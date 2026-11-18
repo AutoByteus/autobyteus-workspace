@@ -1,0 +1,51 @@
+
+=== 2026-11-09T08:34:42Z git clone --no-local /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings /private/tmp/pps/fresh/repo && checkout 4e7c74b2743f6c383d63fc25cfedf3b720cf72f5
+HEAD 4e7c74b2743f6c383d63fc25cfedf3b720cf72f5
+untracked/build output present: 0 ignored entries
+
+=== 2026-11-09T08:36:23Z pnpm install --frozen-lockfile
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.7s using pnpm v10.28.2
+install exit 0
+
+=== 2026-11-09T08:36:32Z cd autobyteus-web && pnpm build:electron:mac -- --arm64 (release env, unsigned)
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.10.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.10.zip.blockmap
+Build completed: [
+  '/private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.10.dmg.blockmap',
+  '/private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.10.dmg',
+  '/private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.10.zip.blockmap',
+  '/private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.10.zip'
+]
+build exit 0
+
+=== 2026-11-09T08:44:25Z Verify bundled Prisma ARM64 engine target
+engines: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+schema-engine-darwin-arm64 present
+client: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+libquery_engine-darwin-arm64.dylib.node present
+
+=== 2026-11-09T08:44:25Z Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: /private/tmp/pps/fresh/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/pps/fresh/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/pps/fresh/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+=== 2026-11-09T08:44:32Z Verify macOS signing policy ARM64: NOT RUN (needs the runner's Apple certificate and notarization)
+app bundle: /private/tmp/pps/fresh/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+=== 2026-11-09T08:44:32Z DONE
+
+real	9m50.185s
+user	16m13.322s
+sys	1m48.591s
+script exit 0

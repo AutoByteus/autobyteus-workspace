@@ -27,6 +27,10 @@ export const testActivationManager = (definitions: Record<string, any>) => ({
           candidate = value;
           if (cancelled) throw new Error("Test activation cancelled.");
           return value;
+        }, (error) => {
+          // A preparation that failed holds nothing: the real operation has released it by the time it rejects.
+          releaseProof = true;
+          throw error;
         }).finally(() => { settled = true; });
         return attempt;
       },

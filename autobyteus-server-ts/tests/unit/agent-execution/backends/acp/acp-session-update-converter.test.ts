@@ -4,6 +4,7 @@ import { AcpSessionUpdateConverter } from "../../../../../src/agent-execution/ba
 import type { AcpAgentSessionProfile } from "../../../../../src/agent-execution/backends/acp/acp-agent-session-profile.js";
 
 const profile: AcpAgentSessionProfile = {
+  longRunningCommandSection: "## Long-Running Commands\n\n- Test agent.",
   newSessionMeta: () => undefined,
   mcpServers: () => [],
   mcpReadiness: () => null,
@@ -13,6 +14,7 @@ const profile: AcpAgentSessionProfile = {
     ...(snapshot.status === "failed" ? { error: "tool failed" } : {}),
   }),
   interpretExtNotification: () => [],
+  configSelection: () => [],
 };
 
 const chunk = (kind: "agent_message_chunk" | "agent_thought_chunk", text: string) =>

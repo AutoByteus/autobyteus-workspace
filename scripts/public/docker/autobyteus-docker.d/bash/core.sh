@@ -3,7 +3,7 @@ LAUNCHER_LABEL_KEY="com.autobyteus.launcher"
 LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
-CONFIG_HASH_VERSION="v6"
+CONFIG_HASH_VERSION="v10"
 NODE_NAME_PREFIX="autobyteus-server"
 DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
@@ -14,6 +14,7 @@ WORKSPACE_CONTAINER_PATH="/home/autobyteus/workspace"
 SHARED_CONTAINER_PATH="/home/autobyteus/shared"
 TEMP_WORKSPACE_ENV_VALUE="${WORKSPACE_CONTAINER_PATH}"
 CHROMIUM_PROFILE_CONTAINER_PATH="/home/vncuser/.config/chromium"
+SERVER_PACKAGES_CONTAINER_PATH="/home/autobyteus/server-packages"
 
 usage() {
   cat <<USAGE
@@ -25,7 +26,10 @@ Usage:
 
 Commands:
   install            Install or replace the local autobyteus-docker CLI
-  new-container      Create a new Docker node with automatic indexed name and ports
+  new-container [--allow-local-network]
+                     Create a new Docker node with automatic indexed name and ports, and print its setup code
+  setup-code [--name <node>]
+                     Print a one-time setup code to connect the desktop app to a node (valid 30 minutes)
   upgrade --all      Upgrade all managed Docker nodes using their saved image refs
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   destroy --name <node>
@@ -34,8 +38,10 @@ Commands:
   workspace paths    Show host/container paths for all nodes by default
   workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
   storage            Show named volumes and host bind mounts for all nodes by default
-  urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs for all nodes by default
-  status | ps        Show managed Docker nodes
+  urls | ports       Show Backend and GraphQL URLs for all nodes by default
+  status | ps        Show managed Docker nodes and the server version each runs
+  update [--name <node> | --all] [--version <X.Y.Z[-beta.N]>]
+                     Update the server inside running node(s), keeping the container and image
   logs               Show Docker logs for a managed node
   stop [--all]       Stop one or all managed Docker nodes
   help               Show this help
@@ -47,8 +53,24 @@ Options:
   --tag <tag>        Docker image tag (default: ${DEFAULT_TAG}; explicit upgrade --all retargets all nodes)
   --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE}; explicit upgrade --all retargets all nodes)
   --all              Required for upgrade/destroy; optional for all-node read-only output; applies to stop/workspace apply as documented
+  --version <ver>    For update: the server version to update to (default: the newest on the node's track)
+  --allow-local-network
+                     For new-container: publish the node on every address of this computer (your local network
+                     too), not only on this computer and its Tailscale address
   -h, --help         Show this help
 
+In-place update (update):
+  Without --version a node follows its saved image tag: latest or latest-zh -> the newest stable
+  release, beta -> the newest release, beta or stable. A node pinned to a version tag or using another
+  image needs --version. Only newer, signed server packages are accepted; a failed update leaves the
+  old version running. A server that needs a newer system than the image has needs upgrade --all.
+
+Access:
+  Every request to a node needs a key. The desktop app gets one for a setup code: run setup-code on this
+  computer and enter the code on the app's Nodes page. A node is published on this computer and, when
+  Tailscale runs, on this computer's Tailscale address; --allow-local-network publishes it on every address.
+  setup-code first applies the current launcher configuration (a node created by an older launcher is
+  recreated once, keeping its named volumes and port).
 Release tracks:
   latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.
   beta               Newest build, beta or stable. Switch once with: upgrade --all --tag beta
@@ -103,7 +125,7 @@ state_path_for() { printf '%s/%s.env\n' "$(state_dir)" "$(normalize_node_name "$
 
 load_state() {
   local file="$1"
-  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT="" IMAGE_REF="" CREATED_AT="" CONFIG_HASH=""
+  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" IMAGE_REF="" CREATED_AT="" CONFIG_HASH="" ALLOW_LOCAL_NETWORK=""
   unset PROFILE
   if [[ -f "$file" ]]; then
     # shellcheck disable=SC1090
@@ -113,10 +135,10 @@ load_state() {
 }
 
 write_state() {
-  local file="$1" node_name="$2" container_name="$3" backend="$4" vnc="$5" novnc="$6" debug="$7" image_ref="$8" created_at="$9" config_hash="${10}"
+  local file="$1" node_name="$2" container_name="$3" backend="$4" image_ref="$5" created_at="$6" config_hash="$7"
   {
-    printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nVNC_PORT=%s\nNOVNC_PORT=%s\nDEBUG_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nUPDATED_AT=%s\n' \
-      "$node_name" "$container_name" "$backend" "$vnc" "$novnc" "$debug" "$image_ref" "$created_at" "$config_hash" "$(now_utc)"
+    printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nALLOW_LOCAL_NETWORK=%s\nUPDATED_AT=%s\n' \
+      "$node_name" "$container_name" "$backend" "$image_ref" "$created_at" "$config_hash" "${ALLOW_LOCAL_NETWORK:-0}" "$(now_utc)"
   } > "$file"
   chmod 600 "$file" 2>/dev/null || true
 }

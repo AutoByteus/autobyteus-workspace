@@ -1,0 +1,11 @@
+# API-10 — MSR-002 (new) + MSR-001 + two existing cases: stopped-run-model-config-graphql.e2e.test.ts on a built server
+# Command: env -i PATH=$PATH HOME=/root TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts --no-watch   (cwd: worktree root)
+# Commit: 817bd9950 + test changes · ENV-1 · 2026-11-10 · Cases API-07, API-10
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (4 tests) 31438ms
+     ✓ updates only a stopped standalone run config and restores the same current package after restart  9839ms
+     ✓ updates exact stopped Team scopes and preserves the current V2 package across restart  9757ms
+     ✓ MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list  6594ms
+     ✓ MSR-002: a new agent run and a new Team run store only the settings the model declares  5248ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  32.52s (transform 199ms, setup 99ms, import 196ms, tests 31.44s, environment 0ms)

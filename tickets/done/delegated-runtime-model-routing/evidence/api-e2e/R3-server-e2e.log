@@ -1,0 +1,122 @@
+# Round 3 (post-merge): MR-01…09, RC-01…41, API-09 regression, each run alone
+# Commit: 7541be3e6d (merged base origin/personal 50e93c2108 + IR-004 f48af0176a; + round-3 probe change, committed with this evidence)
+# Command: env -i PATH HOME=<disposable> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run <file(s)> --no-watch
+# Environment: ENV-1, ENV-2
+# Date: 2026-10-27
+# Look for: "Tests  9 passed (9)"; "Tests  41 passed (41)"; regression "Test Files  3 failed | 44 passed | 9 skipped (56)" = FU-007/008/009 only
+
+## MR
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 395451ms
+     ✓ MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)  855ms
+     ✓ MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)  18454ms
+     ✓ MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)  80385ms
+     ✓ MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)  84313ms
+     ✓ MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)  17768ms
+     ✓ MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)  41118ms
+     ✓ MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again  149278ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+exit 0
+
+## RC
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (41 tests) 443990ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  684ms
+     ✓ RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha  2278ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  3418ms
+     ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted  4318ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  2103ms
+     ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing  2041ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  1943ms
+     ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered  5339ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  4301ms
+     ✓ RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts  888ms
+     ✓ RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; unlinked senders are refused  2936ms
+     ✓ RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta  5013ms
+     ✓ RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it  436ms
+     ✓ RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window  2342ms
+     ✓ RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline  909ms
+     ✓ RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member  345ms
+     ✓ RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start  4015ms
+     ✓ RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation  151024ms
+     ✓ RC-36 278 AC-805: after the idle grace a quiet remote run reads offline in alpha's view; a message from alpha's window restores it with its conversation  414ms
+     ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators  12345ms
+     ✓ RC-24 247 REQ-307: beta's owner stops the peer-started Team during its idle grace; it shows as inactive in history; the delegator's next message restores it  725ms
+     ✓ RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them (290: nor one that selects only the former name list_available_nodes)  5324ms
+     ✓ RC-38 308 AC-003/AC-005: beta's internal agent is not offered to alpha and delegating it is refused while beta hides it; once beta shows it (no restart) it is offered and accepted; hidden again, refused again  1980ms
+     ✓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason  2202ms
+     ✓ RC-40 autobyteus-32 AC-005/REQ-009/REQ-012: with Model Routing on, beta's Model Router chooses for the agent and the Team member no default covers; the launches come back to alpha (result notes, the link); beta records the copies from alpha's node  3583ms
+     ✓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within the 50 s start bound, nothing started  87512ms
+     ✓ RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound  45082ms
+     ✓ RC-28 261 AC-404/AC-407: with alpha's switch off both discovery calls are refused 'turned off' and nothing is sent; an unknown node gets the node-list hint (the same for delegate_task); a blank node gets the recovery text; without node the list is alpha's own  1518ms
+     ✓ RC-29 261 AC-405: a Team that beta's owner adds between two listings appears in the second (nothing is cached)  454ms
+     ✓ RC-30 269 AC-601/AC-602: a long description with line breaks titles the peer-started Agent and Team runs as one line of at most 100 characters, by the history's rule  1065ms
+     ✓ RC-37 278 AC-804: with beta stopped, the view shows its remote runs unreachable within the bound and the rest works; after beta returns, Retry reads them again  2335ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  1171ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  73686ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  445ms
+     ✓ RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways  1617ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  970ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  714ms
+ Test Files  1 passed (1)
+      Tests  41 passed (41)
+exit 0
+
+## API-09 regression
+ ❯ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests | 1 failed) 72004ms
+     × SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched 742ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 2 failed) 10080ms
+     × in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values 1468ms
+     × Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009) 4969ms
+ ❯ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests | 1 failed) 1905ms
+     × E-002/E-004 Team member: images previewable during the turn and after the team run is terminated 337ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 194592ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162512ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 97205ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 75356ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 30315ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 32936ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25537ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 24472ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 21411ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 13756ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 13470ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 11886ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 11763ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 11483ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 9552ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 6436ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 10178ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 9319ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7771ms
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 9217ms
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (8 tests) 6739ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 4868ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 5703ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4838ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4599ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 3633ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3644ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3258ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 3182ms
+ ✓ tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts (3 tests) 2427ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2330ms
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 2522ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 2119ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 1946ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2202ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1831ms
+ ✓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests) 1439ms
+ ✓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test) 1412ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1607ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 1132ms
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 920ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 745ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 718ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 461ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:521:22
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:639:22
+ ❯ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts:287:5
+ ❯ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts:383:22
+ Test Files  3 failed | 44 passed | 9 skipped (56)
+      Tests  4 failed | 204 passed | 32 skipped (240)
+exit 1

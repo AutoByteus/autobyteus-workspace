@@ -4,10 +4,14 @@ import type { Component } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
-import { streamOnlyRetryAdapter } from '~/test-support/remoteRunRetryAdapter'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { peerTeamRows, seedPeerRows, type PeerAnswer } from '~/test-support/runTreeFixtures'
 
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: vi.fn(() => null) }) }))
+const feed = vi.hoisted(() => ({ retry: vi.fn((_runIds: readonly string[]) => true) }))
+vi.mock('~/services/runStatus/runStatusFeed', () => ({
+  RunStatusFeed: class { retry = feed.retry; hold() { return () => undefined } rebind() {} suspend() {} },
+}))
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 
 /**
@@ -17,11 +21,9 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
  * unchanged.
  */
 
-const remoteTeam = {
-  kind: 'agent_team' as const, address: '/studio_team', team_run_id: 'studio-run', node_id: 'srv_docker', node_name: 'docker',
-  coordinator_address: '/studio_team/publisher', members: [{ address: '/studio_team/publisher', agent_run_id: 'publisher-run' }],
-  delegator_agent_run_id: 'manager-run', started_at: '2026-10-23T08:00:00.000Z',
-}
+/** A peer team in the delegator's tree (its node's answer is its rows' `peer`, G-D1). */
+const seed = (answer: PeerAnswer = {}) => seedPeerRows(useRunTreeStore(), 'manager-run', peerTeamRows('studio-run', 'agent:manager-run',
+  [{ agentRunId: 'publisher-run', address: '/studio_team/publisher' }], { nodeId: 'srv_docker', nodeName: 'docker', ...answer }))
 const context = (runId: string) => ({
   config: { agentDefinitionId: '', agentDefinitionName: 'publisher', agentAvatarUrl: null },
   state: { runId, currentStatus: 'idle', conversation: { messages: [] }, eventMonitorPresentationRevision: 0, hasEarlierActiveTraceEvents: false },
@@ -45,11 +47,10 @@ const mountFor = (entry: typeof families[number], runId: string): VueWrapper => 
 } as never)
 
 describe.each(families)('the $family view of a run another node runs', (entry) => {
-  let retry: ReturnType<typeof vi.fn>
   beforeEach(() => {
     setActivePinia(createPinia())
-    retry = vi.fn(() => true)
-    useRemoteRunsStore().register(remoteTeam, streamOnlyRetryAdapter(retry))
+    feed.retry.mockClear()
+    seed()
   })
 
   it('shows the node beside the name, no ⚙ or ＋, and a box naming the node; a run of this node keeps all of them', () => {
@@ -66,10 +67,10 @@ describe.each(families)('the $family view of a run another node runs', (entry) =
   it('shows the red notice with Retry while its node did not answer', async () => {
     const remote = mountFor(entry, 'publisher-run')
     expect(remote.find('[data-test="remote-run-notice"]').exists()).toBe(false)
-    useRemoteRunsStore().markReachable('studio-run', false)
+    seed({ reachable: false })
     await remote.vm.$nextTick()
     expect(remote.get('[data-test="remote-run-notice"]').attributes('role')).toBe('alert')
     await remote.get('[data-test="remote-run-notice-retry"]').trigger('click')
-    expect(retry).toHaveBeenCalledTimes(1)
+    expect(feed.retry).toHaveBeenCalledExactlyOnceWith(['studio-run'])
   })
 })

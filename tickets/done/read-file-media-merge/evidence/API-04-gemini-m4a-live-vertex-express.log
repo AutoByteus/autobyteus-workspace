@@ -1,0 +1,15 @@
+# API-04 temporary copy of tests/integration/agent/gemini-read-file-m4a-live.test.ts with the Gemini mode { kind: 'vertexExpress' } (the only change; diff below), same gates, strict:
+# env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1 AUTOBYTEUS_LIVE_STRICT=1 pnpm -C autobyteus-ts exec vitest run tests/integration/agent/zz-api04-gemini-read-file-m4a-vertex-express.test.ts --reporter=verbose
+# commit 3a336f7a4a, 2026-10-29T20:54:58Z; model gemini-3.1-pro-preview (the test's default)
+## diff
+0a1
+> // TEMPORARY API/E2E probe (autobyteus-328 API-04): gemini-read-file-m4a-live.test.ts in Vertex Express mode; deleted after the run.
+40c41
+< const aiStudioMode: GeminiRuntimeResolver = async () => ({ kind: 'aiStudio' });
+---
+> const aiStudioMode: GeminiRuntimeResolver = async () => ({ kind: 'vertexExpress' }); // TEMPORARY API-04: Vertex Express
+## run
+ ✓ tests/integration/agent/zz-api04-gemini-read-file-m4a-vertex-express.test.ts > Gemini read_file .m4a live integration (env gated) > sends a read_file .m4a tool result continuation to direct Gemini 4814ms
+      Tests  1 passed (1)
+exit: 0
+temporary test removed: yes

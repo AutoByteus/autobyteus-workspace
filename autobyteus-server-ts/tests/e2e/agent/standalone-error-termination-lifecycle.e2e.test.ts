@@ -1,3 +1,4 @@
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import os from "node:os";
 import path from "node:path";
@@ -16,7 +17,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
-import { AgentRunHistoryService } from "../../../src/run-history/services/agent-run-history-service.js";
+import { AgentRunHistoryService, setProcessAgentRunHistoryService } from "../../../src/run-history/services/agent-run-history-service.js";
 import { WorkspaceRunHistoryService } from "../../../src/run-history/services/workspace-run-history-service.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
@@ -88,7 +89,7 @@ const createErrorBackend = (accepted: boolean): RuntimeFixture => {
         phase: active ? "error" : "idle",
         currentTurn: { kind: "NONE" },
       }),
-      hasRunningBackgroundTasks: () => false,
+      backgroundTaskInspection: { kind: "unsupported" } as const,
       subscribeToSourceEventBatches: () => () => undefined,
       dispatchUserInput: vi.fn(async () => ({ accepted: true as const, turnId: "fixture-turn" })),
       approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
@@ -116,6 +117,7 @@ const createManager = (backend: AgentRunBackend): AgentRunManager => {
     claudeBackendFactory: createFactory(unusedClaude),
     agyBackendFactory: createFactory(unusedClaude),
     grokBackendFactory: createFactory(unusedClaude),
+    deepSeekHarnessBackendFactory: createFactory(unusedClaude),
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,
@@ -203,12 +205,14 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
   const statusProjectionService = new AgentRunStatusProjectionService({
     agentRunManager: manager,
   });
-  const historyService = new AgentRunHistoryService(memoryDir, {
+  const historyService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
     catalogService,
     agentRunManager: manager,
     statusProjectionService,
   });
-  workspaceHistoryHolder.service = new WorkspaceRunHistoryService({
+  // autobyteus-461: the composition root registers the process history service (SR-047 step 8); this suite builds its own.
+  cleanups.push(setProcessAgentRunHistoryService(historyService));
+  workspaceHistoryHolder.service = new WorkspaceRunHistoryService({ tree: noDelegations(),
     agentRunHistoryService: historyService,
     teamRunHistoryService: { listTeamRunHistory: vi.fn(async () => []) } as never,
   });

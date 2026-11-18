@@ -1,3 +1,4 @@
+import { messageFeedInto } from "../../helpers/view-streams.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
@@ -10,19 +11,20 @@ import {
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher, type SequencedRootEvent } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream, type SequencedRootEvent } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { AgentOrgCommunicationAdapter } from "../../../src/agent-org-execution/services/agent-org-communication-adapter.js";
+import { createAgentOrgCommunicationPort } from "../../../src/agent-org-execution/services/agent-org-communication-port.js";
 import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import type { PreparedTeamMessageAppend } from "../../../src/agent-team-execution/services/team-run-persistence-contract.js";
-import { COORDINATING_LOG } from "../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../src/run-history/store/message-log-owners.js";
 import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { projectAgentOrgExecutionEvent } from "../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectSequencedTeamRunEvent } from "../../../src/services/agent-streaming/team-execution-view-projector.js";
-import { TeamCommunicationAdapter } from "../../../src/services/team-communication/team-communication-adapter.js";
+import { createTeamCommunicationPort } from "../../../src/services/team-communication/team-communication-port.js";
 import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
-import { StandaloneRootCommunicationAdapter } from "../../../src/standalone-agent-run-root/services/standalone-root-communication-adapter.js";
+import { createStandaloneRootCommunicationPort } from "../../../src/standalone-agent-run-root/services/standalone-root-communication-port.js";
+import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
+import { isTeamRunMessageEvent, teamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 /**
  * CR-001: a message with a remote endpoint stays in the root's message state, but is not published to the
@@ -37,9 +39,7 @@ const WRITER = "writer-run";
 const member = (root: RootExecutionIdentity, agentRunId: string): CollaborationMemberExecutionIdentity =>
   Object.freeze({ root, memberAddress: `/${agentRunId}`, agentRunId });
 const reservation = (agentRunId: string) => Object.freeze({ agentRunId, cancel: vi.fn(), commit: vi.fn(() => Object.freeze({ release: vi.fn() })) });
-const persistence = () => ({
-  commitCommunication: vi.fn(async (input: { commitAfterDurability(): void }) => { input.commitAfterDurability(); return { committed: true as const }; }),
-});
+const persistence = () => ({ commitMessageAppend: vi.fn(runAppendDurably) });
 
 /** Local message, message to the remote run, reply from it, local message: the order a delegator's view sees. */
 const runConversation = async (engine: RootCommunicationEngine, root: RootExecutionIdentity) => {
@@ -63,7 +63,7 @@ const runConversation = async (engine: RootCommunicationEngine, root: RootExecut
   expect(engine.getMessages().map((message) => message.content)).toEqual(["first local", "to remote", "reply from remote", "second local"]);
 };
 
-const collect = <TEvent>(publisher: RootEventPublisher<TEvent>) => {
+const collect = <TEvent>(publisher: RunViewStream<TEvent>) => {
   const events: SequencedRootEvent<TEvent>[] = [];
   publisher.subscribe((event) => events.push(event));
   return events;
@@ -77,30 +77,25 @@ const expectConsecutive = (sequences: readonly number[]) => {
 describe("messages with a remote endpoint keep the root view stream consecutive (CR-001)", () => {
   it("Team root: no COMMUNICATION event for them; the member-input of the reply follows without a gap", async () => {
     const root = createTeamRootExecutionIdentity("team-root");
-    const publisher = new RootEventPublisher<TeamRunEvent>();
+    const publisher = new RunViewStream<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const events = collect(publisher);
-    const adapter = new TeamCommunicationAdapter({
+    const adapter = createTeamCommunicationPort({
       rootTeamRunId: "team-root",
       initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: "team-root", messages: Object.freeze([]) }),
       isCurrentAgent: () => true,
-      messageLogOwnerOf: () => COORDINATING_LOG,
+      messageLogOwnerOf: () => OWN_RUN_LOG,
       assertDeliveryAllowed: () => undefined,
       requireContainingTeamRun: vi.fn(async () => ({
         reserveDirectAgentInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
       }) as unknown as TeamRun),
-      commit: vi.fn(async (plan: PreparedTeamMessageAppend) => {
-        const prepared = plan.prepareAgainstCurrent();
-        if (!prepared.prepared) return { outcome: "conflict" as const, code: prepared.code, message: prepared.message };
-        prepared.commit.commitAfterDurability();
-        return { outcome: "committed" as const };
-      }),
+      commitMessageAppend: vi.fn(runAppendDurably),
       publish: (event) => { publisher.publish(event); },
-      replaceSnapshot: vi.fn(),
-    }, () => true);
+      messageFeed: messageFeedInto(publisher, teamRunMessageEvent),
+    });
 
     await runConversation(new RootCommunicationEngine(adapter), root);
 
-    const projected = events.map((event) => projectSequencedTeamRunEvent({} as never, event) as { type: string; payload: Record<string, any> });
+    const projected = events.map((event) => projectSequencedTeamRunEvent(event) as { type: string; payload: Record<string, any> });
     expectConsecutive(projected.map((message) => message.payload.change_sequence));
     expect(projected.map((message) => message.type)).toEqual([
       "TEAM_COMMUNICATION_MESSAGE", "MEMBER_INPUT_MESSAGE", // first local
@@ -118,27 +113,27 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
     {
       kind: "Agent root (standalone)",
       root: createAgentRootExecutionIdentity(LEAD),
-      build: (root: RootExecutionIdentity, publisher: RootEventPublisher<StandaloneRootEvent>) => new StandaloneRootCommunicationAdapter({
+      build: (root: RootExecutionIdentity, publisher: RunViewStream<StandaloneRootEvent>) => createStandaloneRootCommunicationPort({
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", hostRunId: LEAD, messages: [] },
-        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => COORDINATING_LOG, assertDeliveryAllowed: () => undefined,
+        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        replaceMessages: vi.fn(), publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),
       }),
-      project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, {} as never, event),
+      project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, event),
     },
     {
       kind: "Org root",
       root: createAgentOrgRootExecutionIdentity("org-root"),
-      build: (root: RootExecutionIdentity, publisher: RootEventPublisher<AgentOrgRunEvent>) => new AgentOrgCommunicationAdapter({
+      build: (root: RootExecutionIdentity, publisher: RunViewStream<AgentOrgRunEvent>) => createAgentOrgCommunicationPort({
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
-        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => COORDINATING_LOG, assertDeliveryAllowed: () => undefined,
+        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        replaceMessages: vi.fn(), publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),
       }),
-      project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent({ orgRunId: "org-root" } as never, event),
+      project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent("org-root", event),
     },
   ] as const)("$kind: only the local messages are published, with consecutive sequences", async ({ root, build, project }) => {
-    const publisher = new RootEventPublisher<never>();
+    const publisher = new RunViewStream<never>({ isMessageEvent: () => false });
     const events = collect(publisher);
     await runConversation(new RootCommunicationEngine(build(root, publisher as never) as never), root);
 

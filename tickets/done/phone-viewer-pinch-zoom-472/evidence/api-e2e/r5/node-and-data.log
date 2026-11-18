@@ -1,0 +1,6 @@
+# autobyteus-472 node and data; commit 1d2d2d9de3; 2026-11-11T21:53:01.233Z
+files: {"resume":{"name":"resume-472.pdf","bytes":105463,"sha256":"53d553eb1e85a47501f40a4ff82c197b3144cb0da255b0b9ba9fc06036195b09"},"photo":{"name":"photo-472.png","bytes":149581,"sha256":"e151a304cb0a6a1641e77ed4f52128728866dea77c0167d786f1f64c0b0d1831"},"big":{"name":"big-472.pdf","bytes":25239558,"sha256":"c68752c4d3dbbf0f0286c97c589d6ae6806d679c3477c6d0ef3596f7196c9039"},"notes":{"name":"notes-472.txt","bytes":47,"sha256":"4fe4ceb6120dd4b207753f1b6f537824809154e2b821f28882b472f7a55b5856"}}
+node on http://127.0.0.1:59498 (emulator: http://10.0.2.2:59498); /mobile 200 serves the phone bundle: true
+run reader_2be51668254849b5a14d3cc4ce4d2015 in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-FxLkbH/workspace/ws-472: its own message links the four files
+pairing session 201 for http://10.0.2.2:59498 (link in /tmp/abtest472/pairing-link.txt, not evidence). Waiting for /tmp/abtest472/stop
+node-and-data done

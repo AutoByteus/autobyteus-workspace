@@ -1,0 +1,17 @@
+Check: IMP-05
+Command: vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (starts Antigravity runs)
+Commit: 9833f51bf9
+Environment: macOS arm64, Node 22, pnpm 10.28.2; built dist of the commit; env -i, private HOME, RUN_AGY_FAILURE_E2E=1, scripted Antigravity CLI tests/fixtures/agy-failure-cli.mjs
+Date: 2026-11-08
+
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 23495ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  2744ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1201ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; 
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches 
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider r
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and start
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and star
+      Tests  9 passed (9)

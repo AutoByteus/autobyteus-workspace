@@ -1,0 +1,21 @@
+# Check: IMP-03 autobyteus-ts: LLM unit folder, the whole unit folder, typecheck
+# Commands: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-ts && env -i … pnpm exec vitest run tests/unit/llm); (cd /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra && env -i … pnpm -C autobyteus-ts exec vitest run tests/unit); (cd /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-ts && pnpm exec tsc -p tsconfig.build.json --noEmit)
+# Commit: 11fc06b3be source (later commits change only server tests and docs)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-30 local
+# Result: tests/unit/llm 70 files / 541 tests passed; tests/unit 310 files / 2,090 tests passed; tsc exit 0. The full `pnpm -C autobyteus-ts test` (integration and gated live folders) was not run: the change is catalog data, and its integration folder runs real LM Studio inference by default (FU-004 of autobyteus-328).
+
+===== tests/unit/llm =====
+ Test Files  70 passed (70)
+      Tests  541 passed (541)
+   Start at  12:36:03
+   Duration  4.00s (transform 4.24s, setup 1.50s, import 21.62s, tests 2.12s, environment 6ms)
+
+===== tests/unit =====
+ Test Files  310 passed (310)
+      Tests  2090 passed (2090)
+   Start at  12:37:42
+   Duration  16.31s (transform 9.64s, setup 4.46s, import 35.02s, tests 41.09s, environment 20ms)
+
+===== typecheck =====
+exit 0, output: (none)

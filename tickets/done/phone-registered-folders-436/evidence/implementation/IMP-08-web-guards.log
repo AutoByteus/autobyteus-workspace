@@ -1,0 +1,18 @@
+# IMP-08 web-guards
+# Command: bash -c pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary
+# Environment mode: shell
+# Commit: 271656acc0 (branch codex/phone-registered-folders-436)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09T04:26:02Z
+
+
+> autobyteus@1.5.12-beta.10 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-registered-folders-436/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.12-beta.10 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-registered-folders-436/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+# Exit status: 0

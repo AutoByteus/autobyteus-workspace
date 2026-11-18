@@ -1,0 +1,30 @@
+{
+  "run_id": "rs_native_099582_5dfccc64bd434bc3b749690709955c20",
+  "renderer_revision": 2,
+  "files": [
+    {
+      "journal_file": "work_journal_000001.md",
+      "source_file": "raw_traces_000001.jsonl",
+      "source_record_count": 3,
+      "state": "closed",
+      "content_sha256": "5d2407fdd0aa71d444a7f361f1ab5a3ee73ea4dd95cb3080c585c0899ce8aee8",
+      "runtime_kind": "autobyteus"
+    },
+    {
+      "journal_file": "work_journal_000002.md",
+      "source_file": "raw_traces_000002.jsonl",
+      "source_record_count": 6,
+      "state": "closed",
+      "content_sha256": "1ef9da33cc5f686bc54f59d246b8814d5584f7573af6d55c8dc232b09face46f",
+      "runtime_kind": "antigravity_cli"
+    },
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 4,
+      "state": "open",
+      "content_sha256": "fa0cb9048def9d5c6c014e9d559792eaf1ba7902ace98f0e5975caa11ceeece6",
+      "runtime_kind": "autobyteus"
+    }
+  ]
+}

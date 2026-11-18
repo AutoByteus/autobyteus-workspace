@@ -1,0 +1,19 @@
+# API-L11: restart (DS-006, MP-001, AC-013-like lifecycle): catch-up without loading a model; the first search says the meaning index is loading, then searches by meaning; the index store is reused (no rebuild)
+# Instance iso-53567-504c stopped (isolated-app stop: wasRunning True, dataRootRemoved False: the provided data root is kept), then started again on the same data root:
+#   CODEX_HOME=<throwaway> pnpm --silent isolated-app start --from-worktree --data-root /private/tmp/wjs-api/root → iso-50688-fbfc (app pid 29672, graphql http://127.0.0.1:50689/graphql), 2026-10-26 19:45:58 UTC
+#   (equivalent to isolated-app restart: same build, data root and CODEX_HOME; new instance id). Between stop and start the evaluation command (API-L04 part 2) and the meaning-score probe read this index.
+# Embedded server process 30630 (child of the app); threads by ps -M, memory by footprint -p
+
+## After start, no search yet
+19:46:06 threads 28 Footprint 242 MB · 19:46:16 threads 27 Footprint 242 MB · 19:46:26 threads 27 Footprint 243 MB
+server.log: "Background task 'Memory Search' completed successfully." (startup catch-up)
+memoryIndexStatus: state READY; FIND_RUNS 3693/3693, JOURNALS 3693/3693, TEXT_INDEX 7439/7439, MEANING_INDEX 7439/7439; updatedAt 19:46:00.729 (catch-up); meaningIndexModelId = activeModelId = granite-embedding-small-english-r2; meaningNote null
+Index tab: "Up to date" · "3.693 runs · updated 26.10.2026, 20:46:00" · steps done/done/done/done · button "Rebuild" (screenshot API-L11-02-index-after-restart.png)
+
+## First searches (GraphQL memorySearch "domain updater DDNS", every ~2.5 s)
+19:46:43 threads 27 Footprint 243 MB → search 300 ms, coverage "The meaning index is loading: these results are by words only."
+19:46:45 threads 31 Footprint 468 MB → search 306 ms, coverage null (the model loaded for the meaning job)
+19:46:48 … 19:46:55 threads 31, Footprint 483–490 MB, searches 156–259 ms, coverage null
+
+## Imports after the catch-up (AC-006)
+"pelicanmarigold9152 greenhouse irrigation controller garage Raspberry Pi", limit 20: 0 results from daily_assistant_b7049c63… and 0 paths under imports/

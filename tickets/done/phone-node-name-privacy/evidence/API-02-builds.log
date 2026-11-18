@@ -1,0 +1,14 @@
+# API-02 builds: server dist and /mobile production bundle
+# command: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web
+# commit: 8f87b1ef49 (code ba3ba5b23e)
+# env: macOS 26.5.2, Node v22.23.1
+# date: 2026-11-08T06:58:46Z
+
+server build exit=0
+mobile-web build exit=0
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/autobyteus-web/dist-mobile/public
+files with 'mobile-connection-url': 0
+files with 'AutoByteus node': 2
+bundle index sha256 7dc6cc6142052fbe

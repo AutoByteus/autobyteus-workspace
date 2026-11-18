@@ -1,0 +1,224 @@
+# IMP-10 (IR-002)
+# Command: (autobyteus-web) NUXT_TEST=true npx vitest run components/settings components/run-settings components/workspace/config utils/runSettings stores localization; then guard:web-boundary, guard:localization-boundary, audit:localization-literals
+# Commit: 03d9860e82
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-26T16:20:27Z
+
+ ✓ tests/stores/llmProviderConfigStore.test.ts (15 tests) 51ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts (21 tests) 138ms
+ ✓ stores/__tests__/agentRunStore.spec.ts (26 tests) 127ms
+ ✓ stores/__tests__/tokenUsageMeterStore.spec.ts (23 tests) 76ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts (28 tests) 234ms
+ ✓ components/settings/embedding/__tests__/EmbeddingSettingsPanel.spec.ts (14 tests) 381ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (57 tests) 454ms
+ ✓ stores/__tests__/chatDraftStore.spec.ts (38 tests) 111ms
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (31 tests) 362ms
+ ✓ stores/__tests__/activeContextStore.spec.ts (15 tests) 51ms
+ ✓ components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts (13 tests) 133ms
+ ✓ stores/__tests__/phoneAccessStore.spec.ts (14 tests) 14ms
+ ✓ stores/__tests__/appUpdateStore.spec.ts (19 tests) 12ms
+ ✓ tests/stores/serverSettingsStore.test.ts (15 tests) 169ms
+ ✓ stores/__tests__/workspaceStore.spec.ts (14 tests) 40ms
+ ✓ stores/__tests__/agentOrgLaunchDraftStore.spec.ts (14 tests) 34ms
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 144ms
+ ✓ stores/__tests__/workspaceSelectionComposition.spec.ts (7 tests) 1070ms
+   ✓ explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router > publication-only snapshot/status/input preserves Org route, prior Team focus, explicit intent and draft  301ms
+ ✓ stores/__tests__/nodeStore.spec.ts (12 tests) 20ms
+ ✓ stores/__tests__/runHistoryNavigationProjection.spec.ts (48 tests) 116ms
+ ✓ stores/__tests__/agentRootCompactionIntegration.spec.ts (22 tests) 161ms
+ ✓ stores/__tests__/agentRunCollaborationLazyChildren.spec.ts (9 tests) 86ms
+ ✓ tests/stores/memoryExplorerStore.test.ts (9 tests) 9ms
+ ✓ stores/__tests__/projectTaskStore.spec.ts (17 tests) 337ms
+ ✓ stores/__tests__/retainedActivityTermination.spec.ts (8 tests) 185ms
+   × definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache 26ms
+   ✓ definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache 6ms
+   × definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads 5ms
+   ✓ definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads 5ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Agent create (contract only) 0ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Agent edit (contract only) 0ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Org create (contract only) 0ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Org edit (contract only) 0ms
+   × definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache 3ms
+   ✓ definition mutations publish a complete current-query cache row > keeps nonempty Org catalog diagnostics readable through the real cache 6ms
+ ✓ stores/__tests__/applicationStore.spec.ts (8 tests) 123ms
+ ✓ stores/__tests__/agentActivityStore.spec.ts (16 tests) 18ms
+ ✓ stores/__tests__/nodeListStore.spec.ts (12 tests) 26ms
+ ✓ stores/__tests__/agentContextsStore.spec.ts (12 tests) 27ms
+ ✓ stores/__tests__/teamRunConfigStore.spec.ts (11 tests) 21ms
+ ✓ stores/__tests__/runHistoryTeamExecutionRows.spec.ts (6 tests) 10ms
+ ✓ stores/__tests__/agentOrgInspectionApollo.spec.ts (25 tests) 3909ms
+ ✓ stores/__tests__/taskWorkerTaskStore.spec.ts (9 tests) 47ms
+ ✓ stores/__tests__/agentTeamDefinitionStore.spec.ts (7 tests) 7ms
+ ✓ stores/__tests__/projectLiveChanges.spec.ts (9 tests) 125ms
+ ✓ stores/__tests__/agentDefinitionStore.spec.ts (5 tests) 6ms
+ ✓ stores/__tests__/nativeOrgCompactionTermination.spec.ts (9 tests) 188ms
+ ✓ stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts (6 tests) 15ms
+ ✓ stores/__tests__/nativeCompactionTermination.spec.ts (17 tests) 44ms
+ ✓ stores/__tests__/remoteCollaborationOffersStore.spec.ts (8 tests) 125ms
+ ✓ stores/__tests__/agentTeamDefinitionRefresh.spec.ts (6 tests) 121ms
+ ✓ stores/__tests__/nativeCompactionActivity.spec.ts (16 tests) 12ms
+ ✓ stores/__tests__/projectStore.spec.ts (13 tests) 128ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts (7 tests) 11ms
+ ✓ components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts (4 tests) 277ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts (7 tests) 23ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.savedSnapshot.spec.ts (8 tests) 174ms
+ ✓ stores/__tests__/agentRunConfigStore.spec.ts (18 tests) 8ms
+ ✓ stores/__tests__/browserShellStore.spec.ts (7 tests) 7ms
+ ✓ stores/__tests__/agentRunCollaborationDisclosure.spec.ts (4 tests) 35ms
+ ✓ stores/__tests__/nodeRowStatus.spec.ts (10 tests) 4ms
+ ✓ stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts (7 tests) 32ms
+ ✓ stores/__tests__/runHistorySelectionActions.spec.ts (7 tests) 12ms
+ ✓ stores/__tests__/delegatedLaunchDraftStore.spec.ts (7 tests) 15ms
+ ✓ stores/__tests__/tokenUsageStatistics.spec.ts (2 tests) 8ms
+ ✓ stores/__tests__/agentRunCollaborationRemoteRetry.spec.ts (3 tests) 17ms
+ ✓ stores/__tests__/agentOrgHistoryApollo.spec.ts (85 tests) 9927ms
+ ✓ stores/__tests__/applicationPackagesStore.spec.ts (3 tests) 5ms
+ ✓ stores/__tests__/retainedOrgActivityTermination.spec.ts (4 tests) 91ms
+ ✓ stores/__tests__/runHistoryReconcileActivationPending.spec.ts (6 tests) 64ms
+ ✓ stores/__tests__/runtimeCapabilitiesStore.spec.ts (6 tests) 31ms
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 12ms
+ ✓ stores/__tests__/agentPackagesStore.spec.ts (8 tests) 6ms
+ ✓ stores/__tests__/extensionsStore.spec.ts (4 tests) 7ms
+ ✓ scripts/__tests__/localizationLiteralAudit.spec.ts (6 tests) 24ms
+ ✓ stores/__tests__/contextFileUploadStore.spec.ts (4 tests) 8ms
+ ✓ tests/stores/memoryInspectorStore.test.ts (6 tests) 5ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts (7 tests) 68ms
+ ✓ stores/__tests__/skillStore.spec.ts (5 tests) 10ms
+ ✓ components/settings/model-routing/__tests__/AgentRuntimesNowSection.spec.ts (8 tests) 124ms
+ ✓ stores/__tests__/agentOrgRunConfigPublication.spec.ts (6 tests) 31ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 155ms
+ ✓ components/settings/__tests__/NfsGuideCard.spec.ts (13 tests) 206ms
+ ✓ components/settings/__tests__/MediaDefaultModelsCard.spec.ts (4 tests) 83ms
+ ✓ components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts (6 tests) 133ms
+ ✓ components/settings/__tests__/AgentPackagesManager.spec.ts (12 tests) 136ms
+ ✓ components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts (3 tests) 71ms
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (9 tests) 81ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (26 tests) 73ms
+ ✓ stores/__tests__/updateNotificationsStore.spec.ts (12 tests) 22ms
+ ✓ stores/__tests__/windowNodeContextStore.spec.ts (10 tests) 20ms
+ ✓ components/settings/__tests__/UpdateChecksCard.spec.ts (8 tests) 263ms
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 187ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts (8 tests) 251ms
+ ✓ components/settings/__tests__/ServerSettingsEndpointCards.spec.ts (5 tests) 174ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts (4 tests) 24ms
+ ✓ stores/__tests__/agentOrgDefinitionCache.spec.ts (11 tests) 45ms
+ ✓ components/settings/__tests__/WebSearchConfigurationCard.spec.ts (7 tests) 136ms
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests) 85ms
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (6 tests) 52ms
+ ✓ components/settings/__tests__/ClaudeRuntimeCard.spec.ts (9 tests) 47ms
+ ✓ components/settings/__tests__/CodexFullAccessCard.spec.ts (10 tests) 58ms
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (12 tests) 66ms
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 150ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests) 168ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsStates.spec.ts (4 tests) 61ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (3 tests) 51ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts (9 tests) 55ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (6 tests) 47ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 46ms
+ ✓ components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts (6 tests) 48ms
+ ✓ components/settings/__tests__/AboutSettingsManager.autoCheck.spec.ts (6 tests) 50ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts (7 tests) 47ms
+ ✓ components/settings/__tests__/ApplicationPackagesManager.spec.ts (5 tests) 43ms
+ ✓ stores/__tests__/updateAutomationStore.spec.ts (5 tests) 7ms
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 62ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 56ms
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts (8 tests) 43ms
+ ✓ components/settings/__tests__/TokenUsageRunDetailsView.spec.ts (5 tests) 33ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts (4 tests) 104ms
+ ✓ components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts (3 tests) 61ms
+ ✓ components/settings/__tests__/ShowInternalAgentsCard.spec.ts (4 tests) 37ms
+ ✓ components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts (1 test) 42ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageTrendChart.spec.ts (3 tests) 40ms
+ ✓ components/settings/__tests__/ServerMigrationsManager.spec.ts (3 tests) 35ms
+ ✓ components/settings/__tests__/PhoneAccessCard.spec.ts (3 tests) 31ms
+ ✓ components/settings/__tests__/VoiceInputExtensionCard.spec.ts (8 tests) 39ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 25ms
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts (2 tests) 18ms
+ ✓ stores/__tests__/remoteRunsStore.spec.ts (7 tests) 8ms
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (6 tests) 17ms
+ ✓ stores/__tests__/agentOrgInspection.spec.ts (5 tests) 22ms
+ ✓ stores/__tests__/applicationsCapabilityStore.spec.ts (4 tests) 110ms
+ ✓ stores/__tests__/tokenUsageAnalytics.spec.ts (3 tests) 8ms
+ ✓ stores/__tests__/remoteCollaborationStore.spec.ts (4 tests) 5ms
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (2 tests) 22ms
+ ✓ tests/stores/audioStore.test.ts (7 tests) 21ms
+ ✓ stores/__tests__/nodeChangeDialogStore.spec.ts (3 tests) 7ms
+ ✓ stores/__tests__/projectsPanelStore.spec.ts (6 tests) 20ms
+ ✓ stores/__tests__/agentOrgDefinitionStore.spec.ts (1 test) 4ms
+ ✓ stores/__tests__/applicationHostStore.spec.ts (2 tests) 67ms
+ ✓ stores/__tests__/taskLocatorStore.spec.ts (5 tests) 26ms
+ ✓ stores/__tests__/agentRunCollaborationStoreClosure.spec.ts (2 tests) 7ms
+ ✓ stores/__tests__/agentOrgRemoteRetry.spec.ts (2 tests) 16ms
+ ✓ stores/__tests__/runHistoryTeamRows.spec.ts (2 tests) 5ms
+ ✓ stores/__tests__/appUpdateStore.autoCheck.spec.ts (3 tests) 5ms
+ ✓ stores/__tests__/skillNamesStore.spec.ts (4 tests) 9ms
+ ✓ stores/__tests__/mobileWorkStore.spec.ts (5 tests) 4ms
+ ✓ stores/__tests__/runHistoryReadModel.spec.ts (6 tests) 11ms
+ ✓ stores/__tests__/skillSourcesStore.spec.ts (4 tests) 7ms
+ ✓ stores/__tests__/appFontSizeStore.spec.ts (3 tests) 9ms
+ ✓ stores/__tests__/workspaceStore.reconnect-resync.spec.ts (2 tests) 8ms
+ ✓ stores/__tests__/agentBackgroundTaskStore.spec.ts (5 tests) 15ms
+ ✓ stores/__tests__/appDataMigrationsStore.spec.ts (2 tests) 8ms
+ ✓ components/agentTeams/__tests__/AgentTeamHandoffLocalization.spec.ts (1 test) 35ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageAnalyticsSummaryCards.spec.ts (5 tests) 34ms
+ ✓ components/settings/token-usage/analytics/__tests__/TokenUsageBreakdown.spec.ts (3 tests) 53ms
+ ✓ components/settings/nodes/__tests__/NodeChangeDialog.spec.ts (7 tests) 41ms
+ ✓ stores/__tests__/definitionProblemsStore.spec.ts (3 tests) 3ms
+ ✓ stores/__tests__/toolManagementStore.mcpImport.spec.ts (2 tests) 3ms
+ ✓ stores/__tests__/runHistoryNavigationStoredTitle.spec.ts (2 tests) 3ms
+ ✓ tests/stores/agentDefinitionOptionsStore.test.ts (1 test) 3ms
+ ✓ stores/__tests__/agentSelectionStore.spec.ts (5 tests) 5ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts (2 tests) 17ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (10 tests) 30ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageCostBreakdown.spec.ts (3 tests) 26ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.delegatedSave.spec.ts (3 tests) 39ms
+ ✓ localization/runtime/__tests__/localizationRuntime.spec.ts (4 tests) 23ms
+ ✓ components/settings/providerApiKey/__tests__/QwenSetupForm.spec.ts (4 tests) 26ms
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts (2 tests) 12ms
+ ✓ components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts (1 test) 68ms
+ ✓ components/settings/__tests__/DisplaySettingsManager.spec.ts (3 tests) 77ms
+ ✓ components/run-settings/__tests__/RunMemberRowModelRouting.spec.ts (2 tests) 18ms
+ ✓ stores/__tests__/workspaceMetadataActions.spec.ts (2 tests) 4ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 15ms
+ ✓ components/app/__tests__/AppLocalizationGate.spec.ts (2 tests) 11ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (2 tests) 21ms
+ ✓ components/settings/__tests__/LanguageSettingsManager.integration.spec.ts (1 test) 15ms
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (1 test) 13ms
+ ✓ components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts (1 test) 16ms
+ ✓ utils/runSettings/__tests__/runMemberTree.spec.ts (5 tests) 24ms
+ ✓ components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts (3 tests) 15ms
+ ✓ utils/runSettings/__tests__/delegatedCopyChoices.spec.ts (5 tests) 8ms
+ ✓ utils/runSettings/__tests__/memberLaunchDefaults.spec.ts (6 tests) 5ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRows.spec.ts (5 tests) 6ms
+ ✓ utils/runSettings/__tests__/delegatedLaunchRowsModelRouting.spec.ts (4 tests) 5ms
+ ✓ utils/runSettings/__tests__/startModelDefaults.spec.ts (7 tests) 5ms
+ ✓ stores/capabilities/__tests__/createBoundNodeCapabilityStore.spec.ts (7 tests) 61ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts (7 tests) 8ms
+ ✓ components/settings/nodes/__tests__/AddNodePanel.spec.ts (3 tests) 46ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts (3 tests) 45ms
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts (3 tests) 6ms
+ ✓ utils/runSettings/__tests__/modelOptions.spec.ts (5 tests) 4ms
+ ✓ localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts (2 tests) 2ms
+ ✓ localization/runtime/__tests__/systemLocaleResolver.spec.ts (4 tests) 4ms
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts (2 tests) 4ms
+ ✓ utils/runSettings/__tests__/launchReadiness.spec.ts (5 tests) 3ms
+ ✓ stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts (1 test) 4ms
+ ✓ localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts (1 test) 2ms
+ ✓ stores/__tests__/tokenUsageThroughput.spec.ts (2 tests) 2ms
+ ✓ stores/__tests__/toolManagementStore.mcpGateway.spec.ts (1 test) 3ms
+ ✓ localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts (1 test) 2ms
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 2ms
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 2ms
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+ Test Files  1 failed | 194 passed (195)
+      Tests  3 failed | 1544 passed (1547)
+[guard:web-boundary] Passed.
+guard:web-boundary exit=0
+[guard:localization-boundary] Passed.
+guard:localization-boundary exit=0
+[audit:localization-literals] Passed with zero unresolved findings.
+audit:localization-literals exit=0
+
+# Note: the one failing file, stores/__tests__/definitionMutationCache.spec.ts ("Unconfigured GraphQL fixture field: internal"), is not changed by this branch: autobyteus-308 (813f7208d2, in base d74f75a51a) added `internal` to graphql/queries/agentDefinitionQueries.ts without adding it to that spec's fixture. Recorded as FU-006. The IR-002 web files all pass.

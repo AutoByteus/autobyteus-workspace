@@ -1,0 +1,13 @@
+# API-01 round 2: full web unit/component suite
+# command: pnpm -C autobyteus-web test:nuxt --run (worktree root); commit d115f1601d; macOS, Node v22.23.1; 2026-11-08 01:01-01:06
+# full log /tmp/426-r2-API-01.log (   49172 lines, not committed)
+
+## failed files (expect none)
+(none)
+
+ Test Files  718 passed (718)
+      Tests  5361 passed | 2 skipped (5363)
+   Start at  01:01:53
+   Duration  267.11s (transform 29.71s, setup 1775.83s, collect 187.07s, tests 75.25s, environment 144.04s, prepare 89.47s)
+
+exit 0

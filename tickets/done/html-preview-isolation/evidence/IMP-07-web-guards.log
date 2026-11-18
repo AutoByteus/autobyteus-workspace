@@ -1,0 +1,21 @@
+# IMP-07 web guards
+# Command: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals (run on the working tree committed unchanged as cdba18ba35)
+# Commit: cdba18ba35 (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+## guard:web-boundary
+> autobyteus@1.5.12-beta.5 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+
+## guard:localization-boundary
+> autobyteus@1.5.12-beta.5 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+
+## audit:localization-literals
+> autobyteus@1.5.12-beta.5 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+[audit:localization-literals] Passed with zero unresolved findings.
+

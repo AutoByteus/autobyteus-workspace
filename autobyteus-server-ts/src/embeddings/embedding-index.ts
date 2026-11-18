@@ -46,6 +46,15 @@ export type ItemFingerprints = { readonly [OPAQUE]: "ItemFingerprints" };
 type FingerprintSet = { modelId: string; entries: ReadonlyMap<string, string> };
 const fingerprintSet = (fingerprints: ItemFingerprints): FingerprintSet => fingerprints as unknown as FingerprintSet;
 
+/** A nearest item and its similarity to the query; the caller judges what a score means for its collection. */
+export type NearestMatch = { id: string; score: number };
+
+/**
+ * `nearest`'s answer. `collection` is `notSynced` when the collection has no job in this process (nothing
+ * synced it since the start, so there is nothing to ask); the caller decides whether to sync it.
+ */
+export type EmbeddingNearestResult = { matches: NearestMatch[]; collection: "notSynced" | "synced"; readiness: EmbeddingReadiness };
+
 export type EmbeddingModelsStatus = { activeModelId: string; defaultModelId: string; onDiskBytes: number; models: EmbeddingModelEntry[] };
 
 type ModelPhase =
@@ -112,6 +121,35 @@ export class EmbeddingIndex {
       if (readiness.state !== "preparing" || remaining <= 0) return this.query(job, queryText, readiness, options);
       await this.waitForChange(remaining);
     }
+  }
+
+  /**
+   * The `limit` items nearest to the query among the collection's vectors for their current text, best first, each
+   * with its score. It never creates a job, never prepares or downloads a model, and never syncs: with no job it answers
+   * `notSynced`; while the model is not ready it answers its readiness with no matches. A worker stopped while idle
+   * restarts from disk to embed the query.
+   */
+  async nearest(collection: string, queryText: string, options: { limit: number }): Promise<EmbeddingNearestResult> {
+    const active = this.resolveModel();
+    const model = this.model?.definition.id === active.id ? this.model : null;
+    const job = model ? this.collections.get(collection) : undefined;
+    if (!model || !job) return { matches: [], collection: "notSynced", readiness: { state: "preparing", phase: "loading", done: 0, total: 0 } };
+    if (model.phase.kind === "idle" && !this.files.hasAllFiles(active)) {
+      return { matches: [], collection: "synced", readiness: unavailable("The embedding model is not downloaded.") };
+    }
+    const readiness = this.readinessOf(job);
+    const fresh = job.freshVectors();
+    if (!model.runner || model.phase.kind !== "ready" || !fresh.length) return { matches: [], collection: "synced", readiness };
+    let queryVector: Float32Array;
+    try {
+      [queryVector] = await model.runner.embed("query", [queryText]) as [Float32Array];
+    } catch (error) {
+      if (this.model === model && model.phase.kind === "ready") this.failModel(model, error);
+      return { matches: [], collection: "synced", readiness: unavailable(reasonOf(error)) };
+    }
+    const matches: NearestMatch[] = fresh.map(({ id, vector }) => ({ id, score: dot(queryVector, vector) }))
+      .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id)).slice(0, Math.max(0, options.limit));
+    return { matches, collection: "synced", readiness };
   }
 
   /** Brings the collection in step with `items` (removes absent items, schedules missing or changed ones). */

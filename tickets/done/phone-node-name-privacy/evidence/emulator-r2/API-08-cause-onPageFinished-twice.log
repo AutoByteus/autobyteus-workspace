@@ -1,0 +1,89 @@
+# API-08 (round 2) cause: a failed main-frame load that replaces a page that had loaded gets TWO onPageFinished callbacks
+# command: temporary `Log.i("DIAG433", …)` added to AutoByteusWebView.Client (onPageStarted override, onPageFinished with
+#          the MainFrameLoadOutcome result, onReceivedError, onReceivedHttpError) and to MainActivity (onPageLoaded,
+#          showWebDiagnostic, showPage); `./gradlew :app:assembleDebug`; `adb install -r`; `adb logcat -s DIAG433:I`.
+#          The logging was reverted with `git checkout` and the APK rebuilt: `git diff ea45dc1643 -- autobyteus-android` is
+#          empty, and the reinstalled APK's dex holds 0 "DIAG433" strings (sha256 7445857c…f61b). Never committed.
+# commit: ea45dc1643 + temporary logging
+# env: ticket-owned AVD pnnp433_api35 (Android 15, WebView 124.0.6367.219, headless); node A at 127.0.0.1:47331
+#      reached as hostbox-9f3.home.arpa; test proxy 127.0.0.1:47333 -> A (modes pass | 502 | drop for /mobile; stopped = refused)
+# date: 2026-11-08T08:33–08:36Z
+# Lines copied from `adb logcat -d -s DIAG433:I` (pairing codes in URLs shortened to "…").
+
+## 1. Open Test Desktop (node A up): a successful load; onPageFinished comes several times (SPA), all loaded=true
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47331/mobile
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=false overlay=false screen=Connecting
+I DIAG433 : showPage
+I DIAG433 : onReceivedHttpError main=false http://hostbox-9f3.home.arpa:47331/favicon.ico 404
+I DIAG433 : onReceivedHttpError main=false http://hostbox-9f3.home.arpa:47331/favicon.ico 404
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=true overlay=false screen=Web
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=true overlay=false screen=Web
+
+## 2. Node A stopped; the loaded page reloads (location.reload()) -> REFUSED (-6): the overlay is shown, then replaced
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47331/mobile/
+I DIAG433 : onReceivedError main=true http://hostbox-9f3.home.arpa:47331/mobile/ -6
+I DIAG433 : showWebDiagnostic Can’t reach Test Desktop
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile/ loaded=false
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile/ loaded=true      <- second finish; the mark was already reset
+I DIAG433 : onPageLoaded firstPageShown=true overlay=true screen=Web
+I DIAG433 : showPage                                                                    <- WebView (error page with the URL) shown, overlay gone
+
+## 3. Loaded page, "This link can’t open here" overlay, node A stopped, RETRY (loadTrusted(entry.mobileUrl)) -> same
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47331/mobile
+I DIAG433 : onReceivedError main=true http://hostbox-9f3.home.arpa:47331/mobile -6
+I DIAG433 : showWebDiagnostic Can’t reach Test Desktop
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile loaded=false
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47331/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=true overlay=true screen=Web
+I DIAG433 : showPage
+
+## 4. Proxy entry "Test Server", FIRST load answered 502 (no page loaded before): one finish, overlay stays (as IMP-12)
+I DIAG433 : onReceivedHttpError main=true http://hostbox-9f3.home.arpa:47333/mobile?pairing=… 502
+I DIAG433 : showWebDiagnostic AutoByteus returned HTTP 502
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47333/mobile?pairing=…
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile?pairing=… loaded=false
+I DIAG433 : onReceivedHttpError main=false http://hostbox-9f3.home.arpa:47333/favicon.ico 404
+
+## 5. From that overlay (an error document, no page loaded), RETRY with DROP (-1): one finish, overlay stays (as IMP-12)
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47333/mobile
+I DIAG433 : onReceivedError main=true http://hostbox-9f3.home.arpa:47333/mobile -1
+I DIAG433 : showWebDiagnostic Can’t reach Test Server
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile loaded=false
+
+## 6. Same state, RETRY with the proxy stopped (REFUSED, -6): one finish, overlay stays -> the error kind is not the trigger
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47333/mobile
+I DIAG433 : onReceivedError main=true http://hostbox-9f3.home.arpa:47333/mobile -6
+I DIAG433 : showWebDiagnostic Can’t reach Test Server
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile loaded=false
+
+## 7. Proxy back (pass), RETRY: the page loads and the overlay closes (FU-002 fixed)
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47333/mobile
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=false overlay=true screen=Web
+I DIAG433 : showPage
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=true overlay=false screen=Web
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=true overlay=false screen=Web
+I DIAG433 : onReceivedError main=false http://localhost:8000/health -6
+
+## 8. Now a LOADED page; proxy set to DROP (-1); the page reloads -> two finishes again, overlay replaced
+I DIAG433 : onPageStarted http://hostbox-9f3.home.arpa:47333/mobile/
+I DIAG433 : onReceivedError main=true http://hostbox-9f3.home.arpa:47333/mobile/ -1
+I DIAG433 : showWebDiagnostic Can’t reach Test Server
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile/ loaded=false
+I DIAG433 : onPageFinished http://hostbox-9f3.home.arpa:47333/mobile/ loaded=true
+I DIAG433 : onPageLoaded firstPageShown=true overlay=true screen=Web
+I DIAG433 : showPage
+
+## Conclusion (Measured)
+# When a main-frame load fails while the WebView holds a page that had loaded (2, 3, 8: reload, Retry, and by the same
+# mechanism system Back into history, API-08-05), WebView 124 calls onPageFinished twice for the failed navigation.
+# MainFrameLoadOutcome.onFinished() resets the mark on the first, so the second reports loaded=true; onPageLoaded ->
+# showPage() makes the WebView VISIBLE with Chromium's error page, which prints the URL, and removes the overlay and its
+# Retry. When the WebView holds no loaded page (first load, or after an earlier failure: 4, 5, 6), there is one finish
+# and the design holds; that is the only state IMP-12 exercised. The error kind (refused -6, dropped -1) does not matter.
+# DS-006's premise "onPageFinished always ends a main-frame load (once)" holds only for the second state.

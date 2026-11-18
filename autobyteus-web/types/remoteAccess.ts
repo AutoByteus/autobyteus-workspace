@@ -4,14 +4,17 @@ export type RemoteAccessSettings = {
   updatedBy?: 'loopback-desktop';
 };
 
-export type RemoteAccessUrlCandidateKind = 'loopback' | 'lan' | 'tailnet_like' | 'manual';
+/** How a phone reaches a node. */
+export type ConnectionWay = 'company_address' | 'tailscale' | 'vpn' | 'local_network';
 
-export type RemoteAccessUrlCandidate = {
-  id: string;
-  kind: RemoteAccessUrlCandidateKind;
-  label: string;
-  serverBaseUrl: string;
-  source: string;
+/** One node's report of the network of the computer it runs on (`GET /rest/remote-access/network`). */
+export type NodeNetwork = {
+  computerName: string;
+  runsInContainer: boolean;
+  configuredBaseUrl: string | null;
+  tailscale: { address: string; dnsName: string | null } | null;
+  vpnAddresses: string[];
+  localNetwork: { networkId: string; addresses: string[]; allowed: boolean } | null;
 };
 
 export type RemoteAccessPairingPayload = {
@@ -23,6 +26,7 @@ export type RemoteAccessPairingPayload = {
 };
 
 export type RemoteAccessPairingSessionResponse = {
+  sessionId: string;
   payload: RemoteAccessPairingPayload;
   qrText: string;
   mobileUrl: string;
@@ -32,6 +36,7 @@ export type PairedDeviceSummary = {
   deviceId: string;
   displayName: string;
   clientFacingBaseUrl: string;
+  connectionWay: ConnectionWay | null;
   createdAt: string;
   lastSeenAt: string | null;
   revokedAt: string | null;
@@ -46,28 +51,29 @@ export type PairingExchangeResponse = {
 export type RemoteAccessStatus = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
-  compatibilityVersion: number;
-  serverInstanceId?: string;
-  serverName: string;
+  nodeId?: string;
 };
 
+/**
+ * The phone's paired session, stored by `mobileCredentialStorage`. `entryId` is the window's entry for the paired node.
+ * `nodeName` is the node's name from the QR (absent for sessions paired before it was kept: the page then shows the
+ * Android app's name for the node, or "AutoByteus node"; never the address).
+ */
 export type MobileNodeSession = {
-  version: 1;
-  nodeId: string;
+  entryId: string;
   serverBaseUrl: string;
+  nodeName?: string;
   credential: string;
   device: PairedDeviceSummary;
   pairedAt: string;
 };
 
 export type MobileConnectionFailureKind =
+  | 'network_refused'
   | 'network_unreachable'
   | 'auth_required'
   | 'device_revoked'
-  | 'phone_access_disabled'
-  | 'websocket_blocked'
-  | 'unsupported_mobile_feature'
-  | 'server_version_incompatible';
+  | 'phone_access_disabled';
 
 export type MobileConnectionDiagnostic = {
   kind: MobileConnectionFailureKind;

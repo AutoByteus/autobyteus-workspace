@@ -1,0 +1,9 @@
+# API-12 (autobyteus-515 API/E2E): gated live search-memory-default-tool-live on the native runtime (DeepSeek V4 Flash), real studio server: search_memory, which every native run gets, is now searchable
+# Command (from autobyteus-server-ts): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault SEARCH_MEMORY_LIVE_E2E=autobyteus SEARCH_MEMORY_E2E_EVIDENCE_DIR=<dir> ./node_modules/.bin/vitest run tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts --no-watch
+# commit 327566836a; 2026-11-17 ~20:35 CET; Node v22.23.1
+ ✓ tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts (3 tests | 2 skipped) 36558ms
+     ✓ SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out  34132ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+
+== history tool names in API-12-search-memory-autobyteus.json: search_memory x2; call_tool never appears

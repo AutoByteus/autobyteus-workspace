@@ -1,0 +1,15 @@
+# IMP-IR002-checks: IR-002 checks. Commit 2dd3c665f5. Date 2026-11-02. macOS, node v22.23.1. Suites under env -i PATH HOME=<fresh temp> TMPDIR.
+# Look for: [typecheck] PASS; Tests 5044 passed; guards exit 0.
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+
+## web suite (full)
+ Test Files  688 passed (688)
+      Tests  5044 passed (5044)
+exit=0
+
+## guards: guard:web-boundary exit=0; guard:localization-boundary exit=0; audit:localization-literals exit=0
+
+## targeted: composables/__tests__/useWorkspaceHistorySubjectActions.spec.ts (+ coldHistory) 20 passed; services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts 4 passed

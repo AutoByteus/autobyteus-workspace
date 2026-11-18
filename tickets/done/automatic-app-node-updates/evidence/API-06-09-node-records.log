@@ -1,0 +1,117 @@
+# API-06..09 node records 2026-11-01T21:20:42Z (desktop V1 build 1.5.11-beta.10, data root <R>/data-nodes)
+## node-auto-updates.json
+{
+  "entries": {
+    "remote-67cc676c-a3dd-44c0-b96d-3a9c1fac5785": {
+      "version": "1.5.11-beta.10",
+      "requestedAt": "2026-11-01T21:06:45.450Z",
+      "outcome": "AUTO_UPDATED",
+      "reason": null,
+      "read": true
+    },
+    "remote-f4ce3ecf-a4d6-4c80-bb3a-a1c5643e77fb": {
+      "version": "1.5.11-beta.10",
+      "requestedAt": "2026-11-01T21:06:46.249Z",
+      "outcome": "AUTO_FAILED",
+      "reason": "1.5.11-beta.10 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.7 runs again on the data as it was before the update.",
+      "read": true
+    },
+    "remote-613c35ce-4aed-4225-b2e1-31fd4e8fcd71": {
+      "version": "1.5.11-beta.10",
+      "requestedAt": "2026-11-01T21:11:33.159Z",
+      "outcome": "AUTO_UPDATED",
+      "reason": null,
+      "read": true
+    }
+  }
+}
+## registry switches
+[
+ {
+  "id": "embedded-local",
+  "name": "Embedded Node",
+  "baseUrl": "http://127.0.0.1:47931"
+ },
+ {
+  "id": "remote-67cc676c-a3dd-44c0-b96d-3a9c1fac5785",
+  "name": "n-old",
+  "baseUrl": "http://127.0.0.1:47961",
+  "autoUpdate": true
+ },
+ {
+  "id": "remote-f4ce3ecf-a4d6-4c80-bb3a-a1c5643e77fb",
+  "name": "n-fail",
+  "baseUrl": "http://127.0.0.1:47962",
+  "autoUpdate": true
+ },
+ {
+  "id": "remote-613c35ce-4aed-4225-b2e1-31fd4e8fcd71",
+  "name": "n-stop",
+  "baseUrl": "http://127.0.0.1:47963",
+  "autoUpdate": true
+ },
+ {
+  "id": "remote-7e086ab3-f563-4224-88e9-d026c7b10ead",
+  "name": "n-same",
+  "baseUrl": "http://127.0.0.1:47964",
+  "autoUpdate": true
+ },
+ {
+  "id": "remote-a81a18e6-d862-4ee8-a345-aa8827ce36c6",
+  "name": "n-new",
+  "baseUrl": "http://127.0.0.1:47965",
+  "autoUpdate": true
+ }
+]
+## node versions through C1 now
+47961 {"inPlaceUpdate":"available","version":"1.5.11-beta.10","target":{"version":"1.5.11-beta.10","relation":"same"},"update":{"state":"succeeded","targetVersion":"1.5.11-beta.10","step":"confirming","code":null,"message":"Updated to 1.5.11-beta.10.","startedAt":"2026-11-01T21:06:45.429Z","finishedAt":"2
+47962 {"inPlaceUpdate":"available","version":"1.5.11-beta.7","target":{"version":"1.5.11-beta.10","relation":"newer"},"update":{"state":"failed","targetVersion":"1.5.11-beta.10","step":"rollingBack","code":"FAILED_AFTER_SWITCH","message":"1.5.11-beta.10 did not come up (it exited with code 3 within 60 s o
+47963 {"inPlaceUpdate":"available","version":"1.5.11-beta.10","target":{"version":"1.5.11-beta.10","relation":"same"},"update":{"state":"succeeded","targetVersion":"1.5.11-beta.10","step":"confirming","code":null,"message":"Updated to 1.5.11-beta.10.","startedAt":"2026-11-01T21:11:33.145Z","finishedAt":"2
+47964 {"inPlaceUpdate":"available","version":"1.5.11-beta.10","target":{"version":"1.5.11-beta.10","relation":"same"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+47965 {"inPlaceUpdate":"available","version":"1.5.11-beta.12","target":{"version":"1.5.11-beta.10","relation":"older"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+## Nodes page rows after the first outcomes
+{
+  "rows": {
+    "n-old": {
+      "line": "n-old | 127.0.0.1:47961 | Server 1.5.11-beta.10 | Update automatically | Keep this node on this app's version. | Updated automatically to 1.5.11-beta.10 | ⓘ Agents here can't work with n-old yet. | Turn on",
+      "updated": "Updated automatically to 1.5.11-beta.10",
+      "isNew": false,
+      "failed": null,
+      "toggle": "true"
+    },
+    "n-fail": {
+      "line": "n-fail | 127.0.0.1:47962 | Server 1.5.11-beta.7 | Update to 1.5.11-beta.10 | Same version as this app | Update automatically | Keep this node on this app's version. | Automatic update failed. Nothing was changed. | 1.5.11-beta.10 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.7 runs again on the data as it was before the update. | ⓘ Agents here can't work with n-fail",
+      "updated": null,
+      "isNew": false,
+      "failed": "Automatic update failed. Nothing was changed. | 1.5.11-beta.10 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.7 runs again on the data as it was before the update.",
+      "toggle": "true"
+    },
+    "n-stop": {
+      "line": "n-stop | 127.0.0.1:47963 | ⓘNot reachable. Something answers there, but it isn't an AutoByteus node. | Check again",
+      "updated": null,
+      "isNew": false,
+      "failed": null
+    },
+    "n-same": {
+      "line": "n-same | 127.0.0.1:47964 | Server 1.5.11-beta.10 | Update automatically | Keep this node on this app's version. | ⓘ Agents here can't work with n-same yet. | Turn on",
+      "updated": null,
+      "isNew": false,
+      "failed": null,
+      "toggle": "true"
+    },
+    "n-new": {
+      "line": "n-new | 127.0.0.1:47965 | Server 1.5.11-beta.12 | Newer than this app. Update this app. | Update automatically | Keep this node on this app's version. | ⓘ Agents here can't work with n-new yet. | Turn on",
+      "updated": null,
+      "isNew": false,
+      "failed": null,
+      "toggle": "true"
+    }
+  },
+  "dialogs": []
+}
+## containers (test-owned)
+an356-n-new an356-node:12 Up 17 minutes 127.0.0.1:47955->8000/tcp
+an356-n-same an356-node:10 Up 17 minutes 127.0.0.1:47954->8000/tcp
+an356-n-stop an356-node:7 Up 11 minutes 127.0.0.1:47953->8000/tcp
+an356-n-fail an356-node:7 Up 17 minutes 127.0.0.1:47952->8000/tcp
+an356-n-old an356-node:7 Up 17 minutes 127.0.0.1:47951->8000/tcp

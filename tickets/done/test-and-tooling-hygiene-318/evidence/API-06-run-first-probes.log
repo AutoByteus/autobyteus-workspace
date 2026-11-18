@@ -1,0 +1,11 @@
+# API-06 run-first probes from the fresh clone (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318-clone.94OVpE6TRY/repo; server built in API-02): node tests/e2e/<probe> --skip-server-build --output-dir=<fresh, non-existent dir>
+# commit 7c04283722, 2026-11-01T14:25:58Z
+## projects-feature (load 25.94)
+exit 0 (75s)
+result Pass | cases 17 | pass 17 | not pass: none | browserErrors 0 | cleanup {"browser":"closed","frontend":"terminated:11323","nodeA":"terminated:11786","nodeB":"terminated:11300","frontendPortReleased":true,"nodeAPortReleased":true,"nodeBPortReleased":true,"tempRootRemoved":
+## project-manager-ux (load 15.52)
+exit 0 (263s)
+(run 1 passed: 'Project manager UX probe: Pass.'; its evidence.json was removed by my clean-up before copying; run 2 below keeps it)
+## project-manager-ux run 2 (load 5.21)
+exit 0 (260s); Project manager UX probe: Pass. Evidence: /var/folders/7w/9r4_s1_s42z3f7c136bpjf
+result Pass | cases 25 | pass 25 | not pass: none | browserErrors 0 | PMU-021 {"result":"Pass","description":"Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selectio

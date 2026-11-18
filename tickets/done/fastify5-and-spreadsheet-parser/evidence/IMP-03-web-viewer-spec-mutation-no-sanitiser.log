@@ -1,0 +1,86 @@
+# Mutation check: ExcelViewer spec with the DOMPurify call replaced by 'return tableHtml;' (temporary edit, restored after the run)
+# Check: IMP-03
+# Command: pnpm -C autobyteus-web test:nuxt components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts --run --reporter=verbose | sed 's/\x1b\[[0-9;]*m//g' | grep -E '✓|×|→|Test Files|Tests '
+# Commit: 195db3c42e (+ uncommitted changes)
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:49:20Z
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error
+    at loadExcel [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/[39mcomponents/fileExplorer/viewers/ExcelViewer.vue:83:15[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > keeps markup in cell text inert and renders only table structure
+AssertionError: expected [ 'data-t', 'data-v', 'id', …(9) ] to deeply equal []
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "data-t",[39m
+[31m+   "data-v",[39m
+[31m+   "id",[39m
+[31m+   "data-t",[39m
+[31m+   "data-v",[39m
+[31m+   "id",[39m
+[31m+   "data-t",[39m
+[31m+   "data-v",[39m
+[31m+   "id",[39m
+[31m+   "data-t",[39m
+[31m+   "data-v",[39m
+[31m+   "id",[39m
+[31m+ ][39m
+
+ ❯ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts:130:87
+    128|         const elements = [...root.querySelectorAll('*')];
+    129|         expect(new Set(elements.map((el) => el.tagName.toLowerCase()))…
+    130|         expect(elements.flatMap((el) => [...el.attributes].map((attr) …
+       |                                                                                       ^
+    131|         expect(cellTexts(wrapper)).toEqual(evil);
+    132|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows hyperlinked cells as their text without a link
+AssertionError: expected 2 to be +0 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 2[39m
+
+ ❯ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts:148:51
+    146| 
+    147|         const root = wrapper.find('.sheet-table').element;
+    148|         expect(root.querySelectorAll('a').length).toBe(0);
+       |                                                   ^
+    149|         const attributeNames = [...root.querySelectorAll('*')].flatMap…
+    150|         expect(attributeNames.filter((name) => name === 'href' || name…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders the loading state while the file is fetched 15ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file 26ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a xlsx workbook from a URL with sheet tabs 12ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a biff8 workbook from a URL with sheet tabs 14ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a xlsm workbook from a URL with sheet tabs 8ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders a CSV file from a URL 3ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > renders streamed CSV content when there is no URL 2ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > prefers the URL over streamed content 4ms
+ × components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > keeps markup in cell text inert and renders only table structure 9ms
+   → expected [ 'data-t', 'data-v', 'id', …(9) ] to deeply equal []
+ × components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows hyperlinked cells as their text without a link 6ms
+   → expected 2 to be +0 // Object.is equality
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+
+# exit code: 0

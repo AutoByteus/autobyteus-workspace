@@ -1,0 +1,29 @@
+API-13 — live-refresh E2E incl. its two AGY-gated cases (DCF-E2E-007 Creator journey through list_available_agents/delegate_task, DCF-E2E-008), on the final watcher
+Commit: 959b5cc048 (code af81b3d7d2); date 2026-10-24 12:00-12:04; macOS arm64, Node v22.23.1; host load avg 5-8; no artificial load
+Command (autobyteus-server-ts): env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$PWD/tests/fixtures/agy-failure-cli.mjs" pnpm exec vitest run tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts --no-watch --reporter=verbose
+
+== 5 consecutive runs (loop script /tmp/api253/scripts/loop.sh)
+run 1 PASS rc=0 23s load=5.67 yes=0
+run 2 PASS rc=0 23s load=6.12 yes=0
+run 3 PASS rc=0 21s load=5.15 yes=0
+run 4 PASS rc=0 22s load=5.20 yes=0
+run 5 PASS rc=0 27s load=7.61 yes=0
+RESULT dcf-agy pass=5 fail=0 of 5 end=2026-10-24 12:02:46
+
+== run 6, output kept, with AGENT_PACKAGE_DEFINITIONS_E2E_EVIDENCE_DIR set
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets 650ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload 2259ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it 4444ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list 56ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client 1640ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-010 (SR-009/DSN-005): the renamed contract is a clean cut; the retired route and GraphQL names are gone 28ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED 36ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org 43ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools 2971ms
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found 735ms
+      Tests  10 passed (10)
+
+== suite evidence JSON (run 6), timings and frame contract
+dcf002 {"createdVisibleMs": 65, "editVisibleMs": 5, "fixClearedMs": 54, "deleteVisibleMs": 3}
+dcf007 {"listAfterWriteMs": 381, "framesWhenListed": [{"type": "agent_package_definitions_changed", "changedLists": ["agents", "agent_teams", "agent_orgs"]}], "teamListedAfterWriteMs": 441}
+frames total 53 invalid [] cleanup {"baseRemoved": true, "serverClosed": true, "errors": []}

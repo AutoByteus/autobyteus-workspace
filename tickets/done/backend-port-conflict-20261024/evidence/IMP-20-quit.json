@@ -1,0 +1,23 @@
+{
+  "check": "IMP-20",
+  "date": "2026-10-24T19:03:16.223Z",
+  "instanceId": "iso-52676-257c",
+  "appPid": 83559,
+  "backendPid": 83842,
+  "quitElapsedMs": 218,
+  "appAbsent": true,
+  "backendAbsent": true,
+  "unrelatedFixture": {
+    "pid": 83864,
+    "port": 52769
+  },
+  "unrelatedStatus": 426,
+  "sentinel": "preserve-owned-render-check\n",
+  "evidenceMetadata": {
+    "checkId": "IMP-20",
+    "commit": "10990feb1",
+    "environment": "macOS arm64 / Electron42.11.16 / Node26.12.0 / task-local isolated desktop",
+    "date": "2026-10-24",
+    "steps": "IMP-20-rendered-notes.md; not API/E2E sign-off"
+  }
+}

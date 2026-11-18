@@ -1,0 +1,8 @@
+# IMP-08 mutation recheck (no re-check after the restore; tests from 7d9a305627)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/restart-resumer.test.ts --no-watch --testTimeout=8000
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × SR-005: a root stopped or archived while it was being restored gets no notice (the re-check after the restore) 19ms
+      Tests  1 failed | 14 passed (15)

@@ -1,0 +1,49 @@
+# Check: IMP-13-size-guardrails
+# Command: for each changed source file (server src, web components/stores/graphql, no tests): effective lines = lines not blank or comment-only (grep -cvE '^\s*$|^\s*//|^\s*\*|^\s*/\*'), at HEAD and at base 8760c83788; added = git diff --numstat 8760c83788 (new files: total lines)
+# Commit: 2529eaaec1 (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64
+# Date: 2026-10-30T08:40:19Z
+
+effective_now effective_base +added file
+496 492 +5 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+491 485 +10 autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+470 469 +1 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+445 432 +14 autobyteus-server-ts/src/compositions/build-studio-server.ts
+396 389 +13 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+366 365 +2 autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+363 356 +10 autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+331 328 +4 autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+324 323 +4 autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts
+315 312 +6 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+224 210 +15 autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+217 216 +1 autobyteus-server-ts/src/server-runtime.ts
+189 0 +207 autobyteus-web/components/settings/GitHubIntegrationCard.vue
+183 179 +6 autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts
+173 170 +3 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+161 156 +6 autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts
+146 0 +178 autobyteus-server-ts/src/credential-proxy/credential-proxy-forwarder.ts
+142 137 +8 autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+134 0 +163 autobyteus-server-ts/src/credential-proxy/integration-connection-service.ts
+116 116 +4 autobyteus-server-ts/src/agent-execution/services/agent-run-activation-operation.ts
+116 110 +8 autobyteus-server-ts/src/agent-execution/backends/acp/session/acp-session-launcher.ts
+109 0 +125 autobyteus-server-ts/src/credential-proxy/credential-proxy-routes.ts
+105 103 +2 autobyteus-server-ts/src/api/graphql/schema.ts
+92 0 +114 autobyteus-server-ts/src/credential-proxy/integration-connection-store.ts
+87 0 +103 autobyteus-web/stores/githubIntegrationStore.ts
+84 0 +117 autobyteus-server-ts/src/credential-proxy/integration-definitions.ts
+81 73 +13 autobyteus-server-ts/src/secret-management/catalog/provider-credential-catalog.ts
+62 0 +79 autobyteus-server-ts/src/api/graphql/types/github-integration.ts
+54 49 +6 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-query-options.ts
+50 48 +2 autobyteus-web/components/settings/ServerSettingsBasicsPanel.vue
+46 0 +49 autobyteus-server-ts/src/credential-proxy/credential-proxy-host.ts
+45 0 +56 autobyteus-server-ts/src/credential-proxy/credential-proxy-local-server.ts
+41 0 +45 autobyteus-web/graphql/mutations/githubIntegrationMutations.ts
+34 30 +8 autobyteus-server-ts/src/secret-management/domain/secret-id.ts
+34 0 +48 autobyteus-server-ts/src/credential-proxy/integration-run-access.ts
+29 0 +41 autobyteus-server-ts/src/credential-proxy/integration-activity-log.ts
+27 24 +3 autobyteus-server-ts/src/agent-execution/backends/grok/grok-build-agent-run-backend-factory.ts
+25 23 +3 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-state-input.ts
+23 0 +36 autobyteus-server-ts/src/credential-proxy/run-pass-registry.ts
+12 0 +22 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-integration-thread-config.ts
+11 0 +12 autobyteus-web/graphql/queries/githubIntegrationQueries.ts
+10 0 +16 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.ts

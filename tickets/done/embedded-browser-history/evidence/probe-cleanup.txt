@@ -1,0 +1,1 @@
+Both owned native probe instances (Electron/views/HTTP server) exited; temporary runtime and isolated HOME/userData roots removed on 2026-10-26. No production app used.

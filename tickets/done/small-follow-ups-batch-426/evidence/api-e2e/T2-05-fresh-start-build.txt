@@ -1,0 +1,42 @@
+# T2-05 ticket round 2: fresh-start desktop build (TESTING § Fresh-start build), macOS ARM64; build input changed: autobyteus-web/generated/graphql.ts
+# commit 94d7dca6b4 (product a3bc0525cd); fresh clone git clone --no-local <worktree> /tmp/426-fresh-clone; script API-11-fresh-build.sh.txt
+# env: NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace
+# date 2026-11-08 07:49-07:58; build log /tmp/426-API-11-build.log (overwritten by this run; not committed); not tested: signing, notarization, Windows/Linux (runner)
+
+== clone 94d7dca6b4 07:49:11
+94d7dca6b test(autobyteus-426): round-2 probe cases for D-09 (MSP-20) and D-20 (NP-13)
+== pnpm install --frozen-lockfile 07:50:43
+install exit 0
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 10s using pnpm v10.28.2
+== build:electron:mac -- --arm64 07:50:53
+build exit 0
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+[guard:web-boundary] Passed.
+> autobyteus@1.5.12-beta.7 guard:localization-boundary /private/tmp/426-fresh-clone/autobyteus-web
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+  '/private/tmp/426-fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg.blockmap',
+  '/private/tmp/426-fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg',
+  '/private/tmp/426-fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip.blockmap',
+  '/private/tmp/426-fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip'
+]
+== Verify bundled Prisma ARM64 engine target 07:58:30
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+prisma verify exit 0
+== Verify packaged terminal runtime ARM64 07:58:31
+[terminal-runtime] node-pty root: /private/tmp/426-fresh-clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/426-fresh-clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/426-fresh-clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/tmp/426-fresh-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/426-fresh-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/426-fresh-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] node-pty root: /private/tmp/426-fresh-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/426-fresh-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/426-fresh-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal verify exit 0
+== done 07:58:36

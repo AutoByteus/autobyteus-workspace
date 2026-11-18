@@ -1,0 +1,25 @@
+# NOTE: the hide part of this step is inconclusive: before the hide the tile had already disconnected itself ('Disconnected', upstream 0; the view stream ended at 17:56:21.52Z, the hide was sent at 17:56:21.73Z), most likely because the window was fully covered by another window (Chromium reports an occluded macOS window as hidden). Hide is repeated in step 08b with a visibility recorder. The tab-switch part (Browser tab closes the stream, VNC Viewer reopens it) is valid.
+# Case: API-05 step 08 — hiding the app (macOS hide, as Cmd-H) ends the stream; showing it reconnects in View only; then switching to another tool tab closes the stream and returning reopens it (AC-010)
+# Steps: osascript System Events: set visible of the instance process (unix id 25627) to false; sample upstream; visibility; node log; set visible true; tile; then click tab 'Browser' in the node window, sample upstream, click 'VNC Viewer' again, tile
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:56:21Z
+
+tile before: "Disconnected" upstream=0
+hidden at epochMs=1793987781726
+  +245ms upstream=0
+  +556ms upstream=0
+  +858ms upstream=0
+  +1167ms upstream=0
+  +1512ms upstream=0
+  +1850ms upstream=0
+  +2152ms upstream=0
+  +2464ms upstream=0
+visibilityState node="hidden" main="hidden" tile="Disconnected"
+node log: 2026-11-06T17:56:21.521426417Z [node-desktop] stream ended mode=view viewer=trusted_network durationMs=18898 toViewer=1288266 fromViewer=1126 reason=viewer-closed
+after show: visibility="visible" tile="Connected · View only" upstream=1
+-- tab switch --
+"Browser tab; tile mounted=false"
+upstream with the Browser tab shown: 0
+node log: 2026-11-06T17:56:29.243146088Z [node-desktop] stream ended mode=view viewer=trusted_network durationMs=3272 toViewer=1296472 fromViewer=1126 reason=viewer-closed
+"Connected · View only"
+upstream back on VNC Viewer: 1

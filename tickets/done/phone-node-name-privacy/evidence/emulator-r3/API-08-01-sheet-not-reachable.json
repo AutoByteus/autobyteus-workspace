@@ -1,0 +1,38 @@
+{
+ "pageUrl": "http://hostbox-9f3.home.arpa:47331/mobile/",
+ "value": {
+  "headerName": "Test Desktop",
+  "headerState": "Not reachable",
+  "headerAria": "Test Desktop, Not reachable. Connection",
+  "banner": "Can’t reach Test Desktop.Check",
+  "sheetOpen": true,
+  "sheetText": "Test Desktop\nNot reachable\nRetry\n\nCannot reach AutoByteus desktop\n\nYour phone cannot reach the desktop node over the current private network.\n\nCheck that AutoByteus is running and your LAN, VPN, or tailnet is connected.\n\nSwitch node\n1 node on this phone\nUnpair from Test Desktop",
+  "sheetAddressLine": false,
+  "bodyText": "Test Desktop\nNot reachable\n\nCan’t reach Test Desktop.\n\nCheck\nTest Desktop\nNot reachable\nRetry\n\nCannot reach AutoByteus desktop\n\nYour phone cannot reach the desktop node over the current private network.\n\nCheck that AutoByteus is running and your LAN, VPN, or tailnet is connected.\n\nSwitch node\n1 node on this phone\nUnpair from Test Desktop",
+  "ariaLabels": [
+   "Test Desktop, Not reachable. Connection",
+   "Loading your runs",
+   "New run",
+   "Close",
+   "Close"
+  ],
+  "titles": [
+   "New run"
+  ],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 1,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": "Test Desktop"
+  },
+  "sessionNodeName": "(absent)",
+  "sessionKeys": [
+   "entryId",
+   "serverBaseUrl",
+   "credential",
+   "device",
+   "pairedAt"
+  ]
+ }
+}

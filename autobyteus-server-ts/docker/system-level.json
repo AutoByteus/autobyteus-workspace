@@ -1,0 +1,8 @@
+{
+  "level": 1,
+  "baseImages": {
+    "default": "sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4",
+    "zh": "sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67"
+  },
+  "systemInputsSha256": "b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562"
+}

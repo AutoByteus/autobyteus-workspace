@@ -1,0 +1,20 @@
+# IMP-29 impacted server checks after the CR-004 / CR-005 fix (rerun by impact: src/memory-search normalizer, search service, evaluation; no web or GraphQL change)
+# Commands: pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search tests/unit/embeddings tests/unit/agent-tools/memory tests/unit/api tests/unit/projects tests/agent-work-journal tests/unit/startup --no-watch; env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory --no-watch; pnpm -C autobyteus-server-ts typecheck
+# Commit: 3204aa2455 (run on the working tree committed unchanged as 3204aa2455)
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1; e2e in a clean environment
+# Date: 2026-10-27
+
+## server unit and in-process
+ Test Files  84 passed | 1 skipped (85)
+      Tests  650 passed | 2 skipped (652)
+
+## server e2e (tests/e2e/memory, clean environment)
+ Test Files  7 passed | 1 skipped (8)
+      Tests  20 passed | 3 skipped (23)
+
+## server typecheck
+exit 0
+
+## discrimination (mutations, reverted)
+M4 containsTerm back to a literal substring: 2 tests fail (the separator-variant facade test, the normalizer rule test)
+M5 punctuation-only words kept as terms: 2 tests fail (the facade punctuation test, the queryTerms test)

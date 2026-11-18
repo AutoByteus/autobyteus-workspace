@@ -1,3 +1,5 @@
+import { createTeamRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getStudioRunViewStreams } from "../studio-application-api-services.js";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
@@ -5,7 +7,6 @@ import { getTeamMemberRunViewProjectionService } from "../../../run-history/serv
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { RunFileChangeEntryObject } from "./run-file-changes.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
-import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
 import { RunModelConfigEditabilityObject } from "./run-model-config.js";
 import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
@@ -15,22 +16,30 @@ class TeamRunResumeConfigPayload {
   @Field(() => String)
   teamRunId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => Boolean)
   isActive!: boolean;
 
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
 
-  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE or CANCELLED. */
-  @Field(() => GraphQLJSON)
-  closedTaskExecutions!: unknown;
-
-  /** autobyteus-278: the runs this Team delegated to other nodes, with their node's name, as its stream snapshot lists them. */
-  @Field(() => GraphQLJSON)
-  remoteTaskExecutions!: unknown;
-
   @Field(() => RunModelConfigEditabilityObject)
   modelConfigEditability!: RunModelConfigEditabilityObject;
+
+  /** The running Team's live sequence, as its stream snapshot names it; null when the Team is not running (autobyteus-358). */
+  @Field(() => String, { nullable: true })
+  liveSequenceId!: string | null;
+
+  /** The change sequence this read is consistent with, in `liveSequenceId`; 0 when the Team is not running. */
+  @Field(() => Int)
+  baseChangeSequence!: number;
+
+  /** The sequence of the running Team's latest message through `baseChangeSequence`; null when not running (SR-007). */
+  @Field(() => Int, { nullable: true })
+  lastMessageChangeSequence!: number | null;
 }
 
 @ObjectType()
@@ -97,11 +106,14 @@ export class TeamRunHistoryResolver {
     const config = await this.runModelConfigService.getTeamRunResumeConfig(teamRunId);
     return {
       teamRunId: config.teamRunId,
+      displayName: config.displayName,
       isActive: config.isActive,
+      // Its own members; the runs it delegated are its tree's rows (`runTree`, SR-084).
       executionTree: projectExecutionTree(config.executionTree),
-      closedTaskExecutions: config.closedTaskExecutions,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(config.executionTree.rootTeam.remoteTaskExecutions),
       modelConfigEditability: config.modelConfigEditability,
+      liveSequenceId: config.liveSequenceId,
+      baseChangeSequence: config.baseChangeSequence,
+      lastMessageChangeSequence: config.lastMessageChangeSequence,
     };
   }
 
@@ -135,8 +147,10 @@ export class TeamRunHistoryResolver {
     @Arg("teamRunId", () => String) teamRunId: string,
   ): TeamRunExecutionCheckpointPayload {
     const root = getAgentTeamRunManager().getActiveTeamRun(teamRunId);
-    if (!root) throw new Error(`Active RootTeamRun '${teamRunId}' was not found.`);
-    return root.getExecutionCheckpoint();
+    if (root) return root.getExecutionCheckpoint();
+    // A stopped run's open view streams too (SR-045): its view's sequence, and no open work of its own (SR-062).
+    const stream = getStudioRunViewStreams().streamOf(createTeamRootExecutionIdentity(teamRunId.trim()));
+    return { rootTeamRunId: teamRunId.trim(), changeSequence: stream.getCurrentChangeSequence(), hasOpenExecutionWork: false };
   }
 
   @Query(() => EventMonitorActiveTracePageObject)

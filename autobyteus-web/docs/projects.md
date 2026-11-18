@@ -41,8 +41,11 @@ omitted entry never reorders the rest.
 
 `composables/useShellPrimaryNavigation.ts` is the sole order/route/active-state
 owner, consumed by `AppLeftPanel.vue` and `layout/LeftSidebarStrip.vue`. Projects
-retains its localized label, folder icon, `/projects` destination and active
-matching on `/projects/*`. Compact navigation retains its existing fitting-strip
+retains its localized label, `/projects` destination and active matching on
+`/projects/*`. Its icon is the briefcase (`heroicons:briefcase`), the same icon
+Project rows, Project cards, the Projects empty states, the right panel's
+Projects tab and the New chat chip's Projects tab use; folders keep the folder
+icon. Compact navigation retains its existing fitting-strip
 redock and narrow transient-drawer interactions. Mobile support is not added.
 
 ## Ordinary Routes / Main Owners
@@ -107,8 +110,8 @@ context; workspace registrations/roots and unrelated run data remain untouched.
 ## Continuous Task Board / Physical Refresh
 
 The Tasks tab has search, **Refresh** and New task, then fixed To Do / In Progress /
-Done containers. Each has a continuous semantic list of anchor rows, a description
-summary and matching count; there are no floating cards. Ordering is server
+Done containers. Each has a continuous semantic list of anchor rows (each Task's
+title) and matching count; there are no floating cards. Ordering is server
 updatedAt descending then taskId; while searching, each lane lists its matches
 best-first instead. Empty lanes and whole-board no-match states
 have explicit text/Clear search; status labels are not mutation controls.
@@ -124,16 +127,21 @@ page and right-panel detail show a muted outlined **Cancelled** pill, distinct
 from Done's green, and the open count is TODO + IN_PROGRESS.
 
 Cards stay compact however long the description is (task-card-compact-summary).
-The bold summary is the first non-empty line, and the grey preview is the remaining
-lines joined. Each is clamped to 2 lines (`line-clamp-2`, with no `display`
+The bold main line is the Task's title, and the grey preview is the start of the
+description (its non-empty lines joined). A first description line that repeats
+the title (the case of Tasks titled at upgrade from that line, including a title
+cut with "…") is skipped in the preview. A Temp task has no title: its main line
+is its description's first non-empty line and the preview the remaining lines.
+Each is clamped to 2 lines (`line-clamp-2`, with no `display`
 utility beside it that would override the clamp). Each is also bounded to 300
-characters before rendering (`utils/projects/taskSummary.ts`), so a 10,000-word
+characters before rendering (`utils/projects/taskText.ts`), so a 10,000-word
 brief is never laid out in a card. The cut falls at the last word boundary. Text
 without spaces, such as CJK or one long token, is cut at the limit, and a long
-unbroken token wraps inside the card. One-line labels (the card's
-accessible name and the Task delete confirmation) use the summary shortened to 120
-characters with "…". Search still matches the full description, and the Task page
-(and Temp task page) shows the full text. The Temp tasks board uses the same row.
+unbroken token wraps inside the card. One-line labels (the card's accessible
+name, dependency and part rows, pickers, the parent marker and the Task delete
+confirmation) use the title shortened to 120 characters with "…". Search still
+matches the title and the full description, and the Task page (and Temp task
+page) shows the full text. The Temp tasks board uses the same row.
 
 ### Task keys and "Depends on"
 
@@ -141,7 +149,7 @@ Every Project Task has a readable key (`autobyteus-42`, server-assigned,
 permanent; the long `taskId` stays the identity in requests and the change feed).
 The key is shown where it links to or refers to a Task: the Task page chip,
 dependency rows, the picker, badges and URLs. Board cards and the Workspaces-tree
-Task summary show no key.
+Task line show no key.
 Temp tasks have no key and no dependencies.
 
 - **Key URLs**: Task page and Edit task URLs use the key
@@ -152,7 +160,7 @@ Temp tasks have no key and no dependencies.
   the resolved Task's `taskId`. A long-ID URL (old links) opens the Task and is
   replaced by the key URL, keeping the query. Temp-task URLs are unchanged.
 
-- **Card** (`ProjectTaskRow`): no key line; the card starts with the summary
+- **Card** (`ProjectTaskRow`): no key line; the card starts with the title
   (keys appear only where they link or refer to a Task, task-keys-declutter).
   On To Do / In Progress cards with dependencies,
   `TaskDependencyBadge` shows "Blocked by <key>" (amber, link icon) while any
@@ -165,7 +173,7 @@ Temp tasks have no key and no dependencies.
   sits after the status pill (in the tab, at the right of the Description label).
   `TaskDependenciesSection` (labelled "Dependencies") lists **Depends on** (every
   dependency, Done ones too, in key order: key · status pill, Done with ✓ ·
-  summary), the note "Only informs: work on this Task can start at any time."
+  title), the note "Only informs: work on this Task can start at any time."
   while blocked, and **Required by** (the Tasks that depend on this one);
   an empty list reads "None". Rows link to the Task page; in the tab they open
   the Task inside the tab.
@@ -173,7 +181,9 @@ Temp tasks have no key and no dependencies.
   description. A combobox search ("Add a Task · Search by key or text") lists at
   most 8 Tasks of this Project, newest key first, never the Task itself or one
   already chosen. A Task that already depends on this one, directly or not, is
-  greyed with "Depends on this Task" and cannot be chosen (arrows skip it).
+  greyed with "Depends on this Task" and cannot be chosen (arrows skip it; the
+  highlight starts on the first choosable Task, so Enter never adds a greyed one,
+  and adds nothing when every listed Task is greyed).
   Enter or a click adds; the list closes after a choice and focus stays in the
   search; Esc closes; "No other Tasks in this Project match." when nothing
   matches. Chosen Tasks are rows with a "Remove <key>" button. Edit starts from
@@ -200,16 +210,16 @@ part stores it (`partOfTaskId`); a parent's parts and progress are derived in
 holds, so they update live from the change feed. A parent ID that names no
 current Task is never shown or counted. Temp tasks show none of this.
 
-- **Card** (`ProjectTaskRow`): one wrapping relation line (after the summary and
+- **Card** (`ProjectTaskRow`): one wrapping relation line (after the title and
   preview) holds, in this order, the Blocked / Dependency-cancelled badge, a
   parent's progress pill (`TaskPartsProgress`: "2 of 4 done", slate; emerald with
   a check once every counted part is Done; hidden when no part counts; the hover
   title adds "· 1 cancelled") and a part's quiet "↳ Part of <key>" line
-  (`TaskPartOfMarker`; hover: "Part of <key>: <summary> (<status>)"). The board
+  (`TaskPartOfMarker`; hover: "Part of <key>: <title> (<status>)"). The board
   stays flat: lanes, order, search and the Cancelled toggle are unchanged.
 - **Task page / tab Task view** (`TaskPartsSection`, between Description and
   Dependencies): a part shows **Part of** with its parent's row (key · status
-  pill · summary); any other Task shows **Parts**: every part in key order,
+  pill · title); any other Task shows **Parts**: every part in key order,
   Done ones with ✓ and Cancelled ones included, with "N of M done · K cancelled"
   in the header (M leaves out Cancelled parts; only "K cancelled" when no part
   counts; "No parts yet." when there are none). While a To Do / In Progress
@@ -219,7 +229,7 @@ current Task is never shown or counted. Temp tasks show none of this.
   at `…/tasks/new?partOf=<task ID>` with this Task chosen; the tab has no New
   part and its rows open inside the tab.
 - **New / Edit task**: `TaskPartOfPicker`, "Part of (optional)" above "Depends
-  on". It holds one Task: a chosen row (key, summary, status, "Remove <key>")
+  on". It holds one Task: a chosen row (key, title, status, "Remove <key>")
   and a combobox search ("Choose a Task" / "Choose another Task" · "Search by key
   or text") listing at most 8 Tasks of this Project, newest key first, never the
   Task itself. Tasks that are parts are greyed with "Already part of a Task" and
@@ -401,10 +411,10 @@ This default does not change Agent Team or Agent Org root disclosure policies.
 
 Under Agent runs (`AgentRunTaskRows`) and Team runs
 (`WorkspaceTeamExecutionTree`), a delegated copy row that is a **Task worker**
-(its Task's root) shows a second line under its name: the summary of its current
-Task (`TaskWorkerTaskSummary`, text from `taskSummaryLabel`), gray, indigo when
-the row is selected or on hover. It shows no Task key; its tooltip and
-accessible name read "Show Task in Projects: <summary>". Team members, sub-work copies and converted
+(its Task's root) shows a second line under its name: its current Task's title
+(a Temp task's first description line; `TaskWorkerTaskSummary`, text from
+`taskWorkerTaskLabel`), gray, indigo when the row is selected or on hover. It
+shows no Task key; its tooltip and accessible name read "Show Task in Projects: <title>". Team members, sub-work copies and converted
 unowned runs keep one line. Agent Org rows are unchanged (not in scope). The
 row's elbow and chevron align with the name line
 (`WorkspaceHierarchyBranches` `anchor="name-line"`). Summaries exist only where
@@ -419,16 +429,16 @@ the Projects tab does (`isFeatureAvailableInRuntime('projects')`).
   components never run the query or scan Task lists. The feed decides who is
   re-read: `connected` → every interested worker; `task_upserted` → the worker
   its `root` names and any worker caching that Task (so a follow-up Task
-  replaces the summary, while a rename of an older Task does not steal it);
+  replaces the Task line, while a rename of an older Task does not steal it);
   `task_removed` → workers caching that Task; `project_removed` → workers whose
   Task is in that Project. A key's answer applies only when it answers that
   key's latest read (per-key epochs), and a node rebinding clears and re-reads.
-  A failed read leaves no summary until the next successful read; there is no
+  A failed read leaves no Task line until the next successful read; there is no
   fallback.
-- **Row behavior**: the summary is its own button. Click, Enter or Space shows
+- **Row behavior**: the Task line is its own button. Click, Enter or Space shows
   the Task in Projects and never opens, selects or toggles the row; a row click
   still opens the copy. `aria-current` / `aria-selected` stay on the row, whose
-  accessible name adds "Task: …"; the summary's tooltip and accessible name are
+  accessible name adds "Task: …"; the Task line's tooltip and accessible name are
   "Show Task in Projects: …" (`workspace.history.copyTask.*`).
 - **Locate** (`stores/taskLocatorStore.ts`): one request at a time, advanced
   `pending` → `revealed` → `visible` → done by the surface that owns each step.
@@ -463,18 +473,108 @@ Cancelled is shown, four equal columns (Temp tasks: two, or three with Cancelled
 search takes its own toolbar row; Refresh remains beside New task. Narrow
 layouts preserve wrapping/actions rather than certifying phone deployment.
 
+## Projects Mode In The Left Panel
+
+The left panel's run section has one header (`RunSectionHeader`): the view's name
+and a `⋯` "View" menu choosing **Runs**, **Workspaces** (the default) or
+**Projects**, and nothing else; the section has no add actions (folders are added
+in the chat chooser, Projects on the Projects page). The view is remembered per
+node (`stores/runSectionModeStore.ts`, `localStorage`
+`autobyteus.leftPanel.runSectionMode.<nodeId>`: `runs`, `workspaces` or
+`projects`). Choosing a view only changes how the runs are shown: it never opens,
+starts or stops a run and never changes the open conversation. In the collapsed
+strip the run-section entry keeps its tree icon and is named after the view (see
+[Workspace layout](./workspace_layout.md#app-shell-left-navigation)).
+
+**The tree.** `ProjectsRunsTree` → `ProjectHistorySection` (one per Project, in
+the Projects list's order) → the shared `RunDefinitionGroups` that a workspace
+section also renders. A Project row looks like a workspace row with the
+briefcase: its chevron expands it; its name selects the Project on the right
+panel's Projects board and expands it; its "+" opens New chat under the Project.
+Under it are agent groups and a TEAMS group (with count and "+", which opens New
+chat for that agent or team under the Project), each run with its delegated rows and
+their [Task lines](#task-summaries-in-the-workspaces-tree). There is no Org group.
+A Project lists **exactly the runs started under it** (server
+[`projectRunHistory`](../../autobyteus-server-ts/docs/modules/run_history.md#project-run-history)),
+so a run appears in at most one Project, and also under its folder in
+Workspaces. A run that only hands out a Project's Tasks (for example a Project
+Task Manager started in a workspace) is in no Project; it stays in Workspaces.
+Agent groups keep the 6 newest runs, as in Workspaces.
+A Project is listed only while it has a run the view lists (a run started under
+it, or a Team run; an unsent New chat draft does not count:
+`projectHasListedRun`); the Projects page lists every Project. A Project's
+first run therefore starts from the New chat chip's Projects tab.
+States: "Loading Projects…", "Couldn't load Projects." with Retry, two text-only
+empty states ("No Projects yet" when the node has none; "No Project has a run
+yet" when none has a run), and, when a later read fails, the last good tree with
+"Couldn't refresh Projects." and Retry.
+
+**Delegated rows are the Workspaces rows.** Under a listed run all its delegated
+runs are shown, as in Workspaces, whatever Project their Tasks belong to (a
+Task line can name another Project's Task). Closing a Task removes its copies as
+in Workspaces.
+
+**Open run.** Every listed run opens by run id, as in Workspaces. The open run is
+marked; switching to Projects mode, or opening a run while it is shown, expands
+its ancestry in its Project (`composables/useProjectsTreeState.ts`) and the
+shared reveal scrolls to it.
+Opening a run does not change the board's Project.
+
+**Actions.** A run's Stop, Archive and Delete are the Workspaces actions. A
+group's "Archive all runs" archives only that group's runs listed under the
+Project and is refused with "Stop running runs first." while one of them runs.
+
+**Data and liveness.** `stores/projectRunsStore.ts` reads every Project's runs
+when the mode is shown (one `GetProjectRunHistory` per Project, in parallel) and
+keeps the [change feed](#live-pages--change-feed) open while it is shown.
+`stores/projectRunsProjection.ts` builds the nodes with the Workspaces builders
+keyed by Project, adds local and draft runs from the agent and team contexts,
+overlays their live status, and builds one ancestry per run. Reads are
+coalesced per Project (one in flight, one queued), an older answer never
+replaces a newer one, and a failed read keeps the last good snapshot. A Project
+is read again only when its listing can change:
+1. the feed reports `connected` (every Project);
+2. a Project is added or renamed (`project_upserted`); a removed one
+   (`project_removed`) is dropped;
+3. a run is started under it from this window (`noteRunStarted`);
+4. the web archives, deletes or **stops** an Agent or Team run it lists. The
+   store observes the run history store's archive and delete actions and
+   `agentRunStore.terminateRun`, `agentTeamRunStore.terminateTeamRun`;
+5. the run history poll shows a run added or removed by anyone (another window
+   or client, a Task Agent, the API): every loaded Project is read again when
+   the set of root runs in `runHistoryStore` changes while the mode is shown.
+   A status change leaves the set as it is, and the first value after showing
+   is only the baseline. The run section polls the history every 5 s, and in
+   the Projects view it reads every run (no per-agent window), so a run added
+   or removed is noticed within one poll, however old (autobyteus-388).
+
+Task events read nothing: delegated rows come from the run streams, as in
+Workspaces.
+
+Live status needs no re-read only for runs with a live context in this window:
+the projection overlays it as Workspaces does. A run without one (for example a
+Team restored elsewhere) shows its status from the last read, which is why Stop
+is a re-read trigger.
+
+**New chat under a Project.** See [Chat — Project choice](./chat.md#project-choice).
+
 ## Task Authoring / Detail / Context
 
-New/edit pages use one description composer with text, attachment controls and
-optional local voice. Text is required/trimmed; validation focuses the field.
+New/edit pages have a required one-line **Title** input (trimmed, no length limit,
+in the Project name input's style) above one description composer with text,
+attachment controls and optional local voice. Title and text are required and
+trimmed; validation focuses the first missing field ("Give the task a title." /
+"Describe the task.").
 Creation is TODO; edit preserves identity/status and omitted files. Explicit
-Save publishes; no autosave or fabricated transcript. Task detail shows one
-full description, read-only status and saved context; no repeated description,
+Save publishes; no autosave or fabricated transcript. Task detail shows the title
+above one full description (the right-panel Task view shows the title as its
+heading), read-only status and saved context; no repeated description,
 IDs or timestamps. Back to tasks returns to the same board. Edit returns to
 detail; successful creation/deletion returns to board with a transient notice.
 
 New/edit share `ProjectTaskDraftEditor` and `TaskDescriptionComposer`: project
-context and page title lead directly to the required Description label and editor.
+context and page title lead directly to the required Title input, then the
+required Description label and editor.
 There is no explanatory subtitle, inner Task details heading, description-help
 paragraph or standing file/voice policy note. The placeholder is “Describe the
 task…” (en) / “描述任务…” (zh-CN). Heading-only spacing is removed; card padding,
@@ -482,8 +582,7 @@ eight-row textarea and responsive actions remain. Context Files/count, attachmen
 drag-paste-upload affordances, save shortcut and conditional voice feedback remain.
 The label names the textarea; `aria-describedby` references only the existing
 required-error node while invalid. Save/file/voice errors remain actionable.
-Read-only Task detail retains its Task details heading. First-nonempty-line board
-summaries and saved data are unchanged; this cleanup needs no migration or text rewrite.
+Read-only Task detail retains its Task details heading.
 
 Task deletion is inline on detail, with Cancel-first focus, Escape cancellation
 and focus return. Missing Task/Project/file states remain explicit/actionable;
@@ -499,13 +598,20 @@ save retains entered content/context for action; late responses cannot navigate
 or publish to another active page. A captured server save may already commit
 after the page closes; local guards are not server rollback.
 
+Before uploading, `useProjectTaskDraft` reads the node's context-file size limits
+(`projectTaskContextClient.sizeLimits()`, the same `GET /rest/context-files/size-limits` the
+message composer uses) and refuses an over-limit file without sending it. A refusal, the
+server's `413`/`415`, a lost connection and any other upload failure are shown as the message
+composer's localized lines (too large with the limit, unsupported type, interrupted, other),
+never the server's own text. A failed file does not stop the others from uploading.
+
 The server prepares immutable copies before metadata commit and preserves
 omitted context on text/status writes, including DONE. Drafts expire after 24h;
 saved references do not. Cleanup failure can leave inaccessible orphan bytes,
 not fake rollback. Project/Task deletion cleans only scoped owned context;
 original uploads, physical workspaces and unrelated run files remain untouched.
 See [server Projects](../../autobyteus-server-ts/docs/modules/projects.md) for
-25 MiB/MIME limits, exact GraphQL/REST routes, containment and commit proof.
+per-type size/MIME limits, exact GraphQL/REST routes, containment and commit proof.
 
 ## Optional Local Voice Destination
 
@@ -523,8 +629,9 @@ new editor. Dictation never submits the form: review/edit, then explicitly Save.
 Project and workspace descriptions remain optional, including blank values;
 there is no migration or historical-description backfill.
 
-`ProjectVoiceStatus` replaces TaskDescriptionComposer's local status rendering
-and serves both Project and Task descriptions. It shows target-scoped starting,
+`components/voiceInput/VoiceTargetStatus.vue` (formerly `ProjectVoiceStatus`) is the one
+voice status line for every voice target: Project and Task descriptions and Memory
+search ([Memory Search](./memory.md#memory-search)). It shows target-scoped starting,
 recording/transcribing, cancellation, error and no-speech feedback. Successful
 dictation leaves only editable text, with no success banner or reserved status
 gap. Its synchronous result snapshot retains useful terminal feedback before
@@ -545,7 +652,7 @@ extension, microphone/permission/device or live transcription capability.
 
 ## Agent Tools / Scope Exclusions
 
-`list_projects`, `list_project_tasks`, `create_project`, `update_project`, `create_task`, `update_task` are selected
+`list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`, `create_task`, `update_task` are selected
 independently per agent/node; none is added automatically (not even where `delegate_task` is). `create_project` creates a
 Project with a required name; `update_project` patches a known project_id: omitted fields persist, blank description clears.
 Optional workspaces [{workspace_path, description?}] reference absolute folder paths
@@ -554,8 +661,12 @@ preserves. Retained descriptions persist if omitted. Registration and folder
 existence are not prerequisites; no folder/registry changes happen on Save.
 The saved acknowledgement contains Project metadata and workspaceRootPath/description,
 not workspace IDs, per-link timestamps, Task counts or availability. List requires explicit Project ID after discovery;
-create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
-the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
+create (`project_id` + a required title + text, no Task ID) makes a TODO Task with no status; update takes
+the Task ID alone (no `project_id`) and patches title, text and/or exact status; unknown ID fails.
+`list_project_tasks` returns short entries (title, status, relations, comment count, open
+assignments); `get_project_task` (opt-in) reads one Task in full, and a worker reads only its own Task;
+`search_project_tasks` returns each hit's `title`.
+Every tool result leaves out fields with no value.
 For a Project Task the agent-facing Task ID is its key: results show it as `taskId`, and
 `task_id` accepts the key (any letter case) or the long ID. Both create and update take
 optional `depends_on` (Tasks of the same Project, by key or ID); results show `dependsOn` as keys.
@@ -563,11 +674,11 @@ They also take optional `part_of` (the parent, by key or ID; `""` clears it on u
 show `partOf`, list and search results also `parts`, and an `update_task` that closed a parent's
 open parts lists them in `closedParts` (and any it could not close in `partsNotClosed`).
 `update_task` also takes `add_comment` (one new comment on a Project Task; the description is
-not changed); `list_project_tasks` shows each Task's comment texts and `search_project_tasks`
-its `commentCount`. Delegating a saved Task sends its comments after the description.
+not changed); `list_project_tasks` shows each Task's `commentCount` (and `get_project_task` the comment
+texts) and `search_project_tasks` its `commentCount`. Delegating a saved Task sends its comments after the description.
 Both modes take optional `context_files` (absolute node-local file paths). The server
 copies each file into the Task's saved context under the same upload policy as the
-Task page (allowed types by extension, 25 MiB), so agent-attached files appear in
+Task page (allowed types by extension; audio and video up to the node's audio/video limit, other files up to its other-file limit), so agent-attached files appear in
 Context Files exactly like UI uploads (image preview included) and outlive their
 sources. Patches append and never remove; any invalid entry fails the whole call
 with no change (including no DONE closure); Tasks with no Project refuse files.
@@ -642,6 +753,16 @@ switching journey. `--skip-server-build` requires a current built server;
 `--output-dir=<path>` retains evidence. Clear inherited ENABLE_* flags when
 running development servers; the probe owns isolated flags/profiles.
 
+Projects mode in the left panel has unit and component coverage beside
+`stores/{projectRunsStore,projectRunsProjection,runSectionModeStore,chatDraftProjectChoice}.ts`,
+the history components (`ProjectsRunsTree.spec.ts`), the chip menu
+(`ChatWorkspaceMenu.projects.spec.ts`) and the group archive of a Project's
+listed runs. Its browser probe,
+`pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <dir>`,
+runs PLN-01…PLN-10 on a probe-owned stack (built server, Nuxt dev, headless
+Chrome) with the scripted Antigravity CLI, so delegation, Task closure, the cap,
+a backend restart and Stop are real; prerequisites are in its header.
+
 PT-E2E-005/006 additionally assert concise New/Edit copy and placeholders in
 en/zh-CN at wide/narrow sizes, retained labels/controls, error-only ARIA, reclaimed
 heading space, Ctrl/Meta saves, upload failure/retry and save failure/retained-draft
@@ -678,9 +799,10 @@ live pages with scripted AGY agents calling the actual tools.
 **PMU-013** covers compact cards with real-length fixtures (a ~10,000-word
 paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 1440 and 1024 px:
-- each summary and preview renders within 2 lines, and the card height is bounded;
+- each main line (the title, or a Temp task's first line) and preview renders
+  within 2 lines, and the card height is bounded;
 - accessible names are short, and the delete confirmation uses the shortened
-  summary;
+  main line;
 - short text is unchanged;
 - search finds words beyond the visible lines;
 - both Task pages show the full description.
@@ -690,7 +812,7 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - CJK text is hard-cut at 300 characters;
 - a 5,000-character unbroken token wraps without horizontal overflow;
 - a long Task keeps its context-file line and worker line visible;
-- a short summary appears in full in the delete confirmation.
+- a short main line appears in full in the delete confirmation.
 
 **PMU-015–016** cover the right-panel Projects tab:
 - it is the first tab, with a live board beside the chat;

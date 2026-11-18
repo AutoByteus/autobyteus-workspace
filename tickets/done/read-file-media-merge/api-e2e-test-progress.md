@@ -1,0 +1,44 @@
+# API/E2E Test Progress — read-file-media-merge (autobyteus-328)
+
+- Execution coverage report: `api-e2e-execution-coverage-report.md`
+- Planned cases: the coverage investigation's Planned Cases
+
+| Time | Case ID | Event | Result | Note |
+| --- | --- | --- | --- | --- |
+| 2026-10-29 21:53 | API-02 | Started | | git grep read_media_file |
+| 2026-10-29 21:53 | API-02 | Completed | Pass | only recorded-history renderer, its test/fixture, AC-006 test, docs, old done tickets |
+| 2026-10-29 21:53 | API-05 | Started | | temp probe read_file on real/generated documents |
+| 2026-10-29 21:54 | API-05 | Completed | Fail | cups/chrome PDF, DOCX, ZIP refused; 2 OS PDFs (first NUL at 32001/42388) returned as garbled text 29857/126833 chars |
+| 2026-10-29 21:54 | API-03 | Started | | durable m4a live test, strict, AI Studio |
+| 2026-10-29 21:54 | API-03 | Completed | Blocked | AI Studio project quota 0 (429); helper misclassifies as credentials (FU-005) |
+| 2026-10-29 21:54 | API-04 | Started | | temp copy of m4a live test in Vertex Express mode |
+| 2026-10-29 21:56 | API-04 | Completed | Pass | Vertex Express copy: 1 passed (Gemini transcribed hello from the read_file m4a) |
+| 2026-10-29 21:56 | API-06 | Started | | temp server journey R1 Gemini, R2 OpenAI Daily Assistant (+API-07 journal) |
+| 2026-10-29 21:59 | API-06 | Checkpoint | | run 1: R1 Gemini red/hello/blue, docs refused, os-keyboard.pdf returned as 29857 chars; R2 gpt-5.4-mini sent start_line/end_line=1 -> all media refused; probe assertions fixed; run 2 adds API-08 matrix |
+| 2026-10-29 21:59 | API-08 | Started | | matrix: image read per model/agent, line args and outcome |
+| 2026-10-29 22:22 | API-08 | Completed | Fail | gpt-5.4-mini 6/6 image reads with start_line/end_line=1 -> refused, no retry; Gemini 2/2 read; Anthropic 4 not tested (usage limit until 2026-11-01) |
+| 2026-10-29 22:22 | API-09 | Started | | text read on gpt-5.4-mini; image on larger OpenAI, Grok, Kimi |
+| 2026-10-29 22:29 | API-09 | Completed | Fail | gpt-5.4-mini text read sends start/end 1-200 (works); gpt-5.5 image: 11 attempts all with line args, all refused, then answered 'Red' unseen; grok-4.7 image OK (path only); Kimi not tested (balance) |
+| 2026-10-29 22:29 | API-10 | Started | | Grok audio+video capability refusal, with Work Journal |
+| 2026-10-29 22:30 | API-10 | Completed | Pass | grok-4.7: audio and video refused with the capability messages; agent says it could not hear/see; journal renders both |
+| 2026-10-29 22:30 | API-06 | Completed | Fail | R1 Gemini pass (red/hello/blue; docs refused; os-keyboard.pdf returned as text); R2 gpt-5.4-mini Daily Assistant: all media refused on line args (2 runs) |
+| 2026-10-29 22:30 | API-07 | Completed | Pass | journals: media markers for R1; refusals for R2 and API-10 |
+| 2026-10-29 22:31 | — | Completed | Fail | round 1 result recorded (F-1, F-2, F-3); committing |
+| 2026-10-30 04:53 | API-11 | Started | | newer OpenAI models + LM Studio qwen3.6-35b-a3b (LM Studio: nothing loaded before) |
+| 2026-10-30 05:08 | API-11 | Checkpoint | | run 1 stopped: gpt-6-sol turn streamed >300 s; results only saved at the end (lost); Qwen never ran; probe now saves per cell and records hung cells; run 2 |
+| 2026-10-30 05:42 | API-11 | Checkpoint | | run 2: all OpenAI cells refused by provider (no credits remaining); Qwen image read path-only, 2/2 succeeded; Qwen audio/video loaded but model saw only metadata; file names leak answers -> run 3 with neutral names (Qwen, Gemini, Grok) |
+| 2026-10-30 05:44 | API-11 | Completed | Pass | run 3 neutral names: Qwen green x3 (audio/video not delivered), Gemini green/hello/yellow, Grok green; OpenAI newer models not tested (no credits); Qwen unloaded |
+| 2026-10-30 06:56 | API-12 | Completed | Fail | census: 296 non-media NUL files; 173 tracked .log files (167 Electron build logs) refused as binary, readable before the ticket (F-4) |
+| 2026-10-30 06:58 | API-05 | Started | | round 2: 79 late-NUL OS PDFs + generated docs; API-14 wording in the same probe |
+| 2026-10-30 06:58 | API-05 | Completed | Pass | round 2: 77/79 late-NUL OS PDFs refused, 2 without NUL read as text (DEC-006 residual); docs refused |
+| 2026-10-30 06:58 | API-14 | Completed | Pass | new message and articles for all kinds and line values (0/0, -1/-1 included); media loads without line args; text range works; build.log refused (F-4) |
+| 2026-10-30 06:59 | API-13 | Started | | round 2 journey: 8 OpenAI models image; Daily Assistant gpt-5.4-mini (media, run_bash cwd, text range, build log); Gemini; Grok |
+| 2026-10-30 07:03 | API-13 | Completed | Fail | F-1 fixed: 8/8 OpenAI models path-only, green; Daily Assistant media/capability refusals/text range/run_bash OK; build.log refused as binary (F-4; agent worked around with strings); Gemini, Grok OK |
+| 2026-10-30 07:04 | — | Completed | Fail | round 2 recorded: F-1..F-3 resolved; F-4 new; committing |
+| 2026-10-30 07:19 | API-12 | Started | | round 3 census under DEC-007 |
+| 2026-10-30 07:21 | API-12 | Completed | Pass | round 3: 193/296 tracked NUL files read (172 logs, 20 git status -z outputs, 1 .paths), 103 refused (gz, db, jar, bin, pdf, tgz, sqlite, 1 log with embedded SQLite pages) |
+| 2026-10-30 07:21 | API-15 | Completed | Pass | 84/84 OS binaries refused; gzip, SQLite, ZIP, macOS tar, binary plist, UTF-16 refused; UTF-8 (BOM), Latin-1 read; residuals: ustar tar of ASCII and an all-zero file read as text |
+| 2026-10-30 07:21 | API-05 | Completed | Pass | round 3: 398/400 OS PDFs refused; 2 without NUL read (stated residual) |
+| 2026-10-30 07:21 | API-16 | Started | | server journey: build log (plain read_file agent and Daily Assistant), PDF, image on gpt-5.4-mini |
+| 2026-10-30 07:23 | API-16 | Completed | Pass | build log read by plain read_file agent and Daily Assistant; PDF refused; image green |
+| 2026-10-30 07:23 | — | Completed | Pass | round 3 recorded (95.3%); committing |

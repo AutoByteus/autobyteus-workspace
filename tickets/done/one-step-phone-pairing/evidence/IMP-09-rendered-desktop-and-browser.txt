@@ -1,0 +1,33 @@
+# IMP-09 rendered desktop panel and browser pairing page against an isolated test node
+# steps: node autobyteus-server-ts/dist/app.js --host 0.0.0.0 --port <free> --data-dir <temp> (HOME temp, APP_ENV=test);
+#        pnpm -C autobyteus-web dev against it (BACKEND_NODE_BASE_URL); browser tab /nodes?nodeTab=phoneSetup;
+#        /mobile served by the test node's production bundle (pnpm -C autobyteus-web build:mobile-web).
+# code: working tree of d92d94472f (panel header fix included); macOS host with Tailscale and Wi-Fi; 2026-11-07
+# Real computer name and addresses are replaced by <computer name> / <address>; no screenshot of the real host is kept.
+
+## Desktop panel on open (DOM)
+tabs: ["Same Wi-Fi or LAN:false","Tailscale Recommended:true","Your VPN:false","Company address:false"]
+status: "Ready: Tailscale is on, on this computer."   button: "Turn on and show QR code"   blocked: null   Advanced fold: present
+subtitle: "Show a code, then scan it with the AutoByteus app to connect a phone to <computer name>."
+-> real renderer status checks to this host's Tailscale and Wi-Fi addresses passed by node ID (U-003 in the dev renderer; loopback origin)
+
+## Turn on and show QR code
+access: "On"  line: "Works anywhere through Tailscale"  timer: "Valid for 4:58"  QR image: present  error: none
+narrow viewport (~600 CSS px): header first crushed the title column; fixed (min width) -> title above the switch, as VIS-017
+
+## Advanced (Tailscale ready, this test node's https name not set up)
+"Secure web address Optional. Run this once in a terminal on this computer to give <computer name> an https:// address on your Tailscale network. AutoByteus shows it and does not run it. /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg <port>"
+
+## Same Wi-Fi or LAN tab
+code discarded on tab change: true
+status: "This computer is on a Wi-Fi or LAN network."
+question: "Allow phones on this network? Fine for home and office networks. Not for public Wi-Fi. This network. We ask once for each network."
+button: "Allow and show QR code" -> allowed row "Wi-Fi/LAN allowed on this network ..." and line "Works on this network"
+test node data root: remote-access/allowed-local-networks.json = { networkIds: ["gw_<16 hex>"] }
+switch off -> question back, code gone, button "Allow and show QR code"
+
+## Browser pairing page (pairing link from POST /pairing-sessions, serverName "Test Node", way local_network)
+VIS-032 layout: mark, "Test Node", "Connect this phone to use its runs.", "Connect to Test Node", "Get the Android app"
+tap Connect -> run list; node name "Test Node"; localStorage session nodeName "Test Node"
+node sheet: "Test Node <address> Connected Unpair from Test Node"; Switch node row: absent (browser); refresh icon aria-label "Check connection"
+test node devices: [("Phone", "local_network")]

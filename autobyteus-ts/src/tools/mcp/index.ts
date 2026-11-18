@@ -3,8 +3,20 @@ export {
   StdioMcpServerConfig,
   StreamableHttpMcpServerConfig,
   McpTransportType,
-  McpServerInstanceKey
+  McpServerInstanceKey,
+  isMcpSecretReference,
+  type McpConfigValue,
+  type McpSecretField,
+  type McpSecretReference
 } from './types.js';
+export {
+  McpSecretUnavailableError,
+  resolveMcpValue,
+  resolveMcpValues,
+  type McpSecretResolver,
+  type McpSecretResolutionContext,
+  type McpSecretUnavailableReason
+} from './mcp-secret-resolver.js';
 
 export { McpConfigService } from './config-service.js';
 export { McpSchemaMapper } from './schema-mapper.js';

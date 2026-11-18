@@ -1,0 +1,24 @@
+# Case: DR-01 core build; server typecheck and build; server unit
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-server-ts test:unit
+# Commit: 99ccc2ef5c (codex/integrations-page merged with origin/personal ec3f721622)
+# Environment: macOS 26.5.2 arm64, node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR (+ gates where named)
+# Date: 2026-11-01 (delivery, integrated state)
+
+## server unit (failed files in the full log: 0)
+ Test Files  912 passed | 5 skipped (917)
+      Tests  7729 passed | 9 skipped (7738)
+
+## core-build (exit 0), last lines
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+## server-typecheck (exit 0), last lines
+> autobyteus-server-ts@0.1.1 typecheck ~/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
+## server-build (exit 0), last lines
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

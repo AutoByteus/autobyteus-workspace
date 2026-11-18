@@ -1,0 +1,11 @@
+# API-09 sensitivity (mutation) check — does the live effort-only test fail when the SDK client sends `thinking` again?
+# Step: autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts — added `thinking: { type: "disabled" },` after the effort option in buildQueryOptions,
+#   then `corepack pnpm -C autobyteus-server-ts build` (exit 0), then
+#   env -i PATH=$PATH HOME=<temp> TMPDIR=/tmp AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_CLAUDE_E2E=1 corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-effort-only-live.e2e.test.ts -t "path-claude" --no-watch
+# Commit 817bd9950 · ENV-1 · 2026-11-10 · Case API-09. Source restored from /tmp copy right after (git status of autobyteus-server-ts/src clean) and dist rebuilt (exit 0).
+# Observed:
+     × path-claude: stored effort is passed, stale thinking settings and an unchosen effort are not 14863ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: no --thinking argument: expected [ '--output-format', …(23) ] to not include '--thinking'
+      Tests  1 failed | 1 skipped (2)
+# Reading: the SDK turns the option into the CLI argument '--thinking disabled', which the wrapper logged; the test fails on exactly the change this ticket made (no thinking option sent).

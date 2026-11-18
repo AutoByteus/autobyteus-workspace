@@ -1,0 +1,67 @@
+# Case: DR-03 full server e2e (summary), then the two failing files rerun with a resolved HOME
+# Command: pnpm test:e2e (repo root); then vitest run tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts with HOME=<realpath temp>
+# Commit: 2c67d4b4c2 (codex/secrets-and-integrations-design merged with origin/personal 67994daba0; doc conflicts in GLOSSARY.md and docs/design-cases.md resolved keeping both sides)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; env -i PATH HOME=<temp> TMPDIR
+# Date: 2026-10-26 (delivery, integrated state)
+
+## full e2e: MCP and secret suites
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (5 tests) 19823ms
+ ✓ tests/e2e/secret-management/test-vault-selection.e2e.test.ts (5 tests) 14518ms
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts (1 test) 5995ms
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 3872ms
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 2563ms
+ ✓ tests/e2e/secret-management/environment-key-source.e2e.test.ts (3 tests) 2703ms
+ ✓ tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts (3 tests) 6430ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 5556ms
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 4759ms
+ ✓ tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts (4 tests) 2324ms
+ ✓ tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts (2 tests) 2153ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests) 3005ms
+ ✓ tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts (1 test) 580ms
+
+## full e2e: failures
+ FAIL  tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > reports a run that started after the running-run check as failed and archives the rest (AC-010)
+GraphQLError: AgentDefinitionService.getInstance(...).getAgentDefinitionsWithTeamLocal is not a function
+AssertionError: expected 'printf "__AB_TERMINAL_HOME_OK__:%s\n"…' to contain '__AB_TERMINAL_HOME_OK__:/tmp/dr-244-h…'
+
+ Test Files  2 failed | 103 passed | 98 skipped (203)
+      Tests  5 failed | 448 passed | 480 skipped (933)
+
+## rerun of the two files with a resolved HOME
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests | 4 failed) 1779ms
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 957ms
+ ❯ Object.getAgentDefinitionsWithTeamLocal src/agent-definition/services/internal-agent-visibility.ts:48:51
+ ❯ InternalAgentVisibility.hiddenDefinitionIds src/agent-definition/services/internal-agent-visibility.ts:33:25
+ ❯ AgentRunHistoryService.listRunHistory src/run-history/services/agent-run-history-service.ts:37:28
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:34:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:329:20
+ ❯ queryHistory tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:341:20
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:458:27
+ ❯ Object.getAgentDefinitionsWithTeamLocal src/agent-definition/services/internal-agent-visibility.ts:48:51
+ ❯ InternalAgentVisibility.hiddenDefinitionIds src/agent-definition/services/internal-agent-visibility.ts:33:25
+ ❯ AgentRunHistoryService.listRunHistory src/run-history/services/agent-run-history-service.ts:37:28
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:34:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:329:20
+ ❯ listAgentGroups tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:716:22
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:786:22
+ ❯ Object.getAgentDefinitionsWithTeamLocal src/agent-definition/services/internal-agent-visibility.ts:48:51
+ ❯ InternalAgentVisibility.hiddenDefinitionIds src/agent-definition/services/internal-agent-visibility.ts:33:25
+ ❯ AgentRunHistoryService.listRunHistory src/run-history/services/agent-run-history-service.ts:37:28
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:34:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:329:20
+ ❯ listAgentGroups tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:716:22
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:832:15
+ ❯ Object.getAgentDefinitionsWithTeamLocal src/agent-definition/services/internal-agent-visibility.ts:48:51
+ ❯ InternalAgentVisibility.hiddenDefinitionIds src/agent-definition/services/internal-agent-visibility.ts:33:25
+ ❯ AgentRunHistoryService.listRunHistory src/run-history/services/agent-run-history-service.ts:37:28
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:34:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:329:20
+ ❯ listAgentGroups tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:716:22
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:858:15
+      Tests  4 failed | 6 passed (10)
+
+## reading: terminal = environment (unresolved /tmp HOME vs /private/tmp), green with a resolved HOME; archive = stale vi.mock from autobyteus-308, identical on origin/personal (FU-009)

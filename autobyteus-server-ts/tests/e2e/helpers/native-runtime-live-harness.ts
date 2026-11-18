@@ -28,6 +28,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "./studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
+import { agentStreamFramesOf } from "./agent-stream-frames.js";
 
 export type Json = Record<string, unknown>;
 export type LimitFields = {
@@ -322,6 +323,9 @@ export class NativeRuntimeLiveHarness {
     }) as typeof fetch;
   }
 
+  /** The server's main URL (GraphQL, agent and team WebSockets). */
+  get url(): URL { return this.mainUrl; }
+
   async settleCalls(): Promise<void> { await Promise.all(this.calls.map((call) => call.settled)); }
   callsOf(callPhase: string): CapturedCall[] { return this.calls.filter((call) => call.phase === callPhase); }
 
@@ -358,11 +362,14 @@ export class NativeRuntimeLiveHarness {
   }
 
   async gql<T>(query: string, variables: Json = {}): Promise<T> {
-    const response = await this.originalFetch(new URL("/graphql", this.mainUrl), {
+    // Through the global fetch: the server's owner credential is attached there (node access model); the recorder
+    // passes local requests through unrecorded.
+    const response = await globalThis.fetch(new URL("/graphql", this.mainUrl), {
       method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
     });
     const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
     if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((error) => error.message).join("; ")}`);
+    if (!response.ok) throw new Error(`GraphQL: HTTP ${response.status} ${JSON.stringify(body).slice(0, 300)}`);
     return body.data as T;
   }
 
@@ -406,7 +413,8 @@ export class NativeRuntimeLiveHarness {
     socket.on("message", (raw) => {
       let parsed: { type?: unknown; payload?: unknown };
       try { parsed = JSON.parse(raw.toString()) as { type?: unknown; payload?: unknown }; } catch { return; }
-      if (typeof parsed.type === "string") frames.push({ type: parsed.type, payload: isRecord(parsed.payload) ? parsed.payload : {} });
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+      frames.push(...agentStreamFramesOf(parsed) as WsMessage[]);
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
     this.sockets.add(socket);

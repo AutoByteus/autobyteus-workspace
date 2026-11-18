@@ -1,3 +1,6 @@
+import type { AgentBackgroundTaskView } from './agent-background-task-view.js';
+import { runningBackgroundTaskCount } from './agent-background-task-count.js';
+import type { BackgroundTaskEnd, BackgroundTaskStart } from "autobyteus-ts";
 import { AgentRunExecutionAdmissionFence } from "../input/agent-run-execution-admission-fence.js";
 import { randomUUID } from "node:crypto";
 import type { CompactionRetryRequest } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
@@ -5,7 +8,8 @@ import type { AgentInputStateDto } from "@autobyteus/agent-presentation-contract
 import { observeAgentRunInputEvents } from "../input/agent-run-input-lifecycle.js";
 import { AgentRunCompactionRecovery } from "../input/agent-run-compaction-recovery.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentRunBackend } from "../backends/agent-run-backend.js";
+import type { AgentRunBackend, AgentRunToolListApplyResult } from "../backends/agent-run-backend.js";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { dispatchRuntimeEvent } from "../backends/shared/runtime-event-dispatch.js";
 import { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
 import { dispatchProcessedAgentRunEvents } from "../events/dispatch-processed-agent-run-events.js";
@@ -34,7 +38,6 @@ import { AgentRunTermination } from "./agent-run-termination.js";
 import type { PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
 import {
   buildAgentStatusPayload, agentStatusHint,
-  type AgentApiStatus,
   type AgentStatusPayload,
 } from "./agent-status-payload.js";
 
@@ -153,9 +156,63 @@ export class AgentRun {
   isActive(): boolean { return this.backend.isActive(); }
   getPlatformAgentRunId() { return this.backend.getPlatformAgentRunId(); }
 
+  /**
+   * Gives the runtime the tools of this definition: at once where it can take them, otherwise at
+   * its next turn start (see `AgentRunBackend.applyDefinitionTools`). Rejected on a stopped run.
+   */
+  async applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult> {
+    if (!this.backend.isActive()) throw new Error(`Agent run '${this.runId}' is not active.`);
+    return this.backend.applyDefinitionTools(definition);
+  }
+
+  /** The tool names the runtime has now (the names the agent calls). */
+  getToolNames(): readonly string[] { return this.backend.getToolNames(); }
+
+  /**
+   * Sets up this definition's skills that the runtime does not have yet (see
+   * `AgentRunBackend.applyDefinitionSkills`). Rejected on a stopped run.
+   */
+  async applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    if (!this.backend.isActive()) throw new Error(`Agent run '${this.runId}' is not active.`);
+    await this.backend.applyDefinitionSkills(definition);
+  }
+
+  /** True when the platform delivers this run's background-task completion notices (native runs). */
+  get backgroundTaskNoticesSupported(): boolean { return this.backend.backgroundTaskNotices.kind === "platform"; }
+
+  /** The ends of this run's background tasks not yet reported to the agent, now taken (each end once). */
+  takeUnreportedBackgroundTaskEnds(): readonly BackgroundTaskEnd[] {
+    const notices = this.backend.backgroundTaskNotices;
+    return notices.kind === "platform" ? notices.takeUnreportedEnds() : [];
+  }
+
+  /** This run's background tasks still running. */
+  listRunningBackgroundTasks(): readonly BackgroundTaskStart[] {
+    const notices = this.backend.backgroundTaskNotices;
+    return notices.kind === "platform" ? notices.listRunning() : [];
+  }
+
+  /** True while the runtime reports a running background task (false for runtimes that report none). */
+  hasRunningBackgroundTasks(): boolean { return this.runningBackgroundTaskCount() > 0; }
+
+  /** Background tasks the run has running now, from its runtime's background-task view (the one derivation). */
+  private runningBackgroundTaskCount(): number { return runningBackgroundTaskCount(this.backend.backgroundTaskInspection); }
+
+  async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
+    const inspection = this.backend.backgroundTaskInspection;
+    if (inspection.kind === 'unsupported') return { kind: 'unsupported', agentRunId: this.runId, reason: 'unsupported' };
+    if (inspection.kind === 'event-stream') return { kind: 'event-stream', agentRunId: this.runId, tasks: inspection.current() };
+    const observation = await inspection.read();
+    return observation.kind === 'snapshot'
+      ? { ...observation, agentRunId: this.runId, runInstanceId: this.runInstanceId }
+      : { ...observation, agentRunId: this.runId };
+  }
+
   getStatusSnapshot(): AgentStatusPayload {
     this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-    return buildAgentStatusPayload({ status: this.lifecycleState.status, agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock });
+    this.lifecycleState.observeBackgroundTasksRunning(this.runningBackgroundTaskCount());
+    return buildAgentStatusPayload({ status: this.lifecycleState.status, backgroundTasksRunning: this.lifecycleState.backgroundTasksRunning,
+      agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock });
   }
 
   subscribeToEvents(listener: AgentRunEventListener): () => void {
@@ -196,6 +253,7 @@ export class AgentRun {
         message,
         observer,
         this.backend.isActive(),
+        options.onlyAsFirstInput === true,
       );
       if (!admission.accepted) return { admission, appendTurnId: null, retry: null } as const;
       const retry = this.compactionRecovery.claimAdmission(message, admission.entrySequence);
@@ -225,7 +283,7 @@ export class AgentRun {
     const admission = await this.dispatchQueue.enqueue(this.runId, () => {
       this.executionAdmissionFence.assertOpen();
       this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-      return this.inputAdmissionState.reserve(message, observer, this.backend.isActive());
+      return this.inputAdmissionState.reserve(message, observer, this.backend.isActive(), options.onlyAsFirstInput === true);
     });
     if (!admission.accepted) return { reserved: false, ...admission };
 
@@ -285,6 +343,7 @@ export class AgentRun {
       lifecycleState: this.lifecycleState,
       segmentLifecycleState: this.segmentLifecycleState,
       getRuntimeLifecycleSnapshot: () => this.backend.getLifecycleSnapshot(),
+      getBackgroundTasksRunning: () => this.runningBackgroundTaskCount(),
       onCanonicalEventsDispatched: (canonicalEvents) => {
         observeAgentRunInputEvents(canonicalEvents, this.inputAdmissionState, this.interruptState);
         this.reconcileUncertainDispatch();
@@ -344,7 +403,7 @@ export class AgentRun {
       let dispatch = this.providerInputNormalizer.normalizeForProvider(input.claim.dispatch);
       normalized = true;
       if (canCarryPreface(input.recovery !== null, dispatch.message)) {
-        input.preface = await this.prefaces.take();
+        input.preface = await this.prefaces.take(dispatch.kind);
         if (input.preface) dispatch = combinePreface(dispatch, input.preface);
       }
       result = await this.backend.dispatchUserInput(dispatch);
@@ -477,7 +536,8 @@ export class AgentRun {
       event: {
         eventType: AgentRunEventType.AGENT_STATUS,
         runId: this.runId,
-        payload: buildAgentStatusPayload({ status, agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
+        payload: buildAgentStatusPayload({ status, backgroundTasksRunning: this.lifecycleState.backgroundTasksRunning,
+          agentId: this.runId, recoverableBlock: this.lifecycleState.recoverableBlock }),
         statusHint: agentStatusHint(status),
       },
       onListenerError: (error) => {

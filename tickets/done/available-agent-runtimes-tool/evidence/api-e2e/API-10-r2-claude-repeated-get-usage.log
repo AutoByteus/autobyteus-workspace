@@ -1,0 +1,89 @@
+# API-10 round 2 — repeated live Claude get_usage reads (script API-10-claude-repeat.mjs.txt)
+# Node: built dist at source 7ece4e2069 (HEAD 5a87647318), own data root, 127.0.0.1:<free>, real HOME/USER/LOGNAME (codex-cli 0.164.0, Claude Code 2.1.310, agy 1.4.7, grok 1.0.70), read-only test vault; LM Studio on localhost:1234; macOS darwin 25.5; 2026-10-25
+
+[
+ {
+  "at": "2026-10-25T09:26:34.054Z",
+  "ms": 676,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=53%",
+   "weekly_all=60%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 53,
+  "seven_day_utilization": 60
+ },
+ {
+  "at": "2026-10-25T09:26:38.542Z",
+  "ms": 485,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=53%",
+   "weekly_all=60%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 53,
+  "seven_day_utilization": 60
+ },
+ {
+  "at": "2026-10-25T09:26:43.018Z",
+  "ms": 474,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=53%",
+   "weekly_all=60%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 53,
+  "seven_day_utilization": 60
+ },
+ {
+  "at": "2026-10-25T09:26:47.487Z",
+  "ms": 468,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=53%",
+   "weekly_all=60%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 53,
+  "seven_day_utilization": 60
+ },
+ {
+  "at": "2026-10-25T09:26:51.947Z",
+  "ms": 459,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=53%",
+   "weekly_all=60%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 53,
+  "seven_day_utilization": 60
+ },
+ {
+  "at": "2026-10-25T09:26:56.527Z",
+  "ms": 579,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=53%",
+   "weekly_all=60%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 53,
+  "seven_day_utilization": 60
+ }
+]

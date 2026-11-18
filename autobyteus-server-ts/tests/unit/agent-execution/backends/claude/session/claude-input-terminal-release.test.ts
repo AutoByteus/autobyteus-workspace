@@ -13,6 +13,8 @@ import { buildClaudeSessionConfig } from '../../../../../../src/agent-execution/
 import { buildRuntimeAgentToolExposure } from '../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js';
 import { RuntimeKind } from '../../../../../../src/runtime-management/runtime-kind-enum.js';
 import { createFakeClaudeSdkClient, flushClaudeSession } from '../../../../../helpers/fake-claude-streaming-sdk.js';
+import { createAgentToolMcpRunSessionsStub } from '../../../../../helpers/agent-tool-mcp-run-sessions-stub.js';
+import { createNoopWorkspaceSkillMaterializer, createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const deferred = () => {
   let resolve!: () => void;
@@ -36,14 +38,14 @@ async function harness() {
       ? { kind: 'pending', code: 'TEST_PHYSICAL_PENDING', message: 'Controlled physical proof unavailable.' }
       : opening.release() };
   };
-  const skills = { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) };
-  const mcp = { activateForRun: vi.fn(() => ({ kind: 'disabled' })), deactivateForRun: vi.fn(() => 0) };
-  const manager = new ClaudeSessionManager(mcp as never, {} as never, sdk as never, skills as never);
+  const skills = { ...createNoopWorkspaceSkillMaterializer(), cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) };
+  const mcp = createAgentToolMcpRunSessionsStub();
+  const manager = new ClaudeSessionManager(mcp as never, {} as never, sdk as never);
   const create = async (runId: string) => {
     const context = new AgentRunContext({ runId,
       config: new AgentRunConfig({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, agentDefinitionId: 'test-reader',
         llmModelIdentifier: 'haiku', autoExecuteTools: false }),
-      runtimeContext: new ClaudeAgentRunContext({ carpenterSystemPrompt: 'Test-only reader',
+      runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills({ runId, materializer: skills }), carpenterSystemPrompt: 'Test-only reader',
         sessionConfig: buildClaudeSessionConfig({ model: 'haiku', workingDirectory: '/tmp', permissionMode: 'default' }),
         runtimeToolExposure: buildRuntimeAgentToolExposure([]) }),
     });

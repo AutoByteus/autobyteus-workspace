@@ -1,0 +1,26 @@
+{
+  "firstId": "78bd89ee8cf62e76fd4fcf237270362444b2ce068c574ffe947752cc1c50791f",
+  "recreatedId": "75c77ca92c709c54966f6ca3e40138f544362c847be8310ce1838ea5c5842d6a",
+  "home": "/private/tmp/ab305-api-e2e/tmp-aopl/api-prisma-docker-lCcc2W/home",
+  "data": "/private/tmp/ab305-api-e2e/tmp-aopl/api-prisma-docker-lCcc2W/data",
+  "image": "sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce",
+  "read": {
+    "agentDefinition": {
+      "id": "api-prisma-276c90f7-58c",
+      "name": "api-prisma-276c90f7-58c",
+      "description": "Retained-data proof; no model execution",
+      "instructions": "Do not run"
+    }
+  },
+  "wrongBefore": {
+    "libquery-engine": "3de76598179b95c6910e28547ee3af9236d978cd3e0917b63a3b531f84bfb8d0",
+    "schema-engine": "95ebf7a1c1b2378d66c9e0974e929736344381f82e0a1fb1b9a7e7fef91cef22"
+  },
+  "wrongAfter": {
+    "libquery-engine": "3de76598179b95c6910e28547ee3af9236d978cd3e0917b63a3b531f84bfb8d0",
+    "schema-engine": "95ebf7a1c1b2378d66c9e0974e929736344381f82e0a1fb1b9a7e7fef91cef22"
+  },
+  "noPins": true,
+  "signedOut": true,
+  "distUnchanged": true
+}

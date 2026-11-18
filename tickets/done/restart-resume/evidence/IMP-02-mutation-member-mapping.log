@@ -1,0 +1,8 @@
+# IMP-02 mutation member-mapping (N-10: no member presentation mapping; tests from b50e2354ab)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/restart-notice.test.ts --no-watch --testTimeout=8000
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × shows the restart notice posted as member input as a system notice 13ms
+      Tests  1 failed | 5 passed (6)

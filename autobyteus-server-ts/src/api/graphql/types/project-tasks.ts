@@ -45,9 +45,17 @@ export class ProjectTaskContextChangesInput {
 }
 
 @ObjectType()
-export class TaskRootHost {
+export class TaskRootDelegatingRun {
   @Field(() => String) kind!: string;
   @Field(() => String) runId!: string;
+}
+/** Where a Task's worker opens, as its tree's row opens (autobyteus-461 SR-086 G-F1). */
+@ObjectType()
+export class TaskRootOpenTarget {
+  @Field(() => String) runKind!: string;
+  @Field(() => String) runId!: string;
+  @Field(() => String) agentRunId!: string;
+  @Field(() => String, { nullable: true }) nodeId?: string;
 }
 @ObjectType()
 export class TaskRootStartError {
@@ -59,9 +67,14 @@ export class TaskRootStartError {
 export class TaskRoot {
   @Field(() => String) kind!: string;
   @Field(() => String, { nullable: true }) recipientAddress!: string | null;
+  @Field(() => String, { nullable: true }) displayName!: string | null;
   @Field(() => String) ingressAgentRunId!: string;
   @Field(() => String, { nullable: true }) teamRunId!: string | null;
-  @Field(() => TaskRootHost) hostRoot!: TaskRootHost;
+  @Field(() => TaskRootDelegatingRun) delegatingRun!: TaskRootDelegatingRun;
+  /** The run whose view lists its row, the top of its tree (SR-080); null when not known. */
+  @Field(() => TaskRootDelegatingRun, { nullable: true }) topRun!: TaskRootDelegatingRun | null;
+  /** Where the worker opens (G-F1): its agent run, or its team run at its coordinator; null is a row error. */
+  @Field(() => TaskRootOpenTarget, { nullable: true }) openTarget!: TaskRootOpenTarget | null;
   @Field(() => String) start!: string;
   @Field(() => TaskRootStartError, { nullable: true }) startError!: TaskRootStartError | null;
   @Field(() => Boolean) closed!: boolean;
@@ -89,6 +102,10 @@ export class ProjectTask {
   /** The readable key `<prefix>-<number>`; display only (the identity stays `taskId`). */
   @Field(() => String)
   taskKey!: string;
+
+  /** The Task's one-line name, given by its writer. */
+  @Field(() => String)
+  title!: string;
 
   @Field(() => String)
   description!: string;
@@ -122,6 +139,9 @@ export class CreateProjectTaskInput {
   projectId!: string;
 
   @Field(() => String)
+  title!: string;
+
+  @Field(() => String)
   description!: string;
 
   /** Same-Project Task IDs; omitted means none. */
@@ -141,6 +161,9 @@ export class UpdateProjectTaskInput {
 
   @Field(() => String)
   taskId!: string;
+
+  @Field(() => String)
+  title!: string;
 
   @Field(() => String)
   description!: string;
@@ -187,6 +210,8 @@ export class TaskWithoutProject {
 export class TaskWorkerTaskView {
   @Field(() => String) taskId!: string;
   @Field(() => String, { nullable: true }) projectId!: string | null;
+  /** A Project Task's title; null for a Temp task, which has none. */
+  @Field(() => String, { nullable: true }) title!: string | null;
   @Field(() => String) description!: string;
   @Field(() => ProjectTaskStatus) status!: ProjectTaskStatus;
 }
@@ -209,6 +234,7 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   taskId: task.taskId,
   projectId: task.projectId,
   taskKey: task.taskKey,
+  title: task.title,
   description: task.description,
   status: task.status as ProjectTaskStatus,
   dependsOnTaskIds: [...task.dependsOnTaskIds],
@@ -220,7 +246,7 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
 
 /**
  * Transport for Project Tasks. There is deliberately no status mutation here:
- * users only create, edit the description of, and delete Tasks.
+ * users only create, edit the title and description of, and delete Tasks.
  */
 @Resolver()
 export class ProjectTaskResolver {

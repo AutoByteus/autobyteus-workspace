@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LocalFileMemoryImportStore } from "../../../src/memory-sync/hub/local-file-memory-import-store.js";
 import { createDefaultMemorySyncConfig, toPublicMemorySyncConfig } from "../../../src/memory-sync/source/memory-sync-config.js";
 import { MemorySyncConfigService } from "../../../src/memory-sync/source/memory-sync-config-service.js";
@@ -12,11 +12,16 @@ import { MemoryFileChangePlanner } from "../../../src/memory-sync/source/memory-
 import { MemorySyncService } from "../../../src/memory-sync/source/memory-sync-service.js";
 import type { LocalMemoryExportScanner } from "../../../src/memory-sync/source/local-memory-export-scanner.js";
 import type { MemoryHubClient } from "../../../src/memory-sync/source/memory-hub-client.js";
-import type { MemoryFileOperation, MemorySyncBatch, MemorySyncConfig } from "../../../src/memory-sync/shared/memory-sync-types.js";
+import type { MemorySyncBatchTransfer } from "../../../src/memory-sync/source/memory-sync-batch-transfer.js";
+import type { MemoryFileInlineOperation, MemorySyncBatch, MemorySyncConfig } from "../../../src/memory-sync/shared/memory-sync-types.js";
+import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
+
+// Memory Sync's stored names are current here; the hold-back itself is covered by memory-sync-hold-back.test.ts.
+beforeEach(() => configureMemorySyncCapability(true));
 
 const sha256 = (content: string): string => createHash("sha256").update(content).digest("hex");
 
-const makeOperation = (relativePath: string, content: string): MemoryFileOperation => ({
+const makeOperation = (relativePath: string, content: string): MemoryFileInlineOperation => ({
   opId: `agents:${relativePath}`,
   operation: "replace",
   kind: "agents",
@@ -29,14 +34,14 @@ const makeOperation = (relativePath: string, content: string): MemoryFileOperati
 });
 
 const makeBatch = (input: {
-  sourceNodeId?: string;
+  memorySyncSourceId?: string;
   batchId: string;
   relativePath: string;
   content: string;
 }): MemorySyncBatch => ({
   protocolVersion: 1,
   batchId: input.batchId,
-  sourceNodeId: input.sourceNodeId ?? "source-a",
+  memorySyncSourceId: input.memorySyncSourceId ?? "source-a",
   sourceDisplayName: "Source A",
   sourceEndpoint: "http://source.local",
   generatedAt: new Date(0).toISOString(),
@@ -58,7 +63,7 @@ describe("Memory Sync local fix regressions", () => {
     }
   });
 
-  it("keys source sync state by hub URL and sourceNodeId", async () => {
+  it("keys source sync state by hub URL and memorySyncSourceId", async () => {
     const root = await makeTempRoot();
     const store = new LocalFileMemorySyncStateStore({ getAppDataDir: () => root });
     const hubBaseUrl = "http://hub.local";
@@ -82,7 +87,7 @@ describe("Memory Sync local fix regressions", () => {
     const newState = await store.readState(hubBaseUrl, "new-source");
 
     expect(Object.keys(oldState.files)).toEqual(["agents/agent-a/raw_traces_active.jsonl"]);
-    expect(newState.sourceNodeId).toBe("new-source");
+    expect(newState.memorySyncSourceId).toBe("new-source");
     expect(newState.files).toEqual({});
     expect(store.getFilePath(hubBaseUrl, "old-source")).not.toBe(store.getFilePath(hubBaseUrl, "new-source"));
   });
@@ -92,7 +97,7 @@ describe("Memory Sync local fix regressions", () => {
     config.source = {
       ...config.source,
       enabled: true,
-      sourceNodeId: "source-a",
+      memorySyncSourceId: "source-a",
       hubBaseUrl: "http://hub.local",
       hubToken: "short",
     };
@@ -173,7 +178,7 @@ describe("Memory Sync local fix regressions", () => {
       ...createDefaultMemorySyncConfig(),
       source: {
         enabled: true,
-        sourceNodeId: "saved-source",
+        memorySyncSourceId: "saved-source",
         displayName: null,
         hubBaseUrl: "http://saved-hub.local",
         hubToken: "saved-token",
@@ -190,7 +195,7 @@ describe("Memory Sync local fix regressions", () => {
       testConnection: vi.fn(async () => ({
         ok: true,
         hubEnabled: true,
-        sourceNodeId: "saved-source",
+        memorySyncSourceId: "saved-source",
         authenticated: true,
         message: "ok",
       })),
@@ -201,7 +206,7 @@ describe("Memory Sync local fix regressions", () => {
 
     expect(hubClient.testConnection).toHaveBeenCalledWith({
       hubBaseUrl: "http://saved-hub.local",
-      sourceNodeId: "saved-source",
+      memorySyncSourceId: "saved-source",
       token: "saved-token",
     });
   });
@@ -214,7 +219,7 @@ describe("Memory Sync local fix regressions", () => {
       testConnection: vi.fn(async () => ({
         ok: true,
         hubEnabled: true,
-        sourceNodeId: "draft-source",
+        memorySyncSourceId: "draft-source",
         authenticated: true,
         message: "ok",
       })),
@@ -224,76 +229,94 @@ describe("Memory Sync local fix regressions", () => {
     await service.testConnection({
       mode: "draft",
       hubBaseUrl: "http://draft-hub.local/",
-      sourceNodeId: "draft-source",
+      memorySyncSourceId: "draft-source",
       token: "draft-token",
     });
 
     expect(configService.getConfig).not.toHaveBeenCalled();
     expect(hubClient.testConnection).toHaveBeenCalledWith({
       hubBaseUrl: "http://draft-hub.local",
-      sourceNodeId: "draft-source",
+      memorySyncSourceId: "draft-source",
       token: "draft-token",
     });
   });
 
-  it("coalesces background and manual source sync entry points through one run gate", async () => {
-    const root = await makeTempRoot();
-    const stateStore = new LocalFileMemorySyncStateStore({ getAppDataDir: () => root });
-    const config: MemorySyncConfig = {
-      ...createDefaultMemorySyncConfig(),
-      source: {
-        enabled: true,
-        sourceNodeId: "source-a",
-        displayName: null,
-        hubBaseUrl: "http://hub.local",
-        hubToken: "secret-token",
-        backgroundEnabled: true,
-        intervalMs: 60_000,
-        batchSize: 25,
-        updatedAt: null,
-      },
+  describe("run gate", () => {
+    const makeService = async () => {
+      const root = await makeTempRoot();
+      const stateStore = new LocalFileMemorySyncStateStore({ getAppDataDir: () => root });
+      const config: MemorySyncConfig = {
+        ...createDefaultMemorySyncConfig(),
+        source: {
+          enabled: true,
+          memorySyncSourceId: "source-a",
+          displayName: null,
+          hubBaseUrl: "http://hub.local",
+          hubToken: "secret-token",
+          backgroundEnabled: true,
+          intervalMs: 60_000,
+          batchSize: 25,
+          updatedAt: null,
+        },
+      };
+      const configService = { getConfig: vi.fn(async () => config) } as unknown as MemorySyncConfigService;
+      const gates: Array<() => void> = [];
+      const scanner = {
+        scan: vi.fn(async () => {
+          await new Promise<void>((resolve) => gates.push(resolve));
+          return { files: [] };
+        }),
+      } as unknown as LocalMemoryExportScanner;
+      const batchTransfer = { send: vi.fn() } as unknown as MemorySyncBatchTransfer;
+      const service = new MemorySyncService(configService, stateStore, scanner, new MemoryFileChangePlanner(), batchTransfer);
+      const nextScan = async () => {
+        while (gates.length === 0) await new Promise((resolve) => setTimeout(resolve, 5));
+        return gates.shift() as () => void;
+      };
+      return { service, scanner, stateStore, nextScan };
     };
-    const configService = {
-      getConfig: vi.fn(async () => config),
-    } as unknown as MemorySyncConfigService;
 
-    let releaseScan!: () => void;
-    const scanCanFinish = new Promise<void>((resolve) => {
-      releaseScan = resolve;
+    it("joins a background start to the running run", async () => {
+      const { service, scanner, nextScan } = await makeService();
+
+      const first = service.startSync("background");
+      const release = await nextScan();
+      const second = service.startSync("background");
+      release();
+
+      expect(await second).toBe(await first);
+      expect(scanner.scan).toHaveBeenCalledTimes(1);
     });
-    let scanStarted!: () => void;
-    const scanStartedPromise = new Promise<void>((resolve) => {
-      scanStarted = resolve;
+
+    it("queues exactly one manual run after a running background run, and further Sync now clicks join it", async () => {
+      const { service, scanner, stateStore, nextScan } = await makeService();
+
+      const background = service.startSync("background");
+      const releaseBackground = await nextScan();
+      const manualA = service.startManualSync();
+      const manualB = service.startManualSync();
+      expect(scanner.scan).toHaveBeenCalledTimes(1);
+      releaseBackground();
+      const releaseManual = await nextScan();
+      releaseManual();
+
+      const [backgroundResult, manualResultA, manualResultB] = await Promise.all([background, manualA, manualB]);
+      expect(manualResultA).toBe(manualResultB);
+      expect(manualResultA).not.toBe(backgroundResult);
+      expect(scanner.scan).toHaveBeenCalledTimes(2);
+      await expect(stateStore.readState("http://hub.local", "source-a")).resolves.toMatchObject({ lastJobState: "success", files: {} });
     });
-    const scanner = {
-      scan: vi.fn(async () => {
-        scanStarted();
-        await scanCanFinish;
-        return { files: [], deferred: [] };
-      }),
-    } as unknown as LocalMemoryExportScanner;
-    const hubClient = { pushBatch: vi.fn() } as unknown as MemoryHubClient;
-    const service = new MemorySyncService(
-      configService,
-      stateStore,
-      scanner,
-      new MemoryFileChangePlanner(),
-      hubClient,
-    );
 
-    const backgroundRun = service.startSync();
-    await scanStartedPromise;
-    const manualRun = service.startManualSync();
-    releaseScan();
+    it("joins a Sync now to a manual run already in progress", async () => {
+      const { service, scanner, nextScan } = await makeService();
 
-    const [backgroundResult, manualResult] = await Promise.all([backgroundRun, manualRun]);
+      const first = service.startManualSync();
+      const release = await nextScan();
+      const second = service.startManualSync();
+      release();
 
-    expect(backgroundResult).toBe(manualResult);
-    expect(scanner.scan).toHaveBeenCalledTimes(1);
-    expect(hubClient.pushBatch).not.toHaveBeenCalled();
-    await expect(stateStore.readState("http://hub.local", "source-a")).resolves.toMatchObject({
-      lastJobState: "success",
-      files: {},
+      expect(await second).toBe(await first);
+      expect(scanner.scan).toHaveBeenCalledTimes(1);
     });
   });
 });

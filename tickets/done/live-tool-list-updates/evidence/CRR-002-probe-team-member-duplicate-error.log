@@ -1,0 +1,14 @@
+# Code review CRR-002 probe (temporary test, removed after the run; never committed). Commit c4da95428e, 2026-10-29.
+# Built from tests/integration/agent-collaboration/team-member-reopen-failure.integration.test.ts: the same real
+# ConfiguredAgentExecutionHandle, real AgentRun and real CollaborationAgentPresentationEventAdapter. The member's fake
+# backend FORWARDS the input (turn-1), then emits TURN_STARTED and a turn-terminal ERROR
+# { error_scope: "turn", error_effect: "terminal", turn_id: "turn-1", code: "PROVIDER_ERROR", message: "rate limited" },
+# i.e. an ordinary failed turn of a Team member's direct input (not a reopen failure).
+# cmd: env -i PATH HOME=<resolved temp> TMPDIR pnpm exec vitest run tests/integration/agent-collaboration/zz-review-probe-turn-failure.integration.test.ts --no-watch
+[REVIEW-PROBE] ERROR entries: [{"code":"PROVIDER_ERROR","message":"rate limited"},{"code":"RUNTIME_TURN_FAILED","message":"rate limited"}]
+× counts ERROR entries in the Team stream for one failed turn
+AssertionError: expected [ …(2) ] to have a length of 1 but got 2
+Tests  1 failed (1)
+# Reading: the first entry is the run's own ERROR, forwarded by the handle's run-event subscription (bindEvents);
+# the second is the new postMessage lifecycleObserver, which publishes on every `failed` fact, including the one
+# observeTurnFailure derives from that same ERROR (agent-run-input-lifecycle.ts:33-39).

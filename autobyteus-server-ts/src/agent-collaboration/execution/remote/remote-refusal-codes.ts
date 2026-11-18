@@ -11,11 +11,17 @@ export const REMOTE_REFUSAL = Object.freeze({
   AGENT_NOT_FOUND: "AGENT_NOT_FOUND",
   NO_DEFAULT_RUNTIME: "NO_DEFAULT_RUNTIME",
   AGENT_CANNOT_RUN: "AGENT_CANNOT_RUN",
+  /** autobyteus-32: the peer's Model Router could not choose a runtime for an agent of the target. */
+  MODEL_ROUTER_FAILED: "MODEL_ROUTER_FAILED",
   ATTACHMENTS_NOT_SUPPORTED: "REMOTE_ATTACHMENTS_NOT_SUPPORTED",
   SAVED_TASK_NOT_SUPPORTED: "REMOTE_SAVED_TASK_NOT_SUPPORTED",
   TARGET_NOT_PERMITTED: "REMOTE_TARGET_NOT_PERMITTED",
   TARGET_NOT_FOUND: "REMOTE_TARGET_NOT_FOUND",
   BAD_REQUEST: "REMOTE_REQUEST_INVALID",
+  /** autobyteus-290: this node's or the peer's identity is waiting for its data migration (capability `node_identity`). */
+  NODE_IDENTITY_NOT_MIGRATED: "NODE_IDENTITY_NOT_MIGRATED",
+  /** autobyteus-437: the two nodes do not share a peer secret (paired before peers paired, or unpaired on one side). */
+  PEER_NOT_PAIRED: "PEER_NOT_PAIRED",
 } as const);
 
 /** Texts of refusals a root decides before anything is sent, and of its results for remote runs. */
@@ -30,6 +36,3 @@ export const REMOTE_ROOT_REFUSAL_TEXT = Object.freeze({
 export const remoteDeliveredText = (agentRunId: string, peerName: string): string =>
   `Delivered message to ${agentRunId} on node "${peerName}".`;
 
-/** AR-007: DONE or CANCELLED fences a remote run; it is not stopped from this node (S3). */
-export const remoteRunClosureText = (address: string, peerName: string): string =>
-  `${address} runs on node "${peerName}". This Task sends it no more messages; it stops there when it goes idle.`;

@@ -1,0 +1,10 @@
+
+> autobyteus@1.5.12-beta.2 test:e2e:run-expand-motion-live /Users/normy/autobyteus_org/autobyteus-worktrees/run-expand-motion/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases RXM-001,RXM-002,RXM-003 --output-dir /tmp/rxm-390/rxm-r4
+
+(node:20058) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+RXM-001 Pass AC-001/AC-002: a live run's delegated rows: collapse hides them from the first frame; expand shows each at its final place with no transform from the first frame
+RXM-002 Pass AC-003: while the run is expanded, the agent closes a Task (DONE): its row leaves with the designed fade, then the other rows are at rest
+RXM-003 Pass AC-003/R-01: a stopped run reopened: stored rows show; fold, Runs → Workspaces → Runs, unfold: same rows, no read for the unfold; a delegated row is selected from the list
+Summary: 3 Pass, 0 Fail

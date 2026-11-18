@@ -1,0 +1,5 @@
+content-desc: Back to nodes
+text: Can’t connect
+text: Check the address and try again.
+content-desc: Scan again
+text: Scan again

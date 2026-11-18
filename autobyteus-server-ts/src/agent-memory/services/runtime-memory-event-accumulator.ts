@@ -1,3 +1,4 @@
+import { normalizeAcceptedInputIdentity } from "@autobyteus/agent-presentation-contracts";
 import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
 import { resolveInterAgentSenderId } from "autobyteus-ts/agent/message/inter-agent-sender.js";
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
@@ -14,8 +15,12 @@ import {
 } from "./runtime-memory-event-payload.js";
 import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
 import {
+  BACKGROUND_TASK_NOTICE_SENDER_ID,
   CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
+  MODEL_ROUTER_REQUEST_SENDER_ID,
+  RESTART_RESUME_NOTICE_SENDER_ID,
   SKILL_UPDATE_NOTICE_SENDER_ID,
+  TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
 } from "../../agent-execution/domain/system-task-notification-senders.js";
 import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 
@@ -23,6 +28,10 @@ import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-i
 const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
   CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
   SKILL_UPDATE_NOTICE_SENDER_ID,
+  TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
+  MODEL_ROUTER_REQUEST_SENDER_ID,
+  RESTART_RESUME_NOTICE_SENDER_ID,
+  BACKGROUND_TASK_NOTICE_SENDER_ID,
 ]);
 
 type SegmentState = {
@@ -75,6 +84,10 @@ export class RuntimeMemoryEventAccumulator {
       media,
       fileAttachments,
       senderId: resolveInterAgentSenderId(payload.message.metadata),
+      ...normalizeAcceptedInputIdentity({
+        messageId: payload.message.metadata?.message_id,
+        dedupeKey: payload.message.metadata?.dedupe_key,
+      }),
     });
   }
 
@@ -259,6 +272,8 @@ export class RuntimeMemoryEventAccumulator {
       turnId,
       content,
       senderId,
+      // The notice's one id (autobyteus-526), so the conversation shows it once beside its live copy.
+      messageId: asString(event.payload.message_id) ?? undefined,
       sourceEvent: event.eventType,
       ts: extractTimestamp(event.payload),
     });

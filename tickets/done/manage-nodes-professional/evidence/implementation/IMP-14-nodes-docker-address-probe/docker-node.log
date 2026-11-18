@@ -1,0 +1,1763 @@
+[2026-11-02T09:47:40+00:00] Creating /home/autobyteus/data/.env with default server configuration
+[2026-11-02T09:47:40+00:00] Handing over to base entrypoint
+2026-11-02 09:47:41,121 INFO Included extra file "/etc/supervisor/conf.d/base.conf" during parsing
+2026-11-02 09:47:41,121 INFO Included extra file "/etc/supervisor/conf.d/supervisor-autobyteus-server.conf" during parsing
+2026-11-02 09:47:41,121 INFO Set uid to user 0 succeeded
+2026-11-02 09:47:41,131 INFO RPC interface 'supervisor' initialized
+2026-11-02 09:47:41,132 INFO supervisord started with pid 1
+2026-11-02 09:47:42,134 INFO spawned: 'dbus' with pid 30
+2026-11-02 09:47:42,136 INFO spawned: 'tigervnc' with pid 31
+2026-11-02 09:47:42,137 INFO spawned: 'xfce' with pid 32
+2026-11-02 09:47:42,138 INFO spawned: 'fcitx' with pid 33
+2026-11-02 09:47:42,139 INFO spawned: 'disable_screensaver' with pid 34
+2026-11-02 09:47:42,141 INFO spawned: 'copyq' with pid 35
+2026-11-02 09:47:42,147 INFO spawned: 'chrome' with pid 38
+2026-11-02 09:47:42,158 INFO spawned: 'socat' with pid 48
+2026-11-02 09:47:42,163 INFO spawned: 'websockify' with pid 50
+2026-11-02 09:47:42,170 INFO spawned: 'autobyteus_server' with pid 54
+2026-11-02 09:47:42,176 DEBG 'xfce' stdout output:
+/usr/bin/startxfce4: X server already running on display :99
+
+2026-11-02 09:47:42,177 DEBG 'xfce' stderr output:
+xrdb: Connection refused
+xrdb: Can't open display ':99'
+
+2026-11-02 09:47:42,177 INFO success: disable_screensaver entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2026-11-02 09:47:42,180 DEBG 'disable_screensaver' stderr output:
+
+** (light-locker-command:56): WARNING **: 09:47:42.179: Unknown option -k
+
+2026-11-02 09:47:42,181 DEBG 'dbus' stdout output:
+unix:path=/run/user/1000/bus,guid=95a08af5d2a5cad682bb9b816ae85c3e
+
+2026-11-02 09:47:42,182 DEBG 'tigervnc' stderr output:
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+
+2026-11-02 09:47:42,182 DEBG 'tigervnc' stderr output:
+
+Xvnc TigerVNC 1.13.1 - built 2024-04-01 08:26
+Copyright (C) 1999-2022 TigerVNC Team and many others (see README.rst)
+See https://www.tigervnc.org for information on TigerVNC.
+Underlying X server release 12101011
+
+
+2026-11-02 09:47:42,182 DEBG 'tigervnc' stderr output:
+
+Mon Nov  2 09:47:42 2026
+ vncext:      VNC extension running!
+
+2026-11-02 09:47:42,183 DEBG 'tigervnc' stderr output:
+ vncext:      Listening for VNC connections on all interface(s), port 5900
+ vncext:      created VNC server for screen 0
+
+2026-11-02 09:47:42,289 DEBG 'chrome' stderr output:
+Failed to move to new namespace:
+2026-11-02 09:47:42,290 DEBG 'chrome' stderr output:
+ PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-02 09:47:42,294 DEBG 'chrome' stderr output:
+[38:38:1102/094742.294044:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-02 09:47:42,311 DEBG 'chrome' stderr output:
+[1102/094742.310969:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+
+2026-11-02 09:47:42,311 DEBG 'chrome' stderr output:
+[1102/094742.311274:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-02 09:47:42,317 DEBG 'tigervnc' stderr output:
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+
+2026-11-02 09:47:42,317 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,317 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86CameraAccessEnable
+
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86CameraAccessDisable
+
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86CameraAccessToggle
+
+2026-11-02 09:47:42,318 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,319 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,319 DEBG fd 35 closed, stopped monitoring <POutputDispatcher at 281473237861552 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stdout)>
+2026-11-02 09:47:42,319 DEBG fd 39 closed, stopped monitoring <POutputDispatcher at 281473237862224 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stderr)>
+2026-11-02 09:47:42,319 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-02 09:47:42,319 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:42,319 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86NextElement
+
+2026-11-02 09:47:42,319 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,319 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,319 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86PreviousElement
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86AutopilotEngageToggle
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86MarkWaypoint
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86Sos
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86NavChart
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86FishingChart
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86SingleRangeRadar
+
+2026-11-02 09:47:42,320 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86DualRangeRadar
+
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86RadarOverlay
+
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86TraditionalSonar
+
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86ClearvuSonar
+
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86SidevuSonar
+
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+> 
+2026-11-02 09:47:42,321 DEBG 'tigervnc' stderr output:
+Warning:          
+2026-11-02 09:47:42,325 DEBG 'tigervnc' stderr output:
+Could not resolve keysym XF86NavInfo
+Errors from xkbcomp are not fatal to the X server
+
+2026-11-02 09:47:42,336 DEBG 'tigervnc' stderr output:
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaadf550ec0 for event 2
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaadf550ec0 for event 3
+
+2026-11-02 09:47:42,336 INFO reaped unknown pid 90 (exit status 0)
+2026-11-02 09:47:42,336 INFO reaped unknown pid 92 (exit status 0)
+2026-11-02 09:47:42,336 INFO reaped unknown pid 95 (exit status 0)
+2026-11-02 09:47:42,336 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:42,352 DEBG 'disable_screensaver' stderr output:
+server does not have extension for -dpms option
+
+2026-11-02 09:47:42,359 DEBG 'disable_screensaver' stdout output:
+Screen locking and screensaver have been disabled
+
+2026-11-02 09:47:42,360 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237250896 for <Subprocess at 281473237214496 with name disable_screensaver in state RUNNING> (stdout)>
+2026-11-02 09:47:42,360 DEBG fd 29 closed, stopped monitoring <POutputDispatcher at 281473237250640 for <Subprocess at 281473237214496 with name disable_screensaver in state RUNNING> (stderr)>
+2026-11-02 09:47:42,360 INFO exited: disable_screensaver (exit status 0; expected)
+2026-11-02 09:47:42,360 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:42,366 DEBG 'copyq' stderr output:
+DEBUG: Server "/home/vncuser/.config/copyq/.copyq_s" started.
+
+2026-11-02 09:47:42,384 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:42.382Z","starter":"server-started","pid":103,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:47:42,388 DEBG 'copyq' stderr output:
+DEBUG: Geometry: Window "MainWindow": New geometry "Options/MainWindow_geometry": 645x421,637,329 -> 645x421,637,329
+
+2026-11-02 09:47:42,396 DEBG 'copyq' stderr output:
+DEBUG: Loading configuration
+
+2026-11-02 09:47:42,401 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=32 comm="xfce4-session")
+
+2026-11-02 09:47:42,405 DEBG 'websockify' stderr output:
+WebSocket server settings:
+
+2026-11-02 09:47:42,405 DEBG 'websockify' stderr output:
+  - Listen on :6080
+  - Web server. Web root: /usr/local/share/websockify
+  - No SSL/TLS support (no cert file)
+
+2026-11-02 09:47:42,405 DEBG 'websockify' stderr output:
+  - proxying from :6080 to localhost:5900
+
+2026-11-02 09:47:42,408 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.a11y.Bus'
+
+2026-11-02 09:47:42,417 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.xfce.Xfconf' requested by ':1.4' (uid=1000 pid=32 comm="xfce4-session")
+
+2026-11-02 09:47:42,430 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.xfce.Xfconf'
+
+2026-11-02 09:47:42,433 DEBG 'dbus' stderr output:
+dbus-daemon[118]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=32 comm="xfce4-session")
+
+2026-11-02 09:47:42,449 DEBG 'copyq' stderr output:
+DEBUG: Configuration loaded
+
+2026-11-02 09:47:42,450 DEBG 'dbus' stderr output:
+dbus-daemon[118]: Successfully activated service 'org.a11y.atspi.Registry'
+
+2026-11-02 09:47:42,450 DEBG 'dbus' stdout output:
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+2026-11-02 09:47:42,450 DEBG 'copyq' stderr output:
+DEBUG: Starting monitor
+
+2026-11-02 09:47:42,451 DEBG 'xfce' stderr output:
+_IceTrans
+2026-11-02 09:47:42,451 DEBG 'xfce' stderr output:
+mkdir: ERROR: euid != 0,directory /tmp/.ICE-unix will not be created.
+
+2026-11-02 09:47:42,453 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq --clipboard-access monitorClipboard
+
+2026-11-02 09:47:42,455 DEBG 'xfce' stderr output:
+/usr/bin/iceauth:  creating new authority file /run/user/1000/ICEauthority
+
+2026-11-02 09:47:42,458 DEBG 'copyq' stderr output:
+DEBUG: Starting callback: onStart
+
+2026-11-02 09:47:42,460 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq onStart
+
+2026-11-02 09:47:42,476 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Creating new tab
+
+2026-11-02 09:47:42,482 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Saving 0 items
+
+2026-11-02 09:47:42,486 DEBG 'xfce' stderr output:
+gpg-agent[147]: directory '/home/vncuser/.gnupg' created
+gpg-agent[147]: directory '/home/vncuser/.gnupg/private-keys-v1.d' created
+gpg-agent[148]: gpg-agent (GnuPG) 2.4.4 started
+
+2026-11-02 09:47:42,497 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Items saved
+
+2026-11-02 09:47:42,514 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:47:42,514 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:47:42,514 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:47:42,515 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+2026-11-02 09:47:42,515 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:47:42,515 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:47:42,516 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:47:42,516 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-02 09:47:42,517 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:47:42,519 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.Daemon' requested by ':1.8' (uid=1000 pid=149 comm="xfwm4")
+
+2026-11-02 09:47:42,526 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.Daemon'
+
+2026-11-02 09:47:42,544 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq eval -- runMenuCommandFilters()
+
+2026-11-02 09:47:42,544 INFO reaped unknown pid 162 (exit status 1)
+2026-11-02 09:47:42,544 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:43,510 DEBG 'xfce' stderr output:
+
+(xfwm4:149): xfwm4-WARNING **: 09:47:43.510: Another compositing manager is running on screen 0
+
+2026-11-02 09:47:43,510 INFO success: xfce entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-02 09:47:43,510 INFO success: fcitx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-02 09:47:43,511 INFO spawned: 'chrome' with pid 165
+2026-11-02 09:47:43,512 INFO success: socat entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-02 09:47:43,512 INFO success: websockify entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-02 09:47:43,569 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+[165:165:1102/094743.568172:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-02 09:47:43,574 DEBG 'chrome' stderr output:
+[1102/094743.574455:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1102/094743.574594:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-02 09:47:43,579 DEBG 'xfce' stderr output:
+
+(xfsettingsd:168): libupower-glib-WARNING **: 09:47:43.578: Couldn't connect to proxy: Could not connect: No such file or directory
+
+2026-11-02 09:47:43,580 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278000 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stdout)>
+2026-11-02 09:47:43,580 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278880 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stderr)>
+2026-11-02 09:47:43,580 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-02 09:47:43,580 INFO reaped unknown pid 185 (exit status 0)
+2026-11-02 09:47:43,581 INFO reaped unknown pid 187 (exit status 0)
+2026-11-02 09:47:43,581 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:43,941 DEBG 'xfce' stderr output:
+Connection failure: Connection refused
+pa_context_connect() failed: Connection refused
+
+2026-11-02 09:47:43,942 INFO reaped unknown pid 190 (exit status 0)
+2026-11-02 09:47:43,942 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:44,014 DEBG 'xfce' stderr output:
+
+** (xiccd:221): CRITICAL **: 09:47:44.013: Failed to connect to colord: Could not connect: No such file or directory
+
+2026-11-02 09:47:44,026 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.freedesktop.systemd1' requested by ':1.15' (uid=1000 pid=225 comm="systemctl --user start xfce4-notifyd.service")
+
+2026-11-02 09:47:44,038 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.freedesktop.thumbnails.Thumbnailer1' requested by ':1.14' (uid=1000 pid=207 comm="xfdesktop")
+
+2026-11-02 09:47:44,045 DEBG 'xfce' stderr output:
+
+(polkit-gnome-authentication-agent-1:219): polkit-gnome-1-WARNING **: 09:47:44.042: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+
+2026-11-02 09:47:44,046 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activated service 'org.freedesktop.systemd1' failed: Process org.freedesktop.systemd1 exited with status 1
+
+2026-11-02 09:47:44,059 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='ca.desrt.dconf' requested by ':1.17' (uid=1000 pid=228 comm="light-locker")
+
+2026-11-02 09:47:44,065 DEBG 'xfce' stderr output:
+
+** (light-locker:228): ERROR **: 09:47:44.065: session_id is not set, is /proc mounted with hidepid>0?
+
+2026-11-02 09:47:44,071 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'ca.desrt.dconf'
+
+2026-11-02 09:47:44,095 DEBG 'xfce' stderr output:
+
+(nm-applet:215): nm-applet-WARNING **: 09:47:44.094: Error connecting to system D-Bus: Could not connect: No such file or directory
+
+2026-11-02 09:47:44,095 DEBG 'xfce' stderr output:
+
+(nm-applet:215): nm-applet-WARNING **: 09:47:44.095: Could not connect: No such file or directory
+
+2026-11-02 09:47:44,096 DEBG 'xfce' stderr output:
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.096: ((src/libnm-client-impl/nm-client.c:4115)): assertion '<dropped>' failed
+
+2026-11-02 09:47:44,097 DEBG 'xfce' stderr output:
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4066)): assertion '<dropped>' failed
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4166)): assertion '<dropped>' failed
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4214)): assertion '<dropped>' failed
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4253)): assertion '<dropped>' failed
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4287)): assertion '<dropped>' failed
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4326)): assertion '<dropped>' failed
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4847)): assertion '<dropped>' failed
+
+2026-11-02 09:47:44,097 DEBG 'xfce' stderr output:
+
+(nm-applet:215): nm-CRITICAL **: 09:47:44.097: ((src/libnm-client-impl/nm-client.c:4847)): assertion '<dropped>' failed
+
+2026-11-02 09:47:44,121 DEBG 'xfce' stderr output:
+system-config-printer-applet: failed to connect to system D-Bus
+
+2026-11-02 09:47:44,193 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.UDisks2VolumeMonitor' requested by ':1.19' (uid=1000 pid=237 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-02 09:47:44,193 INFO success: tigervnc entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
+2026-11-02 09:47:44,198 DEBG 'dbus' stderr output:
+
+(process:265): GVFS-UDisks2-WARNING **: 09:47:44.197: Failed to connect to UDisks: Could not connect: No such file or directory
+
+(process:265): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 09:47:44.197: monitor says it's not supported
+
+2026-11-02 09:47:44,200 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.UDisks2VolumeMonitor'
+
+2026-11-02 09:47:44,201 DEBG 'dbus' stderr output:
+
+(process:265): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 09:47:44.201: monitor says it's not supported
+
+2026-11-02 09:47:44,202 DEBG 'dbus' stderr output:
+
+(tumblerd:237): GVFS-RemoteVolumeMonitor-WARNING **: 09:47:44.202: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+
+2026-11-02 09:47:44,203 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.AfcVolumeMonitor' requested by ':1.19' (uid=1000 pid=237 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-02 09:47:44,209 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.AfcVolumeMonitor'
+
+2026-11-02 09:47:44,212 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.GoaVolumeMonitor' requested by ':1.19' (uid=1000 pid=237 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-02 09:47:44,217 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.GoaVolumeMonitor'
+
+2026-11-02 09:47:44,220 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.GPhoto2VolumeMonitor' requested by ':1.19' (uid=1000 pid=237 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-02 09:47:44,226 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.GPhoto2VolumeMonitor'
+
+2026-11-02 09:47:44,228 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.MTPVolumeMonitor' requested by ':1.19' (uid=1000 pid=237 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-02 09:47:44,233 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.MTPVolumeMonitor'
+
+2026-11-02 09:47:44,246 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.freedesktop.thumbnails.Thumbnailer1'
+
+2026-11-02 09:47:44,274 DEBG 'xfce' stderr output:
+xfce4-panel-Message: 09:47:44.274: Plugin "(null)-7" was not found and has been removed from the configuration
+
+2026-11-02 09:47:44,289 DEBG 'xfce' stderr output:
+xfce4-panel-Message: 09:47:44.289: Plugin "power-manager-plugin-9" was not found and has been removed from the configuration
+
+2026-11-02 09:47:44,341 DEBG 'dbus' stderr output:
+
+(process:265): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 09:47:44.341: monitor says it's not supported
+
+2026-11-02 09:47:44,342 DEBG 'xfce' stderr output:
+
+(xfdesktop:207): GVFS-RemoteVolumeMonitor-WARNING **: 09:47:44.342: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+
+2026-11-02 09:47:44,360 DEBG 'xfce' stderr output:
+libclock-Message: 09:47:44.359: could not get proxy for org.freedesktop.login1
+
+(xfce4-panel:192): libclock-WARNING **: 09:47:44.359: could not instantiate a sleep monitor
+
+2026-11-02 09:47:44,380 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.Metadata' requested by ':1.14' (uid=1000 pid=207 comm="xfdesktop")
+
+2026-11-02 09:47:44,385 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.Metadata'
+
+2026-11-02 09:47:44,504 DEBG 'xfce' stderr output:
+
+** (xfdesktop:207): WARNING **: 09:47:44.503: Failed to get system bus: Could not connect: No such file or directory
+
+2026-11-02 09:47:44,922 DEBG 'xfce' stderr output:
+
+(xfce4-session:32): xfce4-session-WARNING **: 09:47:44.922: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-02 09:47:44,924 DEBG 'xfce' stderr output:
+
+(xfce4-session:32): xfce4-session-WARNING **: 09:47:44.923: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-02 09:47:44,928 DEBG 'xfce' stderr output:
+
+(xfce4-session:32): xfce4-session-WARNING **: 09:47:44.926: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-02 09:47:45,932 INFO spawned: 'chrome' with pid 358
+2026-11-02 09:47:45,932 INFO success: autobyteus_server entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2026-11-02 09:47:45,986 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-02 09:47:45,987 DEBG 'chrome' stderr output:
+[358:358:1102/094745.987180:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-02 09:47:45,991 DEBG 'chrome' stderr output:
+[1102/094745.991596:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1102/094745.991653:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-02 09:47:46,007 DEBG 'chrome' stderr output:
+[379:379:0100/000000.005882:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-02 09:47:46,007 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278880 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stdout)>
+2026-11-02 09:47:46,007 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278000 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stderr)>
+2026-11-02 09:47:46,007 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-02 09:47:46,007 INFO reaped unknown pid 374 (exit status 0)
+2026-11-02 09:47:46,007 INFO reaped unknown pid 376 (exit status 0)
+2026-11-02 09:47:46,007 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:47,010 INFO reaped unknown pid 379 (exit status 0)
+2026-11-02 09:47:47,010 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:47,457 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:47:47,457 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-11-02 09:47:47,457 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-11-02 09:47:47,457 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:47:47,467 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:47.467Z","starter":"server-exited","pid":103,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:47:47,471 DEBG fd 50 closed, stopped monitoring <POutputDispatcher at 281473237280640 for <Subprocess at 281473237245776 with name autobyteus_server in state RUNNING> (stdout)>
+2026-11-02 09:47:47,471 DEBG fd 54 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state RUNNING> (stderr)>
+2026-11-02 09:47:47,471 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:47:47,471 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:48,474 INFO spawned: 'autobyteus_server' with pid 382
+2026-11-02 09:47:48,526 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:48.525Z","starter":"server-started","pid":392,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:47:48,577 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:47:48,577 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:47:48,577 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:47:48,577 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:47:48,577 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ enable debugging { debug: true }
+
+2026-11-02 09:47:48,577 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:47:48,578 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:47:48,578 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:47:48,578 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:47:48,579 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:47:48,579 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+
+2026-11-02 09:47:48,579 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:47:49,582 INFO spawned: 'chrome' with pid 400
+2026-11-02 09:47:49,617 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-02 09:47:49,618 DEBG 'chrome' stderr output:
+[400:400:1102/094749.617854:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-02 09:47:49,622 DEBG 'chrome' stderr output:
+[1102/094749.621835:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1102/094749.621907:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-02 09:47:49,644 DEBG 'chrome' stderr output:
+[419:419:0100/000000.643975:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-02 09:47:49,644 DEBG fd 32 closed, stopped monitoring <POutputDispatcher at 281473237280816 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stdout)>
+2026-11-02 09:47:49,644 DEBG fd 41 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473236874608 with name chrome in state STARTING> (stderr)>
+2026-11-02 09:47:49,644 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-02 09:47:49,645 INFO reaped unknown pid 416 (exit status 0)
+2026-11-02 09:47:49,645 INFO reaped unknown pid 420 (exit status 0)
+2026-11-02 09:47:49,645 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:49,645 INFO gave up: chrome entered FATAL state, too many start retries too quickly
+2026-11-02 09:47:50,337 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:47:50,338 INFO reaped unknown pid 419 (exit status 0)
+2026-11-02 09:47:50,338 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:50,338 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:47:50,347 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:50.346Z","starter":"server-exited","pid":392,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:47:50,349 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237281344 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:47:50,350 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237281168 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:47:50,350 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:47:50,350 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:51,356 INFO spawned: 'autobyteus_server' with pid 423
+2026-11-02 09:47:51,414 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:51.413Z","starter":"server-started","pid":433,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:47:51,464 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:47:51,464 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:47:51,464 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:47:51,465 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+
+2026-11-02 09:47:51,465 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:47:51,465 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:47:51,466 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:47:51,466 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:47:51,466 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:47:51,466 DEBG 'autobyteus_server' stdout output:
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:47:51,466 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-02 09:47:51,466 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:47:53,068 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:47:53,068 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:47:53,077 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:53.077Z","starter":"server-exited","pid":433,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:47:53,080 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237281168 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:47:53,080 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237281344 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:47:53,080 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:47:53,080 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:47:55,083 INFO spawned: 'autobyteus_server' with pid 441
+2026-11-02 09:47:55,135 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:55.134Z","starter":"server-started","pid":451,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:47:55,189 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:47:55,189 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+
+2026-11-02 09:47:55,189 DEBG 'autobyteus_server' stdout output:
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:47:55,189 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:47:55,189 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:47:55,190 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ enable debugging { debug: true }
+
+2026-11-02 09:47:55,190 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:47:55,190 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:47:55,190 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:47:55,191 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:47:55,191 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-02 09:47:55,191 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:47:57,242 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:47:57,242 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:47:57,252 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:47:57.252Z","starter":"server-exited","pid":451,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:47:57,255 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237281344 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:47:57,255 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237281168 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:47:57,255 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:47:57,255 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:00,271 INFO spawned: 'autobyteus_server' with pid 459
+2026-11-02 09:48:00,347 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:00.346Z","starter":"server-started","pid":469,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:00,392 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:00,393 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:48:00,393 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:48:00,393 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+
+2026-11-02 09:48:00,394 DEBG 'autobyteus_server' stdout output:
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-02 09:48:00,395 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:02,217 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:02,217 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:02,225 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:02.225Z","starter":"server-exited","pid":469,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:02,228 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237281168 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:02,229 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237281344 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:02,229 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:02,229 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:06,255 INFO spawned: 'autobyteus_server' with pid 477
+2026-11-02 09:48:06,314 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:06.313Z","starter":"server-started","pid":487,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:06,370 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:06,371 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:48:06,371 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:48:06,371 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:06,371 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+2026-11-02 09:48:06,371 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:06,372 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:06,372 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:06,372 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:06,372 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-02 09:48:06,372 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-02 09:48:06,372 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:08,203 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:08,203 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:08,212 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:08.212Z","starter":"server-exited","pid":487,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:08,215 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237281344 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:08,215 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237281168 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:08,215 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:08,215 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:13,240 INFO spawned: 'autobyteus_server' with pid 495
+2026-11-02 09:48:13,293 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:13.292Z","starter":"server-started","pid":505,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:13,345 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:13,345 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+Config file path: /home/autobyteus/data/.env
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:13,346 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+
+2026-11-02 09:48:13,346 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:13,346 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:13,346 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:13,347 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:13,347 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+
+2026-11-02 09:48:13,347 DEBG 'autobyteus_server' stdout output:
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:15,297 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:15,297 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:15,306 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:15.306Z","starter":"server-exited","pid":505,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:15,310 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237281168 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:15,310 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:15,310 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:15,310 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:21,332 INFO spawned: 'autobyteus_server' with pid 513
+2026-11-02 09:48:21,399 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:21.398Z","starter":"server-started","pid":523,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:21,444 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:21,444 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:48:21,444 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:48:21,444 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:21,444 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+2026-11-02 09:48:21,445 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:21,445 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:21,445 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:21,445 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:21,446 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:48:21,446 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:23,250 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:23,250 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:23,259 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:23.259Z","starter":"server-exited","pid":523,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:23,262 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:23,262 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:23,262 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:23,262 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:30,298 INFO spawned: 'autobyteus_server' with pid 531
+2026-11-02 09:48:30,346 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:30.345Z","starter":"server-started","pid":541,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:30,398 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:30,398 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:48:30,398 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:30,398 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-02 09:48:30,399 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:32,143 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:32,143 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:32,152 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:32.152Z","starter":"server-exited","pid":541,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:32,155 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:32,155 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:32,156 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:32,156 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:40,180 INFO spawned: 'autobyteus_server' with pid 549
+2026-11-02 09:48:40,232 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:40.231Z","starter":"server-started","pid":559,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:40,283 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:40,283 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:48:40,283 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:48:40,283 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:40,283 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ override existing { override: true }
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-02 09:48:40,284 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:42,211 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:42,211 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:42,220 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:42.219Z","starter":"server-exited","pid":559,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:42,223 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:42,223 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:42,223 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:42,223 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:48:51,262 INFO spawned: 'autobyteus_server' with pid 567
+2026-11-02 09:48:51,314 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:51.313Z","starter":"server-started","pid":577,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:48:51,372 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:48:51,372 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:48:51,372 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:48:51,373 DEBG 'autobyteus_server' stdout output:
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+
+2026-11-02 09:48:51,374 DEBG 'autobyteus_server' stdout output:
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:48:53,062 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:48:53,064 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:48:53,072 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:48:53.072Z","starter":"server-exited","pid":577,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:48:53,075 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:48:53,075 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:48:53,075 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:48:53,075 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:49:03,102 INFO spawned: 'autobyteus_server' with pid 585
+2026-11-02 09:49:03,157 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:03.156Z","starter":"server-started","pid":595,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:49:03,206 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:49:03,206 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:49:03,206 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:49:03,206 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:49:03,207 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ suppress logs { quiet: true }
+
+2026-11-02 09:49:03,207 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:49:03,207 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:49:03,207 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:49:03,208 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:49:03,208 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+
+2026-11-02 09:49:03,208 DEBG 'autobyteus_server' stdout output:
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:49:04,838 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:49:04,839 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:49:04,847 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:04.847Z","starter":"server-exited","pid":595,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:49:04,850 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:49:04,850 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:49:04,850 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:49:04,850 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:49:15,909 INFO spawned: 'autobyteus_server' with pid 603
+2026-11-02 09:49:15,960 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:15.960Z","starter":"server-started","pid":613,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:49:16,014 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:49:16,014 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:49:16,014 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:49:16,014 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:49:16,015 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+
+2026-11-02 09:49:16,015 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:49:16,015 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:49:16,015 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:49:16,016 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:49:16,016 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-02 09:49:16,016 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+
+2026-11-02 09:49:16,016 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:49:17,918 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:49:17,918 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:49:17,927 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:17.927Z","starter":"server-exited","pid":613,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:49:17,930 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:49:17,930 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:49:17,930 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:49:17,930 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:49:29,976 INFO spawned: 'autobyteus_server' with pid 621
+2026-11-02 09:49:30,027 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:30.027Z","starter":"server-started","pid":631,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:49:30,081 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:49:30,081 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:49:30,081 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:49:30,082 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+2026-11-02 09:49:30,082 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:49:30,082 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:49:30,083 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:49:30,083 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:49:30,083 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+
+2026-11-02 09:49:30,083 DEBG 'autobyteus_server' stdout output:
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-02 09:49:30,083 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:49:32,012 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:49:32,012 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:49:32,023 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:32.023Z","starter":"server-exited","pid":631,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:49:32,027 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:49:32,027 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:49:32,027 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:49:32,027 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:49:45,076 INFO spawned: 'autobyteus_server' with pid 639
+2026-11-02 09:49:45,131 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:45.131Z","starter":"server-started","pid":649,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:49:45,181 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:49:45,182 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:49:45,182 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:49:45,182 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:49:45,182 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ suppress logs { quiet: true }
+
+2026-11-02 09:49:45,182 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:49:45,183 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:49:45,183 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:49:45,183 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:49:45,183 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:49:45,183 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:49:47,239 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:49:47,239 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:49:47,249 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:49:47.249Z","starter":"server-exited","pid":649,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:49:47,253 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:49:47,253 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:49:47,253 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:49:47,253 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:50:01,296 INFO spawned: 'autobyteus_server' with pid 657
+2026-11-02 09:50:01,356 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:01.356Z","starter":"server-started","pid":667,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:50:01,419 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:50:01,419 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:50:01,419 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:50:01,419 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:50:01,419 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+
+2026-11-02 09:50:01,420 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:50:03,664 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:50:03,664 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:50:03,673 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:03.673Z","starter":"server-exited","pid":667,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:50:03,676 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:50:03,676 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:50:03,677 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:50:03,677 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:50:18,725 INFO spawned: 'autobyteus_server' with pid 675
+2026-11-02 09:50:18,777 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:18.776Z","starter":"server-started","pid":685,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:50:18,823 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:50:18,823 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:50:18,824 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:50:18,824 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:50:18,824 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ override existing { override: true }
+
+2026-11-02 09:50:18,824 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:50:18,825 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:50:18,825 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:50:18,825 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:50:18,825 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-02 09:50:18,826 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:50:20,563 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:50:20,563 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:50:20,573 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:20.572Z","starter":"server-exited","pid":685,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:50:20,576 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:50:20,576 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:50:20,577 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:50:20,577 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:50:36,648 INFO spawned: 'autobyteus_server' with pid 693
+2026-11-02 09:50:36,704 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:36.704Z","starter":"server-started","pid":703,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:50:36,763 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:50:36,763 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:50:36,763 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:50:36,763 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:50:36,764 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+2026-11-02 09:50:36,764 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:50:36,764 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:50:36,765 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:50:36,765 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:50:36,765 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:50:36,765 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:50:38,698 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:50:38,698 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:50:38,707 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:38.707Z","starter":"server-exited","pid":703,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:50:38,711 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:50:38,711 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:50:38,711 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:50:38,711 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:50:55,799 INFO spawned: 'autobyteus_server' with pid 711
+2026-11-02 09:50:55,854 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:55.853Z","starter":"server-started","pid":721,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:50:55,902 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:50:55,902 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:50:55,902 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:50:55,902 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:50:55,903 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+
+2026-11-02 09:50:55,903 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:50:55,903 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:50:55,903 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:50:55,904 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:50:55,904 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-02 09:50:55,904 DEBG 'autobyteus_server' stdout output:
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:50:55,904 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-02 09:50:55,904 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:50:57,918 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:50:57,918 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:50:57,927 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:50:57.927Z","starter":"server-exited","pid":721,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:50:57,931 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:50:57,931 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:50:57,931 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:50:57,931 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:51:15,977 INFO spawned: 'autobyteus_server' with pid 729
+2026-11-02 09:51:16,030 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:51:16.030Z","starter":"server-started","pid":739,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:51:16,081 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:51:16,081 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+
+2026-11-02 09:51:16,081 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:51:16,081 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:51:16,082 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+
+2026-11-02 09:51:16,082 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-02 09:51:16,082 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:62216
+
+2026-11-02 09:51:16,082 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-02 09:51:16,082 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:51:16,082 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-02 09:51:16,083 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:51:18,369 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:51:18,369 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:51:18,418 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:51:18.417Z","starter":"server-exited","pid":739,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:51:18,423 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:51:18,423 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:51:18,423 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:51:18,423 DEBG received SIGCHLD indicating a child quit
+2026-11-02 09:51:37,499 INFO spawned: 'autobyteus_server' with pid 747
+2026-11-02 09:51:37,548 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:51:37.547Z","starter":"server-started","pid":757,"version":"1.5.11-beta.7","source":"builtIn"}
+
+2026-11-02 09:51:37,604 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-02 09:51:37,604 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+App data directory: /home/autobyteus/data
+Config file path: /home/autobyteus/data/.env
+
+2026-11-02 09:51:37,604 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-02 09:51:37,606 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:62216
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-02 09:51:37,606 DEBG 'autobyteus_server' stdout output:
+============================================================
+SERVER PUBLIC URL: http://localhost:62216
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-02 09:51:37,606 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+============================================================
+
+2026-11-02 09:51:39,416 DEBG 'autobyteus_server' stderr output:
+Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'
+
+2026-11-02 09:51:39,416 DEBG 'autobyteus_server' stderr output:
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"UNEXPECTED_SERVER_STARTUP_FAILURE","summary":"Failed to start server: SyntaxError: The requested module '@autobyteus/collaboration-stream-contracts' does not provide an export named 'collaborationParticipantMessagesDtoSchema'","logPath":null}
+
+2026-11-02 09:51:39,424 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-02T09:51:39.423Z","starter":"server-exited","pid":757,"version":"1.5.11-beta.7","code":1,"signal":null}
+
+2026-11-02 09:51:39,427 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473237280992 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stdout)>
+2026-11-02 09:51:39,427 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473237278176 for <Subprocess at 281473237245776 with name autobyteus_server in state STARTING> (stderr)>
+2026-11-02 09:51:39,427 WARN exited: autobyteus_server (exit status 1; not expected)
+2026-11-02 09:51:39,427 DEBG received SIGCHLD indicating a child quit

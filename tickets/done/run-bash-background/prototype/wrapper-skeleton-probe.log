@@ -1,0 +1,76 @@
+bash: 3.2.57(1)-release
+== 1 plain command, exit 3
+   FRAME FOREGROUND_DONE 3  (seen after 0.02 s)
+   stdout: out|probe:END|
+   stderr (user part): err|
+   group left: []
+== 2 set -e + failing & job
+   FRAME FOREGROUND_DONE 0 52458 (seen after 0.01 s)
+   stdout: started|probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 52458 3
+   group left: []
+== 3 set -e + failing foreground
+   FRAME FOREGROUND_DONE 1  (seen after 0.02 s)
+   stdout: probe:END|
+   stderr (user part): 
+   group left: []
+== 4 set -x
+   FRAME FOREGROUND_DONE 0  (seen after 0.02 s)
+   stdout: hi|probe:END|
+   stderr (user part): + echo hi|
+   group left: []
+== 5 user EXIT trap stops its server at command end
+   FRAME FOREGROUND_DONE 0 55086 (seen after 0.02 s)
+   stdout: checks-done|probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 55086 143
+   group left: []
+== 6 exec >/dev/null 2>&1, then a job
+   FRAME FOREGROUND_DONE 0 55153 (seen after 0.01 s)
+   stdout: probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 55153 4
+   group left: []
+== 7 two & jobs, exit codes 3 and 7
+   FRAME FOREGROUND_DONE 0 55201 55202 (seen after 0.01 s)
+   stdout: started|probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 55201 3
+   FRAME JOB_ENDED 55202 7
+   group left: []
+== 8 background form (bash): kill <pid> stops everything it started
+   FRAME FOREGROUND_DONE 0 56338 (seen after 0.01 s)
+   group before kill: [bash bash bash bash sleep sleep ]
+   group 0.5 s after kill 56338: []
+   stdout: probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 56338 143
+   group left: []
+== 9 background form (sh): exit 5
+   FRAME FOREGROUND_DONE 0 57730 (seen after 0.01 s)
+   stdout: probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 57730 5
+   group left: []
+== 10 kill of a & job: kill to JOB_ENDED timing
+   FRAME FOREGROUND_DONE 0 57769 (seen after 0.01 s)
+   kill -0 on the job fails 0.012 s after the kill
+   stdout: started|probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 57769 143
+   group left: []
+== 11 plain & job with children: kill <pid> (narrowed REQ-011)
+   FRAME FOREGROUND_DONE 0 57822 (seen after 0.01 s)
+   group after kill 57822: [sleep sleep ]
+   stdout: started|probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 57822 143
+   group left: [sleep sleep ]
+== 12 bash strict mode (set -euo pipefail; IFS=newline-tab) + two jobs
+   FRAME FOREGROUND_DONE 0 58486 58487 (seen after 0.01 s)
+   stdout: started|probe:END|
+   stderr (user part): 
+   FRAME JOB_ENDED 58486 3
+   FRAME JOB_ENDED 58487 7
+   group left: []

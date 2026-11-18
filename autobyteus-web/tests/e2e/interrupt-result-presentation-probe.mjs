@@ -66,7 +66,6 @@ const teamExecutionTree = teamRunExecutionTreeDtoSchema.parse({
       platform_agent_run_id: null,
       launch_configuration: launchConfiguration,
     }],
-    task_executions: [],
   },
 });
 
@@ -169,7 +168,7 @@ const sendJson = (socket, message) => socket.send(JSON.stringify(message));
 const sendTeamJson = (socket, message) => sendJson(socket, parseTeamStreamServerMessage(message));
 const agentStatus = (status) => ({
   type: 'AGENT_STATUS',
-  payload: { status, agent_id: 'browser-agent-run', recoverableBlock: null },
+  payload: { status, agent_id: 'browser-agent-run', recoverableBlock: null, background_tasks_running: 0 },
 });
 
 const startWsServer = async () => {
@@ -197,9 +196,8 @@ const startWsServer = async () => {
         payload: {
           root_team_run_id: TEAM_RUN_ID,
           base_change_sequence: 0,
+          live_sequence_id: 'live-1', last_message_change_sequence: 0,
           execution_tree: teamExecutionTree,
-          closed_task_executions: [],
-          messages: [],
           agent_statuses: [{
             agent_run_id: TEAM_MEMBER_RUN_ID,
             member_address: TEAM_MEMBER_ADDRESS,
@@ -207,7 +205,7 @@ const startWsServer = async () => {
             trigger: null,
             tool_name: null,
             error_message: null,
-            error_details: null,
+            error_details: null, background_tasks_running: 0,
             recoverableBlock: null,
           }],
           agent_input_states: [],

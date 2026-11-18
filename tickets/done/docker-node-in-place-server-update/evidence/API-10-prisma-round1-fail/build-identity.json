@@ -1,0 +1,10 @@
+{
+  "head": "30aaef92846b1c359c3afd1bee05833461cef1fc",
+  "tree": "7995c8091a61dc2319edf583cc2ccc5df9234d07",
+  "workingDiff": "",
+  "sourceSha256": "02902ddd053b2f4ccb944a8b035bbd9fee20444535778af7cb495e17c38b9cc0",
+  "distManifestSha256": "b15a1d800076dd398ce7a0ade2f3aa04b69e16f2b5eee465a5853d6c3eddcdff",
+  "baseline": "e22245f097c208e66065302cfc30814cc5ffd14f",
+  "baseSourceSha256": "c6b1d94f18d38af457580777a8340a9e0fba30710d87f93984d2e9d75dccc227",
+  "image": "sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce"
+}

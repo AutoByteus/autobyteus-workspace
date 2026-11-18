@@ -13,7 +13,7 @@ const orchestration = {
 };
 
 const buildRestApp = async () => {
-  const app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
+  const app = fastify({ routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH } });
   await app.register(async (restApp) => {
     await registerApplicationExecutionResourceRoutes(restApp, orchestration as never);
   }, { prefix: "/rest" });

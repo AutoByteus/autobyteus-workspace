@@ -15,6 +15,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } from "../helpers/team-run-graphql-documents.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 // A delegated AGY agent (Team root, Claude coordinator) starts a background daemon step and ends its turn
 // (idle-shutdown-background-tasks SR-003: BEH-002/BEH-003, AC-002, AC-004). The grace period is set to 60 s.
@@ -139,10 +140,13 @@ suite("Delegated AGY agent with a background daemon under idle shutdown (live E2
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: asRecord(parsed.payload) ?? {}, receivedAt: Date.now() });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed).map((frame) => ({ ...frame, receivedAt: Date.now() })));
       } catch { /* Ignore malformed rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     const until = async <T>(probe: () => T | undefined, label: string, ms = 300_000): Promise<T> => {
       const deadline = Date.now() + ms;
       while (Date.now() < deadline) { const value = probe(); if (value !== undefined) return value; await wait(250); }

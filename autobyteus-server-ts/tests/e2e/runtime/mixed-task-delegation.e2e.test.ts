@@ -915,10 +915,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     expect(resumeAfterStop.getTeamRunResumeConfig.isActive).toBe(false);
 
     // AC-013: reopen the root; children come back shut down and wake on a message with their conversation.
-    const restored = await execGraphql<{ restoreAgentTeamRun: { success: boolean; message: string } }>(
-      `mutation R($teamRunId: String!) { restoreAgentTeamRun(teamRunId: $teamRunId) { success message } }`, { teamRunId: root.teamRunId },
-    );
-    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     const reopened = await openTeamSocket(root.teamRunId);
     expect(await checkpointHasOpenWork(root.teamRunId)).toBe(false);
     for (const [runtime, child] of children) {

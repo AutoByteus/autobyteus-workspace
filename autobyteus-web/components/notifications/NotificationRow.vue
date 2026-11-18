@@ -16,9 +16,9 @@
         <span class="block truncate text-[13px] font-medium leading-5" :class="row.state === 'handled' && !showNewDot ? 'text-gray-500' : 'text-gray-900'" :title="name" data-testid="notification-row-name">
           <span v-if="showNewDot" class="sr-only">{{ $t('settings.notifications.new') }}: </span>{{ name }}
         </span>
-        <span class="flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-gray-500" data-testid="notification-row-change">
+        <span class="flex items-center gap-x-1.5 text-xs leading-5 text-gray-500" :class="row.state === 'handled' ? 'flex-nowrap' : 'flex-wrap'" data-testid="notification-row-change">
           <template v-if="row.state === 'handled'">
-            <Icon icon="heroicons:check-circle-20-solid" class="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
+            <Icon icon="heroicons:check-circle-20-solid" class="h-3.5 w-3.5 flex-shrink-0 text-emerald-600" aria-hidden="true" />
             <span class="text-emerald-700">{{ $t(autoUpdated ? 'settings.notifications.outcome.updated' : 'settings.notifications.handled', { revision: handledTo }) }}</span>
           </template>
           <template v-else>
@@ -50,19 +50,20 @@
 
     <!-- An automatic update's result: what changed, without a click (REQ-008). -->
     <p v-if="autoUpdated" class="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-gray-500" data-testid="notification-row-auto-changed">
-      <template v-if="row.handledAt"><span :title="fullLocalTime(row.handledAt, locale)" data-testid="notification-row-time">{{ shortRelativeTime(row.handledAt, locale) }}</span><span aria-hidden="true">·</span></template>
-      <a v-if="row.kind !== 'app' && row.kind !== 'agent_runtime'" :href="compareUrlOf(row)" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 rounded font-medium text-sky-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500" data-testid="notification-row-compare">
+      <template v-if="row.kind !== 'app' && row.handledAt"><span :title="fullLocalTime(row.handledAt, locale)" data-testid="notification-row-time">{{ shortRelativeTime(row.handledAt, locale) }}</span><span aria-hidden="true">·</span></template>
+      <a v-if="row.kind !== 'agent_runtime' && row.kind !== 'app'" :href="compareUrlOf(row)" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 rounded font-medium text-sky-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500" data-testid="notification-row-compare">
         {{ $t('settings.notifications.compare') }}<Icon icon="heroicons:arrow-top-right-on-square-20-solid" class="h-3.5 w-3.5" aria-hidden="true" />
       </a>
-      <span v-else-if="row.kind === 'agent_runtime'">{{ $t('settings.notifications.outcome.from', { version: row.installedRevision }) }}</span>
+      <span v-else>{{ $t('settings.notifications.outcome.from', { version: row.kind === 'app' ? row.fromVersion : row.installedRevision }) }}</span>
     </p>
     <p v-if="row.kind === 'agent_runtime' && row.state !== 'handled' && row.runningAgentCount > 0 && row.state !== 'updating'" :id="blockedId" class="mt-1 text-xs leading-5 text-gray-600" data-testid="notification-row-blocked">
       {{ $t(`settings.notifications.runtime.blocked.${row.runningAgentCount === 1 ? 'one' : 'other'}`, { count: row.runningAgentCount }) }}
       <template v-if="row.outcome === 'AUTO_WAITING' && runtimeAutomatic"> {{ $t('settings.notifications.runtime.blockedAuto') }}</template>
     </p>
-    <p v-if="row.state === 'waiting' && row.outcome === 'AUTO_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-auto-failed">
+    <p v-if="(row.state === 'waiting' || row.state === 'downloaded') && row.outcome === 'AUTO_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-auto-failed">
       {{ $t('settings.notifications.outcome.failed') }}
       <span v-if="row.outcomeReason" class="block whitespace-pre-line break-words text-red-700">{{ row.outcomeReason }}</span>
+      <span v-if="row.kind === 'app' && row.outcomeStep === 'install'" class="block text-red-700" data-testid="notification-row-not-retried">{{ $t('settings.notifications.outcome.notRetried') }}</span>
     </p>
 
     <div v-if="expanded" :id="detailsId" class="mt-1.5 space-y-1 text-xs leading-5 text-gray-600" data-testid="notification-row-details">
@@ -89,7 +90,7 @@
         <div class="h-1.5 rounded-full bg-sky-700 transition-all" :style="{ width: `${downloadPercent}%` }" />
       </div>
     </div>
-    <p v-if="row.state === 'downloaded'" class="mt-1 text-xs leading-5 text-emerald-700" data-testid="notification-row-downloaded">{{ $t('settings.notifications.app.downloaded') }}</p>
+    <p v-if="row.state === 'downloaded'" class="mt-1 text-xs leading-5 text-emerald-700" data-testid="notification-row-downloaded">{{ $t(appUpdate.automaticInstallPreparing ? 'settings.notifications.app.preparing' : 'settings.notifications.app.downloaded') }}</p>
     <p v-if="row.state === 'installing'" class="mt-1 inline-flex items-center gap-1.5 text-xs leading-5 text-emerald-700" role="status" data-testid="notification-row-installing">
       <Icon icon="heroicons:arrow-path-20-solid" class="h-3.5 w-3.5 animate-spin motion-reduce:animate-none" aria-hidden="true" />{{ $t('settings.notifications.app.installing') }}
     </p>
@@ -132,8 +133,8 @@ const handledTo = computed(() => props.row.kind === 'app'
   : shown(props.row, props.row.handledRevision ?? props.row.latestRevision))
 /** Revisions are mono; versions (the app, a runtime) are plain. */
 const revisionClass = computed(() => props.row.kind === 'app' || props.row.kind === 'agent_runtime' ? '' : 'font-mono text-[11px]')
-/** An automatic update has applied this source or runtime (REQ-008). */
-const autoUpdated = computed(() => props.row.kind !== 'app' && props.row.state === 'handled' && props.row.outcome === 'AUTO_UPDATED')
+/** An automatic update has applied this source, runtime (REQ-008) or the app (autobyteus-356). */
+const autoUpdated = computed(() => props.row.state === 'handled' && props.row.outcome === 'AUTO_UPDATED')
 const showNewDot = computed(() => (props.row.state !== 'handled' || autoUpdated.value) && (props.row.unread || center.isNew(props.row.id)))
 /** A runtime's Update stays visible but does nothing while its agents run; the row says why (REQ-021). */
 const blockedByAgents = computed(() => props.row.kind === 'agent_runtime' && props.row.state !== 'handled' && props.row.runningAgentCount > 0)

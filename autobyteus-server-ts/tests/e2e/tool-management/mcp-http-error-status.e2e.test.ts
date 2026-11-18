@@ -47,7 +47,7 @@ const DISCOVER = `mutation Discover($serverId: String!) {
 
 const tokenInput = (serverId: string, url: string) => ({
   serverId, transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix: serverId,
-  streamableHttpConfig: { url, token: DUMMY, headers: null },
+  streamableHttpConfig: { url, token: { value: DUMMY }, headers: [] },
 });
 
 /** A plain HTTP server that answers every request with `status` and a short text body. */

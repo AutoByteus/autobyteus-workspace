@@ -1,0 +1,14 @@
+# IMP-01 reproduction on base policy (tests updated, source unchanged)
+# cmd: pnpm -C autobyteus-server-ts exec vitest run <admission, remote lister, remote receiver, internal-agent-eligibility> --no-watch
+# commit: 3a6330c3ad + uncommitted test edits only; date: 2026-11-10T05:09:06Z; env: macOS worktree
+     × autobyteus-455 AC-004: prepares a run of the Daily Assistant like any shared Agent 5ms
+     × offers shared Agents then shared Teams, in the run or not, minus the Model Router, non-shared and the run's own definition (REQ-001) 6ms
+     × `@` addresses an in-run configured member; delegation never admits a second instance of it (REQ-002, AC-006) 1ms
+     × the Daily Assistant is an ordinary collaborator; the Model Router never is (autobyteus-455 AC-001, AC-002, AC-005) 2ms
+     × a Daily Assistant run neither lists nor delegates to its own definition, and a run never gets a second Daily Assistant (autobyteus-455 AC-006) 2ms
+     × lists every eligible definition once at its in-run or catalog address, with the `@` exclusions (Q-2, AR-002) 1ms
+     × AC-402: shared Agents then shared Teams, with only name, kind, address and a description when there is one 8ms
+     × reads the catalog on every call: a Team added between two calls is in the second (AC-405, REQ-407) 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 1 passed (4)
+      Tests  8 failed | 21 passed (29)

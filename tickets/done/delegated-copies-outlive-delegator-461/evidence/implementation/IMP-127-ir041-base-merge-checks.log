@@ -1,0 +1,35 @@
+# IMP-127 (IR-041): the merge of origin/personal 1e8b6e5d0a (merge commit 0f3ae7eca8; interaction fixes 33c9ce8d04)
+## git
+33c9ce8d04 2542974ae7 fix(461): the merge of origin/personal (1e8b6e5d0a): two interactions fixed
+2542974ae7 0f3ae7eca8 docs(461): API-REV-020: the next round's planned checks; Grok as a follow-up (user decisions)
+0f3ae7eca8 ae09bc8473 1e8b6e5d0a docs(461): record the user's release decision (beta when the ticket passes)
+ae09bc8473 3750e52c57 docs(461): delivery blocked at base integration; conflicts recorded
+origin/personal is an ancestor of HEAD
+## server type gate
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+## web type gate (autobyteus-workspace-9's gate; baseline file unchanged by the base)
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+## codegen:check
+autobyteus-web/generated/graphql.ts is current.
+## web suite
+      Tests  5678 passed (5678)
+nuxt exit 0
+      Tests  492 passed | 1 skipped (493)
+electron exit 0
+## server test:unit (the base's Memory Sync and context-file unit tests included)
+ Test Files  2 failed | 1003 passed | 5 skipped (1010)
+      Tests  2 failed | 8204 passed | 9 skipped (8215)
+unit exit 1
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts
+## the folder watcher files alone after the full run: Tests  1 failed | 26 passed (27) (timing; no watcher code in 461 or this merge)
+## server integration: tests/integration/api/rest, projects, run-history
+      Tests  62 passed | 1 skipped (63)
+int exit 0
+## the context-file route integration tests (size limits, universal drafts, Org, Team, attachments history)
+ Test Files  5 passed (5) / Tests  62 passed (62)
+## builds after the merge (API/E2E's stopped build had removed the server dist)
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-web/dist-mob

@@ -1,0 +1,21 @@
+# IMP-09 web vue-tsc, filtered to files this ticket changed (the full run has existing errors; total 457, unchanged)
+# command: pnpm -C autobyteus-web exec vue-tsc --noEmit, filtered by git diff --name-only c78ffb15a2
+# commit: cb37d82fab
+# environment: macOS Darwin 25.5 (arm64), Node 22.23.1, pnpm; worktree /Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary
+# date: 2026-10-24
+
+vue-tsc total errors: 457
+errors in files changed by this ticket:
+components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts(81,3): error TS2741: Property 'workspaceMetadata' is missing in type '{ agentDefinitionId: string; agentDefinitionName: string; llmModelIdentifier: string; runtimeKind: string; workspaceId: string; autoExecuteTools: false; isLocked: false; }' but required in type 'AgentRunConfig'.
+components/mobile/__tests__/MobileRemoteAccessShell.spec.ts(600,29): error TS2769: No overload matches this call.
+components/projects/panel/__tests__/ProjectsPanelTaskLocate.spec.ts(21,143): error TS2739: Type '{ taskId: string; projectId: string; description: string; status: ProjectTaskStatus; contextFiles: never[]; createdAt: string; updatedAt: string; root: null; }' is missing the following properties from type 'ProjectTask': taskKey, dependsOnTaskIds, partOfTaskId, comments
+components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts(210,7): error TS2322: Type 'Record<string, unknown>' is not assignable to type 'Stubs | undefined'.
+components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts(258,84): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+generated/graphql.ts(2,38): error TS2307: Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+generated/graphql.ts(3,36): error TS2307: Cannot find module '@vue/composition-api' or its corresponding type declarations.
+tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue(8,12): error TS2322: Type '{ toggleWorkspace: (node: { stableKey: string; }) => void; selectedRunId: null; isTeamRunSelected: (id: string) => boolean; isRunTerminating: () => boolean; isTeamTerminating: () => boolean; isRunDeleting: () => boolean; ... 37 more ...; pruneWorkspace: (workspaceId: string) => void; }' is not assignable to type 'WorkspaceHistorySectionState'.
+utils/__tests__/nodeIdentityProbe.spec.ts(12,57): error TS2322: Type 'Mock<(_url: string, _init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+utils/__tests__/nodeIdentityProbe.spec.ts(25,52): error TS2322: Type 'Mock<(_url: string, _init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+utils/__tests__/nodeIdentityProbe.spec.ts(26,52): error TS2322: Type 'Mock<(_url: string, _init?: RequestInit | undefined) => Promise<Response>>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>; (input: URL | RequestInfo, init?: RequestInit | undefined): Promise<...>; (input: string | ... 1 more ... | Request, init?: RequestInit | undefined): Promise<...>; }'.
+errors naming renamed identifiers anywhere:
+stores/__tests__/skillStore.spec.ts(116,7): error TS2739: Type '{ path: string; skillCount: number; isDefault: true; }' is missing the following properties from type '{ sourceId: string; sourceKind: "LOCAL_PATH" | "GITHUB_REPOSITORY" | "DEFAULT"; github: { repositoryUrl: string; defaultBranch: string; installedRevision: string; latestRevision: string | null; latestCheckedAt: string | null; status: "NOT_CHECKED" | ... 4 more ... | "REMOVING"; lastError: string | null; } | null; pa...': sourceId, sourceKind, github

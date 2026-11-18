@@ -15,7 +15,7 @@
         <h4 class="truncate text-base font-medium text-gray-800" :title="headerFullTitle" data-test="agent-workspace-title">{{ headerTitle }}</h4>
         <!-- autobyteus-278: the node that runs this run, next to its name. -->
         <RemoteNodeChip v-if="remote" :node-name="remote.nodeName" size="header" />
-        <AgentStatusDisplay :status="target.context.state.currentStatus" />
+        <AgentStatusDisplay :status="target.context.state.currentStatus" :background-tasks-running="target.context.state.backgroundTasksRunning" />
       </div>
       <WorkspaceHeaderActions
         v-if="showHeaderActions && remoteView.headerActionsAllowed.value"
@@ -31,7 +31,7 @@
     />
     <div class="min-h-0 flex-1">
       <AgentEventMonitor
-        :read-only="target.access === 'read_only' && !('root' in target && (target.context.submissionPending || target.kind === 'agent_org_direct_agent'))"
+        :read-only="readOnly"
         :conversation="target.context.state.conversation"
         :run-id="target.context.state.runId"
         :agent-name="agentName"
@@ -58,7 +58,7 @@ import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceReco
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue'
-import { useRemoteRunView } from '~/composables/remoteRuns/useRemoteRunView'
+import { useTargetConversation } from '~/composables/workspace/useTargetConversation'
 import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
 
@@ -77,9 +77,8 @@ defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
 const avatarFailed = ref(false)
-const agentName = computed(() => props.target.context.config.agentDefinitionName || 'Agent')
 // autobyteus-278: a run another node runs shows its node, has no ⚙ or ＋, a notice when its node did not answer, and a box naming it.
-const remoteView = useRemoteRunView({ agentRunId: () => props.target.context.state.runId, agentName })
+const { displayName: agentName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target)
 const remote = remoteView.remote
 const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.trim()
   || definitions.getAgentDefinitionById(props.target.context.config.agentDefinitionId)?.avatarUrl?.trim()
@@ -95,15 +94,12 @@ const fallbackTitle = computed(() => {
   const suffix = props.target.context.state.runId.slice(-4).toUpperCase()
   return `${agentName.value} - ${suffix}`
 })
-// A task child of a standalone run is titled by its name.
-const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member')
+// A run delegated by the run whose view shows it, an Agent run's or an Org's, is titled by its name alone (autobyteus-461
+// SR-091, CR-461-115): one name everywhere, as its row names it.
+const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member'
+  || props.target.kind === 'agent_org_task_agent')
 const headerTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.title.value ?? fallbackTitle.value)
 const headerFullTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
-const senderNameByAgentRunId = computed(() => 'collaborationMessages' in props.target
-  ? Object.freeze(Object.fromEntries(Object.entries(
-      props.target.collaborationMessages.memberIdentityByAgentRunId(),
-    ).map(([agentRunId, identity]) => [agentRunId, identity.label])))
-  : Object.freeze({}))
 
 watch(avatarUrl, () => { avatarFailed.value = false })
 </script>

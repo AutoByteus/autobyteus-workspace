@@ -1,0 +1,21 @@
+# Check: IMP-12-integrations-page-ui
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): node tests/e2e/integrations-page-probe.mjs --skip-server-build --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/tickets/in-progress/integrations-page/evidence/IMP-12-integrations-page-ui
+# Commit: f0eb43c749 (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:53:52Z
+
+Pass INT-001 Empty page invites Import; Integrations is last in the menu, after Nodes
+Pass INT-002 Import dialog: field focused, hint follows the input (repository trust text, folder text)
+Pass INT-003 Import refusals: not a link or path, folder not found, no integrations in the folder
+Pass INT-004 Import a folder: the dialog closes, the notice names it, the card needs a token, icon and missing tool shown
+Pass INT-005 Re-importing the folder says it is already imported
+Pass INT-006 Connect step: imported from the folder, help link, tools; a token GitHub rejects says so
+Pass INT-007 Connected card and dialog render login, access line, Test / Replace token / Remove (intercepted)
+Pass INT-008 The Skills page labels the integration skill; the label opens its card, focused
+Pass INT-009 Manage sources: the folder row has no Update; Remove says the files stay; the last removal leaves the notice
+Pass INT-010 Skills → Manage Skill Sources lists an imported source; removing it there removes its card
+Pass INT-011 Server Settings → Basics has no GitHub card
+Pass INT-012 Narrow 390 px and zh-CN render (empty and with a card)
+Result Pass; evidence in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/tickets/in-progress/integrations-page/evidence/IMP-12-integrations-page-ui
+
+# Exit code: 0

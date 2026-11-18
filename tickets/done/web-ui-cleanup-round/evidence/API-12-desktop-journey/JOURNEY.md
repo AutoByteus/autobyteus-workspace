@@ -1,0 +1,18 @@
+# API-12 desktop journey (isolated instance of this worktree)
+
+Instance: `iso-50076-407f` (`pnpm --silent isolated-app start --build`, throwaway `CODEX_HOME`), driven over CDP (`tool-cdp.mjs`, attach only). Stopped afterwards: data root removed, both ports released, `list` empty (`instance-start-stop.json.txt`).
+
+| Check | Criteria | Result | Evidence | Look for |
+| --- | --- | --- | --- | --- |
+| Settings sidebar | AC-001 | Pass | `API-12-01-settings-sidebar.png`; DOM: 14 items, svg count per item | "Back to Workspace" 1 svg; the 13 items 0 |
+| Local Tools | AC-002 | Pass | `API-12-02-Local-Tools.png` | tool names without a tinted box; search magnifier kept |
+| MCP card, Add Server form, Bulk Import | AC-002 | Pass | `API-12-03-mcp-servers.png`, `API-12-04-mcp-add-server-modal.png`, `API-12-05-mcp-bulk-import.png` | "Prefix: demo", "Command: node", "CWD: /tmp" text only; "Sync Tools", "Bulk Import", "Add Server", "Add Argument", "Back" without svg; argument trash (C) kept |
+| Custom provider, Server Settings Save, Migrations Refresh, Extensions, agent detail | AC-002 | Pass | `API-12-06…10` | buttons `[["SaveProvider",0]]`, `[["Save",0]]`, `[["Refresh",0]]`, `[["RunAgent",0],["Edit",0],["Delete",0]]`; voice card without badge (`API-12-17-voice-extension-installed.png`) |
+| Application Setup pills, workspace SearchableSelect | AC-002 | Pass | `API-12-11-application-setup.png`, `API-12-12-workspace-select-open.png` | "Launch setup" pills 0 svg; workspace options without folder icon; search magnifier kept |
+| Runtime names: composer footer, model menu, search rows, Agent Runtimes, application runtime selects | AC-003 | Pass | `API-12-14-chat-model-menu.png`, `API-12-15-*.png` | "AutoByteus / Codex App Server / Claude Agent SDK / Grok Build / Antigravity CLI"; no short form or kind |
+| Application launch setup summary | AC-003 / REQ-003 | **Fail** | `FINDING-application-setup-runtime-kinds.txt` | "/researcher · codex_app_server · gpt-5.6-luna" visible by default |
+| Depends-on Enter | AC-010 | Pass | `API-12-16-depends-on-enter.png`; picker list captured in the report | newest option Task B "Depends on this Task" `aria-disabled`; active option Task C; Enter chose "ab320-picker-1 Task C (choosable)" |
+| Voice in Memory search | AC-011, QR-001 | Pass | `voice-speech.json`, `API-12-20-voice-speech-*.png`, `voice-silence.json`, `API-12-22-voice-no-speech.png`, `voice-denied.json`, `API-12-23-voice-mic-denied.png`, `voice-zh.json`, `API-12-24-voice-language-zh.png`, `API-12-18a-…disabled.png`, `API-12-25-voice-disabled-hidden.png`, `voice-chat.json` | transcript "Release notes for the voice input." in the box, no memory-search request; "No speech detected. Try again or type instead."; "Microphone permission is denied. …" toast with "my own words" unchanged and "Voice input could not be transcribed. Your text is unchanged. …"; Chinese setting → "今天的發布說"; button identical to the chat input's apart from position; disabled while search not ready; hidden when voice disabled (`pr-3`) |
+
+Microphone: emulated in the renderer only (`tool-mic-inject.mjs`): `getUserMedia` returns a MediaStream from a MediaStreamDestination playing a WAV made with macOS `say` (or 3 s of silence), or rejects with `NotAllowedError`. The voice store captures it through its own AudioContext and AudioWorklet, and the real extension (runtime 0.3.0, `mlx-community/whisper-small-mlx`) transcribes it.
+A Work Journal was needed for search to be ready: one turn on the local LM Studio model `qwen/qwen3.6-35b-a3b` (AutoByteus runtime, "Reply with one word: hello."); the model was unloaded afterwards.

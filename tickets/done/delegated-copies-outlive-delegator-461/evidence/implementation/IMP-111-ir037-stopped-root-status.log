@@ -1,0 +1,22 @@
+IMP-111 — CR-461-103 (F-78, SDV-01) pinned: a stopped root's /ws/agent session read a stale live status
+Code: 53f0ae2d4e's server with temporary traces (reverted; none in the tree); stopped-delegator-views-probe --cases SDV-01; 2026-11-15
+Each line: AgentStreamSequence.accept of a status event, its dispose, and unbindStoppedRun's projection (agent ids shortened).
+
+## before (unbind on the root's unregistration): the run's own offline came after the session had left it
+[F78-TRACE] accept manager AGENT_STATUS disposed=false {"status":"running","recoverableBlock":null,"agent_id":"manager"}
+[F78-TRACE] accept manager AGENT_STATUS disposed=false {"status":"idle","recoverableBlock":null,"agent_id":"manager"}
+[F78-TRACE] accept manager AGENT_STATUS disposed=false {"status":"offline","recoverableBlock":null,"agent_id":"manager"}
+[F78-TRACE] dispose manager
+
+## after (unbind once the run's sequence ends)
+[F78-TRACE] accept manager AGENT_STATUS disposed=false {"status":"idle","recoverableBlock":null,"agent_id":"manager"}
+[F78-TRACE] accept manager AGENT_STATUS disposed=false {"status":"offline","recoverableBlock":null,"agent_id":"manager"}
+[F78-TRACE] dispose manager
+[F78-TRACE] unbind manager current=true {"status":"offline","recoverableBlock":null,"agent_id":"manager"}
+
+Reading: before, unbind read the live projection (idle) while the run was still in the run manager, sent it, and unsubscribed; the run's final 'offline' was accepted by its sequence but reached no session, so the Manager read idle (green) in the run list until another read. After: the session keeps the run's frames until its sequence ends (offline delivered), then unbinds; the projection then reads offline.
+
+## SDV-01's later step ('the Manager started', intermittent, 2 of 4 runs before and after the fix)
+A capture 4 s after the probe's send (sdv01d, passing run) shows the center pane at 'Loading' just before the send:
+beforeSendText tail: 'nt_run_id”:“worker_sdvagent_556d_3c82da4fea0146468423b39947edae33”}}\n\nContext Files (0)\n(drag, paste, or upload)\nLoading'
+Not changed here: the probe sends right after clicking the run row, while the Manager's view may still be loading.

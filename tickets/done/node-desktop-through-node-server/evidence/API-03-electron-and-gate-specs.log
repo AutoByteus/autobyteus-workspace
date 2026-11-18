@@ -1,0 +1,18 @@
+# Case: API-03 — IMP-07's spec part rerun (no output kept)
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run electron/server/__tests__/serverRuntimeEnv.spec.ts; pnpm -C autobyteus-web exec vitest run scripts/__tests__/typecheckGate.spec.ts
+# Commit: 952bc1fcd0
+# Environment: macOS arm64, Node v22.23.1
+# Date: 2026-11-06T17:46:15Z
+
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  18:46:15
+   Duration  269ms (transform 40ms, setup 0ms, collect 26ms, tests 4ms, environment 0ms, prepare 65ms)
+
+
+ Test Files  1 passed (1)
+      Tests  29 passed (29)
+   Start at  18:46:18
+   Duration  651ms (transform 56ms, setup 105ms, collect 29ms, tests 295ms, environment 0ms, prepare 43ms)
+

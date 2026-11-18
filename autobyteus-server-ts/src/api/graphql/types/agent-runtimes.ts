@@ -15,7 +15,13 @@ export enum AgentRuntimeUpdateStateKind {
 export enum AgentRuntimeAccountStateKind {
   CHECKING = "CHECKING", SIGNED_IN = "SIGNED_IN", SIGNED_OUT = "SIGNED_OUT", UNKNOWN = "UNKNOWN", NOT_APPLICABLE = "NOT_APPLICABLE",
 }
-export enum AgentRuntimeSignInRouteKind { BROWSER = "BROWSER", COMMAND_LINE = "COMMAND_LINE" }
+export enum AgentRuntimeSignInRouteKind { BROWSER = "BROWSER", COMMAND_LINE = "COMMAND_LINE", API_KEY_SETTING = "API_KEY_SETTING" }
+
+const SIGN_IN_ROUTE_KINDS: Readonly<Record<AgentRuntimeStatus["signInRoute"], AgentRuntimeSignInRouteKind>> = {
+  browser: AgentRuntimeSignInRouteKind.BROWSER,
+  commandLine: AgentRuntimeSignInRouteKind.COMMAND_LINE,
+  apiKeySetting: AgentRuntimeSignInRouteKind.API_KEY_SETTING,
+};
 export enum AgentRuntimeOperationKind { UPDATE = "UPDATE", SIGN_IN = "SIGN_IN" }
 export enum AgentRuntimeOperationState { RUNNING = "RUNNING", SUCCEEDED = "SUCCEEDED", FAILED = "FAILED", DID_NOT_FINISH = "DID_NOT_FINISH" }
 registerEnumType(AgentRuntimeUpdateStateKind, { name: "AgentRuntimeUpdateState" });
@@ -100,7 +106,7 @@ const toAgentRuntime = (status: AgentRuntimeStatus): AgentRuntime => ({
   installedVersion: status.installedVersion,
   updates: { state: UPDATE_STATES[status.updateState], latestVersion: status.latestVersion },
   account: { state: ACCOUNT_STATES[status.accountState] },
-  signInRoute: status.signInRoute === "browser" ? AgentRuntimeSignInRouteKind.BROWSER : AgentRuntimeSignInRouteKind.COMMAND_LINE,
+  signInRoute: SIGN_IN_ROUTE_KINDS[status.signInRoute],
   installInstructionsUrl: status.installInstructionsUrl,
   runningAgentCount: status.runningAgentCount,
   operation: status.operation ? toOperation(status.operation) : null,

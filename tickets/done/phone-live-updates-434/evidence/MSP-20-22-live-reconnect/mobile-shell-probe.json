@@ -1,0 +1,1646 @@
+{
+  "startedAt": "2026-11-08T09:27:53.775Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 57782,
+      "nodeId": "srv_ceJouVTO81A_yx8kLbU9rztE5MW9wREG",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 57781,
+      "nodeId": "srv_bK8eM3n2RMtQZI14Aa5XfH8h9fgSeVzV",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "gamma": {
+      "port": 58069,
+      "nodeId": "srv_FcEuxhLjcLqLab-FzX7q1NuU7R_AkRld",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_618d33c9571b41e8ae4f833ae0c9ece4",
+    "writerRun": "release_notes_writer_679106aaa6854670958d59b195a81831",
+    "squadRun": "docs_review_team_7d32a7120315469db0ba6a96e24c9283",
+    "reviewer": "release_notes_writer_8dcc8c574c5642a0b04744b953745081",
+    "memberDelegated": "fact_checker_0940d8c5e5fc45ee87605aab53a9a495",
+    "remoteAgentRun": "publisher_5dc092178a21454f909e1ab1e439fd7d",
+    "remoteTeamRun": "studio_team_112fbae3bae54dccb7df8837f0c856fa",
+    "plain": [
+      "fact_checker_087b297f9e1649acad1f7b8d4fb12ce1",
+      "fact_checker_2fa7e50cf776484391b78d8613f3e164",
+      "fact_checker_1aa6594d0a394d9c8de889fdd33a8d47"
+    ],
+    "org": "delivery_org_122bce6c702845c18456f585cfbc8246",
+    "orgPlanner": "release_notes_writer_f7300bfee675422fb5a55baa36a86c52",
+    "reviewOrg": "review_org_8183bfded90d48febcf59e94186a468c",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_00f1e33f5e524dd1b78518d91997ae48",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_9fede7d767e84a7e99072edc0db724db",
+    "deliveryLead": "fact_checker_9e258591e2aa4f948453856eff01b5a4",
+    "deliveryMate": "release_notes_writer_006da43f1dda4ee29ef7491dfc6658d9",
+    "leadDelegated": "changelog_helper_291ed42b120e49f7bab4e22b68872932",
+    "approver": "approver_805272e1e5664ff883db47edf60cd1c8",
+    "taskA": "launch-c0af73-1",
+    "taskB": "launch-c0af73-2"
+  },
+  "cases": {
+    "MSP-20": {
+      "result": "Pass",
+      "seconds": 78.5,
+      "outageMs": 45000,
+      "shownAfterPathPassesMs": {
+        "agent": 16151,
+        "org": 16302,
+        "team": 16302
+      },
+      "nextMarkerDelayMs": {
+        "team": 143,
+        "agent": 149,
+        "org": 7
+      },
+      "agentMarkersWhileReconnecting": 15,
+      "missingOnAgentPhone": [],
+      "sockets": {
+        "phone-team": [
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 8881,
+            "closedAt": 8881
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 10884,
+            "closedAt": 10884
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 14897,
+            "closedAt": 14898
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 22900,
+            "closedAt": 22900
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 38902,
+            "closedAt": 38902
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 68908,
+            "closedAt": null
+          },
+          {
+            "url": "/ws/agent/live_agent_7b3b703b7b464967ac8639d546e55d15",
+            "openedAt": 68920,
+            "closedAt": null
+          }
+        ],
+        "phone-agent": [
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 10885,
+            "closedAt": 10885
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 14897,
+            "closedAt": 14898
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 22900,
+            "closedAt": 22900
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 38903,
+            "closedAt": 38903
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 68909,
+            "closedAt": null
+          },
+          {
+            "url": "/ws/agent/live_agent_7b3b703b7b464967ac8639d546e55d15",
+            "openedAt": 68960,
+            "closedAt": null
+          }
+        ],
+        "phone-org": [
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 10884,
+            "closedAt": 10884
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 14897,
+            "closedAt": 14898
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 38903,
+            "closedAt": 38903
+          },
+          {
+            "url": "/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a",
+            "openedAt": 68909,
+            "closedAt": null
+          },
+          {
+            "url": "/ws/agent/live_agent_7b3b703b7b464967ac8639d546e55d15",
+            "openedAt": 68955,
+            "closedAt": null
+          },
+          {
+            "url": "/ws/agent-org/live_org_e3ccd906f3db42928f34a9ecb9ed4003",
+            "openedAt": 69027,
+            "closedAt": null
+          }
+        ]
+      }
+    },
+    "MSP-21": {
+      "result": "Pass",
+      "seconds": 70.6,
+      "glance": {
+        "hiddenMs": 5000,
+        "newStreams": {
+          "phone-team": 0,
+          "phone-agent": 0
+        },
+        "nextMarkerDelayMs": {
+          "team": 146,
+          "agent": 147
+        }
+      },
+      "hiddenDeadPath": {
+        "hiddenMs": 35000,
+        "webSocketsBlackholed": 11,
+        "shownWhileHidden": {
+          "team": false,
+          "agent": false
+        },
+        "streamsOpenedWhileHidden": {
+          "phone-team": 0,
+          "phone-agent": 0
+        },
+        "shownAfterVisibleMs": {
+          "team": 159,
+          "agent": 159
+        },
+        "nextMarkerDelayMs": {
+          "team": 142,
+          "agent": 150
+        }
+      },
+      "hiddenUnreachable": {
+        "hiddenMs": 20000,
+        "attemptsWhileHidden": {
+          "phone-team": 0,
+          "phone-agent": 0
+        },
+        "attemptsWithin2sOfVisible": {
+          "phone-team": 1,
+          "phone-agent": 1
+        },
+        "shownAfterPathPassesMs": {
+          "agent": 3072,
+          "team": 3225
+        }
+      }
+    },
+    "MSP-22": {
+      "result": "Fail",
+      "seconds": 34.8,
+      "error": "Timed out waiting for the run screen of team:live_team_71af6bb44c4646c2a24033087a0f131a",
+      "details": null
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    },
+    {
+      "case": "live-setup",
+      "line": "phone-team console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (404 /favicon.ico)"
+    },
+    {
+      "case": "live-setup",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-20",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-package-definitions?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-org console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error in connection establishment: net::ERR_SOCKET_NOT_CONNECTED",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-team console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-team/live_team_71af6bb44c4646c2a24033087a0f131a?access_token=mra_…' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1150:3813)",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-21",
+      "line": "phone-agent console: WebSocket connection to 'ws://192.168.77.20:58096/ws/agent-collaboration/live_agent_7b3b703b7b464967ac8639d546e55d15?access_token=mra_…' failed: Connection closed before receiving a handshake response",
+      "known": true,
+      "cause": "the case refused or black-holed the phone's path on purpose"
+    },
+    {
+      "case": "MSP-22",
+      "line": "phone-second-team console: Failed to open team: Error: Team context 'live_team_71af6bb44c4646c2a24033087a0f131a' became mounted while it was loading.\n    at kL (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1910:4614)\n    at async wde (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1910:40949)\n    at async Proxy.openTeamMemberRun (http://192.168.77.20:58096/mobile/_nuxt/6gKLa7nn.js:1964:14369)\n    at async k (http://192.168.77.20:58096/mobile/_nuxt/DN8rrJ5d.js:1:1581)\n    at async Object.open (http://192.168.77.20:58096/mobile/_nuxt/C-GXGVPs.js:1:31467)",
+      "known": false
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "live-setup",
+      "label": "phone-team",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-20",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-org",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_SOCKET_NOT_CONNECTED"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-agent",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    },
+    {
+      "case": "MSP-21",
+      "label": "phone-team",
+      "url": "http://192.168.77.20:58096/graphql",
+      "error": "net::ERR_CONNECTION_RESET"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "liveReconnect": {
+    "log": [
+      {
+        "t": 7857,
+        "event": "phones open",
+        "team": "team:live_team_71af6bb44c4646c2a24033087a0f131a",
+        "agent": "agent:live_agent_7b3b703b7b464967ac8639d546e55d15",
+        "org": "org:live_org_e3ccd906f3db42928f34a9ecb9ed4003"
+      },
+      {
+        "t": 7858,
+        "event": "path refused",
+        "open": 29
+      },
+      {
+        "t": 52860,
+        "event": "path passes"
+      },
+      {
+        "t": 52860,
+        "event": "marker sent",
+        "id": "MK-T-1"
+      },
+      {
+        "t": 52860,
+        "event": "marker sent",
+        "id": "MK-A-1"
+      },
+      {
+        "t": 52860,
+        "event": "marker sent",
+        "id": "MK-O-1"
+      },
+      {
+        "t": 52860,
+        "event": "marker sent",
+        "id": "MK-A-2"
+      },
+      {
+        "t": 54861,
+        "event": "marker sent",
+        "id": "MK-A-3"
+      },
+      {
+        "t": 56863,
+        "event": "marker sent",
+        "id": "MK-A-4"
+      },
+      {
+        "t": 58864,
+        "event": "marker sent",
+        "id": "MK-A-5"
+      },
+      {
+        "t": 60864,
+        "event": "marker sent",
+        "id": "MK-A-6"
+      },
+      {
+        "t": 62866,
+        "event": "marker sent",
+        "id": "MK-A-7"
+      },
+      {
+        "t": 64867,
+        "event": "marker sent",
+        "id": "MK-A-8"
+      },
+      {
+        "t": 66868,
+        "event": "marker sent",
+        "id": "MK-A-9"
+      },
+      {
+        "t": 68869,
+        "event": "marker sent",
+        "id": "MK-A-10"
+      },
+      {
+        "t": 70870,
+        "event": "marker sent",
+        "id": "MK-A-11"
+      },
+      {
+        "t": 72875,
+        "event": "marker sent",
+        "id": "MK-A-12"
+      },
+      {
+        "t": 74877,
+        "event": "marker sent",
+        "id": "MK-A-13"
+      },
+      {
+        "t": 76879,
+        "event": "marker sent",
+        "id": "MK-A-14"
+      },
+      {
+        "t": 78882,
+        "event": "marker sent",
+        "id": "MK-A-15"
+      },
+      {
+        "t": 80884,
+        "event": "marker sent",
+        "id": "MK-A-16"
+      },
+      {
+        "t": 85889,
+        "event": "marker sent",
+        "id": "MK-T-2"
+      },
+      {
+        "t": 86042,
+        "event": "marker sent",
+        "id": "MK-A-17"
+      },
+      {
+        "t": 86197,
+        "event": "marker sent",
+        "id": "MK-O-2"
+      },
+      {
+        "t": 94416,
+        "event": "marker sent",
+        "id": "MK-T-3"
+      },
+      {
+        "t": 94569,
+        "event": "marker sent",
+        "id": "MK-A-18"
+      },
+      {
+        "t": 94727,
+        "event": "open WebSocket connections black-holed",
+        "count": 11
+      },
+      {
+        "t": 94727,
+        "event": "marker sent",
+        "id": "MK-T-4"
+      },
+      {
+        "t": 94727,
+        "event": "marker sent",
+        "id": "MK-A-19"
+      },
+      {
+        "t": 129883,
+        "event": "marker sent",
+        "id": "MK-T-5"
+      },
+      {
+        "t": 130034,
+        "event": "marker sent",
+        "id": "MK-A-20"
+      },
+      {
+        "t": 130695,
+        "event": "path refused",
+        "open": 23
+      },
+      {
+        "t": 153707,
+        "event": "path passes"
+      },
+      {
+        "t": 153707,
+        "event": "marker sent",
+        "id": "MK-T-6"
+      },
+      {
+        "t": 153707,
+        "event": "marker sent",
+        "id": "MK-A-21"
+      }
+    ],
+    "runs": {
+      "teamRun": "live_team_71af6bb44c4646c2a24033087a0f131a",
+      "leadRun": "live_lead_ea297964bd9142968dd9637ac1aec7bf",
+      "agentRun": "live_agent_7b3b703b7b464967ac8639d546e55d15",
+      "orgRun": "live_org_e3ccd906f3db42928f34a9ecb9ed4003",
+      "orgPlanner": "live_planner_0993bd74f75c4f489919c46e1e7a3601"
+    },
+    "cleanup": {
+      "browserClosed": true,
+      "proxyClosed": true,
+      "gammaStopped": true,
+      "gammaLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/MSP-20-22-live-reconnect/server-gamma.log"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-20": "Pass",
+      "MSP-21": "Pass",
+      "MSP-22": "Fail"
+    },
+    "unknownBrowserErrors": 1
+  },
+  "finishedAt": "2026-11-08T09:35:17.079Z"
+}

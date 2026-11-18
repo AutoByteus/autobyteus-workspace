@@ -1,0 +1,636 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63766
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63766
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:57020) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-07T22:26:56.064Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794090416337,"pid":57020,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63775"}
+{"level":30,"time":1794090416361,"pid":57020,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63766"}
+[2026-11-07T22:26:56.361Z] [INFO] [server.runtime] Server listening on 127.0.0.1:63766
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Created and registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+Agent Definition created successfully with ID: manager-0b87
+Agent Definition created successfully with ID: release-notes-writer-0b87
+Agent Definition created successfully with ID: fact-checker-0b87
+Agent Team Definition created successfully with ID: docs-review-team-0b87
+Agent Team Definition created successfully with ID: delivery-team-0b87
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session f733dfbf-c16f-4f88-9c53-4f7279cbddc6 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=f733dfbf-c16f-4f88-9c53-4f7279cbddc6, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run release_notes_writer_0b87_cf374c48890640c282926f152a5e7657: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+Closed agent session f733dfbf-c16f-4f88-9c53-4f7279cbddc6
+Agent WebSocket disconnected: f733dfbf-c16f-4f88-9c53-4f7279cbddc6
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1794090425251,"pid":57020,"hostname":"MacBookPro","reqId":"req-x","method":"GET","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_3bc245799798__notes.txt","statusCode":404,"elapsedMs":0.5234999999993306,"msg":"http request completed"}
+{"level":40,"time":1794090425269,"pid":57020,"hostname":"MacBookPro","reqId":"req-12","method":"GET","url":"/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fsquad%2Freviewer/context-files/ctx_6ecda2a32f02__notes.txt","statusCode":404,"elapsedMs":0.6646669999990991,"msg":"http request completed"}
+{"level":40,"time":1794090425285,"pid":57020,"hostname":"MacBookPro","reqId":"req-17","method":"GET","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_d74bd8d0e224__notes.txt","statusCode":404,"elapsedMs":1.0519169999988662,"msg":"http request completed"}
+{"level":40,"time":1794090425299,"pid":57020,"hostname":"MacBookPro","reqId":"req-1c","method":"GET","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_9a3c4ef79d2a__notes.txt","statusCode":404,"elapsedMs":1.1304159999999683,"msg":"http request completed"}
+{"level":40,"time":1794090425315,"pid":57020,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/no-root/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.29783300000053714,"msg":"http request completed"}
+{"level":40,"time":1794090425315,"pid":57020,"hostname":"MacBookPro","reqId":"req-1g","method":"GET","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%20padded/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.14091699999880802,"msg":"http request completed"}
+{"level":40,"time":1794090425315,"pid":57020,"hostname":"MacBookPro","reqId":"req-1h","method":"GET","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/a%2Fb/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.12774999999965075,"msg":"http request completed"}
+{"level":40,"time":1794090425316,"pid":57020,"hostname":"MacBookPro","reqId":"req-1i","method":"GET","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E%2E%2Fctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.11225000000013097,"msg":"http request completed"}
+{"level":40,"time":1794090425316,"pid":57020,"hostname":"MacBookPro","reqId":"req-1j","method":"GET","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/..%2F..%2Fcontext_files%2Fctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.08437499999854481,"msg":"http request completed"}
+{"level":40,"time":1794090425316,"pid":57020,"hostname":"MacBookPro","reqId":"req-1k","method":"GET","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%2E%2E/context-files/ctx_s3__sentinel.txt","statusCode":400,"elapsedMs":0.15795799999978044,"msg":"http request completed"}
+{"level":40,"time":1794090425317,"pid":57020,"hostname":"MacBookPro","reqId":"req-1l","method":"GET","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/%2E%2E/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.23025000000052387,"msg":"http request completed"}
+{"level":40,"time":1794090425317,"pid":57020,"hostname":"MacBookPro","reqId":"req-1m","method":"GET","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/unknown-member/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.6805829999993875,"msg":"http request completed"}
+{"level":40,"time":1794090425318,"pid":57020,"hostname":"MacBookPro","reqId":"req-1n","method":"GET","url":"/rest/drafts/agent-org-runs/missing-org/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.10883400000057009,"msg":"http request completed"}
+{"level":40,"time":1794090425319,"pid":57020,"hostname":"MacBookPro","reqId":"req-1o","method":"GET","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/unknown-child/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.7126250000001164,"msg":"http request completed"}
+{"level":40,"time":1794090425319,"pid":57020,"hostname":"MacBookPro","reqId":"req-1p","method":"GET","url":"/rest/drafts/agent-collaborations/missing-host/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.16037500000129512,"msg":"http request completed"}
+{"level":40,"time":1794090425319,"pid":57020,"hostname":"MacBookPro","reqId":"req-1q","method":"GET","url":"/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.22149999999965075,"msg":"http request completed"}
+{"level":40,"time":1794090425320,"pid":57020,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/../../agent-runs/victim/context-files/ctx_s3__sentinel.txt","statusCode":404,"elapsedMs":0.08516699999927368,"msg":"http request completed"}
+{"level":40,"time":1794090425320,"pid":57020,"hostname":"MacBookPro","reqId":"req-1s","method":"GET","url":"/rest/drafts/agent-runs/../../../context_files/ctx_s2__sentinel.txt","statusCode":404,"elapsedMs":0.08129199999893899,"msg":"http request completed"}
+{"level":40,"time":1794090425320,"pid":57020,"hostname":"MacBookPro","reqId":"req-1t","method":"GET","url":"/rest/drafts/agent-runs/%2E%2E/context-files/ctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.08829200000036508,"msg":"http request completed"}
+{"level":40,"time":1794090425320,"pid":57020,"hostname":"MacBookPro","reqId":"req-1u","method":"GET","url":"/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_s2__sentinel.txt","statusCode":400,"elapsedMs":0.1319999999996071,"msg":"http request completed"}
+{"level":40,"time":1794090425320,"pid":57020,"hostname":"MacBookPro","reqId":"req-1v","method":"GET","url":"/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_s3__sentinel.txt","statusCode":400,"elapsedMs":0.07529099999919708,"msg":"http request completed"}
+{"level":40,"time":1794090425321,"pid":57020,"hostname":"MacBookPro","reqId":"req-1w","method":"GET","url":"/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2Fsquad%2Freviewer/context-files/ctx_s3__sentinel.txt","statusCode":400,"elapsedMs":0.09425000000010186,"msg":"http request completed"}
+{"level":40,"time":1794090425321,"pid":57020,"hostname":"MacBookPro","reqId":"req-1x","method":"GET","url":"/rest/drafts/team-runs/%2E%2E/members/%2Fsquad%2Freviewer/context-files/ctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.10841699999946286,"msg":"http request completed"}
+{"level":40,"time":1794090425321,"pid":57020,"hostname":"MacBookPro","reqId":"req-1y","method":"GET","url":"/rest/runs/%2E%2E/context-files/ctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.13829199999963748,"msg":"http request completed"}
+{"level":40,"time":1794090425323,"pid":57020,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/rest/runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_a%00.txt","statusCode":400,"elapsedMs":1.5695830000004207,"msg":"http request completed"}
+{"level":40,"time":1794090425323,"pid":57020,"hostname":"MacBookPro","reqId":"req-20","method":"GET","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E","statusCode":400,"elapsedMs":0.12312499999825377,"msg":"http request completed"}
+{"level":40,"time":1794090425324,"pid":57020,"hostname":"MacBookPro","reqId":"req-21","method":"DELETE","url":"/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/no-root/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.09924999999930151,"msg":"http request completed"}
+{"level":40,"time":1794090425324,"pid":57020,"hostname":"MacBookPro","reqId":"req-22","method":"DELETE","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%20padded/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.08833300000151212,"msg":"http request completed"}
+{"level":40,"time":1794090425324,"pid":57020,"hostname":"MacBookPro","reqId":"req-23","method":"DELETE","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/a%2Fb/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.1045830000002752,"msg":"http request completed"}
+{"level":40,"time":1794090425325,"pid":57020,"hostname":"MacBookPro","reqId":"req-24","method":"DELETE","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E%2E%2Fctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.11425000000053842,"msg":"http request completed"}
+{"level":40,"time":1794090425325,"pid":57020,"hostname":"MacBookPro","reqId":"req-25","method":"DELETE","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/..%2F..%2Fcontext_files%2Fctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.0870840000006865,"msg":"http request completed"}
+{"level":40,"time":1794090425325,"pid":57020,"hostname":"MacBookPro","reqId":"req-26","method":"DELETE","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%2E%2E/context-files/ctx_s3__sentinel.txt","statusCode":400,"elapsedMs":0.09237500000017462,"msg":"http request completed"}
+{"level":40,"time":1794090425325,"pid":57020,"hostname":"MacBookPro","reqId":"req-27","method":"DELETE","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/%2E%2E/context-files/ctx_a__b.txt","statusCode":400,"elapsedMs":0.12008399999831454,"msg":"http request completed"}
+{"level":40,"time":1794090425327,"pid":57020,"hostname":"MacBookPro","reqId":"req-28","method":"DELETE","url":"/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/unknown-member/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":1.5892079999994166,"msg":"http request completed"}
+{"level":40,"time":1794090425328,"pid":57020,"hostname":"MacBookPro","reqId":"req-29","method":"DELETE","url":"/rest/drafts/agent-org-runs/missing-org/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.19366700000136916,"msg":"http request completed"}
+{"level":40,"time":1794090425329,"pid":57020,"hostname":"MacBookPro","reqId":"req-2a","method":"DELETE","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/unknown-child/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":1.1202919999996084,"msg":"http request completed"}
+{"level":40,"time":1794090425329,"pid":57020,"hostname":"MacBookPro","reqId":"req-2b","method":"DELETE","url":"/rest/drafts/agent-collaborations/missing-host/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.10887499999989814,"msg":"http request completed"}
+{"level":40,"time":1794090425330,"pid":57020,"hostname":"MacBookPro","reqId":"req-2c","method":"DELETE","url":"/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt","statusCode":404,"elapsedMs":0.07899999999972351,"msg":"http request completed"}
+{"level":40,"time":1794090425330,"pid":57020,"hostname":"MacBookPro","reqId":"req-2d","method":"DELETE","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/../../agent-runs/victim/context-files/ctx_s3__sentinel.txt","statusCode":404,"elapsedMs":0.1009169999997539,"msg":"http request completed"}
+{"level":40,"time":1794090425330,"pid":57020,"hostname":"MacBookPro","reqId":"req-2e","method":"DELETE","url":"/rest/drafts/agent-runs/../../../context_files/ctx_s2__sentinel.txt","statusCode":404,"elapsedMs":0.16329199999927368,"msg":"http request completed"}
+{"level":40,"time":1794090425331,"pid":57020,"hostname":"MacBookPro","reqId":"req-2f","method":"DELETE","url":"/rest/drafts/agent-runs/%2E%2E/context-files/ctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.1630829999994603,"msg":"http request completed"}
+{"level":40,"time":1794090425331,"pid":57020,"hostname":"MacBookPro","reqId":"req-2g","method":"DELETE","url":"/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_s2__sentinel.txt","statusCode":400,"elapsedMs":0.1321669999997539,"msg":"http request completed"}
+{"level":40,"time":1794090425331,"pid":57020,"hostname":"MacBookPro","reqId":"req-2h","method":"DELETE","url":"/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_s3__sentinel.txt","statusCode":400,"elapsedMs":0.14637500000026193,"msg":"http request completed"}
+{"level":40,"time":1794090425332,"pid":57020,"hostname":"MacBookPro","reqId":"req-2i","method":"DELETE","url":"/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2Fsquad%2Freviewer/context-files/ctx_s3__sentinel.txt","statusCode":400,"elapsedMs":0.10633400000006077,"msg":"http request completed"}
+{"level":40,"time":1794090425332,"pid":57020,"hostname":"MacBookPro","reqId":"req-2j","method":"DELETE","url":"/rest/drafts/team-runs/%2E%2E/members/%2Fsquad%2Freviewer/context-files/ctx_s1__sentinel.txt","statusCode":400,"elapsedMs":0.0884169999990263,"msg":"http request completed"}
+{"level":40,"time":1794090425332,"pid":57020,"hostname":"MacBookPro","reqId":"req-2k","method":"DELETE","url":"/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E","statusCode":400,"elapsedMs":0.1468750000003638,"msg":"http request completed"}
+Failed to upload context file: Error: draftRunId must be a safe non-empty identity.
+{"level":40,"time":1794090425335,"pid":57020,"hostname":"MacBookPro","reqId":"req-2l","method":"POST","url":"/rest/context-files/upload","statusCode":400,"elapsedMs":0.6103750000002037,"msg":"http request completed"}
+Failed to upload context file: Error: draftRunId must be a safe non-empty identity.
+{"level":40,"time":1794090425337,"pid":57020,"hostname":"MacBookPro","reqId":"req-2m","method":"POST","url":"/rest/context-files/upload","statusCode":400,"elapsedMs":0.4239999999990687,"msg":"http request completed"}
+Failed to upload context file: Error: draftRunId must be a safe non-empty identity.
+{"level":40,"time":1794090425340,"pid":57020,"hostname":"MacBookPro","reqId":"req-2n","method":"POST","url":"/rest/context-files/upload","statusCode":400,"elapsedMs":0.5867920000000595,"msg":"http request completed"}
+Failed to upload context file: Error: Standalone draft context-file owner has unsupported fields.
+{"level":40,"time":1794090425343,"pid":57020,"hostname":"MacBookPro","reqId":"req-2o","method":"POST","url":"/rest/context-files/upload","statusCode":400,"elapsedMs":0.7005829999998241,"msg":"http request completed"}
+Failed to upload context file: Error: teamDraftId must be a safe non-empty identity.
+{"level":40,"time":1794090425346,"pid":57020,"hostname":"MacBookPro","reqId":"req-2p","method":"POST","url":"/rest/context-files/upload","statusCode":400,"elapsedMs":0.49495800000113377,"msg":"http request completed"}
+Failed to upload context file: Error: Team draft context-file owner has unsupported fields.
+{"level":40,"time":1794090425348,"pid":57020,"hostname":"MacBookPro","reqId":"req-2q","method":"POST","url":"/rest/context-files/upload","statusCode":400,"elapsedMs":0.5094580000004498,"msg":"http request completed"}
+Failed to finalize context files: Error: draftRunId must be a safe non-empty identity.
+{"level":40,"time":1794090425350,"pid":57020,"hostname":"MacBookPro","reqId":"req-2r","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":0.31108300000050804,"msg":"http request completed"}
+Failed to finalize context files: Error: Standalone draft context-file owner has unsupported fields.
+{"level":40,"time":1794090425352,"pid":57020,"hostname":"MacBookPro","reqId":"req-2s","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":0.2666250000002037,"msg":"http request completed"}
+Failed to finalize context files: Error: teamDraftId must be a safe non-empty identity.
+{"level":40,"time":1794090425355,"pid":57020,"hostname":"MacBookPro","reqId":"req-2t","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":0.1898750000000291,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_a656540b493f__phone.txt
+{"level":40,"time":1794090425401,"pid":57020,"hostname":"MacBookPro","reqId":"req-2z","method":"DELETE","url":"/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_a656540b493f__phone.txt","statusCode":401,"elapsedMs":0.4446250000000873,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Created terminal session 5a560120-6c09-4c56-947a-4a967c71ec1f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5a560120-6c09-4c56-947a-4a967c71ec1f
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 831059ba-8959-4bbe-9017-40f78ff37c91 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=831059ba-8959-4bbe-9017-40f78ff37c91, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 7d2ba1f3-d612-4af4-a76c-2ba83765dffc for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=7d2ba1f3-d612-4af4-a76c-2ba83765dffc, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Closed PTY session 5a560120-6c09-4c56-947a-4a967c71ec1f
+Terminal WebSocket disconnected: 5a560120-6c09-4c56-947a-4a967c71ec1f
+Closed agent session 7d2ba1f3-d612-4af4-a76c-2ba83765dffc
+Closed agent session 831059ba-8959-4bbe-9017-40f78ff37c91
+Agent WebSocket disconnected: 831059ba-8959-4bbe-9017-40f78ff37c91
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 3a51dbd9-0eac-43b1-bf8c-d4f9d1aa9082 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=3a51dbd9-0eac-43b1-bf8c-d4f9d1aa9082, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session 8bd5f201-cdfc-4cbb-881c-9f6a91f61c3a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8bd5f201-cdfc-4cbb-881c-9f6a91f61c3a
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 7cdb46aa-8fb4-4c28-83f4-0cbd813cd7d1 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=7cdb46aa-8fb4-4c28-83f4-0cbd813cd7d1, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/docs_review_team_0b87_a5347ce599364f02bca1526bbd529a31/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Closed PTY session 8bd5f201-cdfc-4cbb-881c-9f6a91f61c3a
+Terminal WebSocket disconnected: 8bd5f201-cdfc-4cbb-881c-9f6a91f61c3a
+Closed agent session 7cdb46aa-8fb4-4c28-83f4-0cbd813cd7d1
+Closed agent session 3a51dbd9-0eac-43b1-bf8c-d4f9d1aa9082
+Agent WebSocket disconnected: 3a51dbd9-0eac-43b1-bf8c-d4f9d1aa9082
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session b62b143c-0517-430a-83e5-ee12759995ae for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=b62b143c-0517-430a-83e5-ee12759995ae, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session 0cb5a490-e79b-4f07-8193-9108e91d2e40 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0cb5a490-e79b-4f07-8193-9108e91d2e40
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 8b3772fc-3c2b-4e6a-8eb2-03d520cc8dd1 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=8b3772fc-3c2b-4e6a-8eb2-03d520cc8dd1, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Closed PTY session 0cb5a490-e79b-4f07-8193-9108e91d2e40
+Terminal WebSocket disconnected: 0cb5a490-e79b-4f07-8193-9108e91d2e40
+Closed agent session b62b143c-0517-430a-83e5-ee12759995ae
+Agent WebSocket disconnected: b62b143c-0517-430a-83e5-ee12759995ae
+Closed agent session 8b3772fc-3c2b-4e6a-8eb2-03d520cc8dd1
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session e5458f17-68d5-48f0-942e-37b2902076a7 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=e5458f17-68d5-48f0-942e-37b2902076a7, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 765158c1-86e1-4835-84b2-2867a271f9b1 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=765158c1-86e1-4835-84b2-2867a271f9b1, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Closed agent session 765158c1-86e1-4835-84b2-2867a271f9b1
+Closed agent session e5458f17-68d5-48f0-942e-37b2902076a7
+Agent WebSocket disconnected: e5458f17-68d5-48f0-942e-37b2902076a7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 9d55e53f-45b9-477f-98b8-689bf5b8734c for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=9d55e53f-45b9-477f-98b8-689bf5b8734c, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session bbe3d7e1-831a-43a3-9c24-0918ac9a75de using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: bbe3d7e1-831a-43a3-9c24-0918ac9a75de
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 44bf7fa3-ae6b-44bd-a680-6dcfbeaa966b for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=44bf7fa3-ae6b-44bd-a680-6dcfbeaa966b, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Closed agent session 44bf7fa3-ae6b-44bd-a680-6dcfbeaa966b
+Closed agent session 9d55e53f-45b9-477f-98b8-689bf5b8734c
+Agent WebSocket disconnected: 9d55e53f-45b9-477f-98b8-689bf5b8734c
+Closed PTY session bbe3d7e1-831a-43a3-9c24-0918ac9a75de
+Terminal WebSocket disconnected: bbe3d7e1-831a-43a3-9c24-0918ac9a75de
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 068e889f-3f54-45a2-b6e6-fc68148d0216 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=068e889f-3f54-45a2-b6e6-fc68148d0216, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session a3433b9c-a200-4e67-ad53-24bd85fd85f7 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=a3433b9c-a200-4e67-ad53-24bd85fd85f7, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Created terminal session a2a13b0d-1a4b-49a0-9027-04cc8f32f6e2 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a2a13b0d-1a4b-49a0-9027-04cc8f32f6e2
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/release_notes_writer_0b87_156452932847408e9a4ade14afc9bc82/raw_traces_manifest.json
+Closed agent session a3433b9c-a200-4e67-ad53-24bd85fd85f7
+Closed agent session 068e889f-3f54-45a2-b6e6-fc68148d0216
+Agent WebSocket disconnected: 068e889f-3f54-45a2-b6e6-fc68148d0216
+Closed PTY session a2a13b0d-1a4b-49a0-9027-04cc8f32f6e2
+Terminal WebSocket disconnected: a2a13b0d-1a4b-49a0-9027-04cc8f32f6e2
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Created terminal session 6a46cf6d-ed89-4f7b-acca-e516e0ff042e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 6a46cf6d-ed89-4f7b-acca-e516e0ff042e
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 446e024f-6f72-4ced-b653-f105f2d29e58 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=446e024f-6f72-4ced-b653-f105f2d29e58, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 6bd00dea-782f-40e5-82f8-fbddfa012610 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=6bd00dea-782f-40e5-82f8-fbddfa012610, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_orgs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/raw_traces_manifest.json
+Closed agent session 6bd00dea-782f-40e5-82f8-fbddfa012610
+Closed agent session 446e024f-6f72-4ced-b653-f105f2d29e58
+Agent WebSocket disconnected: 446e024f-6f72-4ced-b653-f105f2d29e58
+Closed PTY session 6a46cf6d-ed89-4f7b-acca-e516e0ff042e
+Terminal WebSocket disconnected: 6a46cf6d-ed89-4f7b-acca-e516e0ff042e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Created terminal session 9dc64b67-a4fe-4ab6-8dfd-3444c552456d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9dc64b67-a4fe-4ab6-8dfd-3444c552456d
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 7cdd2f97-881d-40de-84fa-c97e3f035834 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=7cdd2f97-881d-40de-84fa-c97e3f035834, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 4df12b51-5d50-417d-89a8-8b9a7c485c53 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=4df12b51-5d50-417d-89a8-8b9a7c485c53, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_orgs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/docs_review_team_0b87_127070f9719045e9adfe1def4b92acdf/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/raw_traces_manifest.json
+Closed agent session 4df12b51-5d50-417d-89a8-8b9a7c485c53
+Closed agent session 7cdd2f97-881d-40de-84fa-c97e3f035834
+Agent WebSocket disconnected: 7cdd2f97-881d-40de-84fa-c97e3f035834
+Closed PTY session 9dc64b67-a4fe-4ab6-8dfd-3444c552456d
+Terminal WebSocket disconnected: 9dc64b67-a4fe-4ab6-8dfd-3444c552456d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 5e461253-c4aa-46c8-b5c0-202e316ce208 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=5e461253-c4aa-46c8-b5c0-202e316ce208, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session 3fceccd3-19dd-42fd-a791-c60e866a7c3a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3fceccd3-19dd-42fd-a791-c60e866a7c3a
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session c0218e3d-487b-4ba4-b8f3-b60687488e66 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=c0218e3d-487b-4ba4-b8f3-b60687488e66, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/raw_traces_manifest.json
+Closed agent session 5e461253-c4aa-46c8-b5c0-202e316ce208
+Agent WebSocket disconnected: 5e461253-c4aa-46c8-b5c0-202e316ce208
+Closed agent session c0218e3d-487b-4ba4-b8f3-b60687488e66
+Closed PTY session 3fceccd3-19dd-42fd-a791-c60e866a7c3a
+Terminal WebSocket disconnected: 3fceccd3-19dd-42fd-a791-c60e866a7c3a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session b68faa7f-5519-48ff-8183-8b99292da715 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=b68faa7f-5519-48ff-8183-8b99292da715, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session 23735405-c848-4eb4-ba1c-714f31c979e1 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 23735405-c848-4eb4-ba1c-714f31c979e1
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session d343faca-461b-4565-923d-78d5adcd0d1c for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=d343faca-461b-4565-923d-78d5adcd0d1c, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/docs_review_team_0b87_a5347ce599364f02bca1526bbd529a31/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Closed PTY session 23735405-c848-4eb4-ba1c-714f31c979e1
+Terminal WebSocket disconnected: 23735405-c848-4eb4-ba1c-714f31c979e1
+Closed agent session d343faca-461b-4565-923d-78d5adcd0d1c
+Closed agent session b68faa7f-5519-48ff-8183-8b99292da715
+Agent WebSocket disconnected: b68faa7f-5519-48ff-8183-8b99292da715
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 7089b84b-11d0-41ee-9ed5-8d8da2d7a1cd for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=7089b84b-11d0-41ee-9ed5-8d8da2d7a1cd, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session 524ffb6b-9b38-4c2d-9226-4d10b262fb34 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 524ffb6b-9b38-4c2d-9226-4d10b262fb34
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session e36ecf0e-eda5-40a1-84d5-a0ec4170e1ea for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=e36ecf0e-eda5-40a1-84d5-a0ec4170e1ea, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Closed PTY session 524ffb6b-9b38-4c2d-9226-4d10b262fb34
+Terminal WebSocket disconnected: 524ffb6b-9b38-4c2d-9226-4d10b262fb34
+Closed agent session e36ecf0e-eda5-40a1-84d5-a0ec4170e1ea
+Closed agent session 7089b84b-11d0-41ee-9ed5-8d8da2d7a1cd
+Agent WebSocket disconnected: 7089b84b-11d0-41ee-9ed5-8d8da2d7a1cd
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 81ee66b7-e08b-4fa1-94c6-95065b38d95f for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=81ee66b7-e08b-4fa1-94c6-95065b38d95f, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session aaf30c06-b6fa-452f-b317-2afcf80d1140 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: aaf30c06-b6fa-452f-b317-2afcf80d1140
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 9fdaa73d-d1fb-4412-9585-1ec9bbe70133 for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=9fdaa73d-d1fb-4412-9585-1ec9bbe70133, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run release_notes_writer_0b87_c45dc7a85d824b4598a3a483825bd42b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_orgs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/raw_traces_manifest.json
+Closed agent session 9fdaa73d-d1fb-4412-9585-1ec9bbe70133
+Closed agent session 81ee66b7-e08b-4fa1-94c6-95065b38d95f
+Agent WebSocket disconnected: 81ee66b7-e08b-4fa1-94c6-95065b38d95f
+Closed PTY session aaf30c06-b6fa-452f-b317-2afcf80d1140
+Terminal WebSocket disconnected: aaf30c06-b6fa-452f-b317-2afcf80d1140
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 68f91d13-dfbb-4bd8-aed0-dc19f0639b59 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=68f91d13-dfbb-4bd8-aed0-dc19f0639b59, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created terminal session 0a650f5a-c7d9-421d-8c04-c5f7d0c1f37e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 0a650f5a-c7d9-421d-8c04-c5f7d0c1f37e
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 89e4deff-334f-42f4-9ae2-71079a66e7cf for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=89e4deff-334f-42f4-9ae2-71079a66e7cf, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Closed PTY session 0a650f5a-c7d9-421d-8c04-c5f7d0c1f37e
+Terminal WebSocket disconnected: 0a650f5a-c7d9-421d-8c04-c5f7d0c1f37e
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+Agent websocket attached for run manager_0b87_5189579de5bc403ea39636086b822628
+Created agent session 37f3dae1-a089-44ed-9659-eb7443473650 for run manager_0b87_5189579de5bc403ea39636086b822628
+Agent WebSocket connected: session=37f3dae1-a089-44ed-9659-eb7443473650, run=manager_0b87_5189579de5bc403ea39636086b822628
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run manager_0b87_5189579de5bc403ea39636086b822628: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 68f91d13-dfbb-4bd8-aed0-dc19f0639b59
+Agent WebSocket disconnected: 68f91d13-dfbb-4bd8-aed0-dc19f0639b59
+Closed agent session 37f3dae1-a089-44ed-9659-eb7443473650
+Agent WebSocket disconnected: 37f3dae1-a089-44ed-9659-eb7443473650
+Closed agent session 89e4deff-334f-42f4-9ae2-71079a66e7cf
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_5189579de5bc403ea39636086b822628/raw_traces_manifest.json
+Created terminal session 5d49e7ef-b2aa-42f0-930a-9d0941aa3c73 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5d49e7ef-b2aa-42f0-930a-9d0941aa3c73
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_0b87_5189579de5bc403ea39636086b822628
+Created agent session 957fb708-13bd-488d-9854-d170385a13b2 for run manager_0b87_5189579de5bc403ea39636086b822628
+Agent WebSocket connected: session=957fb708-13bd-488d-9854-d170385a13b2, run=manager_0b87_5189579de5bc403ea39636086b822628
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session 851e4daa-331f-4d18-bf08-01c232fb563b for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=851e4daa-331f-4d18-bf08-01c232fb563b, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session e2f33505-7f95-40bc-a183-961797c742cc for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=e2f33505-7f95-40bc-a183-961797c742cc, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Closed PTY session 5d49e7ef-b2aa-42f0-930a-9d0941aa3c73
+Terminal WebSocket disconnected: 5d49e7ef-b2aa-42f0-930a-9d0941aa3c73
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0/manager_0b87_5991d48da4644d02995d5cf9cf03a33c/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0
+Created agent session ca5bdb24-4075-4b8a-9f01-b9ad23232f20 for run delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0
+Agent Team WebSocket connected: session=ca5bdb24-4075-4b8a-9f01-b9ad23232f20, run=delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0/manager_0b87_5991d48da4644d02995d5cf9cf03a33c/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace.
+Reusing registered workspace ID: agent_ws_4902d718027850988035d1ebf6791773f6289d1e425d766fd315758c26a4a69c
+AGY compaction detection off for run manager_0b87_5991d48da4644d02995d5cf9cf03a33c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 957fb708-13bd-488d-9854-d170385a13b2
+Agent WebSocket disconnected: 957fb708-13bd-488d-9854-d170385a13b2
+Closed agent session 851e4daa-331f-4d18-bf08-01c232fb563b
+Agent WebSocket disconnected: 851e4daa-331f-4d18-bf08-01c232fb563b
+Closed agent session e2f33505-7f95-40bc-a183-961797c742cc
+Closed agent session ca5bdb24-4075-4b8a-9f01-b9ad23232f20
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_5189579de5bc403ea39636086b822628/raw_traces_manifest.json
+Created terminal session 676c3f97-5ae2-4b5b-8cc0-8db1e263c77e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 676c3f97-5ae2-4b5b-8cc0-8db1e263c77e
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_0b87_5189579de5bc403ea39636086b822628
+Created agent session 3f941565-677e-42b3-b728-1a2081c26173 for run manager_0b87_5189579de5bc403ea39636086b822628
+Agent WebSocket connected: session=3f941565-677e-42b3-b728-1a2081c26173, run=manager_0b87_5189579de5bc403ea39636086b822628
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0/manager_0b87_5991d48da4644d02995d5cf9cf03a33c/raw_traces_manifest.json
+Agent websocket attached for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Created agent session a25f5082-3b4f-4bed-8579-9553309c43a8 for run manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Agent WebSocket connected: session=a25f5082-3b4f-4bed-8579-9553309c43a8, run=manager_0b87_8edf0b76a8a94a35825ce56b69731ed5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0
+Created agent session c688e090-ce1b-4cbe-8941-b61348689fd2 for run delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0
+Agent Team WebSocket connected: session=c688e090-ce1b-4cbe-8941-b61348689fd2, run=delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0/manager_0b87_5991d48da4644d02995d5cf9cf03a33c/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Created agent session 6ed878f2-729a-4781-9e5b-e4a5fc2a4f1f for run delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Agent Team WebSocket connected: session=6ed878f2-729a-4781-9e5b-e4a5fc2a4f1f, run=delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/manager_0b87_e448ef33cc894d39b03f10c2cc4a117b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_5189579de5bc403ea39636086b822628/raw_traces_manifest.json
+Closed PTY session 676c3f97-5ae2-4b5b-8cc0-8db1e263c77e
+Terminal WebSocket disconnected: 676c3f97-5ae2-4b5b-8cc0-8db1e263c77e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/docs_review_team_0b87_a5347ce599364f02bca1526bbd529a31/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agents/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/memory/agent_teams/docs_review_team_0b87_a5347ce599364f02bca1526bbd529a31/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/raw_traces_manifest.json
+Closed agent session 6ed878f2-729a-4781-9e5b-e4a5fc2a4f1f
+Closed agent session c688e090-ce1b-4cbe-8941-b61348689fd2
+Closed agent session a25f5082-3b4f-4bed-8579-9553309c43a8
+Agent WebSocket disconnected: a25f5082-3b4f-4bed-8579-9553309c43a8
+Closed agent session 3f941565-677e-42b3-b728-1a2081c26173
+Agent WebSocket disconnected: 3f941565-677e-42b3-b728-1a2081c26173

@@ -1,0 +1,4 @@
+# DEL-02b the one DEL-02 failure, alone, 3 runs (cause: fixed wait under the concurrent web suite; FU-005)
+      Tests  20 passed (20)
+      Tests  20 passed (20)
+      Tests  20 passed (20)

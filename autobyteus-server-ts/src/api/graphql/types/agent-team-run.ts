@@ -1,4 +1,4 @@
-import { TeamScopeModelOptionsObject } from "./run-model-config.js";
+import { requiredRuntimeKind, TeamScopeModelOptionsObject } from "./run-model-config.js";
 import {
   Arg,
   Field,
@@ -44,18 +44,6 @@ export class TerminateAgentTeamRunResult {
 
   @Field(() => String)
   message!: string;
-}
-
-@ObjectType()
-export class RestoreAgentTeamRunResult {
-  @Field(() => Boolean)
-  success!: boolean;
-
-  @Field(() => String)
-  message!: string;
-
-  @Field(() => String, { nullable: true })
-  teamRunId?: string | null;
 }
 
 @InputType()
@@ -113,15 +101,22 @@ export class CreateAgentTeamRunInput {
 
   @Field(() => [TeamMemberConfigInput])
   memberConfigs!: TeamMemberConfigInput[];
+
+  @Field(() => String, { nullable: true, description: "The Project the Team run is started under; omitted for a plain run." })
+  projectId?: string | null;
 }
 
 @InputType()
-export class TeamRunModelConfigPatchInput {
+export class TeamRunSelectionPatchInput {
   @Field(() => String)
   scopeKind!: "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
 
   @Field(() => String)
   scopeAddress!: string;
+
+  /** The agent runtime to save the scope with: its own (a model edit), the previous one (undo) or another (a switch). */
+  @Field(() => String)
+  runtimeKind!: string;
 
   @Field(() => String)
   llmModelIdentifier!: string;
@@ -131,16 +126,16 @@ export class TeamRunModelConfigPatchInput {
 }
 
 @InputType()
-export class UpdateStoppedTeamRunModelConfigsInput {
+export class UpdateStoppedTeamRunSelectionsInput {
   @Field(() => String)
   teamRunId!: string;
 
-  @Field(() => [TeamRunModelConfigPatchInput])
-  patches!: TeamRunModelConfigPatchInput[];
+  @Field(() => [TeamRunSelectionPatchInput])
+  selectionPatches!: TeamRunSelectionPatchInput[];
 }
 
 @ObjectType()
-export class UpdateStoppedTeamRunModelConfigsResult {
+export class UpdateStoppedTeamRunSelectionsResult {
   @Field(() => Boolean)
   success!: boolean;
 
@@ -178,6 +173,7 @@ export class AgentTeamRunResolver {
         teamDefinitionId: input.teamDefinitionId,
         teamConfigs: input.teamConfigs,
         memberConfigs: input.memberConfigs,
+        projectId: input.projectId ?? null,
       });
       return {
         success: true,
@@ -208,44 +204,23 @@ export class AgentTeamRunResolver {
     }
   }
 
-  @Mutation(() => RestoreAgentTeamRunResult)
-  async restoreAgentTeamRun(
-    @Arg("teamRunId", () => String) teamRunId: string,
-  ): Promise<RestoreAgentTeamRunResult> {
-    try {
-      const run = await this.teamRunService.restoreTeamRun(teamRunId);
-      return {
-        success: true,
-        message: "Agent team run restored successfully.",
-        teamRunId: run.teamRunId,
-      };
-    } catch (error) {
-      logger.error(`Error restoring agent team run with ID ${teamRunId}: ${String(error)}`);
-      return {
-        success: false,
-        message: String(error),
-        teamRunId: null,
-      };
-    }
-  }
-
   @Query(() => [TeamScopeModelOptionsObject])
   teamRunModelOptions(@Arg("teamRunId", () => String) teamRunId: string): Promise<TeamScopeModelOptionsObject[]> {
     return this.runModelConfigService.teamRunModelOptions(teamRunId);
   }
 
-  @Mutation(() => UpdateStoppedTeamRunModelConfigsResult)
-  async updateStoppedTeamRunModelConfigs(
-    @Arg("input", () => UpdateStoppedTeamRunModelConfigsInput)
-    input: UpdateStoppedTeamRunModelConfigsInput,
-  ): Promise<UpdateStoppedTeamRunModelConfigsResult> {
+  @Mutation(() => UpdateStoppedTeamRunSelectionsResult)
+  async updateStoppedTeamRunSelections(
+    @Arg("input", () => UpdateStoppedTeamRunSelectionsInput)
+    input: UpdateStoppedTeamRunSelectionsInput,
+  ): Promise<UpdateStoppedTeamRunSelectionsResult> {
     try {
-      if (input.patches.some((patch) => !Object.hasOwn(patch, "llmConfig"))) {
+      if (input.selectionPatches.some((patch) => !Object.hasOwn(patch, "llmConfig"))) {
         throw new Error("Every Team patch must contain llmConfig and it may be null.");
       }
-      const result = await this.runModelConfigService.updateStoppedTeamRunModelConfigs({
+      const result = await this.runModelConfigService.updateStoppedTeamRunSelections({
         teamRunId: input.teamRunId,
-        patches: input.patches,
+        selectionPatches: input.selectionPatches.map((patch) => ({ ...patch, runtimeKind: requiredRuntimeKind(patch.runtimeKind, patch.scopeAddress) })),
       });
       return {
         success: result.success,

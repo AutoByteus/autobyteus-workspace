@@ -35,7 +35,8 @@ export class ApplicationReentryService {
       ApplicationExecutionEventDispatchService,
       "resumePendingEventsForApplication" | "suspendApplication"
     >;
-    engineLauncher: Pick<ApplicationEngineLauncher, "ensureReady" | "stop">;
+    // Reentry only stops workers; a returned application's worker starts on demand once it is ACTIVE.
+    engineLauncher: Pick<ApplicationEngineLauncher, "stop">;
     applicationAgentToolCallLifecycle: ApplicationAgentToolCallLifecycle;
   }) {}
 
@@ -71,15 +72,19 @@ export class ApplicationReentryService {
     return token;
   }
 
+  /**
+   * Returns each participant to service, as startup does: bindings recovered, ACTIVE with the worker stopped, pending
+   * events dispatched, tools open. The worker starts on demand (ensure-ready, a tool call, a pending event), when its
+   * own host calls are admitted. A current application with a setup-required detail is quarantined with it.
+   */
   async recoverParticipants(
     token: ApplicationReentryParticipantToken,
     currentApplicationIds: Iterable<string>,
-    recoverableApplicationIds: Iterable<string> = currentApplicationIds,
+    setupRequiredDetails: ReadonlyMap<string, string>,
     options: Readonly<{ recoverPreviouslyInactive?: boolean }> = {},
   ): Promise<ReadonlyMap<string, ApplicationAvailabilityRecord>> {
     this.assertToken(token);
     const current = new Set(currentApplicationIds);
-    const recoverable = new Set(recoverableApplicationIds);
     const participantByApplicationId = new Map(
       token.participants.map((participant) => [participant.applicationId, participant]),
     );
@@ -102,14 +107,12 @@ export class ApplicationReentryService {
 
     for (const applicationId of [...current].sort()) {
       const participant = participantByApplicationId.get(applicationId);
-      if (!recoverable.has(applicationId)) {
+      const setupRequired = setupRequiredDetails.get(applicationId);
+      if (setupRequired) {
         this.dependencies.applicationAgentToolCallLifecycle.close(applicationId);
         results.set(
           applicationId,
-          this.dependencies.availabilityService.quarantineApplication(
-            applicationId,
-            "Application setup is required after catalog transition.",
-          ),
+          this.dependencies.availabilityService.quarantineApplication(applicationId, setupRequired),
         );
         continue;
       }
@@ -148,11 +151,11 @@ export class ApplicationReentryService {
       }
       try {
         await this.dependencies.recoveryService.resumeApplication(applicationId);
-        await this.dependencies.engineLauncher.ensureReady(applicationId);
-        await this.dependencies.eventDispatchService
-          .resumePendingEventsForApplication(applicationId);
         const record = this.dependencies.availabilityService
           .activateApplication(applicationId);
+        // Dispatch needs ACTIVE; it starts the worker for a pending event.
+        await this.dependencies.eventDispatchService
+          .resumePendingEventsForApplication(applicationId);
         this.dependencies.applicationAgentToolCallLifecycle.open(applicationId);
         results.set(applicationId, record);
       } catch (error) {

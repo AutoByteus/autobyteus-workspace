@@ -29,11 +29,13 @@ function getSharedDispatcher(): Dispatcher {
 export function createLocalLongRunningFetch(): typeof fetch {
   if (!sharedFetch) {
     const dispatcher = getSharedDispatcher();
+    // The cast goes through `unknown` because undici's Response and the global (DOM-lib) Response are the same
+    // runtime class but different declared types when another package compiles this file under a DOM `lib`.
     sharedFetch = ((input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) =>
       undiciFetch(input as RequestInfo, {
         ...(init as LocalLongRunningRequestInit | undefined),
         dispatcher,
-      }) as ReturnType<typeof fetch>) as typeof fetch;
+      }) as unknown as ReturnType<typeof fetch>) as typeof fetch;
   }
 
   return sharedFetch;

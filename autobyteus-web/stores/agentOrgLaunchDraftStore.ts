@@ -9,7 +9,8 @@ import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
 import { resolveScopesReadiness, type LaunchReadiness } from '~/utils/runSettings/launchReadiness'
-import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
@@ -394,7 +395,7 @@ export const useAgentOrgLaunchDraftStore = defineStore('agentOrgLaunchDraft', ()
       isRuntimeEnabled: availability.hasFetched ? (runtimeKind) => availability.isRuntimeEnabled(runtimeKind) : null,
     }, {
       targetUnavailable: t('runSettings.orgLaunch.unavailable'),
-      runtimeUnavailable: (runtimeKind) => t('chat.launch.runtimeUnavailable', { runtime: runtimeKindToLabel(runtimeKind) }),
+      runtimeUnavailable: (runtimeKind) => t('chat.launch.runtimeUnavailable', { runtime: agentRuntimeName(runtimeKind) }),
       chooseModel: t('chat.launch.chooseModel'),
     })
   })

@@ -15,7 +15,7 @@
       <div class="flex items-center justify-between gap-3">
         <div>
           <h3 class="text-base font-semibold text-slate-900">{{ t('settings.components.settings.MemorySyncCard.hubTitle') }}</h3>
-          <p class="text-sm text-slate-500">{{ t('settings.components.settings.MemorySyncCard.hubDescriptionPrefix') }} <code>memory/imports/&lt;sourceNodeId&gt;</code>.</p>
+          <p class="text-sm text-slate-500">{{ t('settings.components.settings.MemorySyncCard.hubDescriptionPrefix') }} <code>memory/imports/&lt;memorySyncSourceId&gt;</code>.</p>
         </div>
         <label class="flex items-center gap-2 text-sm font-medium text-slate-700">
           <input v-model="hubForm.enabled" type="checkbox" class="rounded border-slate-300" />
@@ -57,7 +57,7 @@
           <div v-for="credential in store.status.connectionInfo.credentials" :key="credential.credentialId" class="flex flex-col gap-2 p-3 md:flex-row md:items-center md:justify-between">
             <div class="text-sm">
               <p class="font-mono text-xs text-slate-600">{{ credential.credentialId }}</p>
-              <p class="text-slate-500">{{ credential.label || t('settings.components.settings.MemorySyncCard.sourceTokenFallback') }} · {{ credential.status }}<span v-if="credential.boundSourceNodeId"> · {{ credential.boundSourceNodeId }}</span></p>
+              <p class="text-slate-500">{{ credential.label || t('settings.components.settings.MemorySyncCard.sourceTokenFallback') }} · {{ credential.status }}<span v-if="credential.boundMemorySyncSourceId"> · {{ credential.boundMemorySyncSourceId }}</span></p>
             </div>
             <div class="flex gap-2">
               <button class="rounded border border-slate-300 px-2 py-1 text-xs" @click="store.regenerateCredential(credential.credentialId)">{{ t('settings.components.settings.MemorySyncCard.regenerate') }}</button>
@@ -71,9 +71,9 @@
         <h4 class="text-sm font-semibold text-slate-900">{{ t('settings.components.settings.MemorySyncCard.importedSources') }}</h4>
         <div v-if="store.status.imports.length === 0" class="mt-2 text-sm text-slate-500">{{ t('settings.components.settings.MemorySyncCard.noImportedMemoryYet') }}</div>
         <div v-else class="mt-2 grid gap-2 md:grid-cols-2">
-          <NuxtLink v-for="item in store.status.imports" :key="item.sourceNodeId" class="rounded-lg border border-slate-200 p-3 text-sm hover:border-blue-300 hover:bg-blue-50" :to="`/memory?source=imported:${encodeURIComponent(item.sourceNodeId)}`">
-            <p class="font-semibold text-slate-900">{{ item.displayName || item.sourceNodeId }}</p>
-            <p class="font-mono text-xs text-slate-500">{{ item.sourceNodeId }}</p>
+          <NuxtLink v-for="item in store.status.imports" :key="item.memorySyncSourceId" class="rounded-lg border border-slate-200 p-3 text-sm hover:border-blue-300 hover:bg-blue-50" :to="`/memory?source=imported:${encodeURIComponent(item.memorySyncSourceId)}`">
+            <p class="font-semibold text-slate-900">{{ item.displayName || item.memorySyncSourceId }}</p>
+            <p class="font-mono text-xs text-slate-500">{{ item.memorySyncSourceId }}</p>
             <p class="mt-1 text-xs text-slate-500">{{ item.fileCount }} {{ t('settings.components.settings.MemorySyncCard.files') }} · {{ formatBytes(item.totalBytes) }}<span v-if="item.lastImportedAt"> · {{ formatTimestamp(item.lastImportedAt) }}</span></p>
           </NuxtLink>
         </div>
@@ -93,8 +93,8 @@
       </div>
 
       <div class="mt-4 grid gap-3 md:grid-cols-2">
-        <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.sourceNodeId') }}
-          <input v-model="sourceForm.sourceNodeId" data-testid="memory-sync-source-node-id" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" placeholder="docker-node-1" />
+        <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.memorySyncSourceId') }}
+          <input v-model="sourceForm.memorySyncSourceId" data-testid="memory-sync-source-id" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm" placeholder="docker-node-1" />
         </label>
         <label class="text-sm font-medium text-slate-700">{{ t('settings.components.settings.MemorySyncCard.displayName') }}
           <input v-model="sourceForm.displayName" data-testid="memory-sync-display-name" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
@@ -136,6 +136,16 @@
         <p data-testid="memory-sync-current-job"><span class="font-medium text-slate-800">{{ t('settings.components.settings.MemorySyncCard.currentJob') }}:</span> {{ currentJobText }}</p>
         <p data-testid="memory-sync-last-sync" :class="lastSyncStatusClass"><span class="font-medium text-slate-800">{{ t('settings.components.settings.MemorySyncCard.lastSync') }}:</span> {{ lastSyncText }}</p>
       </div>
+
+      <div v-if="fileFailureCount > 0" data-testid="memory-sync-file-failures" class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800" role="status">
+        <p class="font-semibold" data-testid="memory-sync-file-failures-title">{{ fileFailuresTitle }}</p>
+        <ul class="mt-1 space-y-1">
+          <li v-for="failure in fileFailures" :key="`${failure.kind}/${failure.relativePath}`" data-testid="memory-sync-file-failure" class="break-words text-xs">
+            <span class="break-all font-mono">{{ failure.kind }}/{{ failure.relativePath }}</span> · {{ formatBytes(failure.size) }} · {{ failure.reason }} · {{ t('settings.components.settings.MemorySyncCard.nextAttempt') }} {{ formatTimestamp(failure.nextAttemptAt) }}
+          </li>
+        </ul>
+        <p v-if="hiddenFileFailureCount > 0" data-testid="memory-sync-file-failures-more" class="mt-1 text-xs">{{ t('settings.components.settings.MemorySyncCard.fileFailuresMore', { count: hiddenFileFailureCount }) }}</p>
+      </div>
     </section>
   </div>
 </template>
@@ -151,11 +161,11 @@ const props = defineProps<{
 }>();
 
 const store = useMemorySyncStore();
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 const hubForm = reactive({ enabled: false, advertisedHubBaseUrl: '' });
 const sourceForm = reactive({
   enabled: false,
-  sourceNodeId: '',
+  memorySyncSourceId: '',
   displayName: '',
   hubBaseUrl: '',
   hubToken: '',
@@ -190,7 +200,7 @@ function hydrateHubFormFromStatus() {
 
 function hydrateSourceFormFromStatus() {
   sourceForm.enabled = store.status.source.enabled;
-  sourceForm.sourceNodeId = store.status.source.sourceNodeId || '';
+  sourceForm.memorySyncSourceId = store.status.source.memorySyncSourceId || '';
   sourceForm.displayName = store.status.source.displayName || props.nodeName || '';
   sourceForm.hubBaseUrl = store.status.source.hubBaseUrl || '';
   sourceForm.hubToken = '';
@@ -239,7 +249,7 @@ async function testConnection() {
     await store.testConnection({
       mode: 'draft',
       hubBaseUrl: sourceForm.hubBaseUrl,
-      sourceNodeId: sourceForm.sourceNodeId,
+      memorySyncSourceId: sourceForm.memorySyncSourceId,
       token,
     });
     return;
@@ -269,6 +279,16 @@ const lastSyncText = computed(() => {
   }
   return t('settings.components.settings.MemorySyncCard.notSyncedYet');
 });
+
+const fileFailureCount = computed(() => store.status.sourceState?.fileFailureCount ?? 0);
+const fileFailures = computed(() => store.status.sourceState?.fileFailures ?? []);
+const hiddenFileFailureCount = computed(() => Math.max(fileFailureCount.value - fileFailures.value.length, 0));
+const fileFailuresTitle = computed(() => t(
+  fileFailureCount.value === 1
+    ? 'settings.components.settings.MemorySyncCard.fileFailuresTitleOne'
+    : 'settings.components.settings.MemorySyncCard.fileFailuresTitle',
+  { count: fileFailureCount.value },
+));
 
 const lastSyncStatusClass = computed(() => {
   if (lastSyncState.value === 'error') return 'text-red-700';
@@ -303,7 +323,7 @@ const connectionTestMessage = computed(() => store.connectionTestResult?.message
 const connectionTestMeta = computed(() => {
   const result = store.connectionTestResult;
   if (!result) return '';
-  const parts = [result.hubBaseUrl, result.sourceNodeId, formatTimestamp(result.testedAt)].filter(Boolean);
+  const parts = [result.hubBaseUrl, result.memorySyncSourceId, formatTimestamp(result.testedAt)].filter(Boolean);
   return parts.join(' · ');
 });
 const connectionTestFlags = computed(() => {
@@ -324,13 +344,14 @@ const formatBoolean = (value?: boolean | null) => {
 const formatTimestamp = (value?: string | null) => {
   if (!value) return '—';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString(resolvedLocale.value);
 };
 
 const formatBytes = (value: number) => {
   if (!Number.isFinite(value)) return '0 B';
   if (value < 1024) return `${value} B`;
   if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
-  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+  if (value < 1024 * 1024 * 1024) return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(value / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 </script>

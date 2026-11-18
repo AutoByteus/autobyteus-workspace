@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { EMBEDDED_NODE_ID } from '~/types/node';
+import { EMBEDDED_ENTRY_ID } from '~/types/node';
 import { useWindowNodeContextStore } from '../windowNodeContextStore';
 
 describe('windowNodeContextStore', () => {
@@ -12,7 +12,7 @@ describe('windowNodeContextStore', () => {
 
   it('defaults to embedded context', () => {
     const store = useWindowNodeContextStore();
-    expect(store.nodeId).toBe(EMBEDDED_NODE_ID);
+    expect(store.entryId).toBe(EMBEDDED_ENTRY_ID);
     expect(store.bindingRevision).toBe(0);
     expect(store.isEmbeddedWindow).toBe(true);
     expect(store.boundEndpoints.rest).toMatch(/^https?:\/\/.+\/rest$/);
@@ -24,14 +24,14 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 42,
-        nodeId: 'remote-node-1',
+        entryId: 'remote-node-1',
       },
       'https://node.example.com',
     );
 
     expect(store.initialized).toBe(true);
     expect(store.windowId).toBe(42);
-    expect(store.nodeId).toBe('remote-node-1');
+    expect(store.entryId).toBe('remote-node-1');
     expect(store.bindingRevision).toBe(1);
     expect(store.isEmbeddedWindow).toBe(false);
     expect(store.getBoundEndpoints().graphqlHttp).toBe('https://node.example.com/graphql');
@@ -44,7 +44,7 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 1,
-        nodeId: 'remote-node-4',
+        entryId: 'remote-node-4',
       },
       'https://node-a.example.com',
     );
@@ -54,7 +54,7 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 1,
-        nodeId: 'remote-node-4',
+        entryId: 'remote-node-4',
       },
       'https://node-a.example.com',
     );
@@ -70,7 +70,7 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 7,
-        nodeId: 'remote-node-2',
+        entryId: 'remote-node-2',
       },
       'http://127.0.0.1:8000',
     );
@@ -94,7 +94,7 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 8,
-        nodeId: 'remote-node-3',
+        entryId: 'remote-node-3',
       },
       'http://127.0.0.1:8001',
     );
@@ -179,7 +179,7 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 10,
-        nodeId: 'remote-node-5',
+        entryId: 'remote-node-5',
       },
       'http://127.0.0.1:8010',
     );
@@ -215,7 +215,7 @@ describe('windowNodeContextStore', () => {
     store.initializeFromWindowContext(
       {
         windowId: 9,
-        nodeId: 'remote-node-4',
+        entryId: 'remote-node-4',
       },
       'http://127.0.0.1:8002',
     );

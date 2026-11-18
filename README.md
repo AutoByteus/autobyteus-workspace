@@ -63,9 +63,9 @@ Full guide:
 
 ## Phone Access / Remote Access
 
-AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes support stable private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs; Tailscale Serve HTTPS remains the recommended setup for Android, iOS, and travel use.
+AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a trusted Local LAN. The desktop flow lives in **Nodes -> Phone Setup**: the panel shows the ways to connect (Same Wi-Fi or LAN, Tailscale, Your VPN, Company address) as tabs, works out and checks the phone-reachable address itself, and one press on **Show QR code** makes a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. The local Wi-Fi/LAN is used only after a once-per-network "Allow phones on this network?"; Tailscale is the recommended way for a phone that travels. On the phone, AutoByteus Android scans the QR and connects with no other input, keeps several nodes under their own names, and switches between them from inside a node's page.
 
-For remote-node Phone Access, create or open the current AutoByteus node in its own desktop window, then create the QR with a phone-facing private-network `/mobile` URL that the phone can reach and that maps to that same node. HTTPS is preferred; trusted private HTTP requires explicit cleartext acknowledgement, and public HTTP or local-only hosts are rejected. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/iOS/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md), [`docs/android_mobile_access.md`](docs/android_mobile_access.md), and [`docs/ios_mobile_access.md`](docs/ios_mobile_access.md).
+For a Docker node or a node on another machine, open it in its own desktop window and use the same Phone Setup panel; every address in a QR is checked to reach that same node, and public HTTP or local-only hosts are rejected. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/iOS/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md), [`docs/android_mobile_access.md`](docs/android_mobile_access.md), and [`docs/ios_mobile_access.md`](docs/ios_mobile_access.md).
 
 User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
 
@@ -80,7 +80,7 @@ node from **Nodes -> Memory Sync**:
 - copy the backend-generated `mhub_...` source token when it is created or
   regenerated, because plaintext tokens are shown only once;
 - open each Docker, Kubernetes, or remote source node in its own node-bound
-  window, set a stable `sourceNodeId`, paste the hub URL/token, and run
+  window, set a stable `memorySyncSourceId`, paste the hub URL/token, and run
   **Test connection** before **Sync now** or background sync.
 
 On a source node, **Test connection** reports its result inline beside the
@@ -94,7 +94,7 @@ success timestamp still exists.
 
 The hub keeps local runtime memory in `memory/agents` and `memory/agent_teams`
 unchanged. Imported source corpora are stored separately under
-`memory/imports/<sourceNodeId>/` and appear in the Memory page source selector as
+`memory/imports/<memorySyncSourceId>/` and appear in the Memory page source selector as
 read-only imported memory. Imported memory is for browsing and future analysis;
 it is not local runnable state and does not enable restore/continue/delete
 actions.
@@ -144,13 +144,24 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then
 `autobyteus-server-1`, then `autobyteus-server-2`, and so on. Fresh indexed
-nodes prefer friendly sequential ports when those ports are free: server-0 uses
-Backend/VNC/noVNC/debug ports `8001`/`5908`/`6080`/`9228`, server-1 uses
-`8002`/`5909`/`6081`/`9229`, server-2 uses
-`8003`/`5910`/`6082`/`9230`, and later nodes continue the same offsets. If a
-preferred port is unavailable, that service uses a safe random fallback port.
+nodes prefer friendly sequential Backend ports when those ports are free:
+server-0 uses `8001`, server-1 `8002`, server-2 `8003`, and later nodes continue
+the same offsets. If a preferred port is unavailable, the node uses a safe
+random fallback port.
 Existing nodes keep their saved ports during normal inspect/start paths unless
 those ports become unavailable and the launcher must recreate with fresh ports.
+
+Each node publishes one host port: its Backend port, on every network
+interface (other devices add the node with it). The desktop app's VNC Viewer
+shows the node's desktop through that same Backend address
+(`/ws/node-desktop`), so it works for a node on this computer, another machine
+or a cloud VM; View only is the default and the node enforces it. The node's
+VNC (container port 5900), websockify (6080) and Chrome DevTools (9223) ports
+are not published, so a VNC app or `chrome://inspect` does not reach a node
+from outside it. Nodes created by an earlier launcher keep their old port
+publishing until you run `autobyteus-docker upgrade --all` (or
+`autobyteus-docker workspace apply`); the launcher then recreates each node
+once, keeping its Backend port and its named volumes.
 
 Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then open
 that Docker node window only over a trusted LAN, VPN, tailnet, or equivalent
@@ -164,7 +175,9 @@ container itself.
 For managed containers, the public launcher keeps private Docker named volumes
 outside the container writable layer:
 `<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`
-stays mounted at `/root`, `<node>-chromium-profile` stays mounted at
+stays mounted at `/root`, `<node>-server-packages` stays mounted at
+`/home/autobyteus/server-packages` (server packages and their state),
+`<node>-chromium-profile` stays mounted at
 `/home/vncuser/.config/chromium` for private Chromium browser profile state,
 and `<node>-workspace` stays mounted at `/app/autobyteus-server-ts/workspace`.
 It also creates a host-visible shared workspace root outside the source tree:
@@ -219,8 +232,6 @@ Backend: printed by the launcher, usually http://localhost:8001
 GraphQL: <Backend>/graphql
 REST:    <Backend>/rest/*
 WS:      ws://localhost:<Backend port>/ws/...
-noVNC:   printed by the launcher, usually http://localhost:6080
-VNC:     printed by the launcher, usually localhost:5908
 ```
 
 Upgrade every managed Docker node while keeping named volumes. A plain upgrade
@@ -230,6 +241,14 @@ on `latest-zh`):
 
 ```bash
 autobyteus-docker upgrade --all
+```
+
+Update the server inside a running node, without a new image or container
+(see [the Docker guide](autobyteus-server-ts/docker/README.md) for tracks and
+refusals):
+
+```bash
+autobyteus-docker update [--name <node> | --all] [--version <X.Y.Z>]
 ```
 
 To intentionally retarget every managed node to a new tag or image, make that
@@ -395,6 +414,11 @@ available:
 
 - Backend: `http://127.0.0.1:8000`
 - Frontend: `http://127.0.0.1:3000`
+
+The launcher sets the backend's `AUTOBYTEUS_ALLOWED_ORIGINS` to the frontend's
+origins (`http://127.0.0.1:3000` and `http://localhost:3000`) and replaces any
+other value, so the development backend refuses a page from another local
+port.
 
 Development state persists under
 `<repo>/.autobyteus/development/server-data/` (database, vault key, logs,

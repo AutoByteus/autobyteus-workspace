@@ -1,0 +1,38 @@
+# IMP-09a — rendered check, round 1 (found two defects, fixed in 2c4ba2c51e)
+# command: pnpm --silent isolated-app start --from-worktree --data-root /tmp/pps-render/data-root (instance iso-52066-32e2),
+#          driven through the browser-automation CLI attached to its control port (BROWSER_AUTOMATION_ATTACH_ONLY=1)
+# commit: the app was built from the working tree of f9b3e27297 before its last server change (the feed composition taking the
+#         host definition services, a refactor with the same behavior); the UI sources equal f9b3e27297
+# environment: macOS arm64, packaged AutoByteus 1.5.12-beta.10 (worktree build), test-owned data root /tmp/pps-render/data-root,
+#              test-owned fixture package /tmp/pps-render/pps-render-agents (a git repository)
+# date: 2026-11-09
+
+Observed (copied from the probe output and the files):
+
+1. Import of the fixture package as a local path: "Agent package imported." (1 shared agent, 1 team-local agent, 1 Team).
+2. Agent editor: note "Tools, skills, avatar and runtime/model are your personal settings on this computer. Package updates
+   keep them." (screenshot IMP-09a-agent-edit-before.png). Added get_handoff_rules, Update:
+   package git status: [] ; personal-settings.json: {"agent:pps-designer": {"toolsAdded": ["get_handoff_rules"]}}
+3. Reopened: Tools mark "Personal / Reset to the package's setting" (IMP-09a-agent-tools-personal.png).
+4. DEFECT 1: typed a description (unsaved), pressed the Tools reset: tools went back to [read_file, write_file] and the
+   record was removed ({}), but the description field showed the loaded text again — the unsaved edit was lost.
+   Cause: the reset is announced, the agent list reloads, and the same definition arrives after the reset finished; the
+   form's deep watcher refilled every field. Fixed in 2c4ba2c51e (the editors refill only when the loaded values changed);
+   re-checked in IMP-09b step 3.
+5. DEFECT 2: Team editor, uploaded an avatar, Update: personal-settings.json got {"agent_team:pps-team": {"avatarUrl": …}},
+   but package git status: [ M agent-teams/pps-team/team-config.json  M agent-teams/pps-team/team.md ] (formatting only:
+   the writer's JSON layout, and team.md lost its final newline). Cause: AgentTeamDefinitionForm sends
+   instructions.trim(); team.md's instructions end with "\n", so the comparison always saw a change. Fixed in 2c4ba2c51e
+   (text equal to the files' up to surrounding whitespace keeps the files' text); unit test
+   personal-settings-write-forms.test.ts "an avatar-only save writes no file" now sends the trimmed payload and fails
+   without the fix; re-checked in IMP-09b step 4. The fixture was restored with git checkout afterwards.
+6. Org editor: avatar upload, Save: package git status: [] ; personal-settings.json gained
+   {"agent_org:pps-org": {"avatarUrl": …}}; the note and the avatar mark show under the avatar editor
+   (IMP-09a-org-avatar-personal.png). Reset: the record was removed, "Remove image" no longer shown, package git status: [].
+7. Daily Assistant (built-in): note "… Restarts and AutoByteus updates keep them."; removed read_file, Update: its
+   agent-config.json and agent.md hashes unchanged (e58c3e89…, eb21bcfd…); record {"toolsRemoved": ["read_file"]}.
+   After `isolated-app restart`: read_file still absent; mark "Personal / Reset to the built-in setting"
+   (IMP-09a-builtin-after-restart.png).
+
+Not a defect of this change: the uploaded avatar's preview image does not load in the packaged window (Team and Org
+editors show initials); the URL is stored as before.

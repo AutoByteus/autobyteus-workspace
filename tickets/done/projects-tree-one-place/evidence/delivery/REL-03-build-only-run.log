@@ -1,0 +1,10 @@
+# REL-03 build-only release run on personal c3eccdd925 (pnpm release:test --ref personal), 2026-10-31T22:34:18Z
+Run 41246798805 (workflow_dispatch, headSha c3eccdd925cc91c2d28c86f7da3afb75c197c825)
+conclusion: success
+Resolve Release Metadata: success
+Build Linux ARM64: success
+Build macOS Intel x64: success
+Build Linux x64: success
+Build Windows x64: success
+Build macOS ARM64: success
+Publish GitHub Release: skipped

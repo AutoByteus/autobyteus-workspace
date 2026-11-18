@@ -1,0 +1,23 @@
+# API-14 static route response headers (curl -s -D - -o /dev/null <node>/rest/workspaces/<agent_ws id>/static/<file>), isolated instance iso-50112-c4ac, 2026-11-07T05:01:45Z
+== hostile.html
+HTTP/1.1 200 OK
+content-security-policy: sandbox allow-scripts
+content-type: text/html
+== classic.js
+HTTP/1.1 200 OK
+content-security-policy: sandbox allow-scripts
+content-type: text/javascript
+== style.css
+HTTP/1.1 200 OK
+content-security-policy: sandbox allow-scripts
+content-type: text/css
+== pixel.png
+HTTP/1.1 200 OK
+content-security-policy: sandbox allow-scripts
+content-type: image/png
+== missing.html
+HTTP/1.1 404 Not Found
+content-type: application/json; charset=utf-8
+== /content?path=hostile.html (left alone, FU-002)
+HTTP/1.1 200 OK
+content-type: text/html

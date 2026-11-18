@@ -1,0 +1,472 @@
+{
+  "startedAt": "2026-11-08T03:44:50.383Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 57177,
+      "nodeId": "srv_iNVqYs3tUzcdgKPxDNR2DSgpXQuxYIj6",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 57176,
+      "nodeId": "srv_aEuGAs2s65oL9vQceFUt1V6WoVUwZGbl",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_afb65b1753104606a2416b9a0c63910d",
+    "writerRun": "release_notes_writer_991a88e8e7cf49d79db1f1a83fc4daa5",
+    "squadRun": "docs_review_team_8f4f183e984c4afb89cbdb0a030f1d8f",
+    "reviewer": "release_notes_writer_c55e5dd1d14f47b7913073bc9d002592",
+    "memberDelegated": "fact_checker_67bd4e8a9e7c460e85a4aaa4fd968eac",
+    "remoteAgentRun": "publisher_5ef5cca16a264f42b007a397808baa52",
+    "remoteTeamRun": "studio_team_05b17f9cd10c4958bac1081b8d2b35b7",
+    "plain": [
+      "fact_checker_983d437a83334d21aa433f6f735cb2a6",
+      "fact_checker_63268e220e2e4ab5b538c8a33c11d3e1",
+      "fact_checker_8e930dd79ad5406bb55fe23ffdb82694"
+    ],
+    "org": "delivery_org_0ed45d31bc2a4470be587269b5d77aa5",
+    "orgPlanner": "release_notes_writer_d51e7335fca44339bdb29e4cf3ffc1b7",
+    "reviewOrg": "review_org_d0bd61b4e92c49be8ae6dd31d047d62e",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_483e78d80ae249c39f1342bdae815dfb",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_7be317abdd1a442bab4d446d3b1604c2",
+    "deliveryLead": "fact_checker_acce7b5937d64dc393ddea20ae9cf744",
+    "deliveryMate": "release_notes_writer_9782260819f14d149a3fc20654aae01a",
+    "leadDelegated": "changelog_helper_242e86951f714e4f81c8df9523a9aec0",
+    "approver": "approver_c6a8c09ad23f4e469e8ad49711ef5c2b",
+    "taskA": "launch-8f5caa-1",
+    "taskB": "launch-8f5caa-2"
+  },
+  "cases": {
+    "MSP-02": {
+      "result": "Pass",
+      "seconds": 20.1,
+      "phonePlace": {
+        "lead": 1,
+        "leadDelegated": 1
+      },
+      "desktopPlace": {
+        "lead": null,
+        "leadDelegated": 16,
+        "reviewer": 16,
+        "reviewerDelegated": 16
+      },
+      "phoneTitles": {
+        "writer": "Write the release notes.",
+        "squad": "Review the docs site.",
+        "spare": "Spare work. Marker SPARE.",
+        "leadDelegated": "Draft the changelog. Marker LEAD-DELEGATED."
+      },
+      "memberTitles": {
+        "lead": null,
+        "mate": null,
+        "reviewer": null,
+        "editor": null
+      },
+      "desktopTitles": {
+        "writer": [
+          "RN",
+          "release notes writer",
+          "Write the release notes."
+        ],
+        "spare": [
+          "CH",
+          "changelog helper",
+          "Spare work. Marker SPARE."
+        ],
+        "leadDelegated": [
+          "CH",
+          "changelog helper",
+          "Draft the changelog. Marker LEAD-DELEGATED."
+        ]
+      },
+      "liveStatuses": [
+        "idle",
+        "offline"
+      ],
+      "terminated": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      },
+      "unselected": {
+        "seen": [
+          "idle",
+          "offline"
+        ],
+        "changeMs": 2155,
+        "terminated": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "afterRootOpened": "offline"
+      },
+      "reloaded": false,
+      "ptm": {
+        "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_...",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Project Task Manager, CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_..., Idle"
+      },
+      "writer": {
+        "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d/agent:release_notes_writer_991a88e8e7cf49d79db1f1a83fc4daa5",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "release notes writer",
+        "title": "Write the release notes.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "release notes writer, Write the release notes., Idle"
+      },
+      "squad": {
+        "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d/team:docs_review_team_8f4f183e984c4afb89cbdb0a030f1d8f",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "idle",
+        "name": "docs review team",
+        "title": "Review the docs site.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "docs review team, Review the docs site., Idle"
+      },
+      "members": [
+        {
+          "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d/agent:release_notes_writer_c55e5dd1d14f47b7913073bc9d002592",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "reviewer",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "reviewer, Idle"
+        },
+        {
+          "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d/agent:fact_checker_dfe3fd24d2ae44db9a239a25572f7122",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "offline",
+          "name": "editor",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "editor, Stopped"
+        }
+      ],
+      "remoteAgent": {
+        "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d/agent:publisher_5ef5cca16a264f42b007a397808baa52",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "offline",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Stopped"
+      },
+      "remoteTeam": {
+        "key": "agent:project_task_manager_afb65b1753104606a2416b9a0c63910d/team:studio_team_05b17f9cd10c4958bac1081b8d2b35b7",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "offline",
+        "name": "studio team",
+        "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Stopped"
+      },
+      "team": {
+        "teamRow": {
+          "key": "team:delivery_team_7be317abdd1a442bab4d446d3b1604c2",
+          "depth": 0,
+          "expanded": "false",
+          "current": null,
+          "status": "idle",
+          "name": "Delivery Team",
+          "title": "GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-Pq8FsZ...",
+          "chip": null,
+          "unreachable": false,
+          "age": "now",
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "Delivery Team, GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-Pq8FsZ..., Idle"
+        },
+        "lead": {
+          "key": "team:delivery_team_7be317abdd1a442bab4d446d3b1604c2/agent:fact_checker_acce7b5937d64dc393ddea20ae9cf744",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "lead",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "lead, Idle"
+        },
+        "mate": {
+          "key": "team:delivery_team_7be317abdd1a442bab4d446d3b1604c2/agent:release_notes_writer_9782260819f14d149a3fc20654aae01a",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "mate",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "mate, Idle"
+        },
+        "leadDelegatedNested": null
+      },
+      "orgRow": {
+        "key": "org:delivery_org_0ed45d31bc2a4470be587269b5d77aa5",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "running",
+        "name": "Delivery Org",
+        "title": "Plan the delivery. Marker ORG-PLANNER.",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Delivery Org, Plan the delivery. Marker ORG-PLANNER., Running"
+      },
+      "orgMembers": [
+        "planner",
+        "squad"
+      ],
+      "teamRows": [
+        [
+          "Delivery Team",
+          0
+        ],
+        [
+          "lead",
+          1
+        ],
+        [
+          "mate",
+          1
+        ],
+        [
+          "changelog helper",
+          1
+        ]
+      ]
+    },
+    "MSP-12": {
+      "result": "Fail",
+      "seconds": 69,
+      "error": "the delegated rows' status read rides the list poll only: none on the run screen, a view or while hidden (autobyteus-426 D-09, AC-009c)",
+      "details": {
+        "list": 0,
+        "run": 0,
+        "view": 0,
+        "hidden": 0,
+        "shown again": 0
+      }
+    },
+    "MSP-20": {
+      "result": "Fail",
+      "seconds": 80.9,
+      "error": "idle again shows within ≤ 2 polls on the desktop and one on the phone",
+      "details": {
+        "hub": "status_hub_e6d859f9e195472393193c81701d05de",
+        "childA": "changelog_helper_d03294c0b86d4cbda7720ccb14bb6468",
+        "childB": "release_notes_writer_35f25a7cd9d84372af8723899321a1f9",
+        "childC": "changelog_helper_94bbe32e1b264def9e30b32eec728e6a",
+        "quiet": {
+          "desktopStatusReads": 3,
+          "desktopViewReads": 0,
+          "phoneStatusReads": 3,
+          "phoneViewReads": 0,
+          "desktopStatusBytes": [
+            {
+              "bytes": 1647,
+              "statuses": 7,
+              "hubBytes": 511,
+              "hubStatuses": 2,
+              "runIds": 2
+            },
+            {
+              "bytes": 1647,
+              "statuses": 7,
+              "hubBytes": 511,
+              "hubStatuses": 2,
+              "runIds": 2
+            },
+            {
+              "bytes": 1647,
+              "statuses": 7,
+              "hubBytes": 511,
+              "hubStatuses": 2,
+              "runIds": 2
+            }
+          ],
+          "phoneStatusBytes": [
+            556,
+            556,
+            556
+          ],
+          "hubInDesktopRead": true,
+          "hubInPhoneRead": true
+        },
+        "running": {
+          "label": "child A running",
+          "want": "running",
+          "nodeMs": 17,
+          "desktopAfterNodeMs": 2919,
+          "phoneAfterNodeMs": 1275,
+          "desktopViewReads": 0,
+          "phoneViewReads": 0,
+          "desktopStatusReads": 1,
+          "phoneStatusReads": 1
+        },
+        "idleAgain": {
+          "label": "child A idle again",
+          "want": "idle",
+          "nodeMs": null,
+          "desktopAfterNodeMs": null,
+          "phoneAfterNodeMs": null,
+          "desktopViewReads": 0,
+          "phoneViewReads": 0,
+          "desktopStatusReads": 4,
+          "phoneStatusReads": 4
+        },
+        "openRun": {
+          "url": "/chat?id=status_hub_e6d859f9e195472393193c81701d05de",
+          "statusReads": 2,
+          "hubInRead": 0
+        },
+        "third": {
+          "childC": "changelog_helper_94bbe32e1b264def9e30b32eec728e6a",
+          "desktopAfterNodeMs": 5307,
+          "phoneAfterNodeMs": 3478,
+          "desktopViewReads": 1,
+          "phoneViewReads": 1
+        },
+        "stop": {
+          "success": true,
+          "desktopOfflineMs": 2301,
+          "phoneOfflineMs": 650,
+          "desktopViewReads": 1,
+          "phoneViewReads": 1,
+          "finalDesktop": [
+            "offline",
+            "offline",
+            "offline"
+          ],
+          "finalPhone": [
+            "offline",
+            "offline",
+            "offline"
+          ]
+        }
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {
+    "historyReads": 14
+  },
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-02": "Pass",
+      "MSP-12": "Fail",
+      "MSP-20": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-08T03:48:16.489Z"
+}

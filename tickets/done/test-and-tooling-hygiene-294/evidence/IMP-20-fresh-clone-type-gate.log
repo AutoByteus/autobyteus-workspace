@@ -1,0 +1,77 @@
+# IMP-20 the web type gate on a fresh clone with no prior build (delivery packaging Local Fix, REQ-007/AC-009)
+# clone: git clone --branch codex/test-and-tooling-hygiene-294 <worktree> /tmp/h294/fresh; pnpm install --frozen-lockfile (no dist/ except the three committed contract packages)
+# commits: 4c34e5b71d (beta.14, before) and 340cee3763 (fix)
+# environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# date: 2026-10-28T06:42:36Z
+
+== 1. before the fix (4c34e5b71d): pnpm -C autobyteus-web typecheck (CI failure reproduced)
+[typecheck] production errors: 23; test-file errors: 296 in 141 files (baseline 298 in 139 files)
+[typecheck] FAIL
+TS2307 '@autobyteus/application-sdk-contracts' lines: 19
+components/applications/ApplicationIframeHost.vue(21,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+components/applications/ApplicationLaunchSetupPanel.vue(206,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+components/applications/ApplicationSurface.vue(94,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+
+== 2. with the fix (340cee3763), same state: pnpm -C autobyteus-web typecheck
+> autobyteus@1.5.9-beta.14 typecheck /private/tmp/h294/fresh/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+> autobyteus@1.5.9-beta.14 prepare:shared-types /private/tmp/h294/fresh/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+> @autobyteus/application-sdk-contracts@0.1.0 build /private/tmp/h294/fresh/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+
+== 3. git clean -fdx -e node_modules; pnpm -C autobyteus-web build:electron:mac (release job order)
+> autobyteus@1.5.9-beta.14 build:electron:mac /private/tmp/h294/fresh/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+> autobyteus@1.5.9-beta.14 guard:web-boundary /private/tmp/h294/fresh/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.9-beta.14 guard:localization-boundary /private/tmp/h294/fresh/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+> autobyteus@1.5.9-beta.14 audit:localization-literals /private/tmp/h294/fresh/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+[audit:localization-literals] Passed with zero unresolved findings.
+> autobyteus@1.5.9-beta.14 typecheck /private/tmp/h294/fresh/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+> autobyteus@1.5.9-beta.14 prepare:shared-types /private/tmp/h294/fresh/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+> @autobyteus/application-sdk-contracts@0.1.0 build /private/tmp/h294/fresh/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 36.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+> autobyteus@1.5.9-beta.14 prepare-server /private/tmp/h294/fresh/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/h294/fresh/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/h294/fresh/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+> autobyteus-server-ts@0.1.1 build /private/tmp/h294/fresh/autobyteus-server-ts
+> pnpm run build:full
+> autobyteus-server-ts@0.1.1 build:full /private/tmp/h294/fresh/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+> autobyteus@1.5.9-beta.14 build:mobile-web /private/tmp/h294/fresh/autobyteus-web
+> node ./scripts/build-mobile-web.mjs
+> autobyteus@1.5.9-beta.14 generate /private/tmp/h294/fresh/autobyteus-web
+> nuxt generate
+> autobyteus@1.5.9-beta.14 generate:electron /private/tmp/h294/fresh/autobyteus-web
+> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+> autobyteus@1.5.9-beta.14 transpile-electron /private/tmp/h294/fresh/autobyteus-web
+> tsc -p electron/tsconfig.json
+... the chain then ran prepare-server (server prebuild/build), generate:electron, transpile-electron, tsc -p build/tsconfig.json; it stopped at node build/dist/build.js --mac:
+        throw new Error('Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.');
+(the clone's origin is a local path; CI provides GITHUB_REPOSITORY)
+
+== 4. final step as CI provides it: GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace NODE_ENV=production node build/dist/build.js --mac (unsigned, publish never)
+first attempt: exit 1; hdiutil resize failed with errno 35 (resource temporarily unavailable) on this host: 14 lines; zip was produced
+retry: exit 0; hdiutil failures: 0
+AutoByteus_enterprise_macos-arm64-1.5.9-beta.14.dmg
+AutoByteus_enterprise_macos-arm64-1.5.9-beta.14.zip

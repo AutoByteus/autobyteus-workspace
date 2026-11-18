@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+// Temporary API/E2E runner (autobyteus-294, API-20): runs every tracked server E2E file on its own with
+// `vitest run <file>`, in the environment it is started with, one at a time, with a per-file deadline, so a
+// hanging file is named and cannot stall the rest. Appends one line per file to the summary file and keeps
+// each file's full output under <logDir>.
+// Usage: node run-e2e-per-file.mjs <serverDir> <summaryFile> <logDir> <deadlineMs> [startIndex]
+import { spawn, execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const [serverDir, summaryFile, logDir, deadlineArg, startArg] = process.argv.slice(2);
+const deadlineMs = Number(deadlineArg);
+const startIndex = Number(startArg ?? 0);
+fs.mkdirSync(logDir, { recursive: true });
+const files = execFileSync('git', ['ls-files', 'tests/e2e/**/*.test.ts'], { cwd: serverDir, encoding: 'utf8' })
+  .split('\n').filter(Boolean).sort();
+const append = (line) => fs.appendFileSync(summaryFile, `${line}\n`);
+append(`# files: ${files.length}; deadline per file: ${deadlineMs} ms; start index: ${startIndex}; ${new Date().toISOString()}`);
+
+const runOne = (file) => new Promise((resolve) => {
+  const logPath = path.join(logDir, `${file.replaceAll('/', '__')}.log`);
+  const out = fs.openSync(logPath, 'w');
+  const started = Date.now();
+  const child = spawn('pnpm', ['exec', 'vitest', 'run', file, '--no-watch', '--reporter=verbose'], {
+    cwd: serverDir, env: { ...process.env, NO_COLOR: '1' }, stdio: ['ignore', out, out], detached: true,
+  });
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    try { process.kill(-child.pid, 'SIGTERM'); } catch {}
+    setTimeout(() => { try { process.kill(-child.pid, 'SIGKILL'); } catch {} }, 10_000);
+  }, deadlineMs);
+  child.on('exit', (code, signal) => {
+    clearTimeout(timer);
+    fs.closeSync(out);
+    const text = fs.readFileSync(logPath, 'utf8');
+    const tests = (text.match(/^\s+Tests\s+(.+)$/m) ?? [, ''])[1].trim();
+    const files = (text.match(/^\s+Test Files\s+(.+)$/m) ?? [, ''])[1].trim();
+    resolve({ code, signal, timedOut, seconds: Math.round((Date.now() - started) / 1000), tests, files, logPath });
+  });
+});
+
+for (let index = startIndex; index < files.length; index += 1) {
+  const file = files[index];
+  append(`START ${index} ${file} ${new Date().toISOString()}`);
+  const r = await runOne(file);
+  const verdict = r.timedOut ? 'TIMEOUT' : r.code === 0 ? 'PASS' : 'FAIL';
+  append(`END ${index} ${verdict} ${r.seconds}s ${file} | files: ${r.files} | tests: ${r.tests} | exit ${r.code ?? r.signal}`);
+}
+append(`# done ${new Date().toISOString()}`);

@@ -203,7 +203,7 @@ The runner uses these collaborators:
     `LLMRequestAssembler.prepareRequest(...)`, which binds retained provider
     reasoning to the request prefix and returns the exact `tools` to send; it
     then calls `BaseLLM.streamMessages(request.outboundMessages,
-    { logicalConversationId, tools: request.tools }, { promptCacheScope:
+    { tools: request.tools }, { promptCacheScope:
     'conversation', signal, turnId })`. The agent never renders a request; the
     provider adapter is the only request builder;
   - builds `ToolSchemaProvider` schemas only when configured tools exist;
@@ -274,7 +274,7 @@ The runner uses these collaborators:
   - receive one runner-owned, ordered `MemoryManager.ingestToolResults(...)`
     commit after the processed result batch is complete;
   - build semantic completed-tool continuation text, for example
-    `The read_media_file tool call completed successfully.`, plus any context-file
+    `The read_file tool call completed successfully.`, plus any context-file
     media in a same-turn internal `SenderType.TOOL` carrier;
   - keep the builder pure: persistence remains owned by `MemoryManager`, while
     `AgentInputPipeline` returns either `llmUserMessage: null` for text-only

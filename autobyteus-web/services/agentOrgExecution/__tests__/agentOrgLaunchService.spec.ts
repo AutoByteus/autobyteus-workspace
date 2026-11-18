@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { AgentOrgLaunchInput } from '~/stores/agentOrgRunStore'
 
 const mocks = vi.hoisted(() => ({
-  launch: vi.fn(async () => 'org-run-1'),
+  launch: vi.fn(async (_input: AgentOrgLaunchInput) => 'org-run-1'),
   refreshItem: vi.fn(async () => undefined),
   resolve: vi.fn(async (choice: any) => ({
     workspaceId: choice.kind === 'existing' ? choice.workspaceId : `ws:${choice.rootPath}`,

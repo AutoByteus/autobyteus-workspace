@@ -409,7 +409,6 @@ describe('OpenAICompatibleLLM', () => {
     ];
 
     await configured.sendMessages([], {
-      logicalConversationId: 'agent-1',
       tools,
       tool_choice: 'required'
     });
@@ -427,6 +426,5 @@ describe('OpenAICompatibleLLM', () => {
       tools,
       tool_choice: 'required'
     });
-    expect(params).not.toHaveProperty('logicalConversationId');
   });
 });

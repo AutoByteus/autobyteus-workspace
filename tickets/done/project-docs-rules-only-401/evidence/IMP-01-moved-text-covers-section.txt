@@ -1,0 +1,24 @@
+# IMP-01 — AC-002: the text appended to the three records covers RELEASE.md's removed Case Studies section
+# Command: python3: every non-empty line of the base RELEASE.md's Case Studies section (6324fb056d) looked up in the lines appended to the three records (git diff -U0), after mapping the ../../../ link prefix back
+# Commit: working tree committed as 277660ed19
+# Environment: macOS 26.5.2 arm64; git and python3 only (docs ticket: no test suites, builds or gates, per the user)
+# Date: 2026-11-06
+# Look for: "Case Studies section: 66 non-empty lines; appended to the three records: 84 lines"; after mapping the links, only two lines differ, the deliberate cross-story references ("the last case" -> a link to the beta.2 record; "both incidents above" -> names the two versions)
+
+===== ac002-moved-text.txt =====
+Case Studies section: 66 non-empty lines; appended to the three records: 84 lines
+Section lines not found verbatim (after the ../../../ link rewrite) in the appended text:
+     behind and lacked the [Secret Gate](#secret-gate). The gate was run late; it
+       the last case);
+       complete ([Watching The Rollout](#watching-the-rollout));
+   - **Why:** both incidents above were one class, a build or gate that reads
+       ([Build-only release run](#build-only-release-run));
+     - triage of every pipeline failure ([Recovery](#recovery)).
+
+After also mapping ../../../RELEASE.md#anchor back to #anchor, lines still differing (deliberate, cross-story references):
+  - the last case);
+  - - **Why:** both incidents above were one class, a build or gate that reads
+Their replacements in the records:
+  + [its record](../beta-release-v1.5.12-beta.2/release-deployment-report.md));
+  + - **Why:** both incidents, `v1.5.9-beta.14` and `v1.5.11-beta.11`, were one class, a build or gate that reads
+

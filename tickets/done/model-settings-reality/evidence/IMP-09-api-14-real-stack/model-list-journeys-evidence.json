@@ -1,0 +1,157 @@
+{
+  "startedAt": "2026-11-10T15:28:49.278Z",
+  "steps": [
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 21493
+    },
+    {
+      "label": "frontend",
+      "pid": 21573
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 21573,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 21493,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/runtime-switch-members-probe-irMnwH"
+    }
+  ],
+  "browserErrors": [],
+  "ownedRoot": "/tmp/runtime-switch-members-probe-irMnwH",
+  "backendUrl": "http://127.0.0.1:40381",
+  "frontUrl": "http://127.0.0.1:36669",
+  "definitions": {
+    "agent": {
+      "id": "switch-probe-agent",
+      "name": "Switch Probe Agent"
+    },
+    "host": {
+      "id": "switch-probe-host",
+      "name": "Switch Probe Host"
+    },
+    "writer": {
+      "id": "switch-probe-writer",
+      "name": "Switch Probe Writer"
+    },
+    "writerAgy": {
+      "id": "switch-probe-writer-agy",
+      "name": "Switch Probe Writer Agy"
+    },
+    "team": {
+      "id": "switch-probe-team",
+      "name": "Switch Probe Team"
+    },
+    "org": {
+      "id": "switch-probe-org",
+      "name": "Switch Probe Org"
+    }
+  },
+  "cli": {
+    "bundled": "2.1.280 (Claude Code)",
+    "system": "2.1.322 (Claude Code)"
+  },
+  "API-14": {
+    "title": "Stopped Team run on the Claude Agent SDK runtime: the Team-level (runtime-locked) model menu re-reads the run's options when it opens and on Refresh models, shows busy, and keeps its options with an error when the CLI fails (REQ-010, REQ-011, QR-001)",
+    "result": "Pass",
+    "details": {
+      "firstModel": "haiku",
+      "teamRunId": "switch_probe_team_f0176e237f1e456bb6d6722c1a9c5d2f",
+      "runtimeLocked": 1,
+      "firstRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus[1m]",
+        "sonnet"
+      ],
+      "l1": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "added": [
+        "claude-fable-5-1[1m]",
+        "opus"
+      ],
+      "refreshControl": 1,
+      "openedRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus[1m]",
+        "sonnet"
+      ],
+      "busySeen": true,
+      "rowsWhileBusy": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "failedSeen": true,
+      "afterFailure": {
+        "error": "Couldn’t refresh models",
+        "button": "Retry",
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ],
+        "menuText": "Claude Agent SDK claude-haiku-5-5 Haiku · Haiku 5.5 · Fastest for quick answers · $0.10/$0.50 per Mtok ($0.50/$2.50 for prompts over 100k) claude-opus-5-5 Recommended Opus · Opus 5.5 · Best for everyday, complex tasks · $4/$20 per Mtok claude-fable-5-1 Fable · Fable 5.1 · Most capable for your hardest and longest-running tasks · $10/$50 per Mtok claude-sonnet-5-5 Sonnet · Sonnet 5.5 · Efficient fo"
+      },
+      "cardAfterFailure": "Workspace workspace Model claude-haiku-4-5-20251001 Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "noteAfterFailure": [],
+      "afterRecovery": {
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ],
+        "button": "Refresh models"
+      },
+      "findings": []
+    },
+    "ms": 20514
+  },
+  "completedAt": "2026-11-10T15:29:46.647Z"
+}

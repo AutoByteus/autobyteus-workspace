@@ -1,0 +1,478 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:42185) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/.env
+◇ injected env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory
+============================================================
+Initialized server settings service with 28 predefined settings
+
+(node:42185) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:42185) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+(node:42185) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:42185) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Definition created successfully with ID: sun-manager-6b77da
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Definition created successfully with ID: sun-user-6b77da
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Definition created successfully with ID: sun-plain-6b77da
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Team Definition created successfully with ID: sun-team-6b77da
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Created and registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Agent team websocket attached for team run sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83
+Created agent session 1fcd8d48-3b3c-460c-b5ea-382136d47e12 for run sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Agent Team WebSocket connected: session=1fcd8d48-3b3c-460c-b5ea-382136d47e12, run=sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_manager_6b77da_d8a07864a8824e2f80ea92e526322e5a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Agent websocket attached for run sun_manager_6b77da_d8a07864a8824e2f80ea92e526322e5a
+Created agent session ce9b079b-7119-4337-8013-9a8e0c7451e8 for run sun_manager_6b77da_d8a07864a8824e2f80ea92e526322e5a
+Agent WebSocket connected: session=ce9b079b-7119-4337-8013-9a8e0c7451e8, run=sun_manager_6b77da_d8a07864a8824e2f80ea92e526322e5a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agents/sun_manager_6b77da_d8a07864a8824e2f80ea92e526322e5a/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_user_6b77da_75b1dba3d43645c382a0454abb953b07: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_user_6b77da_93a1f4aba5914d37b96e36a88baa4b21/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_user_6b77da_93a1f4aba5914d37b96e36a88baa4b21/raw_traces_active.jsonl
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_user_6b77da_93a1f4aba5914d37b96e36a88baa4b21/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_user_6b77da_93a1f4aba5914d37b96e36a88baa4b21: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_user_6b77da_93a1f4aba5914d37b96e36a88baa4b21/raw_traces_active.jsonl
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_plain_6b77da_790531189feb410283b32b2438d68819/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_plain_6b77da_790531189feb410283b32b2438d68819/raw_traces_active.jsonl
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_plain_6b77da_790531189feb410283b32b2438d68819/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_plain_6b77da_790531189feb410283b32b2438d68819: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_teams/sun_team_6b77da_063dcf082ed44d56b37b3f7e52976b83/sun_plain_6b77da_790531189feb410283b32b2438d68819/raw_traces_active.jsonl
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_orgs/sun_org_6b77da_484f3b1ddc174f15bae770e6661401a7/sun_user_6b77da_eca52a0a08ea49c2a50209531463ae11/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_orgs/sun_org_6b77da_484f3b1ddc174f15bae770e6661401a7/sun_user_6b77da_eca52a0a08ea49c2a50209531463ae11/raw_traces_active.jsonl
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_orgs/sun_org_6b77da_484f3b1ddc174f15bae770e6661401a7/sun_user_6b77da_eca52a0a08ea49c2a50209531463ae11/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_user_6b77da_eca52a0a08ea49c2a50209531463ae11: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agent_orgs/sun_org_6b77da_484f3b1ddc174f15bae770e6661401a7/sun_user_6b77da_eca52a0a08ea49c2a50209531463ae11/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+AGY compaction detection off for run sun_manager_6b77da_12791c45e3b74c4c9e10d4ba769c881f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Agent websocket attached for run sun_manager_6b77da_12791c45e3b74c4c9e10d4ba769c881f
+Created agent session 08589f24-4130-4cc5-968b-74575eefd59e for run sun_manager_6b77da_12791c45e3b74c4c9e10d4ba769c881f
+Agent WebSocket connected: session=08589f24-4130-4cc5-968b-74575eefd59e, run=sun_manager_6b77da_12791c45e3b74c4c9e10d4ba769c881f
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agents/sun_manager_6b77da_12791c45e3b74c4c9e10d4ba769c881f/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+AGY compaction detection off for run sun_user_6b77da_6e3816b7d89642f2858992f17bf841cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+AGY compaction detection off for run sun_user_6b77da_6e3816b7d89642f2858992f17bf841cf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Agent Definition created successfully with ID: sun-github-user-3bb1cd
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Reusing registered workspace ID: agent_ws_27614550f8d987ac8d2d9166861393ed371765f41518b7570960b9f1d7a9ca4e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+AGY compaction detection off for run sun_github_user_3bb1cd_bd3e10ecfc6e4dd7b45557195ed7ac30: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Agent websocket attached for run sun_github_user_3bb1cd_bd3e10ecfc6e4dd7b45557195ed7ac30
+Created agent session 1fecc875-8a6f-44da-bfef-bb02cc95bad9 for run sun_github_user_3bb1cd_bd3e10ecfc6e4dd7b45557195ed7ac30
+Agent WebSocket connected: session=1fecc875-8a6f-44da-bfef-bb02cc95bad9, run=sun_github_user_3bb1cd_bd3e10ecfc6e4dd7b45557195ed7ac30
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-t4SU0H/memory/agents/sun_github_user_3bb1cd_bd3e10ecfc6e4dd7b45557195ed7ac30/raw_traces_active.jsonl
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session 1fecc875-8a6f-44da-bfef-bb02cc95bad9
+Agent WebSocket disconnected: 1fecc875-8a6f-44da-bfef-bb02cc95bad9
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session 08589f24-4130-4cc5-968b-74575eefd59e
+Agent WebSocket disconnected: 08589f24-4130-4cc5-968b-74575eefd59e
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session ce9b079b-7119-4337-8013-9a8e0c7451e8
+Agent WebSocket disconnected: ce9b079b-7119-4337-8013-9a8e0c7451e8
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session 1fcd8d48-3b3c-460c-b5ea-382136d47e12
+
+ ❯ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests | 1 failed) 70886ms
+     ✓ SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none  4602ms
+     ✓ SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice  64859ms
+     × SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched 658ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Error: [{"message":"GitHub repository not found or not public: https://github.com/apar-sun-e2e/skills. For private repositories, clone locally and import the local path.","locations":[{"line":1,"column":23}],"path":["updateGitHubSkillSource"]}]
+ ❯ graphql tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts:101:82
+     99|       headers: { "content-type": "application/json" }, body: JSON.stri…
+    100|     const body = await response.json() as { data?: T; errors?: unknown…
+    101|     if (!response.ok || !body.data || (body.errors && body.errors.leng…
+       |                                                                                  ^
+    102|     return body.data;
+    103|   };
+ ❯ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts:383:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  14:53:54
+   Duration  79.46s (transform 5.98s, setup 39ms, import 8.11s, tests 70.89s, environment 0ms)
+

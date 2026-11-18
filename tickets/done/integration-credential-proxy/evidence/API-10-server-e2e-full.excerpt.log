@@ -1,0 +1,53 @@
+# Case: API-10 — full server e2e (regression)
+# Command: env -i PATH=<user PATH> HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.AWbi9Xz4Yb TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ pnpm test:e2e
+# Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy
+# Commit: b95bad702f (code 2529eaaec1) + uncommitted API/E2E test files (this round)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T09:07:20Z
+# Excerpt of API-10-server-e2e-full.log (ANSI colours removed): the result lines and every failure.
+
+      Tests  1 failed | 469 passed | 475 skipped (945)
+ FAIL  tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts > scoped Org history real HTTP lifecycle > reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes and identities across Stop/restore/restart
+ FAIL  tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts [ tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts [ tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-background-task.e2e.test.ts [ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts [ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts [ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts [ tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts [ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts [ tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts ]
+ Test Files  9 failed | 109 passed | 97 skipped (215)
+
+## The 8 runtime files (load error, FU-002)
+Error: Transform failed with 1 error:
+/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts/tests/e2e/helpers/claude-live-agent-harness.ts:24:7: ERROR: Expected "as" but found "{"
+  Plugin: vite:esbuild
+
+## The Org history test (FU-005)
+ FAIL  tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts > scoped Org history real HTTP lifecycle > reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes and identities across Stop/restore/restart
+AssertionError: expected { success: true, …(2) } to match object { success: false, agentOrgRunId: null }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "agentOrgRunId": null,
+-   "success": false,
++   "agentOrgRunId": "scoped_org_history_44593_1793352142438_c73de0b0dc9848f788775f9db92773d4",
++   "success": true,
+  }
+
+ ❯ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts:111:23
+    109|     const badConfig = await create({ ...input, rootConfiguration: { ..…
+    110|       llmConfig: { unsupported_setting: true } } });
+    111|     expect(badConfig).toMatchObject({ success: false, agentOrgRunId: n…
+       |                       ^
+    112|     expect(await fs.readFile(treeFile)).toEqual(bytes);
+    113|     const restored = await gql(`mutation($id: String!) {
+
+
+## Credential proxy suites in this run (gated suites skip without their gate)
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts (10 tests | 10 skipped)
+ ✓ tests/e2e/credential-proxy/github-integration-graphql.e2e.test.ts (3 tests) 3089ms

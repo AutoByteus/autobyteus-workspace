@@ -66,7 +66,7 @@
       class="rounded-xl border border-dashed border-slate-300 bg-white py-16 text-center"
       data-testid="projects-empty"
     >
-      <Icon icon="heroicons:folder" class="mx-auto h-10 w-10 text-slate-300" aria-hidden="true" />
+      <Icon icon="heroicons:briefcase" class="mx-auto h-10 w-10 text-slate-300" aria-hidden="true" />
       <h2 class="mt-3 text-lg font-semibold text-slate-900">{{ t('projects.components.projects.ProjectsList.emptyTitle') }}</h2>
       <p class="mx-auto mt-2 max-w-md text-sm text-slate-500">{{ t('projects.components.projects.ProjectsList.emptyHelp') }}</p>
     </div>

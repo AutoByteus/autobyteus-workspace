@@ -1,0 +1,22 @@
+# Check: IMP-13 (IR-002 regression)
+# Commands: pnpm -C autobyteus-web test:nuxt --run (full); pnpm -C autobyteus-web typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals; build:mobile-web
+# Commit: 5f06b08ce9
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+## Full web unit suite
+ Test Files  735 passed (735)
+      Tests  5516 passed | 2 skipped (5518)
+   Duration  313.53s (transform 30.82s, setup 2107.38s, collect 200.40s, tests 91.68s, environment 173.74s, prepare 101.32s)
+
+## Typecheck
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+
+## Guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+## Phone bundle build
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-web/dist-mobile/public

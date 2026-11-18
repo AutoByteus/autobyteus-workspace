@@ -7,6 +7,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { prepareOutputDir, probeOutputDir } from './fixtures/probe-output-dir.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -27,7 +28,8 @@ const getArg = (name, fallback = undefined) => {
 };
 
 const timeoutMs = Number(getArg('timeout-ms', '90000'));
-const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/diagram-zoom-viewer'));
+// A fresh per-run folder unless --output-dir names one; a non-empty folder is refused, never cleared.
+const outputDir = prepareOutputDir(probeOutputDir(webDir, 'diagram-zoom-viewer', getArg('output-dir')));
 const explicitPort = getArg('port');
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
 const browserCandidates = [
@@ -528,12 +530,6 @@ const contexts = [];
 let pageInstalled = false;
 let devLogStream;
 
-await fs.mkdir(outputDir, { recursive: true });
-for (const entry of await fs.readdir(outputDir)) {
-  if (/^DZV-BR-\d{3}.*\.png$/.test(entry) || ['evidence.json', 'nuxt-dev.log'].includes(entry)) {
-    await fs.rm(path.join(outputDir, entry), { force: true });
-  }
-}
 const evidencePath = path.join(outputDir, 'evidence.json');
 const devLogPath = path.join(outputDir, 'nuxt-dev.log');
 

@@ -1,0 +1,3 @@
+# DEL-00 Codex quota probe before the smoke check, 2026-11-10T07:12:56Z: codex exec -m gpt-5.6-luna 'Reply with the single word: ok' (in a temp folder)
+ERROR: You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at 10:31 AM.
+exit 1

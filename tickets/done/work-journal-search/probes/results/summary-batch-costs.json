@@ -1,0 +1,2099 @@
+[
+ {
+  "run": "agents/2fcd20db-e873-48f6-847c-136b5d49a5e8",
+  "journal_bytes": 890561,
+  "calls": 5,
+  "prompt_tokens": 81728,
+  "completion_tokens": 1518,
+  "mode": "skeleton",
+  "wall_s": 215.7
+ },
+ {
+  "run": "agents/agent_package_creator_95feafdf9cbb4c269df549bf29d4a0ec",
+  "journal_bytes": 880323,
+  "calls": 6,
+  "prompt_tokens": 85792,
+  "completion_tokens": 2037,
+  "mode": "skeleton",
+  "wall_s": 193.1
+ },
+ {
+  "run": "agents/codex_0eff07c1aca6404c9c57717980e11488",
+  "journal_bytes": 162595,
+  "calls": 1,
+  "prompt_tokens": 9991,
+  "completion_tokens": 349,
+  "mode": "skeleton",
+  "wall_s": 24.9
+ },
+ {
+  "run": "agents/codex_29de1fd8ba8e444e8dd8f10e6683a312",
+  "journal_bytes": 431028,
+  "calls": 4,
+  "prompt_tokens": 19957,
+  "completion_tokens": 1119,
+  "mode": "skeleton",
+  "wall_s": 52.8
+ },
+ {
+  "run": "agents/codex_3bb1091f2aa740bf93f18edb31631e9d",
+  "journal_bytes": 683472,
+  "calls": 4,
+  "prompt_tokens": 22499,
+  "completion_tokens": 1223,
+  "mode": "skeleton",
+  "wall_s": 58.1
+ },
+ {
+  "run": "agents/codex_431f19f1c88d4581829830c83bbc9394",
+  "journal_bytes": 266599,
+  "calls": 3,
+  "prompt_tokens": 22030,
+  "completion_tokens": 1043,
+  "mode": "skeleton",
+  "wall_s": 59.7
+ },
+ {
+  "run": "agents/codex_59fcbed5805544a7983e9ef54e181738",
+  "journal_bytes": 221500,
+  "calls": 1,
+  "prompt_tokens": 15566,
+  "completion_tokens": 221,
+  "mode": "skeleton",
+  "wall_s": 35.8
+ },
+ {
+  "run": "agents/codex_5bae2dc0dd50426cb5760b5d5905c677",
+  "journal_bytes": 539903,
+  "calls": 3,
+  "prompt_tokens": 25053,
+  "completion_tokens": 1108,
+  "mode": "skeleton",
+  "wall_s": 61.5
+ },
+ {
+  "run": "agents/codex_5c3f921c9ca34f9785a7eda4136701f1",
+  "journal_bytes": 249824,
+  "calls": 6,
+  "prompt_tokens": 61831,
+  "completion_tokens": 2129,
+  "mode": "skeleton",
+  "wall_s": 154.2
+ },
+ {
+  "run": "agents/codex_607a888cb8f644adbad30e7ab78c2f17",
+  "journal_bytes": 249970,
+  "calls": 4,
+  "prompt_tokens": 14685,
+  "completion_tokens": 1345,
+  "mode": "skeleton",
+  "wall_s": 51.3
+ },
+ {
+  "run": "agents/codex_767f0aad2cc8475099ef368331ce74ef",
+  "journal_bytes": 502627,
+  "calls": 4,
+  "prompt_tokens": 18909,
+  "completion_tokens": 1287,
+  "mode": "skeleton",
+  "wall_s": 58.6
+ },
+ {
+  "run": "agents/codex_9c30a8ec5af5437eaa2834a91b85afd3",
+  "journal_bytes": 67665,
+  "calls": 1,
+  "prompt_tokens": 2278,
+  "completion_tokens": 222,
+  "mode": "skeleton",
+  "wall_s": 8.0
+ },
+ {
+  "run": "agents/codex_c5d6874095f4425982696c85153b0e21",
+  "journal_bytes": 526627,
+  "calls": 4,
+  "prompt_tokens": 22275,
+  "completion_tokens": 1245,
+  "mode": "skeleton",
+  "wall_s": 67.2
+ },
+ {
+  "run": "agents/codex_c6ca02eb14b94d0fa167f56210793f39",
+  "journal_bytes": 10103,
+  "calls": 1,
+  "prompt_tokens": 885,
+  "completion_tokens": 223,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/codex_df5ad5c0806a4e4fb0bbd972e79ff585",
+  "journal_bytes": 617623,
+  "calls": 4,
+  "prompt_tokens": 18072,
+  "completion_tokens": 1309,
+  "mode": "skeleton",
+  "wall_s": 53.1
+ },
+ {
+  "run": "agents/daily_assistant_0b32b35478f44acdbd1bd472c44157d9",
+  "journal_bytes": 14554,
+  "calls": 1,
+  "prompt_tokens": 1239,
+  "completion_tokens": 246,
+  "mode": "skeleton",
+  "wall_s": 6.7
+ },
+ {
+  "run": "agents/daily_assistant_677f865b9ce140f9a51557bfc4217b51",
+  "journal_bytes": 298863,
+  "calls": 6,
+  "prompt_tokens": 20203,
+  "completion_tokens": 1883,
+  "mode": "skeleton",
+  "wall_s": 71.3
+ },
+ {
+  "run": "agents/daily_assistant_6bf3d914e956467cb00f126274124919",
+  "journal_bytes": 177834,
+  "calls": 5,
+  "prompt_tokens": 15399,
+  "completion_tokens": 1183,
+  "mode": "skeleton",
+  "wall_s": 45.5
+ },
+ {
+  "run": "agents/daily_assistant_9784d6c45cd842cda664941b24206a81",
+  "journal_bytes": 390500,
+  "calls": 4,
+  "prompt_tokens": 40191,
+  "completion_tokens": 1174,
+  "mode": "skeleton",
+  "wall_s": 96.0
+ },
+ {
+  "run": "agents/daily_assistant_b2c1cd14f5304d6a8dab124548c73b0b",
+  "journal_bytes": 238174,
+  "calls": 3,
+  "prompt_tokens": 21602,
+  "completion_tokens": 801,
+  "mode": "skeleton",
+  "wall_s": 55.3
+ },
+ {
+  "run": "agents/daily_assistant_ca6ba91e5fda457f87cfd7d7905c5d3f",
+  "journal_bytes": 17764,
+  "calls": 1,
+  "prompt_tokens": 2870,
+  "completion_tokens": 332,
+  "mode": "skeleton",
+  "wall_s": 10.0
+ },
+ {
+  "run": "agents/daily_assistant_feb311e786054ec1acd79eae16d785f9",
+  "journal_bytes": 796169,
+  "calls": 8,
+  "prompt_tokens": 87768,
+  "completion_tokens": 2805,
+  "mode": "skeleton",
+  "wall_s": 235.7
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_1356",
+  "journal_bytes": 4861,
+  "calls": 1,
+  "prompt_tokens": 812,
+  "completion_tokens": 211,
+  "mode": "skeleton",
+  "wall_s": 5.0
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_8613",
+  "journal_bytes": 125495,
+  "calls": 1,
+  "prompt_tokens": 3438,
+  "completion_tokens": 323,
+  "mode": "skeleton",
+  "wall_s": 13.9
+ },
+ {
+  "run": "agents/product_prototyper_5e5dfa42520d455a80e1a7e86ef41dc3",
+  "journal_bytes": 245284,
+  "calls": 1,
+  "prompt_tokens": 15636,
+  "completion_tokens": 233,
+  "mode": "skeleton",
+  "wall_s": 45.1
+ },
+ {
+  "run": "agents/skill_optimizer_10b53f9202d646429d6a84603b3c2893",
+  "journal_bytes": 331746,
+  "calls": 3,
+  "prompt_tokens": 20084,
+  "completion_tokens": 988,
+  "mode": "skeleton",
+  "wall_s": 53.0
+ },
+ {
+  "run": "agents/skill_optimizer_1ff79c59025f43bda84fdab3cd3117a2",
+  "journal_bytes": 1024691,
+  "calls": 5,
+  "prompt_tokens": 39223,
+  "completion_tokens": 1618,
+  "mode": "skeleton",
+  "wall_s": 104.7
+ },
+ {
+  "run": "agents/skill_optimizer_9d7d9ff727c340d2a4d8be2476e8ffdb",
+  "journal_bytes": 200194,
+  "calls": 1,
+  "prompt_tokens": 20793,
+  "completion_tokens": 309,
+  "mode": "skeleton",
+  "wall_s": 49.7
+ },
+ {
+  "run": "agents/skill_optimizer_ee80d2a9dc4445db8eb2d7064c66952c",
+  "journal_bytes": 168318,
+  "calls": 1,
+  "prompt_tokens": 16426,
+  "completion_tokens": 376,
+  "mode": "skeleton",
+  "wall_s": 43.0
+ },
+ {
+  "run": "agents/skill_optimizer_eec486dbe3c44a1fa66c624a6613c52b",
+  "journal_bytes": 340479,
+  "calls": 3,
+  "prompt_tokens": 28958,
+  "completion_tokens": 1016,
+  "mode": "skeleton",
+  "wall_s": 67.6
+ },
+ {
+  "run": "agents/ce141b25-446f-466d-87d1-cb439739df55",
+  "journal_bytes": 58271,
+  "calls": 1,
+  "prompt_tokens": 5214,
+  "completion_tokens": 241,
+  "mode": "skeleton",
+  "wall_s": 11.9
+ },
+ {
+  "run": "agents/codex_d8fec2951b004ea4941e2488efd520db",
+  "journal_bytes": 111754,
+  "calls": 1,
+  "prompt_tokens": 11530,
+  "completion_tokens": 322,
+  "mode": "skeleton",
+  "wall_s": 24.3
+ },
+ {
+  "run": "agents/codex_dec803a4d3b842578108261ed0580bce",
+  "journal_bytes": 403195,
+  "calls": 3,
+  "prompt_tokens": 28693,
+  "completion_tokens": 1086,
+  "mode": "skeleton",
+  "wall_s": 66.0
+ },
+ {
+  "run": "agents/daily_assistant_f55e7ecf52fe41db80c9701b57c8a7ba",
+  "journal_bytes": 905,
+  "calls": 1,
+  "prompt_tokens": 478,
+  "completion_tokens": 353,
+  "mode": "skeleton",
+  "wall_s": 6.3
+ },
+ {
+  "run": "agents/singleagentxml_tester_8621",
+  "journal_bytes": 1088,
+  "calls": 1,
+  "prompt_tokens": 498,
+  "completion_tokens": 203,
+  "mode": "skeleton",
+  "wall_s": 4.1
+ },
+ {
+  "run": "agents/singleagentxml_tester_3263",
+  "journal_bytes": 824,
+  "calls": 1,
+  "prompt_tokens": 387,
+  "completion_tokens": 222,
+  "mode": "skeleton",
+  "wall_s": 4.2
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_9705",
+  "journal_bytes": 3158,
+  "calls": 1,
+  "prompt_tokens": 1026,
+  "completion_tokens": 309,
+  "mode": "skeleton",
+  "wall_s": 6.3
+ },
+ {
+  "run": "agents/daily_assistant_09790692b8fc413e9fa53699989050f7",
+  "journal_bytes": 9932,
+  "calls": 1,
+  "prompt_tokens": 1873,
+  "completion_tokens": 300,
+  "mode": "skeleton",
+  "wall_s": 7.5
+ },
+ {
+  "run": "agents/1364bdc8-ac40-4230-a732-9dfae31243f8",
+  "journal_bytes": 115099,
+  "calls": 1,
+  "prompt_tokens": 11063,
+  "completion_tokens": 196,
+  "mode": "skeleton",
+  "wall_s": 20.6
+ },
+ {
+  "run": "agents/daily_assistant_93c93b9da40c4d4990849c093490f55f",
+  "journal_bytes": 42350,
+  "calls": 1,
+  "prompt_tokens": 2189,
+  "completion_tokens": 346,
+  "mode": "skeleton",
+  "wall_s": 8.5
+ },
+ {
+  "run": "agents/daily_assistant_be5e60c6ff3c47598adf4c9203742ab4",
+  "journal_bytes": 5934,
+  "calls": 1,
+  "prompt_tokens": 1000,
+  "completion_tokens": 234,
+  "mode": "skeleton",
+  "wall_s": 5.3
+ },
+ {
+  "run": "agents/runtimetestagent_tester_5132",
+  "journal_bytes": 284,
+  "calls": 1,
+  "prompt_tokens": 200,
+  "completion_tokens": 234,
+  "mode": "skeleton",
+  "wall_s": 4.0
+ },
+ {
+  "run": "agents/worker_1663",
+  "journal_bytes": 794,
+  "calls": 1,
+  "prompt_tokens": 341,
+  "completion_tokens": 141,
+  "mode": "skeleton",
+  "wall_s": 2.9
+ },
+ {
+  "run": "agents/9195f623-99e0-4a0c-a997-9b1bba8783a8",
+  "journal_bytes": 150084,
+  "calls": 1,
+  "prompt_tokens": 17651,
+  "completion_tokens": 250,
+  "mode": "skeleton",
+  "wall_s": 34.7
+ },
+ {
+  "run": "agents/daily_assistant_57501b10c85046bc9ec58ef1720ff779",
+  "journal_bytes": 2714,
+  "calls": 1,
+  "prompt_tokens": 1035,
+  "completion_tokens": 181,
+  "mode": "skeleton",
+  "wall_s": 4.4
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_8247",
+  "journal_bytes": 4232,
+  "calls": 1,
+  "prompt_tokens": 1205,
+  "completion_tokens": 292,
+  "mode": "skeleton",
+  "wall_s": 6.5
+ },
+ {
+  "run": "agents/daily_assistant_b6351757754146f193d9f5909b9bc765",
+  "journal_bytes": 3441,
+  "calls": 1,
+  "prompt_tokens": 987,
+  "completion_tokens": 194,
+  "mode": "skeleton",
+  "wall_s": 4.9
+ },
+ {
+  "run": "agents/toolchoiceboundaryagent_boundary_tester_5344",
+  "journal_bytes": 564,
+  "calls": 1,
+  "prompt_tokens": 336,
+  "completion_tokens": 283,
+  "mode": "skeleton",
+  "wall_s": 5.2
+ },
+ {
+  "run": "agents/daily_assistant_bcaf7725801f428fb183c66ded5c7f48",
+  "journal_bytes": 13901,
+  "calls": 1,
+  "prompt_tokens": 1822,
+  "completion_tokens": 191,
+  "mode": "skeleton",
+  "wall_s": 5.6
+ },
+ {
+  "run": "agents/singleagentxml_tester_5849",
+  "journal_bytes": 569,
+  "calls": 1,
+  "prompt_tokens": 318,
+  "completion_tokens": 313,
+  "mode": "skeleton",
+  "wall_s": 5.5
+ },
+ {
+  "run": "agents/daily_assistant_1a284a0e165944beb0c1660dade2ca5b",
+  "journal_bytes": 24252,
+  "calls": 1,
+  "prompt_tokens": 2693,
+  "completion_tokens": 281,
+  "mode": "skeleton",
+  "wall_s": 9.4
+ },
+ {
+  "run": "agents/worker_5612",
+  "journal_bytes": 573,
+  "calls": 1,
+  "prompt_tokens": 308,
+  "completion_tokens": 225,
+  "mode": "skeleton",
+  "wall_s": 4.3
+ },
+ {
+  "run": "agents/deepseekreleasereadinessagent_release_operations_engineer_9859",
+  "journal_bytes": 1375,
+  "calls": 1,
+  "prompt_tokens": 528,
+  "completion_tokens": 222,
+  "mode": "skeleton",
+  "wall_s": 4.5
+ },
+ {
+  "run": "agents/codex_69f623e7aa1f4c7ab863f5e22c44f8e8",
+  "journal_bytes": 594370,
+  "calls": 3,
+  "prompt_tokens": 22512,
+  "completion_tokens": 785,
+  "mode": "skeleton",
+  "wall_s": 52.9
+ },
+ {
+  "run": "agents/codex_5363e9b861ef48edb5a77f2139428204",
+  "journal_bytes": 12281,
+  "calls": 1,
+  "prompt_tokens": 2066,
+  "completion_tokens": 235,
+  "mode": "skeleton",
+  "wall_s": 6.6
+ },
+ {
+  "run": "agents/daily_assistant_258054920c084e1f94247214e99c0821",
+  "journal_bytes": 15935,
+  "calls": 1,
+  "prompt_tokens": 1542,
+  "completion_tokens": 212,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/daily_assistant_1d9a4112db55467ea52b85e9b1c34af3",
+  "journal_bytes": 2199559,
+  "calls": 17,
+  "prompt_tokens": 264442,
+  "completion_tokens": 5543,
+  "mode": "skeleton",
+  "wall_s": 663.0
+ },
+ {
+  "run": "agents/singleagentxmlarray_tester_9218",
+  "journal_bytes": 1313,
+  "calls": 1,
+  "prompt_tokens": 564,
+  "completion_tokens": 246,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/agent_package_creator_9473bc9806ec4342a8d3fc98c2bdc1ca",
+  "journal_bytes": 52617,
+  "calls": 1,
+  "prompt_tokens": 5572,
+  "completion_tokens": 332,
+  "mode": "skeleton",
+  "wall_s": 15.9
+ },
+ {
+  "run": "agents/media_editor_6001",
+  "journal_bytes": 351098,
+  "calls": 9,
+  "prompt_tokens": 83272,
+  "completion_tokens": 1779,
+  "mode": "skeleton",
+  "wall_s": 191.2
+ },
+ {
+  "run": "agents/worker_8764",
+  "journal_bytes": 593,
+  "calls": 1,
+  "prompt_tokens": 310,
+  "completion_tokens": 294,
+  "mode": "skeleton",
+  "wall_s": 5.3
+ },
+ {
+  "run": "agents/dualagenta_tester_8278",
+  "journal_bytes": 4297,
+  "calls": 1,
+  "prompt_tokens": 1257,
+  "completion_tokens": 271,
+  "mode": "skeleton",
+  "wall_s": 7.1
+ },
+ {
+  "run": "agents/article_reviewer_c058a64cb32143859f85f1775d41f3a2",
+  "journal_bytes": 2621,
+  "calls": 1,
+  "prompt_tokens": 725,
+  "completion_tokens": 211,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/codex_5d9e4485aa724d56891462541151150f",
+  "journal_bytes": 99658,
+  "calls": 1,
+  "prompt_tokens": 9823,
+  "completion_tokens": 349,
+  "mode": "skeleton",
+  "wall_s": 23.4
+ },
+ {
+  "run": "agents/daily_assistant_8505566060eb42a49f36517413dcf7eb",
+  "journal_bytes": 619,
+  "calls": 1,
+  "prompt_tokens": 359,
+  "completion_tokens": 273,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_9273",
+  "journal_bytes": 7055,
+  "calls": 1,
+  "prompt_tokens": 1110,
+  "completion_tokens": 280,
+  "mode": "skeleton",
+  "wall_s": 6.3
+ },
+ {
+  "run": "agents/runtimetestagent_tester_6847",
+  "journal_bytes": 284,
+  "calls": 1,
+  "prompt_tokens": 200,
+  "completion_tokens": 238,
+  "mode": "skeleton",
+  "wall_s": 4.3
+ },
+ {
+  "run": "agents/kimifiverunbashvalidationagent_streaming_validation_agent_3266",
+  "journal_bytes": 2526,
+  "calls": 1,
+  "prompt_tokens": 601,
+  "completion_tokens": 280,
+  "mode": "skeleton",
+  "wall_s": 5.9
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_4812",
+  "journal_bytes": 2945,
+  "calls": 1,
+  "prompt_tokens": 751,
+  "completion_tokens": 277,
+  "mode": "skeleton",
+  "wall_s": 6.0
+ },
+ {
+  "run": "agents/daily_assistant_e2cb49a321a64537bb722908f9d77a81",
+  "journal_bytes": 16650,
+  "calls": 1,
+  "prompt_tokens": 2279,
+  "completion_tokens": 335,
+  "mode": "skeleton",
+  "wall_s": 9.2
+ },
+ {
+  "run": "agents/computer_use_operator_1676fdfa754541f9b82e31ec972c78a7",
+  "journal_bytes": 32769,
+  "calls": 1,
+  "prompt_tokens": 4989,
+  "completion_tokens": 223,
+  "mode": "skeleton",
+  "wall_s": 13.3
+ },
+ {
+  "run": "agents/skill_optimizer_214adc0419cf4e85bf6408120debfb6e",
+  "journal_bytes": 68716,
+  "calls": 1,
+  "prompt_tokens": 6584,
+  "completion_tokens": 287,
+  "mode": "skeleton",
+  "wall_s": 17.1
+ },
+ {
+  "run": "agents/project_task_manager_a5f6d9d306e54970bafdad895bdf731d",
+  "journal_bytes": 1523076,
+  "calls": 12,
+  "prompt_tokens": 119698,
+  "completion_tokens": 4177,
+  "mode": "skeleton",
+  "wall_s": 293.5
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_9432",
+  "journal_bytes": 96934,
+  "calls": 19,
+  "prompt_tokens": 11498,
+  "completion_tokens": 4363,
+  "mode": "skeleton",
+  "wall_s": 94.9
+ },
+ {
+  "run": "agents/daily_assistant_62bacd5de1564b0a94da94d5dde42f17",
+  "journal_bytes": 17153,
+  "calls": 1,
+  "prompt_tokens": 4436,
+  "completion_tokens": 286,
+  "mode": "skeleton",
+  "wall_s": 13.8
+ },
+ {
+  "run": "agents/singleagentxmlarray_tester_6131",
+  "journal_bytes": 1298,
+  "calls": 1,
+  "prompt_tokens": 564,
+  "completion_tokens": 318,
+  "mode": "skeleton",
+  "wall_s": 6.0
+ },
+ {
+  "run": "agents/audiotranscriber_1bd26041869849ba855552cb4593533b",
+  "journal_bytes": 1552,
+  "calls": 1,
+  "prompt_tokens": 616,
+  "completion_tokens": 252,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/singleagentxmlmarkup_tester_7425",
+  "journal_bytes": 1022,
+  "calls": 1,
+  "prompt_tokens": 446,
+  "completion_tokens": 272,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/resume_designer_ee51dc6eca704d5d852f6fb51381109d",
+  "journal_bytes": 83865,
+  "calls": 1,
+  "prompt_tokens": 7507,
+  "completion_tokens": 244,
+  "mode": "skeleton",
+  "wall_s": 16.2
+ },
+ {
+  "run": "agents/daily_assistant_a69f78bc11f24282b875060d658ad2e8",
+  "journal_bytes": 11743,
+  "calls": 1,
+  "prompt_tokens": 1020,
+  "completion_tokens": 271,
+  "mode": "skeleton",
+  "wall_s": 6.8
+ },
+ {
+  "run": "agents/singleagentxml_tester_5263",
+  "journal_bytes": 3047,
+  "calls": 1,
+  "prompt_tokens": 1268,
+  "completion_tokens": 281,
+  "mode": "skeleton",
+  "wall_s": 7.0
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_3794",
+  "journal_bytes": 1060,
+  "calls": 1,
+  "prompt_tokens": 418,
+  "completion_tokens": 138,
+  "mode": "skeleton",
+  "wall_s": 3.2
+ },
+ {
+  "run": "agents/audiotranscriber_aa8297d0d08d410db2a1b47ae6fe565f",
+  "journal_bytes": 6626,
+  "calls": 1,
+  "prompt_tokens": 799,
+  "completion_tokens": 262,
+  "mode": "skeleton",
+  "wall_s": 5.7
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_9571",
+  "journal_bytes": 23451,
+  "calls": 1,
+  "prompt_tokens": 1708,
+  "completion_tokens": 354,
+  "mode": "skeleton",
+  "wall_s": 8.2
+ },
+ {
+  "run": "agents/daily_assistant_cd93a7fd49ff4723ba5d92282108b94c",
+  "journal_bytes": 934,
+  "calls": 1,
+  "prompt_tokens": 483,
+  "completion_tokens": 303,
+  "mode": "skeleton",
+  "wall_s": 5.6
+ },
+ {
+  "run": "agents/823eff76-9e7f-4f47-9e8c-1d5079521bfb",
+  "journal_bytes": 2610,
+  "calls": 1,
+  "prompt_tokens": 1033,
+  "completion_tokens": 193,
+  "mode": "skeleton",
+  "wall_s": 4.7
+ },
+ {
+  "run": "agents/worker_5580",
+  "journal_bytes": 1017,
+  "calls": 1,
+  "prompt_tokens": 412,
+  "completion_tokens": 285,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/worker_4862",
+  "journal_bytes": 1133,
+  "calls": 1,
+  "prompt_tokens": 499,
+  "completion_tokens": 217,
+  "mode": "skeleton",
+  "wall_s": 4.5
+ },
+ {
+  "run": "agents/daily_assistant_1b2970e1dabf440d8064e0d45063aab8",
+  "journal_bytes": 517,
+  "calls": 1,
+  "prompt_tokens": 345,
+  "completion_tokens": 188,
+  "mode": "skeleton",
+  "wall_s": 3.8
+ },
+ {
+  "run": "agents/worker_3984",
+  "journal_bytes": 726,
+  "calls": 1,
+  "prompt_tokens": 331,
+  "completion_tokens": 214,
+  "mode": "skeleton",
+  "wall_s": 4.1
+ },
+ {
+  "run": "agents/codex_69e57e2f94ef43be97c02e519f140859",
+  "journal_bytes": 6105,
+  "calls": 1,
+  "prompt_tokens": 949,
+  "completion_tokens": 232,
+  "mode": "skeleton",
+  "wall_s": 5.5
+ },
+ {
+  "run": "agents/dualagenta_tester_7425",
+  "journal_bytes": 449,
+  "calls": 1,
+  "prompt_tokens": 261,
+  "completion_tokens": 199,
+  "mode": "skeleton",
+  "wall_s": 3.7
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_3607",
+  "journal_bytes": 1455,
+  "calls": 1,
+  "prompt_tokens": 519,
+  "completion_tokens": 314,
+  "mode": "skeleton",
+  "wall_s": 5.9
+ },
+ {
+  "run": "agents/codex_3b40b0c1e04f4f2a8a86172a6fba99a3",
+  "journal_bytes": 10248,
+  "calls": 1,
+  "prompt_tokens": 1104,
+  "completion_tokens": 373,
+  "mode": "skeleton",
+  "wall_s": 8.2
+ },
+ {
+  "run": "agents/agent_package_creator_17f5550189ce4b288cdfaf92e370b292",
+  "journal_bytes": 336410,
+  "calls": 3,
+  "prompt_tokens": 25278,
+  "completion_tokens": 947,
+  "mode": "skeleton",
+  "wall_s": 67.7
+ },
+ {
+  "run": "agents/audiotranscriber_cecc7b6929ad49ae9c7f34d52ed54e98",
+  "journal_bytes": 625,
+  "calls": 1,
+  "prompt_tokens": 367,
+  "completion_tokens": 220,
+  "mode": "skeleton",
+  "wall_s": 4.7
+ },
+ {
+  "run": "agents/daily_assistant_e8033f5653c744caa0c0eda7463407df",
+  "journal_bytes": 65872,
+  "calls": 1,
+  "prompt_tokens": 7842,
+  "completion_tokens": 280,
+  "mode": "skeleton",
+  "wall_s": 19.7
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_8014",
+  "journal_bytes": 11081,
+  "calls": 1,
+  "prompt_tokens": 1302,
+  "completion_tokens": 146,
+  "mode": "skeleton",
+  "wall_s": 4.6
+ },
+ {
+  "run": "agents/singleagentxml_tester_8208",
+  "journal_bytes": 824,
+  "calls": 1,
+  "prompt_tokens": 385,
+  "completion_tokens": 280,
+  "mode": "skeleton",
+  "wall_s": 5.9
+ },
+ {
+  "run": "agents/bb9ca76e-ddc1-4d73-b61f-aa2c94c0fc04",
+  "journal_bytes": 116215,
+  "calls": 1,
+  "prompt_tokens": 9521,
+  "completion_tokens": 340,
+  "mode": "skeleton",
+  "wall_s": 32.4
+ },
+ {
+  "run": "agents/audiotranscriber_41279932c7ba413cb5bf46dda7432702",
+  "journal_bytes": 3126,
+  "calls": 1,
+  "prompt_tokens": 679,
+  "completion_tokens": 243,
+  "mode": "skeleton",
+  "wall_s": 6.1
+ },
+ {
+  "run": "agents/worker_7953",
+  "journal_bytes": 1124,
+  "calls": 1,
+  "prompt_tokens": 491,
+  "completion_tokens": 201,
+  "mode": "skeleton",
+  "wall_s": 4.3
+ },
+ {
+  "run": "agents/daily_assistant_5e438a1d265b4e32bd802265fcfbb45f",
+  "journal_bytes": 118173,
+  "calls": 1,
+  "prompt_tokens": 10623,
+  "completion_tokens": 344,
+  "mode": "skeleton",
+  "wall_s": 25.4
+ },
+ {
+  "run": "agents/daily_assistant_e9c72ea2759d46328cab569a0108b65d",
+  "journal_bytes": 19610,
+  "calls": 1,
+  "prompt_tokens": 1467,
+  "completion_tokens": 193,
+  "mode": "skeleton",
+  "wall_s": 5.8
+ },
+ {
+  "run": "agents/SingleAgent_Tester_8084",
+  "journal_bytes": 1178,
+  "calls": 1,
+  "prompt_tokens": 523,
+  "completion_tokens": 223,
+  "mode": "skeleton",
+  "wall_s": 4.5
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_3630",
+  "journal_bytes": 7559,
+  "calls": 1,
+  "prompt_tokens": 1318,
+  "completion_tokens": 275,
+  "mode": "skeleton",
+  "wall_s": 6.7
+ },
+ {
+  "run": "agents/daily_assistant_da5d1a780ab5462b9755c78595dd2232",
+  "journal_bytes": 920,
+  "calls": 1,
+  "prompt_tokens": 488,
+  "completion_tokens": 141,
+  "mode": "skeleton",
+  "wall_s": 3.4
+ },
+ {
+  "run": "agents/skill_optimizer_1e8b1b229ee047979c513ecabbaed4b6",
+  "journal_bytes": 173588,
+  "calls": 1,
+  "prompt_tokens": 12272,
+  "completion_tokens": 293,
+  "mode": "skeleton",
+  "wall_s": 26.6
+ },
+ {
+  "run": "agents/daily_assistant_8b0a3883240f42e183baa15733883996",
+  "journal_bytes": 29203,
+  "calls": 1,
+  "prompt_tokens": 3025,
+  "completion_tokens": 222,
+  "mode": "skeleton",
+  "wall_s": 8.6
+ },
+ {
+  "run": "agents/daily_assistant_02a87aa2bfff43508872d36036d94244",
+  "journal_bytes": 19893,
+  "calls": 1,
+  "prompt_tokens": 1593,
+  "completion_tokens": 244,
+  "mode": "skeleton",
+  "wall_s": 6.3
+ },
+ {
+  "run": "agents/worker_2631",
+  "journal_bytes": 573,
+  "calls": 1,
+  "prompt_tokens": 308,
+  "completion_tokens": 224,
+  "mode": "skeleton",
+  "wall_s": 4.1
+ },
+ {
+  "run": "agents/audiotranscriber_ac7e5743beda40b387cf77defe5a49b3",
+  "journal_bytes": 604,
+  "calls": 1,
+  "prompt_tokens": 361,
+  "completion_tokens": 298,
+  "mode": "skeleton",
+  "wall_s": 5.5
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_4093",
+  "journal_bytes": 1871,
+  "calls": 1,
+  "prompt_tokens": 638,
+  "completion_tokens": 246,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/worker_9618",
+  "journal_bytes": 1120,
+  "calls": 1,
+  "prompt_tokens": 494,
+  "completion_tokens": 228,
+  "mode": "skeleton",
+  "wall_s": 4.9
+ },
+ {
+  "run": "agents/daily_assistant_9e3dce4b037b4aab935c5729a6aaaeab",
+  "journal_bytes": 727,
+  "calls": 1,
+  "prompt_tokens": 359,
+  "completion_tokens": 143,
+  "mode": "skeleton",
+  "wall_s": 3.2
+ },
+ {
+  "run": "agents/singleagentxmlarray_tester_2924",
+  "journal_bytes": 1313,
+  "calls": 1,
+  "prompt_tokens": 564,
+  "completion_tokens": 275,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/daily_assistant_18f7a73d31fa4a0d829a4229406558bc",
+  "journal_bytes": 17433,
+  "calls": 1,
+  "prompt_tokens": 1565,
+  "completion_tokens": 279,
+  "mode": "skeleton",
+  "wall_s": 6.8
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_5484",
+  "journal_bytes": 1574,
+  "calls": 1,
+  "prompt_tokens": 567,
+  "completion_tokens": 269,
+  "mode": "skeleton",
+  "wall_s": 5.5
+ },
+ {
+  "run": "agents/singleagent_tester_8712",
+  "journal_bytes": 1014,
+  "calls": 1,
+  "prompt_tokens": 487,
+  "completion_tokens": 245,
+  "mode": "skeleton",
+  "wall_s": 5.0
+ },
+ {
+  "run": "agents/project_task_manager_de023d732ed84d138ce02ef178306a03",
+  "journal_bytes": 24599,
+  "calls": 1,
+  "prompt_tokens": 1810,
+  "completion_tokens": 370,
+  "mode": "skeleton",
+  "wall_s": 9.1
+ },
+ {
+  "run": "agents/daily_assistant_2f4b2fff5467472f99a3427316148a38",
+  "journal_bytes": 378,
+  "calls": 1,
+  "prompt_tokens": 261,
+  "completion_tokens": 193,
+  "mode": "skeleton",
+  "wall_s": 3.6
+ },
+ {
+  "run": "agents/singleagent_tester_4314",
+  "journal_bytes": 1080,
+  "calls": 1,
+  "prompt_tokens": 504,
+  "completion_tokens": 203,
+  "mode": "skeleton",
+  "wall_s": 4.5
+ },
+ {
+  "run": "agents/agent_package_creator_0cc60bc5ef864c279c03f388349720fa",
+  "journal_bytes": 688379,
+  "calls": 6,
+  "prompt_tokens": 92212,
+  "completion_tokens": 1988,
+  "mode": "skeleton",
+  "wall_s": 220.0
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_7658",
+  "journal_bytes": 5832,
+  "calls": 1,
+  "prompt_tokens": 1926,
+  "completion_tokens": 299,
+  "mode": "skeleton",
+  "wall_s": 8.5
+ },
+ {
+  "run": "agents/codex_b4ac0aeb1c704b90b4cf752a0190b296",
+  "journal_bytes": 1082,
+  "calls": 1,
+  "prompt_tokens": 513,
+  "completion_tokens": 449,
+  "mode": "skeleton",
+  "wall_s": 8.1
+ },
+ {
+  "run": "agents/singleagent_tester_9503",
+  "journal_bytes": 32314,
+  "calls": 1,
+  "prompt_tokens": 8464,
+  "completion_tokens": 344,
+  "mode": "skeleton",
+  "wall_s": 20.4
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_4318",
+  "journal_bytes": 3277,
+  "calls": 1,
+  "prompt_tokens": 781,
+  "completion_tokens": 304,
+  "mode": "skeleton",
+  "wall_s": 6.5
+ },
+ {
+  "run": "agents/b550910f-c7ae-4cd6-b4c8-a5f208db3c55",
+  "journal_bytes": 3519,
+  "calls": 1,
+  "prompt_tokens": 1009,
+  "completion_tokens": 219,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_8302",
+  "journal_bytes": 22869,
+  "calls": 1,
+  "prompt_tokens": 2572,
+  "completion_tokens": 321,
+  "mode": "skeleton",
+  "wall_s": 9.4
+ },
+ {
+  "run": "agents/daily_assistant_52dc49e7c2a6482a9f3e1628a2325bfb",
+  "journal_bytes": 539,
+  "calls": 1,
+  "prompt_tokens": 371,
+  "completion_tokens": 284,
+  "mode": "skeleton",
+  "wall_s": 5.2
+ },
+ {
+  "run": "agents/runbashscenario_checkout_api_bootstrap_tester_1554",
+  "journal_bytes": 2397,
+  "calls": 1,
+  "prompt_tokens": 748,
+  "completion_tokens": 278,
+  "mode": "skeleton",
+  "wall_s": 6.0
+ },
+ {
+  "run": "agents/e3f643fd-2220-4979-a20c-2001c486d198",
+  "journal_bytes": 11618,
+  "calls": 1,
+  "prompt_tokens": 2026,
+  "completion_tokens": 255,
+  "mode": "skeleton",
+  "wall_s": 7.7
+ },
+ {
+  "run": "agents/codex_955facca433c4beb9c01611803627cfc",
+  "journal_bytes": 397,
+  "calls": 1,
+  "prompt_tokens": 263,
+  "completion_tokens": 166,
+  "mode": "skeleton",
+  "wall_s": 3.1
+ },
+ {
+  "run": "agents/dualagentb_tester_7875",
+  "journal_bytes": 447,
+  "calls": 1,
+  "prompt_tokens": 263,
+  "completion_tokens": 248,
+  "mode": "skeleton",
+  "wall_s": 4.4
+ },
+ {
+  "run": "agents/singleagent_tester_7951",
+  "journal_bytes": 1080,
+  "calls": 1,
+  "prompt_tokens": 507,
+  "completion_tokens": 289,
+  "mode": "skeleton",
+  "wall_s": 5.8
+ },
+ {
+  "run": "agents/singleagentxmlmarkup_tester_8155",
+  "journal_bytes": 1037,
+  "calls": 1,
+  "prompt_tokens": 442,
+  "completion_tokens": 253,
+  "mode": "skeleton",
+  "wall_s": 5.3
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_2419",
+  "journal_bytes": 4788,
+  "calls": 1,
+  "prompt_tokens": 1297,
+  "completion_tokens": 229,
+  "mode": "skeleton",
+  "wall_s": 6.4
+ },
+ {
+  "run": "agents/agent_package_creator_534185f0a6bf47ab8a1758fbae2f6593",
+  "journal_bytes": 5044711,
+  "calls": 28,
+  "prompt_tokens": 384625,
+  "completion_tokens": 8644,
+  "mode": "skeleton",
+  "wall_s": 948.5
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_5405",
+  "journal_bytes": 89076,
+  "calls": 3,
+  "prompt_tokens": 18894,
+  "completion_tokens": 1103,
+  "mode": "skeleton",
+  "wall_s": 52.0
+ },
+ {
+  "run": "agents/daily_assistant_600003578d07424fb573201573611345",
+  "journal_bytes": 940,
+  "calls": 1,
+  "prompt_tokens": 472,
+  "completion_tokens": 202,
+  "mode": "skeleton",
+  "wall_s": 4.2
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_4035",
+  "journal_bytes": 3418,
+  "calls": 1,
+  "prompt_tokens": 524,
+  "completion_tokens": 305,
+  "mode": "skeleton",
+  "wall_s": 5.8
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_8347",
+  "journal_bytes": 3112,
+  "calls": 1,
+  "prompt_tokens": 1013,
+  "completion_tokens": 316,
+  "mode": "skeleton",
+  "wall_s": 7.1
+ },
+ {
+  "run": "agents/worker_7423",
+  "journal_bytes": 928,
+  "calls": 1,
+  "prompt_tokens": 396,
+  "completion_tokens": 251,
+  "mode": "skeleton",
+  "wall_s": 4.9
+ },
+ {
+  "run": "agents/fe8a0deb-de32-48bd-960f-e9e61f01f255",
+  "journal_bytes": 4213,
+  "calls": 1,
+  "prompt_tokens": 1763,
+  "completion_tokens": 190,
+  "mode": "skeleton",
+  "wall_s": 5.7
+ },
+ {
+  "run": "agents/daily_assistant_fac3d81b27bb4631bc42251ebbf16653",
+  "journal_bytes": 1946,
+  "calls": 1,
+  "prompt_tokens": 740,
+  "completion_tokens": 131,
+  "mode": "skeleton",
+  "wall_s": 3.6
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_5322",
+  "journal_bytes": 18382,
+  "calls": 1,
+  "prompt_tokens": 4941,
+  "completion_tokens": 198,
+  "mode": "skeleton",
+  "wall_s": 11.3
+ },
+ {
+  "run": "agents/daily_assistant_26e1b1fb83f343c6bb339805bdd126b9",
+  "journal_bytes": 1696,
+  "calls": 1,
+  "prompt_tokens": 616,
+  "completion_tokens": 198,
+  "mode": "skeleton",
+  "wall_s": 4.6
+ },
+ {
+  "run": "agents/daily_assistant_5dba16a9c91d48838dc96a2e07cc7b31",
+  "journal_bytes": 3173,
+  "calls": 1,
+  "prompt_tokens": 1064,
+  "completion_tokens": 273,
+  "mode": "skeleton",
+  "wall_s": 6.5
+ },
+ {
+  "run": "agents/dualagenta_tester_4232",
+  "journal_bytes": 778,
+  "calls": 1,
+  "prompt_tokens": 347,
+  "completion_tokens": 212,
+  "mode": "skeleton",
+  "wall_s": 4.4
+ },
+ {
+  "run": "agents/audiotranscriber_8a9656f41b344cc5a165009d11178419",
+  "journal_bytes": 17319,
+  "calls": 1,
+  "prompt_tokens": 1675,
+  "completion_tokens": 261,
+  "mode": "skeleton",
+  "wall_s": 7.4
+ },
+ {
+  "run": "agents/89625dac-f793-43bc-b5df-bfba964fab48",
+  "journal_bytes": 62204,
+  "calls": 1,
+  "prompt_tokens": 6038,
+  "completion_tokens": 227,
+  "mode": "skeleton",
+  "wall_s": 14.8
+ },
+ {
+  "run": "agents/codex_a4e93af761da48ff898e1069fa82e5bb",
+  "journal_bytes": 24154,
+  "calls": 1,
+  "prompt_tokens": 3298,
+  "completion_tokens": 315,
+  "mode": "skeleton",
+  "wall_s": 12.3
+ },
+ {
+  "run": "agents/singleagent_tester_4131",
+  "journal_bytes": 587,
+  "calls": 1,
+  "prompt_tokens": 316,
+  "completion_tokens": 268,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/singleagentxmlarray_tester_2226",
+  "journal_bytes": 1298,
+  "calls": 1,
+  "prompt_tokens": 560,
+  "completion_tokens": 252,
+  "mode": "skeleton",
+  "wall_s": 5.2
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_9873",
+  "journal_bytes": 13075,
+  "calls": 1,
+  "prompt_tokens": 1545,
+  "completion_tokens": 298,
+  "mode": "skeleton",
+  "wall_s": 7.4
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_4909",
+  "journal_bytes": 4964,
+  "calls": 1,
+  "prompt_tokens": 528,
+  "completion_tokens": 174,
+  "mode": "skeleton",
+  "wall_s": 3.6
+ },
+ {
+  "run": "agents/daily_assistant_46b2c37b5499473a8e15884e4cefc11c",
+  "journal_bytes": 53901,
+  "calls": 1,
+  "prompt_tokens": 5095,
+  "completion_tokens": 303,
+  "mode": "skeleton",
+  "wall_s": 14.0
+ },
+ {
+  "run": "agents/daily_assistant_f61e7eb1b74546219ac612e846384439",
+  "journal_bytes": 862,
+  "calls": 1,
+  "prompt_tokens": 383,
+  "completion_tokens": 171,
+  "mode": "skeleton",
+  "wall_s": 3.7
+ },
+ {
+  "run": "agents/prototype_bootstrapper_abed47840270461f8820e6bb7dbca179",
+  "journal_bytes": 32942,
+  "calls": 1,
+  "prompt_tokens": 2705,
+  "completion_tokens": 231,
+  "mode": "skeleton",
+  "wall_s": 8.7
+ },
+ {
+  "run": "agents/daily_assistant_6c34ddbcf2f240c5bc5a81e064954d2c",
+  "journal_bytes": 3717,
+  "calls": 1,
+  "prompt_tokens": 1283,
+  "completion_tokens": 290,
+  "mode": "skeleton",
+  "wall_s": 6.9
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_3738",
+  "journal_bytes": 5084,
+  "calls": 1,
+  "prompt_tokens": 1389,
+  "completion_tokens": 240,
+  "mode": "skeleton",
+  "wall_s": 6.4
+ },
+ {
+  "run": "agents/daily_assistant_07217644a14d4fac8379ed3c4d30201b",
+  "journal_bytes": 31636,
+  "calls": 1,
+  "prompt_tokens": 2490,
+  "completion_tokens": 264,
+  "mode": "skeleton",
+  "wall_s": 8.2
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_6329",
+  "journal_bytes": 68544,
+  "calls": 1,
+  "prompt_tokens": 6871,
+  "completion_tokens": 279,
+  "mode": "skeleton",
+  "wall_s": 15.9
+ },
+ {
+  "run": "agents/project_task_manager_5a523ae09ef14474a9de254de623bac9",
+  "journal_bytes": 10691,
+  "calls": 1,
+  "prompt_tokens": 1559,
+  "completion_tokens": 382,
+  "mode": "skeleton",
+  "wall_s": 8.9
+ },
+ {
+  "run": "agents/deepseekreleasereadinessagent_release_operations_engineer_8236",
+  "journal_bytes": 3051,
+  "calls": 1,
+  "prompt_tokens": 795,
+  "completion_tokens": 241,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/singleagentxmlarray_tester_5160",
+  "journal_bytes": 1298,
+  "calls": 1,
+  "prompt_tokens": 564,
+  "completion_tokens": 273,
+  "mode": "skeleton",
+  "wall_s": 5.3
+ },
+ {
+  "run": "agents/daily_assistant_d418feb4d6934861ac65eca0f9c1a7ec",
+  "journal_bytes": 15509,
+  "calls": 1,
+  "prompt_tokens": 3268,
+  "completion_tokens": 265,
+  "mode": "skeleton",
+  "wall_s": 10.4
+ },
+ {
+  "run": "agents/codex_e311f9cf46c543cf89e074a93e487e62",
+  "journal_bytes": 4123,
+  "calls": 1,
+  "prompt_tokens": 1264,
+  "completion_tokens": 201,
+  "mode": "skeleton",
+  "wall_s": 6.1
+ },
+ {
+  "run": "agents/daily_assistant_135dbacecb884ecf9791fd2674502895",
+  "journal_bytes": 40348,
+  "calls": 1,
+  "prompt_tokens": 4690,
+  "completion_tokens": 307,
+  "mode": "skeleton",
+  "wall_s": 13.5
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_5272",
+  "journal_bytes": 8735,
+  "calls": 1,
+  "prompt_tokens": 1600,
+  "completion_tokens": 254,
+  "mode": "skeleton",
+  "wall_s": 7.3
+ },
+ {
+  "run": "agents/daily_assistant_8cd560e03a494393a5df01ca127a149c",
+  "journal_bytes": 68434,
+  "calls": 1,
+  "prompt_tokens": 4300,
+  "completion_tokens": 196,
+  "mode": "skeleton",
+  "wall_s": 10.8
+ },
+ {
+  "run": "agents/codex_91cb5916d2814558881ad55c50c053e0",
+  "journal_bytes": 919,
+  "calls": 1,
+  "prompt_tokens": 421,
+  "completion_tokens": 130,
+  "mode": "skeleton",
+  "wall_s": 3.2
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_4846",
+  "journal_bytes": 9186,
+  "calls": 1,
+  "prompt_tokens": 1305,
+  "completion_tokens": 214,
+  "mode": "skeleton",
+  "wall_s": 6.0
+ },
+ {
+  "run": "agents/dualagenta_tester_6502",
+  "journal_bytes": 591,
+  "calls": 1,
+  "prompt_tokens": 283,
+  "completion_tokens": 199,
+  "mode": "skeleton",
+  "wall_s": 3.6
+ },
+ {
+  "run": "agents/217efb22-f2b7-46bc-8fc3-57ddc411be5b",
+  "journal_bytes": 1476,
+  "calls": 1,
+  "prompt_tokens": 661,
+  "completion_tokens": 188,
+  "mode": "skeleton",
+  "wall_s": 4.9
+ },
+ {
+  "run": "agents/agent_package_creator_4506122fcec84631ab4289518813ff95",
+  "journal_bytes": 589205,
+  "calls": 4,
+  "prompt_tokens": 45914,
+  "completion_tokens": 1396,
+  "mode": "skeleton",
+  "wall_s": 111.7
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_5833",
+  "journal_bytes": 5832,
+  "calls": 1,
+  "prompt_tokens": 1926,
+  "completion_tokens": 281,
+  "mode": "skeleton",
+  "wall_s": 8.2
+ },
+ {
+  "run": "agents/singleagent_tester_5208",
+  "journal_bytes": 1093,
+  "calls": 1,
+  "prompt_tokens": 506,
+  "completion_tokens": 298,
+  "mode": "skeleton",
+  "wall_s": 6.1
+ },
+ {
+  "run": "agents/cb84b1aa-44ba-48d7-89e1-efc9c58da97f",
+  "journal_bytes": 118571,
+  "calls": 1,
+  "prompt_tokens": 5425,
+  "completion_tokens": 261,
+  "mode": "skeleton",
+  "wall_s": 13.5
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_4783",
+  "journal_bytes": 7264,
+  "calls": 1,
+  "prompt_tokens": 2228,
+  "completion_tokens": 276,
+  "mode": "skeleton",
+  "wall_s": 8.2
+ },
+ {
+  "run": "agents/daily_assistant_172e0bd6e0fa4077b82344b4264ad730",
+  "journal_bytes": 618,
+  "calls": 1,
+  "prompt_tokens": 342,
+  "completion_tokens": 194,
+  "mode": "skeleton",
+  "wall_s": 3.7
+ },
+ {
+  "run": "agents/general_agent_8501276daad6473694f2b3b42748cf62",
+  "journal_bytes": 922,
+  "calls": 1,
+  "prompt_tokens": 402,
+  "completion_tokens": 175,
+  "mode": "skeleton",
+  "wall_s": 3.7
+ },
+ {
+  "run": "agents/singleagentxmlmarkup_tester_8452",
+  "journal_bytes": 1022,
+  "calls": 1,
+  "prompt_tokens": 444,
+  "completion_tokens": 243,
+  "mode": "skeleton",
+  "wall_s": 5.0
+ },
+ {
+  "run": "agents/daily_assistant_8dc6a5646e264a939c39a61453aa248c",
+  "journal_bytes": 1410,
+  "calls": 1,
+  "prompt_tokens": 814,
+  "completion_tokens": 284,
+  "mode": "skeleton",
+  "wall_s": 6.3
+ },
+ {
+  "run": "agents/codex_21ed76a3e81c4cb58b7e02ae9ebba254",
+  "journal_bytes": 77299,
+  "calls": 1,
+  "prompt_tokens": 5374,
+  "completion_tokens": 257,
+  "mode": "skeleton",
+  "wall_s": 13.3
+ },
+ {
+  "run": "agents/daily_assistant_3a801cb3fab444a3bf0aedda9ff574c9",
+  "journal_bytes": 51762,
+  "calls": 1,
+  "prompt_tokens": 6291,
+  "completion_tokens": 275,
+  "mode": "skeleton",
+  "wall_s": 15.1
+ },
+ {
+  "run": "agents/daily_assistant_cb933fd7ff8b4efe847dc7523c52b82f",
+  "journal_bytes": 397,
+  "calls": 1,
+  "prompt_tokens": 261,
+  "completion_tokens": 193,
+  "mode": "skeleton",
+  "wall_s": 3.6
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_9547",
+  "journal_bytes": 9244,
+  "calls": 1,
+  "prompt_tokens": 2614,
+  "completion_tokens": 294,
+  "mode": "skeleton",
+  "wall_s": 9.4
+ },
+ {
+  "run": "agents/openaisingleflowagent_integration_test_agent_5431",
+  "journal_bytes": 1586,
+  "calls": 1,
+  "prompt_tokens": 601,
+  "completion_tokens": 270,
+  "mode": "skeleton",
+  "wall_s": 5.8
+ },
+ {
+  "run": "agents/daily_assistant_general_agent_4141",
+  "journal_bytes": 67298,
+  "calls": 8,
+  "prompt_tokens": 6978,
+  "completion_tokens": 2346,
+  "mode": "skeleton",
+  "wall_s": 51.2
+ },
+ {
+  "run": "agents/codex_58ab17c83d1a4e72b3d1d80d38d5b675",
+  "journal_bytes": 529,
+  "calls": 1,
+  "prompt_tokens": 374,
+  "completion_tokens": 276,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/lmstudiomultisteprunbashagent_multi_step_ops_rehearsal_tester_3536",
+  "journal_bytes": 11647,
+  "calls": 1,
+  "prompt_tokens": 3020,
+  "completion_tokens": 263,
+  "mode": "skeleton",
+  "wall_s": 9.3
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_7370",
+  "journal_bytes": 2421,
+  "calls": 1,
+  "prompt_tokens": 587,
+  "completion_tokens": 349,
+  "mode": "skeleton",
+  "wall_s": 6.5
+ },
+ {
+  "run": "agents/codex_c3511533a60d4f6b934ae76eaad73774",
+  "journal_bytes": 124330,
+  "calls": 3,
+  "prompt_tokens": 28427,
+  "completion_tokens": 1176,
+  "mode": "skeleton",
+  "wall_s": 71.0
+ },
+ {
+  "run": "agents/runtimetestagent_tester_7996",
+  "journal_bytes": 284,
+  "calls": 1,
+  "prompt_tokens": 200,
+  "completion_tokens": 235,
+  "mode": "skeleton",
+  "wall_s": 4.4
+ },
+ {
+  "run": "agents/kimifiverunbashvalidationagent_streaming_validation_agent_3659",
+  "journal_bytes": 2575,
+  "calls": 1,
+  "prompt_tokens": 604,
+  "completion_tokens": 240,
+  "mode": "skeleton",
+  "wall_s": 5.1
+ },
+ {
+  "run": "agents/codex_3da1594b9fa744e1bc8f149b5de2e6d2",
+  "journal_bytes": 19962,
+  "calls": 1,
+  "prompt_tokens": 6160,
+  "completion_tokens": 292,
+  "mode": "skeleton",
+  "wall_s": 14.9
+ },
+ {
+  "run": "agents/openaisingleflowagent_integration_test_agent_2431",
+  "journal_bytes": 1586,
+  "calls": 1,
+  "prompt_tokens": 597,
+  "completion_tokens": 242,
+  "mode": "skeleton",
+  "wall_s": 4.9
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_7133",
+  "journal_bytes": 3253,
+  "calls": 1,
+  "prompt_tokens": 820,
+  "completion_tokens": 249,
+  "mode": "skeleton",
+  "wall_s": 5.8
+ },
+ {
+  "run": "agents/singleagentxmlarray_tester_7223",
+  "journal_bytes": 1313,
+  "calls": 1,
+  "prompt_tokens": 560,
+  "completion_tokens": 339,
+  "mode": "skeleton",
+  "wall_s": 6.3
+ },
+ {
+  "run": "agents/singleagentxmlmarkup_tester_3909",
+  "journal_bytes": 1022,
+  "calls": 1,
+  "prompt_tokens": 442,
+  "completion_tokens": 248,
+  "mode": "skeleton",
+  "wall_s": 4.9
+ },
+ {
+  "run": "agents/worker_9297",
+  "journal_bytes": 853,
+  "calls": 1,
+  "prompt_tokens": 382,
+  "completion_tokens": 215,
+  "mode": "skeleton",
+  "wall_s": 4.3
+ },
+ {
+  "run": "agents/dualagentb_tester_6734",
+  "journal_bytes": 1038,
+  "calls": 1,
+  "prompt_tokens": 427,
+  "completion_tokens": 225,
+  "mode": "skeleton",
+  "wall_s": 4.5
+ },
+ {
+  "run": "agents/openaisingleflowagent_integration_test_agent_1352",
+  "journal_bytes": 1586,
+  "calls": 1,
+  "prompt_tokens": 605,
+  "completion_tokens": 295,
+  "mode": "skeleton",
+  "wall_s": 5.9
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_5586",
+  "journal_bytes": 617,
+  "calls": 1,
+  "prompt_tokens": 330,
+  "completion_tokens": 162,
+  "mode": "skeleton",
+  "wall_s": 3.2
+ },
+ {
+  "run": "agents/deepseekreleasereadinessagent_release_operations_engineer_6758",
+  "journal_bytes": 4891,
+  "calls": 1,
+  "prompt_tokens": 1258,
+  "completion_tokens": 224,
+  "mode": "skeleton",
+  "wall_s": 6.1
+ },
+ {
+  "run": "agents/agent_package_creator_a3234aabbc114247a7a804bebdecd299",
+  "journal_bytes": 117292,
+  "calls": 1,
+  "prompt_tokens": 9319,
+  "completion_tokens": 293,
+  "mode": "skeleton",
+  "wall_s": 21.3
+ },
+ {
+  "run": "agents/codex_796b58e9b6a54911881abd0c9694a143",
+  "journal_bytes": 3366,
+  "calls": 1,
+  "prompt_tokens": 1070,
+  "completion_tokens": 281,
+  "mode": "skeleton",
+  "wall_s": 6.7
+ },
+ {
+  "run": "agents/singleagent_tester_3962",
+  "journal_bytes": 995,
+  "calls": 1,
+  "prompt_tokens": 450,
+  "completion_tokens": 245,
+  "mode": "skeleton",
+  "wall_s": 5.0
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_8384",
+  "journal_bytes": 3226,
+  "calls": 1,
+  "prompt_tokens": 773,
+  "completion_tokens": 275,
+  "mode": "skeleton",
+  "wall_s": 6.0
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_9488",
+  "journal_bytes": 10019,
+  "calls": 1,
+  "prompt_tokens": 1457,
+  "completion_tokens": 313,
+  "mode": "skeleton",
+  "wall_s": 7.3
+ },
+ {
+  "run": "agents/worker_5548",
+  "journal_bytes": 807,
+  "calls": 1,
+  "prompt_tokens": 342,
+  "completion_tokens": 185,
+  "mode": "skeleton",
+  "wall_s": 3.6
+ },
+ {
+  "run": "agents/daily_assistant_85c4a9f9175b4709a20f606d6a0e33d6",
+  "journal_bytes": 2139,
+  "calls": 1,
+  "prompt_tokens": 810,
+  "completion_tokens": 269,
+  "mode": "skeleton",
+  "wall_s": 5.8
+ },
+ {
+  "run": "agents/project_task_manager_57adb15e0c104abb96f274b49af0a32b",
+  "journal_bytes": 13663,
+  "calls": 1,
+  "prompt_tokens": 1464,
+  "completion_tokens": 322,
+  "mode": "skeleton",
+  "wall_s": 7.6
+ },
+ {
+  "run": "agents/runtimetestagent_tester_1601",
+  "journal_bytes": 284,
+  "calls": 1,
+  "prompt_tokens": 200,
+  "completion_tokens": 313,
+  "mode": "skeleton",
+  "wall_s": 5.2
+ },
+ {
+  "run": "agents/daily_assistant_a4fa889804e34d74934320196eb09aa1",
+  "journal_bytes": 140260,
+  "calls": 1,
+  "prompt_tokens": 6497,
+  "completion_tokens": 305,
+  "mode": "skeleton",
+  "wall_s": 16.0
+ },
+ {
+  "run": "agents/lmstudiorunbashagent_workspace_setup_tester_8746",
+  "journal_bytes": 3112,
+  "calls": 1,
+  "prompt_tokens": 1011,
+  "completion_tokens": 319,
+  "mode": "skeleton",
+  "wall_s": 7.1
+ },
+ {
+  "run": "agents/e02ed00e-c30f-4374-8e15-2c2fb5647d50",
+  "journal_bytes": 109196,
+  "calls": 1,
+  "prompt_tokens": 5279,
+  "completion_tokens": 257,
+  "mode": "skeleton",
+  "wall_s": 13.1
+ },
+ {
+  "run": "agents/audiotranscriber_audio_transcription_specialist_6751",
+  "journal_bytes": 8839,
+  "calls": 1,
+  "prompt_tokens": 1402,
+  "completion_tokens": 288,
+  "mode": "skeleton",
+  "wall_s": 7.2
+ },
+ {
+  "run": "agents/audiotranscriber_46b69bcb9caf4e67b951cb66da42647a",
+  "journal_bytes": 648,
+  "calls": 1,
+  "prompt_tokens": 372,
+  "completion_tokens": 224,
+  "mode": "skeleton",
+  "wall_s": 4.3
+ },
+ {
+  "run": "agents/nativecontinuationcaptureagent_api_continuation_validator_6806",
+  "journal_bytes": 1528,
+  "calls": 1,
+  "prompt_tokens": 563,
+  "completion_tokens": 244,
+  "mode": "skeleton",
+  "wall_s": 5.3
+ },
+ {
+  "run": "agents/daily_assistant_31b8c9bd94b5424d9bc4e2f803428844",
+  "journal_bytes": 25731,
+  "calls": 1,
+  "prompt_tokens": 5068,
+  "completion_tokens": 281,
+  "mode": "skeleton",
+  "wall_s": 12.9
+ },
+ {
+  "run": "agents/daily_assistant_d145e5f3ae4c4a9a9f85941f79523689",
+  "journal_bytes": 24436,
+  "calls": 1,
+  "prompt_tokens": 1806,
+  "completion_tokens": 254,
+  "mode": "skeleton",
+  "wall_s": 7.4
+ },
+ {
+  "run": "agents/agent_package_creator_dc676180429e4657b137651f90452f1e",
+  "journal_bytes": 3885,
+  "calls": 1,
+  "prompt_tokens": 1123,
+  "completion_tokens": 402,
+  "mode": "skeleton",
+  "wall_s": 11.8
+ },
+ {
+  "run": "agents/project_task_manager_de845ae1cea54638b31f1da2b3ccafd7",
+  "journal_bytes": 5252,
+  "calls": 1,
+  "prompt_tokens": 896,
+  "completion_tokens": 244,
+  "mode": "skeleton",
+  "wall_s": 7.1
+ },
+ {
+  "run": "agents/daily_assistant_e9f5255cd8b74dfa9f57cd2a0c53a05b",
+  "journal_bytes": 1399,
+  "calls": 1,
+  "prompt_tokens": 461,
+  "completion_tokens": 224,
+  "mode": "skeleton",
+  "wall_s": 5.7
+ },
+ {
+  "run": "agents/7a8f6e8f-9daa-438f-94c9-0a301797d1e9",
+  "journal_bytes": 341791,
+  "calls": 1,
+  "prompt_tokens": 11033,
+  "completion_tokens": 296,
+  "mode": "skeleton",
+  "wall_s": 26.8
+ },
+ {
+  "run": "agents/deepseekreleasereadinessagent_release_operations_engineer_5129",
+  "journal_bytes": 1375,
+  "calls": 1,
+  "prompt_tokens": 526,
+  "completion_tokens": 220,
+  "mode": "skeleton",
+  "wall_s": 4.6
+ },
+ {
+  "run": "agents/daily_assistant_db4b109e0c1f41548318b576fed1171c",
+  "journal_bytes": 2169,
+  "calls": 1,
+  "prompt_tokens": 706,
+  "completion_tokens": 179,
+  "mode": "skeleton",
+  "wall_s": 4.5
+ },
+ {
+  "run": "agents/467984ca-96d8-4a97-b4b4-c78b770420de",
+  "journal_bytes": 234943,
+  "calls": 1,
+  "prompt_tokens": 14452,
+  "completion_tokens": 286,
+  "mode": "skeleton",
+  "wall_s": 32.1
+ },
+ {
+  "run": "agents/agent_package_creator_ca7de5f1fc58486a8793bbbee4f1d5aa",
+  "journal_bytes": 191285,
+  "calls": 1,
+  "prompt_tokens": 13389,
+  "completion_tokens": 340,
+  "mode": "skeleton",
+  "wall_s": 30.7
+ },
+ {
+  "run": "agents/runtimetestagent_tester_5991",
+  "journal_bytes": 284,
+  "calls": 1,
+  "prompt_tokens": 200,
+  "completion_tokens": 253,
+  "mode": "skeleton",
+  "wall_s": 5.4
+ },
+ {
+  "run": "agents/daily_assistant_de3e7d70559543a783665a1f9aec1b4a",
+  "journal_bytes": 29831,
+  "calls": 1,
+  "prompt_tokens": 2980,
+  "completion_tokens": 233,
+  "mode": "skeleton",
+  "wall_s": 11.3
+ }
+]

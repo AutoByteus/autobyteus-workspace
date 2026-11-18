@@ -1,0 +1,13 @@
+# IMP-02 fail-before (agent-run-manager.ts restored from base 1a4453e553, tests from bf2857ca29)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run-manager.test.ts --no-watch
+# Commit: bf2857ca29 (base origin/personal @ 1a4453e553)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+     × fences (interrupts) the run before preparing termination 4ms
+     × interrupts a busy turn and finishes once the turn ends, instead of waiting for it 1004ms
+     × returns false without preparing when the fence is not accepted, leaving the run active 2ms
+     × fences every run concurrently before finishing any, then finishes them in order 1003ms
+     × stops the other runs and reports a run whose stop fence fails or is not accepted 1ms
+ Test Files  1 failed (1)
+      Tests  5 failed | 34 passed (39)

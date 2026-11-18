@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -16,6 +17,7 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // agent-package-auto-refresh at the real server/wire boundary: the Studio HTTP/GraphQL server, the
 // `/ws/agent-package-definitions` feed with remote-access auth, the package folder watcher on real temp package folders
@@ -169,8 +171,6 @@ describe("Agent package definitions live refresh at the real server/wire boundar
       { input: { sourceKind: "LOCAL_PATH", source: root } })).importAgentPackage as PackageRow[];
     const row = rows.find((entry) => entry.path === root);
     expect(row, `imported row for ${root}`).toBeTruthy();
-    // A real user writes after import; this also lets macOS directory watches start (see the monitor's notes).
-    await sleep(1000);
     return row!;
   };
   const newPackage = async (label: string) => {
@@ -208,7 +208,9 @@ describe("Agent package definitions live refresh at the real server/wire boundar
         }
         if (target.endsWith("/branches/main")) return Response.json({ commit: { sha: githubRevision } });
         if (target.startsWith("https://codeload.github.com/apar-e2e/agents/tar.gz/")) {
-          expect(target).toContain(githubRevision);
+          const requested = target.slice(target.lastIndexOf("/") + 1);
+          // An update first downloads the installed revision (to keep the user's edits): the archive written when it was current.
+          if (requested !== githubRevision) return new Response(await fs.readFile(path.join(base, `github-${requested.slice(0, 6)}.tar.gz`)));
           const archive = path.join(base, `github-${githubRevision.slice(0, 6)}.tar.gz`);
           await create({ gzip: true, file: archive, cwd: path.dirname(upstream), portable: true }, ["wrapper"]);
           return new Response(await fs.readFile(archive));
@@ -271,7 +273,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     // A paired phone (real pairing through the Remote Access REST API) is accepted and receives the feed.
     expect((await rest("PUT", "/rest/remote-access/settings", { phoneAccessEnabled: true })).status).toBe(200);
     const session = await rest("POST", "/rest/remote-access/pairing-sessions",
-      { serverBaseUrl: "https://apar-e2e.tailnet.ts.net/mobile", serverName: "AutoByteus E2E" });
+      { connectionWay: "tailscale", serverBaseUrl: "https://apar-e2e.tailnet.ts.net/mobile", serverName: "AutoByteus E2E" });
     expect(session.status, JSON.stringify(session.body)).toBe(201);
     const exchange = await rest("POST", "/rest/remote-access/pairing-exchanges", {
       pairingCode: session.body.payload.pairingCode, serverBaseUrl: String(session.body.mobileUrl).split("?", 1)[0], deviceName: "APAR phone",
@@ -644,11 +646,11 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     const managerCalls = async (content: string) => toolText(await ask(managerSocket, managerRunId, content, "CALLED:"));
     const listNames = async () => (JSON.parse((await managerCalls(callTool("list_available_agents", {}))).text).agents as Array<{ name: string }>)
       .map((entry) => entry.name);
-    const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: managerRunId }))
-      .agentRunCollaboration?.root_agent?.execution_tree ?? null;
-    const memberConversation = async (address: string, agentRunId: string) => (await graphql(
-      `query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: managerRunId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // autobyteus-461 SR-084: the delegated runs come from the run's tree (its view carries its own parts only).
+    const tree = async () => delegatedRunsTree(graphql, "agent", managerRunId);
+    // A delegated copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the manager.
+    const memberConversation = async (_address: string, agentRunId: string) =>
+      (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     /** Delegates `READ_AGENT_PROMPT` to an address and returns the new copy and the prompt its runtime received. */
     const delegateAndReadPrompt = async (address: string) => {
       const known = new Set(taskNodes(await tree()).map((node) => node.agentRunId ?? node.teamRunId));

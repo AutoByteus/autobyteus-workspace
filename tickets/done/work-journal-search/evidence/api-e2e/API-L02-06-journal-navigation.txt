@@ -1,0 +1,25 @@
+# API-L02: search on the Memory page, open a result at its lines, navigate a multi-MB journal (desktop iso-53567-504c; probes/API-PROBE-memory-page.mjs over CDP 53567); 2026-10-26 ~17:35 UTC, Meaning index still embedding (~6%)
+# Cue 1 (public paraphrase of a May 2026 ticket): "implement the refined nested agent team design in the mixed-team worktree"
+
+## Search → open (UXJ-002)
+Results rendered 767 ms after Enter (wait loop); 10 cards, one per run, each with days ("Mentioned 12. Mai 2026 – 17. Mai 2026"), file, "lines a–b", day, Words/Meaning, Strong/Fair/Weak and a snippet (screenshot, private: API-L02-01-results.png)
+Result #3: implementation_engineer_4c6e0f5431511122, an old-format team member known only by its folder (subject RUN_FOLDER)
+Click its first match → #/memory?view=folder-inspector&runKey=agent_teams/team_software-engineering-team_c6000665/implementation_engineer_4c6e0f5431511122&…
+  banner: "From your search “…” · lines 5–22 · Matched by words, strong"; buttons "Match 1 · lines 5–22", "Match 2 · lines 29–30"
+  file rail: "work_journal_active.md · Active · 12. Mai 2026 – 17. Mai 2026 · 86.296 lines · 6.7 MB · Matched lines" (selected)
+  window "Lines 1–300 of 86.296"; highlighted lines 5…22; "Large file: lines load in parts." present; tabs ['Work Journal'] (a folder-only run has no memory view, by design)
+  screenshot, private: API-L02-02-opened-at-lines-large-file.png
+
+## Large file (UXJ-006): 6.7 MB, 86,296 lines
+Jump to day options: 12. Mai (line 5), 13. Mai (12445), 16. Mai (38042), 17. Mai (59032)
+Jump to day 16 Mai → "Lines 37.892–38.191 of 86.296"; line 38042 reads "[2026-05-16]"
+Go to line 70000 → "Lines 69.850–70.149 of 86.296", 290 ms click → rendered (screenshot, private: API-L02-03-go-to-line-70000.png)
+Show 300 earlier → "Lines 37.592–38.191" (600 lines); Show 300 later → "Lines 37.592–38.491" (900 lines)
+Jump to day 17 Mai → "Lines 58.882–59.181"; Show 300 later → "Lines 58.882–59.481", 293 ms
+Match 2 → window "Lines 1–300", highlighted ['29', '30']
+Back to search results → same results (q in the address, 10 cards), 90 ms
+
+## DDNS run (AGENT subject)
+Cue "set up a domain updater DDNS where is it": codex_45ce1b9e… is result #3 on the page (no asking run on the page, so this ticket's runs that quote the question rank above it)
+Opened: tabs ['Work Journal', 'Raw Traces']; banner "· lines 87–129 · Matched by words, strong", Match 1 · lines 87–129, Match 2 · lines 132–183; "Lines 1–300 of 1.099"; 11 files in the rail; highlighted from line 87 (screenshot, private: API-L02-04-ddns-opened.png)
+Raw Traces tab: "Raw trace file raw_traces_active.jsonl (active) — 92 record…" (screenshot, private: API-L02-05-raw-traces.png)

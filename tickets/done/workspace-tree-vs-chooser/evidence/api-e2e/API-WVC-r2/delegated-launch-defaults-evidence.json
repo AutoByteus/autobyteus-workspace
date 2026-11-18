@@ -1,0 +1,151 @@
+{
+  "startedAt": "2026-11-05T21:11:06.360Z",
+  "cases": {
+    "WVC-003": {
+      "title": "REQ-008/AC-009/AC-011, DS-002/DS-007: Runs → Workspaces → Runs with 9 runs of one agent: windows null/6/null; Show older (N) counts every run; the tree shows the newest 6; nothing missing after the round trip; the view survives a reload; Archive all older is all-or-nothing",
+      "result": "Pass",
+      "ms": 26695,
+      "details": {
+        "folder": {
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-pFISMu/wvc-folders/many-runs-1",
+          "id": "agent_ws_6eb8575a0cba4dddeb6b40ed459ce0c275051cbdfaf5117c965b3126c00c0123",
+          "name": "many-runs-1"
+        },
+        "runningRunId": "plain_f2d7_6e8a6de8736b4190ab36837c38ad7e5f",
+        "runIds": [
+          "plain_f2d7_6d1073cddf53409ea19d8ed002b89b44",
+          "plain_f2d7_bbfce97dbac042a793cc1bd4729dae73",
+          "plain_f2d7_2fb52b9813814bc4b945e342c4d25ba7",
+          "plain_f2d7_a63389dfecb9471092c70ca5e38a41fb",
+          "plain_f2d7_0448dc4d218a45a0b6048fcbd9de4b2e",
+          "plain_f2d7_51e037b685114ceba08b41040aad5b01",
+          "plain_f2d7_35c09d8230d04a1a84b5981e61ff2678",
+          "plain_f2d7_7c9fb0eb8487410cae85ab10ab4090ea",
+          "plain_f2d7_61217a5ac05e4a10930828a6e5d44e8b"
+        ],
+        "listed": 10,
+        "olderBefore": 5,
+        "newestShown": 5,
+        "readsToWorkspaces": [
+          6,
+          6
+        ],
+        "treeRuns": [
+          "plain_f2d7_6e8a6de8736b4190ab36837c38ad7e5f",
+          "plain_f2d7_61217a5ac05e4a10930828a6e5d44e8b",
+          "plain_f2d7_7c9fb0eb8487410cae85ab10ab4090ea",
+          "plain_f2d7_35c09d8230d04a1a84b5981e61ff2678",
+          "plain_f2d7_51e037b685114ceba08b41040aad5b01",
+          "plain_f2d7_0448dc4d218a45a0b6048fcbd9de4b2e",
+          "plain_f2d7_a63389dfecb9471092c70ca5e38a41fb"
+        ],
+        "treeExtra": [
+          "plain_f2d7_6e8a6de8736b4190ab36837c38ad7e5f"
+        ],
+        "readsBackToRuns": [
+          null
+        ],
+        "missingAfterRoundTrip": [],
+        "olderAfter": 5,
+        "titleAfterReload": "Runs",
+        "archiveConfirmation": "Archive all runs?\n\nOlder runs · 5 runs will be hidden from history.\n\nCancel\nArchive all",
+        "remaining": [
+          "plain_f2d7_61217a5ac05e4a10930828a6e5d44e8b",
+          "plain_f2d7_7c9fb0eb8487410cae85ab10ab4090ea",
+          "plain_f2d7_35c09d8230d04a1a84b5981e61ff2678",
+          "plain_f2d7_51e037b685114ceba08b41040aad5b01",
+          "plain_f2d7_0448dc4d218a45a0b6048fcbd9de4b2e"
+        ]
+      }
+    },
+    "WVC-004": {
+      "title": "DS-002/design Risks: the desktop Runs view reads with null while the paired phone reads with 5",
+      "result": "Pass",
+      "ms": 15768,
+      "details": {
+        "desktopReads": [
+          null
+        ],
+        "phoneReads": [
+          5
+        ],
+        "desktopReadsAfterPhone": [
+          null
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 42523
+    },
+    {
+      "label": "frontend",
+      "pid": 44056
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 44056,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 42523,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-pFISMu"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-pFISMu",
+  "backendUrl": "http://127.0.0.1:61588",
+  "frontUrl": "http://127.0.0.1:61589",
+  "definitions": {
+    "ids": {
+      "manager": "manager-d45b",
+      "lead": "lead-cc34",
+      "worker": "worker-1e9c",
+      "plain": "plain-f2d7",
+      "engineer": "engineer-9667",
+      "reviewer": "reviewer-e267",
+      "writer": "writer-f263",
+      "offline": "offline-c5d4",
+      "unoffered": "unoffered-67aa",
+      "badsettings": "badsettings-1ed5",
+      "incomplete": "incomplete-ef63",
+      "build": "build-team-089a",
+      "pair": "pair-team-cb3f",
+      "squad": "squad-team-926d",
+      "home": "home-team-8851",
+      "launchOrg": "launchorg-org-a4d9",
+      "hostOrg": "hostorg-org-16d5"
+    },
+    "names": {
+      "manager": "Manager d45b",
+      "lead": "Lead cc34",
+      "worker": "Worker 1e9c",
+      "plain": "Plain f2d7",
+      "engineer": "Engineer 9667",
+      "reviewer": "Reviewer e267",
+      "writer": "Writer f263",
+      "offline": "Offline c5d4",
+      "unoffered": "Unoffered 67aa",
+      "badsettings": "Badsettings 1ed5",
+      "incomplete": "Incomplete ef63",
+      "build": "Build Team 089a",
+      "pair": "Pair Team cb3f",
+      "squad": "Squad Team 926d",
+      "home": "Home Team 8851",
+      "launchOrg": "LaunchOrg Org a4d9",
+      "hostOrg": "HostOrg Org 16d5"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "completedAt": "2026-11-05T21:12:22.752Z"
+}

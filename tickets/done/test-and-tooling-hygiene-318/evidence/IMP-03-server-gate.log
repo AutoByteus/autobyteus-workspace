@@ -1,0 +1,123 @@
+# IMP-03 — Server gate (REQ-010): passes on day one, fails on a removed API, shrinks after the repairs
+# Command: pnpm -C autobyteus-server-ts typecheck (step 4); the same with a call to a removed planner method injected into tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts, then reverted (negative); pnpm -C autobyteus-server-ts typecheck:update-baseline twice after the test repairs
+# Commit: 0a050de62e (gate); shrinks on the working tree committed in 15b9bedd84 and e8716b0339
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "[typecheck] production errors: 0; test-file errors: 1323 in 379 files (baseline 1323 in 379 files)" then PASS; negative "more errors than the baseline: tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts (3, baseline 2)"; "baseline written: 1203 errors in 371 files (was 1219 in 372)"
+
+===== server-gate-step4.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.0s
+[typecheck] server tests (tsconfig.tests.json): 1323 errors, exit 2, 25.1s
+[typecheck] production errors: 0; test-file errors: 1323 in 379 files (baseline 1323 in 379 files)
+[typecheck] PASS
+
+===== server-gate-negative.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.3s
+[typecheck] server tests (tsconfig.tests.json): 1324 errors, exit 2, 24.7s
+
+Test files above their baseline count:
+tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts(79,49): error TS2345: Argument of type '{ externalRoots: string[]; }' is not assignable to parameter of type 'TestDefinitionConfig'.
+  Type '{ externalRoots: string[]; }' is missing the following properties from type 'Pick<AppConfig, "getAgentsDir" | "getAgentTeamsDir" | "getAgentOrgsDir">': getAgentsDir, getAgentTeamsDir, getAgentOrgsDir
+tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts(173,7): error TS2353: Object literal may only specify known properties, and 'taskRecords' does not exist in type 'Readonly<{ executionTree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; communicationMessages: Readonly<...>; }>'.
+tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts(229,80): error TS2339: Property 'prepareNewAgentRun' does not exist on type 'AgentOrgRunPlanner'.
+[typecheck] more errors than the baseline: tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts (3, baseline 2)
+[typecheck] production errors: 0; test-file errors: 1324 in 379 files (baseline 1323 in 379 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+ ELIFECYCLE  Command failed with exit code 1.
+
+===== server-shrink-1.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 typecheck:update-baseline /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm prepare:shared && node ./scripts/typecheck.mjs --update-baseline
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.3s
+[typecheck] server tests (tsconfig.tests.json): 1219 errors, exit 2, 25.7s
+[typecheck] fewer errors than the baseline: tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts (0, baseline 16)
+[typecheck] fewer errors than the baseline: tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts (0, baseline 8)
+[typecheck] fewer errors than the baseline: tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (0, baseline 12)
+[typecheck] fewer errors than the baseline: tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts (0, baseline 42)
+[typecheck] fewer errors than the baseline: tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts (0, baseline 11)
+[typecheck] fewer errors than the baseline: tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts (0, baseline 13)
+[typecheck] fewer errors than the baseline: tests/integration/services/codex-model-catalog.integration.test.ts (0, baseline 2)
+[typecheck] production errors: 0; test-file errors: 1219 in 372 files (baseline 1323 in 379 files)
+[typecheck] baseline written: 1219 errors in 372 files (was 1323 in 379)
+
+===== server-shrink-2.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 typecheck:update-baseline /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm prepare:shared && node ./scripts/typecheck.mjs --update-baseline
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 14.6s
+[typecheck] server tests (tsconfig.tests.json): 1203 errors, exit 2, 45.5s
+[typecheck] fewer errors than the baseline: tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts (0, baseline 16)
+[typecheck] production errors: 0; test-file errors: 1203 in 371 files (baseline 1219 in 372 files)
+[typecheck] baseline written: 1203 errors in 371 files (was 1219 in 372)
+

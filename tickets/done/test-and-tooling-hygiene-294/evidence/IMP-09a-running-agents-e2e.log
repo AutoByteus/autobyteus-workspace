@@ -1,0 +1,13 @@
+# IMP-09a-running-agents-e2e.log running-agents E2E (H-22, H-23)
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch
+# commit: e97639f088 tree (+H-22/H-23 edits, committed as 4026eb59f6, ee936fc3a2)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8634ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  993ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1693ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2434ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2436ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

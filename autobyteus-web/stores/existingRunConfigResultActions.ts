@@ -1,10 +1,10 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
-import { cloneExistingRunSelection, cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { cloneExistingAgentRunSelection, cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
-import type { AgentModelConfigMutationResult, TeamModelConfigMutationResult } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
+import type { AgentSelectionMutationResult, TeamModelConfigMutationResult } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 import type { AgentOrgRunConfigMutationResult } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -13,18 +13,20 @@ import { planExistingTeamModelConfigPatches } from '~/services/runConfigEditing/
 import type { ExistingRunModelConfigMutationResult } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 
 const requiresOutcomeVerification = (outcome: string): boolean => outcome === 'PERSISTENCE_INDETERMINATE'
+/** The Save was refused because the selected model cannot be used now: not offered, its list could not be read, or its settings could not be checked. */
+const UNAVAILABLE_MODEL_OUTCOMES: ReadonlySet<string> = new Set(['MODEL_UNAVAILABLE', 'MODEL_LIST_UNAVAILABLE', 'SCHEMA_UNAVAILABLE'])
 
 export const existingRunConfigResultActions = {
     applyAgentFailureCanonical(
       this: any,
       draft: Extract<ExistingRunConfigDraft, { kind: 'agent' }>,
-      result: AgentModelConfigMutationResult,
+      result: AgentSelectionMutationResult,
     ): void {
       if (!result.canonicalSelection?.llmModelIdentifier || !Object.hasOwn(result.canonicalSelection, 'llmConfig')) {
         this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
         return
       }
-      const canonical = cloneExistingRunSelection(result.canonicalSelection)
+      const canonical = cloneExistingAgentRunSelection(result.canonicalSelection)
       const payload: RunResumeConfigPayload = {
         runId: draft.runId,
         isActive: result.isActive,
@@ -81,7 +83,7 @@ export const existingRunConfigResultActions = {
   applyResultState(this: any, result: ExistingRunModelConfigMutationResult): void {
     this.feedback = { kind: result.success ? 'success' : 'error', message: result.message }
     this.fieldErrors = [...(result.fieldErrors ?? [])]
-    if (result.outcome !== 'MODEL_UNAVAILABLE' && result.outcome !== 'SCHEMA_UNAVAILABLE') return
+    if (!UNAVAILABLE_MODEL_OUTCOMES.has(result.outcome)) return
     const affectedAddresses = this.draft?.kind === 'team'
       ? planExistingTeamModelConfigPatches(this.draft.planner).map((patch) => patch.scopeAddress)
       : this.draft?.kind === 'agent_org'
@@ -104,9 +106,9 @@ export const existingRunConfigResultActions = {
     this.reconciling = true
     this.cachedLifecycleLock = null
     try {
-      const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId)
+      const { payload } = await this.readAgentCanonical(runId)
       if (!current()) return
-      this.syncAgentCanonical(payload, delegatedSnapshot)
+      this.syncAgentCanonical(payload)
       this.feedback = null
     } catch (error) {
       if (!current()) return

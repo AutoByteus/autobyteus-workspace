@@ -1,5 +1,6 @@
 import type { Client } from '@modelcontextprotocol/client';
 import type { BaseMcpConfig } from '../types.js';
+import type { McpSecretResolver } from '../mcp-secret-resolver.js';
 
 export enum ServerState {
   DISCONNECTED = 'disconnected',
@@ -24,7 +25,11 @@ export abstract class BaseManagedMcpServer {
   private cleanupStack: CleanupCallback[] = [];
   private connectPromise: Promise<void> | null = null;
 
-  constructor(config: BaseMcpConfig) {
+  /**
+   * @param secretResolver resolves the config's secret references when the server connects. Without one, a config
+   * that holds a reference fails to connect with `McpSecretUnavailableError` (`VAULT_UNAVAILABLE`).
+   */
+  constructor(config: BaseMcpConfig, protected readonly secretResolver: McpSecretResolver | null = null) {
     this.config = config;
   }
 

@@ -4,6 +4,7 @@ import {
   composeNativeAutoByteusPrompt,
   composeSharedCarpenterPrompt,
 } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { renderCollaborationSections } from "../../../src/agent-execution/prompt/collaboration-prompt-sections.js";
 import { resolveRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { testMemberExecutionContext } from "../../fixtures/current-team-run-fixtures.js";
@@ -33,8 +34,11 @@ describe("member collaboration instruction provider parity", () => {
       deliverInterAgentMessage: vi.fn(async () => undefined) as never,
     });
     const expected = renderCollaborationSections(memberExecutionContext);
-    const providerSharedPrompt = composeSharedCarpenterPrompt({ agentDefinition, memberExecutionContext });
+    const providerSharedPrompt = composeSharedCarpenterPrompt({
+      semanticMemoryPath: null, agentDefinition, memberExecutionContext, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+    });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition,
       workspaceRootPath: "/tmp/classroom-workspace",
       memberExecutionContext,
@@ -64,12 +68,15 @@ describe("member collaboration instruction provider parity", () => {
     );
     expect(nativeAutoByteusPrompt).toContain("## Bash Operating Practice");
     expect(nativeAutoByteusPrompt).toContain("## File And Directory Practice");
-    expect(runtimeExposure.requestedToolNames).toEqual(["get_handoff_rules", "send_message_to", "delegate_task"]);
+    expect(runtimeExposure.requestedToolNames).toEqual(["get_handoff_rules", "send_message_to", "delegate_task", "search_memory"]);
   });
 
   it("does not inject the collaboration sections or intrinsic tools for standalone Agents without a member context", () => {
-    const providerSharedPrompt = composeSharedCarpenterPrompt({ agentDefinition, memberExecutionContext: null });
+    const providerSharedPrompt = composeSharedCarpenterPrompt({
+      semanticMemoryPath: null, agentDefinition, memberExecutionContext: null, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
+    });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition,
       workspaceRootPath: "/tmp/standalone-workspace",
       memberExecutionContext: null,
@@ -81,6 +88,7 @@ describe("member collaboration instruction provider parity", () => {
     }
     expect(providerSharedPrompt).not.toContain("## Working Environment");
     expect(nativeAutoByteusPrompt).toContain("## Working Environment");
-    expect(resolveRuntimeAgentToolExposure(agentDefinition, null).requestedToolNames).toEqual([]);
+    // No collaboration tool: only the platform-given search_memory, which every run has (autobyteus-496).
+    expect(resolveRuntimeAgentToolExposure(agentDefinition, null).requestedToolNames).toEqual(["search_memory"]);
   });
 });

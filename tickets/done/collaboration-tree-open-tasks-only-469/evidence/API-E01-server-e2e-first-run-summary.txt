@@ -1,0 +1,79 @@
+# Case: API-E01 (round-1 first run, before any test update)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch
+# Code under test: 42652879b3 (HEAD 7ec463393b, docs only after it)
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources
+# Date: 2026-11-11
+# Look for: ' Test Files  17 failed | 164 passed | 71 skipped (252)' and the failed-file list
+
+ Test Files  17 failed | 164 passed | 71 skipped (252)
+      Tests  47 failed | 799 passed | 334 skipped (1180)
+   Start at  00:00:48
+   Duration  2623.44s (transform 14.08s, setup 5.09s, import 290.27s, tests 2305.36s, environment 13ms)
+
+## Failed files
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (42 tests | 2 failed) 441580ms
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 4 failed | 2 skipped) 179062ms
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests | 1 failed) 13092ms
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 5 failed | 1 skipped) 14593ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 2 failed) 9334ms
+ ❯ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests | 1 failed) 15638ms
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests | 4 failed) 795ms
+ ❯ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests | 3 failed) 5210ms
+ ❯ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests | 3 failed) 16206ms
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests | 5 failed) 2355ms
+ ❯ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests | 1 failed) 10255ms
+ ❯ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests | 3 failed) 6806ms
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests | 8 failed) 547ms
+ ❯ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests | 2 failed) 13945ms
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests | 1 failed) 3685ms
+ ❯ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test | 1 failed) 2300ms
+ ❯ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test | 1 failed) 139ms
+
+## Failed tests
+     × RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha 1024ms
+     × RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways 369ms
+     × EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views 7467ms
+     × EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner 8150ms
+     × EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner 8473ms
+     × EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change 1515ms
+     × migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 2658ms
+     × CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED 1182ms
+     × CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED) 1200ms
+     × standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO 2116ms
+     × Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate 2187ms
+     × Agent Org root: the same journey through the Org stream; an Org member cannot reactivate 1933ms
+     × in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values 1188ms
+     × Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006) 434
+     × AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing 4446ms
+     × hydrates native reasoning through standalone and team GraphQL projections 64ms
+     × hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals 59ms
+     × projects a team member from active traces only and preserves its archive bytes 80ms
+     × traverses exactly 275 team-member active events and rejects its cursor for another subject 90ms
+     × standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete 1572ms
+     × Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED) 1496ms
+     × Agent Org root: same journey through the Org stream 1566ms
+     × agent root: Task closure during and before a teammate message save; the root keeps working and restores its history 5341ms
+     × team root: Task closure during and before a teammate message save; the root keeps working and restores its history 4972ms
+     × org root: Task closure during and before a teammate message save; the root keeps working and restores its history 4831ms
+     × archives inactive agent and team runs and hides them from default history without deleting disk or index data 230ms
+     × rejects active and unsafe archive IDs without writing archive state or creating files 220ms
+       × archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else 389ms
+       × archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop 398ms
+       × reports a run that started after the running-run check as failed and archives the rest (AC-010) 559ms
+     × SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope 3260ms
+     × standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete 2163ms
+     × Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete 1939ms
+     × Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete 1806ms
+     × lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003) 20ms
+     × lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011) 8ms
+     × opens team member memory for a configured member and its task instance; unknown and non-admitted roots return empty views (AC-006, AC-011) 3ms
+     × skips a team tree corrupted after admission with a warning while other roots still list (AC-003) 46ms
+     × lists org definitions with member memory, using the history index name (AC-007) 4ms
+     × lists org runs with address-path labels and own run IDs, includes task-team members under their task group, searches and pages (AC-008, AC-010, AC-011, AC-014) 2ms
+     × opens org member memory for a team-hosted member, a task instance and a task-team member; unknown members get an empty view (AC-009, AC-011, AC-014) 1ms
+     × serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate) 44ms
+     × TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing 4144ms
+     × TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows) 3914ms
+     × CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID 405ms
+     × converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing 2299ms
+     × uses one tree read per admitted root in each imported GraphQL request without changing any source file 11ms

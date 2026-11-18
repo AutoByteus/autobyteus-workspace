@@ -1,0 +1,8 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 1282 bytes, trimmed to summaries, skips and failures.
+LRL-001 Pass AC-003, QR-005 (Team): opening a stopped six-member Team run loads only the focused member; another member loads when opened; the Team tab asks once for the focused participant
+LRL-002 Pass AC-003, QR-005 (Org): opening a stopped Org run loads at most the focused member (none with no selection); another member loads when opened
+LRL-003 Pass AC-002 live: a message sent while the Team tab loads, and while the stream is down, appears once; the list equals the stored log
+LRL-004 Pass AC-006: a Team run with a damaged stored message log opens; its Team tab and the phone show the messages as unavailable with the reason; a message to it is refused with the reason
+LRL-005 Pass Reload rule (SR-004…SR-006): a running Team opens with one participant request; a live message adds none; a stop and resume reloads the list
+Summary: 5 Pass, 0 Fail
+exit=0

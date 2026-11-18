@@ -16,6 +16,7 @@ import {
   GraphqlDefaultLaunchConfigInput,
   toDomainDefaultLaunchConfig,
 } from "./default-launch-config.js";
+import { PersonalSetting, PersonalSettingsBase, toDomainPersonalSetting } from "./personal-settings.js";
 
 export enum AgentDefinitionOwnershipScope {
   SHARED = "SHARED",
@@ -115,9 +116,29 @@ export class AgentDefinition {
   @Field(() => GraphqlDefaultLaunchConfig, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfig | null;
 
+  /** An internal agent (the system's own helper); listed only while "Show internal agents" is on. */
+  @Field(() => Boolean)
+  internal!: boolean;
+
+  /** The agent has a semantic memory (its own folder of reusable knowledge, shared by all its runs). */
+  @Field(() => Boolean)
+  semanticMemoryEnabled!: boolean;
+
+  /** The absolute semantic memory folder on this node; null when semantic memory is off. */
+  @Field(() => String, { nullable: true })
+  semanticMemoryPath!: string | null;
+
   /** Set when the definition is served from its last working version; names the file and reason. */
   @Field(() => DefinitionLoadIssue, { nullable: true })
   loadIssue?: DefinitionLoadIssue | null;
+
+  /** The settings that hold the user's personal value on this node (tools, skills, avatar, runtime/model). */
+  @Field(() => [PersonalSetting])
+  personalSettings!: PersonalSetting[];
+
+  /** The base of the personal settings (a package or a built-in agent); null when they do not apply. */
+  @Field(() => PersonalSettingsBase, { nullable: true })
+  personalSettingsBase!: PersonalSettingsBase | null;
 }
 
 @InputType()
@@ -166,6 +187,9 @@ export class CreateAgentDefinitionInput {
 
   @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
+
+  @Field(() => Boolean, { nullable: true })
+  semanticMemoryEnabled?: boolean | null;
 }
 
 @InputType()
@@ -217,6 +241,9 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
+
+  @Field(() => Boolean, { nullable: true })
+  semanticMemoryEnabled?: boolean | null;
 }
 
 @ObjectType()
@@ -238,7 +265,9 @@ export class AgentDefinitionResolver {
       if (!domainDefinition) {
         return null;
       }
-      return await AgentDefinitionConverter.toGraphql(domainDefinition, await service.getLoadIssue(id));
+      return await AgentDefinitionConverter.toGraphql(
+        domainDefinition, await service.getLoadIssue(id), await service.getPersonalSettingsView(id),
+      );
     } catch (error) {
       logger.error(`Error fetching agent definition by ID ${id}: ${String(error)}`);
       throw new Error("Unable to fetch agent definition at this time.");
@@ -252,8 +281,11 @@ export class AgentDefinitionResolver {
       const definitions = await service.getVisibleAgentDefinitions();
       const issues = new Map((await service.listLoadIssues()).map((entry) => [entry.definitionId, entry.issue]));
       return await Promise.all(
-        definitions.map(async (definition) =>
-          AgentDefinitionConverter.toGraphql(definition, issues.get(String(definition.id ?? "")) ?? null)),
+        definitions.map(async (definition) => AgentDefinitionConverter.toGraphql(
+          definition,
+          issues.get(String(definition.id ?? "")) ?? null,
+          await service.getPersonalSettingsView(String(definition.id ?? "")),
+        )),
       );
     } catch (error) {
       logger.error(`Error fetching all agent definitions: ${String(error)}`);
@@ -297,6 +329,7 @@ export class AgentDefinitionResolver {
         skillNames: input.skillNames ?? undefined,
         skillScope: input.skillScope ?? undefined,
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
+        semanticMemoryEnabled: input.semanticMemoryEnabled ?? undefined,
       });
       return await AgentDefinitionConverter.toGraphql(domainDefinition);
     } catch (error) {
@@ -329,10 +362,26 @@ export class AgentDefinitionResolver {
         id,
         updatePayload as unknown as Parameters<typeof service.updateAgentDefinition>[1],
       );
-      return await AgentDefinitionConverter.toGraphql(domainDefinition);
+      return await AgentDefinitionConverter.toGraphql(domainDefinition, null, await service.getPersonalSettingsView(id));
     } catch (error) {
       logger.error(`Error updating agent definition: ${String(error)}`);
       throw new Error(`Failed to update agent definition: ${String(error)}`);
+    }
+  }
+
+  /** "Reset to the package's setting" / "Reset to the built-in setting": removes one personal setting. */
+  @Mutation(() => AgentDefinition)
+  async resetAgentPersonalSetting(
+    @Arg("definitionId", () => String) definitionId: string,
+    @Arg("setting", () => PersonalSetting) setting: PersonalSetting,
+  ): Promise<AgentDefinition> {
+    try {
+      const service = getStudioAgentDefinitionService();
+      const definition = await service.resetPersonalSetting(definitionId, toDomainPersonalSetting(setting));
+      return await AgentDefinitionConverter.toGraphql(definition, null, await service.getPersonalSettingsView(definitionId));
+    } catch (error) {
+      logger.error(`Error resetting a personal setting of agent definition ${definitionId}: ${String(error)}`);
+      throw new Error(`Failed to reset the personal setting: ${String(error)}`);
     }
   }
 

@@ -1,0 +1,16 @@
+# API-10 clean clone of codex/node-vocabulary at 383b1500a2 into /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nv-clone.4yIC59Bt2f/repo
+383b1500a2 test(node-vocabulary): upgrade E2E, browser probe and the former tool name (autobyteus-290)
+untracked or changed files:        0
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9.9s using pnpm v10.28.2
+INSTALL_EXIT=0
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+BUILD_EXIT=0
+# API-10 the upgrade E2E from the clean clone
+ ✓ tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts (3 tests) 15588ms
+     ✓ NV-01 upgrade: same node IDs, renamed files with their values and backups, peers recognize each other, Memory Sync continues into the same import, a third start changes nothing  4843ms
+     ✓ NV-02 a damaged identity file: 503 NODE_IDENTITY_NOT_MIGRATED, no new node ID, the file kept and named, peers refuse with that reason, the rest works; restored, the next start migrates it  3862ms
+     ✓ NV-03 damaged hub credentials: ingestion 503 MEMORY_SYNC_NOT_MIGRATED, reads refuse with the text, only local memory is listed, the files kept; restored, the next start migrates them and alpha syncs again  3840ms
+      Tests  3 passed (3)
+E2E_EXIT=0

@@ -1,3 +1,66 @@
+# Current R3 investigation — 2026-10-26
+
+## Identity, bootstrap and authorities
+- Package **nfs-guide-install-commands**; autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3. Requested by /project_task_manager, run project_task_manager_a5f6d9d306e54970bafdad895bdf731d.
+- Isolated authoring worktree **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3**, branch **codex/nfs-guide-install-commands-r3**.
+- `git fetch origin personal` then `git worktree add -b codex/nfs-guide-install-commands-r3 … origin/personal` completed exit0. Resolved base **d74f75a51ab7dc47d42a13f33e0f943c3a230ad7**; finalization **origin/personal**, NO RELEASE. Initial checkout clean; no path/branch collision.
+- Existing archive moved via git mv to in-progress ONLY in this new isolated worktree for explicit R3 reopening. Other-owner artifacts/raw paths preserved. Old r1/r2 detached worktrees and canonical dirty checkout/PM boards are read-only, not reused or cleaned.
+- Saved Task read in full at intake and before approval. Latest Oct26 comments control; initial description/R2 instructions are historical where superseded. Read R2 terminal receipt before bootstrap and viewed both latest screenshots.
+- Current requirements **R3/SR-005 Approved**; current design **SR-006 Ready**. Historical SR001–004/IR/API/DR results are not R3 proof.
+- Read full current skill and requirements/architecture/finding-the-cause/ticket-scope/handoff/design-principles gates plus requirements/investigation/SR/design templates. Root current AGENTS, DESIGN, TESTING, RELEASE, GLOSSARY; web AGENTS and ARCHITECTURE read. No closer package AGENTS/DESIGN for this path. Initially read older canonical-root authorities, detected difference against fresh checkout and reread fresh complete versions before current design; do not apply old testing/release guidance.
+- Design examples not needed: flat local text/markup removal, no new structural shape. No design-principle mistake/skill change. Project glossary has no task-specific new concept; use established NFS/mount path/Copy terminology.
+
+## Request / factual source log
+The user asks to remove the advanced CLI documentation line and reduce the blue explanation, yellow warning and trailing paragraphs, using Docker's concise guide as reference. Install/run boxes and all Copy behavior must stay. Requirements own the desired compact content; this file owns observations.
+
+| ID | Exact evidence at base d74f75a51a | Finding / method / disposition |
+|---|---|---|
+| INV-11 | `components/settings/NfsGuideCard.vue:52–60`; PM Oct26 full/cropped screenshots | **Read / viewed**: single advanced README anchor, blue folder/Docker paragraph, amber title/two paragraphs, two trailing prose paragraphs exactly match user complaint. This is explicitly requested presentation change, not an uncertain runtime malfunction. |
+| INV-12 | `localization/messages/{en,zh-CN}/settings.ts:422–426,443–444`; Python regex/JSON extraction | **Measured text only**: seven footer keys (advanced/workspaceHint/trustTitle/trustDetail/outageDetail/limitations/deferred) total **164 English whitespace-separated words**. No UI-height/performance measurement claimed. Both locales carry same kinds of material. |
+| INV-13 | `NfsGuideCard.vue:8–50,65–97`; `utils/nfsLauncherCommands.ts:1–47` | **Read + executed pure helper**: nine commands; installer strings use fixed v0.1.0 URL/hash and end in version, and seven installed-tool strings. Footer is literal localized template output, separate from clipboard logic. No required helper/descriptor/lifecycle change. |
+| INV-14 | `DockerNodeStartGuideCard.vue:1–60`, English settings catalog Docker entries | **Read**: installation/actions in cards and one short next-step footer; no release-validation narrative. Match information density, not copying its implementation or changing Docker. |
+| INV-15 | `docs/nfs_guide.md:1–60`; component test `NfsGuideCard.spec.ts:20–52,54–119` | **Read**: docs already retain most limits. Tests intentionally require the old advanced anchor in four descriptor states and Chinese deferred text; these must change, while Copy/lifecycle/availability tests remain. Docs' first paragraph currently says page opens links and needs correction; retain documentation links themselves. Add source-owner mapping/connection-info-not-token facts from removed UI to limits docs rather than lose them. |
+| INV-16 | After approval: `NodeManager.vue:50–74`, `NfsGuideCard.vue:65–97`, `useLocalization.ts:1–19`, `localizationRuntime.ts:94–116,141–145`, `catalogRegistry.ts:1–12`, types.ts | **Read**: normal tab loads local descriptor into guide; guide calls localization translator. Translator reads selected catalog then English, finally key. Catalog keys are string-typed, not compiler-validated closed union; explicit locale assertions/guards needed. All removed keys are literal consumers, not a dynamic exported host API. |
+| INV-17 | After approval: exact-key rg through web sources, current tests; Git diff vs c78ffb15 | **Read/search**: each removed key advanced/limitations/deferred is used only once in NfsGuideCard plus two locale definitions. Dynamic keys use only computer labels and command title/detail, not these keys. Current component/helper/component test/docs equal R2 merge (diff exit0), but current pnpm-lock.yaml and web package.json differ; old runs cannot be advertised as current-base proof. |
+
+All paths in table are relative to `autobyteus-web/`. Historical line numbers below remain historical. Current screenshots are user-supplied observations, not an agent-rendered postchange pass.
+
+## Supported paths and structural inventory
+- BEH001/002/004/005/006: user Nodes → NFS tab → local descriptor projects two install cards + seven usage cards, localized prose/footer. R3 changes only footer/advanced link. Cards still indicate intended platforms; no claim all platforms work because caveats move to docs.
+- BEH003: Copy button → component pending guard → navigator.clipboard.writeText → actual promise fulfillment/rejection → local feedback/reset; unmount marks disposed/clears timer. Never runs shell, fetches release, or checks mount.
+- Payload: two locale catalogs, small template section, matching maintenance document. Structural surface: existing Vue presentation only. No new API/data schema/persistence/host authority/security policy/concurrency/deployment/ownership boundary.
+- Off-spine localization is already owned by localization runtime; no new abstraction, HTTP help fetch, accordion, modal or generated disclaimer required.
+- Persisted data: Not Affected. No user data read, written, migrated or lost; no provider credential needed. No external release/installer retrieval needed because this request freezes command bytes, not support/availability refresh.
+
+## Cheap premise probe and uncertainty
+Executed from fresh worktree with Node **v22.23.1**:
+`node --experimental-strip-types --input-type=module` importing only `./autobyteus-web/utils/nfsLauncherCommands.ts` and node:crypto; evaluated `nfsLauncherCommand('macos'|'linux', nfsPublishedRelease)` and nfsUsageCommands; hashed returned strings, evaluated both null-descriptor cases.
+- Exit0; nine strings. Mac363 bytes SHA256 `0d0f89703ebc337e2f2cccbebba487d6f77cf591e7fdd6f21278a8eedc0286e5`; Linux359 bytes SHA256 `1d34aa6064859e49c9298b2f55bc46bd0ce58ab6cbebf9037cfdca6caefbddb6`.
+- Installed IDs interactive/create/connect/status/reconnect/detach/version; lengths27/34/35/34/37/34/35 bytes. Both null outputs null.
+- Node emitted MODULE_TYPELESS_PACKAGE_JSON diagnostic and reparsed TS as ESM; probe succeeded. No package configuration change needed to silence it.
+- Footer count: Python extracted seven quoted English catalog values and summed `len(value.split())`, result164. Target ≤60 is a requirements decision, not a measured rendering result.
+- This proves pure projection at this base, not clipboard/browser/new UI correctness or installer/NFS operation. No dependencies, devserver, tests, browser, app, installer, Docker, VM or provider started by Solution Designer. No diagnostic production edits. Runtime verification belongs to downstream implementation/API.
+
+## Current supplements / history custody
+PM context root: `/Users/normy/.autobyteus/server-data/projects/project_a1377344-25db-482a-97cc-ecfdb0fb495a/tasks/project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3/context/`.
+| Artifact | Owner / purpose / applicability |
+|---|---|
+| ctx_9181c981acfe__ctx_4f80470bb9dc_image.png | PM/user; full current footer and command boundary; viewed, factual scope evidence for SCN006/AC007, not Product-owned spec |
+| ctx_ca8d816b4bfb__ctx_a6d4d599a98e_image.png | PM/user; footer crop; same scope/evidence |
+| ctx_285229d65a9f__nfs-guide-install-commands-r2-terminal-receipt.md | Solution Designer copy in PM context; R2 completion/cleanup provenance only. Old retained checkout9213d42b unchanged; R2 remote source merge c78ffb15 completed, not reopened there |
+| Prior rows below / current in-progress owner reports | Historical R1/R2 evidence unchanged, not current R3 pass. No cumulative attachment manifest. |
+
+No behavior-defining supplement, separate Product task, prerequisite or new follow-up found. Existing field task nfs-4 remains outside. Root RELEASE at this fresh base already correctly describes published pinned commands and deferred field tests; the earlier stale paragraph read from canonical checkout is not a new current-source defect.
+
+## Architecture findings / handoff implications
+- Remove literal advanced link and trailing limits/deferred paragraphs plus their now-unreachable keys; keep shortened workspaceHint/trustTitle/trustDetail/outageDetail. One existing owner handles all meaning/formatting; no script change required.
+- Preserve exact helper, card markup, locale runtime, parent, Docker and clipboard code. Tests must replace obsolete positive-link/Chinese-deferred assertions with absence/concise-safety expectations while retaining lifecycle and availability.
+- Scoped source + rendered browser checks are sufficient for renderer change under TESTING. Rerun current scoped cases because shared foundation changed; later rounds plan by diff, one run per case, no ritual whole-suite retries. Rebuild/typecheck affected inputs after any merge per current policy.
+- No source implementation or postchange validation performed. Requirements R3 approval is distinct from execution proof and finalization.
+
+---
+## Historical R2 investigation (unchanged)
+
 # Current reopen — 2026-10-24 (requirements investigation)
 - Task/package unchanged: autobyteus-254 / nfs-guide-install-commands. PM carries explicit user direction to remove only “View release downloads” and “Review the pinned installer script”.
 - New isolated authoring worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2; branch codex/nfs-guide-install-commands-r2; fresh origin/personal base 8b34e8ae108a281b0c93c679c60883df28a30773; finalization origin/personal, no release.

@@ -1,0 +1,21 @@
+[
+  {
+    "packageId": "github:autobyteus/autobyteus-agents",
+    "sourceKind": "GITHUB_REPOSITORY",
+    "source": "https://github.com/AutoByteus/autobyteus-agents",
+    "normalizedSource": "autobyteus/autobyteus-agents",
+    "managedInstallPath": "/private/tmp/pps/inst/data/server-data/agent-packages/github/autobyteus__autobyteus-agents",
+    "sourceMetadata": {
+      "github": {
+        "defaultBranch": "main",
+        "installedRevision": "45012f05f21eda057af3c15d2c7b304ca6975d13",
+        "latestRevision": "45012f05f21eda057af3c15d2c7b304ca6975d13",
+        "latestCheckedAt": "2026-11-09T09:06:30.250Z",
+        "updateStatus": "UP_TO_DATE",
+        "lastError": null
+      }
+    },
+    "createdAt": "2026-11-09T08:59:46.021Z",
+    "updatedAt": "2026-11-09T09:06:32.322Z"
+  }
+]

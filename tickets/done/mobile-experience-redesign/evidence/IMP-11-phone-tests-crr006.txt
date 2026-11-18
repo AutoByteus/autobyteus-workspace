@@ -1,0 +1,21 @@
+# IMP-11 phone tests after CRR-006 F-10 (implementation engineer, autobyteus-277, IR-005)
+# Commands: pnpm -C autobyteus-web test:nuxt --run components/mobile composables/mobile; and, verbose, components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts
+# Commit: e3dd8c4677 (run on its tree before the commit was made); environment: macOS, Node v22.23.1; date 2026-11-06T15:34Z
+# The one [Vue warn] inject() line comes from MobileArtifactsContentViewerIntegration.spec.ts, which does not import the changed file; it predates this change.
+# Excerpt:
+ Test Files  11 passed (11)
+      Tests  85 passed (85)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > while an open is pending it shows "Opening…" only, never the previous target 9ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > then the open target: its name, its state and where it is, and its conversation 20ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > hosts the conversation in a clipping root (overflow: clip, not hidden) 4ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a top-level run has no "in" 2ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > keeps the conversation open when the run's temporary id is promoted 3ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a failed open goes back to the list 2ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > with neither an open pending nor a target (a reload) it is replaced by the list 1ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a standalone_agent offers Messages=false 5ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a agent_run_task_agent offers Messages=false 3ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a standalone_team_member offers Messages=true 6ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a agent_run_task_team_member offers Messages=true 7ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a menu item opens its view screen 5ms
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a run on a node that does not answer shows the remote notice instead of the conversation 3ms
+      Tests  13 passed (13)

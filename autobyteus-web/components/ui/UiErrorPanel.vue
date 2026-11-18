@@ -77,8 +77,11 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization'
 import { computed, ref } from 'vue'
 import { useUiErrorStore } from '~/stores/uiErrorStore'
+
+const { resolvedLocale } = useLocalization()
 
 const store = useUiErrorStore()
 const expanded = ref<Record<string, boolean>>({})
@@ -100,7 +103,7 @@ const isExpanded = (id: string) => !!expanded.value[id]
 
 const formatTime = (iso: string) => {
   try {
-    return new Date(iso).toLocaleTimeString()
+    return new Date(iso).toLocaleTimeString(resolvedLocale.value)
   } catch {
     return iso
   }

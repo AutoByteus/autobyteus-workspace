@@ -1,0 +1,12 @@
+# IMP-05 web typecheck
+# command: pnpm -C autobyteus-web typecheck
+# commit: ba3ba5b23e (checks ran on the working tree that this commit records unchanged)
+# env: macOS 26.5.2, Node v22.23.1
+# date: 2026-11-08T06:46Z
+
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 38.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.9s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS

@@ -7,9 +7,9 @@ import {
   type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import {
-  requireMemberTaskCommandCapability,
-  type MemberTaskCommandCapability,
-} from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+  requireMemberTaskCapability,
+  type MemberTaskCapability,
+} from "../../agent-collaboration/execution/task/member-task-capability.js";
 import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 
 export const DELEGATE_TASK_TOOL_NAME = "delegate_task";
@@ -30,7 +30,7 @@ export const isTaskDelegationToolName = (value: string | null | undefined): bool
 
 export type TaskDelegationToolContext = Readonly<{
   identity: CollaborationMemberExecutionIdentity;
-  commands: MemberTaskCommandCapability;
+  commands: MemberTaskCapability;
 }>;
 
 export const TASK_DELEGATION_TOOL_CONFIG_KEY = "taskDelegation";
@@ -58,7 +58,7 @@ export const requireConfiguredTaskDelegationToolContext = (
   ) {
     throw new Error("Task delegation tools require a valid bound taskDelegation context.");
   }
-  const commands = requireMemberTaskCommandCapability(context.commands);
+  const commands = requireMemberTaskCapability(context.commands);
   if (!sameRootExecutionIdentity(identity.root, commands.root)) {
     throw new Error("Task delegation tool identity and commands belong to different roots.");
   }

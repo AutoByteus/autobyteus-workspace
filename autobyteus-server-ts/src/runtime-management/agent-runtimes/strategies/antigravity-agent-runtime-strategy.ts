@@ -6,10 +6,15 @@ import type { AgentRuntimeStrategy } from "../agent-runtime-strategy.js";
 import type { SignInReading } from "../agent-runtime-sign-in-reader.js";
 import { extractRuntimeVersion, readRuntimeVersion } from "../runtime-version.js";
 import { fetchRuntimeSource } from "../runtime-source-fetch.js";
+import { commandBound } from "../../read-deadline.js";
+import { runRuntimeCommand } from "../runtime-command-runner.js";
+import { parseAntigravityUsageLimits } from "../usage-limits/antigravity-usage-limits.js";
 
 const MANIFEST_BASE_URL = "https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests";
 const MANIFEST_OS: Readonly<Partial<Record<NodeJS.Platform, string>>> = { darwin: "darwin", linux: "linux", win32: "windows" };
 const MANIFEST_ARCH: Readonly<Partial<Record<string, string>>> = { x64: "amd64", arm64: "arm64" };
+/** `agy -p "/usage"` asks Google's servers (2.7 s measured). */
+const USAGE_TIMEOUT_MS = 15_000;
 
 /** The updater manifest `agy` itself reads for this OS and CPU (E-R20, E-A08). */
 export const antigravityManifestUrl = (platform: NodeJS.Platform, arch: string): string | null => {
@@ -35,9 +40,9 @@ export const createAntigravityAgentRuntimeStrategy = (): AgentRuntimeStrategy =>
     return version;
   },
   /** `agy models` through model discovery, which already classifies the signed-out answer. */
-  async readSignIn(): Promise<SignInReading> {
+  async readSignIn(_executable, _cwd, options = {}): Promise<SignInReading> {
     try {
-      await listAntigravityModels();
+      await listAntigravityModels(options);
       return { state: "signedIn" };
     } catch (error) {
       const diagnostic = toAgyDiscoveryDiagnostic(error);
@@ -45,6 +50,15 @@ export const createAntigravityAgentRuntimeStrategy = (): AgentRuntimeStrategy =>
         ? { state: "signedOut", detail: diagnostic.message }
         : { state: "unknown", detail: diagnostic.message };
     }
+  },
+  /** `agy -p "/usage" --output-format json`: the CLI's own usage command, answered without a model turn (0 tokens). */
+  async readUsageLimits(executable, _cwd, { deadline }) {
+    const result = await runRuntimeCommand(
+      executable, ["-p", "/usage", "--output-format", "json"], commandBound(deadline, USAGE_TIMEOUT_MS));
+    // A time-out set by the step's deadline is a DeadlineExceededError, which the service words "timed out".
+    if (result.error) throw result.error;
+    if (result.exitCode !== 0) throw new Error("agy /usage failed.");
+    return parseAntigravityUsageLimits(result.stdout);
   },
   updateArgv: (executable) => [executable, "update"],
 });

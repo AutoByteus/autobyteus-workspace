@@ -1,0 +1,105 @@
+{
+  "startedAt": "2026-10-28T16:30:08.552Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web/tests/e2e/fixtures/system-instruction-activity.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web/pages/__system-instruction-activity-probe.vue",
+  "routePath": "/__system-instruction-activity-probe",
+  "scenarios": {
+    "BE2E-SI-001A": {
+      "result": "Pass",
+      "description": "Desktop labels, collapsed default, pointer and keyboard disclosure, exact content, and ARIA",
+      "details": {
+        "autobyteus": {
+          "label": "AutoByteus-supplied · AutoByteus configured system prompt",
+          "controls": "system-instruction-content-browser-native"
+        },
+        "claude_agent_sdk": {
+          "label": "AutoByteus-supplied · Claude Agent SDK systemPrompt",
+          "controls": "system-instruction-content-browser-claude"
+        },
+        "codex_app_server": {
+          "label": "AutoByteus-supplied · Codex App Server baseInstructions",
+          "controls": "system-instruction-content-browser-codex"
+        },
+        "unknown": {
+          "label": "AutoByteus-supplied system instructions",
+          "controls": "system-instruction-content-browser-unknown"
+        },
+        "exactContentLength": 47,
+        "exactContentSha256": "5f08323d9c25aa25e0b3839b1bd63c862c949c9e8501fd3fa559893493ea0799"
+      }
+    },
+    "BE2E-SI-001B": {
+      "result": "Pass",
+      "description": "Desktop and mobile long-line containment, scrolling, and 200% CSS zoom",
+      "details": {
+        "desktop": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "mobile": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "zoomed": {
+          "clientWidth": 390,
+          "scrollWidth": 390
+        },
+        "preMetrics": {
+          "clientWidth": 857,
+          "scrollWidth": 857,
+          "clientHeight": 318,
+          "scrollHeight": 844,
+          "overflowY": "auto",
+          "overflowWrap": "anywhere"
+        }
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 48607,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "log": "closed",
+    "fixture": "removed"
+  },
+  "failures": [],
+  "port": 49676,
+  "baseUrl": "http://127.0.0.1:49676",
+  "result": "Pass",
+  "finishedAt": "2026-10-28T16:30:18.636Z",
+  "artifacts": {
+    "evidencePath": "/tmp/ab320e2e/API-10r2/out/evidence.json",
+    "logPath": "/tmp/ab320e2e/API-10r2/out/nuxt.log"
+  }
+}

@@ -1,0 +1,27 @@
+# IMP-03
+# Command: clean clone: bash autobyteus-web/scripts/prepare-server.sh; git status --short --ignored autobyteus-server-ts; node autobyteus-web/scripts/verify-packaged-server-startup.mjs --server-root <resources/server>
+# Commit: 4db26446cb
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+Removing symlinks that point outside the bundle...
+Removed 0 external symlinks from /private/tmp/pdb-clean/autobyteus-web/resources/server
+
+=======================================
+   Server files prepared successfully!   
+=======================================
+Target directory: /private/tmp/pdb-clean/autobyteus-web/resources/server
+You can now build the Electron app with the server included
+EXIT=0
+
+## git status --short --ignored autobyteus-server-ts (after)
+!! autobyteus-server-ts/dist/
+!! autobyteus-server-ts/node_modules/
+(no autobyteus-server-ts/autobyteus-web)
+
+## the mirrored folder IS produced by pnpm deploy into autobyteus-web/resources/_probe (without the script's cleanup):
+autobyteus-server-ts/autobyteus-web/resources/_probe/node_modules/.bin
+
+## contents of resources/server and startup check
+LICENSE README.md application-packages dist mobile-web node_modules package.json prisma   (715 MB)
+Packaged server startup validation passed for /private/tmp/pdb-clean/autobyteus-web/resources/server

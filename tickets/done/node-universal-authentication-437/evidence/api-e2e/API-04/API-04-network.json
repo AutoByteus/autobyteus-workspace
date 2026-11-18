@@ -1,0 +1,17 @@
+{
+  "computerName": "normy’s MacBook Pro",
+  "runsInContainer": false,
+  "configuredBaseUrl": "http://192.168.2.158:60848",
+  "tailscale": {
+    "address": "100.127.30.107",
+    "dnsName": "normys-macbook-pro.tail0347f8.ts.net"
+  },
+  "vpnAddresses": [],
+  "localNetwork": {
+    "networkId": "gw_510ab652d63d0882",
+    "addresses": [
+      "192.168.2.158"
+    ],
+    "allowed": false
+  }
+}

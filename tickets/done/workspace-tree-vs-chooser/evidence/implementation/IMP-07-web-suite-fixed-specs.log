@@ -1,0 +1,15 @@
+# Check: IMP-07
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts
+# Commit: 0d3c31c4ae
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 21:01 CET
+# Full output: this file
+
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts (3 tests) 2ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts (8 tests) 13ms
+
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+   Start at  21:01:08
+   Duration  6.35s (transform 3.57s, setup 11.06s, collect 199ms, tests 16ms, environment 441ms, prepare 284ms)
+

@@ -1,0 +1,402 @@
+{
+  "case": "API-13",
+  "mode": "wedged-quit",
+  "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean",
+  "commit": "2c3575b0f0fd927da8f2c04a907dbd06e016eb06",
+  "date": "2026-10-31T09:48:16.000Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51",
+  "runTag": "BQ284Dmvw7xejh",
+  "steps": [
+    {
+      "at": "4.0",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "4.2",
+      "step": "instance started",
+      "value": {
+        "label": "first",
+        "instanceId": "iso-64848-32bc",
+        "electronPid": 71393,
+        "serverPid": 72310,
+        "serverPort": 64849,
+        "servers": 1
+      }
+    },
+    {
+      "at": "5.4",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "5.7",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-codex",
+        "runtime": "codex",
+        "kind": "agent",
+        "runId": "desk_agent_bq284dmvw7xejh_152a5ceab7c544b48e2bd730126c1cee",
+        "rootId": "desk_agent_bq284dmvw7xejh_152a5ceab7c544b48e2bd730126c1cee",
+        "marker": "BQ284Dmvw7xejh_sa-codex",
+        "proc": {
+          "pid": 74426,
+          "ppid": 72779,
+          "pgid": 74426
+        }
+      }
+    },
+    {
+      "at": "5.9",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-claude",
+        "runtime": "claude",
+        "kind": "agent",
+        "runId": "desk_agent_bq284dmvw7xejh_c1a6ea8fd15545e5b9cdcbc840f864b5",
+        "rootId": "desk_agent_bq284dmvw7xejh_c1a6ea8fd15545e5b9cdcbc840f864b5",
+        "marker": "BQ284Dmvw7xejh_sa-claude",
+        "proc": {
+          "pid": 74394,
+          "ppid": 73095,
+          "pgid": 74394
+        }
+      }
+    },
+    {
+      "at": "9.5",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "pid": 74426,
+        "ppid": 72779,
+        "pgid": 74426
+      }
+    },
+    {
+      "at": "9.5",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "pid": 74394,
+        "ppid": 73095,
+        "pgid": 74394
+      }
+    },
+    {
+      "at": "11.1",
+      "step": "server stopped (SIGSTOP)",
+      "value": {
+        "serverPid": 72310
+      }
+    },
+    {
+      "at": "34.0",
+      "step": "wedged-server user quit observed",
+      "value": {
+        "label": "wedged-server user quit",
+        "electronPid": 71393,
+        "serverPid": 72310,
+        "serverGoneMs": 20171,
+        "electronGoneMs": 21754,
+        "before": 12,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": [
+          {
+            "label": "sa-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "pid": 74426,
+            "ppid": 72779,
+            "pgid": 74426,
+            "aliveAfter": false
+          },
+          {
+            "label": "sa-claude",
+            "kind": "agent",
+            "runtime": "claude",
+            "pid": 74394,
+            "ppid": 73095,
+            "pgid": 74394,
+            "aliveAfter": false
+          }
+        ]
+      }
+    },
+    {
+      "at": "34.0",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-64848-32bc"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "37.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "37.3",
+      "step": "instance started",
+      "value": {
+        "label": "second",
+        "instanceId": "iso-64994-5911",
+        "electronPid": 75509,
+        "serverPid": 76420,
+        "serverPort": 64995,
+        "servers": 1
+      }
+    },
+    {
+      "at": "37.4",
+      "step": "relaunch check",
+      "value": {
+        "label": "second",
+        "serversForData": [
+          {
+            "pid": 76420,
+            "ppid": 75509,
+            "pgid": 75509,
+            "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  …  --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root/server-data"
+          }
+        ],
+        "exactlyOne": true,
+        "previousSessionLeft": []
+      }
+    },
+    {
+      "at": "40.1",
+      "step": "final quit observed",
+      "value": {
+        "label": "final quit",
+        "electronPid": 75509,
+        "serverPid": 76420,
+        "serverGoneMs": 1377,
+        "electronGoneMs": 1377,
+        "before": 6,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": []
+      }
+    },
+    {
+      "at": "40.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-64994-5911"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    }
+  ],
+  "quit": {
+    "label": "wedged-server user quit",
+    "electronPid": 71393,
+    "serverPid": 72310,
+    "serverGoneMs": 20171,
+    "electronGoneMs": 21754,
+    "before": [
+      {
+        "pid": 71396,
+        "ppid": 71393,
+        "pgid": 71393,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,6337838018243817060,1663269543484168815,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=30"
+      },
+      {
+        "pid": 71397,
+        "ppid": 71393,
+        "pgid": 71393,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,6337838018243817060,1663269543484168815,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=32"
+      },
+      {
+        "pid": 72310,
+        "ppid": 71393,
+        "pgid": 71393,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  …  --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root/server-data"
+      },
+      {
+        "pid": 72329,
+        "ppid": 71393,
+        "pgid": 71393,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,6337838018243817060,1663269543484168815,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=59"
+      },
+      {
+        "pid": 72389,
+        "ppid": 71393,
+        "pgid": 71393,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,6337838018243817060,1663269543484168815,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 72390,
+        "ppid": 71393,
+        "pgid": 71393,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … zation-salt-handle=1935764596,r,6337838018243817060,1663269543484168815,4 --trace-process-track-uuid=3190708991934122588"
+      },
+      {
+        "pid": 72779,
+        "ppid": 72310,
+        "pgid": 71393,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 73095,
+        "ppid": 72310,
+        "pgid": 71393,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio … ser,project,local --permission-mode default --include-partial-messages --session-id=425a3619-c635-4762-93b2-6b1e3ffff268"
+      },
+      {
+        "pid": 74394,
+        "ppid": 73095,
+        "pgid": 74394,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793440104240-5fyflb.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2> …  eval 'python3 -c \"import time; time.sleep(900)\" BQ284Dmvw7xejh_sa-claude' < /dev/null && pwd -P >| /tmp/claude-04ec-cwd"
+      },
+      {
+        "pid": 74424,
+        "ppid": 72779,
+        "pgid": 74424,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 74426,
+        "ppid": 72779,
+        "pgid": 74426,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Dmvw7xejh_sa-codex"
+      },
+      {
+        "pid": 74396,
+        "ppid": 74394,
+        "pgid": 74394,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Dmvw7xejh_sa-claude"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": [
+      {
+        "label": "sa-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "pid": 74426,
+        "ppid": 72779,
+        "pgid": 74426,
+        "aliveAfter": false
+      },
+      {
+        "label": "sa-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "pid": 74394,
+        "ppid": 73095,
+        "pgid": 74394,
+        "aliveAfter": false
+      }
+    ]
+  },
+  "relaunch": {
+    "label": "second",
+    "serversForData": [
+      {
+        "pid": 76420,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  …  --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root/server-data"
+      }
+    ],
+    "exactlyOne": true,
+    "previousSessionLeft": []
+  },
+  "finalQuit": {
+    "label": "final quit",
+    "electronPid": 75509,
+    "serverPid": 76420,
+    "serverGoneMs": 1377,
+    "electronGoneMs": 1377,
+    "before": [
+      {
+        "pid": 75510,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 5764596,r,12186898351607923017,8556248898552168110,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=30"
+      },
+      {
+        "pid": 75511,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 5764596,r,12186898351607923017,8556248898552168110,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=30"
+      },
+      {
+        "pid": 76420,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  …  --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root/server-data"
+      },
+      {
+        "pid": 76748,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 5764596,r,12186898351607923017,8556248898552168110,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=58"
+      },
+      {
+        "pid": 76882,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 5764596,r,12186898351607923017,8556248898552168110,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 76883,
+        "ppid": 75509,
+        "pgid": 75509,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … ation-salt-handle=1935764596,r,12186898351607923017,8556248898552168110,4 --trace-process-track-uuid=3190708991934122588"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "serversForDataAtEnd": [],
+  "copiedLogs": [
+    "<own>/data-root/server-data/logs/server.log",
+    "<own>/data-root/logs/app.log"
+  ],
+  "rootRemoved": true
+}

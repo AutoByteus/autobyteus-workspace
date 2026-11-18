@@ -1,0 +1,138 @@
+# Case: API-B01/B02 (run 1 all cases) (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir> [--cases …]   (clean env; built server dist/app.js, Nuxt dev, headless Chrome 157)
+
+{
+ "startedAt": "2026-11-12T05:12:14.409Z",
+ "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+ "cases": {
+  "SDV-01": {
+   "result": "Pass",
+   "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+   "details": {
+    "streams": [
+     {
+      "closed": true,
+      "frames": 6
+     },
+     {
+      "closed": false,
+      "frames": 5
+     }
+    ],
+    "workerRowKept": true,
+    "renderedRootStatus": {
+     "view open after Stop": [
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+     ],
+     "after a child command": [
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+     ]
+    },
+    "workerAnsweredLive": true,
+    "sentMessages": [
+     {
+      "at": 1794460364621,
+      "socket": "/ws/agent-collaboration/manager_sdvagent_c18b_dd593ae5ac4e48bf82f7ea464fa78179",
+      "target": "worker_sdvagent_c18b_4debb051f47b403c9e9e0c2aa69ac86f"
+     }
+    ],
+    "rootStayedStopped": true,
+    "helperRunId": null,
+    "managerStarted": true,
+    "streamsAfterStart": 0
+   }
+  },
+  "SDV-02": {
+   "result": "Fail",
+   "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+   "message": "Timed out: worker reply live",
+   "details": {
+    "sentMessages": [],
+    "markerInWorkerRun": false,
+    "rootActive": false,
+    "center": "gent with sender address \"/manager\" and sender run id \"manager_sdvteam_9679_b3ac100edfdb4f50b77bd5603aca21c4\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: sdvteam-223e11-1 in Project project_1106ccb1-93de-424a-bf35-293b7b1c323e\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nWrite the notes.\nWS\nworker sdvteam 9679\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)"
+   }
+  },
+  "SDV-03": {
+   "result": "Pass",
+   "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+   "details": {
+    "renderedRootStatus": {
+     "view open while stopped": [
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform"
+     ],
+     "after a child command": [
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-none text-gray-400 transition-transform"
+     ]
+    },
+    "workerAnsweredLive": true,
+    "sentMessages": [
+     {
+      "at": 1794460550828,
+      "socket": "/ws/agent-org/org_sdvorg_92ff_cc124dd6b53f42c7ac8a43836da34bb8",
+      "target": "worker_sdvorg_92ff_716a71f62c7845129c8cce563ff1d76c"
+     }
+    ],
+    "rootStayedStopped": true,
+    "helperRunId": null,
+    "composerPendingIndicators": 0,
+    "restoredLive": true
+   }
+  }
+ },
+ "cleanup": {
+  "browser": "closed",
+  "frontend": {
+   "pid": 17527,
+   "status": "terminated",
+   "exit": "SIGTERM"
+  },
+  "backend": {
+   "pid": 17124,
+   "status": "terminated",
+   "exit": 0
+  },
+  "dataRootRemoved": true
+ },
+ "failures": [
+  {
+   "id": "SDV-02",
+   "message": "Timed out: worker reply live"
+  }
+ ],
+ "stack": {
+  "backendUrl": "http://127.0.0.1:61052",
+  "frontendUrl": "http://127.0.0.1:61053",
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-6JqnKX"
+ },
+ "browserVersion": "157.0.8103.51",
+ "result": "Fail",
+ "finishedAt": "2026-11-12T05:17:38.852Z"
+}

@@ -1,0 +1,77 @@
+{
+ "base": "http://127.0.0.1:<free port>",
+ "cases": {
+  "no-choice": {
+   "storage": {},
+   "path": "/chat",
+   "root": "16px",
+   "rootStyle": "100%",
+   "phoneAttr": null,
+   "dataAttrs": [
+    "data-app-font-size=default"
+   ],
+   "appVars": [
+    "--app-editor-font-size: ",
+    "--app-terminal-font-size: "
+   ],
+   "onThisPhone": 0,
+   "phoneShell": false
+  },
+  "stale-phone-step": {
+   "storage": {
+    "autobyteus.phone.textSize": "largest"
+   },
+   "path": "/chat",
+   "root": "16px",
+   "rootStyle": "100%",
+   "phoneAttr": null,
+   "dataAttrs": [
+    "data-app-font-size=default"
+   ],
+   "appVars": [
+    "--app-editor-font-size: ",
+    "--app-terminal-font-size: "
+   ],
+   "onThisPhone": 0,
+   "phoneShell": false
+  },
+  "display-large": {
+   "storage": {
+    "autobyteus.display.app-font-size": "large",
+    "autobyteus.phone.textSize": "small"
+   },
+   "path": "/chat",
+   "root": "18px",
+   "rootStyle": "112.5%",
+   "phoneAttr": null,
+   "dataAttrs": [
+    "data-app-font-size=large"
+   ],
+   "appVars": [
+    "--app-editor-font-size: ",
+    "--app-terminal-font-size: "
+   ],
+   "onThisPhone": 0,
+   "phoneShell": false
+  },
+  "display-extra-large": {
+   "storage": {
+    "autobyteus.display.app-font-size": "extra-large"
+   },
+   "path": "/chat",
+   "root": "20px",
+   "rootStyle": "125%",
+   "phoneAttr": null,
+   "dataAttrs": [
+    "data-app-font-size=extra-large"
+   ],
+   "appVars": [
+    "--app-editor-font-size: ",
+    "--app-terminal-font-size: "
+   ],
+   "onThisPhone": 0,
+   "phoneShell": false
+  }
+ },
+ "devServerStopped": true
+}

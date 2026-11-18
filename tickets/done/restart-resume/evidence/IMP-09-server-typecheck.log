@@ -1,0 +1,10 @@
+# IMP-09
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/restart-resume/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit 0

@@ -1,0 +1,91 @@
+API-15 — AC-004 loops on the final watcher code, sleep-free tests, under 2 x ncpu load
+Commit: 959b5cc048 (code af81b3d7d2); date 2026-10-24 12:03-12:44; macOS arm64 10 cores, Node v22.23.1
+Load: 20 x 'yes >/dev/null' (2 x ncpu) started by /tmp/api253/scripts/api15.sh, on top of the host's own load (load avg column below: 30-316)
+integ: (autobyteus-server-ts) pnpm exec vitest run tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts --no-watch, 40 consecutive runs
+e2e:   (autobyteus-server-ts) env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm exec vitest run tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts --no-watch, 40 consecutive runs
+Each line: run, result, rc, duration, 5-min load average, number of yes processes running
+
+run 1 PASS rc=0 20s load=31.58 yes=20
+run 2 PASS rc=0 22s load=67.06 yes=20
+run 3 PASS rc=0 24s load=116.83 yes=20
+run 4 PASS rc=0 23s load=151.72 yes=20
+run 5 PASS rc=0 24s load=184.08 yes=20
+run 6 PASS rc=0 27s load=211.02 yes=20
+run 7 PASS rc=0 24s load=241.38 yes=20
+run 8 PASS rc=0 25s load=256.41 yes=20
+run 9 PASS rc=0 24s load=255.15 yes=20
+run 10 PASS rc=0 24s load=251.34 yes=20
+run 11 PASS rc=0 26s load=261.88 yes=20
+run 12 PASS rc=0 26s load=269.81 yes=20
+run 13 PASS rc=0 25s load=272.71 yes=20
+run 14 PASS rc=0 25s load=271.96 yes=20
+run 15 PASS rc=0 25s load=279.02 yes=20
+run 16 PASS rc=0 31s load=270.79 yes=20
+run 17 PASS rc=0 40s load=271.20 yes=20
+run 18 PASS rc=0 36s load=299.90 yes=20
+run 19 PASS rc=0 42s load=309.13 yes=20
+run 20 PASS rc=0 37s load=293.99 yes=20
+run 21 PASS rc=0 42s load=291.96 yes=20
+run 22 PASS rc=0 36s load=316.17 yes=20
+run 23 PASS rc=0 35s load=301.76 yes=20
+run 24 PASS rc=0 42s load=288.14 yes=20
+run 25 PASS rc=0 37s load=298.74 yes=20
+run 26 PASS rc=0 33s load=296.81 yes=20
+run 27 PASS rc=0 28s load=294.48 yes=20
+run 28 PASS rc=0 22s load=265.96 yes=20
+run 29 PASS rc=0 21s load=253.45 yes=20
+run 30 PASS rc=0 21s load=241.76 yes=20
+run 31 PASS rc=0 22s load=225.93 yes=20
+run 32 PASS rc=0 25s load=209.50 yes=20
+run 33 PASS rc=0 22s load=198.25 yes=20
+run 34 PASS rc=0 23s load=204.04 yes=20
+run 35 PASS rc=0 19s load=197.72 yes=20
+run 36 PASS rc=0 20s load=191.70 yes=20
+run 37 PASS rc=0 38s load=252.83 yes=20
+run 38 PASS rc=0 23s load=233.77 yes=20
+run 39 PASS rc=0 21s load=215.94 yes=20
+run 40 PASS rc=0 20s load=198.50 yes=20
+RESULT integ pass=40 fail=0 of 40 end=2026-10-24 12:22:14
+
+run 1 PASS rc=0 37s load=181.48 yes=20
+run 2 PASS rc=0 33s load=162.22 yes=20
+run 3 PASS rc=0 37s load=150.76 yes=20
+run 4 PASS rc=0 32s load=156.88 yes=20
+run 5 PASS rc=0 36s load=153.44 yes=20
+run 6 PASS rc=0 33s load=151.77 yes=20
+run 7 PASS rc=0 37s load=146.24 yes=20
+run 8 PASS rc=0 31s load=157.65 yes=20
+run 9 PASS rc=0 34s load=159.76 yes=20
+run 10 PASS rc=0 34s load=155.25 yes=20
+run 11 PASS rc=0 36s load=150.51 yes=20
+run 12 PASS rc=0 40s load=163.93 yes=20
+run 13 PASS rc=0 33s load=197.32 yes=20
+run 14 PASS rc=0 42s load=250.50 yes=20
+run 15 PASS rc=0 32s load=257.38 yes=20
+run 16 PASS rc=0 33s load=255.59 yes=20
+run 17 PASS rc=0 31s load=251.91 yes=20
+run 18 PASS rc=0 34s load=238.87 yes=20
+run 19 PASS rc=0 31s load=226.14 yes=20
+run 20 PASS rc=0 32s load=218.71 yes=20
+run 21 PASS rc=0 31s load=214.15 yes=20
+run 22 PASS rc=0 30s load=221.84 yes=20
+run 23 PASS rc=0 33s load=234.59 yes=20
+run 24 PASS rc=0 31s load=234.12 yes=20
+run 25 PASS rc=0 30s load=215.12 yes=20
+run 26 PASS rc=0 33s load=218.64 yes=20
+run 27 PASS rc=0 33s load=222.55 yes=20
+run 28 PASS rc=0 33s load=223.92 yes=20
+run 29 PASS rc=0 32s load=224.09 yes=20
+run 30 PASS rc=0 35s load=217.95 yes=20
+run 31 PASS rc=0 32s load=222.37 yes=20
+run 32 PASS rc=0 32s load=238.09 yes=20
+run 33 PASS rc=0 31s load=241.58 yes=20
+run 34 PASS rc=0 32s load=247.63 yes=20
+run 35 PASS rc=0 35s load=238.19 yes=20
+run 36 PASS rc=0 32s load=240.98 yes=20
+run 37 PASS rc=0 32s load=235.04 yes=20
+run 38 PASS rc=0 33s load=226.81 yes=20
+run 39 PASS rc=0 32s load=217.88 yes=20
+run 40 PASS rc=0 34s load=222.29 yes=20
+RESULT e2e pass=40 fail=0 of 40 end=2026-10-24 12:44:31
+yes left from this run: 0

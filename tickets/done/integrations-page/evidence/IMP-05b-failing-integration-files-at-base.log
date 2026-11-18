@@ -1,0 +1,287 @@
+# Check: IMP-05b-failing-integration-files-at-base
+# Command (in /tmp/ip-base/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s exec vitest run tests/integration/agent-execution/agent-run-service.integration.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts
+# Commit: 0295553657 (the base, as a detached temporary worktree /tmp/ip-base sharing this worktree's node_modules and the built dist folders of autobyteus-ts, the application SDKs, the devkit and brief-studio; removed afterwards)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:53:13Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /private/tmp/ip-base/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/ip-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+Platform detection: Windows=false
+App root directory: /private/tmp/ip-base/autobyteus-server-ts
+App data directory: /private/tmp/ip-base/autobyteus-server-ts
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (14 tests | 1 failed) 553ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"] 44ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"] 26ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"] 25ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"] 25ms
+     × supplies only root-neutral local Team callbacks during materialization 6ms
+     ✓ restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity 25ms
+     ✓ emits root lifecycle transitions and unregisters only after accepted termination 29ms
+     ✓ holds one exact-ID transition lane across unmanaged deletion and restore registration 29ms
+     ✓ refuses Team archive and unarchive after Restore owns the exact-root lane 36ms
+     ✓ holds Team archive's manager lane through tree/index commit before Restore 60ms
+     ✓ holds Team unarchive's manager lane through tree/index commit before Restore 81ms
+     ✓ rejects active updates, then persists a stopped narrow patch for the next restore 41ms
+     ✓ orders an exact-ID Team restore after an in-flight Save and restores committed config 97ms
+     ✓ returns RUN_ACTIVE when an exact-ID Team restore completes before Save 27ms
+stdout | tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69691) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts (18 tests | 2 failed) 239ms
+     ✓ reads/admit data authored packages with exact immediate owner, metadata and unchanged bytes 61ms
+     ✓ reads/admit external authored packages with exact immediate owner, metadata and unchanged bytes 43ms
+     ✓ serves the Org-owned Team from its Org unit (never listed as a shared Team) and picks up an edit once detected 18ms
+     ✓ rejects missing owned agent, never borrows same-name shared/other Org children 18ms
+     ✓ rejects missing owned team, never borrows same-name shared/other Org children 16ms
+     ✓ keeps shared and application-owned Team/local-Agent read controls unchanged 13ms
+     ✓ leaves independent owned writes unavailable and package bytes unchanged 20ms
+     ✓ does not fall through to an unrelated shared directory whose name equals a missing tagged Team ID 10ms
+     × plans exact configured identities through real providers and normal cached Team service without activation 16ms
+     × supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service 9ms
+     ✓ requires current parent membership even when the owned Team folder remains on disk 13ms
+     ✓ classifies agent-org-owned-team:org:team without decoding it into filesystem paths 0ms
+     ✓ classifies agent-org-owned-team:org%20name:team%2Fname without decoding it into filesystem paths 0ms
+     ✓ does not classify other/malformed identity squad as an owned Team 0ms
+     ✓ does not classify other/malformed identity agent-org-owned-agent:org:agent as an owned Team 0ms
+     ✓ does not classify other/malformed identity agent-org-owned-team::team as an owned Team 0ms
+     ✓ does not classify other/malformed identity agent-org-owned-team:org: as an owned Team 0ms
+     ✓ does not classify other/malformed identity agent-org-owned-team:org:team/child as an owned Team 0ms
+stdout | tests/integration/agent-execution/agent-run-service.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69692) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+Run 'run-create-autobyteus' failed to activate and was kept: TypeError: this.historyCatalogService.cancelPreparedRun is not a function
+
+stderr | tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+Run 'run-create-codex_app_server' failed to activate and was kept: TypeError: this.historyCatalogService.cancelPreparedRun is not a function
+
+stderr | tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+Run 'run-create-claude_agent_sdk' failed to activate and was kept: TypeError: this.historyCatalogService.cancelPreparedRun is not a function
+
+ ❯ tests/integration/agent-execution/agent-run-service.integration.test.ts (10 tests | 3 failed) 15ms
+     × prepares, durably starts, and only then publishes a autobyteus run 6ms
+     × prepares, durably starts, and only then publishes a codex_app_server run 1ms
+     × prepares, durably starts, and only then publishes a claude_agent_sdk run 1ms
+     ✓ restores a started autobyteus run through the correct exact continuation path 2ms
+     ✓ restores a started codex_app_server run through the correct exact continuation path 1ms
+     ✓ restores a started claude_agent_sdk run through the correct exact continuation path 1ms
+     ✓ returns an already-active run only when its durable metadata is present 0ms
+     ✓ terminates native and external active runs through the manager and records termination 0ms
+     ✓ returns not_found for a missing run or a manager-rejected termination 1ms
+     ✓ rejects unsupported runtime kinds before allocating or constructing a candidate 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+AgentRunActivationError: Run 'run-create-autobyteus' activation commit is indeterminate and is quarantined until restart.
+ ❯ StandaloneAgentRunLifecycleService.abortForIndeterminateCommit src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:409:12
+    407|     const cleanup = await candidate.abort();
+    408|     const cause = cleanup.kind === "quarantined" ? cleanup.error : und…
+    409|     return new AgentRunActivationError(
+       |            ^
+    410|       "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
+    411|       `Run '${runId}' activation commit is indeterminate and is quaran…
+ ❯ StandaloneAgentRunLifecycleService.persistAndPublish src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:369:15
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:148:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:188:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+AgentRunActivationError: Run 'run-create-codex_app_server' activation commit is indeterminate and is quarantined until restart.
+ ❯ StandaloneAgentRunLifecycleService.abortForIndeterminateCommit src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:409:12
+    407|     const cleanup = await candidate.abort();
+    408|     const cause = cleanup.kind === "quarantined" ? cleanup.error : und…
+    409|     return new AgentRunActivationError(
+       |            ^
+    410|       "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
+    411|       `Run '${runId}' activation commit is indeterminate and is quaran…
+ ❯ StandaloneAgentRunLifecycleService.persistAndPublish src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:369:15
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:148:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:188:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+AgentRunActivationError: Run 'run-create-claude_agent_sdk' activation commit is indeterminate and is quarantined until restart.
+ ❯ StandaloneAgentRunLifecycleService.abortForIndeterminateCommit src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:409:12
+    407|     const cleanup = await candidate.abort();
+    408|     const cause = cleanup.kind === "quarantined" ? cleanup.error : und…
+    409|     return new AgentRunActivationError(
+       |            ^
+    410|       "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
+    411|       `Run '${runId}' activation commit is indeterminate and is quaran…
+ ❯ StandaloneAgentRunLifecycleService.persistAndPublish src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:369:15
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:148:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:188:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+AssertionError: expected [ 'applicationExecutionContext', …(5) ] to deeply equal [ 'applicationExecutionContext', …(4) ]
+
+- Expected
++ Received
+
+  [
+    "applicationExecutionContext",
+    "assertExecutionInputAllowed",
+    "buildMemberExecutionContext",
+    "commitPlatformBindingChange",
++   "projectRunRoot",
+    "publishAgentEvent",
+  ]
+
+ ❯ Object.<anonymous> tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:246:45
+    244|     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    245|     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecut…
+    246|       expect(Object.keys(callbacks).sort()).toEqual([
+       |                                             ^
+    247|         "applicationExecutionContext",
+    248|         "assertExecutionInputAllowed",
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:126:17
+ ❯ Object.prepare tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:136:41
+ ❯ materializeTeamRoot src/agent-team-execution/services/team-root-materializer.ts:105:6
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:151:26
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:478:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > plans exact configured identities through real providers and normal cached Team service without activation
+TypeError: Cannot destructure property 'topology' of 'input.plan' as it is undefined.
+ ❯ AgentOrgRunPlanner.build src/agent-org-execution/services/agent-org-run-planner.ts:56:13
+     54|     createdAt?: string;
+     55|   }): Promise<AgentOrgRunExecutionTreeFile> {
+     56|     const { topology, launch } = input.plan;
+       |             ^
+     57|     const members: ConfiguredExecutionNode[] = [];
+     58|     for (const member of topology.members) {
+ ❯ tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts:156:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service
+TypeError: Cannot destructure property 'topology' of 'input.plan' as it is undefined.
+ ❯ AgentOrgRunPlanner.build src/agent-org-execution/services/agent-org-run-planner.ts:56:13
+     54|     createdAt?: string;
+     55|   }): Promise<AgentOrgRunExecutionTreeFile> {
+     56|     const { topology, launch } = input.plan;
+       |             ^
+     57|     const members: ConfiguredExecutionNode[] = [];
+     58|     for (const member of topology.members) {
+ ❯ tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts:165:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  6 failed | 36 passed (42)
+   Start at  08:53:15
+   Duration  7.83s (transform 3.21s, setup 68ms, import 6.27s, tests 806ms, environment 0ms)
+
+
+# Exit code: 1

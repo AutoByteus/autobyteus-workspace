@@ -16,6 +16,8 @@ const taskSpecs: TaskSpec[] = [
   { name: "Cache Pre-loading", modulePath: "./cache-preloader.js", exportName: "runCachePreloading" },
   { name: "MCP Tool Registration", modulePath: "./mcp-loader.js", exportName: "runMcpToolRegistration" },
   { name: "Memory Sync Worker", modulePath: "./memory-sync-worker-loader.js", exportName: "loadMemorySyncWorker" },
+  { name: "Memory Hub Staging Sweep", modulePath: "./memory-hub-staging-sweep-loader.js", exportName: "loadMemoryHubStagingSweep" },
+  { name: "Memory Search", modulePath: "./memory-search-loader.js", exportName: "startMemorySearch" },
 ];
 
 async function loadTask(spec: TaskSpec): Promise<Task | null> {

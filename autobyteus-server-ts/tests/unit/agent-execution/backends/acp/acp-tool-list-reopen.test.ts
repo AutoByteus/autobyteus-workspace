@@ -1,0 +1,182 @@
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
+import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
+import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
+import { AcpAgentProcess } from "../../../../../src/runtime-management/acp/acp-agent-process.js";
+import type { AcpAgentLaunchProfile, AcpRunLaunchRequest } from "../../../../../src/runtime-management/acp/acp-agent-launch-profile.js";
+import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js";
+import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
+import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
+import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { buildRuntimeAgentToolExposure } from "../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { fakeAcpLaunchProfile, fixturePath, fixtureSessionId, makeTestTempDir, readFixture, removeTestTempDirs, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
+
+// The Grok reopen sequence (design: "Grok reopen sequence", SR-003/SR-004): end first, then load,
+// with the run's AcpPreparationOwner as the single holder of its process. The fake ACP agent
+// replays recorded fixtures; each spawn takes the next fixture.
+
+const tempDir = makeTestTempDir;
+/** The tools a run of a definition with these names has: the exposure rule adds the platform-given search_memory. */
+const runTools = (...definitionToolNames: string[]): string[] => buildRuntimeAgentToolExposure(definitionToolNames).requestedToolNames;
+afterAll(removeTestTempDirs);
+const backends: AcpAgentRunBackend[] = [];
+afterEach(async () => {
+  for (const backend of backends.splice(0)) await backend.terminate();
+  vi.restoreAllMocks();
+});
+
+const failingLoadFixture = (): string => {
+  const rows = readFixture("load");
+  const loadIndex = rows.findIndex((row) => row.dir === "out" && row.msg.method === "session/load");
+  const failing: FixtureRow[] = [...rows.slice(0, loadIndex + 1),
+    { dir: "in", msg: { jsonrpc: "2.0", id: rows[loadIndex]!.msg.id, error: { code: -32603, message: "Session not found." } } }];
+  return writeCustomFixture(failing);
+};
+
+const createRestoredRun = async (reopenFixtures: string[]) => {
+  const fixtures = [fixturePath("load"), ...reopenFixtures];
+  let spawned = 0;
+  const launches: AcpRunLaunchRequest[] = [];
+  const launchProfile: AcpAgentLaunchProfile = fakeAcpLaunchProfile("Fake Grok", () => ({
+    FAKE_ACP_FIXTURE: fixtures[Math.min(spawned++, fixtures.length - 1)]!, FAKE_ACP_REPORT_MCP_READY: "1",
+  }), { onRunLaunch: (request) => { launches.push(request); } });
+  const processes: AcpAgentProcess[] = [];
+  const spawn = AcpAgentProcess.spawn.bind(AcpAgentProcess);
+  vi.spyOn(AcpAgentProcess, "spawn").mockImplementation((spec) => {
+    const created = spawn(spec);
+    processes.push(created);
+    return created;
+  });
+  const skill = { name: "codebook" } as never;
+  const cleanupSkills = vi.fn(async () => undefined);
+  // The session opens with the restored run's exposure, as the real Agent Tools session does.
+  const mcpSessions = createAgentToolMcpRunSessionsStub({ enabledTools: (input) => input.runtimeExposure.requestedToolNames });
+  const factory = new AcpAgentRunBackendFactory({
+    launchProfile,
+    sessionProfile: grokBuildSessionProfile,
+    definitions: { getAgentDefinitionById: async () => new AgentDefinition({
+      id: "def-1", name: "Reviewer", role: "Code reviewer", description: "Reviews code", toolNames: ["alpha"],
+    }) } as never,
+    skills: { resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+    workspaces: { resolveWorkingDirectory: async () => tempDir("acp-reopen-ws-") },
+    mcpSessions: mcpSessions as never,
+    skillMaterializer: {
+      materializeConfiguredWorkspaceSkills: async (request: { onAcquired: (value: unknown) => void }) => {
+        request.onAcquired(skill);
+        return { materializedSkills: [skill], effectiveRequests: [] };
+      },
+      cleanupMaterializedWorkspaceSkills: cleanupSkills,
+    } as never,
+    integrationRunAccess: null,
+    providerRelayAccess: null,
+  });
+  const sessionId = fixtureSessionId("load");
+  const backend = await factory.beginPreparation({ kind: "restore", context: new AgentRunContext({
+    runId: "run-grok",
+    config: new AgentRunConfig({
+      agentDefinitionId: "def-1", llmModelIdentifier: "grok-4.7", autoExecuteTools: false,
+      memoryDir: tempDir("acp-reopen-memory-"), runtimeKind: RuntimeKind.GROK_BUILD,
+    }),
+    runtimeContext: new AcpAgentRunContext(sessionId),
+  }) }).prepare();
+  backends.push(backend);
+  const events: AgentRunEvent[] = [];
+  backend.subscribeToSourceEventBatches((batch) => { events.push(...batch); });
+  const start = () => backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("again") });
+  const definition = (toolNames: string[]) => ({ toolNames }) as never;
+  const alive = () => processes.filter((candidate) => candidate.exited === null);
+  return { backend, processes, alive, events, start, definition, cleanupSkills, mcpSessions, sessionId, launches };
+};
+
+describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
+  it("ends the open process first, loads the same session in a new one, then sends the prompt", async () => {
+    const run = await createRestoredRun([fixturePath("load")]);
+    const failure = vi.spyOn(run.backend, "handleSessionFailure");
+    expect(run.alive()).toHaveLength(1);
+
+    expect(await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"])))
+      .toEqual({ kind: "on_next_turn", toolNames: runTools("alpha", "beta") });
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha"));
+
+    const result = await run.start();
+    expect(result).toMatchObject({ forwarded: true, platformAgentRunId: run.sessionId });
+    expect(run.processes).toHaveLength(2);
+    await waitFor(() => run.processes[0]!.exited !== null);
+    expect(run.alive()).toEqual([run.processes[1]]);
+    await waitFor(() => run.events.some((event) => event.eventType === AgentRunEventType.TURN_COMPLETED));
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha", "beta"));
+    // The reopen gives the new launch the instructions the run was restored with (re-sent, not recomposed).
+    expect(run.launches).toHaveLength(2);
+    expect(run.launches[0]!.instructions).toContain("Reviews code");
+    expect(run.launches[1]!.instructions).toBe(run.launches[0]!.instructions);
+    // The deliberate end of the first process is not a run failure.
+    expect(failure).not.toHaveBeenCalled();
+    expect(run.backend.isActive()).toBe(true);
+    expect(run.cleanupSkills).not.toHaveBeenCalled();
+  });
+
+  it("ends the reopened process when the run is stopped after a reopen", async () => {
+    const run = await createRestoredRun([fixturePath("load")]);
+    await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"]));
+    await run.start();
+    await run.backend.terminate();
+    backends.splice(0);
+    await waitFor(() => run.alive().length === 0);
+    expect(run.processes).toHaveLength(2);
+    expect(run.cleanupSkills).toHaveBeenCalledOnce();
+  });
+
+  it("leaves no runtime session after a failed reopen: a plain failed dispatch, input not sent, every operation safe, retried next turn start", async () => {
+    const run = await createRestoredRun([failingLoadFixture(), fixturePath("load")]);
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"]));
+
+    const failed = await run.start();
+    expect(failed).toMatchObject({ forwarded: false, code: "RUNTIME_SESSION_REOPEN_FAILED", turnId: null });
+    expect(failed.message).toMatch(/^Couldn't give this run its new tools \(.*Session not found\..*\)\. Send your message again to retry, or stop and resume the run\.$/);
+    await waitFor(() => run.alive().length === 0);
+    expect(run.events.some((event) => event.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION)).toBe(false);
+    expect(run.events.some((event) => event.eventType === AgentRunEventType.TURN_STARTED)).toBe(false);
+
+    expect(run.backend.isActive()).toBe(true);
+    expect(run.backend.getLifecycleSnapshot()).toEqual({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    expect(await run.backend.approveToolInvocation("call-1", true)).toMatchObject({ accepted: false, code: "NO_PENDING_APPROVAL" });
+    expect(await run.backend.interrupt("turn-1")).toMatchObject({ accepted: false, code: "NO_ACTIVE_TURN" });
+    expect(await run.backend.dispatchUserInput({
+      kind: "append_to_active_turn", turnId: "turn-1", message: new AgentInputUserMessage("x"),
+    })).toMatchObject({ forwarded: false, code: "UNSUPPORTED_RUNTIME_COMMAND" });
+    expect(run.backend.getPlatformAgentRunId()).toBe(run.sessionId);
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha"));
+
+    expect(await run.start()).toMatchObject({ forwarded: true });
+    expect(run.backend.getToolNames()).toEqual(runTools("alpha", "beta"));
+    expect(run.alive()).toHaveLength(1);
+  });
+
+  it("stopping after a failed reopen ends nothing more and releases the skills", async () => {
+    const run = await createRestoredRun([failingLoadFixture()]);
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"]));
+    await run.start();
+    await waitFor(() => run.alive().length === 0);
+    const stops = run.processes.map((candidate) => vi.spyOn(candidate, "stop"));
+
+    expect(await run.backend.terminate()).toEqual({ accepted: true });
+    backends.splice(0);
+    for (const stop of stops) expect(stop).not.toHaveBeenCalled();
+    expect(run.cleanupSkills).toHaveBeenCalledOnce();
+    expect(run.backend.isActive()).toBe(false);
+  });
+
+  it("needs no reopen for a change reverted before the next turn start", async () => {
+    const run = await createRestoredRun([fixturePath("load")]);
+    await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"]));
+    expect(await run.backend.applyDefinitionTools(run.definition(["alpha"]))).toEqual({ kind: "unchanged", toolNames: runTools("alpha") });
+    expect(await run.start()).toMatchObject({ forwarded: true });
+    expect(run.processes).toHaveLength(1);
+  });
+});

@@ -1,0 +1,5 @@
+{"at":"2026-11-02T07:18:17.891Z","state":"no-update|preparing=false|staged=false||","health":200,"marker":true}
+{"at":"2026-11-02T07:18:20.692Z","state":"downloading|preparing=false|staged=false||","health":200,"marker":true}
+{"at":"2026-11-02T07:18:21.816Z","state":"downloaded|preparing=true|staged=true||","health":200,"marker":true}
+{"at":"2026-11-02T07:19:03.155Z","state":"window-gone","health":0,"marker":false}
+{"at":"2026-11-02T07:19:29.219Z","state":"window-gone","health":200,"marker":false}

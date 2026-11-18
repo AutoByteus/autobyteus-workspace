@@ -1,0 +1,9 @@
+# API-12 PowerShell launcher: the pwsh-gated launcher test (parse every PowerShell launcher source) and the launcher test files, in a throwaway alpine container with apk's powershell
+# Command: docker run --rm -v <worktree>/scripts:/repo/scripts:ro alpine:latest sh -c 'apk add powershell python3 py3-pytest bash coreutils git; pytest -q -rs <files>'
+# Commit: b6a57ab154 + the API-14b test addition; 2026-11-08T16:53:44Z
+PowerShell 7.6.9-0-g6077a45514c59137a36a5b9aac974b237f098eb6
+..                                                                       [100%]
+2 passed, 40 deselected in 1.03s
+# Exit status: 0
+scripts/tests/test_public_docker_launcher_shared_workspace.py::PublicDockerLauncherSharedWorkspaceTest::test_powershell_launcher_matches_the_shared_workspace_cli_contract PASSED [ 50%]
+scripts/tests/test_public_docker_launcher_shared_workspace.py::PublicDockerLauncherSharedWorkspaceTest::test_powershell_launcher_parses_when_pwsh_is_available PASSED [100%]

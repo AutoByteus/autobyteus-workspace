@@ -1,0 +1,497 @@
+# IMP-12 — T-54: LM Studio suites find their model through the server catalog (local LM Studio, small model, unloaded after)
+# Command: env -i ... RUN_LMSTUDIO_E2E=1 npx vitest run <autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts | token-usage-runtime-graphql.e2e.test.ts | autobyteus-team-runtime-graphql.e2e.test.ts>
+# Commit: e8716b0339
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "Tests  4 passed (4)" (backend factory); "Tests  1 passed | 3 skipped (4)" (token usage: the LM Studio case; other providers are paid gates); "Tests  5 passed (5)" (team)
+
+===== t54-lmstudio.log =====
+(excerpt: 744 lines, 93436 bytes; the key lines, then the last 40 lines; the full log stayed at /tmp/h318/t54-lmstudio.log)
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+----- last 40 lines -----
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentWorker 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentExternalEventNotifier (NotifierID: d24f0ea5-7449-43ca-a0b7-f0c325c91d18, AgentID: live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentExternalEventNotifier (NotifierID: d24f0ea5-7449-43ca-a0b7-f0c325c91d18, AgentID: live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5' asyncRun() loop has finished.
+AgentWorker 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentWorker 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': Shutdown resource cleanup completed successfully.
+AgentWorker 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+Unregistered AgentContext for agent_id 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5'.
+AgentRuntime for 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentRuntime for 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5' stop() method completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentEventStream (ID: cffabf10-9079-4fc2-b96f-9267677929c7) for 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifacts tool path
+AgentEventStream (ID: cffabf10-9079-4fc2-b96f-9267677929c7) for 'live_autobyteus_publish_artifacts_agent_c8c72d83321f4a91894c4e4899b467f5': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts (4 tests) 65116ms
+     ✓ converts approval and tool lifecycle events through the backend event stream  34309ms
+     ✓ converts a denied approval into TOOL_DENIED and leaves the file absent  8330ms
+     ✓ auto-executes tools without approval and still emits converted execution events  12315ms
+     ✓ publishes an existing workspace file through the live AutoByteus publish_artifacts tool path  10161ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  10:46:40
+   Duration  69.80s (transform 2.88s, setup 41ms, import 4.16s, tests 65.12s, environment 0ms)
+
+
+===== t54-token-usage.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:8676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Discovering LM Studio models from host: http://localhost:1234
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent Definition created successfully with ID: token-usage-runtime-autobyteus-lmstudio-qwen35-33fb3c28-ff00-4988-9fd7-c7b51ae53f0a
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-lmstudio-qwen35-token-usage-workspace-83eGQg
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-lmstudio-qwen35-token-usage-workspace-83eGQg.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Created and registered workspace ID: agent_ws_697efaa2bba8105e0b46376f160e65b296edfa756e8e02d2f22709851a15dcba
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-lmstudio-qwen35-token-usage-workspace-83eGQg
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-lmstudio-qwen35-token-usage-workspace-83eGQg.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Reusing registered workspace ID: agent_ws_697efaa2bba8105e0b46376f160e65b296edfa756e8e02d2f22709851a15dcba
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-token-usage-e2e-TTAkkp/media
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentRuntimeState initialized for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' with config: 'token-usage-runtime-autobyteus-lmstudio-qwen35-33fb3c28-ff00-4988-9fd7-c7b51ae53f0a'.
+AgentWorker initialized for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'.
+Registered AgentContext for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Context registered.
+Agent facade initialized for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' created and stored successfully.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' requesting runtime to start.
+AgentRuntime for 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Starting worker.
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Starting...
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' asyncRun(): Starting.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Runtime init completed (event store initialized).
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Runtime init completed (status deriver initialized).
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Runtime init completed (AgentEventInbox initialized).
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' to become idle (timeout: 30s)...
+AgentEventStream (ID: 4e0c88ac-3683-42a3-8ce9-eafaf74388fc) initialized for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Subscribed to notifier.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Bootstrapper starting direct lifecycle execution.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Executing SystemPromptProcessingStep.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': No configured skills. Skipping skill catalog.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Final processed system prompt configured and captured. Trace ID: rt_1793526651662_54a9a702-539e-416d-81b4-4e61ad14b13b. Final length: 4483.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' has become idle.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentEventStream (ID: 4e0c88ac-3683-42a3-8ce9-eafaf74388fc) for 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentEventStream (ID: 361a0ebe-3c76-4b21-846b-bdf56dc52de6) initialized for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent websocket attached for run token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee
+Created agent session 90b34e56-2319-4e2a-8409-8866803397e1 for run token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee
+Agent WebSocket connected: session=90b34e56-2319-4e2a-8409-8866803397e1, run=token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent run 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': UserInputContextBuildingProcessor completed. Final content length: 79
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Agent run 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Closed agent session 90b34e56-2319-4e2a-8409-8866803397e1
+Agent WebSocket disconnected: 90b34e56-2319-4e2a-8409-8866803397e1
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Removing agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'. Attempting graceful shutdown.
+Agent 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Stop requested.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentExternalEventNotifier (NotifierID: b57b0a09-57ad-4b77-9148-359b581cc5c5, AgentID: token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' asyncRun() loop has finished.
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Shutdown resource cleanup completed successfully.
+AgentWorker 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+Unregistered AgentContext for agent_id 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee'.
+AgentRuntime for 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': Context unregistered.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentRuntime for 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee' stop() method completed.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentEventStream (ID: 361a0ebe-3c76-4b21-846b-bdf56dc52de6) for 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts > real runtime token usage GraphQL e2e > persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL
+AgentEventStream (ID: 361a0ebe-3c76-4b21-846b-bdf56dc52de6) for 'token_usage_runtime_autobyteus_lmstudio_qwen35_3_54c1a5c083b04c58809bc36f5262b6ee': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 3 skipped) 8817ms
+     ✓ persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL  8536ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Start at  10:50:38
+   Duration  21.27s (transform 9.23s, setup 37ms, import 11.95s, tests 8.82s, environment 0ms)
+
+===== t54-team.log =====
+(excerpt: 2003 lines, 252993 bytes; the key lines, then the last 40 lines; the full log stayed at /tmp/h318/t54-team.log)
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+----- last 40 lines -----
+AgentWorker 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+AgentWorker 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+Unregistered AgentContext for agent_id 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22'.
+AgentRuntime for 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+AgentRuntime for 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22' stop() method completed.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+AgentEventStream (ID: 1de71af2-c916-49c1-95ca-f995d2f98517) for 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+AgentEventStream (ID: 1de71af2-c916-49c1-95ca-f995d2f98517) for 'autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22': close() called. Unsubscribing all listeners and signaling.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-aqSd9f/memory/agent_teams/autobyteus_team_projection_07b8ad3b_46b0_43cc_92_f2f789108eeb4b9a86926712eb1a858d/autobyteus_team_coordinator_92895cdb_02d6_4cdb_9_af3aa0b402aa437fa21329c4ea384c22/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-aqSd9f/memory/agent_teams/autobyteus_team_projection_07b8ad3b_46b0_43cc_92_f2f789108eeb4b9a86926712eb1a858d/autobyteus_team_reviewer_ce0accc1_298d_41e5_b9bd_d4702cb025ef4b97a7ac905fc2f86139/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+Closed agent session 6238f916-b757-486e-9f0c-f034925d168b
+
+ ✓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests) 94319ms
+     ✓ routes send_message_to between real AutoByteus team members and projects reference files  13035ms
+     ✓ creates a real team, approves a tool call, restores it, and continues on the same websocket  31303ms
+     ✓ interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket  12440ms
+     ✓ terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket  16754ms
+     ✓ serves every team member projection after terminate, restore, and continue  20516ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  10:48:27
+   Duration  103.63s (transform 6.54s, setup 45ms, import 8.84s, tests 94.32s, environment 0ms)
+
+

@@ -8,7 +8,7 @@ import {
 
 const folderTarget: FileExplorerContextTarget = {
   kind: 'node',
-  nodeId: 'folder-id',
+  treeNodeId: 'folder-id',
   path: 'docs/guides',
   name: 'guides',
   isFile: false,
@@ -16,7 +16,7 @@ const folderTarget: FileExplorerContextTarget = {
 
 const fileTarget: FileExplorerContextTarget = {
   kind: 'node',
-  nodeId: 'file-id',
+  treeNodeId: 'file-id',
   path: 'docs/guides/readme.md',
   name: 'readme.md',
   isFile: true,

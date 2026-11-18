@@ -1,0 +1,20 @@
+# Check: IMP-02
+# Command: python3 -m unittest scripts.tests.test_public_docker_launcher_update scripts.tests.test_public_docker_launcher_stop -v
+# Commit: 2575d870e8
+# Environment: macOS 26.5.2 arm64, Python 3.9.6, bash 3.2 (/bin/bash), Docker 29.0.1
+# Date: 2026-11-06
+
+test_a_failed_update_ends_with_its_code_and_a_non_zero_exit (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_an_image_without_a_starter_cannot_update_in_place (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_status_says_not_available_without_a_starter_or_a_container (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_update_all_updates_each_node_in_turn (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_update_follows_the_steps_to_the_result (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_update_refuses_options_that_do_not_apply (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest) ... ok
+test_launcher_stop_explains_noop_without_changing_policy (scripts.tests.test_public_docker_launcher_stop.DockerLauncherStopTest) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 17.281s
+
+OK

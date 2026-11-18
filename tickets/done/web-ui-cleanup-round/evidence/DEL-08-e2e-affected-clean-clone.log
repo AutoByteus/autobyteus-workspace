@@ -1,0 +1,39 @@
+# Summary of the clean-clone run (/tmp/ab320-clone at a2a431fcd1); the full log was DEL-08-e2e-affected.log (118417 bytes), trimmed to summaries, skips and failures.
+== autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+ ↓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 3 skipped)
+ Test Files  1 skipped (1)
+      Tests  3 skipped (3)
+   Start at  19:29:04
+   Duration  9.97s (transform 6.88s, setup 34ms, import 9.54s, tests 0ms, environment 0ms)
+exit=0
+== autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts
+ ↓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (41 tests | 41 skipped)
+ Test Files  1 skipped (1)
+      Tests  41 skipped (41)
+   Start at  19:29:15
+   Duration  725ms (transform 131ms, setup 40ms, import 140ms, tests 0ms, environment 0ms)
+exit=0
+== autobyteus-server-ts/tests/e2e/runtime/application-import-codex-launch.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:29:16
+   Duration  13.37s (transform 7.30s, setup 49ms, import 9.79s, tests 2.91s, environment 0ms)
+exit=0
+== autobyteus-server-ts/tests/e2e/runtime/application-reload-repair.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  19:29:30
+   Duration  15.55s (transform 6.46s, setup 37ms, import 8.70s, tests 6.40s, environment 0ms)
+exit=0
+== autobyteus-server-ts/tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  19:29:46
+   Duration  17.99s (transform 6.50s, setup 44ms, import 8.71s, tests 8.83s, environment 0ms)
+exit=0
+== autobyteus-server-ts/tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  19:30:05
+   Duration  32.27s (transform 6.79s, setup 36ms, import 9.11s, tests 22.58s, environment 0ms)
+exit=0

@@ -1,0 +1,27 @@
+# API-06 — existing scripted-CLI server E2E files after the fake CLI extension (regression)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch
+# Commit: source 683b036be9 + this round's fixture; macOS darwin 25.5, Node v22.23.1; 2026-10-25T07:40Z
+
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (13 tests) 16868ms
+     ✓ AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006)  2311ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  729ms
+     ✓ AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003)  3239ms
+     ✓ AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011)  333ms
+     ✓ AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003)  9195ms
+ ↓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests | 2 skipped)
+ Test Files  1 passed | 2 skipped (3)
+      Tests  13 passed | 6 skipped (19)
+
+# Rerun after 'pnpm -C autobyteus-server-ts test:integration:prepare' (the two files skipped above need the Brief Studio package):
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch (2026-10-25T07:41Z)
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8080ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  846ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1581ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2400ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2280ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2082ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  990ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  427ms
+ Test Files  2 passed (2)
+      Tests  6 passed (6)

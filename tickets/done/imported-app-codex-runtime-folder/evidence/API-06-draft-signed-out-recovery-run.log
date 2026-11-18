@@ -1,0 +1,10 @@
+# API-06 first run of the draft durable E2E (now evidence/API-06-draft-signed-out-recovery.e2e.test.ts) on the fix, commit 8ab3a2129a + the draft file; ENV macOS Node v22.23.1; 2026-10-24
+# API-06 new E2E on the fix; commit 8ab3a2129a + uncommitted new test file; 2026-10-24T17:24:19Z
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-signed-out-recovery.e2e.test.ts --no-watch --reporter=verbose
+ × tests/e2e/runtime/application-import-signed-out-recovery.e2e.test.ts > Codex-default application imported while Codex is signed out (real studio server, Brief Studio, scripted CLIs) > IR-01 is quarantined on a signed-out import and becomes runnable after sign-in through repair and package Reload, without a restart 1273ms
+   → expected 'QUARANTINED' to be 'ACTIVE' // Object.is equality
+AssertionError: expected 'QUARANTINED' to be 'ACTIVE' // Object.is equality
+exit=1
+
+# rerun with the response body in the assertion message:
+AssertionError: {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>' is currently reentering. Please retry after repair/reload completes.","updatedAt":"2026-10-24T17:25:08.619Z"}: expected 'QUARANTINED' to be 'ACTIVE' // Object.is equality

@@ -1,0 +1,39 @@
+# Check: IMP-10-web-guards-typecheck
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): bash -c for s in guard:web-boundary guard:localization-boundary audit:localization-literals; do echo "## pnpm run $s"; pnpm -s run $s; echo "## exit $?"; done; echo "## node scripts/typecheck.mjs"; node ./scripts/typecheck.mjs; echo "## exit $?"
+# Commit: 9e8264614e (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:56:58Z
+
+## pnpm run guard:web-boundary
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+[guard:web-boundary] Passed.
+## exit 0
+## pnpm run guard:localization-boundary
+[guard:localization-boundary] Passed.
+## exit 0
+## pnpm run audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:19476) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+## exit 0
+## node scripts/typecheck.mjs
+[typecheck] Nuxt app (tsconfig.json): 273 errors, exit 2, 38.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.1s
+
+Production files must have no type errors:
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(37,55): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'readonly EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(41,50): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+[typecheck] production errors: 2; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] FAIL
+## exit 1
+
+# Exit code: 0

@@ -1,0 +1,122 @@
+# API-02 — AC-004, AC-005, AC-001, REQ-004: references, links, anchors, pointer paths. Commit 10a6967442, origin/personal 6324fb056d, script /tmp/api401/linkcheck.py (copy below)
+# Look for: 'Case Studies hits: 0'; 'broken: 0'; every pointer path 'on origin/personal: yes'; the AC-001 version and date lists
+## git grep -n -i 'case studies|#case-studies' in every tracked .md outside tickets/
+docs/design-cases.md:3:Real design mistakes from this project's reviews: what the design said, the fix that was adopted, and how to notice the shape next time. Each case names its tickets and findings; the ticket folders (`tickets/done/<name>/`) hold the full story. The general lesson of each case is in the software engineering team's design case studies; this file keeps our provenance.
+Case Studies hits: 1
+
+## local links and anchors in RELEASE.md, DESIGN.md, TESTING.md and the three records
+  RELEASE.md: 12 local links
+  DESIGN.md: 16 local links
+  TESTING.md: 18 local links
+  tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md: 4 local links
+  tickets/done/release-beta-20261102/release-deployment-report.md: 2 local links
+  tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md: 4 local links
+local links checked: 56; broken: 0
+
+## pointer paths (REQ-005 / AC-005) on origin/personal
+tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md: on origin/personal: yes; referenced at: RELEASE.md:172 RELEASE.md:329
+tickets/done/release-beta-20261102/release-deployment-report.md: on origin/personal: yes; referenced at: DESIGN.md:147
+tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md: on origin/personal: yes; referenced at: DESIGN.md:146 RELEASE.md:278
+
+## AC-001: version strings left in RELEASE.md
+RELEASE.md:172:v1.5.12-beta.2
+RELEASE.md:172:v1.5.12-beta.2
+RELEASE.md:329:v1.5.12-beta.2
+RELEASE.md:329:v1.5.12-beta.2
+RELEASE.md:383:v1.1.8
+RELEASE.md:432:v1.2.7-rc1
+RELEASE.md:437:v1.2.7-beta.1
+RELEASE.md:486:v0.1.0
+## AC-001: dates (20YY-MM-DD) left in RELEASE.md
+(none)
+
+## REQ-004: TESTING.md unchanged by this ticket
+git diff --stat 6324fb056d HEAD -- TESTING.md: ''
+
+## notes
+- The one case-insensitive hit (docs/design-cases.md:3, 'design case studies') names the software engineering team's design case studies, not RELEASE.md's section; case-sensitive 'Case Studies' outside tickets/: 0 hits.
+- Versions left in RELEASE.md: L172 and L329 are the pointer path (beta-release-v1.5.12-beta.2) in link text and target; L383, L432, L437 are the Workflow Reference's format examples; L486 'v0.1.0' is a descriptor's own version. No version or date is used as a story (AC-001).
+- Fresh-start build proof (TESTING.md): changed paths (git diff --name-only 6324fb056d HEAD) are DESIGN.md, RELEASE.md, three tickets/done records and this ticket's folder; none matches a build input, so not required.
+RESULT: PASS
+
+## script
+import os
+import re
+import subprocess
+import sys
+
+FILES = [
+    "RELEASE.md", "DESIGN.md", "TESTING.md",
+    "tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md",
+    "tickets/done/release-beta-20261102/release-deployment-report.md",
+    "tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md",
+]
+
+
+def git(*args):
+    return subprocess.run(["git", *args], capture_output=True, text=True).stdout
+
+
+def slugs(path):
+    out, seen, fence = set(), {}, False
+    for line in open(path, encoding="utf-8"):
+        if line.startswith("```"):
+            fence = not fence
+        if fence:
+            continue
+        m = re.match(r"^(#{1,6})\s+(.*?)\s*#*\s*$", line)
+        if not m:
+            continue
+        t = re.sub(r"[^\w\- ]", "", m.group(2).strip().lower()).replace(" ", "-")
+        n = seen.get(t, 0)
+        seen[t] = n + 1
+        out.add(t if n == 0 else f"{t}-{n}")
+    return out
+
+
+def main():
+    print("## git grep -n -i 'case studies|#case-studies' in every tracked .md outside tickets/")
+    hits = git("grep", "-n", "-i", "-e", "case studies", "-e", "#case-studies", "--", "*.md", ":!tickets/**", ":!**/tickets/**").strip()
+    print(hits or "(none)")
+    print(f"Case Studies hits: {len(hits.splitlines()) if hits else 0}")
+
+    print("\n## local links and anchors in RELEASE.md, DESIGN.md, TESTING.md and the three records")
+    tracked = set(git("ls-files").splitlines())
+    total = broken = 0
+    for f in FILES:
+        text = re.sub(r"```.*?```", "", open(f, encoding="utf-8").read(), flags=re.S)
+        n_file = 0
+        for m in re.finditer(r"\]\(([^)\s]+)\)", text):
+            tgt = m.group(1)
+            if re.match(r"[a-z]+:", tgt):
+                continue
+            total += 1
+            n_file += 1
+            p, _, anchor = tgt.partition("#")
+            dest = os.path.normpath(os.path.join(os.path.dirname(f), p)) if p else f
+            ok = dest in tracked or os.path.isdir(dest)
+            aok = (anchor.lower() in slugs(dest)) if (ok and anchor and dest.endswith(".md")) else True
+            if not (ok and aok):
+                broken += 1
+                print(f"  BROKEN {f}: ({tgt}) -> {dest} exists={ok} anchor_ok={aok}")
+        print(f"  {f}: {n_file} local links")
+    print(f"local links checked: {total}; broken: {broken}")
+
+    print("\n## pointer paths (REQ-005 / AC-005) on origin/personal")
+    paths = sorted(set(re.findall(r"tickets/done/[a-z0-9.-]+/release-deployment-report\.md",
+                                  open("RELEASE.md").read() + open("DESIGN.md").read())))
+    for p in paths:
+        on = subprocess.run(["git", "cat-file", "-e", f"origin/personal:{p}"]).returncode == 0
+        where = " ".join(":".join(l.split(":")[:2]) for l in git("grep", "-n", "-F", p, "--", "RELEASE.md", "DESIGN.md").splitlines())
+        print(f"{p}: on origin/personal: {'yes' if on else 'NO'}; referenced at: {where}")
+
+    print("\n## AC-001: version strings left in RELEASE.md")
+    print(git("grep", "-n", "-o", r"v[0-9]\+\.[0-9]\+\.[0-9]\+[-a-z0-9.]*", "--", "RELEASE.md").strip() or "(none)")
+    print("## AC-001: dates (20YY-MM-DD) left in RELEASE.md")
+    print(git("grep", "-n", "20[0-9][0-9]-[01][0-9]-[0-3][0-9]", "--", "RELEASE.md").strip() or "(none)")
+
+    print("\n## REQ-004: TESTING.md unchanged by this ticket")
+    print(f"git diff --stat {sys.argv[1]} HEAD -- TESTING.md: '{git('diff', '--stat', sys.argv[1], 'HEAD', '--', 'TESTING.md').strip()}'")
+
+
+main()

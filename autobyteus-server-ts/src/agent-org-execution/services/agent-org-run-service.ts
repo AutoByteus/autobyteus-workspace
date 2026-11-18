@@ -1,9 +1,13 @@
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
+import { rootRestoreRefusal, unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
+import type { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
+import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
+import { listAgentOrgRunSelectionScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
-import { remoteTaskExecutionDtos } from "../../services/agent-streaming/remote-task-execution-dto-projection.js";
+import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { PlacementLaunchOverride } from "../../agent-collaboration/services/collaboration-launch-configuration-resolver.js";
@@ -16,8 +20,9 @@ import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { AgentOrgRun } from "../domain/agent-org-run.js";
 import { AgentOrgRunManager } from "./agent-org-run-manager.js";
-import { AgentOrgRunPlanner } from "./agent-org-run-planner.js";
+import { AgentOrgRunPlanner, type ResolvedAgentOrgLaunchPlan } from "./agent-org-run-planner.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
@@ -57,17 +62,28 @@ export class AgentOrgRunService {
     modelSelectionOptions: Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
     history: Pick<AgentOrgRunHistoryCatalogService, "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
-    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
+    /** Archive and delete wait for the runs it delegated to (REQ-007). */
+    workGuard: Pick<DelegatedWorkGuard, "guard">;
+    /** Told after a committed delete, so the run's members leave the episodic catalogs. */
+    episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
+    /** Base's token-usage restore check (SR-078); defaults to the process capability. */
+    tokenUsage?: Pick<TokenUsageCapability, "assertExistingRunRestoreReady">;
   }>) {}
 
-  getRunConfig(orgRunId: string) {
-    return this.dependencies.manager.getRunConfig(orgRunId);
+  /**
+   * The stored Org tree as the wire carries it. A configured Agent's pending runtime switch is server state and is not on the
+   * wire (autobyteus-348, contract §6), so every Org tree this service returns as JSON goes through this one projection.
+   */
+  async getRunConfig(orgRunId: string) {
+    const config = await this.dependencies.manager.getRunConfig(orgRunId);
+    return Object.freeze({ ...config, executionTree: projectAgentOrgExecutionTree(config.executionTree) });
   }
   async runModelOptions(orgRunId: string, teamWorkspacePatches: readonly TeamWorkspacePatch[] = []) {
     const canonical = await this.dependencies.manager.getRunConfig(orgRunId);
     const patches = resolveAgentOrgTeamWorkspacePatches(canonical.executionTree, teamWorkspacePatches)
       .map(patch => ({ ...patch, workspaceRootPath: canonicalizeWorkspaceRootPath(patch.workspaceRootPath) }));
-    const scopes = listAgentOrgRunModelConfigScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
+    const scopes = listAgentOrgRunSelectionScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
     const options = await this.dependencies.modelSelectionOptions.listOptionsMany(scopes.map(({ launchConfiguration }) => ({
       runtimeKind: launchConfiguration.runtimeKind,
       currentModelIdentifier: launchConfiguration.llmModelIdentifier,
@@ -76,8 +92,9 @@ export class AgentOrgRunService {
     if (options.length !== scopes.length) throw new Error("Model options returned an incomplete AgentOrg scope result.");
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
   }
-  updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig) {
-    return this.dependencies.manager.updateStoppedRunConfig(input);
+  async updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig) {
+    const result = await this.dependencies.manager.updateStoppedRunConfig(input);
+    return Object.freeze({ ...result, canonical: result.canonical ? projectAgentOrgExecutionTree(result.canonical) : null });
   }
 
   async create(command: CreateAgentOrgRunCommand): Promise<AgentOrgRun> {
@@ -102,12 +119,10 @@ export class AgentOrgRunService {
       teamOverrides,
       agentOverrides,
     });
-    await this.validateCompleteConfiguration(resolved.launch);
+    const launch = await this.validateCompleteConfiguration(resolved.launch);
     const tree = await planner.build({
       definition,
-      rootConfiguration,
-      teamOverrides,
-      agentOverrides,
+      plan: { topology: resolved.topology, launch },
       applicationBinding: command.applicationBinding ?? null,
     });
     const run = await this.dependencies.manager.create(tree);
@@ -120,9 +135,14 @@ export class AgentOrgRunService {
     }
   }
 
+  /**
+   * Validates every placement's launch and returns the launch to build the tree from: the same placements,
+   * each with its validated (canonical) model selection, so no launch carries a setting its model does not
+   * declare. Inheritance is already resolved here, so no placement's selection is re-derived from another's.
+   */
   private async validateCompleteConfiguration(
-    launch: Awaited<ReturnType<AgentOrgRunPlanner["resolveConfiguration"]>>["launch"],
-  ): Promise<void> {
+    launch: ResolvedAgentOrgLaunchPlan["launch"],
+  ): Promise<ResolvedAgentOrgLaunchPlan["launch"]> {
     const entries = [
       ["/", launch.root] as const,
       ...[...launch.teams.entries()],
@@ -148,16 +168,47 @@ export class AgentOrgRunService {
       const address = results.length < entries.length ? entries[results.length]![0] : "/";
       throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': Model validation returned an incomplete result.`);
     }
-    for (const [index, [address]] of entries.entries()) {
+    const canonical = new Map<string, AgentLaunchConfiguration>();
+    for (const [index, [address, configuration]] of entries.entries()) {
       const result = results[index]!;
       if (result.kind !== "valid") {
-        const detail = result.kind === "invalid"
-          ? result.errors.map((error) => `${error.path}: ${error.message}`).join("; ")
-          : result.kind === "model_unavailable"
-            ? result.catalogDiagnostic?.message ?? "The selected model is unavailable."
-            : "The selected model configuration schema is unavailable.";
+        const detail = isUnavailableModelSelection(result)
+          ? runModelSelectionRefusal({ result, llmModelIdentifier: configuration.llmModelIdentifier,
+            runtimeKind: configuration.runtimeKind, savedSettingsUnchanged: false }).message
+          : result.errors.map((error) => `${error.path}: ${error.message}`).join("; ");
         throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': ${detail}`);
       }
+      canonical.set(address, Object.freeze({ ...configuration,
+        llmModelIdentifier: result.selection.llmModelIdentifier, llmConfig: result.selection.llmConfig }));
+    }
+    const of = <K extends string>(entries: ReadonlyMap<K, AgentLaunchConfiguration>) =>
+      new Map([...entries.keys()].map((address) => [address, canonical.get(address)!] as const));
+    return Object.freeze({ root: canonical.get("/")!, teams: of(launch.teams), agents: of(launch.agents) });
+  }
+
+  /** Base's restore admission (SR-078, CR-461-069), before the stored file is read: its reason, or `null` when it may restore. */
+  restoreRefusal(agentOrgRunId: string): Promise<RootRestoreRefusal | null> {
+    const orgRunId = required(agentOrgRunId, "agentOrgRunId");
+    return rootRestoreRefusal({ tokenUsage: this.dependencies.tokenUsage ?? new TokenUsageCapability(),
+      isCataloged: () => this.dependencies.manager.isCatalogedPackage(orgRunId),
+      notCataloged: { code: "AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED", message: `AgentOrg '${orgRunId}' is not an admitted current package.` } });
+  }
+
+  /**
+   * A stopped Org restored for its first input (SR-046, SR-078): the active run, else base's admission answers with its own
+   * reason; a restore that fails after admission is answered as a run that cannot be restored (the detail logged).
+   */
+  async restoreForInput(agentOrgRunId: string): Promise<AgentOrgRun | RootRestoreRefusal> {
+    const orgRunId = required(agentOrgRunId, "agentOrgRunId");
+    const active = this.getActive(orgRunId);
+    if (active) return active;
+    const refused = await this.restoreRefusal(orgRunId);
+    if (refused) return refused;
+    try {
+      return await this.restore(orgRunId);
+    } catch (error) {
+      // A concurrent restore registered it first.
+      return this.getActive(orgRunId) ?? unrestorableRoot({ kind: "AgentOrg run", code: "AGENT_ORG_RUN_NOT_RESTORABLE", runId: orgRunId, error });
     }
   }
 
@@ -179,16 +230,19 @@ export class AgentOrgRunService {
     return terminated;
   }
 
-  archiveStoredRun(orgRunId: string) {
-    return this.dependencies.history.archiveStored(required(orgRunId, "orgRunId"));
+  async archiveStoredRun(orgRunId: string) {
+    const normalized = required(orgRunId, "orgRunId");
+    return this.dependencies.workGuard.guard({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived", () => this.dependencies.history.archiveStored(normalized));
   }
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    const result = await this.dependencies.history.deleteStored(normalized);
+    const root = createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized });
+    const result = await this.dependencies.workGuard.guard(root, "deleted", () => this.dependencies.history.deleteStored(normalized));
+    if (!result.success) return result;
+    this.dependencies.episodicCatalog.runDeleted(root);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
-    if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));
+    await (this.dependencies.adHocTasks ?? getProjectTaskService()).deleteAdHocTasksDelegatedFrom(root);
     return result;
   }
 
@@ -201,10 +255,9 @@ export class AgentOrgRunService {
     return this.dependencies.manager.getActive(required(agentOrgRunId, "agentOrgRunId"));
   }
 
+  /** The Org's stored or live view: its own parts (its tree is `runTree(run)`, SR-084). */
   async getInspection(orgRunId: string) {
-    const inspection = await this.dependencies.manager.getInspection(orgRunId);
-    return projectAgentOrgExecutionSnapshot({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.rootOrg.remoteTaskExecutions) });
+    return projectAgentOrgExecutionSnapshot(await this.dependencies.manager.getInspection(orgRunId));
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

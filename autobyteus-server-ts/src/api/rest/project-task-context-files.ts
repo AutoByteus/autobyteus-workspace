@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import type { FastifyInstance, FastifyReply } from "fastify";
-import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+import { getProjectTaskContextDrafts } from "../../projects/services/project-task-context-drafts.js";
+import { ContextFileTooLargeError, UnsupportedContextFileTypeError } from "../../context-files/domain/context-file-upload-errors.js";
+import { contextFileUploadCapBytes } from "../../context-files/domain/context-file-upload-policy.js";
+import { discardUploadedFile } from "../../context-files/services/context-file-upload-writer.js";
+import { resolveContextFileSizeLimits } from "../../config/context-file-size-limit-settings.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import type { ProjectTaskContextFile } from "../../projects/domain/project-task-context.js";
 const sendFile = (reply: FastifyReply, {filePath, file}: {filePath: string; file: ProjectTaskContextFile}) => {
@@ -13,6 +17,8 @@ const sendFile = (reply: FastifyReply, {filePath, file}: {filePath: string; file
 const guarded = async (reply: FastifyReply, operation: () => Promise<unknown>) => {
   try { return await operation(); }
   catch (e) {
+    if (e instanceof ContextFileTooLargeError) return reply.code(413).send({error: {code: "CONTEXT_FILE_TOO_LARGE", message: e.message, maxBytes: e.maxBytes}});
+    if (e instanceof UnsupportedContextFileTypeError) return reply.code(415).send({error: {code: "CONTEXT_FILE_TYPE_UNSUPPORTED", message: e.message}});
     if (e instanceof ProjectError) return reply.code(["PROJECT_NOT_FOUND", "TASK_NOT_FOUND", "TASK_CONTEXT_NOT_FOUND"].includes(e.code) ? 404 : 400).send({error: {code: e.code, message: e.message}});
     if ((e as NodeJS.ErrnoException).code === "ENOENT") return reply.code(404).send({detail: "Task context was not found."});
     console.error("Task context operation failed.", e);
@@ -21,7 +27,7 @@ const guarded = async (reply: FastifyReply, operation: () => Promise<unknown>) =
 };
 type DraftParams = {projectId: string; draftId: string; storedFilename: string};
 export async function registerProjectTaskContextRoutes(app: FastifyInstance): Promise<void> {
-  const service = getProjectTaskService();
+  const service = getProjectTaskContextDrafts();
   const drafts = "/projects/:projectId/task-context-drafts";
   const files = `${drafts}/:draftId/context-files`;
   app.post<{Params: {projectId: string}; Body: {taskId?: string}}>(drafts, async (r, reply) => guarded(reply, async () => {
@@ -30,9 +36,11 @@ export async function registerProjectTaskContextRoutes(app: FastifyInstance): Pr
     return reply.send(await service.beginContextDraft(r.params.projectId, taskId));
   }));
   app.post<{Params: DraftParams}>(files, async (r, reply) => guarded(reply, async () => {
-    const file = await r.file();
+    const limits = resolveContextFileSizeLimits();
+    const file = await r.file({limits: {fileSize: contextFileUploadCapBytes(limits)}});
     if (!file) return reply.code(400).send({detail: "No file uploaded."});
-    return reply.send(await service.uploadContextFile(r.params.projectId, r.params.draftId, file));
+    try { return reply.send(await service.uploadContextFile(r.params.projectId, r.params.draftId, file, limits)); }
+    catch (e) { await discardUploadedFile(file); throw e; }
   }));
   app.get<{Params: DraftParams}>(`${files}/:storedFilename`, async (r, reply) => guarded(reply, async () =>
     sendFile(reply, await service.readDraftContextFile(r.params.projectId, r.params.draftId, r.params.storedFilename))));

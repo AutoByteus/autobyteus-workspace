@@ -1,0 +1,7 @@
+# IMP-07 AC-006 / REQ-006: no server, GraphQL, REST or tool surface for either switch
+# Commit: 8cf4278319  Env: macOS 26.5.2, git 2.50.1  Date: 2026-11-01T19:42:32Z
+# Commands: (1) git diff --stat 3b9dc912a1...HEAD -- autobyteus-server-ts autobyteus-application-sdk-contracts
+#           (2) grep -rnwE over autobyteus-server-ts/src and prisma for the new names
+--- (1) server/contracts files changed by the branch (empty = none):
+--- (2) word matches in server code (empty = none):
+--- end (grep exit 1; 1 = no match)

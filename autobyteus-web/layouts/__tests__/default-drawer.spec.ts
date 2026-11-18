@@ -40,7 +40,7 @@ describe('default layout drawer lifecycle', () => {
         ],
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+          RunSectionPanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: {
           $t: (key: string) => key,
@@ -101,7 +101,7 @@ describe('default layout drawer lifecycle', () => {
         plugins: [createTestingPinia({ createSpy: vi.fn, stubActions: false })],
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+          RunSectionPanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: { $t: (key: string) => key },
       },
@@ -148,7 +148,7 @@ describe('default layout drawer lifecycle', () => {
         ],
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+          RunSectionPanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: {
           $t: (key: string) => key,
@@ -186,7 +186,7 @@ describe('default layout drawer lifecycle', () => {
         ],
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+          RunSectionPanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: {
           $t: (key: string) => key,
@@ -221,7 +221,7 @@ describe('default layout drawer lifecycle', () => {
         ],
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+          RunSectionPanel: { template: '<div data-test="runs-tree-stub"></div>' },
         },
         mocks: {
           $t: (key: string) => key,

@@ -1,0 +1,274 @@
+{
+  "startedAt": "2026-11-10T08:39:10.329Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 54204,
+      "nodeId": "srv_v31fnPSmA9-82BmprnYVrvUVVmfmd6QN",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 54205,
+      "nodeId": "srv_LmHkCTbMf4K4cBjqFnWPSEjQXg2-FM6B",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_5f076fc70f544845923306d38c6a391a",
+    "writerRun": "release_notes_writer_616c718821944dd295bf106f4cff1f17",
+    "squadRun": "docs_review_team_8654f0ab71e3405e8230948fc98c0326",
+    "reviewer": "release_notes_writer_d7f799be0db64fa9ade1f649a9ad7360",
+    "memberDelegated": "fact_checker_2b0d4ecf24ee462da13fed6bd72d3740",
+    "remoteAgentRun": "publisher_816390ff5fc44e8c855ee1835793643e",
+    "remoteTeamRun": "studio_team_c2730be0a9a2434b8ea898ee8e929ebb",
+    "plain": [
+      "fact_checker_c2448ca46274466b9ff9c4f61072565f",
+      "fact_checker_67d8dd5f4a8e42809d36d56dc68ceb75",
+      "fact_checker_43e2535a009b4df7949b69774c119ab9"
+    ],
+    "org": "delivery_org_89e477bb2a924550b0cc188dc4d6ed33",
+    "orgPlanner": "release_notes_writer_1689b5af5cc84452ad385ab08c47c9a4",
+    "reviewOrg": "review_org_caa84c4ec16241778d09a293ecd190c0",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_4bdb44f8b10e47fdaac8404250e23180",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_1ccd557668634613a03010927a0b5053",
+    "deliveryLead": "fact_checker_a74a2b8e3d454f6e8ddc77325f1abfbf",
+    "deliveryMate": "release_notes_writer_61b0beee678d4f89a098c4acd8c35283",
+    "leadDelegated": "changelog_helper_28bf9be4e5424980ab45ac331484b422",
+    "approver": "approver_a0b42dc2393f4e1db9df55e785722c10",
+    "taskA": "launch-4b86df-1",
+    "taskB": "launch-4b86df-2"
+  },
+  "cases": {
+    "MSP-33": {
+      "result": "Pass",
+      "seconds": 16.5,
+      "restored": [
+        {
+          "label": "agent Activity",
+          "before": "?row=agent:project_task_manager_5f076fc70f544845923306d38c6a391a&screen=activity",
+          "after": "?row=agent:project_task_manager_5f076fc70f544845923306d38c6a391a&screen=activity",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": null,
+              "activity": true,
+              "messages": false
+            }
+          ]
+        },
+        {
+          "label": "Team Messages",
+          "before": "?row=team:delivery_team_1ccd557668634613a03010927a0b5053&screen=messages",
+          "after": "?row=team:delivery_team_1ccd557668634613a03010927a0b5053&screen=messages",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": true
+            }
+          ]
+        },
+        {
+          "label": "Team member",
+          "before": "?row=team:delivery_team_1ccd557668634613a03010927a0b5053/agent:release_notes_writer_61b0beee678d4f89a098c4acd8c35283&screen=run",
+          "after": "?row=team:delivery_team_1ccd557668634613a03010927a0b5053/agent:release_notes_writer_61b0beee678d4f89a098c4acd8c35283&screen=run",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "open",
+              "activity": false,
+              "messages": false
+            }
+          ]
+        },
+        {
+          "label": "delegated task agent",
+          "before": "?row=agent:project_task_manager_5f076fc70f544845923306d38c6a391a/agent:release_notes_writer_616c718821944dd295bf106f4cff1f17&screen=run",
+          "after": "?row=agent:project_task_manager_5f076fc70f544845923306d38c6a391a/agent:release_notes_writer_616c718821944dd295bf106f4cff1f17&screen=run",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "open",
+              "activity": false,
+              "messages": false
+            }
+          ]
+        }
+      ],
+      "gone": {
+        "reached": true,
+        "query": "?row=agent:no-such-run-435",
+        "activity": false,
+        "runScreen": null
+      },
+      "draftQuery": "?row=agent:temp-1794299997088-1&screen=run",
+      "beforeSend": {
+        "label": "reload before the first message",
+        "before": "?row=agent:temp-1794299997088-1&screen=run",
+        "after": "?row=agent:temp-1794299997088-1",
+        "reached": true,
+        "opening": true,
+        "listShown": true,
+        "trace": [
+          {
+            "list": false,
+            "run": null,
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": false,
+            "run": "opening",
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": true,
+            "run": null,
+            "activity": false,
+            "messages": false
+          }
+        ],
+        "runScreen": null
+      },
+      "createdQuery": "?row=agent:temp-1794299999003-1&screen=run",
+      "viewBeforeSend": "?row=agent:temp-1794299999003-1&screen=activity",
+      "afterSend": "?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=run",
+      "nodeRunId": "project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946",
+      "stored": true,
+      "forwardQuery": "?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=activity",
+      "afterCreate": {
+        "label": "created run Activity",
+        "before": "?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=activity",
+        "after": "?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=activity",
+        "reached": true,
+        "opening": true,
+        "listShown": false,
+        "trace": [
+          {
+            "list": false,
+            "run": null,
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": false,
+            "run": "opening",
+            "activity": false,
+            "messages": false
+          },
+          {
+            "list": false,
+            "run": null,
+            "activity": true,
+            "messages": false
+          }
+        ]
+      },
+      "backQuery": "?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=run"
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [
+    {
+      "case": "MSP-33",
+      "label": "phone-restore",
+      "url": "https://api.iconify.design/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-33",
+      "label": "phone-restore",
+      "url": "https://api.iconify.design/vscode-icons.json?icons=file-type-markdown",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-33": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-10T08:40:29.109Z"
+}

@@ -13,6 +13,8 @@ export type CollaboratorDefinitionCatalog = Readonly<{
   listTeamDefinitions(): Promise<readonly AgentTeamDefinition[]>;
   getAgentDefinition(id: string): Promise<AgentDefinition | null>;
   getTeamDefinition(id: string): Promise<AgentTeamDefinition | null>;
+  /** The internal-agent rule (`InternalAgentVisibility.isHidden`): a hidden agent is not a collaborator now. */
+  isAgentHidden(definition: AgentDefinition): boolean;
 }>;
 
 export type CollaboratorCandidate =
@@ -53,26 +55,29 @@ export type AvailableCollaborator = Readonly<{
 const RANK_ORDER: readonly InRunPlacement["rank"][] = ["run_agent", "configured"];
 
 /**
- * AR-002: one in-run placement per definition, by rank, then the lexicographically smallest
- * address; its address is the definition's in-run address. Null when it has none.
+ * AR-002, SR-059: one in-run placement per definition, by §2.3's step (own team, step 2, own run), then by rank,
+ * then the lexicographically smallest address; its address is the definition's in-run address. Null when it has none.
  */
 export const preferredInRunPlacement = (placements: readonly InRunPlacement[]): InRunPlacement | null => {
   const [best] = [...placements].sort((left, right) =>
-    RANK_ORDER.indexOf(left.rank) - RANK_ORDER.indexOf(right.rank)
+    left.step - right.step
+    || RANK_ORDER.indexOf(left.rank) - RANK_ORDER.indexOf(right.rank)
     || (left.address < right.address ? -1 : left.address > right.address ? 1 : 0));
   return best ?? null;
 };
 
-/** Daily Assistant (the default chat agent) and the internal helpers are never `@` or delegation candidates. */
-const EXCLUDED_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set(BUILT_IN_AGENT_DEFINITIONS.map((entry) => entry.id));
+/** Built-ins marked `collaborationEligible: false` (the Model Router) are never `@` or delegation candidates. */
+const COLLABORATION_INELIGIBLE_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set(
+  BUILT_IN_AGENT_DEFINITIONS.filter((entry) => !entry.collaborationEligible).map((entry) => entry.id));
 
 const hasId = <T extends { id?: string | null }>(definition: T): definition is T & { id: string } =>
   typeof definition.id === "string" && definition.id.trim().length > 0;
 
 /**
  * The single owner of `@` and catalog eligibility. Candidates are shared standalone Agent
- * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the internal
- * built-ins and the viewer's own definition (`port.ownDefinition()`) are never candidates. Two checks: `requireEligible`
+ * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the Model Router
+ * and the viewer's own definition (`port.ownDefinition()`) are never candidates; internal
+ * agents are not while "Show internal agents" is off (autobyteus-308). Two checks: `requireEligible`
  * may be mentioned with `@` (including definitions already in the run, which `@` addresses);
  * `requireAdmissible` may be delegated to as a fresh catalog copy (not already in the run).
  * `list_available_agents` lists every eligible definition once, at its in-run address or at its
@@ -85,12 +90,12 @@ export class CollaboratorCandidatePolicy {
    * In the run: the viewer's own definition and every in-run placement (the run agent and
    * configured placements).
    */
-  inRunDefinitionIds(port: CollaboratorRootPort): InRunDefinitionIds {
+  async inRunDefinitionIds(port: CollaboratorRootPort): Promise<InRunDefinitionIds> {
     const agents = new Set<string>();
     const teams = new Set<string>();
     const own = port.ownDefinition();
     if (own) (own.kind === "agent" ? agents : teams).add(own.definitionId);
-    for (const key of port.inRunPlacementsByDefinition().keys()) {
+    for (const key of (await port.inRunPlacementsByDefinition()).keys()) {
       const separator = key.indexOf(":");
       (key.slice(0, separator) === "agent" ? agents : teams).add(key.slice(separator + 1));
     }
@@ -127,11 +132,11 @@ export class CollaboratorCandidatePolicy {
         ({ kind: "agent_team" as const, definitionId: team.id!, name: team.name, description: team.description ?? "" })),
     ].filter((entry) => !own || own.kind !== entry.kind || own.definitionId !== entry.definitionId);
     const inRunAddresses = new Map<string, AgentTeamAddress>();
-    for (const [key, placements] of port.inRunPlacementsByDefinition()) {
+    for (const [key, placements] of await port.inRunPlacementsByDefinition()) {
       const placement = preferredInRunPlacement(placements);
       if (placement) inRunAddresses.set(key, placement.address);
     }
-    const map = new CatalogAddressMap({ eligible, inRunAddresses, addressesInUse: port.addressesInUse() });
+    const map = new CatalogAddressMap({ eligible, inRunAddresses, addressesInUse: await port.addressesInUse() });
     return { eligible, map };
   }
 
@@ -163,7 +168,7 @@ export class CollaboratorCandidatePolicy {
   }
 
   /**
-   * `@` re-check of one mention: a shared, non-built-in definition that is not the viewer's own.
+   * `@` re-check of one mention: a shared, collaboration-eligible definition that is not the viewer's own.
    * It may already be in the run (the mention then addresses that instance).
    */
   async requireEligible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
@@ -184,7 +189,7 @@ export class CollaboratorCandidatePolicy {
    */
   async requireAdmissible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
     const eligible = await this.requireEligible(port, mention);
-    const inRun = this.inRunDefinitionIds(port);
+    const inRun = await this.inRunDefinitionIds(port);
     const inRunIds = eligible.kind === "agent" ? inRun.agentDefinitionIds : inRun.teamDefinitionIds;
     if (inRunIds.has(eligible.definition.id)) throw this.alreadyInRun(eligible.definition.name);
     return eligible;
@@ -203,7 +208,8 @@ export class CollaboratorCandidatePolicy {
   }
 
   private isEligibleAgent(definition: AgentDefinition): definition is AgentDefinition & { id: string } {
-    return hasId(definition) && definition.ownershipScope === "shared" && !EXCLUDED_AGENT_DEFINITION_IDS.has(definition.id);
+    return hasId(definition) && definition.ownershipScope === "shared" && !COLLABORATION_INELIGIBLE_AGENT_DEFINITION_IDS.has(definition.id)
+      && !this.catalog.isAgentHidden(definition);
   }
 
   private isEligibleTeam(definition: AgentTeamDefinition): definition is AgentTeamDefinition & { id: string } {

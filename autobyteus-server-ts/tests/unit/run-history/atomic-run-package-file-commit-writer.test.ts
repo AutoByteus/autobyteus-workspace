@@ -20,6 +20,6 @@ it('retains non-throwing pre-rename serialization failure results for original J
   const filePath = path.join(root, 'data.json'); await fs.writeFile(filePath, 'original');
   const payload: { self?: unknown } = {}; payload.self = payload;
   expect(await new AtomicRunPackageFileCommitWriter().write({ file: 'json', filePath, payload }))
-    .toMatchObject({ outcome: 'not_renamed', stage: 'write_temp', file: 'json', cause: expect.any(Error) });
+    .toMatchObject({ outcome: 'not_committed', stage: 'write_temp', file: 'json', cause: expect.any(Error) });
   expect(await fs.readFile(filePath, 'utf8')).toBe('original'); expect(await fs.readdir(root)).toEqual(['data.json']);
 });

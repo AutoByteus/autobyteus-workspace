@@ -1,0 +1,312 @@
+# IMP-08 base reproduction
+# Steps: git checkout 3bf9240d42 -- autobyteus-server-ts/src; copy of the IMP-04 test with the PHONE_WEBSOCKET_ROUTES import replaced by a local copy of the 8 patterns; then
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/base-reproduction.e2e.test.ts --reporter=verbose --no-watch
+# Source: base origin/personal 3bf9240d42 src; test from 88a93aaf26
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-06T21:46Z
+# Expected: AC-001..AC-004 and AC-006 fail on base; AC-005 and the disabled refusal (preserved behavior) pass.
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+AgentRunManager initialized.
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Loading workspace packages to trigger registration...
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully loaded workspace packages.
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-NSDYnx/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Core Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'publish_artifacts'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Published Artifact Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Discovery Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Communication Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_memory'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Memory Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Runtime Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Browser Tools
+stderr | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Overwriting existing tool definition for name: 'search_web'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_web'
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Search Tools
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001)
+Created terminal session origin-probe using backend IsolatedPtySession for target /Users/normy
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001)
+Terminal WebSocket connected: origin-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001)
+Terminal websocket attached for cwd /Users/normy
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002)
+Closed PTY session origin-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002)
+Terminal WebSocket disconnected: origin-probe
+ × tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001) 413ms
+   → expected { Object (origin, pathname, ...) } to deeply equal { Object (origin, pathname, ...) }
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+Created terminal session phone-probe using backend IsolatedPtySession for target /Users/normy
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+Terminal WebSocket connected: phone-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+Terminal websocket attached for cwd /Users/normy
+ × tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002) 3228ms
+   → expected { …(2) } to deeply equal { …(2) }
+ × tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003) 1ms
+   → expected 204 to be 403 // Object.is equality
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Agent websocket attached for run phone-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Agent team websocket attached for team run phone-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Closed PTY session phone-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Terminal WebSocket disconnected: phone-probe
+ × tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004) 405ms
+   → expected { …(2) } to deeply equal { …(2) }
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+File explorer websocket attached for workspace phone-probe
+ ✓ tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005) 869ms
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+Created terminal session log-probe using backend IsolatedPtySession for target /Users/normy
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+Terminal WebSocket connected: log-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+Terminal websocket attached for cwd /Users/normy
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+wrong websocket protocol: 
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+Closed PTY session log-probe
+stdout | tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+Terminal WebSocket disconnected: log-probe
+ × tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006) 1220ms
+   → expected [] to deeply equal [ …(4) ]
+ ✓ tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > keeps today's refusal of a phone credential when Phone Access is disabled 17ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001)
+AssertionError: expected { Object (origin, pathname, ...) } to deeply equal { Object (origin, pathname, ...) }
+- Expected
++ Received
+  {
+    "origin": "https://evil.example",
+    "outcome": {
+-     "kind": "refused",
+-     "status": 403,
++     "close": null,
++     "kind": "opened",
+    },
+    "pathname": "/ws/terminal/origin-probe",
+  }
+ ❯ tests/e2e/remote-access/base-reproduction.e2e.test.ts:117:12
+    115|       ]) {
+    116|         expect({ origin, pathname, outcome: await upgrade(pathname, { …
+    117|           .toEqual({ origin, pathname, outcome: { kind: "refused", sta…
+       |            ^
+    118|       }
+    119|     }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+ FAIL  tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002)
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+- Expected
++ Received
+  {
+    "origin": "https://desktop.tail.ts.net.evil.example",
+    "outcome": {
+-     "kind": "refused",
+-     "status": 403,
++     "close": null,
++     "kind": "opened",
+    },
+  }
+ ❯ tests/e2e/remote-access/base-reproduction.e2e.test.ts:143:10
+    141|     for (const origin of ["https://desktop.tail.ts.net.evil.example", …
+    142|       expect({ origin, outcome: await upgrade("/ws/projects", { Origin…
+    143|         .toEqual({ origin, outcome: { kind: "refused", status: 403 } }…
+       |          ^
+    144|     }
+    145|   });
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+ FAIL  tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003)
+AssertionError: expected 204 to be 403 // Object.is equality
+- Expected
++ Received
+- 403
++ 204
+ ❯ tests/e2e/remote-access/base-reproduction.e2e.test.ts:153:41
+    151|       headers: { origin: FOREIGN_ORIGIN, "access-control-request-metho…
+    152|     });
+    153|     expect(foreignPreflight.statusCode).toBe(403);
+       |                                         ^
+    154|     expect(foreignPreflight.json()).toMatchObject({ code: "REMOTE_ACCE…
+    155|     expect(corsHeaders(foreignPreflight.headers)).toEqual({ vary: "Ori…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+ FAIL  tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004)
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+- Expected
++ Received
+  {
+    "outcome": {
+-     "close": {
+-       "code": 4403,
+-       "reason": "PHONE_ACCESS_ROUTE_REFUSED",
+-     },
++     "close": null,
+      "kind": "opened",
+    },
+    "pathname": "/ws/terminal/phone-probe",
+  }
+ ❯ tests/e2e/remote-access/base-reproduction.e2e.test.ts:215:76
+    213|       "/ws/applications/app-1/agent-communication/x",
+    214|     ]) {
+    215|       expect({ pathname, outcome: await upgrade(`${pathname}?${query}`…
+       |                                                                            ^
+    216|         pathname,
+    217|         outcome: { kind: "opened", close: { code: 4403, reason: "PHONE…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+ FAIL  tests/e2e/remote-access/base-reproduction.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006)
+AssertionError: expected [] to deeply equal [ …(4) ]
+- Expected
++ Received
+- [
+-   "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/projects?access_token=%5BREDACTED%5D origin https://evil.example",
+-   "Remote Access WebSocket rejected /ws/terminal/log-probe?access_token=%5BREDACTED%5D: PHONE_ACCESS_ROUTE_REFUSED",
+-   "Remote Access request refused PHONE_ACCESS_ROUTE_REFUSED /graphql?access_token=%5BREDACTED%5D",
+-   "Remote Access request refused PHONE_ACCESS_ROUTE_REFUSED /rest/remote/run-observations?access_token=%5BREDACTED%5D",
+- ]
++ []
+ ❯ tests/e2e/remote-access/base-reproduction.e2e.test.ts:246:28
+    244|     await upgrade(`/rest/remote/run-observations?${query}`);
+    245|
+    246|     expect(refusalLines()).toEqual([
+       |                            ^
+    247|       `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/…
+    248|       "Remote Access WebSocket rejected /ws/terminal/log-probe?access_…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+ Test Files  1 failed (1)
+      Tests  5 failed | 2 passed (7)
+   Start at  22:46:25
+   Duration  14.90s (transform 5.82s, setup 34ms, import 7.66s, tests 6.79s, environment 0ms)

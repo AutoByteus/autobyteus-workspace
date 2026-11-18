@@ -1,0 +1,7 @@
+# IMP-06 targeted unit rerun of everything this change touches, at the handoff commit
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-episodic-catalog tests/unit/agent-memory tests/agent-work-journal tests/unit/memory-search tests/unit/run-history tests/unit/agent-org-execution tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts tests/unit/standalone-application-host tests/unit/projects/ad-hoc-tasks.test.ts --no-watch
+# commit: 0be36462ef
+# environment: macOS, node v22.23.1; load before: 77.61 86.50 88.96
+# date: 2026-11-17T17:14:42Z
+ Test Files  125 passed | 1 skipped (126)
+      Tests  854 passed | 2 skipped (856)

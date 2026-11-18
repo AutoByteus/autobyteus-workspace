@@ -1,0 +1,27 @@
+# DEL-01 post-integration and post-docs-sync checks, 2026-10-30T16:47:36Z, base origin/personal e4bebdc858, HEAD a85cf65c52 + docs-sync edits (uncommitted at run time)
+## file overlap between the ticket's changes and the base's new commits
+(none listed = no overlap)
+## python3 -m unittest discover -s scripts/tests -p 'test_*.py'
+----------------------------------------------------------------------
+Ran 174 tests in 53.798s
+
+OK (skipped=2)
+## check-system-level
+System level 1: the system part is unchanged (b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562)
+exit 0
+## actionlint
+actionlint: no findings
+## shellcheck
+shellcheck: no findings
+## check_licensing
+Licensing is consistent.
+Tracked files scanned: 7543
+exit 0
+## check_repository_artifact_hygiene
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+## secret gate origin/personal..HEAD
+secret gate: scanning 9 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
+exit 0
+## check_repository_artifact_hygiene exit code: 0 (Repository artifact hygiene check passed.)

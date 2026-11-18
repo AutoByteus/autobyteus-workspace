@@ -52,6 +52,7 @@ export async function repairCollaborationRunHistoryIndexes(input: Readonly<{
   const projectedTeams: TeamRunIndexRowRecord[] = [];
   for (const id of teamMissing) {
     const dir = layout.getTeamDirPath({ rootTeamRunId: id, ancestorTeamRunIds: [] });
+    // A row is projected from the run's own parts (D-11): this script runs without the Task records.
     const tree = await teamTrees.read(dir, id);
     if (!tree) throw new Error(`Admitted Team '${id}' has no readable execution tree.`);
     projectedTeams.push(projectTeamRunHistoryIndexRow({ tree }));

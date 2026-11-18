@@ -1,0 +1,11 @@
+# IMP-17 web vue-tsc filtered to files changed in IR-002
+# command: pnpm -C autobyteus-web exec vue-tsc --noEmit, filtered by git diff --name-only
+# commit: 127fc4806e (run on its working tree just before the commit)
+# environment: macOS Darwin 25.5 (arm64), Node 22.23.1, pnpm; worktree /Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary
+# date: 2026-10-24
+
+vue-tsc total errors: 457
+errors in files changed in IR-002:
+generated/graphql.ts(2,38): error TS2307: Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+generated/graphql.ts(3,36): error TS2307: Cannot find module '@vue/composition-api' or its corresponding type declarations.
+errors naming memorySyncSourceId:

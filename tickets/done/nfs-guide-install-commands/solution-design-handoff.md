@@ -1,39 +1,39 @@
-# Architecture Design Complete — nfs-guide-install-commands, R2
+# Architecture Design Complete — nfs-guide-install-commands R3
 
-## Identity / direction
-Task **autobyteus-254** / `project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3`, requested by `/project_task_manager` run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`. Existing Task explicitly reopened Oct24; not a new NFS task. User: “remove the redundant links here ... dispatch to the same worker which earlier worked on this ticket.” PM and screenshots specify only “View release downloads” and “Review the pinned installer script” below installation cards.
+## Request and approved result
+Task **autobyteus-254** / `project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3`, Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`. Requested by `/project_task_manager`, run `project_task_manager_a5f6d9d306e54970bafdad895bdf731d`. Same Task explicitly reopened Oct26, not a new NFS ticket.
+User: “remove those redundant information. learn from the docker guide page. the cli line can be removed”, then “also so so much information at the bottom”. Saved Task clarifies advanced CLI documentation line and blue/amber/trailing footer, **not install/run command boxes**.
 
-**R2/SR-003 Approved; SR-004 Ready; Small / Low; Architecture Design Complete.** Requirements approved within direction, user informed. No Needs user decision, prerequisite, Product artifact or new follow-up. Implementation/validation for this delta not yet done.
+**R3/SR-005 Approved; SR-006 Ready; Small / Low; Architecture Design Complete.** Solution Designer approved within settled direction and informed user: replace164-word footer with short folder-use tip and compact unencrypted/trusted-network/outage warning; keep detailed limits in documentation, exact nine strings unchanged. No Needs user decision, Product deliverable, prerequisite or new follow-up.
 
-## Authoring / preservation
-- **Worktree:** /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2
-- **Branch:** codex/nfs-guide-install-commands-r2
-- **Fresh base:** origin/personal 8b34e8ae108a281b0c93c679c60883df28a30773; finalization origin/personal per RELEASE.md. No release requested.
-- **Canonical active ticket:** /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands
-- Original task delivered at ca1f09e52a71e061fce36b04288e5495fc2356e7. Existing archive moved byte-preserving (except own current docs) to in-progress in this NEW worktree for authorized reopen; prior other-owner reports/evidence are historical, not current readiness.
-- Preserve old detached worktree /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands at 6d90a825feae66f4c397924370562a271da722a0; canonical dirty superrepo/PM boards and NFS repo untouched. No dependencies, runtime, browser, installer or live storage action started by Solution Designer. Only new worktree/branch and ticket documentation authored.
+## Isolated workspace and history
+- Worktree **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3**
+- Branch **codex/nfs-guide-install-commands-r3**
+- Fresh base **origin/personal d74f75a51ab7dc47d42a13f33e0f943c3a230ad7**
+- Finalization target **origin/personal** per current RELEASE.md, **NO RELEASE**.
+- Canonical ticket **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/tickets/in-progress/nfs-guide-install-commands**.
+- Archive moved to in-progress only here for approved reopen; prior specialist reports/raw evidence remain historical and byte-preserved. Append new specialist rounds, do not rewrite original results. R2 completed merge c78ffb15a24a13c52e2ae37f9aa0775155a55b1b; actual R2 detached completion receipt9213d42bb296d0ec63a8885be331db381ef8cc8a is authoritative over old pre-cleanup remote snapshot.
+- Preserve both original/r2 detached worktrees, canonical dirty superrepo, PM boards, NFS repo and all other resources. No dependencies/runtime/browser/installer started by Solution Designer; only this worktree/branch and ticket docs created/changed, plus pure-helper probe. No push/finalization performed.
 
-## Design to implement
-Remove only NfsGuideCard.vue anchors at current base lines31–32. Keep advanced README link line54, all nine cards/Copy buttons, existing exact command strings and all remaining guidance. Local downloadUrl computed also controls version paragraph: replace with explicit hasAvailableInstaller boolean derived from any validated command, preserving version visibility for partial data; keep allAvailable separate. **Do not remove descriptor.downloadUrl validation or change the command helper.**
-Delete just the two obsolete label keys from English/Chinese; clarify review reminder via URL already displayed in command. Update focused component expectations (remaining link exact, partial/invalid version behavior, both locales) and stale guide-doc link-state sentence. Current design-spec lists exact paths/consumers and boundaries. No broad cleanup, new architecture, CSS-hidden legacy links or relocated substitutes.
+## Implement this bounded design
+1. In `autobyteus-web/components/settings/NfsGuideCard.vue`, remove advanced README anchor and trailing limitations/deferred paragraphs. Turn blue mount/Docker block into one unboxed short ordinary-folder tip; shorten existing amber note to trusted-private-network heading plus unencrypted/no-public-internet and practical outage guidance. No extra links/disclaimer drawer/empty spacer. Design supplies bilingual copy; footer ≤60 English words and equivalent concise Chinese.
+2. In existing en/zh-CN settings catalogs shorten workspaceHint/trustDetail/outageDetail, preserve trustTitle, delete now-dead advanced/limitations/deferred keys. Preserve other integrated content.
+3. Update `NfsGuideCard.spec.ts`: no anchors in valid/partial/invalid/null states; absence of old labels/internal testing prose; concise safety and locale checks. Preserve all nine exact commands, version/availability and clipboard lifecycle assertions. Remove obsolete link-attribute loop, not negative safety tests.
+4. Update only `autobyteus-web/docs/nfs_guide.md` for UI simplification while retaining detailed technical limits and documentation links; add removed owner-mapping/connection-info-not-token facts if not already stated. No qualification promotion.
 
-## Constraints / verification intent
-Copy-only application UI revision. No NFS source/installer/release/field changes; no app-node/UUID/launcher coupling; no shared/workspace skill edit; no Docker change, links elsewhere, version/tag/deployment, mandatory user check or live execution. Existing autobyteus-nfs-4 remains separate.
-Current helper/component/test/docs equal original completed source; catalogs contain unrelated later additions to preserve. Static code + user screenshots fully establish removal premise; no new execution verdict claimed. Focused component/command/localization checks plus affected real browser layout/copy journey under current TESTING.md; impact-plan against current base and preserve original failures/results. No need to repeat NFS/installer qualification or previous 36 clipboard samples merely as a ritual.
+**Unchanged:** helper `nfsLauncherCommands.ts`, static v0.1.0 URL/digest, all install/run command bytes/cards, Copy handler/state/timers/unmount, parent/localization framework, Docker Guide. No NFS binary/installer/backend/runtime/security policy, skills, root policy, live mounts/data/nodes, release/version/tag/deploy or installed-app upgrade. Newer independent NFS releases do NOT authorize changing this frozen guide pin or adding server/client commands in this cleanup.
 
-## Expected next output
-Implementation Engineer implements this approved bounded revision and owns implementation checks; then configured executable validation and Delivery. Append new rounds in existing owner histories without rewriting original round results. Finalize freshly on origin/personal and clean owned resources, leaving old retained receipt checkout intact. Return only genuine requirement/design expansion to Solution Designer.
+## Evidence and verification boundary
+Current INV-11–17 trace exact template, both catalogs, real translator dependency, tests/docs and Docker reference. User screenshots show problem; pure Node22 helper probe returned all nine current strings/null handling without executing them. No postchange test/browser pass claimed.
+Current component/helper/test/docs equal delivered R2 source, but lockfile/web package changed since R2. Establish current scoped proof (component/command tests, applicable guards/typecheck and actual web renderer); do not promote historical54tests/36clipboard comparisons. Follow fresh TESTING.md impact planning, one run per case per round, rebuilt inputs/typechecks after merges and proper cause investigation.
+API scope: Nodes → NFS Guide in en/zh-CN ×1280/390, inspect concise footer and unchanged card/Copy behavior, real normal clipboard plus focused controlled lifecycle cases, Docker preserved. Browser evidence is web-equivalent, not Electron/backend/installer/field qualification. No mandatory repeat user check or reopened NFS campaign. Implementation self-checks and executable validation still apply on direct route.
 
-## Own documents (all absolute)
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/requirements-doc.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/investigation-notes.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/design-spec.md
-- /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/solution-revision-record.md
-- This handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/in-progress/nfs-guide-install-commands/solution-design-handoff.md
+## Own authoritative documents
+All in canonical ticket above: **requirements-doc.md**, **investigation-notes.md**, **design-spec.md**, **solution-revision-record.md**, and this **solution-design-handoff.md**. Current exact user screenshots are external PM-owned facts inventoried in investigation; attach selected current screenshots, not the entire historical archive.
 
-Two supplied current screenshots identify exact removals; attach these, not the entire historical evidence chain. Prior terminal receipt and old owner reports remain linked in investigation/ticket for reference. No outstanding solution gaps; downstream evidence required before closing again.
+Expected next output: implement approved R3 delta, validate scope, then configured API/Delivery finalization and owned cleanup; report genuine requirement/design impact instead of expanding. No current solution blocker. Source and current validation are still pending; no completion claim.
 
 ## Route
-Fresh `get_handoff_rules` on 2026-10-24 selected its Architecture Design Complete + Small/Medium + Low rule: **/software_engineering_team/implementation_engineer**, direct implementation. Large/High review and delivery-receipt-gap rules do not match. Independent architecture/source review N/A—not selected; implementation self-checks and executable API validation remain required. Only this primary recipient; no duplicate PM/API/Delivery dispatch.
+Fresh full saved Task re-read on 2026-10-26 found no new direction. Fresh rules select **/software_engineering_team/implementation_engineer** for Architecture Design Complete + Small/Low, direct implementation. Large/High review and receipt-gap conditions do not match. Independent architecture/source review N/A—not selected; current implementation self-checks and API validation remain required. Only this primary recipient; no duplicate PM/Delivery/API dispatch.
 
-Pre-handoff document audit: all 107 other-owner/history files moved byte-identically from the base archive; only ticket paths changed; staged/working whitespace checks passed. No current product test or completion claim.
+Pre-handoff audit: five own canonical documents updated;221 prior other-owner/history files relocated byte-identically; no non-ticket file change; working/staged whitespace checks pass. No production implementation/test verdict. Worktree/branch are the only retained task resources at this stage.

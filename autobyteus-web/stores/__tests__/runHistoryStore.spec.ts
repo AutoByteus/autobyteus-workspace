@@ -72,7 +72,6 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
               workspace_root_path: member.workspaceRootPath ?? teamRun.workspaceRootPath ?? null,
             },
           })),
-          task_executions: [],
         },
       };
     }),
@@ -146,10 +145,10 @@ const buildAgentOrgHistoryRow = (input: {
     root_subject_kind: 'agent_org',
     root_run_id: input.rootRunId,
     created_at: '2026-09-03T00:00:00.000Z',
+    last_activity_at: '2026-09-03T00:00:00.000Z',
     archived_at: null,
     is_active: false,
     summary: input.summary ?? 'Agent Org run',
-    closed_task_executions: [],
     org: {
       subjectKind: 'agent_org',
       createdAt: '2026-09-03T00:00:00.000Z',
@@ -162,7 +161,6 @@ const buildAgentOrgHistoryRow = (input: {
         orgDefinitionName: input.definitionName ?? 'Delivery Org',
         orgRunId: input.treeRootRunId ?? input.rootRunId,
         defaultLaunchConfiguration: launchConfiguration,
-        taskExecutions: [],
         members: [{
           address: '/writer',
           agentDefinitionId: 'writer-definition',
@@ -442,6 +440,15 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', async () => {
   };
 });
 
+// The Workspaces view lists runs only under a registered folder, Org runs included (workspace-tree-vs-chooser CR-001).
+const ORG_ROOT = '/ws/org';
+const registerWorkspaces = (roots: string[]) => {
+  workspaceStoreMock.allWorkspaces = roots.map((root, index) => ({
+    workspaceId: `ws-${index}`, absolutePath: root, workspaceRootPath: root, name: root.split('/').at(-1),
+  }));
+  workspaceStoreMock.workspaces = Object.fromEntries(workspaceStoreMock.allWorkspaces.map((entry: { workspaceId: string }) => [entry.workspaceId, entry]));
+};
+
 describe('runHistoryStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -517,7 +524,7 @@ describe('runHistoryStore', () => {
         hydratedContext,
         projectionByAgentRunId: new Map([[member.agentRunId, { agentRunId: member.agentRunId }]]),
         memberRunStates: [],
-        remoteTaskExecutions: [],
+        rebuild: { liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0 },
       };
     });
     mutateMock.mockReset();
@@ -550,6 +557,12 @@ describe('runHistoryStore', () => {
     }));
 
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/persisted/workspace', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     const fetchTreeSpy = vi.spyOn(store, 'fetchTree');
     expect(store.navigationProjection).toBeNull();
     expect(store.getTreeNodes()).toEqual([]);
@@ -643,7 +656,7 @@ describe('runHistoryStore', () => {
     expect(store.agentAvatarByDefinitionId['agent-def-1']).toBe('https://a');
   });
 
-  it('strictly merges only AgentOrg roots beneath Teams using stable normalized workspace keys', async () => {
+  it('strictly merges AgentOrg roots beneath registered folders by normalized key; a root that is not a registered folder makes no node', async () => {
     workspaceStoreMock.allWorkspaces = [{
       workspaceId: 'ws-a', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A',
     }];
@@ -680,18 +693,18 @@ describe('runHistoryStore', () => {
     await store.fetchTree();
 
     const nodes = store.getTreeNodes();
-    expect(nodes.map((node) => [node.workspaceRootPath, node.stableKey])).toEqual([
-      ['/ws/a', 'workspace:/ws/a'],
-      ['/catalog/missing', 'workspace:/catalog/missing'],
-      ['__workspace_history_no_workspace__', 'workspace:__workspace_history_no_workspace__'],
-    ]);
+    // workspace-tree-vs-chooser CR-001: like Agent and Team runs, an Org run of a folder that is not registered (a removed
+    // folder) gives no node in the Workspaces view; the store keeps every Org run for the Runs view.
+    expect(nodes.map((node) => [node.workspaceRootPath, node.stableKey])).toEqual([['/ws/a', 'workspace:/ws/a']]);
     expect(nodes[0]?.agentOrgDefinitions[0]?.runs.map((run) => run.rootRunId)).toEqual(['org-a']);
+    expect(store.agentOrgHistory.map((run) => run.rootRunId).sort()).toEqual(['org-a', 'org-missing', 'org-no-workspace']);
     expect(store.getTeamNodes('/ws/a').map((team) => team.teamRunId)).toEqual(['team-1']);
     expect(store.getTeamNodes('/ws/a')).toHaveLength(1);
     expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
   });
 
   it('loads all retained linked Org trees from the real public facade fixture without losing family or worker identity', async () => {
+    registerWorkspaces(linkedOrgHistory.map((row) => row.org.rootOrg.defaultLaunchConfiguration.workspaceRootPath as string));
     // Public-only fixture provenance records real stored/active-seam producer controls.
     // Never import server/core into the web, or accept private lifetime fields here.
     queryMock.mockImplementation(async ({ query }: { query: string }) => {
@@ -752,7 +765,7 @@ describe('runHistoryStore', () => {
     for (const row of others) expect(store.agentOrgHistory.find(next => next.rootRunId === row.rootRunId)).toBe(row);
     const retained = store.agentOrgHistory;
     const bad = structuredClone(updated);
-    if (invalid === 'private-stamp') Object.assign(bad.org.rootOrg.taskExecutions[0]!, {
+    if (invalid === 'private-stamp') Object.assign(bad.org.rootOrg.members[0]!, {
       taskLifetime: { lifetimeId: 'negative-scoped-control', purpose: 'assignment' },
     });
     else bad.org.rootOrg.orgRunId = 'not-selected-root';
@@ -771,7 +784,7 @@ describe('runHistoryStore', () => {
     queryMock.mockImplementation(async ({ query }: { query: string }) => {
       if (query === 'ListWorkspaceRunHistory') return { data: { listWorkspaceRunHistory: [] }, errors: [] };
       const rows = structuredClone(linkedOrgHistory);
-      if (leakPrivateStamp) Object.assign(rows[0]!.org.rootOrg.taskExecutions[0]!, {
+      if (leakPrivateStamp) Object.assign(rows[0]!.org.rootOrg.members[0]!, {
         taskLifetime: { lifetimeId: 'negative-private-control', purpose: 'assignment' },
       });
       return { data: { listCollaborationRootHistory: rows }, errors: [] };
@@ -899,8 +912,9 @@ describe('runHistoryStore', () => {
     let resolveRefresh!: (value: unknown) => void;
     queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveRefresh = resolve; }));
     const store = useRunHistoryStore();
-    const rows = [buildAgentOrgHistoryRow({ rootRunId: 'org-restored', summary: 'Restored title' }),
-      buildAgentOrgHistoryRow({ rootRunId: 'org-unrelated', summary: 'Other title' })];
+    registerWorkspaces([ORG_ROOT]);
+    const rows = [buildAgentOrgHistoryRow({ rootRunId: 'org-restored', summary: 'Restored title', workspaceRootPath: ORG_ROOT }),
+      buildAgentOrgHistoryRow({ rootRunId: 'org-unrelated', summary: 'Other title', workspaceRootPath: ORG_ROOT })];
     store.agentOrgHistory = parseAgentOrgHistoryItems(rows);
     const projectedRows = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs);
     const original = projectedRows().find((run) => run.rootRunId === 'org-restored')!;
@@ -922,7 +936,8 @@ describe('runHistoryStore', () => {
     queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveOlder = resolve; }))
       .mockReturnValueOnce(new Promise((_resolve, reject) => { rejectFresh = reject; }));
     const store = useRunHistoryStore();
-    const activeRow = { ...buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title' }), is_active: true };
+    registerWorkspaces([ORG_ROOT]);
+    const activeRow = { ...buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title', workspaceRootPath: ORG_ROOT }), is_active: true };
     store.agentOrgHistory = parseAgentOrgHistoryItems([activeRow]);
     const projectedRow = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions)
       .flatMap((group) => group.runs).find((run) => run.rootRunId === 'org-confirmed')!;
@@ -1151,6 +1166,12 @@ describe('runHistoryStore', () => {
     });
 
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/tmp/autobyteus-temp', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     const nodes = store.getTreeNodes();
 
     expect(nodes).toHaveLength(1);
@@ -1158,16 +1179,15 @@ describe('runHistoryStore', () => {
       workspaceId: 'temp_ws_default',
       workspaceName: 'Temp Workspace',
       workspaceKind: 'temp',
-      canRemoveFromWorkspaces: false,
     });
-    expect(nodes[0]?.agents[0]?.runs[0]).toMatchObject({
+    expect(nodes[0]?.agents[0]?.runs.find((run) => run.runId === 'temp-123')).toMatchObject({
       runId: 'temp-123',
       source: 'draft',
       isDraft: true,
     });
   });
 
-  it('prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root', () => {
+  it('prefers the fixed temp identity when temp and filesystem descriptors share one root', () => {
     workspaceStoreMock.allWorkspaces = [
       {
         workspaceId: 'agent_ws_duplicate',
@@ -1188,6 +1208,12 @@ describe('runHistoryStore', () => {
     ];
 
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/tmp/autobyteus-temp', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     const nodes = store.getTreeNodes();
 
     expect(nodes).toHaveLength(1);
@@ -1195,7 +1221,6 @@ describe('runHistoryStore', () => {
       workspaceId: 'temp_ws_default',
       workspaceName: 'Temp Workspace',
       workspaceKind: 'temp',
-      canRemoveFromWorkspaces: false,
     });
   });
 
@@ -1955,7 +1980,8 @@ describe('runHistoryStore', () => {
 
     const nodes = store.getTreeNodes();
 
-    expect(nodes).toHaveLength(2);
+    // Beta has no run, so the Workspaces view does not list it (workspace-tree-vs-chooser REQ-009).
+    expect(nodes).toHaveLength(1);
     expect(nodes[0]?.workspaceRootPath).toBe('/ws/a');
 
     const alphaAgent = nodes[0]?.agents[0];
@@ -1964,16 +1990,7 @@ describe('runHistoryStore', () => {
     expect(alphaAgent?.runs[0]?.source).toBe('draft');
     expect(alphaAgent?.runs[1]?.source).toBe('history');
 
-    expect(nodes[1]).toEqual({
-      stableKey: 'workspace:/ws/b',
-      workspaceId: 'ws-2',
-      workspaceRootPath: '/ws/b',
-      workspaceName: 'Beta',
-      workspaceKind: 'filesystem',
-      canRemoveFromWorkspaces: true,
-      agents: [],
-      agentOrgDefinitions: [],
-    });
+    expect(nodes.some((node) => node.workspaceRootPath === '/ws/b')).toBe(false);
   });
 
   it('pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace', () => {
@@ -2123,8 +2140,41 @@ describe('runHistoryStore', () => {
     expect(runB?.lastActivityAt).toBe('2026-01-03T00:00:00.000Z');
   });
 
+  it('workspace-tree-vs-chooser VIS-017: a draft-only folder appears with the first sent message (a patch outside the listed folders rebuilds)', () => {
+    const store = useRunHistoryStore();
+    workspaceStoreMock.allWorkspaces = [{ workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' }];
+    workspaceStoreMock.workspaces = { 'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} } };
+    const draft = {
+      config: { workspaceId: 'ws-1', agentDefinitionId: 'agent-def-1', agentDefinitionName: 'SuperAgent' },
+      state: {
+        currentStatus: 'offline',
+        conversation: { id: 'temp-1', messages: [], createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z' },
+      },
+    };
+    agentContextsStoreMock.runs.set('temp-1', draft);
+    expect(store.getTreeNodes()).toEqual([]);
+
+    // Sent: the prepared run takes its permanent ID and starts.
+    agentContextsStoreMock.runs.delete('temp-1');
+    agentContextsStoreMock.runs.set('run-sent', { ...draft, state: { ...draft.state, currentStatus: 'initializing' } });
+    const changed = store.applyRunNavigationEffect(
+      { kind: 'standalone', runId: 'run-sent', currentStatus: 'initializing' as never },
+      { kind: 'PRESENTATION', occurredAt: '2026-01-01T00:00:01.000Z' },
+    );
+
+    expect(changed).toBe(true);
+    expect(store.getTreeNodes().map((node) => node.workspaceRootPath)).toEqual(['/ws/a']);
+    expect(store.getTreeNodes()[0]?.agents[0]?.runs.map((run) => [run.runId, run.source])).toEqual([['run-sent', 'local']]);
+  });
+
   it('projects offline draft contexts as inactive in tree projection', () => {
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/ws/a', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
     ];
@@ -2394,6 +2444,21 @@ describe('runHistoryStore', () => {
     expect(refreshSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('CR-461-087: archiveRuns keeps each refused run\'s reason from the server, for every kind; a transport error gives none', async () => {
+    const reason = "This run can't be archived while a run it delegated to is working (/fact_checker_924b).";
+    mutateMock
+      .mockResolvedValueOnce({ data: { archiveStoredRun: { success: true, message: 'Run archived.' } }, errors: [] })
+      .mockResolvedValueOnce({ data: { archiveStoredRun: { success: false, message: reason } }, errors: [] })
+      .mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: false, message: 'Team run is active.' } }, errors: [] })
+      .mockRejectedValueOnce(new Error('network down'));
+    const store = useRunHistoryStore();
+    vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+    vi.spyOn(store, 'refreshRunNavigationTopology').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const outcome = await store.archiveRuns({ agentRunIds: ['run-1', 'run-2'], teamRunIds: ['team-1'], orgRunIds: ['org-1'] });
+    expect(outcome).toEqual({ archivedRunIds: ['run-1'], failedRunIds: ['run-2', 'team-1', 'org-1'], failureReasons: [reason, 'Team run is active.'] });
+  });
+
   it('archiveRun does not mutate local state when backend rejects archive', async () => {
     mutateMock.mockResolvedValueOnce({
       data: {
@@ -2481,7 +2546,11 @@ describe('runHistoryStore', () => {
       'team-1': {
         teamRunId: 'team-1',
         isActive: false,
-        metadata: buildTeamResumeMetadata({ teamRunId: 'team-1' }),
+        executionTree: buildTestTeamContext({
+          teamRunId: 'team-1', coordinatorAddress: '/super_agent',
+          rootChildren: [testAgentNode('/super_agent', { agentRunId: 'super-agent-run' })],
+        }).view.getExecutionTree(),
+        modelConfigEditability: { editable: true, reason: null },
       },
     };
     store.selectedTeamRunId = 'team-1';
@@ -2790,7 +2859,7 @@ describe('runHistoryStore', () => {
       const topologySpy = vi.spyOn(store, 'refreshRunNavigationTopology');
 
       await expect(store.archiveTeamRuns(['team-1', 'team-2', 'team-3'])).resolves.toEqual({
-        archivedRunIds: ['team-1', 'team-3'], failedRunIds: ['team-2'],
+        archivedRunIds: ['team-1', 'team-3'], failedRunIds: ['team-2'], failureReasons: ['Team run is active.'],
       });
 
       expect(mutateMock.mock.calls.map(([options]: any) => options.variables)).toEqual([
@@ -2808,7 +2877,7 @@ describe('runHistoryStore', () => {
       store.workspaceGroups = [teamGroupWorkspace(['team-1'])];
       const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
 
-      await expect(store.archiveTeamRuns(['team-1'])).resolves.toEqual({ archivedRunIds: [], failedRunIds: ['team-1'] });
+      await expect(store.archiveTeamRuns(['team-1'])).resolves.toEqual({ archivedRunIds: [], failedRunIds: ['team-1'], failureReasons: ['active'] });
       expect(refreshSpy).not.toHaveBeenCalled();
     });
 
@@ -2825,7 +2894,7 @@ describe('runHistoryStore', () => {
       const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
 
       await expect(store.archiveAgentOrgRuns(['org-1', 'org-2'])).resolves.toEqual({
-        archivedRunIds: ['org-1', 'org-2'], failedRunIds: [],
+        archivedRunIds: ['org-1', 'org-2'], failedRunIds: [], failureReasons: [],
       });
 
       expect(store.agentOrgHistory.map((run) => run.rootRunId)).toEqual(['org-other']);

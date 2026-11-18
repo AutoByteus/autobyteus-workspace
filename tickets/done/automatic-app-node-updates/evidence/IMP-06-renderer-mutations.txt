@@ -1,0 +1,51 @@
+# IMP-06 mutation proof (autobyteus-356): each mutation must turn at least one test red; a baseline run is green.
+# Commit: 8cf4278319 (code at that commit; mutated and restored)
+# Env: macOS 26.5.2, Node v22.23.1, vitest 3.2.7  Date: 2026-11-01
+# Command: pnpm -C autobyteus-web exec vitest run <3 new renderer specs>, once per mutation of the renderer files
+
+== R1 an AUTO_UPDATED app row is not new
+   × Notification Center: the app automatic update > an automatic update says "Updated automatically to <version>", new until seen, and keeps the entry visible (REQ-005) 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R2 the app outcome does not keep the entry visible
+   × Notification Center: the app automatic update > an automatic update says "Updated automatically to <version>", new until seen, and keeps the entry visible (REQ-005) 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R3 the app switch asks for confirmation
+   × Notification Center: the app automatic update > the software section has the app switch, off by default; turning it on asks nothing (REQ-001) 40ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R4 the app row shows the manual wording
+   × Notification Center: the app automatic update > an automatic update says "Updated automatically to <version>", new until seen, and keeps the entry visible (REQ-005) 13ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R5 the app failure is not shown
+   × Notification Center: the app automatic update > a failed automatic update says nothing was changed, with the reason, and still offers Download (REQ-004) 8ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R6 a node outcome is never marked seen
+   × NodeAutoUpdate > an automatic update says "Updated automatically to <version>", new this time, and is marked seen (REQ-005) 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R7 an on switch disappears when the node cannot update
+   × NodeAutoUpdate > no switch for a node that cannot update in place, unless it is on 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+== R8 restart-to-install toast during an automatic install
+   × appUpdateStore automatic update > with the switch on, a finished download does not say "restart to install" (it installs at once) 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 19 passed (20)
+
+--- rendered-check fix (server line follows the automatic update), on the working tree after 8cf4278319 ---
+== R9 the server line never asks again
+   × NodeAutoUpdate > the server line asks the node again when the desktop requests and ends an automatic update, without a second notice 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 10 passed (11)
+== R10 the result is reported twice
+   × NodeAutoUpdate > the server line asks the node again when the desktop requests and ends an automatic update, without a second notice 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 10 passed (11)
+== R11 an outcome read at page open asks again
+   × NodeAutoUpdate > an ended outcome read when the page opens does not ask the node twice 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 10 passed (11)

@@ -1,0 +1,14 @@
+# Excerpt of IMP-11-web-full.log (the full log is next to this file): its header, failed tests, totals and exit code
+# Check: IMP-11-web-full
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): bash -c pnpm -s exec cross-env NUXT_TEST=true vitest run; a=$?; pnpm -s exec vitest run --config ./electron/vitest.config.ts; b=$?; echo "## nuxt exit $a, electron exit $b"; exit $((a|b))
+# Commit: 858e493786 (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:22:06Z
+
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): bash -c pnpm -s exec cross-env NUXT_TEST=true vitest run; a=$?; pnpm -s exec vitest run --config ./electron/vitest.config.ts; b=$?; echo "## nuxt exit $a, electron exit $b"; exit $((a|b))
+ Test Files  680 passed (680)
+      Tests  4944 passed | 2 skipped (4946)
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+## nuxt exit 0, electron exit 0
+# Exit code: 0

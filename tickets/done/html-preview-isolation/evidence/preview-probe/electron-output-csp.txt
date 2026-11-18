@@ -1,0 +1,59 @@
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"classic-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"classic-script-late","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"css","value":"rgb(255, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"post-graphql","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"post-node-absolute","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-no-sandbox-attr","check":"ws-open","value":"attempted","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"classic-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"classic-script-late","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"css","value":"rgb(255, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"post-graphql","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"post-node-absolute","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-scripts-only","check":"ws-open","value":"attempted","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"classic-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"classic-script-late","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"css","value":"rgb(255, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"post-graphql","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"post-node-absolute","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"csp/iframe-with-same-origin-attr","check":"ws-open","value":"attempted","eventOrigin":"null"}
+PROBE {"frame":"csp/top-level","check":"classic-script","value":"ran"}
+PROBE {"frame":"csp/top-level","check":"classic-script-late","value":"ran"}
+PROBE {"frame":"csp/top-level","check":"css","value":"rgb(255, 0, 0)"}
+PROBE {"frame":"csp/top-level","check":"fetch-relative-json","value":"failed: TypeError"}
+PROBE {"frame":"csp/top-level","check":"img-relative","value":"error"}
+PROBE {"frame":"csp/top-level","check":"inline-script","value":"ran"}
+PROBE {"frame":"csp/top-level","check":"localStorage","value":"blocked: SecurityError"}
+PROBE {"frame":"csp/top-level","check":"module-script","value":"did-not-run"}
+PROBE {"frame":"csp/top-level","check":"origin","value":"null"}
+PROBE {"frame":"csp/top-level","check":"parent-document","value":"accessible"}
+PROBE {"frame":"csp/top-level","check":"parent-electronAPI","value":"undefined"}
+PROBE {"frame":"csp/top-level","check":"post-graphql","value":"failed: TypeError"}
+PROBE {"frame":"csp/top-level","check":"post-node-absolute","value":"failed: TypeError"}
+PROBE {"frame":"csp/top-level","check":"ws-open","value":"attempted"}

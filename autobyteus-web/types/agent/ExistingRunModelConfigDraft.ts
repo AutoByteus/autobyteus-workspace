@@ -1,4 +1,3 @@
-import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-stream-contracts'
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import type { RunMetadataConfigPayload, RunModelConfigEditability } from '~/stores/runHistoryTypes'
 import type { ExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
@@ -13,16 +12,13 @@ export type ExistingRunModelConfigFieldError = Readonly<{
   message: string
 }>
 
-export type ExistingAgentDelegatedSnapshot = Pick<AgentRunCollaborationViewDto, 'execution_tree' | 'closed_task_executions'>
-
 export type ExistingAgentModelConfigDraft = Readonly<{
   kind: 'agent'
   runId: string
   isActive: boolean
   editability: RunModelConfigEditability
   metadata: RunMetadataConfigPayload
-  draftSelection: ExistingRunModelSelection
-  delegatedSnapshot: ExistingAgentDelegatedSnapshot | null
+  draftSelection: ExistingAgentRunSelection
 }>
 
 export type ExistingTeamRunModelConfigDraft = Readonly<{
@@ -38,12 +34,16 @@ export type ExistingRunModelSelection = Readonly<{
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
 }>
+/** A stopped Agent run's selection: its agent runtime too (the settings can switch it); teams edit the model only. */
+export type ExistingAgentRunSelection = ExistingRunModelSelection & Readonly<{ runtimeKind: string }>
 export type ExistingRunModelOptions = Readonly<{
   currentModelIdentifier: string
   currentModel: ExistingRunModelChoice | null
   replacements: readonly ExistingRunModelChoice[]
   unavailableReason: string | null
 }>
+/** What the server answers for one scope: `modelListReadable` is false only when the runtime's model list could not be read. */
+export type ExistingRunModelOptionsAnswer = ExistingRunModelOptions & Readonly<{ modelListReadable: boolean }>
 export type ExistingRunModelChoice = Readonly<{
   llmModelIdentifier: string
   providerName: string
@@ -56,4 +56,6 @@ export type ExistingRunModelChoice = Readonly<{
 export type ExistingRunModelOptionsState = Readonly<{
   status: 'loading' | 'ready' | 'unavailable'
   options: ExistingRunModelOptions | null
+  /** Why the options are `unavailable`, in the server's words, when it answered that the model list could not be read. */
+  message?: string | null
 }>

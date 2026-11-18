@@ -1,0 +1,21 @@
+API-19 — AC-007 unreachable half: LM Studio suite against a closed port
+Commit: 959b5cc048 (test file last changed af81b3d7d2); date 2026-10-24 11:02; macOS, Node v22.23.1
+Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" LMSTUDIO_HOSTS=http://127.0.0.1:9 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/lmstudio-llm.test.ts --reporter=verbose
+rc=0
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-ts
+
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > uses metadata-aware LM Studio discovery to create a runnable text model with truthful context metadata 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should return a completion for a text model 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene/autobyteus-ts/tests/assets/sample_image.png) 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should handle multimodal images (http://192.168.2.124:29695/rest/files/images/d0d0f29a-824c-4af0-9457-ecfba83ff9be.jpg) 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream responses from a text model 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should stream reasoning from a reasoning-capable text model 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+ ↓ tests/integration/llm/api/lmstudio-llm.test.ts > LMStudioLLM Integration > should emit tool calls for LM Studio 0ms [LM Studio is not reachable at http://127.0.0.1:9 (fetch failed); start it or set LMSTUDIO_HOSTS]
+
+ Test Files  1 passed (1)
+      Tests  7 skipped (7)
+   Start at  11:02:10
+   Duration  774ms (transform 303ms, setup 38ms, import 643ms, tests 3ms, environment 0ms)
+

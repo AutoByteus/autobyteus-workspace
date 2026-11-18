@@ -1,0 +1,12 @@
+# Case: API-05 step 04 — View only in the desktop app: pointer and keys do not reach the node
+# Steps: node: xfce4-terminal titled abx405-capture running 'cat > /tmp/abx405-typed.txt', activated, at 600,300 900x500; app node window (isolated instance iso-62503-d542, target 68DA16FC…), tile 'Connected · View only', canvas at CSS x681 y112.5 830x466.875 (scale 0.4323); CDP Input: click CSS 1135,350 (node ≈1050,550, inside the terminal), type 'abxviewonly' + Enter, move CSS 810,242 (node ≈300,300); then node: xdotool getmouselocation, cat the file
+# Commit: 952bc1fcd0; node abx405-api-node (fresh-clone server package), backend http://192.168.2.158:62053
+# Date: 2026-11-06T17:52:38Z
+
+before: x:960 y:540 screen:0 window:50331651 typed-bytes=0
+0
+click 1135 350
+typed "abxviewonly\n"
+move 810 242
+after:  x:960 y:540 screen:0 window:50331651 typed-bytes=0 typed=[]
+tile: "Connected · View only"

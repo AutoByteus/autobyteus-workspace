@@ -1,0 +1,5 @@
+# IMP-05 server test:unit; commit c29edfb1f7; macOS, Node v22.23.1; 2026-11-10T12:35:37Z
+# Command: pnpm -C autobyteus-server-ts test:unit
+ Test Files  970 passed | 5 skipped (975)
+      Tests  8279 passed | 9 skipped (8288)
+   Duration  748.02s (transform 20.26s, setup 23.52s, import 325.87s, tests 307.28s, environment 827ms)

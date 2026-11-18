@@ -1,0 +1,9 @@
+# API-16 chat-composer-polish: node tests/e2e/chat-composer-polish-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/chat-composer-polish
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T18:22:58Z
+T01 Pass Claude SDK merged thinking menu at desktop width: Off state, pick High, Off, Medium, Off→Medium (A-1)
+T02 Pass Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)
+T03 Pass Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)
+T04 Pass A model without an on/off switch keeps the per-parameter thinking menu (AC-006)
+T05 Pass Workspace search at desktop width with 14 workspaces: focus, filter, path, empty state, keys, IME guard, Escape, reset (AC-007, AC-008)
+T06 Pass Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)
+T07 Pass Narrow bottom sheet (413×738): merged thinking list and workspace search still work

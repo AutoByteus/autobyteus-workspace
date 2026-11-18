@@ -1,0 +1,11 @@
+# IMP-01
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/shutdown/server-close-options.test.ts --no-watch --reporter=verbose
+# Commit: ddb03d0d0b
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ ✓ tests/unit/shutdown/server-close-options.test.ts > server close options > close and onClose do not wait on a silent or idle client connection; preClose still runs first 97ms
+ ✓ tests/unit/shutdown/server-close-options.test.ts > server close options > the credential proxy's local server closes without waiting on its clients 57ms
+ ✓ tests/unit/shutdown/server-close-options.test.ts > server close options > the Agent Tools MCP local server closes without waiting on its clients 55ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

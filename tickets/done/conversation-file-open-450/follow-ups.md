@@ -1,0 +1,5 @@
+# Follow-ups — autobyteus-450
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, `investigation-notes.md` / repro D3 | A file viewer left open does not refresh when the file changes on disk unless the change is a `modify` of a Text file whose tree node is already loaded (`autobyteus-web/stores/fileExplorerTreeActions.ts:75-96`, `fileExplorerContentActions.ts:280-287`). A file in an unexpanded folder, an atomic rewrite (delete+add) and images/PDFs stay old until the user opens the file again | Repro D3: still the old version 10 s after a rewrite with the viewer open | The user's case is opening the link again, which this ticket fixes; live refresh of an open viewer is a separate improvement | No | "File viewer: refresh an open file when it changes on disk, also when its folder is not expanded in the tree, when it was rewritten atomically, and for images and PDFs (autobyteus-450 adds a `contentRevision` that media viewers follow)." |  |

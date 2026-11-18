@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BrowserTabManager } from "../browser-tab-manager";
 import { BrowserShellController } from "../browser-shell-controller";
 
@@ -8,6 +8,10 @@ class FakeWebContents extends EventEmitter {
   private windowOpenHandler: ((details: any) => any) | null = null;
   private currentUrl = '';
   focusCount = 0;
+  readonly navigationHistory = {
+    canGoBack: vi.fn(() => false), canGoForward: vi.fn(() => false),
+    goBack: vi.fn(), goForward: vi.fn(),
+  };
   readonly deviceEmulationCalls: unknown[] = [];
   disableDeviceEmulationCallCount = 0;
 
@@ -143,7 +147,7 @@ const createViewFactory = (
 
 class FakeShellWindow {
   readonly browserWindow = new EventEmitter();
-  readonly nodeId = "embedded-local";
+  readonly entryId = "embedded-local";
   private readonly stableShellId: number;
   throwOnShellIdRead = false;
 
@@ -287,6 +291,8 @@ describe("BrowserShellController", () => {
       sessions: [
         {
           tab_id: opened.tab_id,
+          canGoBack: false,
+          canGoForward: false,
           title: "Browser",
           url: "http://localhost:3000/demo",
           deviceEmulation: { mode: "desktop", profile: null },
@@ -459,11 +465,87 @@ describe("BrowserShellController", () => {
       sessions: [
         {
           tab_id: opener.tab_id,
+          canGoBack: false,
+          canGoForward: false,
           title: "Browser",
           url: "https://x.com/",
           deviceEmulation: { mode: "desktop", profile: null },
         },
       ],
     });
+  });
+});
+
+
+describe('Browser shell history', () => {
+  async function setup() {
+    const views: FakeWebContentsView[] = [];
+    const manager = new BrowserTabManager({ viewFactory: createViewFactory(views) as any, screenshotWriter: {} as any });
+    const controller = new BrowserShellController(manager);
+    const shell = new FakeShellWindow(100);
+    controller.registerShell(shell as any);
+    const open = async (url: string) => {
+      const pending = controller.openSession(100, { url });
+      await Promise.resolve();
+      views.at(-1)!.webContents.finishLoad(url);
+      return (await pending).activeTabId!;
+    };
+    const first = await open('http://localhost/first');
+    return { views, manager, controller, shell, open, first };
+  }
+
+  it('dispatches native history immediately, ignores unavailable direction and projects event-only changes', async () => {
+    const { views, controller, shell, first } = await setup();
+    const history = views[0].webContents.navigationHistory;
+    expect(controller.navigateHistory(100, { tabId: first, direction: 'back' }).activeTabId).toBe(first);
+    expect(history.goBack).not.toHaveBeenCalled();
+    history.canGoBack.mockReturnValue(true);
+    const result = controller.navigateHistory(100, { tabId: first, direction: 'back' });
+    expect(result).not.toBeInstanceOf(Promise);
+    expect(history.goBack).toHaveBeenCalledOnce();
+    history.canGoForward.mockReturnValue(true);
+    views[0].webContents.emit('did-navigate-in-page', {}, 'http://localhost/first', true);
+    expect(shell.lastSnapshot).toMatchObject({ sessions: [{ canGoBack: true, canGoForward: true }] });
+    controller.navigateHistory(100, { tabId: first, direction: 'forward' });
+    expect(history.goForward).toHaveBeenCalledOnce();
+  });
+
+  it('keeps inactive requests inert and never reselects on native completion or close', async () => {
+    const { views, controller, open, first } = await setup();
+    views[0].webContents.navigationHistory.canGoBack.mockReturnValue(true);
+    controller.navigateHistory(100, { tabId: first, direction: 'back' });
+    const second = await open('http://localhost/second');
+    controller.navigateHistory(100, { tabId: first, direction: 'back' });
+    expect(views[0].webContents.navigationHistory.goBack).toHaveBeenCalledOnce();
+    views[0].webContents.emit('did-navigate', {}, 'http://localhost/earlier');
+    expect(controller.getSnapshot(100).activeTabId).toBe(second);
+    await controller.closeSession(100, first);
+    expect(() => controller.navigateHistory(100, { tabId: first, direction: 'back' })).toThrow(/not attached/);
+    expect(controller.getSnapshot(100).activeTabId).toBe(second);
+  });
+
+  it('rejects malformed, unattached, unregistered and foreign-lease requests before dispatch', async () => {
+    const { views, controller, manager, first } = await setup();
+    for (const request of [null, {}, { tabId: first, direction: 'else' }, { tabId: ' ', direction: 'back' }]) {
+      expect(() => controller.navigateHistory(100, request as any)).toThrow(/required/);
+    }
+    expect(() => controller.navigateHistory(100, { tabId: 'foreign', direction: 'back' })).toThrow(/not attached/);
+    expect(() => controller.navigateHistory(999, { tabId: first, direction: 'back' })).toThrow(/not registered/);
+    manager.releaseSessionLease(first, 100);
+    manager.claimSessionLease(first, 101);
+    expect(() => controller.navigateHistory(100, { tabId: first, direction: 'back' })).toThrow(/not leased/);
+    expect(views[0].webContents.navigationHistory.goBack).not.toHaveBeenCalled();
+    expect(views[0].webContents.navigationHistory.goForward).not.toHaveBeenCalled();
+  });
+
+  it('propagates native dispatch errors without a pending load and reconciles on stop', async () => {
+    const { views, controller, shell, first } = await setup();
+    const contents = views[0].webContents;
+    contents.navigationHistory.canGoBack.mockReturnValue(true);
+    contents.navigationHistory.goBack.mockImplementationOnce(() => { throw new Error('native failure'); });
+    expect(() => controller.navigateHistory(100, { tabId: first, direction: 'back' })).toThrow('native failure');
+    contents.navigationHistory.canGoBack.mockReturnValue(false);
+    contents.emit('did-stop-loading');
+    expect(shell.lastSnapshot).toMatchObject({ activeTabId: first, sessions: [{ canGoBack: false }] });
   });
 });

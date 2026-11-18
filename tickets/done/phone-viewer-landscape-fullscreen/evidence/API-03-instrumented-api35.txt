@@ -1,0 +1,28 @@
+# Case: API-03 — instrumented tests on API 35 (415's rotation test, 277's insets tests, shell smoke) with this change
+# Command: adb -s emulator-5554 install the fresh-clone debug + androidTest APKs; adb -s emulator-5554 shell am instrument -w -r org.autobyteus.mobile.test/androidx.test.runner.AndroidJUnitRunner (not gradle connected*, which would also use the other ticket's emulator-5584)
+# Commit: d76be54fb0 fresh clone; emulator-5554 autobyteus277_api35
+# Date: 2026-11-08T08:13:29Z
+
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=appPackageIsInstallable	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=appPackageIsInstallable	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=cameraPermissionAndFileChooserRequestsHaveDistinctCodes	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=cameraPermissionAndFileChooserRequestsHaveDistinctCodes	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=qrCoordinatorOpensTheScannerOnlyWithTheCameraPermission	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=qrCoordinatorOpensTheScannerOnlyWithTheCameraPermission	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=diagnosticWebShellKeepsRecoveryActionsInOverlay	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=diagnosticWebShellKeepsRecoveryActionsInOverlay	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=webViewSettingsPermitUserSelectedContentUrisButNotFilePaths	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest	test=webViewSettingsPermitUserSelectedContentUrisButNotFilePaths	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.MainActivityConfigurationChangeTest	test=rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.MainActivityConfigurationChangeTest	test=rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.SystemBarInsetsTest	test=padsTheRootWithTheBarsAndTheCutout	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.SystemBarInsetsTest	test=padsTheRootWithTheBarsAndTheCutout	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.SystemBarInsetsTest	test=theKeyboardRaisesTheBottomAboveIt	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.SystemBarInsetsTest	test=theKeyboardRaisesTheBottomAboveIt	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.SystemBarInsetsTest	test=withoutInsetsNothingMoves	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.SystemBarInsetsTest	test=withoutInsetsNothingMoves	INSTRUMENTATION_STATUS_CODE: 0
+class=org.autobyteus.mobile.WebShellWindowInsetsTest	test=thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero	INSTRUMENTATION_STATUS_CODE: 1
+class=org.autobyteus.mobile.WebShellWindowInsetsTest	test=thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero	INSTRUMENTATION_STATUS_CODE: 0
+OK (11 tests)	INSTRUMENTATION_CODE: -1	

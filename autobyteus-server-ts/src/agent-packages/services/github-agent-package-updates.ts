@@ -5,6 +5,7 @@ import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github
 import type { GitHubAgentPackageInstaller } from "../installers/github-agent-package-installer.js";
 import type { AgentPackageRegistryStore } from "../stores/agent-package-registry-store.js";
 import type { AgentPackageRecord } from "../types.js";
+import type { PackageEditCapture } from "./package-edit-capture.js";
 import {
   buildGitHubSourceMetadata,
   buildInstalledGitHubMetadata,
@@ -47,6 +48,8 @@ export class GitHubAgentPackageUpdates {
     installer: GitHubAgentPackageInstaller;
     reloadAgentPackageDefinitions: () => Promise<void>;
     assertPackageSkillNames: (rootPath: string) => void;
+    /** Keeps the user's edits of the installed files (backup, then personal settings) before staging. */
+    packageEditCapture: Pick<PackageEditCapture, "captureAndBackUp">;
   }) {}
 
   async listUpdateStates(): Promise<GitHubSourceUpdateState[]> {
@@ -141,6 +144,12 @@ export class GitHubAgentPackageUpdates {
     >;
 
     try {
+      // Backup and capture first: a failure here stops the update with the package files unchanged.
+      await this.deps.packageEditCapture.captureAndBackUp({
+        source: repositorySource,
+        installedRevision: previousMetadata?.installedRevision ?? null,
+        installDir: record.managedInstallPath,
+      });
       replacement = await this.deps.installer.stagePackageReplacement(
         repositorySource,
         metadata,

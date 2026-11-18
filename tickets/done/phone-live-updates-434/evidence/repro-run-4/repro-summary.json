@@ -1,0 +1,291 @@
+{
+  "startedAt": "2026-11-08T07:03:24.244Z",
+  "scenarios": {
+    "R3": {
+      "outageMs": 45000,
+      "phoneShowsByItselfWithin60s": null,
+      "reconnectAttemptsSeen": 5,
+      "socketsDuring": [
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 10200,
+          "closedAt": 10201,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 12204,
+          "closedAt": 12204,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 16207,
+          "closedAt": 16207,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 24212,
+          "closedAt": 24212,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 40213,
+          "closedAt": 40214,
+          "framesIn": 0
+        }
+      ],
+      "afterUserAction": {
+        "reopenToShownMs": 246,
+        "nextMarkerMs": 42
+      },
+      "console": [
+        {
+          "t": 12204,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 16207,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 24212,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 40214,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 40214,
+          "text": "Team WebSocket error: Error: Max reconnection attempts reached\n    at x0.scheduleReconnect (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4575)\n    at t.onclose (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4248)"
+        },
+        {
+          "t": 134369,
+          "text": "Team WebSocket transport connected"
+        }
+      ]
+    },
+    "R4": {
+      "phoneShowsByItselfWithin90s": null,
+      "socketsBefore": 7,
+      "socketsAfter": [
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 8900,
+          "closedAt": 9183,
+          "framesIn": 3
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 10200,
+          "closedAt": 10201,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 12204,
+          "closedAt": 12204,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 16207,
+          "closedAt": 16207,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 24212,
+          "closedAt": 24212,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 40213,
+          "closedAt": 40214,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 134355,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ],
+      "phoneNoticedClose": false,
+      "afterUserActionMs": "not shown"
+    }
+  },
+  "timeline": [
+    {
+      "t": 3803,
+      "event": "team",
+      "teamRunId": "delivery_team_6f71a96f12394652b97652e6dbe24024",
+      "leadRun": "solution_designer_291e472e129f4f5195ba246f0cbe3ea6"
+    },
+    {
+      "t": 8991,
+      "event": "phone paired"
+    },
+    {
+      "t": 9182,
+      "event": "phone opened the lead"
+    },
+    {
+      "t": 9182,
+      "event": "proxy",
+      "mode": "refuse",
+      "open": 8
+    },
+    {
+      "t": 54184,
+      "event": "proxy",
+      "mode": "pass",
+      "open": 0
+    },
+    {
+      "t": 134563,
+      "event": "R3",
+      "outageMs": 45000,
+      "phoneShowsByItselfWithin60s": null,
+      "reconnectAttemptsSeen": 5,
+      "socketsDuring": [
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 10200,
+          "closedAt": 10201,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 12204,
+          "closedAt": 12204,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 16207,
+          "closedAt": 16207,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 24212,
+          "closedAt": 24212,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 40213,
+          "closedAt": 40214,
+          "framesIn": 0
+        }
+      ],
+      "afterUserAction": {
+        "reopenToShownMs": 246,
+        "nextMarkerMs": 42
+      },
+      "console": [
+        {
+          "t": 12204,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 16207,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 24212,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 40214,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4375)"
+        },
+        {
+          "t": 40214,
+          "text": "Team WebSocket error: Error: Max reconnection attempts reached\n    at x0.scheduleReconnect (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4575)\n    at t.onclose (http://192.168.77.10:55810/mobile/_nuxt/dam8y6j6.js:1150:4248)"
+        },
+        {
+          "t": 134369,
+          "text": "Team WebSocket transport connected"
+        }
+      ]
+    },
+    {
+      "t": 134563,
+      "event": "proxy",
+      "mode": "blackhole",
+      "open": 4
+    },
+    {
+      "t": 139565,
+      "event": "proxy",
+      "mode": "pass for new connections; old connections stay dead"
+    },
+    {
+      "t": 260057,
+      "event": "R4",
+      "phoneShowsByItselfWithin90s": null,
+      "socketsBefore": 7,
+      "socketsAfter": [
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 8900,
+          "closedAt": 9183,
+          "framesIn": 3
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 10200,
+          "closedAt": 10201,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 12204,
+          "closedAt": 12204,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 16207,
+          "closedAt": 16207,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 24212,
+          "closedAt": 24212,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 40213,
+          "closedAt": 40214,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_6f71a96f12394652b97652e6dbe24024?access_token=…",
+          "openedAt": 134355,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ],
+      "phoneNoticedClose": false,
+      "afterUserActionMs": "not shown"
+    }
+  ],
+  "proxy": {
+    "connections": 17
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T07:08:14.603Z"
+}

@@ -13,7 +13,8 @@ import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-ex
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -35,7 +36,7 @@ const createRunContext = (input: {
       llmConfig: null,
       memberExecutionContext: input.memberExecutionContext ?? null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: "gpt-5.4-mini",
         workingDirectory: input.workingDirectory,
@@ -92,14 +93,14 @@ const createThread = (
 
 const createMemberExecutionContext = () =>
   new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity: {
       root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/ping",
       agentRunId: "ping-run-1",
     },
     collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
-    tasks: testMemberTaskCommandCapability("team-1"),
+    tasks: testMemberTaskCapability("team-1"),
   });
 
 const createSpeakApprovalParams = () => ({

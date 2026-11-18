@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // Skill update notices on a runtime without active-turn append (AC-001 next-turn class, AC-002), through the real
 // server and WebSocket with the scripted AGY transport (tests/fixtures/agy-failure-cli.mjs, case interrupt_resend:
@@ -90,7 +91,8 @@ suite("AGY skill update notice through the app WebSocket", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: (parsed.payload ?? {}) as Record<string, unknown> });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* ignore */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
@@ -129,7 +131,7 @@ suite("AGY skill update notice through the app WebSocket", () => {
     expect(messages.slice(beforeEnd).filter((m) => m.type === "TURN_STARTED").map((m) => m.payload["turn_id"]))
       .toEqual([noticeTurnId]); // the notice's own turn, right after the busy turn
     expect(replyText(beforeEnd)).toContain(`REPLY:${HEADER}`);
-    expect(replyText(beforeEnd)).toContain(`Your skill package \`notice-probe\` has been updated (${path.dirname(skillMdPath)}).\n\nChanged files:\n- SKILL.md (changed)\n`);
+    expect(replyText(beforeEnd)).toContain(`Your skill package \`notice-probe\` has been updated (\`${path.dirname(skillMdPath)}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
     await wait(1_000);
 
     // Stopped mid-turn (AGY's interrupt stops its process): a notice queued behind that turn is not lost;
@@ -198,7 +200,7 @@ suite("AGY skill update notice through the app WebSocket", () => {
     await wait(500);
     expect(count("TURN_STARTED")).toBe(startsWhileStopped + 1);
     expect(replyText(beforeContinue).startsWith(`REPLY:${HEADER}`)).toBe(true);
-    expect(replyText(beforeContinue)).toContain(`Your skill package \`notice-probe\` has been updated (${path.dirname(skillMdPath)}).\n\nChanged files:\n- SKILL.md (changed)\n`);
+    expect(replyText(beforeContinue)).toContain(`Your skill package \`notice-probe\` has been updated (\`${path.dirname(skillMdPath)}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
     expect(replyText(beforeContinue).endsWith("\n\ncontinue")).toBe(true);
     const history = await conversation();
     expect(history.filter((e) => e["kind"] === "system_task_notification" && e["senderId"] === SENDER)).toHaveLength(1);

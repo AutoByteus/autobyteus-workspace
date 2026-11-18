@@ -89,8 +89,12 @@ kotlin {
 dependencies {
     implementation("androidx.core:core:1.13.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    // The shell bridge: a web-message object only for the open node's origin (a library, not a permission).
+    implementation("androidx.webkit:webkit:1.12.1")
 
     testImplementation("junit:junit:4.13.2")
+    // The JVM unit tests run org.json for real (android.jar has only stubs): the bridge's message rules use it.
+    testImplementation("org.json:json:20240303")
 
     androidTestImplementation("androidx.test:runner:1.6.1")
     androidTestImplementation("androidx.test:core:1.6.1")

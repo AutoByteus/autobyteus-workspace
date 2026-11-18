@@ -1,10 +1,9 @@
 <template>
-  <section :class="title ? 'mt-6' : ''" :data-test="testId">
+  <section :class="title ? 'mt-6' : ''" data-test="run-members">
     <!-- An optional heading (saved runs) and "Reset all" (only when something is customized). -->
     <div v-if="title || (customizedCount && !readOnly)" class="mb-2 flex items-baseline justify-between gap-3">
       <div v-if="title" class="min-w-0">
         <h3 class="text-xs font-medium text-gray-500">{{ title }}</h3>
-        <p v-if="description" class="mt-0.5 text-xs text-gray-400" data-test="run-members-description">{{ description }}</p>
       </div>
       <button
         v-if="customizedCount && !readOnly"
@@ -47,14 +46,11 @@ import RunMemberRow from './RunMemberRow.vue'
 const props = withDefaults(defineProps<{
   nodes: readonly RunMemberNode[]
   title?: string
-  description?: string
   locked?: RunSettingFlags
   runtimeLocked?: boolean
   lockedModelsFor?: ((key: string) => readonly ChatModelOption[] | null) | null
   readOnly?: boolean
-  /** The section's `data-test` (a saved run has a second, read-only section for delegated copies). */
-  testId?: string
-}>(), { testId: 'run-members', title: '', description: '', locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, readOnly: false })
+}>(), { title: '', locked: () => ({}), runtimeLocked: false, lockedModelsFor: null, readOnly: false })
 
 const emit = defineEmits<{
   (event: 'stop', reference: NonNullable<RunMemberDelegatedFacts['stop']>): void

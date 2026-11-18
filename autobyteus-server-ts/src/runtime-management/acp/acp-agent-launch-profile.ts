@@ -1,10 +1,27 @@
-import type { InitializeResponse } from "@agentclientprotocol/sdk";
-import type { ModelInfo } from "autobyteus-ts/llm/models.js";
+/** A run's access to its agent's model provider through a provider relay: the relay's address and the run's pass. */
+export type AcpRelayAccess = Readonly<{ baseUrl: string; apiKey: string }>;
 
-/** Model and effort chosen for one agent process; both are absent for catalog discovery. */
-export type AcpLaunchSelection = Readonly<{
+/** The facts of one run's agent process launch (create, restore and reopen alike). */
+export type AcpRunLaunchRequest = Readonly<{
+  runId: string;
+  workingDirectory: string;
+  /** The run's composed instructions; an agent that keeps them in its session ignores them. */
+  instructions: string;
   model: string | null;
   reasoningEffort: string | null;
+  /** `null` when the launch profile names no provider relay. */
+  relayAccess: AcpRelayAccess | null;
+}>;
+
+/** A short catalog-discovery process: the relay's address without a pass, when the profile names a relay. */
+export type AcpDiscoveryLaunchRequest = Readonly<{ relayBaseUrl: string | null }>;
+
+/** One process launch: its arguments, its whole environment, and what the launch prepared on disk to release. */
+export type AcpLaunch = Readonly<{
+  args: readonly string[];
+  env: NodeJS.ProcessEnv;
+  /** Removes what this launch prepared; called once its process has stopped. */
+  release(): Promise<void>;
 }>;
 
 /**
@@ -14,10 +31,12 @@ export type AcpLaunchSelection = Readonly<{
 export interface AcpAgentLaunchProfile {
   /** Human-readable agent name used in errors and diagnostics. */
   readonly agentLabel: string;
+  /** The provider relay the agent's model calls go through (`null`: the agent reaches its provider itself). */
+  readonly providerRelayId: string | null;
   command(): string;
-  args(selection: AcpLaunchSelection): string[];
-  /** Child environment derived from the server environment; must not mutate `base`. */
-  env(base: NodeJS.ProcessEnv): NodeJS.ProcessEnv;
-  /** Offered models from the agent's `initialize` result, without inference. */
-  normalizeModels(initialize: InitializeResponse): ModelInfo[];
+  runLaunch(request: AcpRunLaunchRequest): Promise<AcpLaunch>;
+  discoveryLaunch(request: AcpDiscoveryLaunchRequest): Promise<AcpLaunch>;
 }
+
+/** The release of a launch that prepared nothing. */
+export const releaseNothing = async (): Promise<void> => undefined;

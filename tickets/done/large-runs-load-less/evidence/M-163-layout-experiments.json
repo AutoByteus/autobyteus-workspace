@@ -1,0 +1,62 @@
+{
+ "feedFound": true,
+ "longEls": 40,
+ "longElSample": [
+  [
+   "div.whitespace-pre-wrap.break-words.text-gray-900.leading-6|d=block|ws=pre-wrap|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.min-w-0.flex-1.pt-0.5|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.flex.items-start.gap-3.pr-8|d=flex|ws=normal|ow=break-word|wb=normal|w=617px|ff=ui-sans-serif, system-ui, sans",
+   "div.|d=block|ws=normal|ow=break-word|wb=normal|w=617px|ff=ui-sans-serif, system-ui, sans",
+   "div.|d=block|ws=normal|ow=break-word|wb=normal|w=617px|ff=ui-sans-serif, system-ui, sans",
+   "div.break-words.px-2.py-3|d=block|ws=normal|ow=break-word|wb=normal|w=633px|ff=ui-sans-serif, system-ui, sans",
+   "div.rounded-xl.bg-white|d=block|ws=normal|ow=normal|wb=normal|w=633px|ff=ui-sans-serif, system-ui, sans",
+   "div.h-full.min-h-0.overflow-y-auto.overscroll-contain|d=block|ws=normal|ow=normal|wb=normal|w=633px|ff=ui-sans-serif, system-ui, sans",
+   "div.relative.h-full.min-h-0.flex-1|d=block|ws=normal|ow=normal|wb=normal|w=633px|ff=ui-sans-serif, system-ui, sans"
+  ],
+  [
+   "p.|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.markdown-body.prose.dark:prose-invert.prose-gray.max-w-none|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.markdown-renderer-segments|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.mb-4|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.min-w-0.flex-1.pt-0.5|d=block|ws=normal|ow=break-word|wb=normal|w=537px|ff=ui-sans-serif, system-ui, sans",
+   "div.flex.items-start.gap-3.pr-8|d=flex|ws=normal|ow=break-word|wb=normal|w=617px|ff=ui-sans-serif, system-ui, sans",
+   "div.|d=block|ws=normal|ow=break-word|wb=normal|w=617px|ff=ui-sans-serif, system-ui, sans",
+   "div.|d=block|ws=normal|ow=break-word|wb=normal|w=617px|ff=ui-sans-serif, system-ui, sans"
+  ]
+ ],
+ "base": [
+  86076,
+  85406
+ ],
+ "fontArial": [
+  83,
+  45
+ ],
+ "breakAll": [
+  42802,
+  42763
+ ],
+ "wsNormal": [
+  85583,
+  85548
+ ],
+ "noLigKern": [
+  48,
+  87
+ ],
+ "displayBlock": [
+  79081,
+  79451
+ ],
+ "withoutUserBlocksCount": 20,
+ "withoutUserBlocks": [
+  43909,
+  43930
+ ],
+ "withoutMarkdownCount": 20,
+ "withoutMarkdown": [
+  42669,
+  42641
+ ]
+}

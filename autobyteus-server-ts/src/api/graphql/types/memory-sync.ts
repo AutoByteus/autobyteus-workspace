@@ -27,6 +27,9 @@ import {
   UpdateMemorySyncSourceConfigInput,
 } from "./memory-sync-schema.js";
 
+/** The status lists this many file failures; the count says how many there are. */
+const MEMORY_SYNC_STATUS_FILE_FAILURE_LIMIT = 20;
+
 const mapCredential = (credential: DomainCredentialSummary): MemoryHubCredentialSummaryGql => ({ ...credential });
 const mapImport = (summary: DomainImportSummary): MemoryImportSummaryGql => ({ ...summary });
 const mapCandidate = (candidate: DomainServerAddressCandidate): ServerAddressCandidateGql => ({ ...candidate });
@@ -37,13 +40,20 @@ const buildStatus = async (oneTimePlaintextToken?: string | null): Promise<Memor
   const publicConfig = toPublicMemorySyncConfig(config);
   const connectionInfo = await getMemoryHubConnectionInfoService().getConnectionInfo();
   let sourceState: MemorySyncSourceStateGql | null = null;
-  if (config.source.sourceNodeId && config.source.hubBaseUrl) {
-    const state = await getLocalFileMemorySyncStateStore().readState(config.source.hubBaseUrl, config.source.sourceNodeId);
+  if (config.source.memorySyncSourceId && config.source.hubBaseUrl) {
+    const state = await getLocalFileMemorySyncStateStore().readState(config.source.hubBaseUrl, config.source.memorySyncSourceId);
     sourceState = {
       jobState: state.lastJobState,
       lastSuccessfulSyncAt: state.lastSuccessfulSyncAt,
       lastError: state.lastError,
       trackedFileCount: Object.keys(state.files).length,
+      fileFailureCount: Object.keys(state.fileFailures).length,
+      fileFailures: Object.values(state.fileFailures)
+        .sort((a, b) => b.lastFailedAt.localeCompare(a.lastFailedAt))
+        .slice(0, MEMORY_SYNC_STATUS_FILE_FAILURE_LIMIT)
+        .map(({ kind, relativePath, size, reason, attempts, lastFailedAt, nextAttemptAt }) => ({
+          kind, relativePath, size, reason, attempts, lastFailedAt, nextAttemptAt,
+        })),
     };
   }
   return {
@@ -141,7 +151,7 @@ export class MemorySyncResolver {
     return await getMemorySyncConnectionTestService().testConnection({
       mode: "draft",
       hubBaseUrl: input.hubBaseUrl,
-      sourceNodeId: input.sourceNodeId,
+      memorySyncSourceId: input.memorySyncSourceId,
       token: input.token,
     });
   }

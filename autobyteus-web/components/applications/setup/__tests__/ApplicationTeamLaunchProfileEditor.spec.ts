@@ -2,6 +2,10 @@ import { computed, defineComponent } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ApplicationTeamLaunchProfileEditor from '../ApplicationTeamLaunchProfileEditor.vue'
+import type {
+  ApplicationExecutionResourceSlotDeclaration,
+  ApplicationResolvedLaunchBaselineLeaf,
+} from '@autobyteus/application-sdk-contracts'
 
 const { loadRuntimeProviderGroupsForSelectionMock, loadRuntimeCurrentModelDescriptorsMock } = vi.hoisted(() => ({
   loadRuntimeProviderGroupsForSelectionMock: vi.fn(async (runtimeKind: string) => ([
@@ -105,7 +109,7 @@ vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
   }),
 }))
 
-const slot = {
+const slot: ApplicationExecutionResourceSlotDeclaration = {
   slotKey: 'draftingTeam',
   name: 'Drafting Team',
   allowedExecutionResourceKinds: ['AGENT_TEAM'],
@@ -124,7 +128,7 @@ const slot = {
   },
 }
 
-const inheritedProfiles = [
+const inheritedProfiles: ApplicationResolvedLaunchBaselineLeaf[] = [
   {
     memberAddress: '/researcher',
     displayName: 'researcher',
@@ -151,7 +155,7 @@ const inheritedProfiles = [
       llmConfig: null,
     },
   },
-] as const
+]
 
 describe('ApplicationTeamLaunchProfileEditor', () => {
   beforeEach(() => {
@@ -171,7 +175,7 @@ describe('ApplicationTeamLaunchProfileEditor', () => {
             workspaceRootPath: '',
           },
           memberProfiles: inheritedProfiles.map((profile) => ({
-            memberAddress: profile.memberAddress,
+            memberAddress: profile.memberAddress ?? '/',
             displayName: profile.displayName,
             agentDefinitionId: profile.agentDefinitionId,
             runtimeKind: '',
@@ -286,7 +290,7 @@ describe('ApplicationTeamLaunchProfileEditor', () => {
     })
     await flushPromises()
 
-    expect(wrapper.get('[data-testid="application-stale-team-override-lock"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-stale-team-override-lock"]').exists()).toBe(true)
     expect(wrapper.emitted('update:draft')).toBeUndefined()
     expect(wrapper.emitted('readiness-change')?.at(-1)?.[0]).toEqual({
       isReady: false,

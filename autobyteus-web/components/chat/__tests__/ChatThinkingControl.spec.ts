@@ -14,9 +14,8 @@ const claudeSdkSchema = {
   thinking_enabled: { type: 'boolean', default: false },
   reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
 }
-const anthropicBudgetSchema = {
-  thinking_enabled: { type: 'boolean', default: false },
-  thinking_budget_tokens: { type: 'integer', title: 'Thinking budget tokens', default: 1024, minimum: 1024 },
+const anthropicOpus55Schema = {
+  reasoning_effort: { type: 'string', title: 'Reasoning effort', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
 }
 const openAiSchema = {
   reasoning_effort: { type: 'string', enum: ['none', 'low', 'high'], default: 'none' },
@@ -82,19 +81,14 @@ describe('ChatThinkingControl', () => {
     expect(control.emitted('update')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, reasoning_effort: 'medium' })
   })
 
-  it('shows Off · On and a budget field for a switch without efforts; a budget turns thinking on (AC-003, AC-005)', async () => {
-    const control = mountControl(anthropicBudgetSchema, { thinking_enabled: false })
+  it('offers Opus 5.5 its effort levels with Medium checked by default (claude-anthropic-effort-control AC-006)', async () => {
+    const control = mountControl(anthropicOpus55Schema, null)
+    expect(trigger(control).text()).toBe('Medium')
     await open(control)
-    const menu = control.get('[data-test="chat-thinking-menu"]')
-    expect(menu.findAll('[role="menuitemradio"]').map((item) => item.text())).toEqual(['Off', 'On'])
-    expect(menu.find('[role="separator"]').exists()).toBe(true)
-    const budget = control.get('[data-test="chat-thinking-input-thinking_budget_tokens"]')
-    await budget.setValue('4096')
-    await budget.trigger('change')
-    expect(control.emitted('update')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, thinking_budget_tokens: 4096 })
-
-    await control.setProps({ llmConfig: { thinking_enabled: true, thinking_budget_tokens: 4096 } })
-    expect(trigger(control).text()).toBe('On')
+    expect(control.find('[data-test^="chat-thinking-option-primary-"]').exists()).toBe(false)
+    expect(checked(control)).toEqual(['chat-thinking-option-reasoning_effort-medium'])
+    await control.get('[data-test="chat-thinking-option-reasoning_effort-max"]').trigger('click')
+    expect(control.emitted('update')?.at(-1)?.[0]).toEqual({ reasoning_effort: 'max' })
   })
 
   it('keeps the per-parameter menu for models without an on/off switch (AC-006)', async () => {

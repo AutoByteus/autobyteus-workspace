@@ -127,6 +127,7 @@ show_status() {
       status="$(docker inspect --format '{{.State.Status}}' "$container" 2>/dev/null || printf 'unknown')"
     fi
     printf '%-24s %-24s %-14s http://localhost:%s (%s)\n' "$name" "$container" "$status" "${BACKEND_PORT:-?}" "$image"
+    print_starter_line "$container" "$status"
     any=1
   done
   shopt -u nullglob
@@ -152,6 +153,58 @@ stop_nodes() {
   [[ "$any" == "1" ]] || fail "No matching managed Docker node was found."
 }
 
+# The node's local control socket answers "setup-code" with a fresh one-time code (node access model NA-5). The
+# client runs inside the container (docker exec); the code is printed here only, never written to a file or a log.
+SETUP_CODE_SOCKET="/home/autobyteus/data/node-access/local-control.sock"
+SETUP_CODE_CLIENT_JS='const s=require("net").createConnection(process.argv[1],()=>s.write("setup-code\n"));s.setTimeout(5000,()=>{console.error("the node did not answer within 5 seconds");process.exit(1)});let d="";s.setEncoding("utf8");s.on("data",(c)=>{d+=c});s.on("end",()=>{let r={};try{r=JSON.parse(d)}catch{}if(!r.setupCode){console.error(r.error||"no setup code");process.exit(1)}console.log(r.setupCode+" "+r.expiresAt)});s.on("error",(e)=>{console.error(e.message);process.exit(1)})'
+SETUP_CODE_WAIT_SECONDS=90
+
+# One attempt is bound by the client's own 5 s socket timeout; the wait itself is bound by wall-clock time, not
+# attempt count (one attempt in progress may finish past the deadline). A waiting message prints as soon as the
+# first attempt fails, then at least every 10 s with the elapsed time; nothing prints when the first attempt answers.
+print_setup_code_of_running_node() {
+  local node_name="$1" file container answer start deadline elapsed last_message_at
+  file="$(state_path_for "$node_name")"
+  load_state "$file"
+  container="${CONTAINER_NAME:-$node_name}"
+  start=$SECONDS
+  deadline=$((start + SETUP_CODE_WAIT_SECONDS))
+  last_message_at=-1
+  while true; do
+    if answer="$(docker exec "$container" node -e "$SETUP_CODE_CLIENT_JS" "$SETUP_CODE_SOCKET" 2>&1)" && [[ -n "$answer" ]]; then
+      printf '\nSetup code for %s: %s\n' "$node_name" "${answer%% *}"
+      printf 'Valid once, until %s. In the AutoByteus desktop app, open Nodes, and enter it at %s (http://localhost:%s).\n' \
+        "${answer#* }" "$node_name" "${BACKEND_PORT:-?}"
+      return 0
+    fi
+    elapsed=$((SECONDS - start))
+    if [[ "$last_message_at" == "-1" ]]; then
+      log "Waiting for ${node_name} to start (up to ${SETUP_CODE_WAIT_SECONDS} seconds)..." >&2
+      last_message_at=$elapsed
+    elif (( elapsed - last_message_at >= 10 )); then
+      log "Still waiting for ${node_name} to start (${elapsed} s)..." >&2
+      last_message_at=$elapsed
+    fi
+    if (( SECONDS >= deadline )); then
+      fail "${node_name} did not answer with a setup code within ${SETUP_CODE_WAIT_SECONDS} seconds (last attempt: ${answer}). Check: autobyteus-docker logs --name ${node_name}"
+    fi
+    sleep 1
+  done
+}
+
+# setup-code: applies the current launcher configuration first (a node created by an older launcher is recreated
+# once with its named volumes and port, design M-8a), then asks the running node for a code. start_node's own
+# progress (image check/pull, recreate/start) goes to standard error here, and its URL block is skipped (the setup
+# code message below already names the node's backend URL); setup-code's own standard output holds only the code.
+print_setup_code() {
+  local node_name="$1" file
+  file="$(state_path_for "$node_name")"
+  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run new-container first."
+  load_state "$file"
+  start_node "$node_name" "${IMAGE_REF:-$(image_ref_for "$DEFAULT_IMAGE" "$DEFAULT_TAG")}" 0 >&2
+  print_setup_code_of_running_node "$node_name"
+}
+
 show_logs() {
   local node_name="$1"; shift
   local file container
@@ -168,7 +221,7 @@ show_logs() {
 }
 
 main() {
-  local cmd="${1:-help}" stop_all=0 name_arg="" name_seen=0 name_option_count=0 tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" image_ref_override_explicit=0 extra=() destroy_node_name=""
+  local cmd="${1:-help}" allow_local_network=0 stop_all=0 name_arg="" name_seen=0 name_option_count=0 tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" image_ref_override_explicit=0 extra=() destroy_node_name="" version=""
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
   shift || true
   while [[ $# -gt 0 ]]; do
@@ -177,18 +230,22 @@ main() {
       --name) [[ $# -gt 1 && "$2" != -* ]] || fail "--name requires a value"; name_arg="$2"; name_seen=1; name_option_count=$((name_option_count + 1)); shift 2 ;;
       --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; image_ref_override_explicit=1; shift 2 ;;
       --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; image_ref_override_explicit=1; shift 2 ;;
+      --version) [[ $# -gt 1 && "$2" != -* ]] || fail "--version requires a value"; version="$2"; shift 2 ;;
+      --allow-local-network) allow_local_network=1; shift ;;
       -h|--help) usage; return ;;
       --) shift; extra+=("$@"); break ;;
-      *) if [[ -z "$name_arg" && "$cmd" =~ ^(urls|ports|status|ps|stop|logs)$ ]]; then name_arg="$1"; else extra+=("$1"); fi; shift ;;
+      *) if [[ -z "$name_arg" && "$cmd" =~ ^(urls|ports|status|ps|stop|logs|setup-code)$ ]]; then name_arg="$1"; else extra+=("$1"); fi; shift ;;
     esac
   done
 
   local node_name image_ref workspace_action
 
   case "$cmd" in
-    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs) ;;
+    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs|update|setup-code) ;;
     *) usage; exit 1 ;;
   esac
+  [[ -z "$version" || "$cmd" == "update" ]] || fail "--version applies only to update."
+  [[ "$allow_local_network" != "1" || "$cmd" == "new-container" ]] || fail "--allow-local-network applies only to new-container."
 
   case "$cmd" in
     new-container|upgrade|destroy|reset|storage)
@@ -222,6 +279,7 @@ main() {
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown new-container option(s): ${extra[*]}"
       [[ "$stop_all" != "1" ]] || fail "new-container creates one node and does not accept --all."
       [[ -z "$name_arg" ]] || fail "new-container always chooses the next indexed name; do not pass --name."
+      REQUESTED_ALLOW_LOCAL_NETWORK="$allow_local_network"
       create_new_container "$image_ref"
       ;;
     upgrade)
@@ -280,7 +338,18 @@ main() {
       ;;
     status|ps) if [[ -n "$name_arg" ]]; then show_status "$node_name"; else show_status ""; fi ;;
     stop) stop_nodes "$node_name" "$stop_all" ;;
+    update)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown update option(s): ${extra[*]}"
+      [[ "$stop_all" != "1" || -z "$name_arg" ]] || fail "update accepts --all or --name <node>, not both."
+      [[ "$image_ref_override_explicit" != "1" ]] || fail "update keeps each node's image; use --version to choose the server version."
+      update_nodes "$node_name" "$stop_all" "$version"
+      ;;
     logs) show_logs "$node_name" "${extra[@]}" ;;
+    setup-code)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown setup-code option(s): ${extra[*]}"
+      [[ "$stop_all" != "1" ]] || fail "setup-code is for one node; use --name <node>."
+      print_setup_code "$node_name"
+      ;;
     *) usage; exit 1 ;;
   esac
 }

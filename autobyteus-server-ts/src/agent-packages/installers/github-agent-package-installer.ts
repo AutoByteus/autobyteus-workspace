@@ -188,6 +188,21 @@ export class GitHubAgentPackageInstaller {
     }
   }
 
+  /**
+   * Downloads the repository at `revision` (a commit, from codeload, outside the API quota) and
+   * extracts it under `targetDir`; returns the extracted package root. The caller owns `targetDir`.
+   */
+  async downloadRevision(source: GitHubRepositorySource, revision: string, targetDir: string): Promise<string> {
+    const extractionDir = path.join(targetDir, "extracted");
+    await fsPromises.mkdir(extractionDir, { recursive: true });
+    const archivePath = await this.getDownloadFileFromUrl()(
+      buildGitHubRepositoryArchiveUrlForRef(source.owner, source.repo, revision),
+      path.join(targetDir, "download", source.installKey),
+    );
+    await this.extractArchive(archivePath, extractionDir);
+    return this.resolveExtractedRoot(extractionDir);
+  }
+
   private async createStagingDirectory(installKey: string): Promise<string> {
     const parentDir = path.join(
       this.getConfig().getAppDataDir(),

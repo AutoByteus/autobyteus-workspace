@@ -1,0 +1,172 @@
+{
+  "case": "native-standalone-host-shutdown",
+  "date": "2026-11-10T11:15:55.138Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-Eyw4aC",
+  "steps": [
+    {
+      "step": "host IPC",
+      "value": {
+        "kind": "ready",
+        "url": "http://127.0.0.1:62825",
+        "model": "shutdown-fixture:lmstudio@127.0.0.1:62821"
+      },
+      "at": "2026-11-10T11:15:57.017Z"
+    },
+    {
+      "step": "application start",
+      "value": {
+        "result": {
+          "bindingId": "c261315f-9d90-4579-abe9-fee308f27511",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-1",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-11-10T11:15:57.219Z",
+          "updatedAt": "2026-11-10T11:15:57.219Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_18d1af9f916340398f16abf0627837f1",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        }
+      },
+      "at": "2026-11-10T11:15:57.272Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 1,
+        "turn": 1,
+        "invoke": true,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file"
+        ]
+      },
+      "at": "2026-11-10T11:15:57.281Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 2,
+        "turn": 1,
+        "invoke": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file"
+        ]
+      },
+      "at": "2026-11-10T11:15:57.554Z"
+    },
+    {
+      "step": "application events",
+      "value": {
+        "result": [
+          {
+            "sequence": 1,
+            "observedAt": "2026-11-10T11:15:57.270Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "c261315f-9d90-4579-abe9-fee308f27511",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_18d1af9f916340398f16abf0627837f1",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          },
+          {
+            "sequence": 2,
+            "observedAt": "2026-11-10T11:15:57.569Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "c261315f-9d90-4579-abe9-fee308f27511",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_18d1af9f916340398f16abf0627837f1",
+              "displayName": null
+            },
+            "event": {
+              "type": "TEXT_DELTA",
+              "delta": "Owned work submitted."
+            }
+          },
+          {
+            "sequence": 3,
+            "observedAt": "2026-11-10T11:15:57.569Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "c261315f-9d90-4579-abe9-fee308f27511",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_18d1af9f916340398f16abf0627837f1",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_COMPLETED"
+            }
+          }
+        ]
+      },
+      "at": "2026-11-10T11:15:57.585Z"
+    },
+    {
+      "step": "application end",
+      "value": {
+        "result": {
+          "bindingId": "c261315f-9d90-4579-abe9-fee308f27511",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-1",
+          "status": "TERMINATED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-11-10T11:15:57.219Z",
+          "updatedAt": "2026-11-10T11:15:58.344Z",
+          "terminatedAt": "2026-11-10T11:15:58.344Z",
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_18d1af9f916340398f16abf0627837f1",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        }
+      },
+      "at": "2026-11-10T11:15:58.355Z"
+    },
+    {
+      "step": "host IPC",
+      "value": {
+        "kind": "closed"
+      },
+      "at": "2026-11-10T11:15:58.368Z"
+    }
+  ],
+  "hostPid": 64485,
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: ordinary agent end retains previews\n\nnull !== 426\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-background/autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs:89:124\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+  "childrenAbsent": true,
+  "rootRemoved": true
+}

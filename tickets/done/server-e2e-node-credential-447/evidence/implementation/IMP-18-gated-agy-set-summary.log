@@ -1,0 +1,88 @@
+# IMP-18 deterministic gated set (API-10's command, every RUN_AGY_FAILURE_E2E suite,       60 files), scripted AGY, no provider; also D13 load attempt 2; commit 6ffb8f3bcb (code = 5abf8591db); macOS, Node v22.23.1; 2026-11-10T09:29:34Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch $(grep -rlE RUN_AGY_FAILURE_E2E tests/e2e | sort)
+# Excerpt of IMP-18-gated-agy-set.full.log (kept in the worktree, not committed). grep NODE_CREDENTIAL_REQUIRED|MCP_GATEWAY_TOKEN_REQUIRED: 0; grep own_/mcpg_ secrets: 0.
+
+## Summary
+ Test Files  2 failed | 56 passed | 2 skipped (60)
+      Tests  2 failed | 291 passed | 31 skipped (324)
+   Duration  2029.52s (transform 10.97s, setup 1.59s, import 135.73s, tests 1885.48s, environment 3ms)
+
+## Failures
+ FAIL  tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
++   "org: Error: Timed out waiting for org: til_worker_4777ff_06b89d96c12e4c2b8288104d343e8da0 idle
+Error: assignment refused (offset 7): {"delegated":false,"message":"Task existing-copy-race-ca8cd4d0-4 was given to the task agent, but the message with its work was not delivered (The task agent exc_worker_ab91ed_17fa708a305b442198ab1b34813e2626 could not continue with its conversation: Task TeamRun 'exc_squad_ab91ed_9077b2e1b9104075ab8289320d3d6d82' is already active or reserved.). Message the task agent's run id exc_worker_ab91ed_17fa708a305b442198ab1b34813e2626, or set Task existing-copy-race-ca8cd4d0-4 to CANCELLED, or delegate it to a new task agent."}
+
+## SR-002 files and DCM-009
+ ✓ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests) 4577ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 3791ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3080ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 25492ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 14045ms
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1023ms
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1185ms
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1036ms
+
+## Every file line
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 13765ms
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test) 1983ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2120ms
+ ✓ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests) 4577ms
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts (13 tests | 13 skipped)
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 395542ms
+ ✓ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts (7 tests) 4834ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 12190ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 3184ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 5727ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 16999ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 3791ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3080ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 25492ms
+ ↓ tests/e2e/projects/delegated-copy-project-folder-live.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 14045ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 18361ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 96448ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7845ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 13707ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1525ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 3765ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 10410ms
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 8302ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 3031ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 2036ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 5651ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 75787ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 11309ms
+ ❯ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 failed) 164643ms
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 1 failed | 2 skipped) 110222ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 29674ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 33764ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 12228ms
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (42 tests) 445525ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 4517ms
+ ✓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests) 1456ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 1150ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 783ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 2184ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 9464ms
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 8890ms
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 7939ms
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 922ms
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 1755ms
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 2495ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 5725ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 76699ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 24576ms
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 19554ms
+ ✓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test) 1388ms
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (8 tests | 6 skipped) 1441ms
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests) 66095ms
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 5 skipped) 1230ms
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (5 tests) 12404ms
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests) 32713ms
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (9 tests) 33639ms
+ ✓ tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts (1 test) 5264ms
+ ✓ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test) 650ms
+ ✓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 987ms
+ ❯ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts:468:22
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:770:17

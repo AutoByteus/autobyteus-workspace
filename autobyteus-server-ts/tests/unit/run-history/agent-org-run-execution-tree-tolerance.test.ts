@@ -8,11 +8,13 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
-/** REQ-018 for AgentOrg trees: read tolerantly (AC-020), write exactly (AC-021). */
+/**
+ * REQ-018 for AgentOrg trees: read tolerantly (AC-020), write exactly (AC-021). An organization run holds its own parts
+ * only: an old `taskExecutions` list is read as an unknown field and never written (autobyteus-461, E9).
+ */
 const TOP_LEVEL_KEYS = ["applicationBinding", "archivedAt", "createdAt", "handoffs", "rootOrg", "subjectKind"];
-const TASK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "platformAgentRunId", "source", "startedAt"];
+const ROOT_ORG_KEYS = ["address", "defaultLaunchConfiguration", "members", "orgDefinitionId", "orgDefinitionName", "orgRunId"];
 const keys = (value: unknown) => Object.keys(value as object).sort();
-const withoutDelegator = (list: readonly string[]) => list.filter((key) => key !== "delegatorAgentRunId");
 
 const currentOrg = () => testAgentOrgExecutionTree({
   orgRunId: "org-run",
@@ -27,77 +29,46 @@ const currentOrg = () => testAgentOrgExecutionTree({
   ],
 });
 
-const taskAgent = (extra: Record<string, unknown> = {}) => ({
-  address: "/director", agentRunId: "task-director-run", platformAgentRunId: null,
-  startedAt: "2026-09-01T00:00:00.000Z",
-  source: { kind: "agent", agentDefinitionId: "director", launchConfiguration: testOrgLaunchConfiguration("/workspace") }, ...extra,
-});
-
-const withRootTasks = (taskExecutions: readonly Record<string, unknown>[], extra: Record<string, unknown> = {}) => {
-  const tree = currentOrg();
-  return { ...tree, ...extra, rootOrg: { ...tree.rootOrg, taskExecutions } };
+const oldTask = {
+  address: "/director", agentRunId: "task-director-run", platformAgentRunId: null, startedAt: "2026-09-01T00:00:00.000Z",
+  source: { kind: "agent", agentDefinitionId: "director", launchConfiguration: testOrgLaunchConfiguration("/workspace") },
 };
 
-/** The released Org tree V1 shape: `schemaVersion: 1`, `settledAt`, no delegator. */
+/** A tree as earlier releases wrote it: `schemaVersion`, and the lists of hosted copies on the root and its team. */
 const releasedOrg = () => {
-  const tree = withRootTasks([taskAgent({ settledAt: null })], { schemaVersion: 1 });
+  const tree = currentOrg();
   const [director, team] = tree.rootOrg.members;
-  return {
-    ...tree,
-    rootOrg: {
-      ...tree.rootOrg,
-      members: [director, { ...team, taskExecutions: [taskAgent({ address: "/team/lead", agentRunId: "team-task-run", settledAt: "2026-09-02T00:00:00.000Z" })] }],
-    },
-  };
+  return { ...tree, schemaVersion: 1, rootOrg: { ...tree.rootOrg, taskExecutions: [{ ...oldTask, settledAt: null }],
+    members: [director, { ...team, taskExecutions: [{ ...oldTask, address: "/team/lead", agentRunId: "team-task-run" }] }] } };
 };
 
 describe("AgentOrgRun execution tree tolerant reading and exact writing", () => {
-  it("loads the released V1 shape, unknown fields and a present schemaVersion, keeping only current fields", () => {
-    for (const candidate of [
-      releasedOrg(),
-      { ...currentOrg(), schemaVersion: 2, revision: 3 },
-      withRootTasks([taskAgent({ delegatorAgentRunId: "team-lead-run", extra: true })]),
-    ]) {
+  it("loads an earlier shape, unknown fields and a present schemaVersion, keeping only current fields", () => {
+    for (const candidate of [releasedOrg(), { ...currentOrg(), schemaVersion: 2, revision: 3 }]) {
       const tree = validateAgentOrgRunExecutionTreePayload(candidate, "org-run");
       expect(keys(tree)).toEqual(TOP_LEVEL_KEYS);
-      expect(JSON.stringify(tree)).not.toMatch(/schemaVersion|settledAt|revision|extra/);
+      expect(keys(tree.rootOrg)).toEqual(ROOT_ORG_KEYS);
+      expect(JSON.stringify(tree)).not.toMatch(/schemaVersion|settledAt|revision|taskExecutions/);
     }
-    const released = validateAgentOrgRunExecutionTreePayload(releasedOrg(), "org-run");
-    expect(released.rootOrg.taskExecutions.map(keys)).toEqual([withoutDelegator(TASK_AGENT_KEYS)]);
   });
 
-  it("rejects a missing required field, a wrong subject kind and an unresolvable delegator", () => {
+  it("rejects a missing required field and a wrong subject kind", () => {
     const { rootOrg: _rootOrg, ...withoutRoot } = currentOrg();
     expect(() => validateAgentOrgRunExecutionTreePayload(withoutRoot)).toThrow("missing required field(s): rootOrg");
     expect(() => validateAgentOrgRunExecutionTreePayload({ ...currentOrg(), subjectKind: "agent_team" }))
       .toThrow("subjectKind must be 'agent_org'");
-    expect(() => validateAgentOrgRunExecutionTreePayload(withRootTasks([taskAgent({ delegatorAgentRunId: "ghost-run" })])))
-      .toThrow("delegator 'ghost-run' is not an AgentRun in this tree");
   });
 
-  it("writes the exact current shape: links in the tree (root and configured team), facts in own files, the delegator on new children", async () => {
+  it("writes the exact current shape and reads back the same tree", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-tree-exact-"));
     const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-run");
-    const LINK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "startedAt"];
     try {
-      const loaded = validateAgentOrgRunExecutionTreePayload(releasedOrg(), "org-run");
-      const next = {
-        ...loaded,
-        schemaVersion: 2,
-        rootOrg: {
-          ...loaded.rootOrg,
-          taskExecutions: [...loaded.rootOrg.taskExecutions, taskAgent({ agentRunId: "new-run", delegatorAgentRunId: "director-run" })],
-        },
-      } as never;
       const store = new AgentOrgRunExecutionTreeStore();
-      await store.write(dir, next);
+      await store.write(dir, { ...releasedOrg() } as never);
       const written = JSON.parse(await fs.readFile(getAgentOrgRunExecutionTreePath(dir), "utf8")) as Record<string, any>;
       expect(keys(written)).toEqual(TOP_LEVEL_KEYS);
-      expect(written.rootOrg.taskExecutions.map(keys)).toEqual([withoutDelegator(LINK_AGENT_KEYS), LINK_AGENT_KEYS]);
-      expect(written.rootOrg.members[1].taskExecutions.map(keys)).toEqual([withoutDelegator(LINK_AGENT_KEYS)]);
-      expect(JSON.stringify(written)).not.toMatch(/schemaVersion|settledAt/);
-      // Composing the links with the own files gives back today's records exactly.
-      expect(await store.read(dir, "org-run")).toEqual(validateAgentOrgRunExecutionTreePayload(next, "org-run"));
+      expect(JSON.stringify(written)).not.toMatch(/schemaVersion|settledAt|taskExecutions/);
+      expect(await store.read(dir, "org-run")).toEqual(validateAgentOrgRunExecutionTreePayload(currentOrg(), "org-run"));
     } finally {
       await fs.rm(memoryDir, { recursive: true, force: true });
     }

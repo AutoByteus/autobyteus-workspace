@@ -1,0 +1,10 @@
+=== electron-server-specs
+ Test Files  14 passed (14)
+      Tests  85 passed (85)
+exit=0
+=== web-typecheck
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+=== server-store-spec
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

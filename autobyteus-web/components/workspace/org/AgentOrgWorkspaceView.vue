@@ -32,7 +32,7 @@
         </div>
       </div>
     </template>
-    <div v-else-if="configurationTarget && center.isConfigMode" class="flex h-full min-h-0 flex-col bg-white" data-test="agent-org-run-config-editor">
+    <div v-else-if="center.isConfigMode" class="flex h-full min-h-0 flex-col bg-white" data-test="agent-org-run-config-editor">
       <div class="flex items-center justify-between border-b border-gray-200 px-4 py-2">
         <h3 class="truncate text-sm font-semibold text-gray-800">{{ t('workspace.agentOrg.runConfig.orgLabel') }}</h3>
         <button type="button" data-test="agent-org-config-back-to-events"
@@ -42,7 +42,7 @@
           <Icon icon="heroicons:arrow-left-20-solid" class="h-4 w-4" />
         </button>
       </div>
-      <ExistingRunConfigEditor :target="{ kind: 'agent_org', orgRunId: configurationTarget.root.orgRunId }" />
+      <ExistingRunConfigEditor :target="{ kind: 'agent_org', orgRunId: target.root.orgRunId }" />
     </div>
     <AgentWorkspaceSurface
       v-else-if="target.kind === 'agent_org_direct_agent' || target.kind === 'agent_org_task_agent'"
@@ -71,6 +71,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { Icon } from '@iconify/vue'
 import { useActiveContextStore } from '~/stores/activeContextStore'
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import TeamWorkspaceSurface from '~/components/workspace/team/TeamWorkspaceSurface.vue'
 import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceRecoveryNotice.vue'
@@ -80,6 +82,8 @@ import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 const route = useRoute()
 const router = useRouter()
 const active = useActiveContextStore()
+const orgContexts = useAgentOrgContextsStore()
+const runTrees = useRunTreeStore()
 const center = useWorkspaceCenterViewStore()
 const runStart = useRunStart()
 const { t } = useLocalization()
@@ -103,9 +107,6 @@ const target = computed(() => {
 const targetIdentity = computed(() => target.value
   ? `${target.value.root.orgRunId}\u0000${target.value.address}\u0000${target.value.context.state.runId}`
   : null)
-const configurationTarget = computed(() => target.value
-  && (target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')
-  ? target.value : null)
 const open = () => {
   if (orgRunId.value) void active.inspectAgentOrg(orgRunId.value).catch(() => undefined)
 }
@@ -113,16 +114,16 @@ const selectRouteExecution = () => {
   if (!orgRunId.value) return
   const agentRunId = String(route.query.agentRunId || '')
   const address = String(route.query.memberAddress || '')
-  if (agentRunId) {
-    const identity = context.value?.index.agents.get(agentRunId)
-    if (identity && address && identity.address !== address) {
-      active.selectAgentOrg(orgRunId.value, null)
-      return
-    }
-    active.selectAgentOrg(orgRunId.value, { kind: 'agent_execution', agentRunId })
-  } else if (address) active.selectAgentOrg(orgRunId.value, address)
+  // An agent of the Org, or a run it delegated (its tree row, rule 2; CR-461-102).
+  if (agentRunId) orgContexts.selectRouteAgent(orgRunId.value, agentRunId, address)
+  else if (address) active.selectAgentOrg(orgRunId.value, address)
 }
 watch([() => route.query.agentRunId, () => route.query.memberAddress, context], selectRouteExecution, { immediate: true })
+// A delegated run the route names opens once the Org's tree has its row (its tree may arrive after the view).
+watch(() => runTrees.rowsOf({ kind: 'agent_org', runId: orgRunId.value }), () => {
+  const agentRunId = String(route.query.agentRunId || '')
+  if (agentRunId && !context.value?.index.agents.has(agentRunId)) selectRouteExecution()
+})
 /** ＋ opens the Org launch page prefilled from this run (REQ-013). */
 const openNewOrgRun = () => {
   const source = context.value?.executionTree.rootOrg
@@ -130,10 +131,10 @@ const openNewOrgRun = () => {
   center.showChat()
   void runStart.copyOrgRun(source.orgRunId, source.orgDefinitionId)
 }
-const headerActionsAvailable = computed(() => Boolean(target.value && (target.value.access === 'live'
-  || target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')))
+const headerActionsAvailable = computed(() => Boolean(target.value))
+/** Every focused agent of the Org has its own settings (autobyteus-366): a member, or a copy of the Org's. */
 const openMemberConfiguration = () => {
-  if (configurationTarget.value) center.showConfig()
+  if (target.value) center.showConfig()
 }
 
 onMounted(() => {
@@ -151,7 +152,11 @@ watch(() => context.value?.phase, (phase) => {
     void router.replace({ path: '/workspace', query: { ...route.query, mode } })
   }
 }, { immediate: true })
+// Settings stay open across focus changes, with their unsaved edits (REQ-005); with nothing focused they close. A run
+// the Org delegated opens as its own run (autobyteus-461 rule 2): while it binds, the Org has its tree row picked but no
+// target yet, and that moment is a focus change, not "nothing focused" (CR-461-095, D-IMP-1; the pick is the store's
+// since SR-084, AFS-002).
 watch(targetIdentity, (nextIdentity, previousIdentity) => {
-  if (previousIdentity && nextIdentity !== previousIdentity) center.showChat()
+  if (previousIdentity && !nextIdentity && !context.value?.selectedTarget() && !orgContexts.selectedRowKey(orgRunId.value)) center.showChat()
 })
 </script>

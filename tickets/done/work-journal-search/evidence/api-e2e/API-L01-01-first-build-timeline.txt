@@ -1,0 +1,27 @@
+# API-L01: first build on the real-size memory copy, desktop Memory page (Index now clicked at 2026-10-26T17:22:57.290Z)
+# Instance iso-53567-504c (packaged build of 06fdc1306a = reviewed source 41501c5a41 + one test); data root /private/tmp/wjs-api/root
+# Data: APFS clone of /tmp/wjs-copy/memory (made 2026-10-21): 3,680 run folders with raw traces, 7.7 GB; every work_journal/ folder removed first, so all journals were generated
+# Sampler: probes/API-PROBE-index-sampler.mjs <graphql> <out> 2000 … --search "domain updater" (memoryIndexStatus every 2 s; one page-equivalent search per sample once the Text index has content)
+# Before the click (checked 17:20–17:22): 0 work_journal folders; Search box disabled ('Index your memory to search it…'); Index tab 'Not indexed yet', 4 steps 'waiting', 'Index now'
+
+## Step transitions (first sample showing each state)
+2026-10-26T17:22:55.605Z load 56.7 NOT_INDEXED ['FIND_RUNS:WAITING:0/0', 'JOURNALS:WAITING:0/0', 'TEXT_INDEX:WAITING:0/0', 'MEANING_INDEX:WAITING:0/0'] textHasContent False 
+2026-10-26T17:22:57.632Z load 56.7 BUILDING ['FIND_RUNS:DONE:3680/3680', 'JOURNALS:RUNNING:0/3680', 'TEXT_INDEX:WAITING:0/0', 'MEANING_INDEX:WAITING:0/0'] textHasContent False 
+2026-10-26T17:24:48.931Z load 18.4 BUILDING ['FIND_RUNS:DONE:3680/3680', 'JOURNALS:DONE:3680/3680', 'TEXT_INDEX:RUNNING:0/0', 'MEANING_INDEX:WAITING:0/0'] textHasContent False 
+2026-10-26T17:26:26.989Z load 51.4 READY ['FIND_RUNS:DONE:3680/3680', 'JOURNALS:DONE:3680/3680', 'TEXT_INDEX:DONE:7426/7426', 'MEANING_INDEX:DONE:0/7426'] textHasContent True search: 159 ms; coverage: The meaning index is loading: these results are by words only.
+
+## Durations from the click
+Journals step done: first sample 17:24:48.9 (1 min 52 s after the click)
+Search by words available (textIndexHasContent true): first sample 17:24:51.115
+Text index done (state READY, Meaning index embedding in the background): first sample 17:26:27.0 (3 min 30 s after the click)
+
+## Host load average (1 min) during steps 1–3: 16.7 – 56.7
+
+## Meaning index (background), from the second sampler file too (/private/tmp/wjs-api/L01-status-2.jsonl, 5 s)
+Text index done / meaning embedding from 2026-10-26T17:26:26.989Z MEANING_INDEX:DONE:0/7426
+Meaning index complete 2026-10-26T18:54:56.240Z MEANING_INDEX:DONE:7429/7429 load [8, 9.5, 12.2]
+wall 88.5 min; host-sleep gaps (sampler silent > 30 s): [('17:51:57', '18:08:30', 993), ('18:09:31', '18:25:04', 932), ('18:25:49', '18:41:53', 964)]
+awake time (sum of sampler gaps ≤ 30 s): 40.3 min
+Host sleep confirmed by pmset -g log (DarkWake from Deep Idle entries); caffeinate -i -s -w <instance pid> held from 18:42 UTC.
+
+## AC-008 summary: journals 1 min 52 s (≤ 5 min); text 3 min 30 s (≤ 10 min); meaning 88.5 min wall / about 40 min awake (≤ 2 h); progress visible on the Memory page throughout (API-L01-02)

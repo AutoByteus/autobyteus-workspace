@@ -1,0 +1,25 @@
+# IMP-02 reproduce-416.sh after the fix
+# Command: bash tickets/in-progress/node-web-page-and-file-security/probes/reproduce-416.sh <tmp dir> (after pnpm -C autobyteus-server-ts build)
+# Commit: da207045a5 (server dist built with pnpm -C autobyteus-server-ts build from the working tree whose src equals da207045a5)
+# Environment: macOS (Darwin 25.5.0), node v22.23.1, isolated node on 127.0.0.1:<free port>, own temp data root, AUTOBYTEUS_ALLOWED_ORIGINS=http://127.0.0.1:3000
+# Date: 2026-11-07
+
+## results.txt
+R1a rebinding POST /graphql (Host+Origin evil.example) | status=403 | code=REMOTE_ACCESS_HOST_REFUSED | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R1b rebinding same-origin GET file (Host evil.example, no Origin) | status=403 | code=REMOTE_ACCESS_HOST_REFUSED | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R1c control: foreign Origin, real Host (refused since 403) | status=403 | code=REMOTE_ACCESS_ORIGIN_REFUSED | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2a localhost:5173 page POST /graphql | status=403 | code=REMOTE_ACCESS_ORIGIN_REFUSED | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2b 127.0.0.1:8080 page POST /graphql | status=403 | code=REMOTE_ACCESS_ORIGIN_REFUSED | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2d control: configured origin 127.0.0.1:3000 POST /graphql (listed in AUTOBYTEUS_ALLOWED_ORIGINS) | status=200 | code=none | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2c localhost:5173 page POST /mcp/gateway | status=403 | code=none | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R3a workspace content page.html | status=200 | code=none | type=text/html | csp=sandbox allow-scripts | nosniff=nosniff
+R3b workspace content pic.svg | status=200 | code=none | type=image/svg+xml | csp=sandbox allow-scripts | nosniff=nosniff
+R3c workspace content doc.pdf | status=200 | code=none | type=application/pdf | csp=sandbox allow-scripts | nosniff=nosniff
+R3d workspace static page.html (417 preview route) | status=200 | code=none | type=text/html | csp=sandbox allow-scripts | nosniff=nosniff
+
+## Refusal lines from the node log (grep "Remote Access request refused" server.log); credential-pattern matches in the whole log: 0
+Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /graphql host evil.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /rest/workspaces/agent_ws_79f4711ddbbefbcd8f931992eea2fdcd4e415ee5f832d1f9e7b8502377bedd35/content?path=page.html host evil.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://evil.example
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://localhost:5173
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://127.0.0.1:8080

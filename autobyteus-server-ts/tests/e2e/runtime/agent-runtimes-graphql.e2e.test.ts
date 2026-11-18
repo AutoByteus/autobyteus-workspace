@@ -1,7 +1,7 @@
 /**
  * Settings → Agent Runtimes through the real GraphQL API (ticket runtime-lifecycle-review).
  *
- * Purpose: the page's server contract on a test-owned studio server reached over HTTP — the four rows, independent
+ * Purpose: the page's server contract on a test-owned studio server reached over HTTP — the five rows, independent
  * per-runtime checks (one vendor source failing, one slow), Update (success with progress and the kept re-check,
  * exit 0 without a newer version, failure with Try again), Sign in (success, Cancel, time-out with a CLI that
  * ignores SIGTERM), refusals with their codes, Codex with no OpenAI sign-in required (DEC-008), a runtime installed
@@ -25,7 +25,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
-import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { initializeRuntimeLoggerBootstrap } from "../../../src/logging/runtime-logger-bootstrap.js";
 import type { LoggingConfig } from "../../../src/config/logging-config.js";
@@ -34,6 +33,7 @@ import {
   type AgentRuntimeRow,
 } from "../helpers/agent-runtimes-e2e-harness.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const SHORT_OPERATION_TIMEOUT_MS = 6_000;
 const realTimeout = vi.hoisted(() => ({ value: 0 }));
@@ -48,6 +48,9 @@ const fake = await vi.hoisted(async () => {
   const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
   // Grok starts "not installed": its command points at a file that does not exist yet.
   const prepared = prepareFakeRuntimes({ label: "agent-runtimes-e2e", grokInstalled: false });
+  // DeepSeek Harness (the fifth row) is not installed here, whatever `dsh` this machine has: its own suites cover it.
+  const previousDsh = process.env.DEEPSEEK_HARNESS_COMMAND;
+  process.env.DEEPSEEK_HARNESS_COMMAND = `${prepared.root}/not-installed/dsh`;
   // The server reads its sign-in browser fact once from its environment: give it a browser, as a Docker node has.
   const previousBrowser = process.env.BROWSER;
   process.env.BROWSER = "/usr/local/bin/open-vnc-browser-url.sh";
@@ -55,6 +58,7 @@ const fake = await vi.hoisted(async () => {
     ...prepared,
     dispose: () => {
       if (previousBrowser === undefined) delete process.env.BROWSER; else process.env.BROWSER = previousBrowser;
+      if (previousDsh === undefined) delete process.env.DEEPSEEK_HARNESS_COMMAND; else process.env.DEEPSEEK_HARNESS_COMMAND = previousDsh;
       prepared.dispose();
     },
   };
@@ -64,6 +68,7 @@ const CODEX = "codex_app_server";
 const CLAUDE = "claude_agent_sdk";
 const AGY = "antigravity_cli";
 const GROK = "grok_build";
+const DSH = "deepseek_harness";
 const LOGGING: LoggingConfig = {
   pinoLogLevel: "trace", httpAccessLogMode: "all", includeNoisyHttpAccessRoutes: true, scopedLogLevelOverrides: [],
 } as LoggingConfig;
@@ -80,7 +85,12 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
   const row = async (kind: string): Promise<AgentRuntimeRow> => (await client.rows())[kind]!;
   const waitRow = async (kind: string, label: string, predicate: (row: AgentRuntimeRow) => boolean, ms = 20_000) => {
     let last: AgentRuntimeRow | undefined;
-    await until(async () => predicate(last = await row(kind)), `${kind} ${label} (last: ${JSON.stringify(last)})`, ms);
+    try {
+      await until(async () => predicate(last = await row(kind)), `${kind} ${label}`, ms);
+    } catch (error) {
+      // The label names the last row read, so it is built after the wait has failed.
+      throw new Error(`${(error as Error).message} (last: ${JSON.stringify(last)})`);
+    }
     return last!;
   };
   const expectCode = async (promise: ReturnType<typeof client.mutate>, code: string) => {
@@ -103,13 +113,9 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     initializeRuntimeLoggerBootstrap({ logsDir: path.join(fake.dataDir, "logs"), loggingConfig: LOGGING });
     sources = installVendorSourceStub();
     sources.answers.claude = { status: 503, body: "Service Unavailable" };
-    const studio = await buildStudioServer({ appConfig: appConfigProvider.config, loggingConfig: LOGGING });
-    await studio.applicationRuntime.lifecycle.prepareBeforeListen();
-    await studio.agentToolsMcpHost.listen();
-    const address = await studio.fastify.listen({ port: 0, host: "127.0.0.1" });
-    await studio.applicationRuntime.lifecycle.recoverAfterListen();
-    fastify = studio.fastify;
-    client = createGraphqlClient(new URL(address), sources.realFetch);
+    const started = await startStudioE2eRuntimeServer("127.0.0.1", { loggingConfig: LOGGING });
+    fastify = started.fastify;
+    client = createGraphqlClient(started.mainUrl, sources.realFetch);
   }, 120_000);
 
   afterAll(async () => {
@@ -119,9 +125,9 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     fake.dispose();
   }, 60_000);
 
-  it("AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)", async () => {
+  it("AR-01 lists the five runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)", async () => {
     expect(realTimeout.value, "the production operation time-out is 10 minutes (DEC-007)").toBe(10 * 60_000);
-    expect(await client.order(), "page order").toEqual([CODEX, CLAUDE, AGY, GROK]);
+    expect(await client.order(), "page order").toEqual([CODEX, CLAUDE, AGY, GROK, DSH]);
     const before = await client.rows();
     expect(before[CODEX]!.updates.state, "nothing is checked before the page asks").toBe("NOT_CHECKED");
     expect(before[CODEX]!.checkedAt).toBeNull();
@@ -135,6 +141,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     expect(settled[CLAUDE]!.installedVersion).toBe("2.1.200");
     expect(settled[AGY]!.installedVersion).toBe("1.4.3");
     expect(settled[GROK]).toMatchObject({ installed: false, installedVersion: null });
+    expect(settled[DSH]).toMatchObject({ installed: false, installedVersion: null, updates: { state: "NOT_CHECKED", latestVersion: null } });
 
     // Codex and Claude finish while the Antigravity source is still held back.
     const codex = await waitRow(CODEX, "checked", (r) => r.updates.state !== "CHECKING" && r.account.state !== "CHECKING");
@@ -314,7 +321,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     const walk = (dir: string) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) walk(full); else dataFiles.push(full);
+        if (entry.isDirectory()) walk(full); else if (entry.isFile()) dataFiles.push(full); // not the node-access control socket
       }
     };
     walk(fake.dataDir);
@@ -352,7 +359,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     };
     const first = await read();
     expect(first.agentRuntimeSignInBrowserAvailable).toBe(true);
-    expect(first.agentRuntimes.map((r) => r.runtimeKind)).toEqual([CODEX, CLAUDE, AGY, GROK]);
+    expect(first.agentRuntimes.map((r) => r.runtimeKind)).toEqual([CODEX, CLAUDE, AGY, GROK, DSH]);
     // A node-level field: no row carries it.
     expect(first.agentRuntimes.every((r) => !("agentRuntimeSignInBrowserAvailable" in r))).toBe(true);
     // The fact is fixed for the server's lifetime: a running sign-in and later reads give the same answer.
@@ -367,6 +374,32 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     expect(await client.mutate("cancelAgentRuntimeSignIn", CODEX)).toEqual({ data: { cancelAgentRuntimeSignIn: true } });
     await waitRow(CODEX, "cancelled", (r) => r.operation === null, 15_000);
     expect((await read()).agentRuntimeSignInBrowserAvailable).toBe(true);
+  }, 60_000);
+
+  it("AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005)", async () => {
+    // A preview build of Codex is installed and the latest release is its stable version.
+    states.set("codex-version", "0.170.0-alpha.2");
+    sources.answers.codex = { status: 302, body: "rust-v0.170.0" };
+    await client.mutate("checkAgentRuntimes");
+    const behind = await waitRow(CODEX, "prerelease checked", (r) => r.updates.state !== "CHECKING" && r.installedVersion === "0.170.0-alpha.2");
+    expect(behind).toMatchObject({ installedVersion: "0.170.0-alpha.2", updates: { state: "UPDATE_AVAILABLE", latestVersion: "0.170.0" } });
+
+    // Update installs the release: an update from the prerelease to its release succeeded.
+    states.set("codex-update-to", "0.170.0");
+    expect(await client.mutate("updateAgentRuntime", CODEX)).toEqual({ data: { updateAgentRuntime: true } });
+    const updated = await waitRow(CODEX, "updated", (r) => r.operation?.kind === "UPDATE" && r.operation.state !== "RUNNING");
+    expect(updated.operation).toMatchObject({ kind: "UPDATE", state: "SUCCEEDED", fromVersion: "0.170.0-alpha.2", toVersion: "0.170.0", error: null });
+    expect(updated.installedVersion).toBe("0.170.0");
+    // The automatic re-check after the update shows "Up to date" as soon as the latest version is read, but it ends
+    // (checkedAt moves) only when the sign-in read ends too; a check started before that is skipped for this row.
+    const reChecked = await waitRow(CODEX, "re-checked", (r) => r.updates.state === "UP_TO_DATE" && r.checkedAt !== updated.checkedAt);
+    expect(reChecked.updates.latestVersion).toBe("0.170.0");
+
+    // A preview of the next version is newer than the latest release: no update is offered.
+    states.set("codex-version", "0.171.0-rc.1");
+    await client.mutate("checkAgentRuntimes");
+    const ahead = await waitRow(CODEX, "newer prerelease checked", (r) => r.updates.state !== "CHECKING" && r.installedVersion === "0.171.0-rc.1");
+    expect(ahead.updates).toEqual({ state: "UP_TO_DATE", latestVersion: "0.170.0" });
   }, 60_000);
 
   it("AR-12 closing the server stops a running vendor process (QR-003, SCN-A4)", async () => {

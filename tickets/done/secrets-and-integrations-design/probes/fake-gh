@@ -1,0 +1,3 @@
+#!/bin/bash
+# stand-in for a CLI that reads its token from the environment (like gh with GH_TOKEN)
+case "$1 $2" in "auth token") echo "$GH_TOKEN";; "api user") echo '{"login":"octo"}';; *) echo "ran: $*";; esac

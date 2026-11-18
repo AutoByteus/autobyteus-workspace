@@ -1,0 +1,46 @@
+// autobyteus-313 API-03 step 2: this branch's built server on the data v1.5.9-beta.12 wrote (AC-005).
+import { spawn } from 'node:child_process';
+import { createWriteStream } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
+const [worktree, dataDir, outFile] = process.argv.slice(2);
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const WebSocket = createRequire(path.join(serverDir, 'package.json'))('ws');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const port = await new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const url = `http://127.0.0.1:${port}`;
+const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_') && !k.startsWith('ENABLE_') && !/_API_KEY$/.test(k))), AUTOBYTEUS_SERVER_HOST: url };
+const log = createWriteStream(path.join(path.dirname(outFile), 'upgrade-server.log'));
+const server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], { cwd: serverDir, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+server.stdout.pipe(log); server.stderr.pipe(log);
+const gql = async (query, variables = {}) => { const r = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) }).then((x) => x.json()); if (r.errors) throw new Error(JSON.stringify(r.errors)); return r.data; };
+const out = {};
+try {
+  while (!(await fetch(`${url}/rest/health`).then((r) => r.ok).catch(() => false))) { if (server.exitCode !== null) throw new Error('server exited'); await sleep(300); }
+  out.statusOnStart = (await gql('{modelRoutingStatus}')).modelRoutingStatus;
+  out.openedRouterRun = (await gql('mutation{openModelRouterAgent}')).openModelRouterAgent;
+  const seed = JSON.parse(await fs.readFile(path.join(path.dirname(outFile), 'beta12-seed.json'), 'utf8'));
+  const runId = seed.delegatorRun;
+  const socket = new WebSocket(`ws://127.0.0.1:${port}/ws/agent/${runId}`);
+  const frames = []; socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  while (!frames.some((f) => f.type === 'CONNECTED')) await sleep(100);
+  const id = randomUUID();
+  socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: runId, content: `Call the delegate_task tool exactly once now with these exact JSON arguments: ${JSON.stringify({ recipient_address: '/writer_bot_b12', description: 'Write a one-line release note for build after the update. Reply OK.' })}. It can take up to a minute; wait for its result. Do not call any other tool. Then reply with one short sentence quoting the launch_notes.`, message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [] } }));
+  const t0 = Date.now(); let done;
+  while (Date.now() - t0 < 300000 && !(done = frames.find((f) => f.type === 'TOOL_EXECUTION_SUCCEEDED' && /delegate_task/.test(String(f.payload?.tool_name))))) await sleep(500);
+  out.delegation = done ? JSON.stringify(done.payload.result).slice(0, 900) : 'no result';
+  out.statusAfterRouting = (await gql('{modelRoutingStatus}')).modelRoutingStatus;
+  out.routerStateAfter = JSON.parse(await fs.readFile(path.join(dataDir, 'model-routing', 'model-router-agent.json'), 'utf8'));
+  out.routerRunsInMemory = (await fs.readdir(path.join(dataDir, 'memory', 'agents'))).filter((d) => d.startsWith('model_router_'));
+  socket.close();
+} catch (error) { out.error = error.stack || String(error); }
+finally {
+  try { process.kill(-server.pid, 'SIGTERM'); } catch {}
+  await sleep(4000); try { process.kill(-server.pid, 'SIGKILL'); } catch {}
+  await fs.writeFile(outFile, JSON.stringify(out, null, 2));
+  console.log(JSON.stringify({ error: out.error ?? null, launch: out.statusOnStart?.routerLaunch, active: out.statusOnStart?.active, opened: out.openedRouterRun, routed: /chosen by the Model Router/.test(out.delegation ?? ''), after: out.statusAfterRouting?.agentRunId, state: out.routerStateAfter, runs: out.routerRunsInMemory }, null, 1));
+}

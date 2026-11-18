@@ -1,0 +1,14 @@
+# IMP-08 dev-stack API and stored-record check
+# Steps: curl GraphQL on the worktree dev backend (pnpm dev, 127.0.0.1:8000); read stored files under .autobyteus/development/server-data
+# Commit: dacdceed36 (server 2f3cb2f411)
+# Date: 2026-10-31T10:52Z
+## projectRunHistory(AutoByteus)
+{"data":{"projectRunHistory":{"projectId":"project_d4e82a7a-e62a-4933-bc09-8214e5cca834","agentDefinitions":[{"agentName":"Project Task Manager","runs":[{"runId":"project_task_manager_4d43368e7a5741c3825096ca1e449408","summary":"second manager run"},{"runId":"project_task_manager_42f2473d3c7b4cd2895d6d3efb83a6d9","summary":"hello from AutoByteus"}]}],"scopes":[{"rootKind":"AGENT","rootRunId":"project_task_manager_4d43368e7a5741c3825096ca1e449408","executions":[]},{"rootKind":"AGENT","rootRunId":"project_task_manager_42f2473d3c7b4cd2895d6d3efb83a6d9","executions":[]}]}}}
+## projectRunHistory(unknown)
+{"data":null,"errors":[{"message":"Project 'project_missing' was not found.","locations":[{"line":1,"column":3}],"path":["projectRunHistory"],"extensions":{"code":"PROJECT_NOT_FOUND"}}]}
+## prepareAgentRun with an unknown projectId
+{"data":{"prepareAgentRun":{"success":false,"message":"Error: PROJECT_NOT_FOUND: Project 'project_missing' was not found.","runId":null}}}
+## stored records
+index rows: [('project_task_manager_4d43368e7a5741c3825096ca1e449408', 'project_d4e82a7a-e62a-4933-bc09-8214e5cca834'), ('project_task_manager_42f2473d3c7b4cd2895d6d3efb83a6d9', 'project_d4e82a7a-e62a-4933-bc09-8214e5cca834')]
+metadata project_task_manager_42f2473d3c7b4cd2895d6d3efb83a6d9 projectId= project_d4e82a7a-e62a-4933-bc09-8214e5cca834
+metadata project_task_manager_4d43368e7a5741c3825096ca1e449408 projectId= project_d4e82a7a-e62a-4933-bc09-8214e5cca834

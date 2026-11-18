@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <AppLocalizationGate>
-      <!-- Conditionally display server status overlays in Electron environment -->
-      <template v-if="isEmbeddedWindow">
+      <!-- The embedded server's start/stop overlays: only the Electron desktop window runs that server. -->
+      <template v-if="showsServerOverlays">
         <ServerLoading />
         <ServerShutdown />
       </template>
@@ -34,16 +34,27 @@ import { ServerStatus } from '~/types/serverStatus'
 import { useAgentPackageDefinitionChangeFeed } from '~/composables/agentPackages/useAgentPackageDefinitionChangeFeed'
 import { useUpdateNotificationChangeFeed } from '~/composables/notifications/useUpdateNotificationChangeFeed'
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates'
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime'
+import { isElectronEnvironment } from '~/utils/browserServerConfig'
+import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore'
 
 const config = useRuntimeConfig()
 const serverStore = useServerStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 const isEmbeddedWindow = computed(() => windowNodeContextStore.isEmbeddedWindow)
+// A browser page (the phone's included) is an embedded window by default but runs no server: mounting the overlays
+// there would check a health URL at every start (autobyteus-435 REQ-001).
+const showsServerOverlays = computed(() => isEmbeddedWindow.value && isElectronEnvironment())
 const isAppReady = computed(() =>
   !isEmbeddedWindow.value || serverStore.status === ServerStatus.RUNNING
 )
 // Agents, Teams, Orgs, packages and the `@` menus follow agent package definition changes without a page reload.
-useAgentPackageDefinitionChangeFeed(isAppReady)
+// The phone opens the feed only while it has a paired session (to the paired node, with its credential).
+const mobileNodeSession = useMobileNodeSessionStore()
+const definitionFeedEnabled = computed(() =>
+  isAppReady.value && (!isMobileRemoteAccessRuntime() || mobileNodeSession.isPaired)
+)
+useAgentPackageDefinitionChangeFeed(definitionFeedEnabled)
 // Update notifications live where Settings does (desktop and browser windows, not the mobile client).
 const showsNotifications = computed(() => isFeatureAvailableInRuntime('desktopSettings'))
 useUpdateNotificationChangeFeed(computed(() => isAppReady.value && showsNotifications.value))
@@ -55,5 +66,13 @@ useUpdateNotificationChangeFeed(computed(() => isAppReady.value && showsNotifica
   @tailwind utilities;
   #app {
     @apply min-h-screen font-sans;
+  }
+  /* autobyteus-358 DS-007: a block with a very long unbroken run (base64, minified text) is shaped without kerning
+     and ligatures, which made each layout of it cost seconds; wrapping, copy and search are unchanged. */
+  .long-unbroken-text {
+    font-kerning: none;
+    font-variant-ligatures: none;
+    font-feature-settings: normal;
+    text-rendering: optimizeSpeed;
   }
 </style>

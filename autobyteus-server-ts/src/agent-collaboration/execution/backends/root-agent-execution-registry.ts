@@ -1,4 +1,3 @@
-import { acceptTaskSeed } from "../task/task-execution-seed-admission.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
@@ -6,17 +5,12 @@ import type { AgentRunManager } from "../../../agent-execution/services/agent-ru
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
-import type { ConfiguredAgentExecutionHandle, PreparedConfiguredAgentActivation } from "./configured-agent-execution-handle.js";
+import type { ConfiguredAgentExecutionHandle } from "./configured-agent-execution-handle.js";
 import type { AgentRunMemoryLocator } from "../services/agent-run-memory-locator.js";
 import { createCollaborationMemberExecutionIdentity, createRootExecutionPhysicalScope, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
-import { TASK_AGENT_PLACEMENT, runPartPlacement, type AgentRunMemoryPlacement } from "../../../agent-memory/domain/agent-run-memory-placement.js";
-import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
+import { runPartPlacement } from "../../../agent-memory/domain/agent-run-memory-placement.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
-import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
-import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
-import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
-import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
-import type { PrepareTaskAgentInput } from "../../../agent-team-execution/domain/task-agent-execution.js";
+import { type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
 import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
 import type { TeamRunAgentNode } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { ConfiguredAgentActivationMode } from "../domain/configured-agent-execution.js";
@@ -27,16 +21,10 @@ export type PreparedRootConfiguredAgent = Readonly<{
   abort(): Promise<void>;
 }>;
 
-/**
- * Root-level Agent hosting shared by the AgentOrg and Agent roots: configured root Agents and
- * root-hosted task Agents. The resource lifecycle policy stays in the shared task lifecycle.
- */
+/** An organization run's own direct Agents (autobyteus-461: a run its agents delegated to is its own run). */
 export class RootAgentExecutionRegistry {
-  private readonly taskPreparations = new Map<string, TaskExecutionPreparationOperation>();
   private readonly active = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly prepared = new Map<string, ConfiguredAgentExecutionHandle>();
-  private readonly taskAgentRunIds = new Set<string>();
-  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly options: Readonly<{
@@ -55,34 +43,14 @@ export class RootAgentExecutionRegistry {
     return Object.freeze([...new Set([...this.active.values(), ...this.prepared.values()])]);
   }
   get(agentRunId: string): ConfiguredAgentExecutionHandle | null { return this.active.get(agentRunId) ?? null; }
-  /**
-   * AR-005 liveness for root-hosted task Agents: live only while the registered handle's
-   * AgentRun is active. A retained handle whose run was shut down or died is not live.
-   */
-  isTaskLive(agentRunId: string): boolean {
-    return this.taskAgentRunIds.has(agentRunId) && (this.active.get(agentRunId)?.isActive() ?? false);
-  }
-  /** Configured Agents keep their predicate; task Agents hold open work only while live and initializing or running. */
-  hasOpenExecutionWork(): boolean {
-    return [...this.active].some(([agentRunId, handle]) => this.taskAgentRunIds.has(agentRunId)
-      ? this.isTaskLive(agentRunId) && isRunningTaskExecutionStatus(handle.getStatusSnapshot().details.status)
-      : handle.hasOpenExecutionWork());
-  }
-  /** Status leaves of every registered Agent; a non-live task Agent always reports `offline`. */
-  getInputStateSnapshots() {
-    return [...this.active].flatMap(([id, handle]) => this.taskAgentRunIds.has(id) && !this.isTaskLive(id)
-      ? [] : handle.getInputStateSnapshots());
-  }
-  getStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
-    return [...this.active].map(([agentRunId, handle]) => this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)
-      ? createCollaborationAgentStatusSnapshot({ execution: handle.identity, status: "offline" })
-      : handle.getStatusSnapshot());
-  }
+  hasOpenExecutionWork(): boolean { return [...this.active.values()].some((handle) => handle.hasOpenExecutionWork()); }
+  getInputStateSnapshots() { return [...this.active.values()].flatMap((handle) => handle.getInputStateSnapshots()); }
+  getStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] { return [...this.active.values()].map((handle) => handle.getStatusSnapshot()); }
   isActive(agentRunId: string): boolean { return this.active.get(agentRunId)?.isActive() ?? false; }
   freezeMaterialization(): void { this.materializationOpen = false; }
 
   async prepareConfigured(sourceNode: TeamRunAgentNode, mode: ConfiguredAgentActivationMode): Promise<PreparedRootConfiguredAgent> {
-    const handle = await this.createHandle(sourceNode, mode, this.options.callbacks, runPartPlacement(this.rootScope()));
+    const handle = await this.createHandle(sourceNode, mode);
     this.reserve(sourceNode.agentRunId, handle);
     try {
       let state: "prepared" | "committed" | "aborted" = "prepared";
@@ -110,103 +78,6 @@ export class RootAgentExecutionRegistry {
     }
   }
 
-  beginTaskPreparation(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation {
-    if (!this.materializationOpen || this.taskPreparations.has(input.agentRunId)) throw new Error("Root task Agent preparation is unavailable.");
-    let handle: ConfiguredAgentExecutionHandle | null = null;
-    const operation = createTaskExecutionPreparation({
-      cancel: () => { handle?.cancelActivation(); },
-      releaseResources: async () => {
-        const result = handle ? await handle.releaseRuntime() : { accepted: true };
-        if (result.accepted && handle) {
-          this.prepared.delete(input.agentRunId);
-          this.taskPreparations.delete(input.agentRunId);
-        }
-        return result;
-      },
-      prepare: async (assertAccepting) => {
-    const eventGate = new TaskAgentDurabilityEventGate(this.options.callbacks.publishAgentEvent);
-    const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
-      ...this.options.callbacks,
-      publishAgentEvent: eventGate.publish,
-    });
-    handle = await this.createHandle(
-      Object.freeze({ ...input.sourceNode, agentRunId: input.agentRunId, platformAgentRunId: null }),
-      "fresh",
-      callbacks,
-      TASK_AGENT_PLACEMENT,
-    ).catch((error) => { eventGate.abort(); throw error; });
-    assertAccepting();
-    this.reserve(input.agentRunId, handle);
-    const exactHandle = handle;
-    let activation: PreparedConfiguredAgentActivation;
-    try { activation = await handle.prepareConfiguredActivation(); }
-    catch (error) { eventGate.abort(); throw error; }
-    assertAccepting();
-    let state: "preparing" | "sealed" | "committed" | "aborted" = "preparing";
-    return Object.freeze({
-      binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: input.agentRunId }),
-      preparedTeamRuns: Object.freeze([]),
-      stagedPlatformBindings: activation.stagedPlatformBindings,
-      sealForCommit: () => {
-        if (state !== "preparing") throw new Error(`Task AgentRun '${input.agentRunId}' cannot be sealed.`);
-        state = "sealed";
-      },
-      commitAfterDurability: () => {
-        if (state !== "sealed" || this.prepared.get(input.agentRunId) !== exactHandle) throw new Error(`Task AgentRun '${input.agentRunId}' is not sealed.`);
-        assertAccepting();
-        this.active.set(input.agentRunId, exactHandle);
-        activation.commitAfterDurability();
-        this.prepared.delete(input.agentRunId);
-        this.active.set(input.agentRunId, exactHandle);
-        this.taskAgentRunIds.add(input.agentRunId);
-        state = "committed";
-        let released = false;
-        if (!eventGate.releaseToLive()) throw new Error("Task publication event gate closed.");
-        return Object.freeze({ releaseWork: (assertOpen: () => void) => {
-          if (released) throw new Error("Task seed already released.");
-          released = true;
-          if (!input.message) throw new Error("Helper awaits an ordinary message.");
-          return acceptTaskSeed(assertOpen, () => exactHandle.postMessage(input.message!));
-        } });
-      },
-      abort: async () => {
-        if (state === "aborted") return;
-        eventGate.abort();
-        const result = await operation.release();
-        if (!result.accepted) throw new Error("Task Agent release remains pending.");
-        state = "aborted";
-      },
-    });
-      },
-    });
-    this.taskPreparations.set(input.agentRunId, operation);
-    return operation;
-  }
-
-  /**
-   * Reactivation, after an accepted exact release: drops the released (fenced) authority of one
-   * root-hosted task Agent so `restoreTask` builds a fresh `restore`-mode handle. A live handle is kept.
-   */
-  discardReleasedTask(agentRunId: string): void {
-    const task = this.taskAgentRunIds.has(agentRunId) || this.taskPreparations.has(agentRunId);
-    if (!task || this.active.get(agentRunId)?.isActive()) return;
-    this.active.delete(agentRunId);
-    this.taskPreparations.delete(agentRunId);
-    this.taskAgentRunIds.delete(agentRunId);
-  }
-
-  cancelTask(agentRunId: string): void {
-    this.taskPreparations.get(agentRunId)?.cancel();
-    (this.active.get(agentRunId) ?? this.prepared.get(agentRunId))?.cancelActivation();
-  }
-  async releaseTask(agentRunId: string): Promise<AgentOperationResult> {
-    this.cancelTask(agentRunId);
-    const operation = this.taskPreparations.get(agentRunId);
-    if (operation) return operation.release();
-    const handle = this.active.get(agentRunId) ?? this.prepared.get(agentRunId);
-    return handle ? handle.releaseRuntime() : { accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" };
-  }
-
   reserveInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
     const handle = this.active.get(agentRunId);
     return handle
@@ -216,93 +87,17 @@ export class RootAgentExecutionRegistry {
   async executeCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     const handle = this.active.get(agentRunId);
     if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `The agent '${agentRunId}' is not running, so the message was not sent.` };
-    // AR-005: never let approve/interrupt re-activate a shut-down task run through the handle.
-    if (command.kind !== "post_message" && this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)) {
-      return { accepted: false, code: "RUN_NOT_ACTIVE", message: `The task agent '${agentRunId}' has stopped, so the message was not sent.` };
-    }
     switch (command.kind) {
-      case "post_message": return handle.postMessage(command.message);
+      case "post_message": return handle.postMessage(command.message, command.postOptions);
       case "approve_tool": return handle.approveToolInvocation(command.invocationId, command.approved, command.reason);
       case "interrupt": return handle.interrupt();
     }
   }
-  /**
-   * Wakes one shut-down root-hosted task Agent inside a live lease: registers a `restore`-mode
-   * handle when none exists (after a root reopen), then activates its AgentRun. A retained
-   * handle re-activates in `restore` mode, continuing the persisted conversation.
-   */
-  async restoreTask(sourceNode: TeamRunAgentNode): Promise<void> {
-    if (!this.materializationOpen) throw new Error("Root task Agent materialization is closed.");
-    if (this.prepared.has(sourceNode.agentRunId)) throw new Error(`Task AgentRun '${sourceNode.agentRunId}' is prepared.`);
-    let handle = this.active.get(sourceNode.agentRunId);
-    if (!handle) {
-      const created = await this.createHandle(sourceNode, "restore", this.options.callbacks, TASK_AGENT_PLACEMENT);
-      if (!this.materializationOpen || this.active.has(sourceNode.agentRunId)) {
-        created.dispose();
-        throw new Error(`The task agent ${sourceNode.agentRunId} could not continue with its conversation.`);
-      }
-      this.active.set(sourceNode.agentRunId, created);
-      this.taskAgentRunIds.add(sourceNode.agentRunId);
-      handle = created;
-    } else if (handle.isStopped()) {
-      // A retained handle (idle shutdown or user Stop) resumes on the copy's current effective launch.
-      handle.replaceModelChoice(sourceNode);
-    }
-    // The chain is live before any input is reserved.
-    await handle.getOrCreateAgentRun();
-  }
-
-  /** Shuts one root-hosted task Agent down only when it is quiet; the handle stays registered. */
-  async tryShutDownTaskIfQuiet(agentRunId: string): Promise<boolean> {
-    const handle = this.active.get(agentRunId);
-    if (!handle || !this.isTaskLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
-    this.shuttingDown.add(agentRunId);
-    try {
-      const local = await handle.tryPrepareTerminationIfQuiescent();
-      if (!local) return false;
-      if (this.active.get(agentRunId) !== handle) {
-        local.cancel();
-        return false;
-      }
-      const result = await local.commit().finish().catch((cause: unknown) => {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' shutdown did not finish.`, { cause });
-      });
-      if (!result.accepted) {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' shutdown was rejected.`);
-      }
-      return true;
-    } finally {
-      this.shuttingDown.delete(agentRunId);
-    }
-  }
-
-  /**
-   * User Stop (DS-002) of one live root-hosted task Agent, quiet or not: interrupts it and releases
-   * its runtime with input left open. The handle stays registered, so the next message restores it.
-   */
-  async shutDownTaskForUser(agentRunId: string): Promise<boolean> {
-    const handle = this.active.get(agentRunId);
-    if (!handle || !this.isTaskLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
-    this.shuttingDown.add(agentRunId);
-    try {
-      const result = await handle.releaseRuntimeForUserStop().catch((cause: unknown) => {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' stop did not finish.`, { cause });
-      });
-      if (!result.accepted) {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' stop was rejected.`);
-      }
-      return true;
-    } finally {
-      this.shuttingDown.delete(agentRunId);
-    }
-  }
-
   private async createHandle(
     sourceNode: TeamRunAgentNode,
     mode: ConfiguredAgentActivationMode,
-    callbacks: FlatTeamExecutionCallbacks,
-    memoryPlacement: AgentRunMemoryPlacement,
   ): Promise<ConfiguredAgentExecutionHandle> {
+    const callbacks = this.options.callbacks;
     const identity = createCollaborationMemberExecutionIdentity({
       root: this.options.root,
       memberAddress: sourceNode.address,
@@ -317,12 +112,13 @@ export class RootAgentExecutionRegistry {
       runtimeKind: sourceNode.runtimeKind,
       workspaceRootPath: sourceNode.workspaceRootPath,
       platformAgentRunId: sourceNode.platformAgentRunId,
+      ...(sourceNode.pendingRuntimeSwitch ? { pendingRuntimeSwitch: sourceNode.pendingRuntimeSwitch } : {}),
     });
     const memberExecutionContext = await callbacks.buildMemberExecutionContext({ identity, physicalScope, execution, sourceNode });
     return (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,
       physicalScope,
-      memoryPlacement,
+      memoryPlacement: runPartPlacement(physicalScope),
       execution,
       activationMode: mode,
       memberExecutionContext,

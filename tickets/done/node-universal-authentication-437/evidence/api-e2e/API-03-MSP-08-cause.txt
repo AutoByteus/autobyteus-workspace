@@ -1,0 +1,19 @@
+# API-03 MSP-08 cause: workspace file search (GraphQL searchFiles) returns [] on this branch, every call logs 'Error searching files: Search aborted'
+# Check: API-03-MSP-08-search-check.mjs (a node with a launch credential, a workspace with src/app.ts, searchFiles 'app' as owner (x3 with delays), 'README' as owner, 'app' as a paired phone); 2026-11-08T16:55:41Z
+
+## the released image autobyteus/autobyteus-server:beta (Node v22.23.3): searchFiles 'app' -> {"data":{"searchFiles":["src/app.ts"]}}
+## this branch's server in the same image (abtest437/autobyteus-server:test, Node v22.23.3): {"data":{"searchFiles":[]}} + 'Error searching files: Search aborted'
+## base b690a5dfdb built in a temporary worktree (/tmp/abtest437/base-wt), host Node v22.23.1:
+   owner search app after +0ms: {"status":200,"body":{"data":{"searchFiles":["src/app.ts"]}}}
+   phone search app: {"status":200,"body":{"data":{"searchFiles":["src/app.ts"]}}}
+## this branch b6a57ab154, host Node v22.23.1:
+   owner search app after +0ms: {"status":200,"body":{"data":{"searchFiles":[]}}}  (also +2000 ms, +5000 ms, README, phone)
+   node log: 'Error searching files: Search aborted' per call
+
+## temporary instrumentation of dist/api/graphql/graphql-request-context.js (restored, cmp equal):
+   'ABTEST437 abort at-creation aborted=false reqDestroyed=true resDestroyed=false readableEnded=true at createRequestAbortSignal (graphql-request-context.js:24)'
+## temporary switch of the gate's hooks in dist/api/security/node-access-plugin.js (restored, cmp equal):
+   preParsing off  -> still [] + 'Search aborted'
+   preValidation off -> {"searchFiles":["src/app.ts"]}
+
+## conclusion: src/api/security/node-access-plugin.ts registers an async preValidation hook for every request (it returns early for non-peers). With it, the request's IncomingMessage has ended and been destroyed by the time Mercurius builds the context, so createRequestAbortSignal (unchanged since 87522ceda1) aborts at creation; searchFiles is the only resolver that uses requestAbortSignal (grep).

@@ -13,8 +13,15 @@ export declare const backgroundTaskStatusSchema: z.ZodEnum<{
     failed: "failed";
     stopped: "stopped";
 }>;
+/** Why an ended task ended, when its runtime says so: its time limit, low memory, or the end of its run. */
+export declare const backgroundTaskEndReasonSchema: z.ZodEnum<{
+    time_limit: "time_limit";
+    low_memory: "low_memory";
+    run_ended: "run_ended";
+}>;
 export type BackgroundTaskKind = z.infer<typeof backgroundTaskKindSchema>;
 export type BackgroundTaskStatus = z.infer<typeof backgroundTaskStatusSchema>;
+export type BackgroundTaskEndReason = z.infer<typeof backgroundTaskEndReasonSchema>;
 export declare const agentPresentationPayloadSchemas: {
     readonly SYSTEM_INSTRUCTIONS_SUPPLIED: z.ZodObject<{
         trace_id: z.ZodString;
@@ -95,6 +102,7 @@ export declare const agentPresentationPayloadSchemas: {
             idle: "idle";
             running: "running";
         }>;
+        background_tasks_running: z.ZodNumber;
         trigger: z.ZodNullable<z.ZodString>;
         tool_name: z.ZodNullable<z.ZodString>;
         error_message: z.ZodNullable<z.ZodString>;
@@ -516,8 +524,15 @@ export declare const agentPresentationPayloadSchemas: {
             stopped: "stopped";
         }>;
         summary: z.ZodNullable<z.ZodString>;
+        end_reason: z.ZodNullable<z.ZodEnum<{
+            time_limit: "time_limit";
+            low_memory: "low_memory";
+            run_ended: "run_ended";
+        }>>;
+        exit_code: z.ZodNullable<z.ZodNumber>;
         started_at: z.ZodString;
     }, z.core.$strict>;
+    /** `message_id`: the notice's one id, the same on every copy (autobyteus-526); null for a notice that has none. */
     readonly SYSTEM_TASK_NOTIFICATION: z.ZodObject<{
         sender: z.ZodUnion<readonly [z.ZodObject<{
             kind: z.ZodLiteral<"system">;
@@ -529,6 +544,7 @@ export declare const agentPresentationPayloadSchemas: {
             }, z.core.$strict>;
         }, z.core.$strict>]>;
         content: z.ZodString;
+        message_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly ARTIFACT_PERSISTED: z.ZodObject<{
         artifact_id: z.ZodString;

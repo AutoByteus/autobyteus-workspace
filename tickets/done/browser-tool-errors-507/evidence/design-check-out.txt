@@ -1,0 +1,24 @@
+RESULT {"rep":0,"sit":"not shown, fresh tab","ok":true,"attempt":3,"ms":358,"size":{"width":2560,"height":1800}}
+RESULT {"rep":0,"sit":"not shown, after navigate","ok":true,"attempt":2,"ms":132,"size":{"width":2560,"height":1800}}
+RESULT {"rep":0,"sit":"not shown, full page","ok":true,"attempt":1,"ms":155,"size":{"width":2560,"height":8000}}
+RESULT {"rep":0,"sit":"founder's sequence (emulated)","ok":true,"attempt":2,"ms":119,"size":{"width":810,"height":1800},"before":[980,2176],"after":[980,2176]}
+RESULT {"rep":0,"sit":"minimized window (rule applied), after navigate","attachedWhile":false,"ok":true,"attempt":2,"ms":125,"size":{"width":2560,"height":1800}}
+RESULT {"rep":0,"sit":"minimized window restored","attachedAgain":true,"ok":true,"attempt":1,"ms":18,"size":{"width":2560,"height":1800}}
+RESULT {"rep":0,"sit":"hidden window (rule applied), after navigate","attachedWhile":false,"ok":true,"attempt":2,"ms":124,"size":{"width":2560,"height":1800}}
+RESULT {"rep":0,"sit":"hidden window restored","attachedAgain":true,"ok":true,"attempt":1,"ms":6,"size":{"width":2560,"height":1800}}
+RESULT {"rep":1,"sit":"not shown, fresh tab","ok":true,"attempt":3,"ms":245,"size":{"width":2560,"height":1800}}
+RESULT {"rep":1,"sit":"not shown, after navigate","ok":true,"attempt":2,"ms":192,"size":{"width":2560,"height":1800}}
+RESULT {"rep":1,"sit":"not shown, full page","ok":true,"attempt":1,"ms":294,"size":{"width":2560,"height":8000}}
+RESULT {"rep":1,"sit":"founder's sequence (emulated)","ok":true,"attempt":2,"ms":121,"size":{"width":810,"height":1800},"before":[980,2176],"after":[980,2176]}
+RESULT {"rep":1,"sit":"minimized window (rule applied), after navigate","attachedWhile":false,"ok":true,"attempt":2,"ms":122,"size":{"width":2560,"height":1800}}
+RESULT {"rep":1,"sit":"minimized window restored","attachedAgain":true,"ok":true,"attempt":1,"ms":12,"size":{"width":2560,"height":1800}}
+RESULT {"rep":1,"sit":"hidden window (rule applied), after navigate","attachedWhile":false,"ok":true,"attempt":2,"ms":119,"size":{"width":2560,"height":1800}}
+RESULT {"rep":1,"sit":"hidden window restored","attachedAgain":true,"ok":true,"attempt":1,"ms":6,"size":{"width":2560,"height":1800}}
+RESULT {"rep":2,"sit":"not shown, fresh tab","ok":true,"attempt":3,"ms":214,"size":{"width":2560,"height":1800}}
+RESULT {"rep":2,"sit":"not shown, after navigate","ok":true,"attempt":2,"ms":110,"size":{"width":2560,"height":1800}}
+RESULT {"rep":2,"sit":"not shown, full page","ok":true,"attempt":1,"ms":252,"size":{"width":2560,"height":8000}}
+RESULT {"rep":2,"sit":"founder's sequence (emulated)","ok":true,"attempt":2,"ms":112,"size":{"width":810,"height":1800},"before":[980,2176],"after":[980,2176]}
+RESULT {"rep":2,"sit":"minimized window (rule applied), after navigate","attachedWhile":false,"ok":true,"attempt":2,"ms":119,"size":{"width":2560,"height":1800}}
+RESULT {"rep":2,"sit":"minimized window restored","attachedAgain":true,"ok":true,"attempt":1,"ms":10,"size":{"width":2560,"height":1800}}
+RESULT {"rep":2,"sit":"hidden window (rule applied), after navigate","attachedWhile":false,"ok":true,"attempt":2,"ms":119,"size":{"width":2560,"height":1800}}
+RESULT {"rep":2,"sit":"hidden window restored","attachedAgain":true,"ok":true,"attempt":1,"ms":8,"size":{"width":2560,"height":1800}}

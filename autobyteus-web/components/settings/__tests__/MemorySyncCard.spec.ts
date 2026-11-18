@@ -27,7 +27,7 @@ const { storeSlot, translationCatalog } = vi.hoisted(() => ({
   sourceDescriptionAnd: 'and',
   sourceDescriptionSuffix: 'memory to a hub.',
   enableSource: 'Enable source',
-  sourceNodeId: 'Source node id',
+  memorySyncSourceId: 'Memory Sync source ID',
   displayName: 'Display name',
   hubBaseUrl: 'Hub base URL',
   hubToken: 'Hub token',
@@ -57,6 +57,10 @@ const { storeSlot, translationCatalog } = vi.hoisted(() => ({
   yes: 'yes',
   no: 'no',
   unknown: 'unknown',
+  fileFailuresTitle: '{{count}} files could not be synced',
+  fileFailuresTitleOne: '{{count}} file could not be synced',
+  fileFailuresMore: 'and {{count}} more',
+  nextAttempt: 'next attempt',
   } as Record<string, string>,
 }));
 
@@ -66,8 +70,10 @@ vi.mock('~/stores/memorySyncStore', () => ({
 
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
-    t: (key: string) => {
-      return translationCatalog[key.split('.').pop() || key] ?? key;
+    resolvedLocale: { value: 'en' },
+    t: (key: string, params: Record<string, unknown> = {}) => {
+      const text = translationCatalog[key.split('.').pop() || key] ?? key;
+      return text.replace(/\{\{(\w+)\}\}/g, (_match, name: string) => String(params[name] ?? ''));
     },
   }),
 }));
@@ -76,7 +82,7 @@ const createStatus = () => ({
   hub: { enabled: true, advertisedHubBaseUrl: 'http://hub.local', updatedAt: null },
   source: {
     enabled: true,
-    sourceNodeId: 'saved-source',
+    memorySyncSourceId: 'saved-source',
     displayName: 'Saved Source',
     hubBaseUrl: 'http://saved-hub.local',
     hubTokenConfigured: true,
@@ -99,6 +105,8 @@ const createStatus = () => ({
     lastSuccessfulSyncAt: '2026-06-24T06:00:16.000Z',
     lastError: null,
     trackedFileCount: 3,
+    fileFailureCount: 0,
+    fileFailures: [],
   },
   imports: [],
   oneTimePlaintextToken: null,
@@ -159,23 +167,25 @@ describe('MemorySyncCard', () => {
     const wrapper = await mountCard();
 
     await wrapper.get('[data-testid="memory-sync-hub-base-url"]').setValue('http://draft-hub.local');
-    await wrapper.get('[data-testid="memory-sync-source-node-id"]').setValue('draft-source');
+    await wrapper.get('[data-testid="memory-sync-source-id"]').setValue('draft-source');
     await wrapper.get('[data-testid="memory-sync-display-name"]').setValue('Draft Source');
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('draft-token');
 
     storeSlot.store.status.source.hubBaseUrl = 'http://poll-hub.local';
-    storeSlot.store.status.source.sourceNodeId = 'poll-source';
+    storeSlot.store.status.source.memorySyncSourceId = 'poll-source';
     storeSlot.store.status.source.displayName = 'Poll Source';
     storeSlot.store.status.sourceState = {
       jobState: 'running',
       lastSuccessfulSyncAt: '2026-06-24T06:00:16.000Z',
       lastError: null,
       trackedFileCount: 4,
+      fileFailureCount: 0,
+      fileFailures: [],
     };
     await nextTick();
 
     expect((wrapper.get('[data-testid="memory-sync-hub-base-url"]').element as HTMLInputElement).value).toBe('http://draft-hub.local');
-    expect((wrapper.get('[data-testid="memory-sync-source-node-id"]').element as HTMLInputElement).value).toBe('draft-source');
+    expect((wrapper.get('[data-testid="memory-sync-source-id"]').element as HTMLInputElement).value).toBe('draft-source');
     expect((wrapper.get('[data-testid="memory-sync-display-name"]').element as HTMLInputElement).value).toBe('Draft Source');
     expect((wrapper.get('[data-testid="memory-sync-hub-token"]').element as HTMLInputElement).value).toBe('draft-token');
     expect(wrapper.get('[data-testid="memory-sync-current-job"]').text()).toContain('syncing…');
@@ -185,7 +195,7 @@ describe('MemorySyncCard', () => {
     const wrapper = await mountCard();
 
     await wrapper.get('[data-testid="memory-sync-hub-base-url"]').setValue('http://draft-hub.local');
-    await wrapper.get('[data-testid="memory-sync-source-node-id"]').setValue('draft-source');
+    await wrapper.get('[data-testid="memory-sync-source-id"]').setValue('draft-source');
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('');
     await wrapper.get('[data-testid="memory-sync-test-connection"]').trigger('click');
 
@@ -196,14 +206,14 @@ describe('MemorySyncCard', () => {
     const wrapper = await mountCard();
 
     await wrapper.get('[data-testid="memory-sync-hub-base-url"]').setValue('http://draft-hub.local');
-    await wrapper.get('[data-testid="memory-sync-source-node-id"]').setValue('draft-source');
+    await wrapper.get('[data-testid="memory-sync-source-id"]').setValue('draft-source');
     await wrapper.get('[data-testid="memory-sync-hub-token"]').setValue('draft-token');
     await wrapper.get('[data-testid="memory-sync-test-connection"]').trigger('click');
 
     expect(storeSlot.store.testConnection).toHaveBeenCalledWith({
       mode: 'draft',
       hubBaseUrl: 'http://draft-hub.local',
-      sourceNodeId: 'draft-source',
+      memorySyncSourceId: 'draft-source',
       token: 'draft-token',
     });
   });
@@ -218,6 +228,8 @@ describe('MemorySyncCard', () => {
       lastSuccessfulSyncAt: '2026-06-24T06:00:16.000Z',
       lastError: '401 Unauthorized',
       trackedFileCount: 4,
+      fileFailureCount: 0,
+      fileFailures: [],
     };
     storeSlot.store.syncing = true;
     await nextTick();
@@ -229,5 +241,57 @@ describe('MemorySyncCard', () => {
     expect(wrapper.text()).not.toContain('Legacy global test feedback');
     expect(wrapper.get('[data-testid="memory-sync-sync-now"]').text()).toContain('Syncing…');
     expect(wrapper.get('[data-testid="memory-sync-sync-now"]').attributes('disabled')).toBeDefined();
+  });
+
+  describe('files that could not be synced', () => {
+    const failure = (relativePath: string, size: number, reason: string) => ({
+      kind: 'agents', relativePath, size, reason, attempts: 2,
+      lastFailedAt: '2026-11-15T14:02:00.000Z', nextAttemptAt: '2026-11-15T14:06:00.000Z',
+    });
+
+    it('shows nothing extra while no file has failed', async () => {
+      const wrapper = await mountCard();
+
+      expect(wrapper.find('[data-testid="memory-sync-file-failures"]').exists()).toBe(false);
+    });
+
+    it('lists each failed file with its size, reason and next attempt, and how many more there are', async () => {
+      const wrapper = await mountCard();
+
+      storeSlot.store.status.sourceState = {
+        jobState: 'success',
+        lastSuccessfulSyncAt: '2026-11-15T14:02:00.000Z',
+        lastError: null,
+        trackedFileCount: 4,
+        fileFailureCount: 23,
+        fileFailures: [
+          failure('run-b/context_files/video.mp4', 1.9 * 1024 * 1024 * 1024, 'Uploaded file hash mismatch for agents/run-b/context_files/video.mp4.'),
+          failure('run-c/notes.txt', 2048, 'Could not read file: EACCES'),
+        ],
+      };
+      await nextTick();
+
+      expect(wrapper.get('[data-testid="memory-sync-file-failures-title"]').text()).toBe('23 files could not be synced');
+      const rows = wrapper.findAll('[data-testid="memory-sync-file-failure"]').map((row) => row.text());
+      expect(rows).toHaveLength(2);
+      expect(rows[0]).toContain('agents/run-b/context_files/video.mp4 · 1.9 GB · Uploaded file hash mismatch');
+      expect(rows[0]).toContain('next attempt');
+      expect(rows[1]).toContain('2.0 KB · Could not read file: EACCES');
+      expect(wrapper.get('[data-testid="memory-sync-file-failures-more"]').text()).toBe('and 21 more');
+      expect(wrapper.get('[data-testid="memory-sync-last-sync"]').text()).toContain('success');
+    });
+
+    it('says "1 file" for a single failure', async () => {
+      const wrapper = await mountCard();
+
+      storeSlot.store.status.sourceState = {
+        jobState: 'success', lastSuccessfulSyncAt: '2026-11-15T14:02:00.000Z', lastError: null, trackedFileCount: 1,
+        fileFailureCount: 1, fileFailures: [failure('a.txt', 10, 'refused')],
+      };
+      await nextTick();
+
+      expect(wrapper.get('[data-testid="memory-sync-file-failures-title"]').text()).toBe('1 file could not be synced');
+      expect(wrapper.find('[data-testid="memory-sync-file-failures-more"]').exists()).toBe(false);
+    });
   });
 });

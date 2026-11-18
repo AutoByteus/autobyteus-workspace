@@ -1,0 +1,8 @@
+# IMP-11 (QR-004, AC-007, DS-007): L-010 on the test-owned seed /tmp/ab358-seed, probe autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs --from-seed /tmp/ab358-seed --live --cases L-010 --large-shape <unbroken|words> --samples 1
+# commit: b58a3106c3 tree (class in app.vue); env: macOS, headless Chrome, isolated HOME; date: 2026-11-01T11:52:03Z
+# look for: clickToStoreLoadedMs < 1000 for unbroken; words not regressed (base prose of the same size 262 ms)
+
+IMP-L010-unbroken-ds007: result=Pass clickToStoreLoadedMs=198.8 clickToLastMessageInDomMs=201.3 projectionBytes=2461906 ops={'GetAgentRunCollaborationMemberProjection': 1, 'GetAgentRunCollaborationMemberFileChanges': 1} load=[9.7, 8.8, 13.9]
+IMP-L010-words-ds007: result=Pass clickToStoreLoadedMs=293.6 clickToLastMessageInDomMs=295.4 projectionBytes=2369239 ops={'GetAgentRunCollaborationMemberProjection': 1, 'GetAgentRunCollaborationMemberFileChanges': 1} load=[8.8, 8.6, 13.5]
+Before (same probe and seed): unbroken 87,014 ms at base (M-163-unbroken-open-current.json), 85,946 ms after DS-006 only (IMP-L010-unbroken-after/), 86,844 ms with the class in assets/css/main.css, which the app never loads (FU-002).
+All four properties of long-unbroken-text kept as designed; they were not measured one by one.

@@ -1,0 +1,10 @@
+# API-05 BEFORE update. command: env -i PATH HOME=<temp> pnpm exec vitest run tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts --no-watch
+# commit dd56f6de6c; date 2026-10-30T18:48:35Z
+
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 3134ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  1096ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  973ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  677ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Duration  11.74s (transform 6.16s, setup 38ms, import 8.17s, tests 3.13s, environment 0ms)

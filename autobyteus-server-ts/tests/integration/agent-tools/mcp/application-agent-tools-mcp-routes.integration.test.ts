@@ -8,6 +8,7 @@ import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-
 import { AgentToolsMcpLocalAccessGate } from "../../../../src/agent-tools/mcp/agent-tools-mcp-local-access.js";
 import { AgentToolsMcpMethodDispatcher } from "../../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
 import { registerAgentToolsMcpRoutes } from "../../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
+import { AgentToolsMcpSessionStreams } from "../../../../src/agent-tools/mcp/agent-tools-mcp-session-streams.js";
 import { createAgentToolMcpSessionAuthorityFactory } from "../../../../src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.js";
 import { ApplicationAgentToolCatalog } from "../../../../src/application-agent-tools/services/application-agent-tool-catalog.js";
 import { beginApplicationAgentToolCapabilityAssembly } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
@@ -98,6 +99,7 @@ describe("application-owned Agent Tools MCP routes", () => {
     const registry = new AgentToolMcpSessionRegistry();
     const mcpCatalog = new AgentToolMcpCatalog({ adapters: [] });
     const app = fastify();
+    const streams = new AgentToolsMcpSessionStreams();
     await registerAgentToolsMcpRoutes(app, {
       registry,
       dispatcher: new AgentToolsMcpMethodDispatcher({
@@ -105,11 +107,13 @@ describe("application-owned Agent Tools MCP routes", () => {
         toolExecutor: new AgentToolMcpToolExecutor({ catalog: mcpCatalog }),
       }),
       localAccessGate: new AgentToolsMcpLocalAccessGate(),
+      streams,
     });
     await app.ready();
     const authority = createAgentToolMcpSessionAuthorityFactory({
       registry,
       catalog: mcpCatalog,
+      streams,
       getLocalBaseUrl: () => "http://127.0.0.1:1",
       assertHostOpen: () => undefined,
     }).begin({ scopeIdentity: "application:app-a,app-b" }).complete({
@@ -173,9 +177,16 @@ describe("application-owned Agent Tools MCP routes", () => {
     }
 
     try {
-      expect(general).toEqual({ kind: "not_exposed" });
-      expect(unselected).toEqual({ kind: "not_exposed" });
-      expect(registry.listSessions()).toHaveLength(2);
+      // Runs without application tools still get a session, with an empty list.
+      expect(general).toMatchObject({ kind: "active", descriptor: { enabledTools: [] } });
+      expect(unselected).toMatchObject({ kind: "active", descriptor: { enabledTools: [] } });
+      expect(registry.listSessions()).toHaveLength(4);
+      for (const empty of [general, unselected]) {
+        const listed = await post(app, empty.sessionId, {
+          jsonrpc: "2.0", id: `list-${empty.sessionId}`, method: "tools/list", params: {},
+        });
+        expect(listed.json()).toMatchObject({ result: { tools: [] } });
+      }
       expect(appA.descriptor).not.toHaveProperty("headers");
       expect(appB.descriptor).not.toHaveProperty("headers");
 

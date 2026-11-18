@@ -1,0 +1,13 @@
+# API-13 round 2 (AC-003-1, DEC-019) — the Electron desktop window's Nodes page against a real node's Host gate; 2026-11-10T09:48:55Z
+# App: isolated instance iso-61038-68f7 of this worktree's packaged build at b5da2d15a0 (`pnpm --silent isolated-app start --build`, enterprise flavor), window origin file://.
+# Node: worktree server dist at b5da2d15a0 on 127.0.0.1:61177 (probes/refnode.sh), own data root/HOME. Closed port 61178. A plain HTTP server
+#   answering 403 "Forbidden" (no refusal code) on 127.0.0.1:61442 (probes/plain403.mjs). Steps: probes/electron-nodes.mjs, electron-rows-shot.mjs, electron-eval.mjs.
+
+N1 Add http://127.0.0.1.nip.io:61177 while the node allows that name -> key srv_2TdT… (reached; the node's ID)
+node restarted without AUTOBYTEUS_ALLOWED_HOSTS: curl 127.0.0.1.nip.io -> 403
+N2 row asked again (page reloaded): "Not reachable. The node at this address doesn’t accept the name 127.0.0.1.nip.io. Add 127.0.0.1.nip.io to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."
+N3 Add http://127-0-0-1.nip.io:61177: "Not reachable. The node at this address doesn’t accept the name 127-0-0-1.nip.io. Add 127-0-0-1.nip.io to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."   status requests: 2 (one per probe: Add + the row's ask; no opaque second request)
+N4 Add http://127.0.0.1.nip.io:61178 (closed): "Not reachable. No answer from that address."   status requests: 4 (readable + opaque per probe; today's cause)
+N5 Add http://127.0.0.1.nip.io:61442 (plain 403, no code): "Not reachable. Something answers there, but it isn't an AutoByteus node."   status requests: 2 (today's cause)
+window read (electron-eval): {"readable":{"status":403,"type":"basic","code":"REMOTE_ACCESS_HOST_REFUSED"}}
+node log: REMOTE_ACCESS_HOST_REFUSED lines: 5

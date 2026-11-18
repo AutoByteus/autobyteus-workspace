@@ -3,18 +3,22 @@ import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../../src/projects/services/project-service.js";
 import * as taskServices from "../../../../src/projects/services/project-task-service.js";
 import { ProjectTaskService } from "../../../../src/projects/services/project-task-service.js";
+import { ProjectTaskContextDrafts } from "../../../../src/projects/services/project-task-context-drafts.js";
 import { ProjectTaskContextStore } from "../../../../src/projects/context/project-task-context-store.js";
 import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-store.js";
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
-import { CreateTaskTool, UpdateTaskTool, ListProjectTasksTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { defaultContextFileSizeLimits } from "../../../helpers/context-file-size-limits.js";
+import { CreateTaskTool, UpdateTaskTool, ListProjectTasksTool, createBoundGetProjectTaskTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 const mcp = async (name: string, args: Record<string, unknown>) => {
   const result = await new ProjectTaskToolsMcpAdapterProvider().getAdapters().find(a => a.definition.name === name)!
@@ -26,10 +30,11 @@ const mcp = async (name: string, args: Record<string, unknown>) => {
 const idOfKey = async (taskKey: string) => (await store.listTasks(projectId)).find((task) => task.taskKey === taskKey)!.taskId;
 const root = (kind: RootSubjectKind) => createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: `root-${kind}` });
 let dir: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
+let releases: ReleaseTracker;
 let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
 const service = async (storeOverride?: object) => {
-  const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: release,
-    adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) });
+  const created = new ProjectTaskService(withTaskRunResources({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
+    adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) }));
   await created.load();
   return created;
 };
@@ -39,52 +44,59 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   context = new ProjectTaskContextStore(layout);
   projectId = (await new ProjectService({ store }).createProject({ name: "Business fixture" })).projectId;
-  release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
+  release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
   tasks = await service();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
 });
-afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
+afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
 describe("shared native/MCP business Task result boundary (Q-2)", () => {
   it("lists saved work/context, open and closed assignments with explicit copy IDs, never workers' internal runs or platform detail (REQ-010, AC-013)", async () => {
-    const draft = await tasks.beginContextDraft(projectId);
-    const upload = await tasks.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never);
-    const task = await tasks.createTask({ projectId, description: "Full saved work description",
+    const drafts = new ProjectTaskContextDrafts({ store, contextStore: context });
+    const draft = await drafts.beginContextDraft(projectId);
+    const upload = await drafts.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never, defaultContextFileSizeLimits);
+    const task = await tasks.createTask({ projectId, title: "Full saved work description", description: "Full saved work description",
       contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
     const assigned = (agentRun: { agentRunId: string } | { teamRunId: string }, kind: RootSubjectKind, coordinatorAgentRunId?: string) =>
-      tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: `manager-${kind}`, hostRoot: root(kind), execution: agentRun, ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
+      tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: `manager-${kind}` }, execution: agentRun, ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
     await assigned({ agentRunId: "closed-worker" }, "agent");
-    await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
+    await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await releases.settled();
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "TODO" });
     await assigned({ agentRunId: "accepted-agent" }, "agent"); await tasks.markStarted({ agentRunId: "accepted-agent" });
     await assigned({ teamRunId: "failed-team" }, "agent_team", "failed-team-lead");
     await tasks.markFailed({ teamRunId: "failed-team" }, { code: "TASK_DISPATCH_FAILED", message: "Internal dispatch detail" });
     await assigned({ agentRunId: "starting-agent" }, "agent_org");
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "internal-delegate" } });
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "owned-helper" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "accepted-agent" }, delegatorAgentRunId: "accepted-agent" }, execution: { agentRunId: "internal-delegate" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "accepted-agent" }, delegatorAgentRunId: "accepted-agent" }, execution: { agentRunId: "owned-helper" } });
 
-    const native = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
-    expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(native);
-    expect(native).toEqual({ projectId, tasks: [{ projectId, taskId: task.taskKey, description: task.description, status: "TODO", dependsOn: [], partOf: null, parts: [],
-      contextFiles: task.contextFiles, assignments: [
-        { kind: "agent", agentRunId: "accepted-agent", assignedBy: "manager-agent", outcome: "accepted" },
-        { kind: "team", teamRunId: "failed-team", teamCoordinatorAgentRunId: "failed-team-lead", assignedBy: "manager-agent_team", outcome: "failed" },
-        { kind: "agent", agentRunId: "starting-agent", assignedBy: "manager-agent_org", outcome: "not_confirmed" },
-      ], closedAssignments: [
+    const openAssignments = [
+      { kind: "agent", agentRunId: "accepted-agent", assignedBy: "manager-agent", outcome: "accepted" },
+      { kind: "team", teamRunId: "failed-team", teamCoordinatorAgentRunId: "failed-team-lead", assignedBy: "manager-agent_team", outcome: "failed" },
+      { kind: "agent", agentRunId: "starting-agent", assignedBy: "manager-agent_org", outcome: "not_confirmed" },
+    ];
+    // Default: short entries (no description, context files or closed assignments; projectId once).
+    const short = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
+    expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(short);
+    expect(short).toEqual({ projectId, tasks: [{ taskId: task.taskKey, title: task.title, status: "TODO", assignments: openAssignments }] });
+    // get_project_task: the Task in full (a caller on no Task reads any).
+    const native = JSON.parse(await createBoundGetProjectTaskTool(null).execute(null, { project_id: projectId, task_id: task.taskKey }));
+    expect((await mcp("get_project_task", { project_id: projectId, task_id: task.taskKey })).structuredContent).toEqual(native);
+    expect(native).toEqual({ projectId, taskId: task.taskKey, title: task.title, status: "TODO", description: task.description,
+      contextFiles: [{ name: "instructions.txt", path: task.contextFiles[0]!.localPath }], assignments: openAssignments, closedAssignments: [
         // The copy that did the earlier (now reopened) work stays findable after its Task closed.
         { kind: "agent", agentRunId: "closed-worker", assignedBy: "manager-agent", outcome: "not_confirmed" },
-      ] }] });
+      ] });
     expect(JSON.stringify(native)).not.toContain("targetAgentRunId");
-    expect(await fs.readFile(native.tasks[0].contextFiles[0].localPath, "utf8")).toBe("saved context");
+    expect(await fs.readFile(native.contextFiles[0].path, "utf8")).toBe("saved context");
     for (const privateDetail of ["internal-delegate", "owned-helper", "hostRoot", "closedAt", "Internal dispatch detail", "linkedAt"]) {
       expect(JSON.stringify(native)).not.toContain(privateDetail);
     }
     // The stored long ID is still accepted as task_id; results name the Task by key.
     const patch = { task_id: task.taskId, description: "Revised saved work" };
-    expect(JSON.parse(await new UpdateTaskTool().execute(null, patch))).toEqual({ task: { projectId, taskId: task.taskKey, status: "TODO", dependsOn: [], partOf: null } });
-    expect((await mcp("update_task", patch)).structuredContent).toEqual({ task: { projectId, taskId: task.taskKey, status: "TODO", dependsOn: [], partOf: null } });
-    const reread = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as typeof native;
-    expect(reread.tasks[0]).toEqual({ ...native.tasks[0], description: "Revised saved work" });
+    expect(JSON.parse(await new UpdateTaskTool().execute(null, patch))).toEqual({ task: { projectId, taskId: task.taskKey, title: task.title, status: "TODO" } });
+    expect((await mcp("update_task", patch)).structuredContent).toEqual({ task: { projectId, taskId: task.taskKey, title: task.title, status: "TODO" } });
+    const reread = (await mcp("get_project_task", { project_id: projectId, task_id: task.taskId })).structuredContent as typeof native;
+    expect(reread).toEqual({ ...native, description: "Revised saved work" });
   });
 
   it("attaches context_files on create and patch through native and MCP, returning only this call's files compactly (AC-001, AC-002, AC-009)", async () => {
@@ -92,29 +104,33 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     await fs.mkdir(sourceDir);
     const file = async (name: string) => { const p = path.join(sourceDir, name); await fs.writeFile(p, `bytes of ${name}`); return p; };
     const shot = await file("shot1.png"), notes = await file("notes.md");
-    const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, description: "Fix green status", context_files: [shot, notes] }));
+    const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, title: "Fix green status", description: "Fix green status", context_files: [shot, notes] }));
     const key = created.task.taskId, taskId = await idOfKey(key);
-    const saved = (await store.readTask(projectId, taskId))!.contextFiles!;
-    expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [
-      { storedFilename: saved[0]!.storedFilename, displayName: "shot1.png" }, { storedFilename: saved[1]!.storedFilename, displayName: "notes.md" }] } });
+    const savedPath = async (index: number) => (await tasks.listTasks(projectId)).find((t) => t.taskId === taskId)!.contextFiles[index]!.localPath;
+    expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", title: "Fix green status", status: "TODO", attachedContextFiles: [
+      { name: "shot1.png", path: await savedPath(0) }, { name: "notes.md", path: await savedPath(1) }] } });
+    // AC-011: each attached file's path reads the saved copy.
+    expect(await fs.readFile(created.task.attachedContextFiles[0].path, "utf8")).toBe("bytes of shot1.png");
     const patch = { task_id: key, context_files: [await file("shot2.png")] };
     const viaMcp = (await mcp("update_task", patch)).structuredContent as typeof created;
     const viaNative = JSON.parse(await new UpdateTaskTool().execute(null, patch));
     const files = (await store.readTask(projectId, taskId))!.contextFiles!;
-    expect(files.map(f => f.displayName)).toEqual(["shot1.png", "notes.md", "shot2.png", "shot2.png"]);
-    expect(viaMcp).toEqual({ task: { projectId, taskId: key, status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [{ storedFilename: files[2]!.storedFilename, displayName: "shot2.png" }] } });
-    expect(viaNative).toEqual({ task: { projectId, taskId: key, status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [{ storedFilename: files[3]!.storedFilename, displayName: "shot2.png" }] } });
-    // The Task's full list (with locators and saved paths) stays on list_project_tasks.
-    const listed = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as { tasks: Array<{ contextFiles: Array<{ localPath: string }> }> };
-    expect(await fs.readFile(listed.tasks[0]!.contextFiles[0]!.localPath, "utf8")).toBe("bytes of shot1.png");
+    expect(files).toHaveLength(4);
+    expect(viaMcp).toEqual({ task: { projectId, taskId: key, title: "Fix green status", status: "TODO", attachedContextFiles: [{ name: "shot2.png", path: await savedPath(2) }] } });
+    expect(viaNative).toEqual({ task: { projectId, taskId: key, title: "Fix green status", status: "TODO", attachedContextFiles: [{ name: "shot2.png", path: await savedPath(3) }] } });
+    expect(await fs.readFile(viaNative.task.attachedContextFiles[0].path, "utf8")).toBe("bytes of shot2.png");
+    // The Task's full list of files (with their saved paths) is on get_project_task.
+    const read = (await mcp("get_project_task", { project_id: projectId, task_id: key })).structuredContent as { contextFiles: Array<{ name: string; path: string }> };
+    expect(read.contextFiles.map((f) => f.name)).toEqual(["shot1.png", "notes.md", "shot2.png", "shot2.png"]);
+    expect(await fs.readFile(read.contextFiles[0]!.path, "utf8")).toBe("bytes of shot1.png");
     // Calls that attach nothing keep the exact plain acknowledgement.
-    expect(JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, description: "Plain", context_files: [] })))
-      .toEqual({ task: { projectId, taskId: "business-fixture-2", status: "TODO", dependsOn: [], partOf: null } });
-    expect((await mcp("update_task", { task_id: key, status: "IN_PROGRESS" })).structuredContent).toEqual({ task: { projectId, taskId: key, status: "IN_PROGRESS", dependsOn: [], partOf: null } });
+    expect(JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, title: "Plain", description: "Plain", context_files: [] })))
+      .toEqual({ task: { projectId, taskId: "business-fixture-2", title: "Plain", status: "TODO" } });
+    expect((await mcp("update_task", { task_id: key, status: "IN_PROGRESS" })).structuredContent).toEqual({ task: { projectId, taskId: key, title: "Fix green status", status: "IN_PROGRESS" } });
   });
 
   it.each(["native", "mcp"] as const)("reports an invalid context file through %s with its path and changes nothing (AC-005)", async mode => {
-    const task = await tasks.createTask({ projectId, description: "Unchanged" });
+    const task = await tasks.createTask({ projectId, title: "Unchanged", description: "Unchanged" });
     const before = await fs.readFile(layout.taskFile(projectId, task.taskId), "utf8");
     const missing = path.join(dir, "gone.png");
     const run = (args: Record<string, unknown>) => {
@@ -125,16 +141,16 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     };
     expect(await run({ task_id: task.taskId, status: "DONE", context_files: [missing] }))
       .toEqual({ error: { code: "TASK_CONTEXT_FILE_UNAVAILABLE", message: `Context file '${missing}' does not exist or cannot be accessed.` } });
-    expect(await run({ project_id: projectId, description: "Never", context_files: ["relative.md"] }))
+    expect(await run({ project_id: projectId, title: "Never", description: "Never", context_files: ["relative.md"] }))
       .toEqual({ error: { code: "TASK_CONTEXT_INVALID", message: "Context file 'relative.md' must be a normalized absolute path." } });
     expect(await fs.readFile(layout.taskFile(projectId, task.taskId), "utf8")).toBe(before);
     expect((await store.listTasks(projectId)).map(t => t.taskId)).toEqual([task.taskId]);
   });
 
   it("marks a Task whose agent run resources can't be read as assignments unavailable, never as an empty list", async () => {
-    const a = await tasks.createTask({ projectId, description: "A" });
-    await tasks.createTask({ projectId, description: "B" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot: root("agent"), execution: { agentRunId: "w" } });
+    const a = await tasks.createTask({ projectId, title: "A", description: "A" });
+    await tasks.createTask({ projectId, title: "B", description: "B" });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: a.taskId, delegatedFrom: { delegatingRun: root("agent"), delegatorAgentRunId: "manager" }, execution: { agentRunId: "w" } });
     await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "[]");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     tasks = await service();
@@ -142,32 +158,35 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const damaged = listed.tasks.find((t: { taskId: string }) => t.taskId === a.taskKey);
     expect(damaged).toMatchObject({ assignmentsUnavailable: true });
     expect(damaged).not.toHaveProperty("assignments");
-    expect(listed.tasks.find((t: { taskId: string }) => t.taskId !== a.taskKey)).toMatchObject({ assignments: [] });
+    // A Task with no open assignment has no assignments field (absent = none), never the marker.
+    const other = listed.tasks.find((t: { taskId: string }) => t.taskId !== a.taskKey);
+    expect(other).not.toHaveProperty("assignments");
+    expect(other).not.toHaveProperty("assignmentsUnavailable");
     const done = await new UpdateTaskTool().execute(null, { task_id: a.taskId, status: "DONE" })
       .then(() => { throw new Error("Must reject"); }, e => JSON.parse(e.message));
     expect(done).toEqual({ error: { code: "TASK_AGENT_RESOURCES_UNAVAILABLE", message: expect.stringContaining("Fix or restore the file and restart the app") } });
   });
 
   it.each(["agent", "agent_team", "agent_org"] as const)("acknowledges recorded DONE only; stops under %s are requested again by repeated DONE and Task B is untouched", async kind => {
-    const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, description: "A" }));
-    expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", status: "TODO", dependsOn: [], partOf: null } });
+    const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, title: "A", description: "A" }));
+    expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", title: "A", status: "TODO" } });
     const key = created.task.taskId, taskId = await idOfKey(key);
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root(kind), execution: { teamRunId: "A" }, teamCoordinatorAgentRunId: "A-lead" });
-    const b = await tasks.createTask({ projectId, description: "B protected" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot: root(kind), execution: { agentRunId: "B" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: "manager" }, execution: { teamRunId: "A" }, teamCoordinatorAgentRunId: "A-lead" });
+    const b = await tasks.createTask({ projectId, title: "B protected", description: "B protected" });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: b.taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: "manager" }, execution: { agentRunId: "B" } });
     const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    release.mockResolvedValueOnce([{ execution: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
-    const done = { task: { projectId, taskId: key, status: "DONE", dependsOn: [], partOf: null } }, args = { task_id: key, status: "DONE" };
+    release.mockResolvedValueOnce({ execution: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } });
+    const done = { task: { projectId, taskId: key, title: "A", status: "DONE" } }, args = { task_id: key, status: "DONE" };
     expect(JSON.parse(await new UpdateTaskTool().execute(null, args))).toEqual(done);
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect(errors).toHaveBeenCalledWith("TASK_AGENT_RESOURCE_STOP_FAILED", expect.objectContaining({ taskId }));
-    expect((await mcp("update_task", args)).structuredContent).toEqual(done); await tasks.drainRuntimeReleases();
+    expect((await mcp("update_task", args)).structuredContent).toEqual(done); await releases.settled();
     expect(release).toHaveBeenCalledTimes(2);
-    expect(release).toHaveBeenLastCalledWith(root(kind), [{ teamRunId: "A" }]);
+    expect(release).toHaveBeenLastCalledWith({ teamRunId: "A" });
     expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8")).not.toContain("EXACT_CLOSE_FAILED");
     expect(tasks.isOpen({ agentRunId: "B" })).toBe(true);
     const listing = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId, status: "DONE" }));
-    expect(listing.tasks[0].assignments).toEqual([]);
+    expect(listing.tasks[0]).not.toHaveProperty("assignments");
   });
 
   it.each(["native", "mcp"] as const)("does not fabricate a create acknowledgement after a %s postcommit failure", async mode => {
@@ -175,7 +194,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
       createTask: async (...args: Parameters<ProjectStore["createTask"]>) => { await store.createTask(...args); throw new Error("test-owned postcommit failure"); },
     }));
     const diagnostics = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    const args = { project_id: projectId, description: "Recorded but unconfirmed" };
+    const args = { project_id: projectId, title: "Recorded but unconfirmed", description: "Recorded but unconfirmed" };
     const result = mode === "native"
       ? await new CreateTaskTool().execute(null, args).then(() => { throw new Error("Must not acknowledge"); }, e => JSON.parse(e.message))
       : (await mcp("create_task", args)).structuredContent;
@@ -186,8 +205,8 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
   });
 
   it.each(["native", "mcp"] as const)("returns truthful DONE postcommit uncertainty through %s: runs closed, status recorded, stop requested", async mode => {
-    const task = await tasks.createTask({ projectId, description: "Saved" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot: root("agent"), execution: { agentRunId: "owned" } });
+    const task = await tasks.createTask({ projectId, title: "Saved", description: "Saved" });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: root("agent"), delegatorAgentRunId: "manager" }, execution: { agentRunId: "owned" } });
     tasks = await service(Object.assign(Object.create(store), {
       updateTask: async (...args: Parameters<ProjectStore["updateTask"]>) => { await store.updateTask(...args); throw new Error("private postcommit detail"); },
     }));
@@ -198,11 +217,11 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const result = mode === "native" ? await new UpdateTaskTool().execute(null, args).then(() => { throw new Error("Must not acknowledge"); }, e => JSON.parse(e.message))
       : mcpResult!.structuredContent;
     expect(result).toEqual({ error: { code: "PROJECT_OPERATION_UNCONFIRMED", message: "Task change could not be confirmed. Check the saved Task before repeating." } });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect(diagnostics).toHaveBeenCalled();
     expect((await store.readTask(projectId, task.taskId))!.status).toBe("DONE");
     expect(tasks.isOpen({ agentRunId: "owned" })).toBe(false);
-    expect(release).toHaveBeenCalledWith(root("agent"), [{ agentRunId: "owned" }]);
+    expect(release).toHaveBeenCalledWith({ agentRunId: "owned" });
     expect(JSON.stringify(result)).not.toMatch(/private|released|rollback/);
   });
 });

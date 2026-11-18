@@ -30,6 +30,8 @@ export interface RunMemberNode {
   key: AgentTeamAddress
   kind: 'agent' | 'team'
   name: string
+  /** A saved run's agent: its run ID, by which Settings find the focused agent's row (autobyteus-366). */
+  agentRunId?: string
   isCoordinator: boolean
   /** What this member runs with. */
   values: RunSettingsValues
@@ -48,6 +50,10 @@ export interface RunMemberNode {
   badge?: 'delegated_copy'
   /** A delegated copy: where its launch came from (absent once the user chose its model). */
   sourceKey?: RunMemberLaunchSource
+  /** autobyteus-32: the Model Router's choice for this copy agent (its reason, task kind and where its decision is). */
+  routing?: RunMemberRouting
+  /** autobyteus-32: the other node that runs this copy (a remote copy's read-only row). */
+  remoteNode?: string
   /** A delegated copy row: what the user can stop and change on it (SR-007). */
   delegated?: RunMemberDelegatedFacts
   /** This row's own locks; when set they replace its section's. */
@@ -57,20 +63,31 @@ export interface RunMemberNode {
 
 /**
  * The user's control of a delegated copy row: where its model choice is recorded
- * (`agent:<run ID>` or `team:<run ID>`), the model it runs with before this edit, what its stop
+ * (`agent:<run ID>` or `team:<run ID>`), the agent runtime and model it runs with before this edit, what its stop
  * icon stops (only the copy itself, never one member of a Team), and whether its
  * copy is running (its model is locked until it is stopped).
  */
 export type RunMemberDelegatedFacts = Readonly<{
   target: `agent:${string}` | `team:${string}`
-  original: Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
+  original: Readonly<{ runtimeKind: string; llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
   stop: Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }> | null
   running: boolean
   stopping: boolean
 }>
 
 /** Where a delegated copy's launch came from (`configured`: a copy of an in-run placement). */
-export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'inherited' | 'configured' | 'not_recorded'
+/** `settings`: the user's own Settings edit (autobyteus-461 V-11), shown with no origin text. */
+export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'inherited' | 'configured' | 'settings' | 'not_recorded'
+
+/**
+ * A copy agent the Model Router chose for (autobyteus-32 REQ-009): why, for which kind of Task, and where its decision
+ * is recorded on this node (the delegating run, the copy and the agent; null for a copy another node decided).
+ */
+export type RunMemberRouting = Readonly<{
+  decision: Readonly<{ runId: string; copy: string; agent: string }> | null
+  taskKind: string | null
+  reason: string | null
+}>
 
 /** A recorded configured layer a copy skipped, with the server's reason. */
 export type RunMemberLaunchFallback = Readonly<{
@@ -153,12 +170,15 @@ export type RunMemberLaunchFacts = Readonly<{
   /** Absent: the user chose this row's model, so no origin is shown (SR-007). */
   sourceKey?: RunMemberLaunchSource
   notes: readonly RunMemberNote[]
+  routing?: RunMemberRouting
+  remoteNode?: string
 }>
 
 export const memberNode = (input: Readonly<{
   key: AgentTeamAddress
   kind: 'agent' | 'team'
   name: string
+  agentRunId?: string
   isCoordinator?: boolean
   values: RunSettingsValues
   parentValues: RunSettingsValues
@@ -172,6 +192,7 @@ export const memberNode = (input: Readonly<{
   key: input.key,
   kind: input.kind,
   name: input.name,
+  ...(input.agentRunId ? { agentRunId: input.agentRunId } : {}),
   isCoordinator: Boolean(input.isCoordinator),
   values: input.values,
   parentValues: input.parentValues,
@@ -182,6 +203,8 @@ export const memberNode = (input: Readonly<{
   launchNotes: Object.freeze(input.launch?.notes ?? seededNotes(input.marks, input.key)),
   ...(input.launch?.badge ? { badge: input.launch.badge } : {}),
   ...(input.launch?.sourceKey ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.launch?.routing ? { routing: input.launch.routing } : {}),
+  ...(input.launch?.remoteNode ? { remoteNode: input.launch.remoteNode } : {}),
   ...(input.delegated ? { delegated: input.delegated } : {}),
   ...(input.locked ? { locked: input.locked } : {}),
   children: Object.freeze([...(input.children ?? [])]),
@@ -327,8 +350,8 @@ const nameAt = (address: string): string => address.split('/').filter(Boolean).a
 
 /**
  * A saved Team or Org run: what each scope was saved with, with this edit's model and thinking
- * (`planner.draftSelection`; non-customized members follow their parent's edit) and, for a placed
- * team, its edited workspace. Runtime, approval and member workspaces stay as saved.
+ * (`planner.draftSelection`, with its agent runtime; non-customized members follow their parent's edit) and, for a
+ * placed team, its edited workspace. Approval and member workspaces stay as saved.
  */
 export const buildSavedRunMemberTree = (
   input: SavedRunMemberTreeInput,
@@ -339,7 +362,7 @@ export const buildSavedRunMemberTree = (
     if (!scope) throw new Error(`Saved run settings are missing configured scope '${address}'.`)
     return {
       workspace: workspace !== undefined ? workspace : deps.workspaceFromRootPath(launch.workspaceRootPath),
-      runtimeKind: launch.runtimeKind,
+      runtimeKind: scope.draftSelection.runtimeKind,
       llmModelIdentifier: scope.draftSelection.llmModelIdentifier,
       llmConfig: scope.draftSelection.llmConfig,
       autoExecuteTools: launch.autoExecuteTools,
@@ -360,7 +383,7 @@ export const buildSavedRunMemberTree = (
       name: input.tree.root_team.team_definition_name,
       root,
       nodes: Object.freeze(input.tree.root_team.members.map((member) => memberNode({
-        key: member.address, kind: 'agent', name: nameAt(member.address), isCoordinator: member.address === coordinator,
+        key: member.address, kind: 'agent', name: nameAt(member.address), agentRunId: member.agent_run_id, isCoordinator: member.address === coordinator,
         values: { ...values(member.address, teamLaunch(member.launch_configuration)), workspace: root.workspace },
         parentValues: root, fields: MEMBER_RUN_SETTING_FIELDS,
       }, deps))),
@@ -371,7 +394,7 @@ export const buildSavedRunMemberTree = (
   const nodes = org.members.map((member): RunMemberNode => {
     if ('agentRunId' in member) {
       return memberNode({
-        key: member.address, kind: 'agent', name: member.role || nameAt(member.address),
+        key: member.address, kind: 'agent', name: member.role || nameAt(member.address), agentRunId: member.agentRunId,
         values: { ...values(member.address, member.launchConfiguration), workspace: root.workspace },
         parentValues: root, fields: MEMBER_RUN_SETTING_FIELDS,
       }, deps)
@@ -383,7 +406,7 @@ export const buildSavedRunMemberTree = (
       key: member.address, kind: 'team', name: member.role || nameAt(member.address), values: teamValues, parentValues: root,
       fields: PLACED_TEAM_RUN_SETTING_FIELDS,
       children: member.members.map((agent) => memberNode({
-        key: agent.address, kind: 'agent', name: agent.role || nameAt(agent.address),
+        key: agent.address, kind: 'agent', name: agent.role || nameAt(agent.address), agentRunId: agent.agentRunId,
         isCoordinator: agent.address === member.coordinatorAddress,
         values: { ...values(agent.address, agent.launchConfiguration), workspace: teamValues.workspace },
         parentValues: teamValues, fields: MEMBER_RUN_SETTING_FIELDS,

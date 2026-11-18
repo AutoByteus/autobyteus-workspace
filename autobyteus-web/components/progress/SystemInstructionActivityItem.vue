@@ -50,12 +50,15 @@
         {{ $t('workspace.components.progress.SystemInstructionActivityItem.captured_at', { time: captureTime }) }} ·
         {{ $t('workspace.components.progress.SystemInstructionActivityItem.character_count', { count: characterCount }) }}
       </p>
-      <pre tabindex="0" class="max-h-80 min-h-8 overflow-auto whitespace-pre-wrap [overflow-wrap:anywhere] rounded-md border border-gray-200 bg-gray-50 p-3 font-mono text-xs leading-5 text-gray-900 select-text">{{ activity.content }}</pre>
+      <!-- The whole text in the Activity's own flow (autobyteus-435 REQ-014): no height cap and no inner scroll; the
+           header collapses it again. -->
+      <pre class="min-h-8 whitespace-pre-wrap [overflow-wrap:anywhere] rounded-md border border-gray-200 bg-gray-50 p-3 font-mono text-xs leading-5 text-gray-900 select-text">{{ activity.content }}</pre>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization';
 import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { SystemInstructionActivity } from '~/types/activity/RunActivity';
@@ -63,6 +66,8 @@ import {
   countUnicodeCodePoints,
   getSystemInstructionSourceKey,
 } from '~/services/activity/runActivityPresentation';
+
+const { resolvedLocale } = useLocalization();
 
 const props = defineProps<{
   activity: SystemInstructionActivity;
@@ -74,7 +79,7 @@ const expanded = ref(false);
 const contentId = computed(() => `system-instruction-content-${props.activity.activityId}`);
 const titleId = computed(() => `system-instruction-title-${props.activity.activityId}`);
 const characterCount = computed(() => countUnicodeCodePoints(props.activity.content));
-const captureTime = computed(() => props.activity.timestamp.toLocaleString(undefined, {
+const captureTime = computed(() => props.activity.timestamp.toLocaleString(resolvedLocale.value, {
   dateStyle: 'medium',
   timeStyle: 'medium',
 }));

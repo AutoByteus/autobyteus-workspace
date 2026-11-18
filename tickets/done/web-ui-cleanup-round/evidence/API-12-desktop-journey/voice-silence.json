@@ -1,0 +1,1 @@
+[["focused button","BUTTON[Start voice input]"],["50ms after Enter (start)","BODY","Stop recording"],["1.2s after start","BODY","Stop recording"],["refocused","BUTTON[Stop recording]"],["50ms after Enter (stop)","BODY","Start voice input"],["settled","BODY","Start voice input"]]

@@ -1,12 +1,11 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
   LocatedExecutionGroup,
-  LocatedExecutionKind,
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
+import { TeamExecutionIndex, type AgentExecutionKind } from "../../agent-team-execution/services/team-execution-index.js";
 import type { ConfiguredAgentExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
@@ -19,7 +18,7 @@ export type LocatedTeamAgentExecution = Readonly<{
   agentRunId: string;
   memberAddress: AgentTeamAddress;
   configuredPlacement: ConfiguredAgentExecutionNode | null;
-  executionKind: LocatedExecutionKind;
+  executionKind: AgentExecutionKind;
   /** Task agents only. */
   startedAt: string | null;
   /** Teams from the root (exclusive) down to the containing team, outermost first. */
@@ -190,7 +189,7 @@ export class TeamRunExecutionTreeLocationService {
         teamRunId: team.teamRunId,
         address: team.address,
         executionKind: team.executionKind,
-        startedAt: "startedAt" in team.source ? team.source.startedAt : null,
+        startedAt: null,
       }));
     return Object.freeze({
       rootTeamRunId: scope.root.rootRunId,
@@ -200,7 +199,7 @@ export class TeamRunExecutionTreeLocationService {
       memberAddress: agent.address,
       configuredPlacement,
       executionKind: agent.executionKind,
-      startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
+      startedAt: null,
       groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agent.agentRunId), agent.agentRunId),
       tree,

@@ -1,0 +1,28 @@
+{
+  "shown": {
+    "hash": "#/chat?id=reporter_560df74af0f3481a93100860b8328dce",
+    "hasMarker": true
+  },
+  "link": {
+    "label": "link",
+    "found": true,
+    "status": "That file is on host-b-471: open the run in that node's window to see it.",
+    "toast": "",
+    "filesDrawer": 0,
+    "requests": []
+  },
+  "attachment": {
+    "label": "attachment",
+    "found": true,
+    "status": "That file is on host-b-471: open the run in that node's window to see it.",
+    "toast": "",
+    "filesDrawer": 0,
+    "requests": [
+      "/rest/node-files/content"
+    ]
+  },
+  "hostWorkspaceText": false,
+  "links": [
+    "<B-root>/workspace/b-notes-471.txt"
+  ]
+}

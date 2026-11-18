@@ -5,6 +5,14 @@ import {
   composeSharedCarpenterPrompt,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
+import {
+  ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION,
+  CLAUDE_LONG_RUNNING_COMMAND_SECTION,
+  CODEX_LONG_RUNNING_COMMAND_SECTION,
+  GENERIC_LONG_RUNNING_COMMAND_SECTION,
+  GROK_LONG_RUNNING_COMMAND_SECTION,
+  NATIVE_LONG_RUNNING_COMMAND_SECTION,
+} from "../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
 const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>[0]> = {}) =>
@@ -30,6 +38,7 @@ const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare 
 describe("composeNativeAutoByteusPrompt", () => {
   it("renders the exact ordered standalone foundation without role or fallbacks", () => {
     const prompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ role: "Ignored role" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: null,
@@ -38,6 +47,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt.indexOf("## Agent Identity")).toBeLessThan(prompt.indexOf("## Working Environment"));
     expect(prompt.indexOf("## Working Environment")).toBeLessThan(prompt.indexOf("## Bash Operating Practice"));
     expect(prompt.indexOf("## Bash Operating Practice")).toBeLessThan(prompt.indexOf("## File And Directory Practice"));
+    expect(prompt.endsWith(`\n\n${NATIVE_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
     expect(prompt).toContain("- Name: Builder Agent");
     expect(prompt).toContain("- Description: Builds things");
     expect(prompt).toContain("#### Scope");
@@ -71,6 +81,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("renders the authored Team instruction before the exact sibling AgentTeam sections", () => {
     const prompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: teamContext(),
@@ -103,6 +114,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("omits blank optional identity and team bodies", () => {
     const prompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ description: " ", instructions: "\n" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: teamContext("  "),
@@ -117,14 +129,17 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {
     expect(() => composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ name: " " }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/name must be non-blank/);
     expect(() => composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
       workspaceRootPath: "relative/path",
     })).toThrow(/absolute path/);
     expect(() => composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/unresolved documentation placeholder/);
@@ -134,8 +149,10 @@ describe("composeNativeAutoByteusPrompt", () => {
 describe("composeSharedCarpenterPrompt", () => {
   it("renders shared identity and collaboration without native workspace or file-operation guidance", () => {
     const prompt = composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
       memberExecutionContext: teamContext(),
+      longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
 
     expect(prompt).toContain("## Agent Identity");
@@ -152,7 +169,9 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("does not require a workspace path for standalone external composition", () => {
     const prompt = composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
+      longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     });
 
     expect(prompt).toContain("## Agent Identity");
@@ -161,8 +180,59 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("preserves placeholder validation without a native workspace", () => {
     expect(() => composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
+      longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION,
     })).toThrow(/unresolved documentation placeholder/);
+  });
+
+  it("refuses a blank long-running command section", () => {
+    expect(() => composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
+      agentDefinition: definition(),
+      longRunningCommandSection: " \n",
+    })).toThrow(/long-running command section is required/);
+  });
+});
+
+describe("Long-Running Commands section (autobyteus-483, REQ-007, AC-011)", () => {
+  const base = () => ({ semanticMemoryPath: null, agentDefinition: definition(), memberExecutionContext: teamContext() });
+
+  it.each([
+    ["Claude", CLAUDE_LONG_RUNNING_COMMAND_SECTION],
+    ["Codex", CODEX_LONG_RUNNING_COMMAND_SECTION],
+    ["Antigravity", ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION],
+    ["Grok", GROK_LONG_RUNNING_COMMAND_SECTION],
+    ["DeepSeek Harness", GENERIC_LONG_RUNNING_COMMAND_SECTION],
+  ])("appends the %s section after every other shared section and changes nothing else", (_runtime, section) => {
+    const prompt = composeSharedCarpenterPrompt({ ...base(), longRunningCommandSection: section });
+    const other = composeSharedCarpenterPrompt({ ...base(), longRunningCommandSection: "## Long-Running Commands\n\n- other" });
+
+    expect(prompt.endsWith(`\n\n${section}`)).toBe(true);
+    expect(prompt.slice(0, -section.length)).toBe(other.slice(0, -"## Long-Running Commands\n\n- other".length));
+    expect(prompt.match(/^## Long-Running Commands$/gm)).toHaveLength(1);
+  });
+
+  it.each([
+    ["Claude", CLAUDE_LONG_RUNNING_COMMAND_SECTION, ["run_in_background", "2 hours"]],
+    ["Codex", CODEX_LONG_RUNNING_COMMAND_SECTION, ["exec_command", "write_stdin", "yield_time_ms"]],
+    ["Antigravity", ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION, ["run_command", "WaitMsBeforeAsync"]],
+    ["Grok", GROK_LONG_RUNNING_COMMAND_SECTION, ["run_terminal_command", "block_until_ms: 0", "get_command_or_subagent_output"]],
+    ["native AutoByteus", NATIVE_LONG_RUNNING_COMMAND_SECTION, ["run_bash", "run_in_background", "timeout_seconds"]],
+    ["DeepSeek Harness", GENERIC_LONG_RUNNING_COMMAND_SECTION, ["background"]],
+  ] as const)("writes the %s section in that runtime's terms, short, with the shared habit", (_runtime, section, terms) => {
+    expect(section.startsWith("## Long-Running Commands\n\n")).toBe(true);
+    for (const term of terms) expect(section).toContain(term);
+    expect(section).toContain("never start the same command again while it still runs, or a second command that only waits for it.");
+    expect(section).toMatch(/loops of `sleep`/);
+    expect(section.split("\n").length).toBeLessThanOrEqual(8);
+  });
+
+  it("names a time limit only where the runtime has one", () => {
+    expect(CLAUDE_LONG_RUNNING_COMMAND_SECTION).toContain("up to 2 hours");
+    for (const section of [CODEX_LONG_RUNNING_COMMAND_SECTION, GROK_LONG_RUNNING_COMMAND_SECTION, ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION, GENERIC_LONG_RUNNING_COMMAND_SECTION]) {
+      expect(section).not.toContain("2 hours");
+    }
   });
 });
 

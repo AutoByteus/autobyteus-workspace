@@ -1,0 +1,14 @@
+# Check: IMP-04
+# Command: pnpm -C autobyteus-web typecheck
+# Commit: e470edf165 (working tree identical)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 35.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.7s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+
+Note: node autobyteus-web/scripts/typecheck.mjs alone, after vitest runs, reported 101 (5 extra errors in untouched layouts/__tests__/default-drawer.spec.ts and test-support/*): stale generated .nuxt types. The package script above runs nuxt prepare first.

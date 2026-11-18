@@ -123,6 +123,15 @@ Runtime skill exposure is defined by the agent definition's `skillScope`:
 The former launch-time all-installed-skill option is not available in the run
 config UI or generated GraphQL enum; the scope belongs to the definition.
 
+### Semantic Memory
+
+The form's **Semantic memory** checkbox (`AgentSemanticMemoryField.vue`) sets the
+definition's `semanticMemoryEnabled`: the agent gets its own folder of reusable
+knowledge, shared by all its runs, and every run is told its path. The detail page
+shows On with the folder (`semanticMemoryPath`, selectable) or Off. For package and
+built-in agents the switch is a personal setting (`SEMANTIC_MEMORY`). Server side:
+[agent_memory.md](../../autobyteus-server-ts/docs/modules/agent_memory.md#semantic-memory).
+
 
 ## Store Ownership
 
@@ -144,6 +153,14 @@ mask an incomplete update response. Healthy saves return the server's explicit
 `loadIssue: null`. Returned issue values remain authoritative—this is response
 completeness, not warning suppression, fabricated defaults, or a cache-refetch
 workaround. Existing diagnostic badges and save/navigation behavior are unchanged.
+
+Saving a changed tool list also changes the definition's runs that already exist; the user
+does not stop or restart them. AutoByteus, Claude and Antigravity runs take the new list at
+once, Codex and Grok runs at their next message, a stopped run when it is restored, and each
+run shows a "Tools updated" card. A removed tool is refused from the save on. A save without a
+tool change shows nothing. See the server's
+[Tool List Updates](../../autobyteus-server-ts/docs/modules/tool_list_updates.md) and the card
+in [agent_execution_architecture.md](./agent_execution_architecture.md).
 
 ## Live Agent Package Definition Refresh
 
@@ -190,6 +207,38 @@ for example an agent change also reloads Teams and Orgs. See the server's
   package that contains a malformed agent is refused by the existing package
   validation.
 
+## Personal Settings
+
+For an agent from an agent package, or a built-in agent (Daily Assistant, Model
+Router), tools, skills, avatar, default runtime/model and semantic memory are personal settings:
+the server keeps them on this node outside the definition's files, so package
+updates, restarts and AutoByteus updates keep them (server contract:
+[personal_settings.md](../../autobyteus-server-ts/docs/modules/personal_settings.md)).
+Teams and Orgs from a package have two: avatar and default runtime/model.
+
+- Every definition carries `personalSettings` (the settings that are personal)
+  and `personalSettingsBase` (`PACKAGE`, `BUILT_IN`, or `null` for the user's
+  own definitions). The editors read them; nothing else changes: lists, launch
+  defaults and pickers already get the effective values from the server.
+- The editors keep sending full values; the server splits a save into personal
+  settings and file changes.
+- `components/definitions/PersonalSettingsNote.vue` shows one note line at the
+  top of the agent and Team editors (and in the Org editor) when
+  `personalSettingsBase` is set.
+- `components/definitions/PersonalSettingMark.vue` shows "Personal" and the
+  reset link ("Reset to the package's setting" / "Reset to the built-in
+  setting") next to each personal setting: tools, skills and avatar in
+  `AgentDefinitionForm.vue`, the avatar in `AgentTeamDefinitionForm.vue`, and
+  runtime/model in `DefinitionLaunchPreferencesSection.vue`.
+- A reset is saved at once through the store's `resetAgentPersonalSetting` /
+  `resetAgentTeamPersonalSetting` / `resetPersonalSetting` (Org). The editor
+  takes the reset setting's value from the server and keeps the user's other
+  unsaved edits (`composables/usePersonalSettingReset.ts`).
+- The agent and Team editors refill their fields from the loaded definition only
+  when its values changed. Every saved change is announced and reloads the
+  lists, so the same definition often arrives again; that keeps the user's
+  unsaved edits.
+
 ## Package Refresh Behavior
 
 Agent package import, removal, local reload, and managed GitHub update flows
@@ -205,8 +254,9 @@ Local path packages remain user-owned: edit or pull the folder outside
 AutoByteus, and press the package row's **Reload** only when the row is not
 auto-refreshing or to force a full rescan.
 Public GitHub package rows can **Check again** for default-branch drift and
-**Update** the AutoByteus-managed package when an update is available or the
-installed revision is unknown. These actions refresh the local agent catalog
+**Update** the AutoByteus-managed package when an update is available (a
+package whose installed revision is unknown cannot be updated; remove and import
+it again). These actions refresh the local agent catalog
 from configured package sources and perform a network refetch; they do not copy
 definitions between nodes.
 

@@ -1,0 +1,30 @@
+# API-01…05 — server E2E tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (AAR-01…AAR-05)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch
+# Commit: source 683b036be9 + this round's test/fixture changes (uncommitted at run time); macOS darwin 25.5, Node v22.23.1; 2026-10-25T07:38Z
+
+# Excerpt of API-01-05-server-e2e-full.log: test results and AAR-EVIDENCE lines (cut to 400 chars; full lines in the full log)
+
+AAR-EVIDENCE AAR-01 cold-read {"ms":287,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"]}
+AAR-EVIDENCE AAR-01 report {"checkedAt":"2026-10-25T07:38:41.326Z","agentRuntimes":[{"runtime":"codex_app_server","name":"Codex","limits":[{"name":"Weekly","remainingPercent":0,"resetsAt":"2026-10-30T19:57:53.000Z"}],"models":[{"id":"gpt-5.6-luna","name":"GPT-5.6-LUNA (default reasoning: medium)","blocked":{"until":"2026-10-30T19:57:53.000Z","by":"Weekly"}}]},{"runtime":"claude_agent_sdk","name":"
+AAR-EVIDENCE AAR-01 elapsed-ms 191
+AAR-EVIDENCE AAR-01 claude-stdin-frames ["control_request initialize","control_request get_usage"]
+AAR-EVIDENCE AAR-01 providers {"Anthropic":{"provider":"Anthropic","blocked":"credit balance too low","models":"10 models, 10 blocked"},"DeepSeek":{"provider":"DeepSeek","balance":"0.14 USD","models":"2 models, 0 blocked"},"Grok":{"provider":"Grok","models":"1 models, 0 blocked"},"Kimi":{"provider":"Kimi","balance":"0 USD","blocked":"no balance left","models":"1 models, 1 blocked"},"OpenAI":{"prov
+AAR-EVIDENCE AAR-01 provider-requests ["POST https://api.anthropic.com/v1/messages/count_tokens","GET https://api.deepseek.com/user/balance","GET https://api.x.ai/v1/api-key","GET https://api.moonshot.ai/v1/users/me/balance"]
+AAR-EVIDENCE AAR-01 refused-outside-urls []
+AAR-EVIDENCE AAR-02 signed-out-missing-unchecked [{"runtime":"codex_app_server","signIn":"not checked"},{"runtime":"antigravity_cli"},{"runtime":"autobyteus"}]
+AAR-EVIDENCE AAR-03 elapsed-ms 14045
+AAR-EVIDENCE AAR-03 report {"checkedAt":"2026-10-25T07:38:42.094Z","agentRuntimes":[{"runtime":"codex_app_server","name":"Codex","limits":"unknown: Codex usage limits timed out","models":[{"id":"gpt-5.6-luna","name":"GPT-5.6-LUNA (default reasoning: medium)"}]},{"runtime":"claude_agent_sdk","name":"Claude","limits":[{"name":"5-hour","remainingPercent":13,"resetsAt":"2026-10-24T21:10:00.354Z"},{"na
+AAR-EVIDENCE AAR-03 hung [{"runtime":"grok","step":"version","pid":66355},{"runtime":"agy","step":"models","pid":66359},{"runtime":"codex","step":"rateLimits","pid":66362},{"runtime":"agy","step":"usage","pid":66488},{"runtime":"agy","step":"models","pid":66489}]
+AAR-EVIDENCE AAR-03 cli-calls ["1792913921976 66346 agy --help","1792913922013 66348 agy models","1792913922049 66349 agy --help","1792913922050 66350 agy -p /usage --output-format json","1792913922085 66351 agy models","1792913922127 66354 agy --version","1792913922128 66355 grok --version","1792913922163 66356 agy --help","1792913922200 66359 agy models","1792913928164 66487 agy --help","1792913
+AAR-EVIDENCE AAR-04 with-tool enabled_tools ["list_available_agent_runtimes","send_message_to","delegate_task"]
+AAR-EVIDENCE AAR-04 mcp-report-runtimes ["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"]
+AAR-EVIDENCE AAR-04 parallel {"wallMs":404,"calls":[{"ms":346,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codexLimits":"unknown: Codex usage limits could not be read"},{"ms":327,"runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codexLimits":"read"},{"ms":404,"runtimes":["codex_app_server","claude_agen
+AAR-EVIDENCE AAR-04 without-tool enabled_tools ["list_available_agents","send_message_to","delegate_task"]
+AAR-EVIDENCE AAR-04 without-tool call {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Tool is not enabled for this session"}}
+AAR-EVIDENCE AAR-05 scanned {"responses":27,"outputChunks":123,"files":[".env","agents/autobyteus-daily-assistant/agent-config.json","agents/autobyteus-daily-assistant/agent.md","agents/plain-agent/agent-config.json","agents/plain-agent/agent.md","agents/router-agent/agent-config.json","agents/router-agent/agent.md","application-packages/platform/applications/.gitkeep","logs/server.log","memory/ag
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (5 tests) 17185ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  508ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  574ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14298ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once (AC-002, AC-012, RSK-002)  1067ms
+      Tests  5 passed (5)

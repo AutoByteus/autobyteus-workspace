@@ -1,0 +1,504 @@
+{
+  "header": "Round 5 (integrated head, after IR-007's merge of origin/personal 92fffca77a): (1) pnpm -C autobyteus-web test:e2e:large-runs-load-less --output-dir <fresh>; (2) a new seed (--teams 12 --unrelated 50) and pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <seed> --output-dir <fresh> --live --cases S-001,L-001,L-002,L-012 --samples 1; head add88e6e59 (merge bd79cb1601), server dist rebuilt; ENV-1/ENV-2; 2026-11-01. No durable test changed.",
+  "lrl": {
+    "cases": {
+      "LRL-001": {
+        "title": "AC-003, QR-005 (Team): opening a stopped six-member Team run loads only the focused member; another member loads when opened; the Team tab asks once for the focused participant",
+        "result": "Pass",
+        "ms": 41202,
+        "details": {
+          "names": {
+            "team": "LRL Team 52db"
+          },
+          "teamDefinitionId": "lrl-team-52db",
+          "teamRunId": "lrl_team_52db_3cbda4652d9444fc8b3875cff1433f64",
+          "members": {
+            "lead": "lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c",
+            "designer": "lrl_designer_52db_01a02485ee8a4b7da2712eb3c668535a",
+            "builder": "lrl_builder_52db_241449217cb340d58cd44ff3eadd0a5a",
+            "reviewer": "lrl_reviewer_52db_1c52632a58cb49fda88ff47ace1fec52",
+            "tester": "lrl_tester_52db_f8a3dabc0041434abac44bd8585fa188",
+            "writer": "lrl_writer_52db_7fb1599a586e4f75a8a2be9d144ab6da"
+          },
+          "openMs": 9855,
+          "openOps": {
+            "GetTeamMemberRunProjection:lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c": 1,
+            "GetTeamMemberFileChanges:lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c": 1,
+            "CollaborationParticipantMessages:lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c": 1
+          },
+          "loadedAtOpen": [
+            "lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c"
+          ],
+          "focused": "lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c",
+          "memberRowsShown": 6,
+          "opened": "lrl_designer_52db_01a02485ee8a4b7da2712eb3c668535a",
+          "otherOps": {
+            "GetTeamMemberRunProjection:lrl_designer_52db_01a02485ee8a4b7da2712eb3c668535a": 1,
+            "GetTeamMemberFileChanges:lrl_designer_52db_01a02485ee8a4b7da2712eb3c668535a": 1
+          },
+          "backOps": {},
+          "tabOps": {},
+          "participantRequestsTotal": {
+            "CollaborationParticipantMessages:lrl_lead_52db_61d306ad2c50432c8484c517e1b7342c": 1,
+            "CollaborationParticipantMessages:lrl_designer_52db_01a02485ee8a4b7da2712eb3c668535a": 1
+          },
+          "storedForFocused": 5
+        }
+      },
+      "LRL-002": {
+        "title": "AC-003, QR-005 (Org): opening a stopped Org run loads at most the focused member (none with no selection); another member loads when opened",
+        "result": "Pass",
+        "ms": 31454,
+        "details": {
+          "names": {
+            "org": "LRL Org 7c43"
+          },
+          "orgDefinitionId": "lrl-org-7c43",
+          "orgRunId": "lrl_org_7c43_03ef069fcc2a43b8a14889c1d22278ff",
+          "orgAgents": [
+            {
+              "address": "/manager",
+              "agentRunId": "lrlo_manager_7c43_ab8248928dc5414cbaf0eeaee781c03e"
+            },
+            {
+              "address": "/writer",
+              "agentRunId": "lrlo_writer_7c43_7831b95b22054c1fbf8a553644cd6a0b"
+            },
+            {
+              "address": "/analyst",
+              "agentRunId": "lrlo_analyst_7c43_623b62a2297a4511996215ef8572514f"
+            },
+            {
+              "address": "/pair/lead",
+              "agentRunId": "lrlo_lead_7c43_f0094f501fd44dae862e7c4755850ddd"
+            },
+            {
+              "address": "/pair/engineer",
+              "agentRunId": "lrlo_engineer_7c43_f7375ae047fd498d95c4a9ff3c51257b"
+            }
+          ],
+          "openMs": 3323,
+          "openOps": {},
+          "loadedAtOpen": [],
+          "centerAtOpen": "Stopped Agent Org Select a member from the historical run in the sidebar to continue from its saved state.",
+          "writerOps": {
+            "GetAgentOrgMemberRunProjection:lrlo_writer_7c43_7831b95b22054c1fbf8a553644cd6a0b": 1,
+            "GetAgentOrgMemberFileChanges:lrlo_writer_7c43_7831b95b22054c1fbf8a553644cd6a0b": 1
+          },
+          "memberRowsShown": 3,
+          "allOrgMemberLoads": {
+            "GetAgentOrgMemberRunProjection:lrlo_writer_7c43_7831b95b22054c1fbf8a553644cd6a0b": 1,
+            "GetAgentOrgMemberFileChanges:lrlo_writer_7c43_7831b95b22054c1fbf8a553644cd6a0b": 1
+          }
+        }
+      },
+      "LRL-003": {
+        "title": "AC-002 live: a message sent while the Team tab loads, and while the stream is down, appears once; the list equals the stored log",
+        "result": "Pass",
+        "ms": 25431,
+        "details": {
+          "names": {
+            "team": "LRL Live e7a0"
+          },
+          "teamDefinitionId": "lrl-live-e7a0",
+          "teamRunId": "lrl_live_e7a0_1a70bb93602a4cabaa5c17a13e077362",
+          "members": {
+            "lead": "lrll_lead_e7a0_49a096e1ed6643bca402b77e748f88d9",
+            "worker": "lrll_worker_e7a0_35ef7492211643358fa0691a5d10c9e5"
+          },
+          "heldResponseHasM2": false,
+          "loadingShownWhileHeld": true,
+          "afterLoad": [
+            "Message Nov 1, 05:19 PM from lead During e7a0 M2",
+            "Message Nov 1, 05:19 PM from lead Before e7a0 M1"
+          ],
+          "shownWhileDown": false,
+          "afterReconnect": [
+            "Message Nov 1, 05:19 PM from lead Offline e7a0 M3",
+            "Message Nov 1, 05:19 PM from lead During e7a0 M2",
+            "Message Nov 1, 05:19 PM from lead Before e7a0 M1"
+          ]
+        }
+      },
+      "LRL-004": {
+        "title": "AC-006: a Team run with a damaged stored message log opens; its Team tab and the phone show the messages as unavailable with the reason; a message to it is refused with the reason",
+        "result": "Pass",
+        "ms": 35513,
+        "details": {
+          "names": {
+            "team": "LRL Damaged affa"
+          },
+          "teamDefinitionId": "lrl-damaged-affa",
+          "teamRunId": "lrl_damaged_affa_664753090a9a42569a06f825a0ccad45",
+          "members": {
+            "lead": "lrld_lead_affa_40c128469fb549e58b99240662595935",
+            "worker": "lrld_worker_affa_5540ad2b7b9446c18b8c2f866cf88e6c"
+          },
+          "logFiles": [
+            "team_communication_messages_active.jsonl"
+          ],
+          "damaged": {
+            "file": "team_communication_messages_active.jsonl",
+            "line": 2,
+            "nonEmptyLines": 3
+          },
+          "memberRowsShown": 2,
+          "teamTabText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+          "serverReason": "GraphQL: [{\"message\":\"team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"locations\":[{\"line\":1,\"column\":41}],\"path\":[\"collaborationParticipantMessages\"]}]",
+          "expectedReason": "team_communication_messages_active.jsonl:line 2 is not valid JSON",
+          "restoreResponses": [
+            "{\"data\":{\"restoreAgentTeamRun\":{\"__typename\":\"RestoreAgentTeamRunResult\",\"success\":false,\"message\":\"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"teamRunId\":null}}}"
+          ],
+          "resumeConsoleErrors": [
+            "Failed to send message via activeContextStore: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:53145/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:53145/_nuxt/stores/acti",
+            "Error sending requirement: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:53145/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:53145/_nuxt/stores/activeContextStore.ts:11"
+          ],
+          "activeAfterResume": false,
+          "composerStillHolds": true,
+          "reasonVisibleAfterResume": 1,
+          "phoneText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+          "phoneRows": 0
+        }
+      },
+      "LRL-005": {
+        "title": "Reload rule (SR-004\u2026SR-006): a running Team opens with one participant request; a live message adds none; a stop and resume reloads the list",
+        "result": "Pass",
+        "ms": 34671,
+        "details": {
+          "names": {
+            "team": "LRL Running 07bd"
+          },
+          "teamDefinitionId": "lrl-running-07bd",
+          "teamRunId": "lrl_running_07bd_5773c2b0edcf45c088ca3e818ea978e2",
+          "members": {
+            "lead": "lrlr_lead_07bd_37da05b3fe1c4750b59c8584c3238510",
+            "worker": "lrlr_worker_07bd_15d687ed366f450ebe6411cb026ba06e"
+          },
+          "openParticipantOps": {
+            "CollaborationParticipantMessages:lrlr_lead_07bd_37da05b3fe1c4750b59c8584c3238510": 1
+          },
+          "focused": "lrlr_lead_07bd_37da05b3fe1c4750b59c8584c3238510",
+          "liveParticipantOps": {},
+          "resumeParticipantOps": {
+            "CollaborationParticipantMessages:lrlr_lead_07bd_37da05b3fe1c4750b59c8584c3238510": 1
+          },
+          "afterResume": [
+            "Message Nov 1, 05:21 PM to worker Resumed 07bd M3",
+            "Message Nov 1, 05:20 PM to worker Running 07bd M2",
+            "Message Nov 1, 05:20 PM to worker Running 07bd M1"
+          ]
+        }
+      }
+    },
+    "browserErrors": [],
+    "cleanup": [
+      {
+        "pid": 36834,
+        "stop": "SIGTERM"
+      },
+      {
+        "pid": 36060,
+        "stop": "SIGTERM"
+      },
+      {
+        "pid": 36035,
+        "stop": "already-exited"
+      },
+      {
+        "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-hhaRsO"
+      }
+    ]
+  },
+  "hub": {
+    "stackHead": "add88e6e59",
+    "probeHead": "add88e6e59",
+    "result": "Pass",
+    "errors": [],
+    "cleanup": {
+      "browserClosed": true,
+      "frontend": {
+        "pid": 37965,
+        "status": "terminated",
+        "exit": "SIGTERM"
+      },
+      "backend": {
+        "pid": 37940,
+        "status": "terminated",
+        "exit": 0
+      },
+      "runRootRemoved": true,
+      "backendPortClosed": true,
+      "frontendPortClosed": true
+    },
+    "cases": {
+      "S-API": {
+        "result": "Not Run (filtered)",
+        "description": "Server timings over HTTP: hub view, hub conversation, a copy projection, a copy artifact list (generic and scoped)"
+      },
+      "S-001": {
+        "result": "Pass",
+        "description": "Stopped hub cold sample 1: T-1, T-2, T-3 with request counts; reopen without refetch",
+        "ms": 6812,
+        "load": [
+          4.6,
+          7.7,
+          11.2
+        ],
+        "details": {
+          "teamRowsShown": 12,
+          "t1": {
+            "hubRowToCopyRowsMs": 19.799999952316284,
+            "hubRowAt": 461.2000000476837,
+            "copyRowsAt": 481,
+            "requestStart": 0,
+            "opsUntilRows": {
+              "GetUpdateNotifications": 1,
+              "GetUpdateAutomationSettings": 1,
+              "GetApplicationsCapability": 1,
+              "GetServerSettings": 1,
+              "GetAllWorkspaces": 1,
+              "ListWorkspaceRunHistory": 1,
+              "ListCollaborationRootHistory": 1,
+              "GetAgentDefinitions": 1,
+              "GetAgentTeamDefinitions": 1,
+              "GetAgentOrgDefinitions": 1,
+              "GetWorkspaceRunHistory": 1,
+              "GetAgentRunCollaboration": 2,
+              "GetTaskWorkerTasks": 3
+            }
+          },
+          "hubClickToConversationMs": 130.5,
+          "hubClickOps": {
+            "GetRunProjection": 1,
+            "GetAgentRunResumeConfig": 1,
+            "GetRunFileChanges": 1,
+            "CollaborationParticipantMessages": 1,
+            "GetSkills": 1
+          },
+          "hubClickSettledOps": {
+            "GetRunProjection": 1,
+            "GetAgentRunResumeConfig": 1,
+            "GetRunFileChanges": 1,
+            "CollaborationParticipantMessages": 1,
+            "GetSkills": 2
+          },
+          "copyClickToConversationMs": 30.799999952316284,
+          "copyClickMemberOps": {
+            "GetAgentRunCollaborationMemberProjection": 1,
+            "GetAgentRunCollaborationMemberFileChanges": 1
+          },
+          "copyReopenMs": 26.59999990463257,
+          "copyReopenOps": {},
+          "state": {
+            "selected": "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece",
+            "child": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "target": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "conversationId": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "messageCount": 1,
+            "pending": [],
+            "error": null,
+            "phase": "historical",
+            "rows": 24,
+            "teams": 12
+          }
+        }
+      },
+      "S-ROWS": {
+        "result": "Not Run (filtered)",
+        "description": "Every Team row and every member row with statuses and Task summaries (AC-005)"
+      },
+      "L-001": {
+        "result": "Pass",
+        "description": "Running large hub: hub row \u2192 copy rows and hub click \u2192 conversation (AC-003 running, QR-001/QR-002)",
+        "ms": 6366,
+        "load": [
+          4.6,
+          7.7,
+          11.1
+        ],
+        "details": {
+          "t1": {
+            "hubRowToCopyRowsMs": 17,
+            "hubRowAt": 512.5,
+            "copyRowsAt": 529.5,
+            "requestStart": 39,
+            "opsUntilRows": {
+              "GetUpdateNotifications": 1,
+              "GetUpdateAutomationSettings": 1,
+              "GetApplicationsCapability": 1,
+              "GetServerSettings": 1,
+              "GetAllWorkspaces": 1,
+              "ListWorkspaceRunHistory": 1,
+              "ListCollaborationRootHistory": 1,
+              "GetAgentDefinitions": 1,
+              "GetAgentTeamDefinitions": 1,
+              "GetAgentOrgDefinitions": 1,
+              "GetRunProjection": 1,
+              "GetAgentRunResumeConfig": 1,
+              "GetRunFileChanges": 1,
+              "GetWorkspaceRunHistory": 1,
+              "GetAgentRunCollaboration": 2,
+              "GetTaskWorkerTasks": 3
+            }
+          },
+          "hubClickToConversationMs": 102.89999997615814,
+          "ops": {
+            "GetRunProjection": 1,
+            "GetAgentRunResumeConfig": 1,
+            "GetRunFileChanges": 1,
+            "CollaborationParticipantMessages": 1,
+            "GetSkills": 2
+          },
+          "participants": {
+            "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece": 1
+          },
+          "memberOps": {},
+          "state": {
+            "selected": "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece",
+            "child": null,
+            "target": "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece",
+            "conversationId": "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece",
+            "messageCount": 51,
+            "pending": [],
+            "error": null,
+            "phase": "live",
+            "rows": 12,
+            "teams": 12
+          }
+        }
+      },
+      "L-002": {
+        "result": "Pass",
+        "description": "New delegation while one copy is open: new row, opened copy keeps its conversation, exactly one projection and one artifact request (AC-007, AC-006)",
+        "ms": 5163,
+        "load": [
+          4.8,
+          7.7,
+          11.1
+        ],
+        "details": {
+          "teamsBefore": 12,
+          "teamsAfter": 13,
+          "minMessagesDuringRepublication": 1,
+          "ops": {
+            "GetAgentRunCollaborationMemberProjection": 1,
+            "GetAgentRunCollaborationMemberFileChanges": 1,
+            "GetTaskWorkerTasks": 2,
+            "ListWorkspaceRunHistory": 1,
+            "ListCollaborationRootHistory": 1
+          },
+          "participants": {},
+          "hubMessagesBefore": 62,
+          "hubMessagesAfter": 62,
+          "memberOps": {
+            "GetAgentRunCollaborationMemberProjection": 1,
+            "GetAgentRunCollaborationMemberFileChanges": 1
+          },
+          "allMemberOps": {
+            "GetAgentRunCollaborationMemberProjection": 1,
+            "GetAgentRunCollaborationMemberFileChanges": 1
+          },
+          "snapshotsReceived": 1,
+          "events": [
+            "task_execution_started",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation_batch",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation",
+            "agent_presentation"
+          ],
+          "before": {
+            "selected": "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece",
+            "child": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "target": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "conversationId": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "messageCount": 1,
+            "pending": [],
+            "error": null,
+            "phase": "live",
+            "rows": 18,
+            "teams": 12
+          },
+          "after": {
+            "selected": "large_hub_manager_probe_4c8051babde8432da5b3e3927f816ece",
+            "child": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "target": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "conversationId": "implementation_engineer_bf2b67f5134147079b9a280e521ca4b2",
+            "messageCount": 1,
+            "pending": [],
+            "error": null,
+            "phase": "live",
+            "rows": 19,
+            "teams": 13
+          }
+        }
+      },
+      "L-003": {
+        "result": "Not Run (filtered)",
+        "description": "Composer send to the opened copy of the running hub: shown, delivered, answered and stored (AC-006)"
+      },
+      "L-004": {
+        "result": "Not Run (filtered)",
+        "description": "Queued input of a busy copy (sent by a second client) survives a reload and shows when the copy is opened (AC-006, Assumption 2)"
+      },
+      "L-008": {
+        "result": "Not Run (filtered)",
+        "description": "Status of a copy woken by a composer send into a held turn: row, header and server agree (REQ-005, REQ-006)"
+      },
+      "L-009": {
+        "result": "Not Run (filtered)",
+        "description": "Opening a copy while it works through a burst of turns: loads (or retries on reselect) and ends with its complete conversation (CAND-003 residual)"
+      },
+      "L-010": {
+        "result": "Not Run (filtered)",
+        "description": "Opening a copy whose stored conversation is several MB: shown within QR-002 with one projection and one artifact request"
+      },
+      "L-011": {
+        "result": "Not Run (filtered)",
+        "description": "A copy whose load fails (network error on its projection) is logged with its identity, stays not loaded, other copies open, reopening loads it (AC-004 alternate)"
+      },
+      "L-005": {
+        "result": "Not Run (filtered)",
+        "description": "Copy row of a hub that is not the selected run: at most two loads, ends loaded (MP-001, R-004)"
+      },
+      "L-006": {
+        "result": "Not Run (filtered)",
+        "description": "Project Task locate on the large hub selects the worker within the 5 s navigation wait (FU-4)"
+      },
+      "L-012": {
+        "result": "Pass",
+        "description": "A delegation whose new copy reports to the hub at once: the hub's Team-tab list is fetched at most once more and shows the report once (large-runs-load-less SR-007)",
+        "ms": 7410,
+        "load": [
+          4.6,
+          7.5,
+          11
+        ],
+        "details": {
+          "before": 62,
+          "after": 63,
+          "participants": {},
+          "hubListReloaded": false,
+          "rowsShown": 63,
+          "markerShown": 1
+        }
+      },
+      "L-007": {
+        "result": "Not Run (filtered)",
+        "description": "Composer send to an opened copy of a stopped hub wakes the copy, which answers; stored (AC-006, REQ-006)"
+      }
+    }
+  }
+}

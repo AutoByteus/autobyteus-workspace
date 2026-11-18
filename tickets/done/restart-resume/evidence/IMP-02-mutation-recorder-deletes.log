@@ -1,0 +1,8 @@
+# IMP-02 mutation recorder-deletes (AR-005: the recorder deletes when it has no entries; tests from b50e2354ab)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/busy-run-recorder.test.ts --no-watch --testTimeout=8000
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × with no busy runs writes nothing and never removes a record not yet consumed (AR-005) 33ms
+      Tests  1 failed | 4 passed (5)

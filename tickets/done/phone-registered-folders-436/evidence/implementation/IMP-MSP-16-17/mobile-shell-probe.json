@@ -1,0 +1,240 @@
+{
+  "startedAt": "2026-11-09T04:00:07.681Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58587,
+      "nodeId": "srv_r6SRz0X-lSSdCnQ9AXx5nTrCbChNqAff",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58588,
+      "nodeId": "srv_WzVjk4rFxzM4BoyoOzoY7gZw-TFRzj0e",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_8db34e11534a474488b110d761f7ce8c",
+    "writerRun": "release_notes_writer_54fffdf6d8cf4a74a092fb99d5674275",
+    "squadRun": "docs_review_team_3aa261d1429948eb8ca35f3d3ffd6520",
+    "reviewer": "release_notes_writer_2e5af86a59714dd3a9a4167028076d6f",
+    "memberDelegated": "fact_checker_92a5c3fac8e641f8967cc0fa67d14dee",
+    "remoteAgentRun": "publisher_513f36ff35f64444bb0ce9688199f500",
+    "remoteTeamRun": "studio_team_4b3d6f2c24a2419e9ed25d6f5f2aea12",
+    "plain": [
+      "fact_checker_f1369af3481440e98c443d5c6b639ee8",
+      "fact_checker_72436f32ce3240dc933efd8874c9fda5",
+      "fact_checker_d8615b22962e48e998eaa908a89ad9b3"
+    ],
+    "org": "delivery_org_ebf216f4e8904b0e8b9f9355a8dc733c",
+    "orgPlanner": "release_notes_writer_72078ffb304e4bdab66fd912974a01d4",
+    "reviewOrg": "review_org_3fc67359b027443c8951ce79fbee1bfc",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_93770f768753494598a112fd9ac0cdd3",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_5bd254faeaa743019f6c4a7f4bf064c4",
+    "deliveryLead": "fact_checker_3568f5b0167f44748ef52de750ade62d",
+    "deliveryMate": "release_notes_writer_5458e474b9d145948ba34fa926d58fe1",
+    "leadDelegated": "changelog_helper_e31436c3448e4daca2831938cab36f0b",
+    "approver": "approver_9a74fab455a24c11b9155d9d81c04ec1",
+    "taskA": "launch-e0af56-1",
+    "taskB": "launch-e0af56-2"
+  },
+  "cases": {
+    "MSP-16": {
+      "result": "Pass",
+      "seconds": 98.7,
+      "draftPath": "alpha/workspace/drafts/draft-v3.txt",
+      "outsidePath": "alpha/outside-427/private.txt",
+      "workspaceId": "agent_ws_ec25c606904dbb0cc8a51f745d02f41fc035ad4c3351e69736c9526496cfd8eb",
+      "links": {
+        "draft": 1,
+        "outside": 1,
+        "draftLabel": "draft-v3.txt",
+        "draftAria": "Open draft-v3.txt in Files"
+      },
+      "before": "?screen=run",
+      "opened": {
+        "viewer": 1,
+        "text": true,
+        "query": {
+          "screen": "files",
+          "workspace": "agent_ws_ec25c606904dbb0cc8a51f745d02f41fc035ad4c3351e69736c9526496cfd8eb",
+          "file": "drafts/draft-v3.txt"
+        },
+        "status": 0
+      },
+      "back": {
+        "state": "open",
+        "query": "?screen=run",
+        "name": "lead",
+        "link": 1,
+        "composer": 1
+      },
+      "outside": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-3fvY7I/alpha/outside-427/private.txt"
+        },
+        "text": "private.txt\n1\n2\nOUTSIDE-TEXT-9090 opens read-only on the phone.",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "notes": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-3fvY7I/alpha/outside-427/notes-436.md"
+        },
+        "text": "notes-436.md\nNOTES-436\n\nREAD-ONLY-NOTES-436 from a worktree.",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "image": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-3fvY7I/alpha/outside-427/diagram-436.png"
+        },
+        "text": "diagram-436.png\n100%\nScroll to zoom • Drag to pan • Double-click to reset",
+        "error": "",
+        "image": 1,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "missing": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-3fvY7I/alpha/outside-427/gone-436.md"
+        },
+        "text": "gone-436.md\n\nThis file was not found on the computer.",
+        "error": "This file was not found on the computer.",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "folder": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-3fvY7I/alpha/outside-427/reports-436.md"
+        },
+        "text": "reports-436.md\n\nThis path is a folder, not a file.",
+        "error": "This path is a folder, not a file.",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "consoleLines": [
+        "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "error: Failed to load resource: the server responded with a status of 400 (Bad Request)"
+      ]
+    },
+    "MSP-17": {
+      "result": "Pass",
+      "seconds": 4.3,
+      "orgRunId": "delivery_org_da47babb5d49478393f06dbffcd73e80",
+      "task": {
+        "address": "/changelog_helper",
+        "agentRunId": "changelog_helper_7f16a0bb3908484d9fd34d6da1f5f870",
+        "teamRunId": null
+      },
+      "echoed": true,
+      "terminated": true,
+      "taskKey": "org:delivery_org_da47babb5d49478393f06dbffcd73e80/task-agent:changelog_helper_7f16a0bb3908484d9fd34d6da1f5f870",
+      "before": {
+        "links": 1,
+        "composer": 0,
+        "status": 0
+      },
+      "after": {
+        "status": 0,
+        "composer": 0,
+        "urlChanged": true,
+        "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-3fvY7I/alpha/outside-426/old-notes.txt",
+        "viewer": 1,
+        "text": true
+      },
+      "backToList": {
+        "backs": [
+          {
+            "step": 0,
+            "count": 1,
+            "enabled": true,
+            "screen": "open",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_da47babb5d49478393f06dbffcd73e80&mode=history&memberAddress=/changelog_helper&agentRunId=changelog_helper_7f16a0bb3908484d9fd34d6da1f5f870&screen=run"
+          }
+        ],
+        "list": 1
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    },
+    {
+      "case": "MSP-16",
+      "line": "phone console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true
+    },
+    {
+      "case": "MSP-16",
+      "line": "phone console: Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "known": true
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-16": "Pass",
+      "MSP-17": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-09T04:02:29.573Z"
+}

@@ -1,0 +1,822 @@
+{
+  "startedAt": "2026-11-08T10:33:09.414Z",
+  "serial": "emulator-5584",
+  "cycles": [
+    {
+      "label": "team",
+      "kind": "team",
+      "doze": false,
+      "sameActivityAndTask": true,
+      "activityBefore": "eec704 task 18",
+      "activityAfter": "eec704 task 18",
+      "backgroundMs": 150038,
+      "screenWakefulnessAfterSleep": "Asleep",
+      "markers": [
+        "EMU-T-2",
+        "EMU-T-3",
+        "EMU-T-4"
+      ],
+      "producedAllWhileInBackground": true,
+      "backgroundAt": 42842,
+      "foregroundAt": 192880,
+      "foregroundWallClock": "2026-11-08T10:36:22.294Z",
+      "appInFrontAfterMs": 238,
+      "streamReopenedAfterAppInFrontMs": {
+        "agent-team": 4045,
+        "agent": 4060
+      },
+      "shownAfterForegroundMs": 7393,
+      "shownAfterForegroundBounds": {
+        "notBeforeMs": 5398,
+        "noLaterThanMs": 7393,
+        "looks": 1,
+        "averageLookMs": 1995
+      },
+      "nextMarker": {
+        "id": "EMU-T-5",
+        "phoneMinusNodeMs": 2110,
+        "bounds": {
+          "notBeforeMs": 47,
+          "noLaterThanMs": 2110,
+          "averageLookMs": 2063
+        }
+      },
+      "streamReopenedAfterForegroundMs": {
+        "agent-team": 4283,
+        "agent": 4298
+      },
+      "liveBeforeBackgroundMs": -34,
+      "streamConnectionsWhileInBackground": [],
+      "streamConnectionsAfterForeground": [
+        {
+          "openedAt": 197163,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+        },
+        {
+          "openedAt": 197178,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+        }
+      ],
+      "note": "shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front",
+      "logcat": {
+        "resumeLine": "11-08 11:36:21.768 I/wm_on_resume_called(10879): [15648516,org.autobyteus.mobile.MainActivity,RESUME_ACTIVITY,0]",
+        "teamConnectedAfterResumeMs": 3997,
+        "agentConnectedAfterResumeMs": 4011,
+        "note": "the agent stream opens only after its catch-up (stored state) is committed; the Team stream gets its snapshot right after it connects"
+      }
+    },
+    {
+      "label": "agent",
+      "kind": "agent",
+      "doze": false,
+      "sameActivityAndTask": true,
+      "activityBefore": "eec704 task 18",
+      "activityAfter": "eec704 task 18",
+      "backgroundMs": 150001,
+      "screenWakefulnessAfterSleep": "Asleep",
+      "markers": [
+        "EMU-A-7",
+        "EMU-A-8",
+        "EMU-A-9"
+      ],
+      "producedAllWhileInBackground": true,
+      "backgroundAt": 218290,
+      "foregroundAt": 368291,
+      "foregroundWallClock": "2026-11-08T10:39:17.705Z",
+      "appInFrontAfterMs": 333,
+      "streamReopenedAfterAppInFrontMs": {
+        "agent-team": 602,
+        "agent": 718
+      },
+      "shownAfterForegroundMs": 7421,
+      "shownAfterForegroundBounds": {
+        "notBeforeMs": 5434,
+        "noLaterThanMs": 7421,
+        "looks": 1,
+        "averageLookMs": 1987
+      },
+      "nextMarker": {
+        "id": "EMU-A-10",
+        "phoneMinusNodeMs": 2046,
+        "bounds": {
+          "notBeforeMs": 49,
+          "noLaterThanMs": 2046,
+          "averageLookMs": 1997
+        }
+      },
+      "streamReopenedAfterForegroundMs": {
+        "agent-team": 935,
+        "agent": 1051
+      },
+      "liveBeforeBackgroundMs": -56,
+      "streamConnectionsWhileInBackground": [],
+      "streamConnectionsAfterForeground": [
+        {
+          "openedAt": 369226,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+        },
+        {
+          "openedAt": 369342,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+        }
+      ],
+      "note": "shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front",
+      "logcat": {
+        "resumeLine": "11-08 11:39:17.362 I/wm_on_resume_called(10879): [15648516,org.autobyteus.mobile.MainActivity,RESUME_ACTIVITY,0]",
+        "teamConnectedAfterResumeMs": 546,
+        "agentConnectedAfterResumeMs": 698,
+        "note": "the agent stream opens only after its catch-up (stored state) is committed; the Team stream gets its snapshot right after it connects"
+      }
+    },
+    {
+      "label": "agent-doze",
+      "kind": "agent",
+      "doze": true,
+      "sameActivityAndTask": true,
+      "activityBefore": "eec704 task 18",
+      "activityAfter": "eec704 task 18",
+      "backgroundMs": 150058,
+      "screenWakefulnessAfterSleep": "Asleep",
+      "markers": [
+        "EMU-A-12",
+        "EMU-A-13",
+        "EMU-A-14"
+      ],
+      "producedAllWhileInBackground": true,
+      "backgroundAt": 393578,
+      "foregroundAt": 543636,
+      "foregroundWallClock": "2026-11-08T10:42:13.050Z",
+      "appInFrontAfterMs": 252,
+      "streamReopenedAfterAppInFrontMs": {
+        "agent-team": 1015,
+        "agent": 1117
+      },
+      "shownAfterForegroundMs": 7368,
+      "shownAfterForegroundBounds": {
+        "notBeforeMs": 5326,
+        "noLaterThanMs": 7368,
+        "looks": 1,
+        "averageLookMs": 2042
+      },
+      "nextMarker": {
+        "id": "EMU-A-15",
+        "phoneMinusNodeMs": 2113,
+        "bounds": {
+          "notBeforeMs": 49,
+          "noLaterThanMs": 2113,
+          "averageLookMs": 2064
+        }
+      },
+      "streamReopenedAfterForegroundMs": {
+        "agent-team": 1267,
+        "agent": 1369
+      },
+      "liveBeforeBackgroundMs": -37,
+      "streamConnectionsWhileInBackground": [],
+      "streamConnectionsAfterForeground": [
+        {
+          "openedAt": 544903,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+        },
+        {
+          "openedAt": 545005,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+        }
+      ],
+      "note": "shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front",
+      "logcat": {
+        "resumeLine": "11-08 11:42:12.519 I/wm_on_resume_called(10879): [15648516,org.autobyteus.mobile.MainActivity,RESUME_ACTIVITY,0]",
+        "teamConnectedAfterResumeMs": 1221,
+        "agentConnectedAfterResumeMs": 1221,
+        "note": "the agent stream opens only after its catch-up (stored state) is committed; the Team stream gets its snapshot right after it connects"
+      }
+    }
+  ],
+  "connections": [
+    {
+      "openedAt": 8123,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/rest/remote-access/status"
+    },
+    {
+      "openedAt": 9235,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjY1MDg4IiwicGFpcmluZ0NvZGUiOiJ0aTZMbWtUbG9FQnhTeXRfNlZ6cHZTZ3MiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA4VDEwOjM4OjEzLjUxNVoiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0"
+    },
+    {
+      "openedAt": 9305,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/6gKLa7nn.js"
+    },
+    {
+      "openedAt": 9322,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css"
+    },
+    {
+      "openedAt": 9386,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/C0peU2YB.js"
+    },
+    {
+      "openedAt": 9454,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DxfFyxED.js"
+    },
+    {
+      "openedAt": 9484,
+      "closedAt": 21679,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/J1bxg2UA.js"
+    },
+    {
+      "openedAt": 14035,
+      "closedAt": 21679,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 14382,
+      "closedAt": 21679,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 14577,
+      "closedAt": 21679,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+    },
+    {
+      "openedAt": 21679,
+      "closedAt": 48598,
+      "webSocket": false,
+      "path": "/rest/remote-access/status"
+    },
+    {
+      "openedAt": 22471,
+      "closedAt": 48598,
+      "webSocket": false,
+      "path": "/mobile"
+    },
+    {
+      "openedAt": 22587,
+      "closedAt": 38449,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/6gKLa7nn.js"
+    },
+    {
+      "openedAt": 22642,
+      "closedAt": 40415,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css"
+    },
+    {
+      "openedAt": 22648,
+      "closedAt": 48598,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/C0peU2YB.js"
+    },
+    {
+      "openedAt": 22651,
+      "closedAt": 48598,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DxfFyxED.js"
+    },
+    {
+      "openedAt": 22666,
+      "closedAt": 48598,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DN8rrJ5d.js"
+    },
+    {
+      "openedAt": 23850,
+      "closedAt": 48598,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 24118,
+      "closedAt": 48598,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 24167,
+      "closedAt": 48598,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+    },
+    {
+      "openedAt": 193776,
+      "closedAt": 224239,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 193776,
+      "closedAt": 224238,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 197150,
+      "closedAt": 224238,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 197163,
+      "closedAt": 224238,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+    },
+    {
+      "openedAt": 197169,
+      "closedAt": 224238,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 197178,
+      "closedAt": 224238,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 197189,
+      "closedAt": 210641,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 197189,
+      "closedAt": 210641,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 210641,
+      "closedAt": 224238,
+      "webSocket": false,
+      "path": "/rest/health"
+    },
+    {
+      "openedAt": 210648,
+      "closedAt": 224238,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 210676,
+      "closedAt": 224239,
+      "webSocket": true,
+      "path": "/ws/agent-collaboration/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 368899,
+      "closedAt": 395775,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 369224,
+      "closedAt": 395775,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 369224,
+      "closedAt": 395775,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 369224,
+      "closedAt": 395775,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 369225,
+      "closedAt": 385962,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 369225,
+      "closedAt": 385962,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 369226,
+      "closedAt": 395775,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+    },
+    {
+      "openedAt": 369309,
+      "closedAt": 395775,
+      "webSocket": true,
+      "path": "/ws/agent-collaboration/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 369342,
+      "closedAt": 395775,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 385962,
+      "closedAt": 395775,
+      "webSocket": false,
+      "path": "/rest/health"
+    },
+    {
+      "openedAt": 385968,
+      "closedAt": 395775,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 544460,
+      "closedAt": 557486,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 544460,
+      "closedAt": 557486,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 544872,
+      "closedAt": 557486,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 544903,
+      "closedAt": 557486,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+    },
+    {
+      "openedAt": 544974,
+      "closedAt": 557486,
+      "webSocket": true,
+      "path": "/ws/agent-collaboration/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 545005,
+      "closedAt": 557486,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+    },
+    {
+      "openedAt": 545155,
+      "closedAt": 557486,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 545171,
+      "closedAt": 557486,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 545217,
+      "closedAt": 557485,
+      "webSocket": false,
+      "path": "/graphql"
+    }
+  ],
+  "timeline": [
+    {
+      "t": 4227,
+      "event": "device",
+      "model": "sdk_gphone64_arm64",
+      "sdk": "35",
+      "webview": "124.0.6367.219"
+    },
+    {
+      "t": 4940,
+      "event": "apk",
+      "versionName": "0.1.0"
+    },
+    {
+      "t": 18167,
+      "event": "paired through the share intent"
+    },
+    {
+      "t": 34031,
+      "event": "opened from the launcher, run list shown"
+    },
+    {
+      "t": 38449,
+      "event": "marker sent",
+      "id": "EMU-T-1"
+    },
+    {
+      "t": 57844,
+      "event": "marker sent",
+      "id": "EMU-T-2"
+    },
+    {
+      "t": 112846,
+      "event": "marker sent",
+      "id": "EMU-T-3"
+    },
+    {
+      "t": 172844,
+      "event": "marker sent",
+      "id": "EMU-T-4"
+    },
+    {
+      "t": 202460,
+      "event": "marker sent",
+      "id": "EMU-T-5"
+    },
+    {
+      "t": 204574,
+      "event": "cycle",
+      "label": "team",
+      "kind": "team",
+      "doze": false,
+      "sameActivityAndTask": true,
+      "activityBefore": "eec704 task 18",
+      "activityAfter": "eec704 task 18",
+      "backgroundMs": 150038,
+      "screenWakefulnessAfterSleep": "Asleep",
+      "markers": [
+        "EMU-T-2",
+        "EMU-T-3",
+        "EMU-T-4"
+      ],
+      "producedAllWhileInBackground": true,
+      "backgroundAt": 42842,
+      "foregroundAt": 192880,
+      "foregroundWallClock": "2026-11-08T10:36:22.294Z",
+      "appInFrontAfterMs": 238,
+      "streamReopenedAfterAppInFrontMs": {
+        "agent-team": 4045,
+        "agent": 4060
+      },
+      "shownAfterForegroundMs": 7393,
+      "shownAfterForegroundBounds": {
+        "notBeforeMs": 5398,
+        "noLaterThanMs": 7393,
+        "looks": 1,
+        "averageLookMs": 1995
+      },
+      "nextMarker": {
+        "id": "EMU-T-5",
+        "phoneMinusNodeMs": 2110,
+        "bounds": {
+          "notBeforeMs": 47,
+          "noLaterThanMs": 2110,
+          "averageLookMs": 2063
+        }
+      },
+      "streamReopenedAfterForegroundMs": {
+        "agent-team": 4283,
+        "agent": 4298
+      },
+      "liveBeforeBackgroundMs": -34,
+      "streamConnectionsWhileInBackground": [],
+      "streamConnectionsAfterForeground": [
+        {
+          "openedAt": 197163,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+        },
+        {
+          "openedAt": 197178,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+        }
+      ],
+      "note": "shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"
+    },
+    {
+      "t": 213779,
+      "event": "marker sent",
+      "id": "EMU-A-6"
+    },
+    {
+      "t": 233294,
+      "event": "marker sent",
+      "id": "EMU-A-7"
+    },
+    {
+      "t": 288294,
+      "event": "marker sent",
+      "id": "EMU-A-8"
+    },
+    {
+      "t": 348293,
+      "event": "marker sent",
+      "id": "EMU-A-9"
+    },
+    {
+      "t": 377894,
+      "event": "marker sent",
+      "id": "EMU-A-10"
+    },
+    {
+      "t": 379943,
+      "event": "cycle",
+      "label": "agent",
+      "kind": "agent",
+      "doze": false,
+      "sameActivityAndTask": true,
+      "activityBefore": "eec704 task 18",
+      "activityAfter": "eec704 task 18",
+      "backgroundMs": 150001,
+      "screenWakefulnessAfterSleep": "Asleep",
+      "markers": [
+        "EMU-A-7",
+        "EMU-A-8",
+        "EMU-A-9"
+      ],
+      "producedAllWhileInBackground": true,
+      "backgroundAt": 218290,
+      "foregroundAt": 368291,
+      "foregroundWallClock": "2026-11-08T10:39:17.705Z",
+      "appInFrontAfterMs": 333,
+      "streamReopenedAfterAppInFrontMs": {
+        "agent-team": 602,
+        "agent": 718
+      },
+      "shownAfterForegroundMs": 7421,
+      "shownAfterForegroundBounds": {
+        "notBeforeMs": 5434,
+        "noLaterThanMs": 7421,
+        "looks": 1,
+        "averageLookMs": 1987
+      },
+      "nextMarker": {
+        "id": "EMU-A-10",
+        "phoneMinusNodeMs": 2046,
+        "bounds": {
+          "notBeforeMs": 49,
+          "noLaterThanMs": 2046,
+          "averageLookMs": 1997
+        }
+      },
+      "streamReopenedAfterForegroundMs": {
+        "agent-team": 935,
+        "agent": 1051
+      },
+      "liveBeforeBackgroundMs": -56,
+      "streamConnectionsWhileInBackground": [],
+      "streamConnectionsAfterForeground": [
+        {
+          "openedAt": 369226,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+        },
+        {
+          "openedAt": 369342,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+        }
+      ],
+      "note": "shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"
+    },
+    {
+      "t": 389133,
+      "event": "marker sent",
+      "id": "EMU-A-11"
+    },
+    {
+      "t": 395775,
+      "event": "doze",
+      "forceIdle": "Now forced in to deep idle mode"
+    },
+    {
+      "t": 408579,
+      "event": "marker sent",
+      "id": "EMU-A-12"
+    },
+    {
+      "t": 463581,
+      "event": "marker sent",
+      "id": "EMU-A-13"
+    },
+    {
+      "t": 523586,
+      "event": "marker sent",
+      "id": "EMU-A-14"
+    },
+    {
+      "t": 543609,
+      "event": "doze end",
+      "unforce": "Light state: OVERRIDE, deep state: IDLE\nmForceModeManagerQuickDozeRequest: false\nmForceModeManagerOffBodyState: false"
+    },
+    {
+      "t": 553206,
+      "event": "marker sent",
+      "id": "EMU-A-15"
+    },
+    {
+      "t": 555321,
+      "event": "cycle",
+      "label": "agent-doze",
+      "kind": "agent",
+      "doze": true,
+      "sameActivityAndTask": true,
+      "activityBefore": "eec704 task 18",
+      "activityAfter": "eec704 task 18",
+      "backgroundMs": 150058,
+      "screenWakefulnessAfterSleep": "Asleep",
+      "markers": [
+        "EMU-A-12",
+        "EMU-A-13",
+        "EMU-A-14"
+      ],
+      "producedAllWhileInBackground": true,
+      "backgroundAt": 393578,
+      "foregroundAt": 543636,
+      "foregroundWallClock": "2026-11-08T10:42:13.050Z",
+      "appInFrontAfterMs": 252,
+      "streamReopenedAfterAppInFrontMs": {
+        "agent-team": 1015,
+        "agent": 1117
+      },
+      "shownAfterForegroundMs": 7368,
+      "shownAfterForegroundBounds": {
+        "notBeforeMs": 5326,
+        "noLaterThanMs": 7368,
+        "looks": 1,
+        "averageLookMs": 2042
+      },
+      "nextMarker": {
+        "id": "EMU-A-15",
+        "phoneMinusNodeMs": 2113,
+        "bounds": {
+          "notBeforeMs": 49,
+          "noLaterThanMs": 2113,
+          "averageLookMs": 2064
+        }
+      },
+      "streamReopenedAfterForegroundMs": {
+        "agent-team": 1267,
+        "agent": 1369
+      },
+      "liveBeforeBackgroundMs": -37,
+      "streamConnectionsWhileInBackground": [],
+      "streamConnectionsAfterForeground": [
+        {
+          "openedAt": 544903,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent-team/emu_team_ea0fd956a42f4745880224657811a245?access_token=…"
+        },
+        {
+          "openedAt": 545005,
+          "closedAt": null,
+          "webSocket": true,
+          "path": "/ws/agent/emu_agent_f8457a82268a45fd968a550f0c460016?access_token=…"
+        }
+      ],
+      "note": "shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"
+    }
+  ],
+  "error": null,
+  "runs": {
+    "teamRun": "emu_team_ea0fd956a42f4745880224657811a245",
+    "leadRun": "emu_lead_cda140c5ab8c4d8ea4839a345eeefce0",
+    "agentRun": "emu_agent_f8457a82268a45fd968a550f0c460016"
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T10:42:27.083Z"
+}

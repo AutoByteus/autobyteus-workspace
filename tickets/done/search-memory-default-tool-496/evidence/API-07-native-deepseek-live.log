@@ -1,0 +1,696 @@
+# API-07 native AutoByteus live (paid, DeepSeek deepseek-v4-flash via test vault)
+# Command: env -i PATH HOME=<throwaway> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 SEARCH_MEMORY_LIVE_E2E=autobyteus SEARCH_MEMORY_E2E_EVIDENCE_DIR=<ticket>/evidence/live pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts --no-watch
+# Commit: code under test 5cdd6faf81 (+ the new suite)
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1; date 2026-11-17 06:49
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69038) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/.env
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+[2026-11-17T05:48:08.132Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/search-memory-default-tool-496/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/memory
+============================================================
+Initialized server settings service with 34 predefined settings
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Node access: local control socket not opened. The node's local control socket path is 117 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent Definition created successfully with ID: search-memory-plain-8219d8
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-earlier
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-earlier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Created and registered workspace ID: agent_ws_ea8d51eb0b36091b774b652ae492db7ef91ffc71342635e01274bf4c91dad308
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-earlier
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-earlier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Reusing registered workspace ID: agent_ws_ea8d51eb0b36091b774b652ae492db7ef91ffc71342635e01274bf4c91dad308
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/media
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentRuntimeState initialized for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' with config: 'search-memory-plain-8219d8'.
+AgentWorker initialized for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'.
+Registered AgentContext for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Context registered.
+Agent facade initialized for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' created and stored successfully.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' requesting runtime to start.
+AgentRuntime for 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Starting worker.
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Starting...
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' asyncRun(): Starting.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Runtime init completed (event store initialized).
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Runtime init completed (status deriver initialized).
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Runtime init completed (AgentEventInbox initialized).
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' to become idle (timeout: 30s)...
+AgentEventStream (ID: 86ab0ae8-5e8d-42ec-8e01-a715159d7848) initialized for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Subscribed to notifier.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Bootstrapper starting direct lifecycle execution.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Executing SystemPromptProcessingStep.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': No configured skills. Skipping skill catalog.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Final processed system prompt configured and captured. Trace ID: rt_1794894495286_857ad1df-df78-4748-a699-c7be6d1fcc2d. Final length: 4451.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' has become idle.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentEventStream (ID: 86ab0ae8-5e8d-42ec-8e01-a715159d7848) for 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': close() called. Unsubscribing all listeners and signaling.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentEventStream (ID: 1c0798ed-9953-4184-86df-321ad6ed295d) initialized for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent websocket attached for run search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d
+Created agent session 1e9dfb1b-c79c-404c-8e07-4c924d0b89c1 for run search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d
+Agent WebSocket connected: session=1e9dfb1b-c79c-404c-8e07-4c924d0b89c1, run=search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': UserInputContextBuildingProcessor completed. Final content length: 93
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': UserInputContextBuildingProcessor completed. Final content length: 51
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-asking
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-asking.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Created and registered workspace ID: agent_ws_bb3e8dddc69a78c90fae44c38bf31c4be5d3566b0f04afae10517ec208443254
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-asking
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/workspace-asking.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Reusing registered workspace ID: agent_ws_bb3e8dddc69a78c90fae44c38bf31c4be5d3566b0f04afae10517ec208443254
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-memory-live-e2e-lZ9Csm/media
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentRuntimeState initialized for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': LLM instance 'DeepSeekLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' with config: 'search-memory-plain-8219d8'.
+AgentWorker initialized for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'.
+Registered AgentContext for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Context registered.
+Agent facade initialized for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' created and stored successfully.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' requesting runtime to start.
+AgentRuntime for 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Starting worker.
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Starting...
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' asyncRun(): Starting.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Runtime init completed (event store initialized).
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Runtime init completed (status deriver initialized).
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Runtime init completed (AgentEventInbox initialized).
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' to become idle (timeout: 30s)...
+AgentEventStream (ID: 725c1038-d5b9-4b09-b90c-f3a9f2767055) initialized for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Subscribed to notifier.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Bootstrapper starting direct lifecycle execution.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Executing SystemPromptProcessingStep.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': No configured skills. Skipping skill catalog.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Final processed system prompt configured and captured. Trace ID: rt_1794894501437_6ab62aa9-e99e-471c-a4d8-8d0c54d4e882. Final length: 4450.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' has become idle.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentEventStream (ID: 725c1038-d5b9-4b09-b90c-f3a9f2767055) for 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentEventStream (ID: c034d37d-139d-43b0-87f7-254955352323) initialized for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Subscribed to notifier.
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent websocket attached for run search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70
+Created agent session 77afd6ef-186d-438e-aee1-79a7dc057880 for run search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70
+Agent WebSocket connected: session=77afd6ef-186d-438e-aee1-79a7dc057880, run=search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': UserInputContextBuildingProcessor completed. Final content length: 205
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': UserInputContextBuildingProcessor completed. Final content length: 51
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': UserInputContextBuildingProcessor completed. Final content length: 205
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': UserInputContextBuildingProcessor completed. Final content length: 51
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+Agent run 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data) > SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Closed agent session 77afd6ef-186d-438e-aee1-79a7dc057880
+Agent WebSocket disconnected: 77afd6ef-186d-438e-aee1-79a7dc057880
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Closed agent session 1e9dfb1b-c79c-404c-8e07-4c924d0b89c1
+Agent WebSocket disconnected: 1e9dfb1b-c79c-404c-8e07-4c924d0b89c1
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Removing agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'. Attempting graceful shutdown.
+Agent 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Stop requested.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentExternalEventNotifier (NotifierID: 0dfaedad-4b31-46dd-a7f8-d4af6e0ecc46, AgentID: search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' asyncRun() loop has finished.
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Shutdown resource cleanup completed successfully.
+AgentWorker 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Unregistered AgentContext for agent_id 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d'.
+AgentRuntime for 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': Context unregistered.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentRuntime for 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d' stop() method completed.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentEventStream (ID: 1c0798ed-9953-4184-86df-321ad6ed295d) for 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentEventStream (ID: 1c0798ed-9953-4184-86df-321ad6ed295d) for 'search_memory_plain_8219d8_eae1fd28ff9a471187db7bed1f5f557d': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Removing agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'. Attempting graceful shutdown.
+Agent 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Stop requested.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentExternalEventNotifier (NotifierID: 3be4dffe-0357-4ec5-90d4-13e1dc75ea43, AgentID: search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' asyncRun() loop has finished.
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Shutdown resource cleanup completed successfully.
+AgentWorker 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+Unregistered AgentContext for agent_id 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70'.
+AgentRuntime for 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': Context unregistered.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentRuntime for 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70' stop() method completed.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentEventStream (ID: c034d37d-139d-43b0-87f7-254955352323) for 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts > search_memory given to every agent run, on autobyteus (real server, isolated data)
+AgentEventStream (ID: c034d37d-139d-43b0-87f7-254955352323) for 'search_memory_plain_8219d8_8a87d4f32db04ff88c6c86dc4f506a70': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts (3 tests | 2 skipped) 42239ms
+     ✓ SM-autobyteus: a run of a definition without search_memory finds an earlier run and leaves itself out  40818ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Start at  06:47:57
+   Duration  52.84s (transform 7.52s, setup 58ms, import 10.02s, tests 42.24s, environment 0ms)
+

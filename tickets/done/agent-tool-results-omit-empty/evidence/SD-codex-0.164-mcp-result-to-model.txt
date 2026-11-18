@@ -1,0 +1,62 @@
+# Codex rust-v0.164.0 (tag sha fe3b29455488c2e189e43ad5526a107900c5e1b7), codex-rs/protocol/src/models.rs, fetched via gh api 2026-10-25 (read-only). Local codex-cli 0.164.0.
+## CallToolResult::as_function_call_output_payload (lines 2467-2506)
+    pub fn as_function_call_output_payload(&self) -> FunctionCallOutputPayload {
+        let content_items = convert_mcp_content_to_items(&self.content);
+        if content_items
+            .iter()
+            .any(|item| matches!(item, FunctionCallOutputContentItem::EncryptedContent { .. }))
+        {
+            return FunctionCallOutputPayload {
+                body: FunctionCallOutputBody::ContentItems(content_items),
+                success: Some(self.success()),
+            };
+        }
+
+        if let Some(structured_content) = &self.structured_content
+            && !structured_content.is_null()
+        {
+            match serde_json::to_string(structured_content) {
+                Ok(serialized_structured_content) => {
+                    return FunctionCallOutputPayload {
+                        body: FunctionCallOutputBody::Text(serialized_structured_content),
+                        success: Some(self.success()),
+                    };
+                }
+                Err(err) => {
+                    return FunctionCallOutputPayload {
+                        body: FunctionCallOutputBody::Text(err.to_string()),
+                        success: Some(false),
+                    };
+                }
+            }
+        }
+
+        FunctionCallOutputPayload {
+            body: FunctionCallOutputBody::ContentItems(content_items),
+            success: Some(self.success()),
+        }
+    }
+
+    pub fn into_function_call_output_payload(self) -> FunctionCallOutputPayload {
+        self.as_function_call_output_payload()
+    }
+## test preserves_structured_mcp_content (lines 3604-3622)
+    #[test]
+    fn preserves_structured_mcp_content() {
+        let call_tool_result = CallToolResult {
+            content: vec![serde_json::json!({"type":"text","text":"ignored"})],
+            structured_content: Some(serde_json::json!({"result":"structured"})),
+            is_error: Some(false),
+            meta: None,
+        };
+
+        assert_eq!(
+            call_tool_result.as_function_call_output_payload(),
+            FunctionCallOutputPayload {
+                body: FunctionCallOutputBody::Text(
+                    serde_json::json!({"result":"structured"}).to_string(),
+                ),
+                success: Some(true),
+            }
+        );
+    }

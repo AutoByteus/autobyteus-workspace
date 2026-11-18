@@ -1,0 +1,169 @@
+#!/usr/bin/env node
+// autobyteus-32 L-05 (round 2; temporary probe, a copy is kept in the ticket's evidence): AC-011 as reworded (SR-018) and
+// AC-007 on every runtime. A built node on a fresh data root, the real HOME (the CLIs' sign-ins; nothing in ~/.claude,
+// ~/.codex, ~/.grok is written), a throwaway CODEX_HOME whose auth.json links the real one, and (with AUTOBYTEUS_TEST_VAULT)
+// provider keys read from the test vault. For each router runtime (Claude, Codex, Antigravity, Grok, AutoByteus/DeepSeek):
+// the router launch is set (a new router run), the owner adds a line to knowledge.md through the router's own run and asks
+// for its tool names, then a live delegator (Claude haiku) delegates a writing Task that only the router covers.
+// Usage: node router-runtimes-probe.mjs <worktree> <out-dir>
+import { spawn, execFileSync } from 'node:child_process';
+import { createWriteStream, existsSync } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
+
+const [worktree, outDir] = process.argv.slice(2);
+const PHASES = (process.env.MR_PHASES ?? 'L-01,L-03,L-04,L-02').split(',');
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const WebSocket = createRequire(path.join(serverDir, 'package.json'))('ws');
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const out = { startedAt: new Date().toISOString(), head: execFileSync('git', ['-C', worktree, 'rev-parse', '--short', 'HEAD']).toString().trim(), phases: {} };
+await fs.mkdir(outDir, { recursive: true });
+const save = () => fs.writeFile(path.join(outDir, 'router-live-probe.json'), JSON.stringify(out, null, 2));
+const port = await new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'mr-live-')));
+const dataRoot = path.join(root, 'node');
+for (const folder of ['db', 'logs', 'memory', 'temp_workspace', 'workspace']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
+const codexHome = path.join(root, 'codex-home');
+await fs.mkdir(codexHome, { recursive: true });
+await fs.symlink(path.join(os.homedir(), '.codex', 'auth.json'), path.join(codexHome, 'auth.json'));
+const url = `http://127.0.0.1:${port}`;
+const db = pathToFileURL(path.join(dataRoot, 'db', 'node.db')).href;
+const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_') && !k.startsWith('ENABLE_') && !/_API_KEY$/.test(k))),
+  ...(process.env.AUTOBYTEUS_TEST_VAULT ? { AUTOBYTEUS_TEST_VAULT: process.env.AUTOBYTEUS_TEST_VAULT } : {}),
+  CODEX_HOME: codexHome, CLAUDE_SESSION_RAW_EVENT_DEBUG: '1', CLAUDE_SESSION_RAW_EVENT_MAX_CHARS: '200000', CLAUDE_SESSION_RAW_EVENT_LOG_DIR: path.join(outDir, 'raw-claude'), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
+  AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace') };
+await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${db}\nAUTOBYTEUS_SERVER_HOST=${url}\n`);
+execFileSync('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { env: { ...env, HOME: os.homedir() }, stdio: 'ignore' });
+const log = createWriteStream(path.join(outDir, 'router-live-probe-server.log'));
+const server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataRoot], { cwd: serverDir, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+server.stdout.pipe(log); server.stderr.pipe(log);
+const gql = async (query, variables = {}) => { const r = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) }).then((x) => x.json()); if (r.errors) throw new Error(JSON.stringify(r.errors)); return r.data; };
+const sockets = [];
+const connect = async (runId) => {
+  const socket = new WebSocket(`ws://127.0.0.1:${port}/ws/agent/${runId}`);
+  sockets.push(socket);
+  const frames = []; socket.on('message', (raw) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  for (let i = 0; i < 600 && !frames.some((f) => f.type === 'CONNECTED'); i += 1) await sleep(100);
+  return { socket, frames, runId };
+};
+/** One turn: sends `content`, waits for idle after the turn's own activity; returns the turn's frames and text. */
+const turn = async (channel, content, ms = 240_000) => {
+  const from = channel.frames.length;
+  const id = `mr-${randomUUID()}`;
+  const t0 = Date.now();
+  channel.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: channel.runId, content, message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [] } }));
+  let busy = false;
+  while (Date.now() - t0 < ms) {
+    const slice = channel.frames.slice(from);
+    busy ||= slice.some((f) => f.type === 'AGENT_STATUS' && f.payload?.status !== 'idle') || slice.some((f) => f.type.startsWith('SEGMENT_') || f.type.startsWith('TOOL_'));
+    const lastStatus = [...slice].reverse().find((f) => f.type === 'AGENT_STATUS');
+    if (busy && lastStatus?.payload?.status === 'idle' && Date.now() - lastStatus.at > 1500) break;
+    await sleep(500);
+  }
+  const slice = channel.frames.slice(from);
+  return { ms: Date.now() - t0,
+    tools: slice.filter((f) => f.type.startsWith('TOOL_')).map((f) => ({ type: f.type, tool: f.payload?.tool_name, args: JSON.stringify(f.payload?.arguments ?? null).slice(0, 300),
+      result: JSON.stringify(f.payload?.result ?? f.payload?.error ?? null).slice(0, 400), at: f.at - t0 })),
+    text: slice.filter((f) => f.type === 'SEGMENT_CONTENT').map((f) => String(f.payload?.delta ?? f.payload?.content ?? '')).join('').slice(-1500),
+    errors: slice.filter((f) => /ERROR/.test(f.type)).map((f) => JSON.stringify(f.payload).slice(0, 400)) };
+};
+const exists = (file) => existsSync(file);
+const report = async () => (await gql('{ availableAgentRuntimes }')).availableAgentRuntimes;
+const modelsOf = (rep, runtime) => (rep.agentRuntimes.find((e) => e.runtime === runtime)?.models ?? []).filter((m) => !m.blocked).map((m) => m.id);
+const metadataOf = async (runId) => JSON.parse(await fs.readFile(path.join(dataRoot, 'memory', 'agents', runId, 'run_metadata.json'), 'utf8'));
+const routing = {
+  router: (r, m) => gql('mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}', { r, m }).then((d) => d.setModelRouterLaunch),
+  enable: (e) => gql('mutation($e:Boolean!){setModelRoutingEnabled(enabled:$e)}', { e }).then((d) => d.setModelRoutingEnabled),
+  status: () => gql('{ modelRoutingStatus }').then((d) => d.modelRoutingStatus),
+  open: () => gql('mutation{ openModelRouterAgent }').then((d) => d.openModelRouterAgent),
+  decisions: () => gql('{ modelRoutingDecisions(limit: 50) }').then((d) => d.modelRoutingDecisions),
+};
+const segment = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const createDefinition = async (name, instructions, extra = {}) => (await gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
+  { i: { name, role: 'assistant', description: extra.description ?? `${name} (autobyteus-32 live probe)`, instructions, toolNames: [], ...extra.input } })).createAgentDefinition.id;
+const createRun = async (definitionId, runtimeKind, model) => {
+  const created = (await gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: definitionId,
+    workspaceRootPath: path.join(dataRoot, 'workspace'), llmModelIdentifier: model, llmConfig: null, autoExecuteTools: true, runtimeKind } })).createAgentRun;
+  if (!created.success) throw new Error(created.message);
+  return created.runId;
+};
+/** Processes whose working directory is `dir` and that descend from the server. */
+const processesIn = (dir) => {
+  const lsof = (() => { try { return execFileSync('lsof', ['-a', '-d', 'cwd', '-Fpn', '+c', '0'], { encoding: 'utf8' }); } catch (e) { return e.stdout ?? ''; } })();
+  const pids = []; let pid = null;
+  for (const line of lsof.split('\n')) { if (line.startsWith('p')) pid = Number(line.slice(1)); else if (line.startsWith('n') && line.slice(1) === dir) pids.push(pid); }
+  const parentOf = (p) => { try { return Number(execFileSync('ps', ['-o', 'ppid=', '-p', String(p)], { encoding: 'utf8' }).trim()); } catch { return 0; } };
+  const descends = (p) => { for (let i = 0; i < 12 && p > 1; i += 1) { if (p === server.pid) return true; p = parentOf(p); } return false; };
+  return pids.filter(descends).map((p) => ({ pid: p, command: (() => { try { return execFileSync('ps', ['-o', 'command=', '-p', String(p)], { encoding: 'utf8' }).trim().slice(0, 200); } catch { return ''; } })() }));
+};
+
+try {
+  while (!(await fetch(`${url}/rest/health`).then((r) => r.ok).catch(() => false))) { if (server.exitCode !== null) throw new Error('server exited'); await sleep(250); }
+  const rep = await report();
+  const pick = (runtime, preferred) => { const m = modelsOf(rep, runtime); return preferred.find((p) => m.includes(p)) ?? m[0] ?? null; };
+  const autobyteusEntry = rep.agentRuntimes.find((e) => e.runtime === 'autobyteus');
+  const autobyteusModels = JSON.stringify(autobyteusEntry ?? {}).match(/"(deepseek[^"]*)"/g)?.map((s) => s.slice(1, -1)) ?? [];
+  out.runtimes = Object.fromEntries(rep.agentRuntimes.map((e) => [e.runtime, Array.isArray(e.models) ? e.models.map((m) => m.id) : (e.providers ?? []).map((p) => ({ provider: p.provider, models: (p.models ?? []).map((m) => m.id ?? m) }))]));
+  const routers = [
+    ['claude_agent_sdk', pick('claude_agent_sdk', ['sonnet', 'haiku'])],
+    ['codex_app_server', pick('codex_app_server', [])],
+    ['antigravity_cli', pick('antigravity_cli', ['gemini-3.8-flash-low'])],
+    ['grok_build', pick('grok_build', ['grok-4.7'])],
+    ['autobyteus', modelsOf(rep, 'autobyteus').find((m) => /deepseek/.test(m)) ?? autobyteusModels.find((m) => /flash/.test(m)) ?? autobyteusModels[0] ?? null],
+  ].filter(([, model]) => model);
+  out.routers = routers;
+  const agyModel = pick('antigravity_cli', ['gemini-3.8-flash-low']);
+  const writerName = `Writer Bot ${randomUUID().slice(0, 4)}`;
+  await createDefinition(writerName, 'Write what you are asked to write. Keep it to one line.', { description: 'Writes documentation and release notes.' });
+  const delegatorDef = await createDefinition(`Probe Delegator ${randomUUID().slice(0, 4)}`, 'You are a precise tool operator. Call only the tools the user names, exactly as asked, and keep every reply to one short sentence.');
+  const delegator = await connect(await createRun(delegatorDef, 'claude_agent_sdk', pick('claude_agent_sdk', ['haiku'])));
+  out.phases.statusOn = await routing.enable(true);
+  for (const [runtime, model] of routers) {
+    const phase = { runtime, model };
+    out.phases[runtime] = phase;
+    try {
+      phase.status = await routing.router(runtime, model);
+      const runId = await routing.open();
+      const meta = await metadataOf(runId);
+      const workspace = await fs.realpath(meta.workspaceRootPath);
+      phase.run = { runId, workspace, runtimeKind: meta.runtimeKind, model: meta.llmModelIdentifier, autoExecuteTools: meta.autoExecuteTools, keys: Object.keys(meta).sort() };
+      const before = await fs.readFile(path.join(workspace, 'knowledge.md'), 'utf8').catch(() => null);
+      const line = `- Router check on ${runtime}: writing tasks (documentation, release notes) go to antigravity_cli with the model ${agyModel}.`;
+      const router = await connect(runId);
+      phase.teach = await turn(router, 'From the node owner (not a routing request): add this exact line to the knowledge.md file in your workspace, keeping everything already in it, '
+        + `then follow it when you route: ${line} After saving, reply with the names of all the tools you have, comma-separated, and nothing else.`, 300_000);
+      const after = await fs.readFile(path.join(workspace, 'knowledge.md'), 'utf8').catch(() => null);
+      phase.knowledge = { before, after, lineAdded: Boolean(after?.includes(`Router check on ${runtime}`)) };
+      phase.toolReply = phase.teach.text.slice(-1500);
+      phase.collaborationToolsNamed = ['delegate_task', 'send_message_to', 'get_handoff_rules'].filter((name) => phase.toolReply.includes(name));
+      phase.route = await turn(delegator, `Call the delegate_task tool exactly once now with these exact JSON arguments: ${JSON.stringify({ recipient_address: `/${segment(writerName)}`, description: `Write a one-line release note for build ${runtime}. Reply OK.` })}. `
+        + 'It can take up to a minute; wait for its result. Do not call any other tool. Then reply with one short sentence quoting the launch_notes.', 300_000);
+      const result = phase.route.tools.find((t) => t.type === 'TOOL_EXECUTION_SUCCEEDED' && /delegate_task/.test(String(t.tool)))?.result ?? '';
+      phase.routedByRouter = /chosen by the Model Router/.test(result);
+      phase.routedToAntigravity = new RegExp(`runs on antigravity_cli / ${agyModel}, chosen by the Model Router`).test(result);
+      phase.statusAfter = await routing.status();
+    } catch (error) { phase.error = error.stack || String(error); }
+    await save();
+  }
+  out.phases.decisions = await routing.decisions();
+  await routing.enable(false);
+} catch (error) {
+  out.error = error.stack || String(error);
+} finally {
+  for (const socket of sockets) { try { socket.close(); } catch {} }
+  try { process.kill(-server.pid, 'SIGTERM'); } catch {}
+  await sleep(4000);
+  try { process.kill(-server.pid, 'SIGKILL'); } catch {}
+  out.cleanup = { serverExited: server.exitCode !== null || server.signalCode !== null };
+  await fs.rm(root, { recursive: true, force: true });
+  out.cleanup.removed = { tempRoot: !existsSync(root) };
+  out.finishedAt = new Date().toISOString();
+  await save();
+  console.log(JSON.stringify({ error: out.error ?? null, phases: Object.keys(out.phases), cleanup: out.cleanup }));
+}

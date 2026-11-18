@@ -1,0 +1,13 @@
+# DEL-03 server E2E projects + run-history + agent-team-runs on merged personal 6b58f3f5af, 2026-10-31T21:44:34Z
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 8776ms
+     ✓ PRH-01: an Agent prepared under P is recorded in P's file, told its Project at first activation, listed under P and its folder; run records keep the released keys  488ms
+     ✓ PRH-03: a Team created under P lists in P's team group; its coordinator and member are told the Project  1713ms
+     ✓ PRH-04: a root started under P delegates Tasks of P and Q and Temp-task work: listed once, under P only  1905ms
+     ✓ PRH-05: the user's case: a Workspaces-started root that handed out Tasks of P, Q and R is listed under none and recorded nowhere  1703ms
+     ✓ PRH-07: P lists the 6 newest runs of an agent; an older run hosting P's open work is not pinned; it opens by run id  402ms
+     ✓ PRH-10: an Org root hosting Tasks of P and Q is listed under neither  1282ms
+ Test Files  39 passed (39)
+      Tests  179 passed | 4 skipped (183)
+   Duration  967.87s (transform 8.15s, setup 587ms, import 80.47s, tests 881.79s, environment 3ms)
+exit=0
+# full log: DEL-03-server-e2e.full.log.gz

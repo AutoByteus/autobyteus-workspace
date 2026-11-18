@@ -1,0 +1,5 @@
+{"t":15299,"event":"attachments sent by the second phone"}
+{"t":18048,"event":"apk","versionName":"0.1.0"}
+{"t":86590,"event":"tap","name":"text","found":true,"pairingScreen":false,"viewerText":false,"viewerImage":false,"conversationShown":false,"connectionsAfterTap":[{"path":"/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…","webSocket":true}],"backToConversation":true}
+{"t":98776,"event":"tap","name":"png","found":true,"pairingScreen":false,"viewerText":false,"viewerImage":true,"conversationShown":false,"connectionsAfterTap":[{"path":"/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…","webSocket":true}],"backToConversation":true}
+{"t":163313,"event":"revocation","status":200,"pairingShown":false,"screen":[""]}

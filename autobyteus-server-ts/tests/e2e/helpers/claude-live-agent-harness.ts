@@ -15,20 +15,26 @@ import type { ClaudeSession } from "../../../src/agent-execution/backends/claude
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { ClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 import {
   buildStandaloneClaudeProcessEnv,
   type ClaudeCliExecutableCandidate,
 } from "../../helpers/claude-cli-executable-candidates.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
+import { agentStreamFramesOf } from "./agent-stream-frames.js";
+import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
 
 export type StreamMessage = { type?: string; payload?: Record<string, unknown> };
 
 export type ClaudeLiveAgentHarness = {
   app: FastifyInstance;
+  agentTools: Awaited<ReturnType<typeof startAgentToolsMcpTestHost>>;
   socket: WebSocket;
   agentRun: AgentRun;
   runContext: AgentRunContext<ClaudeAgentRunContext>;
@@ -67,7 +73,7 @@ const buildRunContext = (
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       memoryDir,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
         workingDirectory: workspaceRoot,
@@ -75,6 +81,8 @@ const buildRunContext = (
         autoExecuteTools: true,
       }),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
+        semanticMemoryPath: null,
+        longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
         agentDefinition: {
           name: "Claude Live E2E Agent",
           description: "Runs shell commands for the user",
@@ -97,11 +105,12 @@ export const createClaudeLiveAgentHarness = async (input: {
   memoryDir?: string;
 }): Promise<ClaudeLiveAgentHarness> => {
   const runContext = buildRunContext(input.runId, input.workspaceRoot, input.memoryDir ?? null);
+  // Every run has an Agent Tools MCP session, so the live Claude run needs a live endpoint.
+  const agentTools = await startAgentToolsMcpTestHost();
   const sessionManager = new ClaudeSessionManager(
-    { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 } as never,
+    agentTools.runSessions,
     {} as never,
     new ClaudeSdkClient(),
-    { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
   // The harness owns the session through the returned value; the exact-ownership callback the
   // backend factory uses for release on a cancelled preparation has nothing to record here.
@@ -140,16 +149,21 @@ export const createClaudeLiveAgentHarness = async (input: {
       };
     },
   };
+  // The run's own stream sequence (autobyteus-461 SR-087), attached as the run's resources attach it in the app; without
+  // it the stream refuses the socket (AGENT_STREAM_UNAVAILABLE).
+  const stream = lazyAgentStreamSequences((runId) => (runId === input.runId ? agentRun : null));
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as never,
-    undefined,
     undefined,
     new AgentRunCommandCoordinator({
       agentRunService: agentRunService as never,
       projectionService: statusProjectionService as never,
     }),
     statusProjectionService as never,
+    null,
+    stream.sequences,
+    stream.readStored,
   );
   const dummyTeamHandler = {
     connect: async () => null,
@@ -165,7 +179,8 @@ export const createClaudeLiveAgentHarness = async (input: {
   const messages: StreamMessage[] = [];
   socket.on("message", (data) => {
     try {
-      messages.push(JSON.parse(data.toString()) as StreamMessage);
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+      messages.push(...agentStreamFramesOf(JSON.parse(data.toString()) as StreamMessage) as unknown as StreamMessage[]);
     } catch {
       // Non-JSON frames are not part of the agent stream contract.
     }
@@ -174,15 +189,19 @@ export const createClaudeLiveAgentHarness = async (input: {
     socket.once("open", () => resolve());
     socket.once("error", reject);
   });
-  return { app, socket, agentRun, runContext, sessionManager, session, messages };
+  return { app, agentTools, socket, agentRun, runContext, sessionManager, session, messages };
 };
 
 export const closeClaudeLiveAgentHarness = async (harness: ClaudeLiveAgentHarness): Promise<void> => {
   if (harness.socket.readyState === WebSocket.OPEN || harness.socket.readyState === WebSocket.CONNECTING) {
     harness.socket.close();
   }
-  await harness.sessionManager.closeRunSession(harness.runContext.runId);
-  await harness.app.close();
+  try {
+    await harness.sessionManager.closeRunSession(harness.runContext.runId);
+    await harness.app.close();
+  } finally {
+    await harness.agentTools.close();
+  }
 };
 
 /** Resolves with the index of the first stream message (after `fromIndex`) matching the predicate. */

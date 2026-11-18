@@ -1,0 +1,20 @@
+# Evidence formatting: terminal blank lines normalized; content retained.
+# API12 | 2026-10-26T10:40:38.951019+00:00 | source9b10fcd4 / HEAD52a3434f5 plus new test | macOS arm64 Node26.12.0
+# cwd worktree root; env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:electron --run server/__tests__/BackendPortBindFaults.spec.ts --reporter=verbose
+
+> autobyteus@1.5.9-beta.10 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run server/__tests__/BackendPortBindFaults.spec.ts --reporter=verbose
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts > preserves actual-shaped EACCES on a valid port without diagnosis/retry 2ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts > preserves actual-shaped EADDRNOTAVAIL on a valid port without diagnosis/retry 0ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts > preserves actual-shaped EMFILE on a valid port without diagnosis/retry 0ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts > preserves wildcard non-address error after a successful loopback probe 0ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts > classifies only EADDRINUSE as conflict even when real inspector callback fails 1ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  11:40:40
+   Duration  294ms (transform 29ms, setup 0ms, collect 31ms, tests 5ms, environment 0ms, prepare 53ms)

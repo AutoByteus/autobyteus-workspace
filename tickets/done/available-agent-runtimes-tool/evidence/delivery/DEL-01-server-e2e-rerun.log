@@ -1,0 +1,19 @@
+# DEL-01 — delivery smoke rerun of the server E2E on the final ticket state
+# Command: env -i PATH="$PATH" HOME=<mktemp -d> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch
+# Commit: e1450c9754 (code identical to cc789b7c84); base origin/personal a2faf424d6 (not advanced); macOS darwin 25.5; 2026-10-25T09:37Z
+
+AAR-EVIDENCE AAR-01 elapsed-ms 207
+AAR-EVIDENCE AAR-01 claude-stdin-frames ["control_request initialize","control_request get_usage"]
+AAR-EVIDENCE AAR-01 refused-outside-urls []
+AAR-EVIDENCE AAR-03 elapsed-ms 14066
+AAR-EVIDENCE AAR-04 parallel {"wallMs":196,"appServersStarted":1,"calls":[{"ms":195,"checkedAt":"2026-10-25T09:36:53.637Z","runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codex":{"limits":"read","models":"read"}},{"ms":195,"checkedAt":"2026-10-25T09:36:53.637Z","runtimes":["codex_app_server","claude_agent_sdk","antigravity_cli","grok_build","autobyteus"],"codex":{"limits":"read","models":"read"}},{"ms":196,"checkedAt":"2026-10-25T09:36:53.637Z","ru
+AAR-EVIDENCE AAR-04 without-tool call {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Tool is not enabled for this session"}}
+AAR-EVIDENCE AAR-06 custom-not-answering {"provider":"E2E Gateway","limits":"not reported","models":"unknown: E2E Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE"}
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 21556ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  548ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  627ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14336ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013)  4433ms
+     ✓ AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)  828ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

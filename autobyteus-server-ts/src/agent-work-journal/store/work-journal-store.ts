@@ -20,19 +20,28 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 
 const JOURNAL_FILE_NAME = /^work_journal_(\d{6}|active)\.md$/;
+const errorMessage = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+
+/** What a manifest says about a run's journal files, read for their names only. */
+export type ManifestJournalFileNames =
+  | Readonly<{ kind: "none" }>
+  | Readonly<{ kind: "unreadable"; reason: string }>
+  | Readonly<{ kind: "names"; names: readonly string[] }>;
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 
 /** A manifest entry with every field known and valid, else null (that file is simply re-rendered). */
 const readManifestFile = (value: unknown): WorkJournalManifestFile | null => {
   const entry = asRecord(value);
   if (!entry) return null;
-  const { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state, content_sha256: sha } = entry;
+  const { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state, content_sha256: sha, runtime_kind: runtimeKind } = entry;
   if (typeof journalFile !== "string" || !JOURNAL_FILE_NAME.test(journalFile)) return null;
   if (typeof sourceFile !== "string" || !sourceFile || sourceFile !== path.basename(sourceFile)) return null;
   if (typeof count !== "number" || !Number.isInteger(count) || count < 0) return null;
   if (state !== "closed" && state !== "open") return null;
   if (typeof sha !== "string" || !SHA256_HEX.test(sha)) return null;
-  return { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state: state as WorkJournalFileState, content_sha256: sha };
+  // An entry written before a file recorded its own agent runtime is dropped, so the file is rendered again.
+  if (typeof runtimeKind !== "string" && runtimeKind !== null) return null;
+  return { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state: state as WorkJournalFileState, content_sha256: sha, runtime_kind: runtimeKind };
 };
 
 /**
@@ -65,21 +74,45 @@ export class WorkJournalStore {
     }
     const manifest = asRecord(parsed);
     if (!manifest) return null;
-    const { run_id: runId, runtime_kind: runtimeKind, renderer_revision: revision, files } = manifest;
-    if (typeof runId !== "string" || typeof runtimeKind !== "string" || typeof revision !== "number") return null;
+    const { run_id: runId, renderer_revision: revision, files } = manifest;
+    if (typeof runId !== "string" || typeof revision !== "number") return null;
     return {
       run_id: runId,
-      runtime_kind: runtimeKind,
       renderer_revision: revision,
       files: Array.isArray(files) ? files.map(readManifestFile).filter((file): file is WorkJournalManifestFile => file !== null) : [],
     };
+  }
+
+  /**
+   * The journal file names the manifest lists, in its order, whatever else each entry records: a names-only read. An
+   * entry the projection above drops (it must be rendered again) still names a journal file on disk. `none`: there is
+   * no manifest; `unreadable`: there is one, but it cannot be read or holds no list of files.
+   */
+  async readManifestJournalFileNames(memoryDir: string): Promise<ManifestJournalFileNames> {
+    let text: string;
+    try {
+      text = await fs.readFile(this.manifestPath(memoryDir), "utf-8");
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException)?.code === "ENOENT") return { kind: "none" };
+      return { kind: "unreadable", reason: errorMessage(error) };
+    }
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch (error) {
+      return { kind: "unreadable", reason: `${WORK_JOURNAL_MANIFEST_FILE_NAME} is not JSON: ${errorMessage(error)}` };
+    }
+    const files = asRecord(parsed)?.files;
+    if (!Array.isArray(files)) return { kind: "unreadable", reason: `${WORK_JOURNAL_MANIFEST_FILE_NAME} lists no files.` };
+    const names = files.map((file) => asRecord(file)?.journal_file)
+      .filter((name): name is string => typeof name === "string" && JOURNAL_FILE_NAME.test(name));
+    return { kind: "names", names: [...new Set(names)] };
   }
 
   /** The exact manifest shape, nothing more (no generation time, no paths). */
   async writeManifest(memoryDir: string, manifest: WorkJournalManifest): Promise<void> {
     const exact: WorkJournalManifest = {
       run_id: manifest.run_id,
-      runtime_kind: manifest.runtime_kind,
       renderer_revision: manifest.renderer_revision,
       files: manifest.files.map((file) => ({
         journal_file: file.journal_file,
@@ -87,6 +120,7 @@ export class WorkJournalStore {
         source_record_count: file.source_record_count,
         state: file.state,
         content_sha256: file.content_sha256,
+        runtime_kind: file.runtime_kind,
       })),
     };
     await this.writeAtomically(this.manifestPath(memoryDir), `${JSON.stringify(exact, null, 2)}\n`);
@@ -94,6 +128,31 @@ export class WorkJournalStore {
 
   async writeJournalFile(memoryDir: string, journalFile: string, markdown: string): Promise<void> {
     await this.writeAtomically(this.filePath(memoryDir, journalFile), markdown);
+  }
+
+  /** A journal file's text; null when it does not exist. */
+  async readJournalFile(memoryDir: string, journalFile: string): Promise<string | null> {
+    try {
+      return await fs.readFile(this.filePath(memoryDir, journalFile), "utf-8");
+    } catch {
+      return null;
+    }
+  }
+
+  /** The first `bytes` bytes of a journal file and its size; null when it does not exist. */
+  async readJournalFileHead(memoryDir: string, journalFile: string, bytes: number): Promise<{ head: string; sizeBytes: number } | null> {
+    let handle: fs.FileHandle | null = null;
+    try {
+      handle = await fs.open(this.filePath(memoryDir, journalFile), "r");
+      const { size } = await handle.stat();
+      const buffer = Buffer.alloc(Math.min(bytes, size));
+      const { bytesRead } = await handle.read(buffer, 0, buffer.length, 0);
+      return { head: buffer.subarray(0, bytesRead).toString("utf-8"), sizeBytes: size };
+    } catch {
+      return null;
+    } finally {
+      await handle?.close().catch(() => undefined);
+    }
   }
 
   async journalFileExists(memoryDir: string, journalFile: string): Promise<boolean> {

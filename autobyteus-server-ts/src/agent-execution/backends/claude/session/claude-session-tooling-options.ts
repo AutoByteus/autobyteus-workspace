@@ -3,7 +3,7 @@ import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../services/published-arti
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/services/send-message-to-tool-contract.js";
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-available-agents-contract.js";
-import { LIST_AVAILABLE_NODES_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-available-nodes-contract.js";
+import { LIST_PEER_NODES_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
@@ -17,7 +17,7 @@ export type ClaudeSessionToolingOptions = {
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
   listAvailableAgentsToolingEnabled: boolean;
-  listAvailableNodesToolingEnabled: boolean;
+  listPeerNodesToolingEnabled: boolean;
   agentToolsMcpToolingRequested: boolean;
   agentToolsMcpEnabledToolNames: string[];
   allowedTools: string[];
@@ -50,7 +50,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
   const listAvailableAgentsToolingEnabled = input.runtimeToolExposure.listAvailableAgentsEnabled
     && Boolean(input.memberExecutionContext?.collaboration.listAvailableAgents);
   // The same availability rule as list_available_agents (autobyteus-261).
-  const listAvailableNodesToolingEnabled = input.runtimeToolExposure.listAvailableNodesEnabled
+  const listPeerNodesToolingEnabled = input.runtimeToolExposure.listPeerNodesEnabled
     && Boolean(input.memberExecutionContext?.collaboration.listAvailableAgents);
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({
     sendMessageToToolingEnabled,
@@ -62,13 +62,12 @@ export const resolveClaudeSessionToolingOptions = (input: {
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
     listAvailableAgentsToolingEnabled,
-    listAvailableNodesToolingEnabled,
+    listPeerNodesToolingEnabled,
   });
   const agentToolsMcpEnabledToolNames = normalizeToolNames(
     input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
   );
   const allowedTools = resolveAllowedToolNames({
-    agentToolsMcpEnabledToolNames,
     hasMaterializedSkills: input.hasMaterializedSkills,
   });
 
@@ -82,7 +81,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
     listAvailableAgentsToolingEnabled,
-    listAvailableNodesToolingEnabled,
+    listPeerNodesToolingEnabled,
     agentToolsMcpToolingRequested: agentToolsMcpEnabledToolNames.length > 0,
     agentToolsMcpEnabledToolNames,
     allowedTools,
@@ -99,7 +98,7 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
   listAvailableAgentsToolingEnabled: boolean;
-  listAvailableNodesToolingEnabled: boolean;
+  listPeerNodesToolingEnabled: boolean;
 }): string[] => {
   const toolNames = new Set<string>();
   if (input.sendMessageToToolingEnabled) {
@@ -126,8 +125,8 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   if (input.listAvailableAgentsToolingEnabled) {
     toolNames.add(LIST_AVAILABLE_AGENTS_TOOL_NAME);
   }
-  if (input.listAvailableNodesToolingEnabled) {
-    toolNames.add(LIST_AVAILABLE_NODES_TOOL_NAME);
+  if (input.listPeerNodesToolingEnabled) {
+    toolNames.add(LIST_PEER_NODES_TOOL_NAME);
   }
   return [...toolNames];
 };
@@ -140,17 +139,18 @@ const normalizeToolNames = (toolNames: Iterable<string> | null | undefined): str
   ),
 ];
 
+/**
+ * The tools the Claude CLI allows without asking: only `Skill`. Agent Tools are not listed here,
+ * because the list can change during the run (autobyteus-324); the tool-use coordinator allows a
+ * tool that is in the run's current Agent Tools descriptor.
+ */
 const resolveAllowedToolNames = (input: {
-  agentToolsMcpEnabledToolNames: string[];
   hasMaterializedSkills: boolean;
-}): string[] => {
-  const allowedTools = new Set<string>();
-  if (input.hasMaterializedSkills) {
-    allowedTools.add("Skill");
-  }
-  for (const toolName of input.agentToolsMcpEnabledToolNames) {
-    allowedTools.add(toolName);
-    allowedTools.add(buildClaudeAgentToolsMcpToolName(toolName));
-  }
-  return [...allowedTools];
-};
+}): string[] => (input.hasMaterializedSkills ? ["Skill"] : []);
+
+/** Whether a Claude tool name is one of these Agent Tools (as its MCP tool name or bare). */
+export const isEnabledClaudeAgentToolsMcpTool = (
+  enabledToolNames: readonly string[],
+  claudeToolName: string,
+): boolean => enabledToolNames.some((toolName) =>
+  claudeToolName === toolName || claudeToolName === buildClaudeAgentToolsMcpToolName(toolName));

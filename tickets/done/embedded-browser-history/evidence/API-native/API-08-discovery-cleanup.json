@@ -1,0 +1,43 @@
+{
+  "caseId": "API-08",
+  "command": "isolated-app start --from-worktree; UI discovery; isolated-app stop iso-49253-b946",
+  "commit": "e51d4b103",
+  "environment": "macOS arm64 Node 22.23.3 / retained Electron 42.11.16 build",
+  "date": "2026-10-26",
+  "start": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "start",
+    "result": {
+      "instanceId": "iso-49253-b946",
+      "pid": 97021,
+      "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:49254",
+      "graphqlUrl": "http://127.0.0.1:49254/graphql",
+      "controlEndpoint": "http://127.0.0.1:49253",
+      "controlPort": 49253,
+      "serverPort": 49254,
+      "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-NQn99v",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "testUpdateFeedUrl": null,
+      "databaseUrl": "file:/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-NQn99v/server-data/db/production.db",
+      "logPath": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-app/iso-49253-b946.log"
+    }
+  },
+  "stop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-49253-b946",
+      "wasRunning": true,
+      "forced": true,
+      "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-NQn99v",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  }
+}

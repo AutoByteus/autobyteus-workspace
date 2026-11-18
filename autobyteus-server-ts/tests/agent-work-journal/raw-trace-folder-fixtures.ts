@@ -45,7 +45,7 @@ export const writeActive = (runDir: string, records: readonly RawRecord[]): void
 export const appendActive = (runDir: string, records: readonly RawRecord[]): void =>
   fs.appendFileSync(path.join(runDir, "raw_traces_active.jsonl"), records.map((record) => `${JSON.stringify(record)}\n`).join(""), "utf-8");
 
-type SegmentEntry = Readonly<{ index: number; fileName: string; recordCount: number; status?: "complete" | "pending" }>;
+type SegmentEntry = Readonly<{ index: number; fileName: string; recordCount: number; status?: "complete" | "pending"; runtimeKind: string | null }>;
 
 const writeRawManifest = (runDir: string, segments: readonly SegmentEntry[]): void => {
   fs.writeFileSync(path.join(runDir, "raw_traces_manifest.json"), JSON.stringify({
@@ -57,7 +57,7 @@ const writeRawManifest = (runDir: string, segments: readonly SegmentEntry[]): vo
       boundary_type: "provider_compaction_boundary",
       boundary_key: `boundary-${segment.index}`,
       boundary_trace_id: null,
-      runtime_kind: null,
+      runtime_kind: segment.runtimeKind,
       source_event: null,
       archived_at: BASE_TS,
       first_trace_id: null,
@@ -79,11 +79,15 @@ const readSegments = (runDir: string): SegmentEntry[] => {
     fileName: segment.file_name as string,
     recordCount: segment.record_count as number,
     status: segment.status as "complete" | "pending",
+    runtimeKind: (segment.runtime_kind as string | null | undefined) ?? null,
   }));
 };
 
-/** What a compaction does to the raw folder: the active records become the next closed segment. */
-export const rotateActive = (runDir: string): string => {
+/**
+ * What a compaction does to the raw folder: the active records become the next closed segment, which records the agent
+ * runtime that wrote it (the manifest's `runtime_kind`; Claude Agent SDK unless the test says otherwise).
+ */
+export const rotateActive = (runDir: string, runtimeKind: string | null = "claude_agent_sdk"): string => {
   const activePath = path.join(runDir, "raw_traces_active.jsonl");
   const raw = fs.existsSync(activePath) ? fs.readFileSync(activePath, "utf-8") : "";
   const segments = readSegments(runDir);
@@ -91,10 +95,14 @@ export const rotateActive = (runDir: string): string => {
   const fileName = `raw_traces_${String(index).padStart(6, "0")}.jsonl`;
   fs.writeFileSync(path.join(runDir, fileName), raw, "utf-8");
   fs.writeFileSync(activePath, "", "utf-8");
-  writeRawManifest(runDir, [...segments, { index, fileName, recordCount: raw.split("\n").filter(Boolean).length }]);
+  writeRawManifest(runDir, [...segments, { index, fileName, recordCount: raw.split("\n").filter(Boolean).length, runtimeKind }]);
   return fileName;
 };
 
 /** Rewrites the raw manifest's record count of one segment (e.g. a segment that grew). */
 export const setSegmentRecordCount = (runDir: string, fileName: string, recordCount: number): void =>
   writeRawManifest(runDir, readSegments(runDir).map((segment) => segment.fileName === fileName ? { ...segment, recordCount } : segment));
+
+/** Rewrites the agent runtime the raw manifest records for one segment. */
+export const setSegmentRuntimeKind = (runDir: string, fileName: string, runtimeKind: string | null): void =>
+  writeRawManifest(runDir, readSegments(runDir).map((segment) => segment.fileName === fileName ? { ...segment, runtimeKind } : segment));

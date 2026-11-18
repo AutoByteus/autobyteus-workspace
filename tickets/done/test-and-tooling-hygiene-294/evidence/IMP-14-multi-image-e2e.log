@@ -1,0 +1,11 @@
+# IMP-14-multi-image-e2e.log multi-image E2E gated (H-11, AC-013)
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs … vitest run tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts
+# commit: d0a4dd0ec4 tree
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 1972ms
+     ✓ E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn  963ms
+     ✓ E-002/E-004 Team member: images previewable during the turn and after the team run is terminated  650ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

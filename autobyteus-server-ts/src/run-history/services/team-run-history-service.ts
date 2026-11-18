@@ -1,9 +1,10 @@
+import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunHistoryItem, TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
@@ -12,18 +13,28 @@ import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from ".
 import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
 import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
-import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
+import { RunLastActivityReader } from "./run-last-activity-reader.js";
 
 export interface DeleteStoredTeamRunResult { success: boolean; message: string }
 export interface ArchiveStoredTeamRunResult { success: boolean; message: string }
 export interface TeamRunResumeConfig {
   teamRunId: string;
+  /** The run's name (SR-091): a delegated team run's slot; `null` for one the user started, which its definition names. */
+  displayName: string | null;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeSnapshot;
-  /** Task executions of `executionTree` whose Task is DONE or CANCELLED. */
-  closedTaskExecutions: readonly TaskExecutionReference[];
   modelConfigEditability: RunModelConfigEditability;
+  /**
+   * The live sequence and change sequence of the running Team, as its stream snapshot reports them (read together);
+   * null and 0 when the Team is not running (autobyteus-358, SR-006).
+   */
+  liveSequenceId: string | null;
+  baseChangeSequence: number;
+  /** The sequence of the running Team's latest message through `baseChangeSequence`; null when not running (SR-007). */
+  lastMessageChangeSequence: number | null;
 }
 
 export class TeamRunHistoryService {
@@ -32,16 +43,32 @@ export class TeamRunHistoryService {
   private readonly manager: AgentTeamRunManager;
   private readonly live: TeamRunLiveProjectionService;
   private readonly layout: AgentMemoryLayout;
-  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
+  private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
+  private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
+  private readonly episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
 
   constructor(memoryDir: string, options: {
+    /** The relationships between runs, from the Task entries (SR-047), and a delegated run's name (SR-091). */
+    tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
+    /** Archive and delete wait for the runs it delegated to (REQ-007). */
+    workGuard: Pick<DelegatedWorkGuard, "guard">;
+    /** Told after a committed delete, so the run's members leave the episodic catalogs. */
+    episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
     executionTreeStore?: TeamRunExecutionTreeStore;
     catalogService?: TeamRunHistoryCatalogService;
     teamRunManager?: AgentTeamRunManager;
     liveProjectionService?: TeamRunLiveProjectionService;
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
-    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
-  } = {}) {
+    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
+    /** A run's last activity over its agents. */
+    lastActivity?: Pick<RunLastActivityReader, "forTeamRun">;
+  }) {
+    this.workGuard = options.workGuard;
+    this.episodicCatalog = options.episodicCatalog;
+    this.names = options.tree;
+    this.lastActivity = options.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: options.tree });
     this.adHocTasks = options.adHocTasks;
     this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.catalog = options.catalogService ?? getTeamRunHistoryCatalogService();
@@ -50,14 +77,17 @@ export class TeamRunHistoryService {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 
-  async listTeamRunHistory(): Promise<TeamRunHistoryItem[]> {
+  /** The Team runs the user browses, newest first; `include` selects rows before their trees are read (a Project's runs). */
+  async listTeamRunHistory(include: (row: TeamRunIndexRow) => boolean = () => true): Promise<TeamRunHistoryItem[]> {
     const items: TeamRunHistoryItem[] = [];
     for (const row of await this.catalog.listCatalogRows()) {
+      if (!include(row)) continue;
       const projection = this.live.getCatalogListLiveProjection(row.teamRunId);
       if (row.archivedAt && !projection.isActive) continue;
       const tree = await this.readTree(row.teamRunId);
       if (!tree) continue;
-      items.push(this.toHistoryItem(row, tree, projection));
+      const lastActivityAt = await this.lastActivity.forTeamRun({ teamRunId: row.teamRunId, createdAt: row.createdAt });
+      items.push(this.toHistoryItem(row, tree, projection, lastActivityAt, await this.displayNameOf(row.teamRunId)));
     }
     return items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
@@ -65,13 +95,18 @@ export class TeamRunHistoryService {
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
     const tree = await this.readTree(teamRunId);
     if (!tree) throw new Error(`Team run execution tree not found for '${teamRunId}'.`);
-    const isActive = this.manager.hasManagedTeamRun(teamRunId);
     const row = await this.catalog.getCatalogRow(teamRunId);
+    const managed = this.manager.getManagedTeamRun(teamRunId);
+    const isActive = managed !== null;
+    const live = managed?.getLivePosition() ?? null;
     return {
       teamRunId,
+      displayName: await this.displayNameOf(teamRunId),
       isActive,
+      liveSequenceId: live?.liveSequenceId ?? null,
+      baseChangeSequence: live?.changeSequence ?? 0,
+      lastMessageChangeSequence: live?.lastMessageChangeSequence ?? null,
       executionTree: tree,
-      closedTaskExecutions: this.manager.closedTaskExecutionsFor(teamRunId, tree),
       modelConfigEditability: runModelConfigEditability({
         isActive,
         available: Boolean(row),
@@ -80,15 +115,17 @@ export class TeamRunHistoryService {
     };
   }
 
-  archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
-    return this.catalog.archiveTeamRun(teamRunId);
+  async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
+    return this.workGuard.guard({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "archived", () => this.catalog.archiveTeamRun(teamRunId));
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    const result = await this.catalog.deleteTeamRun(teamRunId);
+    const root = createTeamRootExecutionIdentity(teamRunId.trim());
+    const result = await this.workGuard.guard(root, "deleted", () => this.catalog.deleteTeamRun(teamRunId));
+    if (!result.success) return result;
+    this.episodicCatalog.runDeleted(root);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
-    if (result.success) await (this.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }));
+    await (this.adHocTasks ?? getProjectTaskService()).deleteAdHocTasksDelegatedFrom(root);
     return result;
   }
 
@@ -99,20 +136,29 @@ export class TeamRunHistoryService {
     );
   }
 
+  /** A delegated team run's slot, as its tree row names it (SR-091); `null` for one the user started. */
+  private displayNameOf(teamRunId: string): Promise<string | null> {
+    return runDisplayNameOf(this.names, createTeamRootExecutionIdentity(teamRunId));
+  }
+
   private toHistoryItem(
     row: TeamRunIndexRow,
     tree: TeamRunExecutionTreeSnapshot,
     projection: { isActive: boolean; memberStatusSnapshots: TeamRunMemberStatusProjection[] },
+    lastActivityAt: string,
+    displayName: string | null,
   ): TeamRunHistoryItem {
     const members = collectConfiguredAgents(tree.rootTeam.members);
     return {
       teamRunId: row.teamRunId,
+      displayName,
       teamDefinitionId: row.teamDefinitionId,
       teamDefinitionName: row.teamDefinitionName,
       coordinatorAddress: tree.rootTeam.coordinatorAddress,
       workspaceRootPath: row.workspaceRootPath ?? members.find((member) => member.launchConfiguration.workspaceRootPath)?.launchConfiguration.workspaceRootPath ?? null,
       summary: row.summary,
       createdAt: row.createdAt,
+      lastActivityAt,
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
       isActive: projection.isActive,
@@ -141,6 +187,14 @@ const collectConfiguredAgents = (members: readonly ConfiguredExecutionNode[]): C
 const statusFor = (agentRunId: string, snapshots: TeamRunMemberStatusProjection[]): AgentApiStatus =>
   snapshots.find((snapshot) => snapshot.agentRunId === agentRunId)?.status ?? "offline";
 
-let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
-export const getTeamRunHistoryService = (): TeamRunHistoryService => cachedTeamRunHistoryService ??=
-  new TeamRunHistoryService(appConfigProvider.config.getMemoryDir());
+let processService: TeamRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessTeamRunHistoryService = (service: TeamRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
+export const getTeamRunHistoryService = (): TeamRunHistoryService => {
+  if (!processService) throw new Error("TeamRunHistoryService is created by the composition root.");
+  return processService;
+};

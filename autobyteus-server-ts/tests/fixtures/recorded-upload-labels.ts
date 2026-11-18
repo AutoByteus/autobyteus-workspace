@@ -6,6 +6,7 @@ import { normalizeRawTraceRecords } from '../../src/agent-memory/services/raw-tr
 import { buildHistoricalReplayEvents } from '../../src/run-history/projection/transformers/raw-trace-to-historical-replay-events.js';
 import { buildRunProjectionConversation } from '../../src/run-history/projection/transformers/historical-replay-events-to-conversation.js';
 import { buildEventMonitorActiveTracePageEvents } from '../../src/run-history/projection/event-monitor-active-trace-page-projection.js';
+import { isEventMonitorReplayEvent } from '../../src/run-history/projection/historical-replay-event-types.js';
 
 const base = '/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/';
 export const recordedUploadLabelCases = [
@@ -33,7 +34,8 @@ export const createRecordedUploadLabelFixture = (
   }).toDict();
   const bytes = JSON.stringify(raw);
   const savedRow = cold ? JSON.parse(bytes) : raw;
-  const replay = buildHistoricalReplayEvents(normalizeRawTraceRecords([savedRow]));
+  // As the run-view projection does: the Event Monitor and the conversation take the monitor's events only.
+  const replay = buildHistoricalReplayEvents(normalizeRawTraceRecords([savedRow])).filter(isEventMonitorReplayEvent);
   const page = buildEventMonitorActiveTracePageEvents(replay).map(event => ({ ...event,
     visuals: event.visuals.map(visual => ({ ...visual, __typename: 'EventMonitorUserVisual' as const })),
   }));

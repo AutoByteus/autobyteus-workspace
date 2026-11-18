@@ -1,0 +1,16 @@
+[+0.01s] stamp "1.5.11-beta.9"
+[+2.05s] server started {"label":"X","pid":18461,"port":58899}
+[+3.29s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:58898","codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+13.44s] busy {"label":"copy","pid":22722}
+[+13.48s] busy {"label":"sa-codex","pid":20458}
+[+13.53s] busy {"label":"sa-claude","pid":20954}
+[+13.57s] busy {"label":"team-codex","pid":20582}
+[+18.53s] busy {"label":"org-claude","pid":23632}
+[+37.52s] busy {"label":"host","pid":26955}
+[+40.93s] server stopped {"label":"X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793520523968},"ms":1276}
+[+40.93s] record after quit {"entries":[{"kind":"agent","place":"host","status":"running","version":"1.5.11-beta.9","run":"f81800f7e1"},{"kind":"agent","place":"host","status":"running","version":"1.5.11-beta.9","run":"9779d3472b"},{"kind":"agent_team","place":"member","status":"running","version":"1.5.11-beta.9","run":"53ffd0db02"},{"kind":"agent_org","place":"member","status":"running","version":"1.5.11-beta.9","run":"db2c71e85b"},{"kind":"agent","place":"host","status":"running","version":"1.5.11-beta.9","run":"08c02f5f9c"},{"kind":"agent","place":"delegated","status":"running","version":"1.5.11-beta.9","run":"41b5a7ddd4"}],"lines":["[39.55] Recorded 6 busy run(s) for restart resume"]}
+[+40.93s] stamp "1.5.11-beta.9-rr285next"
+[+42.76s] server started {"label":"X1","pid":27087,"port":59066}
+[+68.25s] after X1 start {"lines":["[42.64] Restart resume resumed host run 'probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b' of agent 'probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b'","[42.80] Restart resume resumed host run 'probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1' of agent 'probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1'","[42.82] Restart resume resumed delegated run 'probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4' of agent 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c'","[42.88] Restart resume resumed host run 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c' of agent 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f
+[+69.45s] server stopped {"label":"X1","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793520552512},"ms":1097}
+{"result":"Completed","error":null}

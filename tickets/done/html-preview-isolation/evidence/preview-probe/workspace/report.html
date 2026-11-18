@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <script src="classic.js"></script>
+  <script type="module" src="module.js"></script>
+</head>
+<body>
+  <h1>Workspace report</h1>
+  <img src="pixel.png" onerror="report('img-relative', 'error')" onload="report('img-relative', 'loaded')">
+  <script>
+    function report(name, value) { if (parent === window) { console.log('PROBE ' + JSON.stringify({ frame: window.PROBE_LABEL, check: name, value: String(value) })); return; } parent.postMessage({ probe: window.PROBE_LABEL || location.href, name, value: String(value) }, '*'); }
+    window.PROBE_LABEL = window.PROBE_LABEL || new URLSearchParams(location.search).get('label') || 'static';
+    report('origin', self.origin);
+    report('inline-script', 'ran');
+    report('classic-script', window.CLASSIC_LOADED === true ? 'ran' : 'not-yet');
+    try { report('parent-document', parent.document.title || 'accessible'); } catch (e) { report('parent-document', 'blocked: ' + e.name); }
+    try { report('parent-electronAPI', typeof parent.electronAPI); } catch (e) { report('parent-electronAPI', 'blocked: ' + e.name); }
+    try { if (typeof parent.electronAPI === 'object') parent.electronAPI.ping().then(v => report('parent-electronAPI-call', v)).catch(e => report('parent-electronAPI-call', 'failed: ' + e)); } catch (e) { report('parent-electronAPI-call', 'blocked: ' + e.name); }
+    try { localStorage.setItem('k', 'v'); report('localStorage', 'works'); } catch (e) { report('localStorage', 'blocked: ' + e.name); }
+    fetch('data.json').then(r => r.json()).then(j => report('fetch-relative-json', j.ok)).catch(e => report('fetch-relative-json', 'failed: ' + e.name));
+    fetch('/graphql', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }).then(r => report('post-graphql', 'status ' + r.status)).catch(e => report('post-graphql', 'failed: ' + e.name));
+    fetch('http://127.0.0.1:47921/graphql?abs=' + window.PROBE_LABEL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }).then(r => report('post-node-absolute', 'status ' + r.status)).catch(e => report('post-node-absolute', 'failed: ' + e.name));
+    try { new WebSocket('ws://' + (location.host || '127.0.0.1:47921') + '/ws/terminal/x?from=' + window.PROBE_LABEL); report('ws-open', 'attempted'); } catch (e) { report('ws-open', 'threw ' + e.name); }
+    setTimeout(() => report('module-script', window.MODULE_LOADED === true ? 'ran' : 'did-not-run'), 1200);
+    setTimeout(() => report('classic-script-late', window.CLASSIC_LOADED === true ? 'ran' : 'did-not-run'), 1200);
+    setTimeout(() => report('css', getComputedStyle(document.querySelector('h1')).color), 1200);
+  </script>
+</body>
+</html>

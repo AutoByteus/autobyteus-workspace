@@ -1,0 +1,10 @@
+# IMP-01 reproduction: sheetjs-attr-escape probe, xlsx 0.18.5 (base) vs installed 0.20.3 (branch)
+# Command: node probes/sheetjs-attr-escape.cjs <xlsx dir>
+# Commit: base ddd6fdcdf6 + viewer working tree (commit 1); 0.18.5 = leftover base virtual-store copy, 0.20.3 = autobyteus-web/node_modules/xlsx after frozen install
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2; date 2026-10-24T19:44:49Z
+
+## base 0.18.5
+0.18.5 <td data-t="s" data-v="x" onmouseover="window.__pwned=1" data-y="" id="excel-table-A1"> INJECTED_ATTRIBUTE
+
+## branch (installed) 0.20.3
+0.20.3 <td data-t="s" data-v="x&quot; onmouseover=&quot;window.__pwned=1&quot; data-y=&quot;" id="excel-table-A1"> ESCAPED

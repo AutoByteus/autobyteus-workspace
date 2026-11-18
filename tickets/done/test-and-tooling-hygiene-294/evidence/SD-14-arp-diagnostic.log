@@ -1,0 +1,17 @@
+
+> autobyteus@1.5.9-beta.12 test:e2e:agent-runtimes-settings /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web
+> node tests/e2e/agent-runtimes-settings-probe.mjs -- --skip-server-build --output-dir=/tmp/hyg294/ev/SD-14-arp-diagnostic
+
+Pass ARP-01 Open: four rows; one source failing, one slow, one runtime missing; table at 1440 px (AC-001, AC-002, AC-005, AC-006, AC-009, VIS-001)
+Pass ARP-02 Table/stacked follows the list width (~58 rem), never overflowing: 1280 table; 1024, 739, 390 stacked (SR-012, VIS-022)
+Pass ARP-03 Update stays visible but inert while a Codex agent runs, with the count; enabled after it ends (AC-004)
+Pass ARP-04 Update: Updating… with the command and the vendor step, then "Updated from 0.150.0 to 0.163.0." and Up to date, announced (AC-003, VIS-004/005)
+Pass ARP-05 Check again: Claude's source recovers; its update fails with the vendor's message and Try again (AC-002, AC-003, VIS-006)
+Pass ARP-06 Sign in: Signing in… + "Finish signing in to Codex in your browser." + Cancel; then completion → Signed in, announced (AC-007, VIS-008/009)
+Pass ARP-07 zh-CN: menu, title, hints and statuses in Chinese at 1440 px (table) and 739 px (stacked)
+Not applicable ARP-08 A remote node window on a node without a desktop browser: same rows and statuses, no Update, no Sign in, no hint, the status-only note (AC-010, VIS-019; remote-node-runtime-sign-in AC-005): a darwin node always has a desktop browser
+Pass ARP-09 A node that can't be read: the error with Retry (VIS-018)
+Pass ARP-11 A remote node window on a node with a desktop browser: the VNC note, Sign in for Codex and Grok, the command-line hint "on that node", no Update or blocked line even with a running agent; Sign in runs on that node with the remote waiting text and Cancel, then ends Signed in, announced; rebinding to a headless node is status only (remote-node-runtime-sign-in AC-001…AC-005, REQ-005)
+Pass ARP-12 zh-CN on a remote node with a desktop browser: note, hint and waiting text in Chinese at 1440 px (table) and 739 px (stacked)
+Pass ARP-10 No sign-in URL, code or account detail in the page, its GraphQL responses or the backend logs (AC-011)
+Result: Pass (/tmp/hyg294/ev/SD-14-arp-diagnostic/result.json)

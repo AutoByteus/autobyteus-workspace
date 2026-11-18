@@ -1,0 +1,125 @@
+{
+  "startedAt": "2026-11-02T06:45:13.690Z",
+  "cases": {
+    "AC-001/003/004/005/006 + AC-002: real delegation from a manager in another folder (scripted AGY)": {
+      "result": "Pass",
+      "details": {
+        "managerRun": "project_task_manager_b750_7d2530a056324497b008a772803b7bb8",
+        "agentCopy": {
+          "run": "package_writer_b750_a9763d0d67ad4dad823ab6f393ccadc8",
+          "recorded": [
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+          ],
+          "agy": {
+            "processCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/package_writer_b750_a9763d0d67ad4dad823ab6f393ccadc8/agy-project",
+            "addDirs": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+            ],
+            "capsuleWorkspacePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+          }
+        },
+        "managerFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder",
+        "teamCopy": {
+          "team": "scouting_team_b750_3e4ed2834cad4248945dddd455e07173",
+          "recorded": [
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first",
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+          ]
+        },
+        "subWork": {
+          "run": "fact_checker_b750_d2a0609c24604b6a98b89c01ed9b1266",
+          "recorded": [
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+          ]
+        },
+        "inherit": {
+          "noLink": [
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder"
+          ],
+          "temp": [
+            "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder"
+          ]
+        },
+        "refused_missing": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\"error\":{\"code\":\"TASK_PROJECT_FOLDER_UNAVAILABLE\",\"message\":\"Project \"Moved Away b750\" has the linked folder \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/moved-away\", which is not an existing folder on this node. Fix the Project's link, or link another folder, then delegate again. Nothing was started.\"}}\"}],\"isError\":true}\",\"media\":null,\"t",
+        "refused_file": "CALLED:{\"content\":[{\"type\":\"text\",\"text\":\"{\"error\":{\"code\":\"TASK_PROJECT_FOLDER_UNAVAILABLE\",\"message\":\"Project \"Is A File b750\" has the linked folder \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/a-file\", which is not an existing folder on this node. Fix the Project's link, or link another folder, then delegate again. Nothing was started.\"}}\"}],\"isError\":true}\",\"media\":null,\"ts\":17"
+      }
+    },
+    "Native runtime: the copy's real working directory (run_bash pwd; fake OpenAI-compatible endpoint)": {
+      "result": "Pass",
+      "details": {
+        "copy": "native_worker_b750_d9022c3e366f4a6ba68163543d665576",
+        "pwdWrittenByTheCopy": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first",
+        "recorded": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+        ]
+      }
+    },
+    "AC-009 Agent root, Workspaces mode: focus shows the copy's folder; row stays under the manager": {
+      "result": "Pass",
+      "details": {
+        "terminal": "project-first$pwder-majarc/p/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r000project-first$older-majarc/p",
+        "workspaceRows": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/temp_workspace"
+        ],
+        "newWorkspacesRowForProjectFolder": true
+      }
+    },
+    "AC-009 Projects mode: a manager started under another Project keeps the copy nested; focus shows the copy's folder": {
+      "result": "Pass",
+      "details": {
+        "manager": "project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b",
+        "copy": "package_writer_b750_64e7b0a0ba654b999c990355b95bb06d",
+        "recorded": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first"
+        ],
+        "managerFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-of-manager"
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated",
+    "backend": "terminated",
+    "fakeLlm": "stopped",
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "seed": {
+    "names": {
+      "manager": "Project Task Manager b750",
+      "writer": "Package Writer b750",
+      "checker": "Fact Checker b750",
+      "native": "Native Worker b750",
+      "squad": "Scouting Team b750"
+    },
+    "projects": {
+      "linked": {
+        "projectId": "project_8b47bfcd-968f-4eac-ba5d-ea3aac49194c",
+        "name": "AutoByteus Agents b750"
+      },
+      "noLink": {
+        "projectId": "project_28ef2e72-7aa0-4f5a-b7b9-8ecd4a0ca0c3",
+        "name": "No Folder b750"
+      },
+      "missing": {
+        "projectId": "project_9b7103f5-4f31-4b4f-87cb-448101124cb9",
+        "name": "Moved Away b750"
+      },
+      "file": {
+        "projectId": "project_5d0652e2-c8f4-4768-9bd8-580f3a6d2953",
+        "name": "Is A File b750"
+      },
+      "own": {
+        "projectId": "project_f85c9b4a-bf08-4448-8bea-1937c1620959",
+        "name": "Manager's Project b750"
+      }
+    },
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc"
+  },
+  "browserVersion": "156.0.8078.74",
+  "result": "Pass",
+  "finishedAt": "2026-11-02T06:46:18.326Z"
+}

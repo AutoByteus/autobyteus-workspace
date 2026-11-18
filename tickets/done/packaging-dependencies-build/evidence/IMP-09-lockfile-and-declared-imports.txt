@@ -1,0 +1,36 @@
+# IMP-09
+# Command: git diff efd28d5c4a..HEAD -- pnpm-lock.yaml (after pnpm install --lockfile-only); node scripts/check-declared-imports.mjs autobyteus-server-ts autobyteus-web; git grep nuxtjs/apollo
+# Commit: 4db26446cb
+# Date: 2026-11-01
+
+## Lockfile: top-level entries removed or added
+-  '@nuxtjs/apollo@5.0.0-alpha.16':
+-  '@rollup/plugin-graphql@2.0.5':
+-  '@vue/apollo-option@4.2.2':
+-  '@nuxtjs/apollo@5.0.0-alpha.16
+-  '@rollup/plugin-graphql@2.0.5(graphql@16.12.0)(rollup@4.64.12)':
+-  '@vue/apollo-option@4.2.2(@apollo/client@3.14.0(@types/react@19.2.14)(graphql-ws@6.0.7(
+
+Retained packages that changed version: none (version lines changed only for the importer lines below)
++        specifier: ^5.22.0
++        version: 5.22.0
++        specifier: workspace:*
++        version: link:../autobyteus-application-backend-sdk
+-        specifier: ^5.22.0
+-        version: 5.22.0
+-        specifier: ^5.0.0-alpha.14
+-        version: 5.0.0-alpha.16(@fastify/websocket@11.3.4)(@nuxt/schema@3.21.11)(@types/react@19.2.14)(confbox@0.3.1)(crossws@0.3.5)(dotenv@16.6.1)(giget@3.3.1)(magic-string@0.30.21)(mlly@1.8.2)(oxc-parser@0.143.0)(react@19.2.4)(rollup@4.64.12)(typescript@5.9.3)(unplugin@3.4.0(esbuild@0.28.2)(rollup@4.64.12)(vite@7.3.7(@types/node@22.19.11)(jiti@1.21.7)(terser@5.51.2)(yaml@2.8.2)))(vue@3.5.44(typescript@5.9.3))(ws@8.22.0)
++        specifier: ^2.12.6
++        version: 2.12.6(graphql@16.12.0)
++        specifier: ^3.5.44
++        version: 3.5.44(typescript@5.9.3)
++        specifier: ^4.6.4
++        version: 4.6.4(vue@3.5.44(typescript@5.9.3))
+
+## declared imports
+Imports are declared: autobyteus-server-ts, autobyteus-web
+
+## @nuxtjs/apollo left in tracked files outside tickets/:
+(none)
+
+## reference search for the removed workflow outside tickets/ and planning notes:

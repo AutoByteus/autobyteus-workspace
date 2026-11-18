@@ -1,0 +1,31 @@
+# API-08 round 2: process death (AC-004a, REQ-003 as narrowed by SR-008; RR-02 rule changed in 35263117c9)
+# build: worktree debug APK at d115f1601d (assembleDebug 01:18); emulator autobyteus277_api35 (Android 15, WebView 124.0.6367.219), app data cleared
+# node: mobile-shell probe --hold (server dist of the unchanged server source; phone bundle rebuilt on d115f1601d), reached at http://10.0.2.2:50737
+# steps: API-08-r2-steps.sh.txt (Home → adb shell am kill org.autobyteus.mobile → Recents → the card; page facts over CDP:
+#        href, the document's navigation entry "loadedWith", history length, the "Unsupported on phone" notice, list, pairing screen)
+# node page used: /mobile?unsupported=desktopWorkspace (the run list with the notice the URL names; a run screen is AC-004b, round 2)
+# date: 2026-11-08 01:19-01:23 (local); pairing codes redacted (pairing=…)
+
+## Run A: the task a shared pairing link started (root intent: act=android.intent.action.SEND typ=text/plain flg=0x10000000 …)
+paired: href http://10.0.2.2:50737/mobile/, loadedWith http://10.0.2.2:50737/mobile?pairing=…, list
+before: {"href":"…/mobile/?unsupported=desktopWorkspace","loadedWith":"…/mobile?unsupported=desktopWorkspace","notice":true,"list":true,"pairing":false} (API-08-r2-A1-before.png)
+pid before 3181 → after kill [] → after reopen 3411
+after:  {"href":"http://10.0.2.2:50737/mobile/?unsupported=desktopWorkspace","loadedWith":"http://10.0.2.2:50737/mobile/?unsupported=desktopWorkspace","historyLength":1,"notice":true,"list":true,"pairing":false}
+screen: text="Alpha Test Node, Connected. Connection" text="Unsupported on phone" text="The desktop workspace isn’t on the phone. Your runs are here." text="Your runs" (API-08-r2-A2-after.png)
+→ the same node and /mobile URL load in the new process; the share is not run again (no "This code has expired")
+
+## Run B: a task started from the launcher (root intent: act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER])
+start: loadedWith http://10.0.2.2:50737/mobile (last used node)
+before: {"href":"…/mobile/?unsupported=desktopWorkspace","notice":true} (API-08-r2-B1-before.png)
+pid before 3558 → after kill [] → after reopen 3730
+after:  {"href":"http://10.0.2.2:50737/mobile/?unsupported=desktopWorkspace","loadedWith":"http://10.0.2.2:50737/mobile/?unsupported=desktopWorkspace","historyLength":1,"notice":true,"list":true,"pairing":false} (API-08-r2-B2-after.png)
+
+## Run D (alternate): a new share while the process is dead
+devices on the node before: 1; Home; am kill (pid []); a new pairing session made on the node; ACTION_SEND of its link
+after: pid 3882; {"href":"http://10.0.2.2:50737/mobile/","loadedWith":"http://10.0.2.2:50737/mobile?pairing=…","list":true,"pairing":false} (API-08-r2-D-new-share.png)
+devices after: 2 ['2026-11-08T00:19:28.659Z', '2026-11-08T00:21:30.089Z'] → the new share connected (a second device paired)
+
+## Run C (alternate): the node removed while the process is dead (the top activity is the one Run D's share started)
+Home; am kill (pid []); shared_prefs/saved_nodes.xml (debug app, adb shell run-as) set to entries [] ; Recents → the card
+pid after reopen 4065; screen: text="AutoByteus" text="Scan the QR code on your computer" … text="Scan"; WebView DevTools sockets: 0 (API-08-r2-C-node-removed.png)
+devices on the node still 2 → the share that started this activity was not run again (it would have paired a third device)

@@ -1,0 +1,129 @@
+{
+  "startedAt": "2026-11-08T11:22:28.387Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 58886,
+      "nodeId": "srv_v3sV6pJbo4-SgstqNtLeejeYB1EKbVzF",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 58885,
+      "nodeId": "srv_wunTBzVU7VMTRS7ylJr7nXpWRU1TLIcM",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_8f933a638ea544b691de545e2d749127",
+    "writerRun": "release_notes_writer_beb008d8691b475284217f98618b60c9",
+    "squadRun": "docs_review_team_539c66249f164abaa6b07d5377394b83",
+    "reviewer": "release_notes_writer_0bd47f4122ca43b89e4eaa061e0459d0",
+    "memberDelegated": "fact_checker_81adb5f3bc194e0fbfa5a66e331412f8",
+    "remoteAgentRun": "publisher_2cf9ec7c895b4a2cb843ca87651278e7",
+    "remoteTeamRun": "studio_team_859e25392b6d4679a7a66098daeb2f77",
+    "plain": [
+      "fact_checker_3c25ad0df7794db185c914ff1945d3b5",
+      "fact_checker_0fc4f67b477c4e7c8e8f2d219f3d3b07",
+      "fact_checker_225786c63232490ea530b59137ff714a"
+    ],
+    "org": "delivery_org_20aec6b093554583b9de0cb088ef4b8f",
+    "orgPlanner": "release_notes_writer_60cd153a10e345f0ac86d14cf7daf2d6",
+    "reviewOrg": "review_org_dac0a0a71fb748c7885e2a312613476a",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_6d33fe484de3496f905afe190afd8617",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_7149825c74cf4f3da60ed2f15b0c414f",
+    "deliveryLead": "fact_checker_0ee9ab77739c42658714d053bce9414e",
+    "deliveryMate": "release_notes_writer_6b95d18aba3e4beb9429380a99994f4d",
+    "leadDelegated": "changelog_helper_af51523416b34375be2c0488fb2a8f43",
+    "approver": "approver_aeb5f532ae344540ba7d60c9707dbfdc",
+    "taskA": "launch-d0e4bb-1",
+    "taskB": "launch-d0e4bb-2"
+  },
+  "cases": {
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 5.9,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_20aec6b093554583b9de0cb088ef4b8f&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?pairing=…&rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_20aec6b093554583b9de0cb088ef4b8f&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_20aec6b093554583b9de0cb088ef4b8f&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-05": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-08T11:23:08.070Z"
+}

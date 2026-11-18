@@ -1,0 +1,155 @@
+{
+  "startedAt": "2026-10-24T12:33:07.583Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 55289,
+      "nodeId": "srv_33ibdXENwL5qd9eWZJ2jaqoohK1Ge0CN"
+    },
+    "beta": {
+      "port": 55290,
+      "nodeId": "srv_L645kjdWbnHXaxP9P-DGaCVWlmRF1M83"
+    }
+  },
+  "cases": {
+    "NVP-01": {
+      "result": "Pass",
+      "ms": 203,
+      "failedExpectations": [],
+      "stored": {
+        "version": 7,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:55289",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_33ibdXENwL5qd9eWZJ2jaqoohK1Ge0CN"
+          },
+          {
+            "id": "remote-beta-entry",
+            "name": "beta box",
+            "baseUrl": "http://127.0.0.1:55290",
+            "nodeType": "remote",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_L645kjdWbnHXaxP9P-DGaCVWlmRF1M83"
+          }
+        ]
+      },
+      "names": [
+        "beta"
+      ],
+      "backup": "{\"version\":7,\"nodes\":[{\"id\":\"embedded-local\",\"name\":\"Embedded Node\",\"baseUrl\":\"http://127.0.0.1:55289\",\"nodeType\":\"embedded\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":true,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_33ibdXENwL5qd9eWZJ2jaqoohK1Ge0CN\"},{\"id\":\"remote-beta-entry\",\"name\":\"beta box\",\"baseUrl\":\"http://127.0.0.1:55290\",\"nodeType\":\"remote\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":false,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_L645kjdWbnHXaxP9P-DGaCVWlmRF1M83\"}]}"
+    },
+    "NVP-02": {
+      "result": "Pass",
+      "ms": 67,
+      "failedExpectations": [],
+      "lines": [
+        "ⓘNot reachable. This node's identity is waiting for its data migration.\n\nCheck again"
+      ]
+    },
+    "NVP-03": {
+      "result": "Pass",
+      "ms": 2840,
+      "failedExpectations": [],
+      "en": "Memory Sync source ID",
+      "zh": "记忆同步源 ID",
+      "sources": [
+        "local",
+        "imported:nvp-beta-source"
+      ]
+    },
+    "NVP-04": {
+      "result": "Pass",
+      "ms": 6150,
+      "failedExpectations": [],
+      "shown": "home",
+      "storedKeys": [
+        "entryId",
+        "serverBaseUrl",
+        "credential",
+        "device",
+        "pairedAt"
+      ],
+      "entryId": "mobile-paired-node"
+    },
+    "NVP-05": {
+      "result": "Pass",
+      "ms": 9817,
+      "failedExpectations": [],
+      "sources": [
+        "local"
+      ],
+      "cardHasReason": true
+    }
+  },
+  "browserErrors": [
+    "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+    "phone console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "phone console: TypeError: Failed to fetch dynamically imported module: http://192.168.2.158:55344/_nuxt/pages/mobile.vue",
+    "phone console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://192.168.2.158:55344/_nuxt/pages/mobile.vue",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: WebSocket connection to 'ws://192.168.2.158:55344/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: Unexpected response code: 200",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: WebSocket connection to 'ws://192.168.2.158:55344/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "console: WebSocket connection to 'ws://127.0.0.1:55289/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "console: WebSocket connection to 'ws://127.0.0.1:55289/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [
+    "phone console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "phone console: TypeError: Failed to fetch dynamically imported module: http://192.168.2.158:55344/_nuxt/pages/mobile.vue",
+    "phone console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://192.168.2.158:55344/_nuxt/pages/mobile.vue",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: WebSocket connection to 'ws://192.168.2.158:55344/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: Unexpected response code: 200",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "phone console: WebSocket connection to 'ws://192.168.2.158:55344/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "console: WebSocket connection to 'ws://127.0.0.1:55289/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "console: WebSocket connection to 'ws://127.0.0.1:55289/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+  ],
+  "finishedAt": "2026-10-24T12:33:51.197Z"
+}

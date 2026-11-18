@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -8,7 +9,8 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { getAgentOrgRunExecutionTreePath } from "../../../../src/run-history/store/agent-org-run-execution-tree-path.js";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
-import { orgProjectionTree, withoutRemoteLinks } from "../../../fixtures/collaboration-public-projection-fixtures.js";
+import { validateAgentOrgRunExecutionTreePayload } from "../../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -16,13 +18,24 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true })));
 });
 
-// Check every public field, not just a set of IDs: source/ingress/launch facts
-// and every nested position must survive. Private ownership stays in storage.
-const setup = async (active: boolean, linked: boolean) => {
+/** An Org with every public field set: a direct agent, a mounted team with a role, handoffs and an application binding. */
+const orgTree = () => {
+  const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/manager", "manager"), {
+    ...testOrgTeamNode({ address: "/configured", teamRunId: "configured-team", coordinatorAddress: "/configured/lead",
+      members: [testOrgAgentNode("/configured/lead", "configured-lead")] }),
+    role: "Delivery", description: "Configured Team", defaultLaunchConfiguration: testOrgLaunchConfiguration("/tmp/test-owned-projection-workspace"),
+  }] });
+  return validateAgentOrgRunExecutionTreePayload({ ...base, archivedAt: null, applicationBinding: { applicationId: "app", bindingId: "binding" },
+    handoffs: [{ from: "/manager", to: "/configured/lead", rules: ["coordinate"] }] }, "org-root");
+};
+
+// Check every public field, not just a set of IDs. A run its agents delegated to is its own run (autobyteus-461): the
+// history row holds the Org's own parts only (its delegated runs are its tree's rows, SR-084).
+const setup = async (active: boolean) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-history-public-"));
   roots.push(memoryDir);
-  const tree = { ...orgProjectionTree(linked), archivedAt: null };
-  const expected = agentOrgExecutionTreeDtoSchema.parse(withoutRemoteLinks({ ...orgProjectionTree(false), archivedAt: null }));
+  const tree = orgTree();
+  const expected = agentOrgExecutionTreeDtoSchema.parse(JSON.parse(JSON.stringify(tree)));
   const store = new AgentOrgRunExecutionTreeStore();
   const packagePath = new AgentMemoryLayout(memoryDir).getOrgDirPath("org-root");
   await store.write(packagePath, tree);
@@ -32,24 +45,21 @@ const setup = async (active: boolean, linked: boolean) => {
   const write = vi.spyOn(store, "write");
   const getExecutionTreeSnapshot = vi.fn(() => tree);
   const catalog = [projectAgentOrgRunHistoryRow(tree)];
-  const service = new CollaborationRootHistoryService({
+  const service = new CollaborationRootHistoryService({ tree: noDelegations(),
     memoryDir,
     teams: { listTeamRunHistory: async () => [] },
     orgs: { listCatalogRows: async () => catalog, getCatalogRow: async (id: string) => catalog.find(row => row.orgRunId === id) ?? null },
-    orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null), closedTaskExecutionsFor: () => [] } as never,
+    orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null) } as never,
     orgTrees: store,
   });
-  return { tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
+  return { memoryDir, tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
 };
 
 describe("mixed public history Org projection", () => {
-  it.each([
-    [false, true, "list"], [true, true, "list"], [false, false, "list"], [true, false, "list"],
-    [false, true, "scoped"], [true, true, "scoped"], [false, false, "scoped"], [true, false, "scoped"],
-  ] as const)("strictly projects active=%s linked=%s via %s without losing any concrete worker or private bytes", async (active, linked, surface) => {
-    const current = await setup(active, linked);
+  it.each([[false, "list"], [true, "list"], [false, "scoped"], [true, "scoped"]] as const)(
+    "strictly projects active=%s via %s without losing any public field or private bytes", async (active, surface) => {
+    const current = await setup(active);
     const privateBefore = JSON.stringify(current.tree);
-    expect(privateBefore).not.toContain("taskLifetime"); // dev-residue stamps never reach the current tree (C-1)
     // Repeated normal reads have the same result, never a write/migration/restore.
     for (let attempt = 0; attempt < 2; attempt++) {
       const rows = surface === "list" ? await current.service.list() : [await current.service.getAgentOrg(" org-root ")];
@@ -59,18 +69,16 @@ describe("mixed public history Org projection", () => {
       if (row.root_subject_kind !== "agent_org") throw new Error("Expected Org branch");
       expect(agentOrgExecutionTreeDtoSchema.parse(row.org)).toEqual(current.expected);
       expect(row.org).toEqual(current.expected);
-      expect(JSON.stringify(row.org)).not.toContain("taskLifetime");
       expect(JSON.stringify(current.tree)).toBe(privateBefore);
       expect(await fs.readFile(current.file)).toEqual(current.bytes);
     }
     expect(current.write).not.toHaveBeenCalled();
     expect(current.getExecutionTreeSnapshot).toHaveBeenCalledTimes(active ? 2 : 0);
     expect(current.read).toHaveBeenCalledTimes(active ? 0 : 2);
-    expect(JSON.stringify(await current.store.read(current.packagePath, "org-root"))).not.toContain("taskLifetime");
   });
 
   it("uses the active snapshot rather than a stale stored copy and leaves that copy intact", async () => {
-    const current = await setup(true, true);
+    const current = await setup(true);
     current.getExecutionTreeSnapshot.mockReturnValue({ ...current.tree, rootOrg: { ...current.tree.rootOrg, orgDefinitionName: "Active current name" } });
     const rows = await current.service.list();
     expect(rows[0]).toMatchObject({ org: { rootOrg: { orgDefinitionName: "Active current name" } } });
@@ -81,12 +89,12 @@ describe("mixed public history Org projection", () => {
   });
 
   it("retains mixed family ordering and the existing archived inactive exclusion", async () => {
-    const current = await setup(false, true);
+    const current = await setup(false);
     const team = { teamRunId: "team-root", createdAt: "2026-10-04T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Team" };
-    const service = new CollaborationRootHistoryService({
+    const service = new CollaborationRootHistoryService({ tree: noDelegations(),
       memoryDir: roots.at(-1)!, teams: { listTeamRunHistory: async () => [team] } as never,
       orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async (id: string) => current.catalog.find(row => row.orgRunId === id) ?? null },
-      orgRuns: { getActive: () => null, closedTaskExecutionsFor: () => [] }, orgTrees: current.store,
+      orgRuns: { getActive: () => null }, orgTrees: current.store,
     });
     const rows = await service.list();
     expect(rows.map(row => row.root_run_id)).toEqual(["team-root", "org-root"]);
@@ -100,7 +108,7 @@ describe("mixed public history Org projection", () => {
   });
 
   it("keeps scoped lookup selected, rejects wrong root identity, and preserves archived active visibility", async () => {
-    const current = await setup(true, true);
+    const current = await setup(true);
     const list = vi.spyOn(current.service, "list");
     expect(await current.service.getAgentOrg("missing")).toBeNull();
     await expect(current.service.getAgentOrg(" ")).rejects.toThrow("orgRunId is required");
@@ -113,5 +121,24 @@ describe("mixed public history Org projection", () => {
     expect(current.read).not.toHaveBeenCalled();
     expect(current.write).not.toHaveBeenCalled();
     expect(await fs.readFile(current.file)).toEqual(current.bytes);
+  });
+
+  it("carries each Org and Team root's last activity (workspace-tree-vs-chooser DS-005)", async () => {
+    const current = await setup(false);
+    const forOrgRun = vi.fn(async () => "2026-11-05T09:30:00.000Z");
+    const team = { teamRunId: "team-root", createdAt: "2026-11-01T00:00:00.000Z", lastActivityAt: "2026-11-04T00:00:00.000Z",
+      archivedAt: null, isActive: false, summary: "" };
+    const service = new CollaborationRootHistoryService({ tree: noDelegations(),
+      memoryDir: current.memoryDir,
+      teams: { listTeamRunHistory: async () => [team as never] },
+      orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async () => current.catalog[0]! },
+      orgRuns: { getActive: () => null } as never,
+      orgTrees: current.store,
+      lastActivity: { forOrgRun },
+    });
+    const rows = await service.list();
+    expect(rows.find((row) => row.root_subject_kind === "agent_org")?.last_activity_at).toBe("2026-11-05T09:30:00.000Z");
+    expect(rows.find((row) => row.root_subject_kind === "agent_team")?.last_activity_at).toBe("2026-11-04T00:00:00.000Z");
+    expect(forOrgRun).toHaveBeenCalledWith({ orgRunId: "org-root", createdAt: current.catalog[0]!.createdAt });
   });
 });

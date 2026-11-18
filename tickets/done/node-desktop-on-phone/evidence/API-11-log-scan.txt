@@ -1,0 +1,19 @@
+# Case: API-11 — log scan of the test node after every case of this round (QR-S3-3, REQ-011)
+# Command: docker logs abx407-api-node + /var/log/supervisor/*.log + every *.log under /home/autobyteus/data; count credential-bearing values and markers
+# Commit: 165de82af4; node abx407-api-node
+# Date: 2026-11-06T23:30:32Z
+
+sources: docker logs     1727 lines; log files     2420 lines
+hits 'access_token=[A-Za-z0-9_-]': docker=0 files=0
+hits 'mra_[A-Za-z0-9]': docker=0 files=0
+hits 'pairing=eyJ': docker=0 files=0
+hits 'pairingCode': docker=0 files=0
+hits 'abx407-typed': docker=0 files=0
+hits 'wrold': docker=0 files=0
+
+[node-desktop] line shapes (numbers masked):
+   8 [node-desktop] stream ended mode=control viewer=mobile durationMs=N toViewer=N fromViewer=N reason=viewer-closed
+   4 [node-desktop] stream ended mode=view viewer=mobile durationMs=N toViewer=N fromViewer=N reason=node-closed close=PHONE_ACCESS_DISABLED
+   4 [node-desktop] stream ended mode=view viewer=mobile durationMs=N toViewer=N fromViewer=N reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED
+  36 [node-desktop] stream ended mode=view viewer=mobile durationMs=N toViewer=N fromViewer=N reason=viewer-closed
+  28 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=N fromViewer=N reason=viewer-closed

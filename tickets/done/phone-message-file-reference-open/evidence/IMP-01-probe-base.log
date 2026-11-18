@@ -1,0 +1,80 @@
+# Check: IMP-01 reproduction probe on the base (expected to fail)
+# Command: cp tickets/.../probes/probe427.mobileFileOpen.spec.ts autobyteus-web/composables/__tests__/ && pnpm -C autobyteus-web exec vitest run composables/__tests__/probe427.mobileFileOpen.spec.ts --no-watch (probe removed afterwards)
+# Commit: f7c31e4b0c (base code; docs-only commit on origin/personal 6225a734a3)
+# Environment: macOS (Darwin 25.5.0), Node via pnpm, vitest nuxt environment
+# Date: 2026-11-07
+# Owner: implementation engineer
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+stderr | composables/__tests__/probe427.mobileFileOpen.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/probe427.mobileFileOpen.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | composables/__tests__/probe427.mobileFileOpen.spec.ts > probe 427: tapping a file in a phone message > opens the Files screen with the file (handler calls the opener after an await, as AgentEventMonitor does)
+[Vue warn]: inject() can only be used inside setup() or functional components.
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | composables/__tests__/probe427.mobileFileOpen.spec.ts > probe 427: tapping a file in a phone message > opens the Files screen with the file (handler calls the opener after an await, as AgentEventMonitor does)
+[EventMonitorFilePreview] File preview failed. TypeError: Cannot read properties of undefined (reading 'query')
+    at orgKeys [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/mobile/useMobileNavigation.ts:45:60[90m)[39m
+    at Object.openFile [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/mobile/useMobileNavigation.ts:95:15[90m)[39m
+    at openMobilePath [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/useEventMonitorFilePreview.ts:60:28[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+    at Object.openPath [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/useEventMonitorFilePreview.ts:68:16[90m)[39m
+    at onClick [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/__tests__/probe427.mobileFileOpen.spec.ts:33:20[90m)[39m
+
+stdout | composables/__tests__/probe427.mobileFileOpen.spec.ts > probe 427: tapping a file in a phone message > opens the Files screen with the file (handler calls the opener after an await, as AgentEventMonitor does)
+PROBE result = {"status":"failed","message":"workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed"}
+PROBE route  = /mobile?screen=run
+PROBE warns  = [Vue warn]: inject() can only be used inside setup() or functional components. | [Vue warn]: inject() can only be used inside setup() or functional components. | [EventMonitorFilePreview] File preview failed.
+
+stdout | composables/__tests__/probe427.mobileFileOpen.spec.ts > probe 427: tapping a file in a phone message > CONTROL: the same tap opens the Files screen when the opener is created in the app injection context
+CONTROL result = {"status":"opened","path":"draft-v3.txt"} route = /mobile?screen=files&workspace=B&file=draft-v3.txt
+
+ ❯ composables/__tests__/probe427.mobileFileOpen.spec.ts (2 tests | 1 failed) 475ms
+   × probe 427: tapping a file in a phone message > opens the Files screen with the file (handler calls the opener after an await, as AgentEventMonitor does) 419ms
+     → expected { status: 'failed', …(1) } to deeply equal { status: 'opened', …(1) }
+   ✓ probe 427: tapping a file in a phone message > CONTROL: the same tap opens the Files screen when the opener is created in the app injection context 54ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/__tests__/probe427.mobileFileOpen.spec.ts > probe 427: tapping a file in a phone message > opens the Files screen with the file (handler calls the opener after an await, as AgentEventMonitor does)
+AssertionError: expected { status: 'failed', …(1) } to deeply equal { status: 'opened', …(1) }
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "path": "draft-v3.txt",[39m
+[32m-   "status": "opened",[39m
+[31m+   "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed",[39m
+[31m+   "status": "failed",[39m
+[2m  }[22m
+
+ ❯ composables/__tests__/probe427.mobileFileOpen.spec.ts:44:20
+     42|     console.log('PROBE route  =', router.currentRoute.value.fullPath);
+     43|     console.log('PROBE warns  =', warn.mock.calls.map((c) => String(c[…
+     44|     expect(result).toEqual({ status: 'opened', path: 'draft-v3.txt' });
+       |                    ^
+     45|     expect(router.currentRoute.value.query).toMatchObject({ screen: 'f…
+     46|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  20:39:54
+   Duration  13.65s (transform 7.08s, setup 12.12s, collect 42ms, tests 475ms, environment 335ms, prepare 292ms)
+

@@ -1,0 +1,8 @@
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts (14 tests | 1 failed) 7698ms
+     × creates one frozen context path value per host and shares it across both roots 79ms
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > creates one frozen context path value per host and shares it across both roots
+AssertionError: expected 'import { DelegatedLaunchSelectionServ…' to contain 'contextFilePathEnvironment: ContextFi…'
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts:700:21
+ Test Files  1 failed | 931 passed | 5 skipped (937)
+      Tests  1 failed | 7941 passed | 9 skipped (7951)
+exit=1

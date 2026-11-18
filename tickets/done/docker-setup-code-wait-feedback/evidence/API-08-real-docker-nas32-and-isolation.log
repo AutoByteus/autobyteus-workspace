@@ -1,0 +1,32 @@
+Case: API-08 (NAS-32 code-leak check across API-05..API-07, and isolation / cleanup confirmation)
+Commit: e9cc21bf28e7c9435aef0ce447f35aeba5be87f8 (branch codex/docker-setup-code-wait-feedback)
+Date: 2026-11-09 (~16:38 UTC)
+
+1) NAS-32 (REQ-007 / AC-007): grepped each real run's captured standard-error log for each of the three real
+   setup codes printed in API-05, API-06 and API-07:
+
+   grep -E "6KdLdr5WQov881mQs67dclPD|ZExUmdoUogZrDrZllp1COysj|yGSAipmiV4YM-9yBJPVm8WEe" <each .stderr.log>
+
+   Result for all three stderr logs: not found (good) — none of the three real codes this round generated
+   ever appeared outside their own stdout code line.
+
+2) Isolation (this run never touched the user's own node): before cleanup,
+   - isolated state dir (/tmp/autobyteus-apie2e-real-docker.<random>/state) held only
+     nodes/autobyteus-server-1.env — the test-owned node;
+   - the real user state dir ($HOME/.autobyteus/docker-server/nodes/) still held only
+     autobyteus-server-0.env, with its pre-existing mtime unchanged (Nov 9 16:11, before this round started);
+   - `docker ps --filter name=autobyteus-server-0` still showed the real node Up (56 minutes at the time of
+     the check), same published ports (100.65.37.54:8001->8000/tcp, 127.0.0.1:8001->8000/tcp) as before this
+     round — the real node was never stopped, recreated or inspected-and-changed by this round.
+
+3) Cleanup (test-owned resources removed after the round):
+   docker rm -f -v autobyteus-server-1
+   docker volume rm autobyteus-server-1-chromium-profile autobyteus-server-1-data \
+     autobyteus-server-1-root-home autobyteus-server-1-server-packages autobyteus-server-1-workspace
+   rm -rf /tmp/autobyteus-apie2e-real-docker.<random>
+
+   After cleanup: `docker ps -a --format '{{.Names}}'` printed only `autobyteus-server-0` (the real node);
+   `docker volume ls` no longer listed any `autobyteus-server-1-*` volume.
+
+What to look for: "not found (good)" for all three grep checks; the real node's unchanged mtime/status before
+cleanup; the single remaining container name (autobyteus-server-0) after cleanup.

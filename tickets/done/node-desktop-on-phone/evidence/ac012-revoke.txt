@@ -1,0 +1,8 @@
+streams ended before: 4; upstream rows: 2
+revoke: HTTP 200
+closed after 2.3 s
+[node-desktop] stream ended mode=control viewer=mobile durationMs=47264 toViewer=1283141 fromViewer=1364 reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED
+upstream rows after: 0
+"{\"s\":\"This viewer is not allowed on this node\"}"
+"{\"v\":\"visible\",\"q\":\"?screen=desktop\",\"s\":\"This viewer is not allowed on this node\"}"
+upstream rows: 0

@@ -7,7 +7,8 @@ import { LLMRuntime } from 'autobyteus-ts/llm/runtimes.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import { BuiltInLlmProviderCatalog } from '../../../../src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js';
-import { ModelCatalogService } from '../../../../src/llm-management/services/model-catalog-service.js';
+import { RuntimeKind } from '../../../../src/runtime-management/runtime-kind-enum.js';
+import { ModelCatalogService, ModelListUnavailableError } from '../../../../src/llm-management/services/model-catalog-service.js';
 
 describe('ModelCatalogService', () => {
   const builtInCatalog = new BuiltInLlmProviderCatalog();
@@ -68,6 +69,27 @@ describe('ModelCatalogService', () => {
     expect(selectionCatalog).toHaveBeenCalledTimes(3);
   });
 
+  it.each([
+    ['claude_agent_sdk', (service: ModelCatalogService) => service.runtimeModelSelectionCatalog('claude_agent_sdk')],
+    ['codex_app_server', (service: ModelCatalogService) => service.runtimeModelSelectionCatalog('codex_app_server')],
+    ['codex_app_server (snapshots)', (service: ModelCatalogService) => service.listProviderModelCatalogSnapshots('codex_app_server')],
+  ])('treats an empty external list as an unreadable list, never as "no models" (%s)', async (_label, read) => {
+    const emptyClaude = { selectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })) };
+    const service = new ModelCatalogService(builtInCatalog, customProviderStore as never, customSyncService as never,
+      emptyClaude as never, emptyExternalCatalog as never);
+    await expect(read(service)).rejects.toBeInstanceOf(ModelListUnavailableError);
+  });
+
+  it('words the empty-list failure with the runtime\'s display name, never its enum value', () => {
+    expect(new ModelListUnavailableError(RuntimeKind.CLAUDE_AGENT_SDK).message).toBe('Claude Agent SDK returned no models.');
+    expect(new ModelListUnavailableError(RuntimeKind.CODEX_APP_SERVER).message).toBe('Codex App Server returned no models.');
+  });
+
+  it('keeps the AutoByteus runtime outside the empty-list rule', async () => {
+    const service = createService();
+    await expect(service.runtimeModelSelectionCatalog('autobyteus')).resolves.toMatchObject({ offeredModels: expect.any(Array) });
+  });
+
   it('returns static and cold dynamic registry snapshots without discovery and without a remote AutoByteus provider', async () => {
     const snapshots = await createService().listProviderModelCatalogSnapshots('autobyteus');
     const openAi = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OPENAI);
@@ -81,7 +103,7 @@ describe('ModelCatalogService', () => {
     expect(openAi?.imageModels.length).toBeGreaterThan(0);
     expect(ollama).toMatchObject({
       ownerProvider: { catalogMode: 'DISCOVERED' },
-      sources: [{ modelKind: 'LLM', state: 'IDLE' }],
+      sources: [{ state: 'IDLE' }],
     });
     expect(snapshots.map(({ ownerProvider }) => ownerProvider.id)).not.toContain('AUTOBYTEUS');
     expect(discoverOllamaModels).not.toHaveBeenCalled();
@@ -119,7 +141,7 @@ describe('ModelCatalogService', () => {
     const service = createService();
 
     const first = await service.ensureProviderModelCatalog(LLMProvider.OLLAMA, 'autobyteus');
-    expect(first.sources).toEqual([expect.objectContaining({ modelKind: 'LLM', state: 'READY' })]);
+    expect(first.sources).toEqual([expect.objectContaining({ state: 'READY' })]);
     expect(discoverOllamaModels).toHaveBeenCalledOnce();
 
     await service.ensureProviderModelCatalog(LLMProvider.OLLAMA, 'autobyteus');
@@ -150,6 +172,6 @@ describe('ModelCatalogService', () => {
     const snapshot = await service.listProviderModelCatalogSnapshots('autobyteus');
     const ollama = snapshot.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OLLAMA)!;
     expect(ollama.llmModels).toEqual([]);
-    expect(ollama.sources).toEqual([expect.objectContaining({ modelKind: 'LLM', state: 'ERROR', modelCount: 0 })]);
+    expect(ollama.sources).toEqual([expect.objectContaining({ state: 'ERROR', modelCount: 0 })]);
   });
 });

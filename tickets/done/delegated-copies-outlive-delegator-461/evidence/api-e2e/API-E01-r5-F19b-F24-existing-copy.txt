@@ -1,0 +1,47 @@
+# F-19b EXC-E2E-005 and F-24 TKD-AGY-001 (r5-batchA.log 14144-14189, code 56e4ce773b)
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_squad_64b2ba_c87cd70da74e49cbbc1cc8064646127f is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
++   "message": "Only the agent that gave this task agent its most recent Task can give it a new one. Delegate Task existing-copy-cross-root-9709d4bf-2 to a new task agent with recipient_address instead.",
+  }
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:823:25
+    821|     // AC-008: a copy hosted by another root is not a copy of the send…
+    822|     const crossAssign = await other.managerCalls(callTool("delegate_ta…
+    823|     expect(crossAssign).toEqual({ delegated: false, message: `${team} …
+       |                         ^
+    824|       + "or delegate to a new task agent with recipient_address." });
+    825|     expect(await projectFiles(projectId)).toEqual(files);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: true, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "delegated": true,
+-   "target_agent_run_id": "exc_worker_64b2ba_c76e9f8a87504e538e6436a659377b42",
+-   "target_kind": "agent",
++   "delegated": false,
++   "message": "exc_worker_64b2ba_c76e9f8a87504e538e6436a659377b42 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
+  }
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:927:26
+    925|     const taskE = await createTask(projectId, "Follow up on the delete…
+    926|     const afterDeleted = await root.managerCalls(callTool("delegate_ta…
+    927|     expect(afterDeleted).toEqual({ delegated: true, target_kind: "agen…
+       |                          ^
+    928|     let workerConversation = "";
+    929|     const workerAddressInTree = (await root.waitForNodes("Task B worke…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+

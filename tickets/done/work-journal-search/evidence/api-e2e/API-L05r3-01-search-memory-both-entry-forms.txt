@@ -1,0 +1,25 @@
+# API-L05/L06/L07 (round 3): search_memory through both entry forms on the packaged merged build (the platform's one tool-result rule, autobyteus-260)
+# Desktop iso-63150-d45d (3d209177ec); data root /private/tmp/wjs-api3/root; Project Task Manager linked from a test package; chats started from the UI (Agents → Run, model chosen in the picker's search); 2026-10-27 08:01–08:16 UTC
+# Native = AutoByteus runtime, qwen/qwen3.6-35b-a3b via LM Studio (provider saved with a placeholder key in the instance's data); Codex = Codex App Server, GPT-6-Sol (medium) unless noted
+# Full tool calls and raw results: private r3/API-L05r3-L07r3-runs-tool-calls.txt; run metadata confirms each run's runtimeKind and model
+
+## AC-013 (shipped definition, 16 tools, no search_memory)
+Codex (GPT-6.1-Sol low, run …6b895498, codex_app_server/gpt-6.1-sol): "It failed with: TypeError: tools.mcp__autobyteus_agent_tools__search_memory is not a function … No available tool names contain "memory""
+Native (run …5caa30d4, autobyteus/qwen…): "I do not have a tool named search_memory. The tools I have available that contain the word “memory” are: none."
+Then search_memory selected in the definition editor (General → search_memory → Save Changes) → agentDefinitions: project-task-manager 17 tools, search_memory true
+
+## Before any build (index not built)
+Native (run …9f6e7093): tool call search_memory {"query": "domain updater DDNS"} → raw result {"coverage":"Memory index not built yet: ask the user to start it on the Memory page."} (results left out)
+Codex (run …45e61aec): tool list includes mcp__autobyteus_agent_tools__search_memory; raw result {"content":[{"type":"text","text":"{\"coverage\":\"Memory index not built yet: ask the user to start it on the Memory page.\"}"}],"structuredContent":{"coverage":"Memory index not built yet: ask the user to start it on the Memory page."}} — text and structuredContent from one value
+(Codex GPT-6.1-Sol low, run …e57d7c0f, answered "I don’t have a search_memory tool available" without calling any tool; the same definition's next chat on GPT-6-Sol listed and called it. Model behaviour, not exposure: O-1.)
+
+## With results, and an argument error (Text index complete, Meaning embedding)
+Codex (run …a2fed339): search_memory {"query":"domain updater DDNS","limit":3} → 3 results with matchedWords (e.g. domain, updater, ddns) and a genuine meaning coverage note
+  search_memory {"query":"domain updater DDNS","limit":50} → {"content":[{"type":"text","text":"{\"error\":{\"code\":\"MEMORY_TOOL_ARGUMENT_INVALID\",\"message\":\"limit must be a whole number from 1 to 20.\"}}"}],"structuredContent":{"error":{"code":"MEMORY_TOOL_ARGUMENT_INVALID","message":"limit must be a whole number from 1 to 20."}},"isError":true}
+Native (run …82793775): limit 3 → {"results":[{"agent":"Project Task Manager","runId":"project_task_manager_a2fed339…",…,"matches":[{"journalFile":…,"lines":"5-8","day":"2026-10-27","snippet":…}]…; the asking run …82793775 not among the results; a meaning-only match carries no matchedWords
+  limit 50 → tool error "Error preparing tool 'search_memory' (ID: 485500147): Error: {"error":{"code":"MEMORY_TOOL_ARGUMENT_INVALID","message":"limit must be a whole number from 1 to 20."}}"
+
+## With no results (after the embedding model switch of API-L10r3: MODEL_CHANGED, the meaning tier is skipped, so an absent word gives no results)
+Codex (run …9d7c2528): search_memory {"query": "pelicanmarigold9152"} → {"content":[{"type":"text","text":"{\"coverage\":\"The meaning index was built with granite-embedding-small-english-r2; results are by words only until the user rebuilds the index on the Memory page.\",\"wordsNotFound\":[\"pelicanmarigold9152\"],\"note\":\"No matches; try other words.\"}"}],"structuredContent":{"coverage":"…","wordsNotFound":["pelicanmarigold9152"],"note":"No matches; try other words."}} — results left out
+Native (run …38d9fc04): search_memory "gazelleturnip6230" → {"coverage":"The meaning index was built with granite-embedding-small-english-r2; results are by words only until the user rebuilds the index on the Memory page.","wordsNotFound":["gazelleturnip6230"],"note":"No matches; try other words."}
+(A native call with "pelicanmarigold9152" 25 s after the Codex chat found that chat: its journal, which quoted the word, had been indexed by the live update. Correct behaviour; the fresh word above gives the no-results case.)

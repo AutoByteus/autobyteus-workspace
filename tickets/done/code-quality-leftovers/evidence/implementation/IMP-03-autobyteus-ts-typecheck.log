@@ -1,0 +1,12 @@
+# IMP-03 autobyteus-ts typecheck: sources (build config) and sources+tests compared with HEAD~ base
+# Command: pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit; pnpm -C autobyteus-ts exec tsc -p tsconfig.json --noEmit (error count compared with the same command on a temporary worktree of ebc5277e52 sharing node_modules)
+# Commit: d7b11c57b6 (HEAD); comparison run on 0eda6aafe4 content (autobyteus-ts unchanged since)
+# Date: 2026-11-01T06:29Z
+
+## build config
+exit=0
+## sources + tests: error count now
+183
+## sources + tests: error count at ebc5277e52 (recorded in the comparison run)
+183
+## difference (paths normalised): only the worktree path differs; see the implementation handoff

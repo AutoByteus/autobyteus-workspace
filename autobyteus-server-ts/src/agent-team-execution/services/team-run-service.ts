@@ -1,3 +1,5 @@
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
@@ -20,12 +22,15 @@ import {
   type TeamScopeLaunchInput,
 } from "./flat-team-topology-planner.js";
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
-import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
+import { rootRestoreRefusal, unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
+import type { TeamRunSelectionPatch } from "./team-run-selection-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
+import { projectNewRunLlmConfig } from "../../llm-management/services/new-run-llm-config-projection.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -36,6 +41,8 @@ export interface TeamRunPresetInput {
 }
 export type TeamRunMemberConfigInput = {
   memberAddress: string;
+  /** A delegated team member's resolved launch source (autobyteus-461). */
+  launchSource?: LaunchConfigurationSource;
   agentDefinitionId?: string | null;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
@@ -45,6 +52,8 @@ export type TeamRunMemberConfigInput = {
 };
 export type TeamRunTeamConfigInput = {
   teamAddress: string;
+  /** A delegated team's resolved default launch source (DS-10 step 4). */
+  launchSource?: LaunchConfigurationSource;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   workspaceRootPath?: string | null;
@@ -56,8 +65,15 @@ export interface CreateTeamRunInput {
   teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
   applicationBinding?: { applicationId: string; bindingId: string } | null;
-  /** A Team run a peer node starts (autobyteus-247): the back-link to its delegator there, kept on the tree. */
+  /** A delegated Team run (local or a peer's, autobyteus-247): the back-link to its delegator, kept on the tree. */
   delegatedFrom?: DelegatedFrom;
+  /**
+   * A delegated Team run's handoff rules as its members have them in the delegating run, in the team's own space (a
+   * `to` outside the team as written; CR-461-009). Only with `delegatedFrom`; without them the definition's are used.
+   */
+  handoffs?: readonly CollaborationHandoff[];
+  /** The Project the Team run is started under (REQ-004); refused with `PROJECT_NOT_FOUND` when it does not exist. */
+  projectId?: string | null;
 }
 
 export interface CreateTeamRunFromRootConfigInput {
@@ -85,6 +101,7 @@ export class TeamRunService {
   private readonly tokenUsageReadiness: Pick<TokenUsageCapability,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly admission: Pick<DefinitionAdmissionService, "requireAvailable">;
+  private readonly peerRunOf: PeerRunOf | null;
 
   constructor(options: {
     agentTeamRunManager?: AgentTeamRunManager;
@@ -98,6 +115,8 @@ export class TeamRunService {
     tokenUsageReadiness?: Pick<TokenUsageCapability,
       "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
     definitionAdmissionService?: Pick<DefinitionAdmissionService, "requireAvailable">;
+    /** A run on a peer node by its own ID (SR-066): its Stop goes to its node. */
+    peerRunOf?: PeerRunOf;
   } = {}) {
     this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
     this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
@@ -107,12 +126,15 @@ export class TeamRunService {
     this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
     this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.admission = options.definitionAdmissionService ?? DefinitionAdmissionService.getInstance();
+    this.peerRunOf = options.peerRunOf ?? null;
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
+    if (input.handoffs && !input.delegatedFrom) throw new Error("Handoff rules are given only for a delegated Team run.");
     const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
     if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
+    const projectId = input.projectId?.trim() || undefined;
     const workspaces = new Map<string, Promise<string>>();
     const activateWorkspace = async (requestedPath: string | null | undefined): Promise<string | null> => {
       const requested = requestedPath?.trim() || null;
@@ -126,15 +148,16 @@ export class TeamRunService {
       }
       return activation;
     };
-    const normalizedTeamConfigs = input.teamConfigs.map((team, index) => ({
-      ...team,
-      runtimeKind: resolveRequiredRuntimeKind(team.runtimeKind, `teamConfigs[${index}].runtimeKind`),
-      llmConfig: team.llmConfig ?? null,
+    // A new run stores and launches only declared settings (undeclared keys are dropped silently).
+    const normalizedTeamConfigs = await Promise.all(input.teamConfigs.map(async (team, index) => {
+      const runtimeKind = resolveRequiredRuntimeKind(team.runtimeKind, `teamConfigs[${index}].runtimeKind`);
+      return { ...team, runtimeKind, llmConfig: await projectNewRunLlmConfig({
+        runtimeKind, llmModelIdentifier: team.llmModelIdentifier, llmConfig: team.llmConfig }) };
     }));
-    const normalizedMemberConfigs = input.memberConfigs.map((member, index) => ({
-      ...member,
-      runtimeKind: resolveRequiredRuntimeKind(member.runtimeKind, `memberConfigs[${index}].runtimeKind`),
-      llmConfig: member.llmConfig ?? null,
+    const normalizedMemberConfigs = await Promise.all(input.memberConfigs.map(async (member, index) => {
+      const runtimeKind = resolveRequiredRuntimeKind(member.runtimeKind, `memberConfigs[${index}].runtimeKind`);
+      return { ...member, runtimeKind, llmConfig: await projectNewRunLlmConfig({
+        runtimeKind, llmModelIdentifier: member.llmModelIdentifier, llmConfig: member.llmConfig }) };
     }));
     const teamConfigs: TeamScopeLaunchInput[] = await Promise.all(normalizedTeamConfigs.map(async (team) => ({
       ...team,
@@ -150,9 +173,11 @@ export class TeamRunService {
       teamConfigs,
       memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
+      // A delegated team keeps a handoff `to` outside the team; a team the user starts keeps today's check (CR-461-009).
+      ...(input.delegatedFrom ? { handoffs: { kind: "delegated_team" as const, ...(input.handoffs ? { handoffs: input.handoffs } : {}) } } : {}),
     });
     const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
-      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}) });
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}), ...(projectId ? { projectId } : {}) });
     try {
       await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
       return root;
@@ -201,6 +226,31 @@ export class TeamRunService {
     }
   }
 
+  /** Base's restore admission (SR-078, CR-461-069), before the stored file is read: its reason, or `null` when it may restore. */
+  restoreRefusal(teamRunId: string): Promise<RootRestoreRefusal | null> {
+    const normalized = required(teamRunId, "teamRunId");
+    return rootRestoreRefusal({ tokenUsage: this.tokenUsageReadiness, isCataloged: () => this.manager.isCatalogedPackage(normalized),
+      notCataloged: { code: "TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED", message: `TeamRun '${normalized}' is not an admitted current package.` } });
+  }
+
+  /**
+   * A stopped run restored for its first input (SR-046, SR-078): the managed run, else base's admission answers with its
+   * own reason; a restore that fails after admission is answered as a run that cannot be restored (the detail logged).
+   */
+  async restoreForInput(teamRunId: string): Promise<RootTeamRun | RootRestoreRefusal> {
+    const normalized = required(teamRunId, "teamRunId");
+    const managed = this.getManagedTeamRun(normalized);
+    if (managed) return managed;
+    const refused = await this.restoreRefusal(normalized);
+    if (refused) return refused;
+    try {
+      return await this.restoreTeamRun(normalized);
+    } catch (error) {
+      // A concurrent restore registered it first.
+      return this.getManagedTeamRun(normalized) ?? unrestorableRoot({ kind: "Team run", code: "TEAM_RUN_NOT_RESTORABLE", runId: normalized, error });
+    }
+  }
+
   getActiveTeamRun(teamRunId: string): RootTeamRun | null {
     return this.manager.getActiveTeamRun(required(teamRunId, "teamRunId"));
   }
@@ -236,15 +286,25 @@ export class TeamRunService {
     return (await this.catalog.getCatalogRow(teamRunId))?.summary || null;
   }
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
+    // A delegated team run on a peer node is stopped as itself, by its node through its coordinator (SR-066, REQ-013).
+    const peer = this.peerRunOf?.(teamRunId) ?? null;
+    if (peer?.kind === "agent_team" && peer.runId === teamRunId) return (await peer.terminate()).accepted;
     const success = await this.manager.terminateTeamRun(teamRunId);
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
     return success;
   }
-  updateStoppedModelConfigs(input: {
+  /** DS-5 (contract T-1, `model.py` `stop`; CR-461-001): as `AgentRunService.stopForTaskClosure`, for a team run. */
+  async stopForTaskClosure(teamRunId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
+    const outcome = await this.manager.terminateTeamRunForTaskClosure(teamRunId, stillClosed);
+    if (outcome !== "stopped") return outcome;
+    if (!(await this.catalog.getCatalogRow(teamRunId))?.terminatedAt) await this.catalog.recordTeamRunTerminated({ teamRunId });
+    return "stopped";
+  }
+  updateStoppedSelections(input: {
     teamRunId: string;
-    patches: readonly TeamRunModelConfigPatch[];
+    selectionPatches: readonly TeamRunSelectionPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
-    return this.manager.updateStoppedModelConfigs(input);
+    return this.manager.updateStoppedSelections(input);
   }
   async observeTeamRunLifecycle(teamRunId: string, listener: (event: ObservedRunLifecycleEvent) => void): Promise<(() => void) | null> {
     const root = await this.resolveActiveTeamRun(teamRunId);
@@ -273,22 +333,6 @@ export class TeamRunService {
   }
 }
 
-let cached: TeamRunService | null = null;
-export const bindProcessTeamRunService = (service: TeamRunService): void => {
-  if (!service) {
-    throw new Error("A process TeamRunService instance is required.");
-  }
-  if (cached) {
-    throw new Error("The process TeamRunService is already initialized.");
-  }
-  cached = service;
-};
-export const releaseProcessTeamRunService = (service: TeamRunService): void => {
-  if (cached === service) {
-    cached = null;
-  }
-};
-export const getTeamRunService = (): TeamRunService => cached ??= new TeamRunService();
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
   if (!normalized) throw new Error(`${field} is required.`);

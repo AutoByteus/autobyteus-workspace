@@ -1,0 +1,8 @@
+# IMP-07
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts tests/unit/agent-org-execution/agent-org-execution-scope-builder.test.ts tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts tests/unit/remote-collaboration/remote-child-commands.test.ts tests/unit/agent-org-execution/agent-org-task-publication.test.ts --no-watch
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+ Test Files  13 passed (13)
+      Tests  167 passed (167)

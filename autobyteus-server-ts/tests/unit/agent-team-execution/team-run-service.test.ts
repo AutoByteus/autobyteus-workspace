@@ -227,6 +227,16 @@ describe("TeamRunService current root lifecycle", () => {
     unsubscribe?.();
   });
 
+  it("passes the chosen Project to the manager, which records the start (DS-002)", async () => {
+    const { service, mocks } = createSubject();
+    const input = { teamDefinitionId: "team-def-1", teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER)],
+      memberConfigs: [launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER), launchConfig("/Reviewer", RuntimeKind.CLAUDE_AGENT_SDK)] };
+    await service.createTeamRun({ ...input, projectId: " project_a1 " });
+    expect(mocks.agentTeamRunManager.createTeamRun.mock.calls[0][0].projectId).toBe("project_a1");
+    await service.createTeamRun(input);
+    expect(mocks.agentTeamRunManager.createTeamRun.mock.calls[1][0]).not.toHaveProperty("projectId");
+  });
+
   it("builds one canonical mixed root config and records its execution tree", async () => {
     const { service, mocks } = createSubject();
 
@@ -254,6 +264,27 @@ describe("TeamRunService current root lifecycle", () => {
       },
     });
     expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).toHaveBeenCalledOnce();
+  });
+
+  it("stores only declared settings for the Team scope and every member of a new run, per runtime (AC-008)", async () => {
+    const { service, mocks } = createSubject();
+    const submitted = { thinking_enabled: false, thinking_display: "x", reasoning_effort: "low" };
+
+    await service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      teamConfigs: [{ ...teamLaunchConfig(RuntimeKind.CLAUDE_AGENT_SDK), llmConfig: submitted }],
+      memberConfigs: [
+        { ...launchConfig("/Coordinator", RuntimeKind.CLAUDE_AGENT_SDK), llmConfig: submitted },
+        { ...launchConfig("/Reviewer", RuntimeKind.AUTOBYTEUS), llmModelIdentifier: "claude-fable-5", llmConfig: submitted },
+      ],
+    });
+
+    const [{ config }] = mocks.agentTeamRunManager.createTeamRun.mock.calls[0];
+    expect(config.rootTeam.defaultLaunchConfiguration.llmConfig).toEqual({ reasoning_effort: "low" });
+    expect(config.rootTeam.children.map((child: { llmConfig: unknown }) => child.llmConfig)).toEqual([
+      { reasoning_effort: "low" },
+      { reasoning_effort: "low" },
+    ]);
   });
 
   it.each([

@@ -1,0 +1,58 @@
+{
+  "startedAt": "2026-11-10T08:20:04.418Z",
+  "contentLength": 15818,
+  "phoneAdd": true,
+  "phone": {
+    "expanded": {
+      "found": true,
+      "expanded": "true",
+      "preMaxHeight": "none",
+      "preOverflowY": "visible",
+      "preScrollHeight": 9124,
+      "preClientHeight": 9124,
+      "preHasOwnScroll": false,
+      "preHorizontalOverflow": false,
+      "textLength": 15818,
+      "tabindex": null,
+      "pageHorizontalOverflow": false,
+      "outerScroller": {
+        "tag": "DIV",
+        "testid": null,
+        "scrollHeight": 9286,
+        "clientHeight": 796
+      }
+    },
+    "collapsedAgain": {
+      "expanded": "false",
+      "preVisible": false
+    }
+  },
+  "desktopTabs": "Projects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer",
+  "desktopAdd": true,
+  "desktop": {
+    "expanded": {
+      "found": true,
+      "expanded": "true",
+      "preMaxHeight": "none",
+      "preOverflowY": "visible",
+      "preScrollHeight": 9084,
+      "preClientHeight": 9084,
+      "preHasOwnScroll": false,
+      "preHorizontalOverflow": false,
+      "textLength": 15818,
+      "tabindex": null,
+      "pageHorizontalOverflow": false,
+      "outerScroller": {
+        "tag": "DIV",
+        "testid": "activity-feed-scroll-container",
+        "scrollHeight": 9246,
+        "clientHeight": 775
+      }
+    },
+    "collapsedAgain": {
+      "expanded": "false",
+      "preVisible": false
+    }
+  },
+  "finishedAt": "2026-11-10T08:20:14.879Z"
+}

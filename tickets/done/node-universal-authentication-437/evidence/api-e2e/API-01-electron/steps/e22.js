@@ -1,0 +1,10 @@
+const fs = await import('node:fs');
+const code = fs.readFileSync('/tmp/abtest437/lan-node/code.txt', 'utf8').match(/Setup code: (\S+)/)[1];
+const all = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('renderer/index.html'));
+const main = all.find(p => p.url().includes('#/nodes'));
+await main.getByLabel('Setup code for loop-node').fill(code);
+await main.getByTestId('node-access-connect-srv_DmENtLWSipOTRw5PxWzn4k1jxopMzN2j').click();
+await main.waitForTimeout(5000);
+const card = await main.getByTestId('node-list-card').innerText();
+await main.screenshot({ path: '/tmp/abtest437/e22.png' });
+return card.slice(card.indexOf('loop-node'), card.indexOf('loop-node') + 300);

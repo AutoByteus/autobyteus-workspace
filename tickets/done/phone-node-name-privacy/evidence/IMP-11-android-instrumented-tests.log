@@ -1,0 +1,20 @@
+# IMP-11 Android instrumented tests (whole suite) on an own emulator
+# command: ANDROID_SERIAL=emulator-5570 ./gradlew :app:connectedDebugAndroidTest (JDK 17)
+# commit: ea45dc1643 (ran on the working tree this commit records unchanged)
+# env: own read-only emulator codex_api35_arm64 (port 5570), API 35, Android System WebView 124.0.6367.219
+# date: 2026-11-08
+
+Starting 11 tests on codex_api35_arm64(AVD) - 15
+BUILD SUCCESSFUL in 43s
+AutoByteusMobileShellSmokeTest appPackageIsInstallable ok
+AutoByteusMobileShellSmokeTest cameraPermissionAndFileChooserRequestsHaveDistinctCodes ok
+AutoByteusMobileShellSmokeTest qrCoordinatorOpensTheScannerOnlyWithTheCameraPermission ok
+AutoByteusMobileShellSmokeTest healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar ok
+AutoByteusMobileShellSmokeTest diagnosticWebShellKeepsRecoveryActionsInOverlay ok
+AutoByteusMobileShellSmokeTest webViewSettingsPermitUserSelectedContentUrisButNotFilePaths ok
+MainActivityConfigurationChangeTest rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput ok
+SystemBarInsetsTest padsTheRootWithTheBarsAndTheCutout ok
+SystemBarInsetsTest theKeyboardRaisesTheBottomAboveIt ok
+SystemBarInsetsTest withoutInsetsNothingMoves ok
+WebShellWindowInsetsTest thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero ok
+TOTAL 11 failures 0 errors 0

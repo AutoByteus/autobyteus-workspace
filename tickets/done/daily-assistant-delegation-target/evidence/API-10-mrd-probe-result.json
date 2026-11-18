@@ -1,0 +1,70 @@
+{
+  "_header": {
+    "case": "API-10 (API/E2E round 1)",
+    "command": "cd autobyteus-web && node tests/e2e/model-routing-decisions-probe.mjs --output-dir=<new dir>",
+    "commit": "c4f004d7fc + MRD-08 assertion (committed with this round); server dist built from fbc9b3c2e9 source",
+    "environment": "macOS, Node v22.23.1, two built servers, Nuxt dev, headless Chrome, scripted AGY",
+    "date": "2026-11-10T07:00:05.669Z"
+  },
+  "result": "Pass",
+  "cases": {
+    "MRD-01": {
+      "title": "Setup: the router row and the status of an active router",
+      "result": "Pass",
+      "ms": 32128
+    },
+    "MRD-02": {
+      "title": "Decisions: Task blocks, the Team row folds and opens to its agents with source and reason; the remote copy is not on this node; the filter",
+      "result": "Pass",
+      "ms": 3663
+    },
+    "MRD-03": {
+      "title": "Overview: period, sources and task kinds of these records",
+      "result": "Pass",
+      "ms": 2143
+    },
+    "MRD-04": {
+      "title": "The Manager run's copies, each in its own Settings: runtime, model, source and reason (local member and remote copy; autobyteus-366)",
+      "result": "Pass",
+      "ms": 17243
+    },
+    "MRD-05": {
+      "title": "beta's window: its own Decisions list the copy alpha delegated, without \"Open run\"",
+      "result": "Pass",
+      "ms": 11502
+    },
+    "MRD-08": {
+      "title": "New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1); the Daily Assistant is offered (autobyteus-455 AC-005)",
+      "result": "Pass",
+      "ms": 3683
+    },
+    "MRD-06": {
+      "title": "Simplified Chinese: Decisions and Overview are translated",
+      "result": "Pass",
+      "ms": 4478
+    },
+    "MRD-07": {
+      "title": "No browser errors",
+      "result": "Pass",
+      "ms": 0
+    }
+  },
+  "newChatMentions": {
+    "options": [
+      "autobyteus-daily-assistant",
+      "lead",
+      "writer",
+      "studio"
+    ],
+    "filteredModel": [],
+    "menu": "Delegate to an agent or team @Model \u00b7 \u2191\u2193 to move, Enter to choose No agents or teams match Agent Orgs can\u2019t be mentioned. Manager gets your message and delegates the work"
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:18853",
+    "alpha": "terminated:15658",
+    "beta": "terminated:15659",
+    "tempRoot": "removed"
+  }
+}

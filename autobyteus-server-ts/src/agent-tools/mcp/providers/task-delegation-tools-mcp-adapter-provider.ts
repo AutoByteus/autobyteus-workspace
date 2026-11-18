@@ -3,10 +3,8 @@ import {
   getTaskDelegationToolService,
   type TaskDelegationToolService,
 } from "../../task-delegation/task-delegation-tool-service.js";
-import {
-  toTaskDelegationJsonString,
-  toTaskDelegationToolErrorPayload,
-} from "../../task-delegation/task-delegation-tool-serialization.js";
+import { toTaskDelegationToolErrorPayload } from "../../task-delegation/task-delegation-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import {
   toAgentToolMcpToolResult,
   type AgentToolMcpAdapterProvider,
@@ -25,7 +23,8 @@ const asRawArguments = (value: unknown): Record<string, unknown> =>
 
 export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(
-    private readonly taskDelegationToolService: TaskDelegationToolService = getTaskDelegationToolService(),
+    /** Read at use: the composition root creates the service after this provider (SR-047 step 8). */
+    private readonly taskDelegationToolService: () => TaskDelegationToolService = getTaskDelegationToolService,
   ) {}
 
   getAdapters(): AgentToolMcpToolAdapter[] {
@@ -42,7 +41,7 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
         const capabilities = session.executionCapabilities;
         if (capabilities.kind !== "collaboration_member") {
           return createAgentToolsMcpErrorResult(
-            toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(
+            toToolResultJson(toTaskDelegationToolErrorPayload(
               new Error("Task delegation tools require an authenticated Team-member capability."),
             )),
             "task_delegation_context_required",
@@ -50,17 +49,16 @@ export class TaskDelegationToolsMcpAdapterProvider implements AgentToolMcpAdapte
         }
         try {
           const result = await entry.execute(
-            this.taskDelegationToolService,
+            this.taskDelegationToolService(),
             capabilities.taskDelegation,
             entry.parseInput(asRawArguments(rawArguments)),
           );
-          const serializedResult = toTaskDelegationJsonString(result);
           return entry.resultSchema
-            ? toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(serializedResult))
-            : createAgentToolsMcpSuccessResult(serializedResult);
+            ? toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(result))
+            : createAgentToolsMcpSuccessResult(toToolResultJson(result));
         } catch (error) {
           return createAgentToolsMcpErrorResult(
-            toTaskDelegationJsonString(toTaskDelegationToolErrorPayload(error)),
+            toToolResultJson(toTaskDelegationToolErrorPayload(error)),
             "task_delegation_tool_execution_failed",
           );
         }

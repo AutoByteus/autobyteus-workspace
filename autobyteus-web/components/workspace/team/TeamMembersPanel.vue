@@ -64,11 +64,6 @@
           <span class="block truncate text-sm font-medium" :title="row.displayName">{{ row.displayName }}</span>
           <span v-if="row.teamRunId" class="mt-0.5 block text-xs text-slate-500">Team</span>
           <span
-            v-if="row.delegatedBy"
-            class="mt-0.5 block truncate text-xs text-slate-500"
-            data-test="team-member-started-by"
-          >{{ $t('workspace.members.started_by', { name: row.delegatedBy }) }}</span>
-          <span
             v-if="inspectionAttempt(row)?.state === 'loading'"
             class="mt-0.5 block text-xs font-medium text-indigo-700"
             role="status"
@@ -86,7 +81,7 @@
           v-if="row.coordinator"
           class="rounded-full bg-yellow-200 px-2 py-0.5 text-xs font-bold text-yellow-800"
         >Coord</span>
-        <AgentStatusDisplay v-if="row.agentRunId" :status="row.currentStatus ?? 'offline'" />
+        <AgentStatusDisplay v-if="row.agentRunId" :status="row.currentStatus ?? 'offline'" :background-tasks-running="row.backgroundTasksRunning" />
       </button>
     </div>
 
@@ -136,16 +131,12 @@ const visibleRows = computed(() => allRows.value.filter((row) => {
   return true;
 }));
 const focusedAgentRunId = computed(() => activeTeam.value?.view.getFocusedAgentRunId() ?? null);
-const teamName = computed(() => activeTeam.value?.view.getTeamDefinitionName() || 'this team');
+const teamName = computed(() => activeTeam.value?.view.getDisplayName() || 'this team');
 const isStopPending = computed(() => {
   const rootTeamRunId = activeTeam.value?.view.getRootTeamRunId();
   return rootTeamRunId ? Boolean(teamRunStore.stopPendingTeamIds[rootTeamRunId]) : false;
 });
-const accessibleRowLabel = (row: TeamExecutionNavigationRow): string => [
-  row.accessibleName,
-  row.delegatedBy ? t('workspace.members.started_by', { name: row.delegatedBy }) : '',
-  row.address,
-].filter(Boolean).join(', ');
+const accessibleRowLabel = (row: TeamExecutionNavigationRow): string => [row.accessibleName, row.address].filter(Boolean).join(', ');
 const inspectionAttempt = (row: TeamExecutionNavigationRow) => row.agentRunId && activeTeam.value
   ? runHistoryStore.getTeamMemberInspectionAttempt(
     activeTeam.value.view.getRootTeamRunId(),

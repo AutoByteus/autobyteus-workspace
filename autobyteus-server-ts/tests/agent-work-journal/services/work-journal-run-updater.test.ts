@@ -45,7 +45,7 @@ const createRun = (input: { runtimeKind: RuntimeKind; memoryDir: string | null; 
     inputCapabilities: { activeTurnAppend: "unsupported" },
     getContext: () => context,
     isActive: () => true,
-    hasRunningBackgroundTasks: () => false,
+    backgroundTaskInspection: { kind: "unsupported" } as const,
     getPlatformAgentRunId: () => "platform-run-1",
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
     subscribeToSourceEventBatches: () => () => undefined,
@@ -83,7 +83,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
       runSessions: { deactivateForRun: () => 0 },
       runFileChangeService: { attachToRun: () => () => undefined },
       publishedArtifactRelayService: { attachToRun: () => () => undefined },
-      memoryRecorder: recorder,
+      memoryRecorder: recorder, streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: updater,
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     });
@@ -112,7 +112,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
       runSessions: { deactivateForRun: () => 0 },
       runFileChangeService: sidecar("fileChanges"),
       publishedArtifactRelayService: sidecar("artifactRelay"),
-      memoryRecorder: sidecar("memoryRecorder"),
+      memoryRecorder: sidecar("memoryRecorder"), streamSequences: { attachToRun: vi.fn(() => vi.fn()) },
       workJournalUpdater: sidecar("workJournal"),
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }).attach(createRun({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir: null }));
@@ -127,7 +127,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
     recorder.attachToRun(run);
     updater.attachToRun(run);
     writeActive(memoryDir, turnRecords("turn_1", "ls", "a.ts"));
-    rotateActive(memoryDir);
+    rotateActive(memoryDir, "autobyteus");
     await run.publishEvent(event(AgentRunEventType.COMPACTION_STATUS, { status: "compacted", turn_id: "turn-1" }));
     await updater.waitForIdle("run-1");
     const closed = fs.readFileSync(path.join(memoryDir, "work_journal", "work_journal_000001.md"), "utf-8");

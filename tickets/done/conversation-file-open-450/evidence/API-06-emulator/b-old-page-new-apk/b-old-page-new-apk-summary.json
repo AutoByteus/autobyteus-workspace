@@ -1,0 +1,149 @@
+{
+  "label": "b-old-page-new-apk",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/api450-base-6884309283",
+  "apk": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk",
+  "startedAt": "2026-11-09T11:46:05.378Z",
+  "taps": [
+    {
+      "name": "text",
+      "found": true,
+      "appRejectionScreen": false,
+      "pagePairingScreen": false,
+      "viewer": false,
+      "conversationShown": true,
+      "connectionsAfterTap": [],
+      "backToConversation": false
+    },
+    {
+      "name": "png",
+      "found": false
+    }
+  ],
+  "connections": [
+    {
+      "openedAt": 26446,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 27378,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjYzMzA0IiwicGFpcmluZ0NvZGUiOiJ0a3JmcmVDVmpsTXNoTzhtaU5Wa0J6WXUiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA5VDExOjUxOjI3LjgyMloiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0",
+      "webSocket": false
+    },
+    {
+      "openedAt": 27443,
+      "path": "/mobile/_nuxt/Dc3LwecR.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 30031,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css",
+      "webSocket": false
+    },
+    {
+      "openedAt": 30031,
+      "path": "/mobile/_nuxt/HW2qV4AW.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 30031,
+      "path": "/mobile/_nuxt/DxfFyxED.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 30031,
+      "path": "/mobile/_nuxt/J1bxg2UA.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 37727,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 37860,
+      "path": "/ws/agent/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 43864,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44537,
+      "path": "/mobile",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44607,
+      "path": "/mobile/_nuxt/Dc3LwecR.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44617,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44623,
+      "path": "/mobile/_nuxt/HW2qV4AW.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44628,
+      "path": "/mobile/_nuxt/DxfFyxED.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44630,
+      "path": "/mobile/_nuxt/J1bxg2UA.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 47786,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 49978,
+      "path": "/ws/agent/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 57074,
+      "path": "/ws/agent-collaboration/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec?access_token=…",
+      "webSocket": true
+    }
+  ],
+  "timeline": [
+    {
+      "t": 22442,
+      "event": "attachments sent by the second phone"
+    },
+    {
+      "t": 23373,
+      "event": "apk",
+      "versionName": "0.1.0"
+    },
+    {
+      "t": 85761,
+      "event": "tap",
+      "name": "text",
+      "found": true,
+      "appRejectionScreen": false,
+      "pagePairingScreen": false,
+      "viewer": false,
+      "conversationShown": true,
+      "connectionsAfterTap": [],
+      "backToConversation": false
+    }
+  ],
+  "error": null,
+  "run": "content_creator_f46bd40da73c4f9db9e1caa1ee8947ec",
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-09T11:47:36.335Z"
+}

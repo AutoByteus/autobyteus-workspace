@@ -12,6 +12,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // Real AGY (agy-image-context-input AC-006): images and files attached in the app reach an Antigravity agent
 // through the real server (REST upload + finalize as the web stores do, app WebSocket send, normalizer, AGY
@@ -97,8 +98,8 @@ suite("real AGY sees app-attached images and files through the real server", () 
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") frames.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" ? parsed.payload as Record<string, any> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        frames.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore only malformed diagnostic transport rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });

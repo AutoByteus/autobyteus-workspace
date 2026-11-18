@@ -75,7 +75,7 @@ export interface AgentPackageImportInput {
   source: string
 }
 
-const graphQLErrorMessage = (errors: Array<{ message: string }> | undefined): string | null => {
+const graphQLErrorMessage = (errors: ReadonlyArray<{ message: string }> | undefined): string | null => {
   if (!errors || errors.length === 0) {
     return null
   }

@@ -1,0 +1,133 @@
+# API-06R server next1 pid 16039; mode repeat; 2026-10-30T12:40:31.940Z
+[26.77] Platform detection: Windows=false
+[26.77] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts
+[26.77] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data
+[26.77] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/.env
+[26.77] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/.env
+[26.77] ◇ injected env (2) from ../../../bq284-live-repeat-8MjN74/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+[26.77] Environment variables loaded successfully
+[26.77] Server public base URL configured to: http://127.0.0.1:58077
+[26.77] === Starting logging configuration ===
+[26.77] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts/logging_config.ini
+[26.77] ============================================================
+[26.77] SERVER PUBLIC URL: http://127.0.0.1:58077
+[26.77] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts
+[26.77] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data
+[26.77] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/db
+[26.77] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/logs
+[26.77] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/download
+[26.77] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/memory
+[26.77] ============================================================
+[27.65] AgentFactory (Singleton) initialized.
+[27.80] Running Prisma migrations...
+[27.80] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[27.97] Prisma schema loaded from prisma/schema.prisma
+[27.97] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/db/test.db"
+[27.99] 27 migrations found in prisma/migrations
+
+
+[28.00] No pending migrations to apply.
+[28.01] Database migrations completed successfully.
+[28.02] (node:16039) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[28.02] (Use `node --trace-warnings ...` to show where the warning was created)
+[28.02] prisma:info Starting a sqlite pool with 21 connections.
+[28.03] [2026-10-30T12:40:59.967Z] [INFO] [secret-management.vault] Secret vault: application database
+[28.05] Initialized server settings service with 33 predefined settings
+[28.09] AgentRunManager initialized.
+[28.09] AgentRunManager initialized.
+[28.16] Loading workspace packages to trigger registration...
+[28.16] Successfully loaded workspace packages.
+[28.16] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/temp_workspace
+[28.16] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/temp_workspace.
+[28.16] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/data/temp_workspace with fixed ID 'temp_ws_default'
+[28.16] Temp workspace created and cached with ID: temp_ws_default
+[28.16] Registering agent customization processors...
+[28.16] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[28.16] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[28.16] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[28.16] Registered input processor 'UserInputContextBuildingProcessor'.
+[28.16] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[28.16] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[28.16] Agent customization processor registration complete.
+[28.16] Successfully registered tool definition: 'read_file'
+[28.16] Successfully registered tool definition: 'write_file'
+[28.16] Successfully registered tool definition: 'edit_file'
+[28.16] Successfully registered tool definition: 'run_bash'
+[28.16] Successfully registered tool definition: 'start_background_process'
+[28.16] Successfully registered tool definition: 'get_background_processes'
+[28.16] Successfully registered tool definition: 'get_process_output'
+[28.16] Successfully registered tool definition: 'stop_background_process'
+[28.16] Successfully registered tool definition: 'search_web'
+[28.16] Successfully registered tool definition: 'download_media'
+[28.16] Successfully registered tool definition: 'read_url'
+[28.16] Registered required tool unit: Core Tools
+[28.17] Successfully registered tool definition: 'get_project_task'
+[28.17] Successfully registered tool definition: 'list_projects'
+[28.17] Successfully registered tool definition: 'list_project_tasks'
+[28.17] Successfully registered tool definition: 'search_project_tasks'
+[28.17] Successfully registered tool definition: 'create_project'
+[28.17] Successfully registered tool definition: 'update_project'
+[28.17] Successfully registered tool definition: 'create_task'
+[28.17] Successfully registered tool definition: 'update_task'
+[28.17] Successfully registered tool definition: 'delegate_task'
+[28.17] Successfully registered tool definition: 'generate_image'
+[28.17] Successfully registered tool definition: 'edit_image'
+[28.17] Successfully registered tool definition: 'generate_speech'
+[28.17] Successfully registered tool definition: 'generate_video'
+[28.17] Registered required tool unit: Project Task Tools
+[28.17] Registered required tool unit: Task Delegation Tools
+[28.17] Registered required tool unit: Media Tools
+[28.18] Successfully registered tool definition: 'list_available_agents'
+[28.18] Successfully registered tool definition: 'list_peer_nodes'
+[28.18] Registered required tool unit: Agent Discovery Tools
+[28.18] Successfully registered tool definition: 'list_available_agent_runtimes'
+[28.18] Successfully registered tool definition: 'submit_launch_choices'
+[28.18] Registered required tool unit: Agent Runtime Tools
+[28.18] Registered required tool unit: Browser Tools
+[28.18] Successfully registered tool definition: 'publish_artifacts'
+[28.18] Registered required tool unit: Published Artifact Tools
+[28.18] Successfully registered tool definition: 'search_memory'
+[28.18] Registered required tool unit: Memory Tools
+[28.18] Successfully registered tool definition: 'send_message_to'
+[28.18] Successfully registered tool definition: 'get_handoff_rules'
+[28.18] Registered required tool unit: Agent Communication Tools
+[28.18] Overwriting existing tool definition for name: 'search_web'
+[28.18] Successfully registered tool definition: 'search_web'
+[28.18] Registered required tool unit: Search Tools
+[28.19] {"level":30,"time":1793364060134,"pid":16039,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58086"}
+[28.22] {"level":30,"time":1793364060160,"pid":16039,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58077"}
+[28.22] {"level":30,"time":1793364060160,"pid":16039,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:58077"}
+[28.22] {"level":30,"time":1793364060160,"pid":16039,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:58077"}
+[28.22] [2026-10-30T12:41:00.160Z] [INFO] [server.runtime] Server listening on 0.0.0.0:58077
+[28.22] Scheduling Studio-only non-critical startup tasks...
+[28.23] Background cache pre-loading process has started.
+[28.23] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[28.23] Populating MCP server config cache for the first time...
+[28.23] Running MCP tool registration background task...
+[28.23] Loading and registering all MCP server configurations from file...
+[28.23] Background task 'Memory Sync Worker' completed successfully.
+[28.23] Background task 'Memory Search' completed successfully.
+[28.23] MCP server config cache populated with 0 items.
+[28.23] Found 0 total MCP server configs.
+[28.23] Synchronized cached configurations with the core MCP config service.
+[28.23] Pre-loaded 0 MCP server configs into cache.
+[28.23] Finished loading and registering all MCP server configurations.
+[28.23] Background task 'MCP Tool Registration' completed successfully.
+[28.23] Pre-loaded 32 LLM models into cache.
+[28.23] Pre-loaded 7 image models into cache.
+[28.23] Pre-loaded 3 audio models into cache.
+[28.23] Background application cache pre-loading completed.
+[28.23] Background task 'Cache Pre-loading' completed successfully.
+[28.24] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/workspace
+[28.24] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/workspace.
+[28.24] Created and registered workspace ID: agent_ws_85fe84ffc3b9a6e0797bdcb8b9dd8af6788f5c8b8d82d760964e1ea383f7c76e
+[28.28] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/workspace
+[28.28] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-8MjN74/workspace.
+[28.28] Reusing registered workspace ID: agent_ws_85fe84ffc3b9a6e0797bdcb8b9dd8af6788f5c8b8d82d760964e1ea383f7c76e
+[28.35] Agent websocket attached for run probe_agent_bq284lmvuyn35w_d45d591804004ba7bbd3490b2798adeb
+[28.35] Created agent session af329ecc-6703-448e-844f-b07b4f8930c7 for run probe_agent_bq284lmvuyn35w_d45d591804004ba7bbd3490b2798adeb
+[28.35] Agent WebSocket connected: session=af329ecc-6703-448e-844f-b07b4f8930c7, run=probe_agent_bq284lmvuyn35w_d45d591804004ba7bbd3490b2798adeb
+[35.74] Closed agent session af329ecc-6703-448e-844f-b07b4f8930c7
+[35.74] Agent WebSocket disconnected: af329ecc-6703-448e-844f-b07b4f8930c7
+[35.76] [CodexAppServerClient] stderr: [2m2026-10-30T12:41:07.695517Z[0m [31mERROR[0m [2mcodex_core::session[0m[2m:[0m failed to record rollout items: thread 01a18cd3-e85a-7093-8f14-9631f95b9c0e not found
+[35.82] Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.

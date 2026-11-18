@@ -1,5 +1,5 @@
 import { app, ipcMain } from 'electron'
-import type { AppUpdateChannelChangeResult, AppUpdateState } from '../../shared/appUpdateTypes'
+import type { AppUpdateAutomaticChangeResult, AppUpdateChannelChangeResult, AppUpdateState } from '../../shared/appUpdateTypes'
 import {
   APP_UPDATE_IPC_CHECK,
   APP_UPDATE_IPC_CLEAR_NOTIFICATION,
@@ -9,6 +9,7 @@ import {
   APP_UPDATE_IPC_INSTALL,
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_SET_AUTO_CHECK,
+  APP_UPDATE_IPC_SET_AUTOMATIC,
   APP_UPDATE_IPC_SET_CHANNEL,
   type AppUpdateController,
 } from './appUpdateController'
@@ -45,6 +46,10 @@ export class DisabledAppUpdater implements AppUpdateController {
     ipcMain.handle(APP_UPDATE_IPC_MARK_NOTIFICATION_READ, async () => this.getState())
     ipcMain.handle(APP_UPDATE_IPC_CLEAR_NOTIFICATION, async () => this.getState())
     ipcMain.handle(APP_UPDATE_IPC_SET_AUTO_CHECK, async () => this.getState())
+    ipcMain.handle(
+      APP_UPDATE_IPC_SET_AUTOMATIC,
+      async (): Promise<AppUpdateAutomaticChangeResult> => ({ accepted: false, persisted: false, state: this.getState() }),
+    )
   }
 
   startAutoCheck(): void {
@@ -70,6 +75,8 @@ export class DisabledAppUpdater implements AppUpdateController {
       checkedAt: null,
       notification: null,
       autoCheck: null,
+      automaticUpdate: false,
+      automaticInstallPreparing: false,
     }
   }
 }

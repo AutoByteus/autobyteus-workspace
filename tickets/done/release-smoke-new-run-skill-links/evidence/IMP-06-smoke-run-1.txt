@@ -1,0 +1,38 @@
+# IMP-06-smoke-run-1
+# command: python3 scripts/release_smoke.py   (from the repository root, normal shell)
+# commit: base cba6b85122 + the uncommitted suite and runner changes later committed as 26a557f665, 3f02a176d4, e918bb6c44 (before the baseline fix 8e65be9e6f)
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.302, codex-cli 0.163.0, grok 1.0.62 signed in
+# date: 2026-10-19T03:33Z
+# shows: the runner names the 3 failing team-member cases; cause = the live suite read only SEGMENT_CONTENT, the Team socket now sends SEGMENT_CONTENT_BATCH (autobyteus-139)
+
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    FAIL    failed: AssertionError: expected '' to contain 'LINKCODE-69465f49'
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    FAIL    failed: AssertionError: expected '' to contain 'LINKCODE-69465f49'
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    FAIL    failed: AssertionError: expected '' to contain 'LINKCODE-69465f49'
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    cba6b851227352d6bcefd5a8543ef8e5ba9f550d
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 118s, antigravity 18s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-apbxagi6
+exit=1
+
+## Excerpt of the live step log (SKILL_LINKS_LIVE_TEAM_MEMBER lines: empty text although the member used its skill)
+SKILL_LINKS_LIVE_TEAM_MEMBER claude {"designerRunId":"link_probe_agent_69465f49_8251159d69024887ba037df08073d037","text":"","tools":["Skill"],"memberFoldersAfter":["link_probe_agent_69465f49_8251159d69024887ba037df08073d037","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_69465f49_3fe89ca1c2024d44bedb4363cf964c5b","text":"","tools":["run_bash"],"memberFoldersAfter":["link_probe_agent_69465f49_3fe89ca1c2024d44bedb4363cf964c5b","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_69465f49_f68918e6c5814e63b1f0ddd455dec72a","text":"","tools":["grep","run_bash","read_file"],"memberFoldersAfter":["link_probe_agent_69465f49_f68918e6c5814e63b1f0ddd455dec72a","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}

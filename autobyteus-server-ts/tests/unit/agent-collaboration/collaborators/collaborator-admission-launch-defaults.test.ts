@@ -4,7 +4,6 @@ import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-defi
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../../../src/agent-collaboration/collaborators/collaborator-root-port.js";
-import { projectTaskExecutionSource } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -36,14 +35,15 @@ const port = (): CollaboratorRootPort => ({
   isApplicationBound: false,
   launchBase: () => ({ kind: "inherited", launch: root }),
   ownDefinition: () => ({ kind: "agent_team", definitionId: "pm-team" }),
-  inRunPlacementsByDefinition: () => buildInRunPlacements({ configured: [] }),
-  addressesInUse: () => new Set(["/project_task_manager"]),
+  inRunPlacementsByDefinition: async () => buildInRunPlacements({ configured: [], configuredStep: 1, reached: [] }),
+  addressesInUse: async () => new Set(["/project_task_manager"]),
 });
 
 const setup = (codexEnabled = true) => {
   const state = definitions();
   const catalog: CollaboratorDefinitionCatalog = {
     listAgentDefinitions: async () => state.agents,
+    isAgentHidden: () => false,
     listTeamDefinitions: async () => state.teams,
     getAgentDefinition: async (id) => state.agents.find((item) => item.id === id) ?? null,
     getTeamDefinition: async (id) => state.teams.find((item) => item.id === id) ?? null,
@@ -51,7 +51,7 @@ const setup = (codexEnabled = true) => {
   const validator = {
     validate: vi.fn(),
     validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string } }[]) =>
-      inputs.map(({ selection }) => ({ kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } }))),
+      inputs.map(({ selection }) => ({ kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }))),
   } as unknown as RunModelSelectionValidator;
   const availability = {
     getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({
@@ -66,7 +66,7 @@ const codexLaunch = { ...sol, autoExecuteTools: false, workspaceRootPath: "/work
 describe("admission honors definition launch defaults", () => {
   it("AC-001 / AC-015: a catalog Team copy runs its configured members on their defaults and the rest on the root's", async () => {
     const run = setup();
-    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
+    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     expect(copy?.launchNotes).toEqual([]);
     expect(copy?.source).toMatchObject({
       kind: "agent_team", defaultLaunchConfiguration: root, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
@@ -82,9 +82,9 @@ describe("admission honors definition launch defaults", () => {
 
   it("AC-005: when the configured runtime is unavailable, the copy starts on the root's launch and returns one note per skipped agent", async () => {
     const run = setup(false);
-    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
+    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     expect(copy?.launchNotes).toEqual(["implementation_engineer", "code_reviewer"].map((name) =>
-      `${name}: its agent default codex_app_server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on claude_agent_sdk / opus (inherited from the run).`));
+      `${name}: its agent default Codex App Server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on Claude Agent SDK / opus (inherited from the run).`));
     expect(copy?.source.kind === "agent_team" && copy.source.members[1]).toEqual({
       address: "/software_engineering_team/implementation_engineer", agentDefinitionId: "implementation_engineer",
       launchConfiguration: root, followsTeam: true,
@@ -95,13 +95,14 @@ describe("admission honors definition launch defaults", () => {
 
   it("AC-008: a recorded copy keeps its values after the definition changes; a new copy uses the new default", async () => {
     const run = setup();
-    const recorded = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
+    const recorded = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     run.state.agents.find((item) => item.id === "implementation_engineer")!.defaultLaunchConfig =
       { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-model", llmConfig: null };
-    const restored = projectTaskExecutionSource("/software_engineering_team" as never, recorded!.source);
-    expect(restored.kind === "agent_team" && restored.node.children.find((child) => child.address === "/software_engineering_team/implementation_engineer"))
-      .toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" });
-    const fresh = await run.admission.catalogTaskSource(port(), { address: "/implementation_engineer", senderRunId: "pm" });
+    // The started team's source is its own snapshot: a later definition change does not reach it (AC-008).
+    const member = recorded!.source.kind === "agent_team"
+      ? recorded!.source.members.find((candidate) => candidate.address === "/software_engineering_team/implementation_engineer") : null;
+    expect(member?.launchConfiguration).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" });
+    const fresh = await run.admission.catalogTaskSource(port(), { address: "/implementation_engineer", senderRunId: "pm", workspaceRootPath: null });
     expect(fresh?.source).toMatchObject({ kind: "agent", launchConfiguration: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-model" } });
   });
 });

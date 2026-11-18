@@ -1,0 +1,6 @@
+# IMP-03 web boundary guard
+# cmd: pnpm -C autobyteus-web guard:web-boundary
+# commit: 5af1a03e11  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:51Z
+
+
+[guard:web-boundary] Passed.

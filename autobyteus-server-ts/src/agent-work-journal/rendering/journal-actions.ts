@@ -1,4 +1,5 @@
 import { splitLines } from "./output-shortener.js";
+import { skillNameOfPlainRead } from "./skill-load.js";
 import type { BodyPart, BuiltInLine } from "./runtimes/runtime-translation.js";
 import type { TextDiff } from "./text-diff.js";
 import { NO_RESULT, OK, type NormalizedToolResult, type ToolOutcome } from "./tool-outcome.js";
@@ -16,12 +17,18 @@ const withNotes = (text: string, notes: readonly string[]): string =>
 const outputParts = (output: string | null): BodyPart[] =>
   output !== null && output.length > 0 ? [{ kind: "output", text: output }] : [];
 
-/** `Command: <command> (in <cwd>) (background)`, with further command lines and the output below. */
+/**
+ * `Command: <command> (in <cwd>) (background)`, with further command lines and the output below.
+ * A plain read of a skill file is `Load skill: <name>` instead, on every runtime (contract §5); the
+ * `in <cwd>` note is not part of what was loaded.
+ */
 export const commandLine = (
   command: string | null,
   notes: readonly string[],
   result: NormalizedToolResult | null,
 ): BuiltInLine => {
+  const skill = command !== null && !notes.includes("background") ? skillNameOfPlainRead(command) : null;
+  if (skill !== null) return loadSkillLine(skill, result);
   const lines = command === null ? [] : splitLines(command);
   const first = lines[0] ?? "(command not recorded)";
   const parts: BodyPart[] = lines.length > 1 ? [{ kind: "command", lines: lines.slice(1) }] : [];
@@ -33,10 +40,16 @@ export const commandLine = (
  * Outcome of a write or edit: a runtime's own success confirmation is not shown (`→ ok`), a
  * failure keeps its text.
  */
-const changeOutcome = (result: NormalizedToolResult | null): { outcome: ToolOutcome; parts: BodyPart[] } => {
+export const confirmedOutcome = (result: NormalizedToolResult | null): { outcome: ToolOutcome; parts: BodyPart[] } => {
   if (!result) return { outcome: NO_RESULT.outcome, parts: [] };
   if (result.outcome.kind === "ok") return { outcome: OK, parts: [] };
   return { outcome: result.outcome, parts: outputParts(result.output) };
+};
+
+/** `Load skill: <name>`: the skill's text is not repeated; a failure keeps its text. */
+export const loadSkillLine = (name: string, result: NormalizedToolResult | null): BuiltInLine => {
+  const { outcome, parts } = confirmedOutcome(result);
+  return { head: `Load skill: ${name}`, outcome, parts };
 };
 
 /** `Write file: <path> (<n> lines)` with the first lines of the content. */
@@ -46,7 +59,7 @@ export const writeFileLine = (
   notes: readonly string[],
   result: NormalizedToolResult | null,
 ): BuiltInLine => {
-  const { outcome, parts } = changeOutcome(result);
+  const { outcome, parts } = confirmedOutcome(result);
   if (content === null) {
     return { head: withNotes(`Write file: ${pathText(path)}`, [...notes, "content not recorded"]), outcome, parts };
   }
@@ -64,7 +77,7 @@ export const editFileLine = (
   notes: readonly string[],
   result: NormalizedToolResult | null,
 ): BuiltInLine => {
-  const { outcome, parts } = changeOutcome(result);
+  const { outcome, parts } = confirmedOutcome(result);
   if (diff === null) {
     return { head: withNotes(`Edit file: ${pathText(path)}`, [...notes, "change not recorded"]), outcome, parts };
   }
@@ -82,6 +95,18 @@ export const searchWebLine = (queries: readonly string[], result: NormalizedTool
     ? `Search web: ${queries.map((query) => JSON.stringify(query)).join(", ")}`
     : "Search web: (query not recorded)";
   return { head, outcome: normalized.outcome, parts: outputParts(normalized.output) };
+};
+
+/** `Read output of background task <id>` with the output below (Claude `TaskOutput`, AutoByteus `get_process_output`). */
+export const backgroundOutputLine = (id: string | null, result: NormalizedToolResult | null): BuiltInLine => {
+  const normalized = result ?? NO_RESULT;
+  return { head: `Read output of background task ${id ?? "(id not recorded)"}`, outcome: normalized.outcome, parts: outputParts(normalized.output) };
+};
+
+/** `Stop background task <id>` (Claude `TaskStop`, AutoByteus `stop_background_process`). */
+export const stopBackgroundTaskLine = (id: string | null, result: NormalizedToolResult | null): BuiltInLine => {
+  const { outcome, parts } = confirmedOutcome(result);
+  return { head: `Stop background task ${id ?? "(id not recorded)"}`, outcome, parts };
 };
 
 /** A line whose output is shown as recorded (converted commands such as `cat`, `grep`, `curl`). */

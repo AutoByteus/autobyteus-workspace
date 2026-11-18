@@ -1,0 +1,27 @@
+# Case: DR-01 core build and core unit; server typecheck and build
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-ts exec vitest run tests/unit; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts build
+# Commit: 8b53331099 (codex/integration-credential-proxy merged with origin/personal f13dec395f)
+# Environment: macOS 26.5.2 arm64, node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR (+ gates where named)
+# Date: 2026-10-30 (delivery, integrated state)
+
+## core unit
+ Test Files  310 passed (310)
+      Tests  2089 passed (2089)
+
+## core-build (exit 0), last lines
+> autobyteus-ts@1.0.0 build ~/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+## server-typecheck (exit 0), last lines
+
+> autobyteus-server-ts@0.1.1 typecheck ~/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
+## server-build (exit 0), last lines
+(node:77813) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

@@ -1,0 +1,177 @@
+[
+  {
+    "t": 6505,
+    "event": "phones open",
+    "team": "team:live_team_92e36e286c734a8abf54cbe360f7c47f",
+    "agent": "agent:live_agent_8866f027e3f4435e81086999e1f0cc79",
+    "org": "org:live_org_a4231aae149447eda957fb359a1ab7e5"
+  },
+  {
+    "t": 6506,
+    "event": "path refused",
+    "open": 29
+  },
+  {
+    "t": 51507,
+    "event": "path passes"
+  },
+  {
+    "t": 51508,
+    "event": "marker sent",
+    "id": "MK-T-1"
+  },
+  {
+    "t": 51508,
+    "event": "marker sent",
+    "id": "MK-A-1"
+  },
+  {
+    "t": 51508,
+    "event": "marker sent",
+    "id": "MK-O-1"
+  },
+  {
+    "t": 51508,
+    "event": "marker sent",
+    "id": "MK-A-2"
+  },
+  {
+    "t": 53509,
+    "event": "marker sent",
+    "id": "MK-A-3"
+  },
+  {
+    "t": 55510,
+    "event": "marker sent",
+    "id": "MK-A-4"
+  },
+  {
+    "t": 57512,
+    "event": "marker sent",
+    "id": "MK-A-5"
+  },
+  {
+    "t": 59513,
+    "event": "marker sent",
+    "id": "MK-A-6"
+  },
+  {
+    "t": 61516,
+    "event": "marker sent",
+    "id": "MK-A-7"
+  },
+  {
+    "t": 63517,
+    "event": "marker sent",
+    "id": "MK-A-8"
+  },
+  {
+    "t": 65519,
+    "event": "marker sent",
+    "id": "MK-A-9"
+  },
+  {
+    "t": 67519,
+    "event": "marker sent",
+    "id": "MK-A-10"
+  },
+  {
+    "t": 69520,
+    "event": "marker sent",
+    "id": "MK-A-11"
+  },
+  {
+    "t": 71522,
+    "event": "marker sent",
+    "id": "MK-A-12"
+  },
+  {
+    "t": 73525,
+    "event": "marker sent",
+    "id": "MK-A-13"
+  },
+  {
+    "t": 75526,
+    "event": "marker sent",
+    "id": "MK-A-14"
+  },
+  {
+    "t": 77528,
+    "event": "marker sent",
+    "id": "MK-A-15"
+  },
+  {
+    "t": 79529,
+    "event": "marker sent",
+    "id": "MK-A-16"
+  },
+  {
+    "t": 84537,
+    "event": "marker sent",
+    "id": "MK-T-2"
+  },
+  {
+    "t": 84693,
+    "event": "marker sent",
+    "id": "MK-A-17"
+  },
+  {
+    "t": 84847,
+    "event": "marker sent",
+    "id": "MK-O-2"
+  },
+  {
+    "t": 93046,
+    "event": "marker sent",
+    "id": "MK-T-3"
+  },
+  {
+    "t": 93199,
+    "event": "marker sent",
+    "id": "MK-A-18"
+  },
+  {
+    "t": 93356,
+    "event": "open WebSocket connections black-holed",
+    "count": 11
+  },
+  {
+    "t": 93356,
+    "event": "marker sent",
+    "id": "MK-T-4"
+  },
+  {
+    "t": 93356,
+    "event": "marker sent",
+    "id": "MK-A-19"
+  },
+  {
+    "t": 128514,
+    "event": "marker sent",
+    "id": "MK-T-5"
+  },
+  {
+    "t": 128666,
+    "event": "marker sent",
+    "id": "MK-A-20"
+  },
+  {
+    "t": 129336,
+    "event": "path refused",
+    "open": 23
+  },
+  {
+    "t": 152360,
+    "event": "path passes"
+  },
+  {
+    "t": 152364,
+    "event": "marker sent",
+    "id": "MK-T-6"
+  },
+  {
+    "t": 152364,
+    "event": "marker sent",
+    "id": "MK-A-21"
+  }
+]

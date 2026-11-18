@@ -1,0 +1,38 @@
+# IMP-01 vitest probe: a nested describe.each beforeAll that throws skips only its own group
+# Command: cp investigation-probe-nested-beforeall.test.ts.txt autobyteus-server-ts/tests/zz-ab355-probe.test.ts; vitest run tests/zz-ab355-probe.test.ts --reporter=default --reporter=json (temp file deleted afterwards)
+# Commit: efd28d5c4a (base; the probe does not touch product code)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, vitest 4.1.12, worktree release-guide-notes-and-grok-smoke
+# Date: 2026-11-01
+
+ ❯ tests/zz-ab355-probe.test.ts (6 tests | 2 skipped) 4ms
+       ✓ case A 1ms
+       ✓ case B 0ms
+       ✓ case A 0ms
+       ✓ case B 0ms
+       ↓ case A
+       ↓ case B
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/zz-ab355-probe.test.ts > live suite > grok
+Error: grok model grok-4.7 is not offered; available: grok-4.5
+ ❯ tests/zz-ab355-probe.test.ts:6:50
+      4|   beforeAll(() => { /* shared setup ok */ });
+      5|   describe.each(runtimes)("%s", (name) => {
+      6|     beforeAll(() => { if (name === "grok") throw new Error("grok model…
+       |                                                  ^
+      7|     it("case A", () => { expect(name).toBeTruthy(); });
+      8|     it("case B", () => { expect(name).toBeTruthy(); });
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed (1)
+      Tests  4 passed | 2 skipped (6)
+   Start at  06:04:34
+   Duration  856ms (transform 29ms, setup 37ms, import 5ms, tests 4ms, environment 0ms)
+JSON report written to /tmp/ab355/probe.json
+
+# JSON report (ancestorTitles, title, status):
+file message: ''
+['live suite', 'claude'] case A passed
+['live suite', 'claude'] case B passed
+['live suite', 'codex'] case A passed
+['live suite', 'codex'] case B passed
+['live suite', 'grok'] case A skipped
+['live suite', 'grok'] case B skipped

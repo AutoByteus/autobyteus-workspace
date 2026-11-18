@@ -80,11 +80,16 @@ export class ClaudeSessionToolUseCoordinator {
     }
   }
 
+  /**
+   * `autoApproveReason`: the tool is allowed without asking for this reason (a tool in the run's
+   * current Agent Tools list), as auto-execution allows every tool.
+   */
   async handleToolPermissionCheck(
     runContext: ClaudeRunContext,
     toolNameRaw: string,
     toolInputRaw: Record<string, unknown>,
     options: ClaudeCanUseToolOptions,
+    approval: Readonly<{ autoApproveReason?: string | null }> = {},
   ): Promise<Record<string, unknown>> {
     const invocationId =
       asString(options.toolUseID) ??
@@ -108,6 +113,7 @@ export class ClaudeSessionToolUseCoordinator {
       toolName,
       toolInput,
       signal: options.signal,
+      autoApproveReason: approval.autoApproveReason ?? null,
     });
 
     if (decision.approved) {
@@ -237,8 +243,12 @@ export class ClaudeSessionToolUseCoordinator {
     toolName: string;
     toolInput: Record<string, unknown>;
     signal?: AbortSignal;
+    autoApproveReason?: string | null;
   }): Promise<ClaudeToolApprovalDecision> {
-    if (input.runContext.runtimeContext.autoExecuteTools) {
+    const autoApproveReason = input.runContext.runtimeContext.autoExecuteTools
+      ? "auto_execute_tools_enabled"
+      : input.autoApproveReason ?? null;
+    if (autoApproveReason) {
       this.emitEvent(input.runContext, {
         method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_APPROVED,
         params: {
@@ -246,12 +256,12 @@ export class ClaudeSessionToolUseCoordinator {
           tool_name: input.toolName,
           turn_id: input.runContext.runtimeContext.activeTurnId,
           arguments: input.toolInput,
-          reason: "auto_execute_tools_enabled",
+          reason: autoApproveReason,
         },
       });
       return {
         approved: true,
-        reason: "auto_execute_tools_enabled",
+        reason: autoApproveReason,
       };
     }
 

@@ -1,0 +1,20 @@
+# API-14 PowerShell launcher parse (the durable test test_powershell_launcher_parses_when_pwsh_is_available, run with pwsh present)
+# Command: docker run --rm -v <worktree>:<worktree>:ro mcr.microsoft.com/dotnet/sdk:8.0 pwsh -NoLogo -NoProfile -Command "$paths=@('/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1'); foreach ($path in $paths) { $null=[scriptblock]::Create((Get-Content -Raw $path)) }"
+# Commit: 4c356d69b7; Date: 2026-10-30T16:25:40Z; Environment: sha256:6ba9644da07bb5b560a402acec9ca38711a0762969f1b61da261df5c9f6f85da linux/arm64
+
+pwsh version: 7.4.22
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1
+exit 0
+
+## control: a copy of DockerRuntime.ps1 with a syntax error must fail to parse
+MethodInvocationException: Exception calling "Create" with "1" argument(s): "At line:302 char:21
++ function Start-Node( {{[string]$NodeName, [string]$ImageRef, [bool]$P …
++                     ~
+Missing ')' in function parameter list.
+control exit 1
+
+## run args of Start-Node: removed env items absent from the PowerShell launcher
+grep exit 1 (1 = none found)

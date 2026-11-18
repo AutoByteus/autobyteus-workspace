@@ -12,8 +12,6 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testTaskTeamLayout,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { testCollaborationMessagesContextView } from '~/test-support/teamWorkspaceContextView';
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
@@ -46,18 +44,10 @@ const mountWorkflow = () => {
   const teacher = testAgentNode('/Teacher', { agentRunId: 'teacher-persistent-run', displayName: 'Teacher' });
   const studentOne = testAgentNode('/student_one', { agentRunId: 'student-one-persistent-run' });
   const studentTwo = testAgentNode('/student_two', { agentRunId: 'student-two-persistent-run' });
-  const studyGroup = testTaskTeamLayout('/StudentStudyGroup', [
-    testAgentNode('/StudentStudyGroup/student_one', { agentRunId: 'student-one' }),
-    testAgentNode('/StudentStudyGroup/student_two', { agentRunId: 'student-two' }),
-  ]);
-  const tasks = [
-    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/student_two', target: { agentRunId: 'student-two-task-run' } }),
-    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/StudentStudyGroup', target: { teamRunId: 'study-group-task-run', team: studyGroup } }),
-  ];
   const teamContext = buildTestTeamContext({
     teamRunId: 'classroom-root-run', teamDefinitionName: 'Classroom Test Team',
     rootChildren: [teacher, studentOne, studentTwo],
-    coordinatorAddress: '/Teacher', focusedAgentRunId: 'teacher-persistent-run', delegations: tasks,
+    coordinatorAddress: '/Teacher', focusedAgentRunId: 'teacher-persistent-run',
   });
   useAgentTeamContextsStore().addTeamContext(teamContext);
   useAgentSelectionStore().selectRunWithoutShellNavigation('classroom-root-run', 'team');
@@ -103,11 +93,11 @@ describe('Team Messages-only collaboration and current AgentRun send workflow', 
     expect(teamContext.view.getFocusedAgentRunId()).toBe('teacher-persistent-run');
   });
 
-  it('focuses a delegated task Agent through the view and retargets the Messages perspective', async () => {
+  it('focuses another member through the view and retargets the Messages perspective', async () => {
     const { wrapper, teamContext } = mountWorkflow();
-    teamContext.view.focusAgent('student-two-task-run');
+    teamContext.view.focusAgent('student-two-persistent-run');
     await flushPromises();
-    expect(teamContext.view.getFocusedAgentRunId()).toBe('student-two-task-run');
-    expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('student-two-task-run');
+    expect(teamContext.view.getFocusedAgentRunId()).toBe('student-two-persistent-run');
+    expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('student-two-persistent-run');
   });
 });

@@ -1,0 +1,4 @@
+prisma-verify=ok
+[terminal-runtime] ok: node-pty spawn probe
+terminal-verify=ok
+exit=0

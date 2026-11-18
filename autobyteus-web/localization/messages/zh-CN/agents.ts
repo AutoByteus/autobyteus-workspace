@@ -1,10 +1,17 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agents.components.agents.AgentCard.internalBadge': '内部',
+  'agents.components.agents.AgentCard.internalBadgeTitle': '系统自身的辅助智能体；因已开启“显示内部智能体”而显示。',
   'agents.components.agents.AgentCard.allInstalledSkills': '全部已安装技能',
   'agents.components.agents.AgentDetail.allInstalledSkills': '全部已安装',
   'agents.components.agents.AgentDetail.allInstalledSkillsDescription': '全部已安装技能。智能体会获得所有已启用的已安装技能，包括之后安装的技能。',
   'agents.components.agents.AgentDefinitionForm.useAllInstalledSkills': '使用全部已安装技能',
+  'agents.components.agents.AgentSemanticMemoryField.label': '语义记忆',
+  'agents.components.agents.AgentSemanticMemoryField.help': '为该智能体提供一个专属的可复用知识文件夹，在所有项目和团队中的每次运行之间共享。保存哪些内容由智能体及其技能决定。',
+  'agents.components.agents.AgentDetail.semanticMemoryHeading': '语义记忆',
+  'agents.components.agents.AgentDetail.semanticMemoryOn': '已开启。智能体将可复用的知识保存在此文件夹中：',
+  'agents.components.agents.AgentDetail.semanticMemoryOff': '已关闭',
   'agents.components.agents.AgentDefinitionForm.useAllInstalledSkillsHelp': '智能体会获得所有已启用的已安装技能，包括之后安装的技能。开启后将忽略下方的技能列表。',
   'agents.components.agents.AgentCard.teamLabel': '团队：{{team}}',
   'agents.components.agents.AgentCard.toolsSummary': '工具 {{count}}',

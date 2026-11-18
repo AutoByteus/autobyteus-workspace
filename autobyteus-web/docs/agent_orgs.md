@@ -105,6 +105,13 @@ existing writer (a null update is not a clear). Removing a reference does not
 delete the uploaded media file. Existing members, handoffs and hidden metadata
 retain their normal save semantics.
 
+For an Org from an agent package, the avatar and the default runtime/model are
+[personal settings](./agent_management.md#personal-settings).
+`AgentOrgPersonalSettings.vue`, under the avatar editor in Edit, shows the note,
+the avatar's "Personal" mark with "Reset to the package's setting", and — since
+the editor has no runtime/model field — a personal runtime/model (captured from
+an edit of the package's `org-config.json` at a GitHub update) with its reset.
+
 Detail **Delete** captures the selected Org identity and asks for named,
 irreversible confirmation. It removes that definition package, including
 physically owned Agent/Team definitions inside it—not shared referenced
@@ -338,9 +345,11 @@ If a valid current stream fails strict admission, the workspace retires that
 exact connection generation and recovers automatically. Recovery preserves the
 exact selected Team or Agent, verifies the replacement snapshot against durable
 checkpoints, and prevents the stale socket from regaining ownership. There is
-no manual **Reconnect** action. The client makes at most five recovery attempts;
-if none succeeds, it leaves the stream non-ready and presents exactly one
-localized notice instead of remaining indefinitely in **Connecting**. A network
+no manual **Reconnect** action. The client keeps trying, at most 30 s apart,
+while the page is visible. It pauses while the page is hidden and tries again at
+once when the page is shown. After five failed attempts in a row it leaves the
+stream non-ready and shows exactly one localized notice, and it keeps trying
+(see [Live Run Stream Reconnection](./agent_execution_architecture.md#live-run-stream-reconnection)). A network
 or inspection failure does not prove that the Org is inactive: retain last-known
 activity until exact-root observation establishes its current state.
 
@@ -392,22 +401,21 @@ on-demand detail disclosure. Disclosure state resets on item, reference or scope
 changes; readable labels never replace identity keys.
 
 The delegation work packet (the only task-system input) appears in the
-recipient event monitor, not as ordinary Messages. Fresh message/status and
-`task_execution_started` publications update already-mounted views without
-refocus; snapshots are the recovery path, not a
-substitute for normal live publication.
+recipient event monitor, not as ordinary Messages. Fresh messages, statuses and
+the Org tree's changes (a newly delegated run is the tree's next change,
+`run_tree_changed`) update already-mounted views without refocus; snapshots are
+the recovery path, not a substitute for normal live publication.
 
-When a Task becomes DONE, its task executions leave the Org's Workspaces rows
-(with a short fade; at once under reduced motion). The Org view and the
-`agent_org` history item carry `closed_task_executions` beside the unfiltered
-tree, so rows rendered from the history item before the Org context hydrates
-already leave them out; a live `task_executions_closed` event updates a mounted
-view in place. When the delegating agent reactivates a closed execution (it
-reopens the Task, then messages the execution's run ID), a live
-`task_executions_reopened` event lists it again. Its still-closed helpers stay
-hidden. A selected closed agent hands selection to the agent that
-delegated its outermost closed execution, when that agent is still listed. The
-Team tab keeps messages with closed runs.
+When a Task becomes DONE, the runs whose last open Task it was leave the Org's
+tree, with the rows under them, as the tree's next change (with a short fade; at
+once under reduced motion). The Org's tree is built on the server, so a listed Org
+read before its context hydrates shows the same rows (see
+[Run trees](agent_execution_architecture.md#run-trees-autobyteus-461); it replaced
+`closed_task_executions` and its events). When the delegating agent reactivates a
+closed run (it reopens the Task, then messages the run's ID), its row comes back
+as the tree's next change; its still-closed helpers stay out. A selected run whose
+row left hands selection to the Org agent that delegated it (CR-461-109). The Team
+tab keeps messages with closed runs.
 
 The left **Workspaces** hierarchy remains mounted across configuration, active,
 focused, and stopped/history states. Within each Workspace it retains the
@@ -444,7 +452,10 @@ with custom model/runtime settings or a previously distinct workspace. Sibling
 Teams, direct Agents and historical task snapshots are unchanged. Model and
 workspace edits are saved together; a Team workspace draft never resets models.
 No project files, conversation history or provider sessions are moved or reset.
-Fresh delegation uses the updated configured source. If the saved workspace's
+Fresh delegation uses the updated configured source, except its folder when the
+delegated Task's Project has a linked folder: then the new copy runs in that
+Project's first linked folder (autobyteus-97; server `projects.md` "Folder of a
+new copy"). If the saved workspace's
 metadata cannot be loaded, Files shows unavailable feedback rather than the old
 workspace or an unrelated launch draft; reopening Settings retries canonical
 metadata without repeating Save. Existing launch drafts are preserved.
@@ -495,45 +506,40 @@ reactivating the task, or replacing it with a same-address execution.
 
 ## Status And Hierarchy
 
-Each Agent row shows its exact runtime status. Every Team row inside the Org (a
-direct mounted Team, and a delegated task Team, also one delegated inside
-another) also shows the
-presentation-only universal Team status over the listed Agent rows in its
-branch:
+Each Agent row shows its exact runtime status. A direct mounted Team row shows the
+presentation-only universal Team status over its listed members; a delegated Team
+row, also one delegated inside another, shows that team run's own status, computed
+on the server from its own agents (autobyteus-461 SR-086 G-A4):
 
 ```text
 busy (running or initializing) > error > idle > offline
 ```
 
-Configured and task-scoped descendant Agents contribute; closed task work does
-not. Direct Org Agents, sibling Teams, ancestors, and the Team container itself
-do not. Empty/unknown input is offline. The Org counts as alive only while its
+A mounted Team counts its own members only. Direct Org Agents, sibling Teams,
+ancestors, and the Team container itself do not. Empty/unknown input is offline. The Org counts as alive only while its
 status authority is `live`; otherwise every Team row in it is offline (gray).
 The Org root row is not a Team and keeps its own dot. The Team status remains
 visible while the Team is collapsed and does not own polling, lifecycle, focus,
 readiness, or command authority. The rule owner is described in
 [Agent Execution Architecture](agent_execution_architecture.md).
 
-Task Agents and task Teams are transient execution projections. They can be
-nested by task delegation without changing the fixed configured Org topology.
+Delegated Agents and Teams are runs of their own, shown as rows of the Org's tree.
+They can be nested by task delegation without changing the fixed configured Org
+topology.
 A task Agent row shows the member marker (solid status dot and initials); the
 starter is kept in the accessible label, not as a visible line. The Org context has no
 collaborator concept: runs that earlier releases recorded as collaborators were converted at
-startup into ordinary task rows. Every copy (`delegate_task` to a configured placement or to a
-listed catalog Agent or Team; `send_message_to` never creates one) carries the `source` it started
-with on its task DTO. `AgentOrgExecutionViewIndex` decides by execution kind, never by address: a
-configured member shows its placement, a copy its own `source` (by run ID, with
-`copyAgentSourceOf` / `copyTeamSourceOf`); the Org history rows read a Team copy's coordinator
-from its `source`.
+startup into ordinary delegated runs. Every copy (`delegate_task` to a configured placement or to a
+listed catalog Agent or Team; `send_message_to` never creates one) is a run of its own, and its
+row's `launch.source` is where its launch came from. `AgentOrgExecutionViewIndex` holds the Org's
+own parts only (its configured agents and mounted Teams, each with its placement as `source`); a
+Team copy's row opens at its coordinator by the row's `openTarget`. This replaced the per-copy
+`copyAgentSourceOf` / `copyTeamSourceOf`.
 
-Copies are placed by address (REQ-012, approved behavior change). A
-mounted-team member's copy of an Org-level address now appears at the Org top
-level (`rootOrg.taskExecutions`), not under the member's Team, while a teammate
-copy stays inside the team. A copy of a mounted Team reaches its own members,
-not the mounted Team's (REQ-007).
-Status projection walks each structural Team root once and lets that Team own
-recursive descendants; the flat Team directory is not reused as recursive
-status roots, so nested task-Team Agent statuses remain unique.
+A copy's row is under the agent or member that delegated it in the Org's tree
+(autobyteus-461), at any depth. A copy of a mounted Team reaches its own members,
+not the mounted Team's (REQ-007). Each row's status is its own run's, by the run ID
+the server names; no client walks the Team structure for statuses.
 
 ## History, Restore, And Stop
 
@@ -729,7 +735,7 @@ report for the exact acceptance scope.
   Messages-only collaboration panel.
 - `components/workspace/org/AgentOrgWorkspaceView.vue`: focused/unfocused and
   stopped workspace states plus the enclosing-Org config/Back adapter.
-- `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` and
+- `components/workspace/history/RunSectionPanel.vue` and
   `WorkspaceHistoryWorkspaceSection.vue`: always-mounted mixed-family
   Workspaces hierarchy and sibling Agent/Team/AgentOrg groups.
 

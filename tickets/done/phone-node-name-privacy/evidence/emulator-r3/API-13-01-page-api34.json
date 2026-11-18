@@ -1,0 +1,24 @@
+{
+ "pageUrl": "http://hostbox-9f3.home.arpa:47331/mobile/?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovL2hvc3Rib3gtOWYzLmhvbWUuYXJwYTo0NzMzMSIsInBhaXJpbmdDb2RlIjoiX2hvbmtsakVmQllZeGpqb3haYVdkUVlJIiwiZXhwaXJlc0F0IjoiMjAyNi0xMS0wOFQwOTo0Mzo0My4zNDNaIiwic2VydmVyTmFtZSI6IlRlc3QgRGVza3RvcCJ9",
+ "value": {
+  "headerName": null,
+  "headerState": null,
+  "headerAria": null,
+  "banner": null,
+  "sheetOpen": false,
+  "sheetText": null,
+  "sheetAddressLine": false,
+  "bodyText": "Connecting to Test Desktop",
+  "ariaLabels": [],
+  "titles": [],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 0,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": "Test Desktop"
+  },
+  "sessionNodeName": "(no session)",
+  "sessionKeys": null
+ }
+}

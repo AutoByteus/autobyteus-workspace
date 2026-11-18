@@ -1,25 +1,41 @@
 import os from "node:os";
 import { appConfigProvider } from "../config/app-config-provider.js";
+import {
+  isIpv4LinkLocal,
+  isIpv4Private,
+  isIpv4TailscaleRange,
+  isIpv6LinkLocal,
+  isIpv6UniqueLocal,
+  parseIpv4Address,
+} from "../remote-access/services/ip-address-ranges.js";
 import { normalizeNodeBaseUrl } from "../remote-access/services/url-normalization.js";
 import type { ServerAddressCandidate, ServerAddressCandidateKind } from "./server-address-candidate-types.js";
 
-const isTailnetLikeIp = (address: string): boolean => {
-  const parts = address.split(".").map((part) => Number(part));
-  return parts.length === 4
-    && parts.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)
-    && parts[0] === 100
-    && parts[1] !== undefined
-    && parts[1] >= 64
-    && parts[1] <= 127;
+type InterfaceAddressKind = Extract<ServerAddressCandidateKind, "lan" | "tailnet_like" | "public">;
+
+/** How an interface address is listed; `null` for link-local and unparseable addresses, which are not listed. */
+const classifyInterfaceAddress = (address: string): InterfaceAddressKind | null => {
+  const octets = parseIpv4Address(address);
+  if (octets) {
+    if (isIpv4LinkLocal(octets)) {
+      return null;
+    }
+    if (isIpv4TailscaleRange(octets)) {
+      return "tailnet_like";
+    }
+    return isIpv4Private(octets) ? "lan" : "public";
+  }
+  if (!address.includes(":") || isIpv6LinkLocal(address)) {
+    return null;
+  }
+  return isIpv6UniqueLocal(address) ? "lan" : "public";
 };
 
-const isLanIp = (address: string): boolean =>
-  /^10\./.test(address)
-  || /^192\.168\./.test(address)
-  || /^172\.(1[6-9]|2\d|3[0-1])\./.test(address)
-  || /^169\.254\./.test(address)
-  || address.startsWith("fc")
-  || address.startsWith("fd");
+const INTERFACE_ADDRESS_LABELS: Record<InterfaceAddressKind, string> = {
+  tailnet_like: "Tailnet-like address",
+  lan: "Private/LAN address",
+  public: "Public address",
+};
 
 const hostForUrl = (address: string): string => address.includes(":") ? `[${address}]` : address;
 
@@ -101,27 +117,27 @@ export class ServerAddressCandidateService {
         });
       }
 
+      const publicCandidates: ServerAddressCandidate[] = [];
       for (const [interfaceName, addresses] of Object.entries(os.networkInterfaces())) {
         for (const addressInfo of addresses ?? []) {
           if (addressInfo.internal || !["IPv4", "IPv6"].includes(addressInfo.family)) {
             continue;
           }
-          const kind: ServerAddressCandidateKind = isTailnetLikeIp(addressInfo.address)
-            ? "tailnet_like"
-            : isLanIp(addressInfo.address)
-              ? "lan"
-              : "lan";
-          candidates.push({
+          const kind = classifyInterfaceAddress(addressInfo.address);
+          if (!kind) {
+            continue;
+          }
+          const candidate: ServerAddressCandidate = {
             id: `${kind}-${addressInfo.address}`,
             kind,
-            label: kind === "tailnet_like"
-              ? `Tailnet-like address (${interfaceName})`
-              : `Private/LAN address (${interfaceName})`,
+            label: `${INTERFACE_ADDRESS_LABELS[kind]} (${interfaceName})`,
             baseUrl: `${protocol}://${hostForUrl(addressInfo.address)}:${port}`,
             source: interfaceName,
-          });
+          };
+          (kind === "public" ? publicCandidates : candidates).push(candidate);
         }
       }
+      candidates.push(...publicCandidates);
     }
 
     const manualBase = tryNormalize(input.manualBaseUrl);

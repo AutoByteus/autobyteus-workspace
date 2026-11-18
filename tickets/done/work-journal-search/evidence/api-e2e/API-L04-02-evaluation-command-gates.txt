@@ -1,0 +1,19 @@
+# API-L04 (part 2): R-016 evaluation command on the desktop instance's own index (instance stopped, data root kept); AC-001, AC-002 (rank, latency), AC-003, AC-004, AC-005, AC-007
+# Command: caffeinate -i node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /private/tmp/wjs-api/root/server-data/memory --index-dir /private/tmp/wjs-api/root/server-data --questions <private queries-api-l04.json> --model granite-embedding-small-english-r2 --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private API-L04-evaluation-full-2.json>
+# Question file: the private SR-004b file with the implementer's two adjustments (IMP-17): Q30 left out (its run codex_b7185a43… has no raw traces in the copy, only run_metadata.json, so its work is in no journal: outside AC-001), Q13 with two rephrasings (mine: an Electron upgrade phrasing and a 'when did we upgrade' phrasing; the originals are not in the file)
+# Build 06fdc1306a (dist of API-R03); index built in API-L01 plus live updates; 3,6xx runs incl. this run's test chats (they quote some questions: Q01, Q06, Q07, Q13 and compete for those); host load before 8.53 10.42 11.25, after 14.34 11.57 11.64; 2026-10-26 19:43 UTC
+
+questions 31
+gate1 {"passed": 31, "oneSearchTop10": 30, "withinThreeSearches": 31}
+gate2 {"number1": 16, "top3": 26, "top3Share": 0.8387096774193549, "mrr": 0.6887480798771121, "p90Ms": 508, "maxMs": 900}
+meaningPointers {"total": 71, "textChunk": 23, "cardPart": 23, "firstRequest": 25, "emptySnippet": 0}
+unmaskedSecrets 0
+offTopic {"questions": 3, "passed": 3, "failed": []}
+falseOnlyWeak []
+partial [{"id": "N01", "onlyWeak": false}, {"id": "N03", "onlyWeak": false}]
+
+Per question (rank in the first search @ search where found; IDs only):
+Q01:3@1 Q02:1@1 Q03:1@1 Q04:8@1 Q05:1@1 Q06:2@1 Q07:8@1 Q08:2@1 Q09:2@1 Q10:1@1 Q11:1@1 Q12:1@1 Q13:None@2 Q14:8@1 Q15:1@1 Q16:1@1 Q17:1@1 Q18:1@1 Q19:1@1 Q20:2@1 Q21:2@1 Q22:1@1 Q23:1@1 Q24:1@1 Q25:1@1 Q26:2@1 Q27:7@1 Q28:2@1 Q29:1@1 Q31:2@1 Q32:2@1
+
+Chinese questions (AC-004): Q07 #8, Q10 #1, Q19 #1, Q22 #1, Q29 #1. DDNS (AC-003): Q01 #3 (behind this run's own test chats that asked it).
+First run of the command used the private file unchanged: gate1 passed 30 of 32 (Q13 no rephrasings; Q30 no history), top3 26, p90 722 ms, max 1354 ms (first-search latency includes the meaning job's warm start); private API-L04-evaluation-full.json

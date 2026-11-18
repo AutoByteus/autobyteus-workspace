@@ -1,0 +1,193 @@
+{
+  "runtimeKind": "deepseek_harness",
+  "model": "deepseek-v4-flash",
+  "codeword": "QUOKKA-8667",
+  "skillFolder": [
+    ".dsh",
+    "skills"
+  ],
+  "initialSkills": [],
+  "steps": [
+    {
+      "label": "1 no skills",
+      "content": "Reply with exactly: READY-1",
+      "reply": "READY-1",
+      "notices": []
+    },
+    {
+      "label": "2 skill added",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "reply": "QUOKKA-8667",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+          "turn_id": "729c6791-7c61-4c7e-a421-560c61aa451e"
+        }
+      ]
+    },
+    {
+      "label": "3 skill removed",
+      "content": "Reply with exactly: DONE-3",
+      "reply": "The notice says codeword-probe no longer available but the catalog still lists it. The user's instruction: reply exactly DONE-3. That's the direct request. Should I load anchor-skill? The instruction says \"Read its instructions before work it governs\" — anchor-skill is not needed for codewords and the task is just replying DONE-3. Hmm, but the system reminder says load skills if task matches. The task is a literal reply. I'll just reply DONE-3.\n\nActually there's a conflict: notice says codeword-probe no longer available, but catalog includes it. Doesn't matter — no codeword requested. Reply DONE-3.DONE-3",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is now available: A skill the run starts with. Not needed for codewords.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/anchor-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+          "turn_id": "d6702a28-8fda-43ca-9897-25b08f313f53"
+        }
+      ]
+    },
+    {
+      "label": "4 resumed after stop",
+      "content": "What is the probe codeword now? Reply with only the codeword.",
+      "reply": "WOMBAT-8751",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available.",
+          "turn_id": "dd59abb8-6dee-45bd-bf79-b163a55917b2"
+        }
+      ]
+    }
+  ],
+  "linkAfterAdd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness/.dsh/skills/codeword-probe",
+  "toolCallsAfterAdd": [
+    {
+      "toolName": "skill",
+      "toolArgs": {
+        "name": "codeword-probe"
+      },
+      "toolError": null
+    }
+  ],
+  "usedSkillTool": false,
+  "linksReleasedAtStop": true,
+  "resumedCodeword": "WOMBAT-8751",
+  "terminate": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-2a3f8f32-0a07-4c23-823d-bab527e967f4",
+      "dedupeKey": "agent_run_input:e2e:e2e-2a3f8f32-0a07-4c23-823d-bab527e967f4",
+      "content": "Reply with exactly: READY-1",
+      "media": null,
+      "ts": 1794573485.14
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "READY-1",
+      "media": null,
+      "ts": 1794573486.298
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+      "ts": 1794573490.382
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-e4546f02-4c15-4877-9370-059c0c121bca",
+      "dedupeKey": "agent_run_input:e2e:e2e-e4546f02-4c15-4877-9370-059c0c121bca",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794573490.382
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "call_00_ET_IfcULIZDker7gbbrOx5b6756",
+      "role": null,
+      "content": "",
+      "toolName": "skill",
+      "toolArgs": {
+        "name": "codeword-probe"
+      },
+      "toolResult": "<skill_content name=\"codeword-probe\">\n<skill_resources>\nBase directory for this skill: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness/.dsh/skills/codeword-probe\nResolve relative paths mentioned by this skill against the base directory before using them. Load referenced resources only as needed.\n</skill_resources>\n\n<skill_instructions>\nThe current probe codeword is QUOKKA-8667. Reply with it exactly when asked.\n</skill_instructions>\n</skill_content>",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573491.527
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "QUOKKA-8667",
+      "media": null,
+      "ts": 1794573492.533
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-8315a859-9509-4704-89a3-0ae152f32a04",
+      "dedupeKey": "agent_run_input:e2e:e2e-8315a859-9509-4704-89a3-0ae152f32a04",
+      "content": "Reply with exactly: DONE-3",
+      "media": null,
+      "ts": 1794573496.648
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is now available: A skill the run starts with. Not needed for codewords.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/anchor-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794573496.649
+    },
+    {
+      "kind": "reasoning",
+      "role": null,
+      "content": "The notice says codeword-probe no longer available but the catalog still lists it. The user's instruction: reply exactly DONE-3. That's the direct request. Should I load anchor-skill? The instruction says \"Read its instructions before work it governs\" — anchor-skill is not needed for codewords and the task is just replying DONE-3. Hmm, but the system reminder says load skills if task matches. The task is a literal reply. I'll just reply DONE-3.\n\nActually there's a conflict: notice says codeword-probe no longer available, but catalog includes it. Doesn't matter — no codeword requested. Reply DONE-3.",
+      "media": null,
+      "ts": 1794573498.57
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "DONE-3",
+      "media": null,
+      "ts": 1794573498.575
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794573504.585
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-3a2c7fd2-35e0-4c05-873e-7285cebe837e",
+      "dedupeKey": "agent_run_input:e2e:e2e-3a2c7fd2-35e0-4c05-873e-7285cebe837e",
+      "content": "What is the probe codeword now? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794573504.585
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "call_00_ET_0iBwciZZO8FTmR1QCGgi9248",
+      "role": null,
+      "content": "",
+      "toolName": "skill",
+      "toolArgs": {
+        "name": "codeword-probe"
+      },
+      "toolResult": "<skill_content name=\"codeword-probe\">\n<skill_resources>\nBase directory for this skill: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness/.dsh/skills/codeword-probe\nResolve relative paths mentioned by this skill against the base directory before using them. Load referenced resources only as needed.\n</skill_resources>\n\n<skill_instructions>\nThe current probe codeword is WOMBAT-8751. Reply with it exactly when asked.\n</skill_instructions>\n</skill_content>",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573505.628
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "WOMBAT-8751",
+      "media": null,
+      "ts": 1794573506.838
+    }
+  ]
+}

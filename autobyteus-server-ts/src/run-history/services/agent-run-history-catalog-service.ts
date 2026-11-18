@@ -8,11 +8,14 @@ import type { AgentRunHistoryIndexRowRecord } from "../store/agent-run-history-i
 import { AgentRunHistoryIndexStore } from "../store/agent-run-history-index-store.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
-import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 import { compactSummary } from "./run-history-service-helpers.js";
+import {
+  normalizeAgentRunHistoryIndexRow as normalizeRow,
+  projectAgentRunHistoryIndexRow,
+} from "./agent-run-history-row-projector.js";
 import {
   createStandaloneRunLiveness,
   type AgentRunActivityLookup,
@@ -20,9 +23,10 @@ import {
   type StandaloneRunLiveness,
 } from "./standalone-run-liveness.js";
 import {
-  commitAgentRunModelConfig,
+  commitAgentRunRuntimeSwitch,
   type AgentRunModelConfigCommitResult,
-} from "./agent-run-model-config-commit.js";
+  type RunSelectionToCommit,
+} from "./agent-run-runtime-switch-commit.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -74,20 +78,6 @@ export const resetAgentRunHistoryCatalogState = (memoryDir: string): void => {
   state.rows = new Map();
 };
 
-const normalizeRow = (
-  row: AgentRunHistoryIndexRowRecord,
-): AgentRunHistoryIndexRowRecord => ({
-  runId: row.runId.trim(),
-  agentDefinitionId: row.agentDefinitionId.trim(),
-  agentName: row.agentName.trim() || row.agentDefinitionId.trim(),
-  workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
-  summary: compactSummary(row.summary),
-  createdAt: row.createdAt,
-  archivedAt: row.archivedAt ?? null,
-  terminatedAt: row.terminatedAt ?? null,
-  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
-});
-
 const cloneRows = (
   rows: Map<string, AgentRunHistoryIndexRowRecord>,
 ): Map<string, AgentRunHistoryIndexRowRecord> =>
@@ -110,7 +100,7 @@ export class AgentRunHistoryCatalogService {
   private readonly liveness: StandaloneRunLiveness;
   private readonly state: CatalogState;
   private readonly definitionNameCache = new Map<string, string>();
-  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
 
   constructor(
     private readonly memoryDir: string,
@@ -121,7 +111,7 @@ export class AgentRunHistoryCatalogService {
       agentDefinitionService?: AgentDefinitionLookup;
       agentRunManager?: AgentRunActivityLookup;
       collaborationRoots?: StandaloneRunCollaborationRoots;
-      adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">; // default: the process Task service
+      adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">; // default: the process Task service
     } = {},
   ) {
     this.adHocTasks = dependencies.adHocTasks;
@@ -165,15 +155,12 @@ export class AgentRunHistoryCatalogService {
   }): Promise<void> {
     const createdAt = input.createdAt ?? input.metadata.preparedAt ?? new Date().toISOString();
     await this.enqueue(async () => {
-      const row = normalizeRow({
+      const row = projectAgentRunHistoryIndexRow({
         runId: input.runId,
-        agentDefinitionId: input.metadata.agentDefinitionId,
+        metadata: input.metadata,
         agentName: await this.resolveAgentName(input.metadata.agentDefinitionId),
-        workspaceRootPath: input.metadata.workspaceRootPath,
         summary: input.summary ?? "",
         createdAt,
-        archivedAt: null,
-        terminatedAt: null,
       });
       if (this.state.rows.has(row.runId) || await this.metadataStore.readMetadata(row.runId)) {
         throw new Error(`Run '${row.runId}' already exists in standalone history.`);
@@ -204,6 +191,8 @@ export class AgentRunHistoryCatalogService {
     platformAgentRunId?: string | null;
     runtimeKind?: RuntimeKind;
     startedAt?: string;
+    /** The activation commit of an agent runtime switch removes the pending switch in the same write. */
+    clearPendingRuntimeSwitch?: boolean;
   }): Promise<AgentRunMetadata | null> {
     return this.mutate(async (rows) => {
       const metadata = await this.metadataStore.readMetadata(input.runId);
@@ -211,8 +200,9 @@ export class AgentRunHistoryCatalogService {
         return { value: null, shouldFlush: false };
       }
       const startedAt = input.startedAt ?? metadata.startedAt ?? new Date().toISOString();
+      const { pendingRuntimeSwitch, ...withoutPending } = metadata;
       const nextMetadata: AgentRunMetadata = {
-        ...metadata,
+        ...(input.clearPendingRuntimeSwitch ? withoutPending : metadata),
         runtimeKind: input.runtimeKind ?? metadata.runtimeKind,
         platformAgentRunId:
           input.platformAgentRunId === undefined
@@ -231,21 +221,22 @@ export class AgentRunHistoryCatalogService {
     });
   }
 
-  async commitRunModelConfig(input: {
+  /** A stopped run's settings save with an agent runtime and model: model-only edit, switch or undo (see the commit function). */
+  async commitRunRuntimeSwitch(input: {
     runId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
+    selection: RunSelectionToCommit;
+    switchId: string;
   }): Promise<AgentRunModelConfigCommitResult> {
     return this.enqueueValue(async () => {
       const runId = input.runId.trim();
       const row = this.state.rows.get(runId) ?? null;
-      return commitAgentRunModelConfig({
+      return commitAgentRunRuntimeSwitch({
         metadataStore: this.metadataStore,
         runId,
         cataloged: Boolean(row),
         archived: Boolean(row?.archivedAt),
-        llmModelIdentifier: input.llmModelIdentifier,
-        llmConfig: input.llmConfig,
+        selection: input.selection,
+        switchId: input.switchId,
       });
     });
   }
@@ -312,7 +303,7 @@ export class AgentRunHistoryCatalogService {
     const result = await this.removeCatalogRowAndDirectory(identity.runId, identity.runDirPath, "deleted permanently");
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: identity.runId }));
+      .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: identity.runId }));
     return result;
   }
 

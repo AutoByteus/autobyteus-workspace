@@ -1,0 +1,456 @@
+{
+  "startedAt": "2026-10-24T16:43:33.250Z",
+  "cases": {
+    "DCP-003": {
+      "title": "delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 33070,
+      "details": {
+        "orgRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"agent\",\\n \"target_agent_run_id\": \"writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1\",\\n \"task_id\": \"ad_hoc_task_ade9dcc3-2884-4110-875f-71d1df8c9229\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1\",\"task_id\":\"ad_hoc_task_ade9dcc3-2884-4110-875f-71d1df8c9229\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1",
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "afterRowClick": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "true",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "settingsTaskBefore": {
+          "taskId": "ad_hoc_task_ade9dcc3-2884-4110-875f-71d1df8c9229",
+          "status": "TODO",
+          "root": {
+            "ingressAgentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1",
+            "teamRunId": null,
+            "closed": false,
+            "status": "idle"
+          }
+        },
+        "settingsTaskAfter": {
+          "taskId": "ad_hoc_task_ade9dcc3-2884-4110-875f-71d1df8c9229",
+          "status": "TODO",
+          "root": {
+            "ingressAgentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1",
+            "teamRunId": null,
+            "closed": false,
+            "status": "offline"
+          }
+        },
+        "savedSummary": "Gemini test · Antigravity · Auto-approve",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 24, 06:49 PM\n\nto writer dc06\n\nOne more paragraph.\n\nMessage\nwriter dc06\nOct 24, 06:49 PM\n\nOne more paragraph.\nMessage\nwriter dc06\nOct 24, 06:49 PM\n\nOne more paragraph.",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "stop": {
+          "operation": "StopDelegatedExecution",
+          "variables": {
+            "input": {
+              "rootKind": "AGENT_ORG",
+              "rootRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+              "agentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1"
+            }
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "input": {
+                "rootKind": "AGENT_ORG",
+                "rootRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+                "agentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1"
+              }
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:53112/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-5710&orgRunId=hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82&mode=active&memberAddress=/manager"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid",
+            "outlineWidth": "2px",
+            "label": "Stop writer dc06",
+            "title": "Stop writer dc06",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping writer dc06…",
+            "opacity": "0.6",
+            "cursor": "default",
+            "animation": "pulse",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:53112/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-5710&orgRunId=hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82&mode=active&memberAddress=/manager"
+          },
+          "response": {
+            "data": {
+              "stopDelegatedExecution": {
+                "success": true,
+                "outcome": "STOPPED",
+                "message": "Stopped. A new message resumes it with its conversation.",
+                "notStoppedUnattributed": 0,
+                "__typename": "StopDelegatedExecutionResult"
+              }
+            }
+          },
+          "taskBefore": {
+            "taskId": "ad_hoc_task_ade9dcc3-2884-4110-875f-71d1df8c9229",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1",
+              "teamRunId": null,
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_ade9dcc3-2884-4110-875f-71d1df8c9229",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1",
+              "teamRunId": null,
+              "closed": false,
+              "status": "offline"
+            }
+          },
+          "input": {
+            "rootKind": "AGENT_ORG",
+            "rootRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+            "agentRunId": "writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1"
+          },
+          "parentAfterCopyStop": {
+            "root_run_id": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+            "is_active": true
+          }
+        },
+        "sidebarResume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_dc06_9c10e8f3e3ab4a5988c2d882cf5c2cb1\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n2 Messages\nMessage\nOct 24, 06:49 PM\n\nto writer dc06\n\nContinue after sidebar Stop.\n\nMessage\nOct 24, 06:49 PM\n\nto writer dc06\n\nOne more paragraph.\n\nMessage\nwriter dc06\nOct 24, 06:49 PM\n\nOne more paragraph.\nMessage\nwriter dc06\nOct 24, 06:49 PM\n\nOne more paragraph.",
+        "sidebarResumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "rootStop": {
+          "operation": "TerminateAgentOrgRun",
+          "variables": {
+            "agentOrgRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82"
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "agentOrgRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:53112/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-5710&orgRunId=hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82&mode=active&memberAddress=/manager"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "none",
+            "outline": "auto",
+            "outlineWidth": "1px",
+            "label": "Stop Agent Org",
+            "title": "Stop Agent Org",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stop Agent Org",
+            "opacity": "0.5",
+            "cursor": "not-allowed",
+            "animation": "none",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0s",
+            "transitionProperty": "all",
+            "hovered": true
+          },
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:53112/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-5710&orgRunId=hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82&mode=active&memberAddress=/manager"
+          },
+          "response": {
+            "data": {
+              "terminateAgentOrgRun": {
+                "success": true,
+                "message": "Agent organization run terminated successfully.",
+                "agentOrgRunId": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+                "__typename": "AgentOrgRunMutationResult"
+              }
+            }
+          },
+          "historyBefore": {
+            "root_run_id": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+            "is_active": true
+          },
+          "historyAfter": {
+            "root_run_id": "hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82",
+            "is_active": false
+          },
+          "urlAfter": "http://127.0.0.1:53112/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-5710&orgRunId=hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82&mode=history&memberAddress=/manager"
+        }
+      }
+    },
+    "DCR-003": {
+      "title": "AC-011(a): a mounted Team member with its own auto-approve but the Team's model is recorded as following the Team in its copy (Grok); a Team-level model choice on a stopped configured-place Team copy reaches its following lead (AGY)",
+      "result": "Pass",
+      "ms": 24636,
+      "details": {
+        "grokLeadApprovalBefore": "true",
+        "grokLeadApprovalAfter": "false",
+        "drawer": {
+          "grokLead": "Customized · Grok 4.7 · Grok Build · Ask first",
+          "agyLead": "Alt test model · Antigravity · Auto-approve"
+        },
+        "orgRunId": "slot_org3_3512_03d681eb6ad74281ab827810ed4618d7",
+        "slots": {
+          "gpair": {
+            "runtime": "grok_build",
+            "model": "grok-4.7",
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace"
+          },
+          "gpairLead": {
+            "runtime": "grok_build",
+            "model": "grok-4.7",
+            "auto": false,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace"
+          },
+          "pair": {
+            "runtime": "antigravity_cli",
+            "model": "dlc-alt-model",
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace"
+          },
+          "pairLead": {
+            "runtime": "antigravity_cli",
+            "model": "dlc-alt-model",
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace"
+          }
+        },
+        "gcpCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"team\",\\n \"target_team_run_id\": \"org3_grok_pair_3512_2d98a6fb3c71472b8c063f7bb73affe2\",\\n \"target_team_coordinator_agent_run_id\": \"org3_lead_3512_127a781f9f0b4d7da22d2464c8fca402\",\\n \"task_id\": \"ad_hoc_task_2197ef39-7b8b-486d-b562-001d2e18658f\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"org3_grok_pair_3512_2d98a6fb3c71472b8c063f7bb73affe2\",\"target_team_coordinator_agent_run_id\":\"org3_lead_3512_127a781f9f0b4d7da22d2464c8fca402\",\"task_id\":\"ad_hoc_task_2197ef39-7b8b-486d-b562-001d2e18658f\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "gcp": "org3_grok_pair_3512_2d98a6fb3c71472b8c063f7bb73affe2",
+        "gcpFacts": {
+          "/gpair/lead": {
+            "runtime": "grok_build",
+            "model": "grok-4.7",
+            "auto": false,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace",
+            "followsTeam": true
+          },
+          "/gpair/helper": {
+            "runtime": "antigravity_cli",
+            "model": "dlc-alt-model",
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace",
+            "followsTeam": false
+          }
+        },
+        "cpCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n \"delegated\": true,\\n \"target_kind\": \"team\",\\n \"target_team_run_id\": \"org3_pair_3512_b29bfc0051be4102b6da5aedbc779518\",\\n \"target_team_coordinator_agent_run_id\": \"org3_lead_3512_bd1a88292b4d4551aa35c507c4b89232\",\\n \"task_id\": \"ad_hoc_task_1af785eb-8f79-42bf-bf42-bd5c1234ee6b\"\\n}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"org3_pair_3512_b29bfc0051be4102b6da5aedbc779518\",\"target_team_coordinator_agent_run_id\":\"org3_lead_3512_bd1a88292b4d4551aa35c507c4b89232\",\"task_id\":\"ad_hoc_task_1af785eb-8f79-42bf-bf42-bd5c1234ee6b\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "cp": "org3_pair_3512_b29bfc0051be4102b6da5aedbc779518",
+        "cpLead": "org3_lead_3512_bd1a88292b4d4551aa35c507c4b89232",
+        "cpFacts": {
+          "/pair/lead": {
+            "runtime": "antigravity_cli",
+            "model": "dlc-alt-model",
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace",
+            "followsTeam": true
+          },
+          "/pair/engineer": {
+            "runtime": "grok_build",
+            "model": "grok-4.7",
+            "auto": true,
+            "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf/server-data/temp_workspace",
+            "followsTeam": false
+          }
+        },
+        "leadFirst": [
+          [
+            "dlc-alt-model",
+            null
+          ]
+        ],
+        "leadSession": "12895879-c948-42dc-be41-6fbb0a4e927b",
+        "cpRowAfter": "Gemini test · Antigravity · Auto-approve",
+        "leadRowAfter": "Gemini test · Antigravity · Auto-approve",
+        "engineerRowAfter": "Grok 4.7 · Grok Build · Auto-approve · As configured in this run",
+        "resumeCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"org3_lead_3512_bd1a88292b4d4551aa35c507c4b89232\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"org3_lead_3512_bd1a88292b4d4551aa35c507c4b89232\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n1 Messages\nMessage\nOct 24, 06:49 PM\n\nto lead\n\nContinue CP-RESUME-DCR3.\n\nMessage\nlead\nOct 24, 06:49 PM\n\nContinue CP-RESUME-DCR3.\nMessage\nlead\nOct 24, 06:49 PM\n\nContinue CP-RESUME-DCR3.",
+        "leadResumed": [
+          [
+            "gemini-3.8-flash-low",
+            "12895879-c948-42dc-be41-6fbb0a4e927b"
+          ]
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 88942
+    },
+    {
+      "label": "frontend",
+      "pid": 88997
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 88997,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 88942,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-fB4dMf",
+  "backendUrl": "http://127.0.0.1:53111",
+  "frontUrl": "http://127.0.0.1:53112",
+  "definitions": {
+    "ids": {
+      "manager": "manager-5b1e",
+      "lead": "lead-4e20",
+      "worker": "worker-8b0a",
+      "plain": "plain-09c3",
+      "engineer": "engineer-049a",
+      "reviewer": "reviewer-d595",
+      "writer": "writer-dc06",
+      "offline": "offline-057d",
+      "unoffered": "unoffered-e1ef",
+      "badsettings": "badsettings-74d0",
+      "incomplete": "incomplete-6251",
+      "build": "build-team-0e5a",
+      "pair": "pair-team-3653",
+      "squad": "squad-team-97ff",
+      "home": "home-team-ec22",
+      "launchOrg": "launchorg-org-15b5",
+      "hostOrg": "hostorg-org-5710"
+    },
+    "names": {
+      "manager": "Manager 5b1e",
+      "lead": "Lead 4e20",
+      "worker": "Worker 8b0a",
+      "plain": "Plain 09c3",
+      "engineer": "Engineer 049a",
+      "reviewer": "Reviewer d595",
+      "writer": "Writer dc06",
+      "offline": "Offline 057d",
+      "unoffered": "Unoffered e1ef",
+      "badsettings": "Badsettings 74d0",
+      "incomplete": "Incomplete 6251",
+      "build": "Build Team 0e5a",
+      "pair": "Pair Team 3653",
+      "squad": "Squad Team 97ff",
+      "home": "Home Team ec22",
+      "launchOrg": "LaunchOrg Org 15b5",
+      "hostOrg": "HostOrg Org 5710"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0
+  },
+  "completedAt": "2026-10-24T16:49:59.004Z"
+}

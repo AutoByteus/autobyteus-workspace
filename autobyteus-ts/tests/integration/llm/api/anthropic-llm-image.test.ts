@@ -15,9 +15,9 @@ const live = liveProviderTest('Anthropic');
 
 const buildModel = () =>
   new LLMModel({
-    name: 'claude-sonnet-4.6',
-    value: 'claude-sonnet-4-6',
-    canonicalName: 'claude-sonnet-4.6',
+    name: 'claude-haiku-5-5',
+    value: 'claude-haiku-5-5',
+    canonicalName: 'claude-haiku-5-5',
     provider: LLMProvider.ANTHROPIC
   });
 
@@ -51,7 +51,7 @@ live.describe('AnthropicLLM Image Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (message.includes('not_found_error') || message.includes('claude-haiku-5-5')) {
         return;
       }
       throw error;
@@ -78,7 +78,7 @@ live.describe('AnthropicLLM Image Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (message.includes('not_found_error') || message.includes('claude-haiku-5-5')) {
         return;
       }
       throw error;
@@ -107,7 +107,7 @@ live.describe('AnthropicLLM Image Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (message.includes('not_found_error') || message.includes('claude-haiku-5-5')) {
         return;
       }
       throw error;
@@ -139,7 +139,7 @@ live.describe('AnthropicLLM Image Integration', () => {
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (message.includes('not_found_error') || message.includes('claude-haiku-5-5')) {
         return;
       }
       throw error;
@@ -165,7 +165,7 @@ live.describe('AnthropicLLM Image Integration', () => {
       expect(response.content.toLowerCase()).toContain('hello');
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (message.includes('not_found_error') || message.includes('claude-haiku-5-5')) {
         return;
       }
       throw error;

@@ -1,0 +1,202 @@
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agents/chemistry_teaching_assistant_b9b189b1c3af4ec2bdb8c47ca1bf5011/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb
+Created agent session dd0100f8-e59d-48e0-a696-a1bb779f3d1d for run project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb
+Agent WebSocket connected: session=dd0100f8-e59d-48e0-a696-a1bb779f3d1d, run=project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb
+Closed agent session dd0100f8-e59d-48e0-a696-a1bb779f3d1d
+Agent WebSocket disconnected: dd0100f8-e59d-48e0-a696-a1bb779f3d1d
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-05T08:43:22.983Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/.autobyteus/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/.autobyteus/server-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/.autobyteus/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793868203417,"pid":55993,"hostname":"NormyMac","msg":"Server listening at http://127.0.0.1:54992"}
+{"level":30,"time":1793868203436,"pid":55993,"hostname":"NormyMac","msg":"Server listening at http://127.0.0.1:29695"}
+{"level":30,"time":1793868203436,"pid":55993,"hostname":"NormyMac","msg":"Server listening at http://192.168.2.92:29695"}
+{"level":30,"time":1793868203436,"pid":55993,"hostname":"NormyMac","msg":"Server listening at http://100.65.37.54:29695"}
+[2026-11-05T08:43:23.436Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 2 items.
+Found 2 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 2 MCP server configs into cache.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus-org/autobyteus-agents.
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus-org/autobyteus-workspace.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/a1-b1_material-tools/task-170.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/a1-c2_learning_contents.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Anna_Lernt_Deutsch.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/b1-exam-contents.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/B2_Deutsch_Lernprojekt.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Chemie_Folie.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Deutsch_lernprojekt.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Deutsch_lernprojekt-overrite-header.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Deutsch_lernprojekt-prototype.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/german_learning_A2.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/german_words.
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Glavion_TG.
+Successfully registered tool definition: 'lan_ssh_health_check'
+Successfully registered tool definition: 'lan_ssh_open_session'
+Successfully registered tool definition: 'lan_ssh_session_exec'
+Successfully registered tool definition: 'lan_ssh_close_session'
+Successfully registered tool definition: 'droplet_ssh_health_check'
+Successfully registered tool definition: 'droplet_ssh_open_session'
+Successfully registered tool definition: 'droplet_ssh_session_exec'
+Successfully registered tool definition: 'droplet_ssh_close_session'
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_58a9bbad27364d43a298aa20f43f9848/solution_designer_2cf29660fa1c4f25a9cc1e39bf13e070/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb
+Created agent session a4251db6-84b7-4cea-a864-745fb5d8f351 for run project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb
+Agent WebSocket connected: session=a4251db6-84b7-4cea-a864-745fb5d8f351, run=project_task_manager_89e33a2ea30f422fab0407e4dc2b13bb
+Creating new workspace for rootPath: /Users/normy/normy-projects/Deutsch_lernprojekt
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Deutsch_lernprojekt.
+Created and registered workspace ID: agent_ws_053c3a8517d65c3775854fe05adc646b5f5d30db8a5ff68504df8ef5b9c398ba
+{"level":40,"time":1793872479203,"pid":55993,"hostname":"NormyMac","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_E26g1U-Fd23CjZrFhKATsR9EEs5SgxZmC1mIu4y8F2o","statusCode":400,"elapsedMs":0.7954159993678331,"msg":"http request completed"}
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agents/daily_assistant_14bb5dffba4643ecac98ff411d06eefc/raw_traces_manifest.json
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_9de4a4c73af248f193813601b051a77a
+Created agent session b1f261b4-390d-47eb-a1b4-9cd8858c5984 for run daily_assistant_9de4a4c73af248f193813601b051a77a
+Agent WebSocket connected: session=b1f261b4-390d-47eb-a1b4-9cd8858c5984, run=daily_assistant_9de4a4c73af248f193813601b051a77a
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1793875877233,"pid":55993,"hostname":"NormyMac","reqId":"req-7","method":"POST","url":"/mcp/agent-tools/agtrun_WZP1rZVTpkEAaLs9X1LgwCrPaNr0BdAPlxWbLroCrcg","statusCode":400,"elapsedMs":0.497957999818027,"msg":"http request completed"}
+{"level":40,"time":1793875877235,"pid":55993,"hostname":"NormyMac","reqId":"req-b","method":"GET","url":"/.well-known/oauth-protected-resource/mcp/agent-tools/agtrun_WZP1rZVTpkEAaLs9X1LgwCrPaNr0BdAPlxWbLroCrcg","statusCode":404,"elapsedMs":0.13124999962747097,"msg":"http request completed"}
+{"level":40,"time":1793875877235,"pid":55993,"hostname":"NormyMac","reqId":"req-c","method":"GET","url":"/.well-known/oauth-protected-resource","statusCode":404,"elapsedMs":0.039499999955296516,"msg":"http request completed"}
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agents/project_task_manager_603e6a7849f24400a3fe9944205f235b/raw_traces_manifest.json
+Creating new workspace for rootPath: /Users/normy/normy-projects/galavion-design
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/galavion-design.
+Created and registered workspace ID: agent_ws_70139de9dd39a82da069510289a07708b8aa484834c4a197862d07f406f74878
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/normy-projects/galavion-design
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/galavion-design.
+Reusing registered workspace ID: agent_ws_70139de9dd39a82da069510289a07708b8aa484834c4a197862d07f406f74878
+{"level":40,"time":1793886882800,"pid":55993,"hostname":"NormyMac","reqId":"req-i","method":"POST","url":"/mcp/agent-tools/agtrun_r5jkixS2ZgIqF6nFIQP-20QMoiWl_W_aZ7-irgaDKBI","statusCode":400,"elapsedMs":0.3321250006556511,"msg":"http request completed"}
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/product_team_c879b08656d04f1ab278f898bb20968f/product_ui_ux_designer_76a51a1e23a448dc9df819489256d319/raw_traces_manifest.json
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agents/agent_package_creator_f3ed0e142d7d4756901e8e213182a81d/raw_traces_manifest.json
+Agent websocket attached for run agent_package_creator_f3ed0e142d7d4756901e8e213182a81d
+Created agent session 569b5559-10f8-4a61-a09c-d621284127ba for run agent_package_creator_f3ed0e142d7d4756901e8e213182a81d
+Agent WebSocket connected: session=569b5559-10f8-4a61-a09c-d621284127ba, run=agent_package_creator_f3ed0e142d7d4756901e8e213182a81d
+Creating new workspace for rootPath: /Users/normy/autobyteus-org/autobyteus-agents
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus-org/autobyteus-agents.
+Created and registered workspace ID: agent_ws_f7a6aebf2673f63f18804f7213abecb54ac02b34e7059391d430a6afbedac4f0
+Closed agent session 569b5559-10f8-4a61-a09c-d621284127ba
+Agent WebSocket disconnected: 569b5559-10f8-4a61-a09c-d621284127ba
+Agent websocket attached for run agent_package_creator_f3ed0e142d7d4756901e8e213182a81d
+Created agent session 72d79a84-dd0d-495f-a31e-e106b41ad3c9 for run agent_package_creator_f3ed0e142d7d4756901e8e213182a81d
+Agent WebSocket connected: session=72d79a84-dd0d-495f-a31e-e106b41ad3c9, run=agent_package_creator_f3ed0e142d7d4756901e8e213182a81d
+Creating new workspace for rootPath: /Users/normy/autobyteus-org/autobyteus-agents
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus-org/autobyteus-agents.
+Reusing registered workspace ID: agent_ws_f7a6aebf2673f63f18804f7213abecb54ac02b34e7059391d430a6afbedac4f0
+{"level":40,"time":1793905737214,"pid":55993,"hostname":"NormyMac","reqId":"req-w","method":"POST","url":"/mcp/agent-tools/agtrun_8e2nySO0Uc2HIFnQDImeseGo3dRGin2tEXJmgDSc7UI","statusCode":400,"elapsedMs":0.28700000047683716,"msg":"http request completed"}
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/product_team_c879b08656d04f1ab278f898bb20968f/ui_baseline_bootstrapper_46b910bf42cc47deab23ecebbc546e48/raw_traces_manifest.json
+Creating new workspace for rootPath: /Users/normy/normy-projects/galavion-design
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/galavion-design.
+Reusing registered workspace ID: agent_ws_70139de9dd39a82da069510289a07708b8aa484834c4a197862d07f406f74878
+{"level":40,"time":1793907592892,"pid":55993,"hostname":"NormyMac","reqId":"req-15","method":"POST","url":"/mcp/agent-tools/agtrun_r5jkixS2ZgIqF6nFIQP-20QMoiWl_W_aZ7-irgaDKBI","statusCode":400,"elapsedMs":0.24091699719429016,"msg":"http request completed"}
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agent_teams/product_team_c879b08656d04f1ab278f898bb20968f/product_ui_ux_designer_76a51a1e23a448dc9df819489256d319/raw_traces_manifest.json
+Memory file missing: /Users/normy/.autobyteus/server-data/memory/agents/chemistry_teaching_assistant_b9b189b1c3af4ec2bdb8c47ca1bf5011/raw_traces_manifest.json
+Creating new workspace for rootPath: /Users/normy/normy-projects/galavion-design
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/galavion-design.
+Reusing registered workspace ID: agent_ws_70139de9dd39a82da069510289a07708b8aa484834c4a197862d07f406f74878
+{"level":40,"time":1793910010257,"pid":55993,"hostname":"NormyMac","reqId":"req-1c","method":"POST","url":"/mcp/agent-tools/agtrun_r5jkixS2ZgIqF6nFIQP-20QMoiWl_W_aZ7-irgaDKBI","statusCode":400,"elapsedMs":0.2560419961810112,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/normy-projects/galavion-design
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/galavion-design.
+Reusing registered workspace ID: agent_ws_70139de9dd39a82da069510289a07708b8aa484834c4a197862d07f406f74878
+{"level":40,"time":1793912567646,"pid":55993,"hostname":"NormyMac","reqId":"req-44","method":"POST","url":"/mcp/agent-tools/agtrun_r5jkixS2ZgIqF6nFIQP-20QMoiWl_W_aZ7-irgaDKBI","statusCode":400,"elapsedMs":0.34062500298023224,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/normy-projects/Deutsch_lernprojekt
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/Deutsch_lernprojekt.
+Reusing registered workspace ID: agent_ws_053c3a8517d65c3775854fe05adc646b5f5d30db8a5ff68504df8ef5b9c398ba
+{"level":40,"time":1793912574326,"pid":55993,"hostname":"NormyMac","reqId":"req-4b","method":"POST","url":"/mcp/agent-tools/agtrun_9aFf2mNBLkrTiYgeAwUWwAAXWklZEKMBi5UPubfeQyU","statusCode":400,"elapsedMs":0.2541250064969063,"msg":"http request completed"}
+Creating new workspace for rootPath: /Users/normy/normy-projects/galavion-design
+Created metadata-only FileSystemWorkspace at /Users/normy/normy-projects/galavion-design.
+Reusing registered workspace ID: agent_ws_70139de9dd39a82da069510289a07708b8aa484834c4a197862d07f406f74878
+{"level":40,"time":1793912927495,"pid":55993,"hostname":"NormyMac","reqId":"req-6e","method":"POST","url":"/mcp/agent-tools/agtrun_r5jkixS2ZgIqF6nFIQP-20QMoiWl_W_aZ7-irgaDKBI","statusCode":400,"elapsedMs":0.26691700518131256,"msg":"http request completed"}
+Closed agent session b1f261b4-390d-47eb-a1b4-9cd8858c5984
+Agent WebSocket disconnected: b1f261b4-390d-47eb-a1b4-9cd8858c5984
+Closed agent session a4251db6-84b7-4cea-a864-745fb5d8f351
+Agent WebSocket disconnected: a4251db6-84b7-4cea-a864-745fb5d8f351
+Closed agent session 72d79a84-dd0d-495f-a31e-e106b41ad3c9
+Agent WebSocket disconnected: 72d79a84-dd0d-495f-a31e-e106b41ad3c9

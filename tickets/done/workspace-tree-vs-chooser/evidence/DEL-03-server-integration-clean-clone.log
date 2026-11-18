@@ -1,0 +1,7 @@
+# Clean-clone run of codex/workspace-tree-vs-chooser @ 6ec6e2d603 (/tmp/ab385-clone); full log 868290 bytes, trimmed to summaries, skips and failures.
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ Test Files  87 passed | 20 skipped (107)
+      Tests  506 passed | 69 skipped (575)
+   Start at  22:58:05
+   Duration  212.04s (transform 7.51s, setup 959ms, import 70.44s, tests 131.58s, environment 5ms)
+exit=0

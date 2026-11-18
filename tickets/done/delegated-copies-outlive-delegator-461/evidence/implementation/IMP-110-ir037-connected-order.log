@@ -1,0 +1,16 @@
+IMP-110 — CR-461-101 (F-76): a command sent on CONNECTED finds the Team and Org view session
+Code: the IR-037 tree (server src); macOS, Node 22.23; 2026-11-15
+Command: vitest run --no-watch tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+
+## before the fix (the four src files reverted, tests kept)
+     × CR-461-101: CONNECTED comes after every read, right before the snapshot, so a command sent on CONNECTED finds the session 8ms
+     × CR-461-101: CONNECTED comes after every read, right before the snapshot, so a command sent on CONNECTED finds the session 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  2 failed | 43 passed (45)
+
+## after
+ Test Files  2 passed (2)
+      Tests  45 passed (45)
+
+Reading: on the old order CONNECTED was sent before the snapshot's reads (the test holds the stored read open), so connect resolved after the client's command; now CONNECTED is sent right before the snapshot, after every read (base's order).

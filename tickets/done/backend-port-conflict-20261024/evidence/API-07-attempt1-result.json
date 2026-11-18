@@ -1,0 +1,17 @@
+{
+  "case": "API-07",
+  "commit": "a201abe848cdff500948dfbd40dcd71d97926e26",
+  "own": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc",
+  "date": "2026-10-26T09:10:36.334Z",
+  "cases": [
+    {
+      "mode": "startup-cancel",
+      "messages": [],
+      "start": "2026-10-26T09:10:36.336Z",
+      "pid": 85621
+    }
+  ],
+  "result": "Fail",
+  "error": "Error: child exited before ready Platform detection: Windows=false\nApp root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\nApp data directory: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data\nERROR: Configuration file not found: Error: Configuration file not found: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data/.env\nFailed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data/.env\n{\"protocol\":\"autobyteus.embedded-server.platform-fatal.v1\",\"code\":\"APP_CONFIG_INITIALIZATION_FAILED\",\"summary\":\"Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data/.env\",\"logPath\":null}\n\n    at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs:21:51\n    at wait (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs:8:94)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs:21:3",
+  "rootRemoved": true
+}

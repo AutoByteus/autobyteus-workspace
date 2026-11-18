@@ -1,0 +1,15 @@
+# IMP-17 Markdown sanitisation spec: passes under jsdom, the injection case fails under happy-dom (H-19, AC-020)
+# command: pnpm -C autobyteus-web exec vitest run composables/__tests__/useMarkdownSegments.sanitization.spec.ts (then the same with the environment comment set to happy-dom, restored)
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1, jsdom 25.0.1, happy-dom 15.11.7
+# date: 2026-10-27T19:33:45Z
+
+-- jsdom:
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 27ms
+      Tests  3 passed (3)
+-- happy-dom:
+   × useMarkdownSegments sanitisation (jsdom) > removes script, event handlers, javascript: links and iframes from raw HTML 28ms
+   ✓ useMarkdownSegments sanitisation (jsdom) > does not turn a Markdown javascript: link into a link 3ms
+   ✓ useMarkdownSegments sanitisation (jsdom) > keeps allowed formatting and inline styles 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 2 passed (3)

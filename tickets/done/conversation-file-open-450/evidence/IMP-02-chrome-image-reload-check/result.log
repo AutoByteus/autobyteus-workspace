@@ -1,0 +1,8 @@
+# Check: IMP-02 (premise check for the desktop media reload)
+# Command: node evidence/IMP-02-chrome-image-reload-check/check.mjs (headless Chrome, a local server that sends no cache headers, like the node file routes)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, Chrome (playwright-core)
+# Date: 2026-11-09
+
+{"first":10,"afterRewriteRemountSameUrl":10,"hitsAfterRemount":1,"reloadThroughFetchNoStore":40,"serverHits":2}
+
+Reading: an <img> mounted again with the same URL shows the image the page already has (first=10, afterRewriteRemountSameUrl=10, hitsAfterRemount=1); a reload through fetch(cache: no-store) into an object URL shows the rewritten file (40). So the desktop, which shows node files by their plain URL, reloads media through fetch on a revision change.

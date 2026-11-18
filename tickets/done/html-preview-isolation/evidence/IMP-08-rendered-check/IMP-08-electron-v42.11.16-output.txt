@@ -1,0 +1,70 @@
+# IMP-08 rendered check, Electron v42.11.16
+# Command: node harness/build-harness.mjs; [HPI_ELECTRON=<electron>] harness/run.sh <out>
+# Commit: cdba18ba35 (real registerWorkspaceRoutes from autobyteus-server-ts/src/api/rest/workspaces.ts bundled with a stubbed workspace manager; app page mirrors HtmlPreviewer.vue at this commit)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, Electron v42.11.16, app window webPreferences: preload, contextIsolation, sandbox, file:// page
+# Date: 2026-11-07T04:36Z
+
+## Electron output (sorted)
+PROBE {"frame":"app","check":"app-origin","value":"file://"}
+PROBE {"frame":"blob","check":"classic-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"css","value":"rgb(0, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"other-site-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"top-level","check":"classic-script","value":"ran"}
+PROBE {"frame":"top-level","check":"css","value":"rgb(255, 0, 0)"}
+PROBE {"frame":"top-level","check":"fetch-relative-json","value":"failed: TypeError"}
+PROBE {"frame":"top-level","check":"img-relative","value":"loaded 3x3"}
+PROBE {"frame":"top-level","check":"inline-script","value":"ran"}
+PROBE {"frame":"top-level","check":"localStorage","value":"blocked: SecurityError"}
+PROBE {"frame":"top-level","check":"module-script","value":"did-not-run"}
+PROBE {"frame":"top-level","check":"origin","value":"null"}
+PROBE {"frame":"top-level","check":"other-site-script","value":"ran"}
+PROBE {"frame":"top-level","check":"parent-document","value":"Synthetic preview page"}
+PROBE {"frame":"top-level","check":"parent-electronAPI","value":"undefined"}
+PROBE {"frame":"workspace-preview","check":"classic-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"css","value":"rgb(255, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"img-relative","value":"loaded 3x3","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"other-site-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"workspace-preview","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+
+## Harness node log (Origin of each request; CSP header of each reply)
+listening
+NODE GET /rest/workspaces/ws-1/static/report.html?label=top-level origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/report.html?label=top-level status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/report.html?label=workspace-preview origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/report.html?label=workspace-preview status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/style.css status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/classic.js status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/module.js origin=null
+NODE-REPLY /rest/workspaces/ws-1/static/module.js status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/pixel.png status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/data.json origin=null
+NODE-REPLY /rest/workspaces/ws-1/static/data.json status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/style.css status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/classic.js status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/module.js origin=null
+NODE-REPLY /rest/workspaces/ws-1/static/module.js status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+NODE-REPLY /rest/workspaces/ws-1/static/pixel.png status=200 csp=sandbox allow-scripts
+NODE GET /rest/workspaces/ws-1/static/data.json origin=null
+NODE-REPLY /rest/workspaces/ws-1/static/data.json status=200 csp=sandbox allow-scripts

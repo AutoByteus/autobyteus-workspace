@@ -1,0 +1,899 @@
+# Case: API-04…API-07 desktop journey B (packaged build; instance on an owned data root <L>/b-root, seeded before its first start with a realistic plain mcps.json of the user's kinds of servers, dummy values)
+# Starts: --data-root <L>/b-root --server-port 50101 (iso-50102-4afa); after a stop, --server-port 50240 (iso-50241-6fee); after a stop with the root key moved aside (iso-50348-2769); after restoring the key (iso-50419-6918)
+# Commands: node journey-b.mjs <start.json> <out> seed-check|move|keep|after-port-change|import <A file>|replace|reimport <older copy>|vault-unavailable|vault-restored; node zh-check.mjs; node lang-en.mjs
+# Commit: f3c52bd0f6 (code 4aa2543f9d; round-2 code 4505158d77, fc6032999e, 98eeac9f31)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; <L> = test-owned scratch $TMPDIR/s244-api (removed after the round)
+# Date: 2026-10-26
+
+== seeded mcps.json ==
+{
+  "mcpServers": {
+    "tts": {
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": {
+        "TTS_MCP_BACKEND": "local"
+      }
+    },
+    "image-audio": {
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "tool_name_prefix": "ia",
+      "env": {
+        "AUTOBYTEUS_API_KEY": "test-dummy-api-key-0002",
+        "DEFAULT_IMAGE_MODEL": "test-model"
+      }
+    },
+    "ssh_remote": {
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "tool_name_prefix": "ssh",
+      "env": {
+        "SSH_MCP_DEFAULT_HOST": "host.example",
+        "SSH_MCP_PRIVATE_KEY_FILE": "/tmp/test-dummy-key-file"
+      }
+    },
+    "legacy-http": {
+      "url": "http://127.0.0.1:49606/mcp",
+      "token": "test-dummy-http-token-B",
+      "tool_name_prefix": "lh"
+    }
+  }
+}
+== phase seed-check ==
+{
+  "phase": "seed-check",
+  "backendUrl": "http://127.0.0.1:50101",
+  "banner": {
+    "visible": true,
+    "text": "3 value(s) look like secrets but are stored as plain text. Keep as they are Review and move to vault",
+    "reviewState": null
+  },
+  "views": [
+    {
+      "serverId": "tts",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": null,
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "TTS_MCP_BACKEND",
+          "value": "local",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "image-audio",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ia",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "AUTOBYTEUS_API_KEY",
+          "value": "test-dummy-api-key-0002",
+          "state": "PLAIN"
+        },
+        {
+          "name": "DEFAULT_IMAGE_MODEL",
+          "value": "test-model",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "ssh_remote",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ssh",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "SSH_MCP_DEFAULT_HOST",
+          "value": "host.example",
+          "state": "PLAIN"
+        },
+        {
+          "name": "SSH_MCP_PRIVATE_KEY_FILE",
+          "value": "/tmp/test-dummy-key-file",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "legacy-http",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "lh",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "PLAIN",
+      "headers": []
+    }
+  ],
+  "candidates": [
+    {
+      "serverId": "image-audio",
+      "field": "env:AUTOBYTEUS_API_KEY",
+      "matchedBy": "NAME"
+    },
+    {
+      "serverId": "ssh_remote",
+      "field": "env:SSH_MCP_PRIVATE_KEY_FILE",
+      "matchedBy": "NAME"
+    },
+    {
+      "serverId": "legacy-http",
+      "field": "token",
+      "matchedBy": "ALWAYS_SECRET"
+    }
+  ],
+  "plainToolWorks": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"test-dummy-api-key-0002\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "pageErrors": []
+}
+== phase move ==
+{
+  "phase": "move",
+  "backendUrl": "http://127.0.0.1:50101",
+  "dialogCandidates": [
+    {
+      "id": "move-image-audio|env:AUTOBYTEUS_API_KEY",
+      "checked": true
+    },
+    {
+      "id": "move-ssh_remote|env:SSH_MCP_PRIVATE_KEY_FILE",
+      "checked": true
+    },
+    {
+      "id": "move-legacy-http|token",
+      "checked": true
+    }
+  ],
+  "result": "Moved to the vault: 2.\n\nBackup of the previous mcps.json:\n<L>/b-root/server-data/mcps.json.backup-before-vault-move-2026-10-26T08-42-39-520Z\n\nThe backup holds the plain values. Delete it when you no longer need it.",
+  "toasts": [
+    "Move secrets to the vault",
+    "The selected values move from mcps.json into the vault, and mcps.json then holds a reference to each. Untick a value to leave it as plain text.",
+    "Moved to the vault: 2.",
+    "Backup of the previous mcps.json:",
+    "<L>/b-root/server-data/mcps.json.backup-before-vault-move-2026-10-26T08-42-39-520Z",
+    "The backup holds the plain values. Delete it when you no longer need it.",
+    "Close"
+  ],
+  "backups": [
+    {
+      "file": "mcps.json.backup-before-vault-move-2026-10-26T08-42-39-520Z",
+      "mode": "600",
+      "holdsPlainValues": true
+    }
+  ],
+  "file": {
+    "tts": {
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": {
+        "TTS_MCP_BACKEND": "local"
+      }
+    },
+    "image-audio": {
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "tool_name_prefix": "ia",
+      "env": {
+        "AUTOBYTEUS_API_KEY": {
+          "vaultSecretId": "mcp.806e3845-97ae-42da-b31e-4d77cdddeb9b"
+        },
+        "DEFAULT_IMAGE_MODEL": "test-model"
+      }
+    },
+    "ssh_remote": {
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "tool_name_prefix": "ssh",
+      "env": {
+        "SSH_MCP_DEFAULT_HOST": "host.example",
+        "SSH_MCP_PRIVATE_KEY_FILE": "/tmp/test-dummy-key-file"
+      }
+    },
+    "legacy-http": {
+      "url": "http://127.0.0.1:49606/mcp",
+      "token": {
+        "vaultSecretId": "mcp.2567e838-d2bc-4f5e-b117-1c49910b297a"
+      },
+      "tool_name_prefix": "lh"
+    }
+  },
+  "fileHasMovedValues": false,
+  "views": [
+    {
+      "serverId": "tts",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": null,
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "TTS_MCP_BACKEND",
+          "value": "local",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "image-audio",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ia",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "AUTOBYTEUS_API_KEY",
+          "value": null,
+          "state": "CONFIGURED"
+        },
+        {
+          "name": "DEFAULT_IMAGE_MODEL",
+          "value": "test-model",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "ssh_remote",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ssh",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "SSH_MCP_DEFAULT_HOST",
+          "value": "host.example",
+          "state": "PLAIN"
+        },
+        {
+          "name": "SSH_MCP_PRIVATE_KEY_FILE",
+          "value": "/tmp/test-dummy-key-file",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "legacy-http",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "lh",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    }
+  ],
+  "movedStdioWorks": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"test-dummy-api-key-0002\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "movedHttpWorks": {
+    "listed": true,
+    "isError": false,
+    "text": "after-move"
+  },
+  "bannerAfter": {
+    "visible": false,
+    "text": null,
+    "reviewState": "[\"ssh_remote|env:SSH_MCP_PRIVATE_KEY_FILE\"]"
+  },
+  "pageErrors": []
+}
+== phase keep ==
+{
+  "phase": "keep",
+  "backendUrl": "http://127.0.0.1:50101",
+  "configureErrors": null,
+  "bannerBefore": {
+    "visible": true,
+    "text": "1 value(s) look like secrets but are stored as plain text. Keep as they are Review and move to vault",
+    "reviewState": "[\"ssh_remote|env:SSH_MCP_PRIVATE_KEY_FILE\"]"
+  },
+  "bannerAfter": {
+    "visible": false,
+    "text": null,
+    "reviewState": "[\"ssh_remote|env:SSH_MCP_PRIVATE_KEY_FILE\",\"notes-server|env:NOTES_SERVICE_TOKEN\"]"
+  },
+  "bannerAfterReload": {
+    "visible": false,
+    "text": null,
+    "reviewState": "[\"ssh_remote|env:SSH_MCP_PRIVATE_KEY_FILE\",\"notes-server|env:NOTES_SERVICE_TOKEN\"]"
+  },
+  "notesStillPlain": [
+    {
+      "name": "NOTES_SERVICE_TOKEN",
+      "value": "test-dummy-notes-token",
+      "state": "PLAIN"
+    }
+  ],
+  "pageErrors": []
+}
+== phase after-port-change ==
+{
+  "phase": "after-port-change",
+  "backendUrl": "http://127.0.0.1:50240",
+  "banner": {
+    "visible": false,
+    "text": null,
+    "reviewState": "[\"ssh_remote|env:SSH_MCP_PRIVATE_KEY_FILE\",\"notes-server|env:NOTES_SERVICE_TOKEN\"]"
+  },
+  "candidatesFromServer": [
+    {
+      "serverId": "ssh_remote",
+      "field": "env:SSH_MCP_PRIVATE_KEY_FILE",
+      "matchedBy": "NAME"
+    },
+    {
+      "serverId": "notes-server",
+      "field": "env:NOTES_SERVICE_TOKEN",
+      "matchedBy": "NAME"
+    }
+  ],
+  "movedStdioWorks": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"test-dummy-api-key-0002\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "pageErrors": []
+}
+== phase import ==
+{
+  "phase": "import",
+  "backendUrl": "http://127.0.0.1:50240",
+  "toasts": [
+    "MCP server configurations imported: 2. Enter these secrets again on this node: github-like env:GITHUB_TOKEN.",
+    "MCP Gateway",
+    "Search",
+    "Add Server",
+    "tts",
+    "STDIO",
+    "Enabled",
+    "Command:"
+  ],
+  "stillOnView": false,
+  "needsSecretList": null,
+  "card": "Needs secret: env:GITHUB_TOKEN",
+  "view": {
+    "serverId": "github-like",
+    "transportType": "STDIO",
+    "enabled": true,
+    "toolNamePrefix": "gh",
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": [
+      {
+        "name": "GITHUB_TOKEN",
+        "value": null,
+        "state": "MISSING"
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "debug",
+        "state": "PLAIN"
+      }
+    ]
+  },
+  "fileEntry": {
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": {
+      "GITHUB_TOKEN": {
+        "vaultSecretId": "mcp.69562478-cdfe-49f6-8143-9049922351c5"
+      },
+      "LOG_LEVEL": "debug"
+    },
+    "tool_name_prefix": "gh"
+  },
+  "discover": {
+    "success": false,
+    "message": "McpSecretUnavailableError: MCP server 'github-like' needs secret: env:GITHUB_TOKEN (no value is stored)."
+  },
+  "pageErrors": []
+}
+== phase replace ==
+{
+  "phase": "replace",
+  "backendUrl": "http://127.0.0.1:50240",
+  "rowsBefore": [
+    {
+      "name": "GITHUB_TOKEN",
+      "value": "",
+      "locked": "true",
+      "move": false,
+      "note": "Needs secret: no value is stored. Type a value to store one."
+    },
+    {
+      "name": "LOG_LEVEL",
+      "value": "debug",
+      "locked": null,
+      "move": true,
+      "note": null
+    }
+  ],
+  "toasts": [
+    "Server 'github-like' saved successfully.",
+    "Successfully discovered and registered 5 tools.",
+    "Tools for github-like",
+    "gh_echo",
+    "Returns the given text.",
+    "gh_add",
+    "Adds two numbers and returns the sum as structured content.",
+    "gh_fail"
+  ],
+  "view": {
+    "serverId": "github-like",
+    "transportType": "STDIO",
+    "enabled": true,
+    "toolNamePrefix": "gh",
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": [
+      {
+        "name": "GITHUB_TOKEN",
+        "value": null,
+        "state": "CONFIGURED"
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "debug",
+        "state": "PLAIN"
+      }
+    ]
+  },
+  "fileEntry": {
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": {
+      "GITHUB_TOKEN": {
+        "vaultSecretId": "mcp.41934e9b-15a6-4946-a9c3-bbee8ccde2ab"
+      },
+      "LOG_LEVEL": "debug"
+    },
+    "tool_name_prefix": "gh"
+  },
+  "gatewayDeliveredB1": true,
+  "pageErrors": []
+}
+== phase reimport ==
+{
+  "phase": "reimport",
+  "backendUrl": "http://127.0.0.1:50240",
+  "toasts": [
+    "MCP server configurations imported: 7. Stored in the vault: ssh_remote env:SSH_MCP_PRIVATE_KEY_FILE, notes-server env:NOTES_SERVICE_TOKEN.",
+    "MCP Gateway",
+    "Search",
+    "Add Server",
+    "tts",
+    "STDIO",
+    "Enabled",
+    "Command:"
+  ],
+  "olderCopyRef": {
+    "vaultSecretId": "mcp.69562478-cdfe-49f6-8143-9049922351c5"
+  },
+  "refBefore": {
+    "vaultSecretId": "mcp.41934e9b-15a6-4946-a9c3-bbee8ccde2ab"
+  },
+  "refAfter": {
+    "vaultSecretId": "mcp.41934e9b-15a6-4946-a9c3-bbee8ccde2ab"
+  },
+  "view": {
+    "serverId": "github-like",
+    "transportType": "STDIO",
+    "enabled": true,
+    "toolNamePrefix": "gh",
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": [
+      {
+        "name": "GITHUB_TOKEN",
+        "value": null,
+        "state": "CONFIGURED"
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "debug",
+        "state": "PLAIN"
+      }
+    ]
+  },
+  "gatewayStillB1": true,
+  "pageErrors": []
+}
+== phase vault-unavailable ==
+{
+  "phase": "vault-unavailable",
+  "backendUrl": "http://127.0.0.1:50240",
+  "vaultStatus": {
+    "health": "LOCKED",
+    "instructionCode": "SECRET_VAULT_LOCKED"
+  },
+  "views": [
+    {
+      "serverId": "tts",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": null,
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "TTS_MCP_BACKEND",
+          "value": "local",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "image-audio",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ia",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "AUTOBYTEUS_API_KEY",
+          "value": null,
+          "state": "VAULT_UNAVAILABLE"
+        },
+        {
+          "name": "DEFAULT_IMAGE_MODEL",
+          "value": "test-model",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "ssh_remote",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ssh",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "SSH_MCP_DEFAULT_HOST",
+          "value": "host.example",
+          "state": "PLAIN"
+        },
+        {
+          "name": "SSH_MCP_PRIVATE_KEY_FILE",
+          "value": null,
+          "state": "VAULT_UNAVAILABLE"
+        }
+      ]
+    },
+    {
+      "serverId": "legacy-http",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "lh",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "VAULT_UNAVAILABLE",
+      "headers": []
+    },
+    {
+      "serverId": "notes-server",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ns",
+      "command": "/Users/normy/.hermes/node/bin/node",
+      "args": [
+        "--version"
+      ],
+      "env": [
+        {
+          "name": "NOTES_SERVICE_TOKEN",
+          "value": null,
+          "state": "VAULT_UNAVAILABLE"
+        }
+      ]
+    },
+    {
+      "serverId": "github-like",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "gh",
+      "command": "/Users/normy/.hermes/node/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "GITHUB_TOKEN",
+          "value": null,
+          "state": "VAULT_UNAVAILABLE"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "value": "debug",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": null,
+      "headers": []
+    }
+  ],
+  "listLoaded": true,
+  "cards": [
+    "Needs secret: env:AUTOBYTEUS_API_KEY",
+    "Needs secret: env:SSH_MCP_PRIVATE_KEY_FILE",
+    "Needs secret: token",
+    "Needs secret: env:NOTES_SERVICE_TOKEN",
+    "Needs secret: env:GITHUB_TOKEN"
+  ],
+  "rows": [
+    {
+      "name": "GITHUB_TOKEN",
+      "value": "",
+      "locked": "true",
+      "move": false,
+      "note": "Needs secret: the vault is unavailable, so the stored value cannot be read."
+    },
+    {
+      "name": "LOG_LEVEL",
+      "value": "debug",
+      "locked": null,
+      "move": true,
+      "note": null
+    }
+  ],
+  "discover": {
+    "success": false,
+    "message": "McpSecretUnavailableError: MCP server 'github-like' needs secret: env:GITHUB_TOKEN (the vault is unavailable)."
+  },
+  "gateway": {
+    "listed": false
+  },
+  "plainServerStillWorks": {
+    "listed": false
+  },
+  "pageErrors": []
+}
+== phase vault-restored ==
+{
+  "phase": "vault-restored",
+  "backendUrl": "http://127.0.0.1:50240",
+  "vaultStatus": {
+    "health": "READY",
+    "instructionCode": null
+  },
+  "views": [
+    {
+      "serverId": "tts",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": null,
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "TTS_MCP_BACKEND",
+          "value": "local",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "image-audio",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ia",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "AUTOBYTEUS_API_KEY",
+          "value": null,
+          "state": "CONFIGURED"
+        },
+        {
+          "name": "DEFAULT_IMAGE_MODEL",
+          "value": "test-model",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "ssh_remote",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ssh",
+      "command": "/Users/normy/.local/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "SSH_MCP_DEFAULT_HOST",
+          "value": "host.example",
+          "state": "PLAIN"
+        },
+        {
+          "name": "SSH_MCP_PRIVATE_KEY_FILE",
+          "value": null,
+          "state": "CONFIGURED"
+        }
+      ]
+    },
+    {
+      "serverId": "legacy-http",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "lh",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    },
+    {
+      "serverId": "notes-server",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "ns",
+      "command": "/Users/normy/.hermes/node/bin/node",
+      "args": [
+        "--version"
+      ],
+      "env": [
+        {
+          "name": "NOTES_SERVICE_TOKEN",
+          "value": null,
+          "state": "CONFIGURED"
+        }
+      ]
+    },
+    {
+      "serverId": "github-like",
+      "transportType": "STDIO",
+      "enabled": true,
+      "toolNamePrefix": "gh",
+      "command": "/Users/normy/.hermes/node/bin/node",
+      "args": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+      ],
+      "env": [
+        {
+          "name": "GITHUB_TOKEN",
+          "value": null,
+          "state": "CONFIGURED"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "value": "debug",
+          "state": "PLAIN"
+        }
+      ]
+    },
+    {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": null,
+      "headers": []
+    }
+  ],
+  "listLoaded": true,
+  "cards": [],
+  "rows": [
+    {
+      "name": "GITHUB_TOKEN",
+      "value": "",
+      "locked": "true",
+      "move": false,
+      "note": "Stored in the vault. Leave empty to keep it, or type a new value to replace it."
+    },
+    {
+      "name": "LOG_LEVEL",
+      "value": "debug",
+      "locked": null,
+      "move": true,
+      "note": null
+    }
+  ],
+  "discover": {
+    "success": true,
+    "message": "Successfully discovered and registered 5 tools."
+  },
+  "gateway": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"test-dummy-github-token-B1\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "plainServerStillWorks": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"host.example\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "pageErrors": []
+}
+== zh-CN check ==
+{
+  "banner": "有 1 个值看起来像密钥，但以明文存储。 保持原样 检查并移入密钥库",
+  "rowNotes": [
+    "已存入密钥库。留空即保留，输入新值即替换。"
+  ],
+  "envHint": true,
+  "tokenNote": "已存入密钥库。留空即保留，输入新令牌即替换。",
+  "importToast": [
+    "已导入 1 个 MCP 服务器配置。 请在此节点上重新输入这些密钥：zh-imported env:GITHUB_TOKEN。",
+    "MCP 网关",
+    "Search"
+  ],
+  "card": "需要密钥：env:GITHUB_TOKEN",
+  "error": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('select').first()\n    - locator resolved to <select id=\"settings-language-mode\" data-testid=\"settings-language-select\" class=\"w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - did not find some options\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - did not find some options\n    - retrying select option action\n      - waiting 100ms\n    59 × waiting for element to be visible and enabled\n       - did not find some options\n     - retrying select option action\n       - waiting 500ms\n",
+  "pageErrors": []
+}(the language was then switched back to English by value: english true)
+
+== notes ==
+- keep: the first attempt found no banner because the page had not refetched after the test's out-of-band GraphQL configure; after a reload the banner showed 1 candidate (look-b-after-reload); the phase reloads first.
+- After reimport, a direct check: ssh_remote tool still receives /tmp/test-dummy-key-file from the vault; candidates now [] (both reviewed-plain values were stored in the vault by the import rule; observation O-1).
+- vault-unavailable: a plain-only server (tts) discovered and its tool returned "local" while the vault was LOCKED.

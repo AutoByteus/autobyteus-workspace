@@ -1,0 +1,83 @@
+# DEL-03-smoke-integrated
+# case: delivery post-integration rerun (TESTING.md Rerun by impact, Rule 4: base changed autobyteus-ts, contract packages, lockfile)
+# command: python3 scripts/release_smoke.py from the repository root, normal user shell, wrapped with the API-08 snapshots (git status --porcelain, SHA-256 of ~/.codex/config.toml, ~/.claude/settings.json, ~/.grok/config.toml, listings of ~/.autobyteus and ~/.codex)
+# commit: 32eac02929e1b71244717d29440d5a2cd9a03a54 (merge of origin/personal 9f7c9c10a6 into 4143ab1abc)
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.312 (Claude Code), codex-cli 0.165.0, grok 1.0.70 (f50904eaee6c) [stable]; signed in
+# run 1: 2026-10-29T12:59:34Z .. 2026-10-29T13:00:27Z; run 2: 2026-10-29T13:01:18Z .. 2026-10-29T13:04:28Z
+# shows: run 2 = 10 of 13 PASS, the same result as API-08. Codex's 3 cases FAIL only on the account usage limit ("try again at Nov 4th, 2026 8:11 AM");
+#        Codex run start worked up to the provider turn: run created, member folder created on the first message, collision refused (markers below).
+#        Run 1 failed closed before any turn: Grok's ACP handshake offered only grok-4.5, grok-4.6 (the signed-out list, FU-001) while
+#        ~/.grok/auth.json was being rewritten (mtime 2026-10-29T12:59:51Z, inside run 1). Right after, 'grok models' printed
+#        'You are logged in with grok.com' / 'grok-4.7 (default)'. Cause: a Grok sign-in refresh during the handshake, external; run 2 passed Grok 3/3.
+#        AC-008: all four snapshots identical before and after, in both runs.
+
+## Run 2 (authoritative)
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a187c0-df62-7080-a341-6174fb1e2f19"} | {"
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a187c0-eeb4-7a11-a345-6c8f8258275e","chan
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a187c0-fbd0-7291-ac53-2a299cd4d1eb"} | {"
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+commit    32eac02929e1b71244717d29440d5a2cd9a03a54
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 154s, antigravity 22s, autobyteus 10s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-dvko33xz
+exit=1
+status before == after: yes
+cli-config before == after: yes
+autobyteus-root before == after: yes
+codex-home before == after: yes
+
+## Run 2 live markers
+SKILL_LINKS_LIVE_TEAM_MEMBER claude {"designerRunId":"link_probe_agent_93622bc5_4a22c9dfe6ca46fd9e8653f59e0881d4","text":"LINKCODE-93622bc5","tools":["Skill"],"memberFoldersAfter":["link_probe_agent_93622bc5_4a22c9dfe6ca46fd9e8653f59e08
+SKILL_LINKS_LIVE_NEW_RUN codex {"runId":"link_probe_agent_93622bc5_9bfd7af74efe405e81e3eeec1e81ea29","text":"","tools":[]}
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE codex {"teamRunId":"link_probe_team_codex_93622bc5_83c6c8cd27b14e65970a471ddc7d2562","designerRunId":"link_probe_agent_93622bc5_5e3c94246f5e4eab8c3b0d40dcfdb9f3","memberFoldersBefore":["team_communication_m
+SKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_93622bc5_5e3c94246f5e4eab8c3b0d40dcfdb9f3","text":"","tools":[],"memberFoldersAfter":["link_probe_agent_93622bc5_5e3c94246f5e4eab8c3b0d40dcfdb9f3","team_communicatio
+SKILL_LINKS_LIVE_COLLISION codex {"success":false,"refusal":"Error: Workspace skill path collision for Codex App Server skill 'link-probe-93622bc5': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-FeuF
+SKILL_LINKS_LIVE_ALL_INSTALLED codex {"text":"","tools":[]}
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_93622bc5_8c3a0ae18b5940a3b2528a92f62820ae","text":"The user wants me to use the link-probe skill and reply with only the code. I need to find and read the skill.Let 
+SKILL_LINKS_LIVE_MODELS {"claude":"haiku","codex":"gpt-5.6-luna","grok":"grok-4.7"}
+
+## Run 1 (failed closed on Grok's model list)
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+commit    32eac02929e1b71244717d29440d5a2cd9a03a54
+models    not reported
+duration  live 17s, antigravity 22s, autobyteus 10s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-h9ah3uqc
+exit=1
+status before == after: yes
+cli-config before == after: yes
+autobyteus-root before == after: yes
+codex-home before == after: yes
+
+## grok models, right after run 1
+You are logged in with grok.com.
+Default model: grok-4.7
+Available models:
+  * grok-4.7 (default)

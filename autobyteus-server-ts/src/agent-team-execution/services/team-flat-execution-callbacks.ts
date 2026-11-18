@@ -1,3 +1,4 @@
+import type { RunProjectRoot } from "../../agent-execution/domain/run-project-context.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { FlatTeamExecutionCallbacks } from "../local/flat-team-execution-callbacks.js";
@@ -8,7 +9,7 @@ import type { TeamRunContext } from "../domain/team-run-context.js";
 import { toTeamAgentEvent } from "./team-agent-event-adapter.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
 import { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 
 type MemberExecutionContextBuildInput = Parameters<MemberExecutionContextBuilder["build"]>[0];
 
@@ -17,20 +18,23 @@ export const createTeamFlatExecutionCallbacks = (input: {
   teamContext: TeamRunContext<unknown>;
   assertExecutionInputAllowed: FlatTeamExecutionCallbacks["assertExecutionInputAllowed"];
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
-  taskCommands: MemberTaskCommandCapability;
+  taskCapability: MemberTaskCapability;
   publish(event: TeamRunEvent): void;
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
   /** The root's `list_available_agents`; absent in application-owned runs. */
   listAvailableAgents?: MemberExecutionContextBuildInput["listAvailableAgents"];
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
+  /** The root Team run: its members are told the Project it was started under, if any. */
+  projectRunRoot?: RunProjectRoot | null;
 }): FlatTeamExecutionCallbacks => Object.freeze({
+  projectRunRoot: () => input.projectRunRoot ?? null,
   assertExecutionInputAllowed: input.assertExecutionInputAllowed,
   buildMemberExecutionContext: ({ identity, sourceNode, hostTeam }) => input.memberExecutionContextBuilder.build({
     teamContext: input.teamContext,
     agentNode: sourceNode,
     deliverInterAgentMessage: input.deliverInterAgentMessage,
     listAvailableAgents: input.listAvailableAgents ?? null,
-    taskCommands: input.taskCommands,
+    taskCapability: input.taskCapability,
     hostTeam,
   }).then((context) => {
     if (context.identity.agentRunId !== identity.agentRunId || context.identity.memberAddress !== identity.memberAddress) {

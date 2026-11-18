@@ -1,0 +1,4 @@
+ ✓ tests/e2e/runtime/zz-probe-imported-app-codex-launch.e2e.test.ts (1 test) 1726ms
+     ✓ imports Brief Studio, reads it as runnable and launches its Codex drafting team  1039ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

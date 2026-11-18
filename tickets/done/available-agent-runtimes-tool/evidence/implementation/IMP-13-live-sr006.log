@@ -1,0 +1,55 @@
+# IMP-13
+# command: pnpm dev (own data root, no keys; LM Studio serving, Ollama off) + node live-r2.mjs: one read, 3 rounds of 4 concurrent reads, 3 back-to-back reads
+# environment: macOS darwin 25.5, v22.23.1; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+LIVE-R2 single {
+ "ms": 5135,
+ "summary": {
+  "codex_app_server": {
+   "models": 7,
+   "limits": [
+    "Weekly 100"
+   ]
+  },
+  "claude_agent_sdk": {
+   "models": 12,
+   "limits": [
+    "5-hour 73",
+    "Weekly 46",
+    "Weekly · Fable 100"
+   ]
+  },
+  "antigravity_cli": {
+   "models": 13,
+   "limits": [
+    "Gemini Models · weekly 90",
+    "Gemini Models · 5-hour 68",
+    "Claude and GPT models · weekly 0",
+    "Gemini 4 Argon · weekly 36"
+   ]
+  },
+  "grok_build": {
+   "models": 1,
+   "limits": [
+    "Billing period null"
+   ],
+   "limitsNote": "Grok does not report how much of the period is used."
+  },
+  "autobyteus": [
+   {
+    "provider": "LM Studio",
+    "models": [
+     "deepseek-ocr:lmstudio@127.0.0.1:1234",
+     "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+     "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+     "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234"
+    ]
+   }
+  ]
+ }
+}
+LIVE-R2 concurrent {"round":1,"wallMs":4492,"sameCheckedAt":1,"codex":[{"models":7,"limits":"read"},{"models":7,"limits":"read"},{"models":7,"limits":"read"},{"models":7,"limits":"read"}]}
+LIVE-R2 concurrent {"round":2,"wallMs":5183,"sameCheckedAt":1,"codex":[{"models":7,"limits":"read"},{"models":7,"limits":"read"},{"models":7,"limits":"read"},{"models":7,"limits":"read"}]}
+LIVE-R2 concurrent {"round":3,"wallMs":4333,"sameCheckedAt":1,"codex":[{"models":7,"limits":"read"},{"models":7,"limits":"read"},{"models":7,"limits":"read"},{"models":7,"limits":"read"}]}
+LIVE-R2 back-to-back [{"ms":4716,"models":7,"limits":"read"},{"ms":4361,"models":7,"limits":"read"},{"ms":5065,"models":7,"limits":"read"}]

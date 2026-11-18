@@ -1,0 +1,18 @@
+# IMP-08 run 1 fake feed + fake C1 node request log (test-owned, /tmp/autobyteus-356-check/fakes.mjs)
+# Instance: isolated worktree build of 8cf4278319 (iso-58047-b19a), --test-update-feed http://127.0.0.1:47356  Date: 2026-11-01
+# ua=node lines are the desktop main process (NodeAutoUpdater); Mozilla lines are the window
+2026-11-01T19:42:03.578Z listening feed=47356 node=47357
+2026-11-01T19:48:21.983Z feed GET /latest-mac.yml?noCache=1k6cafoqq
+2026-11-01T19:48:54.901Z feed GET /AutoByteus-99.0.0-arm64-mac.zip.blockmap
+2026-11-01T19:48:54.903Z feed GET /AutoByteus-99.0.0-arm64-mac.zip
+2026-11-01T19:50:09.560Z node GET /rest/remote-access/status ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:50:09.565Z node GET /rest/remote-access/status ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:50:09.567Z node GET /rest/node-update?target=1.5.11-beta.10 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:50:09.568Z node POST /graphql ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:50:09.570Z node POST /graphql ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:50:25.632Z node GET /rest/node-update?target=1.5.11-beta.10 ua=node
+2026-11-01T19:50:25.637Z node POST /rest/node-update ua=node
+2026-11-01T19:50:25.637Z node POST body={"version":"1.5.11-beta.10"}
+2026-11-01T19:50:35.640Z node GET /rest/node-update?target=1.5.11-beta.10 ua=node
+2026-11-01T19:50:45.642Z node GET /rest/node-update?target=1.5.11-beta.10 ua=node
+2026-11-01T19:50:55.644Z node GET /rest/node-update?target=1.5.11-beta.10 ua=node

@@ -1,0 +1,12 @@
+Check: IMP-15
+Command: pnpm -C autobyteus-web typecheck; test:nuxt --run; guards; codegen:check
+Commit: 9e28c019b6
+Environment: macOS arm64, Node 22, pnpm 10.28.2 (the worktree, not a clean clone)
+Date: 2026-11-02
+
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+ Test Files  686 passed (686)
+      Tests  5013 passed | 2 skipped (5015)
+exit 0
+guards and codegen:check: passed (autobyteus-web/generated/graphql.ts is current.)

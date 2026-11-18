@@ -1,0 +1,14 @@
+# R4-05 phone probe on the merged build: pnpm build:mobile-web; node tests/e2e/mobile-shell-probe.mjs --cases=MSP-67,MSP-59, then --cases=MSP-67,MSP-63 (final MSP-67)
+[mobile-shell] MSP-59 …
+[mobile-shell] MSP-59 Pass
+[mobile-shell] MSP-67 …
+[mobile-shell] MSP-67 Pass
+mobile-shell probe: Pass
+[mobile-shell] MSP-67 …
+[mobile-shell] MSP-67 Pass
+[mobile-shell] MSP-63 …
+[mobile-shell] MSP-63 Pass
+mobile-shell probe: Pass
+# MSP-67 extended: ⋮ → Settings (autobyteus-458) while the task runs. First run read the screen before its rows loaded (no stop-run icon yet); final run waits for 458's stop-run icon:
+{"result": "Pass", "seconds": 37.8, "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500", "stop": 0, "send": 1, "settings": {"status": "Background task running", "dotClass": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500", "runtime": "Choose", "runStop": true}, "row": {"status": "background", "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50", "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"}, "after": "Idle"}
+# Observed, not raised: the stack run's Runtime row reads 'Choose' (its saved model gemini-3.8-flash-low is not on the scripted runtime's list); MSP-63's own run reads 'Antigravity CLI'. 458's rows, not part 2.

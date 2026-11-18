@@ -22,11 +22,19 @@ class RunHistoryItemObject {
   @Field(() => String)
   runId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => String)
   summary!: string;
 
   @Field(() => String)
   createdAt!: string;
+
+  /** When the run was last active, its delegated work included; `createdAt` before any (workspace-tree-vs-chooser DS-005). */
+  @Field(() => String)
+  lastActivityAt!: string;
 
   @Field(() => String, { nullable: true })
   archivedAt?: string | null;
@@ -34,6 +42,7 @@ class RunHistoryItemObject {
   @Field(() => String, { nullable: true })
   terminatedAt?: string | null;
 
+  /** Base's flag (SR-068): the run delegated at least once; its row's stored flag (contract §3.5). */
   @Field(() => Boolean)
   hasCollaboration!: boolean;
 
@@ -51,7 +60,7 @@ class RunHistoryItemObject {
 }
 
 @ObjectType()
-class RunHistoryAgentGroupObject {
+export class RunHistoryAgentGroupObject {
   @Field(() => String)
   agentDefinitionId!: string;
 
@@ -88,6 +97,10 @@ class WorkspaceHistoryTeamRunItemObject {
   @Field(() => String)
   teamRunId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => String)
   teamDefinitionId!: string;
 
@@ -106,6 +119,10 @@ class WorkspaceHistoryTeamRunItemObject {
   @Field(() => String)
   createdAt!: string;
 
+  /** When the run was last active, its delegated work included; `createdAt` before any (workspace-tree-vs-chooser DS-005). */
+  @Field(() => String)
+  lastActivityAt!: string;
+
   @Field(() => String, { nullable: true })
   archivedAt?: string | null;
 
@@ -123,7 +140,7 @@ class WorkspaceHistoryTeamRunItemObject {
 }
 
 @ObjectType("WorkspaceHistoryTeamDefinitionObject")
-class WorkspaceHistoryTeamDefinitionObject {
+export class WorkspaceHistoryTeamDefinitionObject {
   @Field(() => String)
   teamDefinitionId!: string;
 
@@ -214,6 +231,10 @@ class RunResumeConfigPayload {
   @Field(() => String)
   runId!: string;
 
+  /** The run's name (SR-091): a delegated run's slot; null for a run nobody delegated, which its definition names. */
+  @Field(() => String, { nullable: true })
+  displayName!: string | null;
+
   @Field(() => Boolean)
   isActive!: boolean;
 
@@ -262,9 +283,10 @@ export class RunHistoryResolver {
   private agentRunProjectionService = getAgentRunViewProjectionService();
   private runModelConfigService = getStudioRunModelConfigService();
 
+  /** Omitted: the newest 6 runs per agent and folder; an explicit `null`: every run (the Runs view's window). */
   @Query(() => [WorkspaceRunHistoryGroupObject])
   async listWorkspaceRunHistory(
-    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+    @Arg("limitPerAgent", () => Int, { nullable: true, defaultValue: 6 }) limitPerAgent: number | null,
   ): Promise<WorkspaceRunHistoryGroupObject[]> {
     return this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent);
   }
@@ -272,16 +294,14 @@ export class RunHistoryResolver {
   @Query(() => WorkspaceRunHistoryGroupObject)
   async workspaceRunHistory(
     @Arg("workspaceId", () => String) workspaceId: string,
-    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+    /** As `listWorkspaceRunHistory`: an explicit `null` keeps every run. */
+    @Arg("limitPerAgent", () => Int, { nullable: true, defaultValue: 6 }) limitPerAgent: number | null,
   ): Promise<WorkspaceRunHistoryGroupObject> {
     const workspaceRootPath = await this.workspaceManager.getWorkspaceRootPathForHistory(workspaceId);
     if (!workspaceRootPath) {
       throw new Error(`Workspace '${workspaceId}' was not found or is not visible for run history.`);
     }
-    return this.workspaceRunHistoryService.getWorkspaceRunHistory(
-      workspaceRootPath,
-      limitPerAgent,
-    );
+    return this.workspaceRunHistoryService.getWorkspaceRunHistory(workspaceRootPath, limitPerAgent);
   }
 
   @Query(() => RunProjectionPayload)

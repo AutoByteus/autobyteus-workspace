@@ -1,0 +1,20 @@
+# IMP-08 web unit and component suite
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: c17490a004 + uncommitted D-17 (committed as 8aa5647d58 with the 4 mock fixes)
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-07
+      Tests  13 failed | 5339 passed | 2 skipped (5354)
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > previews an alternate selection and saves only the sparse current launch override
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > reopens a saved Claude exact-default Agent resource through the real slot editor
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > shows nothing for the runtime of a baseline leaf without one, and the name in the effective configuration (autobyteus-320, CRR-002 FO-003)
+ FAIL  components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts > ApplicationLaunchSetupPanel > uses DELETE for explicit Reset and restores the package-selected view
+ FAIL  components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Messages > lists "From <name>" with the text and its file references; a reference opens full screen and ← closes it first
+ FAIL  components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts > selected background inspection panel > discards delayed responses after a node selection change
+ FAIL  components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts > selected background inspection panel > discards delayed responses after a run selection change
+ FAIL  components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts > selected background inspection panel > keeps last successful snapshot, not stream rows, on a later failure and replaces instance history
+ FAIL  components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts > selected background inspection panel > uses successful snapshots exclusively, renders unknown and numeric exit without raw content expansion
+ FAIL  components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > preserves edited Source form values and pasted tokens when status refresh changes store status
+ FAIL  components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > shows latest sync error before stale success without legacy success metrics or global info
+ FAIL  components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > uses draft connection-test mode when a draft token is present
+ FAIL  components/settings/__tests__/MemorySyncCard.spec.ts > MemorySyncCard > uses saved connection-test mode when the token field is blank even if draft identity fields changed
+ Test Files  4 failed | 713 passed (717)

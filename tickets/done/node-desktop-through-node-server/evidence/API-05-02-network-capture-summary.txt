@@ -1,0 +1,36 @@
+# Case: API-05 — network capture of the node window (target 68DA16FC…) from before the VNC Viewer tab opened to the end of step 09
+# Steps: node cdp.mjs <ws pkg> 62503 netcapture 68DA16FC9A2245ADBC9134A9BEF620B1 <jsonl> (CDP Network.enable; every Network.requestWillBeSent and Network.webSocketCreated), stopped after step 09; summarised here; data: URLs are page-local (no network)
+# Commit: 952bc1fcd0; node backend http://192.168.2.158:62053 (published on the LAN address only); app iso-62503-d542
+# Date: 2026-11-06
+
+request/websocket events: 1911; first 2026-11-06T17:51:46.186Z; last 2026-11-06T17:58:06.201Z
+
+count  kind       origin                            path
+ 1648  request    data: (page-local)                
+  159  request    http://192.168.2.158:62053        /graphql
+   80  request    http://192.168.2.158:62053        /rest
+    3  request    http://192.168.2.158:62053        /rest/node-desktop
+    3  request    https://api.iconify.design        /heroicons.json
+   11  websocket  ws://192.168.2.158:62053          /ws/node-desktop
+    3  websocket  ws://192.168.2.158:62053          /ws/agent-package-definitions
+    3  websocket  ws://192.168.2.158:62053          /ws/update-notifications
+    1  websocket  ws://192.168.2.158:62053          /ws/terminal/<id>
+
+node-desktop traffic (all):
+  2026-11-06T17:51:55.927Z  request    http://192.168.2.158:62053/rest/node-desktop
+  2026-11-06T17:51:55.933Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:52:23.273Z  request    http://192.168.2.158:62053/rest/node-desktop
+  2026-11-06T17:52:23.283Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:52:53.964Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=control
+  2026-11-06T17:54:02.944Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:55:16.929Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=control
+  2026-11-06T17:56:02.614Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:56:25.963Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:56:30.939Z  request    http://192.168.2.158:62053/rest/node-desktop
+  2026-11-06T17:56:30.944Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:57:17.611Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:57:46.354Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+  2026-11-06T17:57:52.479Z  websocket  ws://192.168.2.158:62053/ws/node-desktop?mode=view
+
+hosts of node-desktop traffic: ['192.168.2.158:62053']
+other network hosts contacted by the node window: ['api.iconify.design']

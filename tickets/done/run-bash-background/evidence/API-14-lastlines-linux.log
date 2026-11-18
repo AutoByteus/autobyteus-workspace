@@ -1,0 +1,40 @@
+# API-14 last-lines ordering probe (linux): reported lastLines vs the output file tail, 4 variants x 50 tasks, 10 at a time
+# Command: docker run --rm -v "$PWD:$PWD:ro" -w "$PWD" node:22-bookworm node tickets/in-progress/run-bash-background/evidence/API-14-lastlines-order-probe.mjs 50
+# Commit: code ddd594d07b (autobyteus-ts/dist built from it); 2026-11-10
+
+{
+ "platform": "linux 6.12.54-linuxkit",
+ "bash": "5.2.15(1)-release",
+ "perVariant": 50,
+ "variants": {
+  "background, last line on stdout": {
+   "tasks": 50,
+   "lastLineMissing": 0,
+   "differsFromFileTail": 0,
+   "noEnd": 0,
+   "examples": []
+  },
+  "background, burst then last line on stdout": {
+   "tasks": 50,
+   "lastLineMissing": 0,
+   "differsFromFileTail": 0,
+   "noEnd": 0,
+   "examples": []
+  },
+  "background, last line on stderr": {
+   "tasks": 50,
+   "lastLineMissing": 0,
+   "differsFromFileTail": 0,
+   "noEnd": 0,
+   "examples": []
+  },
+  "& job, burst then last line on stdout": {
+   "tasks": 50,
+   "lastLineMissing": 0,
+   "differsFromFileTail": 0,
+   "noEnd": 0,
+   "examples": []
+  }
+ },
+ "result": "Pass"
+}

@@ -1,0 +1,5 @@
+# DEL-01 server typecheck + unit | integrated beda3ed8c2 (origin/personal 034bfe51ab)
+typecheck=0
+ Test Files  814 passed | 4 skipped (818)
+      Tests  6762 passed | 7 skipped (6769)
+server-unit exit=0

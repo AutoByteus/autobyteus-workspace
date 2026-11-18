@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:token-statistics-ui /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/token-statistics-ui-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/token-statistics-ui
+
+Fail: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/token-statistics-ui/token-statistics-browser-result.json
+ ELIFECYCLE  Command failed with exit code 1.

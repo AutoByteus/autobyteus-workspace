@@ -1,0 +1,539 @@
+{
+  "mode": "real-stack-browser",
+  "label": "current-unbroken",
+  "startedAt": "2026-11-01T08:38:41.322Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less",
+  "stackHead": "efd28d5c4a",
+  "probeHead": "efd28d5c4a",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    6.4,
+    14.9,
+    18.4
+  ],
+  "cases": {
+    "S-API": {
+      "result": "Not Run (filtered)",
+      "description": "Server timings over HTTP: hub view, hub conversation, a copy projection, a copy artifact list (generic and scoped)"
+    },
+    "S-001": {
+      "result": "Not Run (filtered)",
+      "description": "Stopped hub cold sample 1: T-1, T-2, T-3 with request counts; reopen without refetch"
+    },
+    "S-002": {
+      "result": "Not Run (filtered)",
+      "description": "Stopped hub cold sample 2: T-1, T-2, T-3 with request counts; reopen without refetch"
+    },
+    "S-003": {
+      "result": "Not Run (filtered)",
+      "description": "Stopped hub cold sample 3: T-1, T-2, T-3 with request counts; reopen without refetch"
+    },
+    "S-ROWS": {
+      "result": "Not Run (filtered)",
+      "description": "Every Team row and every member row with statuses and Task summaries (AC-005)"
+    },
+    "L-001": {
+      "result": "Not Run (filtered)",
+      "description": "Running large hub: hub row → copy rows and hub click → conversation (AC-003 running, QR-001/QR-002)"
+    },
+    "L-002": {
+      "result": "Not Run (filtered)",
+      "description": "New delegation while one copy is open: new row, opened copy keeps its conversation, exactly one projection and one artifact request (AC-007, AC-006)"
+    },
+    "L-003": {
+      "result": "Not Run (filtered)",
+      "description": "Composer send to the opened copy of the running hub: shown, delivered, answered and stored (AC-006)"
+    },
+    "L-004": {
+      "result": "Not Run (filtered)",
+      "description": "Queued input of a busy copy (sent by a second client) survives a reload and shows when the copy is opened (AC-006, Assumption 2)"
+    },
+    "L-008": {
+      "result": "Not Run (filtered)",
+      "description": "Status of a copy woken by a composer send into a held turn: row, header and server agree (REQ-005, REQ-006)"
+    },
+    "L-009": {
+      "result": "Not Run (filtered)",
+      "description": "Opening a copy while it works through a burst of turns: loads (or retries on reselect) and ends with its complete conversation (CAND-003 residual)"
+    },
+    "L-010": {
+      "result": "Pass",
+      "description": "Opening a copy whose stored conversation is several MB: shown within QR-002 with one projection and one artifact request",
+      "ms": 100450,
+      "load": [
+        7.3,
+        12.4,
+        17
+      ],
+      "details": {
+        "clickToStoreLoadedMs": 87013.90000009537,
+        "clickToLastMessageInDomMs": 87016.60000002384,
+        "projectionBytes": 2461904,
+        "projectionServerMs": 26.3,
+        "ops": {
+          "GetAgentRunCollaborationMemberProjection": 1,
+          "GetAgentRunCollaborationMemberFileChanges": 1
+        },
+        "state": {
+          "selected": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114",
+          "child": "code_reviewer_a872e4c4749d4f57b7e5826ea640217f",
+          "target": "code_reviewer_a872e4c4749d4f57b7e5826ea640217f",
+          "conversationId": "code_reviewer_a872e4c4749d4f57b7e5826ea640217f",
+          "messageCount": 40,
+          "pending": [],
+          "error": null,
+          "phase": "live",
+          "rows": 56,
+          "teams": 50
+        }
+      }
+    },
+    "L-011": {
+      "result": "Not Run (filtered)",
+      "description": "A copy whose load fails (network error on its projection) is logged with its identity, stays not loaded, other copies open, reopening loads it (AC-004 alternate)"
+    },
+    "L-005": {
+      "result": "Not Run (filtered)",
+      "description": "Copy row of a hub that is not the selected run: at most two loads, ends loaded (MP-001, R-004)"
+    },
+    "L-006": {
+      "result": "Not Run (filtered)",
+      "description": "Project Task locate on the large hub selects the worker within the 5 s navigation wait (FU-4)"
+    },
+    "L-007": {
+      "result": "Not Run (filtered)",
+      "description": "Composer send to an opened copy of a stopped hub wakes the copy, which answers; stored (AC-006, REQ-006)"
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "frontend": {
+      "pid": 31151,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 31124,
+      "status": "terminated",
+      "exit": 0
+    },
+    "runRootRemoved": true,
+    "backendPortClosed": true,
+    "frontendPortClosed": true
+  },
+  "failures": [],
+  "setup": {
+    "hostId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114",
+    "otherHostId": "large_hub_manager_probe_9575eded03ea4358b1bf3b57f099aaa5",
+    "shape": {
+      "teams": 50,
+      "childAgents": 300,
+      "unrelatedTeamRuns": 300,
+      "hubMessageLogBytes": 2614147,
+      "hubViewBytes": 2790524,
+      "memoryBytes": 17974566,
+      "memoryFolders": {
+        "agent_teams": 352,
+        "agents": 2,
+        "run_history_index.json": 0,
+        "team_run_history_index.json": 0
+      }
+    },
+    "markers": [
+      {
+        "index": 2,
+        "teamRunId": "large_hub_engineering_team_2257cb9b32ce4f55b1e76f49e529c9e2",
+        "taskId": "project_task_5583c6a3-7d33-4b7d-b6fa-b89c0bc3d8e7",
+        "address": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_c3d47f109d5b457797e0cf7353dfc6d1",
+        "marker": "Persisted marker for copy 2"
+      },
+      {
+        "index": 3,
+        "teamRunId": "large_hub_engineering_team_aad4e0fe2c474c5aa1cc733e5ea57240",
+        "taskId": "project_task_7d6247aa-4a78-42de-a95d-68d28f1ea784",
+        "address": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_bc30bb3103d142d193317861a1627b36",
+        "marker": "Persisted marker for copy 3"
+      }
+    ]
+  },
+  "browser": "156.0.8078.74",
+  "result": "Pass",
+  "errors": [],
+  "warnings": [],
+  "requests": [
+    {
+      "at": 1793522349316,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1793522349316,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1793522349535,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522349538,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522349538,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522354313,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1793522354314,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1793522355584,
+      "op": "GetUpdateNotifications",
+      "v": {}
+    },
+    {
+      "at": 1793522355588,
+      "op": "GetUpdateAutomationSettings",
+      "v": {}
+    },
+    {
+      "at": 1793522355619,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1793522355626,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1793522355627,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1793522355628,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1793522355628,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1793522355629,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1793522355634,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1793522355635,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1793522355776,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522355776,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522355776,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522355851,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_3d8593936b43c43459642b3181ac9bb5cba65bceaf2b230536b5110cea3a4182"
+      }
+    },
+    {
+      "at": 1793522355931,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_9575eded03ea4358b1bf3b57f099aaa5"
+      }
+    },
+    {
+      "at": 1793522355931,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522356009,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_982c0dfcb2664e4298f05fe3a79acbc6",
+          "large_hub_engineering_team_286648f396c94d35ac183c87d4d1d8af",
+          "large_hub_engineering_team_2257cb9b32ce4f55b1e76f49e529c9e2",
+          "large_hub_engineering_team_aad4e0fe2c474c5aa1cc733e5ea57240",
+          "large_hub_engineering_team_06f16d63b7f0498fa8668dc33d609dc2",
+          "large_hub_engineering_team_295cebe21d834d24bddad5b68ce8a9a0",
+          "large_hub_engineering_team_ec22a46d73104adc9c88e38a8a698f3b",
+          "large_hub_engineering_team_c1997718ea96439bb08fd5a983d40e39",
+          "large_hub_engineering_team_a96f37a8e56a4266bc1514153f5ce238",
+          "large_hub_engineering_team_d54ed44f76914377a0891b86d8f8561c",
+          "large_hub_engineering_team_1e6366d9d589418198f417c2cdc03cd8",
+          "large_hub_engineering_team_93051b17958449d28383378a5ccee596",
+          "large_hub_engineering_team_15cf8f051d7e4469bb82139069de53b4",
+          "large_hub_engineering_team_a66603f8b05c43d39d79a68cbeaa4316",
+          "large_hub_engineering_team_87926a20de1e4f2cac932ce97871d4f0",
+          "large_hub_engineering_team_8bf56086e8004779b12b760256bbe90e",
+          "large_hub_engineering_team_bc98ea6e95454be182d052ec621c2a26",
+          "large_hub_engineering_team_2a9c33504d9447718bcba2c5ff706f72",
+          "large_hub_engineering_team_12e1a0dacb574cf1bce2b67835214554",
+          "large_hub_engineering_team_ef94cbc9ed054311ba51e2e547306177",
+          "large_hub_engineering_team_939cf7d0e7ee4e8eaf37cf4b0a6b02c3",
+          "large_hub_engineering_team_ebd4a6242e1546c69fcf2e0400a137f9",
+          "large_hub_engineering_team_19554542447c44bdbfec548c020f3fd8",
+          "large_hub_engineering_team_213991e8c97840daa087427b14ad1a37",
+          "large_hub_engineering_team_553b4924e06842caae7b0df1cdd6e9c8",
+          "large_hub_engineering_team_8057559e19854e79b3c191b50c5791a5",
+          "large_hub_engineering_team_4eb63e3efdf944dcb83aa85b66a99d79",
+          "large_hub_engineering_team_ba4b36bb66de4a338e0b86da14d070d5",
+          "large_hub_engineering_team_655431bfc2c14d69adbbd76aacbff627",
+          "large_hub_engineering_team_f3afc588c8ab4e0989b02239a0f93ae6",
+          "large_hub_engineering_team_1b275a31a0d04467b43166913c20e604",
+          "large_hub_engineering_team_bb0c05e354c34f8fa91ea79ddce30c03",
+          "large_hub_engineering_team_4e45ddaf1ce44f9f95c702620b13fad5",
+          "large_hub_engineering_team_7df47e8ed9bf408baa55dfdde9442caa",
+          "large_hub_engineering_team_556a5ae9137942349ded868cb8dbb6e6",
+          "large_hub_engineering_team_74b68a89ab564895b650614f3e62d2ed",
+          "large_hub_engineering_team_32c8189cc43d443b80c0d52524a6cb5e",
+          "large_hub_engineering_team_10965ba6838740e9a38233bd03eb6c5d",
+          "large_hub_engineering_team_02ee8f1109cc4ec0b85daadc0261a8e1",
+          "large_hub_engineering_team_a822dcb495854509a7dc20a73c344e61",
+          "large_hub_engineering_team_f250f7007ab34b9294304c48d20ce9ca",
+          "large_hub_engineering_team_3af29fecbb514045a2a57143b064de70",
+          "large_hub_engineering_team_df6eff3363fa411abb4f18b0423bd79e",
+          "large_hub_engineering_team_42c697bd1de04cdf98a618e46ed07119",
+          "large_hub_engineering_team_51a7e60444f24d00846f50b6d18f74b4",
+          "large_hub_engineering_team_a939f2d400c44a4ca2d11a8b81e0a1e2",
+          "large_hub_engineering_team_22cb162a34544f8c9320c24448acbbeb",
+          "large_hub_engineering_team_15397a7bb96746daa06c18852bd02e65",
+          "large_hub_engineering_team_181eab38b83642a88c1e53cdfa8174de",
+          "large_hub_engineering_team_30ab68c68f97420c958d7c48b228ce3d"
+        ]
+      }
+    },
+    {
+      "at": 1793522356027,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_dcf1c459116c4b549a1d2433d3b566b7",
+          "large_hub_engineering_team_804a976207af41df8b755d1629335abd"
+        ]
+      }
+    },
+    {
+      "at": 1793522356028,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_982c0dfcb2664e4298f05fe3a79acbc6",
+          "large_hub_engineering_team_286648f396c94d35ac183c87d4d1d8af",
+          "large_hub_engineering_team_2257cb9b32ce4f55b1e76f49e529c9e2",
+          "large_hub_engineering_team_aad4e0fe2c474c5aa1cc733e5ea57240",
+          "large_hub_engineering_team_06f16d63b7f0498fa8668dc33d609dc2",
+          "large_hub_engineering_team_295cebe21d834d24bddad5b68ce8a9a0",
+          "large_hub_engineering_team_ec22a46d73104adc9c88e38a8a698f3b",
+          "large_hub_engineering_team_c1997718ea96439bb08fd5a983d40e39",
+          "large_hub_engineering_team_a96f37a8e56a4266bc1514153f5ce238",
+          "large_hub_engineering_team_d54ed44f76914377a0891b86d8f8561c",
+          "large_hub_engineering_team_1e6366d9d589418198f417c2cdc03cd8",
+          "large_hub_engineering_team_93051b17958449d28383378a5ccee596",
+          "large_hub_engineering_team_15cf8f051d7e4469bb82139069de53b4",
+          "large_hub_engineering_team_a66603f8b05c43d39d79a68cbeaa4316",
+          "large_hub_engineering_team_87926a20de1e4f2cac932ce97871d4f0",
+          "large_hub_engineering_team_8bf56086e8004779b12b760256bbe90e",
+          "large_hub_engineering_team_bc98ea6e95454be182d052ec621c2a26",
+          "large_hub_engineering_team_2a9c33504d9447718bcba2c5ff706f72",
+          "large_hub_engineering_team_12e1a0dacb574cf1bce2b67835214554",
+          "large_hub_engineering_team_ef94cbc9ed054311ba51e2e547306177",
+          "large_hub_engineering_team_939cf7d0e7ee4e8eaf37cf4b0a6b02c3",
+          "large_hub_engineering_team_ebd4a6242e1546c69fcf2e0400a137f9",
+          "large_hub_engineering_team_19554542447c44bdbfec548c020f3fd8",
+          "large_hub_engineering_team_213991e8c97840daa087427b14ad1a37",
+          "large_hub_engineering_team_553b4924e06842caae7b0df1cdd6e9c8",
+          "large_hub_engineering_team_8057559e19854e79b3c191b50c5791a5",
+          "large_hub_engineering_team_4eb63e3efdf944dcb83aa85b66a99d79",
+          "large_hub_engineering_team_ba4b36bb66de4a338e0b86da14d070d5",
+          "large_hub_engineering_team_655431bfc2c14d69adbbd76aacbff627",
+          "large_hub_engineering_team_f3afc588c8ab4e0989b02239a0f93ae6",
+          "large_hub_engineering_team_1b275a31a0d04467b43166913c20e604",
+          "large_hub_engineering_team_bb0c05e354c34f8fa91ea79ddce30c03",
+          "large_hub_engineering_team_4e45ddaf1ce44f9f95c702620b13fad5",
+          "large_hub_engineering_team_7df47e8ed9bf408baa55dfdde9442caa",
+          "large_hub_engineering_team_556a5ae9137942349ded868cb8dbb6e6",
+          "large_hub_engineering_team_74b68a89ab564895b650614f3e62d2ed",
+          "large_hub_engineering_team_32c8189cc43d443b80c0d52524a6cb5e",
+          "large_hub_engineering_team_10965ba6838740e9a38233bd03eb6c5d",
+          "large_hub_engineering_team_02ee8f1109cc4ec0b85daadc0261a8e1",
+          "large_hub_engineering_team_a822dcb495854509a7dc20a73c344e61",
+          "large_hub_engineering_team_f250f7007ab34b9294304c48d20ce9ca",
+          "large_hub_engineering_team_3af29fecbb514045a2a57143b064de70",
+          "large_hub_engineering_team_df6eff3363fa411abb4f18b0423bd79e",
+          "large_hub_engineering_team_42c697bd1de04cdf98a618e46ed07119",
+          "large_hub_engineering_team_51a7e60444f24d00846f50b6d18f74b4",
+          "large_hub_engineering_team_a939f2d400c44a4ca2d11a8b81e0a1e2",
+          "large_hub_engineering_team_22cb162a34544f8c9320c24448acbbeb",
+          "large_hub_engineering_team_15397a7bb96746daa06c18852bd02e65",
+          "large_hub_engineering_team_181eab38b83642a88c1e53cdfa8174de",
+          "large_hub_engineering_team_30ab68c68f97420c958d7c48b228ce3d",
+          "large_hub_engineering_team_dcf1c459116c4b549a1d2433d3b566b7",
+          "large_hub_engineering_team_804a976207af41df8b755d1629335abd"
+        ]
+      }
+    },
+    {
+      "at": 1793522356231,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522356231,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522356231,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522356620,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1793522357098,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1793522357907,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_a872e4c4749d4f57b7e5826ea640217f"
+      }
+    },
+    {
+      "at": 1793522357907,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114",
+        "memberAddress": "/large_hub_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_a872e4c4749d4f57b7e5826ea640217f"
+      }
+    },
+    {
+      "at": 1793522357907,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522357907,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522357907,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_246a3f0bf0a64d769ad8dbd2d81f3114"
+      }
+    },
+    {
+      "at": 1793522444926,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1793522444926,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1793522445810,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1793522445811,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    }
+  ],
+  "loadAtEnd": [
+    7.3,
+    12.4,
+    17
+  ]
+}

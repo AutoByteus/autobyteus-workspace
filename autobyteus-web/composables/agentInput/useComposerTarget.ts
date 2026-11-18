@@ -1,11 +1,10 @@
 import { computed, type ComputedRef } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 import { resolveRunMentionScope, type RunMentionScope } from '~/composables/agentInput/runMentionScope';
 import {
-  buildAgentCollaborationMemberDraftContextFileOwner,
   buildAgentDraftContextFileOwner,
   buildOrgMemberDraftContextFileOwner,
   buildTeamMemberDraftContextFileOwner,
@@ -37,6 +36,11 @@ export interface ComposerTarget {
   interrupt?(): Promise<void> | void;
 }
 
+/**
+ * The owner of the composer's draft uploads: the run it sends to (autobyteus-461 rule 2, CR-461-106), as the target's read
+ * subject names it, in whichever view it is shown. Its own send finalizes the drafts from that owner: an agent run's,
+ * a team run's member's, or an org run's member's. A run on another node takes no uploads (its files stay there).
+ */
 const resolveDraftOwner = (
   target: ActiveAgentWorkspaceTarget,
 ): DraftContextFileOwnerDescriptor | null => {
@@ -44,17 +48,20 @@ const resolveDraftOwner = (
   // retained task/standalone read-only targets do not acquire upload authority.
   if (target.access === 'read_only' && target.kind !== 'agent_org_direct_agent'
     && target.kind !== 'agent_org_team_member') return null;
-  if ('root' in target) return buildOrgMemberDraftContextFileOwner(target.root.orgRunId, target.context.state.runId);
-  if ('host' in target) return buildAgentCollaborationMemberDraftContextFileOwner(target.host.hostRunId, target.context.state.runId);
-  if (target.kind === 'standalone_agent') return buildAgentDraftContextFileOwner(target.context.state.runId);
-  return buildTeamMemberDraftContextFileOwner(target.team.rootRunId, target.team.focusedMemberAddress);
+  const subject = target.browse;
+  switch (subject.kind) {
+    case 'run': return buildAgentDraftContextFileOwner(subject.runId);
+    case 'teamMember': return subject.memberAddress ? buildTeamMemberDraftContextFileOwner(subject.teamRunId, subject.memberAddress) : null;
+    case 'agentOrgMember': return buildOrgMemberDraftContextFileOwner(subject.orgRunId, subject.agentRunId);
+    case 'peerRun': return null;
+  }
 };
 
 /** The active-context composer target for run views (standalone agent, team member, org member). */
 export function useComposerTarget(): ComputedRef<ComposerTarget | null> {
   const activeContextStore = useActiveContextStore();
 
-  const remoteRuns = useRemoteRunsStore();
+  const trees = useRunTreeStore();
   return computed<ComposerTarget | null>(() => {
     const target = activeContextStore.activeWorkspaceTarget;
     if (!target) {
@@ -66,7 +73,7 @@ export function useComposerTarget(): ComputedRef<ComposerTarget | null> {
       draftOwner: resolveDraftOwner(target),
       access: target.access === 'read_only' ? 'read_only' : 'live',
       // autobyteus-278: `@` brings units into a run on this node; a run another node runs takes no `@`.
-      mentionScope: remoteRuns.runOfAgentRun(target.context.state.runId) ? null : resolveRunMentionScope(target),
+      mentionScope: trees.peerRunOf(target.context.state.runId) ? null : resolveRunMentionScope(target),
       send: () => activeContextStore.send(),
       interrupt: () => activeContextStore.interruptGeneration(),
     });

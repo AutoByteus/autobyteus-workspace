@@ -1,0 +1,298 @@
+{
+  "mode": "measure",
+  "label": "base",
+  "startedAt": "2026-11-08T19:47:14.570Z",
+  "stackRoot": "/private/tmp/abtest437r2/base-wt",
+  "stackHead": "b690a5dfdb",
+  "probeHead": "8cac59f2d4",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    89.3,
+    94.7,
+    84.7
+  ],
+  "budgetMs": 250,
+  "checks": {
+    "RB-C1": {
+      "result": "Pass",
+      "description": "window null returns every seeded run (Agent, Team, Org)",
+      "details": {
+        "agentItems": 40,
+        "teamItems": 200,
+        "orgItems": 10
+      }
+    },
+    "RB-C2": {
+      "result": "Pass",
+      "description": "window 6 returns the newest 6 runs per agent and folder, and every Team and Org run",
+      "details": [
+        {
+          "folder": "agents-main",
+          "agent": "budget-main-agent",
+          "listed": 6,
+          "stored": 10
+        },
+        {
+          "folder": "agents-side",
+          "agent": "budget-main-agent",
+          "listed": 6,
+          "stored": 10
+        },
+        {
+          "folder": "agents-side",
+          "agent": "budget-side-agent",
+          "listed": 6,
+          "stored": 12
+        },
+        {
+          "folder": "agents-third",
+          "agent": "budget-third-agent",
+          "listed": 6,
+          "stored": 8
+        }
+      ]
+    },
+    "RB-C3": {
+      "result": "Pass",
+      "description": "per-folder workspaceRunHistory with null is complete",
+      "details": {
+        "folder": "agents-side",
+        "listed": 22,
+        "stored": 22
+      }
+    },
+    "RB-C4": {
+      "result": "Pass",
+      "description": "every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn",
+      "details": {
+        "items": 250,
+        "byKind": {
+          "agent": 40,
+          "team": 200,
+          "org": 10
+        }
+      }
+    },
+    "RB-B1": {
+      "result": "Pass",
+      "description": "uncapped poll read (Runs view) p95 within 250 ms",
+      "details": {
+        "n": 40,
+        "p50": 150.7,
+        "p95": 174.7,
+        "max": 200.2,
+        "mean": 152.4
+      }
+    },
+    "RB-B2": {
+      "result": "Pass",
+      "description": "capped poll read (Workspaces view) p95 within 250 ms",
+      "details": {
+        "n": 40,
+        "p50": 147.4,
+        "p95": 168.8,
+        "max": 170.7,
+        "mean": 149.3
+      }
+    }
+  },
+  "cleanup": {
+    "backend": {
+      "pid": 19858,
+      "status": "terminated",
+      "exit": 0
+    },
+    "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-home-xhRWw2",
+    "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-sfs9Ib removed"
+  },
+  "failures": [],
+  "seedShape": {
+    "agentRuns": 40,
+    "teamRuns": 200,
+    "orgRuns": 10,
+    "teamMembers": 5,
+    "perAgent": {
+      "main": 20,
+      "side": 12,
+      "third": 8
+    }
+  },
+  "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-sfs9Ib",
+  "queryHasLastActivity": true,
+  "windows": {
+    "uncapped": {
+      "limitPerAgent": null,
+      "coldMs": 162.2,
+      "counts": {
+        "agentRuns": 40,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 931786,
+      "loadBefore": [
+        86,
+        93.9,
+        84.5
+      ],
+      "loadAfter": [
+        84.2,
+        93.3,
+        84.4
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 150.7,
+        "p95": 174.7,
+        "max": 200.2,
+        "mean": 152.4
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 145.3,
+        "p95": 169.5,
+        "max": 193.9,
+        "mean": 146.9
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 150.4,
+        "p95": 174.4,
+        "max": 199.9,
+        "mean": 152
+      },
+      "samplesMs": [
+        140.7,
+        136.1,
+        141.6,
+        179.5,
+        150.7,
+        152.4,
+        169.3,
+        160.2,
+        158.9,
+        174.7,
+        155.1,
+        154.3,
+        151,
+        147.7,
+        144,
+        145.7,
+        142.6,
+        146.5,
+        146.7,
+        143.9,
+        148.1,
+        146.9,
+        147,
+        159.3,
+        154.1,
+        152.3,
+        151.7,
+        151.5,
+        151.5,
+        136.5,
+        156.4,
+        140.6,
+        145.7,
+        140.7,
+        142.9,
+        169.5,
+        162.6,
+        155.5,
+        142.7,
+        200.2
+      ]
+    },
+    "capped": {
+      "limitPerAgent": 6,
+      "coldMs": 160.8,
+      "counts": {
+        "agentRuns": 24,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 925952,
+      "loadBefore": [
+        84.2,
+        93.3,
+        84.4
+      ],
+      "loadAfter": [
+        80.2,
+        91.9,
+        84.1
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 147.4,
+        "p95": 168.8,
+        "max": 170.7,
+        "mean": 149.3
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 142,
+        "p95": 162.3,
+        "max": 166.5,
+        "mean": 144.2
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 147,
+        "p95": 168.4,
+        "max": 170.3,
+        "mean": 148.9
+      },
+      "samplesMs": [
+        143.7,
+        136.4,
+        145.5,
+        152.4,
+        165.3,
+        147.4,
+        146.4,
+        144.2,
+        151.8,
+        145.5,
+        147.5,
+        157.4,
+        159.1,
+        144,
+        160.2,
+        134.8,
+        150.1,
+        138.7,
+        170.7,
+        142.3,
+        142.1,
+        137.9,
+        141.8,
+        141.5,
+        145.3,
+        145.3,
+        149,
+        147.4,
+        152.7,
+        150,
+        149.5,
+        150.7,
+        145.2,
+        146.9,
+        168.8,
+        152.6,
+        147.5,
+        169.1,
+        153.9,
+        152.9
+      ]
+    }
+  },
+  "completedAt": "2026-11-08T19:47:44.459Z",
+  "loadAtEnd": [
+    80.2,
+    91.9,
+    84.1
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "agent": {
+    "copies": {
+      "copyA": {
+        "teamRunId": "tdr_squad_ac4310_10dc17617f484ad78c769bf64ba3611f",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ac4310/lead",
+            "agentRunId": "tdr_worker_ac4310_ac65b083327540d9b08cf6bf5d8b76dd"
+          },
+          "mate": {
+            "address": "/tdr_squad_ac4310/mate",
+            "agentRunId": "tdr_worker_ac4310_d5000128db134bf2bc17d3f06f2f2565"
+          }
+        }
+      },
+      "copyB": {
+        "teamRunId": "tdr_squad_ac4310_d4644120c1fe4b6bb00176b0d85169ef",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ac4310/lead",
+            "agentRunId": "tdr_worker_ac4310_d13a95aa9bad473ab7cbb4b2a91274ee"
+          },
+          "mate": {
+            "address": "/tdr_squad_ac4310/mate",
+            "agentRunId": "tdr_worker_ac4310_88d476bd500444d9a47dde301720c9ed"
+          }
+        }
+      },
+      "copyC": {
+        "teamRunId": "tdr_squad_ac4310_958775b621994996ad63ea48c258047d",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ac4310/lead",
+            "agentRunId": "tdr_worker_ac4310_047b8ec99916498eb000a620c213959b"
+          },
+          "mate": {
+            "address": "/tdr_squad_ac4310/mate",
+            "agentRunId": "tdr_worker_ac4310_0627fdc524134d95b65dc6680107e4dc"
+          }
+        }
+      }
+    },
+    "timeline": [
+      [
+        "tdr001 write held",
+        13
+      ],
+      [
+        "tdr001 task closed",
+        64
+      ],
+      [
+        "tdr001 write released",
+        1565
+      ],
+      [
+        "tdr001 sender result",
+        1635
+      ]
+    ],
+    "tdr001": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "Error",
+          "code": null,
+          "message": "AgentRun input reservation '2' cannot be cancelled."
+        }
+      }
+    }
+  },
+  "team": {
+    "copies": {
+      "copyA": {
+        "teamRunId": "tdr_squad_ac4310_c6f3c7ea9a6046f3b161e72895de1d73",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ac4310/lead",
+            "agentRunId": "tdr_worker_ac4310_a40faeee844d4b5da4031d86c73dacde"
+          },
+          "mate": {
+            "address": "/tdr_squad_ac4310/mate",
+            "agentRunId": "tdr_worker_ac4310_b3120b035a394b979e383e6553eb212e"
+          }
+        }
+      },
+      "copyB": {
+        "teamRunId": "tdr_squad_ac4310_98f4e203c5844c29911145eecdf216aa",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ac4310/lead",
+            "agentRunId": "tdr_worker_ac4310_eb3b7ee197084adcab36a2d5434ab829"
+          },
+          "mate": {
+            "address": "/tdr_squad_ac4310/mate",
+            "agentRunId": "tdr_worker_ac4310_c98e449736ef428eb90c0b0dbf63a285"
+          }
+        }
+      },
+      "copyC": {
+        "teamRunId": "tdr_squad_ac4310_d4ea68b4a88642fd8a280e99cfbec0b1",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ac4310/lead",
+            "agentRunId": "tdr_worker_ac4310_5751edb88ea54aa0a9545f73571fbb04"
+          },
+          "mate": {
+            "address": "/tdr_squad_ac4310/mate",
+            "agentRunId": "tdr_worker_ac4310_36c961aa98614679a1469d346e2cc19e"
+          }
+        }
+      }
+    },
+    "timeline": [
+      [
+        "tdr001 write held",
+        40
+      ],
+      [
+        "tdr001 task closed",
+        93
+      ],
+      [
+        "tdr001 write released",
+        1595
+      ]
+    ]
+  },
+  "org": {
+    "copies": {
+      "copyA": {
+        "teamRunId": "tdr_squad_ac4310_d6e002a5e1c1473d9871a205f440f6d6",
+        "members": {
+          "lead": {
+            "address": "/squad/lead",
+            "agentRunId": "tdr_worker_ac4310_5ca5edd571264d88814ba4576e6b66b8"
+          },
+          "mate": {
+            "address": "/squad/mate",
+            "agentRunId": "tdr_worker_ac4310_0034adb640e240398d0c5aa2c45f46f1"
+          }
+        }
+      },
+      "copyB": {
+        "teamRunId": "tdr_squad_ac4310_964dab683772468a848f14e073c8b5cf",
+        "members": {
+          "lead": {
+            "address": "/squad/lead",
+            "agentRunId": "tdr_worker_ac4310_c4e6f6d562af4809a26eac9d26d70f26"
+          },
+          "mate": {
+            "address": "/squad/mate",
+            "agentRunId": "tdr_worker_ac4310_8f1bb681953e4c1b9da2fb2450953f89"
+          }
+        }
+      },
+      "copyC": {
+        "teamRunId": "tdr_squad_ac4310_b947201ee0434f128f3121279e2d11e5",
+        "members": {
+          "lead": {
+            "address": "/squad/lead",
+            "agentRunId": "tdr_worker_ac4310_0469c93fbc59430e9ab0610124ddced0"
+          },
+          "mate": {
+            "address": "/squad/mate",
+            "agentRunId": "tdr_worker_ac4310_af70a1654d5a49909b03152b397a5a84"
+          }
+        }
+      }
+    },
+    "timeline": [
+      [
+        "tdr001 write held",
+        10
+      ],
+      [
+        "tdr001 task closed",
+        77
+      ],
+      [
+        "tdr001 write released",
+        1579
+      ]
+    ]
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 2,
+    "leftoverProcesses": [],
+    "errors": [
+      "AssertionError: Agent team run not found.: expected false to be true // Object.is equality",
+      "AssertionError: Agent organization run not found.: expected false to be true // Object.is equality"
+    ]
+  }
+}

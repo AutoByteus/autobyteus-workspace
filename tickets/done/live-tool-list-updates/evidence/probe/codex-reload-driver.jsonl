@@ -1,0 +1,7 @@
+{"t":"2026-10-29T09:06:56.697Z","kind":"thread","threadId":"01a186e9-9126-7f20-a802-074503419425","variant":"open"}
+{"t":"2026-10-29T09:06:59.999Z","kind":"status","label":"after start","probeTools":["probe_alpha"]}
+{"t":"2026-10-29T09:07:00.023Z","kind":"control","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T09:07:03.974Z","kind":"status","label":"after list_changed","probeTools":["probe_beta","probe_alpha"]}
+{"t":"2026-10-29T09:07:04.004Z","kind":"reload","ok":true}
+{"t":"2026-10-29T09:07:08.950Z","kind":"status","label":"after reload","probeTools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T09:07:08.951Z","kind":"end"}

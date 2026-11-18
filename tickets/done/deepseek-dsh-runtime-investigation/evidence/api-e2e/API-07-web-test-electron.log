@@ -1,0 +1,105 @@
+# API-07 Electron main-process suite
+# Command: pnpm -C autobyteus-web test:electron
+# Commit: fddcff0f13 + baseline fix (web voice test timeout) in working tree
+# Env: macOS, Node v22.23.1
+# Date: 2026-11-06T08:47:16Z
+
+> autobyteus@1.5.12-beta.1 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web
+> vitest --config ./electron/vitest.config.ts
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/electron
+
+Downloading Electron binary...
+ ✓ __tests__/nodeRegistryStore.spec.ts (9 tests) 61ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts (17 tests) 114ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (12 tests) 132ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 98ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (12 tests) 10ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 136ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 153ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 169ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 20ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (14 tests) 84ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 94ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 119ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (13 tests) 4ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 98ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 8ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (7 tests) 22ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts (24 tests) 26ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 31ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 4ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts (3 tests) 20ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (5 tests) 19ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (16 tests) 1682ms
+   ✓ waits beyond 100s, notifies once, keeps the same child and bridge snapshot, then becomes ready once  437ms
+   ✓ retains genuine fatal failure once; delayed/late health and output cannot revive it  371ms
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 3ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 117ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 177ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts (5 tests) 7ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts (8 tests) 16ms
+stdout | server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+AC002 actual deadline receipt {"elapsedMs":1006,"pid":82679,"absent":true}
+
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts (6 tests) 452ms
+   ✓ nodeUpdateClient (C1) > gives up on a node that does not answer within the timeout (real fetch)  444ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 3ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 8ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 25ms
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 8ms
+ ✓ __tests__/logger.spec.ts (4 tests) 257ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 4ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (5 tests) 16ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 7ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 56ms
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 19ms
+ ✓ __tests__/preload.spec.ts (5 tests) 55ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 38ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 17ms
+ ✓ server/__tests__/serverProcessTree.spec.ts (5 tests) 71ms
+ ✓ server/__tests__/ServerForceStopTree.spec.ts (2 tests) 2013ms
+   ✓ force-stops a wedged server and its whole tree, leaving no process behind  2011ms
+ ✓ updater/__tests__/appUpdateAutomaticStore.spec.ts (4 tests) 31ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (2 tests) 3ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (2 tests) 31ms
+ ✓ browser/__tests__/browser-tab-observers.spec.ts (1 test) 4ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 6ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 97ms
+ ✓ browser/__tests__/register-browser-shell-ipc-handlers.spec.ts (2 tests) 3ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 20ms
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 2ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 2ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (3 tests) 442ms
+   ✓ reports real loopback conflict without killing listener; fresh retry succeeds  441ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 45ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 1ms
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 4495ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  3220ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  829ms
+   ✓ ManagedExtensionService > marks a broken installation as requiring attention  446ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts (11 tests) 4444ms
+   ✓ actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child  1009ms
+   ✓ actual advisory inspector faults > rejects over-32KiB output rather than publishing a truncated owner  320ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "" does not fabricate an owner  392ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "unstructured text" does not fabricate an owner  403ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p0\ncnode\n" does not fabricate an owner  531ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "pNaN\ncnode\n" does not fabricate an owner  408ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p9007199254740992\ncnode\n" does not fabricate an owner  400ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p12\ncnode\npbad\n" does not fabricate an owner  468ms
+   ✓ actual advisory inspector faults > discards racing/nonzero partial evidence, recovers fresh, then forgets vanished owners  475ms
+
+ Test Files  60 passed | 1 skipped (61)
+      Tests  407 passed | 1 skipped (408)
+   Start at  09:47:17
+   Duration  9.31s (transform 3.43s, setup 0ms, collect 13.02s, tests 16.10s, environment 39ms, prepare 8.23s)
+
+EXIT 0

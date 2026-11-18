@@ -1,0 +1,135 @@
+{
+  "runs_with_journals": 3734,
+  "runs_with_a_changed_file": 3084,
+  "files_after": 7527,
+  "files_before": 7527,
+  "entries_after": 647649,
+  "entries_before": 647649,
+  "entries_changed": 47676,
+  "files_changed": 6171,
+  "bytes_before": 1789511687,
+  "bytes_after": 1768052713,
+  "share_files_changed": 0.8198,
+  "entries_changed_by_rule": {
+    "browser": 16617,
+    "message sent": 13629,
+    "skill load": 4853,
+    "handoff rules": 4838,
+    "codex-only": 4434,
+    "project board": 1723,
+    "media": 1132,
+    "task handed over": 309,
+    "claude-only": 86,
+    "discovery/memory/artifacts/routing": 27,
+    "autobyteus-only": 23,
+    "other": 5
+  },
+  "files_changed_by_rule": {
+    "message sent": 5018,
+    "skill load": 3675,
+    "handoff rules": 2081,
+    "browser": 492,
+    "codex-only": 277,
+    "media": 64,
+    "project board": 60,
+    "task handed over": 50,
+    "claude-only": 25,
+    "discovery/memory/artifacts/routing": 18,
+    "autobyteus-only": 8,
+    "other": 3
+  },
+  "skill_loads_total": 4853,
+  "skill_loads_from_command_reads": 4172,
+  "command_lines_naming_SKILL_md_left": 7623,
+  "skill_names_top20": [
+    [
+      "api-e2e-engineer",
+      877
+    ],
+    [
+      "solution-designer",
+      800
+    ],
+    [
+      "delivery-engineer",
+      678
+    ],
+    [
+      "code-reviewer",
+      667
+    ],
+    [
+      "implementation-engineer",
+      555
+    ],
+    [
+      "architecture-reviewer",
+      396
+    ],
+    [
+      "control-in-app-browser",
+      136
+    ],
+    [
+      "browser",
+      101
+    ],
+    [
+      "software-engineering-workflow-skill",
+      68
+    ],
+    [
+      "shell-first-operating-practice",
+      66
+    ],
+    [
+      "product-experience-design",
+      39
+    ],
+    [
+      "project-task-management",
+      36
+    ],
+    [
+      "product-design-repository-management",
+      29
+    ],
+    [
+      "agent-package-creation",
+      26
+    ],
+    [
+      "product-experience-prototyper",
+      24
+    ],
+    [
+      "prototype-bootstrapper",
+      20
+    ],
+    [
+      "browser-automation",
+      17
+    ],
+    [
+      "pdf",
+      17
+    ],
+    [
+      "exploratory-requirements-visualizer",
+      17
+    ],
+    [
+      "article-reviewer",
+      16
+    ]
+  ],
+  "message_outcomes": {
+    "delivered": 6283,
+    "ok": 7213,
+    "failed": 126,
+    "no result in this file": 6,
+    "rejected by the user": 1
+  },
+  "generic_tool_lines_before": 47200,
+  "generic_tool_lines_after": 3696
+}

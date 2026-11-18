@@ -1,0 +1,5 @@
+Build Android APK	Build APK	2026-11-09T06:00:37.8504297Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Build Android APK	Build APK	2026-11-09T06:00:37.8504651Z env:
+Build Android APK	Build APK	2026-11-09T06:00:37.8504963Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+Build Android APK	Build APK	2026-11-09T06:00:38.5671305Z ##[error]Exception in thread "main" java.io.IOException: Server returned HTTP response code: 504 for URL: https://github.com/gradle/gradle-distributions/releases/download/v8.13.0/gradle-8.13-bin.zip
+Build Android APK	Build APK	2026-11-09T06:00:38.5800094Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,66 @@
+# API-08b — LM Studio (local provider with models) before and after its catalog is loaded (temporary script: API-08-live-lmstudio-probe.mjs.txt)
+# Same node setup as API-08; LM Studio running on localhost:1234; 2026-10-25T07:57Z
+
+{
+  "startedAt": "2026-10-25T07:57:19.585Z",
+  "worktreeHead": "eac7ee8394",
+  "steps": {
+    "startupMs": 2041,
+    "lmStudioDirect": [
+      "google/gemma-4-26b-a4b",
+      "qwen/qwen3.6-35b-a3b",
+      "text-embedding-nomic-embed-text-v1.5",
+      "deepseek-ocr"
+    ],
+    "beforeEnsure": {
+      "ms": 3938,
+      "providers": [
+        "Anthropic",
+        "DeepSeek",
+        "Gemini",
+        "GLM",
+        "Grok",
+        "Kimi",
+        "OpenAI"
+      ],
+      "lmStudio": null
+    },
+    "lmStudioCredentialSetting": {
+      "provider": {
+        "id": "LMSTUDIO",
+        "name": "LM Studio"
+      },
+      "apiKeyConfigured": false
+    },
+    "ensure": "ok",
+    "afterEnsure": {
+      "ms": 4150,
+      "providers": [
+        "Anthropic",
+        "DeepSeek",
+        "Gemini",
+        "GLM",
+        "Grok",
+        "Kimi",
+        "LM Studio",
+        "OpenAI"
+      ],
+      "lmStudio": {
+        "provider": "LM Studio",
+        "limits": "not reported",
+        "models": [
+          "deepseek-ocr:lmstudio@127.0.0.1:1234",
+          "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+          "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "serverPid": 89867,
+    "serverExited": true,
+    "tempRoot": "removed"
+  },
+  "finishedAt": "2026-10-25T07:57:33.361Z"
+}

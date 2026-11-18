@@ -1,0 +1,14 @@
+text: AutoByteus
+text: YOUR NODES
+content-desc: Test Node, Online
+text: Test Node
+text: Online
+content-desc: More for Test Node
+content-desc: Test Desktop, Online
+text: Test Desktop
+text: Online
+content-desc: More for Test Desktop
+content-desc: Other ways to connect, collapsed
+text: Other ways to connect
+content-desc: Scan
+text: Scan

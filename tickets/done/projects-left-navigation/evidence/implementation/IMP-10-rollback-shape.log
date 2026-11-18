@@ -1,0 +1,45 @@
+# IMP-10 rollback shape: run-record readers/writers identical to the released base
+# Command: git diff --stat 8faae96899 -- <files>; plus tests/unit/run-history/store/run-records-rollback-shape.test.ts
+# Commit: working tree on a595cc74b7 (IR-002 changes); Date: 2026-10-31T11:27Z
+## files compared:
+autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts
+autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts
+autobyteus-server-ts/src/run-history/store/agent-run-history-index-record-types.ts
+autobyteus-server-ts/src/run-history/store/agent-run-history-index-store.ts
+autobyteus-server-ts/src/run-history/store/team-run-history-index-record-types.ts
+autobyteus-server-ts/src/run-history/store/team-run-history-index-store.ts
+autobyteus-server-ts/src/run-history/services/team-run-history-index-row-projector.ts
+autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts
+autobyteus-server-ts/src/run-history/store/team-run-execution-tree-schema.ts
+autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-builder.ts
+## git diff --stat 8faae96899 (empty = identical):
+## end of diff
+## Agent row keys: base normalizeRow (in catalog service) vs current projector
+const normalizeRow = (
+  row: AgentRunHistoryIndexRowRecord,
+): AgentRunHistoryIndexRowRecord => ({
+  runId: row.runId.trim(),
+  agentDefinitionId: row.agentDefinitionId.trim(),
+  agentName: row.agentName.trim() || row.agentDefinitionId.trim(),
+  workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
+  summary: compactSummary(row.summary),
+  createdAt: row.createdAt,
+  archivedAt: row.archivedAt ?? null,
+  terminatedAt: row.terminatedAt ?? null,
+  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
+});
+export const normalizeAgentRunHistoryIndexRow = (
+  row: AgentRunHistoryIndexRowRecord,
+): AgentRunHistoryIndexRowRecord => ({
+  runId: row.runId.trim(),
+  agentDefinitionId: row.agentDefinitionId.trim(),
+  agentName: row.agentName.trim() || row.agentDefinitionId.trim(),
+  workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
+  summary: compactSummary(row.summary),
+  createdAt: row.createdAt,
+  archivedAt: row.archivedAt ?? null,
+  terminatedAt: row.terminatedAt ?? null,
+  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
+});
+## rollback-shape test
+      Tests  2 passed (2)

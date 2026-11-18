@@ -1,0 +1,28 @@
+# IMP2-07 supervision (DS-007, mode supervising): server crash and supervisord stop
+# Image: autobyteus-server-305-test:step2 sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9, built from b1029fc1b0's Dockerfile, starter and server source (IMP2-05)
+# Container: ab305-step2 on 127.0.0.1:<free port>, test-owned volumes ab305-step2-server-packages and ab305-step2-data only; removed afterwards with docker rm -f -v and docker volume rm. The user's nodes were not touched.
+# Environment: macOS arm64 host, Docker 29.0.1. Date: 2026-10-30
+
+## B. The server dies (SIGKILL): the starter exits with the server's code, supervisord restarts it, a new server runs
+old server pid 101
+new status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":586,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+autobyteus_server                STARTING  
+{"time":"2026-10-30T17:08:27.202Z","starter":"server-started","pid":101,"version":"1.5.11-beta.5","source":"builtIn"}
+{"time":"2026-10-30T17:08:40.356Z","starter":"server-exited","pid":101,"version":"1.5.11-beta.5","code":null,"signal":"SIGKILL"}
+{"time":"2026-10-30T17:08:41.429Z","starter":"server-started","pid":586,"version":"1.5.11-beta.5","source":"builtIn"}
+2026-10-30 17:08:27,096 INFO spawned: 'autobyteus_server' with pid 51
+2026-10-30 17:08:40,359 WARN exited: autobyteus_server (exit status 137; not expected)
+2026-10-30 17:08:41,370 INFO spawned: 'autobyteus_server' with pid 576
+{"status":"ok","message":"Server is running"}
+
+## C. supervisorctl stop: the starter forwards SIGTERM, the server shuts down, the starter exits 0
+autobyteus_server: stopped
+stop took .137284334 s
+server 586 gone
+autobyteus_server                STOPPED   Oct 30 05:08 PM
+{"time":"2026-10-30T17:08:43.927Z","starter":"stopping","signal":"SIGTERM"}
+{"time":"2026-10-30T17:08:43.982Z","starter":"server-exited","pid":586,"version":"1.5.11-beta.5","code":0,"signal":null}
+2026-10-30 17:08:43,927 INFO waiting for autobyteus_server to stop
+2026-10-30 17:08:43,989 INFO stopped: autobyteus_server (exit status 0)
+autobyteus_server: started
+after start: {"status":"ok","message":"Server is running"}

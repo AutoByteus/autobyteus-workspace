@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type {
   BrowserHostBounds,
+  BrowserShellHistoryNavigationRequest,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
@@ -73,6 +74,8 @@ export const useBrowserShellStore = defineStore('browserShell', () => {
         candidate?.tab_id === session.tab_id &&
         candidate?.title === session.title &&
         candidate?.url === session.url &&
+        candidate.canGoBack === session.canGoBack &&
+        candidate.canGoForward === session.canGoForward &&
         areDeviceEmulationStatesEqual(candidate?.deviceEmulation, session.deviceEmulation)
       );
     });
@@ -155,6 +158,16 @@ export const useBrowserShellStore = defineStore('browserShell', () => {
 
     try {
       applySnapshot(await window.electronAPI.navigateBrowserTab(request));
+    } catch (error) {
+      lastError.value = error instanceof Error ? error.message : String(error);
+    }
+  };
+
+  const navigateHistory = async (request: BrowserShellHistoryNavigationRequest): Promise<void> => {
+    await initialize();
+    if (!browserAvailable.value) return;
+    try {
+      applySnapshot(await window.electronAPI.navigateBrowserHistory(request));
     } catch (error) {
       lastError.value = error instanceof Error ? error.message : String(error);
     }
@@ -257,6 +270,7 @@ export const useBrowserShellStore = defineStore('browserShell', () => {
     initialize,
     openTab,
     navigateTab,
+    navigateHistory,
     reloadTab,
     focusSession,
     setActiveSession,

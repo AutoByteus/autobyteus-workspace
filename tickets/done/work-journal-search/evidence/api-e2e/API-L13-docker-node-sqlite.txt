@@ -1,0 +1,10 @@
+# API-L13: the server image's Node runs the memory store's SQLite features (contentless FTS5 with delete, unicode61, fts5vocab, bm25)
+# Command: docker run --rm --network none --entrypoint node autobyteus/autobyteus-server:beta -e '<script: DDL as in memory-search-store.ts L29-30, insert, delete, MATCH, vocab>'
+# Image autobyteus/autobyteus-server:beta (created 2026-10-25, linux/arm64; same Dockerfile.monorepo), test-owned throwaway container, no volumes, no network; 2026-10-26 18:31
+{"node":"v22.23.3","sqlite":"3.51.3","match":[1,2],"cjkPhrase":[2],"afterDelete":0,"vocab":[{"term":"ddns","doc":2}]}
+(node:1) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+exit 0
+
+## Script
+see the command in this file's history: DDL copied from autobyteus-server-ts/src/memory-search/store/memory-search-store.ts lines 29-30; rows 1 'ddns updater for the home domain', 2 '域 名 自 动 更 新 ddns' (CJK spaced as the store indexes it), 3 'tortoise and bunny game' then DELETE rowid 3

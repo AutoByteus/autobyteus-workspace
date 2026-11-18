@@ -1,0 +1,151 @@
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import { BaseTool } from '../../../src/tools/base-tool.js';
+import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
+import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
+import { ToolContinuationInputBuilder } from '../../../src/agent/loop/tool-continuation-input-builder.js';
+import { AgentInputPipeline } from '../../../src/agent/pipelines/agent-input-pipeline.js';
+import { AgentTurn } from '../../../src/agent/agent-turn.js';
+import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
+import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import { SenderType } from '../../../src/agent/sender-type.js';
+import { ContextFile } from '../../../src/agent/message/context-file.js';
+import { ContextFileType } from '../../../src/agent/message/context-file-type.js';
+import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
+import { GeminiPromptRenderer } from '../../../src/llm/prompt-renderers/gemini-prompt-renderer.js';
+import { MessageRole } from '../../../src/llm/utils/messages.js';
+import { supportedModelDefinitions } from '../../../src/llm/supported-model-definitions.js';
+import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+
+const SMALL_AUDIO_BYTES = Buffer.from('small-audio-fixture');
+const SMALL_VIDEO_BYTES = Buffer.from('small-video-fixture');
+
+describe('read_file media continuation flow (integration)', () => {
+  let tempDir: string;
+  let workspaceRoot: string;
+  let registrySnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
+
+  beforeEach(async () => {
+    registrySnapshot = defaultToolRegistry.snapshot();
+    defaultToolRegistry.clear();
+    registerReadFileTool();
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'read-media-continuation-'));
+    workspaceRoot = path.join(tempDir, 'workspace');
+    await fs.mkdir(workspaceRoot, { recursive: true });
+  });
+
+  afterEach(async () => {
+    defaultToolRegistry.restore(registrySnapshot);
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  it('carries small audio and video read by tools into the next LLM request', async () => {
+    const audioPath = path.join(workspaceRoot, 'sample.m4a');
+    const videoPath = path.join(workspaceRoot, 'clip.mp4');
+    await fs.writeFile(audioPath, SMALL_AUDIO_BYTES);
+    await fs.writeFile(videoPath, SMALL_VIDEO_BYTES);
+
+    const memoryManager = new MemoryManager({
+      store: new FileMemoryStore(tempDir, 'agent_read_media_continuation')
+    });
+    const turn = new AgentTurn('turn-read-media-1');
+    const context = {
+      agentId: 'agent-read-media',
+      workspaceRootPath: workspaceRoot,
+      config: { inputProcessors: [] },
+      state: { activeTurn: turn, memoryManager }
+    } as any;
+    const tool = defaultToolRegistry.createTool('read_file') as BaseTool;
+
+    const audioResult = await tool.execute(context, { path: 'sample.m4a', base_dir: workspaceRoot });
+    const videoResult = await tool.execute(context, { path: 'clip.mp4', base_dir: workspaceRoot });
+    expect(audioResult).toBeInstanceOf(ContextFile);
+    expect(videoResult).toBeInstanceOf(ContextFile);
+    const audioContextFile = audioResult as ContextFile;
+    const videoContextFile = videoResult as ContextFile;
+    expect(audioContextFile.fileType).toBe(ContextFileType.AUDIO);
+    expect(videoContextFile.fileType).toBe(ContextFileType.VIDEO);
+
+    memoryManager.ingestToolIntents([
+      new ToolInvocation('read_file', { path: 'sample.m4a', base_dir: workspaceRoot }, 'inv-audio', turn.turnId),
+      new ToolInvocation('read_file', { path: 'clip.mp4', base_dir: workspaceRoot }, 'inv-video', turn.turnId)
+    ], turn.turnId, {
+      assistantContent: 'Reading requested media files.'
+    });
+
+    const results = [
+      new ToolResultEvent('read_file', audioContextFile, 'inv-audio', undefined, { path: 'sample.m4a', base_dir: workspaceRoot }, turn.turnId),
+      new ToolResultEvent('read_file', videoContextFile, 'inv-video', undefined, { path: 'clip.mp4', base_dir: workspaceRoot }, turn.turnId)
+    ];
+    memoryManager.ingestToolResults(results, turn.turnId, {
+      source: 'native_api_ordered_batch',
+    });
+    const continuation = new ToolContinuationInputBuilder().build(results, turn.turnId);
+
+    expect(continuation.senderType).toBe(SenderType.TOOL);
+    expect(continuation.contextFiles?.map((file) => file.uri)).toEqual([audioPath, videoPath]);
+
+    const pipelineResult = await new AgentInputPipeline().processToolContinuation(continuation, context, turn);
+    expect(pipelineResult.llmUserMessage).not.toBeNull();
+    expect(pipelineResult.llmUserMessage?.audio_urls).toEqual([audioPath]);
+    expect(pipelineResult.llmUserMessage?.video_urls).toEqual([videoPath]);
+
+    const geminiDefinition = supportedModelDefinitions.find(
+      (definition) => definition.name === 'gemini-3.8-flash',
+    );
+    expect(geminiDefinition).toBeDefined();
+
+    const request = await new LLMRequestAssembler(
+      memoryManager,
+      null,
+      geminiDefinition!.staticMetadata.multimodalCapabilities,
+    ).prepareRequest(
+      pipelineResult.llmUserMessage,
+      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` } as any,
+      'System prompt',
+      [],
+    );
+
+    const toolResultTraces = memoryManager
+      .listTurnRawTracesOrdered()
+      .filter((trace) => trace.traceType === 'tool_result');
+    expect(toolResultTraces).toHaveLength(2);
+    expect(memoryManager.listTurnRawTracesOrdered().some(
+      ({ traceType }) => traceType === 'tool_continuation',
+    )).toBe(false);
+
+    const currentMessage = request.canonicalMessages.at(-1);
+    expect(currentMessage?.role).toBe(MessageRole.USER);
+    expect(currentMessage?.audio_urls).toEqual([audioPath]);
+    expect(currentMessage?.video_urls).toEqual([videoPath]);
+
+    const outboundCurrentMessage = request.outboundMessages.at(-1);
+    expect(outboundCurrentMessage?.audio_urls).toEqual([audioPath]);
+    expect(outboundCurrentMessage?.video_urls).toEqual([videoPath]);
+
+    const renderedMessages = await new GeminiPromptRenderer().render(request.outboundMessages) as Array<{
+      role?: string;
+      parts?: Array<Record<string, unknown>>;
+    }>;
+    const renderedCurrentMessage = renderedMessages.at(-1);
+    expect(renderedCurrentMessage?.role).toBe('user');
+    const inlineParts = renderedCurrentMessage?.parts?.filter((part) => 'inlineData' in part) ?? [];
+    expect(inlineParts).toEqual([
+      {
+        inlineData: {
+          data: SMALL_AUDIO_BYTES.toString('base64'),
+          mimeType: 'audio/mp4'
+        }
+      },
+      {
+        inlineData: {
+          data: SMALL_VIDEO_BYTES.toString('base64'),
+          mimeType: 'video/mp4'
+        }
+      }
+    ]);
+  });
+});

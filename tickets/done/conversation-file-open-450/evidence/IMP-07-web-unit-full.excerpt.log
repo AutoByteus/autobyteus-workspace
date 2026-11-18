@@ -1,0 +1,19 @@
+# Check: IMP-07
+# Command: pnpm -C autobyteus-web test:nuxt --run (full web unit suite)
+# Commit: e470edf165
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+## Summary and failures (one stale assertion, updated in 486ba3c395 and rerun below)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 734 passed (735)
+      Tests  2 failed | 5511 passed | 2 skipped (5515)
+   Duration  295.32s (transform 33.00s, setup 1954.99s, collect 208.85s, tests 91.40s, environment 159.15s, prepare 97.11s)
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+AssertionError: expected "spy" to be called 1 times, but got 2 times
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts:275:22
+
+## Rerun of RightSideTabs.workspaceTarget.spec.ts at 486ba3c395
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

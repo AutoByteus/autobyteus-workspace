@@ -14,16 +14,13 @@ describe('30.apollo.client plugin helpers', () => {
     vi.restoreAllMocks();
   });
 
-  it('registers bound client in both custom and nuxt-apollo compatibility slots', () => {
+  it('binds the client to the Nuxt app under its one key', () => {
     const client = buildBoundApolloClient('http://127.0.0.1:8000/graphql');
-    const nuxtApp: any = {};
+    const nuxtApp: Record<string, unknown> = {};
 
     registerBoundApolloClient(nuxtApp, client);
 
-    expect(nuxtApp[BOUND_APOLLO_CLIENT_KEY]).toBe(client);
-    expect(nuxtApp._apolloClients.default).toBe(client);
-    expect(nuxtApp.$apollo.defaultClient).toBe(client);
-    expect(nuxtApp.$apollo.clients.default).toBe(client);
+    expect(nuxtApp).toEqual({ [BOUND_APOLLO_CLIENT_KEY]: client });
   });
 
   it('uses provided endpoint and surfaces network errors through uiErrorStore', async () => {

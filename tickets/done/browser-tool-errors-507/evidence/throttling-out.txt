@@ -1,0 +1,16 @@
+RESULT throttling=true detached-fresh: first capture              {"Current display surface not available for capture":3}
+RESULT throttling=true detached-fresh: second capture             {"Current display surface not available for capture":3}
+RESULT throttling=true detached-navigate: first capture           {"UnknownVizError":3}
+RESULT throttling=true detached-navigate: second capture          {"ok":1,"UnknownVizError":2}
+RESULT throttling=true minimized-navigate: first capture          {"UnknownVizError":3}
+RESULT throttling=true minimized-navigate: second capture         {"UnknownVizError":3}
+RESULT throttling=false detached-fresh: first capture             {"Current display surface not available for capture":3}
+RESULT throttling=false detached-fresh: second capture            {"Current display surface not available for capture":3}
+RESULT throttling=false detached-navigate: first capture          {"UnknownVizError":3}
+RESULT throttling=false detached-navigate: second capture         {"UnknownVizError":2,"HANG>2s":1}
+RESULT throttling=false minimized-navigate: first capture         {"UnknownVizError":3}
+RESULT throttling=false minimized-navigate: second capture        {"UnknownVizError":1,"HANG>2s":2}
+RESULT throttling=false hidden-navigate: first capture            {"UnknownVizError":3}
+RESULT throttling=false hidden-navigate: second capture           {"UnknownVizError":1,"HANG>2s":2}
+
+[exited with code 0]

@@ -72,27 +72,14 @@ export class AgentRunInputAdmissionState {
   private rootShutdownFenced = false;
   private activeClaim: InputEntry | null = null;
 
+  /** One step: `reserve` (which holds the only admission checks), then commit and release. */
   admit(
     message: AgentInputUserMessage,
     observer: AgentRunInputLifecycleObserver | null,
     runtimeAvailable: boolean,
+    onlyAsFirstInput = false,
   ): AgentRunInputAdmission {
-    if (!this.accepting || !runtimeAvailable) {
-      return {
-        accepted: false,
-        code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
-        message: "AgentRun is not accepting input.",
-      };
-    }
-    if (!message || !requiredString(message.content)) {
-      return {
-        accepted: false,
-        code: "AGENT_RUN_INPUT_INVALID",
-        message: "AgentRun input content must be a non-empty string.",
-      };
-    }
-
-    const reservation = this.reserve(message, observer, runtimeAvailable);
+    const reservation = this.reserve(message, observer, runtimeAvailable, onlyAsFirstInput);
     if (!reservation.accepted) return reservation;
     this.commitReservation(reservation.entrySequence);
     this.releaseReservation(reservation.entrySequence);
@@ -103,6 +90,7 @@ export class AgentRunInputAdmissionState {
     message: AgentInputUserMessage,
     observer: AgentRunInputLifecycleObserver | null,
     runtimeAvailable: boolean,
+    onlyAsFirstInput = false,
   ): AgentRunInputAdmission {
     if (!this.accepting || !runtimeAvailable) {
       return {
@@ -117,6 +105,10 @@ export class AgentRunInputAdmissionState {
         code: "AGENT_RUN_INPUT_INVALID",
         message: "AgentRun input content must be a non-empty string.",
       };
+    }
+    // Any reserved input advanced the sequence: this instance already had input.
+    if (onlyAsFirstInput && this.nextSequence > 1) {
+      return { accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST", message: "AgentRun already had input." };
     }
 
     const entry: InputEntry = {

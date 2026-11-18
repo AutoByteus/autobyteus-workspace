@@ -1,0 +1,8 @@
+# IMP-02b-fastify-routeroptions-tests.log tests touched by the routerOptions change
+# command: vitest run (2 unit + 3 integration application-backend files)
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ Test Files  3 passed (3)
+      Tests  6 passed (6)

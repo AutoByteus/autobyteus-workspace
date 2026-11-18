@@ -10,7 +10,7 @@ function harness(prepare: () => Promise<never | object>, release: () => Promise<
   const claim = registry.claim('owned-A');
   const constructRun = vi.fn(() => ({ runId: 'owned-A', runtimeKind: 'autobyteus', getPlatformAgentRunId: () => null, isActive: () => true }));
   const operation = beginAgentRunActivation({ claim, registry, constructRun: constructRun as never,
-    preparation: createBackendPreparation({ prepare: prepare as never, releaseResources: release }), deactivateMcp: vi.fn(), validateRun: validateRun as never });
+    preparation: createBackendPreparation({ prepare: prepare as never, releaseResources: release }), releaseLocalSessions: vi.fn(), validateRun: validateRun as never });
   return { registry, operation, resources, constructRun };
 }
 describe('retained private Agent activation authority', () => {

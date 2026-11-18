@@ -1,0 +1,13 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:model-routing-decisions /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/model-routing-decisions-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/R2-API-07-model-routing-decisions
+
+Pass MRD-01 Setup: the router row and the status of an active router
+Pass MRD-02 Decisions: Task blocks, the Team row folds and opens to its agents with source and reason; the remote copy is not on this node; the filter
+Pass MRD-03 Overview: period, sources and task kinds of these records
+Pass MRD-04 The Manager run's copies, each in its own Settings: runtime, model, source and reason (local member and remote copy; autobyteus-366)
+Pass MRD-05 beta's window: its own Decisions list the copy alpha delegated, without "Open run"
+Pass MRD-08 New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1)
+Pass MRD-06 Simplified Chinese: Decisions and Overview are translated
+Pass MRD-07 No browser errors
+Model Routing decisions probe: Pass → /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/R2-API-07-model-routing-decisions

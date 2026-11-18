@@ -1,0 +1,29 @@
+    43    agent
+   376    assigned: assignedBy = own file's delegator
+   371    assigned: recipientAddress = own file's address
+     1    holding a link to a run on another node
+     8    host address leaf equals the definition id
+   375    hostRoot = one-hop delegating run
+   406    hostRoot = own file's coordinatingRun
+     2    links to runs on another node
+     2    remote entry keys: agentRun,assignedBy,closedAt,hostRoot,linkedAt,recipientAddress,role,start
+   378    role assigned
+     2    role broughtIn
+    28    role delegated
+     8    still holding old local entries (dropped at the next save)
+   153    team
+   408  Task record entries
+     2  Task record entries of a run not on this node
+   406  Task record entries of a run on this node
+     6  delegated agent runs whose address is not the definition id
+   196  delegated runs (own file with taskAgent)
+    11  delegated runs with an open Task entry
+    15  delegated runs without any Task record
+    11  delegated runs without any Task record that record a delegator
+   159  one hop: delegating run = today's coordinating run
+    32  one hop: delegating run is a delegated run (nested)
+     1  one hop: delegator's run not stored
+     4  one hop: no delegator recorded (old)
+     2  runs that hold open delegated runs, by hostRoot
+     3  runs that hold open delegated runs, one hop
+     8  standalone tree files

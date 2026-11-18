@@ -1,0 +1,19 @@
+[+4.9s] server started {"label":"first","pid":78115,"port":63813}
+[+6.2s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+6.8s] standalone sent {"label":"sa-codex","runtime":"codex","runId":"probe_agent_bq284lmvw6c9gh_ccf7dd682ca046f190f4ffbc762d3a8e"}
+[+7.1s] standalone sent {"label":"sa-claude","runtime":"claude","runId":"probe_agent_bq284lmvw6c9gh_d3eda71239b248c78f418f42031cfb8b"}
+[+8.3s] team sent {"label":"team-codex","runtime":"codex","teamRunId":"probe_team_bq284lmvw6c9gh_team_codex_9280ea6783bc44b3a5881e65df485084","memberRunId":"probe_team_coordinator_team_codex_bq284lmvw6c9gh_36e80e3bc9a3441f84e959957415d093"}
+[+9.8s] org sent {"label":"org-claude","runtime":"claude","orgRunId":"probe_org_bq284lmvw6c9gh_org_claude_1a0d3061aec64a2da3bf884060c46ce8","memberRunId":"probe_org_manager_org_claude_bq284lmvw6c9gh_03489030911f455d95c8e60f57575506"}
+[+10.0s] createAgentRun latency (ms) [97,72,91]
+[+10.8s] client connections held {"keepAliveLocalPort":63929,"silentLocalPort":63930}
+[+11.0s] busy {"label":"sa-codex","marker":"BQ284Lmvw6c9gh_sa-codex","pid":80489,"ppid":78175,"pgid":80489,"afterMs":107}
+[+11.7s] busy {"label":"sa-claude","marker":"BQ284Lmvw6c9gh_sa-claude","pid":83414,"ppid":78606,"pgid":83414,"afterMs":727}
+[+11.7s] busy {"label":"team-codex","marker":"BQ284Lmvw6c9gh_team-codex","pid":82411,"ppid":78175,"pgid":82411,"afterMs":55}
+[+13.7s] busy {"label":"org-claude","marker":"BQ284Lmvw6c9gh_org-claude","pid":84269,"ppid":80372,"pgid":84269,"afterMs":2006}
+[+27.2s] shutdown {"case":"API-03","serverPid":78115,"exit":{"code":1,"signal":null,"at":1793437455927},"elapsedMs":10583,"runs":[{"label":"sa-codex","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvw6c9gh_ccf7dd682ca046f190f4ffbc762d3a8e","toolCommand":{"pid":80489,"ppid":78175,"pgid":80489,"aliveAfter":false}},{"label":"sa-claude","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvw6c9gh_
+[+27.4s] in-flight requests [{"k":0,"sentAt":1793437445298,"status":200,"endedAt":1793437445396,"result":{"success":true,"message":"Agent run created successfully.","runId":"probe_agent_bq284lmvw6c9gh_8b3ef3a718c242dd9faf7c3d3534cf28"},"sentRelSigtermMs":-46,"endedRelSigtermMs":52},{"k":1,"sentAt":1793437445316,"status":200,"endedAt":1793437445411,"result":{"success":true,"message":"Agent run created successfully.","runId":"
+[+27.4s] held connections {"silentClosedRelSigtermMs":10583,"silentError":null,"keepAliveClosedRelSigtermMs":4}
+[+30.7s] server started {"label":"second","pid":87864,"port":63979}
+[+30.7s] restore of prepared-only runs []
+[+30.7s] after relaunch {"listed":8,"onDisk":8,"unknown":0,"preparedOnly":0,"inspected":[],"cutHandlerLog":[]}
+{"result":"Completed","error":null,"fallbackCleanup":0}

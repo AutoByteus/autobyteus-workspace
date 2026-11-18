@@ -1,0 +1,16 @@
+{"t":"2026-10-29T11:15:00.203Z","kind":"listening","port":39957}
+{"t":"2026-10-29T11:15:02.061Z","kind":"rpc","methods":["server/discover"],"names":[null],"accept":"application/json, text/event-stream","session":null,"ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:02.079Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"application/json, text/event-stream","session":null,"ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:02.090Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:02.096Z","kind":"http","http":"GET","accept":"text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:02.100Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:08.011Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_beta"]}
+{"t":"2026-10-29T11:15:08.015Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:08.015Z","kind":"notify-on-post"}
+{"t":"2026-10-29T11:15:09.021Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:14.485Z","kind":"rpc","methods":["tools/call"],"names":["probe_beta"],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:15.699Z","kind":"notify","reason":"remove-alpha","getStreams":1,"tools":["probe_beta"]}
+{"t":"2026-10-29T11:15:15.702Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:15.702Z","kind":"notify-on-post"}
+{"t":"2026-10-29T11:15:16.707Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"330406fe-c32f-4e3c-a959-908135d8ca11","ua":"claude-code/2.1.280 (sdk-ts, agent-sdk/0.3.280)"}
+{"t":"2026-10-29T11:15:20.144Z","kind":"http","http":"GET-closed","session":"330406fe-c32f-4e3c-a959-908135d8ca11"}

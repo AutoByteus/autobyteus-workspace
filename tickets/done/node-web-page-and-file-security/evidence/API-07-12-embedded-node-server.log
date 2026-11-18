@@ -1,0 +1,271 @@
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-07T21:52:38.877Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794088359120,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57329"}
+{"level":30,"time":1794088359140,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57277"}
+{"level":30,"time":1794088359140,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57277"}
+{"level":30,"time":1794088359140,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57277"}
+[2026-11-07T21:52:39.140Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57277
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=logcheck origin http://localhost:5173
+{"level":40,"time":1794088378243,"pid":82880,"hostname":"MacBookPro","reqId":"req-z","method":"POST","url":"/graphql?f=logcheck","statusCode":403,"elapsedMs":0.5811670000002778,"msg":"http request completed"}
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/api416-fixtures-hofA/files
+Created metadata-only FileSystemWorkspace at /tmp/api416-fixtures-hofA/files.
+Created and registered workspace ID: agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+{"level":40,"time":1794088403185,"pid":82880,"hostname":"MacBookPro","reqId":"req-1p","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.6040419999990263,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+{"level":40,"time":1794088403186,"pid":82880,"hostname":"MacBookPro","reqId":"req-1q","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.13279100000363542,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+{"level":40,"time":1794088403187,"pid":82880,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.7680420000033337,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+{"level":40,"time":1794088403187,"pid":82880,"hostname":"MacBookPro","reqId":"req-1s","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.1462500000052387,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+{"level":40,"time":1794088403188,"pid":82880,"hostname":"MacBookPro","reqId":"req-1t","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.2970839999979944,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+{"level":40,"time":1794088403197,"pid":82880,"hostname":"MacBookPro","reqId":"req-1u","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.576415999996243,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+{"level":40,"time":1794088403198,"pid":82880,"hostname":"MacBookPro","reqId":"req-1v","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.2197920000035083,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+{"level":40,"time":1794088403199,"pid":82880,"hostname":"MacBookPro","reqId":"req-1w","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.12962500000139698,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+{"level":40,"time":1794088403212,"pid":82880,"hostname":"MacBookPro","reqId":"req-1x","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.2434999999968568,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+{"level":40,"time":1794088403227,"pid":82880,"hostname":"MacBookPro","reqId":"req-1y","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.21495799999684095,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+{"level":40,"time":1794088403241,"pid":82880,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.2884170000033919,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+{"level":40,"time":1794088403255,"pid":82880,"hostname":"MacBookPro","reqId":"req-20","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.206291999995301,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+{"level":40,"time":1794088412553,"pid":82880,"hostname":"MacBookPro","reqId":"req-28","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.2906250000014552,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+{"level":40,"time":1794088412553,"pid":82880,"hostname":"MacBookPro","reqId":"req-29","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.08258300000306917,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+{"level":40,"time":1794088412553,"pid":82880,"hostname":"MacBookPro","reqId":"req-2a","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.06658299999980954,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+{"level":40,"time":1794088412555,"pid":82880,"hostname":"MacBookPro","reqId":"req-2b","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.23629199999413686,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+{"level":40,"time":1794088412556,"pid":82880,"hostname":"MacBookPro","reqId":"req-2c","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.1472910000011325,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+{"level":40,"time":1794088412565,"pid":82880,"hostname":"MacBookPro","reqId":"req-2d","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.18962499999906868,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-fetch origin null
+{"level":40,"time":1794088412567,"pid":82880,"hostname":"MacBookPro","reqId":"req-2e","method":"POST","url":"/graphql?f=popup-fetch","statusCode":403,"elapsedMs":0.12795799999730662,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-xhr origin null
+{"level":40,"time":1794088412567,"pid":82880,"hostname":"MacBookPro","reqId":"req-2f","method":"POST","url":"/graphql?f=popup-xhr","statusCode":403,"elapsedMs":0.06708299999445444,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+{"level":40,"time":1794088412575,"pid":82880,"hostname":"MacBookPro","reqId":"req-2g","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.2882499999977881,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+{"level":40,"time":1794088412575,"pid":82880,"hostname":"MacBookPro","reqId":"req-2h","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.25362500000483124,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+{"level":40,"time":1794088412577,"pid":82880,"hostname":"MacBookPro","reqId":"req-2i","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.2202919999981532,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+{"level":40,"time":1794088412591,"pid":82880,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.22129199999471894,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-popup?f=popup-ws origin null
+{"level":40,"time":1794088412620,"pid":82880,"hostname":"MacBookPro","reqId":"req-2k","method":"GET","url":"/ws/terminal/api08-popup?f=popup-ws","statusCode":403,"elapsedMs":0.290833000006387,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-gqlws origin null
+{"level":40,"time":1794088412635,"pid":82880,"hostname":"MacBookPro","reqId":"req-2l","method":"GET","url":"/graphql?f=popup-gqlws","statusCode":403,"elapsedMs":0.23279099999490427,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+{"level":40,"time":1794088412651,"pid":82880,"hostname":"MacBookPro","reqId":"req-2m","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.17575000000215368,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+{"level":40,"time":1794088412664,"pid":82880,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.20970800000213785,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+{"level":40,"time":1794088469818,"pid":82880,"hostname":"MacBookPro","reqId":"req-3p","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.35254199999326374,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+{"level":40,"time":1794088469819,"pid":82880,"hostname":"MacBookPro","reqId":"req-3q","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.11408400000073016,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+{"level":40,"time":1794088469819,"pid":82880,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.1662919999944279,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+{"level":40,"time":1794088469821,"pid":82880,"hostname":"MacBookPro","reqId":"req-3s","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.2832919999927981,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+{"level":40,"time":1794088469821,"pid":82880,"hostname":"MacBookPro","reqId":"req-3t","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.1629160000011325,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+{"level":40,"time":1794088469832,"pid":82880,"hostname":"MacBookPro","reqId":"req-3u","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.21604200000001583,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+{"level":40,"time":1794088469834,"pid":82880,"hostname":"MacBookPro","reqId":"req-3v","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.212666999999783,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+{"level":40,"time":1794088469834,"pid":82880,"hostname":"MacBookPro","reqId":"req-3w","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.07658300000184681,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+{"level":40,"time":1794088469843,"pid":82880,"hostname":"MacBookPro","reqId":"req-3x","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.2055839999957243,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+{"level":40,"time":1794088469858,"pid":82880,"hostname":"MacBookPro","reqId":"req-3y","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.2444170000089798,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+{"level":40,"time":1794088469872,"pid":82880,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.18766599999798927,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+{"level":40,"time":1794088469885,"pid":82880,"hostname":"MacBookPro","reqId":"req-40","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.14337499999965075,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+{"level":40,"time":1794088478949,"pid":82880,"hostname":"MacBookPro","reqId":"req-44","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.4772499999962747,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+{"level":40,"time":1794088478949,"pid":82880,"hostname":"MacBookPro","reqId":"req-45","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.21020899999712128,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+{"level":40,"time":1794088478952,"pid":82880,"hostname":"MacBookPro","reqId":"req-46","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.309958000012557,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+{"level":40,"time":1794088478953,"pid":82880,"hostname":"MacBookPro","reqId":"req-47","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.1244579999911366,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+{"level":40,"time":1794088478953,"pid":82880,"hostname":"MacBookPro","reqId":"req-48","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.2601250000006985,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-fetch origin null
+{"level":40,"time":1794088478959,"pid":82880,"hostname":"MacBookPro","reqId":"req-49","method":"POST","url":"/graphql?f=popup-fetch","statusCode":403,"elapsedMs":0.33449999999720603,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-xhr origin null
+{"level":40,"time":1794088478959,"pid":82880,"hostname":"MacBookPro","reqId":"req-4a","method":"POST","url":"/graphql?f=popup-xhr","statusCode":403,"elapsedMs":0.19074999999429565,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+{"level":40,"time":1794088478961,"pid":82880,"hostname":"MacBookPro","reqId":"req-4b","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.14987500000279397,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+{"level":40,"time":1794088478961,"pid":82880,"hostname":"MacBookPro","reqId":"req-4c","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.12941599999612663,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+{"level":40,"time":1794088478969,"pid":82880,"hostname":"MacBookPro","reqId":"req-4d","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.24470899999141693,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+{"level":40,"time":1794088478986,"pid":82880,"hostname":"MacBookPro","reqId":"req-4e","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.22941699999500997,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+{"level":40,"time":1794088479002,"pid":82880,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.23379100000602193,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-popup?f=popup-ws origin null
+{"level":40,"time":1794088479110,"pid":82880,"hostname":"MacBookPro","reqId":"req-4g","method":"GET","url":"/ws/terminal/api08-popup?f=popup-ws","statusCode":403,"elapsedMs":0.22945899999467656,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-gqlws origin null
+{"level":40,"time":1794088479160,"pid":82880,"hostname":"MacBookPro","reqId":"req-4h","method":"GET","url":"/graphql?f=popup-gqlws","statusCode":403,"elapsedMs":0.20883299999695737,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+{"level":40,"time":1794088479559,"pid":82880,"hostname":"MacBookPro","reqId":"req-4i","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.23733299999730662,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+{"level":40,"time":1794088479947,"pid":82880,"hostname":"MacBookPro","reqId":"req-4m","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.7860419999924488,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api09-fetch origin null
+{"level":40,"time":1794088506999,"pid":82880,"hostname":"MacBookPro","reqId":"req-57","method":"OPTIONS","url":"/graphql?f=api09-fetch","statusCode":403,"elapsedMs":0.37966700000106357,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api09-session?f=api09-ws origin null
+{"level":40,"time":1794088506999,"pid":82880,"hostname":"MacBookPro","reqId":"req-58","method":"GET","url":"/ws/terminal/api09-session?f=api09-ws","statusCode":403,"elapsedMs":0.17229200000292622,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api09-fetch origin null
+{"level":40,"time":1794088547513,"pid":82880,"hostname":"MacBookPro","reqId":"req-60","method":"OPTIONS","url":"/graphql?f=api09-fetch","statusCode":403,"elapsedMs":0.4824580000131391,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api09-session?f=api09-ws origin null
+{"level":40,"time":1794088547514,"pid":82880,"hostname":"MacBookPro","reqId":"req-61","method":"GET","url":"/ws/terminal/api09-session?f=api09-ws","statusCode":403,"elapsedMs":0.16991599998436868,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api11-fetch origin http://localhost:57757
+{"level":40,"time":1794088565029,"pid":82880,"hostname":"MacBookPro","reqId":"req-6f","method":"OPTIONS","url":"/graphql?f=api11-fetch","statusCode":403,"elapsedMs":0.46716700002434663,"msg":"http request completed"}
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api11-session?f=api11-ws origin http://localhost:57757
+{"level":40,"time":1794088565029,"pid":82880,"hostname":"MacBookPro","reqId":"req-6g","method":"GET","url":"/ws/terminal/api11-session?f=api11-ws","statusCode":403,"elapsedMs":0.10670900001423433,"msg":"http request completed"}
+Agent Definition created successfully with ID: viewer-proof-agent
+Agent Definition created successfully with ID: viewer-proof-agent-2
+Created terminal session 3f805fca-a751-4fe5-9d13-bdd2334126dc using backend IsolatedPtySession for target /tmp/api416-fixtures-hofA/files
+Terminal WebSocket connected: 3f805fca-a751-4fe5-9d13-bdd2334126dc
+Terminal websocket attached for cwd /tmp/api416-fixtures-hofA/files
+Created WorkspaceFileExplorer for agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346 (file-explorer-websocket).
+FileSystemWatcher initialized for '/tmp/api416-fixtures-hofA/files' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+Acquired file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+Created file explorer session e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346. Active sessions: 1
+File explorer WebSocket connected: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+File explorer websocket attached for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/media
+File saved successfully to persistent storage: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/media/documents/a9a2be6d-199a-4306-aaca-27943fa1d976.pdf
+Returning file URL: /rest/files/documents/a9a2be6d-199a-4306-aaca-27943fa1d976.pdf
+Agent Definition created successfully with ID: viewer-proof-agent-3
+Released file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+FileExplorerSession closed: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f
+Closed file explorer session e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f. Active sessions: 0
+File explorer WebSocket disconnected: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f
+Closed PTY session 3f805fca-a751-4fe5-9d13-bdd2334126dc
+Terminal WebSocket disconnected: 3f805fca-a751-4fe5-9d13-bdd2334126dc
+Created terminal session 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9 using backend IsolatedPtySession for target /tmp/api416-fixtures-hofA/files
+Terminal WebSocket connected: 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9
+Terminal websocket attached for cwd /tmp/api416-fixtures-hofA/files
+FileSystemWatcher initialized for '/tmp/api416-fixtures-hofA/files' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+Acquired file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 2233d19b-4842-4b9b-b942-f5e079dfe782 for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+Created file explorer session 2233d19b-4842-4b9b-b942-f5e079dfe782 for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346. Active sessions: 1
+File explorer WebSocket connected: 2233d19b-4842-4b9b-b942-f5e079dfe782 for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+File explorer websocket attached for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+File saved successfully to persistent storage: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/media/documents/6cdb0dcc-c8d7-4655-a11c-e2145c1a422a.pdf
+Returning file URL: /rest/files/documents/6cdb0dcc-c8d7-4655-a11c-e2145c1a422a.pdf
+Released file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+FileExplorerSession closed: 2233d19b-4842-4b9b-b942-f5e079dfe782
+Closed file explorer session 2233d19b-4842-4b9b-b942-f5e079dfe782. Active sessions: 0
+File explorer WebSocket disconnected: 2233d19b-4842-4b9b-b942-f5e079dfe782
+Closed PTY session 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9
+Terminal WebSocket disconnected: 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9

@@ -411,6 +411,16 @@ One observation per `response_completed` call (`grok_acp_call`, a model call).
 Input excludes cache reads; the latest prompt = input + cache read + cache write.
 Grok reports no window or threshold.
 
+### DeepSeek Harness
+
+dsh reports no usage over ACP. The credential proxy's DeepSeek provider relay
+reads DeepSeek's own counts from each forwarded call's stream, and the run's
+session reports one observation per finished call (`deepseek_harness_call`, or
+`deepseek_harness_compaction_call` for one of dsh's compaction calls; both are
+model calls). Input excludes cache reads and writes; the latest prompt = input +
+cache read + cache write. dsh reports no window or threshold. See
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md#token-usage-compaction-and-liveness).
+
 ### Native AutoByteus
 
 `LlmPhase` reports one observation per provider call (a model call) with the
@@ -435,6 +445,7 @@ replaces them. No local estimate is made.
 | Codex | No | Compacts when the previous context reaches its limit; the post-compaction size is reported |
 | Antigravity | No | Internal |
 | Grok Build | No | — |
+| DeepSeek Harness | No | dsh's own setting; its compaction calls are seen by the provider relay |
 
 A runtime's own reading can be above its window: Codex just before it compacts,
 or the Claude SDK after a failed compaction. The meter shows the true number and
@@ -719,16 +730,22 @@ records:
 
 ### Standalone Run Roll-Up
 
-A standalone run's usage includes its delegated copies and the members of its
-Team copies (recursively), as a Team run's usage
-includes its members (REQ-006). `StandaloneRunTokenUsageSummaryService`
-(`token-usage/services/`) reads the run's collaboration tree (the live root's
-tree, else the stored package; see
-[Standalone Agent Run Root](./standalone_agent_run_root.md)) and
+A standalone run's usage includes the runs delegated from it, recursively, open
+and closed, and their team members, as a Team run's usage includes its members
+(REQ-006). `StandaloneRunTokenUsageSummaryService` (`token-usage/services/`) asks
+`DelegatedRunAgentsReader` for those runs' agent run IDs (from the Task entries,
+each run's agents from its own file; autobyteus-461) and
 `TokenUsageRunStore.getStandaloneRunSummary` sums the records of the host and
 every child run ID once each. Children carry no root attribution, and none is
-needed: the tree lists their run IDs, so existing runs roll up with no migration.
-A run without a package is its host alone (equal to the exact-run summary).
+needed. A run that delegated nothing is its host alone (equal to the exact-run
+summary).
+
+A Team or Org run's total (`getTeamRunTokenUsageSummary`, by its run ID) is its own
+records (those that name it as their root team run) plus the records of every agent of
+the runs delegated from it, recursively, open and closed, each record once
+(`TokenUsageRunStore.getTeamRunSummary(rootTeamRunId, delegatedAgentRunIds)`;
+autobyteus-461, REQ-009). As for a standalone run, the identity, latest prompt, context
+window and model stay the run's own.
 
 Totals, costs, pricing and report count cover every record. The latest prompt,
 context window, latest model, runtime and run identity stay those of the host
@@ -828,6 +845,10 @@ Settings > Token Statistics has two sibling views:
   run tables, Model diagnostic grouping, sorting, expansion, cost disclosure,
   first-observed fallback, retained loading/error/empty states, and
   history-migration guidance under `tokenUsageRunStatistics`.
+  Its cost breakdown shows 5-minute and 1-hour cache writes (tokens and cost)
+  in their own rows, as the live Token Meter does, using the aggregate's
+  `cacheCreation5m/1hInputTokens` and `estimatedApiCacheCreation5m/1hInputCost`;
+  writes without a split keep one "Cache writes" row.
 
 Task rows continue to render backend-provided `children`, `rootTeamRunId`,
 `runId`, display fields, models, totals, and cost statuses. The frontend must not

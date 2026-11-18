@@ -1,0 +1,60 @@
+// Direct, 0-token answers of each runtime (no prompt, no identity printed), to validate list_available_agent_runtimes.
+import { spawn, execFileSync } from "node:child_process";
+import readline from "node:readline";
+const sdkPath = process.argv[2];
+const out = {};
+const jsonRpc = (cmd, args, init) => {
+  const p = spawn(cmd, args, { cwd: "/tmp/routing-probes", stdio: ["pipe", "pipe", "ignore"] });
+  const pending = new Map(); let id = 0;
+  readline.createInterface({ input: p.stdout }).on("line", (l) => { let m; try { m = JSON.parse(l); } catch { return; } if (m.id != null && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } });
+  const req = (method, params) => new Promise((res) => { const i = ++id; pending.set(i, res); p.stdin.write(JSON.stringify({ ...(init ?? {}), id: i, method, params }) + "\n"); setTimeout(() => { if (pending.has(i)) { pending.delete(i); res({ timeout: true }); } }, 20000); });
+  return { req, p };
+};
+// Codex: app-server rate limits + model list
+{
+  const { req, p } = jsonRpc("codex", ["app-server"]);
+  await req("initialize", { clientInfo: { name: "direct-check", version: "0" } });
+  p.stdin.write(JSON.stringify({ method: "initialized" }) + "\n");
+  const rl = (await req("account/rateLimits/read", {})).result;
+  const ml = (await req("model/list", {})).result;
+  out.codex = {
+    windows: Object.values(rl.rateLimitsByLimitId ?? { x: rl.rateLimits }).flatMap((e) => ["primary", "secondary"].map((k) => e[k]).filter(Boolean).map((w) => ({ mins: w.windowDurationMins, usedPercent: w.usedPercent, resetsAt: new Date(w.resetsAt * 1000).toISOString(), reached: e.rateLimitReachedType ?? null, hasCredits: e.credits?.hasCredits ?? null }))),
+    models: (ml.data ?? []).filter((m) => !m.hidden).map((m) => m.id), hiddenModels: (ml.data ?? []).filter((m) => m.hidden).map((m) => m.id),
+  };
+  p.kill();
+}
+// Claude: SDK get_usage + supportedModels on an idle query
+{
+  const { query } = await import(sdkPath);
+  let release; const idle = new Promise((r) => { release = r; });
+  async function* input() { await idle; }
+  const q = query({ prompt: input(), options: { pathToClaudeCodeExecutable: execFileSync("which", ["claude"]).toString().trim(), cwd: "/tmp/routing-probes", permissionMode: "plan" } });
+  const u = await q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET({ skipBehaviors: true });
+  const models = await q.supportedModels();
+  out.claude = { cost: u.session?.total_cost_usd, limits: (u.rate_limits?.limits ?? []).map((l) => ({ kind: l.kind, scope: l.scope?.model?.display_name ?? null, usedPercent: l.percent, resetsAt: l.resets_at })), models: models.map((m) => `${m.value} | ${m.displayName}`) };
+  release(); q.close?.();
+}
+// Antigravity: /usage and models
+{
+  const usage = JSON.parse(execFileSync("agy", ["-p", "/usage", "--output-format", "json"], { cwd: "/tmp" }).toString());
+  out.antigravity = {
+    tokens: usage.usage?.total_tokens,
+    groups: usage.command.data.groups.map((g) => ({ group: g.name, families: g.description, buckets: g.buckets.map((b) => ({ window: b.window, disabled: !!b.disabled, remainingFraction: b.remaining_fraction, resetsAt: b.reset_time })) })),
+    models: execFileSync("agy", ["models"], { cwd: "/tmp" }).toString().trim().split("\n").filter((l) => l.includes("\t")).map((l) => l.replace("\t", " | ")),
+  };
+}
+// Grok: ACP initialize (models) + _x.ai/billing
+{
+  const { req, p } = jsonRpc("grok", ["agent", "--no-leader", "stdio"], { jsonrpc: "2.0" });
+  const init = (await req("initialize", { protocolVersion: 1, clientCapabilities: {} })).result;
+  const bill = (await req("_x.ai/billing", {})).result;
+  out.grok = { models: (init?._meta?.modelState?.availableModels ?? []).map((m) => `${m.modelId} | ${m.name} | ${m._meta?.totalContextTokens}`), period: bill?.config?.currentPeriod, creditUsagePercent: bill?.config?.creditUsagePercent ?? null, tier: bill?.config?.subscriptionTier ?? bill?.subscription_tier ?? "(not printed)" };
+  p.kill();
+}
+// LM Studio
+{
+  const lm = await fetch("http://localhost:1234/api/v1/models").then((r) => r.json());
+  out.lmstudio = lm.models.map((m) => `${m.key} | ${m.type} | ${m.max_context_length}`);
+}
+console.log(JSON.stringify(out, null, 1));
+process.exit(0);

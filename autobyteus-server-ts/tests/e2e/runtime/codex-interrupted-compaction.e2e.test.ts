@@ -3,14 +3,13 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, onTestFinished } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -24,6 +23,8 @@ import { CodexAppServerClient } from "../../../src/runtime-management/codex/clie
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 // Live proof that an interrupted Codex automatic compaction is closed as failed (REQ-C01, AC-C01d)
 // through the real AgentRun, Codex backend, app server and memory recorder. As in probe C10, the app
@@ -39,8 +40,7 @@ const dataDump = (label: string) => `Data dump ${label}. Do not analyze. Reply w
     `Record ${i}: the quick brown fox ${i * 7} jumps over lazy dog ${i * 13}; checksum ${(i * 2654435761) % 1000003}.`).join("\n");
 
 const unusedBackendFactory: AgentRunBackendFactory = {
-  createBackend: async () => { throw new Error("Unexpected backend factory use."); },
-  restoreBackend: async () => { throw new Error("Unexpected backend restore use."); },
+  beginPreparation: () => { throw new Error("Unexpected backend factory use."); },
 };
 const noopSidecar = () => ({ attachToRun: () => () => undefined });
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,7 +57,8 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
   let runId: string | null = null;
 
   afterEach(async () => {
-    if (threadManager && runId) await threadManager.terminateThread(runId).catch(() => undefined);
+    const thread = threadManager && runId ? threadManager.getThread(runId) : null;
+    if (threadManager && runId && thread) await threadManager.terminateThread(runId, thread).catch(() => undefined);
     if (clientManager) await clientManager.close();
     clientManager = null; threadManager = null; runId = null;
     await Promise.all(tempDirs.splice(0).map((dir) => fsPromises.rm(dir, { recursive: true, force: true })));
@@ -72,7 +73,7 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       createClient: (cwd) => new CodexAppServerClient({ command: "codex",
         args: ["app-server", "-c", "model_auto_compact_token_limit=20000"], cwd, requestTimeoutMs: 45_000 }),
     });
-    threadManager = new CodexThreadManager(clientManager, undefined, new CodexClientThreadRouter());
+    threadManager = new CodexThreadManager(clientManager, new CodexClientThreadRouter());
     const available = (await new CodexModelCatalog(clientManager).listModels(workspaceRoot))
       .map((model) => model.model_identifier);
     const model = [process.env.CODEX_COMPACTION_E2E_MODEL?.trim(), "gpt-5.6-luna", "gpt-5.4-mini", "gpt-5.6-sol"]
@@ -81,10 +82,13 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
 
     const recorder = new AgentRunMemoryRecorder();
     const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+    // Every run has an Agent Tools MCP session, so the live Codex run needs a live endpoint.
+    const agentTools = await startAgentToolsMcpTestHost();
+    onTestFinished(() => agentTools.close());
     const manager = new AgentRunManager({
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: new CodexAgentRunBackendFactory(threadManager, new CodexThreadBootstrapper(
-        { activateForRun: () => ({ kind: "not_exposed" }) },
+        agentTools.runSessions,
         { materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }) } as never,
         { resolveWorkingDirectory: async () => workspaceRoot } as never,
         { getAgentDefinitionById: async () => ({ name: "Codex Compaction Agent", skillNames: [], toolNames: [],
@@ -92,23 +96,25 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
         { resolveConfiguredSkillBindingsForAgent: () => [], resolveSkillScope: () => "CONFIGURED",
           hasEffectiveSkills: () => false } as never,
         clientManager,
-      ), new CodexThreadCleanup(undefined, clientManager)),
+      ), agentTools.runSessions),
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({
         runSessions: deactivator, runFileChangeService: noopSidecar() as never,
-        publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder, workJournalUpdater: noopSidecar() as never,
-        mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined } })),
+        publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: noopSidecar() as never,
+        mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined }, runPasses: null })),
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
+      runPasses: null,
     });
     runId = `run-codex-compaction-${randomUUID()}`;
-    const run = (await manager.prepareNewAgentRun({ runId, config: new AgentRunConfig({
+    const run = (await manager.beginActivation({ kind: "new", runId, config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentDefinitionId: "agent-def-codex-compaction", llmModelIdentifier: model!,
       autoExecuteTools: false, workspaceId: "workspace-codex-compaction", memoryDir, llmConfig: { reasoning_effort: "low" },
-    }) })).commitPublication();
+    }) }).prepare()).commitPublication();
     const events: AgentRunEvent[] = [];
     run.subscribeToEvents((event) => { if (event && typeof event === "object") events.push(event as AgentRunEvent); });
     const turnsCompleted = () => events.filter((event) => event.eventType === AgentRunEventType.TURN_COMPLETED).length;

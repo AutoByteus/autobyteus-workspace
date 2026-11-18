@@ -1,0 +1,5 @@
+# IMP-03 web guards, rerun for IR-006 (implementation engineer, autobyteus-277)
+# Commands: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals (each exit 0)
+# Commit: ed20da1cd1 (the latest-base merge; run on its tree before the commit was made); environment: macOS, Node v22.23.1; date 2026-11-06T15:56Z
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.

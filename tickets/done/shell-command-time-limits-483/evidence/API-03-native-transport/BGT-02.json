@@ -1,0 +1,242 @@
+{
+  "pid": 95790,
+  "endedBeforeTurnEndMs": 3032,
+  "noticeAfterTurnMs": 2030,
+  "requests": [
+    {
+      "at": 1794915495704,
+      "repliedAt": 1794915495704,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task",
+        "search_memory"
+      ],
+      "toolResults": [],
+      "lastUser": "CASE:BGT-02 Start the check in the background, then answer."
+    },
+    {
+      "at": 1794915495864,
+      "repliedAt": 1794915500867,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task",
+        "search_memory"
+      ],
+      "toolResults": [
+        "{\"pid\":95790,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-Ok1Ri4\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10/call-1794915495848-95759.log\"}"
+      ],
+      "lastUser": "CASE:BGT-02 Start the check in the background, then answer."
+    },
+    {
+      "at": 1794915502929,
+      "repliedAt": 1794915502929,
+      "scripted": true,
+      "noticeTurn": true,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task",
+        "search_memory"
+      ],
+      "toolResults": [],
+      "lastUser": "[Platform notice — background tasks finished]\n\n- pid 95790 `sleep 2; echo failing; exit 3`: exit code 3 after 2s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10/call-1794915495848-95759.log. Last lines:\n    failing"
+    }
+  ],
+  "frames": [
+    {
+      "type": "AGENT_STREAM_SNAPSHOT",
+      "at": 1794915495672,
+      "payload": "{\"stored\":{\"runId\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\",\"conversation\":[],\"activities\":[{\"kind\":\"system_instruction\",\"activityId\":\"rt_1794915495642_b3182886-5830-4e71-8a54-34afb1e65495\",\"content\":\"## Agent Identity\\n\\n- Name: native-bgt-fbc567ba\\n- Description: Live native-runtime validation agent.\\n\\n### Responsibilities and Boundaries\\n\\nRun the shell commands you are asked to run.\\n\\n## Working With Other Agents\\n\\nYou can delegate tasks to other agents and agent teams.\\n\\n- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a "
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915495701,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "at": 1794915495701,
+      "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\",\"message_id\":\"e2e-42b87142-e450-4be9-ac33-1cfb0bf30776\",\"dedupe_key\":\"agent_run_input:e2e:e2e-42b87142-e450-4be9-ac33-1cfb0bf30776\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}}"
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "at": 1794915495701,
+      "payload": "{\"trace_id\":\"rt_1794915495642_b3182886-5830-4e71-8a54-34afb1e65495\",\"content\":\"## Agent Identity\\n\\n- Name: native-bgt-fbc567ba\\n- Description: Live native-runtime validation agent.\\n\\n### Responsibilities and Boundaries\\n\\nRun the shell commands you are asked to run.\\n\\n## Working With Other Agents\\n\\nYou can delegate tasks to other agents and agent teams.\\n\\n- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915495702,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794915495702,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794915495734,
+      "payload": "{\"id\":\"call-bd469a18-876\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_CONTENT_BATCH",
+      "at": 1794915495734,
+      "payload": "{\"items\":[{\"id\":\"call-bd469a18-876\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"delta\":\"{\\\"command\\\":\\\"sleep 2; echo failing; exit 3\\\",\\\"run_in_background\\\":true}\"}]}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794915495734,
+      "payload": "{\"id\":\"call-bd469a18-876\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"sleep 2; echo failing; exit 3\",\"run_in_background\":true}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794915495734,
+      "payload": "{\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-bd469a18-876\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"sleep 2; echo failing; exit 3\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794915495734,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10, Tool: run_bash, Invocation_ID: call-bd469a18-876, Arguments: command: sleep 2; echo failing; exit 3\\nrun_in_background: true\",\"tool_invocation_id\":\"call-bd469a18-876\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794915495864,
+      "payload": "{\"task_id\":\"95790\",\"kind\":\"shell\",\"description\":\"sleep 2; echo failing; exit 3\",\"command\":\"sleep 2; echo failing; exit 3\",\"status\":\"running\",\"summary\":null,\"end_reason\":null,\"exit_code\":null,\"started_at\":\"2026-11-17T11:38:15.848Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794915495864,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] pid: 95790\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-Ok1Ri4\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10/call-1794915495848-95759.log\",\"tool_invocation_id\":\"call-bd469a18-876\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794915495864,
+      "payload": "{\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-bd469a18-876\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":95790,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-Ok1Ri4\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10/call-1794915495848-95759.log\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794915495864,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10, Tool: run_bash, Invocation_ID: call-bd469a18-876, Result: pid: 95790\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-Ok1Ri4\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10/call-1794915495848-95759.log\",\"tool_invocation_id\":\"call-bd469a18-876\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794915497867,
+      "payload": "{\"task_id\":\"95790\",\"kind\":\"shell\",\"description\":\"sleep 2; echo failing; exit 3\",\"command\":\"sleep 2; echo failing; exit 3\",\"status\":\"failed\",\"summary\":null,\"end_reason\":null,\"exit_code\":3,\"started_at\":\"2026-11-17T11:38:15.848Z\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794915500899,
+      "payload": "{\"id\":\"turn_cdde3729af7a4137bf7ea20b37ed6849:21ba68a0630c49dba77182d2ffcfc4f5\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_CONTENT_BATCH",
+      "at": 1794915500899,
+      "payload": "{\"items\":[{\"id\":\"turn_cdde3729af7a4137bf7ea20b37ed6849:21ba68a0630c49dba77182d2ffcfc4f5\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"delta\":\"Still working on the answer.\"}]}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794915500899,
+      "payload": "{\"id\":\"turn_cdde3729af7a4137bf7ea20b37ed6849:21ba68a0630c49dba77182d2ffcfc4f5\",\"turn_id\":\"turn_0001\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794915500899,
+      "payload": "{\"content\":\"Still working on the answer.\",\"image_urls\":[],\"audio_urls\":[],\"video_urls\":[],\"is_error\":false}"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794915500899,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915500899,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915500899,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915500899,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915502924,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915502924,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "SYSTEM_TASK_NOTIFICATION",
+      "at": 1794915502924,
+      "payload": "{\"sender_id\":\"system.background_task_notifier\",\"content\":\"[Platform notice — background tasks finished]\\n\\n- pid 95790 `sleep 2; echo failing; exit 3`: exit code 3 after 2s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10/call-1794915495848-95759.log. Last lines:\\n    failing\"}"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794915502928,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794915502946,
+      "payload": "{\"id\":\"turn_6891099d455f402d94cda0042448eb54:7c909b802d2f40419b635e538f6ab5f6\",\"turn_id\":\"turn_0002\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_CONTENT_BATCH",
+      "at": 1794915502946,
+      "payload": "{\"items\":[{\"id\":\"turn_6891099d455f402d94cda0042448eb54:7c909b802d2f40419b635e538f6ab5f6\",\"turn_id\":\"turn_0002\",\"segment_type\":\"text\",\"delta\":\"Noted the failure.\"}]}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794915502946,
+      "payload": "{\"id\":\"turn_6891099d455f402d94cda0042448eb54:7c909b802d2f40419b635e538f6ab5f6\",\"turn_id\":\"turn_0002\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794915502946,
+      "payload": "{\"content\":\"Noted the failure.\",\"image_urls\":[],\"audio_urls\":[],\"video_urls\":[],\"is_error\":false}"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794915502946,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915502946,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915502946,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794915502946,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_fbc567ba_d54847e27f5a480098906d8e44cc7d10\"}"
+    }
+  ]
+}

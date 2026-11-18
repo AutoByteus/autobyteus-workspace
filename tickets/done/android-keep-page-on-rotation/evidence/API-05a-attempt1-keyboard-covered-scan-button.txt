@@ -1,0 +1,29 @@
+# NOTE: attempt 1, not a result. After typing, the on-screen keyboard covered SCAN QR, so the tap landed on the keyboard and the scanner never opened (focus stayed MainActivity); the BACK only closed the keyboard; the field clearing was incomplete. Repeated in API-05-qr-scanner-across-rotation.txt.
+# Case: API-05 — the QR scanner across a rotation (REQ-003, SCN-001c), with a no-rotation baseline
+# Steps: camera permission granted beforehand (pm grant); native connection screen (Back from the page); tap the address field, adb shell input text <URL>; tap SCAN QR; check the scanner is in front; [with rotation: adb emu rotate while the scanner shows]; KEYCODE_BACK; read the connection screen (uiautomator); rotate back to 0°
+# Commit: dd129696a4; emulator autobyteus277_api35
+# Date: 2026-11-06T20:46:20Z
+
+## baseline (no rotation)
+typed: 'http://abx415-qr-baseline.example:8000/mobile' [android.widget.EditText] [52,1202][1028,1372] checked=false
+scanner: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+after back: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+field: 'http://abx415-qr-baseline.example:8000/mobile' [android.widget.EditText] [52,1202][1028,1372] checked=false
+screen texts:
+'AutoByteus mobile' [TextView] [52,209][1028,301]
+'Open the existing /mobile shell from a saved desktop node. Pair with the same stable Tailscale URL you expect ' [TextView] [52,301][1028,448]
+'SAVED NODES' [TextView] [52,470][1028,513]
+'AutoByteus Desktop' [TextView] [88,544][992,601]
+'http://10.0.2.2:50364/mobile' [TextView] [88,601][992,644]
+'OPEN' [Button] [88,654][532,780]
+'REMOVE' [Button] [548,654][992,780]
+'AutoByteus Desktop' [TextView] [88,852][992,909]
+
+## with rotation while the scanner shows
+typed: 'http://abx415-qr-rotation.example:8000/mobile0/mobile' [android.widget.EditText] [52,1202][1028,1372] checked=false
+scanner: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+rotated: mRotation=3 scanner: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+after back: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+field: 'http://abx415-qr-rotation.example:8000/mobile0/mobile' [android.widget.EditText] [52,938][2212,1080] checked=false
+back at mRotation=0: field: 'http://abx415-qr-rotation.example:8000/mobile0/mobile' [android.widget.EditText] [52,1202][1028,1372] checked=false
+app pid: 5815

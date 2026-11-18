@@ -2,25 +2,35 @@
   <span
     class="inline-flex flex-shrink-0 items-center"
     role="img"
-    :aria-label="$t(statusLabelKey)"
-    :title="$t(statusLabelKey)"
+    :aria-label="label"
+    :title="label"
     data-test="team-aggregate-status-dot"
-    :data-status="props.status"
+    :data-status="activity.kind === 'background' ? 'background' : props.status"
   >
-    <StatusDot :status="props.status" />
+    <StatusDot :status="activity.status" :background-tasks-running="activity.backgroundTasksRunning ?? 0" />
   </span>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
-import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
+import { useLocalization } from '~/composables/useLocalization';
+import { agentActivityLabel, agentActivityPresentation } from '~/utils/agentActivityPresentation';
+import { teamActivityOf, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   status: TeamStatus;
-}>();
+  /** The sum of the Team's own agents' running background tasks (autobyteus-448). */
+  backgroundTasksRunning?: number;
+}>(), {
+  backgroundTasksRunning: 0,
+});
 
-const statusLabelKey = computed(() => (
-  `workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_${props.status}`
-));
+const { t } = useLocalization();
+const activity = computed(() => {
+  const shown = teamActivityOf(props.status, props.backgroundTasksRunning);
+  return { ...shown, kind: agentActivityPresentation(shown).kind };
+});
+const label = computed(() => agentActivityLabel(activity.value, t,
+  () => t(`workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_${props.status}`)));
 </script>

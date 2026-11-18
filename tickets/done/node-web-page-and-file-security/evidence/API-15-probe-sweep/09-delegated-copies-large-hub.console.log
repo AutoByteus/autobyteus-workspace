@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:delegated-copies-large-hub /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/delegated-copies-large-hub-probe.mjs --seed-to /tmp/api416-15-seed-GozQ/hub --teams 5 --unrelated 10
+
+[2026-11-07T22:32:28.216Z] SEED start: Seed 5 Team copies, 10 unrelated team runs through public APIs
+  report commands: 5 acks; problems: []; first ack: {"type":"AGENT_COMMAND_ACK","payload":{"root_subject_kind":"agent","root_run_id":"large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee","command_id":"564b2286-a62d-45a7-ae5b-65b7feb9a4f2","command_type":"SEND_MESSAGE","target_agent_run_id":"solution_designer_0eb49e79e5e840d788fe5c12d7536060","st
+  message log: {"at":"2026-11-07T22:32:49.929Z","liveViewMessages":27,"liveViewReports":25,"storedMessages":27,"storedReports":25,"storedFiles":["communication_messages_active.jsonl"]}
+[2026-11-07T22:32:51.223Z] SEED Pass
+{"result":"Seeded","label":"current","cases":{"SEED":"Pass"},"errors":0,"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":81754,"status":"terminated","exit":0},"backendPortClosed":true,"frontendPortClosed":true,"seedKept":"/tmp/api416-15-seed-GozQ/hub (test-owned seed; remove after the measurements)"},"evidencePath":"/tmp/api416-15-seed-GozQ/hub-seed-evidence/evidence.json"}

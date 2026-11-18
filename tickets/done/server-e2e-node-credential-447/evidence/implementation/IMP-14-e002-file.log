@@ -1,0 +1,9 @@
+# IMP-14 D10: remove-built-in-project-task-manager-startup file alone; working tree = 8b7c60e343 + D10; rebuilt dist (IMP-13); macOS, Node v22.23.1; 2026-11-10T08:37:39Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts --no-watch
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 16568ms
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  4091ms
+     ✓ E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued  4395ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  3409ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  4672ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

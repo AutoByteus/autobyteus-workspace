@@ -1,0 +1,37 @@
+IMP-07 — full web unit/component suite (regression safety net); pre-existing-failure analysis (FU-003)
+Command: pnpm -C autobyteus-web test:nuxt --run
+Commit: c8ec06b5132870931b6833990e20db07642ccf45 (implementation commit)
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, pnpm 10.28.2 (via npx)
+Date: 2026-11-06
+
+Result on the implementation commit (run 1 and run 2, identical):
+
+ Test Files  32 failed | 672 passed (704)
+      Tests  242 failed | 4976 passed | 2 skipped (5220)
+
+Representative failure (every failing file shows the same root cause, a
+TypeError reading/writing window.localStorage):
+
+ FAIL  components/workspace/history/__tests__/RunSectionPanel.spec.ts > ...
+TypeError: Cannot read properties of undefined (reading 'clear')
+ ❯ components/workspace/history/__tests__/RunSectionPanel.spec.ts:483:25
+    483|     window.localStorage.clear()
+
+32 distinct failing files, none of which exercise this ticket's changed files
+(serverRuntimeEnv.ts, baseServerManager.ts, serverStatusManager.ts,
+stores/serverStore.ts, verify-packaged-server-startup.mjs): components/*,
+composables/*, pages/*, services/*, stores/* (chatDraftStore, appFontSizeStore,
+taskLocatorStore, projectsPanelStore, runSectionModeStore,
+agentOrgLaunchDraftStore), utils/* — see follow-ups.md FU-003 for the full list.
+
+Pre-existing confirmation (not caused by this change):
+  cd <worktree> && git stash push -u -m wip -- <this ticket's 11 changed/added files>
+  pnpm -C autobyteus-web test:nuxt components/workspace/history/__tests__/RunSectionPanel.spec.ts --run
+  -> identical failure (60/60 tests failed in that file, same TypeError at the
+     same line) on the base content, before this ticket's changes.
+  git stash pop   # changes restored
+
+Conclusion: these 242 failures are a pre-existing, deterministic (reproduced
+twice with identical counts) window.localStorage test-harness defect, unrelated
+to this ticket's scope. Recorded as FU-003 in follow-ups.md; not fixed here
+(out of scope, different subsystem, repository-wide impact).

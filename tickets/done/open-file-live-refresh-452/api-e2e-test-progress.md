@@ -1,0 +1,31 @@
+# API/E2E Test Progress — autobyteus-452
+
+- Execution coverage report: `api-e2e-execution-coverage-report.md`
+- Planned cases: the coverage investigation's Planned Cases (same case IDs)
+
+| Time | Case ID | Event | Result | Note |
+| --- | --- | --- | --- | --- |
+| 16:55 | — | Checkpoint | — | Base defect: two `MSP-32` cases (autobyteus-9, autobyteus-435) stop the probe at its start check; baseline fix `0da603e62e` (autobyteus-9's → MSP-37). API-01…03 reused from the handoff. |
+| 16:55 | MSP-38…41 | Started | — | Debug run (not evidence): `--cases=MSP-38,MSP-39,MSP-40,MSP-41 --output-dir=/tmp/api452-dev-1` |
+| 16:59 | MSP-38…41 | Completed | MSP-38, MSP-41 Pass; MSP-39, MSP-40 Fail (debug) | MSP-38: every rewrite on both surfaces in ~0.53 s, 1 read each, folder never read. MSP-41: 0 reads; 200 changes in 1 frame of 10 053 bytes, 200 unique paths, both surfaces. MSP-39: desktop PDF re-rendered with ratio 4.1 (my exact-4 check) → shape threshold. MSP-40: edit kept; own save: 1 write, 1 read-back — the base code does the same (mark consumed by the mutation result, the watcher's report read once), not a loop → AC-004's wording asserted (≤ 1 read-back, 1 write). |
+| 16:59 | MSP-39, MSP-40 | Started | — | Debug run 2 → /tmp/api452-dev-2 |
+| 17:01 | MSP-38…40 | Completed | Pass (debug) | MSP-39: image 80×30 and root 60×20 in ~0.53 s, PDF ratio 2 → 4 in 0.64 s on both; MSP-40: edit kept, 1 write, 1 read-back. |
+| 17:01 | API-04, MSP-38…41 | Started | — | Full probe (evidence): `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<ticket>/evidence/API-04-mobile-shell-probe` |
+| 17:23 | API-04 | Completed | Fail (3 cases outside this ticket) | 41 cases: every case Pass except MSP-24, MSP-34, MSP-35 (closed-rows, after TODO: `nodeStillClosed:false`, rows not listed); MSP-38…41 (now MSP-39…42) Pass; `unknownBrowserErrors 0`; cleanup `serversLeft 0`, `rootRemoved true` |
+| 17:25 | MSP-24/34/35 | Checkpoint | — | Cause (Rule 9): since autobyteus-469 a stopped copy of a closed Task leaves its root's tree, and `closed_task_executions` name only closed copies still in the tree. After TODO the view names the copy nowhere, so "not named closed" ≠ "listed". The status digest is unchanged (`3:dde197b4`), so the copy is still closed. The cases are stale; this ticket's code is not in this path. Same as autobyteus-471's FU-003 |
+| 17:27 | API-06 | Completed | MSP-24 Pass, MSP-34/35 Fail (fix check) | First fix read `execution_tree` at the view's top level. The new before-close check showed `nodeListed:false` while every surface listed the row → `API-06-closed-rows-rerun-1-wrapper-miss/` |
+| 17:33 | — | Checkpoint | — | Debug dump (`/tmp`): the view is `{root_subject_kind, root_run_id, root_agent:{execution_tree, closed_task_executions,…}}`; the helper reads `root_agent`. MSP-24 gets the before-close check too (its first pass was vacuous) |
+| 17:39 | API-06 | Completed | Pass | MSP-24…27, 34, 35 all Pass. Node lists the copy before the close (`true` ×3), after TODO `false` on the node and on every surface; digest unchanged. Baseline fix `e30dd1b15e` |
+| 17:40 | — | Checkpoint | — | autobyteus-471 already on `personal` (`ed481ae4ca`): renumbered the same duplicate to MSP-38, changes `_reloadOpenFile`. Design: whoever merges second rebases and reruns the other's cases. Own cases → MSP-39…42 (`02650fba10`); merge `2da34f6644` (conflict only the model-sheet ID → personal's MSP-38); 42 IDs, no duplicates |
+| 17:45 | API-07 | Completed | Pass | server build, `build:mobile-web` from `2da34f6644`; `contentChangeFor` in server dist 2 files; 471's `node-file` route in the phone bundle 2 files |
+| 17:50 | API-08 | Completed | Pass after a baseline fix | server file-explorer 81/81; web full suite 752 files, 5684 passed, 2 skipped; typechecks at baseline (web 93/40, server 1180/364), guards Passed. Server unit: 7581 passed, 1 failed: `memory-layout-cleanup-regression` timed out at 5 s (reads 3,487 files; 0.6–1.9 s alone ×3; the full run's import time was 529 s) → baseline fix `3db909124e` (30 s limit for the read); rerun below |
+| 18:16 | API-09 | Started | — | full phone probe on the merged state → `evidence/API-09-merged-mobile-shell-probe/` |
+| 18:43 | API-09 | Completed | 41 Pass, MSP-22 Fail | 452's MSP-39…42 Pass (527–580 ms; PDF 633 ms; burst 1 frame / 10,053 B / 200 paths; 0 reads); 471's MSP-37 Pass; MSP-24/34/35 Pass (node listed before `true` ×3); `unknownBrowserErrors 0`; cleanup clean. MSP-22(c): no Team attempt counted within 2 s of visible |
+| 18:50 | MSP-22 | Checkpoint | — | Cause (Rule 9): the Team phone's console shows its attempt right after visible ending "in connection establishment: ERR_SOCKET_NOT_CONNECTED", then the 2 s retry. Playwright reports no `websocket` event for such a socket; the probe counted attempts from that event. 3 instrumented reruns (`/tmp/api452-msp22-*`): Pass |
+| 19:10 | API-11 | Completed | Pass | baseline fix `899839dcae` (attempts recorded where the page constructs the WebSocket); MSP-21…23 Pass; Team attempt 6 ms after visible; standalone check 30 attempts / 0 `websocket` events |
+| 19:20 | API-10 | Completed | search-pdf-preview Pass; pending-save-draft PSD-005 Fail (1 of 11) | — |
+| 19:45 | PSD-005 | Checkpoint | — | Store-level order spec (temporary): pre-452 and merged code both read once after the own Save and end clean; 3 plain reruns Pass; re-read delayed 400 ms: 2 of 3 Fail ("clean after settle"). Cause: an editor value emission during the post-save re-read (`content` null) stores a draft equal to the saved text; same path before 452 → FU-002 |
+| 19:50 | API-08 | Started | — | full server unit rerun after `3db909124e` |
+| 19:55 | API-08 | Completed | Server unit run 2: memory-layout Pass; 1 Fail | `pairing-auth-service` "exchanges a single-use code…": ENOTEMPTY in `afterEach`. Cause: the verified phone's last-seen is saved in the background by design, and the folder was removed while that write ran. Leftover folder `…-THZIFx` (this run, removed), 36 older ones since 2026-11-08 → baseline fix `0298663b07`; 10 of 10 alone; test typecheck at baseline |
+| 19:58 | API-08 | Started | — | full server unit run 3 (final) |
+| 20:16 | API-08 | Completed | Pass | server unit run 3 at `0298663b07`: 895 files passed, 4 skipped; 7582 tests passed, 7 skipped; exit 0. Round complete: Pass → Delivery Engineer |

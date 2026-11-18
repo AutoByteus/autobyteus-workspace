@@ -12,6 +12,8 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { OTHER_TASK_REFUSAL, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
@@ -19,6 +21,8 @@ export type GlobalAgentRunMessageDeliveryInput = {
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
+  /** How the sender named the receiver, when by address (the result's "Delivered message to …"). */
+  shownAs?: string;
 };
 
 type ActiveRunLookup = Pick<AgentRunManager, "getActiveRun">;
@@ -40,23 +44,14 @@ const normalizeReferenceFiles = (referenceFiles: string[] | null | undefined): s
   Array.isArray(referenceFiles) ? [...referenceFiles] : [];
 
 export class GlobalAgentRunMessageRouter {
-  private static instance: GlobalAgentRunMessageRouter | null = null;
-
-  static getInstance(): GlobalAgentRunMessageRouter {
-    if (!GlobalAgentRunMessageRouter.instance) {
-      GlobalAgentRunMessageRouter.instance = new GlobalAgentRunMessageRouter();
-    }
-    return GlobalAgentRunMessageRouter.instance;
-  }
-
-  static resetInstance(): void {
-    GlobalAgentRunMessageRouter.instance = null;
-  }
-
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
-  } = {}) {}
+    /** Messages between two runs of this node (DS-2); created by the composition root. */
+    crossRun: Pick<CrossRunMessageDelivery, "route">;
+    /** A team run's coordinator when the team does not run (R-12, SR-071): the tree, its one owner. */
+    coordinators: Pick<DelegationIndex, "teamCoordinatorOf">;
+  }) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
     const targetAgentRunId = normalizeRequired(input.targetAgentRunId, "targetAgentRunId");
@@ -85,8 +80,18 @@ export class GlobalAgentRunMessageRouter {
       return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
     }
 
-    // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID.
-    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId);
+    // DS-2: an agent of another run that a Task relates to the sender's run (CrossRunMessageDelivery: the tree's rule,
+    // the receiver restored when stopped, both runs' logs).
+    const crossRun = input.sender.memberExecutionContext ? this.deps.crossRun : null;
+    if (crossRun) {
+      const routed = await crossRun.route({ sender: input.sender.memberExecutionContext!.identity, senderDisplayName: input.sender.senderName,
+        targetAgentRunId, content, messageType, referenceFiles, ...(input.shownAs ? { shownAs: input.shownAs } : {}) });
+      if (routed) return routed;
+    }
+
+    // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID, whether the
+    // team runs or not (R-12, SR-071).
+    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId) ?? await this.deps.coordinators.teamCoordinatorOf(targetAgentRunId);
     if (coordinator) {
       const result = {
         accepted: false,
@@ -121,6 +126,8 @@ export class GlobalAgentRunMessageRouter {
       } satisfies AgentOperationResult;
       return result;
     }
+    // R-9 (contract §2.2): another run that no Task relates to the sender's run (a legacy run, a deleted Task's run).
+    if (senderTeam && targetTeam && crossRun) return { accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: OTHER_TASK_REFUSAL };
 
     const messageId = buildDirectAgentRunMessageId();
     const createdAt = new Date().toISOString();
@@ -177,6 +184,3 @@ export class GlobalAgentRunMessageRouter {
   }
 
 }
-
-export const getGlobalAgentRunMessageRouter = (): GlobalAgentRunMessageRouter =>
-  GlobalAgentRunMessageRouter.getInstance();

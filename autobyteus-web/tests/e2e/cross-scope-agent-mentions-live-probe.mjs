@@ -29,6 +29,10 @@ import path from 'node:path'
 import process from 'node:process'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs'
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess()
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
@@ -97,8 +101,8 @@ const gql = async (query, variables = {}) => {
   return json.data
 }
 const startBackend = async (label) => {
-  const env = { ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' }
-  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, env)
+  const env = { ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' }
+  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(env))
   await waitFor(`${label} health`, async () => { assert(child.exitCode === null, `${label} exited`); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
   return child
 }
@@ -128,6 +132,9 @@ const REPORT_RULE = 'When another agent messages you or gives you work, do what 
   + 'task delegator address given in the message, and your one-sentence result as content. '
   + 'When the user talks to you directly, just reply in one short sentence without tools.' + TOOL_HINT
 const ids = {}
+// autobyteus-455: the Model Router is never offered; the Daily Assistant is, except in its own run or draft.
+const DAILY_ASSISTANT_ID = 'autobyteus-daily-assistant'
+const NEVER_OFFERED_AGENT_IDS = ['autobyteus-model-router']
 const createAgent = async (key, name, description, instructions) => {
   const r = await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}', { input: { name, description, instructions, toolNames: ['update_task'] } })
   ids[key] = r.createAgentDefinition.id
@@ -257,6 +264,8 @@ const waitHostIdle = (page, timeout = 300000) => waitFor('focused agent idle', (
 /** Not working on a turn: Idle, or Offline for a stopped agent that a send will wake. */
 const waitNotBusy = (page, timeout = 300000) => waitFor('focused agent not busy', () => headerStatusIs(page, ['Idle', 'Offline']), timeout, 1000)
 const agentRootView = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent ?? null
+// autobyteus-358: the run's view carries no messages; the host's Team tab loads its messages with this query.
+const hostMessages = async (runId) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: runId, a: runId }).catch(() => null))?.collaborationParticipantMessages?.messages ?? []
 const agentRunActive = async (runId) => {
   const r = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { agentDefinitions { runs { runId isActive status hasCollaboration } } } }')
   return r.listWorkspaceRunHistory.flatMap((w) => w.agentDefinitions).flatMap((a) => a.runs).find((run) => run.runId === runId)?.isActive ?? null
@@ -309,8 +318,7 @@ const sendInComposer = async (page, text) => {
   await page.keyboard.press('Enter')
 }
 const waitMessageFrom = (runId, childRunId, label) => waitFor(label, async () => {
-  const view = await agentRootView(runId)
-  return view?.communication_messages.messages.find((m) => m.senderAgentRunId === childRunId) ?? null
+  return (await hostMessages(runId)).find((m) => m.senderAgentRunId === childRunId) ?? null
 }, 300000, 1500)
 
 // SR-010 helpers ------------------------------------------------------------------------------
@@ -495,11 +503,13 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   await waitHostIdle(page)
   assert(collaboratorsOf(await agentRootView(state.agentRunId)).length === 0, 'collaborators before any mention')
 
-  // VIS-011: outside-run shared Agents, then Teams; own agent, Daily Assistant and Orgs not offered (UI unchanged).
+  // VIS-011: outside-run shared Agents, then Teams; own agent, the Model Router and Orgs not offered (UI unchanged).
+  // autobyteus-455 AC-005: the Daily Assistant is offered like any shared Agent.
   await openMenu(page)
   r.options = await menuOptions(page)
   assert(!r.options.includes(ids.research), 'host agent offered', r.options)
-  assert(!r.options.includes('autobyteus-daily-assistant') && !r.options.includes(ids.org), 'Daily Assistant or Org offered', r.options)
+  assert(r.options.includes(DAILY_ASSISTANT_ID), 'Daily Assistant not offered in another agent\'s run', r.options)
+  assert(!NEVER_OFFERED_AGENT_IDS.some((id) => r.options.includes(id)) && !r.options.includes(ids.org), 'Model Router or Org offered', r.options)
   assert(r.options.includes(ids.reviewer) && r.options.includes(ids.productTeam) && r.options.indexOf(ids.productTeam) > r.options.indexOf(ids.reviewer), 'candidate order wrong', r.options)
   r.menuText = await page.locator(sel('run-mention-menu')).innerText()
   r.footer = await page.locator(sel('run-mention-menu-footer')).innerText()
@@ -611,8 +621,8 @@ defineCase('A02', 'SCN-002 / AC-007 / AC-009: the user tells the host the notes 
   await waitHostIdle(page); await delay(1500)
   r.cards = await toolCards(page, RUN_VIEW)
   assert(r.cards.some((c) => /update_task/.test(c.text) && !c.error), 'expected a successful update_task card (AC-009)', r.cards)
-  const kept = await gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}', { h: state.agentRunId, a: NOTE_TAKER_ADDRESS, r: state.children.notes })
-  r.closedConversationEntries = kept.agentRunCollaborationMemberProjection?.conversation?.length ?? 0
+  const kept = await gql('query($r:String!){getRunProjection(runId:$r){conversation}}', { r: state.children.notes })
+  r.closedConversationEntries = kept.getRunProjection?.conversation?.length ?? 0
   assert(r.closedConversationEntries > 0, 'the closed copy\'s conversation must be kept', r)
   assert(collaboratorsOf(await agentRootView(state.agentRunId)).length === 0, 'collaborator entry after DONE')
   await shot(page, 'A02-row-gone-after-done')
@@ -738,10 +748,10 @@ defineCase('S01', 'AC-005 / SCN-004 (collaboration-model-contract): a send_messa
   r.tasksForCopy = (await adHocTasks()).filter((t) => t.resources.includes(copyNode.runId)).map((t) => t.id)
   assert(r.tasksForCopy.length === 1, 'the delegated copy has no ad-hoc Task', r)
   // The copy is reached by its run ID; the address still resolves to nothing for messaging.
-  const before = (await agentRootView(runId))?.communication_messages.messages.length ?? 0
+  const before = (await hostMessages(runId)).length
   await sendInComposer(page, `Use send_message_to with target_agent_run_id ${copyNode.runId} to ask the copy to reply with the single word READY.`)
   await waitFor('host message to the copy by run ID', async () => {
-    const msgs = (await agentRootView(runId))?.communication_messages.messages ?? []
+    const msgs = await hostMessages(runId)
     return msgs.length > before && msgs.slice(before).some((m) => m.senderAgentRunId === runId && m.receiverAgentRunId === copyNode.runId)
   }, 300000, 1500)
   await waitHostIdle(page)
@@ -803,8 +813,10 @@ defineCase('T01', 'SCN-001 Team run: VIS-001 menu; @Product Team → no Team col
   assert(researcherRunId, 'researcher run id', await teamTree(state.teamRunId))
   await openMenu(page)
   r.options = await menuOptions(page)
-  // mention-candidates-in-run REQ-001: configured shared members are offered; only the run's own Team, Orgs and built-ins are not.
-  assert(![ids.reviewTeam, ids.org, 'autobyteus-daily-assistant'].some((id) => r.options.includes(id)), 'the run\'s own Team, an Org or a built-in offered in the Team run', r.options)
+  // mention-candidates-in-run REQ-001: configured shared members are offered; only the run's own Team, Orgs and the
+  // Model Router are not. autobyteus-455 AC-005: the Daily Assistant is offered.
+  assert(![ids.reviewTeam, ids.org, ...NEVER_OFFERED_AGENT_IDS].some((id) => r.options.includes(id)), 'the run\'s own Team, an Org or the Model Router offered in the Team run', r.options)
+  assert(r.options.includes(DAILY_ASSISTANT_ID), 'Daily Assistant not offered in the Team run', r.options)
   assert(r.options.includes(ids.researcher) && r.options.includes(ids.writer), 'configured shared members not offered in the Team run (REQ-001)', r.options)
   assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer), 'outside definitions missing', r.options)
   await shot(page, 'T01-01-team-run-at-menu')
@@ -1162,7 +1174,6 @@ defineCase('N01', 'New chat: the heading switcher picks the target; `@` mentions
 
 // run-settings-ui-unification AF-009 / REQ-012: the first message of a new run keeps its `@` mentions. Since
 // mention-delegation-dismissal the server resolves them (nothing is added) and the focused agent delegates.
-const BUILT_IN_AGENT_IDS = ['autobyteus-daily-assistant']
 const newChatInput = (page) => page.locator(`${sel('chat-composer')} textarea`).first()
 const typeFirstMessageWithMention = async (page, prefix, query, id, rest) => {
   const input = newChatInput(page)
@@ -1181,8 +1192,8 @@ defineCase('N02', 'AF-009 + AC-001/003: an Agent New chat first send with an `@T
   await switchTarget(page, 'Research', ids.research)
   await openMenu(page)
   r.options = await menuOptions(page)
-  assert(!r.options.includes(ids.research) && !r.options.includes(ids.org) && !BUILT_IN_AGENT_IDS.some((id) => r.options.includes(id)), 'target, Org or a built-in agent offered in Agent New chat', r.options)
-  assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer), 'shared candidates missing in Agent New chat', r.options)
+  assert(!r.options.includes(ids.research) && !r.options.includes(ids.org) && !NEVER_OFFERED_AGENT_IDS.some((id) => r.options.includes(id)), 'target, Org or the Model Router offered in Agent New chat', r.options)
+  assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer) && r.options.includes(DAILY_ASSISTANT_ID), 'shared candidates missing in Agent New chat', r.options)
   await page.keyboard.press('Escape')
   r.text = await typeFirstMessageWithMention(page, 'please ask @', 'product', ids.productTeam, 'to design a tiny settings page and report back.')
   assert(r.text.includes('@Product Team '), 'mention token not inserted in the New chat composer', r.text)
@@ -1202,7 +1213,7 @@ defineCase('N02', 'AF-009 + AC-001/003: an Agent New chat first send with an `@T
   return r
 })
 
-defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; "From Code Reviewer:"', async (page) => {
+defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, the Model Router and Orgs and offers the Daily Assistant; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; "From Code Reviewer:"', async (page) => {
   const r = {}
   const teamRunsBefore = async () => {
     const h = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { teamDefinitions { teamDefinitionId runs { teamRunId } } } }')
@@ -1215,10 +1226,10 @@ defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits 
   await openMenu(page)
   r.options = await menuOptions(page)
   // mention-candidates-in-run REQ-005: the Team target's shared members are offered; the target itself is not.
-  const excluded = [ids.reviewTeam, ids.org, ...BUILT_IN_AGENT_IDS]
+  const excluded = [ids.reviewTeam, ids.org, ...NEVER_OFFERED_AGENT_IDS]
   assert(r.options.includes(ids.researcher) && r.options.includes(ids.writer), 'Team New chat does not offer the Team\'s shared members (REQ-005)', r.options)
-  assert(!excluded.some((id) => r.options.includes(id)), 'Team New chat offers the team, a member, a built-in or an Org', { options: r.options, excluded })
-  assert([ids.research, ids.reviewer, ids.analyst, ids.productTeam].every((id) => r.options.includes(id)), 'shared outside candidates missing in Team New chat', r.options)
+  assert(!excluded.some((id) => r.options.includes(id)), 'Team New chat offers the team, the Model Router or an Org', { options: r.options, excluded })
+  assert([ids.research, ids.reviewer, ids.analyst, ids.productTeam, DAILY_ASSISTANT_ID].every((id) => r.options.includes(id)), 'shared outside candidates missing in Team New chat', r.options)
   await page.keyboard.press('Escape')
   r.text = await typeFirstMessageWithMention(page, 'please ask @', 'code', ids.reviewer, 'to review the phrase "hello team" and report back.')
   assert(r.text.includes('@Code Reviewer '), 'mention token not inserted in the Team New chat composer', r.text)
@@ -1286,6 +1297,7 @@ try {
   await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 240000, 1000)
   browser = await chromium.launch({ headless: true, executablePath: chrome, args: ['--no-sandbox'] })
   const context = await browser.newContext({ viewport: { width: 1512, height: 952 }, locale: 'en-US' })
+  await attachToBrowserContext(context)
   const page = await context.newPage(); page.setDefaultTimeout(30000)
   const browserErrors = []; page.on('pageerror', (e) => browserErrors.push(e.message)); evidence.browserErrors = browserErrors
   for (const c of cases) {

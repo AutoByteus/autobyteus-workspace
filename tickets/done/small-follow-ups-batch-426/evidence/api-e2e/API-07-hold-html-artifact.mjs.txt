@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+// API-07 data (autobyteus-426, AC-007): on the mobile-shell probe's `--hold` stack, the Delivery Team lead writes an HTML
+// file (the scripted AGY CLI's GENERATE_IMAGE: writes it as the agent's own file change, so it is the lead's artifact).
+// Its content reports, from inside the preview frame, whether the frame sees `AutoByteusShell`, its origin, and whether
+// it can reach its parent's object. Usage: node hold-html-artifact.mjs <hold.json>
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { randomUUID } from 'node:crypto'
+import { existsSync } from 'node:fs'
+const hold = JSON.parse(await fs.readFile(process.argv[2], 'utf8'))
+const alphaWs = hold.alpha.replace('http', 'ws')
+const htmlPath = path.join(hold.workspace, 'preview-426.html')
+const socket = new WebSocket(`${alphaWs}/ws/agent-team/${hold.runs.delivery}`)
+await new Promise((res, rej) => { socket.onopen = res; socket.onerror = rej })
+await new Promise(r => setTimeout(r, 400))
+socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: randomUUID(), dedupe_key: `team_member_input:api07:${randomUUID()}`, context_file_paths: [], image_urls: [],
+  agent_run_id: hold.runs.deliveryLead, content: `GENERATE_IMAGE:${htmlPath} \nProduce the preview file.` } }))
+await new Promise(r => setTimeout(r, 800))
+socket.close()
+const deadline = Date.now() + 60000
+while (!existsSync(htmlPath) && Date.now() < deadline) await new Promise(r => setTimeout(r, 500))
+if (!existsSync(htmlPath)) { console.log('the lead did not write the file'); process.exit(1) }
+await fs.writeFile(htmlPath, `<!doctype html><html><head><meta name="viewport" content="width=device-width"></head><body style="font:20px sans-serif">
+<h1 id="r">PREVIEW-426 loading</h1>
+<script>
+var parentShell; try { parentShell = typeof parent.AutoByteusShell } catch (e) { parentShell = 'blocked-' + e.name }
+document.getElementById('r').textContent = 'PREVIEW-426 shell=' + (typeof window.AutoByteusShell) + ' origin=' + String(location.origin) + ' parentShell=' + parentShell;
+</script></body></html>
+`)
+console.log(JSON.stringify({ htmlPath, lead: hold.runs.deliveryLead, team: hold.runs.delivery }))
+process.exit(0)

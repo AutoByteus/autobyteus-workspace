@@ -1,0 +1,13 @@
+{
+  "command": [
+    "docker",
+    "exec",
+    "api-prisma-a73a37eb-fc6-recreated",
+    "node",
+    "/opt/autobyteus/starter/cli.mjs",
+    "status"
+  ],
+  "exit": 0,
+  "stdout": "{\"version\":\"1.5.11-beta.5\",\"state\":\"running\",\"server\":{\"pid\":109,\"packageVersion\":\"1.5.11-beta.5\",\"source\":\"builtIn\"},\"update\":{\"state\":\"idle\",\"targetVersion\":null,\"step\":null,\"code\":null,\"message\":null,\"startedAt\":null,\"finishedAt\":null,\"requestedFrom\":null}}\n",
+  "stderr": ""
+}

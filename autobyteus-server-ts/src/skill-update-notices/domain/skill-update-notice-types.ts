@@ -16,12 +16,28 @@ export type SkillFileChangeStatus = "changed" | "added" | "removed";
 export type SkillFileChange = Readonly<{ path: string; status: SkillFileChangeStatus }>;
 
 /**
- * What changed for one skill since a run last saw it: updated (its current folder and every file
- * that differs, `SKILL.md` first, then by path) or no longer available.
+ * What changed for one skill version since a run last saw it: added (it has the skill now and never saw it),
+ * updated (its current folder and every file that differs, `SKILL.md` first, then by path) or no longer available.
  */
-export type SkillChange =
+export type SkillVersionChange =
+  | Readonly<{ kind: "added"; skillName: string; skillDir: string; skillMdPath: string }>
   | Readonly<{ kind: "updated"; skillName: string; skillDir: string; files: readonly SkillFileChange[] }>
   | Readonly<{ kind: "removed"; skillName: string }>;
 
+/**
+ * What a run is told about one skill: a version change, where an added skill also carries its description and
+ * the integrations whose access through it starts only when the run is restarted (empty: none).
+ */
+export type SkillChange =
+  | Exclude<SkillVersionChange, { kind: "added" }>
+  | Readonly<{
+      kind: "added";
+      skillName: string;
+      skillDir: string;
+      skillMdPath: string;
+      description: string;
+      integrationNames: readonly string[];
+    }>;
+
 /** A skill as the catalog resolves it now. */
-export type ResolvedSkill = Readonly<{ name: string; rootPath: string }>;
+export type ResolvedSkill = Readonly<{ name: string; rootPath: string; description: string }>;

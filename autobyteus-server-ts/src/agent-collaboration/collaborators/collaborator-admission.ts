@@ -4,6 +4,8 @@ import {
   type MentionedCollaborator,
 } from "@autobyteus/agent-presentation-contracts";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegationWork, RoutingDecisionDraft } from "../../model-routing/domain/model-routing-types.js";
+import { routingDecisionDraftOf } from "./routing-decision-draft.js";
 import {
   preferredInRunPlacement,
   type AdmissibleCollaboratorDefinition,
@@ -15,7 +17,7 @@ import type {
   CollaboratorEntryBuilder,
   CollaboratorEntryPlan,
 } from "./collaborator-entry-builder.js";
-import type { CollaboratorRootPort } from "./collaborator-root-port.js";
+import { baseInFolder, type CollaboratorLaunchBase, type CollaboratorRootPort } from "./collaborator-root-port.js";
 import type { MentionViewer, MentionViewerRelation, OwnTeamMentionFacts } from "./mention-viewer.js";
 import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
 import type { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
@@ -46,7 +48,13 @@ export type { CollaboratorMention };
  * A catalog task copy's definition snapshot (REQ-005): no collaborator entry, no identities.
  * `launchNotes` describe this admission's skipped configured layers (empty when none).
  */
-export type CatalogTaskSource = Readonly<{ name: string; source: TaskExecutionSource; launchNotes: readonly string[] }>;
+export type CatalogTaskSource = Readonly<{
+  name: string;
+  source: TaskExecutionSource;
+  launchNotes: readonly string[];
+  /** Present only when the copy was resolved while Model Routing was on: its decision records once it starts (REQ-012). */
+  routingDecision?: RoutingDecisionDraft;
+}>;
 
 /**
  * Stateless catalog coordinator. `@` only resolves: `resolveMentions` validates each mentioned
@@ -80,7 +88,7 @@ export class CollaboratorAdmission {
       const eligible: AdmissibleCollaboratorDefinition[] = [];
       for (const ref of definitions) eligible.push(await this.checked(() => this.dependencies.policy.requireEligible(port, ref), ref));
       const addresses = await this.dependencies.policy.catalogAddressMap(port);
-      const placements = port.inRunPlacementsByDefinition();
+      const placements = await port.inRunPlacementsByDefinition();
       const collaborators = eligible.map((definition): MentionedCollaborator => {
         // Own team first (SR-011): the focused agent's own team instance is checked by definition before the
         // configured-placement and catalog paths, because a task agent team's members are neither.
@@ -105,6 +113,12 @@ export class CollaboratorAdmission {
     return (await this.dependencies.policy.catalogAddressMap(port)).definitionFor(address);
   }
 
+  /** The catalog address `ref` has in this run's catalog (the inverse of `catalogDefinitionAt`); `null` when it has none. */
+  async catalogAddressOf(port: CollaboratorRootPort, ref: CatalogDefinitionRef): Promise<string | null> {
+    if (port.isApplicationBound) return null;
+    return (await this.dependencies.policy.catalogAddressMap(port)).addressFor(ref);
+  }
+
   /**
    * The source snapshot of a task copy of the catalog definition at `address` (DS-003): the
    * definition, its Team layout and handoffs, and each agent's launch resolved by the layer
@@ -114,9 +128,16 @@ export class CollaboratorAdmission {
   async catalogTaskSource(port: CollaboratorRootPort, input: Readonly<{
     address: string;
     senderRunId: string;
+    /** The work the copy is started for (the Model Router is told it). */
+    work: DelegationWork;
+    /** The copy's own folder (its Task's Project's); `null` takes the launch base's. */
+    workspaceRootPath: string | null;
   }>): Promise<CatalogTaskSource | null> {
     const ref = await this.catalogDefinitionAt(port, input.address);
-    return ref ? this.catalogTaskSourceOf(port, { ref, address: input.address }) : null;
+    if (!ref) return null;
+    const base = port.launchBase();
+    return this.sourceFromBase(port, { ref, address: input.address, work: input.work },
+      input.workspaceRootPath === null ? base : baseInFolder(base, input.workspaceRootPath));
   }
 
   /**
@@ -128,11 +149,25 @@ export class CollaboratorAdmission {
   async catalogTaskSourceOf(port: CollaboratorRootPort, input: Readonly<{
     ref: CatalogDefinitionRef;
     address: string;
+    work: DelegationWork;
   }>): Promise<CatalogTaskSource> {
+    return this.sourceFromBase(port, input, port.launchBase());
+  }
+
+  private async sourceFromBase(port: CollaboratorRootPort, input: Readonly<{
+    ref: CatalogDefinitionRef;
+    address: string;
+    work: DelegationWork;
+  }>, base: CollaboratorLaunchBase): Promise<CatalogTaskSource> {
     const definition = await this.admissible(port, input.ref);
     const plan = await this.buildPlan(definition, { address: input.address });
-    const [resolved] = await this.dependencies.launches.resolve([plan], port.launchBase());
-    return Object.freeze({ name: resolved!.name, source: toTaskExecutionSource(resolved!), launchNotes: Object.freeze(entryPlanLaunchNotes(resolved!)) });
+    const { plans: [resolved], modelRoutingOn } = await this.dependencies.launches.resolve([plan], base, input.work);
+    return Object.freeze({
+      name: resolved!.name,
+      source: toTaskExecutionSource(resolved!),
+      launchNotes: Object.freeze(entryPlanLaunchNotes(resolved!)),
+      ...(modelRoutingOn ? { routingDecision: routingDecisionDraftOf(resolved!) } : {}),
+    });
   }
 
   /** Catalog copies: never a second instance of a definition already in the run. */

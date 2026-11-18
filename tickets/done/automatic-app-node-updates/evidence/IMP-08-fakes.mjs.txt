@@ -1,0 +1,37 @@
+// Test-owned fakes for the autobyteus-356 rendered check: an electron-updater generic feed (99.0.0, artifact missing)
+// and a C1 node that accepts an update and reports it succeeded. Nothing here touches real user data.
+import http from 'node:http';
+import fs from 'node:fs';
+const [feedPort, nodePort, logFile] = [Number(process.argv[2]), Number(process.argv[3]), process.argv[4]];
+const log = (line) => fs.appendFileSync(logFile, `${new Date().toISOString()} ${line}\n`);
+const zero = Buffer.alloc(64).toString('base64');
+const yml = `version: 99.0.0\nfiles:\n  - url: AutoByteus-99.0.0-arm64-mac.zip\n    sha512: ${zero}\n    size: 1000\npath: AutoByteus-99.0.0-arm64-mac.zip\nsha512: ${zero}\nreleaseDate: '2026-11-01T00:00:00.000Z'\n`;
+http.createServer((req, res) => {
+  log(`feed ${req.method} ${req.url}`);
+  if (req.url.startsWith('/latest-mac.yml')) { res.writeHead(200, { 'content-type': 'text/yaml' }); res.end(yml); return; }
+  res.writeHead(404); res.end('missing');
+}).listen(feedPort, '127.0.0.1');
+const NODE_ID = 'srv_fakeDockerNodeAAAAAAAAAAAAAAAAAAAAAAAAA';
+let accepted = null; let asksAfter = 0;
+const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type', 'access-control-allow-methods': 'GET,POST,OPTIONS' };
+const json = (res, status, body) => { res.writeHead(status, { ...cors, 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
+http.createServer((req, res) => {
+  const url = new URL(req.url, 'http://x');
+  log(`node ${req.method} ${req.url} ua=${(req.headers['user-agent'] || '').slice(0, 40)}`);
+  if (req.method === 'OPTIONS') { res.writeHead(204, cors); res.end(); return; }
+  if (url.pathname === '/rest/remote-access/status') return json(res, 200, { nodeId: NODE_ID });
+  if (url.pathname === '/rest/node-update' && req.method === 'POST') {
+    let body = ''; req.on('data', (c) => { body += c; }); req.on('end', () => { accepted = JSON.parse(body).version; asksAfter = 0; log(`node POST body=${body}`); json(res, 202, { accepted: true }); });
+    return;
+  }
+  if (url.pathname === '/rest/node-update') {
+    const target = url.searchParams.get('target');
+    const idle = { state: 'idle', targetVersion: null, step: null, code: null, message: null };
+    if (!accepted) return json(res, 200, { inPlaceUpdate: 'available', version: '1.0.0', target: { version: target, relation: 'newer' }, update: idle });
+    asksAfter += 1;
+    if (asksAfter <= 2) return json(res, 200, { inPlaceUpdate: 'available', version: '1.0.0', target: { version: target, relation: 'newer' }, update: { state: 'running', targetVersion: accepted, step: 'downloading', code: null, message: null } });
+    return json(res, 200, { inPlaceUpdate: 'available', version: accepted, target: { version: target, relation: 'same' }, update: { state: 'succeeded', targetVersion: accepted, step: null, code: null, message: null } });
+  }
+  json(res, 404, { error: 'not found' });
+}).listen(nodePort, '127.0.0.1');
+log(`listening feed=${feedPort} node=${nodePort}`);

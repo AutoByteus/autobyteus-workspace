@@ -3,20 +3,25 @@ import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
-import { buildRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import {
+  buildRuntimeAgentToolExposure,
+  resolveRuntimeAgentToolExposure,
+} from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { SEARCH_MEMORY_TOOL_NAME } from "../../../../src/agent-tools/memory/memory-tool-contract.js";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
 import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-mcp-catalog.js";
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
+import { AgentToolsMcpSessionStreams } from "../../../../src/agent-tools/mcp/agent-tools-mcp-session-streams.js";
 import {
   toAgentToolMcpOperationResult,
   toAgentToolMcpToolResult,
   type AgentToolMcpToolAdapter,
 } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import {
-  testMemberTaskCommandCapability,
+  testMemberTaskCapability,
   testMemberExecutionContext,
 } from "../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationAgentToolCapability } from "../../../../src/application-agent-tools/services/application-agent-tool-capability.js";
@@ -51,9 +56,11 @@ const buildService = (
   catalog = new AgentToolMcpCatalog({ adapters: [buildSendMessageAdapter()] }),
   getLocalBaseUrl: () => string = () => "http://127.0.0.1:43124",
   applicationAgentTools: ApplicationAgentToolCapability | null = null,
+  streams: AgentToolsMcpSessionStreams = new AgentToolsMcpSessionStreams(),
 ) => new AgentToolMcpSessionService({
   registry,
   catalog,
+  streams,
   getLocalBaseUrl,
   executionCapabilities: {
     publishedArtifactPublisher: createPublisher(),
@@ -117,18 +124,96 @@ describe("AgentToolMcpSessionService", () => {
     expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
   });
 
-  it("returns not_exposed without reading readiness or inserting a record", () => {
+  it("activates a session with an empty tool list", () => {
     const registry = new AgentToolMcpSessionRegistry();
-    const getLocalBaseUrl = vi.fn(() => { throw new Error("not ready"); });
-    const result = buildService(registry, undefined, getLocalBaseUrl).activateForRun({
-      owner: { runId: "run-hidden" },
-      sender: buildSender("run-hidden"),
+    const result = buildService(registry).activateForRun({
+      owner: { runId: "run-empty" },
+      sender: buildSender("run-empty"),
       runtimeExposure: buildRuntimeAgentToolExposure([]),
     });
 
-    expect(result).toEqual({ kind: "not_exposed" });
-    expect(getLocalBaseUrl).not.toHaveBeenCalled();
-    expect(registry.listSessions()).toEqual([]);
+    expect(result).toMatchObject({ kind: "active", descriptor: { enabledTools: [] } });
+    expect(result.descriptor.serverUrl).toBe(
+      `http://127.0.0.1:43124/mcp/agent-tools/${result.sessionId}`,
+    );
+    expect(registry.resolveSession(result.sessionId)).toMatchObject({
+      ok: true,
+      session: { enabledTools: [] },
+    });
+  });
+
+  it("lists the platform-given search_memory for a definition that does not select it, once when it does (autobyteus-496 AC-001)", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    // The production adapter set, as every MCP runtime's Agent Tools session uses it.
+    const catalog = new AgentToolMcpCatalog();
+    const service = buildService(registry, catalog);
+    const activate = (runId: string, toolNames: string[]) => {
+      const result = service.activateForRun({
+        owner: { runId },
+        sender: buildSender(runId),
+        runtimeExposure: resolveRuntimeAgentToolExposure({ toolNames }, null),
+      });
+      if (result.kind !== "active") throw new Error("Expected active result.");
+      const session = registry.getSession(result.sessionId);
+      if (!session) throw new Error("Expected an active session.");
+      return { descriptor: result.descriptor, listed: catalog.listMcpToolsForSession(session, "2025-03-26").map((tool) => tool.name) };
+    };
+
+    const unselected = activate("run-default", []);
+    expect(unselected.descriptor.enabledTools).toEqual([SEARCH_MEMORY_TOOL_NAME]);
+    expect(unselected.listed).toEqual([SEARCH_MEMORY_TOOL_NAME]);
+
+    const selected = activate("run-explicit", [SEARCH_MEMORY_TOOL_NAME, "publish_artifacts"]);
+    expect(selected.listed.filter((name) => name === SEARCH_MEMORY_TOOL_NAME)).toHaveLength(1);
+  });
+
+  it("replaces a run's exposure as one new frozen record and notifies its streams", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const streams = new AgentToolsMcpSessionStreams();
+    const notifyToolsChanged = vi.spyOn(streams, "notifyToolsChanged");
+    const service = buildService(registry, undefined, undefined, null, streams);
+    const activation = service.activateForRun({
+      owner: { runId: "run-replace" },
+      sender: buildSender("run-replace"),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    });
+    const before = registry.getSession(activation.sessionId)!;
+    expect(Object.isFrozen(before)).toBe(true);
+
+    const added = service.replaceForRun({
+      runId: "run-replace",
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+    });
+    const after = registry.getSession(activation.sessionId)!;
+    expect(added).toEqual({ ...activation.descriptor, enabledTools: [SEND_MESSAGE_TO_TOOL_NAME] });
+    expect(Object.isFrozen(added)).toBe(true);
+    expect(after).not.toBe(before);
+    expect(Object.isFrozen(after)).toBe(true);
+    expect(after.enabledTools).toEqual([SEND_MESSAGE_TO_TOOL_NAME]);
+    expect(after.toolRoutes[SEND_MESSAGE_TO_TOOL_NAME]).toBeDefined();
+    expect(after.runtimeExposure.sendMessageToEnabled).toBe(true);
+    expect(after.sender).toBe(before.sender);
+    expect(after.createdAt).toBe(before.createdAt);
+    expect(before.enabledTools).toEqual([]);
+    expect(notifyToolsChanged).toHaveBeenCalledWith(activation.sessionId);
+    expect(service.describeForRun("run-replace")).toEqual(added);
+
+    const removed = service.replaceForRun({
+      runId: "run-replace",
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    });
+    expect(removed.enabledTools).toEqual([]);
+    expect(registry.getSession(activation.sessionId)!.toolRoutes).toEqual({});
+    expect(notifyToolsChanged).toHaveBeenCalledTimes(2);
+  });
+
+  it("refuses to replace or describe a run without a session", () => {
+    const service = buildService();
+    expect(() => service.describeForRun("run-missing")).toThrow("is not active");
+    expect(() => service.replaceForRun({
+      runId: "run-missing",
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    })).toThrow("is not active");
   });
 
   it("fails before insertion when the owned local listener is not ready", () => {
@@ -186,12 +271,12 @@ describe("AgentToolMcpSessionService", () => {
 
   it("builds exact Team-member capabilities and rejects mismatched ownership", () => {
     const registry = new AgentToolMcpSessionRegistry();
-    const taskCommands = testMemberTaskCommandCapability("root-team");
+    const taskCapability = testMemberTaskCapability("root-team");
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "root-team",
       memberAddress: "/researcher",
       agentRunId: "researcher-run",
-      taskCommands,
+      taskCapability,
     });
     const service = buildService(registry);
     const result = service.activateForRun({

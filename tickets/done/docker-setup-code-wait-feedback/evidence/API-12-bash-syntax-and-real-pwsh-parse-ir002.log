@@ -1,0 +1,20 @@
+# API-12 — independent bash syntax regression + real pwsh parse of the fixed Commands.ps1
+Commit: 63365f010a14e9b2ad38d69680bbb0f656567012
+Environment: macOS (Darwin 25.6.0), bash (system), pwsh 7.6.9
+Date: 2026-11-09
+
+Command 1:
+  bash -n scripts/public/docker/autobyteus-docker.d/bash/commands.sh && \
+  bash -n scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh && echo "OK: no syntax errors"
+Output:
+  OK: no syntax errors
+
+Command 2:
+  pwsh -NoLogo -NoProfile -Command '$null=[scriptblock]::Create((Get-Content -Raw
+  "scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1")); Write-Host "Commands.ps1 parses OK"'
+Output:
+  Commands.ps1 parses OK
+
+What to look for: both bash files unaffected (confirms IR-002 touched PowerShell only); the fixed Commands.ps1,
+including the new try/finally $ErrorActionPreference guard, parses as valid PowerShell with a real pwsh 7.6.9
+parser.

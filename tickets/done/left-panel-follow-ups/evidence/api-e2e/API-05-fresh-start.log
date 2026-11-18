@@ -1,0 +1,27 @@
+== header: fresh-start build proof; commit dda6ba59cf; 2026-11-06T08:56:55Z; 26.5.2; node v22.23.1; pnpm 10.28.2
+== clone: dda6ba59c; dist folders before install:        3
+== step 1: pnpm install --frozen-lockfile 08:58:50
+install exit=0
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 10.8s using pnpm v10.28.2
+== step 2: (autobyteus-web) pnpm build:electron:mac -- --arm64, NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x, no APPLE_* secrets, GITHUB_REPOSITORY as the runner sets it 08:59:01
+build exit=0 09:05:46
+9:[guard:web-boundary] Passed.
+14:[guard:localization-boundary] Passed.
+19:[audit:localization-literals] Passed with zero unresolved findings.
+66:[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 40.7s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.6s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 28.0s
+70:[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+71:[typecheck] PASS
+676:ℹ .nuxt/dist/client/_nuxt/projectErrorMessageKey.Qu4jEtks.js                      0.63 kB │ gzip:     0.32 kB
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.dmg
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.zip
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.zip.blockmap
+builder-debug.yml
+latest-mac.yml
+mac-arm64
+all-done

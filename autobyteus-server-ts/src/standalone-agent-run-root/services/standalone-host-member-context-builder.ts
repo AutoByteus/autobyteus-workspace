@@ -12,16 +12,20 @@ import {
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 
 
 /**
  * Builds the host member context of an eligible standalone run; its root passes it to the host's
- * activation. Tool calls resolve the run's active root at call time, so a root that is replaced
+ * activation. Its role, and an org copy's handoff rules and instruction, come from the run's collaboration tree. Tool calls resolve the run's active root at call time, so a root that is replaced
  * (after a fail-stop) or stopped answers for itself.
  */
 export class StandaloneHostMemberContextBuilder {
   constructor(private readonly options: Readonly<{
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+    /** The run's collaboration tree: a task agent when delegated, and what an org copy inherits (SR-058, SR-060). */
+    tree: Pick<DelegationIndex, "collaborationTreeOf">;
+    orgInstruction(orgDefinitionId: string): Promise<string | null>;
     getActiveRoot(hostRunId: string): StandaloneAgentRunRoot | null;
     readStoredHostAddress(hostRunId: string): Promise<AgentTeamAddress | null>;
   }>) {}
@@ -42,12 +46,18 @@ export class StandaloneHostMemberContextBuilder {
       memberAddress: await this.resolveHostAddress(metadata),
       agentRunId: metadata.runId,
     });
+    // SR-058: a delegated run's agent is a task agent; a copy of an org's configured agent keeps its rules and instruction.
+    const collaboration = await this.options.tree.collaborationTreeOf(root).agentCollaboration();
+    const instruction = collaboration.placement ? await this.options.orgInstruction(collaboration.placement.orgDefinitionId) : null;
     return new MemberExecutionContext({
       identity,
-      teamScoped: false,
-      collaborationRole: "standalone_agent",
-      authoredEnclosingScopeInstruction: null,
+      // Team-scoped where base's hosted copy was (CR-461-114): its tree starts at a Team or an Org run.
+      teamScoped: collaboration.teamScoped,
+      collaborationRole: collaboration.role,
+      inOrganization: false,
+      authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
+        outgoingHandoffs: collaboration.placement?.handoffs ?? [],
         deliverLogicalMessage: async (message) => {
           const active = this.options.getActiveRoot(metadata.runId);
           return active
@@ -62,13 +72,15 @@ export class StandaloneHostMemberContextBuilder {
       }),
       tasks: Object.freeze({
         root,
-        delegateToNewCopy: async (caller, input) => {
+        delegationSource: async (caller) => {
           const active = this.options.getActiveRoot(metadata.runId);
-          return active ? active.delegateToNewCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
+          return active ? active.delegationSource({ identity: caller }) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
         },
-        assignToExistingCopy: async (caller, input) => {
+        ownedTaskOf: (caller) => {
+          // An inactive root can't say which Task the caller works on: refuse rather than answer "none".
           const active = this.options.getActiveRoot(metadata.runId);
-          return active ? active.assignToExistingCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
+          if (!active) throw new Error(ROOT_NOT_ACTIVE_MESSAGE);
+          return active.ownedTaskOf({ identity: caller });
         },
       }),
     });

@@ -1,0 +1,15 @@
+# IMP-14 fake C1 node request log for the merged-row check (iso-54004-c228, build of 08984df524). ua=node lines are the desktop main process.
+2026-11-02T13:01:35.411Z listening feed=47356 node=47357
+2026-11-02T13:07:53.529Z node GET /rest/remote-access/status ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:07:53.542Z node GET /rest/remote-access/status ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:07:53.546Z node GET /rest/node-update?target=1.5.11-beta.11 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:07:53.548Z node POST /graphql ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:07:53.549Z node POST /graphql ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:08:15.763Z node GET /rest/node-update?target=1.5.11-beta.11 ua=node
+2026-11-02T13:08:15.769Z node POST /rest/node-update ua=node
+2026-11-02T13:08:15.769Z node POST body={"version":"1.5.11-beta.11"}
+2026-11-02T13:08:15.772Z node GET /rest/node-update?target=1.5.11-beta.11 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:08:17.780Z node GET /rest/node-update?target=1.5.11-beta.11 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:08:19.789Z node GET /rest/node-update?target=1.5.11-beta.11 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-02T13:08:25.782Z node GET /rest/node-update?target=1.5.11-beta.11 ua=node
+2026-11-02T13:08:25.785Z node GET /rest/node-update?target=1.5.11-beta.11 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1

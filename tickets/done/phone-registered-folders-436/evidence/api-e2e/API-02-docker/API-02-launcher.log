@@ -1,0 +1,28 @@
+# API-02 Docker node for AC-005; commit ea51d4fddd; 2026-11-09T04:57:24Z
+## server package (docker buildx --target server-package, Dockerfile without its '# syntax' line) and the test image
+buildx exit 0
+#45 copying files 687.38MB 8.3s done
+#45 DONE 8.4s
+sha256:279a03036254e0e5277b494e1220d81d9900775b66d0b2f4a0f939e1e100b8ce
+node-file-reader.d.ts
+node-file-reader.d.ts.map
+node-file-reader.js
+## this branch's launcher: new-container (temp state, temp shared folder)
+new-container exit 0
+Shared folder: /home/autobyteus/shared -> /tmp/abtest436/shared-host/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-3-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
+
+Setup code for autobyteus-server-3: <redacted>
+Valid once, until 2026-11-09T05:31:17.425Z. In the AutoByteus desktop app, open Nodes, and enter it at autobyteus-server-3 (http://localhost:8004).
+node autobyteus-server-3 container autobyteus-server-3 port 8004 published: 100.127.30.107:8004 127.0.0.1:8004 
+mounts: /tmp/abtest436/shared-host/shared -> /home/autobyteus/shared  /tmp/abtest436/shared-host/nodes/autobyteus-server-3 -> /home/autobyteus/workspace 
+{'ac005-notes.md': 86, 'ac005-large.pdf': 18000828, 'ac005-picture.png': 20274}
+total 17608
+drwxr-xr-x 2 root root       64 Nov  9 05:01 .
+drwxr-xr-x 1 root root     4096 Nov  9 05:01 ..
+-rw-r--r-- 1 root root 18000828 Nov  9 05:01 ac005-large.pdf
+-rw-r--r-- 1 root root       86 Nov  9 05:01 ac005-notes.md
+-rw-r--r-- 1 root root    20274 Nov  9 05:01 ac005-picture.png
+drwxr-xr-x 2 root root       64 Nov  9 05:01 a-folder
+phone probe exit 1

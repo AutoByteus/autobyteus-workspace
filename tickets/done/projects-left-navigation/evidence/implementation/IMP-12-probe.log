@@ -1,0 +1,19 @@
+# IMP-12 the API/E2E browser probe (all cases) on the CR-003 fix, as an implementation check of PLN-09
+# Command: env -i PATH HOME TMPDIR USER LOGNAME pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <ev>/IMP-12-probe
+# Commit: c9972a1581 (server dist built from 467cff24c0, server source unchanged since); macOS, Chrome headless
+# Date: 2026-10-31T13:50Z
+
+> autobyteus@1.5.11-beta.7 test:e2e:projects-left-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-web
+> node tests/e2e/projects-left-navigation-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/implementation/IMP-12-probe
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/implementation/IMP-12-probe/evidence.json

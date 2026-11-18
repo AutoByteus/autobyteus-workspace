@@ -10,7 +10,7 @@ import {
 } from "../../../agent-execution/domain/agent-run-event.js";
 import type { AgentPresentationEvent, AgentPresentationTokenUsageDetails } from "./agent-presentation-event.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
-import { normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-status-payload.js";
+import { backgroundTasksRunningOf, normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-status-payload.js";
 import { isAgentSegmentType } from "../../../agent-execution/domain/agent-segment.js";
 import { resolveAgentRunErrorEvidence } from "../../../agent-execution/domain/agent-run-error-evidence.js";
 import type {
@@ -317,7 +317,8 @@ export class AgentRunPresentationAdapter {
       }
       case AgentRunEventType.AGENT_STATUS:
         return correlated({ eventType: "AGENT_STATUS", details: {
-          status: normalizeAgentApiStatus(p.status), trigger: text(p.trigger),
+          status: normalizeAgentApiStatus(p.status), backgroundTasksRunning: backgroundTasksRunningOf(p.background_tasks_running),
+          trigger: text(p.trigger),
           toolName: text(raw(p, "tool_name", "toolName")), errorMessage: text(raw(p, "error_message", "errorMessage")),
           errorDetails: text(raw(p, "error_details", "errorDetails")),
           recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(p.recoverableBlock ?? null),
@@ -365,7 +366,7 @@ export class AgentRunPresentationAdapter {
         const sender = senderRunId
           ? (() => { const identity = this.resolveIdentityByAgentRunId(senderRunId); if (!identity) throw new Error("sender_run_id does not resolve in the active collaboration root"); return Object.freeze({ kind: "execution" as const, identity }); })()
           : Object.freeze({ kind: "system" as const });
-        return correlated({ eventType: "SYSTEM_TASK_NOTIFICATION", details: { sender, content: stringValue(p.content) }, statusHint: hint });
+        return correlated({ eventType: "SYSTEM_TASK_NOTIFICATION", details: { sender, content: stringValue(p.content), messageId: text(raw(p, "message_id", "messageId")) }, statusHint: hint });
       }
       case AgentRunEventType.ARTIFACT_PERSISTED:
         return correlated({ eventType: "ARTIFACT_PERSISTED", details: { artifactId: required(raw(p, "artifact_id", "id"), "artifact_id"), path: required(p.path, "path"), artifactType: required(raw(p, "artifact_type", "type"), "artifact_type"), status: "available", description: typeof p.description === "string" ? p.description : null, revisionId: required(raw(p, "revision_id", "revisionId"), "revision_id"), createdAt: required(raw(p, "created_at", "createdAt"), "created_at"), updatedAt: required(raw(p, "updated_at", "updatedAt"), "updated_at") }, statusHint: hint });

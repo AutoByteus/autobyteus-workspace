@@ -1,0 +1,2 @@
+2026-11-09T06:05:44.2449637Z   ⨯ cannot resolve https://github.com/electron/electron/releases/download/v42.11.16/electron-v42.11.16-linux-x64.zip: status code 504
+2026-11-09T06:05:44.3079395Z ##[error]Process completed with exit code 1.

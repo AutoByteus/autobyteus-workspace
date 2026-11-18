@@ -1,0 +1,351 @@
+{
+  "startedAt": "2026-11-06T05:52:27.093Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "REM-01": {
+      "description": "Expanded at first: twelve delegated rows, at rest",
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "top": 244,
+            "transform": "none"
+          },
+          {
+            "top": 274,
+            "transform": "none"
+          },
+          {
+            "top": 304,
+            "transform": "none"
+          },
+          {
+            "top": 334,
+            "transform": "none"
+          },
+          {
+            "top": 364,
+            "transform": "none"
+          },
+          {
+            "top": 394,
+            "transform": "none"
+          },
+          {
+            "top": 424,
+            "transform": "none"
+          },
+          {
+            "top": 454,
+            "transform": "none"
+          },
+          {
+            "top": 484,
+            "transform": "none"
+          },
+          {
+            "top": 514,
+            "transform": "none"
+          },
+          {
+            "top": 544,
+            "transform": "none"
+          },
+          {
+            "top": 574,
+            "transform": "none"
+          }
+        ]
+      }
+    },
+    "REM-02": {
+      "description": "Collapse: the delegated rows are gone at once (AC-002)",
+      "result": "Pass",
+      "details": {
+        "perFrame": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "REM-03": {
+      "description": "Expand: from the first frame, every row is at its final place with no transform (AC-001; 4 frames)",
+      "result": "Pass",
+      "details": {
+        "frames": [
+          [
+            {
+              "top": 244,
+              "transform": "none"
+            },
+            {
+              "top": 274,
+              "transform": "none"
+            },
+            {
+              "top": 304,
+              "transform": "none"
+            },
+            {
+              "top": 334,
+              "transform": "none"
+            },
+            {
+              "top": 364,
+              "transform": "none"
+            },
+            {
+              "top": 394,
+              "transform": "none"
+            },
+            {
+              "top": 424,
+              "transform": "none"
+            },
+            {
+              "top": 454,
+              "transform": "none"
+            },
+            {
+              "top": 484,
+              "transform": "none"
+            },
+            {
+              "top": 514,
+              "transform": "none"
+            },
+            {
+              "top": 544,
+              "transform": "none"
+            },
+            {
+              "top": 574,
+              "transform": "none"
+            }
+          ],
+          [
+            {
+              "top": 244,
+              "transform": "none"
+            },
+            {
+              "top": 274,
+              "transform": "none"
+            },
+            {
+              "top": 304,
+              "transform": "none"
+            },
+            {
+              "top": 334,
+              "transform": "none"
+            },
+            {
+              "top": 364,
+              "transform": "none"
+            },
+            {
+              "top": 394,
+              "transform": "none"
+            },
+            {
+              "top": 424,
+              "transform": "none"
+            },
+            {
+              "top": 454,
+              "transform": "none"
+            },
+            {
+              "top": 484,
+              "transform": "none"
+            },
+            {
+              "top": 514,
+              "transform": "none"
+            },
+            {
+              "top": 544,
+              "transform": "none"
+            },
+            {
+              "top": 574,
+              "transform": "none"
+            }
+          ],
+          [
+            {
+              "top": 244,
+              "transform": "none"
+            },
+            {
+              "top": 274,
+              "transform": "none"
+            },
+            {
+              "top": 304,
+              "transform": "none"
+            },
+            {
+              "top": 334,
+              "transform": "none"
+            },
+            {
+              "top": 364,
+              "transform": "none"
+            },
+            {
+              "top": 394,
+              "transform": "none"
+            },
+            {
+              "top": 424,
+              "transform": "none"
+            },
+            {
+              "top": 454,
+              "transform": "none"
+            },
+            {
+              "top": 484,
+              "transform": "none"
+            },
+            {
+              "top": 514,
+              "transform": "none"
+            },
+            {
+              "top": 544,
+              "transform": "none"
+            },
+            {
+              "top": 574,
+              "transform": "none"
+            }
+          ],
+          [
+            {
+              "top": 244,
+              "transform": "none"
+            },
+            {
+              "top": 274,
+              "transform": "none"
+            },
+            {
+              "top": 304,
+              "transform": "none"
+            },
+            {
+              "top": 334,
+              "transform": "none"
+            },
+            {
+              "top": 364,
+              "transform": "none"
+            },
+            {
+              "top": 394,
+              "transform": "none"
+            },
+            {
+              "top": 424,
+              "transform": "none"
+            },
+            {
+              "top": 454,
+              "transform": "none"
+            },
+            {
+              "top": 484,
+              "transform": "none"
+            },
+            {
+              "top": 514,
+              "transform": "none"
+            },
+            {
+              "top": 544,
+              "transform": "none"
+            },
+            {
+              "top": 574,
+              "transform": "none"
+            }
+          ]
+        ],
+        "settled": [
+          {
+            "top": 244,
+            "transform": "none"
+          },
+          {
+            "top": 274,
+            "transform": "none"
+          },
+          {
+            "top": 304,
+            "transform": "none"
+          },
+          {
+            "top": 334,
+            "transform": "none"
+          },
+          {
+            "top": 364,
+            "transform": "none"
+          },
+          {
+            "top": 394,
+            "transform": "none"
+          },
+          {
+            "top": 424,
+            "transform": "none"
+          },
+          {
+            "top": 454,
+            "transform": "none"
+          },
+          {
+            "top": 484,
+            "transform": "none"
+          },
+          {
+            "top": 514,
+            "transform": "none"
+          },
+          {
+            "top": 544,
+            "transform": "none"
+          },
+          {
+            "top": 574,
+            "transform": "none"
+          }
+        ]
+      }
+    },
+    "REM-04": {
+      "description": "No browser errors during the cases",
+      "result": "Pass",
+      "details": {
+        "events": 0
+      }
+    }
+  },
+  "browserEvents": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxt": "SIGTERM",
+    "installedPageRemoved": true
+  },
+  "failures": [],
+  "browserVersion": "156.0.8078.80",
+  "result": "Pass",
+  "finishedAt": "2026-11-06T05:52:42.231Z"
+}

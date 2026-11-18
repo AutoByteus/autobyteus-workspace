@@ -5,9 +5,9 @@ import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraf
 import type {
   ExistingRunModelConfigSchemaState,
   ExistingRunModelOptionsState,
-  ExistingRunModelSelection,
+  ExistingAgentRunSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
-import { selectionAllowed, cloneExistingRunModelConfig } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { runtimeChanged, selectionAllowed, cloneExistingRunModelConfig } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { createExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import { createExistingAgentOrgModelConfigDraft } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import { createExistingAgentOrgWorkspaceDraft, existingAgentOrgWorkspacesDirty } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
@@ -18,7 +18,8 @@ import { createExistingAgentOrgWorkspaceDraft, existingAgentOrgWorkspacesDirty }
  */
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
 type ExistingAgentDraft = Extract<ExistingRunConfigDraft, { kind: 'agent' }>
-const metadataSelection = (metadata: ExistingAgentDraft['metadata']): ExistingRunModelSelection => ({
+const metadataSelection = (metadata: ExistingAgentDraft['metadata']): ExistingAgentRunSelection => ({
+  runtimeKind: metadata.runtimeKind ?? 'autobyteus',
   llmModelIdentifier: metadata.llmModelIdentifier,
   llmConfig: cloneExistingRunModelConfig(metadata.llmConfig),
 })
@@ -29,10 +30,12 @@ const metadataSelection = (metadata: ExistingAgentDraft['metadata']): ExistingRu
  * longer offered; another model must be one of the replacements the server allows.
  */
 const schemaStateFor = (
-  original: ExistingRunModelSelection,
-  selection: ExistingRunModelSelection,
+  original: ExistingAgentRunSelection,
+  selection: ExistingAgentRunSelection,
   options: ExistingRunModelOptionsState | undefined,
 ): ExistingRunModelConfigSchemaState => {
+  // Another agent runtime is a fresh selection: the server validates the pair when it is saved.
+  if (runtimeChanged(original, selection)) return { status: 'ready', message: null }
   const offeredOptions = options?.status === 'ready' ? options.options : null
   if (selection.llmModelIdentifier === original.llmModelIdentifier) {
     return offeredOptions && offeredOptions.currentModelIdentifier === original.llmModelIdentifier && !offeredOptions.currentModel
@@ -41,7 +44,7 @@ const schemaStateFor = (
   }
   if (!options || options.status === 'loading') return loadingSchemaState()
   if (!offeredOptions) {
-    return { status: 'unavailable', message: localizationRuntime.translate('workspace.runModelConfig.optionsUnavailable') }
+    return { status: 'unavailable', message: options.message ?? localizationRuntime.translate('workspace.runModelConfig.optionsUnavailable') }
   }
   return selectionAllowed(original, selection, options)
     ? { status: 'ready', message: null }
@@ -53,7 +56,7 @@ export const existingRunConfigEditActions = {
   deriveSchemaStates(this: any): void {
     const draft = this.draft
     if (!draft) return
-    type ScopeSelections = { originalSelection: ExistingRunModelSelection; draftSelection: ExistingRunModelSelection }
+    type ScopeSelections = { originalSelection: ExistingAgentRunSelection; draftSelection: ExistingAgentRunSelection }
     const scopes: Record<string, ScopeSelections> = draft.kind === 'agent'
       ? { '/': { originalSelection: metadataSelection(draft.metadata), draftSelection: draft.draftSelection } }
       : draft.planner.scopesByAddress
@@ -80,8 +83,9 @@ export const existingRunConfigEditActions = {
     this.deriveSchemaStates()
   },
   /**
-   * After a lifecycle change (the stop icon): read the run's canonical settings again, so
-   * editability comes from the server, through the same loader as Refresh.
+   * After a lifecycle change (the stop icon) or a committed Save: read the run's canonical settings again, so
+   * editability comes from the server, through the same loader as Refresh. After a Save a hub's view is read again (a
+   * stopped hub's is re-read when it stops: `syncHost`).
    */
   async reloadCanonical(this: any, committed = false): Promise<boolean> {
     const target = this.loadTarget

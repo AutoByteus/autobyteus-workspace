@@ -6,6 +6,7 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { testViewSources } from "../../helpers/child-rows-feed.js";
 
 type WsMessage = { type: string; payload: Record<string, unknown> };
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -62,9 +63,10 @@ const startHarness = async () => {
     : { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not active.` });
   const root = {
     teamRunId: "team-run-1",
-    openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, closedTaskExecutions: [], messages: messagesSnapshot, statuses: [], inputStates: [] },
+    openViewSnapshotConnection: vi.fn(async (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => ({
+      snapshot: await read({ tree, messages: messagesSnapshot, statuses: [], inputStates: [] }, atBase()),
       baseChangeSequence: 0,
+      liveSequenceId: "live-team-1", lastMessageChangeSequence: 0,
       queuedEvents: [],
       subscribe: vi.fn(() => vi.fn()),
       close: vi.fn(),
@@ -72,7 +74,6 @@ const startHarness = async () => {
     executeAgentCommand,
     getExecutionTreeSnapshot: () => tree,
     getTaskRecordsSnapshot: () => tasks,
-    remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
   };
   const teamRunService = {
     getActiveTeamRun: vi.fn(() => root),
@@ -86,7 +87,7 @@ const startHarness = async () => {
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    lifecycle as never,
+    testViewSources(),
   );
   await registerAgentWebsocket(app, {} as never, handler, {} as never);
   await app.listen({ host: "127.0.0.1", port: 0 });

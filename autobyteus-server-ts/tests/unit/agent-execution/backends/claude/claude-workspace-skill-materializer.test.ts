@@ -17,7 +17,7 @@ describe("Claude workspace skill materializer composition", () => {
 
   it("provides the Claude profile through one shared singleton", () => {
     expect(CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE).toEqual({
-      runtimeLabel: "Claude",
+      runtimeLabel: "Claude Agent SDK",
       workspaceSkillsRootSegments: [".claude", "skills"],
     });
     expect(getClaudeWorkspaceSkillMaterializer()).toBe(getClaudeWorkspaceSkillMaterializer());

@@ -1,0 +1,197 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/serverStore.ts" is used
+stderr | stores/__tests__/definitionMutationCache.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/definitionMutationCache.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+Failed to fetch agent definitions: ApolloError: Unconfigured GraphQL fixture field: internal
+    at new ApolloError (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/errors/index.js:59:28)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/core/QueryManager.js:823:71
+    at both (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:35:31)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:24:72
+    at new Promise (<anonymous>)
+    at Object.then (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:24:24)
+    at Object.error (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:37:49)
+    at notifySubscription (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:140:18)
+    at onNotify (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:179:3)
+    at SubscriptionObserver.error (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:240:7) {
+  graphQLErrors: [],
+  protocolErrors: [],
+  clientErrors: [],
+  networkError: Error: Unconfigured GraphQL fixture field: internal
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:30:35)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:52
+      at Array.map (<anonymous>)
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:40)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:97:31
+      at new Subscription (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:197:34)
+      at Observable.subscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:279:14)
+      at Object.complete (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:111:43)
+      at Concast.start (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:152:23)
+      at new Concast (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:137:19),
+  extraInfo: undefined,
+  cause: Error: Unconfigured GraphQL fixture field: internal
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:30:35)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:52
+      at Array.map (<anonymous>)
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:40)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:97:31
+      at new Subscription (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:197:34)
+      at Observable.subscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:279:14)
+      at Object.complete (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:111:43)
+      at Concast.start (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:152:23)
+      at new Concast (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:137:19)
+}
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+Failed to fetch agent definitions: ApolloError: Unconfigured GraphQL fixture field: internal
+    at new ApolloError (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/errors/index.js:59:28)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/core/QueryManager.js:823:71
+    at both (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:35:31)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:24:72
+    at new Promise (<anonymous>)
+    at Object.then (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:24:24)
+    at Object.error (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/asyncMap.js:37:49)
+    at notifySubscription (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:140:18)
+    at onNotify (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:179:3)
+    at SubscriptionObserver.error (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:240:7) {
+  graphQLErrors: [],
+  protocolErrors: [],
+  clientErrors: [],
+  networkError: Error: Unconfigured GraphQL fixture field: internal
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:30:35)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:52
+      at Array.map (<anonymous>)
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:40)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:97:31
+      at new Subscription (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:197:34)
+      at Observable.subscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:279:14)
+      at Object.complete (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:111:43)
+      at Concast.start (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:152:23)
+      at new Concast (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:137:19),
+  extraInfo: undefined,
+  cause: Error: Unconfigured GraphQL fixture field: internal
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:30:35)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:52
+      at Array.map (<anonymous>)
+      at selected (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:33:40)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/__tests__/definitionMutationCache.spec.ts:97:31
+      at new Subscription (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:197:34)
+      at Observable.subscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/zen-observable@0.8.15/node_modules/zen-observable/lib/Observable.js:279:14)
+      at Object.complete (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:111:43)
+      at Concast.start (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:152:23)
+      at new Concast (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@11.3.4_g_24ae9e477f2e51382ebe712d5af18d01/node_modules/@apollo/client/utilities/observables/Concast.js:137:19)
+}
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Org catalog diagnostics readable through the real cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Org catalog diagnostics readable through the real cache
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts (10 tests | 3 failed) 46ms
+   × definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache 26ms
+     → expected null not to be null
+   ✓ definition mutations publish a complete current-query cache row > creates a healthy Org without missing-field errors or an unreadable catalog cache 5ms
+   × definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads 4ms
+     → expected null not to be null
+   ✓ definition mutations publish a complete current-query cache row > edits a healthy Org with complete issue fields and cache-first rereads 4ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Agent create (contract only) 0ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Agent edit (contract only) 0ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Org create (contract only) 0ms
+   ✓ definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Org edit (contract only) 0ms
+   × definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache 3ms
+     → expected undefined to match object { …(4) }
+   ✓ definition mutations publish a complete current-query cache row > keeps nonempty Org catalog diagnostics readable through the real cache 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+AssertionError: expected null not to be null
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:117:24
+    115|     expect(missingFields, 'Creation must not publish a row missing fie…
+    116|     const cached = io.client.readQuery({ query })
+    117|     expect(cached).not.toBeNull()
+       |                        ^
+    118|     if (kind === 'Agent') {
+    119|       expect(cached.agentDefinitions).toHaveLength(2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+AssertionError: expected null not to be null
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:148:24
+    146|     expect(missingCacheFields(error.mock.calls)).toEqual([])
+    147|     const cached = io.client.readQuery({ query })
+    148|     expect(cached).not.toBeNull()
+       |                        ^
+    149|     if (kind === 'Agent') {
+    150|       expect(cached.agentDefinitions).toContainEqual(expect.objectCont…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+AssertionError: expected undefined to match object { …(4) }
+
+- Expected: 
+{
+  "code": "DEFINITION_CONTRACT_INVALID",
+  "definitionPath": "/packages/agents/existing-agent/agent-config.json",
+  "packageRoot": "/packages",
+  "reason": "Cannot read definition JSON",
+}
+
++ Received: 
+undefined
+
+ ❯ stores/__tests__/definitionMutationCache.spec.ts:181:65
+    179|       const store = useAgentDefinitionStore()
+    180|       await store.fetchAllAgentDefinitions()
+    181|       expect(store.getAgentDefinitionById(agent.id)?.loadIssue).toMatc…
+       |                                                                 ^
+    182|       expect(io.client.readQuery({ query: GetAgentDefinitions }).agent…
+    183|     } else {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 7 passed (10)
+   Start at  14:47:26
+   Duration  7.05s (transform 3.34s, setup 6.41s, collect 32ms, tests 46ms, environment 199ms, prepare 149ms)
+

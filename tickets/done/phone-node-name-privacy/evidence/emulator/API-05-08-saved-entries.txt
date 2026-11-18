@@ -1,0 +1,4 @@
+# API-05/RU-04 saved_nodes.xml read with `adb shell run-as org.autobyteus.mobile cat shared_prefs/saved_nodes.xml` (credential-free: entries hold no credential)
+selected_entry_id = http://hostbox-9f3.example-tailnet.ts.net:47331
+{'id': 'http://hostbox-9f3.example-tailnet.ts.net:47331', 'displayName': 'hostbox-9f3.example-tailnet.ts.net', 'host': 'hostbox-9f3.example-tailnet.ts.net', 'port': 47331, 'scheme': 'http', 'httpAcknowledged': True}
+{'id': 'http://hostbox-9f3.home.arpa:47331', 'displayName': 'Test Desktop', 'host': 'hostbox-9f3.home.arpa', 'port': 47331, 'scheme': 'http', 'httpAcknowledged': True}

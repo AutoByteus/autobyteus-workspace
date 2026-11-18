@@ -1,0 +1,24 @@
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+  ➜ Local:    http://127.0.0.1:55365/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 80ms
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/tmp/abtest437r2/base-wt/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 674ms
+[nitro] ✔ Nuxt Nitro server built in 860ms
+ℹ Vite client warmed up in 1ms

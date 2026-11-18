@@ -1,0 +1,96 @@
+# IMP-04 autobyteus-ts suite, full; then the 3 terminal files that failed under load, alone; ps timing idle
+# Command: pnpm -C autobyteus-ts test; pnpm -C autobyteus-ts exec vitest run <3 terminal files>; time ps -axo pid=,ppid=,pgid=,stat=,lstart=,comm=
+# Commit: full run on the content of 0eda6aafe4 for autobyteus-ts (only docs changed in autobyteus-ts since); reruns on d7b11c57b6
+# Date: 2026-11-01T06:29Z
+
+## full suite
+
+> autobyteus-ts@1.0.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-ts
+> vitest run
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-ts
+
+(node:15546) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+ ❯ tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts (9 tests | 1 failed) 7825ms
+     × drains multiple groups collectively while an unrelated scope survives 800ms
+stdout | tests/integration/tools/terminal/terminal-tools.test.ts
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+
+ ❯ tests/integration/tools/terminal/terminal-tools.test.ts (13 tests | 1 failed) 11403ms
+     × can manage multiple background processes independently 3086ms
+ ❯ tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts (5 tests | 2 failed) 4358ms
+     × keeps an adopted live record output until confirmed explicit stop 837ms
+     × preserves completed background history until its record is removed 1344ms
+mcp test server: exiting at start (mode exit-at-start)
+(node:20405) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+mcp test server: exiting at start (mode exit-at-start)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/terminal/terminal-tools.test.ts > terminal tools integration > can manage multiple background processes independently
+Error: Command cleanup unconfirmed: Command failed: ps -axo pid=,ppid=,pgid=,stat=,lstart=,comm=
+
+ ❯ BackgroundProcessManager.stopProcess src/tools/terminal/background-process-manager.ts:81:49
+     79|     if (!record) return false;
+     80|     const result = await this.scope.stop(record.handle, 'explicit-stop…
+     81|     if (result.outcome === 'unconfirmed') throw new Error(`Command cle…
+       |                                                 ^
+     82|     for (const [key, sibling] of this.processes) if (sibling.handle ==…
+     83|       sibling.status = 'stopped'; this.processes.delete(key);
+ ❯ FunctionalTool.stopBackgroundProcess [as _originalFunc] src/tools/terminal/tools/stop-background-process.ts:14:19
+ ❯ tests/integration/tools/terminal/terminal-tools.test.ts:256:26
+ ❯ withTempDir tests/integration/tools/terminal/terminal-tools.test.ts:32:12
+ ❯ tests/integration/tools/terminal/terminal-tools.test.ts:235:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > drains multiple groups collectively while an unrelated scope survives
+ FAIL  tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts > output capture lifecycle > preserves completed background history until its record is removed
+Error: Command failed: ps -axo pid=,ppid=,pgid=,stat=,lstart=,comm=
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts > output capture lifecycle > keeps an adopted live record output until confirmed explicit stop
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts:45:75
+     43|   it('keeps an adopted live record output until confirmed explicit sto…
+     44|     await executor.execute('printf before; (sleep 0.1; printf after; s…
+     45|     const records = await manager.listProcesses(); expect(records.leng…
+       |                                                                           ^
+     46|     expect(captures(manager).size).toBe(1);
+     47|     let output = '';
+ ❯ fixture tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts:19:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  3 failed | 396 passed | 22 skipped (421)
+      Tests  4 failed | 2384 passed | 94 skipped (2482)
+   Start at  06:53:40
+   Duration  86.60s (transform 12.71s, setup 7.98s, import 56.14s, tests 226.38s, environment 27ms)
+
+ ELIFECYCLE  Test failed. See above for more details.
+
+## the three failing files alone
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-ts
+
+
+ Test Files  3 passed (3)
+      Tests  27 passed (27)
+   Start at  07:29:54
+   Duration  11.67s (transform 638ms, setup 211ms, import 667ms, tests 23.36s, environment 0ms)
+
+
+## ps timing, idle machine (the observer's limit is 500 ms)
+real 0.06
+real 0.06
+real 0.07
+processes:      815

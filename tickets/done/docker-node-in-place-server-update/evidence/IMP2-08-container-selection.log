@@ -1,0 +1,32 @@
+# IMP2-08 selection in the container (DS-003): NEEDS_NEW_IMAGE, older current, installed package. state.json and packages/1.5.12 written on the test volume by a helper container while the node was stopped; they reproduce what an image upgrade or an in-place update (step 3) leaves there
+# Image: autobyteus-server-305-test:step2 sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9, built from b1029fc1b0's Dockerfile, starter and server source (IMP2-05)
+# Container: ab305-step2 on 127.0.0.1:<free port>, test-owned volumes ab305-step2-server-packages and ab305-step2-data only; removed afterwards with docker rm -f -v and docker volume rm. The user's nodes were not touched.
+# Environment: macOS arm64 host, Docker 29.0.1. Date: 2026-10-30
+
+## D. NEEDS_NEW_IMAGE: the node already ran 1.5.13 (state.json written on the test volume), the image has 1.5.11-beta.5
+{"current":{"source":"builtIn","version":"1.5.13"}}
+$ curl /rest/health
+curl: (52) Empty reply from server
+ (no server: connection refused or reset)
+$ cli.mjs status
+{"version":"1.5.13","state":"needsNewImage","update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null},"message":"This node already ran 1.5.13; this image can run only 1.5.11-beta.5. Use an image of version 1.5.13 or newer: autobyteus-docker upgrade --all --tag 1.5.13"}
+exit=0
+autobyteus_server                RUNNING   pid 52, uptime 0:00:19
+spawns of the starter in supervisord.log (the log survives docker stop/start; this is the 4th start of this container: initial boot, restart after B, start after C, this boot): 4
+pgrep -fa dist/app.js matched only this probe command itself: no server process
+{"time":"2026-10-30T17:09:12.147Z","starter":"needs-new-image","code":"NEEDS_NEW_IMAGE","message":"This node already ran 1.5.13; this image can run only 1.5.11-beta.5. Use an image of version 1.5.13 or newer: autobyteus-docker upgrade --all --tag 1.5.13"}
+{"current":{"source":"builtIn","version":"1.5.13"}}
+## E. The node ran an older version (1.5.10): the newer built-in package runs and becomes current
+{"version":"1.5.11-beta.5","state":"running","server":{"pid":105,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idl
+{
+  "current": {
+    "source": "builtIn",
+    "version": "1.5.11-beta.5"
+  }
+}
+
+## F. An installed package newer than the built-in one (1.5.12 in packages/1.5.12, a copy of the built-in with its version renamed) runs from the volume
+health: {"status":"ok","message":"Server is running"}
+{"version":"1.5.12","state":"running","server":{"pid":102,"packageVersion":"1.5.12","source":"installed"},"update":{"state":"idle","targetVe
+server cwd: /home/autobyteus/server-packages/packages/1.5.12
+C1 with target 1.5.12: {"inPlaceUpdate":"available","version":"1.5.12","target":{"version":"1.5.12","relation":"same"},"update":{"state":"idle"

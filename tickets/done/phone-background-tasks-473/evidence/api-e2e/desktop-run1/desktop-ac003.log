@@ -1,0 +1,7 @@
+# AC-003 desktop window; run builder_fc4078b36a914685be3a01879fcb4e99; 2026-11-12T05:48:22.726Z
+opened: {"url":"/workspace?agentRunId=builder_fc4078b36a914685be3a01879fcb4e99","rows":[],"header":"Background Tasks Current count unavailable"}
+after reload: {"url":"/workspace?agentRunId=builder_fc4078b36a914685be3a01879fcb4e99","rows":[],"header":"Background Tasks Current count unavailable"}
+background-task view reads after the reload: []
+FAIL the running task is listed when the window opens the run
+FAIL after a reload the Progress/Activity panel lists the running task (AC-003)
+result Fail

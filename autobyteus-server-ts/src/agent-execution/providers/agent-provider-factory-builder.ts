@@ -1,3 +1,4 @@
+import type { NativeCommandProcessScope } from "autobyteus-ts";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -11,7 +12,6 @@ import {
 } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../backends/codex/backend/codex-thread-bootstrapper.js";
-import type { CodexThreadCleanup } from "../backends/codex/backend/codex-thread-cleanup.js";
 import type { CodexWorkspaceResolver } from "../backends/codex/codex-workspace-resolver.js";
 import type { CodexThreadManager } from "../backends/codex/thread/codex-thread-manager.js";
 import type { WorkspaceSkillMaterializer } from "../backends/shared/workspace-skill-materializer.js";
@@ -19,17 +19,21 @@ import type { CodexAppServerClientManager } from "../../runtime-management/codex
 import { AgyAgentRunBackendFactory } from "../backends/antigravity/backend/agy-agent-run-backend-factory.js";
 import type { AcpAgentRunBackendFactory } from "../backends/acp/backend/acp-agent-run-backend-factory.js";
 import { createGrokBuildAgentRunBackendFactory } from "../backends/grok/grok-build-agent-run-backend-factory.js";
+import { createDeepSeekHarnessAgentRunBackendFactory } from "../backends/deepseek-harness/deepseek-harness-agent-run-backend-factory.js";
 import { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
 import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
 import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
 import type { ClaudeSdkClient } from "../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
+import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
 
 export type AgentProviderFactoryBuilderProcessInput = Readonly<{
   workspaceManager: WorkspaceManager;
   skillService: SkillService;
   autoByteus: Readonly<{
+    nativeCommandProcessScope: NativeCommandProcessScope;
     agentFactory: AutoByteusAgentFactoryLike;
     createLlm: AutoByteusLlmFactory;
     processorRegistries: Readonly<ProcessorRegistries>;
@@ -40,7 +44,6 @@ export type AgentProviderFactoryBuilderProcessInput = Readonly<{
     workspaceResolver: CodexWorkspaceResolver;
     clientManager: CodexAppServerClientManager;
     threadManager: CodexThreadManager;
-    threadCleanup: CodexThreadCleanup;
   }>;
   claude: Readonly<{
     workspaceResolver: ClaudeWorkspaceResolver;
@@ -55,6 +58,7 @@ export type AgentProviderFactorySet = Readonly<{
   claude: ClaudeAgentRunBackendFactory;
   antigravity: AgyAgentRunBackendFactory;
   grok: AcpAgentRunBackendFactory;
+  deepSeekHarness: AcpAgentRunBackendFactory;
 }>;
 
 export interface AgentProviderFactoryBuilder {
@@ -62,6 +66,10 @@ export interface AgentProviderFactoryBuilder {
     agentDefinitionService: AgentDefinitionService;
     agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
     applicationAgentTools: ApplicationAgentToolCapability | null;
+    /** The runs' integration access (`null`: this host's runs get none). */
+    integrationRunAccess: IntegrationRunAccess | null;
+    /** The runs' provider relays (`null`: this host runs no credential proxy, so relay runtimes are refused). */
+    providerRelayAccess: ProviderRelayAccess | null;
   }>): AgentProviderFactorySet;
 }
 
@@ -93,6 +101,7 @@ const freezeProcessInput = (
     "autoByteus.processorRegistries",
   );
   for (const field of [
+    "nativeCommandProcessScope",
     "agentFactory",
     "createLlm",
     "waitForIdle",
@@ -114,7 +123,6 @@ const freezeProcessInput = (
     "workspaceResolver",
     "clientManager",
     "threadManager",
-    "threadCleanup",
   ] as const) {
     requireLeaf(codex[field], `codex.${field}`);
   }
@@ -150,6 +158,8 @@ export const createAgentProviderFactoryBuilder = (
       agentDefinitionService: AgentDefinitionService;
       agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
       applicationAgentTools: ApplicationAgentToolCapability | null;
+      integrationRunAccess: IntegrationRunAccess | null;
+      providerRelayAccess: ProviderRelayAccess | null;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
@@ -159,6 +169,17 @@ export const createAgentProviderFactoryBuilder = (
           "Agent provider factory builder applicationAgentTools disposition is required.",
         );
       }
+      if (!("integrationRunAccess" in input) || input.integrationRunAccess === undefined) {
+        throw new Error(
+          "Agent provider factory builder integrationRunAccess disposition is required.",
+        );
+      }
+      if (!("providerRelayAccess" in input) || input.providerRelayAccess === undefined) {
+        throw new Error(
+          "Agent provider factory builder providerRelayAccess disposition is required.",
+        );
+      }
+      const integrationRunAccess = input.integrationRunAccess;
 
       const codexBootstrapper = new CodexThreadBootstrapper(
         input.agentToolMcpRunSessions,
@@ -167,15 +188,17 @@ export const createAgentProviderFactoryBuilder = (
         input.agentDefinitionService,
         process.skillService,
         process.codex.clientManager,
+        integrationRunAccess,
       );
       const claudeSessionManager = new ClaudeSessionManager(
         input.agentToolMcpRunSessions,
         process.workspaceManager,
         process.claude.sdkClient,
-        process.claude.workspaceSkillMaterializer,
+        integrationRunAccess,
       );
       return Object.freeze({
         autoByteus: new AutoByteusAgentRunBackendFactory({
+          nativeCommandProcessScope: process.autoByteus.nativeCommandProcessScope,
           agentFactory: process.autoByteus.agentFactory,
           agentDefinitionService: input.agentDefinitionService,
           createLLM: process.autoByteus.createLlm,
@@ -184,20 +207,30 @@ export const createAgentProviderFactoryBuilder = (
           registries: process.autoByteus.processorRegistries,
           waitForIdle: process.autoByteus.waitForIdle,
           applicationAgentTools: input.applicationAgentTools,
+          integrationRunAccess,
         }),
         codex: new CodexAgentRunBackendFactory(
           process.codex.threadManager,
           codexBootstrapper,
-          process.codex.threadCleanup,
+          input.agentToolMcpRunSessions,
         ),
         antigravity: new AgyAgentRunBackendFactory(
           input.agentDefinitionService, process.skillService,
           new ClaudeWorkspaceResolver(process.workspaceManager), input.agentToolMcpRunSessions,
+          integrationRunAccess,
         ),
         grok: createGrokBuildAgentRunBackendFactory({
           definitions: input.agentDefinitionService, skills: process.skillService,
           workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
           mcpSessions: input.agentToolMcpRunSessions,
+          integrationRunAccess,
+        }),
+        deepSeekHarness: createDeepSeekHarnessAgentRunBackendFactory({
+          definitions: input.agentDefinitionService, skills: process.skillService,
+          workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
+          mcpSessions: input.agentToolMcpRunSessions,
+          integrationRunAccess,
+          providerRelayAccess: input.providerRelayAccess,
         }),
         claude: new ClaudeAgentRunBackendFactory(
           claudeSessionManager,

@@ -9,9 +9,11 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ProjectChangeMessageSchema } from "../../../src/projects/changes/project-change-messages.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { removedRunIdsIn } from "../helpers/run-tree-delegated.js";
 
 // task-part-of AC-018, AC-008, AC-007 (live), AC-003 / AC-014 (Temp tasks) and AC-006 through the real Studio HTTP/WebSocket
 // server, the Manager's scoped Agent Tools MCP session, the Project/Task services, live delegated task agents and the
@@ -103,8 +105,8 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
   const workerEntry = async (taskId: string, worker: string) => JSON.parse(await fs.readFile(path.join(taskDir(taskId), "agent_run_resources.json"), "utf8"))
     .agentRunResources.find((entry: any) => entry.agentRun.agentRunId === worker);
   const upserts = (taskId: string, from = 0) => feedFrames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId).map((f) => f.task);
-  const closedFrame = (frame: Frame) => frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
-  const closedRunIds = (frames: Frame[]) => frames.filter(closedFrame).flatMap((frame) => (frame.payload.event.task_executions as any[]).map((ref) => ref.agentRunId ?? ref.agent_run_id));
+  // autobyteus-461 SR-084: a closed Task's copy leaves the tree; the view tells it as a tree change removing its row.
+  const closedRunIds = (frames: Frame[]) => removedRunIdsIn(frames);
   const workerAddress = () => `/${segment(workerName)}`;
 
   /** The Manager delegates the Task to the worker catalog agent; returns the new task agent once its process runs. */
@@ -150,8 +152,8 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     const view = await connect("agent-collaboration", rootId, (frames) => frames.some((f) => f.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
     const conversationOf = async (agentRunId: string, address: string) => agentRunId === rootId
       ? (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation
-      : (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-        { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+      // Any other agent is in a run this root delegated to: read by its own run (autobyteus-461 rule 2).
+      : (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     const calls = async (content: string) => {
       const before = calledResults(await conversationOf(rootId, "/")).length;
       sendE2eSendMessageCommand(input.socket, { agent_run_id: rootId, content });
@@ -182,12 +184,20 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
   }, 120000);
 
   it("POF-LIVE-001: a parent's CANCELLED, then another parent's DONE, close their open parts (stopping a really running task agent), list them in closedParts and update the feed; closed parts, reopen and a part's own close change nothing; re-parent and delete cleanup are live (AC-018, AC-008, AC-007, AC-006)", async () => {
+    // autobyteus-260: each Task is created with a title (here its one-line description); acknowledgements name it and
+    // leave out empty fields (no dependsOn, no partOf without a parent).
+    const titles: Record<string, string> = {};
     const ack = (taskId: string, status: string, partOf: string | null, extra: Record<string, unknown> = {}) =>
-      ({ task: { projectId, taskId, status, dependsOn: [], partOf, ...extra } });
+      ({ task: { projectId, taskId, title: titles[taskId], status, ...(partOf ? { partOf } : {}), ...extra } });
+    const create = async (description: string, extra: Record<string, unknown> = {}) => {
+      const created = (await manager.calls(callTool("create_task", { project_id: projectId, title: description, description, ...extra }))).task;
+      titles[created.taskId] = created.title;
+      expect(created.title).toBe(description);
+      return created.taskId as string;
+    };
     // The Manager creates the bigger Task and its parts through its own tools (by key, in another letter case).
-    const parent = (await manager.calls(callTool("create_task", { project_id: projectId, description: "P: cross-node collaboration" }))).task;
-    const P = parent.taskId as string;
-    const make = async (description: string, partOf: string) => (await manager.calls(callTool("create_task", { project_id: projectId, description, part_of: partOf }))).task.taskId as string;
+    const P = await create("P: cross-node collaboration");
+    const make = async (description: string, partOf: string) => create(description, { part_of: partOf });
     const A = await make("A: transport (delegated)", P.toUpperCase());
     const B = await make("B: protocol notes", P);
     const C = await make("C: discovery (done)", P);
@@ -211,7 +221,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     const cancelled = await manager.calls(callTool("update_task", { task_id: P, status: "CANCELLED" }));
     expect(cancelled).toEqual(ack(P, "CANCELLED", null, { closedParts: [A, B] }));
     // The running part's task agent is closed (live closure event, closed entry) and its process stops.
-    await until(() => closedRunIds(manager.view.frames.slice(from)).includes(workerA), "live task_executions_closed for the part's task agent", 60_000);
+    await until(() => closedRunIds(manager.view.frames.slice(from)).includes(workerA), "the part's task agent's row removed live from the manager's tree", 60_000);
     expect((await workerEntry(ids[A]!, workerA))?.closedAt).toEqual(expect.any(String));
     await until(() => liveAgyCwds().every((cwd) => !cwd.includes(workerA)), "no live process of the part's task agent after the parent's CANCELLED", 30_000);
     const fenced = await manager.calls(callTool("send_message_to", { target_agent_run_id: workerA, content: "Still there?" }));
@@ -234,7 +244,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     expect(liveAgyCwds().some((cwd) => cwd.includes(workerA))).toBe(false);
 
     // AC-018 (DONE) on a second parent: its running part's task agent stops and its To Do part is DONE as well.
-    const Q = (await manager.calls(callTool("create_task", { project_id: projectId, description: "Q: release the bigger Task" }))).task.taskId as string;
+    const Q = await create("Q: release the bigger Task");
     const E = await make("E: build (delegated)", Q);
     const F = await make("F: notes", Q);
     const workerE = await delegateRunning(E, "PRE-CASCADE-E");
@@ -242,7 +252,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     from = manager.view.frames.length; feedFrom = feedFrames.length;
     const done = await manager.calls(callTool("update_task", { task_id: Q, status: "DONE" }));
     expect(done).toEqual(ack(Q, "DONE", null, { closedParts: [E, F] }));
-    await until(() => closedRunIds(manager.view.frames.slice(from)).includes(workerE), "live task_executions_closed for E's task agent", 60_000);
+    await until(() => closedRunIds(manager.view.frames.slice(from)).includes(workerE), "E's task agent's row removed live from the manager's tree", 60_000);
     const longE = (await task(E)).taskId as string, longF = (await task(F)).taskId as string, longQ = (await task(Q)).taskId as string;
     expect((await workerEntry(longE, workerE))?.closedAt).toEqual(expect.any(String));
     await until(() => liveAgyCwds().every((cwd) => !cwd.includes(workerE)), "no live process of E's task agent after the parent's DONE", 30_000);
@@ -251,7 +261,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     evidence.done = { parent: Q, parts: { E, F }, workerE, done };
 
     // AC-006: a part's own close never changes its parent (R stays TODO; no closedParts).
-    const R = (await manager.calls(callTool("create_task", { project_id: projectId, description: "R: still open" }))).task.taskId as string;
+    const R = await create("R: still open");
     const H = await make("H: last slice", R);
     expect(await manager.calls(callTool("update_task", { task_id: H, status: "DONE" }))).toEqual(ack(H, "DONE", R));
     expect((await task(R)).status).toBe("TODO");
@@ -272,7 +282,9 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
       expect(upserts(id, feedFrom).at(-1)).toMatchObject({ partOfTaskId: null, updatedAt: partsBefore[id].updatedAt });
     }
     const listed = await manager.calls(callTool("list_project_tasks", { project_id: projectId }));
-    const byKey = Object.fromEntries((listed.tasks as any[]).map((t) => [t.taskId, { status: t.status, partOf: t.partOf, parts: t.parts }]));
+    // Absent partOf / parts read as none (REQ-001).
+    expect((listed.tasks as any[]).every((t) => t.partOf !== null && !(Array.isArray(t.parts) && t.parts.length === 0))).toBe(true);
+    const byKey = Object.fromEntries((listed.tasks as any[]).map((t) => [t.taskId, { status: t.status, partOf: t.partOf ?? null, parts: t.parts ?? [] }]));
     expect(byKey[P]).toEqual({ status: "TODO", partOf: null, parts: [A, C, D] });
     expect(byKey[E]).toEqual({ status: "DONE", partOf: null, parts: [] });
     expect(byKey[R]).toEqual({ status: "TODO", partOf: null, parts: [H] });
@@ -293,7 +305,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     expect(onTemp).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID", message: "Only Project Tasks have a parent; this Task has no Project." } });
     const clearOnTemp = await manager.calls(callTool("update_task", { task_id: adHocTaskId, part_of: "" }));
     expect(clearOnTemp).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID" } });
-    const createUnder = await manager.calls(callTool("create_task", { project_id: projectId, description: "never created", part_of: adHocTaskId }));
+    const createUnder = await manager.calls(callTool("create_task", { project_id: projectId, title: "never created", description: "never created", part_of: adHocTaskId }));
     expect(createUnder).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID", message: `Task '${adHocTaskId}' is not a current Task of this Project.` } });
     const moveUnder = await manager.calls(callTool("update_task", { task_id: someTask, part_of: adHocTaskId }));
     expect(moveUnder).toMatchObject({ isError: true, error: { code: "TASK_PARENT_INVALID" } });
@@ -301,7 +313,7 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     expect(await adHocEntries()).toEqual(["agent_run_resources.json", "task.json"]);
     expect(await tasks()).toEqual(projectTasksBefore);
     // A text patch on the Temp task still works and its result has no Project fields.
-    expect(await manager.calls(callTool("update_task", { task_id: adHocTaskId, description: "Patched text" }))).toEqual({ task: { projectId: null, taskId: adHocTaskId, status: expect.any(String) } });
+    expect(await manager.calls(callTool("update_task", { task_id: adHocTaskId, description: "Patched text" }))).toEqual({ task: { taskId: adHocTaskId, status: expect.any(String) } }); // a Task with no Project has no projectId (REQ-001)
     evidence.temp = { adHocTaskId, onTemp, clearOnTemp, createUnder, moveUnder };
   }, 300000);
 

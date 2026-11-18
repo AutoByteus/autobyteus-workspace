@@ -1,0 +1,36 @@
+{
+ "pageUrl": "http://dockbox-5e1.home.arpa:61529/mobile/",
+ "value": {
+  "headerName": "Test Docker Node",
+  "headerState": "Connected",
+  "headerAria": "Test Docker Node, Connected. Connection",
+  "banner": null,
+  "sheetOpen": false,
+  "sheetText": null,
+  "sheetAddressLine": false,
+  "bodyText": "Test Docker Node\nConnected\n\nNo runs yet\n\nStart with New run. Work an agent delegates appears under its run and leaves when it is done.",
+  "ariaLabels": [
+   "Test Docker Node, Connected. Connection",
+   "New run"
+  ],
+  "titles": [
+   "New run"
+  ],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 3,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": "Test Docker Node"
+  },
+  "sessionNodeName": "Test Docker Node",
+  "sessionKeys": [
+   "entryId",
+   "serverBaseUrl",
+   "nodeName",
+   "credential",
+   "device",
+   "pairedAt"
+  ]
+ }
+}

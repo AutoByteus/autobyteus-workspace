@@ -1,0 +1,38 @@
+# Case: API-08 step 01
+# Command: state before; lsof 127.0.0.1:58396 (holder); autobyteus-docker.sh workspace apply --name abx402-api-node
+# Setup: test node abx402-api-node from API-07 (saved BACKEND_PORT=58395, NOVNC_PORT=58396); its container removed with docker rm -f (state kept), as after a Docker reset; a Python listener owned by this run holds 127.0.0.1:58396; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx402-api/bash/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx402-api/bash/shared; v8 bash launcher (worktree)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, Docker Desktop 29.0.1
+# Date: 2026-11-06T15:40:06Z
+
+NODE_NAME=abx402-api-node
+CONTAINER_NAME=abx402-api-node
+BACKEND_PORT=58395
+NOVNC_PORT=58396
+IMAGE_REF=autobyteus/autobyteus-server:1.5.11-beta.7
+CREATED_AT=2026-11-06T00:00:00Z
+CONFIG_HASH=6ebde18257e9dbd528e53bde4d278cab2bbbdbf7a12d289963ba7cb27448bb62
+UPDATED_AT=2026-11-06T15:38:49Z
+
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+Python  75561 normy    3u  IPv4 0x11c66cff8e096fcf      0t0  TCP 127.0.0.1:58396 (LISTEN)
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx402-api-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:1.5.11-beta.7
+1.5.11-beta.7: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8bcf8eabfafef982577b327951cb34f655daad77e1f2513b5f07d49797649666
+Status: Image is up to date for autobyteus/autobyteus-server:1.5.11-beta.7
+docker.io/autobyteus/autobyteus-server:1.5.11-beta.7
+[AutoByteus Docker] Port bind failed; retrying with fresh ports (attempt 2/5).
+[AutoByteus Docker] Started abx402-api-node.
+AutoByteus Docker node: abx402-api-node
+Container: abx402-api-node
+Image: autobyteus/autobyteus-server:1.5.11-beta.7
+Backend: http://localhost:58923
+GraphQL: http://localhost:58923/graphql
+VNC Viewer: localhost:58924 (this computer only)
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx402-api/bash/shared/nodes/abx402-api-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx402-api/bash/shared/shared
+Private app data: /home/autobyteus/data -> abx402-api-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0

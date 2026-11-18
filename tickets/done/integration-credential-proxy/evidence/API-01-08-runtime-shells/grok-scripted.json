@@ -1,0 +1,111 @@
+{
+  "runtime": "grok_build (recorded fake CLI)",
+  "probe": {
+    "result": {
+      "apiHttp": "200",
+      "gitStatus": 0,
+      "psStatus": 0,
+      "psEnvStatus": 0
+    },
+    "address": "http://127.0.0.1:63110/r/rp_<pass>/github/api",
+    "gitConfig": [
+      [
+        "url.http://127.0.0.1:63110/r/rp_<pass>/github/git/.insteadOf",
+        "https://github.com/"
+      ]
+    ],
+    "terminalPrompt": "0",
+    "issueNumber": 1,
+    "lsRemoteHead": true,
+    "tokenInShellOutputs": []
+  },
+  "statuses": {
+    "unticked": {
+      "status": 403,
+      "error": "INTEGRATION_NOT_ALLOWED"
+    },
+    "reticked": {
+      "status": 200,
+      "error": null
+    },
+    "stopped": {
+      "status": 403,
+      "error": "RUN_PASS_INVALID"
+    }
+  },
+  "activity": [
+    {
+      "at": "2026-10-30T09:35:58.210Z",
+      "runId": "gh_proxy_grok_scripted_e719a4_920234ea57474da0bc9315b50476c548",
+      "agentDefinitionId": "gh-proxy-grok-scripted-e719a4",
+      "integrationId": "github",
+      "route": "api",
+      "method": "GET",
+      "path": "/repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1",
+      "status": 200,
+      "durationMs": 366
+    },
+    {
+      "at": "2026-10-30T09:35:58.615Z",
+      "runId": "gh_proxy_grok_scripted_e719a4_920234ea57474da0bc9315b50476c548",
+      "agentDefinitionId": "gh-proxy-grok-scripted-e719a4",
+      "integrationId": "github",
+      "route": "git",
+      "method": "GET",
+      "path": "/ryan-zheng-teki/autobyteus-mcp-test.git/info/refs",
+      "status": 200,
+      "durationMs": 185
+    },
+    {
+      "at": "2026-10-30T09:35:58.808Z",
+      "runId": "gh_proxy_grok_scripted_e719a4_920234ea57474da0bc9315b50476c548",
+      "agentDefinitionId": "gh-proxy-grok-scripted-e719a4",
+      "integrationId": "github",
+      "route": "git",
+      "method": "POST",
+      "path": "/ryan-zheng-teki/autobyteus-mcp-test.git/git-upload-pack",
+      "status": 200,
+      "durationMs": 167
+    },
+    {
+      "at": "2026-10-30T09:35:59.193Z",
+      "runId": "gh_proxy_grok_scripted_e719a4_920234ea57474da0bc9315b50476c548",
+      "agentDefinitionId": "gh-proxy-grok-scripted-e719a4",
+      "integrationId": "github",
+      "route": "api",
+      "method": "GET",
+      "path": "/repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1",
+      "status": 403,
+      "error": "INTEGRATION_NOT_ALLOWED",
+      "durationMs": 0
+    },
+    {
+      "at": "2026-10-30T09:35:59.212Z",
+      "runId": "gh_proxy_grok_scripted_e719a4_920234ea57474da0bc9315b50476c548",
+      "agentDefinitionId": "gh-proxy-grok-scripted-e719a4",
+      "integrationId": "github",
+      "route": "api",
+      "method": "GET",
+      "path": "/repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1",
+      "status": 200,
+      "durationMs": 422
+    },
+    {
+      "at": "2026-10-30T09:35:59.661Z",
+      "runId": null,
+      "agentDefinitionId": null,
+      "integrationId": "github",
+      "route": "api",
+      "method": "GET",
+      "path": "/repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1",
+      "status": 403,
+      "error": "RUN_PASS_INVALID",
+      "durationMs": 0
+    }
+  ],
+  "scan": {
+    "onWire": false,
+    "filesInDataDir": [],
+    "filesInCodexHome": "not scanned (not a temp CODEX_HOME)"
+  }
+}

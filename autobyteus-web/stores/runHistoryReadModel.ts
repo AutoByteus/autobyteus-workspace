@@ -83,7 +83,8 @@ export const resolveWorkspaceRootPath = (
   );
 };
 
-const summarizeDraftRun = (
+/** The row title of a run of this session the history does not list yet: its first message, else "New - <agent>". */
+export const localRunSummary = (
   conversation: Conversation,
   agentName: string,
 ): string => {
@@ -94,7 +95,7 @@ const summarizeDraftRun = (
   return `${DEFAULT_DRAFT_SUMMARY_PREFIX}${agentName}`.trim();
 };
 
-const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus: ProjectionRunKnownStatus } => {
+export const runStatusOf = (status: AgentStatus): { isActive: boolean; lastKnownStatus: ProjectionRunKnownStatus } => {
   if (status === AgentStatus.Error) {
     return { isActive: true, lastKnownStatus: 'ERROR' };
   }
@@ -138,7 +139,6 @@ const resolveVisibleRunWorkspaceDescriptor = (workspace: {
     workspaceRootPath: normalizedRoot,
     workspaceName: workspace.displayName || workspace.name || displayWorkspaceName(normalizedRoot),
     workspaceKind: isTempWorkspace ? 'temp' : 'filesystem',
-    canRemoveFromWorkspaces: isFilesystemWorkspace && !isTempWorkspace,
     isFixedTempWorkspace,
   };
 };
@@ -173,7 +173,6 @@ const buildVisibleRunWorkspaceDescriptors = (
     workspaceRootPath: descriptor.workspaceRootPath,
     workspaceName: descriptor.workspaceName,
     workspaceKind: descriptor.workspaceKind,
-    canRemoveFromWorkspaces: descriptor.canRemoveFromWorkspaces,
   }));
 };
 
@@ -232,7 +231,7 @@ export const buildRunHistoryTreeNodes = (params: {
         null,
       runs: agent.runs.map((run) => {
         const currentStatus = normalizeAgentRuntimeStatus(run.status);
-        const { lastKnownStatus } = toRunStatus(currentStatus);
+        const { lastKnownStatus } = runStatusOf(currentStatus);
         return {
           ...run,
           lastActivityAt: run.createdAt,
@@ -258,7 +257,7 @@ export const buildRunHistoryTreeNodes = (params: {
     const agentName = context.config.agentDefinitionName || 'Agent';
     const conversation = context.state.conversation;
     const currentStatus = normalizeAgentRuntimeStatus(context.state.currentStatus);
-    const { isActive, lastKnownStatus } = toRunStatus(currentStatus);
+    const { isActive, lastKnownStatus } = runStatusOf(currentStatus);
     const agentAvatarUrl =
       context.config.agentAvatarUrl?.trim() ||
       agentAvatarByDefinitionId.get(context.config.agentDefinitionId) ||
@@ -270,7 +269,7 @@ export const buildRunHistoryTreeNodes = (params: {
       agentDefinitionId: context.config.agentDefinitionId,
       agentName,
       agentAvatarUrl,
-      summary: summarizeDraftRun(conversation, agentName),
+      summary: localRunSummary(conversation, agentName),
       lastActivityAt:
         conversation.updatedAt ||
         conversation.createdAt ||

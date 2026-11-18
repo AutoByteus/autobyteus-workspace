@@ -1,0 +1,14 @@
+# IMP-35 collaboration stream contracts: build and tests (SR-055, SR-056)
+# command: (autobyteus-collaboration-stream-contracts) pnpm test   (tsc build, then node --test tests/*.test.mjs)
+# commit: a9f34ce3e6; macOS, Node v22.23.1; 2026-11-12T09:25Z
+
+# Subtest: a child run's identity is an agent run or a team run, with nothing a run changes while it runs (SR-055, SR-056)
+ok 39 - a child run's identity is an agent run or a team run, with nothing a run changes while it runs (SR-055, SR-056)
+# Subtest: the listed-runs poll answers every kind with each run's activity and children (SR-055)
+ok 40 - the listed-runs poll answers every kind with each run's activity and children (SR-055)
+# tests 41
+# pass 41
+# fail 0
+
+## dist matches the committed build
+(no 'changed:' line: the rebuilt dist equals the committed one)

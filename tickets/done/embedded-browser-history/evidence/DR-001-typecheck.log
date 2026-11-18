@@ -1,0 +1,7 @@
+DR-001 post-merge transpile; source 763265ab81fbb58e532bda75d7b374c47dd40e28
+Command: pnpm -C autobyteus-web transpile-electron
+
+> autobyteus@1.5.9-beta.10 transpile-electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Exit: 0

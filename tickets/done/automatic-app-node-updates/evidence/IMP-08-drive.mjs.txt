@@ -1,0 +1,12 @@
+// Test-owned CDP driver for the isolated instance (autobyteus-356 rendered check).
+// Usage: node drive.mjs <controlPort> <js-expression-file|-> [screenshot.png]
+import fs from 'node:fs';
+import { chromium } from '/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core/index.mjs';
+const [port, scriptFile, shot] = process.argv.slice(2);
+const browser = await chromium.connectOverCDP('http://127.0.0.1:' + port);
+const page = browser.contexts().flatMap((c) => c.pages()).find((p) => p.url().includes('index.html'));
+const code = fs.readFileSync(scriptFile === '-' ? 0 : scriptFile, 'utf8');
+const result = await page.evaluate(`(async () => { ${code} })()`);
+console.log(JSON.stringify(result, null, 2));
+if (shot) await page.screenshot({ path: shot });
+await browser.close().catch(() => undefined);

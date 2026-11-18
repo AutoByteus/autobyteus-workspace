@@ -1,0 +1,5 @@
+# IMP-02 server remote-access unit + e2e + tracked-imports
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts tests/unit/remote-access tests/architecture/tracked-imports.test.ts --no-watch
+# commit: b2c7239d5e; 2026-11-07, macOS Darwin 25.5, Node v22.23.1
+ Test Files  16 passed (16)
+      Tests  119 passed (119)

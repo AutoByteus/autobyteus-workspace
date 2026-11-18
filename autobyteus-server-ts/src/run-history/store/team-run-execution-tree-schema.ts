@@ -16,18 +16,13 @@ import {
   objectRecord,
   parseApplicationBinding,
   parseConfiguredAgent,
-  collectTaskExecutionRunIds,
   parseLaunchConfiguration,
-  parseRemoteTaskExecutions,
-  parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCopyLayouts,
-  validateRemoteTaskExecutions,
-  validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
+import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const root = objectRecord(value, "rootTeam");
@@ -39,7 +34,6 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     "coordinatorAddress",
     "defaultLaunchConfiguration",
     "members",
-    "taskExecutions",
   ], "rootTeam");
   if (root.address !== "/") throw new Error("rootTeam.address must be '/'.");
   const coordinatorAddress = canonicalNonRootAddress(root.coordinatorAddress, "rootTeam.coordinatorAddress");
@@ -60,9 +54,8 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     teamRunId: requiredString(root.teamRunId, "rootTeam.teamRunId"),
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
+    ...parseOptionalLaunchFields(root, { source: "defaultLaunchSource" }, "rootTeam"),
     members,
-    taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
-    ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
 
@@ -77,19 +70,17 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
   }
   for (const handoff of tree.handoffs) {
     const from = assertAgentTeamAddress(handoff.from);
-    const to = assertAgentTeamAddress(handoff.to);
+    assertAgentTeamAddress(handoff.to);
     if (!byAddress.has(from)) throw new Error(`Handoff sender '${from}' is not a configured Agent.`);
-    if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
+    // A `to` outside the team (TC-12: a delegated team copied from an org hands off to `/Teacher`) is an external
+    // target, kept as stored and resolved when sent (contract §2.3).
   }
-  validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
-  validateCopyLayouts([tree.rootTeam]);
-  validateRemoteTaskExecutions(new Set([...tree.rootTeam.members.map((member) => member.agentRunId),
-    ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)]), tree.rootTeam.remoteTaskExecutions);
 };
 
 /**
  * Reads a TeamRun execution tree tolerantly (REQ-018): known fields are required and
- * validated; `schemaVersion`, `settledAt` and any other unknown field are ignored. The
+ * validated; `schemaVersion`, `settledAt` and any other unknown field are ignored (the `taskExecutions` lists are
+ * gone since autobyteus-461, E9: the Task entries hold who delegated to whom). The
  * result holds only current fields, so writing it produces the exact current shape.
  */
 export const validateTeamRunExecutionTreePayload = (

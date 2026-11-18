@@ -1,0 +1,555 @@
+{
+  "MR-01": {
+    "result": {
+      "delegated": true,
+      "target_kind": "team",
+      "target_team_run_id": "mr_team_0085_009eaae41e7a4fecbd94a1998ed75e43",
+      "target_team_coordinator_agent_run_id": "mr_designer_12c1_136a693151ce4ec49d5471eca960da6b",
+      "task_id": "ad_hoc_task_47334ed3-bbd0-4326-8265-0eec7450060d"
+    }
+  },
+  "MR-02": {
+    "result": {
+      "delegated": true,
+      "target_kind": "team",
+      "target_team_run_id": "mr_team_0085_95759d1f2d5549178ad28a11ba90327f",
+      "target_team_coordinator_agent_run_id": "mr_designer_12c1_8fb452cc4e0f411ba80589d18b284645",
+      "task_id": "ad_hoc_task_afc4c9ac-2f43-4cd3-8c04-8bb085adaada",
+      "launch_notes": [
+        "engineer: runs on grok_build / grok-4.7, chosen by the Model Router (implementation): Grok is signed in with limit left.",
+        "reviewer: runs on grok_build / grok-4.7, chosen by the Model Router (implementation): Grok is signed in with limit left."
+      ]
+    },
+    "elapsedMs": 9294
+  },
+  "MR-02-sources": [
+    {
+      "address": "/mr_team_0085/designer",
+      "runtimeKind": "antigravity_cli",
+      "model": "gemini-3.8-flash-low",
+      "source": {
+        "origin": "agent_default",
+        "fallbacks": []
+      }
+    },
+    {
+      "address": "/mr_team_0085/engineer",
+      "runtimeKind": "grok_build",
+      "model": "grok-4.7",
+      "source": {
+        "origin": "model_router",
+        "fallbacks": [],
+        "choiceReason": "Grok is signed in with limit left.",
+        "taskKind": "implementation"
+      }
+    },
+    {
+      "address": "/mr_team_0085/reviewer",
+      "runtimeKind": "grok_build",
+      "model": "grok-4.7",
+      "source": {
+        "origin": "model_router",
+        "fallbacks": [],
+        "choiceReason": "Grok is signed in with limit left.",
+        "taskKind": "implementation"
+      }
+    }
+  ],
+  "MR-02-decisions": {
+    "groups": [
+      {
+        "taskId": "ad_hoc_task_afc4c9ac-2f43-4cd3-8c04-8bb085adaada",
+        "taskKey": null,
+        "projectId": null,
+        "taskTitle": "Implement the login form. Reply OK.",
+        "latestAt": "2026-10-26T17:08:19.218Z",
+        "delegations": [
+          {
+            "recordedAt": "2026-10-26T17:08:19.218Z",
+            "delegatingRunId": "mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f",
+            "delegatingAgentName": "mr_manager_8b25",
+            "fromNode": null,
+            "copyAddress": "/mr_team_0085",
+            "copyKind": "agent_team",
+            "records": [
+              {
+                "recordedAt": "2026-10-26T17:08:19.218Z",
+                "taskId": "ad_hoc_task_afc4c9ac-2f43-4cd3-8c04-8bb085adaada",
+                "taskKey": null,
+                "projectId": null,
+                "taskTitle": "Implement the login form. Reply OK.",
+                "delegatingRunId": "mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f",
+                "delegatingAgentName": "mr_manager_8b25",
+                "fromNode": null,
+                "copyAddress": "/mr_team_0085",
+                "copyKind": "agent_team",
+                "agentAddress": "/mr_team_0085/designer",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "source": "agent_default",
+                "taskKind": null,
+                "choiceReason": null,
+                "routerFailure": null,
+                "skipped": []
+              },
+              {
+                "recordedAt": "2026-10-26T17:08:19.218Z",
+                "taskId": "ad_hoc_task_afc4c9ac-2f43-4cd3-8c04-8bb085adaada",
+                "taskKey": null,
+                "projectId": null,
+                "taskTitle": "Implement the login form. Reply OK.",
+                "delegatingRunId": "mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f",
+                "delegatingAgentName": "mr_manager_8b25",
+                "fromNode": null,
+                "copyAddress": "/mr_team_0085",
+                "copyKind": "agent_team",
+                "agentAddress": "/mr_team_0085/engineer",
+                "runtimeKind": "grok_build",
+                "llmModelIdentifier": "grok-4.7",
+                "source": "model_router",
+                "taskKind": "implementation",
+                "choiceReason": "Grok is signed in with limit left.",
+                "routerFailure": null,
+                "skipped": []
+              },
+              {
+                "recordedAt": "2026-10-26T17:08:19.218Z",
+                "taskId": "ad_hoc_task_afc4c9ac-2f43-4cd3-8c04-8bb085adaada",
+                "taskKey": null,
+                "projectId": null,
+                "taskTitle": "Implement the login form. Reply OK.",
+                "delegatingRunId": "mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f",
+                "delegatingAgentName": "mr_manager_8b25",
+                "fromNode": null,
+                "copyAddress": "/mr_team_0085",
+                "copyKind": "agent_team",
+                "agentAddress": "/mr_team_0085/reviewer",
+                "runtimeKind": "grok_build",
+                "llmModelIdentifier": "grok-4.7",
+                "source": "model_router",
+                "taskKind": "implementation",
+                "choiceReason": "Grok is signed in with limit left.",
+                "routerFailure": null,
+                "skipped": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "totalTasks": 1
+  },
+  "MR-02-statistics": {
+    "period": "all",
+    "totalAgents": 3,
+    "sources": {
+      "model_router": 2,
+      "agent_default": 1,
+      "team_default": 0,
+      "inherited": 0
+    },
+    "taskKinds": [
+      {
+        "taskKind": "implementation",
+        "count": 2,
+        "runtimes": [
+          {
+            "runtimeKind": "grok_build",
+            "count": 2
+          }
+        ],
+        "models": [
+          {
+            "runtimeKind": "grok_build",
+            "llmModelIdentifier": "grok-4.7",
+            "count": 2
+          }
+        ]
+      }
+    ],
+    "notRouted": {
+      "count": 1,
+      "runtimes": [
+        {
+          "runtimeKind": "antigravity_cli",
+          "count": 1
+        }
+      ],
+      "models": [
+        {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "count": 1
+        }
+      ]
+    },
+    "routerFailures": 0
+  },
+  "MR-03-corrected": {
+    "result": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "mr_solo_fe81_0f24e81b33254d8ca7c1edc2301d9fe8",
+      "task_id": "ad_hoc_task_a4cb5f83-ee94-441b-a537-2654691490d6",
+      "launch_notes": [
+        "MR solo fe81: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (review): Antigravity has Gemini left."
+      ]
+    },
+    "request": {
+      "requestId": "req_447a544e",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034508072,
+      "answeredAt": 1793034508096,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": true,
+          "text": "Not accepted; nothing was changed. Correct these and submit again for request req_447a544e:\n- /mr_solo_fe81: Antigravity does not offer the model mr-no-such-model on this node."
+        },
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_447a544e."
+        }
+      ]
+    }
+  },
+  "MR-03-turn-ended": {
+    "result": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "mr_solo_fe81_5a96b22e82c2487787b790bbecb383ec",
+      "task_id": "ad_hoc_task_b0c0798e-c1ce-4dfa-8b00-952be11d7cee",
+      "launch_notes": [
+        "MR solo fe81: Model Router could not choose (the Model Router's turn ended without a decision); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+      ]
+    },
+    "elapsedMs": 8508
+  },
+  "MR-03-silent": {
+    "result": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "mr_solo_fe81_c56e4a0f264d4fdbbccd71722abfb0c9",
+      "task_id": "ad_hoc_task_b5aa9bd7-66b3-4596-b5bf-d8c49fd6d589",
+      "launch_notes": [
+        "MR solo fe81: Model Router could not choose (no valid answer within 40 seconds); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+      ]
+    },
+    "elapsedMs": 40328
+  },
+  "MR-04-quick": {
+    "burst": [
+      {
+        "requestId": "req_30b97f0e",
+        "addresses": [
+          "/mr_solo_fe81"
+        ],
+        "receivedAt": 1793034588923,
+        "answeredAt": 1793034591935,
+        "results": [
+          {
+            "tool": "submit_launch_choices",
+            "isError": false,
+            "text": "Accepted: 1 launch choice for request req_30b97f0e."
+          }
+        ]
+      },
+      {
+        "requestId": "req_cfb26152",
+        "addresses": [
+          "/mr_solo_fe81"
+        ],
+        "receivedAt": 1793034591939,
+        "answeredAt": 1793034594952,
+        "results": [
+          {
+            "tool": "submit_launch_choices",
+            "isError": false,
+            "text": "Accepted: 1 launch choice for request req_cfb26152."
+          }
+        ]
+      },
+      {
+        "requestId": "req_3e045bc6",
+        "addresses": [
+          "/mr_solo_fe81"
+        ],
+        "receivedAt": 1793034594956,
+        "answeredAt": 1793034597971,
+        "results": [
+          {
+            "tool": "submit_launch_choices",
+            "isError": false,
+            "text": "Accepted: 1 launch choice for request req_3e045bc6."
+          }
+        ]
+      }
+    ],
+    "results": [
+      {
+        "elapsedMs": 17867,
+        "notes": [
+          "MR solo fe81: runs on grok_build / grok-4.7, chosen by the Model Router (implementation): Grok is free."
+        ]
+      },
+      {
+        "elapsedMs": 14780,
+        "notes": [
+          "MR solo fe81: runs on grok_build / grok-4.7, chosen by the Model Router (implementation): Grok is free."
+        ]
+      },
+      {
+        "elapsedMs": 11826,
+        "notes": [
+          "MR solo fe81: runs on grok_build / grok-4.7, chosen by the Model Router (implementation): Grok is free."
+        ]
+      }
+    ]
+  },
+  "MR-04-slow": {
+    "requests": [
+      {
+        "requestId": "req_e980d493",
+        "addresses": [
+          "/mr_solo_fe81"
+        ],
+        "receivedAt": 1793034606415,
+        "answeredAt": 1793034631431,
+        "results": [
+          {
+            "tool": "submit_launch_choices",
+            "isError": false,
+            "text": "Accepted: 1 launch choice for request req_e980d493."
+          }
+        ]
+      },
+      {
+        "requestId": "req_acf5d9e0",
+        "addresses": [
+          "/mr_solo_fe81"
+        ],
+        "receivedAt": 1793034631436,
+        "answeredAt": 1793034656445,
+        "results": [
+          {
+            "tool": "submit_launch_choices",
+            "isError": true,
+            "text": "Routing request req_acf5d9e0 is no longer open (answered or timed out); nothing was changed."
+          }
+        ]
+      }
+    ],
+    "results": [
+      {
+        "elapsedMs": 40337,
+        "notes": "MR solo fe81: Model Router could not choose (the Model Router was busy); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+      },
+      {
+        "elapsedMs": 40336,
+        "notes": "MR solo fe81: Model Router could not choose (no valid answer within 40 seconds); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+      },
+      {
+        "elapsedMs": 33384,
+        "notes": "MR solo fe81: runs on grok_build / grok-4.7, chosen by the Model Router (implementation): Grok is free."
+      }
+    ]
+  },
+  "MR-05-on": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "mr_blocked_4c18_67b99d26524a4248aff81ed42d2412da",
+    "task_id": "ad_hoc_task_e0309008-7350-4142-b812-db484cddbedc",
+    "launch_notes": [
+      "MR blocked 4c18: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (general): Gemini has limit left.",
+      "MR blocked 4c18: its agent default antigravity_cli / mr-blocked-model could not be used (mr-blocked-model is blocked until 2026-11-02 10:00 UTC (Retiring · weekly)); it runs on antigravity_cli / gemini-3.8-flash-low (chosen by the Model Router)."
+    ]
+  },
+  "MR-05-off": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "mr_blocked_4c18_5e225b8831e04ddfbe1d34982e44f0db",
+    "task_id": "ad_hoc_task_9f611261-5acd-47f9-9d9e-06f4b9eb8aaa"
+  },
+  "MR-06-status": {
+    "enabled": true,
+    "routerLaunch": {
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "haiku"
+    },
+    "active": false,
+    "reasonCode": "SIGNED_OUT",
+    "reasonParams": {
+      "runtime": "claude_agent_sdk",
+      "model": "haiku"
+    },
+    "reasonText": "Claude is signed out",
+    "agentRunId": "model_router_84cab76c46514f228838e8a4f56d9a70"
+  },
+  "MR-07": {
+    "routerRunId": "model_router_84cab76c46514f228838e8a4f56d9a70",
+    "hidden": {
+      "definition": false,
+      "run": false,
+      "workspace": false
+    },
+    "shown": {
+      "definition": true,
+      "run": true,
+      "workspace": true
+    }
+  },
+  "MR-08": [
+    "list_available_agent_runtimes",
+    "submit_launch_choices"
+  ],
+  "routerRequests": [
+    {
+      "requestId": "req_b8aa449c",
+      "addresses": [
+        "/mr_team_0085/engineer",
+        "/mr_team_0085/reviewer"
+      ],
+      "receivedAt": 1793034498773,
+      "answeredAt": 1793034498919,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 2 launch choices for request req_b8aa449c."
+        }
+      ]
+    },
+    {
+      "requestId": "req_447a544e",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034508072,
+      "answeredAt": 1793034508096,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": true,
+          "text": "Not accepted; nothing was changed. Correct these and submit again for request req_447a544e:\n- /mr_solo_fe81: Antigravity does not offer the model mr-no-such-model on this node."
+        },
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_447a544e."
+        }
+      ]
+    },
+    {
+      "requestId": "req_ef8cf651",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034516627,
+      "answeredAt": 1793034516627,
+      "results": []
+    },
+    {
+      "requestId": "req_c510c8d4",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034525077,
+      "answeredAt": 1793034580084,
+      "results": []
+    },
+    {
+      "requestId": "req_30b97f0e",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034588923,
+      "answeredAt": 1793034591935,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_30b97f0e."
+        }
+      ]
+    },
+    {
+      "requestId": "req_cfb26152",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034591939,
+      "answeredAt": 1793034594952,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_cfb26152."
+        }
+      ]
+    },
+    {
+      "requestId": "req_3e045bc6",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034594956,
+      "answeredAt": 1793034597971,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_3e045bc6."
+        }
+      ]
+    },
+    {
+      "requestId": "req_e980d493",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034606415,
+      "answeredAt": 1793034631431,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_e980d493."
+        }
+      ]
+    },
+    {
+      "requestId": "req_acf5d9e0",
+      "addresses": [
+        "/mr_solo_fe81"
+      ],
+      "receivedAt": 1793034631436,
+      "answeredAt": 1793034656445,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": true,
+          "text": "Routing request req_acf5d9e0 is no longer open (answered or timed out); nothing was changed."
+        }
+      ]
+    },
+    {
+      "requestId": "req_37d0a903",
+      "addresses": [
+        "/mr_blocked_4c18"
+      ],
+      "receivedAt": 1793034673316,
+      "answeredAt": 1793034673328,
+      "results": [
+        {
+          "tool": "submit_launch_choices",
+          "isError": false,
+          "text": "Accepted: 1 launch choice for request req_37d0a903."
+        }
+      ]
+    }
+  ],
+  "leftover": ""
+}

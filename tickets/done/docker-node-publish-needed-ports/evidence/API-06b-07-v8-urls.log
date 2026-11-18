@@ -1,0 +1,17 @@
+# Case: API-06 (b) step 07
+# Command: ps-run.sh <v8 launcher> urls --name abx402-ps-node
+# Setup: as API-06b-02 (test node abx402-ps-node; native arm64 PowerShell 7.4.6; real Docker engine; temp state/shared under /private/tmp/abx402-api/ps)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Date: 2026-11-06T15:38:15Z
+
+AutoByteus Docker node: abx402-ps-node
+Container: abx402-ps-node
+Image: autobyteus/autobyteus-server:1.5.11-beta.7
+Backend: http://localhost:56184
+GraphQL: http://localhost:56184/graphql
+VNC Viewer: localhost:56186 (this computer only)
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx402-api/ps/shared/nodes/abx402-ps-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx402-api/ps/shared/shared
+Private app data: /home/autobyteus/data -> abx402-ps-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0

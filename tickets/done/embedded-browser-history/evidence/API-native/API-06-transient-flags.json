@@ -1,0 +1,15 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+  "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+  "date": "2026-10-26T17:21:29.595Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "autobyteus-web/package.json",
+  "caseId": "API-06",
+  "instanceId": "iso-50251-5536",
+  "fixtureOrigin": "http://127.0.0.1:50250",
+  "observations": [],
+  "startedAt": "2026-10-26T17:21:33.061Z",
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\ntrue !== false\n\n    at flags (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:71:19)\n    at async API-06 (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:230:5)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:295:30",
+  "completedAt": "2026-10-26T17:21:33.368Z"
+}

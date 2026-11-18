@@ -5,10 +5,7 @@ import { getCollaboratorAdmission } from "../../../agent-collaboration/collabora
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { getStandaloneRootMemberViewProjectionService } from "../../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
-import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { resolveCollaboratorRootPort } from "../services/collaborator-root-port-resolver.js";
-import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
-import { RunFileChangeEntryObject } from "./run-file-changes.js";
 
 @ObjectType()
 export class CollaboratorMentionCandidateObject {
@@ -41,14 +38,13 @@ export class AgentRunCollaborationMemberProjectionPayload {
 @Resolver()
 export class AgentRunCollaborationResolver {
   /**
-   * The Agent-root view of a standalone run: the live root snapshot when one is active, else the
-   * stored package with every child offline. Null when the run has no package. Never restores.
+   * The Agent-root view of a standalone run: the live root snapshot when one is active, else the stored package. Its
+   * tree is `runTree(run)` (SR-084). Null when the run has no package. Never restores.
    */
   @Query(() => GraphQLJSON, { nullable: true })
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
-    return inspection ? projectAgentCollaborationView({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.remoteTaskExecutions) }) : null;
+    return inspection ? projectAgentCollaborationView(inspection) : null;
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)
@@ -58,26 +54,6 @@ export class AgentRunCollaborationResolver {
     @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<AgentRunCollaborationMemberProjectionPayload> {
     return getStandaloneRootMemberViewProjectionService().getProjection(hostRunId, memberAddress, agentRunId);
-  }
-
-  @Query(() => EventMonitorActiveTracePageObject)
-  agentRunCollaborationMemberEventMonitorActiveTracePage(
-    @Arg("hostRunId", () => String) hostRunId: string,
-    @Arg("memberAddress", () => String) memberAddress: string,
-    @Arg("agentRunId", () => String) agentRunId: string,
-    @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
-  ): Promise<EventMonitorActiveTracePageObject> {
-    return getStandaloneRootMemberViewProjectionService().getActiveTracePage(hostRunId, memberAddress, agentRunId, beforeCursor);
-  }
-
-  /** One child's artifact list, located inside the named hub only (live while the hub runs). */
-  @Query(() => [RunFileChangeEntryObject])
-  agentRunCollaborationMemberFileChanges(
-    @Arg("hostRunId", () => String) hostRunId: string,
-    @Arg("memberAddress", () => String) memberAddress: string,
-    @Arg("agentRunId", () => String) agentRunId: string,
-  ): Promise<RunFileChangeEntryObject[]> {
-    return getStandaloneRootMemberViewProjectionService().getFileChanges(hostRunId, memberAddress, agentRunId);
   }
 
   /**

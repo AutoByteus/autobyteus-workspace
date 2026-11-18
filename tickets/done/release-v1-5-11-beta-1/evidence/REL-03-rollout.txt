@@ -1,0 +1,47 @@
+# REL-03-rollout
+# tag: v1.5.11-beta.1 -> d334684fc0 (pushed 2026-10-29T14:58:55Z)
+# watched: the four runs together (polled every 60 s), first failure would stop the watch
+
+## Workflows
+Server Docker Release: success sha=d334684fc0 2026-10-29T14:58:57Z..2026-10-29T15:36:58Z
+Desktop Release: success sha=d334684fc0 2026-10-29T14:58:57Z..2026-10-29T15:36:04Z
+Android APK Release: success sha=d334684fc0 2026-10-29T14:58:57Z..2026-10-29T15:05:13Z
+iOS App Store Connect Release: success sha=d334684fc0 2026-10-29T14:58:57Z..2026-10-29T15:25:24Z
+
+## GitHub release (gh release view v1.5.11-beta.1)
+prerelease: True draft: False assets: 17
+https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.11-beta.1
+  AutoByteus_personal_android-1.5.11-beta.1-release.apk
+  AutoByteus_personal_android-1.5.11-beta.1-release.apk.sha256
+  AutoByteus_personal_linux-arm64-1.5.11-beta.1.AppImage
+  AutoByteus_personal_linux-x64-1.5.11-beta.1.AppImage
+  AutoByteus_personal_macos-arm64-1.5.11-beta.1.dmg
+  AutoByteus_personal_macos-arm64-1.5.11-beta.1.dmg.blockmap
+  AutoByteus_personal_macos-arm64-1.5.11-beta.1.zip
+  AutoByteus_personal_macos-arm64-1.5.11-beta.1.zip.blockmap
+  AutoByteus_personal_macos-x64-1.5.11-beta.1.dmg
+  AutoByteus_personal_macos-x64-1.5.11-beta.1.dmg.blockmap
+  AutoByteus_personal_macos-x64-1.5.11-beta.1.zip
+  AutoByteus_personal_macos-x64-1.5.11-beta.1.zip.blockmap
+  AutoByteus_personal_windows-1.5.11-beta.1.exe
+  latest-linux-arm64.yml
+  latest-linux.yml
+  latest-mac.yml
+  latest.yml
+
+## gh release list --limit 3
+v1.5.11-beta.1	Pre-release	v1.5.11-beta.1	2026-10-29T15:05:04Z
+v1.5.10	Latest	v1.5.10	2026-10-29T05:20:06Z
+v1.5.10-beta.1	Pre-release	v1.5.10-beta.1	2026-10-28T18:50:43Z
+
+## Docker Hub autobyteus/autobyteus-server (registry API, tag digest last_updated)
+### before (14:59Z)
+latest sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd 2026-10-29T05:47:24.472633Z 
+beta sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd 2026-10-29T06:01:01.768751Z 
+1.5.10 sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd 2026-10-29T05:47:20.616471Z 
+1.5.11-beta.1 None None httperror 404: tag '1.5.11-beta.1' not found
+### after (15:38Z)
+latest sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd 2026-10-29T05:47:24.472633Z 
+beta sha256:aafc9eac2b12a580c27ffc77952913a28c8bab22b6aef39bcf170cfdec41823a 2026-10-29T15:35:58.262454Z 
+1.5.10 sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd 2026-10-29T05:47:20.616471Z 
+1.5.11-beta.1 sha256:aafc9eac2b12a580c27ffc77952913a28c8bab22b6aef39bcf170cfdec41823a 2026-10-29T15:29:27.616904Z 

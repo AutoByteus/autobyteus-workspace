@@ -26,6 +26,13 @@ describe('useShellPrimaryNavigation shared policy helpers', () => {
     expect(resolveShellPrimaryRoute('agentTeams')).toEqual({ path: '/agent-teams', query: { view: 'team-list' } });
   });
 
+  // autobyteus-337: Integrations, last after Nodes, routes to its page and lights on it (and a card's hash).
+  it('routes Integrations to its page and lights it there', () => {
+    expect(resolveShellPrimaryRoute('integrations')).toBe('/integrations');
+    expect(isShellPrimaryRouteActive('integrations', { path: '/integrations', query: {} })).toBe(true);
+    expect(isShellPrimaryRouteActive('integrations', { path: '/skills', query: {} })).toBe(false);
+  });
+
   it('matches active route state for the Nodes primary item', () => {
     expect(isShellPrimaryRouteActive('nodes', { path: '/nodes', query: {} })).toBe(true);
     expect(isShellPrimaryRouteActive('nodes', { path: '/nodes/details', query: {} })).toBe(true);

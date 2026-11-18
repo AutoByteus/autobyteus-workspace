@@ -1,0 +1,548 @@
+# IMP-06 server-e2e-node-access
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/node-access tests/e2e/remote-access tests/e2e/node-desktop tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts --no-watch
+# Environment mode: clean
+# Commit: 4d6a3382d5 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T14:50:13Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:88100) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/.env
+◇ injected env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://studio-node.company.example:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://studio-node.company.example:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Node access: local control socket not opened. The node's local control socket path is 118 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-mF68em/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+Agent websocket attached for run phone-probe
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+Agent team websocket attached for team run phone-probe
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+File explorer websocket attached for workspace phone-probe
+
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests) 4847ms
+     ✓ accepts each allowed-origin class and refuses near misses (AC-002)  2875ms
+     ✓ NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)  837ms
+     ✓ accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003)  830ms
+(node:91083) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/node-access/node-access-model.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (22 tests) 1943ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  1508ms
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > GET /rest/node-desktop reports a node desktop exactly on a Docker node
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-xpYFe6
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-01 streams the node desktop to the owner's desktop in either mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-4p5piZ
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-01 streams the node desktop to the owner's desktop in either mode
+[node-desktop] stream ended mode=control viewer=owner durationMs=1 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses every other query with 4400 before any desktop connection (AC-003)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-AGOobH
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > answers 4404 NODE_DESKTOP_UNAVAILABLE on a node without a node desktop
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-kUSfjl
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-12 NAS-10 refuses invalid, revoked and disabled phone credentials before any desktop connection (AC-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-KcV6L4
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-ADLGSL
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=209 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=210 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=211 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-pzG0IP
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=phone durationMs=3 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=phone durationMs=4 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=1 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stderr | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+Remote Access: last-seen of paired device device_fa470228c6bbb67760f30181f1509e66 was not saved: Error: EINVAL: invalid argument, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-pzG0IP/remote-access/paired-devices.json.92948.1794149432279.db4776c6d6352.tmp'
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-TX59ev
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+[node-desktop] stream ended mode=view viewer=owner durationMs=19 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+[node-desktop] stream ended mode=view viewer=phone durationMs=20 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-snMOkw
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)
+[node-desktop] stream ended mode=control viewer=phone durationMs=11 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)
+[node-desktop] stream ended mode=view viewer=owner durationMs=11 toViewer=12 fromViewer=0 reason=viewer-closed
+
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 461ms
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-VeXSr9
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Node request refused NODE_ROUTE_NOT_PERMITTED /rest/remote-access/devices/revoked from 100.64.1.2
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /rest/protected-probe from 100.64.1.2
+
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-0SbzQR
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/remote-access/settings from 100.64.1.2
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/protected-probe from 100.64.1.2
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 100.64.1.2
+
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP
+
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/memory
+============================================================
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Node request refused NODE_ROUTE_NOT_PERMITTED /rest/remote-access/network from 192.168.1.30
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Remote Access: last-seen of paired device device_9443e80bff77688925a1fe7bfbf96192 was not saved: Error: EINVAL: invalid argument, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Mbf1NP/remote-access/paired-devices.json.92949.1794149432997.9c28cd7566493.tmp'
+
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (3 tests) 466ms
+     ✓ keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy  367ms
+(node:92953) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Node access: local control socket not opened. The node's local control socket path is 112 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+AgentRunManager initialized.
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+AgentRunManager initialized.
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/peer-host-refused-dtZNZH/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback)
+Registered required tool unit: Search Tools
+
+stderr | tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts > A peer address at a host name its node refuses (lvh.me must resolve to loopback) > pairing with an invite at a refused name records host_refused; the same node at its IP address passes the Host gate
+Node request refused REMOTE_ACCESS_HOST_REFUSED /rest/remote-access/status from 127.0.0.1 host lvh.me (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+
+ ✓ tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts (1 test) 213ms
+
+ Test Files  5 passed (5)
+      Tests  46 passed (46)
+   Start at  15:50:14
+   Duration  19.90s (transform 5.87s, setup 133ms, import 11.10s, tests 7.93s, environment 0ms)
+
+# Exit status: 0

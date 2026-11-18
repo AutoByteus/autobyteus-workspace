@@ -1,0 +1,23 @@
+IMP-104 — IR-036 contracts and server checks (CR-461-099, CR-461-100, SR-090)
+Code: the tree committed as 57aaa0ca53 (server, contracts) and 28b3b956fd (CR-461-100); macOS, Node 22.23; 2026-11-15
+Commands: pnpm test (collaboration-stream-contracts, team-stream-contracts); node scripts/typecheck.mjs (server); vitest run --no-watch <files> (server)
+
+## contracts: collaboration-stream-contracts  # pass 36 / # fail 0; team-stream-contracts  # pass 13 / # fail 0
+
+## server type gate
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.8s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 24.8s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+
+##  and the rest of this batch
+ Test Files  2 passed (2)
+      Tests  21 passed (21)
+
+##  and the rest of this batch
+ Test Files  5 passed (5)
+      Tests  56 passed (56)
+
+## server pnpm test:unit (tests/unit, app-data-migrations, architecture, agent-work-journal) at 4dec092f80
+ Test Files  992 passed | 5 skipped (997)
+      Tests  8113 passed | 9 skipped (8122)

@@ -1,0 +1,137 @@
+# Cases: API-04 (upgrade from the installed release) and API-05 (packaged worktree build journey)
+# Phase 1: pnpm --silent isolated-app start --data-root /private/tmp/s337/root → iso-61887-b09e, /Applications/AutoByteus.app 1.5.11-beta.9, controlPort 61887, serverPort 61888
+# Driver: node /tmp/s337/phase1-installed.mjs 61887 61888 /private/tmp/s337/root <evidence>/API-04-05-desktop (sources in API-04-05-driver-sources.txt). JSON lines; passes masked rp_<pass>; the token is never printed
+# Commit: 22f17adf30 (code 9e8264614e); macOS 26.5.2 arm64; date 2026-11-01T08:25:49Z
+
+## Phase 1 — installed release 1.5.11-beta.9
+{"step":"agent-created","agentId":"github-helper"}
+{"step":"old-card-initial","status":"Not connected"}
+(node:91983) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"step":"old-card-connected-and-ticked","status":"Connected as @ryan-zheng-teki","ticked":true,"api":{"connected":true,"login":"ryan-zheng-teki","agentDefinitionIds":["github-helper"]},"connectionsJson":{"integrations":{"github":{"login":"ryan-zheng-teki","connectedAt":"2026-11-01T08:25:53.889Z","agentDefinitionIds":["github-helper"]}}}}
+{"step":"screenshot","file":"API-04-01-installed-release-old-card-connected-ticked.png"}
+
+## Phase 2 — this branch's packaged build on the same data root
+# CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build --data-root /private/tmp/s337/root → iso-62256-190c, controlPort 62256, serverPort 62257
+# node /tmp/s337/phase2-worktree.mjs 62256 62257 /private/tmp/s337/root <evidence>/API-04-05-desktop github-helper; date 2026-11-01T08:32:20Z
+{"step":"basics-FAILED","error":"locator.waitFor: Unexpected token \"=\" while parsing css selector \"[data-testid=\"phone-access-card\"], text=Applications\". Did you mean to CSS.escape it?\nCall log:\n  - waiting for [data-testid=\"phone-access-card\"], text=Applications >> nth=0 to be visible\n"}
+{"step":"screenshot","file":"API-05-FAILED-basics.png"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Unexpected token "=" while parsing css selector "[data-testid="phone-access-card"], text=Applications". Did you mean to CSS.escape it?
+Call log:
+  - waiting for [data-testid="phone-access-card"], text=Applications >> nth=0 to be visible
+
+    at go (/private/tmp/s337/common.mjs:37:16)
+    at async file:///private/tmp/s337/phase2-worktree.mjs:24:3
+    at async step (/private/tmp/s337/phase2-worktree.mjs:17:42)
+    at async file:///private/tmp/s337/phase2-worktree.mjs:23:1 {
+  name: 'Error'
+}
+
+Node.js v22.23.1
+
+## Phase 2, attempt 2 (attempt 1 above stopped on a driver selector error before any action; selector fixed)
+# date 2026-11-01T08:32:31Z
+{"step":"basics-after-upgrade","githubCardCount":0}
+{"step":"screenshot","file":"API-04-02-basics-without-github-card.png"}
+{"step":"page-empty-after-upgrade","emptyText":"No integrations yet\n\nImport a GitHub repository or a folder that contains integrations. Each integration appears here as a card.\n\nImport","toolbarCount":0,"menu":[{"t":"Nodes","y":292},{"t":"Integrations","y":332}],"connectionsJsonBeforeAnyWrite":{"integrations":{"github":{"login":"ryan-zheng-teki","connectedAt":"2026-11-01T08:25:53.889Z","agentDefinitionIds":["github-helper"]}}}}
+{"step":"screenshot","file":"API-04-03-integrations-empty-after-upgrade.png"}
+{"step":"import-dialog","hint":"Import only repositories you trust. AutoByteus sends a token only to its service's own address, but an integration's scripts can still use the service as you."}
+{"step":"screenshot","file":"API-05-01-import-dialog-link.png"}
+{"step":"imported-by-link","notice":"Imported GitHub from AutoByteus/autobyteus-integrations.","cards":[{"id":"github","name":"GitHub","state":"CONNECTED","login":"ryan-zheng-teki","source":{"sourceId":"b995e65a-6fbf-4869-8eac-2b18bfb57e1d","kind":"GITHUB_REPOSITORY","label":"AutoByteus/autobyteus-integrations"},"tools":[{"tool":"curl","found":true},{"tool":"jq","found":true},{"tool":"git","found":true}]}],"cardStatus":"Connected as @ryan-zheng-teki"}
+{"step":"screenshot","file":"API-04-04-imported-card-already-connected.png"}
+{"step":"dialog","source":"Imported from AutoByteus/autobyteus-integrations","helpLinks":[],"tools":"Tools on this node\nfound\ncurl\nfound\njq\nfound\ngit","testMessage":"The token works: @ryan-zheng-teki."}
+{"step":"screenshot","file":"API-05-02-dialog-connected-tested.png"}
+{"step":"screenshot","file":"API-05-03-rejected-token.png"}
+(node:3231) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"step":"replace","rejected":{"message":"GitHub rejected the token.","state":"CONNECTED"},"afterReplace":{"id":"github","name":"GitHub","state":"CONNECTED","login":"ryan-zheng-teki","source":{"sourceId":"b995e65a-6fbf-4869-8eac-2b18bfb57e1d","kind":"GITHUB_REPOSITORY","label":"AutoByteus/autobyteus-integrations"},"tools":[{"tool":"curl","found":true},{"tool":"jq","found":true},{"tool":"git","found":true}]},"connectionsJsonAfterWrite":{"integrations":{"github":{"login":"ryan-zheng-teki","connectedAt":"2026-11-01T08:32:40.491Z"}}}}
+{"step":"screenshot","file":"API-05-04-manage-sources-github-row.png"}
+{"step":"manage-update-FAILED","error":"locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"integration-source-update-b995e65a-6fbf-4869-8eac-2b18bfb57e1d\"]')\n"}
+{"step":"screenshot","file":"API-05-FAILED-manage-update.png"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="integration-source-update-b995e65a-6fbf-4869-8eac-2b18bfb57e1d"]')
+
+    at /private/tmp/s337/phase2-worktree.mjs:96:60
+    at async step (/private/tmp/s337/phase2-worktree.mjs:17:42)
+    at async file:///private/tmp/s337/phase2-worktree.mjs:88:1 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+
+## Phase 2, attempt 3 (RESUME=1: steps A–D passed in attempt 2. Attempt 2 stopped because the driver expected an Update chip on an up-to-date source; the approved spec shows it only with "Update available" (UXJ-005), so the driver now records the row's status)
+# date 2026-11-01T08:33:42Z
+{"step":"screenshot","file":"API-05-04-manage-sources-github-row.png"}
+{"step":"manage-sources","status":"Up to date","updateChipShown":false,"sources":[{"sourceId":"b995e65a-6fbf-4869-8eac-2b18bfb57e1d","kind":"GITHUB_REPOSITORY","label":"AutoByteus/autobyteus-integrations","github":{"status":"UP_TO_DATE","installedRevision":"888747576a2a9cf958b9bae61fc4aa62729e568c","latestRevision":"888747576a2a9cf958b9bae61fc4aa62729e568c"}}]}
+{"step":"screenshot","file":"API-05-06-agent-edit-skill-added.png"}
+{"step":"agent-skill","before":{"skillNames":[],"skillScope":"CONFIGURED"},"after":{"skillNames":["github-integration"],"skillScope":"CONFIGURED"}}
+{"step":"agent-run","model":"gpt-5.6-luna","runCreated":true,"result":{"endTypes":["TURN_COMPLETED"],"messages":51},"activity":["api GET /user 200","api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues 200","api POST /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1/comments 201"],"stampInWire":true,"finalTextTail":"**Planning script execution skill****Locating scripts for sequential execution****Capturing URL output and redirecting printenv**Issue titles: MCP live check: test issue  \nComment URL: https://github.com/ryan-zheng-teki/autobyteus-mcp-test/issues/1#issuecomment-6555589417","addressFile":true}
+{"step":"skills-page-removal-FAILED","error":"locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByTitle('Manage skill sources').first()\n"}
+{"step":"screenshot","file":"API-05-FAILED-skills-page-removal.png"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByTitle('Manage skill sources').first()
+
+    at /private/tmp/s337/phase2-worktree.mjs:160:57
+    at async step (/private/tmp/s337/phase2-worktree.mjs:17:42)
+    at async file:///private/tmp/s337/phase2-worktree.mjs:157:1 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+
+## Phase 2, attempt 4 (RESUME=2, RUN_ID=github_helper_fcba4ea8380e45659c8d5b9bb6741043: steps E–G passed in attempt 3, and the run is still active. Attempt 3 stopped because the driver's wait for the Skills page matched the menu item, so it never navigated; it now waits for the Manage skill sources button)
+# date 2026-11-01T08:35:01Z
+{"step":"skills-page-removal-FAILED","error":"locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator('[title=\"Manage skill sources\"]').first() to be visible\n"}
+{"step":"screenshot","file":"API-05-FAILED-skills-page-removal.png"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator('[title="Manage skill sources"]').first() to be visible
+
+    at go (/private/tmp/s337/common.mjs:37:16)
+    at async file:///private/tmp/s337/phase2-worktree.mjs:160:3
+    at async step (/private/tmp/s337/phase2-worktree.mjs:17:42)
+    at async file:///private/tmp/s337/phase2-worktree.mjs:158:1 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+
+## Phase 2, attempt 5 (RESUME=2, same run. Attempt 4 stopped before any action: the title selector found no visible element, though the button is visibly "Sources". The driver now targets that text)
+# date 2026-11-01T08:36:14Z
+{"step":"screenshot","file":"API-05-07a-skills-page-integration-label.png"}
+{"step":"screenshot","file":"API-05-07-skills-manage-sources-github-row.png"}
+{"step":"screenshot","file":"API-05-08-skills-remove-confirmation.png"}
+{"step":"skills-page-removal","rowGone":true,"beforeCall":{"status":200,"error":null},"afterCall":{"status":403,"error":"INTEGRATION_NOT_ALLOWED"},"cards":[],"emptyShown":true,"connectionsJson":{"integrations":{"github":{"login":null,"connectedAt":null}}},"secondTurn":{"endTypes":["TURN_COMPLETED"],"messages":31},"activityAfterRemoval":["api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 403 INTEGRATION_NOT_ALLOWED"]}
+{"step":"screenshot","file":"API-05-09-integrations-empty-after-skills-removal.png"}
+{"step":"import-folder-hint","hint":"The folder stays where it is; nothing is copied. Its integrations appear on this page and its skills in your skills."}
+{"step":"token-help","text":"Make one at https://github.com/settings/tokens or http://plain.example/tokens, never javascript:alert(document.domain) or data:text/html,hi.","anchors":[{"href":"https://github.com/settings/tokens","text":"https://github.com/settings/tokens"}],"anyJavascriptHref":0,"state":"NEEDS_TOKEN"}
+{"step":"screenshot","file":"API-05-10-token-help-links.png"}
+{"step":"folder-removed","notice":"Imported GitHub (link test) from help-links-source.","filesKept":true}
+{"step":"run-stopped","terminate":{"success":true,"message":"Agent run terminated successfully."},"afterStop":{"status":403,"error":"RUN_PASS_INVALID"},"activityTotal":8}
+
+## Addendum: checks after attempt 5 (2026-11-01T08:36:57Z)
+# 1. The folder-removal notice the driver read was the earlier import notice (it was still on screen). The state, read with GraphQL on the instance:
+{"data":{"integrationSources":[],"integrations":[]}}
+# The folder's files on disk after Remove: SKILL.md integration.json 
+# 2. The agent's second turn after the Skills-page removal, from the run's raw traces (<memory>/agents/github_helper_fcba…/raw_traces_active.jsonl):
+"content":"[Platform notice — skill updated]\n\nYour skill package `github-integration` is no longer available.\n\nDo not rely on a skill that is no longer available."
+"tool_error":"/bin/bash: line 1: <data root>/agent-workspace/.codex/skills/github-integration/scripts/issues.sh: No such file or directory\nExit code: 127"}
+"content":"/bin/bash: line 1: <data root>/agent-workspace/.codex/skills/github-integration/scripts/issues.sh: No such file or directory"

@@ -1,0 +1,232 @@
+# API-11 driver sources (temporary; ran from /tmp/s311, removed after the run)
+# Run: node journey.mjs 62750 62751 /private/tmp/s311/desktop-root <evidence>/API-11-desktop; peek-card.mjs was used once to see why attempt 1 stopped
+
+## journey.mjs
+```js
+// Temporary desktop journey driver (autobyteus-311 API/E2E, API-11). Attaches to an isolated AutoByteus instance over
+// CDP and drives the GitHub card like a user; starts a Codex run with auto-execute off on the instance's own server
+// (the API the renderer uses); checks the proxy port with Phone Access on (QR-001); clones a multi-MB repository
+// through the run's address while sampling the embedded server's memory (QR-002); then Remove and stop.
+// Usage: node journey.mjs <controlPort> <serverPort> <dataRoot> <evidenceDir>
+// It never prints the token: it is read from the test vault and only typed into the card's password field.
+import fs from "node:fs";
+import net from "node:net";
+import http from "node:http";
+import path from "node:path";
+import { execFileSync, spawn } from "node:child_process";
+
+const [controlPort, serverPort, dataRoot, evidenceDir] = process.argv.slice(2);
+const WT = "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy";
+const PROBE = `${WT}/autobyteus-server-ts/tests/fixtures/github-proxy-shell-probe.sh`;
+const REPO = "ryan-zheng-teki/autobyteus-mcp-test";
+const { chromium } = await import(`${WT}/autobyteus-web/node_modules/playwright-core/index.mjs`);
+const server = `http://127.0.0.1:${serverPort}`;
+const mask = (t) => String(t).replace(/rp_[A-Za-z0-9_-]+/g, "rp_<pass>");
+const log = (step, data) => console.log(mask(JSON.stringify({ step, ...data })));
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+fs.mkdirSync(evidenceDir, { recursive: true });
+
+const readToken = async () => {
+  const { openVerifiedTestVault } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/open-test-vault.js`);
+  const { readSecretEntry } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/read-secret-entry.js`);
+  const { secretId } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/secret-id.js`);
+  const vault = await openVerifiedTestVault(`${process.env.HOME}/.autobyteus-test/vault`);
+  try { return (await readSecretEntry(vault.store, vault.rootKey, vault.metadata, secretId("test.github.token"))).revealToTrustedConsumer(); }
+  finally { vault.close(); }
+};
+const gql = async (query, variables) => {
+  const res = await fetch(`${server}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+  const body = await res.json();
+  if (!body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+  return body.data;
+};
+const status = async () => (await gql("query { githubIntegration { connected login connectedAt agentDefinitionIds } }")).githubIntegration;
+const call = async (address) => {
+  const res = await fetch(`${address}/repos/${REPO}/issues/1`, { headers: { accept: "application/vnd.github+json" } });
+  const text = await res.text();
+  return { status: res.status, error: res.status === 200 ? null : (JSON.parse(text).error ?? text.slice(0, 80)) };
+};
+const shot = async (page, name) => { await page.screenshot({ path: path.join(evidenceDir, name) }); log("screenshot", { file: name }); };
+const statusText = async (page) => (await page.locator('[data-testid="github-integration-status"]').innerText()).trim();
+const waitStatus = async (page, re, ms = 30_000) => {
+  const deadline = Date.now() + ms;
+  while (Date.now() < deadline) { if (re.test(await statusText(page))) return statusText(page); await wait(250); }
+  throw new Error(`status did not match ${re}: ${await statusText(page)}`);
+};
+const goSettings = async (page) => {
+  // The renderer may still settle on its start route after a load, so the hash is set until the card shows.
+  const card = page.locator('[data-testid="github-integration-card"]');
+  for (let i = 0; i < 10 && !(await card.isVisible()); i++) {
+    await page.evaluate(() => { location.hash = "#/settings?section=server-settings&mode=quick"; });
+    await card.waitFor({ timeout: 5_000 }).catch(() => undefined);
+  }
+  await card.waitFor({ timeout: 5_000 });
+  await card.scrollIntoViewIfNeeded();
+};
+
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${controlPort}`);
+const page = browser.contexts()[0].pages().find((p) => !p.url().startsWith("devtools")) ?? browser.contexts()[0].pages()[0];
+page.on("dialog", (dialog) => { log("page-dialog", { message: dialog.message() }); dialog.accept(); });
+await page.setViewportSize({ width: 1440, height: 1000 }).catch(() => undefined);
+
+// 1. An agent the user will tick (created before the card loads its list).
+const agentId = (await gql("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+  { input: { name: `GitHub desktop agent ${Date.now() % 100000}`, role: "assistant", category: "runtime-e2e", description: "API/E2E desktop journey agent.", toolNames: [],
+    instructions: "You are a shell test agent. Run exactly the one shell command the user gives you, once, with your shell tool. Do not run any other command. Then reply FINISHED." } })).createAgentDefinition.id;
+log("agent-created", { agentId });
+
+// 2. The card: Not connected → paste the token → Save → Connected as @login → Test.
+await page.reload(); await page.waitForLoadState("domcontentloaded"); await wait(3000);
+await goSettings(page);
+log("card-agent-listed", { listed: await page.locator(`[data-testid="github-integration-agent-${agentId}"]`).count() === 1 });
+log("card-initial", { status: await statusText(page), api: await status() });
+await shot(page, "API-11-01-card-not-connected.png");
+await page.locator('[data-testid="github-integration-token-input"]').fill(await readToken());
+await page.locator('[data-testid="github-integration-save"]').click();
+const connectedText = await waitStatus(page, /@/);
+const afterSave = await status();
+log("card-connected", { status: connectedText, api: afterSave,
+  tokenFieldEmptyAfterSave: (await page.locator('[data-testid="github-integration-token-input"]').inputValue()) === "" });
+await shot(page, "API-11-02-card-connected.png");
+await page.locator('[data-testid="github-integration-test"]').click();
+await page.locator('[data-testid="github-integration-message"]').waitFor({ timeout: 30_000 });
+log("card-tested", { message: (await page.locator('[data-testid="github-integration-message"]').innerText()).trim() });
+
+// 3. Tick the agent on the card.
+const tick = page.locator(`[data-testid="github-integration-agent-${agentId}"]`);
+await tick.scrollIntoViewIfNeeded();
+await tick.click();
+for (let i = 0; i < 40 && !(await status()).agentDefinitionIds.includes(agentId); i++) await wait(250);
+log("card-ticked", { checked: await tick.isChecked(), api: await status() });
+await shot(page, "API-11-03-card-agent-ticked.png");
+
+// 4. A Codex run with auto-execute off (workspace-write sandbox, approval on request), as the chat starts it.
+const models = (await gql("query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",
+  { r: "codex_app_server" })).providerModelCatalogSnapshots.flatMap((p) => p.llmModels.map((m) => m.modelIdentifier));
+const model = models.find((m) => m.includes("mini")) ?? models.find((m) => m.includes("luna")) ?? models[0];
+const workspace = path.join(dataRoot, "journey-workspace");
+const out = path.join(workspace, "probe-out");
+fs.mkdirSync(workspace, { recursive: true });
+const run = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+  { input: { agentDefinitionId: agentId, workspaceRootPath: workspace, llmModelIdentifier: model, llmConfig: { reasoning_effort: "low" },
+    autoExecuteTools: false, runtimeKind: "codex_app_server" } })).createAgentRun;
+log("run-created", { model, success: run.success, message: run.message, runId: run.runId });
+const ws = new WebSocket(`ws://127.0.0.1:${serverPort}/ws/agent/${run.runId}`);
+const wire = [];
+ws.addEventListener("message", (e) => { try { const m = JSON.parse(String(e.data)); if (m.type) wire.push(m); } catch {} });
+await new Promise((resolve, reject) => { ws.addEventListener("open", resolve); ws.addEventListener("error", reject); });
+const messageId = `journey-${Date.now()}`;
+ws.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { agent_run_id: run.runId, content: `Run this exact shell command once, then reply FINISHED:\nbash '${PROBE}' '${out}'`,
+  message_id: messageId, dedupe_key: `agent_run_input:e2e:${messageId}`, context_file_paths: [], image_urls: [] } }));
+const ends = new Set(["TURN_COMPLETED", "ERROR", "TOOL_APPROVAL_REQUESTED"]);
+for (let i = 0; i < 1800 && !wire.some((m) => ends.has(m.type)); i++) await wait(200);
+ws.close();
+const endTypes = wire.map((m) => m.type).filter((t) => ends.has(t));
+const result = JSON.parse(fs.readFileSync(path.join(out, "result.json"), "utf8"));
+const env = new Map(fs.readFileSync(path.join(out, "env.txt"), "utf8").split("\n").filter((l) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(l))
+  .map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)]));
+const address = env.get("AUTOBYTEUS_GITHUB_API_URL");
+const gitEnv = Object.fromEntries([...env].filter(([k]) => k.startsWith("GIT_CONFIG_") || k === "GIT_TERMINAL_PROMPT"));
+const issue = JSON.parse(fs.readFileSync(path.join(out, "issue.json"), "utf8"));
+log("run-probe", { endTypes, approvalsRequested: wire.filter((m) => m.type === "TOOL_APPROVAL_REQUESTED").length, result, address,
+  gitConfig: gitEnv, issueNumber: issue.number, lsRemoteHead: /^[0-9a-f]{40}\tHEAD/m.test(fs.readFileSync(path.join(out, "ls-remote.txt"), "utf8")) });
+
+// 5. QR-001: Phone Access on; the proxy port listens on 127.0.0.1 only and refuses a non-loopback address.
+await page.evaluate(() => { location.hash = "#/nodes?nodeTab=phoneSetup"; });
+const toggle = page.locator('[data-testid="phone-access-toggle"]');
+await toggle.waitFor({ timeout: 30_000 });
+if (!(await toggle.isChecked())) await toggle.click();
+for (let i = 0; i < 40 && !(await toggle.isChecked()); i++) await wait(250);
+await wait(1000);
+log("phone-access", { enabled: await toggle.isChecked(), info: await page.locator('[data-testid="phone-access-info"]').innerText().catch(() => null),
+  error: await page.locator('[data-testid="phone-access-error"]').innerText().catch(() => null) });
+await shot(page, "API-11-04-phone-access-on.png");
+const proxyPort = Number(new URL(address).port);
+const listen = (port) => { try { return execFileSync("lsof", ["-nP", `-iTCP:${port}`, "-sTCP:LISTEN"], { encoding: "utf8" }).trim().split("\n").slice(1).map((l) => l.split(/\s+/).slice(0, 2).concat(l.split(/\s+/).slice(-2, -1)).join(" ")); } catch { return []; } };
+const lan = (() => { for (const i of ["en0", "en1"]) { try { const ip = execFileSync("ipconfig", ["getifaddr", i], { encoding: "utf8" }).trim(); if (ip) return ip; } catch {} } return null; })();
+const tryConnect = (host, port) => new Promise((resolve) => { const s = net.connect({ host, port }); const t = setTimeout(() => { s.destroy(); resolve("timeout"); }, 3000);
+  s.once("connect", () => { clearTimeout(t); s.destroy(); resolve("connected"); }); s.once("error", (e) => { clearTimeout(t); resolve(e.code); }); });
+const hostHeader = () => new Promise((resolve) => { const u = new URL(`${address}/repos/${REPO}/issues/1`);
+  const r = http.request({ host: "127.0.0.1", port: proxyPort, path: u.pathname, headers: { host: `${lan}:${proxyPort}` } }, (res) => {
+    let b = ""; res.on("data", (c) => { b += c; }); res.on("end", () => resolve({ status: res.statusCode, error: (() => { try { return JSON.parse(b).error; } catch { return b.slice(0, 60); } })() })); });
+  r.on("error", (e) => resolve({ error: e.code })); r.end(); });
+log("qr-001", { proxyListen: listen(proxyPort), serverListen: listen(Number(serverPort)), lanAddress: lan ? "<LAN address>" : null,
+  proxyFromLan: lan ? await tryConnect(lan, proxyPort) : "no LAN address", serverFromLan: lan ? await tryConnect(lan, Number(serverPort)) : "no LAN address",
+  proxyWithNonLoopbackHost: await hostHeader() });
+
+// 6. QR-002: clone a multi-MB repository through the run's address; sample the embedded server's resident memory.
+const serverPid = Number(execFileSync("lsof", ["-t", "-nP", `-iTCP:${serverPort}`, "-sTCP:LISTEN"], { encoding: "utf8" }).trim().split("\n")[0]);
+const proxyPid = Number(execFileSync("lsof", ["-t", "-nP", `-iTCP:${proxyPort}`, "-sTCP:LISTEN"], { encoding: "utf8" }).trim().split("\n")[0]);
+const rss = () => Number(execFileSync("ps", ["-o", "rss=", "-p", String(serverPid)], { encoding: "utf8" }).trim());
+let chosen = null;
+for (const candidate of ["expressjs/express", "axios/axios", "lodash/lodash", "sindresorhus/got", "chalk/chalk"]) {
+  const res = await fetch(`${address}/repos/${candidate}`); if (res.status !== 200) continue;
+  const size = (await res.json()).size; log("qr-002-candidate", { candidate, sizeKb: size });
+  if (size >= 8_000 && size <= 120_000) { chosen = { repo: candidate, sizeKb: size }; break; }
+}
+const cloneDir = path.join(dataRoot, "qr-002-clone");
+const gitHome = path.join(dataRoot, "qr-002-home"); fs.mkdirSync(gitHome, { recursive: true });
+const before = rss(); let peak = before; const samples = [];
+const sampler = setInterval(() => { try { const v = rss(); samples.push(v); if (v > peak) peak = v; } catch {} }, 100);
+const started = Date.now();
+const clone = await new Promise((resolve) => { const c = spawn("git", ["clone", "-q", `https://github.com/${chosen.repo}.git`, cloneDir],
+  { env: { PATH: process.env.PATH, HOME: gitHome, GIT_CONFIG_NOSYSTEM: "1", GIT_CONFIG_GLOBAL: "/dev/null", ...gitEnv }, stdio: ["ignore", "ignore", "pipe"] });
+  let err = ""; c.stderr.on("data", (d) => { err += d; }); c.on("close", (code) => resolve({ code, stderr: err.slice(0, 300) })); });
+clearInterval(sampler);
+const packBytes = Number(execFileSync("du", ["-sk", path.join(cloneDir, ".git")], { encoding: "utf8" }).split(/\s/)[0]) * 1024;
+log("qr-002", { repo: chosen?.repo, sizeKb: chosen?.sizeKb, cloneExit: clone.code, cloneStderr: clone.stderr, seconds: (Date.now() - started) / 1000,
+  serverPid, proxyInServerProcess: serverPid === proxyPid, gitDirBytes: packBytes, rssKbBefore: before, rssKbPeak: peak, rssKbPeakDelta: peak - before,
+  samples: samples.length });
+fs.rmSync(cloneDir, { recursive: true, force: true });
+
+// 7. Untick on the card → refused; tick again → allowed.
+await goSettings(page);
+await tick.click(); for (let i = 0; i < 40 && (await status()).agentDefinitionIds.includes(agentId); i++) await wait(250);
+const unticked = await call(address);
+await tick.click(); for (let i = 0; i < 40 && !(await status()).agentDefinitionIds.includes(agentId); i++) await wait(250);
+const reticked = await call(address);
+log("untick-retick", { unticked, reticked });
+
+// 8. Remove on the card → Not connected; the run's next call → INTEGRATION_NOT_CONNECTED.
+await page.locator('[data-testid="github-integration-remove"]').click();
+const removedText = await waitStatus(page, /not connected/i);
+log("card-removed", { status: removedText, api: await status(), afterRemove: await call(address) });
+await shot(page, "API-11-05-card-removed.png");
+
+// 9. Stop the run → its address is refused RUN_PASS_INVALID; Phone Access back off.
+const term = (await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }", { id: run.runId })).terminateAgentRun;
+log("run-stopped", { terminate: term, afterStop: await call(address) });
+await page.evaluate(() => { location.hash = "#/nodes?nodeTab=phoneSetup"; });
+await toggle.waitFor({ timeout: 30_000 }); if (await toggle.isChecked()) await toggle.click();
+log("phone-access-restored", { enabled: await toggle.isChecked() });
+const activityFile = execFileSync("find", [dataRoot, "-name", "activity.jsonl", "-path", "*integrations*"], { encoding: "utf8" }).trim().split("\n")[0];
+const activity = activityFile ? fs.readFileSync(activityFile, "utf8").trim().split("\n").map((l) => JSON.parse(l)) : [];
+log("activity", { file: activityFile.replace(dataRoot, "<data root>"), records: activity.map((r) => `${r.route} ${r.method} ${r.path} ${r.status}${r.error ? " " + r.error : ""}`) });
+process.exit(0); // Leave the instance running (stopped with isolated-app stop); only this CDP client ends.
+```
+## peek.mjs
+```js
+const WT = "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy";
+const { chromium } = await import(`${WT}/autobyteus-web/node_modules/playwright-core/index.mjs`);
+const b = await chromium.connectOverCDP(`http://127.0.0.1:${process.argv[2]}`);
+const pages = b.contexts().flatMap((c) => c.pages());
+console.log(pages.map((p) => p.url()));
+const page = pages.find((p) => !p.url().startsWith("devtools")) ?? pages[0];
+if (process.argv[4]) await page.evaluate((h) => { location.hash = h; }, process.argv[4]);
+await new Promise((r) => setTimeout(r, 3000));
+await page.screenshot({ path: process.argv[3] });
+console.log(page.url(), JSON.stringify((await page.locator("body").innerText()).slice(0, 600)));
+process.exit(0);
+```
+## peek-card.mjs
+```js
+const WT = "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy";
+const { chromium } = await import(`${WT}/autobyteus-web/node_modules/playwright-core/index.mjs`);
+const b = await chromium.connectOverCDP(`http://127.0.0.1:62750`);
+const page = b.contexts()[0].pages()[0];
+const card = page.locator('[data-testid="github-integration-card"]');
+console.log("count", await card.count());
+if (await card.count()) { await card.scrollIntoViewIfNeeded(); console.log(await card.innerText()); await page.screenshot({ path: "/tmp/s311/peek3.png" }); }
+console.log(JSON.stringify((await page.locator("body").innerText()).slice(600, 2500)));
+process.exit(0);
+```

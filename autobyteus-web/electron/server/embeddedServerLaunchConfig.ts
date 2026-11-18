@@ -8,4 +8,6 @@ export type EmbeddedServerLaunchConfig = Readonly<{
   listenerPolicy: EmbeddedServerListenerPolicy
   baseDataRoot: string
   environmentPolicy: ServerEnvironmentPolicy
+  /** The origin of the development renderer (`isDev`), which the node must accept; `null` when packaged. */
+  developmentRendererOrigin: string | null
 }>

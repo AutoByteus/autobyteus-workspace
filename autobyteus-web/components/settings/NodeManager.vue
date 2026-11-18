@@ -8,7 +8,7 @@
       <div
         v-if="activeTab === 'manage'"
         id="node-manager-panel-manage"
-        class="mx-auto w-full max-w-7xl space-y-5"
+        class="mx-auto w-full max-w-7xl space-y-6"
         role="tabpanel"
         aria-labelledby="node-manager-tab-manage"
         data-testid="node-manager-panel-manage"
@@ -43,9 +43,7 @@
         aria-labelledby="node-manager-tab-phoneSetup"
         data-testid="node-manager-panel-phoneSetup"
       >
-        <PhoneSetupGuideCard />
-
-        <PhoneAccessCard />
+        <PhonesPanel />
       </div>
       <div
         v-else-if="activeTab === 'dockerGuide'"
@@ -76,8 +74,7 @@ import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import MemorySyncCard from '~/components/settings/MemorySyncCard.vue';
 import NodeList from '~/components/settings/nodes/NodeList.vue';
 import ThisNodeCard from '~/components/settings/nodes/ThisNodeCard.vue';
-import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
-import PhoneSetupGuideCard from '~/components/settings/PhoneSetupGuideCard.vue';
+import PhonesPanel from '~/components/settings/phone/PhonesPanel.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -98,7 +95,7 @@ const initialActiveTab = (): NodeManagerTabId => {
 };
 const activeTab = ref<NodeManagerTabId>(initialActiveTab());
 
-const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
+const currentNode = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId));
 const nodeTypeLabel = (nodeType: string | undefined) =>
   t(`settings.components.settings.NodeManager.nodeType.${nodeType ?? 'unknown'}` as const);
 const currentNodeTypeLabel = computed(() => nodeTypeLabel(currentNode.value?.nodeType));

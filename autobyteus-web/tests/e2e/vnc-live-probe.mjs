@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+/**
+ * Live VNC Viewer probe: the web app's VNC Viewer tab against a test-owned Docker node, through the
+ * node's own server (`/ws/node-desktop`). Prerequisites: a web app at --base-url whose bound node is
+ * the test container's server, and the container labelled com.autobyteus.api-e2e-owner=<label>.
+ * Cases: VNC-LIVE-001-003 connect/reconnect, Maximize keeps the agent desktop's size, View only by
+ * default with no clipboard to the viewer, Control with clipboard both ways; VNC-LIVE-004 denied and
+ * missing Clipboard API stay non-fatal. Run:
+ *   pnpm -C autobyteus-web test:e2e:vnc-live --base-url <url> --vnc-container <name> --output-dir <new dir>
+ */
 import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
@@ -25,7 +34,6 @@ const origin = new URL(baseUrl).origin;
 const outputDir = path.resolve(getArg('output-dir', 'test-results/vnc-live'));
 const vncContainer = getArg('vnc-container');
 const vncDisplay = getArg('vnc-display', ':100');
-const expectedHost = getArg('expect-host');
 const expectedOwnerLabel = getArg('expected-container-label', 'replace-vendored-novnc');
 const timeoutMs = Number(getArg('timeout-ms', '60000'));
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
@@ -117,7 +125,6 @@ const evidence = {
   origin,
   vncContainer,
   vncDisplay,
-  expectedHost: expectedHost || null,
   expectedOwnerLabel,
   browserExecutable: executablePath || 'playwright-default',
   platform: `${process.platform}-${process.arch}`,
@@ -175,13 +182,10 @@ const locateAndOpenVnc = async (page, scenarioId) => {
 
   const viewer = page.locator('.vnc-viewer');
   await viewer.waitFor({ state: 'visible', timeout: timeoutMs });
-  if (expectedHost) {
-    await viewer.getByText(expectedHost, { exact: true }).first().waitFor({ state: 'visible', timeout: timeoutMs });
-  }
 
-  const tile = viewer.locator('.vnc-tile').first();
+  const tile = viewer.locator('[data-testid="node-desktop-tile"]').first();
   await tile.waitFor({ state: 'visible', timeout: timeoutMs });
-  await tile.getByText('Connected to VNC server', { exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+  await waitForStatus(tile, 'Connected · View only');
   const canvas = tile.locator('canvas').first();
   await canvas.waitFor({ state: 'visible', timeout: timeoutMs });
   await waitFor(`${scenarioId} framebuffer canvas dimensions`, async () => {
@@ -192,6 +196,31 @@ const locateAndOpenVnc = async (page, scenarioId) => {
     (event) => event.scenarioId === scenarioId && event.type === 'websocket' && event.framesSent > 0 && event.framesReceived > 0,
   ));
   return { viewer, tile, canvas };
+};
+
+const waitForStatus = (tile, text) =>
+  tile.locator('[data-testid="node-desktop-status"]').getByText(text, { exact: true })
+    .waitFor({ state: 'visible', timeout: timeoutMs });
+
+const switchMode = async (tile, from, to) => {
+  await tile.getByRole('button', { name: from, exact: true }).click();
+  await waitForStatus(tile, `Connected · ${to}`);
+  await tile.getByRole('button', { name: to, exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+};
+
+/** Every desktop socket goes to the node's server route; nothing dials a VNC port. */
+const assertNodeDesktopSockets = (scenarioId) => {
+  const sockets = evidence.browserEvents.filter((event) => event.scenarioId === scenarioId && event.type === 'websocket'
+    && !event.url.includes('/graphql') && !event.url.includes('/_nuxt'));
+  const desktopSockets = sockets.filter((event) => new URL(event.url).pathname === '/ws/node-desktop');
+  if (desktopSockets.length === 0) throw new Error(`${scenarioId}: no /ws/node-desktop socket observed`);
+  for (const event of desktopSockets) {
+    const mode = new URL(event.url).searchParams.get('mode');
+    if (mode !== 'view' && mode !== 'control') throw new Error(`${scenarioId}: unexpected stream URL ${event.url}`);
+  }
+  const vncPortSockets = sockets.filter((event) => /websockify|:6080|:5900/.test(event.url));
+  if (vncPortSockets.length > 0) throw new Error(`${scenarioId}: a socket dialled a VNC port: ${vncPortSockets[0].url}`);
+  return desktopSockets.map((event) => ({ url: event.url, framesSent: event.framesSent, framesReceived: event.framesReceived }));
 };
 
 const createContext = async (scenarioId, options = {}) => {
@@ -214,7 +243,7 @@ try {
     args: ['--disable-dev-shm-usage'],
   });
 
-  // VNC-LIVE-001/002/003: real authenticated lifecycle, viewport policy, and bidirectional clipboard.
+  // VNC-LIVE-001/002/003: lifecycle through /ws/node-desktop, no resize, View only and Control clipboard.
   {
     const scenarioId = 'VNC-LIVE-001-003';
     const { context, page } = await createContext(scenarioId);
@@ -230,26 +259,32 @@ try {
     await tile.getByRole('button', { name: 'Disconnect', exact: true }).click();
     await tile.getByRole('button', { name: 'Connect', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
     await tile.getByRole('button', { name: 'Connect', exact: true }).click();
-    await tile.getByText('Connected to VNC server', { exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
-    await waitFor(`${scenarioId} reconnect WebSocket`, async () => (
-      evidence.browserEvents.filter((event) => event.scenarioId === scenarioId && event.type === 'websocket').length >= 2
-    ));
+    await waitForStatus(tile, 'Connected · View only');
 
-    await tile.getByTitle('Maximize View').click();
+    await tile.getByTitle('Maximize view').click();
     const maximizedTile = page.locator('.vnc-maximized');
     await maximizedTile.waitFor({ state: 'visible', timeout: timeoutMs });
     await maximizedTile.locator('canvas').first().waitFor({ state: 'visible', timeout: timeoutMs });
-    const maximizedRemote = await waitFor(`${scenarioId} maximized remote resize`, async () => {
-      const dimensions = readRemoteDimensions();
-      return dimensions.width > initialRemote.width || dimensions.height > initialRemote.height ? dimensions : null;
-    });
+    await page.waitForTimeout(1500);
+    const maximizedRemote = readRemoteDimensions();
+    if (maximizedRemote.text !== initialRemote.text) {
+      throw new Error(`${scenarioId}: Maximize resized the agent desktop from ${initialRemote.text} to ${maximizedRemote.text}`);
+    }
     await page.keyboard.press('Escape');
     await maximizedTile.waitFor({ state: 'detached', timeout: timeoutMs });
     await tile.waitFor({ state: 'visible', timeout: timeoutMs });
-    await tile.getByRole('button', { name: 'View Only', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
 
-    await tile.getByRole('button', { name: 'View Only', exact: true }).click();
-    await tile.getByRole('button', { name: 'Interactive', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+    // View only: the agent's clipboard does not reach the viewer's device (AC-020).
+    const browserClipboardBefore = `autobyteus-local-before-${Date.now()}`;
+    await page.evaluate((text) => navigator.clipboard.writeText(text), browserClipboardBefore);
+    writeRemoteClipboard(`autobyteus-remote-view-only-${Date.now()}`);
+    await page.waitForTimeout(1500);
+    const browserClipboardInViewOnly = await page.evaluate(() => navigator.clipboard.readText());
+    if (browserClipboardInViewOnly !== browserClipboardBefore) {
+      throw new Error(`${scenarioId}: View only copied the agent's clipboard to the viewer`);
+    }
+
+    await switchMode(tile, 'View only', 'Control');
     await page.waitForTimeout(400);
 
     const localToRemoteText = `autobyteus-local-to-remote-${Date.now()}`;
@@ -267,7 +302,11 @@ try {
       return value === remoteToLocalText ? value : null;
     });
 
-    await page.screenshot({ path: path.join(outputDir, 'vnc-live-connected-interactive.png'), fullPage: true });
+    const controlRemote = readRemoteDimensions();
+    if (controlRemote.text !== initialRemote.text) {
+      throw new Error(`${scenarioId}: Control resized the agent desktop from ${initialRemote.text} to ${controlRemote.text}`);
+    }
+    await page.screenshot({ path: path.join(outputDir, 'vnc-live-connected-control.png'), fullPage: true });
     await tile.getByRole('button', { name: 'Disconnect', exact: true }).click();
     await tile.getByRole('button', { name: 'Connect', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
 
@@ -277,11 +316,13 @@ try {
       initialCanvas,
       initialRemote,
       maximizedRemote,
+      controlRemote,
+      browserClipboardInViewOnly,
       localToRemoteText,
       observedRemoteClipboard,
       remoteToLocalText,
       observedBrowserClipboard,
-      webSockets: evidence.browserEvents.filter((event) => event.scenarioId === scenarioId && event.type === 'websocket'),
+      nodeDesktopSockets: assertNodeDesktopSockets(scenarioId),
     };
     await context.close();
   }
@@ -309,12 +350,11 @@ try {
     if (permissionStates.read !== 'denied' || permissionStates.write !== 'denied') {
       throw new Error(`${scenarioId}: expected denied permissions, observed ${JSON.stringify(permissionStates)}`);
     }
-    await tile.getByRole('button', { name: 'View Only', exact: true }).click();
-    await tile.getByRole('button', { name: 'Interactive', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+    await switchMode(tile, 'View only', 'Control');
     await canvas.focus();
     writeRemoteClipboard(`denied-nonfatal-${Date.now()}`);
     await page.waitForTimeout(800);
-    await tile.getByText('Connected to VNC server', { exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+    await waitForStatus(tile, 'Connected · Control');
     const readAttempt = await page.evaluate(async () => {
       try {
         await navigator.clipboard.readText();
@@ -345,12 +385,11 @@ try {
     const { tile, canvas } = await locateAndOpenVnc(page, scenarioId);
     const clipboardType = await page.evaluate(() => typeof navigator.clipboard);
     if (clipboardType !== 'undefined') throw new Error(`${scenarioId}: clipboard override did not apply`);
-    await tile.getByRole('button', { name: 'View Only', exact: true }).click();
-    await tile.getByRole('button', { name: 'Interactive', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+    await switchMode(tile, 'View only', 'Control');
     await canvas.focus();
     writeRemoteClipboard(`unsupported-nonfatal-${Date.now()}`);
     await page.waitForTimeout(800);
-    await tile.getByText('Connected to VNC server', { exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
+    await waitForStatus(tile, 'Connected · Control');
     evidence.scenarios[scenarioId] = { result: 'Pass', clipboardType };
     await context.close();
   }

@@ -1,0 +1,10 @@
+# IMP-08 mutation admission (the first-input rule ignored; tests from 7d9a305627)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run.test.ts --no-watch --testTimeout=8000
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × admits an onlyAsFirstInput input as the first input; refuses it once the instance reserved or admitted any input 10ms
+     × counts a reserved input (a teammate's delivery) as earlier input; an invalid input does not 2ms
+     × decides concurrent inputs in the run's dispatch queue: whichever is admitted first wins 1ms
+      Tests  3 failed | 47 passed (50)

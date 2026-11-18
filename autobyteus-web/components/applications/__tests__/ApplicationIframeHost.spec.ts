@@ -198,6 +198,8 @@ describe('ApplicationIframeHost', () => {
         transport: {
           backendBaseUrl: null,
           backendNotificationsUrl: null,
+          backendWebSocketBaseUrl: null,
+          agentCommunicationWebSocketBaseUrl: null,
         },
       }),
     })

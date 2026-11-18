@@ -1,0 +1,11 @@
+{
+  "entries": {
+    "remote-9b9dfdc6-6852-4629-83a4-18b038c084fb": {
+      "version": "1.5.12-beta.3",
+      "requestedAt": "2026-11-07T12:05:28.005Z",
+      "outcome": "AUTO_FAILED",
+      "reason": "No server package was published for 1.5.12-beta.3 (linux-arm64).",
+      "read": true
+    }
+  }
+}

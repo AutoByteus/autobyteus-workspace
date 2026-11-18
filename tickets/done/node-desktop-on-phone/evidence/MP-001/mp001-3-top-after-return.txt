@@ -1,0 +1,1 @@
+    topResumedActivity=ActivityRecord{f0951c u0 org.autobyteus.mobile/.MainActivity t9}

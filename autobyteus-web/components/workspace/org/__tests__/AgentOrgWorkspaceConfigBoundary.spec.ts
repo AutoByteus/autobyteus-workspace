@@ -38,7 +38,7 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => center,
 }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({
-  useAgentOrgContextsStore: () => ({ readRunConfig: readOrg, saveRunConfig: saveOrg }),
+  useAgentOrgContextsStore: () => ({ readRunConfig: readOrg, saveRunConfig: saveOrg, contextFor: () => null, selectedRowKey: () => null }),
 }))
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({
   loadExistingRunModelOptions: vi.fn().mockResolvedValue({}),
@@ -90,6 +90,7 @@ describe('AgentOrg workspace configuration boundary', () => {
     state.context = {
       phase: 'historical', error: null,
       executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+      selectedTarget: () => null,
     }
     readOrg.mockImplementation(async (orgRunId: string) => {
       const tree = structuredClone(taskBearingView().execution_tree)
@@ -141,7 +142,7 @@ describe('AgentOrg workspace configuration boundary', () => {
     await wrapper.setProps({ target: { kind: 'agent_org', orgRunId: 'org-run-next' } })
     await vi.waitFor(() => expect(readOrg).toHaveBeenCalledTimes(2))
     expect(readOrg.mock.calls.map(([id]) => id)).toEqual(['org-run', 'org-run-next'])
-    expect(wrapper.get('[data-test="rendered-whole-org-form"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="rendered-whole-org-form"]').exists()).toBe(true)
     wrapper.unmount()
   })
 })

@@ -1,0 +1,177 @@
+{
+  "startedAt": "2026-11-07T19:54:01.295Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 53094,
+      "nodeId": "srv_INzrCYeYkaNh11m3y7XcZxWX0eFYEEru",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 53095,
+      "nodeId": "srv_ACKiMhbwwknkWwC1Q9Z36mqUZKiTpnJo",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_c7f53b3de4cc492a8bcf6ec8d438bc50",
+    "writerRun": "release_notes_writer_35f528ad97d148eba61b2f5f01c78d80",
+    "squadRun": "docs_review_team_734bd988631141deb0d2ccfbf7a1ea34",
+    "reviewer": "release_notes_writer_8928cce77fee48e4b7836839dfb29028",
+    "memberDelegated": "fact_checker_30b482a274424f12b3678e34f0cfab0f",
+    "remoteAgentRun": "publisher_309230739f924257b61006b16d64a23a",
+    "remoteTeamRun": "studio_team_d2501629cafa46dd882f0f92d49c48fc",
+    "plain": [
+      "fact_checker_9ef856f83cc2409dae7146e01ea02169",
+      "fact_checker_d47f89d4b0404aeeb10a5d09b518fe5f",
+      "fact_checker_a982a631775c4a179f399192c5e39319"
+    ],
+    "org": "delivery_org_c5f8b450607e478691f5bbae1e779d23",
+    "orgPlanner": "release_notes_writer_520fa3b3f67349e688ee9b864958eacc",
+    "reviewOrg": "review_org_493eaaade45f4b9983695808d4b44201",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_d2c9e5bb66a54d66826b8f78d16e23a8",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_10c4ef4f2e1d4ba48d8a0404e309d60c",
+    "deliveryLead": "fact_checker_f1cd8bf96d96475ca4bd49557bbcbaf8",
+    "deliveryMate": "release_notes_writer_e416355658b74c52abc7416a70fd10f5",
+    "leadDelegated": "changelog_helper_287f868a05544df8afdd0eece7587fbf",
+    "approver": "approver_4e39e4c93c2a4e0aa1cb53f841cc2a0d",
+    "taskA": "launch-644af7-1",
+    "taskB": "launch-644af7-2"
+  },
+  "cases": {
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 7.8,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 7, 07:54 PM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image generate_image success"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Activity"
+      ],
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    },
+    "MSP-16": {
+      "result": "Pass",
+      "seconds": 4.5,
+      "draftPath": "alpha/workspace/drafts/draft-v3.txt",
+      "outsidePath": "alpha/outside-427/private.txt",
+      "workspaceId": "agent_ws_bdff9ce99faee2cbdf0847a80ef77f216388d13be2174fa5bdca9974f757bbb2",
+      "links": {
+        "draft": 1,
+        "outside": 1,
+        "draftLabel": "draft-v3.txt",
+        "draftAria": "Open draft-v3.txt in Files"
+      },
+      "before": "?screen=run",
+      "opened": {
+        "viewer": 1,
+        "text": true,
+        "query": {
+          "screen": "files",
+          "workspace": "agent_ws_bdff9ce99faee2cbdf0847a80ef77f216388d13be2174fa5bdca9974f757bbb2",
+          "file": "drafts/draft-v3.txt"
+        },
+        "status": 0
+      },
+      "back": {
+        "state": "open",
+        "query": "?screen=run",
+        "name": "lead",
+        "link": 1,
+        "composer": 1
+      },
+      "outside": {
+        "status": "This file is available only on the host workspace.",
+        "urlUnchanged": true,
+        "viewer": 0,
+        "leaked": false
+      },
+      "consoleLines": []
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-08": "Pass",
+      "MSP-16": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-07T19:54:49.415Z"
+}

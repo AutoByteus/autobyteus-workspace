@@ -34,7 +34,7 @@ const withoutLister = () => testMemberExecutionContext();
 
 describe("list_available_agents (REQ-001/002)", () => {
   it("exposes actual Daily Assistant discovery through native and MCP bindings in a standalone host context", async () => {
-    const context = new MemberExecutionContext({ ...withLister(), teamScoped: false, collaborationRole: "standalone_agent" });
+    const context = new MemberExecutionContext({ ...withLister(), teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false });
     const exposure = buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context);
     expect(exposure.listAvailableAgentsEnabled).toBe(true);
     expect(exposure.sendMessageToEnabled).toBe(true);
@@ -79,7 +79,7 @@ describe("list_available_agents (REQ-001/002)", () => {
   it("keeps an empty eligible catalog a valid discovery result for Daily Assistant", async () => {
     const context = new MemberExecutionContext({
       ...testMemberExecutionContext({ listAvailableAgents: async () => [] }),
-      teamScoped: false, collaborationRole: "standalone_agent",
+      teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false,
     });
     expect(buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context).listAvailableAgentsEnabled).toBe(true);
     await expect(listAvailableAgentsFor(context.collaboration)).resolves.toEqual({ agents: [] });
@@ -151,7 +151,8 @@ describe("list_available_agents (REQ-001/002)", () => {
     const selected = options([LIST_AVAILABLE_AGENTS_TOOL_NAME], withLister());
     expect(selected.listAvailableAgentsToolingEnabled).toBe(true);
     expect(selected.agentToolsMcpEnabledToolNames).toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
-    expect(selected.allowedTools).toContain(buildClaudeAgentToolsMcpToolName(LIST_AVAILABLE_AGENTS_TOOL_NAME));
+    // Allowed per call from the run's current descriptor, not through allowedTools (autobyteus-324).
+    expect(selected.allowedTools).not.toContain(buildClaudeAgentToolsMcpToolName(LIST_AVAILABLE_AGENTS_TOOL_NAME));
     expect(options([], withLister()).agentToolsMcpEnabledToolNames).not.toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
     expect(options([LIST_AVAILABLE_AGENTS_TOOL_NAME], withoutLister()).listAvailableAgentsToolingEnabled).toBe(false);
   });

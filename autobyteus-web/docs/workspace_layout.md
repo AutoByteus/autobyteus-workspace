@@ -14,9 +14,21 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 
 The first left-panel item is **Chat** (`/chat`), with a pencil action that starts a New chat. `/` redirects to `/chat`. Kept New chats with typed text are listed as Draft rows directly under the Chat row; while a Draft row is selected the Chat row is not active (see [Chat — Draft rows](./chat.md#draft-rows)).
 
+Below the page entries is the **run section** (`RunSectionPanel`). Its header (`RunSectionHeader`) shows the view's name and a `⋯` "View" menu (`role=menu`, `menuitemradio` items; arrow keys, Enter, Escape returns focus to the button) choosing one of three views of the same runs, remembered per node:
+
+- **Runs** (`components/runList/RunListPanel`): every top-level Agent, Team and Org run, newest first by the server's last activity (`lastActivityAt`), each with its delegated work nested; the newest 5, then "Show older (N)" and "Archive all older" (`stores/runListStore.ts`, `utils/runListProjection.ts`, `useRunListDisclosure`, `useRunListArchiveOlder`).
+- **Workspaces** (the default): runs by folder. Only registered folders are shown, so a folder removed in the chat chooser leaves this view whatever runs it still has; its runs stay in the Runs view and on disk (`projectWorkspaceHistoryByWorkspace` attaches Org runs only to registered folders, as Agent and Team runs are). A folder, Temp workspace included, is listed only while it has a listed run: an Agent run that is not an unsent New chat draft, a Team run or an Org run (`hasListedRun` in `runHistoryNavigationProjection.ts`); a draft-only folder appears with its first sent message. With none: "No runs in any folder yet".
+- **Projects**: runs by Project (see [Projects mode in the left panel](./projects.md#projects-mode-in-the-left-panel)).
+
+A view only shows: there is no add form, no "New Project" and no folder remove button. Folders are removed (unregistered) in the chat chooser ([Chat](./chat.md)). The views share the open-run mark, the reveal below and the run actions; choosing a view never changes the open conversation.
+
+**History read window.** The section loads the run history on mount and every 5 seconds. `runHistoryStore` owns the one read window (`setHistoryWindow`): the section sets it from the view before each read (`null`, every run, for Runs, whose fold and "Archive all older" need every run, and for Projects, so that another client's removal of any run is noticed (autobyteus-388); 6 per agent and folder for Workspaces) and reads once when the view changes. Every read (list, per-folder, the retired-run reconcile) uses it. The phone (`/mobile`) reads every run (`null`, autobyteus-277).
+
+**Delegated rows and their states (autobyteus-461).** The delegated rows of a listed run (Agent, Team or Org) are its tree's rows, built on the server ([Run trees](./agent_execution_architecture.md#run-trees-autobyteus-461)). A run that is shown but not open is read with `runTree(kind, runId)` when it is first shown and again when `/ws/run-status` says its rows changed (`RUN_TREE_CHANGED`: a delegated run started, closed, reopened or deleted, at any depth, whether or not the run is stopped); an open run's view stream keeps its tree current. Every row's state is its own run's, on `/ws/run-status`, never its delegator's. So without a poll a new delegated run appears, a stopped run's rows show offline, a closed Task's rows leave the list and a reactivated one's come back. Runs on other nodes (autobyteus-278) are held the same way. The Runs view, the Workspaces tree and the phone's run list share this. It replaced the 5-second status read for listed Agent runs (`agentRunCollaborationStatuses`, `refreshListedStatuses`) and its `closedTaskExecutionsDigest`.
+
 ### Collapsed strip: pages and Workspaces
 
-The collapsed left strip (`LeftSidebarStrip.vue`) shows the page icons (Chat … Nodes), then a light divider and a **Workspaces** icon (`ph:tree-view`, `data-nav-key="workspaces"`), with Settings pinned at the bottom. On windows up to 540 px tall the divider is hidden and the icons sit 4 px apart so Settings still fits.
+The collapsed left strip (`LeftSidebarStrip.vue`) shows the page icons (Chat … Nodes), then a light divider and a **Workspaces** icon (`ph:tree-view`, `data-nav-key="workspaces"`), with Settings pinned at the bottom. The run-section entry keeps that icon in every view; its label, tooltip and accessible name follow the view ("Your runs", "Workspaces" or "Projects"). On windows up to 540 px tall the divider is hidden and the icons sit 4 px apart so Settings still fits.
 
 - A page icon docks the panel (or opens the drawer when there is no room) and goes to its page.
 - **Workspaces** only shows the panel, docked or as the drawer. It never changes the route, the selected run, the center, an open draft or the right panel. After docking, focus moves to the panel's Workspaces section and then onto the open run's row; closing the drawer returns focus to Workspaces.
@@ -30,7 +42,7 @@ The collapsed left strip (`LeftSidebarStrip.vue`) shows the page icons (Chat …
 
 The route predicates (`chatRouteRunId`, `isAgentOrgRunRoute`, `isAgentOrgLaunchRoute`) live in `services/workspace/workspaceNavigationService.ts`, so the center and the highlight read the same route meaning.
 
-**Revealing the open run when the panel appears.** Each time the tree panel mounts (docked expand, drawer open, app start), `useWorkspaceHistoryTreeState` expands the selected run's ancestry, including a Team's focused member inside delegated task-Team rows. The Team reveal stays pending until that member's row exists. `components/workspace/history/useRevealSelectedTreeRow.ts` then watches the tree for up to 3 s: once the selected row (the last `[aria-current="true"], [aria-selected="true"]`) renders, it is centred if it is not fully visible; a visible row does not move. The first wheel, press or key in the tree ends the window. It acts only while a run is shown: `AppLeftPanel` passes `isWorkspacesActive` to the tree as `runShown`, so on New chat or another page a row still marked by an earlier selection is neither scrolled to nor focused, and focus stays on the Workspaces section. The reveal only scrolls and focuses; it never selects or expands anything. Opening a run while the panel is already docked does not scroll the tree.
+**Revealing the open run when the panel appears.** Each time the tree panel mounts (docked expand, drawer open, app start), `useWorkspaceHistoryTreeState` (in Projects mode `useProjectsTreeState`, in the run's Project) expands the selected run's ancestry, including a Team's focused member inside delegated task-Team rows. The Team reveal stays pending until that member's row exists. `components/workspace/history/useRevealSelectedTreeRow.ts` then watches the tree for up to 3 s: once the selected row (the last `[aria-current="true"], [aria-selected="true"]`) renders, it is centred if it is not fully visible; a visible row does not move. The first wheel, press or key in the tree ends the window. It acts only while a run is shown: `AppLeftPanel` passes `isWorkspacesActive` to the tree as `runShown`, so on New chat or another page a row still marked by an earlier selection is neither scrolled to nor focused, and focus stays on the Workspaces section. The reveal only scrolls and focuses; it never selects or expands anything. Opening a run while the panel is already docked does not scroll the tree.
 
 `layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 
@@ -115,7 +127,11 @@ Right-tool order is also centralized there and should remain:
 6. Token, when applicable
 7. Artifacts
 8. Browser, when applicable
-9. VNC, when applicable
+9. VNC Viewer: the bound node's node desktop, through the node's own server
+   (`/ws/node-desktop`, View only by default, Control by a deliberate switch;
+   see [Node Desktop](../../autobyteus-server-ts/docs/modules/node_desktop.md)).
+   A node without one (the embedded node) says "This node has no shared desktop".
+   The tile disconnects when the window is hidden and reconnects in View only.
 
 Projects is never a contextual default (Team members / Activity stay the
 defaults), and a scope change keeps it selected: opening a worker from the

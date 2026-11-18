@@ -1,0 +1,38 @@
+AE-01 — AC-002/AC-003 executable probe: real backend process started with the real
+buildServerProcessEnv output (inherit-caller policy, production-shaped inputs, test-owned
+port/data dir); a real OS child process sharing that exact env printing PORT/SERVER_PORT;
+the real get-port-please@3.2.0 package under that exact env.
+Script: AE-01-probe-script.mts (this folder)
+Command: npx tsx AE-01-probe-script.mts <worktree-root>
+Commit: 26b6ca34db5367f768937f89b4435ea0b312ccd9
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, tsx 4.23.15
+Date: 2026-11-06
+
+Output:
+{"step":"composed-env","hasPort":false,"hasServerPort":false}
+{"step":"backend-healthy","port":56308,"pid":38344}
+{"step":"env-check","code":0,"stdout":"PORT=[]\nSERVER_PORT=[]\n","stderr":""}
+{"step":"get-port-please","code":0,"stdout":"{\"chosen\":24678}\n","stderr":""}
+{"step":"result","chosenPort":24678,"backendTestPort":56308}
+{"step":"cleanup-done"}
+--- backend log (tail) ---
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+

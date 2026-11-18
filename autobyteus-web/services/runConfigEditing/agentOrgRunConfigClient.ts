@@ -55,7 +55,7 @@ export type AgentOrgRunConfigMutationResult = ExistingRunModelConfigMutationResu
 
 export const updateStoppedAgentOrgRunConfig = async (input: {
   orgRunId: string
-  modelPatches: readonly ExistingAgentOrgModelConfigPatch[]
+  selectionPatches: readonly ExistingAgentOrgModelConfigPatch[]
   teamWorkspacePatches: readonly TeamWorkspacePatch[]
 }): Promise<AgentOrgRunConfigMutationResult> => {
   type RawAgentOrgResult = ExistingRunModelConfigMutationResult & { canonical?: unknown | null }

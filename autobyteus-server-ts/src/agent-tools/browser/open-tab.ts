@@ -6,7 +6,8 @@ import {
 } from "./browser-tool-contract.js";
 import { getBrowserToolManifestEntry } from "./browser-tool-manifest.js";
 import { buildOpenTabParameterSchema } from "./browser-tool-parameter-schemas.js";
-import { toBrowserToolErrorPayload, toBrowserJsonString } from "./browser-tool-serialization.js";
+import { toBrowserToolErrorPayload } from "./browser-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { getBrowserToolService } from "./browser-tool-service.js";
 
 const DESCRIPTION = getBrowserToolManifestEntry(OPEN_TAB_TOOL_NAME).description;
@@ -39,11 +40,11 @@ export async function openTab(
       reuse_existing: reuse_existing ?? false,
       wait_until: wait_until ?? "load",
     });
-    return toBrowserJsonString(result);
+    return toToolResultJson(result);
   } catch (error) {
     const payload = toBrowserToolErrorPayload(error);
     logger.error(`open_tab failed for agent run ${agentRunId}: ${payload.error.message}`);
-    throw new Error(toBrowserJsonString(payload));
+    throw new Error(toToolResultJson(payload));
   }
 }
 

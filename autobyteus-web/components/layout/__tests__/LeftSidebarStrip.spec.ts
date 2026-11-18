@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import LeftSidebarStrip from '../LeftSidebarStrip.vue'
+import { useRunSectionModeStore } from '~/stores/runSectionModeStore'
 
 const {
   applicationsCapabilityStoreMock,
@@ -227,7 +228,9 @@ describe('LeftSidebarStrip Component', () => {
       const divider = wrapper.get('[data-test="workspace-left-strip-workspaces-divider"]')
 
       expect(children.at(-2)).toBe(divider.element)
-      expect(children.at(-3)?.dataset.navKey).toBe('nodes')
+      // autobyteus-337: Integrations is the last page icon, after Nodes.
+      expect(children.at(-3)?.dataset.navKey).toBe('integrations')
+      expect(children.at(-4)?.dataset.navKey).toBe('nodes')
       expect(children.at(-1)).toBe(workspaces(wrapper).element)
       expect(divider.attributes('aria-hidden')).toBe('true')
       expect(divider.classes()).toEqual(expect.arrayContaining(['mx-auto', 'h-px', 'w-6', 'bg-gray-100', '[@media(max-height:540px)]:hidden']))
@@ -241,6 +244,22 @@ describe('LeftSidebarStrip Component', () => {
       })
       expect(workspaces(wrapper).get('.icon-stub').attributes('data-icon')).toBe('ph:tree-view')
       wrapper.unmount()
+    })
+
+    it('names the run section after its view: Your runs, Workspaces or Projects (workspace-tree-vs-chooser UXJ-001 step 3)', async () => {
+      const modeStore = useRunSectionModeStore()
+      try {
+        for (const [mode, name] of [['runs', 'Your runs'], ['projects', 'Projects'], ['workspaces', 'Workspaces']] as const) {
+          modeStore.setMode(mode)
+          const wrapper = mountStrip('redock-panel')
+          expect(workspaces(wrapper).attributes()).toMatchObject({ title: name, 'aria-label': name })
+          expect(workspaces(wrapper).get('.icon-stub').attributes('data-icon')).toBe('ph:tree-view')
+          wrapper.unmount()
+        }
+      } finally {
+        modeStore.setMode('workspaces')
+        window.localStorage.clear()
+      }
     })
 
     it('docks the panel without navigating and hands focus to the Workspaces section (REQ-002, REQ-009)', async () => {

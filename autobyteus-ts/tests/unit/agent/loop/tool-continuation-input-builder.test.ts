@@ -39,18 +39,18 @@ describe('ToolContinuationInputBuilder', () => {
 
   it('builds semantic completed-tool wording without a coordination label', () => {
     const resultEvent = new ToolResultEvent(
-      'read_media_file',
+      'read_file',
       { uri: '/tmp/audio.mp3' },
       'inv-media',
       undefined,
-      { file_path: '/tmp/audio.mp3' },
+      { path: '/tmp/audio.mp3' },
       'turn-1',
       false,
     );
 
     const message = new ToolContinuationInputBuilder().build([resultEvent], 'turn-1');
 
-    expect(message.content).toBe('The read_media_file tool call completed successfully.');
+    expect(message.content).toBe('The read_file tool call completed successfully.');
     expect(message.content).not.toContain('Tool history continuation');
     expect(message.content).not.toContain('Native API tool continuation');
   });
@@ -61,23 +61,23 @@ describe('ToolContinuationInputBuilder', () => {
       uri: '/tmp/clip.mp4',
       fileType: ContextFileType.VIDEO,
       fileName: 'clip.mp4',
-      metadata: { source: 'read_media_file' },
+      metadata: { source: 'read_file' },
     };
     const events = [
       new ToolResultEvent(
-        'read_media_file',
+        'read_file',
         audioFile,
         'inv-audio',
         undefined,
-        { file_path: 'sample.mp3' },
+        { path: 'sample.mp3' },
         'turn-1',
       ),
       new ToolResultEvent(
-        'read_media_file',
+        'read_file',
         [[serializedVideoFile]],
         'inv-video',
         undefined,
-        { file_path: 'clip.mp4' },
+        { path: 'clip.mp4' },
         'turn-1',
       ),
     ];

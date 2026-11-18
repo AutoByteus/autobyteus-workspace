@@ -1,0 +1,758 @@
+[2026-11-07T21:52:36.397Z] [INFO] [electron] Application started
+[2026-11-07T21:52:36.481Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-11-07T21:52:36.481Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-11-07T21:52:36.482Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/db
+[2026-11-07T21:52:36.482Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/logs
+[2026-11-07T21:52:36.482Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/download
+
+DevTools listening on ws://127.0.0.1:57276/devtools/browser/1fa8aea5-8722-4736-99e7-f421e2725576
+[2026-11-07T21:52:36.548Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:57308
+[2026-11-07T21:52:36.560Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-11-07T21:52:36.561Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-11-07T21:52:36.562Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-07T21:52:36.562Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data
+[2026-11-07T21:52:36.562Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-11-07T21:52:36.562Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/.env
+[2026-11-07T21:52:36.562Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-11-07T21:52:36.563Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Using PATH from login shell
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Starting server with port: 57277
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:57277
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-07T21:52:37.526Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data
+[2026-11-07T21:52:37.526Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 57277 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data
+[2026-11-07T21:52:37.528Z] [INFO] [electron] Server process spawned with PID: 82880
+[2026-11-07T21:52:37.595Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-11-07T21:52:37.595Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-07T21:52:37.595Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data
+[2026-11-07T21:52:37.595Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/.env
+[2026-11-07T21:52:37.595Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/.env
+[2026-11-07T21:52:37.595Z] [INFO] [electron.embedded-server.stdout] ◇ injected env (2) from ../../../../../../../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/.env // tip: ⌘ override existing { override: true }
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:57277
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:57277
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/db
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/logs
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/download
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/memory
+[2026-11-07T21:52:37.596Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-11-07T21:52:38.375Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-11-07T21:52:38.525Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-11-07T21:52:38.526Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-11-07T21:52:38.728Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-11-07T21:52:38.731Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/db/production.db"
+[2026-11-07T21:52:38.758Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/db/production.db
+[2026-11-07T21:52:38.767Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-11-07T21:52:38.771Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-11-07T21:52:38.775Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-11-07T21:52:38.779Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-11-07T21:52:38.780Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-11-07T21:52:38.781Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-11-07T21:52:38.782Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-11-07T21:52:38.783Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-11-07T21:52:38.788Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-11-07T21:52:38.788Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-11-07T21:52:38.791Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-11-07T21:52:38.792Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-11-07T21:52:38.793Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-11-07T21:52:38.796Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-11-07T21:52:38.797Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-11-07T21:52:38.799Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-11-07T21:52:38.807Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-11-07T21:52:38.809Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-11-07T21:52:38.810Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-11-07T21:52:38.812Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-11-07T21:52:38.813Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-11-07T21:52:38.815Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-11-07T21:52:38.816Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-11-07T21:52:38.818Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-11-07T21:52:38.820Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-11-07T21:52:38.822Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-11-07T21:52:38.823Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-11-07T21:52:38.824Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.825Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-07T21:52:38.826Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-11-07T21:52:38.840Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-11-07T21:52:38.849Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-07T21:52:38.877Z] [INFO] [electron.embedded-server.stdout] [2026-11-07T21:52:38.877Z] [INFO] [secret-management.vault] Secret vault: application database
+[2026-11-07T21:52:38.994Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 32 predefined settings
+[2026-11-07T21:52:39.020Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-11-07T21:52:39.021Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-11-07T21:52:39.094Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-11-07T21:52:39.095Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-11-07T21:52:39.095Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/temp_workspace
+[2026-11-07T21:52:39.095Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/temp_workspace.
+[2026-11-07T21:52:39.095Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-11-07T21:52:39.095Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-11-07T21:52:39.095Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-11-07T21:52:39.096Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_project_task'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_project_tasks'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_task'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_task'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_peer_nodes'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agent_runtimes'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_launch_choices'
+[2026-11-07T21:52:39.106Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Runtime Tools
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_memory'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Memory Tools
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-11-07T21:52:39.107Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-11-07T21:52:39.109Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-11-07T21:52:39.109Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-11-07T21:52:39.109Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-11-07T21:52:39.120Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1794088359120,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57329"}
+[2026-11-07T21:52:39.140Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1794088359140,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57277"}
+[2026-11-07T21:52:39.141Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1794088359140,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57277"}
+[2026-11-07T21:52:39.141Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1794088359140,"pid":82880,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57277"}
+[2026-11-07T21:52:39.141Z] [INFO] [electron.embedded-server.stdout] [2026-11-07T21:52:39.140Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57277
+[2026-11-07T21:52:39.141Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-11-07T21:52:39.143Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-11-07T21:52:39.143Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-11-07T21:52:39.143Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-11-07T21:52:39.144Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-11-07T21:52:39.144Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-11-07T21:52:39.147Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-11-07T21:52:39.147Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Search' completed successfully.
+[2026-11-07T21:52:39.147Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-11-07T21:52:39.147Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-11-07T21:52:39.147Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-11-07T21:52:39.147Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 33 LLM models into cache.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-11-07T21:52:39.148Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-11-07T21:52:39.296Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-11-07T21:52:39.296Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-11-07T21:52:39.296Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:52:39.397Z] [INFO] [electron] Creating node-bound window for entryId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-11-07T21:52:39.706Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:52:39.710Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:52:41.687Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:52:41.688Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:52:44.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:52:44.790Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:52:49.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:52:49.788Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:52:54.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:52:54.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:52:58.243Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=logcheck origin http://localhost:5173
+[2026-11-07T21:52:58.243Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088378243,"pid":82880,"hostname":"MacBookPro","reqId":"req-z","method":"POST","url":"/graphql?f=logcheck","statusCode":403,"elapsedMs":0.5811670000002778,"msg":"http request completed"}
+[2026-11-07T21:52:59.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:52:59.788Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:04.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:04.790Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:08.778Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:08.780Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:09.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:09.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:11.284Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:11.287Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:14.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:14.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:19.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:19.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:22.704Z] [INFO] [electron.embedded-server.stdout] GraphQL mutation to create workspace metadata
+[2026-11-07T21:53:22.704Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:53:22.704Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /tmp/api416-fixtures-hofA/files.
+[2026-11-07T21:53:22.705Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:53:23.183Z] [WARN] [electron] Blocked browser popup request from '215ad2' to 'about:blank': Popup requests require the opener session '215ad2' to be attached to a shell.
+[2026-11-07T21:53:23.185Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+[2026-11-07T21:53:23.185Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403185,"pid":82880,"hostname":"MacBookPro","reqId":"req-1p","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.6040419999990263,"msg":"http request completed"}
+[2026-11-07T21:53:23.186Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403186,"pid":82880,"hostname":"MacBookPro","reqId":"req-1q","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.13279100000363542,"msg":"http request completed"}
+[2026-11-07T21:53:23.187Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+[2026-11-07T21:53:23.187Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+[2026-11-07T21:53:23.187Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403187,"pid":82880,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.7680420000033337,"msg":"http request completed"}
+[2026-11-07T21:53:23.187Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+[2026-11-07T21:53:23.187Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403187,"pid":82880,"hostname":"MacBookPro","reqId":"req-1s","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.1462500000052387,"msg":"http request completed"}
+[2026-11-07T21:53:23.187Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+[2026-11-07T21:53:23.188Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403188,"pid":82880,"hostname":"MacBookPro","reqId":"req-1t","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.2970839999979944,"msg":"http request completed"}
+[2026-11-07T21:53:23.197Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+[2026-11-07T21:53:23.198Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403197,"pid":82880,"hostname":"MacBookPro","reqId":"req-1u","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.576415999996243,"msg":"http request completed"}
+[2026-11-07T21:53:23.198Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+[2026-11-07T21:53:23.198Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403198,"pid":82880,"hostname":"MacBookPro","reqId":"req-1v","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.2197920000035083,"msg":"http request completed"}
+[2026-11-07T21:53:23.199Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403199,"pid":82880,"hostname":"MacBookPro","reqId":"req-1w","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.12962500000139698,"msg":"http request completed"}
+[2026-11-07T21:53:23.199Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+[2026-11-07T21:53:23.213Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+[2026-11-07T21:53:23.213Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403212,"pid":82880,"hostname":"MacBookPro","reqId":"req-1x","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.2434999999968568,"msg":"http request completed"}
+[2026-11-07T21:53:23.227Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+[2026-11-07T21:53:23.227Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403227,"pid":82880,"hostname":"MacBookPro","reqId":"req-1y","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.21495799999684095,"msg":"http request completed"}
+[2026-11-07T21:53:23.241Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+[2026-11-07T21:53:23.241Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403241,"pid":82880,"hostname":"MacBookPro","reqId":"req-1z","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.2884170000033919,"msg":"http request completed"}
+[2026-11-07T21:53:23.255Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+[2026-11-07T21:53:23.255Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088403255,"pid":82880,"hostname":"MacBookPro","reqId":"req-20","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.206291999995301,"msg":"http request completed"}
+[2026-11-07T21:53:24.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:24.786Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:29.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:29.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:32.553Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+[2026-11-07T21:53:32.553Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+[2026-11-07T21:53:32.553Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+[2026-11-07T21:53:32.553Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412553,"pid":82880,"hostname":"MacBookPro","reqId":"req-28","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.2906250000014552,"msg":"http request completed"}
+[2026-11-07T21:53:32.553Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412553,"pid":82880,"hostname":"MacBookPro","reqId":"req-29","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.08258300000306917,"msg":"http request completed"}
+[2026-11-07T21:53:32.553Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412553,"pid":82880,"hostname":"MacBookPro","reqId":"req-2a","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.06658299999980954,"msg":"http request completed"}
+[2026-11-07T21:53:32.558Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+[2026-11-07T21:53:32.558Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+[2026-11-07T21:53:32.558Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412555,"pid":82880,"hostname":"MacBookPro","reqId":"req-2b","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.23629199999413686,"msg":"http request completed"}
+[2026-11-07T21:53:32.558Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412556,"pid":82880,"hostname":"MacBookPro","reqId":"req-2c","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.1472910000011325,"msg":"http request completed"}
+[2026-11-07T21:53:32.565Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+[2026-11-07T21:53:32.565Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412565,"pid":82880,"hostname":"MacBookPro","reqId":"req-2d","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.18962499999906868,"msg":"http request completed"}
+[2026-11-07T21:53:32.567Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-fetch origin null
+[2026-11-07T21:53:32.567Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-xhr origin null
+[2026-11-07T21:53:32.567Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412567,"pid":82880,"hostname":"MacBookPro","reqId":"req-2e","method":"POST","url":"/graphql?f=popup-fetch","statusCode":403,"elapsedMs":0.12795799999730662,"msg":"http request completed"}
+[2026-11-07T21:53:32.567Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412567,"pid":82880,"hostname":"MacBookPro","reqId":"req-2f","method":"POST","url":"/graphql?f=popup-xhr","statusCode":403,"elapsedMs":0.06708299999445444,"msg":"http request completed"}
+[2026-11-07T21:53:32.574Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+[2026-11-07T21:53:32.575Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412575,"pid":82880,"hostname":"MacBookPro","reqId":"req-2g","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.2882499999977881,"msg":"http request completed"}
+[2026-11-07T21:53:32.575Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+[2026-11-07T21:53:32.576Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412575,"pid":82880,"hostname":"MacBookPro","reqId":"req-2h","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.25362500000483124,"msg":"http request completed"}
+[2026-11-07T21:53:32.577Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+[2026-11-07T21:53:32.577Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412577,"pid":82880,"hostname":"MacBookPro","reqId":"req-2i","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.2202919999981532,"msg":"http request completed"}
+[2026-11-07T21:53:32.591Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+[2026-11-07T21:53:32.591Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412591,"pid":82880,"hostname":"MacBookPro","reqId":"req-2j","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.22129199999471894,"msg":"http request completed"}
+[2026-11-07T21:53:32.620Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-popup?f=popup-ws origin null
+[2026-11-07T21:53:32.620Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412620,"pid":82880,"hostname":"MacBookPro","reqId":"req-2k","method":"GET","url":"/ws/terminal/api08-popup?f=popup-ws","statusCode":403,"elapsedMs":0.290833000006387,"msg":"http request completed"}
+[2026-11-07T21:53:32.635Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-gqlws origin null
+[2026-11-07T21:53:32.635Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412635,"pid":82880,"hostname":"MacBookPro","reqId":"req-2l","method":"GET","url":"/graphql?f=popup-gqlws","statusCode":403,"elapsedMs":0.23279099999490427,"msg":"http request completed"}
+[2026-11-07T21:53:32.651Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+[2026-11-07T21:53:32.651Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412651,"pid":82880,"hostname":"MacBookPro","reqId":"req-2m","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.17575000000215368,"msg":"http request completed"}
+[2026-11-07T21:53:32.664Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+[2026-11-07T21:53:32.664Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088412664,"pid":82880,"hostname":"MacBookPro","reqId":"req-2n","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.20970800000213785,"msg":"http request completed"}
+[2026-11-07T21:53:34.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:34.787Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:39.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:39.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:44.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:44.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:49.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:49.787Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:54.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:54.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:53:59.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:53:59.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:04.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:04.788Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:09.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:09.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:14.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:14.787Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:19.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:19.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:24.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:24.790Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:29.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:29.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:29.818Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+[2026-11-07T21:54:29.819Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+[2026-11-07T21:54:29.819Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469818,"pid":82880,"hostname":"MacBookPro","reqId":"req-3p","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.35254199999326374,"msg":"http request completed"}
+[2026-11-07T21:54:29.819Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469819,"pid":82880,"hostname":"MacBookPro","reqId":"req-3q","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.11408400000073016,"msg":"http request completed"}
+[2026-11-07T21:54:29.819Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+[2026-11-07T21:54:29.819Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469819,"pid":82880,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.1662919999944279,"msg":"http request completed"}
+[2026-11-07T21:54:29.821Z] [WARN] [electron] Blocked browser popup request from '6765de' to 'about:blank': Popup requests require the opener session '6765de' to be attached to a shell.
+[2026-11-07T21:54:29.821Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+[2026-11-07T21:54:29.821Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+[2026-11-07T21:54:29.821Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469821,"pid":82880,"hostname":"MacBookPro","reqId":"req-3s","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.2832919999927981,"msg":"http request completed"}
+[2026-11-07T21:54:29.821Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469821,"pid":82880,"hostname":"MacBookPro","reqId":"req-3t","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.1629160000011325,"msg":"http request completed"}
+[2026-11-07T21:54:29.832Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+[2026-11-07T21:54:29.832Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469832,"pid":82880,"hostname":"MacBookPro","reqId":"req-3u","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.21604200000001583,"msg":"http request completed"}
+[2026-11-07T21:54:29.834Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+[2026-11-07T21:54:29.834Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469834,"pid":82880,"hostname":"MacBookPro","reqId":"req-3v","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.212666999999783,"msg":"http request completed"}
+[2026-11-07T21:54:29.834Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+[2026-11-07T21:54:29.835Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469834,"pid":82880,"hostname":"MacBookPro","reqId":"req-3w","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.07658300000184681,"msg":"http request completed"}
+[2026-11-07T21:54:29.843Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+[2026-11-07T21:54:29.843Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469843,"pid":82880,"hostname":"MacBookPro","reqId":"req-3x","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.2055839999957243,"msg":"http request completed"}
+[2026-11-07T21:54:29.858Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+[2026-11-07T21:54:29.858Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469858,"pid":82880,"hostname":"MacBookPro","reqId":"req-3y","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.2444170000089798,"msg":"http request completed"}
+[2026-11-07T21:54:29.872Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+[2026-11-07T21:54:29.872Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469872,"pid":82880,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.18766599999798927,"msg":"http request completed"}
+[2026-11-07T21:54:29.885Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+[2026-11-07T21:54:29.885Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088469885,"pid":82880,"hostname":"MacBookPro","reqId":"req-40","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.14337499999965075,"msg":"http request completed"}
+[2026-11-07T21:54:34.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:34.790Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:38.949Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null
+[2026-11-07T21:54:38.949Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478949,"pid":82880,"hostname":"MacBookPro","reqId":"req-44","method":"POST","url":"/graphql?f=top-fetch","statusCode":403,"elapsedMs":0.4772499999962747,"msg":"http request completed"}
+[2026-11-07T21:54:38.950Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478949,"pid":82880,"hostname":"MacBookPro","reqId":"req-45","method":"POST","url":"/graphql?f=top-xhr","statusCode":403,"elapsedMs":0.21020899999712128,"msg":"http request completed"}
+[2026-11-07T21:54:38.950Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null
+[2026-11-07T21:54:38.952Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null
+[2026-11-07T21:54:38.952Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478952,"pid":82880,"hostname":"MacBookPro","reqId":"req-46","method":"POST","url":"/graphql?f=blank-fetch","statusCode":403,"elapsedMs":0.309958000012557,"msg":"http request completed"}
+[2026-11-07T21:54:38.953Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null
+[2026-11-07T21:54:38.953Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478953,"pid":82880,"hostname":"MacBookPro","reqId":"req-47","method":"POST","url":"/graphql?f=blank-xhr","statusCode":403,"elapsedMs":0.1244579999911366,"msg":"http request completed"}
+[2026-11-07T21:54:38.953Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null
+[2026-11-07T21:54:38.953Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478953,"pid":82880,"hostname":"MacBookPro","reqId":"req-48","method":"GET","url":"/ws/terminal/api08-top?f=top-ws","statusCode":403,"elapsedMs":0.2601250000006985,"msg":"http request completed"}
+[2026-11-07T21:54:38.959Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-fetch origin null
+[2026-11-07T21:54:38.959Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478959,"pid":82880,"hostname":"MacBookPro","reqId":"req-49","method":"POST","url":"/graphql?f=popup-fetch","statusCode":403,"elapsedMs":0.33449999999720603,"msg":"http request completed"}
+[2026-11-07T21:54:38.959Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-xhr origin null
+[2026-11-07T21:54:38.960Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478959,"pid":82880,"hostname":"MacBookPro","reqId":"req-4a","method":"POST","url":"/graphql?f=popup-xhr","statusCode":403,"elapsedMs":0.19074999999429565,"msg":"http request completed"}
+[2026-11-07T21:54:38.961Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null
+[2026-11-07T21:54:38.961Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478961,"pid":82880,"hostname":"MacBookPro","reqId":"req-4b","method":"POST","url":"/graphql?f=srcdoc-fetch","statusCode":403,"elapsedMs":0.14987500000279397,"msg":"http request completed"}
+[2026-11-07T21:54:38.961Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null
+[2026-11-07T21:54:38.961Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478961,"pid":82880,"hostname":"MacBookPro","reqId":"req-4c","method":"POST","url":"/graphql?f=srcdoc-xhr","statusCode":403,"elapsedMs":0.12941599999612663,"msg":"http request completed"}
+[2026-11-07T21:54:38.969Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null
+[2026-11-07T21:54:38.969Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478969,"pid":82880,"hostname":"MacBookPro","reqId":"req-4d","method":"GET","url":"/graphql?f=top-gqlws","statusCode":403,"elapsedMs":0.24470899999141693,"msg":"http request completed"}
+[2026-11-07T21:54:38.986Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null
+[2026-11-07T21:54:38.986Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088478986,"pid":82880,"hostname":"MacBookPro","reqId":"req-4e","method":"GET","url":"/ws/terminal/api08-blank?f=blank-ws","statusCode":403,"elapsedMs":0.22941699999500997,"msg":"http request completed"}
+[2026-11-07T21:54:39.002Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null
+[2026-11-07T21:54:39.002Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088479002,"pid":82880,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/graphql?f=blank-gqlws","statusCode":403,"elapsedMs":0.23379100000602193,"msg":"http request completed"}
+[2026-11-07T21:54:39.110Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-popup?f=popup-ws origin null
+[2026-11-07T21:54:39.110Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088479110,"pid":82880,"hostname":"MacBookPro","reqId":"req-4g","method":"GET","url":"/ws/terminal/api08-popup?f=popup-ws","statusCode":403,"elapsedMs":0.22945899999467656,"msg":"http request completed"}
+[2026-11-07T21:54:39.160Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-gqlws origin null
+[2026-11-07T21:54:39.160Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088479160,"pid":82880,"hostname":"MacBookPro","reqId":"req-4h","method":"GET","url":"/graphql?f=popup-gqlws","statusCode":403,"elapsedMs":0.20883299999695737,"msg":"http request completed"}
+[2026-11-07T21:54:39.559Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null
+[2026-11-07T21:54:39.560Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088479559,"pid":82880,"hostname":"MacBookPro","reqId":"req-4i","method":"GET","url":"/ws/terminal/api08-srcdoc?f=srcdoc-ws","statusCode":403,"elapsedMs":0.23733299999730662,"msg":"http request completed"}
+[2026-11-07T21:54:39.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:39.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:39.947Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null
+[2026-11-07T21:54:39.947Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088479947,"pid":82880,"hostname":"MacBookPro","reqId":"req-4m","method":"GET","url":"/graphql?f=srcdoc-gqlws","statusCode":403,"elapsedMs":0.7860419999924488,"msg":"http request completed"}
+[2026-11-07T21:54:44.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:44.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:49.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:49.791Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:54.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:54.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:54:59.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:54:59.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:04.785Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:04.790Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:06.998Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api09-fetch origin null
+[2026-11-07T21:55:06.999Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088506999,"pid":82880,"hostname":"MacBookPro","reqId":"req-57","method":"OPTIONS","url":"/graphql?f=api09-fetch","statusCode":403,"elapsedMs":0.37966700000106357,"msg":"http request completed"}
+[2026-11-07T21:55:06.999Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api09-session?f=api09-ws origin null
+[2026-11-07T21:55:06.999Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088506999,"pid":82880,"hostname":"MacBookPro","reqId":"req-58","method":"GET","url":"/ws/terminal/api09-session?f=api09-ws","statusCode":403,"elapsedMs":0.17229200000292622,"msg":"http request completed"}
+[2026-11-07T21:55:09.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:09.788Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:14.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:14.787Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:19.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:19.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:24.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:24.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:29.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:29.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:34.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:34.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:39.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:39.789Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:44.787Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:44.791Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:47.513Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api09-fetch origin null
+[2026-11-07T21:55:47.513Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088547513,"pid":82880,"hostname":"MacBookPro","reqId":"req-60","method":"OPTIONS","url":"/graphql?f=api09-fetch","statusCode":403,"elapsedMs":0.4824580000131391,"msg":"http request completed"}
+[2026-11-07T21:55:47.514Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api09-session?f=api09-ws origin null
+[2026-11-07T21:55:47.514Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088547514,"pid":82880,"hostname":"MacBookPro","reqId":"req-61","method":"GET","url":"/ws/terminal/api09-session?f=api09-ws","statusCode":403,"elapsedMs":0.16991599998436868,"msg":"http request completed"}
+[2026-11-07T21:55:49.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:49.785Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:54.786Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:54.790Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:55:59.784Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:55:59.787Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:04.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:04.783Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:05.029Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api11-fetch origin http://localhost:57757
+[2026-11-07T21:56:05.029Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088565029,"pid":82880,"hostname":"MacBookPro","reqId":"req-6f","method":"OPTIONS","url":"/graphql?f=api11-fetch","statusCode":403,"elapsedMs":0.46716700002434663,"msg":"http request completed"}
+[2026-11-07T21:56:05.030Z] [ERROR] [electron.embedded-server.stderr] Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api11-session?f=api11-ws origin http://localhost:57757
+[2026-11-07T21:56:05.030Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1794088565029,"pid":82880,"hostname":"MacBookPro","reqId":"req-6g","method":"GET","url":"/ws/terminal/api11-session?f=api11-ws","statusCode":403,"elapsedMs":0.10670900001423433,"msg":"http request completed"}
+[2026-11-07T21:56:09.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:09.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:14.783Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:14.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:17.549Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: viewer-proof-agent
+[2026-11-07T21:56:17.730Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:17.731Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:17.750Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:17.752Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:19.741Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:19.743Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:22.760Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:22.762Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:27.762Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:27.767Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:32.761Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:32.766Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:37.760Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:37.762Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:42.761Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:42.764Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:47.761Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:47.762Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:52.759Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:52.760Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:56:57.761Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:56:57.762Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:02.759Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:02.760Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:07.761Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:07.766Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:10.245Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: viewer-proof-agent-2
+[2026-11-07T21:57:10.417Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:10.419Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:10.435Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:10.437Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:10.440Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:10.441Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:10.696Z] [INFO] [electron.embedded-server.stdout] Created terminal session 3f805fca-a751-4fe5-9d13-bdd2334126dc using backend IsolatedPtySession for target /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:57:10.697Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 3f805fca-a751-4fe5-9d13-bdd2334126dc
+[2026-11-07T21:57:10.697Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:57:11.668Z] [INFO] [electron.embedded-server.stdout] Created WorkspaceFileExplorer for agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346 (file-explorer-websocket).
+[2026-11-07T21:57:11.675Z] [INFO] [electron.embedded-server.stdout] FileSystemWatcher initialized for '/tmp/api416-fixtures-hofA/files' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[2026-11-07T21:57:11.758Z] [INFO] [electron.embedded-server.stdout] Started filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:57:11.758Z] [INFO] [electron.embedded-server.stdout] Acquired file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 1
+[2026-11-07T21:57:11.758Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession created: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:57:11.758Z] [INFO] [electron.embedded-server.stdout] Created file explorer session e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346. Active sessions: 1
+[2026-11-07T21:57:11.758Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket connected: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:57:11.758Z] [INFO] [electron.embedded-server.stdout] File explorer websocket attached for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:57:12.430Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:12.432Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:15.445Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:15.447Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:20.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:20.450Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:25.446Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:25.447Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:30.448Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:30.453Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:35.445Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:35.447Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:40.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:40.449Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:45.446Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:45.447Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:50.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:50.449Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:57:52.672Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/media
+[2026-11-07T21:57:52.673Z] [INFO] [electron.embedded-server.stdout] File saved successfully to persistent storage: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/media/documents/a9a2be6d-199a-4306-aaca-27943fa1d976.pdf
+[2026-11-07T21:57:52.673Z] [INFO] [electron.embedded-server.stdout] Returning file URL: /rest/files/documents/a9a2be6d-199a-4306-aaca-27943fa1d976.pdf
+[2026-11-07T21:57:55.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:57:55.451Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:00.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:00.448Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:05.444Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:05.446Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:10.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:10.448Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:15.447Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:15.448Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:15.898Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: viewer-proof-agent-3
+[2026-11-07T21:58:15.918Z] [INFO] [electron.embedded-server.stdout] Released file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 0
+[2026-11-07T21:58:15.919Z] [INFO] [electron.embedded-server.stdout] Logically stopped filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:58:15.919Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession closed: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f
+[2026-11-07T21:58:15.919Z] [INFO] [electron.embedded-server.stdout] Closed file explorer session e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f. Active sessions: 0
+[2026-11-07T21:58:15.919Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket disconnected: e2b54d04-1c6d-46b6-8d5c-f44d7e389a4f
+[2026-11-07T21:58:15.951Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 3f805fca-a751-4fe5-9d13-bdd2334126dc
+[2026-11-07T21:58:15.951Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 3f805fca-a751-4fe5-9d13-bdd2334126dc
+[2026-11-07T21:58:16.069Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:16.070Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:16.086Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:16.087Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:16.326Z] [INFO] [electron.embedded-server.stdout] Created terminal session 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9 using backend IsolatedPtySession for target /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:58:16.326Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9
+[2026-11-07T21:58:16.326Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:58:17.296Z] [INFO] [electron.embedded-server.stdout] FileSystemWatcher initialized for '/tmp/api416-fixtures-hofA/files' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[2026-11-07T21:58:17.388Z] [INFO] [electron.embedded-server.stdout] Started filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:58:17.389Z] [INFO] [electron.embedded-server.stdout] Acquired file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 1
+[2026-11-07T21:58:17.389Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession created: 2233d19b-4842-4b9b-b942-f5e079dfe782 for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:58:17.389Z] [INFO] [electron.embedded-server.stdout] Created file explorer session 2233d19b-4842-4b9b-b942-f5e079dfe782 for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346. Active sessions: 1
+[2026-11-07T21:58:17.389Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket connected: 2233d19b-4842-4b9b-b942-f5e079dfe782 for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:58:17.389Z] [INFO] [electron.embedded-server.stdout] File explorer websocket attached for workspace agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346
+[2026-11-07T21:58:18.083Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:18.084Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:21.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:21.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:26.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:26.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:31.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:31.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:36.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:36.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:37.936Z] [INFO] [electron.embedded-server.stdout] File saved successfully to persistent storage: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-JzusE7/server-data/media/documents/6cdb0dcc-c8d7-4655-a11c-e2145c1a422a.pdf
+[2026-11-07T21:58:37.936Z] [INFO] [electron.embedded-server.stdout] Returning file URL: /rest/files/documents/6cdb0dcc-c8d7-4655-a11c-e2145c1a422a.pdf
+[2026-11-07T21:58:41.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:41.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:46.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:46.093Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:51.096Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:51.102Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:58:56.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:58:56.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:01.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:01.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:06.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:06.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:11.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:11.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:16.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:16.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:16.222Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:16.223Z] [INFO] [electron.embedded-server.stdout] Released file watcher lease for /tmp/api416-fixtures-hofA/files (file-explorer-websocket); active leases: 0
+[2026-11-07T21:59:16.223Z] [INFO] [electron.embedded-server.stdout] Logically stopped filesystem watcher for workspace /tmp/api416-fixtures-hofA/files
+[2026-11-07T21:59:16.223Z] [INFO] [electron.embedded-server.stdout] FileExplorerSession closed: 2233d19b-4842-4b9b-b942-f5e079dfe782
+[2026-11-07T21:59:16.223Z] [INFO] [electron.embedded-server.stdout] Closed file explorer session 2233d19b-4842-4b9b-b942-f5e079dfe782. Active sessions: 0
+[2026-11-07T21:59:16.223Z] [INFO] [electron.embedded-server.stdout] File explorer WebSocket disconnected: 2233d19b-4842-4b9b-b942-f5e079dfe782
+[2026-11-07T21:59:16.223Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:16.298Z] [INFO] [electron.embedded-server.stdout] Closed PTY session 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9
+[2026-11-07T21:59:16.298Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: 5e8f73c7-f0ae-41d6-a3af-85335d8df3e9
+[2026-11-07T21:59:21.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:21.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:26.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:26.093Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:31.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:31.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:36.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:36.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:41.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:41.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:46.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:46.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:51.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:51.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T21:59:56.096Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T21:59:56.101Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:01.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:01.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:06.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:06.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:11.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:11.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:16.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:16.098Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:21.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:21.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:26.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:26.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:31.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:31.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:36.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:36.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:41.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:41.098Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:46.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:46.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:51.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:51.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:56.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:56.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:00:56.220Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:00:56.221Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:00.527Z] [INFO] [electron] Creating node-bound window for entryId=remote-bba33264-287d-4b20-b38d-4879871f4bbd; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-11-07T22:01:01.117Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:01.118Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:06.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:06.093Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:11.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:11.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:16.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:16.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:17.711Z] [INFO] [electron] Creating node-bound window for entryId=remote-e60a220f-c446-43f9-9cac-2feda8d6a0c3; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-11-07T22:01:21.097Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:21.100Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:26.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:26.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:31.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:31.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:36.096Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:36.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:41.096Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:41.101Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:46.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:46.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:51.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:51.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:01:56.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:01:56.103Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:01.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:01.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:06.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:06.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:11.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:11.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:16.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:16.101Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:21.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:21.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:26.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:26.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:31.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:31.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:36.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:36.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:41.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:41.098Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:46.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:46.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:51.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:51.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:02:56.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:02:56.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:01.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:01.093Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:06.097Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:06.102Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:11.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:11.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:16.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:16.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:21.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:21.098Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:26.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:26.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:31.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:31.097Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:36.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:36.098Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:41.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:41.101Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:46.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:46.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:51.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:51.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:03:56.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:03:56.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:01.096Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:01.101Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:06.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:06.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:11.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:11.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:16.097Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:16.101Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:21.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:21.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:26.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:26.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:31.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:31.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:36.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:36.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:41.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:41.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:46.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:46.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:51.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:51.100Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:04:56.092Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:04:56.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:05:00.623Z] [INFO] [electron] Creating node-bound window for entryId=remote-bba33264-287d-4b20-b38d-4879871f4bbd; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-11-07T22:05:01.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:05:01.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:05:06.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:05:06.096Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:05:06.832Z] [INFO] [electron] Creating node-bound window for entryId=remote-f00e85c9-8748-4f1c-a302-72dfa6c580bd; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-11-07T22:05:11.095Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:05:11.099Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:05:16.093Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:05:16.094Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:05:21.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:05:21.095Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-07T22:05:26.094Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-07T22:05:26.098Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

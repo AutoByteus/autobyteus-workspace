@@ -1,0 +1,265 @@
+# Requirements Document
+
+## Document Status
+
+- Status: `Approved` (SR-018, 2026-11-11; REQ-014 and AC-017 added at SR-082 on 2026-11-14 by the user's decision to fix the architecture in this ticket, relayed by the code reviewer and confirmed by the user to the Solution Designer; REQ-013 and AC-016 added at SR-066 on 2026-11-12 by the Solution Designer within the user's direction, which the architecture reviewer relayed: "the peer … task agent or task agent team are like the local task agent or agent team. It shouldn't be belonging to the delegate, shouldn't also go through the delegate". The user was informed; the non-goals' exception for TC-12 approved by the user at SR-035, 2026-11-11). The user approved the package for architecture review after the Solution Designer's own validation: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me." The scope covers standalone, team and org runs (TC-4 revised, SR-017).
+- Current solution revision ID: `SR-022`
+- Package identifier: `delegated-copies-outlive-delegator-461`
+- Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
+- Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), with the user's decisions of 2026-11-10 in the Solution Designer's conversation
+- Requirements owner: Solution Designer
+- Date: 2026-11-10
+- Approved by and reference: `User` for the direction and every decision that needed him, all on 2026-11-10 in the Solution Designer's conversation: the structure is corrected in this ticket ("we should start to refactor in this ticket … put the data model correct"), contract first ("we always start with the contract"), the contract after its data validation ("after you validate it if it works … we're definitely go for this approach"; then "I agree with your decision one and three", "I like your recommendation" on the second, and `subWork`). The remaining details: `Solution Designer within the direction (user informed)`.
+- Exact approved requirements baseline / solution revision: this document at `SR-018` with `target-collaboration-contract.md` revision 5
+- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md` revision 6 (the user's decisions of 2026-11-11: TC-4 revised, TC-7, TC-8, TC-9, TC-10 revised, TC-11, DEC-011), SR-022. Revision 5 was approved at SR-018.
+- History: SR-001 … SR-003 were a smaller baseline (change only what Stop covers) and its design; the user replaced that direction at SR-004. Their IDs are kept below where the meaning is kept; `solution-revision-record.md` indexes the rounds.
+
+## Problem And Desired Outcome
+
+- Problem: a run that was delegated is stored and run as a part of another run (its "coordinating run", the top of the delegation chain), which hosts, idles, wakes and stops it. So stopping the Project Task Manager stopped every team working for it. The relationship is wrong in the data model and the code follows the data model.
+- Affected actors or systems: the user; every run that delegates and every delegated run; the Task side; run history and the run tree in the web client (also shown by the phone apps); stored run data.
+- Desired outcome: a delegated run is an ordinary run, related to the run that delegated it through its Task, as the contract defines. Each run owns its life; a Task owns the work. This ticket puts the contract in place for every kind of run that delegates (standalone agent runs, team runs, org runs), and nothing hosts another run afterwards (TC-4, revised by the user on 2026-11-11).
+- Observable definition of success: on an isolated instance, an agent delegates a long task; the user stops the delegating agent; the delegated run keeps running and finishes; its result wakes the delegator; closing the Task stops the delegated run; existing delegated runs of standalone runs keep working after the upgrade.
+
+## Relevant Current And Desired Behavior
+
+| Behavior ID | Kind | Related Scenario IDs | Evidence-Backed Current Behavior | Desired Behavior | Intentionally Preserved Behavior | Investigation Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| BEH-001 | User | SCN-001 | Stop of a standalone agent run stops every local run it (or anything below it) delegated to, then its own agent | Stop of a run stops that run only | History, conversation, resume by the next message | Notes BEH-001 (`Reproduced` at unit level) |
+| BEH-002 | User | SCN-002 | Stop of a team run or org run stops its members and every delegated run they started | Stop of a team run or org run stops its own members only (TC-1, TC-4 revised) | History, conversation, resume by the next message | Notes BEH-002 (`Read`) |
+| BEH-003 | System | SCN-003 | A message to a host that is not running makes it ready first; after a Stop no local delegated run is alive to send | A delegated run's message wakes its stopped delegator, once | Messages between running runs | Notes BEH-003 (`Read`) |
+| BEH-004 | User | SCN-004 | Stop of one delegated run also stops the runs it delegated to | That run only, whatever its kind (TC-1) | — | Notes BEH-004 (`Read`) |
+| BEH-005 | Contract | SCN-004 | Closing a Task stops its runs that have no other open Task; a closed run takes no input except its assigner's reactivation; runs of different Tasks cannot message each other | Unchanged | The whole behavior | Notes BEH-005 (`Read`) |
+| BEH-006 | Operational | SCN-007 | Shutdown ends everything; a run is restored by its next message; an update restart resumes busy runs but skips those of a stopped root | Unchanged, except that a busy delegated run is resumed after an update whether or not its delegator was stopped | Shutdown order; the update-restart rule | Notes BEH-006 (`Read`) |
+| BEH-007 | User | SCN-006 | Archive or delete of a run ends a still-loaded root and its children first; a deleted run's delegated runs keep their folders and are hidden ("detached") | Refused while a run it delegated to is working; its delegated runs are never deleted with it and are then listed as runs of their own (TC-2, TC-3) | Archive and delete of a run with no working delegated run | Notes BEH-007 (`Read`); contract §5 E6 |
+| BEH-008 | System | SCN-008 | A run delegated to a peer is an ordinary run there with `delegatedFrom`; it is not stopped with its delegator; its message restores the delegator | Unchanged; its stored back-link follows the contract (rename) | The whole behavior | Notes BEH-008 (`Read`) |
+| BEH-009 | User | SCN-005 | Opening a standalone run's collaboration view starts its own agent | Opening or watching never starts or resumes a run | Messages resume | Notes BEH-009 (`Read`) |
+| BEH-010 | Contract | SCN-009 | A local delegated run's file has a `taskAgent` section naming the top of the chain; the Task record has `hostRoot`; a remote one has `delegatedFrom` | The stored shapes of the contract (§2), for the runs this ticket reaches; existing data converted | Conversations, memory, message logs, Task records' content | Notes "Data-level validation" (`Measured`) |
+| BEH-011 | User | SCN-010 | A delegated run is shown only inside its coordinating run's view, with copy-only versions of Stop, model choice, files and conversation | A delegated run of a standalone run is an ordinary run: shown under the run that delegated it, and opened, watched, messaged, configured while stopped, archived and deleted like any run | What the user can do with it today | Contract §5–§6 |
+
+## Stakeholders, Actors, And Outcomes
+
+| Actor / Stakeholder | Goal Or Responsibility | Required Outcome | Important Constraint |
+| --- | --- | --- | --- |
+| The user | Stop, reconfigure and resume a coordinating run without losing delegated work; see the relationship | REQ-001 … REQ-007 | Simple rules; existing data keeps working |
+| A delegated run | Do its Task's work and report | Its report reaches its delegator | No change to agent tools or their texts |
+| The Task side | End a Task's work | Closing a Task stops its runs | Unchanged rules |
+| (Team runs and org runs are in this ticket since SR-017) | — | — | — |
+
+## Scope Guardrail (Mandatory)
+
+### In-Scope Use Cases
+
+| Use-Case ID | Use Case | Related Scenario IDs |
+| --- | --- | --- |
+| UC-001 | A standalone agent run (started by the user, or itself delegated) delegates to an Agent or an Agent Team on this node; the user stops, resumes, reconfigures either run | SCN-001, SCN-010 |
+| UC-002 | A delegated run messages its delegator, running or stopped; the delegator messages it | SCN-003 |
+| UC-003 | A Task is closed or reopened; a follow-up Task is given to the same run | SCN-004 |
+| UC-004 | The user watches delegated runs | SCN-005 |
+| UC-005 | The user archives or deletes a run that delegated | SCN-006 |
+| UC-006 | The server restarts | SCN-007 |
+| UC-007 | A delegation to or from a peer node | SCN-008 |
+| UC-008 | The app is upgraded with existing delegated runs | SCN-009 |
+
+### Out Of Scope
+
+- (Since SR-017 delegations made from team runs and org runs, and the removal of the hosting code, are in this ticket; follow-ups FU-003 … FU-005 are withdrawn.)
+- `autobyteus-460` (a running agent does not learn that a skill was added or removed).
+- Stop on Task closure across nodes, attachments to a peer, and the other remote steps named in `collaboration_model.md` § 4.
+- A Memory page view for runs whose delegating run was deleted (they are ordinary runs now).
+- A hard kill or power loss; a plain restart resuming busy runs.
+
+### Non-Goals
+
+- No "stop this run and everything it delegated" action (DEC-008). Closing the Task does that.
+- No new store, inbox or queue for messages.
+- No change to what an agent reads: tool names, parameters, results and collaboration texts. **Exception, approved by the user on 2026-11-11 (SR-035, ARCH-REV-009 AR-019):** the members of a delegated team address each other at their team's root, as in a team the user starts. `/code_reviewer` replaces `/software_engineering_team/code_reviewer`, in messages and in `get_handoff_rules`. The new addresses come from where every agent already gets addresses: `get_handoff_rules`, `list_available_agents` and message headers. An old prefixed address copied from an agent's conversation is refused with a correction that names the address to use ("… is no longer an address: your team is addressed from its own root. Use /code_reviewer."). Nothing is stored for it (SR-036; contract S24). (SR-037: `delegate_task` to the team's own definition stays refused, as in every run today, autobyteus-455 AC-006; only its text, inside a delegated team, becomes the own-definition refusal that teams the user starts already give.) Contract TC-12 and §5 (S2, S23, DL-11).
+
+### Preserved Behavior Boundary
+
+BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-008, REQ-009, REQ-010 and AC-005, AC-009, AC-012, AC-013.
+
+### Prerequisites
+
+| Prerequisite ID | Finding And Evidence | Blocks (REQ / AC IDs) | Sent To (agent) / Task Key | Status |
+| --- | --- | --- | --- | --- |
+| PRE-001 | A run's collaboration tree keeps an entry for every run it ever delegated to, also after the run's Task is closed, and grows for good. Evidence (read-only, the user's data, `investigation-notes.md` and `evidence/data-model-validation/task-record-validation-2026-11-10.txt`): the manager's tree has 145 entries, 134 of closed Tasks; loading the run also reads 143 own files of listed runs; of 196 delegated runs 170 belong only to closed Tasks; for all 170 the entry's facts are also in the Task's record or the run's own file. The user decided on 2026-11-10 to fix this first, on the current structure, and to return to this ticket afterwards ("let's first fix the problem regarding the collaboration tree which is constantly growing … and then after this problem is fixed we come back to this ticket again"). It is other functionality than this ticket's (which removes the hosting); this ticket's contract §11 and §12 are its rules | All (the user's ordering): this ticket's design is rebuilt on the result | `/project_task_manager`, 2026-11-10 (`handoff-waiting-for-prerequisite.md`); Task key: to be created | Sent Delivered: `827f1e68dc`, verified Terminal on 2026-11-11 |
+
+### Review Authority
+
+- Every blocking `Design Impact` or implementation-correction finding must cite an approved requirement, acceptance criterion, or preserved-behavior ID that it protects.
+- A finding that would introduce new product behavior, policy, threat model, migration obligation, compatibility promise, or operational contract is a `Requirement Gap`; it requires explicit user approval before becoming authoritative.
+- An adjacent concern outside the approved boundary may be recorded as a non-blocking risk, recommendation, or follow-up. It is not a required design correction, unless it is a prerequisite.
+- A downstream reviewer comment does not amend this requirements basis. The Solution Designer must update the canonical requirements and obtain renewed user approval before a scope-changing proposal can govern design or implementation.
+- The contract (`target-collaboration-contract.md`) is part of this basis: a design or implementation that needs a stored shape, word or rule it does not contain returns here.
+
+## Requirements
+
+| Requirement ID | Requirement | Related Behavior IDs | Priority / Criticality | Rationale | Feasibility Evidence | Source / Decision Reference |
+| --- | --- | --- | --- | --- | --- | --- |
+| REQ-001 | Stop of any run (a standalone agent run, a team run, an org run, or a delegated run of any kind) stops that run only: its own agent, or its own members. A run it delegated to, at any depth, on this node or a peer, keeps running. | BEH-001, BEH-002, BEH-004 | Critical | The user's decisions; contract P6, TC-1, TC-4 | N/A | Task 461 want 1; DEC-010; TC-1; TC-4 |
+| REQ-002 | A delegated run, whoever delegated it, is shown under the run that delegated it, once, with its real status and its own Stop, in the desktop and phone layouts. It is opened, watched, messaged, configured while stopped, archived and deleted like any run. A quiet delegated run is shut down after the idle grace period and woken by its next message. | BEH-011 | Critical | Contract P1, §5 | N/A | Contract; TC-3 |
+| REQ-003 | A message a delegated run sends to its stopped delegator wakes the delegator: it resumes with its conversation and receives the message once. It is never lost or refused because the delegator is stopped. The same holds for a message to a stopped or idle delegated run. | BEH-003 | Critical | The platform's standard rule | N/A | DEC-001 (the user) |
+| REQ-004 | Opening or watching a run, a delegated run or their conversations never starts or resumes a run. | BEH-009 | High | Otherwise watching undoes a Stop | N/A | Investigation BEH-009 |
+| REQ-005 | The Task rules are unchanged for every delegated run: closing a Task stops its runs that have no other open Task (assigned and sub-work); a closed run takes no input except its assigner's reactivation; reopening starts nothing; runs of different Tasks cannot message each other by run ID; a follow-up Task can be given to a run by its ID. | BEH-005 | Critical | Contract P5; the Task rules stay | N/A | Task 461 want 3; CM-6 |
+| REQ-006 | A stopped run's own settings are editable while the runs it delegated to work, and a stopped delegated run's settings are saved like any stopped run's. | BEH-001, BEH-011 | High | "Change the manager's configuration without losing the work"; TC-5 | N/A | Task 461; TC-5 |
+| REQ-007 | Archive and delete of a run are refused, with the reason shown to the user, while a run it delegated to is working. They never delete a delegated run. A delegated run whose delegating run was deleted is listed as a run of its own. | BEH-007 | High | TC-2, TC-3 | N/A | TC-2; TC-3 (the user) |
+| REQ-008 | Server shutdown and restart stay as today; after an update restart a busy delegated run is resumed whether or not its delegator was stopped, and a stopped run is not resumed. | BEH-006 | Medium | DEC-007 | N/A | Task 461 want 4 |
+| REQ-009 | Everything else a user or an agent can do today with a delegation, from a standalone run, a team run or an org run, keeps working: `delegate_task` to an address (described work and a saved Task) and to an existing run by its ID, with the same results and texts; the Project's folder and launch inheritance of a new delegated run; the launch notes; the Task page with each run's status and locator; a delegated run's files, conversation, context files and token usage, and the delegating run's token roll-up (standalone, team and org totals include the work of the runs delegated from them, as today); tool approval, interrupt, messages and Stop of a delegated run from the delegating run's view; `@` mentions; the restart notice. | BEH-011 | Critical | No regression | N/A | Preserved behavior |
+| REQ-010 | Unchanged: termination of an application-owned run by its application. Inside one team run or org run, its members keep working together as today (messages, handoff rules); only runs delegated from it become runs of their own. | BEH-002 | High | DEC-006; TC-4 revised | N/A | DEC-006; TC-4 (the user) |
+| REQ-011 | Stored data follows the contract (§2, §3) for every delegated run and for runs started by a peer; the Task record's sub-work role is `subWork`. Existing data is converted once at startup: nothing is lost, a run that cannot be converted is left intact and reported, and the app starts and stays usable. | BEH-010 | Critical | Contract P4, P7; `DESIGN.md` rules 7 and 10; Data Migration Guideline | N/A (no uncertain technology; the data check shows every stored run converts) | Contract; DEC-010 |
+| REQ-013 | A run delegated to a peer node is reached from this node by its own identity, like a delegated run on this node. Its Stop, messages, interrupts, stored conversation and live status in its delegator's view work whether or not its delegator is running. The delegator is not started and takes no part. Node B's checks are unchanged, and the peer protocol is unchanged except for two agent-scoped additions: a request for node B's agent stream snapshot, and an observation of that agent's numbered stream frames (SR-087, SR-088). Both nodes run the same release. | BEH-008, BEH-009 | High | A stopped delegator with working children is normal after this ticket. The user: a peer's task agent or team is "like the local task agent or agent team … shouldn't also go through the delegate" | Base: the peer channel is per node (`remote-run-channel.ts:125`); node B admits an owner command by the run's back-link (`remote-run-links.ts:144`) | The user's direction, 2026-11-12 (SR-066) |
+| REQ-014 | Every run tree is one view, built by the backend from the runs, the same for an agent, team and org run, started or delegated, on desktop and phone. Each row has its kind, name, address, depth, the target it opens, and its launch where Settings needs it. Every client displays it, opens rows through one path, and keeps only presentation state. The same row behaves the same in every view: a team row opens its coordinator. A delegated run has one name everywhere: the name of the slot it was delegated to (its delegation address, as its row shows it and as at base). That name is used in its row, its own view's header and context, the Task page and Settings. A run the user started keeps its definition's name (SR-091). A run's status is read from that run, by its run ID, everywhere it is shown. No client and no other run derives it. | BEH-009, BEH-011 | High | Client code rebuilding a run's facts kept producing defects (F-54 … F-73) | The backend builds every relationship (`DelegationIndex`, `CollaborationTree`) | The user's decisions, 2026-11-14 (SR-082) and 2026-11-15 (SR-084, reinstating the server-built tree) |
+| REQ-012 | `collaboration_model.md` and `GLOSSARY.md` carry the contract's words and rules, with a current-state table that says which delegating run kinds follow it. | BEH-010 | High | The canonical contract changes with the code | N/A | `DESIGN.md` project documents |
+
+## Acceptance Criteria
+
+| Acceptance-Criteria ID | Related Requirement IDs | Related Behavior / Scenario IDs | Preconditions / Trigger | Observable Expected Outcome | Important Alternate Or Failure Outcome | Verification Intent |
+| --- | --- | --- | --- | --- | --- | --- |
+| AC-001 | REQ-001, REQ-002 | BEH-001 / SCN-001 | A standalone agent delegated a long task to an Agent, and to a Team; the user stops the delegating agent | The delegating agent is stopped; the delegated run's turn is not interrupted; it stays running under the stopped run and finishes | A run delegated by a delegated agent run also keeps running | Isolated instance, real runtime; server tests |
+| AC-002 | REQ-003 | BEH-003 / SCN-003 | AC-001's state; the delegated run reports to the delegator by run ID, and by address | The delegator resumes with its conversation and the report is in it once | The send is accepted | Isolated instance; server tests |
+| AC-003 | REQ-003, REQ-009 | SCN-003 | The user resumes the stopped delegator with a message | It resumes; it messages its delegated runs by run ID (waking an idle one) and receives their later messages | — | Isolated instance |
+| AC-004 | REQ-001 | BEH-004 / SCN-004 | A delegated agent run A of a standalone run delegated to B; the user stops A | A stops; B keeps running; B's report wakes A | — | Server tests; isolated instance |
+| AC-005 | REQ-005 | BEH-005 / SCN-004 | The Task of a delegated run is closed while the delegator is stopped, and while it runs | The run stops and shows as closed; a message to it is refused with the closed-Task text; after the Task is reopened the assigner's message continues it, a sub-work run stays closed | A follow-up Task given by run ID reopens its record as today | Server tests; isolated instance for close |
+| AC-006 | REQ-001 | BEH-002 / SCN-002 | A member of a team run, and an agent of an org run, delegated a long task; the user stops that team run or org run | The delegated run keeps running and finishes; its report wakes the stopped run; closing the Task stops the delegated run | The delegated run reports while the team run is stopped: the team run is restored and the member gets the message once | Server tests per kind; isolated instance |
+| AC-007 | REQ-004 | BEH-009 / SCN-005 | A stopped run with a running delegated run; the user opens both and the delegated run's conversation, desktop and phone layout | Live output of the delegated run; the stopped run stays stopped | A message to the delegated run wakes only it | Web tests; isolated instance |
+| AC-008 | REQ-007, REQ-013 | BEH-007 / SCN-006 | The user archives or deletes a run whose delegated run is working, on this node or on a peer; then when none is working | Refused, and the reason is shown; then it succeeds, the delegated runs' folders stay, and each is listed as a run of its own. After a delete, a delegated run no longer reaches the deleted run's agents (SR-067) | — | Server and web tests; isolated instance |
+| AC-009 | REQ-008 | BEH-006 / SCN-007 | Shutdown and start with a stopped run and its delegated runs | Plain restart: each run offline with its conversation, continued by its next message. Update restart: a busy delegated run gets the restart notice; the stopped delegator does not | — | Server tests |
+| AC-010 | REQ-006 | SCN-001 | A stopped run with a running delegated run: the user saves its model; a stopped delegated run: the user saves its model | Both saved and used at the next start; no run is interrupted | — | Server tests; isolated instance |
+| AC-011 | REQ-001, REQ-011 | BEH-008 / SCN-008 | A delegation to a peer; a run started by a peer on this node | As today; the peer-started run's file carries `delegatedFrom.delegatingRun` | — | Server tests; two nodes where available, otherwise stated as read |
+| AC-012 | REQ-009, REQ-010 | SCN-010 | The preserved operations of REQ-009, for delegations from every kind of run; an application-owned run is terminated by its application | REQ-009's list works; the application's termination is unchanged | — | Existing tests adapted or green; isolated instance for delegate, Task page, files |
+| AC-013 | REQ-002 | SCN-010 | A delegated run becomes quiet | Shut down after the grace period; woken by its next message | A run waiting for tool approval or with a background task is not shut down | Server tests |
+| AC-014 | REQ-011 | BEH-010 / SCN-009 | Start on a data folder holding every existing shape of the contract's §5 that this ticket converts | Each run has the contract's shape; conversations, logs, Task records and links are intact; a second start changes nothing; an unreadable run is left as it was and reported while every other run is converted | The app starts in every case | Migration tests on small hand-built data of each shape (Data Migration Guideline); isolated instance started on such data |
+| AC-016 | REQ-013 | BEH-008 / SCN-008 | A standalone agent, a team member and an org agent each delegated to an Agent and to a Team on a peer node. The user stops the delegator and keeps its view open | The peer child's row shows its live status. Its Stop, a message and an interrupt reach it on its node. Its stored conversation opens. The delegator stays stopped | The peer node is offline: "Couldn't reach {node}.", as today. A command for a run whose back-link doesn't name this node is refused by node B | Server tests; two nodes where available, otherwise stated as read |
+| AC-017 | REQ-014 | BEH-009 / SCN-005 | Agent, team and org runs, each with local and peer delegated runs at two depths, delegator running and stopped, desktop and phone | Every view shows the same rows for the same tree, and every row opens its own run (a team row opens its coordinator). Each row's status, and the Task card's and Settings' liveness, is the run's own: a running run under a stopped delegator shows running and can be saved only when stopped itself. Opening a stopped team requests the focused member's data once | A run's status change reaches every view showing it, without a reload | Web and server tests; API/E2E browser suites (desktop, phone), the server view suites, the Task card, Settings, the peer suite |
+| AC-015 | REQ-012 | BEH-010 | — | The two documents state the contract and the current state by delegating run kind | — | Document review |
+
+## Relevant Scenarios And Journeys
+
+| Scenario ID | Kind | Actor / Initiator / Governing Contract | Coherent Goal Or Governing Event | Supported Trigger / Entry Surface | Starting Condition | Product-Level Steps Or Event Sequence | Expected Outcome | Supported Alternate / Error Behavior | Scenario Validity | Independent Evidence / Decision Reference | Related Requirement / AC IDs |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SCN-001 | User | The user | Stop a coordinating agent without losing delegated work | Stop on a standalone agent run | It delegated runs that are working | Stop → the agent stops → the delegated runs keep working → the user edits settings or sends a message → the run resumes | Delegated runs were never interrupted | — | Supported Normal Scenario | Task 461 (the real case) | REQ-001, REQ-006 / AC-001, AC-010 |
+| SCN-002 | User | The user | The same for a team run or org run | Stop on that run | A member delegated a run | Its own members stop; the delegated run keeps working | REQ-001 | — | Supported Normal Scenario | TC-4 revised (the user, 2026-11-11) | REQ-001 / AC-006 |
+| SCN-003 | System | A delegated run; a delegator | Report, ask, answer | `send_message_to` by run ID or address | The receiver is stopped, idle or running | The message is delivered; a receiver that is not running is restored first | The receiver has the message once | Closed Task: refused with the Task text | Supported Normal Scenario | Task 461 want 2; DEC-001 | REQ-003 / AC-002, AC-003 |
+| SCN-004 | User / Contract | The user; an agent with `update_task` | Stop one run; end or continue a Task's work | Stop on a delegated run; `update_task`; `delegate_task` with a run ID | Any | As REQ-001 and REQ-005 | — | — | Supported Normal Scenario | Task 461 want 3; TC-1 | REQ-001, REQ-005 / AC-004, AC-005 |
+| SCN-005 | User | The user | Watch delegated work | Selecting a run or a delegated run in the run tree | The delegating run is stopped | Open → read live output | Nothing starts | — | Supported Normal Scenario | Investigation BEH-009 | REQ-004 / AC-007 |
+| SCN-006 | User | The user | Archive or delete a run | Archive / Delete | It delegated runs | Refused while one works; else done, and the delegated runs become runs of their own | — | — | Supported Explicit Edge Scenario | TC-2, TC-3 | REQ-007 / AC-008 |
+| SCN-007 | Operational | The node | Shutdown, restart, update restart | Quit, Restart server, update | Runs and delegated runs exist | Everything ends → next start | REQ-008 | — | Supported Normal Scenario | Task 461 want 4 | REQ-008 / AC-009 |
+| SCN-008 | System | Two nodes | Delegation across nodes | `delegate_task` with `node`; a peer's delegation | Remote collaboration on | As today | — | — | Supported Normal Scenario | CM-10, CM-11 | REQ-001, REQ-011 / AC-011 |
+| SCN-009 | Operational | The node | Upgrade | First start of the new release | Existing delegated runs | Startup migration → normal use | REQ-011 | A run that cannot be converted is left and reported | Supported Normal Scenario | Data Migration Guideline; contract §5 | REQ-011 / AC-014 |
+| SCN-010 | User | The user | Work with a delegated run as a run | The run tree, Settings, the Task page | A standalone run delegated | Open, message, stop, resume, configure, archive, delete the delegated run | REQ-002, REQ-009 | — | Supported Normal Scenario | Contract §5; the user ("a normal run … start it, stop it like any other") | REQ-002, REQ-009 / AC-012, AC-013 |
+
+## UI, Interaction, And Experience Requirements
+
+- Applicable: `Yes` (existing surfaces)
+- Linked UI/UX or interaction supplement: N/A — not applicable
+- Linked runnable UI reference, separate design repository/root, UI/UX specification, and applicable support artifacts: N/A — not applicable
+- Product ticket record and folder (externally owned): N/A — not applicable
+- Design repository revision or commit: N/A — not applicable
+- UI/UX user-confirmation reference: N/A — not applicable
+- Approved visual-reference baseline: N/A — not applicable
+- Normative visual and interaction details, including the approved final references: the run tree keeps its shape: a delegated run is a row under the run that delegated it, with its status and its own Stop; it is not listed a second time among the top-level runs unless its delegating run was deleted. No new screen.
+- Explicitly illustrative fixture content or permitted implementation variation: N/A
+- Required screens, states, transitions, feedback, responsive behavior, or accessibility outcomes: a stopped run with running delegated runs; the refusal of archive and delete with its reason; a delegated run listed as a run of its own after its delegating run was deleted.
+- Product decisions that need the user (with reasoning and recommendation): none open.
+
+## Quality And Non-Functional Requirements
+
+| Quality ID | Related Requirement / AC IDs | Area | Measurable Requirement Or Constraint | Conditions / Scope | Verification Intent |
+| --- | --- | --- | --- | --- | --- |
+| QR-001 | REQ-001 / AC-001 | Reliability | A delegated run's running turn is not interrupted by its delegator's Stop | Every agent runtime | Server tests on the shared path; one real runtime |
+| QR-002 | REQ-003 / AC-002 | Reliability | A message between a run and its delegated run is delivered exactly once and stored in both runs' logs | Local and remote | Server tests |
+| QR-003 | REQ-011 / AC-014 | Reliability | The migration never prevents startup and never deletes data | Every existing shape; a stop in the middle | Migration tests; a second start is a no-op |
+| QR-004 | REQ-002 | Performance | Opening a run that delegated reads its links, not the content of every run it delegated to | The user's hub: one run with 144 links | A work-count check in a server test (reads per open) |
+
+## Data Continuity And Acceptable Loss
+
+- Persisted or external data affected: `Yes`
+- Data or state that must be preserved: every run's conversation, memory, message logs, files; every link; every Task record's content
+- Loss, reset, rebuild, or regeneration that is acceptable: none
+- Retention, privacy, compliance, volume, downtime, or operational constraints: the user's data today: 196 delegated runs, 197 links, 407 Task records; no downgrade after the migration, as in any upgrade that changes stored data
+- Unknowns requiring downstream investigation: none open in the requirements; the design's "Readers Of Removed Or Renamed Fields" is confirmed file by file in implementation
+
+## External Contracts And Dependencies
+
+| Contract / Dependency | Required Behavior Or Constraint | Evidence / Authority | Uncertainty Or Risk |
+| --- | --- | --- | --- |
+| Collaboration Model, Glossary | Updated to the contract in the same change | `DESIGN.md` | None |
+| Data Migration Guideline | Governs the migration | `autobyteus-server-ts/docs/design/data_migration_guideline.md` | Released migrations whose partial states the migration must preserve (design DS-10) |
+| The peer protocol between nodes | Both nodes run the same release (`DESIGN.md` rule 9); a renamed wire field is a clean cut | `DESIGN.md` | None |
+
+## Supplemental Artifacts
+
+| Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
+| --- | --- | --- | --- | --- |
+| `target-collaboration-contract.md` | The contract: words, rules, records with example JSON, cases, attribute check, existing data, communication, simulations, decisions | All | Revision 5, approved (TC-1 … TC-10, DEC-011 decided) | Behavior-defining; approved by the user, 2026-11-11 (SR-018) |
+| `evidence/data-model-validation/validate_delegation_shapes.py`, `counts-2026-11-10.txt` | The read-only data check | REQ-011 | Current | Evidence |
+| `follow-ups.md` | FU-002 (open); FU-003 … FU-005 withdrawn (now in scope) | — | Current | Not behavior-defining |
+
+## Assumptions
+
+| Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
+| --- | --- | --- | --- | --- |
+| ASM-001 | An application-owned run's termination by its application is not the user's Stop | REQ-010 | Solution Designer | Accepted |
+| ASM-003 | A delegated run can run under its own root with the features of REQ-009, as a run started by a peer already runs under its own root | REQ-002, REQ-009 | Investigation notes F-2, F-3 and "Re-investigation after autobyteus-469"; the design's spines DS-1 … DS-11 and its "Earlier Review Findings" table | Confirmed by reading; to be proven by implementation |
+
+## Decisions
+
+| Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| DEC-001 | A message to a stopped delegator | Visible behavior | Wake / hold | Wake: the platform's standard rule | The user | Decided, 2026-11-10 |
+| DEC-004 | Archive or delete of a run whose delegated runs work | Running work | Refuse / stop / detach | Refuse with the reason (contract TC-2) | Solution Designer | Decided |
+| DEC-006 | Application-owned runs | Other callers of Stop | Same / unchanged | Unchanged | Solution Designer | Decided |
+| DEC-007 | Server shutdown and restart | The Task leaves it to the team | Keep / change | Keep, with the update-restart addition | Solution Designer | Decided |
+| DEC-008 | A one-click "stop this run and all it delegated" | Today's Stop did that | Add / no | No; closing the Task does it | Solution Designer | Decided |
+| DEC-011 | Which messages by run ID and by address exist between two runs? | Without hosting, every route must exist on purpose (architecture review AR-002) | A: links only / B: links and the Task / **centered on the Task with today's reach** | **Centered on the Task** (contract §10): two runs may talk when they work on one open Task, or one is the run that assigned the other's Task; by address, the sender's team, then the standing agents of the run that assigned its Task. Validated on 1,604 stored messages: 1,540 as today; the 64 others involve the 15 legacy runs; none newly allowed | The user | **Decided by the user, 2026-11-11** ("the routing strategy will be centered around the task itself"; "let's go with this approach") |
+| DEC-010 | Change what Stop covers, or correct the structure | The cause | SR-003 design / the contract | The structure, in this ticket | The user | Decided, 2026-11-10 |
+| TC-1 … TC-6 | See the contract §9 | — | — | — | The user (TC-1, TC-3, TC-4, TC-6); Solution Designer (TC-2, TC-5) | Decided |
+| DEC-002, DEC-003, DEC-005, DEC-009 | Earlier scope and cascade decisions | — | — | Superseded by DEC-010, TC-1, TC-3, TC-4 (history in `solution-revision-record.md`) | — | Superseded |
+
+## Traceability
+
+| Requirement ID | Use-Case IDs | Behavior IDs | Acceptance-Criteria IDs | Scenario IDs | Supplemental / Product Design Evidence |
+| --- | --- | --- | --- | --- | --- |
+| REQ-001 | UC-001, UC-007 | BEH-001, BEH-004 | AC-001, AC-004, AC-011 | SCN-001, SCN-004, SCN-008 | Contract P6, TC-1 |
+| REQ-002 | UC-001, UC-004 | BEH-011 | AC-001, AC-013 | SCN-010 | Contract P1 |
+| REQ-003 | UC-002 | BEH-003 | AC-002, AC-003 | SCN-003 | Contract §6 |
+| REQ-004 | UC-004 | BEH-009 | AC-007 | SCN-005 | — |
+| REQ-005 | UC-003 | BEH-005 | AC-005 | SCN-004 | Contract P5 |
+| REQ-006 | UC-001 | BEH-001, BEH-011 | AC-010 | SCN-001 | Contract TC-5 |
+| REQ-007 | UC-005 | BEH-007 | AC-008 | SCN-006 | Contract TC-2, TC-3 |
+| REQ-008 | UC-006 | BEH-006 | AC-009 | SCN-007 | — |
+| REQ-009 | UC-001, UC-003 | BEH-011 | AC-003, AC-012 | SCN-010 | — |
+| REQ-010 | UC-001 | BEH-002 | AC-012 | SCN-002 | Contract TC-4 |
+| REQ-011 | UC-007, UC-008 | BEH-008, BEH-010 | AC-011, AC-014 | SCN-008, SCN-009 | Contract §2, §3, §5 |
+| REQ-012 | UC-008 | BEH-010 | AC-015 | SCN-009 | Contract |
+
+## Architecture Phase Input
+
+- Approved scenario IDs and product-level behavior paths architecture must map: SCN-001 … SCN-010.
+- Product and system constraints architecture must preserve: the Preserved Behavior Boundary; the contract; `DESIGN.md` (smallest solution; no speculative machinery; rule 7 containment; rule 10 stored names); the Data Migration Guideline.
+- Decisions intentionally deferred to architecture design: how each run kind runs under its own root with REQ-009's features; the route of a message between two runs; the Task side without a host; the migration; the client's views.
+- Technical facts architecture should verify: the readers of the removed and renamed fields; ASM-003.
+- Known feasibility or integration risks: REQ-009 is a wide surface; a part of it may prove to depend on hosting in a way that needs a decision.
+
+## Readiness Check
+
+### Content Ready For Approval
+
+- Relevant current behavior is evidence-backed: `Yes`
+- Desired and preserved behavior are explicit: `Yes`
+- Scope and non-goals are clear: `Yes`
+- Requirements and acceptance criteria are testable and traceable: `Yes`
+- Applicable scenarios are covered with validity and evidence: `Yes`
+- Product design and supplemental evidence is integrated consistently: `Yes`
+- Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
+- Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
+- Content ready for approval: `Yes`
+- Remaining content blocker: none
+
+### Approved Basis Ready For Design
+
+- Approval recorded (the user's, or yours within the direction with the user informed): `Yes` (the user, SR-018)
+- Exact requirements and supplement approval basis recorded: `Yes`
+- Approved requirements package ready for architecture design: `Yes`
+- Remaining blocker: none

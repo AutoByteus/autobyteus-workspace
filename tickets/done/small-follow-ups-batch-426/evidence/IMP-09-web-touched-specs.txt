@@ -1,0 +1,35 @@
+# IMP-09 web specs touched since base (this ticket and the merged 427 specs)
+# Command: pnpm -C autobyteus-web exec vitest run <every *.spec.ts / *.test.ts in git diff 6225a734a3 HEAD, tests/e2e excluded>
+# Commit: b1d92c7ced
+# Environment: macOS, Node v22.23.1; 2026-11-07
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts (15 tests) 192ms
+ ✓ tests/integration/localization-boundary-guard.integration.test.ts (8 tests) 410ms
+ ✓ components/settings/phone/__tests__/PhonesPanel.spec.ts (10 tests) 221ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (59 tests) 428ms
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts (12 tests) 162ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts (2 tests) 254ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 270ms
+ ✓ components/layout/__tests__/WorkspaceToolShell.spec.ts (15 tests) 507ms
+ ✓ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests) 1325ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  649ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: true  643ms
+ ✓ components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts (8 tests) 67ms
+ ✓ __tests__/app.spec.ts (8 tests) 34ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts (4 tests) 43ms
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts (7 tests) 72ms
+ ✓ components/progress/__tests__/SystemInstructionActivityItem.spec.ts (2 tests) 29ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (13 tests) 93ms
+ ✓ components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (4 tests) 64ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (24 tests) 40ms
+ ✓ composables/runHistory/__tests__/useRunHistorySectionLoad.spec.ts (7 tests) 15ms
+ ✓ composables/__tests__/useVncSession.spec.ts (27 tests) 13ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (10 tests) 19ms
+ ✓ utils/remoteAccess/__tests__/remoteAccessReadRefusal.spec.ts (4 tests) 2ms
+ ✓ stores/__tests__/runHistorySelectionActions.spec.ts (9 tests) 8ms
+ ✓ utils/phoneAccess/__tests__/phoneSetupTextKey.spec.ts (3 tests) 3ms
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts (5 tests) 9ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts (6 tests) 8ms
+ ✓ stores/__tests__/mobileNodeSessionStore.recordCheckOutcome.spec.ts (2 tests) 2ms
+ ✓ utils/workspace/__tests__/workspacePathRefusal.spec.ts (2 tests) 2ms
+ Test Files  27 passed (27)
+      Tests  285 passed (285)

@@ -13,6 +13,8 @@ import {
 import { SkillService } from "../../../skills/services/skill-service.js";
 import type { Skill as SkillModel } from "../../../skills/domain/models.js";
 import { withSkillNameConflictMapping } from "../errors/skill-name-conflict-graphql-error.js";
+import { getIntegrationCatalog } from "../../../credential-proxy/integration-catalog.js";
+import fs from "node:fs";
 
 @ObjectType()
 export class Skill {
@@ -42,6 +44,10 @@ export class Skill {
 
   @Field(() => String, { nullable: true })
   updatedAt?: string | null;
+
+  /** The ID of the imported integration whose folder holds this skill, for the "Integration" label; else null. */
+  @Field(() => String, { nullable: true })
+  integrationId?: string | null;
 }
 
 @InputType()
@@ -146,6 +152,20 @@ const decodeFileContent = (content: Buffer): string => {
   return content.toString("latin1");
 };
 
+const realPath = (target: string): string => {
+  try {
+    return fs.realpathSync(target);
+  } catch {
+    return target;
+  }
+};
+
+/** A skill mapper over one read of the integration catalog (the catalog owns which skill is an integration's, P11). */
+const skillMapper = (): ((skill: SkillModel) => Skill) => {
+  const integrationIds = getIntegrationCatalog().integrationIdsBySkillRoot();
+  return (skill) => ({ ...mapSkill(skill), integrationId: integrationIds.get(realPath(skill.rootPath)) ?? null });
+};
+
 const mapSkill = (skill: SkillModel): Skill => ({
   name: skill.name,
   description: skill.description,
@@ -170,7 +190,7 @@ export class SkillResolver {
   @Query(() => [Skill])
   skills(): Skill[] {
     const service = SkillService.getInstance();
-    return service.listSkills().map(mapSkill);
+    return service.listSkills().map(skillMapper());
   }
 
   @Query(() => Skill, { nullable: true })
@@ -180,7 +200,7 @@ export class SkillResolver {
     if (!skill) {
       return null;
     }
-    return mapSkill(skill);
+    return skillMapper()(skill);
   }
 
   @Query(() => String, { nullable: true })
@@ -228,14 +248,14 @@ export class SkillResolver {
   createSkill(@Arg("input", () => CreateSkillInput) input: CreateSkillInput): Promise<Skill> {
     const service = SkillService.getInstance();
     return withSkillNameConflictMapping(() =>
-      mapSkill(service.createSkill(input.name, input.description, input.content)));
+      skillMapper()(service.createSkill(input.name, input.description, input.content)));
   }
 
   @Mutation(() => Skill)
   updateSkill(@Arg("input", () => UpdateSkillInput) input: UpdateSkillInput): Skill {
     const service = SkillService.getInstance();
     const skill = service.updateSkill(input.name, input.description ?? null, input.content ?? null);
-    return mapSkill(skill);
+    return skillMapper()(skill);
   }
 
   @Mutation(() => DeleteSkillResult)
@@ -279,14 +299,14 @@ export class SkillResolver {
   disableSkill(@Arg("name", () => String) name: string): Skill {
     const service = SkillService.getInstance();
     const skill = service.disableSkill(name);
-    return mapSkill(skill);
+    return skillMapper()(skill);
   }
 
   @Mutation(() => Skill)
   enableSkill(@Arg("name", () => String) name: string): Skill {
     const service = SkillService.getInstance();
     const skill = service.enableSkill(name);
-    return mapSkill(skill);
+    return skillMapper()(skill);
   }
 
   @Mutation(() => SkillCatalogReloadResult)
@@ -295,7 +315,7 @@ export class SkillResolver {
     const result = service.reloadSkillCatalog();
 
     return {
-      skills: result.map(mapSkill),
+      skills: result.map(skillMapper()),
       skillSources: SkillSourceService.getInstance().getSkillSources().map(mapSkillSource),
       skillSourceRegistryError: SkillSourceService.getInstance().getRegistryError(),
     };
@@ -304,13 +324,14 @@ export class SkillResolver {
   @Mutation(() => [SkillSource])
   addSkillSource(@Arg("path", () => String) pathValue: string): Promise<SkillSource[]> {
     const service = SkillSourceService.getInstance();
-    return withSkillNameConflictMapping(() => service.addSkillSource(pathValue).map(mapSkillSource));
+    return withSkillNameConflictMapping(async () => (await service.addSkillSource(pathValue)).map(mapSkillSource));
   }
 
+  /** Unlinks a local folder; the connections of its integrations go first (DEC-015), and a failure refuses it. */
   @Mutation(() => [SkillSource])
-  removeSkillSource(@Arg("path", () => String) pathValue: string): SkillSource[] {
+  async removeSkillSource(@Arg("path", () => String) pathValue: string): Promise<SkillSource[]> {
     const service = SkillSourceService.getInstance();
-    return service.removeSkillSource(pathValue).map(mapSkillSource);
+    return (await service.removeSkillSource(pathValue)).map(mapSkillSource);
   }
   @Query(() => String, { nullable: true })
   skillSourceRegistryError(): string | null { return SkillSourceService.getInstance().getRegistryError(); }

@@ -1,7 +1,8 @@
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   AcpCompactionPhase,
   AcpCompactionStatusInput,
-  AcpExtEffect,
+  AcpSessionEffect,
 } from "../acp/acp-agent-session-profile.js";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -37,7 +38,7 @@ const SOURCE_SURFACES: Readonly<Record<AcpCompactionStatusInput["phase"], string
 export const interpretGrokCompactionUpdate = (
   update: Record<string, unknown>,
   params: Record<string, unknown>,
-): AcpExtEffect | null => {
+): AcpSessionEffect | null => {
   const phase = typeof update.sessionUpdate === "string" ? GROK_COMPACTION_PHASES[update.sessionUpdate] : undefined;
   if (!phase) return null;
   const meta = isRecord(params._meta) ? params._meta : null;
@@ -48,7 +49,7 @@ export const interpretGrokCompactionUpdate = (
 export const buildGrokBuildCompactionStatusPayload = (input: AcpCompactionStatusInput): Record<string, unknown> => {
   const base = {
     kind: "provider_compaction_boundary",
-    runtime_kind: "GROK_BUILD",
+    runtime_kind: RuntimeKind.GROK_BUILD,
     provider: "grok",
     source_surface: SOURCE_SURFACES[input.phase],
     provider_session_id: input.sessionId,

@@ -46,6 +46,16 @@
         <div class="error-icon">❌</div>
         <h2 class="text-xl font-semibold mt-4 text-red-600">{{ $t('server.components.server.ServerLoading.application_error') }}</h2>
         <p class="text-gray-800 mt-2">{{ serverStore.userFriendlyError }}</p>
+        <section v-if="conflict" class="mt-4 text-left text-gray-800 break-words" role="alert">
+          <ul v-if="conflict.owners.length" class="list-disc pl-5">
+            <li v-for="owner in conflict.owners" :key="owner.pid" class="break-all">
+              {{ $t('server.conflict.owner', { pid: owner.pid, executable: owner.executable || $t('server.conflict.unknownName') }) }}
+            </li>
+          </ul>
+          <p v-else>{{ $t('server.conflict.unavailable') }}</p>
+          <p class="mt-3">{{ $t('server.conflict.guidance') }}</p>
+          <p class="mt-3">{{ $t('server.conflict.noReset') }}</p>
+        </section>
         
         <div v-if="showDetails && serverStore.errorMessage" class="technical-details mt-4">
           <p class="text-gray-600 text-sm">Technical details: {{ serverStore.errorMessage }}</p>
@@ -76,7 +86,7 @@
         </div>
         
         <!-- Advanced Recovery Options -->
-        <div class="mt-4">
+        <div v-if="!conflict" class="mt-4">
           <button @click="showRecoveryOptions = !showRecoveryOptions" class="text-sm text-gray-600 hover:text-gray-800">
             {{ showRecoveryOptions ? 'Hide' : 'Show' }} Advanced Recovery Options
           </button>
@@ -100,13 +110,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useServerStore } from '~/stores/serverStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
 // Use the server store
 const serverStore = useServerStore()
 const windowNodeContextStore = useWindowNodeContextStore()
+const conflict = computed(() => serverStore.diagnostic?.kind === 'port-conflict' ? serverStore.diagnostic : null)
 
 // Toggle for showing technical details
 const showDetails = ref(false)
@@ -187,6 +198,7 @@ onBeforeUnmount(() => {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  overflow-y: auto;
 }
 
 .server-loading-content {
@@ -197,6 +209,8 @@ onBeforeUnmount(() => {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 90%;
   width: 30rem;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .spinner {

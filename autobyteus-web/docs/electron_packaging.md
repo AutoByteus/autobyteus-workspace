@@ -119,6 +119,73 @@ Key features:
 - **Validation**: Checks for required server files before starting
 - **Port waiting**: Ensures port is free before binding
 
+### Backend port conflict recovery
+
+An occupied required backend endpoint produces a structured `port-conflict`
+diagnostic: port, inspection status, observation time, and current PID/executable
+identity where available. Owner lookup is bounded and advisory; denied, missing
+or racing inspection does not invent an owner. Full command arguments are not
+used as the default identity display. Non-address startup failures keep their
+own diagnosis.
+
+The default error surface shows the conflict and safe recovery without opening
+technical details. Restart Server controls only this application's managed
+backend; it cannot release another application's listener. Verify the other
+application, stop or reconfigure it independently, then retry. Resetting server
+data does not free a port and is not offered as conflict recovery. Retrying
+while the external owner remains leaves it untouched; a healthy retry clears
+the stale diagnostic. Port-owner information never authorizes automatic kills.
+
+ERROR is a stopped state. While the server is in ERROR, `checkServerHealth()`
+answers `error` / "Server is not running" (not the STARTING-era "still
+starting"). The renderer's fallback health poller (`serverStore`) calls health
+only in STARTING and RESTARTING and stops once RUNNING; its timer ticks idle in
+any other status. Entering ERROR also clears the stale health text. Restart
+Server moves the status to RESTARTING, which resumes the poll until RUNNING.
+
+### Confirmed backend and application shutdown
+
+Each managed backend child has a `ManagedBackendShutdownClient` bound to that
+captured child and the versioned `autobyteus.embedded-server.shutdown.v1`
+ready/request/complete/failed protocol. Capability readiness is separate from
+HTTP health. Graceful stop requests the backend's shared close owner, including
+startup cancellation; success requires a complete result and exit code zero,
+not merely signal delivery or pipe EOF. Missing/failed acknowledgement,
+disconnection and forced fallback remain incomplete cleanup, not clean success.
+Windows uses this application request before its bounded captured-child force
+fallback, so taskkill alone is not treated as graceful host cleanup.
+
+The desktop waits up to 20 s for the server to exit; the server bounds its own
+cleanup at 10 s and then sweeps the processes it started, so a busy quit
+normally ends within seconds. Client connections do not hold the server's
+close: one that never sent a request is closed at once, and a request in
+progress gets up to 2 s to finish (see the server's `agent_execution.md`).
+Only when the server does not exit in that window does the force step run. On macOS/Linux it stops the server's whole tree, not
+the server alone (`BaseServerManager.forceStop`, `serverProcessTree.ts`): it
+reads the process table asynchronously (2 s timeout) and records the server's
+descendants in its process group and the groups they lead, sends them SIGTERM
+(runtime CLIs end their own tool commands on SIGTERM, not on SIGKILL or EOF),
+SIGKILLs the server, and after up to 1.5 s SIGKILLs the recorded survivors. The
+2 s exit confirmation is unchanged. Windows keeps `taskkill /pid <pid> /f /t`.
+
+`ApplicationShutdown` prevents normal `will-quit` completion until shared
+resource cleanup finishes, with a 30-second application deadline and log flush.
+Repeated quit requests share the work; the updater's explicit installation path
+uses the same preparation. Backend restart and application quit drain the host's
+owned native command scope, including work retained after an agent ends;
+provider shutdown remains provider-owned. Ordinary agent stop does not acquire
+a new preview-killing policy. Failures are reported instead of declared clean.
+
+"Install update and restart" prepares with the same stop
+(`ElectronApplication.prepareForInstall`). When that stop is incomplete but the
+server process is confirmed gone (`BaseServerManager.isServerProcessGone()`: no
+server process, or it has an exit code or signal), the incomplete stop is still
+logged as "Application shutdown incomplete", and
+`ApplicationShutdown.acceptIncompleteStopForInstall()` lets `will-quit` pass, so
+the update installs and the app restarts. Only when the server's exit is not
+confirmed does the install stop with the existing error. A normal quit after an
+incomplete stop still ends with `app.exit(1)`.
+
 ### Delayed startup is informational
 
 Startup calls share one pending attempt, including port preflight. After 100 seconds
@@ -159,7 +226,7 @@ Bridges server events to the renderer process:
 // Events emitted to renderer via IPC
 interface ServerStatusEvent {
   status: "starting" | "running" | "error" | "restarting" | "shutting-down";
-  urls: { graphql; rest; ws; transcription; health };
+  urls: { graphql; rest; ws; health };
   message?: string;
   healthCheckStatus?: string;
 }
@@ -496,26 +563,34 @@ ownership before changing the pin.
 ### Build Commands
 
 ```bash
-# Build for current platform
-npx ts-node build/scripts/build.ts
+# Build for the current platform (run from the repository root)
+pnpm -C autobyteus-web build:electron:mac        # macOS
+pnpm -C autobyteus-web build:electron:linux      # Linux (host architecture)
+pnpm -C autobyteus-web build:electron:windows    # Windows
 
-# Build for specific platform
-npx ts-node build/scripts/build.ts --linux
-npx ts-node build/scripts/build.ts --linux --x64
-npx ts-node build/scripts/build.ts --linux --arm64
-npx ts-node build/scripts/build.ts --windows
-npx ts-node build/scripts/build.ts --mac
+# Build for a specific Linux architecture
+pnpm -C autobyteus-web build:electron:linux:x64
+pnpm -C autobyteus-web build:electron:linux:arm64
 
 # Build for all platforms. The Linux target uses the native Linux host architecture
-# and fails if a Linux package is requested from a non-Linux host.
-npx ts-node build/scripts/build.ts
+# and fails if a Linux package is requested from a non-Linux host, so run it on Linux.
+pnpm -C autobyteus-web build:electron
 ```
+
+Each script runs the boundary guards, the web type check (`pnpm typecheck`, which first builds
+`@autobyteus/application-sdk-contracts`, so it needs no earlier build; see the Web typecheck layer in
+[TESTING.md](../../TESTING.md#test-layers)), `prepare-server`, `generate:electron` and `transpile-electron`, compiles
+`build/tsconfig.json`, then runs `build/dist/build.js` (the platform flag is passed to it). A type error in a
+production file, or test-file errors that no longer match `typecheck-baseline.json`, stop the build. The packaged
+Electron harness (`pnpm test:e2e:electron`) builds the current host with the matching script.
 
 The package keeps the ordinary `AutoByteus` product name, app ID, signing
 configuration, and release/update channel in both runtime profiles. E2E values
 are launch inputs; there is no separate E2E artifact or artifact naming scheme.
 
 `scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime. Native rebuilds use the direct `@electron/rebuild` dev dependency, exposed through the `electron-rebuild` CLI, and the scripts fail if that workspace-provided CLI is unavailable. Do not add a `pnpm dlx electron-rebuild` fallback: ad-hoc fallback installs can resolve a rebuild stack that is not reviewed with the pinned Electron ABI.
+The server package holds runtime content only: `autobyteus-server-ts/package.json` `files` lists `dist`, `prisma` and `application-packages` (plus the files npm and pnpm always include), and the scripts deploy it with `pnpm deploy --legacy --prod`, so development packages stay out. The Prisma CLI, which the running server starts to migrate its database, is therefore a production dependency of the server. Every install of a release build follows `pnpm-lock.yaml` (`--frozen-lockfile`): both prepare scripts, the Docker builder and the release workflow. The one exception in kind is the Windows staging install: it needs a flat `node_modules`, which pnpm does not produce from the lockfile, so `prepare-server.mjs` runs `npm install` bounded by `--before=<time>`: nothing published after the commit being built enters the package. The time is the commit time of the checkout, or `AUTOBYTEUS_NPM_BEFORE` (ISO 8601) when an older commit is rebuilt; with neither the build stops. It is a bound, not an identity. `pnpm deploy` also leaves a mirrored `node_modules/.bin` folder under `autobyteus-server-ts/autobyteus-web/`; both scripts remove it. Source checks for these rules: `scripts/tests/test_install_from_lockfile.py` and `autobyteus-server-ts/tests/architecture/server-package-contents.test.ts`.
+After staging, both scripts (and the Docker server package, `Dockerfile.monorepo`) remove the Claude Agent SDK's platform binary packages (`@anthropic-ai/claude-agent-sdk-<platform>`, about 200 MB each) with `scripts/claude-agent-sdk-binary-packaging.mjs`: Claude runs use the user's installed `claude`, and the server always passes its path, so the SDK never loads its own copy. The SDK package `@anthropic-ai/claude-agent-sdk` stays; the step fails the build if it is missing (autobyteus-514).
 The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
 
 Renderer contract packages that Nuxt consumes only while generating the renderer
@@ -600,9 +675,13 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
     Notification Center's intents; both return `AppUpdateState`)
   - `app-update:set-auto-check` (`{ enabled, intervalMinutes }`; returns
     `AppUpdateState`)
+  - `app-update:set-automatic` (a boolean; returns
+    `AppUpdateAutomaticChangeResult`, see [Automatic App Updates](#automatic-app-updates))
 - The handlers are registered by `electron/updater/appUpdateIpc.ts`.
-- Nothing downloads by itself (`autoDownload = false`). An available update is
-  announced only in the Notification Center (the self-opening card is gone).
+- Nothing downloads by itself (`autoDownload = false`) unless the user turned on
+  **Update automatically** ([Automatic App Updates](#automatic-app-updates)). An
+  available update is announced only in the Notification Center (the
+  self-opening card is gone).
 
 ### Automatic App Checks
 
@@ -631,7 +710,101 @@ only starts it.
   `isQuietBackgroundAppUpdateError`); Settings → Updates shows it.
 - `checkedAt` marks a finished check (its result or its failure), not its start.
 - A periodic check that finds an update only announces it: nothing downloads
-  or installs without the user's press.
+  or installs without the user's press, unless **Update automatically** is on.
+
+### Automatic App Updates
+
+"Update automatically" for the app (autobyteus-356) is kept by the desktop in
+`userData/app-update-automatic.json` (`{ enabled }`, off by default; missing or
+invalid reads as off; atomic writes; `appUpdateAutomaticStore.ts`). No server,
+GraphQL, REST route or agent tool reads or writes it.
+
+- `AppUpdateAutomaticPolicy` (`appUpdateAutomaticPolicy.ts`) owns the sequence and
+  calls the same `downloadUpdate()` and `installUpdateAndRestart()` a click runs. A
+  version any check finds downloads. The switch is read at each event: turned off
+  during a download, nothing installs (the staged update still installs on quit, as
+  today). Turning it on continues an update that is `available` or `downloaded`.
+- **As soon as the download is done.** Not on macOS: `update-downloaded` installs at
+  once. On macOS electron-updater reports the download before Squirrel has fetched,
+  unpacked and verified its copy (about 36 s idle, over 60 s on a busy machine), and a
+  native refusal arrives only then. So `AppUpdateInstallReadiness` waits for Electron's
+  own `update-downloaded` (every electron-updater report, also a cached re-emit, resets
+  it), and nothing stops until then. During this one wait, bounded at 15 minutes, the
+  app and its server keep working, the status stays `downloaded`,
+  `AppUpdateState.automaticInstallPreparing` is true, and no check or download runs (the
+  check button is disabled). The row's Install click still works: it ends the wait and
+  follows the manual path.
+- **The wait's failures** stop nothing and run no recovery; they record an `install`
+  failure, which blocks the version. Any updater `error` during the wait is the
+  system updater's refusal: the state is `install-preparation`, `updateStaged` is false
+  (Squirrel holds nothing, so automatic checks run again and a newer version is tried),
+  and the rest of that refusal (a second `error`, the rejected download) only logs. The
+  bound keeps status `downloaded` and the stage, because Squirrel may still finish.
+- A version already staged and ready, with a later check at `available`, installs with
+  no second native fetch.
+- `AppUpdateAutomaticRun` (`appUpdateAutomaticRun.ts`) keeps the run: a failed
+  automatic download (the `error` event or a rejected download while the
+  download runs) is recorded once and tried again at the next check; it never replaces
+  an install failure of that version. An automatic install is recorded only when it
+  was accepted (`automatic: { version }` in `app-update-notification.json`). It has
+  failed when the install throws, the updater reports an `error` during the install,
+  or the app does not quit within 60 s (`before-quit` clears the bound). It is then
+  recorded once as an install failure, which blocks that version (`blocksAutomatic`;
+  also for the rest of the process once its install was requested).
+  `AppUpdateInstallAttempt` (`appUpdateInstallAttempt.ts`) settles first: a failure
+  before the preparation started cancels the install; a failure during or after it
+  waits for the preparation and skips `quitAndInstall`, and then
+  `recoverAfterFailedInstall` runs: `ElectronApplication` relaunches this version
+  (`app.relaunch()`, `app.exit(0)`) only when the server process is gone; otherwise the
+  app stays open with the failure row. The automatic path records plain reasons, never
+  raw system text.
+- After the restart, the record's reconcile marks the notification handled
+  with `outcome: 'AUTO_UPDATED'` (unread) when the app runs the version, or
+  records an install failure when it still runs the old one. The Notification
+  Center reads `outcome` and `outcomeReason`.
+- `DisabledAppUpdater` refuses the switch (`accepted: false`) and reports
+  `automaticUpdate: false`.
+
+### Automatic Node Updates
+
+`electron/nodeAutoUpdate/` (autobyteus-356) updates each remote Docker node
+whose registry entry has `autoUpdate: true` to this desktop's version, in the
+main process, so it runs with no window open. Packaged builds only.
+
+- `NodeAutoUpdater` runs a pass 2 minutes after the start and then every 60
+  minutes (never overlapping, nodes one after another), and checks at once a
+  node whose switch turns on. Each node is asked `GET /rest/node-update?target=V`
+  through `nodeUpdateClient.ts` (C1, 10 s timeout).
+- `decideNodeAutoUpdate` requests `POST { version: V }` only when the node can
+  update in place, `target.relation` is `newer`, no update runs, nothing blocks
+  it, and it has no pending or failed attempt at V (one attempt per version per
+  node). Only a 202 is an attempt; a 409, a network error or a timeout changes
+  nothing and the next pass tries again.
+- An accepted update is followed every 10 s for up to 15 minutes, on its own
+  timer, and reconciled: `AUTO_UPDATED` when the node runs V with no update
+  running or its update succeeded; `AUTO_FAILED` with the node's reason when
+  it failed or was refused; `AUTO_FAILED` "The node did not finish the update."
+  30 minutes after the request with no update running.
+- A failure that the node has passed is dropped (autobyteus-412,
+  `isSupersededFailure`): an `AUTO_FAILED` entry for V is removed when the node
+  answers `?target=V` with `relation` `same` or `older` and no update running,
+  whichever route updated it (the card's "Update to V", `autobyteus-docker
+  update`, a new image). It is not counted as "Updated automatically". A pass
+  applies the rule first, so it clears a failure for its own V; a failure for
+  an earlier version is cleared by the card's recheck. A failure for V stays
+  while the node is older than V, and V is still not requested again.
+- The recheck: when a node card in a window has a new answer from its node and
+  the entry is `AUTO_FAILED`, the window sends `node-auto-update:recheck` with
+  the entry ID. `NodeAutoUpdater.recheckFailure` asks the node itself about the
+  failed version (through the entry's `baseUrl`, switch on or off) and removes
+  the entry only when the rule holds for the entry as it is after the answer.
+  It holds the node's per-node guard while it waits, so a pass skips that node
+  meanwhile, and it never requests an update. The window sends only the ID and
+  decides nothing.
+- Outcomes are kept in `userData/node-auto-updates.json` (tolerant read, atomic
+  writes, entries of removed nodes dropped) and reach windows through
+  `node-auto-update:get-state`, `node-auto-update:mark-read` and the broadcast
+  `node-auto-update:changed`.
 
 ### App Update Notification
 
@@ -759,7 +932,11 @@ uploaded every desktop updater asset and metadata file listed above. A packaged
 app that checks for updates during that window can receive missing
 `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, or asset-not-found provider
 errors even though the final release will become complete after the desktop
-workflow finishes.
+workflow finishes. The desktop workflow uploads the four `latest*.yml` updater
+files last, only after both architectures' server packages are on the release
+(autobyteus-412), so desktops are offered a version only once its nodes can
+update to it. For a release, that window therefore lasts until the Server Docker
+Release has uploaded its packages (RELEASE.md, Watching The Rollout).
 
 App-side behavior for that condition is intentionally `release-preparing`: show
 calm retry guidance such as "The latest update is still being prepared on
@@ -974,12 +1151,16 @@ maps the launch profile to a policy:
   case-insensitively.
 
 Both add the Electron-owned values: login-shell `PATH` when available,
-`ELECTRON_RUN_AS_NODE=1`, `PORT`/`SERVER_PORT`, `DATABASE_URL` and
+`ELECTRON_RUN_AS_NODE=1`, `DATABASE_URL` and
 `AUTOBYTEUS_DATA_DIR` under the data root, `AUTOBYTEUS_SERVER_HOST`, `DB_TYPE`,
 and the browser-bridge runtime overrides, then, last so that no inherited or
 override value changes it, `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` (the server is
 the desktop's own node, the only one that checks and updates the installed agent
-runtimes; see the server's `update_notifications.md`). In `e2e` mode, production
+runtimes; see the server's `update_notifications.md`). The server's own port
+travels only as its `--port` argument; the composer does not also set generic
+`PORT`/`SERVER_PORT`, because every agent runtime and tool shell this process
+spawns would inherit them and could bind their own programs to the backend's
+port. In `e2e` mode, production
 `AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
 inherited (for example an agent shell inside AutoByteus) therefore never reach
 the isolated server. Its settings come from its own data root's `.env`.

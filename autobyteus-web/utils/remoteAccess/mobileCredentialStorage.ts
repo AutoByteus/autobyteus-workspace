@@ -1,6 +1,6 @@
 import type { MobileNodeSession } from '~/types/remoteAccess';
 
-const STORAGE_KEY = 'autobyteus.remote_access.mobile_session.v1';
+const MOBILE_SESSION_STORAGE_KEY = 'autobyteus.remote_access.mobile_session';
 
 const canUseLocalStorage = (): boolean =>
   typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -9,8 +9,7 @@ const isMobileNodeSession = (value: unknown): value is MobileNodeSession => {
   const candidate = value as Partial<MobileNodeSession> | null;
   return Boolean(
     candidate
-      && candidate.version === 1
-      && typeof candidate.nodeId === 'string'
+      && typeof candidate.entryId === 'string'
       && typeof candidate.serverBaseUrl === 'string'
       && typeof candidate.credential === 'string'
       && candidate.device
@@ -24,7 +23,7 @@ export const mobileCredentialStorage = {
       return null;
     }
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
+      const raw = window.localStorage.getItem(MOBILE_SESSION_STORAGE_KEY);
       if (!raw) {
         return null;
       }
@@ -39,13 +38,13 @@ export const mobileCredentialStorage = {
     if (!canUseLocalStorage()) {
       return;
     }
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    window.localStorage.setItem(MOBILE_SESSION_STORAGE_KEY, JSON.stringify(session));
   },
 
   clear(): void {
     if (!canUseLocalStorage()) {
       return;
     }
-    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(MOBILE_SESSION_STORAGE_KEY);
   },
 };

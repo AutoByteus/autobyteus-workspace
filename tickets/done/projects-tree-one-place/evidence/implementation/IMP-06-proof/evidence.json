@@ -1,0 +1,155 @@
+{
+  "startedAt": "2026-10-31T21:01:44.535Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "AC-001": {
+      "result": "Pass",
+      "description": "the user's case: workspace run handing out Tasks of 3 Projects; every Project \"No runs yet\"",
+      "startedAt": "2026-10-31T21:02:02.969Z",
+      "finishedAt": "2026-10-31T21:02:02.969Z",
+      "details": {
+        "W": "project_task_manager_e07d_8ccd773d326644d38c0d64e601423feb",
+        "delegated": {
+          "P1": "release_notes_writer_e07d_689b4e3ddb6a43a9998fa3c6f48f5b1d",
+          "Q1": "fact_checker_e07d_68a3cb60a65b4e678b7f3aa1380045a3",
+          "R1": "release_notes_writer_e07d_8390b132b0994e9db56924f2f0bee773"
+        },
+        "projectRunHistory": {
+          "P": [],
+          "Q": [],
+          "R": []
+        },
+        "projectRunsJson": {
+          "P": [],
+          "Q": [],
+          "R": []
+        },
+        "projectsMode": {
+          "P": {
+            "hint": "No runs yet. Use + to run an agent or team for this Project.",
+            "runRows": []
+          },
+          "Q": {
+            "hint": "No runs yet. Use + to run an agent or team for this Project.",
+            "runRows": []
+          },
+          "R": {
+            "hint": "No runs yet. Use + to run an agent or team for this Project.",
+            "runRows": []
+          }
+        },
+        "projectsModeAfterOpeningW": {
+          "P": {
+            "hint": "No runs yet. Use + to run an agent or team for this Project.",
+            "runRows": []
+          },
+          "Q": {
+            "hint": "No runs yet. Use + to run an agent or team for this Project.",
+            "runRows": []
+          },
+          "R": {
+            "hint": "No runs yet. Use + to run an agent or team for this Project.",
+            "runRows": []
+          }
+        }
+      }
+    },
+    "AC-002": {
+      "result": "Pass",
+      "description": "\"+\" on P; delegates P and Q Tasks; listed once under P with both nested; Q \"No runs yet\"",
+      "startedAt": "2026-10-31T21:02:08.019Z",
+      "finishedAt": "2026-10-31T21:02:08.019Z",
+      "details": {
+        "A": "project_task_manager_e07d_2ca20619980f4451937eebbecd7ed995",
+        "projectRunsJsonP": [
+          {
+            "kind": "agent",
+            "runId": "project_task_manager_e07d_2ca20619980f4451937eebbecd7ed995"
+          }
+        ],
+        "pCopy": "release_notes_writer_e07d_ffd7c8c82a8f4097a079503b80ca291f",
+        "qCopy": "fact_checker_e07d_82834d4cffda449c8c90d25d6fa3df16",
+        "projectRunHistory": {
+          "P": [
+            "project_task_manager_e07d_2ca20619980f4451937eebbecd7ed995"
+          ],
+          "Q": [],
+          "R": []
+        },
+        "nestedUnderAInP": [
+          "release_notes_writer_e07d_ffd7c8c82a8f4097a079503b80ca291f",
+          "fact_checker_e07d_82834d4cffda449c8c90d25d6fa3df16"
+        ],
+        "qShows": {
+          "hint": "No runs yet. Use + to run an agent or team for this Project.",
+          "runRows": []
+        },
+        "rShows": {
+          "hint": "No runs yet. Use + to run an agent or team for this Project.",
+          "runRows": []
+        },
+        "rowsOfAInProjectsMode": 1,
+        "qAfterReload": {
+          "hint": "No runs yet. Use + to run an agent or team for this Project.",
+          "runRows": []
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 32097,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 32073,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54722",
+    "frontendUrl": "http://127.0.0.1:54723",
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-tree-one-place-bYzmT0"
+  },
+  "seed": {
+    "ids": {
+      "manager": "project-task-manager-e07d",
+      "writer": "release-notes-writer-e07d",
+      "checker": "fact-checker-e07d"
+    },
+    "names": {
+      "manager": "Project Task Manager e07d",
+      "writer": "Release Notes Writer e07d",
+      "checker": "Fact Checker e07d"
+    },
+    "projects": {
+      "P": {
+        "projectId": "project_66438199-6794-4c28-8464-8808f03d24ae",
+        "name": "Prototype Launch e07d"
+      },
+      "Q": {
+        "projectId": "project_3fe84717-fc4e-44ea-8c34-b7e298868fd3",
+        "name": "Docs Site e07d"
+      },
+      "R": {
+        "projectId": "project_21e2598b-91ed-4b69-bde4-eb4391b915c6",
+        "name": "Website e07d"
+      }
+    },
+    "tasks": {
+      "P1": "project_task_c3e88c8d-66fc-4e36-b2c1-798735f5fcad",
+      "Q1": "project_task_1a60e297-ef91-499e-b141-44270812efc3",
+      "R1": "project_task_b35ff8a4-91f5-4276-b518-53454d670db9",
+      "P2": "project_task_805f7d65-2e44-4859-9414-23b0319fd201",
+      "Q2": "project_task_c59a3edb-97a1-458f-81bd-2f0665962d02"
+    }
+  },
+  "browserVersion": "156.0.8078.74",
+  "result": "Pass",
+  "finishedAt": "2026-10-31T21:02:16.086Z"
+}

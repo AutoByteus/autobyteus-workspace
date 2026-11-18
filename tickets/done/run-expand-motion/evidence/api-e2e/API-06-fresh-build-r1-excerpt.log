@@ -1,0 +1,13 @@
+
+> autobyteus@1.5.12-beta.2 transpile-electron /private/tmp/rxm-390/clean-clone/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+
+/private/tmp/rxm-390/clean-clone/autobyteus-web/build/dist/build.js:127
+        throw new Error('Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.');
+              ^
+Error: Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.
+    at resolveUpdaterPublishConfig (/private/tmp/rxm-390/clean-clone/autobyteus-web/build/dist/build.js:127:15)
+    at Object.<anonymous> (/private/tmp/rxm-390/clean-clone/autobyteus-web/build/dist/build.js:208:30)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)

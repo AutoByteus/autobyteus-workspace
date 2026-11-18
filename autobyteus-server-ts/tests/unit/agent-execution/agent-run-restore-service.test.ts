@@ -73,11 +73,12 @@ describe("AgentRunService routes an eligible standalone run through its root (AR
     const activation = { run, metadata: metadata() };
     const lifecycleService = Object.assign(
       Object.create(StandaloneAgentRunLifecycleService.prototype) as StandaloneAgentRunLifecycleService,
-      { activateHost: vi.fn().mockResolvedValue(activation) },
+      { activateHost: vi.fn().mockResolvedValue(activation), updateStoppedSelection: vi.fn() },
     );
     const standaloneRuns = {
       resolveRootAndEnsureHost: vi.fn(async () => owned ? activation : null),
       stopRoot: vi.fn(async () => null),
+      refreshInheritedLaunch: vi.fn(async () => undefined),
     };
     const provisioningService = { prepareAgentRun: vi.fn(async () => ({ runId: "run-1" })) };
     const service = new AgentRunService("/tmp/agent-run-service-test", {
@@ -106,5 +107,33 @@ describe("AgentRunService routes an eligible standalone run through its root (AR
     await service.restoreAgentRun("run-1");
     expect(standaloneRuns.resolveRootAndEnsureHost).toHaveBeenCalledWith("run-1");
     expect(lifecycleService.activateHost).toHaveBeenCalledExactlyOnceWith("run-1", { memberExecutionContext: null });
+  });
+
+  const edit = { agentRunId: "run-1", runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "m", llmConfig: null };
+
+  it("a saved edit of a stopped run is followed by its registered root (FU-008, AC-001/AC-004)", async () => {
+    const { service, lifecycleService, standaloneRuns } = subject(true);
+    const saved = { success: true, outcome: "UPDATED", canonical: null };
+    vi.mocked(lifecycleService.updateStoppedSelection).mockResolvedValue(saved as never);
+    await expect(service.updateStoppedSelection(edit as never)).resolves.toBe(saved);
+    expect(standaloneRuns.refreshInheritedLaunch).toHaveBeenCalledExactlyOnceWith("run-1");
+  });
+
+  it.each(["UNCHANGED", "RUN_ACTIVE", "VALIDATION_FAILED", "MODEL_UNAVAILABLE"])("an edit that saved nothing (%s) leaves the root alone", async (outcome) => {
+    const { service, lifecycleService, standaloneRuns } = subject(true);
+    const refused = { success: false, outcome, canonical: null };
+    vi.mocked(lifecycleService.updateStoppedSelection).mockResolvedValue(refused as never);
+    await expect(service.updateStoppedSelection(edit as never)).resolves.toBe(refused);
+    expect(standaloneRuns.refreshInheritedLaunch).not.toHaveBeenCalled();
+  });
+
+  it("a root that cannot follow is logged and the saved edit stays successful", async () => {
+    const { service, lifecycleService, standaloneRuns } = subject(true);
+    const saved = { success: true, outcome: "UPDATED", canonical: null };
+    vi.mocked(lifecycleService.updateStoppedSelection).mockResolvedValue(saved as never);
+    standaloneRuns.refreshInheritedLaunch.mockRejectedValue(new Error("metadata unreadable"));
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    await expect(service.updateStoppedSelection(edit as never)).resolves.toBe(saved);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("metadata unreadable"));
   });
 });

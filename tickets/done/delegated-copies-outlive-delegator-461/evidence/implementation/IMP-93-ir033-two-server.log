@@ -1,0 +1,18 @@
+IMP-93 — CR-461-090 / CR-461-091 with real nodes: remote-delegation-two-server.e2e.test.ts
+Code: ae38f8e421 (server dist rebuilt from it; the RS-TRACE lines of the investigation were reverted before the build).
+Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 REMOTE_E2E_EVIDENCE_DIR=<temp> ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
+Each server owns its temp data root and port; scripted AGY CLI; no provider, no user data.
+
+## Before the fix (same suite, traced, round 33 investigation)
+43/44: RC-32 failed. Alpha's status entry for r10 opened its peer observation, got AGENT_INPUT_STATE, then nothing until the owner's
+terminate (AGENT_STATUS offline, end). Beta's stream carries changes only and r10 was already idle when alpha subscribed, so
+alpha read it offline from the start (F-70).
+
+## After (ae38f8e421)
+ Test Files  1 passed (1)
+      Tests  44 passed (44)
+
+RC-32 receipt (alpha's statuses of r10 by its run ID): 
+  summariesAfterOwnerStop: ['offline', 'idle', 'offline'] (the snapshot's offline before beta's opening status arrives; idle from that opening status; offline at the owner's stop)
+  RC-31 liveSeen (AC-802, the peer run's output in alpha's Agent view): True
+  RC-33 asserts the same for a Team delegator's view ("a remote Team member's live output reaches the Team delegator's view"): passed.

@@ -1,0 +1,15 @@
+# IMP-04 builds, typechecks and web guards
+# command: corepack pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals (pnpm via a corepack shim on PATH, since the scripts call pnpm)
+# commit: 574aa0bd7
+# env: Linux 6.12.54-linuxkit, node v22.23.3
+# date: 2026-10-29 (run before this excerpt was written; full log too large to commit)
+autobyteus-ts build: [verify:runtime-deps] OK
+server typecheck: exit 0 (> tsc -p tsconfig.build.json --noEmit)
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 53.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.1s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+guard:web-boundary: exit 0 [guard:web-boundary] Passed.
+guard:localization-boundary: exit 0 [guard:localization-boundary] Passed.
+audit:localization-literals: exit 0 [audit:localization-literals] Passed with zero unresolved findings.

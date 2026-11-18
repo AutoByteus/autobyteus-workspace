@@ -11,6 +11,10 @@ import {
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
 import {
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
+} from "../runtime-management/claude/claude-prompt-cache-setting.js";
+import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
@@ -31,12 +35,37 @@ import {
   normalizeTaskExecutionIdleShutdownGraceForPersistence,
   TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
 } from "../config/task-execution-idle-shutdown-setting.js";
+import {
+  CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY,
+  CONTEXT_FILE_OTHER_MAX_MB_SETTING_KEY,
+  normalizeContextFileAudioVideoMaxMbForPersistence,
+  normalizeContextFileOtherMaxMbForPersistence,
+} from "../config/context-file-size-limit-settings.js";
+import {
+  normalizeShowInternalAgentsForPersistence,
+  SHOW_INTERNAL_AGENTS_SETTING_KEY,
+} from "../config/show-internal-agents-setting.js";
+import {
+  MODEL_ROUTER_LLM_CONFIG_SETTING_KEY,
+  MODEL_ROUTER_MODEL_SETTING_KEY,
+  MODEL_ROUTER_RUNTIME_SETTING_KEY,
+  MODEL_ROUTING_ENABLED_SETTING_KEY,
+  normalizeModelRouterLlmConfigForPersistence,
+  normalizeModelRouterModelForPersistence,
+  normalizeModelRouterRuntimeForPersistence,
+  normalizeModelRoutingEnabledForPersistence,
+} from "../model-routing/model-routing-settings.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import {
   EMBEDDING_MODEL_SETTING_DESCRIPTION,
   EMBEDDING_MODEL_SETTING_KEY,
   normalizeEmbeddingModelSettingForPersistence,
 } from "../embeddings/catalog/embedding-model-setting.js";
+import {
+  MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_DESCRIPTION,
+  MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_KEY,
+  normalizeMemorySearchDefaultLimitForPersistence,
+} from "../memory-search/settings/memory-search-settings.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -85,11 +114,6 @@ export class ServerSettingsService {
       "AUTOBYTEUS_SERVER_HOST",
       "Public URL of this server. Managed at startup by the launch environment and not editable here.",
       false,
-    );
-
-    this.registerPredefinedSetting(
-      "AUTOBYTEUS_VNC_SERVER_HOSTS",
-      "Comma-separated host:port values for AutoByteus VNC WebSocket endpoints (e.g., localhost:6080,localhost:6081)",
     );
 
     this.registerPredefinedSetting(
@@ -163,6 +187,16 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
+      CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+      "Claude runtime: request Claude Code's one-hour prompt cache for agent sessions started afterwards (true/false, default true). A promptCacheTtl in the user's Claude Code settings, CLAUDE_CODE_PROMPT_CACHE_TTL or FORCE_PROMPT_CACHING_5M take precedence.",
+      true,
+      {
+        allowedValues: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
+        trimBeforePersist: true,
+      },
+    );
+
+    this.registerPredefinedSetting(
       STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
       "Milliseconds between live response content updates. Smaller values update more frequently; larger values reduce UI and transport work. Recommended default: 500.",
       true,
@@ -181,11 +215,71 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
+      CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY,
+      "Largest audio or video file a user can attach, in MiB. Applies to the next upload. Default: 2048 (2 GiB); allowed range 1 to 10240.",
+      true,
+      { normalizeForPersistence: normalizeContextFileAudioVideoMaxMbForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      CONTEXT_FILE_OTHER_MAX_MB_SETTING_KEY,
+      "Largest image, document or other non-audio/video file a user can attach, in MiB. Applies to the next upload. Default: 25; allowed range 1 to 1024.",
+      true,
+      { normalizeForPersistence: normalizeContextFileOtherMaxMbForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTING_ENABLED_SETTING_KEY,
+      "Model Routing: the node's Model Router chooses a runtime and model for delegated agents that have no usable default (true/false). Default: false. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRoutingEnabledForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_RUNTIME_SETTING_KEY,
+      "The Model Router agent's runtime (for example codex_app_server). Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterRuntimeForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_MODEL_SETTING_KEY,
+      "The Model Router agent's model on its runtime. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterModelForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_LLM_CONFIG_SETTING_KEY,
+      "The Model Router agent's model settings (a JSON object, e.g. its thinking level); empty means none. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterLlmConfigForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      SHOW_INTERNAL_AGENTS_SETTING_KEY,
+      "Show internal agents (the system's own helpers, such as the Model Router) in the Agents list, agent pickers, run history, the Memory page and to other agents (true/false). Default: false. Takes effect on the next list. Set in Server Settings → Basics.",
+      true,
+      {
+        normalizeForPersistence: normalizeShowInternalAgentsForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
       EMBEDDING_MODEL_SETTING_KEY,
       EMBEDDING_MODEL_SETTING_DESCRIPTION,
       true,
       {
         normalizeForPersistence: normalizeEmbeddingModelSettingForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_KEY,
+      MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_DESCRIPTION,
+      true,
+      {
+        normalizeForPersistence: normalizeMemorySearchDefaultLimitForPersistence,
       },
     );
 

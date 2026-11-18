@@ -1,0 +1,20 @@
+# Case: API-09 safety and scan
+# Date: 2026-10-26
+
+== dummy values in the instances' logs (instance logs + data-root logs) ==
+A: bytes 124105, test-dummy occurrences 0
+B: bytes 106542, test-dummy occurrences 0
+
+== instances stopped ==
+{  "schemaVersion": 1,  "ok": true,  "command": "stop",  "result": {    "instanceId": "iso-49772-c791",    "wasRunning": true,    "forced": false,    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-21Z1zd",    "dataRootRemoved": true,    "controlPortRel
+
+{  "schemaVersion": 1,  "ok": true,  "command": "stop",  "result": {    "instanceId": "iso-50419-6918",    "wasRunning": true,    "forced": false,    "dataRoot": "<L>/b-root",    "dataRootRemoved": false,    "controlPortReleased": true,    "serverPortReleased": true,    "logPath": "/var/folders/7w/9
+
+isolated-app list: no instance; no leftover app, fixture or server process
+
+== user data untouched ==
+~/.autobyteus/server-data/mcps.json last modified Sep 16 09:24
+test vault status (IDs only): STATE READY; CONFIGURED test.github.token
+
+== worktree ==
+git status: only the ticket folder; the temporary matrix diagnostic was reverted (git checkout); a stray autobyteus-server-ts/autobyteus-web/ left by the Electron build's server packaging was removed (known pre-existing)

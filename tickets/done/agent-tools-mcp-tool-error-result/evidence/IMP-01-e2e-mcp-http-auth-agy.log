@@ -1,0 +1,15 @@
+# IMP-01 credential e2e with the AGY gate (AC-001; AGY credentials case = AC-004 regression)
+# cmd: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts --no-watch --reporter=verbose
+# commit: 253854bf8d  env: macOS (darwin), Node v22.23.1, scripted AGY CLI; native/Codex/Claude gates not set (skipped = not run)  date: 2026-10-24T16:44Z
+
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: the agent's tool calls reach both servers with their credentials 650ms
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: the agent's tool calls reach both servers with their credentials
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: the agent's tool calls reach both servers with their credentials
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > claude: the agent's tool calls reach both servers with their credentials
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > agy: after the server revokes the token, the agent's tool call fails with the HTTP status 610ms
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > native: after the server revokes the token, the agent's tool call fails with the HTTP status
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > codex: after the server revokes the token, the agent's tool call fails with the HTTP status
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts > Agents call tools of credential-protected remote MCP servers > claude: after the server revokes the token, the agent's tool call fails with the HTTP status
+ Test Files  1 passed (1)
+      Tests  2 passed | 6 skipped (8)
+   Duration  14.75s (transform 8.23s, setup 52ms, import 11.49s, tests 2.63s, environment 0ms)

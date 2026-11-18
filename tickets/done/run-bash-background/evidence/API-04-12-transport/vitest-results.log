@@ -1,0 +1,21 @@
+# API-04..API-12 transport suite (scripted LM Studio model; real server, native runtime, processes)
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_NATIVE_BACKGROUND_TASK_E2E=1 BACKGROUND_TASK_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts --no-watch
+# Commit: code ddd594d07b + API/E2E test commit (see report); macOS 26 arm64, bash 3.2.57, node 22.23.1; 2026-11-10
+# Excerpt: test results (server log noise removed)
+
+# start Tue Nov 10 12:29:48 CET 2026
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts (9 tests) 246907ms
+     ✓ BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)  11571ms
+     ✓ BGT-02: a command failing while the agent is busy is told in one notice right after the turn (AC-002)  10395ms
+     ✓ BGT-03: three commands ending within 1 s arrive in exactly one notice that also lists the one still running (AC-004)  10154ms
+     ✓ BGT-04: kill <pid> of an `npm run dev` stops everything it started, reported in the kill's own result, no notice (AC-005)  40044ms
+     ✓ BGT-05: & jobs of a foreground call are background tasks; kill, children (DEC-012), disown, Terminate (AC-010)  13371ms
+     ✓ BGT-06: Terminate stops a running background command within 10 s, with no notice, and removes its output (AC-006)  6316ms
+     ✓ BGT-07: Stop during a foreground command leaves the background command running; its notice still arrives (AC-013)  10585ms
+     ✓ BGT-08: a background command killed from outside while the agent is idle is told as a signal in a notice (AC-002)  2669ms
+     ✓ BGT-09: a delegated copy with a running command is not idle-shut-down; the notice wakes it; shut down one grace after quiet (AC-009)  137753ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Duration  260.76s (transform 9.88s, setup 76ms, import 13.20s, tests 246.91s, environment 0ms)
+exit=0
+# end Tue Nov 10 12:34:11 CET 2026

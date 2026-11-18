@@ -1,0 +1,301 @@
+{
+  "case": "API-10",
+  "mode": "idle",
+  "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean",
+  "commit": "b520b51c9e354a9585c34a3c0c9b4adbf8d1920e",
+  "date": "2026-10-30T12:33:16.884Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M",
+  "runTag": "BQ284Dmvuydrgh",
+  "steps": [
+    {
+      "at": "3.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "3.3",
+      "step": "instance started",
+      "value": {
+        "label": "first",
+        "instanceId": "iso-56493-4590",
+        "electronPid": 69145,
+        "serverPid": 70053,
+        "serverPort": 56494,
+        "servers": 1
+      }
+    },
+    {
+      "at": "7.8",
+      "step": "idle quit observed",
+      "value": {
+        "label": "idle quit",
+        "electronPid": 69145,
+        "serverPid": 70053,
+        "serverGoneMs": 206,
+        "electronGoneMs": 259,
+        "before": 6,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": []
+      }
+    },
+    {
+      "at": "7.8",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-56493-4590"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "10.8",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "11.0",
+      "step": "instance started",
+      "value": {
+        "label": "second",
+        "instanceId": "iso-56547-5870",
+        "electronPid": 70304,
+        "serverPid": 71212,
+        "serverPort": 56548,
+        "servers": 1
+      }
+    },
+    {
+      "at": "11.2",
+      "step": "relaunch check",
+      "value": {
+        "label": "second",
+        "serversForData": [
+          {
+            "pid": 71212,
+            "ppid": 70304,
+            "pgid": 70304,
+            "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 56548 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M/data-root/server-data"
+          }
+        ],
+        "exactlyOne": true,
+        "previousSessionLeft": []
+      }
+    },
+    {
+      "at": "12.7",
+      "step": "second idle quit observed",
+      "value": {
+        "label": "second idle quit",
+        "electronPid": 70304,
+        "serverPid": 71212,
+        "serverGoneMs": 260,
+        "electronGoneMs": 260,
+        "before": 7,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": []
+      }
+    },
+    {
+      "at": "12.7",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-56547-5870"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    }
+  ],
+  "quit": {
+    "label": "idle quit",
+    "electronPid": 69145,
+    "serverPid": 70053,
+    "serverGoneMs": 206,
+    "electronGoneMs": 259,
+    "before": [
+      {
+        "pid": 69146,
+        "ppid": 69145,
+        "pgid": 69145,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,8716278580259889008,4464872424425857424,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=30"
+      },
+      {
+        "pid": 69147,
+        "ppid": 69145,
+        "pgid": 69145,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,8716278580259889008,4464872424425857424,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=32"
+      },
+      {
+        "pid": 70053,
+        "ppid": 69145,
+        "pgid": 69145,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 56494 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M/data-root/server-data"
+      },
+      {
+        "pid": 70060,
+        "ppid": 69145,
+        "pgid": 69145,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,8716278580259889008,4464872424425857424,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=60"
+      },
+      {
+        "pid": 70120,
+        "ppid": 69145,
+        "pgid": 69145,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,8716278580259889008,4464872424425857424,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 70121,
+        "ppid": 69145,
+        "pgid": 69145,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … zation-salt-handle=1935764596,r,8716278580259889008,4464872424425857424,4 --trace-process-track-uuid=3190708991934122588"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": []
+  },
+  "relaunch": {
+    "label": "second",
+    "serversForData": [
+      {
+        "pid": 71212,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 56548 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M/data-root/server-data"
+      }
+    ],
+    "exactlyOne": true,
+    "previousSessionLeft": []
+  },
+  "secondQuit": {
+    "label": "second idle quit",
+    "electronPid": 70304,
+    "serverPid": 71212,
+    "serverGoneMs": 260,
+    "electronGoneMs": 260,
+    "before": [
+      {
+        "pid": 70305,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,13378346600920896189,791556470506220586,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=31"
+      },
+      {
+        "pid": 70306,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,13378346600920896189,791556470506220586,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=32"
+      },
+      {
+        "pid": 71212,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 56548 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-yn3g0M/data-root/server-data"
+      },
+      {
+        "pid": 71218,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,13378346600920896189,791556470506220586,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=59"
+      },
+      {
+        "pid": 71352,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,13378346600920896189,791556470506220586,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 71353,
+        "ppid": 70304,
+        "pgid": 70304,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … zation-salt-handle=1935764596,r,13378346600920896189,791556470506220586,4 --trace-process-track-uuid=3190708991934122588"
+      },
+      {
+        "pid": 71409,
+        "ppid": 71212,
+        "pgid": 70304,
+        "command": "(2.1.314)"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "serversForDataAtEnd": [],
+  "copiedLogs": [
+    "<own>/data-root/server-data/logs/app-data-migrations/20261015_collaborators_to_delegated_runs_v1-2026-10-30T12-33-19-709Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260823_repair_team_agent_memory_layout-2026-10-30T12-33-19-557Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-10-30T12-33-19-647Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260901_agent_org_flat_team_families_v1-2026-10-30T12-33-19-591Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260814_team_run_execution_tree_v1-2026-10-30T12-33-19-552Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260924_remove_external_messaging_data-2026-10-30T12-33-19-682Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-10-30T12-33-19-528Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261025_project_task_titles-2026-10-30T12-33-19-699Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261019_delegated_copy_own_file_complete_v1-2026-10-30T12-33-19-730Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261019_remove_work_trace_exports-2026-10-30T12-33-19-728Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-10-30T12-33-19-597Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260803_custom_provider_readable_identity-2026-10-30T12-33-19-677Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260731_migrate_native_working_context_snapshots_v5-2026-10-30T12-33-19-617Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-10-30T12-33-19-625Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261020_remove_skill_improvement_data-2026-10-30T12-33-19-733Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260521_run_history_index_v2-2026-10-30T12-33-19-664Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261024_memory_sync_source_id_names-2026-10-30T12-33-19-737Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261005_projects_per_folder_v1-2026-10-30T12-33-19-687Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260905_agent_org_history_first_message_summary_v1-2026-10-30T12-33-19-621Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-10-30T12-33-19-605Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261006_remove_built_in_project_task_manager-2026-10-30T12-33-19-704Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261017_task_agent_own_run_v1-2026-10-30T12-33-19-714Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260730_token_usage_provider_name_snapshot_backfill-2026-10-30T12-33-19-578Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260730_token_usage_custom_provider_model_value_backfill-2026-10-30T12-33-19-570Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261018_append_only_message_logs_v1-2026-10-30T12-33-19-723Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261017_project_task_keys_v1-2026-10-30T12-33-19-693Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-10-30T12-33-19-601Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-10-30T12-33-19-628Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260926_team_context_file_execution_locators_v1-2026-10-30T12-33-19-612Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20261024_node_identity_file_name-2026-10-30T12-33-19-735Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260819_token_usage_run_records_v1-2026-10-30T12-33-19-584Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-10-30T12-33-19-532Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260727_custom_provider_v1_secret_migration-2026-10-30T12-33-19-523Z.log",
+    "<own>/data-root/server-data/logs/app-data-migrations/20260824_team_run_execution_tree_v2-2026-10-30T12-33-19-562Z.log",
+    "<own>/data-root/server-data/logs/server.log",
+    "<own>/data-root/logs/app.log",
+    "<own>/data-root/electron/session-data/Session Storage/000003.log",
+    "<own>/data-root/electron/session-data/Local Storage/leveldb/000003.log"
+  ],
+  "rootRemoved": true
+}

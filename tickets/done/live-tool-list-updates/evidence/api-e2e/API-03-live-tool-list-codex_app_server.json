@@ -1,0 +1,146 @@
+{
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "codeword": "OKAPI-8545",
+  "turns": [
+    {
+      "label": "1 call alpha",
+      "content": "Remember this codeword: OKAPI-8545. Call the list_projects tool once, then reply with exactly: DONE-1",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember this codeword: OKAPI-8545. Call the list_projects tool once, then reply with exactly: DONE-1",
+          "media": null,
+          "ts": 1793300116.228
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Inspecting available tools for projects**\n\n**Scheduling project listing call**",
+          "media": null,
+          "ts": 1793300120.938
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-4d5e1c28-2a90-44c9-87e4-44d751f49001",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": {
+            "projects": [
+              {
+                "projectId": "project_c2e433aa-4676-41e3-8d9d-ef734022a26c",
+                "name": "Tool List Live d4ae32"
+              }
+            ]
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793300120.946
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-1",
+          "media": null,
+          "ts": 1793300122.621
+        }
+      ]
+    },
+    {
+      "label": "2 add beta, call beta",
+      "content": "Call the list_project_tasks tool once with project_id \"project_c2e433aa-4676-41e3-8d9d-ef734022a26c\". Then reply with DONE-2 followed by the codeword from my first message.",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Call the list_project_tasks tool once with project_id \"project_c2e433aa-4676-41e3-8d9d-ef734022a26c\". Then reply with DONE-2 followed by the codeword from my first message.",
+          "media": null,
+          "ts": 1793300128.372
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+          "ts": 1793300128.373
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Planning single tool invocation**",
+          "media": null,
+          "ts": 1793300131.582
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-661f97a3-4291-4f84-815b-ede26fdc3ad7",
+          "role": null,
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {
+            "project_id": "project_c2e433aa-4676-41e3-8d9d-ef734022a26c"
+          },
+          "toolResult": {
+            "projectId": "project_c2e433aa-4676-41e3-8d9d-ef734022a26c"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793300131.587
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-2 OKAPI-8545",
+          "media": null,
+          "ts": 1793300132.541
+        }
+      ]
+    },
+    {
+      "label": "3 remove alpha, try alpha",
+      "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+      "entries": [
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+          "ts": 1793300138.452
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+          "media": null,
+          "ts": 1793300138.452
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Inspecting available tools**",
+          "media": null,
+          "ts": 1793300142.543
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-3",
+          "media": null,
+          "ts": 1793300142.59
+        }
+      ]
+    }
+  ],
+  "seenToolNames": [
+    "{\n  \"version\": 1,\n  \"toolNames\": [\n    \"delegate_task\",\n    \"list_project_tasks\",\n    \"send_message_to\"\n  ]\n}\n"
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

@@ -1,6 +1,10 @@
 <template>
   <form @submit.prevent="handleSubmit" class="rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="space-y-6 p-6">
+      <div v-if="personalBase">
+        <PersonalSettingsNote :base="personalBase" kind="collaboration" />
+        <p v-if="resetError" class="mt-1 text-sm text-red-600">{{ resetError }}</p>
+      </div>
       <section class="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <h2 class="text-base font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.basics') }}</h2>
         <div class="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-[16rem_minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
@@ -34,6 +38,7 @@
                   </button>
                 </div>
                 <p class="text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.png_jpg_square_recommended') }}</p>
+                <PersonalSettingMark :base="personalBase" :active="isPersonal('AVATAR')" :busy="resetting !== null" @reset="resetPersonal('AVATAR')" />
                 <p v-if="fileUploadStore.isUploading" class="text-xs text-blue-600">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.uploading_avatar') }}</p>
                 <p v-else-if="avatarUploadError" class="text-xs text-red-600">{{ avatarUploadError }}</p>
               </div>
@@ -222,6 +227,10 @@
       :seed-model-identifier="initialData?.defaultLaunchConfig?.llmModelIdentifier"
         :llm-config="launchPreferences.llmConfig"
         id-prefix="team-definition"
+        :personal-settings-base="personalBase"
+        :personal="isPersonal('DEFAULT_LAUNCH_CONFIG')"
+        :resetting-personal="resetting !== null"
+        @reset-personal="resetPersonal('DEFAULT_LAUNCH_CONFIG')"
         @update:runtime-kind="launchPreferences.runtimeKind = $event"
         @update:llm-model-identifier="launchPreferences.llmModelIdentifier = $event"
         @update:llm-config="launchPreferences.llmConfig = $event"
@@ -262,6 +271,11 @@
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import DefinitionLaunchPreferencesSection from '~/components/launch-config/DefinitionLaunchPreferencesSection.vue';
+import PersonalSettingMark from '~/components/definitions/PersonalSettingMark.vue';
+import PersonalSettingsNote from '~/components/definitions/PersonalSettingsNote.vue';
+import { usePersonalSettingReset } from '~/composables/usePersonalSettingReset';
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import type { PersonalSetting } from '~/types/personalSettings';
 import AgentTeamLibraryPanel from './form/AgentTeamLibraryPanel.vue';
 import AgentTeamMemberDetailsPanel from './form/AgentTeamMemberDetailsPanel.vue';
 import HandoffManager from '~/components/collaboration/handoffs/HandoffManager.vue';
@@ -305,6 +319,26 @@ const avatarPreviewBroken = ref(false);
 const formErrors = reactive<Record<string, string>>({});
 const formData = reactive(createInitialFormData());
 const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
+
+// Personal settings (package Teams): marks and reset; a reset keeps the user's other unsaved edits.
+const { resetting, resetError, isApplyingReset, runReset } = usePersonalSettingReset();
+const personalBase = computed(() => initialData.value?.personalSettingsBase ?? null);
+const isPersonal = (setting: PersonalSetting): boolean => Boolean(initialData.value?.personalSettings?.includes(setting));
+/** What the form fills from a loaded Team; a re-delivery with the same values keeps the user's unsaved edits. */
+const filledValuesOf = (data: any): string => JSON.stringify(data ? [
+  data.name, data.category, data.description, data.instructions, data.coordinatorMemberName, data.avatarUrl || data.avatar_url || '',
+  data.defaultLaunchConfig ?? null, data.nodes ?? [], data.handoffs ?? [],
+] : null);
+let filledFrom: string | null = null;
+const resetPersonal = (setting: PersonalSetting) => runReset(
+  setting,
+  () => useAgentTeamDefinitionStore().resetAgentTeamPersonalSetting(initialData.value.id, setting),
+  (reset) => {
+    filledFrom = filledValuesOf(reset);
+    if (setting === 'AVATAR') formData.avatarUrl = reset?.avatarUrl || '';
+    else Object.assign(launchPreferences, toEditableDefaultLaunchConfig(reset?.defaultLaunchConfig ?? null));
+  },
+);
 const handoffs = ref<EditableHandoff[]>([]);
 const handoffManagerRef = ref<{ validateAll: () => boolean } | null>(null);
 
@@ -460,6 +494,11 @@ const handleSubmit = () => {
 watch(
   initialData,
   (newData) => {
+    // The same definition again (a list reload after any announced change), or this editor's own reset arriving.
+    const values = filledValuesOf(newData);
+    const keep = values === filledFrom || isApplyingReset();
+    filledFrom = values;
+    if (keep) return;
     clearErrors();
     Object.assign(formData, createInitialFormData());
 

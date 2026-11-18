@@ -1,0 +1,16 @@
+{
+  "case": "C01",
+  "date": "2026-10-26T07:08:50.094292+00:00",
+  "command": "Read/parse owned files, Git exact-input/history preservation and product diff before explicit staging",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "environment": "macOS26.5.2arm64",
+  "result": "Pass",
+  "otherOwnerChanged": [],
+  "priorHistoryPrefixPreserved": true,
+  "nonTicketDelta": "",
+  "jsonFilesParsed": 10,
+  "newEvidenceFilesChecked": 42,
+  "newProductTests": "None; only audit/probe syntax checks",
+  "cleanup": "C01-03-cleanup.json",
+  "limits": "No integration/fetch/release/publication by API"
+}

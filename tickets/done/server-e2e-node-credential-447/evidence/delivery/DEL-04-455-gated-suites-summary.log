@@ -1,0 +1,7 @@
+# DEL-04 the gated suites autobyteus-455 brought in, on this ticket's harness (scripted AGY, no provider); commit 5c29d6fca2; 2026-11-10 (rerun after an app restart cut the first attempt)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
+# exit=0; grep NODE_CREDENTIAL_REQUIRED|MCP_GATEWAY_TOKEN_REQUIRED: 0; grep own_/mcpg_: 0. Full log kept in the worktree, not committed.
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 3394ms
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (42 tests) 442008ms
+ Test Files  2 passed (2)
+      Tests  48 passed (48)

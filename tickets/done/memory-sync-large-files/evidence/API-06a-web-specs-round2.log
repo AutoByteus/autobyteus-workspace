@@ -1,0 +1,5 @@
+# API-06a rerun: card + NodeManager specs on the OBS-1 fix; commit 23bdafdac (code 542bf871f); Node v26.12.0; Sun Nov 15 15:23:41 CET 2026
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts (7 tests) 43ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 37ms
+ Test Files  2 passed (2)
+      Tests  17 passed (17)

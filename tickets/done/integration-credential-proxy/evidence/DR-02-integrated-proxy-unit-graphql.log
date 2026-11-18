@@ -1,0 +1,16 @@
+# Case: DR-02 credential-proxy unit and integration; GraphQL e2e on the built server
+# Command: vitest run tests/unit/credential-proxy tests/integration/credential-proxy; vitest run tests/e2e/credential-proxy/github-integration-graphql.e2e.test.ts
+# Commit: 8b53331099 (codex/integration-credential-proxy merged with origin/personal f13dec395f)
+# Environment: macOS 26.5.2 arm64, node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR (+ gates where named)
+# Date: 2026-10-30 (delivery, integrated state)
+
+ ✓ tests/integration/credential-proxy/credential-proxy-git-smart-http.integration.test.ts (2 tests) 710ms
+ ✓ tests/integration/credential-proxy/credential-proxy-host.integration.test.ts (17 tests) 391ms
+ ✓ tests/integration/credential-proxy/integration-connection-service.integration.test.ts (5 tests) 504ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts (17 tests) 23ms
+ Test Files  4 passed (4)
+      Tests  41 passed (41)
+
+ ✓ tests/e2e/credential-proxy/github-integration-graphql.e2e.test.ts (3 tests) 2033ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

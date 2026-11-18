@@ -95,7 +95,7 @@ describe("app-data capability readiness", () => {
   beforeEach(() => markCapabilitiesPending());
   afterEach(async () => {
     vi.restoreAllMocks();
-    applyCapabilityReadiness({ token_usage_history: true, custom_llm_providers: true });
+    applyCapabilityReadiness({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
     await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
   });
 

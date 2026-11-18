@@ -28,6 +28,8 @@ export type BrowserShellTabSummary = {
   tab_id: string;
   title: string | null;
   url: string;
+  canGoBack: boolean;
+  canGoForward: boolean;
   deviceEmulation?: BrowserShellDeviceEmulationState;
 };
 
@@ -42,6 +44,11 @@ export type BrowserShellNavigateTabRequest = {
   tabId: string;
   url: string;
   waitUntil?: BrowserShellReadyState;
+};
+
+export type BrowserShellHistoryNavigationRequest = {
+  tabId: string;
+  direction: 'back' | 'forward';
 };
 
 export type BrowserShellReloadTabRequest = {

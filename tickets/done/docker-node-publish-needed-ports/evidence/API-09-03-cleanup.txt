@@ -1,0 +1,32 @@
+# Case: API-09 step 03 — cleanup
+# Command: ./docker-start.sh down -p abx402-compose --volumes --delete-state; docker rmi autobyteus-server:latest-abx402 (untags only); receipts
+# Commit: 71dc90b1f1
+# Date: 2026-11-06T15:40:53Z
+
+ Container abx402-compose-autobyteus-server-1  Stopping
+ Container abx402-compose-autobyteus-server-1  Stopped
+ Container abx402-compose-autobyteus-server-1  Removing
+ Container abx402-compose-autobyteus-server-1  Removed
+ Volume abx402-compose_autobyteus-server-workspace  Removing
+ Volume abx402-compose_autobyteus-server-chromium-profile  Removing
+ Volume abx402-compose_autobyteus-server-root-home  Removing
+ Volume abx402-compose_autobyteus-server-data  Removing
+ Volume abx402-compose_autobyteus-server-server-packages  Removing
+ Network abx402-compose_default  Removing
+ Volume abx402-compose_autobyteus-server-root-home  Removed
+ Volume abx402-compose_autobyteus-server-server-packages  Removed
+ Volume abx402-compose_autobyteus-server-chromium-profile  Removed
+ Volume abx402-compose_autobyteus-server-data  Removed
+ Volume abx402-compose_autobyteus-server-workspace  Removed
+ Network abx402-compose_default  Removed
+[2026-11-06 16:40:55] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-publish-needed-ports/autobyteus-server-ts/docker/.runtime/abx402-compose.env
+exit=0
+Untagged: autobyteus-server:latest-abx402
+compose containers: []
+compose volumes: []
+.runtime: []
+image autobyteus/autobyteus-server:1.5.11-beta.7 still present: sha256:8bcf8eabfafe
+user nodes:
+autobyteus-server-2	Up 3 days
+autobyteus-server-1	Up 3 days
+autobyteus-server-0	Up 3 days

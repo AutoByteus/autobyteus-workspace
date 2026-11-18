@@ -15,6 +15,9 @@ const mocks = vi.hoisted(() => ({
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: mocks.push }) }))
 vi.mock('~/stores/chatDraftStore', () => ({
   useChatDraftStore: () => mocks.chat,
+}))
+vi.mock('~/stores/chatDraftProjectChoice', async (importOriginal) => ({
+  ...await importOriginal<typeof import('~/stores/chatDraftProjectChoice')>(),
   chatStartSettingsOf: (draft: any) => ({ carriedFrom: draft.id }),
 }))
 vi.mock('~/stores/agentOrgLaunchDraftStore', () => ({ useAgentOrgLaunchDraftStore: () => mocks.org }))

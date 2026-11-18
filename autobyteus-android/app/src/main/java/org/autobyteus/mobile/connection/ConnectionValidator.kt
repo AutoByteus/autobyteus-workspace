@@ -4,20 +4,25 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
+/** Whether a node answers at an entry's address with phone access on. */
+interface NodeStatusCheck {
+    fun validate(entry: SavedNodeEntry): ConnectionValidationResult
+}
+
 class ConnectionValidator(
     private val connectTimeoutMs: Int = 5_000,
     private val readTimeoutMs: Int = 5_000,
-) {
-    fun validate(profile: SavedNodeProfile): ConnectionValidationResult = validate(profile.baseUrl, profile)
+) : NodeStatusCheck {
+    override fun validate(entry: SavedNodeEntry): ConnectionValidationResult = validate(entry.baseUrl, entry)
 
-    fun validate(baseUrl: String, existingProfile: SavedNodeProfile? = null): ConnectionValidationResult {
+    fun validate(baseUrl: String, existingEntry: SavedNodeEntry? = null): ConnectionValidationResult {
         val normalized = try {
             NodeUrlNormalizer.normalize(baseUrl)
-        } catch (error: NodeUrlNormalizationException) {
-            return ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.invalidUrl(error.message ?: "Invalid URL."))
+        } catch (_: NodeUrlNormalizationException) {
+            return ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.invalidUrl())
         }
 
-        val profile = existingProfile ?: SavedNodeProfile.fromNormalized(normalized)
+        val entry = existingEntry ?: SavedNodeEntry.fromNormalized(normalized)
         return try {
             val connection = (URL(normalized.statusUrl).openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
@@ -27,14 +32,14 @@ class ConnectionValidator(
             }
             val statusCode = connection.responseCode
             if (statusCode !in 200..299) {
-                ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.fromHttpStatus(statusCode))
+                ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.fromHttpStatus(statusCode, entry.shownName))
             } else {
                 val body = connection.inputStream.bufferedReader().use { it.readText() }
                 val status = RemoteAccessStatus.fromJson(body)
                 if (!status.phoneAccessEnabled) {
-                    ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(status.serverName))
+                    ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(entry.shownName))
                 } else {
-                    ConnectionValidationResult.Reachable(profile, status)
+                    ConnectionValidationResult.Reachable(entry, status)
                 }
             }
         } catch (error: Throwable) {
@@ -43,11 +48,10 @@ class ConnectionValidator(
     }
 }
 
+/** A node's public status. It carries no name: the phone takes a node's name from its QR. */
 data class RemoteAccessStatus(
     val phoneAccessEnabled: Boolean,
     val pairingAvailable: Boolean,
-    val compatibilityVersion: Int,
-    val serverName: String,
 ) {
     companion object {
         fun fromJson(jsonText: String): RemoteAccessStatus {
@@ -55,14 +59,12 @@ data class RemoteAccessStatus(
             return RemoteAccessStatus(
                 phoneAccessEnabled = json.optBoolean("phoneAccessEnabled", false),
                 pairingAvailable = json.optBoolean("pairingAvailable", false),
-                compatibilityVersion = json.optInt("compatibilityVersion", 0),
-                serverName = json.optString("serverName", "AutoByteus Desktop"),
             )
         }
     }
 }
 
 sealed class ConnectionValidationResult {
-    data class Reachable(val profile: SavedNodeProfile, val status: RemoteAccessStatus) : ConnectionValidationResult()
+    data class Reachable(val entry: SavedNodeEntry, val status: RemoteAccessStatus) : ConnectionValidationResult()
     data class Failed(val diagnostic: ConnectionDiagnostic) : ConnectionValidationResult()
 }

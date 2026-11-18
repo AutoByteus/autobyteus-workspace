@@ -1,0 +1,31 @@
+# Case: DR-02 full server e2e
+# Command: pnpm test:e2e (repo root)
+# Commit: 99ccc2ef5c (codex/integrations-page merged with origin/personal ec3f721622)
+# Environment: macOS 26.5.2 arm64, node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR (+ gates where named)
+# Date: 2026-11-01 (delivery, integrated state)
+
+## integrations, skills and credential-proxy suites
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 9381ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 3109ms
+ ✓ tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts (5 tests) 1838ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 1817ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (4 tests) 714ms
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (6 tests) 270ms
+ ✓ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests) 279ms
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 84ms
+
+## failures (files that cannot load; 0 failed tests)
+ FAIL  tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts [ tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts [ tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-background-task.e2e.test.ts [ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts [ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts [ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts [ tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts [ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts [ tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts ]
+~/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts/tests/e2e/helpers/claude-live-agent-harness.ts:24:7: ERROR: Expected "as" but found "{"
+
+ Test Files  8 failed | 113 passed | 102 skipped (223)
+      Tests  480 passed | 499 skipped (979)
+
+## reading: the 8 files import tests/e2e/helpers/claude-live-agent-harness.ts, which fails to transform (L24); identical on origin/personal; FU-002 of autobyteus-311

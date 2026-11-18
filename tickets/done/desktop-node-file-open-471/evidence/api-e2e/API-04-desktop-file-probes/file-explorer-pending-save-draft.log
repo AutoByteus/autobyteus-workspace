@@ -1,0 +1,29 @@
+# API-04 file-explorer-pending-save-draft; commit 32dccf58fa; 2026-11-11T14:06:06Z; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:e2e:file-explorer-pending-save-draft --output-dir <API-04-desktop-file-probes/file-explorer-pending-save-draft>
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:file-explorer-pending-save-draft /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/file-explorer-pending-save-draft-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-04-desktop-file-probes/file-explorer-pending-save-draft
+
+PSD-001: Started
+PSD-001: Pass
+PSD-002: Started
+PSD-002: Pass
+PSD-003: Started
+PSD-003: Pass
+PSD-004: Started
+PSD-004: Pass
+PSD-005: Started
+PSD-005: Pass
+PSD-006: Started
+PSD-006: Pass
+PSD-007: Started
+PSD-007: Pass
+PSD-008: Started
+PSD-008: Pass
+PSD-009: Started
+PSD-009: Pass
+PSD-010: Started
+PSD-010: Pass
+PSD-011: Started
+PSD-011: Pass
+{"cases":{"PSD-001":"Pass","PSD-002":"Pass","PSD-003":"Pass","PSD-004":"Pass","PSD-005":"Pass","PSD-006":"Pass","PSD-007":"Pass","PSD-008":"Pass","PSD-009":"Pass","PSD-010":"Pass","PSD-011":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":77970,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":76724,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

@@ -131,9 +131,11 @@ for (const previouslyMounted of [false, true]) {
     const retainedDraft = draftStore.config
     await files.openFile('A.txt', 'A')
     // The normal History action retains the unrelated launch draft.
-    history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any
+    history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree }] as any
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run',
       action: 'select', memberAddress: '/team/lead' })
+    // The selected member's stored conversation loads when it is selected (autobyteus-358).
+    await flush()
     const orgStore = useAgentOrgContextsStore(), org = orgStore.contextFor('org-run')!
     const member = org.getAgentContext('agent-lead-configured')!
     member.requirement = 'retained composer'; member.contextFilePaths = [{ id: 'attachment', path: '/old/reference' }] as any
@@ -154,7 +156,7 @@ for (const previouslyMounted of [false, true]) {
       expect(write).not.toHaveBeenCalled()
       await wrapper.getComponent(FileExplorer).find('input').setValue('pending search')
     } else expect(wrapper.findComponent(FileExplorer).exists()).toBe(false)
-    const saved = await orgStore.saveRunConfig('org-run', { modelPatches: [],
+    const saved = await orgStore.saveRunConfig('org-run', { selectionPatches: [],
       teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/workspace/B' }] })
     await flush()
     expect(saved.success).toBe(true)
@@ -165,7 +167,7 @@ for (const previouslyMounted of [false, true]) {
     expect(draftStore.config).toBe(retainedDraft); expect(draftStore.config?.workspaceId).toBe('A')
     if (previouslyMounted) {
       expect(released).toHaveBeenCalled()
-      expect(removeWindow.mock.calls.some(call => call[0] === 'keydown')).toBe(true)
+      expect(removeWindow.mock.calls.some(call => String(call[0]) === 'keydown')).toBe(true)
       expect(removeDocument.mock.calls.some(call => call[0] === 'dragover')).toBe(true)
     }
     acquire.mockClear(); readFile.mockClear(); search.mockClear(); write.mockClear()
@@ -239,7 +241,7 @@ for (const knownId of [false, true]) {
         conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } };
       return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } };
     });
-    useRunHistoryStore().agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any;
+    useRunHistoryStore().agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree }] as any;
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team/lead' });
     const active = useActiveContextStore(), target = active.activeWorkspaceTarget!;
     expect(target.workspaceRootPath).toBe('/workspace/B');
@@ -261,7 +263,7 @@ for (const knownId of [false, true]) {
       const context = target.context, conversation = context.conversation;
       expect(useFileExplorerStore() === files).toBe(true);
       expect(useActiveContextStore() === active).toBe(true);
-      const launch = useEventMonitorFilePreview({ revealTool: async tab => { useRightSideTabs().selectTabExplicitly(tab); await nextTick(); return true; }, isOriginCurrent: () => true });
+      const launch = useEventMonitorFilePreview({ revealTool: async tab => { useRightSideTabs().selectTabExplicitly(tab); await nextTick(); return true; }, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' });
       const action = { id: 'native', rawCandidate: '/workspace/B/brief.md', normalizedCandidate: '/workspace/B/brief.md', sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const };
       expect((await launch.openPath(action)).status).toBe('opened'); await flush();
       expect(wrapper.getComponent(FileExplorerTabs).props('workspaceId')).toBe('B');
@@ -270,7 +272,8 @@ for (const knownId of [false, true]) {
       expect(files.getOpenFiles('B')).toHaveLength(2);
       expect(files.getActiveFileData('B')?.accessIntent).toEqual({ source: 'event-monitor', readOnly: true });
       expect((await launch.openPath(action)).status).toBe('opened'); await flush();
-      expect(bridge).toHaveBeenCalledTimes(1); expect(files.getOpenFiles('B')).toHaveLength(2);
+      // The same link again reads the file again (autobyteus-450 REQ-003), in the same tab.
+      expect(bridge).toHaveBeenCalledTimes(2); expect(files.getOpenFiles('B')).toHaveLength(2);
       expect(active.activeAgentContext).toBe(context); expect(context.conversation).toBe(conversation);
       expect(draftStore.config?.workspaceId).toBe('A');
       if (knownId) expect(resolve).not.toHaveBeenCalled();

@@ -1,0 +1,11 @@
+# IMP-02 mutation n7 (N-7: each root's host takes a post slot, checks its own eligibility, then runs its delegated wave while holding the slot; tests from b50e2354ab)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/restart-resumer.test.ts --no-watch --testTimeout=8000
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × N-7: three roots with delegated runs under the cap of 3 never deadlock (a waiting host holds no slot) 3017ms
+AssertionError: expected 'deadlocked' to match object { resumed: 9 }
+"deadlocked"
+    241|       new Promise((resolve) => setTimeout(() => resolve("deadlocked"),…
+      Tests  1 failed | 12 passed (13)

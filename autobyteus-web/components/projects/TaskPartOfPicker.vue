@@ -11,7 +11,7 @@
 
       <div v-if="selected" class="mt-3 flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-3 pr-1.5 text-sm" data-testid="task-part-of-selected">
         <span class="max-w-[45%] flex-shrink-0 font-medium text-slate-700"><TaskKey :task-key="selected.taskKey" /></span>
-        <span class="min-w-0 flex-1 truncate text-slate-600">{{ taskSummaryLabel(selected.description) }}</span>
+        <span class="min-w-0 flex-1 truncate text-slate-600">{{ taskTitleLabel(selected.title) }}</span>
         <span class="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="taskStatusPillClass(selected.status)">{{ t(TASK_STATUS_LABEL_KEYS[selected.status]) }}</span>
         <button
           type="button"
@@ -71,7 +71,7 @@
             @mousemove="active = index"
           >
             <span class="max-w-[40%] flex-shrink-0 font-medium" :class="item.blocked ? '' : 'text-slate-700'"><TaskKey :task-key="item.task.taskKey" /></span>
-            <span class="min-w-0 flex-1 truncate" :class="item.blocked ? '' : 'text-slate-600'">{{ taskSummaryLabel(item.task.description) }}</span>
+            <span class="min-w-0 flex-1 truncate" :class="item.blocked ? '' : 'text-slate-600'">{{ taskTitleLabel(item.task.title) }}</span>
             <span v-if="item.blocked" class="flex-shrink-0 text-xs">{{ t('projects.parts.alreadyPart') }}</span>
             <span v-else class="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="taskStatusPillClass(item.task.status)">{{ t(TASK_STATUS_LABEL_KEYS[item.task.status]) }}</span>
           </li>
@@ -90,7 +90,7 @@ import type { ProjectTask } from '~/types/project'
 import { taskKeyNumber } from '~/utils/projects/taskDependencies'
 import { partOfBlockedIds, partsOf } from '~/utils/projects/taskParts'
 import { TASK_STATUS_LABEL_KEYS, taskStatusPillClass } from '~/utils/projects/taskStatusPresentation'
-import { taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { taskTitleLabel } from '~/utils/projects/taskText'
 import TaskKey from './TaskKey.vue'
 
 const props = defineProps<{ projectId: string; projectName: string; taskId?: string; disabled?: boolean }>()
@@ -114,7 +114,7 @@ const options = computed(() => {
   const words = query.value.trim().toLocaleLowerCase()
   return tasks.value
     .filter((item) => item.taskId !== props.taskId && item.taskId !== model.value)
-    .filter((item) => !words || `${item.taskKey} ${item.description}`.toLocaleLowerCase().includes(words))
+    .filter((item) => !words || `${item.taskKey} ${item.title} ${item.description}`.toLocaleLowerCase().includes(words))
     .sort((a, b) => taskKeyNumber(b) - taskKeyNumber(a))
     .slice(0, 8)
     .map((task) => ({ task, blocked: blockedIds.value.has(task.taskId) }))

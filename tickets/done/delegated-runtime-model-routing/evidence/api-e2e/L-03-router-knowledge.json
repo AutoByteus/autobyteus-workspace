@@ -1,0 +1,133 @@
+{
+  "case": "L-03 AC-007: the owner teaches the router in its run; knowledge.md; the next writing Task is routed by it",
+  "commit": "75ca9c82ff",
+  "command": "env -i PATH HOME(real, CLI sign-ins only; nothing in ~/.claude ~/.codex ~/.grok written) USER LOGNAME TMPDIR [MR_PHASES=\u2026] node router-live-probe.mjs <worktree> <out>",
+  "environment": "ENV-3; router claude_agent_sdk/sonnet, delegator claude_agent_sdk/haiku, Antigravity real agy",
+  "date": "2026-10-26",
+  "what_to_look_for": "knowledgeBefore null; knowledgeAfter contains \"Writing tasks (documentation, release notes, prose): choose runtime `antigravity_cli`\"; delegate_task result launch_notes \"runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule\"",
+  "teach": {
+    "turn": {
+      "ms": 9532,
+      "tools": [
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "Read",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+          "result": "null",
+          "at": 3055
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "tool": "Read",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+          "result": "\"File does not exist. Note: your current working directory is /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router.\"",
+          "at": 3081
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "Write",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"content\":\"# Knowledge\\n\\n- Writing tasks (documentation, release notes, prose): choose runtime `antigravity_cli`, model `gemini-3.8-flash-low`. Reason",
+          "result": "null",
+          "at": 6404
+        },
+        {
+          "type": "TOOL_APPROVED",
+          "tool": "Write",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"content\":\"# Knowledge\\n\\n- Writing tasks (documentation, release notes, prose): choose runtime `antigravity_cli`, model `gemini-3.8-flash-low`. Reason",
+          "result": "null",
+          "at": 6428
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "Write",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"content\":\"# Knowledge\\n\\n- Writing tasks (documentation, release notes, prose): choose runtime `antigravity_cli`, model `gemini-3.8-flash-low`. Reason",
+          "result": "\"File created successfully at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-VvmwkH/node/internal-workspaces/autobyteus-model-router/knowledge.md (file state is current in your context \u2014 no need to Read it back)\"",
+          "at": 6472
+        }
+      ],
+      "text": "DONE. `knowledge.md` didn't exist yet, so I created it with this one rule. It sends writing tasks (documentation, release notes, prose) to `antigravity_cli` with `gemini-3.8-flash-low`, and I'll give that as the reason.",
+      "errors": []
+    },
+    "knowledgeBefore": null,
+    "knowledgeAfter": "# Knowledge\n\n- Writing tasks (documentation, release notes, prose): choose runtime `antigravity_cli`, model `gemini-3.8-flash-low`. Reason to give: \"Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-flash-low.\" (Set by the node owner.)\n"
+  },
+  "route": {
+    "turn": {
+      "ms": 26101,
+      "tools": [
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f374\",\"description\":\"Write the release notes for version 2.0 of the app (three bullet points). Reply OK.\"}",
+          "result": "null",
+          "at": 2992
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f374\",\"description\":\"Write the release notes for version 2.0 of the app (three bullet points). Reply OK.\"}",
+          "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_f374_30ec8383baf9424db273102dbf892ee3\\\",\\\"task_id\\\":\\\"ad_hoc_task_97d2b4ac-23f4-49ce-bf01-59ad31ef33ad\\\",\\\"launch_notes\\\":[\\\"Writer Bot f374: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-fla",
+          "at": 22862
+        }
+      ],
+      "text": "The launch notes say: \"Writer Bot f374: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-flash-low.\"",
+      "errors": []
+    },
+    "decisions": {
+      "groups": [
+        {
+          "taskId": "ad_hoc_task_97d2b4ac-23f4-49ce-bf01-59ad31ef33ad",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write the release notes for version 2.0 of the app (three bullet points). Reply OK.",
+          "latestAt": "2026-10-26T18:44:14.139Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-26T18:44:14.139Z",
+              "delegatingRunId": "probe_delegator_5d32_2acdf2f0f90e4b478a78a4dded6f8fb2",
+              "delegatingAgentName": "probe_delegator_5d32",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_f374",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-26T18:44:14.139Z",
+                  "taskId": "ad_hoc_task_97d2b4ac-23f4-49ce-bf01-59ad31ef33ad",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write the release notes for version 2.0 of the app (three bullet points). Reply OK.",
+                  "delegatingRunId": "probe_delegator_5d32_2acdf2f0f90e4b478a78a4dded6f8fb2",
+                  "delegatingAgentName": "probe_delegator_5d32",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_f374",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_f374",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "source": "model_router",
+                  "taskKind": "release notes writing",
+                  "choiceReason": "Node owner's rule: writing tasks go to antigravity_cli with gemini-3.8-flash-low.",
+                  "routerFailure": null,
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "totalTasks": 1
+    },
+    "status": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet"
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_c8f9e18874854e9188e31a3b5433e606"
+    }
+  }
+}

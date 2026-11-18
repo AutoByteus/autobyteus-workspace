@@ -1,0 +1,8 @@
+# IMP-05 web specs (Agent Runtimes, presentation, model routing, activity)
+# Command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/settings/agent-runtimes utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts utils/__tests__/grokBuildRuntimePresentation.spec.ts components/settings/model-routing services/activity
+# Commit: d5566977b4
+# Environment: macOS (Darwin 25.5), Node 22.21.1 (server), dsh 0.2.2-rc.1 on Node 25.2.1
+# Date: 2026-11-06
+
+ Test Files  6 passed (6)
+      Tests  41 passed (41)

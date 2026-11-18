@@ -31,7 +31,7 @@ import {
 } from '~/stores/runHistoryLoadActions';
 import {
   archiveAgentOrgRunInHistoryStore, archiveAgentOrgRunsInHistoryStore, archiveAgentRunGroupInHistoryStore,
-  archiveRunInHistoryStore, archiveTeamRunInHistoryStore, archiveTeamRunsInHistoryStore,
+  archiveRunInHistoryStore, archiveRunsInHistoryStore, archiveTeamRunInHistoryStore, archiveTeamRunsInHistoryStore, type RunArchiveTargets,
   deleteAgentOrgRunFromHistoryStore, deleteRunFromHistoryStore, deleteTeamRunFromHistoryStore,
 } from '~/stores/runHistoryMutationActions';
 import { fetchWorkspaceHistoryForStore, pruneWorkspaceHistoryForStore } from '~/stores/runHistoryWorkspaceHistoryActions';
@@ -56,6 +56,8 @@ import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberIn
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentRunResumeConfig, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { teamRowsAboveAgent } from '~/utils/runTree/runTreeAgents';
 
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
@@ -67,6 +69,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     agentOrgRequestSequenceById: {} as Record<string, number>,
     agentOrgHistoryItemErrors: {} as Record<string, string>,
     workspaceRequestGeneration: 0,
+    historyWindow: 6 as number | null, // agent runs read per agent and folder; null: every run. The one owner of the cap (DS-002).
     workspaceHistoryLoadingById: {} as Record<string, boolean>,
     workspaceHistoryErrorById: {} as Record<string, string | null>,
     agentAvatarByDefinitionId: {} as Record<string, string>,
@@ -94,6 +97,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
     getModelConfigEditability: (state) => (runId: string) =>
       state.resumeConfigByRunId[runId]?.modelConfigEditability ?? null,
 
+    /** The listed standalone Agent runs, active or stopped (the history poll's status read, autobyteus-426 D-09, -435). */
+    listedAgentRunIds: (state): string[] => state.workspaceGroups.flatMap((group) =>
+      group.agentDefinitions.flatMap((agent) => agent.runs.map((run) => run.runId))),
+
     isRunActive: (state) => (runId: string): boolean => {
       return Boolean(state.resumeConfigByRunId[runId]?.isActive);
     },
@@ -116,8 +123,14 @@ export const useRunHistoryStore = defineStore('runHistory', {
       this.refreshRunNavigationTopology('workspace-catalog-load');
     },
 
-    async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
-      await fetchRunHistoryTree(this, limitPerAgent, options);
+    /**
+     * The one read window (workspace-tree-vs-chooser DS-002): agent runs read per agent and folder, `null` for every run.
+     * The run section sets it from its view (Runs, Projects: `null`; Workspaces: 6); the phone reads every run (`null`). Every read uses it.
+     */
+    setHistoryWindow(limitPerAgent: number | null): void { this.historyWindow = limitPerAgent; },
+
+    async fetchTree(options: { quiet?: boolean } = {}): Promise<void> {
+      await fetchRunHistoryTree(this, options);
     },
 
     async refreshAgentOrgHistory(): Promise<void> {
@@ -132,14 +145,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const result = await openHistoricalRun(this, runId, options);
       if (result.disposition === 'committed') this.refreshRunNavigationTopology('standalone-open');
       return result;
-    },
-
-    async createWorkspace(rootPath: string): Promise<string> {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = await workspaceStore.createWorkspace({ root_path: rootPath });
-      const workspace = workspaceStore.workspaces[workspaceId];
-      this.refreshRunNavigationTopology('workspace-create');
-      return workspace?.absolutePath || rootPath;
     },
 
     markRunAsActive(runId: string): void {
@@ -423,26 +428,19 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
     archiveTeamRuns(teamRunIds: string[]) { return archiveTeamRunsInHistoryStore(this, teamRunIds); },
     archiveAgentOrgRuns(orgRunIds: string[]) { return archiveAgentOrgRunsInHistoryStore(this, orgRunIds); },
+    archiveRuns(targets: RunArchiveTargets) { return archiveRunsInHistoryStore(this, targets); },
 
-    async refreshTreeQuietly(limitPerAgent = 6): Promise<void> {
+    async refreshTreeQuietly(): Promise<void> {
       try {
-        await this.fetchTree(limitPerAgent, { quiet: true });
+        await this.fetchTree({ quiet: true });
       } catch {
         // No-op for best-effort refreshes.
       }
     },
 
-    async fetchWorkspaceHistory(workspaceId: string, limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
-      await fetchWorkspaceHistoryForStore(this, workspaceId, limitPerAgent, options);
+    async fetchWorkspaceHistory(workspaceId: string, options: { quiet?: boolean } = {}): Promise<void> {
+      await fetchWorkspaceHistoryForStore(this, workspaceId, options);
       this.refreshRunNavigationTopology('workspace-history-fetch');
-    },
-
-    async refreshWorkspaceHistoryQuietly(workspaceId: string, limitPerAgent = 6): Promise<void> {
-      try {
-        await this.fetchWorkspaceHistory(workspaceId, limitPerAgent, { quiet: true });
-      } catch {
-        // No-op for best-effort refreshes.
-      }
     },
 
     pruneWorkspace(workspaceId: string, workspaceRootPath: string | null | undefined): void {
@@ -480,6 +478,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
       teamRunId: string,
       agentRunId: string,
     ): string[] {
+      // A run the Team delegated is a row of its tree (SR-084): the team rows above it unfold (CR-461-108).
+      const delegated = teamRowsAboveAgent(useRunTreeStore().rowsOf({ kind: 'agent_team', runId: teamRunId }), agentRunId, `team:${teamRunId}`);
+      if (delegated.length) return delegated;
       if (!this.navigationProjection) this.refreshRunNavigationTopology('lazy-member-ancestry-read');
       const keys = this.navigationProjection?.memberAncestorExecutionKeysByIdentity[
         runHistoryMemberIndexKey(teamRunId, agentRunId)
@@ -531,7 +532,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async selectTreeRun(
       row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberFocusTarget,
-      options: { selectionIntent?: WorkspaceSelectionIntent } = {},
+      options: { selectionIntent?: WorkspaceSelectionIntent; selectionMode?: RunHistorySelectionMode } = {},
     ): Promise<WorkspaceSelectionOutcome> {
       return selectTreeRunFromHistory(this, row, options);
     },

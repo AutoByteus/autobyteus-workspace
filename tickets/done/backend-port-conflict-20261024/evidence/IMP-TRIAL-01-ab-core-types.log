@@ -1,0 +1,313 @@
+IMP-TRIAL-01 — archived implementation attempt; not reusable current acceptance
+Step: ab-core-types; see failure analysis in implementation-check-ledger.md.
+Commit: evolving uncommitted IR-002 tree over2630c26f8 before f34ad8749; desktop setup build overlapped later fix commits. Exact source snapshot/invocation not retained, therefore no current-pass authority.
+Environment: macOS arm64 Node26.12.0, task-local packages; no provider gate.
+Log finished: 2026-10-24T18:29:21.805079+00:00
+
+autobyteus-ts/src/tools/terminal/command-execution/anchored-command-launcher.ts(79,28): error TS2339: Property 'message' does not exist on type '{ kind: "READY" | "STARTED"; pid: number; } | { kind: "SPAWN_FAILED"; message: string; }'.
+  Property 'message' does not exist on type '{ kind: "READY" | "STARTED"; pid: number; }'.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(210,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(261,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(303,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(367,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(413,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(445,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(483,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(535,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(581,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(612,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(646,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(680,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(721,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(754,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(786,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(828,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(862,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(897,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(930,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(964,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(998,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1041,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1070,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1099,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1166,67): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1167,64): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1212,96): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1219,96): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1265,71): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/edit-file-benchmark-flow.test.ts(1266,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(358,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(408,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(449,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(494,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(525,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(562,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(592,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(625,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(658,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/edit-file-diagnostics.test.ts(699,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/gemini-read-media-file-m4a-live.test.ts(28,34): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/test-vault.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via '../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/agent/gemini-read-media-file-m4a-live.test.ts'
+    Imported via '../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/agent/openai-single-agent-flow.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/agent/handlers/api-tool-call-handler-live.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/agent/handlers/claude-tool-call-handler-live.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/agent/handlers/mistral-tool-call-handler-live.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/anthropic-llm-image.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/anthropic-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/deepseek-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/gemini-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/glm-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/grok-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/kimi-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/mistral-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/openai-compatible-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/openai-llm-image.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/openai-llm.test.ts'
+    Imported via '../../../../../test-support/test-vault/test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/integration/llm/api/qwen-llm.test.ts'
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(93,67): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(94,64): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(95,66): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(172,71): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(173,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(174,70): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(310,69): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(311,66): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(312,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(415,73): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(416,70): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(417,72): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/memory-tool-call-flow.test.ts(116,62): error TS2339: Property 'traceType' does not exist on type 'MemoryItem'.
+autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts(111,18): error TS2353: Object literal may only specify known properties, and 'prompt_tokens' does not exist in type '{ input_tokens: number | null; output_tokens: number | null; total_tokens: number | null; usage_scope: "per_call"; model_provider: string | null; model_identifier: string | null; ... 14 more ...; billable_output_tokens?: number | ... 1 more ... | undefined; }'.
+autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts(119,16): error TS2353: Object literal may only specify known properties, and 'prompt_tokens' does not exist in type '{ input_tokens: number | null; output_tokens: number | null; total_tokens: number | null; usage_scope: "per_call"; model_provider: string | null; model_identifier: string | null; ... 14 more ...; billable_output_tokens?: number | ... 1 more ... | undefined; }'.
+autobyteus-ts/tests/integration/agent/run-bash-benchmark-flow.test.ts(664,67): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/run-bash-benchmark-flow.test.ts(665,64): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/run-bash-benchmark-flow.test.ts(748,71): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/run-bash-benchmark-flow.test.ts(749,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts(104,103): error TS2322: Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts(105,97): error TS2322: Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts(154,89): error TS2322: Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts(213,104): error TS2322: Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts(214,86): error TS2322: Type 'number' is not assignable to type 'void | Promise<void>'.
+autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts(187,66): error TS7031: Binding element 'message' implicitly has an 'any' type.
+autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts(427,21): error TS2352: Conversion of type 'EventEnvelope | undefined' to type '{ event: ToolResultEvent; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'EventEnvelope' is not comparable to type '{ event: ToolResultEvent; }'.
+    Types of property 'event' are incompatible.
+      Type 'BaseEvent' is missing the following properties from type 'ToolResultEvent': toolName, result, isDenied
+autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts(481,21): error TS2352: Conversion of type 'EventEnvelope | undefined' to type '{ event: ToolResultEvent; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'EventEnvelope' is not comparable to type '{ event: ToolResultEvent; }'.
+    Types of property 'event' are incompatible.
+      Type 'BaseEvent' is missing the following properties from type 'ToolResultEvent': toolName, result, isDenied
+autobyteus-ts/tests/integration/llm/api/kimi-llm.test.ts(270,17): error TS2554: Expected 2-3 arguments, but got 1.
+autobyteus-ts/tests/integration/llm/api/mistral-llm.test.ts(56,17): error TS2554: Expected 2-3 arguments, but got 1.
+autobyteus-ts/tests/integration/tools/multimedia/download-media-tool.test.ts(32,9): error TS2322: Type 'unknown' is not assignable to type 'string'.
+autobyteus-ts/tests/integration/tools/multimedia/download-media-tool.test.ts(62,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+autobyteus-ts/tests/integration/tools/multimedia/media-reader-tool.test.ts(35,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/multimedia/media-reader-tool.test.ts(36,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/multimedia/media-reader-tool.test.ts(37,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/multimedia/media-reader-tool.test.ts(53,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/multimedia/media-reader-tool.test.ts(54,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/multimedia/media-reader-tool.test.ts(55,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/terminal/isolated-pty-session.test.ts(88,22): error TS2339: Property 'close' does not exist on type 'never'.
+autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts(175,14): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts(177,14): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/integration/tools/tool-state.test.ts(9,18): error TS18047: 'current' is possibly 'null'.
+autobyteus-ts/tests/integration/tools/usage/providers/tool-schema-provider.test.ts(43,32): error TS2339: Property 'name' does not exist on type '{}'.
+autobyteus-ts/tests/setup.ts(6,44): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/credential-environment.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via '../../test-support/test-vault/credential-environment.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/setup.ts'
+    Imported via './credential-environment.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/test-vault.ts'
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"
+autobyteus-ts/tests/setup.ts(7,42): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/live-provider-test.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via '../../test-support/test-vault/live-provider-test.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/setup.ts'
+    Imported via './live-provider-test.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/test-vault.ts'
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"
+autobyteus-ts/tests/unit/agent/agent.test.ts(50,3): error TS2322: Type 'Mock<(event: any) => Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>>' is not assignable to type '(event: ToolExecutionApprovalEvent) => Promise<PostToolApprovalResult>'.
+  Type 'Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>' is not assignable to type 'Promise<PostToolApprovalResult>'.
+    Type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' is not assignable to type 'PostToolApprovalResult'.
+      Property 'message' is missing in type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' but required in type '{ accepted: false; code: "interrupted_turn"; invocationId: string; turnId: string; message: string; }'.
+autobyteus-ts/tests/unit/agent/agent.test.ts(56,3): error TS2322: Type 'Mock<(event: any) => Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>>' is not assignable to type '(event: ToolResultEvent) => Promise<PostToolResultResult>'.
+  Type 'Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>' is not assignable to type 'Promise<PostToolResultResult>'.
+    Type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' is not assignable to type 'PostToolResultResult'.
+      Property 'message' is missing in type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' but required in type '{ accepted: false; code: "interrupted_turn"; invocationId: string; turnId: string; message: string; }'.
+autobyteus-ts/tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts(93,47): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+autobyteus-ts/tests/unit/agent/event-inbox/agent-event-inbox.test.ts(70,67): error TS2339: Property 'origin' does not exist on type 'AgentEventInboxEntry<BaseEvent>'.
+autobyteus-ts/tests/unit/agent/event-inbox/agent-event-scheduler.test.ts(156,53): error TS2339: Property 'origin' does not exist on type 'AgentEventInboxEntry<BaseEvent>'.
+autobyteus-ts/tests/unit/agent/event-inbox/agent-event-scheduler.test.ts(164,53): error TS2339: Property 'origin' does not exist on type 'AgentEventInboxEntry<BaseEvent>'.
+autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts(234,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts(206,76): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts(209,20): error TS2358: The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.
+autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts(209,73): error TS2339: Property 'turnId' does not exist on type 'never'.
+autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts(215,11): error TS2358: The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.
+autobyteus-ts/tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts(186,94): error TS2554: Expected 1 arguments, but got 2.
+autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts(134,19): error TS18047: 'result.llmUserMessage' is possibly 'null'.
+autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts(165,19): error TS18047: 'result.llmUserMessage' is possibly 'null'.
+autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts(196,32): error TS18047: 'result.llmUserMessage' is possibly 'null'.
+autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts(236,32): error TS18047: 'result.llmUserMessage' is possibly 'null'.
+autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts(262,19): error TS18047: 'result.llmUserMessage' is possibly 'null'.
+autobyteus-ts/tests/unit/llm/api/anthropic-llm-claude-5-5.test.ts(230,16): error TS18046: 'nativeTurn.blocks' is of type 'unknown'.
+autobyteus-ts/tests/unit/llm/api/compaction-single-attempt-transport.test.ts(23,55): error TS2345: Argument of type '{ name: string; value: string; provider: LLMProvider; hostUrl: string; }' is not assignable to parameter of type 'LLMModelOptions'.
+  Property 'canonicalName' is missing in type '{ name: string; value: string; provider: LLMProvider; hostUrl: string; }' but required in type 'LLMModelOptions'.
+autobyteus-ts/tests/unit/llm/api/gemini-llm.test.ts(64,86): error TS2345: Argument of type '(runtime: "vertex" | "api_key") => Promise<void>' is not assignable to parameter of type '(...args: ["api_key", "AI Studio"] | ["vertex", "Vertex Express"] | ["vertex", "Vertex Project"]) => Awaitable<void>'.
+  Types of parameters 'runtime' and 'args' are incompatible.
+    Type '["api_key", "AI Studio"] | ["vertex", "Vertex Express"] | ["vertex", "Vertex Project"]' is not assignable to type '[runtime: "vertex" | "api_key"]'.
+      Type '["api_key", "AI Studio"]' is not assignable to type '[runtime: "vertex" | "api_key"]'.
+        Source has 2 element(s) but target allows only 1.
+autobyteus-ts/tests/unit/llm/api/nonstreaming-finish.test.ts(14,54): error TS2345: Argument of type '{ name: string; value: string; provider: LLMProvider; hostUrl: string; }' is not assignable to parameter of type 'LLMModelOptions'.
+  Property 'canonicalName' is missing in type '{ name: string; value: string; provider: LLMProvider; hostUrl: string; }' but required in type 'LLMModelOptions'.
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts(30,20): error TS2352: Conversion of type 'ChatCompletionCreateParams' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'ChatCompletionCreateParamsStreaming' is not comparable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'ChatCompletionCreateParamsStreaming'.
+autobyteus-ts/tests/unit/llm/api/openai-compatible-request-builder.test.ts(79,20): error TS2352: Conversion of type 'ChatCompletionCreateParams' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'ChatCompletionCreateParamsStreaming' is not comparable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'ChatCompletionCreateParamsStreaming'.
+autobyteus-ts/tests/unit/llm/extensions/base-extension.test.ts(25,27): error TS2554: Expected 0 arguments, but got 1.
+autobyteus-ts/tests/unit/llm/extensions/base-extension.test.ts(26,26): error TS2554: Expected 0 arguments, but got 2.
+autobyteus-ts/tests/unit/llm/extensions/extension-registry.test.ts(39,25): error TS2345: Argument of type 'typeof ExtA' is not assignable to parameter of type 'new (...args: unknown[]) => ExtA'.
+  Types of construct signatures are incompatible.
+    Type 'new (llm: BaseLLM) => ExtA' is not assignable to type 'new (...args: unknown[]) => ExtA'.
+      Types of parameters 'llm' and 'args' are incompatible.
+        Type 'unknown' is not assignable to type 'BaseLLM'.
+autobyteus-ts/tests/unit/llm/extensions/extension-registry.test.ts(54,25): error TS2345: Argument of type 'typeof ExtA' is not assignable to parameter of type 'new (...args: unknown[]) => ExtA'.
+  Types of construct signatures are incompatible.
+    Type 'new (llm: BaseLLM) => ExtA' is not assignable to type 'new (...args: unknown[]) => ExtA'.
+      Types of parameters 'llm' and 'args' are incompatible.
+        Type 'unknown' is not assignable to type 'BaseLLM'.
+autobyteus-ts/tests/unit/llm/llm-factory-config-composition.test.ts(43,5): error TS2322: Type 'typeof CapturingLLM' is not assignable to type 'new (model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver | undefined, geminiRuntimeResolver?: GeminiRuntimeResolver | undefined) => BaseLLM'.
+  Types of construct signatures are incompatible.
+    Type 'new (model: LLMModel, config: LLMConfig, resolver: ProviderApiKeyResolver) => CapturingLLM' is not assignable to type 'new (model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver | undefined, geminiRuntimeResolver?: GeminiRuntimeResolver | undefined) => BaseLLM'.
+      Types of parameters 'resolver' and 'apiKeyResolver' are incompatible.
+        Type 'ProviderApiKeyResolver | undefined' is not assignable to type 'ProviderApiKeyResolver'.
+          Type 'undefined' is not assignable to type 'ProviderApiKeyResolver'.
+autobyteus-ts/tests/unit/llm/models.test.ts(72,9): error TS2353: Object literal may only specify known properties, and 'apiKey' does not exist in type '{ id: string; name: string; providerType: LLMProvider.OPENAI_COMPATIBLE; baseUrl: string; }'.
+autobyteus-ts/tests/unit/llm/openai-compatible-endpoint-discovery.test.ts(109,7): error TS2322: Type 'Mock<(url: string, init: RequestInit) => Promise<Response>>' is not assignable to type '((input: string | URL | Request, init?: RequestInit | undefined) => Promise<Response>) | undefined'.
+  Type 'Mock<(url: string, init: RequestInit) => Promise<Response>>' is not assignable to type '(input: string | URL | Request, init?: RequestInit | undefined) => Promise<Response>'.
+    Types of parameters 'url' and 'input' are incompatible.
+      Type 'string | URL | Request' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+autobyteus-ts/tests/unit/llm/openai-compatible-endpoint-discovery.test.ts(149,9): error TS2322: Type 'Mock<(_url: string, init: RequestInit) => Promise<never>>' is not assignable to type '((input: string | URL | Request, init?: RequestInit | undefined) => Promise<Response>) | undefined'.
+  Type 'Mock<(_url: string, init: RequestInit) => Promise<never>>' is not assignable to type '(input: string | URL | Request, init?: RequestInit | undefined) => Promise<Response>'.
+    Types of parameters '_url' and 'input' are incompatible.
+      Type 'string | URL | Request' is not assignable to type 'string'.
+        Type 'URL' is not assignable to type 'string'.
+autobyteus-ts/tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts(31,24): error TS2339: Property 'tool_calls' does not exist on type 'ChatCompletionMessageParam'.
+  Property 'tool_calls' does not exist on type 'ChatCompletionDeveloperMessageParam'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(51,14): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(55,14): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(62,12): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(73,12): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(96,12): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(107,12): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(199,12): error TS18048: 'definition.defaultConfig' is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(242,12): error TS2532: Object is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(302,12): error TS18048: 'definition.defaultConfig' is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(348,14): error TS18048: 'definition.defaultConfig' is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts(398,12): error TS18048: 'definition.defaultConfig' is possibly 'undefined'.
+autobyteus-ts/tests/unit/llm/utils/llm-config.test.ts(257,37): error TS2345: Argument of type 'LLMConfigData' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'LLMConfigData'.
+autobyteus-ts/tests/unit/memory/direct-compaction-harness.ts(17,7): error TS2741: Property 'usesCachedSummary' is missing in type '{ requestCachedSummary: () => never; requestTranscriptSummary: () => never; fitsInputBudget: () => never; }' but required in type 'ConversationSummaryPort'.
+autobyteus-ts/tests/unit/memory/retriever.test.ts(20,63): error TS2353: Object literal may only specify known properties, and 'turnIds' does not exist in type 'EpisodicItemOptions'.
+autobyteus-ts/tests/unit/memory/retriever.test.ts(21,63): error TS2353: Object literal may only specify known properties, and 'turnIds' does not exist in type 'EpisodicItemOptions'.
+autobyteus-ts/tests/unit/memory/user-file-attachments.test.ts(85,41): error TS2741: Property 'list' is missing in type 'RunMemoryFileStore' but required in type 'MemoryStore'.
+autobyteus-ts/tests/unit/secrets/provider-api-key-resolver.test.ts(5,42): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/synthetic-test-vault.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via '../../../../test-support/test-vault/synthetic-test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/unit/secrets/provider-api-key-resolver.test.ts'
+    Imported via '../../../../../test-support/test-vault/synthetic-test-vault.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts/tests/unit/secrets/vault/read-secret-entry.test.ts'
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"
+autobyteus-ts/tests/unit/secrets/vault-module-graph.test.ts(4,29): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/module-graph/module-graph.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"
+autobyteus-ts/tests/unit/tools/file/file-tool-schema.test.ts(29,63): error TS2339: Property 'path' does not exist on type '{}'.
+autobyteus-ts/tests/unit/tools/file/file-tool-schema.test.ts(30,66): error TS2339: Property 'base_dir' does not exist on type '{}'.
+autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts(51,23): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts(76,23): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/download-media-tool.test.ts(92,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(37,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(38,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(39,12): error TS18046: 'result' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(58,12): error TS18046: 'audioResult' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(59,12): error TS18046: 'audioResult' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(60,12): error TS18046: 'audioResult' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(63,12): error TS18046: 'videoResult' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(64,12): error TS18046: 'videoResult' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/multimedia/media-reader-tool.test.ts(65,12): error TS18046: 'videoResult' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/terminal/background-process-manager.test.ts(38,19): error TS2741: Property 'birth' is missing in type '{ pid: number; parentPid: number; processGroupId: number; status: string; command: string; }' but required in type 'ObservedProcess'.
+autobyteus-ts/tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts(33,23): error TS2339: Property 'shellIdentityMarker' does not exist on type 'NonInteractiveShellInvocation'.
+autobyteus-ts/tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts(34,57): error TS2339: Property 'shellIdentityMarker' does not exist on type 'NonInteractiveShellInvocation'.
+autobyteus-ts/tests/unit/tools/terminal/command-execution/process-group-observer.test.ts(36,24): error TS2339: Property 'stopProcess' does not exist on type 'ProcessGroupObserver'.
+autobyteus-ts/tests/unit/tools/terminal/command-execution/process-group-observer.test.ts(89,36): error TS2339: Property 'stopProcess' does not exist on type 'ProcessGroupObserver'.
+autobyteus-ts/tests/unit/tools/terminal/command-execution/process-group-observer.test.ts(121,36): error TS2339: Property 'stopProcess' does not exist on type 'ProcessGroupObserver'.
+autobyteus-ts/tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts(57,12): error TS18046: 'inputSchema' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts(58,12): error TS18046: 'inputSchema' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts(59,12): error TS18046: 'inputSchema' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts(56,12): error TS18046: 'parameters' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts(57,12): error TS18046: 'parameters' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts(58,12): error TS18046: 'parameters' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(61,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(62,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(63,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(64,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(65,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(66,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(67,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(68,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(69,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(70,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(71,12): error TS18046: 'output.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(23,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(24,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(25,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(26,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(27,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(28,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(32,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(33,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(34,24): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(35,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(46,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(47,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(48,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(49,12): error TS18046: 'schema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(78,12): error TS18046: 'runSchema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(79,12): error TS18046: 'backgroundSchema.function' is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/tool-schema-provider.test.ts(54,12): error TS2571: Object is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/tool-schema-provider.test.ts(55,12): error TS2571: Object is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/tool-schema-provider.test.ts(56,12): error TS2571: Object is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/tool-schema-provider.test.ts(57,12): error TS2571: Object is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/tool-schema-provider.test.ts(76,12): error TS2571: Object is of type 'unknown'.
+autobyteus-ts/tests/unit/tools/usage/providers/tool-schema-provider.test.ts(95,12): error TS2571: Object is of type 'unknown'.
+test-support/test-vault/live-provider-test.ts(1,48): error TS2307: Cannot find module 'vitest' or its corresponding type declarations.
+test-support/test-vault/live-provider-test.ts(2,45): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/provider-access-classification.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Imported via './provider-access-classification.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/live-provider-test.ts'
+    Imported via './provider-access-classification.js' from file '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/test-vault.ts'
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"
+test-support/test-vault/live-provider-test.ts(58,3): error TS2322: Type 'any' is not assignable to type 'never'.
+test-support/test-vault/live-provider-test.ts(77,45): error TS7006: Parameter 'context' implicitly has an 'any' type.
+test-support/test-vault/test-vault.ts(17,8): error TS6059: File '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/test-support/test-vault/test-vault-selection.ts' is not under 'rootDir' '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  File is CommonJS module because '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/package.json' does not have field "type"

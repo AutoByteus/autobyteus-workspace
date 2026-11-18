@@ -1,0 +1,883 @@
+{
+  "caseId": "LCL-LONG-AGY-DAEMON",
+  "startedAt": "2026-11-17T11:30:17.502Z",
+  "longSeconds": 2100,
+  "firstTurnEnd": "TURN_COMPLETED",
+  "watched": {
+    "pid": 66632,
+    "samples": [
+      {
+        "elapsedS": 11,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 71,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 131,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 191,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 251,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 311,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 371,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 431,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 491,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 551,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 611,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 671,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 731,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 791,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 851,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 911,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 971,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1031,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1091,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1151,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1211,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1271,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1331,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1391,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1451,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1511,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1571,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1631,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1691,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1751,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1811,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1871,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1931,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 1991,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2051,
+        "pidAlive": true,
+        "done": null,
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": [
+            {
+              "taskId": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+              "kind": "shell",
+              "description": "bash long-job.sh 2100 agyd",
+              "command": "bash long-job.sh 2100 agyd",
+              "status": "running",
+              "summary": null,
+              "endReason": null,
+              "exitCode": null,
+              "startedAt": "2026-11-17T11:30:47.242Z"
+            }
+          ]
+        }
+      },
+      {
+        "elapsedS": 2111,
+        "pidAlive": false,
+        "done": "agyd finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      },
+      {
+        "elapsedS": 2116,
+        "pidAlive": false,
+        "done": "agyd finished after 2103s",
+        "killed": null,
+        "view": {
+          "__typename": "AgentBackgroundTaskEventStream",
+          "currentTasks": []
+        }
+      }
+    ],
+    "aliveAfter30Min": true
+  },
+  "ended": {
+    "at": 2108367,
+    "task_id": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+    "kind": "shell",
+    "description": "bash long-job.sh 2100 agyd",
+    "command": "bash long-job.sh 2100 agyd",
+    "status": "completed",
+    "summary": "Command exited with code 0.\n\nCommand output:\nagyd started\r\nagyd progress 30s\r\nagyd progress 60s\r\nagyd progress 90s\r\nagyd progress 120s\r\nagyd progress 150s\r\nagyd progress 180s\r\nagyd progress 210s\r\nagyd progress 240s\r\nagyd progress 270s\r\nagyd progress 300s\r\nagyd progress 330s\r\nagyd progress 360s\r\nagyd progress 391s\r\nagyd progress 421s\r\nagyd progress 451s\r\nagyd progress 481s\r\nagyd progress 511s\r\nagyd progress 541s\r\nagyd progress 571s\r\nagyd progress 601s\r\nagyd progress 631s\r\nagyd progress 661s\r\nagyd progress 691s\r\nagyd progress 721s\r\nagyd progress 751s\r\nagyd progress 781s\r\nagyd progress 811s\r\nagyd progress 841s\r\nagyd progress 871s\r\nagyd progress 901s\r\nagyd progress 931s\r\nagyd progress 961s\r\nagyd progress 991s\r\nagyd progress 1021s\r\nagyd progress 1051s\r\nagyd progress 1081s\r\nagyd progress 1111s\r\nagyd progress 1142s\r\nagyd progress 1172s\r\nagyd progress 1202s\r\nagyd progress 1232s\r\nagyd progress 1262s\r\nagyd progress 1292s\r\nagyd progress 1322s\r\nagyd progress 1352s\r\nagyd progress 1382s\r\nagyd progr…",
+    "end_reason": null,
+    "exit_code": 0,
+    "started_at": "2026-11-17T11:30:47.242Z"
+  },
+  "runId": "long_command_external_0a43ec7a_4729_4a41_9156_e7_84b89f8d363f4eb19ad42df090aeacb6",
+  "socketEvents": [],
+  "toolCalls": [
+    {
+      "at": 4956,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool": "run_command",
+      "invocation": "agy-tool-91a2848b-f967-4107-bcbe-1f54dda4b5ab-2",
+      "args": {
+        "CommandLine": "bash long-job.sh 2100 agyd",
+        "IsDaemon": true,
+        "WaitMsBeforeAsync": 500,
+        "toolSummary": "Start long job daemon"
+      }
+    },
+    {
+      "at": 10022,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "run_command",
+      "invocation": "agy-tool-91a2848b-f967-4107-bcbe-1f54dda4b5ab-2",
+      "result": "{\"provider_state\":\"RUNNING\",\"output\":\"Started as a background task; still running when the turn ended.\"}"
+    }
+  ],
+  "tasks": [
+    {
+      "at": 10022,
+      "task_id": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+      "kind": "shell",
+      "description": "bash long-job.sh 2100 agyd",
+      "command": "bash long-job.sh 2100 agyd",
+      "status": "running",
+      "summary": null,
+      "end_reason": null,
+      "exit_code": null,
+      "started_at": "2026-11-17T11:30:47.242Z"
+    },
+    {
+      "at": 2108367,
+      "task_id": "0815b968-7180-4b18-8003-8f615a6309f6/task-2",
+      "kind": "shell",
+      "description": "bash long-job.sh 2100 agyd",
+      "command": "bash long-job.sh 2100 agyd",
+      "status": "completed",
+      "summary": "Command exited with code 0.\n\nCommand output:\nagyd started\r\nagyd progress 30s\r\nagyd progress 60s\r\nagyd progress 90s\r\nagyd progress 120s\r\nagyd progress 150s\r\nagyd progress 180s\r\nagyd progress 210s\r\nagyd progress 240s\r\nagyd progress 270s\r\nagyd progress 300s\r\nagyd progress 330s\r\nagyd progress 360s\r\nagyd progress 391s\r\nagyd progress 421s\r\nagyd progress 451s\r\nagyd progress 481s\r\nagyd progress 511s\r\nagyd progress 541s\r\nagyd progress 571s\r\nagyd progress 601s\r\nagyd progress 631s\r\nagyd progress 661s\r\nagyd progress 691s\r\nagyd progress 721s\r\nagyd progress 751s\r\nagyd progress 781s\r\nagyd progress 811s\r\nagyd progress 841s\r\nagyd progress 871s\r\nagyd progress 901s\r\nagyd progress 931s\r\nagyd progress 961s\r\nagyd progress 991s\r\nagyd progress 1021s\r\nagyd progress 1051s\r\nagyd progress 1081s\r\nagyd progress 1111s\r\nagyd progress 1142s\r\nagyd progress 1172s\r\nagyd progress 1202s\r\nagyd progress 1232s\r\nagyd progress 1262s\r\nagyd progress 1292s\r\nagyd progress 1322s\r\nagyd progress 1352s\r\nagyd progress 1382s\r\nagyd progr…",
+      "end_reason": null,
+      "exit_code": 0,
+      "started_at": "2026-11-17T11:30:47.242Z"
+    }
+  ],
+  "notices": [],
+  "turns": [
+    {
+      "at": 13,
+      "type": "TURN_STARTED",
+      "payload": "{\"turn_id\":\"91a2848b-f967-4107-bcbe-1f54dda4b5ab\"}"
+    },
+    {
+      "at": 10022,
+      "type": "TURN_COMPLETED",
+      "payload": "{\"turn_id\":\"91a2848b-f967-4107-bcbe-1f54dda4b5ab\",\"provider_status\":\"SUCCESS\"}"
+    }
+  ],
+  "text": "STARTED\n",
+  "finalViewAfterEnd": {
+    "__typename": "AgentBackgroundTaskEventStream",
+    "currentTasks": []
+  },
+  "result": "Pass",
+  "endedAt": "2026-11-17T12:05:53.106Z"
+}

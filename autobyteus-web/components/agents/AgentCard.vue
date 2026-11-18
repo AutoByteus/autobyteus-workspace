@@ -15,7 +15,15 @@
       <div class="min-w-0">
         <h3 class="truncate text-2xl font-semibold text-slate-900">{{ agentDef.name }}</h3>
         <p class="mt-1 text-sm text-slate-600">{{ descriptionText }}</p>
-        <div v-if="ownershipBadge || ownershipLabel" class="mt-1 flex flex-wrap items-center gap-2 text-sm">
+        <div v-if="agentDef.internal || ownershipBadge || ownershipLabel" class="mt-1 flex flex-wrap items-center gap-2 text-sm">
+          <span
+            v-if="agentDef.internal"
+            class="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800"
+            data-testid="agent-card-internal-badge"
+            :title="$t('agents.components.agents.AgentCard.internalBadgeTitle')"
+          >
+            {{ $t('agents.components.agents.AgentCard.internalBadge') }}
+          </span>
           <span
             v-if="ownershipBadge"
             class="rounded-full px-2 py-0.5 text-[11px] font-semibold"

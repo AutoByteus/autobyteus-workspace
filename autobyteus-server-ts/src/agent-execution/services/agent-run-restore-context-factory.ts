@@ -16,7 +16,9 @@ export const buildAgentRunRestoreRuntimeContext = (
   platformAgentRunId: string,
 ): RuntimeAgentRunContext => {
   if (config.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return new AgyAgentRunContext(platformAgentRunId);
-  if (config.runtimeKind === RuntimeKind.GROK_BUILD) return new AcpAgentRunContext(platformAgentRunId);
+  if (config.runtimeKind === RuntimeKind.GROK_BUILD || config.runtimeKind === RuntimeKind.DEEPSEEK_HARNESS) {
+    return new AcpAgentRunContext(platformAgentRunId);
+  }
   if (config.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
     return new CodexAgentRunContext({
       codexThreadConfig: buildCodexThreadConfig({
@@ -28,6 +30,8 @@ export const buildAgentRunRestoreRuntimeContext = (
         sandbox: "workspace-write",
         dynamicTools: null,
       }),
+      // A restore binding: the bootstrapper prepares the run's workspace skills.
+      workspaceSkills: null,
       threadId: platformAgentRunId,
     });
   }
@@ -41,6 +45,8 @@ export const buildAgentRunRestoreRuntimeContext = (
       }),
       carpenterSystemPrompt: "Pending runtime bootstrap.",
       runtimeToolExposure: buildRuntimeAgentToolExposure([], config.memberExecutionContext),
+      // A restore binding: the bootstrapper prepares the run's workspace skills.
+      workspaceSkills: null,
       sessionId: platformAgentRunId,
     });
   }

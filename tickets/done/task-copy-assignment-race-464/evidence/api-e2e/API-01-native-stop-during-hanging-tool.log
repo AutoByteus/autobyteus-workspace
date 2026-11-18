@@ -1,0 +1,110 @@
+# API-01 temporary probe (C-01): a real native autobyteus-ts agent is stopped (AgentFactory.removeAgent(id, 10), the server's native stop call) while its tool call waits forever; commit 3da0b47f31 (source c29edfb1f7) + this temporary test file (removed after); macOS, Node v22.23.1; 2026-11-10T13:31:26Z; load 21.03 13.35 23.34
+# Command: NO_COLOR=1 pnpm -C autobyteus-ts exec vitest run tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts --no-watch --reporter=verbose
+# Probe file content:
+#   /**
+#    * API/E2E temporary probe (autobyteus-464, C-01). Removed after the run; its content is kept in the evidence log.
+#    * A real native agent (AgentFactory, worker, turn, tool phase) whose scripted LLM calls a tool that never resolves:
+#    * the stand-in for a copy's `delegate_task`/`send_message_to` waiting for a root-queue step that sits behind the
+#    * closure release which is stopping that copy. The server's native stop calls `AgentFactory.removeAgent(id, ~10)`
+#    * (`autobyteus-agent-run-backend.ts:309`). If the stop waited for the tool, it would take the full 10 s and the
+#    * release step would hold the root queue that long; if the turn abandons the tool's await, it returns at once.
+#    */
+#   import fs from 'node:fs';
+#   import os from 'node:os';
+#   import path from 'node:path';
+#   import { afterEach, describe, expect, it, vi } from 'vitest';
+#   import { AgentConfig } from '../../../src/agent/context/agent-config.js';
+#   import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
+#   import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
+#   import { AgentStatus } from '../../../src/agent/status/status-enum.js';
+#   import { BaseLLM } from '../../../src/llm/base.js';
+#   import { LLMModel } from '../../../src/llm/models.js';
+#   import { LLMProvider } from '../../../src/llm/providers.js';
+#   import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
+#   import { buildFinish } from '../../../src/llm/utils/llm-response-finish.js';
+#   import { buildLlmTokenUsageObservation } from '../../../src/llm/utils/llm-token-usage-observation.js';
+#   import { ChunkResponse, CompleteResponse } from '../../../src/llm/utils/response-types.js';
+#   import { ParameterDefinition, ParameterSchema, ParameterType } from '../../../src/utils/parameter-schema.js';
+#   import { FunctionalTool } from '../../../src/tools/functional-tool.js';
+#   import { resetAgentFactory, waitForCondition, waitForStatus } from './runtime/runtime-test-harness.js';
+#   
+#   const usage = buildLlmTokenUsageObservation({ inputTokens: 10, outputTokens: 5, totalTokens: 15, rawUsage: null });
+#   
+#   class OneToolCallLLM extends BaseLLM {
+#     calls = 0;
+#     constructor() {
+#       super(new LLMModel({ name: 'probe', value: 'probe', canonicalName: 'probe', provider: LLMProvider.OPENAI, maxOutputTokens: 4096 }),
+#         new LLMConfig({ maxTokens: 256 }));
+#     }
+#     protected async _sendMessagesToLLM(): Promise<CompleteResponse> { return new CompleteResponse({ content: 'unused' }); }
+#     protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+#       this.calls += 1;
+#       if (this.calls === 1) {
+#         yield new ChunkResponse({ content: '', tool_calls: [{ index: 0, call_id: 'call_q', name: 'wait_for_root_queue', arguments_delta: '{"target":"copy"}' }] });
+#         yield new ChunkResponse({ content: '', is_complete: true, usage, finish: buildFinish('tool_calls', 'tool_calls') });
+#         return;
+#       }
+#       yield new ChunkResponse({ content: 'done', is_complete: true, usage, finish: buildFinish('stop', 'stop') });
+#     }
+#   }
+#   
+#   describe('C-01 probe: native stop while a tool call waits forever', () => {
+#     let dir = '';
+#     afterEach(() => { resetAgentFactory(); vi.restoreAllMocks(); if (dir) fs.rmSync(dir, { recursive: true, force: true }); });
+#   
+#     it('removeAgent(id, 10) returns without waiting for the hanging tool', async () => {
+#       for (const level of ['debug', 'info'] as const) vi.spyOn(console, level).mockImplementation(() => undefined);
+#       resetAgentFactory();
+#       let toolStarted = 0;
+#       const schema = new ParameterSchema([new ParameterDefinition({ name: 'target', type: ParameterType.STRING, description: 'Target', required: true })]);
+#       const hanging = new FunctionalTool(
+#         () => { toolStarted = Date.now(); return new Promise(() => undefined); },
+#         'wait_for_root_queue', 'Waits for a root-queue step that never comes', schema, null, false, false, false, ['target'], ['target'],
+#       );
+#       dir = fs.mkdtempSync(path.join(os.tmpdir(), 'api01-c01-probe-'));
+#       const config = new AgentConfig('probe', 'worker', 'C-01 probe', new OneToolCallLLM(), 'You are a probe.', [hanging]);
+#       config.memoryDir = dir;
+#       const factory = new AgentFactory();
+#       const agent = factory.createAgent(config);
+#       agent.start();
+#       expect(await waitForStatus(agent.context, (status) => status === AgentStatus.IDLE)).toBe(true);
+#       await agent.postUserMessage(new AgentInputUserMessage('Call the tool.'));
+#       expect(await waitForCondition(() => toolStarted > 0, 10_000), 'the tool call is in flight').toBe(true);
+#       await new Promise((resolve) => setTimeout(resolve, 200));
+#       expect(agent.context.state.activeTurn, 'the turn is still active inside the tool call').not.toBeNull();
+#   
+#       const started = Date.now();
+#       const removed = await factory.removeAgent(agent.agentId, 10);
+#       const elapsedMs = Date.now() - started;
+#       console.warn(`C01_PROBE removeAgent=${removed} elapsedMs=${elapsedMs} running=${agent.isRunning} status=${agent.currentStatus}`);
+#       expect(removed).toBe(true);
+#       expect(agent.isRunning).toBe(false);
+#       expect(elapsedMs, 'the stop does not wait for the hanging tool (a wait would take ~10 000 ms)').toBeLessThan(3_000);
+#     }, 30_000);
+#   });
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/task-copy-assignment-race-464/autobyteus-ts
+
+stdout | tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts > C-01 probe: native stop while a tool call waits forever > removeAgent(id, 10) returns without waiting for the hanging tool
+Registered AgentContext for agent_id 'probe_worker_3598'. Total registered contexts: 1
+
+stderr | tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts > C-01 probe: native stop while a tool call waits forever > removeAgent(id, 10) returns without waiting for the hanging tool
+Tool 'wait_for_root_queue' not found in registry.
+
+stdout | tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts > C-01 probe: native stop while a tool call waits forever > removeAgent(id, 10) returns without waiting for the hanging tool
+Unregistered AgentContext for agent_id 'probe_worker_3598'.
+
+stderr | tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts > C-01 probe: native stop while a tool call waits forever > removeAgent(id, 10) returns without waiting for the hanging tool
+C01_PROBE removeAgent=true elapsedMs=77 running=false status=shutdown_complete
+
+ ✓ tests/integration/agent/zz-api01-probe-stop-during-hanging-tool.test.ts > C-01 probe: native stop while a tool call waits forever > removeAgent(id, 10) returns without waiting for the hanging tool 410ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:31:28
+   Duration  1.46s (transform 674ms, setup 44ms, import 907ms, tests 411ms, environment 0ms)
+
+exit=0

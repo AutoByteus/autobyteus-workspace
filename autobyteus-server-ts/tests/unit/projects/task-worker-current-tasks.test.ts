@@ -1,20 +1,22 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { runIdentityOf } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const agent: TaskExecutionReference = { agentRunId: "writer" };
@@ -23,6 +25,7 @@ const team: TaskExecutionReference = { teamRunId: "review-team" };
 /** The batched "current Task of each Task worker" read (DS-001, REQ-008, REQ-009, AR-001). */
 describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, projects: ProjectService, tasks: ProjectTaskService, projectId: string;
+  let releases: ReleaseTracker;
 
   beforeEach(async () => {
     appData = await fs.mkdtemp(path.join(os.tmpdir(), "task-worker-tasks-"));
@@ -32,29 +35,29 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const changes = new ProjectChangePublisher();
     projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
     projectId = (await projects.createProject({ name: "Desktop App" })).projectId;
-    const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (_root, executions) => executions.map((execution) => ({ execution, stopped: true })));
+    const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), changes,
-      requestRelease, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });
-  afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   const assign = async (taskId: string, execution: TaskExecutionReference) => {
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/worker", hostRoot, execution,
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/worker", execution,
       ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: "lead" } : {}) });
     await tasks.markStarted(execution);
   };
-  const create = async (description: string) => (await tasks.createTask({ projectId, description })).taskId;
+  const create = async (description: string) => (await tasks.createTask({ projectId, title: description, description })).taskId;
 
   it("answers an agent and a team worker with their Project Task and Temp task, in request order", async () => {
     const taskId = await create("Ship the summary line\nwith details");
     await assign(taskId, agent);
-    const { taskId: tempTaskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/review_team", hostRoot,
+    const { taskId: tempTaskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/review_team",
       execution: team, teamCoordinatorAgentRunId: "lead", adHocTask: { description: "Review it", referenceFiles: [] } });
 
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, { agentRunId: "unknown" }, { teamRunId: "unknown" }])).toEqual([
-      { execution: agent, task: { taskId, projectId, description: "Ship the summary line\nwith details", status: "TODO" } },
-      { execution: team, task: { taskId: tempTaskId, projectId: null, description: "Review it", status: "TODO" } },
+      { execution: agent, task: { taskId, projectId, title: "Ship the summary line\nwith details", description: "Ship the summary line\nwith details", status: "TODO" } },
+      { execution: team, task: { taskId: tempTaskId, projectId: null, title: null, description: "Review it", status: "TODO" } },
       { execution: { agentRunId: "unknown" }, task: null },
       { execution: { teamRunId: "unknown" }, task: null },
     ]);
@@ -65,16 +68,16 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const followUp = await create("Follow-up Task");
     await assign(first, team);
     await tasks.updateTaskById({ taskId: first, status: "DONE" });
-    expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, description: "First Task", status: "DONE" } }]);
+    expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, title: "First Task", description: "First Task", status: "DONE" } }]);
 
-    await tasks.assignExistingTaskExecution({ hostRoot, execution: team, teamCoordinatorAgentRunId: "lead", taskId: followUp, assignedBy: "manager" });
+    await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead", taskId: followUp });
     expect((await tasks.currentTasksOfTaskWorkers([team]))[0]!.task).toMatchObject({ taskId: followUp, status: "TODO" });
   });
 
   it("answers null for a sub-work copy, which is never its Task's root", async () => {
     const taskId = await create("Root work");
     await assign(taskId, agent);
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: agent, hostRoot, execution: { agentRunId: "sub-work" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: runIdentityOf(agent), delegatorAgentRunId: "lead" }, execution: { agentRunId: "sub-work" } });
     expect(await tasks.currentTasksOfTaskWorkers([{ agentRunId: "sub-work" }, agent])).toEqual([
       { execution: { agentRunId: "sub-work" }, task: null },
       { execution: agent, task: expect.objectContaining({ taskId }) },
@@ -85,7 +88,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const deleted = await create("Deleted Task");
     await assign(deleted, agent);
     const otherProjectId = (await projects.createProject({ name: "Other" })).projectId;
-    const other = (await tasks.createTask({ projectId: otherProjectId, description: "In a deleted Project" })).taskId;
+    const other = (await tasks.createTask({ projectId: otherProjectId, title: "In a deleted Project", description: "In a deleted Project" })).taskId;
     await assign(other, team);
     const survivor = await create("Still here");
     const survivorWorker = { agentRunId: "survivor" };
@@ -97,7 +100,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, survivorWorker])).toEqual([
       { execution: agent, task: null },
       { execution: team, task: null },
-      { execution: survivorWorker, task: { taskId: survivor, projectId, description: "Still here", status: "TODO" } },
+      { execution: survivorWorker, task: { taskId: survivor, projectId, title: "Still here", description: "Still here", status: "TODO" } },
     ]);
   });
 

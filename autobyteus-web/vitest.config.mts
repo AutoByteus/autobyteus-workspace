@@ -19,6 +19,8 @@ export default defineVitestConfig({
       'node_modules/**',
       'dist/**',
       'electron-dist/**',
+      // Electron main-process specs run under their own node-environment config (`pnpm test:electron`).
+      'electron/**',
       'resources/**',
       '**/resources/**',
       '**/server/tests/**',

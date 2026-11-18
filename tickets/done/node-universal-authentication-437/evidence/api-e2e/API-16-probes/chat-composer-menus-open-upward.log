@@ -1,0 +1,8 @@
+# API-16 chat-composer-menus-open-upward: node tests/e2e/chat-composer-menus-open-upward-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/chat-composer-menus-open-upward
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T18:21:12Z
+U01 Pass Layout at four wide viewports: pt-[14vh] pb-10, centered, 10vh−40px lower, hint under the composer (AC-003)
+U02 Pass @ and / open above the composer card at four wide viewports; scroll, keyboard, choose, Escape, outside click (AC-001, AC-004, AC-005)
+U03 Pass Workspace, Model (flyout, search) and Thinking open above their trigger at four wide viewports (AC-002, AC-004)
+U04 Pass Very short window, page scrolled: menus still open above and stay on screen; a Thinking menu taller than its limit scrolls (REQ-003)
+U05 Pass Narrow 390x844: @, /, Workspace, Model and Thinking are the unchanged bottom sheet (AC-005)
+U06 Pass Running conversation at 1512x952: / opens the skill menu above the run composer, placement policy unchanged (AC-005)

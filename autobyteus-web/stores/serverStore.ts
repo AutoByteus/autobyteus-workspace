@@ -1,20 +1,21 @@
+import { useLocalization } from '~/composables/useLocalization'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import {
   getBrowserServerUrls,
   isElectronEnvironment,
 } from '~/utils/browserServerConfig'
-import { ServerStatus, type ServerStatusSnapshot } from '~/types/serverStatus'
+import { ServerStatus, type ServerStatusSnapshot, type ServerDiagnostic } from '~/types/serverStatus'
 
 // Define the state interface
 interface ServerState {
+  diagnostic?: ServerDiagnostic
   status: ServerStatus
   port: number
   urls: {
     graphql: string
     rest: string
     graphqlWs: string
-    transcription: string
     terminalWs: string
     health: string
   }
@@ -32,7 +33,6 @@ const emptyElectronUrls = () => ({
   graphql: '',
   rest: '',
   graphqlWs: '',
-  transcription: '',
   terminalWs: '',
   health: '',
 })
@@ -59,6 +59,7 @@ export const useServerStore = defineStore('server', {
   
   getters: {
     userFriendlyError: (state): string => {
+      if (state.diagnostic?.kind === 'port-conflict') return useLocalization().t('server.conflict.summary', { port: state.diagnostic.port })
       if (state.isInitialStartup) {
         return 'The server is starting up. This may take a moment...'
       }
@@ -101,6 +102,7 @@ export const useServerStore = defineStore('server', {
       }
       
       this.status = ServerStatus.STARTING
+      this.diagnostic = undefined
       this.statusMessage = ''
       this.errorMessage = ''
       this.connectionAttempts = 0
@@ -209,6 +211,11 @@ export const useServerStore = defineStore('server', {
           clearInterval(healthCheckInterval)
           return
         }
+        // Only STARTING/RESTARTING are still waiting on a health answer; ERROR is a
+        // stopped state (polling it forever kept showing a stale "starting" message).
+        if (this.status !== ServerStatus.STARTING && this.status !== ServerStatus.RESTARTING) {
+          return
+        }
         this.checkServerHealth().then(result => {
           if (result.status === 'ok') {
             this.isInitialStartup = false
@@ -299,17 +306,21 @@ export const useServerStore = defineStore('server', {
           graphql: serverStatus.urls.graphql,
           rest: serverStatus.urls.rest,
           graphqlWs: serverStatus.urls.graphqlWs,
-          transcription: serverStatus.urls.transcription,
           terminalWs: serverStatus.urls.terminalWs,
           health: serverStatus.urls.health,
         }
       }
       
+      this.diagnostic = serverStatus.status === ServerStatus.ERROR ? serverStatus.diagnostic : undefined
       this.statusMessage = serverStatus.status === ServerStatus.STARTING || serverStatus.status === ServerStatus.RESTARTING
         ? serverStatus.message || ''
         : ''
       this.errorMessage = serverStatus.status === ServerStatus.ERROR ? serverStatus.message || '' : ''
-      if (serverStatus.status === ServerStatus.ERROR) this.isInitialStartup = false
+      if (serverStatus.status === ServerStatus.ERROR) {
+        this.isInitialStartup = false
+        // Clear a STARTING-era health text; it describes a state the server has left.
+        this.healthCheckStatus = ''
+      }
     },
     
     /**
@@ -323,6 +334,7 @@ export const useServerStore = defineStore('server', {
       }
       
       console.log('serverStore: Initiating server restart.')
+      this.diagnostic = undefined
       this.statusMessage = ''
       this.status = ServerStatus.RESTARTING; // Optimistically update UI
       this.errorMessage = ''

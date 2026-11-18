@@ -1,7 +1,7 @@
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { computed, ref, watch, type Ref } from 'vue'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
-  runtimeKindToLabel,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import {
@@ -73,7 +73,6 @@ export const useRuntimeScopedModelSelection = (params: {
   inheritedRuntimeKind?: Ref<string | null | undefined>
   allowBlankRuntime?: boolean
   useDefaultRuntimeFallback?: boolean
-  loadCatalog?: boolean
 }) => {
   const llmStore = useLLMProviderConfigStore()
   const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
@@ -117,7 +116,7 @@ export const useRuntimeScopedModelSelection = (params: {
     try {
       await Promise.all([
         runtimeAvailabilityStore.fetchRuntimeAvailability(kind, true),
-        llmStore.refreshLocalCatalog(kind),
+        llmStore.refreshCatalog(kind),
       ])
       await ensureModelsForRuntime(kind)
     } catch {
@@ -126,11 +125,26 @@ export const useRuntimeScopedModelSelection = (params: {
     }
   }
 
+  const modelListRefreshing = computed(() => selectedCatalog.value?.refreshing === true)
+  const modelListRefreshFailed = computed(() => selectedCatalog.value?.refreshError != null)
+
+  /** A model picker opened: the runtime's list is read again in the background; the list shown stays usable (REQ-010). */
+  const refreshModelsOnOpen = (): void => {
+    const kind = effectiveRuntimeKind.value
+    if (kind) void llmStore.refreshCatalog(kind)
+  }
+
+  /** "Refresh models" (REQ-011): also re-discovers the AutoByteus runtime's discovered providers. */
+  const refreshModels = (): void => {
+    const kind = effectiveRuntimeKind.value
+    if (kind) void llmStore.refreshModelList(kind)
+  }
+
   watch(
     () => effectiveRuntimeKind.value,
     (runtimeKind) => {
       if (runtimeKind) void runtimeAvailabilityStore.fetchRuntimeAvailability(runtimeKind).catch(() => undefined)
-      if (runtimeKind && params.loadCatalog !== false) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)
+      if (runtimeKind) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)
     },
     { immediate: true },
   )
@@ -146,7 +160,7 @@ export const useRuntimeScopedModelSelection = (params: {
     for (const availability of runtimeAvailabilityStore.availabilities) {
       optionByKind.set(availability.runtimeKind, {
         value: availability.runtimeKind,
-        label: runtimeKindToLabel(availability.runtimeKind),
+        label: agentRuntimeName(availability.runtimeKind),
         enabled: runtimeAvailabilityStore.isRuntimeEnabled(availability.runtimeKind),
       })
     }
@@ -154,7 +168,7 @@ export const useRuntimeScopedModelSelection = (params: {
     if (selectedRuntimeKind && !optionByKind.has(selectedRuntimeKind)) {
       optionByKind.set(selectedRuntimeKind, {
         value: selectedRuntimeKind,
-        label: runtimeKindToLabel(selectedRuntimeKind),
+        label: agentRuntimeName(selectedRuntimeKind),
         enabled: runtimeAvailabilityStore.isRuntimeEnabled(selectedRuntimeKind),
       })
     }
@@ -222,9 +236,13 @@ export const useRuntimeScopedModelSelection = (params: {
     isLoadingModels,
     isLoadingRuntime,
     modelLoadError,
+    modelListRefreshFailed,
+    modelListRefreshing,
     modelConfigSchemaByIdentifier,
     modelIdentifiers,
     normalizedStoredRuntimeKind,
+    refreshModels,
+    refreshModelsOnOpen,
     reloadModelsForRuntime,
     providerSourceStatuses,
     runtimeOptions,

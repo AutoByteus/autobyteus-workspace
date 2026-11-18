@@ -1,3 +1,4 @@
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -18,6 +19,7 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
 
 const harness = vi.hoisted(() => ({
   agentRunManager: {
@@ -68,16 +70,23 @@ vi.mock("../../../src/agent-team-execution/services/agent-team-run-manager.js", 
   },
 }));
 
-vi.mock("../../../src/agent-definition/services/agent-definition-service.js", () => ({
-  AgentDefinitionService: {
-    getInstance: () => ({
-      getAgentDefinitionById: vi.fn(async (agentDefinitionId: string) => ({
-        id: agentDefinitionId,
-        name: agentDefinitionId === "agent-def-e2e" ? "E2E Agent" : agentDefinitionId,
-      })),
-    }),
-  },
-}));
+vi.mock("../../../src/agent-definition/services/agent-definition-service.js", () => {
+  // The definitions this suite's runs use; neither is internal, so the internal-agent rule hides none of their runs.
+  const describeDefinition = (agentDefinitionId: string) => ({
+    id: agentDefinitionId,
+    name: agentDefinitionId === "agent-def-e2e" ? "E2E Agent" : agentDefinitionId,
+    internal: false,
+  });
+  return {
+    AgentDefinitionService: {
+      getInstance: () => ({
+        getAgentDefinitionById: vi.fn(async (agentDefinitionId: string) => describeDefinition(agentDefinitionId)),
+        getAgentDefinitionsWithTeamLocal: vi.fn(async () =>
+          ["agent-def-e2e", "agent-def-group"].map(describeDefinition)),
+      }),
+    },
+  };
+});
 
 vi.mock("../../../src/run-history/services/agent-run-history-service.js", async () => {
   const actual = await vi.importActual<
@@ -220,6 +229,7 @@ describe("Archive run history GraphQL e2e", () => {
   let teamExecutionTreeStore: TeamRunExecutionTreeStore;
   let memoryLayout: AgentMemoryLayout;
   let closeStudioServices: (() => void) | null = null;
+  let releaseRunHistory: (() => void) | null = null;
 
   beforeAll(async () => {
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
@@ -238,6 +248,11 @@ describe("Archive run history GraphQL e2e", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "archive-history-graphql-e2e-"));
+    // The history readers over this case's memory dir, as the composition root sets them (autobyteus-461 SR-047 step 8).
+    releaseRunHistory = setE2eRunHistoryServices({ memoryDir });
+    // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
+    // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
+   
     agentMetadataStore = new AgentRunMetadataStore(memoryDir);
     teamExecutionTreeStore = new TeamRunExecutionTreeStore();
     memoryLayout = new AgentMemoryLayout(memoryDir);
@@ -298,16 +313,16 @@ describe("Archive run history GraphQL e2e", () => {
         }),
       },
     });
-    harness.services.agentRunHistoryService = new AgentRunHistoryService(memoryDir, {
+    harness.services.agentRunHistoryService = new AgentRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       catalogService: agentCatalogService,
       metadataStore: agentMetadataStore,
     });
-    harness.services.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
+    harness.services.teamRunHistoryService = new TeamRunHistoryService(memoryDir, { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       executionTreeStore: teamExecutionTreeStore,
       catalogService: teamCatalogService,
       teamRunManager: harness.teamRunManager as any,
     });
-    harness.services.workspaceRunHistoryService = new WorkspaceRunHistoryService({
+    harness.services.workspaceRunHistoryService = new WorkspaceRunHistoryService({ tree: noDelegations(),
       agentRunHistoryService: harness.services.agentRunHistoryService as any,
       teamRunHistoryService: harness.services.teamRunHistoryService as any,
     });
@@ -316,6 +331,8 @@ describe("Archive run history GraphQL e2e", () => {
   });
 
   afterEach(async () => {
+    releaseRunHistory?.();
+    releaseRunHistory = null;
     await fs.rm(memoryDir, { recursive: true, force: true });
     harness.services.agentRunHistoryService = null;
     harness.services.teamRunHistoryService = null;

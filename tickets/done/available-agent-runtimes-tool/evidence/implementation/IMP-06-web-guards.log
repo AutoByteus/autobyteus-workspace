@@ -1,0 +1,9 @@
+# IMP-06
+# command: pnpm -C autobyteus-web guard:web-boundary && guard:localization-boundary && audit:localization-literals
+# commit: 5135bb73dc (code identical to the run)
+# environment: macOS darwin 25.5, Node v22.23.1, pnpm; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

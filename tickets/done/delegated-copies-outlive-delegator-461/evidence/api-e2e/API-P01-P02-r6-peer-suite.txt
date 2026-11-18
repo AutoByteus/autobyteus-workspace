@@ -1,0 +1,310 @@
+# Case: API-P01, API-P02 (peer suite), API-REV-006 round 6, code 958cb22462
+# Command: as API-P01-P02-r5-peer-suite.txt
+# Result: Tests 44 passed (44). F-35 (RC-25 startError.code TASK_DISPATCH_FAILED) and F-36 (RC-33 coordinator_address /lead, SR-072) are hard checks and pass.
+ ✓ RC-01 AC-101/AC-111: off by default; with the switch off, inbound requests of an unpaired node are refused at the gate and no invite can be made 17ms
+ ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent 549ms
+ ✓ RC-03 AC-101/102/111, 245 AC-207, 437 NAS-19: switched on, the nodes pair with one invite and each pins the other's identity; bad URLs record nothing; the gateway admits in order; there is no publi
+ ✓ RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha 2283ms
+ ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open) 3312ms
+ ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted 4351ms
+ ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears 2005ms
+ ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing 2030ms
+ ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent 1936ms
+ ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered 5155ms
+ ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent 4292ms
+ ✓ RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts 773ms
+ ✓ RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; unlinked senders are refused 2883
+ ✓ RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta 4913ms
+ ✓ RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it 549ms
+ ✓ RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's
+ ✓ RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline 904ms
+ ✓ RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member 333ms
+ ✓ RC-34 278 AC-801/803/806: an Org delegator's tree has its remote Agent with title and status; its projection; the owner messages it from the Org view 215ms
+ ✓ RC-43 461 AC-016 / REQ-013 / SR-066: with each delegator stopped (standalone agent, Team member, Org agent), its peer children are reached by their own identity: live status in its open view, the o
+ ✓ RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start 6652ms
+ ✓ RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation 150962ms
+ ✓ RC-36 278 AC-805: after the idle grace a quiet remote run reads offline in alpha's view; a message from alpha's window restores it with its conversation 409ms
+ ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators 12388ms
+ ✓ RC-24 247 REQ-307: beta's owner stops the peer-started Team during its idle grace; it shows as inactive in history; the delegator's next message restores it 817ms
+ ✓ RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every l
+ ✓ RC-38 308 AC-003/AC-005: beta's internal agent is not offered to alpha and delegating it is refused while beta hides it; once beta shows it (no restart) it is offered and accepted; hidden again, re
+ ✓ RC-42 455 AC-004/REQ-004: once beta's owner gives its Daily Assistant a runtime and model, alpha's agent lists and delegates /daily_assistant on beta; it starts in beta's temp workspace and its rep
+ ✓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason 2967ms
+ ✓ RC-40 autobyteus-32 AC-005/REQ-009/REQ-012: with Model Routing on, beta's Model Router chooses for the agent and the Team member no default covers; the launches come back to alpha (result notes, th
+ ✓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within th
+ ✓ RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not 
+ ✓ RC-28 261 AC-404/AC-407: with alpha's switch off both discovery calls are refused 'turned off' and nothing is sent; an unknown node gets the node-list hint (the same for delegate_task); a blank nod
+ ✓ RC-29 261 AC-405: a Team that beta's owner adds between two listings appears in the second (nothing is cached) 468ms
+ ✓ RC-30 269 AC-601/AC-602: a long description with line breaks titles the peer-started Agent and Team runs as one line of at most 100 characters, by the history's rule 1089ms
+ ✓ RC-37 278 AC-804: with beta stopped, the view shows its remote runs unreachable within the bound and the rest works; after beta returns, Retry reads them again 2841ms
+ ✓ RC-44 461 AC-008 / SR-067 (DS-13): archive and delete of a delegator are refused while its peer child works, naming it; with the peer node unreachable they go ahead and the result names the run not
+ ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found' 944ms
+ ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha 75970ms
+ ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch' 451ms
+ ✓ RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways 1145ms
+ ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off' 922ms
+ ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays 732ms
+ ✓ RC-20 AC-111/REQ-113/REQ-114, 437 NAS-20: every captured request between the nodes carries only its peer signature (never the secret, no other credential) and only the contract's fields 22ms
+## RC-25
+{
+ "result": {
+  "delegated": false,
+  "message": "Node \"beta-node\" could not be reached (fetch failed).",
+  "isError": false,
+  "elapsedMs": 529
+ },
+ "text": "Node \"beta-node\" could not be reached (fetch failed).",
+ "unused": "studio_team_4815537b68d94007894246334c7e7a71",
+ "sent": [
+  {
+   "path": "/rest/remote/delegated-runs",
+   "kind": null,
+   "outcome": "forwarded"
+  },
+  {
+   "path": "/rest/remote/run-summaries",
+   "kind": null,
+   "outcome": "forwarded"
+  },
+  {
+   "path": "/rest/remote/run-observations",
+   "kind": null,
+   "outcome": "forwarded"
+  },
+  {
+   "path": "/rest/remote/messages",
+   "kind": "work_packet",
+   "outcome": "dropped by the test"
+  }
+ ],
+ "alphaLinks": [
+  {
+   "address": "/studio_team",
+   "teamRunId": "studio_team_4815537b68d94007894246334c7e7a71",
+   "coordinatorAgentRunId": "publisher_ce9f6d3fc1f8449886d3af719140c7cc",
+   "nodeId": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+   "members": [
+    {
+     "address": "/lead",
+     "agentRunId": "publisher_ce9f6d3fc1f8449886d3af719140c7cc"
+    },
+    {
+     "address": "/checker",
+     "agentRunId": "checker_f3dbfdf7a5eb4b46a94508864aa57f7b"
+    }
+   ],
+   "delegatorAgentRunId": "delegator_c1b73f23969c411ea9b251cbc23557fa",
+   "startedAt": "2026-11-13T16:44:39.732Z"
+  }
+ ],
+ "alphaTaskRecords": [
+  {
+   "file": "ad-hoc-tasks/ad_hoc_task_7f9dfd38-6ca6-495a-950f-73cb82c591f4/agent_run_resources.json",
+   "entry": {
+    "role": "assigned",
+    "delegatedFrom": {
+     "delegatingRun": {
+      "kind": "agent",
+      "runId": "delegator_c1b73f23969c411ea9b251cbc23557fa"
+     },
+     "delegatorAgentRunId": "delegator_c1b73f23969c411ea9b251cbc23557fa"
+    },
+    "recipientAddress": "/studio_team",
+    "agentRun": {
+     "kind": "team",
+     "teamRunId": "studio_team_4815537b68d94007894246334c7e7a71",
+     "coordinatorAgentRunId": "publisher_ce9f6d3fc1f8449886d3af719140c7cc"
+    },
+    "nodeId": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+    "members": [
+     {
+      "address": "/lead",
+      "agentRunId": "publisher_ce9f6d3fc1f8449886d3af719140c7cc"
+     },
+     {
+      "address": "/checker",
+      "agentRunId": "checker_f3dbfdf7a5eb4b46a94508864aa57f7b"
+     }
+    ],
+    "linkedAt": "2026-11-13T16:44:39.732Z",
+    "start": "failed",
+    "startError": {
+     "code": "TASK_DISPATCH_FAILED",
+     "message": "Node \"beta-node\" could not be reached (fetch failed)."
+    },
+    "closedAt": null
+   }
+  }
+ ]
+}
+## RC-33
+{
+ "agentRow": {
+  "kind": "agent",
+  "address": "/publisher",
+  "agent_run_id": "publisher_cd7709e242a14995bff88692f6934839",
+  "node_id": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+  "node_name": "beta-node",
+  "delegator_agent_run_id": "delegator_75853b4a5a344856807b662dd78b7811",
+  "started_at": "2026-11-13T16:44:11.771Z"
+ },
+ "teamRow": {
+  "kind": "agent_team",
+  "address": "/studio_team",
+  "team_run_id": "studio_team_b395b160ddb64b51a7dc53bfd7d1228e",
+  "node_id": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+  "node_name": "beta-node",
+  "coordinator_address": "/lead",
+  "members": [
+   {
+    "address": "/lead",
+    "agent_run_id": "publisher_9ea8f49adc7b4490a4210ff148a049a0"
+   },
+   {
+    "address": "/checker",
+    "agent_run_id": "checker_eeb18eb92ccc429b8de179fddd8a0420"
+   }
+  ],
+  "delegator_agent_run_id": "delegator_75853b4a5a344856807b662dd78b7811",
+  "started_at": "2026-11-13T16:44:31.213Z"
+ },
+ "studioSummary": {
+  "node_id": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+  "run_id": "studio_team_b395b160ddb64b51a7dc53bfd7d1228e",
+  "reachable": true,
+  "title": "Studio work. Marker STUDIO-PACKET.",
+  "statuses": [
+   {
+    "agent_run_id": "publisher_9ea8f49adc7b4490a4210ff148a049a0",
+    "status": "idle"
+   },
+   {
+    "agent_run_id": "checker_eeb18eb92ccc429b8de179fddd8a0420",
+    "status": "idle"
+   }
+  ],
+  "launches": [
+   {
+    "address": "/lead",
+    "runtime_kind": "antigravity_cli",
+    "llm_model_identifier": "gemini-3.8-flash-low",
+    "source": {
+     "origin": "agent_default",
+     "fallbacks": []
+    }
+   },
+   {
+    "address": "/checker",
+    "runtime_kind": "antigravity_cli",
+    "llm_model_identifier": "alt-model",
+    "source": {
+     "origin": "team_default",
+     "fallbacks": []
+    }
+   }
+  ],
+  "change_sequence": 390
+ },
+ "liveSeen": true,
+ "atChecker": "From the owner of node \"alpha-node\":\n\nOwner of alpha here. Marker OWNER-TO-CHECKER.",
+ "types": [
+  "CONNECTED",
+  "TEAM_EXECUTION_VIEW_SNAPSHOT",
+  "TEAM_RUN_LIFECYCLE",
+  "REMOTE_TASK_EXECUTION_SUMMARY",
+  "AGENT_STATUS",
+  "AGENT_INPUT_STATE",
+  "MEMBER_INPUT_MESSAGE",
+  "TURN_STARTED",
+  "SEGMENT_START",
+  "SEGMENT_CONTENT_BATCH",
+  "SEGMENT_END",
+  "TURN_COMPLETED"
+ ]
+}
+## RC-43
+{
+ "soloSummaries": {
+  "a1": {
+   "node_id": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+   "run_id": "publisher_a8013583fb084685a6765c6738be284f",
+   "reachable": true,
+   "title": "AC-016 solo work. Marker A16-SOLO.",
+   "statuses": [
+    {
+     "agent_run_id": "publisher_a8013583fb084685a6765c6738be284f",
+     "status": "idle"
+    }
+   ],
+   "launches": [
+    {
+     "address": "/publisher",
+     "runtime_kind": "antigravity_cli",
+     "llm_model_identifier": "gemini-3.8-flash-low",
+     "source": {
+      "origin": "agent_default",
+      "fallbacks": []
+     }
+    }
+   ],
+   "kind": "remote_task_execution_summary"
+  },
+  "t1": {
+   "node_id": "srv_l_CdcV6TU8PJ-e8k5Jkf6ny6lQ9B_SZW",
+   "run_id": "studio_team_dc7542e6dd0947c1906b3f9c9364e6e2",
+   "reachable": true,
+   "title": "AC-016 studio work. Marker A16-STUDIO.",
+   "statuses": [
+    {
+     "agent_run_id": "publisher_996ac93e7cc14728a505a205a7d9a45d",
+     "status": "idle"
+    },
+    {
+     "agent_run_id": "checker_cb7154d7db07430597f50bb317a6a0a1",
+     "status": "offline"
+    }
+   ],
+   "launches": [
+    {
+     "address": "/lead",
+     "runtime_kind": "antigravity_cli",
+     "llm_model_identifier": "gemini-3.8-flash-low",
+     "source": {
+      "origin": "agent_default",
+      "fallbacks": []
+     }
+    },
+    {
+     "address": "/checker",
+     "runtime_kind": "antigravity_cli",
+     "llm_model_identifier": "alt-model",
+     "source": {
+      "origin": "team_default",
+      "fallbacks": []
+     }
+    }
+   ],
+   "kind": "remote_task_execution_summary"
+  }
+ },
+ "a1": "publisher_a8013583fb084685a6765c6738be284f",
+ "t1": "studio_team_dc7542e6dd0947c1906b3f9c9364e6e2",
+ "a2": "publisher_a521ecd7b4374ce398b1bc7a6347c156",
+ "a3": "publisher_5b8d923edbab44fdb80f59ec390bbdc8"
+}
+## RC-44
+{
+ "p1": "publisher_358f14e7e71a40239c371f4d06060b19",
+ "refusedArchive": {
+  "success": false,
+  "message": "This run can't be archived while a run it delegated to is working (/publisher). Try again when it has finished, or stop it first."
+ },
+ "refusedDelete": {
+  "success": false,
+  "message": "This run can't be deleted while a run it delegated to is working (/publisher). Try again when it has finished, or stop it first."
+ },
+ "deleted": {
+  "success": true,
+  "message": "Run 'delegator_1b589bfc1f50482ebf9eb99f60110b29' deleted permanently. Not asked, because their nodes didn't answer: /publisher."
+ }
+}

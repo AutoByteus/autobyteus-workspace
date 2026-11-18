@@ -1,0 +1,39 @@
+# DEL-06 autobyteus-ts suite (alone), native-compaction integration suites, native-input-history on a20c9f56d3, 2026-11-01T08:05:56Z
+## pnpm -C autobyteus-ts test
+ FAIL  tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+ FAIL  tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+ FAIL  tests/unit/tools/terminal/background-process-manager.test.ts > BackgroundProcessManager process lifecycle > stopProcess removes a managed process
+ FAIL  tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts > explicit stop and retirement serialization > drains after inspection, shares only real stop work (expired=true)
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > executes foreground commands through the non-PTY shell executor
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > writes large heredoc content without PTY corruption
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > uses the workspace root when cwd is omitted
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > uses the system temporary directory when cwd and workspace are omitted
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > executes in an explicit absolute cwd outside the workspace
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > accepts an explicit absolute cwd without a configured workspace
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > reports the physical target for an external symlink cwd
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > host-supplied terminal child environment > passes per-execution values to the child without changing process.env
+ FAIL  tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts > output capture lifecycle > preserves completed background history until its record is removed
+ FAIL  tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts > explicit stop and retirement serialization > drains after inspection, shares only real stop work (expired=false)
+ FAIL  tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts > explicit stop and retirement serialization > rechecks completed empty retirement rather than signalling its released anchor
+ Test Files  5 failed | 394 passed | 22 skipped (421)
+      Tests  15 failed | 2373 passed | 94 skipped (2482)
+ts-exit=1
+## server native-compaction integration suites
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+integration-exit=0
+## pnpm test:native-input-history
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+nih-exit=0
+
+## The 5 failing files rerun together, 2026-11-01T08:09:27Z; load before: 7.67 11.39 22.00
+ Test Files  5 passed (5)
+      Tests  31 passed (31)
+rerun-exit=0
+Cause: the full-suite failures are terminal timing tests (FU-003 class: fixed deadlines such as the 500 ms ps deadline) under machine load (15-min load average ~22 from other sessions during the full run); this ticket and its base changed no terminal code (git diff efd28d5c4a HEAD -- autobyteus-ts/src/tools: 0 changed-file lines).
+
+## third recovery-fixture integration suite (completes the 3 integration of IMP-05), 2026-11-01T08:13:52Z
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+exit=0

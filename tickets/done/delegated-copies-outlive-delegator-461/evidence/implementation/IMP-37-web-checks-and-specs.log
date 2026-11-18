@@ -1,0 +1,14 @@
+# IMP-37 web checks and full spec suite (CR-461-022, CR-461-025, CR-461-026, SR-057)
+# commands: (autobyteus-web) pnpm typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals; codegen:check; npx vitest run --no-watch
+# commit: d9e124f844; macOS, Node v22.23.1; 2026-11-12T11:28Z
+
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[codegen:check] generated/graphql.ts matches the server schema (exit 0)
+
+## npx vitest run --no-watch
+ Test Files  750 passed (750)
+      Tests  5649 passed | 2 skipped (5651)

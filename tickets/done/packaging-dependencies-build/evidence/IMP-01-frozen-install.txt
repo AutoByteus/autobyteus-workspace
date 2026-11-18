@@ -1,0 +1,16 @@
+# IMP-01
+# Command: git clone --branch codex/packaging-dependencies-build <worktree> /private/tmp/pdb-clean; pnpm install --frozen-lockfile; then the same inside the Docker builder
+# Commit: 4db26446cb
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9.1s using pnpm v10.28.2
+INSTALL_EXIT=0
+
+## Docker builder (RUN pnpm install --frozen-lockfile with the 8 copied manifests)
+#22 2.222 Scope: all 9 workspace projects
+#22 2.324 Lockfile is up to date, resolution step is skipped
+#22 56.07 Done in 54.1s using pnpm v10.28.2
+#22 DONE 56.6s

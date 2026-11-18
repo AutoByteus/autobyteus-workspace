@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-64080-b4de",
+    "pid": 54958,
+    "executablePath": "/private/tmp/ab387-api35-fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:64081",
+    "graphqlUrl": "http://127.0.0.1:64081/graphql",
+    "controlEndpoint": "http://127.0.0.1:64080",
+    "controlPort": 64080,
+    "serverPort": 64081,
+    "dataRoot": "/private/tmp/ab387-api30/c",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/tmp/ab387-api30/c/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-64080-b4de.log"
+  }
+}

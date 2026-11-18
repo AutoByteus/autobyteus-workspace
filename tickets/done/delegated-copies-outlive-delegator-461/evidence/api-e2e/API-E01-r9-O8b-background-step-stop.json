@@ -1,0 +1,23 @@
+{
+  "case": "O-8b (R9-C, pass): own stream and task view after a stop mid-step; user-started run (Stop) vs delegated copy (Task DONE)",
+  "evidence": {
+    "userStarted": {
+      "runningFrameSeen": true,
+      "backgroundAfterStop": [],
+      "typesAfterStop": [],
+      "taskView": {
+        "__typename": "AgentBackgroundTaskUnavailable",
+        "reason": "inactive"
+      }
+    },
+    "delegatedCopy": {
+      "runningFrameSeen": false,
+      "backgroundAfterStop": [],
+      "typesAfterStop": [],
+      "taskView": {
+        "__typename": "AgentBackgroundTaskUnavailable",
+        "reason": "inactive"
+      }
+    }
+  }
+}

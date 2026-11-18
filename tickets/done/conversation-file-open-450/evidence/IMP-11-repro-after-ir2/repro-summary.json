@@ -1,0 +1,86 @@
+{
+  "startedAt": "2026-11-09T10:54:48.503Z",
+  "timeline": [
+    {
+      "t": 4821,
+      "event": "stack",
+      "runId": "content_creator_09cf51eb60644300aa8865e47b47070d",
+      "postPath": "<root>/workspace/posts/post.md"
+    },
+    {
+      "t": 40336,
+      "event": "desktop",
+      "D1_firstOpen": "VERSION-ONE-1111",
+      "D2_newLinkAfterRewrite": "VERSION-TWO-2222",
+      "D3_after10sOpen": "VERSION-TWO-2222",
+      "D4_closeButtonFound": false,
+      "D5_afterReload": "VERSION-TWO-2222"
+    },
+    {
+      "t": 52090,
+      "event": "phone",
+      "P1_firstOpen": "VERSION-TWO-2222",
+      "P2_newLinkAfterRewrite": "VERSION-THREE-3333",
+      "P3_afterReload": "VERSION-THREE-3333"
+    },
+    {
+      "t": 60827,
+      "event": "bug1",
+      "fileInputFound": true,
+      "chipKind": "thumbnail",
+      "chipLabel": "",
+      "thumbnailRequests": [],
+      "afterTap": {
+        "phoneUrlChanged": true,
+        "phoneUrl": "/mobile/?screen=files&contextFile=/rest/runs/content_creator_09cf51eb60644300aa8865e47b47070d/context-files/ctx_635efe73da07__attach-450.png&contextFileName=attach-450.png",
+        "newWindow": null,
+        "viewerOpen": 1,
+        "requestsAfterTap": [
+          {
+            "url": "/rest/runs/content_creator_09cf51eb60644300aa8865e47b47070d/context-files/ctx_635efe73da07__attach-450.png",
+            "status": 200,
+            "type": "fetch",
+            "mainFrame": false
+          }
+        ]
+      }
+    }
+  ],
+  "desktop": {
+    "D1_firstOpen": "VERSION-ONE-1111",
+    "D2_newLinkAfterRewrite": "VERSION-TWO-2222",
+    "D3_after10sOpen": "VERSION-TWO-2222",
+    "D4_closeButtonFound": false,
+    "D5_afterReload": "VERSION-TWO-2222"
+  },
+  "phone": {
+    "P1_firstOpen": "VERSION-TWO-2222",
+    "P2_newLinkAfterRewrite": "VERSION-THREE-3333",
+    "P3_afterReload": "VERSION-THREE-3333"
+  },
+  "bug1": {
+    "fileInputFound": true,
+    "chipKind": "thumbnail",
+    "chipLabel": "",
+    "thumbnailRequests": [],
+    "afterTap": {
+      "phoneUrlChanged": true,
+      "phoneUrl": "/mobile/?screen=files&contextFile=/rest/runs/content_creator_09cf51eb60644300aa8865e47b47070d/context-files/ctx_635efe73da07__attach-450.png&contextFileName=attach-450.png",
+      "newWindow": null,
+      "viewerOpen": 1,
+      "requestsAfterTap": [
+        {
+          "url": "/rest/runs/content_creator_09cf51eb60644300aa8865e47b47070d/context-files/ctx_635efe73da07__attach-450.png",
+          "status": 200,
+          "type": "fetch",
+          "mainFrame": false
+        }
+      ]
+    }
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  }
+}

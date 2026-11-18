@@ -1,0 +1,38 @@
+# Case: API-02 — instrumented tests on the emulator, including the new MainActivityConfigurationChangeTest
+# Command: cd autobyteus-android && ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew :app:connectedDebugAndroidTest
+# Commit: dd129696a4 + the new test (uncommitted at run time; committed with this report)
+# Environment: emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, Android 15 / API 35, google_apis arm64), -no-window -no-snapshot -wipe-data; the only adb device; JDK 21
+# Date: 2026-11-06T20:25:33Z
+
+> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:validateSigningDebugAndroidTest UP-TO-DATE
+> Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app:packageDebugAndroidTest UP-TO-DATE
+> Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
+
+> Task :app:connectedDebugAndroidTest
+Starting 13 tests on autobyteus277_api35(AVD) - 15
+
+autobyteus277_api35(AVD) - 15 Tests 12/13 completed. (0 skipped) (0 failed)
+Finished 13 tests on autobyteus277_api35(AVD) - 15
+
+BUILD SUCCESSFUL in 30s
+65 actionable tasks: 1 executed, 64 up-to-date
+
+## results (app/build/outputs/androidTest-results/connected/debug/TEST-*.xml)
+file: TEST-autobyteus277_api35(AVD) - 15-_app-.xml
+testsuite name=org.autobyteus.mobile.AutoByteusMobileShellSmokeTest tests=13 failures=0 errors=0 skipped=0 time=13.734
+  AutoByteusMobileShellSmokeTest.appPackageIsInstallable  passed  0.007s
+  AutoByteusMobileShellSmokeTest.fileChooserAndQrActivityResultsHaveDistinctRequestCodes  passed  0.0s
+  AutoByteusMobileShellSmokeTest.healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar  passed  1.38s
+  AutoByteusMobileShellSmokeTest.qrCoordinatorEmitsDecodedTextFromSuccessfulScanResult  passed  0.029s
+  AutoByteusMobileShellSmokeTest.qrCoordinatorReturnsCancelDiagnosticForCanceledOrEmptyScan  passed  0.031s
+  AutoByteusMobileShellSmokeTest.diagnosticWebShellKeepsRecoveryActionsInOverlay  passed  0.118s
+  AutoByteusMobileShellSmokeTest.webViewSettingsPermitUserSelectedContentUrisButNotFilePaths  passed  0.177s
+  AutoByteusMobileShellSmokeTest.qrCoordinatorOwnsCameraPermissionBeforeLaunchingScanner  passed  0.083s
+  MainActivityConfigurationChangeTest.rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput  passed  4.326s
+  SystemBarInsetsTest.padsTheRootWithTheBarsAndTheCutout  passed  0.064s
+  SystemBarInsetsTest.theKeyboardRaisesTheBottomAboveIt  passed  0.001s
+  SystemBarInsetsTest.withoutInsetsNothingMoves  passed  0.103s
+  WebShellWindowInsetsTest.thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero  passed  5.659s

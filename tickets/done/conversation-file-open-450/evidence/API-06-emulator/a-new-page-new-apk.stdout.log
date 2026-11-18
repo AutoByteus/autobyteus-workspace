@@ -1,0 +1,5 @@
+{"t":19679,"event":"attachments sent by the second phone"}
+{"t":20470,"event":"apk","versionName":"0.1.0"}
+{"t":72803,"event":"tap","name":"text","found":true,"appRejectionScreen":false,"pagePairingScreen":false,"viewer":true,"conversationShown":false,"connectionsAfterTap":[{"path":"/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…","webSocket":true}],"backToConversation":true}
+{"t":85097,"event":"tap","name":"png","found":true,"appRejectionScreen":false,"pagePairingScreen":false,"viewer":true,"conversationShown":false,"connectionsAfterTap":[{"path":"/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…","webSocket":true}],"backToConversation":true}
+{"t":98719,"event":"revocation","status":200,"pairingShown":true,"screen":["AutoByteus","Connect this phone","Scan the QR code on your computer with this phone’s camera."," [Get the Android app]","Get the Android app","Other ways to connect"]}

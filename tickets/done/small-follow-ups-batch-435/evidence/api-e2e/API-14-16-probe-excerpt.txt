@@ -1,0 +1,35 @@
+# API-14/15/16 phone probe excerpts; commands (from the worktree):
+#  r1: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/private/tmp/abx435-api/probe-r1 --cases=MSP-05,MSP-33,MSP-24,MSP-25,MSP-26,MSP-34,MSP-27,MSP-35
+#  r2: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/private/tmp/abx435-api/probe-r2 --cases=MSP-33 (after the MSP-33 test timing fix)
+# builds: worktree HEAD 432d1c3af2 server dist + build:mobile-web (no web/server code of items 1-12 changed since f9cb6f7153), probe files as committed with this report; headless Chrome; 2026-11-10
+
+## r1: result Fail; summary {"cases": {"MSP-05": "Pass", "MSP-33": "Fail", "MSP-24": "Pass", "MSP-25": "Pass", "MSP-26": "Pass", "MSP-34": "Pass", "MSP-27": "Pass", "MSP-35": "Pass"}, "unknownBrowserErrors": 0}; cleanup {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}
+- MSP-05: Pass
+- MSP-33: Fail — after the first message the route names the node's run (DS-006b)
+    agent Activity: reached True same query True opening True listShown False
+    Team Messages: reached True same query True opening True listShown False
+    Team member: reached True same query True opening True listShown False
+    delegated task agent: reached True same query True opening True listShown False
+    gone: {'reached': True, 'query': '?row=agent:no-such-run-435', 'activity': False, 'runScreen': None}
+    reload before the first message: draft ?row=agent:temp-1794299649483-1&screen=run -> ?row=agent:temp-1794299649483-1 runScreen None list reached True
+    view before send ?row=agent:temp-1794299651316-1&screen=activity; after send ?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=run; stored False; forward ?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=activity
+    created run Activity after reload: reached True opening True listShown False query ?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=activity; Back ?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=run
+- MSP-24: Pass
+- MSP-25: Pass
+- MSP-26: Pass
+- MSP-34: Pass
+    {"stoppedBefore": {"status": {"runId": "project_task_manager_3dad667acf0340abb315bc0819cb499c", "isActive": false, "closedTaskExecutionsDigest": "2:a5bad41a"}, "listed": {"phoneHost": true, "phoneOther": true}, "viewReads": {"phoneHost": 0, "phoneOther": 0}, "statusReadsNamingPtm": 3}, "before": null, "afterClose": {"status": {"runId": "project_task_manager_3dad667acf0340abb315bc0819cb499c", "isActive": false, "closedTaskExecutionsDigest": "3:d52528df"}, "goneAfterCloseMs": {"phoneOther": 2685, "phoneHost": 842}, "viewReads": {"phoneHost": 1, "phoneOther": 1}}, "afterTodo": {"status": {"runId": "project_task_manager_3dad667acf0340abb315bc0819cb499c", "isActive": false, "closedTaskExecutionsDigest": "3:d52528df"}, "nodeStillClosed": true, "listed": {"phoneHost": false, "phoneOther": false}, "viewReads": {"phoneHost": 0, "phoneOther": 0}}}
+- MSP-27: Pass
+- MSP-35: Pass
+    {"stoppedBefore": null, "before": {"listed": true, "viewReads": 0, "statusReadsNamingPtm": 2}, "afterClose": {"status": {"runId": "project_task_manager_3d822b10452a4d51bada49b572cb2290", "isActive": false, "closedTaskExecutionsDigest": "3:55276a8b"}, "goneAfterCloseMs": 3988, "viewReads": 1}, "afterTodo": {"status": {"runId": "project_task_manager_3d822b10452a4d51bada49b572cb2290", "isActive": false, "closedTaskExecutionsDigest": "3:55276a8b"}, "nodeStillClosed": true, "listed": false, "viewReads": 0}}
+
+## r2: result Pass; summary {"cases": {"MSP-33": "Pass"}, "unknownBrowserErrors": 0}; cleanup {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}
+- MSP-33: Pass
+    agent Activity: reached True same query True opening True listShown False
+    Team Messages: reached True same query True opening True listShown False
+    Team member: reached True same query True opening True listShown False
+    delegated task agent: reached True same query True opening True listShown False
+    gone: {'reached': True, 'query': '?row=agent:no-such-run-435', 'activity': False, 'runScreen': None}
+    reload before the first message: draft ?row=agent:temp-1794299997088-1&screen=run -> ?row=agent:temp-1794299997088-1 runScreen None list reached True
+    view before send ?row=agent:temp-1794299999003-1&screen=activity; after send ?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=run; stored True; forward ?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=activity
+    created run Activity after reload: reached True opening True listShown False query ?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=activity; Back ?row=agent:project_task_manager_ea3ae52d4bd44b149fb29a0ae6185946&screen=run

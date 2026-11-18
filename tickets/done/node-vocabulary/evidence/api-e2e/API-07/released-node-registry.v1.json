@@ -1,0 +1,33 @@
+{
+  "version": 5,
+  "nodes": [
+    {
+      "id": "embedded-local",
+      "name": "Embedded Node",
+      "baseUrl": "http://127.0.0.1:29695",
+      "nodeType": "embedded",
+      "isSystem": true,
+      "createdAt": "2026-09-01T10:00:00.000Z",
+      "updatedAt": "2026-09-01T10:00:00.000Z"
+    },
+    {
+      "id": "remote-x-entry",
+      "name": "remote x box",
+      "baseUrl": "http://127.0.0.1:60000",
+      "nodeType": "remote",
+      "serverInstanceId": "srv_rK3-Dw0suyak5YriiBooKHWczqOxO6Ad",
+      "isSystem": false,
+      "createdAt": "2026-09-02T10:00:00.000Z",
+      "updatedAt": "2026-09-02T10:00:00.000Z"
+    },
+    {
+      "id": "remote-never-entry",
+      "name": "never reached",
+      "baseUrl": "http://127.0.0.1:9",
+      "nodeType": "remote",
+      "isSystem": false,
+      "createdAt": "2026-09-03T10:00:00.000Z",
+      "updatedAt": "2026-09-03T10:00:00.000Z"
+    }
+  ]
+}

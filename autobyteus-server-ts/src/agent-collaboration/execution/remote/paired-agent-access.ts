@@ -8,7 +8,15 @@ export type PairedAgentPresentationListener = (agentRunId: string, message: Agen
 export type PairedAgentObservation = Readonly<{ close(): void }>;
 /** The node whose owner sends a command, by this node's name for it (the peer's registered name). */
 export type RemoteOwner = Readonly<{ nodeName: string }>;
-export type PairedAgentStatus = Readonly<{ agentRunId: string; status: RemoteAgentStatus }>;
+/** A live paired agent's status and how many background tasks it has running (autobyteus-448). */
+export type PairedAgentStatus = Readonly<{ agentRunId: string; status: RemoteAgentStatus; backgroundTasksRunning: number }>;
+/**
+ * A paired agent's status as a presentation message: its current status and background task count when followed, or
+ * `offline` with `0` when its run ends.
+ */
+export const pairedAgentStatusFrame = (status: string, backgroundTasksRunning: number): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
+  status, background_tasks_running: backgroundTasksRunning, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+} } as AgentPresentationMessage);
 
 /**
  * autobyteus-278 (AR-401): a run a peer started, as the node that runs it serves the peer's owner. Each root kind's

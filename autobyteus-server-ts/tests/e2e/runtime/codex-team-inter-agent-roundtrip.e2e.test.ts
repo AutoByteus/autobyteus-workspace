@@ -32,19 +32,25 @@ const wait = (ms: number): Promise<void> =>
     setTimeout(resolve, ms);
   });
 
-const waitForSocketOpen = (
+/** The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke). */
+const waitForStreamConnected = (
   socket: WebSocket,
-  timeoutMs = 10_000,
+  timeoutMs = 30_000,
 ): Promise<void> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(
-      () => reject(new Error("Timed out waiting for websocket open")),
+      () => reject(new Error("Timed out waiting for the stream's CONNECTED message")),
       timeoutMs,
     );
-    socket.once("open", () => {
+    const onMessage = (raw: WebSocket.RawData) => {
+      let type: unknown;
+      try { type = (JSON.parse(String(raw)) as { type?: unknown }).type; } catch { return; }
+      if (type !== "CONNECTED") return;
       clearTimeout(timer);
+      socket.off("message", onMessage);
       resolve();
-    });
+    };
+    socket.on("message", onMessage);
     socket.once("error", (error) => {
       clearTimeout(timer);
       reject(error);
@@ -468,7 +474,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
       const streamMessages: Array<{
         type: string;
         payload: Record<string, unknown>;
@@ -994,7 +1000,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
       const streamMessages: Array<{
         type: string;
         payload: Record<string, unknown>;
@@ -1296,7 +1302,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
 
       const streamMessages: Array<{
         type: string;
@@ -1549,15 +1555,6 @@ Rules:
           }
         }
       `;
-      const restoreTeamRunMutation = `
-        mutation RestoreAgentTeamRun($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) {
-            success
-            message
-            teamRunId
-          }
-        }
-      `;
       const listWorkspaceRunHistoryQuery = `
         query ListWorkspaceRunHistory {
           listWorkspaceRunHistory(limitPerAgent: 200) {
@@ -1597,7 +1594,7 @@ Rules:
       const teamSocket = new WebSocket(
         `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
       );
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
       const streamMessages: Array<{
         type: string;
         payload: Record<string, unknown>;
@@ -1705,15 +1702,7 @@ Rules:
       }>(terminateTeamRunMutation, { teamRunId });
       expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
 
-      const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: {
-          success: boolean;
-          message: string;
-          teamRunId: string | null;
-        };
-      }>(restoreTeamRunMutation, { teamRunId });
-      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+      // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
       const streamCountBeforeContinue = streamMessages.length;
       sendTeamMessageOverSocket(teamSocket, {
@@ -1926,7 +1915,7 @@ Rules:
           // ignore malformed rows in test stream capture
         }
       });
-      await waitForSocketOpen(teamSocket);
+      await waitForStreamConnected(teamSocket);
 
       const teamResumeQuery = `
         query TeamResume($teamRunId: String!) {
@@ -1940,15 +1929,6 @@ Rules:
           terminateAgentTeamRun(teamRunId: $teamRunId) {
             success
             message
-          }
-        }
-      `;
-      const restoreTeamRunMutation = `
-        mutation RestoreAgentTeamRun($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) {
-            success
-            message
-            teamRunId
           }
         }
       `;
@@ -2105,15 +2085,7 @@ Rules:
           await expectTerminatedProjection(member, [member.firstToken]);
         }
 
-        const restoreResult = await execGraphql<{
-          restoreAgentTeamRun: {
-            success: boolean;
-            message: string;
-            teamRunId: string | null;
-          };
-        }>(restoreTeamRunMutation, { teamRunId });
-        expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-        expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+        // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
         for (const member of members) {
           const startIndex = streamMessages.length;

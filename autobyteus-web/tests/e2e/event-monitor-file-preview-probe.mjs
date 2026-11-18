@@ -78,7 +78,7 @@ const state = () => page.evaluate(() => {
     drawer: !!document.querySelector('[data-test="workspace-right-tool-drawer"]'),
     dock: !!document.querySelector('[data-test="workspace-right-panel"]'),
     tabFocused: !!tab && document.activeElement === tab,
-    focusText: document.activeElement?.textContent, hostOnly: document.body.innerText.includes('available only on the host workspace') };
+    focusText: document.activeElement?.textContent, otherNode: document.body.innerText.includes('where this run runs') };
 });
 const waitState = async predicate => {
   const until = Date.now() + 30000; let last;
@@ -88,10 +88,15 @@ const waitState = async predicate => {
 const link = label => page.getByText(label, { exact: true });
 const activate = async (label, options = {}) => {
   await link(label).click();
-  const result = await waitState(s => s.visible && !s.preview?.isLoading && (options.error ? s.preview?.error === options.error : s.text?.includes(options.content || 'NATIVE SELECTED B PROOF')));
-  assert.equal(result.target.runId, selectedId); assert.equal(result.hostOnly, false); assert.equal(result.preview.accessIntent.readOnly, true);
-  if (options.error) { assert(result.alert); assert(!result.alert.includes('host workspace')); }
-  else assert(result.tabFocused);
+  let result = await waitState(s => s.visible && !s.preview?.isLoading && (options.error ? s.preview?.error === options.error : s.text?.includes(options.content || 'NATIVE SELECTED B PROOF')));
+  assert.equal(result.target.runId, selectedId); assert.equal(result.otherNode, false); assert.equal(result.preview.accessIntent.readOnly, true);
+  if (options.error) { assert(result.alert); assert(!result.alert.includes('where this run runs')); }
+  else {
+    // The link handler focuses the tab one task after the Files panel is revealed, so the content can show one poll
+    // earlier: wait for the focus (a state timeout fails the case) and record how long it took.
+    const shownAt = Date.now();
+    result = await waitState(s => s.tabFocused); result.focusAfterContentMs = Date.now() - shownAt;
+  }
   return result;
 };
 const navigate = async (orgRunId, memberAddress = '/team/lead', agentRunId = selectedId) => {
@@ -130,11 +135,15 @@ try {
       if (op === 'GetAgentOrgRunInspection') {
         const view = JSON.parse(JSON.stringify(module.exports.taskBearingView()));
         const root = view.execution_tree.rootOrg, id = variables.orgRunId;
-        root.orgRunId = id; view.communication_messages.orgRunId = id; view.is_active = false; view.agent_statuses = [];
+        root.orgRunId = id; view.is_active = false; view.agent_statuses = [];
         root.members[0].launchConfiguration.workspaceRootPath = rootA;
         const selectedRoot = id === `${scope}-pending` ? rootC : rootB;
         root.members[2].defaultLaunchConfiguration.workspaceRootPath = selectedRoot;
         root.members[2].members.forEach(member => { member.launchConfiguration.workspaceRootPath = selectedRoot; });
+        // The selected agent is a delegated copy of that Team: a copy runs from the launch snapshot it recorded.
+        const copy = root.taskExecutions.find(execution => execution.teamRunId === 'team-task');
+        copy.source.defaultLaunchConfiguration.workspaceRootPath = selectedRoot;
+        copy.source.members.forEach(member => { member.launchConfiguration.workspaceRootPath = selectedRoot; });
         response = { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: id, root_org: view } } };
       }
       if (op === 'GetAgentOrgMemberRunProjection') {
@@ -150,6 +159,8 @@ try {
         pendingMetadata.add(release); await held; pendingMetadata.delete(release);
       }
       if (op === 'GetRunFileChanges') response = { data: { getRunFileChanges: [] } };
+      // The saved Org exists only in this fixture, so its member's file changes are answered here too.
+      if (op === 'GetAgentOrgMemberFileChanges') response = { data: { getAgentOrgMemberFileChanges: [] } };
       if (response) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(response) });
       return route.continue();
     });
@@ -198,10 +209,13 @@ try {
   await run('N-009', 'real public workspace-relative content and out-of-root denial', async () => {
     const workspaceId = (await state()).target.id;
     const query = 'query GetFileContent($workspaceId: String!, $filePath: String!) { fileContent(workspaceId: $workspaceId, filePath: $filePath) }';
+    // Read through the app window: the desktop's main process attaches its node credential there (autobyteus-437, NA-1).
     const read = async filePath => {
-      const response = await fetch(instance.graphqlUrl, { method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ operationName: 'GetFileContent', query, variables: { workspaceId, filePath } }), signal: AbortSignal.timeout(10000) });
-      assert.equal(response.status, 200); return response.json();
+      const response = await page.evaluate(async ({ url, body }) => {
+        const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body, signal: AbortSignal.timeout(10000) });
+        return { status: r.status, json: await r.json() };
+      }, { url: instance.graphqlUrl, body: JSON.stringify({ operationName: 'GetFileContent', query, variables: { workspaceId, filePath } }) });
+      assert.equal(response.status, 200); return response.json;
     };
     const inside = await read('brief.md'); assert.equal(inside.data?.fileContent, markdown); assert(!inside.errors);
     const outside = await read('../A/private.md');

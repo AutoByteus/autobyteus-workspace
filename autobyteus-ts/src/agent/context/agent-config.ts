@@ -1,3 +1,4 @@
+import type { NativeCommandProcessScope } from '../../tools/terminal/command-execution/native-command-process-scope.js';
 import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { BaseAgentUserInputMessageProcessor } from '../input-processor/base-user-input-processor.js';
@@ -60,6 +61,12 @@ export class AgentConfig {
     skills: string[] | null = null,
     memoryDir: string | null = null,
     memoryCompaction: MemoryCompactionConfiguration = DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
+    public nativeCommandProcessScope?: NativeCommandProcessScope,
+    /**
+     * The tools whose definitions every request carries (listed tools); the agent's other tools
+     * are searchable (`search_tools` + `call_tool`). `null` lists every tool.
+     */
+    public listedToolNames: readonly string[] | null = null,
   ) {
     this.name = name;
     this.role = role;
@@ -106,6 +113,8 @@ export class AgentConfig {
       this.skills.slice(),
       this.memoryDir ?? null,
       copyMemoryCompactionConfiguration(this.memoryCompaction),
+      this.nativeCommandProcessScope,
+      this.listedToolNames === null ? null : [...this.listedToolNames],
     );
   }
 

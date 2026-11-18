@@ -1,0 +1,42 @@
+# API-20 workspaces-graphql.e2e.test.ts alone, before the baseline fix (commit dfef14abc6), env -i PATH HOME=<temp> TMPDIR, 2026-10-28T01:31:56Z
+Failed to fetch all workspaces: TypeError: __vite_ssr_import_0__.appConfigProvider.config.get is not a function
+Failed to fetch all workspaces: TypeError: __vite_ssr_import_0__.appConfigProvider.config.get is not a function
+Failed to fetch all workspaces: TypeError: __vite_ssr_import_0__.appConfigProvider.config.get is not a function
+Failed to fetch all workspaces: TypeError: __vite_ssr_import_0__.appConfigProvider.config.get is not a function
+     ✓ creates and lists workspaces 10ms
+     ✓ removes a registered workspace from visibility, preserves files, and re-adds the same root 15ms
+     ✓ keeps a workspace registered when removeWorkspace is blocked by an active standalone run 5ms
+     ✓ returns workspace metadata from createWorkspace without acquiring file explorer 4ms
+     ✓ resolves deterministic workspace metadata without initializing the workspace 4ms
+     × creates and lists the temp workspace with the backend-selected app-data-relative path 6ms
+     × lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries 5ms
+     × resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry 3ms
+     × preserves a seeded registry when GraphQL workspace listing and creation overlap 6ms
+     ✓ rejects removing the default temp workspace 2ms
+     ✓ creates and lists the temp workspace using the configured relative override under app data dir 3ms
+GraphQLError: Unable to fetch workspaces at this time.
+     83|       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
+GraphQLError: Unable to fetch workspaces at this time.
+     83|       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
+GraphQLError: Unable to fetch workspaces at this time.
+     83|       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
+GraphQLError: Unable to fetch workspaces at this time.
+     83|       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
+ Test Files  1 failed (1)
+      Tests  4 failed | 7 passed (11)
+
+# after the fix (worktree, uncommitted fix applied)
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces 10ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root 12ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run 6ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer 4ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace 4ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path 2ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries 4ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry 3ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap 6ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace 2ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir 2ms
+      Tests  11 passed (11)
+   Duration  8.40s (transform 5.47s, setup 43ms, import 7.45s, tests 119ms, environment 0ms)
+real	0m9.747s

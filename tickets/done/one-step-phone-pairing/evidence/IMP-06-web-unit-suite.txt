@@ -1,0 +1,11 @@
+# IMP-06 web unit/component suite
+# command: pnpm -C autobyteus-web test:nuxt --run (full, on the working tree before d92d94472f), then the affected specs on b2c7239d5e
+# 2026-11-07, macOS Darwin 25.5, Node v22.23.1
+## full run
+ FAIL  pages/__tests__/mobile-root-shell.spec.ts > mobile static root shell rendering > shows unsupported desktop-route feedback at the mobile root before the phone is paired
+ FAIL  pages/__tests__/mobile-root-shell.spec.ts > mobile static root shell rendering > keeps generated pairing links on the mobile root in the phone pairing bootstrap
+ Test Files  1 failed | 710 passed (711)
+      Tests  2 failed | 5305 passed | 2 skipped (5309)
+## the 2 failures were pages/__tests__/mobile-root-shell.spec.ts asserting the removed device-name page; updated. Affected specs rerun:
+ Test Files  16 passed (16)
+      Tests  125 passed (125)

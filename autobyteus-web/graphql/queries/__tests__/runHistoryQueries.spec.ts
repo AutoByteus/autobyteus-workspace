@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   GetRunEventMonitorActiveTracePage,
   GetRunFileChanges,
-  GetTeamCommunicationMessages,
   GetTeamMemberEventMonitorActiveTracePage,
   ListWorkspaceRunHistory,
 } from '../runHistoryQueries';
@@ -42,7 +41,8 @@ describe('ListWorkspaceRunHistory query', () => {
     expect(standaloneRunsBlock).toContain('archivedAt');
     expect(standaloneRunsBlock).toContain('terminatedAt');
     expect(standaloneRunsBlock).toContain('status');
-    expect(standaloneRunsBlock).not.toContain('lastActivityAt');
+    // The server's last activity, derived at read time from memory files, never stored (workspace-tree-vs-chooser DS-005).
+    expect(standaloneRunsBlock).toContain('lastActivityAt');
     expect(standaloneRunsBlock).not.toContain('lastKnownStatus');
 
     expect(teamRunsBlock).toContain('createdAt');
@@ -50,25 +50,8 @@ describe('ListWorkspaceRunHistory query', () => {
     expect(teamRunsBlock).toContain('terminatedAt');
     expect(teamRunsBlock).toContain('isActive');
     expect(teamRunsBlock).toContain('rootTeam');
-    expect(teamRunsBlock).not.toContain('lastActivityAt');
+    expect(teamRunsBlock).toContain('lastActivityAt');
     expect(teamRunsBlock).not.toContain('lastKnownStatus');
     expect(teamRunsBlock).not.toContain('deleteLifecycle');
   });
 });
-
-describe('GetTeamCommunicationMessages query', () => {
-  it('requests exact sender and receiver AgentRun identities without removed route identity', () => {
-    const source = GetTeamCommunicationMessages.loc?.source.body ?? '';
-
-    expect(source).toContain('getTeamCommunicationMessages');
-    expect(source).toContain('senderAgentRunId');
-    expect(source).toContain('receiverAgentRunId');
-    expect(source).not.toContain('senderAddress');
-    expect(source).not.toContain('receiverAddress');
-    expect(source).not.toContain('senderMemberRouteKey');
-    expect(source).not.toContain('receiverMemberRouteKey');
-    expect(source).not.toContain('taskTeamScope');
-    expect(source).not.toContain('memberRouteKey');
-  });
-});
-

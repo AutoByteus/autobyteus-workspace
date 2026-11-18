@@ -1,0 +1,98 @@
+# DEL-04 web specs on 7c1117e209 2026-11-06T09:35:28Z
+# NUXT_TEST=true pnpm exec vitest run components/settings/agent-runtimes utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts utils/__tests__/grokBuildRuntimePresentation.spec.ts components/settings/model-routing services/activity components/runList components/progress/__tests__/SystemInstructionActivityItem.spec.ts 
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/runList/__tests__/RunListRow.agent.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/model-routing/__tests__/AgentRuntimesNowSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/runList/__tests__/RunListPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/SystemInstructionActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/runList/__tests__/RunListRow.org.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/model-routing/__tests__/AgentRuntimesNowSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/runList/__tests__/RunListPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/SystemInstructionActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/runList/__tests__/RunListRow.org.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/runList/__tests__/RunListRow.agent.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/progress/__tests__/SystemInstructionActivityItem.spec.ts (1 test) 26ms
+ ✓ utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts (2 tests) 2ms
+ ✓ components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts (4 tests) 20ms
+ ✓ components/settings/model-routing/__tests__/AgentRuntimesNowSection.spec.ts (8 tests) 171ms
+ ✓ components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts (14 tests) 189ms
+ ✓ components/runList/__tests__/RunListRow.agent.spec.ts (4 tests) 111ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts (10 tests) 137ms
+ ✓ components/runList/__tests__/RunListRow.org.spec.ts (9 tests) 90ms
+ ✓ components/runList/__tests__/RunListPanel.spec.ts (7 tests) 161ms
+stderr | utils/__tests__/grokBuildRuntimePresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/grokBuildRuntimePresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/grokBuildRuntimePresentation.spec.ts (3 tests) 3ms
+
+ Test Files  10 passed (10)
+      Tests  62 passed (62)
+   Start at  10:35:31
+   Duration  9.78s (transform 5.33s, setup 63.97s, collect 5.37s, tests 909ms, environment 2.95s, prepare 1.90s)
+
+exit=0

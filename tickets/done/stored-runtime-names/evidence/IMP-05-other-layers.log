@@ -1,0 +1,7 @@
+Check IMP-05: other layers on the worktree
+Commit: f5f9ee3221 (tests unchanged since 9d6552c5a3)
+Date: 2026-10-30
+---
+library: pnpm -C autobyteus-ts exec vitest run tests/unit -> Test Files 310 passed (310); Tests 2090 passed (2090)
+web: pnpm -C autobyteus-web test:nuxt services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts -> Test Files 1 passed (1); Tests 30 passed (30) (after pnpm -C autobyteus-web exec nuxt prepare)
+e2e (clean env, throwaway HOME): vitest run tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts -> Test Files 2 passed | 1 skipped (3); Tests 12 passed | 1 skipped (13). The skipped file is gated (live AGY); the other gated files whose assertions changed (agy-compaction-rotation-live, grok-build-compaction-live) were not run.

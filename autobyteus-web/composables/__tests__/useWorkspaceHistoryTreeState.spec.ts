@@ -212,11 +212,12 @@ describe('useWorkspaceHistoryTreeState', () => {
     expect(treeState.isTeamDefinitionExpanded('workspace:/ws/a', 'team-def-1')).toBe(false);
   });
 
-  it('prunes workspace expansion state for removed workspaces', () => {
+  it('prunes the expansion of a folder that leaves the list, so it comes back collapsed (workspace-tree-vs-chooser DS-004)', async () => {
     const { state, treeState } = buildReactiveHarness();
     state.nodes = [buildAgentWorkspace()];
     state.teams = [buildTeamNode()];
     state.workspaceGroups = [buildTeamHistoryWorkspace()];
+    await flushReactiveUpdates();
 
     treeState.toggleWorkspace('workspace:/ws/a');
     treeState.toggleAgent('workspace:/ws/a', 'agent-def-1');
@@ -226,7 +227,11 @@ describe('useWorkspaceHistoryTreeState', () => {
     expect(treeState.isAgentExpanded('workspace:/ws/a', 'agent-def-1')).toBe(true);
     expect(treeState.isTeamDefinitionExpanded('workspace:/ws/a', 'team-def-1')).toBe(true);
 
-    treeState.pruneWorkspace('workspace:/ws/a');
+    // Removed in the chooser, or its last run archived: the folder leaves the node list.
+    state.nodes = [];
+    await flushReactiveUpdates();
+    state.nodes = [buildAgentWorkspace()];
+    await flushReactiveUpdates();
 
     expect(treeState.isWorkspaceExpanded('workspace:/ws/a')).toBe(false);
     expect(treeState.isAgentExpanded('workspace:/ws/a', 'agent-def-1')).toBe(false);

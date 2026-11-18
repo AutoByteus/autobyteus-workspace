@@ -1,8 +1,8 @@
 <template>
   <div class="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-900" role="alert" :data-testid="testId">
-    <p class="font-medium"><span aria-hidden="true">✗ </span>{{ t(k('hint.cantReach'), { node, address: hint.firstTried }) }}</p>
-    <p class="mt-1 text-red-800">{{ t(k('hint.loopback'), { node }) }}</p>
-    <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+    <p class="flex items-start gap-2 font-medium"><NodeNoticeIcon class="mt-0.5" tone="error" />{{ t(k('hint.cantReach'), { node, address: hint.firstTried }) }}</p>
+    <p class="mt-1 pl-6 text-red-800">{{ t(k('hint.loopback'), { node }) }}</p>
+    <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 pl-6">
       <template v-if="hint.suggestion">
         <span class="text-red-900">{{ t(k('hint.try'), { address: hint.suggestion }) }}</span>
         <button
@@ -23,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import NodeNoticeIcon from '~/components/settings/nodes/NodeNoticeIcon.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { NODES_PAGE_KEY, type NodeAddressHintModel } from '~/utils/nodeConnectionErrorText'
 

@@ -1,0 +1,110 @@
+# Check: IMP-10 OpenAI Responses request body carries strict: false on each function tool (REQ-010 / AC-010 unit)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts && env -i … pnpm exec vitest run tests/unit/llm/api/provider-native-request-payloads.test.ts -t "strict: false")
+# Commits: before = the new test on b262b5e7a0 source (normalizeTools without strict); after = 53d149a4cc
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-30 local
+# Result: before, 2 of 2 fail (sendMessages and streamMessages: the tools lack strict); after, the whole file passes 13/13 (in the focused run below)
+
+===== before the fix =====
+     ↓ captures Gemini generateContent payload with native calls, ordered function responses, preserved thinking metadata, and no synthetic aggregate user text
+     ↓ captures Gemini generateContent payload with local .m4a audio as inlineData
+     ↓ captures Ollama chat payload with assistant tool_calls, ordered role=tool results, and no synthetic aggregate user text
+     ↓ captures Anthropic messages payload with strict assistant tool_use followed by result-block-first user tool_result blocks and no synthetic aggregate user text
+     ↓ captures Mistral chat payload with native tool_calls, ordered role=tool results, and no synthetic aggregate user text
+     ↓ captures OpenAI Responses payload with reasoning/function_call/function_call_output retention, include merge, and no synthetic aggregate user text
+     × sends every OpenAI Responses function tool with strict: false (sendMessages) 8ms
+     × sends every OpenAI Responses function tool with strict: false (streamMessages) 2ms
+     ↓ submits the canonical GPT-5.6 model and max reasoning effort through Responses
+     ↓ submits exact GPT-6 Astra with a supported direct-API reasoning effort through Responses
+     ↓ submits exact gpt-6-sol send and stream tool payloads through Responses
+     ↓ submits exact gpt-6-luna send and stream tool payloads through Responses
+     ↓ captures OpenAI Responses streaming payload with caller include preserved and encrypted reasoning requested
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 skipped (13)
+   Start at  06:37:54
+   Duration  1.24s (transform 347ms, setup 98ms, import 958ms, tests 11ms, environment 0ms)
+Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/llm/api/provider-native-request-payloads.test.ts > provider-native API request payloads > sends every OpenAI Responses function tool with strict: false (sendMessages)
+ FAIL  tests/unit/llm/api/provider-native-request-payloads.test.ts > provider-native API request payloads > sends every OpenAI Responses function tool with strict: false (streamMessages)
+AssertionError: expected [ { type: 'function', …(3) }, …(3) ] to deeply equal [ { type: 'function', …(4) }, …(3) ]
+
+- Expected
++ Received
+
+@@ -14,11 +14,10 @@
+        "required": [
+          "city",
+        ],
+        "type": "object",
+      },
+-     "strict": false,
+      "type": "function",
+    },
+    {
+      "description": "Return local time for a city.",
+      "name": "get_time",
+@@ -31,11 +30,10 @@
+        "required": [
+          "city",
+        ],
+        "type": "object",
+      },
+-     "strict": false,
+      "type": "function",
+    },
+    {
+      "description": "A function tool already in Responses shape.",
+      "name": "already_flat",
+@@ -45,11 +43,10 @@
+            "type": "string",
+          },
+        },
+        "type": "object",
+      },
+-     "strict": false,
+      "type": "function",
+    },
+    {
+      "type": "web_search",
+    },
+
+ ❯ tests/unit/llm/api/provider-native-request-payloads.test.ts:668:30
+    666|       }
+    667|
+    668|       expect(captured.tools).toEqual([
+       |                              ^
+    669|         {
+    670|           type: 'function',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 skipped (13)
+   Start at  06:37:54
+   Duration  1.24s (transform 347ms, setup 98ms, import 958ms, tests 11ms, environment 0ms)
+
+
+
+===== after: focused run (file tools, Responses payloads, native-agent flow) at 815b6e175a source =====
+ ✓ tests/unit/tools/file/context-patch.test.ts (43 tests) 80ms
+ ✓ tests/integration/tools/file/write-file.test.ts (9 tests) 38ms
+ ✓ tests/integration/tools/file/read-file.test.ts (11 tests) 65ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts (7 tests) 65ms
+ ✓ tests/integration/tools/file/read-file-binary.test.ts (9 tests) 72ms
+ ✓ tests/integration/tools/file/read-file-media.test.ts (25 tests) 107ms
+ ✓ tests/unit/tools/file/edit-file.test.ts (18 tests) 109ms
+ ✓ tests/integration/tools/file/edit-file.test.ts (4 tests) 44ms
+ ✓ tests/unit/tools/file/workspace-path-utils.test.ts (8 tests) 20ms
+ ✓ tests/unit/tools/file/edit-file-patch-diagnostic.test.ts (9 tests) 6ms
+ ✓ tests/unit/tools/file/write-file.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/file/read-file.test.ts (2 tests) 5ms
+ ✓ tests/unit/tools/file/file-tool-schema.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/file/exact-file-tools-removed.test.ts (1 test) 5ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (13 tests) 38ms
+ ✓ tests/integration/agent/read-file-media-native-agent-flow.test.ts (3 tests) 233ms
+ Test Files  16 passed (16)
+      Tests  164 passed (164)
+   Start at  06:39:22
+   Duration  1.85s (transform 2.68s, setup 423ms, import 4.04s, tests 895ms, environment 1ms)

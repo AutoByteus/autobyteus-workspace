@@ -1,0 +1,12 @@
+# IMP-02-server-test-unit.log server test:unit (with tests/architecture and tests/agent-work-journal)
+# command: pnpm -C autobyteus-server-ts test:unit
+# commit: 4a97ded528 (server code; 6fa5f443c6 later changed 3 compositions + 5 Fastify test setups, rerun in IMP-02b)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+> vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts"
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+ Test Files  864 passed | 5 skipped (869)
+      Tests  7296 passed | 9 skipped (7305)
+exit 0

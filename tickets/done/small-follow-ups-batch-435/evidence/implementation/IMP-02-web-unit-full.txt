@@ -1,0 +1,33 @@
+# IMP-02 full web unit suite: pnpm -C autobyteus-web test:nuxt --run
+# Tree: the production code of commit e5ca0e1da7 (run before commit; later edits touched only test doubles, test types, docs and the typecheck baseline; see IMP-03). macOS darwin 25.5.0, Node v22.23.1. 2026-11-10.
+# Result: 23 failures in 2 files, both caused by socket doubles that called onclose() with no event (the Org close handler now reads event.code); fixed in the doubles and rerun in IMP-03.
+
+  23      → Cannot read properties of undefined (reading 'code')
+  14 TypeError: Cannot read properties of undefined (reading 'code')
+   1 ⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+   1  Test Files  2 failed | 737 passed (739)
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /team/worker without refocus or input
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /director without refocus or input
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: pending projection cannot publish during stop, even before terminate resolves
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: pending inspection cannot publish during stop, even before terminate resolves
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: pending attachment submission remains excluded through historical cleanup and settles once
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: late inspection cannot overwrite release owner
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: late inspection cannot overwrite manual owner
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: an activity conflict cannot partially publish; a later recovery preserves latest focus
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-04: history during a loss streak starts no second recovery; the scheduler keeps trying and recovers; unretained roots are ignored
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-04: after a full history load the retained service in a loss streak recovers through inspection
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-04: after a focused history load the retained service in a loss streak recovers through inspection
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-03: projection stays unknown and never publishes inactive
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-03: network stays unknown and never publishes inactive
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-03: missing stays unknown and never publishes inactive
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-03: malformed stays unknown and never publishes inactive
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-03: graphql stays unknown and never publishes inactive
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-03: foreign stays unknown and never publishes inactive
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-02: active-to-inactive checkpoint rejection retries via new inspection, not error classification
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-02: active observation still needs both checkpoint barriers and a new snapshot
+   1  FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-01/05: inactive publication rejects readiness and released service cannot resurrect
+   1  FAIL  services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org strict candidate and terminal boundaries > does not partially mutate retained AgentContexts when the staged projection is invalid
+   1  FAIL  services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect
+   1  FAIL  services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > Org shared composer -> exact interaction -> correlated stream > preserves actual textarea edits while a verified same-Agent replacement is held
+   1    Duration  362.77s (transform 33.99s, setup 2459.31s, collect 223.11s, tests 97.48s, environment 210.55s, prepare 117.27s)
+   1       Tests  23 failed | 5558 passed | 2 skipped (5583)

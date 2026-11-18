@@ -1,0 +1,9 @@
+# API-14b launcher tests incl. the new --allow-local-network across upgrade --all case
+# Command: python3 -m pytest -q -rs scripts/tests/test_public_docker_launcher_shared_workspace.py scripts/tests/test_public_docker_launcher_stop.py scripts/tests/test_public_docker_launcher_update.py scripts/tests/test_server_docker_cli_install_failures.py scripts/tests/test_server_docker_cli_latest_defaults.py
+# Commit: b6a57ab154 + working-tree test change; Date: 2026-11-08T16:08:30Z; macOS arm64, fake docker/tailscale
+....................ss.........................................          [100%]
+=========================== short test summary info ============================
+SKIPPED [1] scripts/tests/test_public_docker_launcher_shared_workspace.py:865: pwsh is not installed
+SKIPPED [1] scripts/tests/test_public_docker_launcher_shared_workspace.py:662: port 8001 is not available for collision test setup
+61 passed, 2 skipped in 53.26s
+# Exit status: 0

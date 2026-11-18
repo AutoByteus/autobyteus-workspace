@@ -31,6 +31,7 @@ import { computed } from 'vue';
 import type { Component } from 'vue';
 import { getLanguage } from '~/utils/highlighting/languageDetector';
 import type { FileDataType, FileOpenMode, FileRelativeResourceContext } from '~/stores/fileExplorerState';
+import type { ViewerZoomMemory } from '~/composables/mobile/useViewerZoomMemory';
 
 // Import Viewers
 import MonacoEditor from '~/components/fileExplorer/MonacoEditor.vue';
@@ -48,12 +49,18 @@ const props = defineProps<{
     type: FileDataType;
     content: string | null;
     url: string | null;
+    /** An open file's reload count (autobyteus-450); files shown outside the file explorer have none. */
+    contentRevision?: number;
     relativeResourceContext?: FileRelativeResourceContext | null;
   };
   mode: FileOpenMode;
   loading?: boolean;
   error?: string | null;
   readOnly?: boolean;
+  /** The phone viewer (autobyteus-472): PDFs and images zoom by touch; given to those two viewers only. */
+  touchZoom?: boolean;
+  /** The phone viewer's zoom memory for its open file (autobyteus-472 REQ-006); with `touchZoom` only. */
+  zoomMemory?: ViewerZoomMemory | null;
 }>();
 
 const emit = defineEmits<{
@@ -100,10 +107,13 @@ const componentProps = computed(() => {
     };
   }
 
-  // Media types
-  return {
+  // Media types: an explicit open of the same file bumps `contentRevision`; the viewer loads its (same) URL again.
+  const media = {
     url: props.file.url || null,
     content: props.file.content || null,
+    contentRevision: props.file.contentRevision ?? 0,
   };
+  const zoomable = props.touchZoom && (props.file.type === 'PDF' || props.file.type === 'Image');
+  return zoomable ? { ...media, touchZoom: true, zoomMemory: props.zoomMemory ?? null } : media;
 });
 </script>

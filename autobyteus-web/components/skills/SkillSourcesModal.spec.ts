@@ -36,7 +36,7 @@ const ConfirmationModalStub = {
 
 const mounted: VueWrapper[] = []
 
-const mountComponent = async (options: { extraSources?: SkillSource[]; nodeId?: string } = {}) => {
+const mountComponent = async (options: { extraSources?: SkillSource[]; entryId?: string } = {}) => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: true,
@@ -51,7 +51,7 @@ const mountComponent = async (options: { extraSources?: SkillSource[]; nodeId?: 
         error: '',
       },
       skill: { skills: [], loading: false, error: '' },
-      ...(options.nodeId ? { windowNodeContext: { nodeId: options.nodeId } } : {}),
+      ...(options.entryId ? { windowNodeContext: { entryId: options.entryId } } : {}),
     },
   })
   setActivePinia(pinia)
@@ -283,7 +283,7 @@ describe('SkillSourcesModal', () => {
       expect(byLabel(browser.wrapper, 'Browse…')).toBeUndefined()
 
       Object.defineProperty(window, 'electronAPI', { configurable: true, value: { showFolderDialog: vi.fn() } })
-      const remoteNode = await mountComponent({ nodeId: 'remote-node' })
+      const remoteNode = await mountComponent({ entryId: 'remote-node' })
       expect(byLabel(remoteNode.wrapper, 'Browse…')).toBeUndefined()
     })
 

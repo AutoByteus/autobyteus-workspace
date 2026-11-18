@@ -1,0 +1,116 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "codeword": "OKAPI-8834",
+  "turns": [
+    {
+      "label": "1 call alpha",
+      "content": "Remember this codeword: OKAPI-8834. Call the list_projects tool once, then reply with exactly: DONE-1",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember this codeword: OKAPI-8834. Call the list_projects tool once, then reply with exactly: DONE-1",
+          "media": null,
+          "ts": 1793297808.055
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01X36oGkHB3X2vN97aVULCzd",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": "{\"projects\":[{\"projectId\":\"project_a448a710-c5b3-4e7b-a51d-4da6b0c55ff1\",\"name\":\"Tool List Live 1ce6cd\"}]}",
+          "toolError": null,
+          "media": null,
+          "ts": 1793297811.381
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-1",
+          "media": null,
+          "ts": 1793297812.399
+        }
+      ]
+    },
+    {
+      "label": "2 add beta, call beta",
+      "content": "Call the list_project_tasks tool once with project_id \"project_a448a710-c5b3-4e7b-a51d-4da6b0c55ff1\". Then reply with DONE-2 followed by the codeword from my first message.",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Call the list_project_tasks tool once with project_id \"project_a448a710-c5b3-4e7b-a51d-4da6b0c55ff1\". Then reply with DONE-2 followed by the codeword from my first message.",
+          "media": null,
+          "ts": 1793297818.184
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+          "ts": 1793297818.187
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_014czu5dRWQyZYHixBUHsN4v",
+          "role": null,
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {
+            "project_id": "project_a448a710-c5b3-4e7b-a51d-4da6b0c55ff1"
+          },
+          "toolResult": "{\"projectId\":\"project_a448a710-c5b3-4e7b-a51d-4da6b0c55ff1\"}",
+          "toolError": null,
+          "media": null,
+          "ts": 1793297819.916
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-2 OKAPI-8834",
+          "media": null,
+          "ts": 1793297821.007
+        }
+      ]
+    },
+    {
+      "label": "3 remove alpha, try alpha",
+      "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+          "media": null,
+          "ts": 1793297826.27
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+          "ts": 1793297826.271
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-3",
+          "media": null,
+          "ts": 1793297828.202
+        }
+      ]
+    }
+  ],
+  "seenToolNames": [
+    "{\n  \"version\": 1,\n  \"toolNames\": [\n    \"delegate_task\",\n    \"list_project_tasks\",\n    \"send_message_to\"\n  ]\n}\n"
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

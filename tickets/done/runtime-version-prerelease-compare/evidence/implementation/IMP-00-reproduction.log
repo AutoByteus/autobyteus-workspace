@@ -1,0 +1,14 @@
+# IMP-00 reproduction: the new runtime-version tests on the code before the fix
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/agent-runtimes/runtime-version.test.ts --no-watch
+# Commit: b9643693f8 (base code) + the new test file
+# Environment: macOS (Darwin 25.5), Node 22.21.1
+# Date: 2026-11-06
+
+     × reads "0.2.2-rc.1" as "0.2.2-rc.1"
+     × reads "1.0.0-alpha.beta+exp.sha.5114f85\n" as "1.0.0-alpha.beta"
+     × orders a prerelease before its release, and equal versions as equal (AC-002)
+     × follows the SemVer precedence chain, each step in both directions (AC-003)
+     × ignores build metadata (AC-003)
+      Tests  5 failed | 13 passed (18)
+
+After the fix (same file): Tests  18 passed (18). runtime-management unit folder: Test Files  33 passed (33), Tests  276 passed (276).

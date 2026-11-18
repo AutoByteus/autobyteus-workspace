@@ -16,7 +16,10 @@ import {
 } from "../../../src/app-data-migrations/frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { MESSAGE_LOG_ROTATION_LIMIT_BYTES } from "../../../src/run-history/store/message-log.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
-import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeOpenTaskRecordsOfReleasedData, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // The startup migration `20261018_append_only_message_logs_v1` through the BUILT Studio server (`dist/app.js`, the server the
 // desktop app embeds) on a faithful upgrade, with the real migration runner, its SQLite ledger and the production registry order.
@@ -65,7 +68,7 @@ const studio = async (root: string) => {
   const env: NodeJS.ProcessEnv = Object.fromEntries(["PATH", "USER", "LANG", "TMPDIR", "SHELL"].flatMap((key) => process.env[key] === undefined ? [] : [[key, process.env[key]]]));
   Object.assign(env, { HOME: path.join(root, "home"), DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
     ANTIGRAVITY_CLI_COMMAND: AGY_CLI, AGY_FAKE_CASE: "linked_skills" });
-  const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
@@ -156,6 +159,8 @@ const faithfulRoot = async () => {
 
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);
+  // autobyteus-469: the installs this stands for keep a Task record per task agent; a top run's tree is built from them.
+  await writeOpenTaskRecordsOfReleasedData(root);
   const withReference = (entry: Message): Message => ({ ...entry, referenceFiles: [path.join(root, "workspace", "refs", `${entry.messageId}.md`)] });
   const released = {
     hub: (HUB_MESSAGES as Message[]).map(withReference),
@@ -204,19 +209,21 @@ const objectsIn = (value: unknown): Json[] => {
   return [value as Json, ...Object.values(value).flatMap(objectsIn)];
 };
 
-/** The served history of each family, as the renderer reads it. */
-const views = (server: Studio) => ({
-  hub: async (id: string): Promise<Message[]> =>
-    ((await server.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id })).agentRunCollaboration.root_agent.communication_messages.messages as Json[]).map(fields),
-  team: async (id: string): Promise<Array<Message & { referenceIds: string[] }>> =>
-    ((await server.gql(`query($id:String!){getTeamCommunicationMessages(teamRunId:$id){messageId senderAgentRunId receiverAgentRunId content messageType createdAt referenceFiles{referenceId path}}}`,
-      { id })).getTeamCommunicationMessages as Json[]).map((entry) => ({ ...fields({ ...entry, referenceFiles: entry.referenceFiles.map((file: Json) => file.path) }),
-      referenceIds: entry.referenceFiles.map((file: Json) => file.referenceId) })),
-  org: async (id: string): Promise<Message[]> => {
-    const inspection = (await server.gql(`query($id:String!){getAgentOrgRunInspection(orgRunId:$id)}`, { id })).getAgentOrgRunInspection;
-    return (inspection.root_org.communication_messages.messages as Json[]).map(fields);
-  },
-});
+/**
+ * The served history of each family, as the renderer reads it: the view gives the tree, and the Team tab loads each
+ * participant's messages (autobyteus-358).
+ */
+const views = (server: Studio) => {
+  const messagesOf = async (rootKind: "agent" | "agent_team" | "agent_org", rootRunId: string, tree: unknown) =>
+    (await readRootMessages(server.gql, { rootKind, rootRunId, agentRunIds: agentRunIdsOfViewTree(tree) })) as unknown as Json[];
+  return {
+    // autobyteus-461 SR-084: a run's agents (its own and its delegated runs') are its tree's rows (views carry own parts only).
+    hub: async (id: string): Promise<Message[]> => (await messagesOf("agent", id, await readRunTree(server.gql, "agent", id))).map(fields),
+    team: async (id: string): Promise<Array<Message & { referenceIds: string[] }>> => (await messagesOf("agent_team", id, await readRunTree(server.gql, "agent_team", id)))
+      .map((entry) => ({ ...fields(entry), referenceIds: (entry.referenceFiles as string[]).map((file) => rootReferenceId(entry.messageId as string, file)) })),
+    org: async (id: string): Promise<Message[]> => (await messagesOf("agent_org", id, await readRunTree(server.gql, "agent_org", id))).map(fields),
+  };
+};
 /** The renderer's reference id of a hub or organization message (`agentOrgReferenceProjection.ts`). */
 const rootReferenceId = (messageId: string, file: string) => createHash("sha256").update(`${messageId}\0${file}`).digest("hex");
 const fetchText = async (server: Studio, route: string) => {
@@ -417,7 +424,8 @@ describe("append-only message logs: the built server converts a faithful release
     await start0.gql(`mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success}}`, { id: orgRunId });
     await start0.stop();
 
-    const dirs = { hub: path.join(memory, "agents", hubId, "collaboration"), helper: path.join(memory, "agents", helperId),
+    // autobyteus-461 TC-13: every agent run logs in its own folder (the current code wrote the hub's log there).
+    const dirs = { hub: path.join(memory, "agents", hubId), helper: path.join(memory, "agents", helperId),
       team: path.join(memory, "agent_teams", teamRunId), org: path.join(memory, "agent_orgs", orgRunId) };
     const [director, analyst] = [orgMembers["/director"]!, orgMembers["/analyst"]!];
     const older = Array.from({ length: BIG_MESSAGE_COUNT }, (_, index): Message => ({ messageId: `older-${String(index).padStart(2, "0")}`,
@@ -501,8 +509,7 @@ describe("append-only message logs: the built server converts a faithful release
     hub1.close();
 
     // Team run family, resumed: the lead's message to its teammate is one new line in the team's log.
-    const restoredTeam = (await first.gql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`, { id: teamRunId })).restoreAgentTeamRun;
-    expect(restoredTeam, JSON.stringify(restoredTeam)).toMatchObject({ success: true });
+    // The stopped run's view serves it from its stored file; the member's message on it restores the run (autobyteus-461 CR-461-008).
     const team1 = await driver(first, "team", teamRunId);
     const teamReference = await reference("new-team");
     expect(await team1.call(teamMembers["/lead"]!, "/lead", callTool("send_message_to", { recipient_address: "/mate", content: "New team message.", reference_files: [teamReference] })))
@@ -517,8 +524,7 @@ describe("append-only message logs: the built server converts a faithful release
     team1.close();
 
     // Org family, resumed, on the rotated converted log: one new line at the end of the active file; the sealed files keep their bytes.
-    const restoredOrg = (await first.gql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: orgRunId })).restoreAgentOrgRun;
-    expect(restoredOrg, JSON.stringify(restoredOrg)).toMatchObject({ success: true });
+    // The stopped run's view serves it from its stored file; the member's message on it restores the run (autobyteus-461 CR-461-008).
     const org1 = await driver(first, "org", orgRunId);
     const activeFile = path.join(dirs.org, "agent_org_communication_messages_active.jsonl");
     const activeBefore = await fs.readFile(activeFile, "utf8");

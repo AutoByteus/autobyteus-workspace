@@ -1,3 +1,4 @@
+import { ApplicationShutdown } from './applicationShutdown'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import * as fsSync from 'fs'
 import * as fs from 'fs/promises'
@@ -13,17 +14,18 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from '../nodeRegistryTypes'
-import { EMBEDDED_NODE_ID, isServerInstanceId } from '../nodeRegistryTypes'
+import { EMBEDDED_ENTRY_ID, isNodeId } from '../nodeRegistryTypes'
 import { logger } from '../logger'
 import { attachRendererConsoleDiagnostics } from '../rendererConsoleDiagnostics'
 import {
   ensureEmbeddedNode,
-  getNodeProfileById,
+  getEntryById,
   loadNodeRegistrySnapshot,
   nowIsoString,
   identifyNodeEntry,
   sanitizeBaseUrl,
   saveNodeRegistrySnapshot,
+  setNodeAutoUpdate,
 } from '../nodeRegistryStore'
 import { ServerManagerFactory } from '../server/serverManagerFactory'
 import type { BaseServerManager } from '../server/baseServerManager'
@@ -40,12 +42,19 @@ import { WorkspaceShellWindow } from '../shell/workspace-shell-window'
 import { WorkspaceShellWindowRegistry } from '../shell/workspace-shell-window-registry'
 import { validateReadableRegularFile } from '../localFileValidation'
 import { installLocalFileProtocol } from '../local-file-protocol/local-file-protocol'
+import { runElectronFileMigrations } from '../../client-data-migrations/electron-file-runner'
+import { NodeAutoUpdater } from '../nodeAutoUpdate/nodeAutoUpdater'
+import { NodeAutoUpdateRecord } from '../nodeAutoUpdate/nodeAutoUpdateRecord'
+import { createNodeUpdateClient } from '../nodeAutoUpdate/nodeUpdateClient'
+import { registerNodeAutoUpdateIpc } from '../nodeAutoUpdate/nodeAutoUpdateIpc'
+import { startDesktopNodeAccess } from '../nodeAccess/desktopNodeAccess'
+import type { NodeConnectService } from '../nodeAccess/nodeConnectService'
+import { NODE_AUTO_UPDATE_CHANGED_CHANNEL, type NodeAutoUpdateEntries } from '../../shared/nodeAutoUpdateTypes'
 
 type ElectronApplicationOptions = {
   profile: ElectronLaunchProfile
 }
 
-const shutdownTimeoutMs = 8000
 
 export class ElectronApplication {
   private readonly profile: ElectronLaunchProfile
@@ -55,9 +64,11 @@ export class ElectronApplication {
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
   private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
-  private hasShutdownRun = false
-  private shutdownTimer: NodeJS.Timeout | null = null
+  private readonly shutdown = new ApplicationShutdown(() => this.stopResources(), () => logger.close(), 30000,
+    error => logger.error('Application shutdown incomplete', error))
   private nodeRegistrySnapshot: NodeRegistrySnapshot = { version: 0, nodes: [] }
+  private nodeAutoUpdater: NodeAutoUpdater | null = null
+  private nodeAccess: NodeConnectService | null = null
 
   constructor({ profile }: ElectronApplicationOptions) {
     this.profile = profile
@@ -66,12 +77,17 @@ export class ElectronApplication {
       listenerPolicy: 'preserve-backend-default',
       baseDataRoot: profile.baseDataRoot,
       environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
+      developmentRendererOrigin: isDev ? new URL(this.getStartUrl()).origin : null,
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
+    const installHooks = {
+      prepareForInstall: () => this.prepareForInstall(),
+      recoverAfterFailedInstall: () => this.recoverAfterFailedInstall(),
+    }
     this.appUpdateController = profile.updaterEnabled
-      ? new AppUpdater()
+      ? new AppUpdater(installHooks)
       : profile.testUpdateFeedUrl
-        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl })
+        ? new AppUpdater({ ...installHooks, testFeedUrl: profile.testUpdateFeedUrl })
         : new DisabledAppUpdater()
   }
 
@@ -115,30 +131,35 @@ export class ElectronApplication {
   }
 
   private commitNodeRegistrySnapshot(snapshot: NodeRegistrySnapshot): void {
+    const removed = this.nodeRegistrySnapshot.nodes.filter((node) => !snapshot.nodes.some((next) => next.id === node.id))
     this.nodeRegistrySnapshot = snapshot
+    // A removed node's credential is revoked on the node and forgotten here (autobyteus-437 REQ-011).
+    for (const node of removed) void this.nodeAccess?.nodeRemoved(node.id, node.baseUrl)
+    this.nodeAccess?.refresh()
     saveNodeRegistrySnapshot(app.getPath('userData'), snapshot)
     this.broadcastNodeRegistrySnapshot()
+    this.nodeAutoUpdater?.nodesChanged()
   }
 
   private getWindowContextByWebContentsId(webContentsId: number): WindowNodeContext {
     return {
       windowId: webContentsId,
-      nodeId: this.shellWindowRegistry.getNodeIdForShell(webContentsId) || EMBEDDED_NODE_ID,
+      entryId: this.shellWindowRegistry.getEntryIdForShell(webContentsId) || EMBEDDED_ENTRY_ID,
     }
   }
 
-  private createNodeBoundWindow(nodeId: string): WorkspaceShellWindow {
+  private createNodeBoundWindow(entryId: string): WorkspaceShellWindow {
     const startUrl = this.getStartUrl()
     const window = new WorkspaceShellWindow({
-      nodeId,
+      entryId,
       startUrl,
       preloadPath: path.join(__dirname, '..', 'preload.js'),
       iconPath: this.getWindowIcon(),
     })
     this.shellWindowRegistry.register(window)
     this.browserRuntime?.registerShell(window)
-    logger.info(`Creating node-bound window for nodeId=${nodeId}; url=${startUrl}`)
-    attachRendererConsoleDiagnostics(window.browserWindow.webContents, { logger, nodeId })
+    logger.info(`Creating node-bound window for entryId=${entryId}; url=${startUrl}`)
+    attachRendererConsoleDiagnostics(window.browserWindow.webContents, { logger, entryId })
     window.browserWindow.webContents.on('did-finish-load', () => {
       window.send('server-status', this.serverStatusManager.getStatus())
       window.send('node-registry-updated', this.nodeRegistrySnapshot)
@@ -147,7 +168,7 @@ export class ElectronApplication {
       'did-fail-load',
       (_event, errorCode, errorDescription, validatedURL) => {
         logger.error('Page failed to load:', {
-          nodeId,
+          entryId,
           errorCode,
           errorDescription,
           validatedURL,
@@ -162,21 +183,21 @@ export class ElectronApplication {
     return window
   }
 
-  private openNodeWindow(nodeId: string): { windowId: number; created: boolean } {
-    const existingWindow = this.shellWindowRegistry.getByNodeId(nodeId)
+  private openNodeWindow(entryId: string): { windowId: number; created: boolean } {
+    const existingWindow = this.shellWindowRegistry.getByEntryId(entryId)
     if (existingWindow && !existingWindow.isDestroyed()) {
       const focused = this.shellWindowRegistry.focusShell(existingWindow.shellId)
       if (focused) {
         return { windowId: existingWindow.shellId, created: false }
       }
     }
-    const createdWindow = this.createNodeBoundWindow(nodeId)
+    const createdWindow = this.createNodeBoundWindow(entryId)
     return { windowId: createdWindow.shellId, created: true }
   }
 
-  private ensureNodeExists(nodeId: string): void {
-    if (!getNodeProfileById(this.nodeRegistrySnapshot, nodeId)) {
-      throw new Error(`Node does not exist: ${nodeId}`)
+  private ensureNodeExists(entryId: string): void {
+    if (!getEntryById(this.nodeRegistrySnapshot, entryId)) {
+      throw new Error(`Node does not exist: ${entryId}`)
     }
   }
 
@@ -194,8 +215,8 @@ export class ElectronApplication {
       if (existingNodes.some((node) => node.id === candidate.id)) {
         throw new Error(`Node id already exists: ${candidate.id}`)
       }
-      if (candidate.serverInstanceId !== undefined && !isServerInstanceId(candidate.serverInstanceId)) {
-        throw new Error(`Invalid server instance ID: ${candidate.serverInstanceId}`)
+      if (candidate.nodeId !== undefined && !isNodeId(candidate.nodeId)) {
+        throw new Error(`Invalid node ID: ${candidate.nodeId}`)
       }
       const normalizedBaseUrl = sanitizeBaseUrl(candidate.baseUrl)
       if (existingNodes.some(
@@ -206,24 +227,23 @@ export class ElectronApplication {
       existingNodes.push({
         ...candidate,
         baseUrl: normalizedBaseUrl,
-        isSystem: false,
         createdAt: candidate.createdAt || now,
         updatedAt: now,
       })
     } else if (change.type === 'remove') {
-      if (change.nodeId === EMBEDDED_NODE_ID) {
+      if (change.entryId === EMBEDDED_ENTRY_ID) {
         throw new Error('Embedded node cannot be removed')
       }
-      const removeIndex = existingNodes.findIndex((node) => node.id === change.nodeId)
+      const removeIndex = existingNodes.findIndex((node) => node.id === change.entryId)
       if (removeIndex === -1) {
-        throw new Error(`Node does not exist: ${change.nodeId}`)
+        throw new Error(`Node does not exist: ${change.entryId}`)
       }
-      this.shellWindowRegistry.closeNodeWindow(change.nodeId)
+      this.shellWindowRegistry.closeNodeWindow(change.entryId)
       existingNodes.splice(removeIndex, 1)
     } else if (change.type === 'rename') {
-      const target = existingNodes.find((node) => node.id === change.nodeId)
+      const target = existingNodes.find((node) => node.id === change.entryId)
       if (!target || !change.name.trim()) {
-        throw new Error(target ? 'Node name is required' : `Node does not exist: ${change.nodeId}`)
+        throw new Error(target ? 'Node name is required' : `Node does not exist: ${change.entryId}`)
       }
       target.name = change.name.trim()
       target.updatedAt = now
@@ -231,6 +251,10 @@ export class ElectronApplication {
       const identified = identifyNodeEntry(existingNodes, change, now)
       if (identified === existingNodes) return this.nodeRegistrySnapshot
       existingNodes = identified
+    } else if (change.type === 'set-auto-update') {
+      const changed = setNodeAutoUpdate(existingNodes, change, now)
+      if (changed === existingNodes) return this.nodeRegistrySnapshot
+      existingNodes = changed
     } else {
       const neverChange: never = change
       throw new Error(`Unsupported registry change: ${JSON.stringify(neverChange)}`)
@@ -247,17 +271,15 @@ export class ElectronApplication {
   private installIpcHandlers(): void {
     ipcMain.on('ping', (event) => event.reply('pong', 'Pong from main process!'))
     ipcMain.on('start-shutdown', () => {
-      if (this.shutdownTimer) clearTimeout(this.shutdownTimer)
-      this.shutdownTimer = null
       app.quit()
     })
-    ipcMain.handle('open-node-window', async (_event, nodeId: string) => {
-      this.ensureNodeExists(nodeId)
-      return this.openNodeWindow(nodeId)
+    ipcMain.handle('open-node-window', async (_event, entryId: string) => {
+      this.ensureNodeExists(entryId)
+      return this.openNodeWindow(entryId)
     })
-    ipcMain.handle('focus-node-window', async (_event, nodeId: string) => {
-      this.ensureNodeExists(nodeId)
-      const existing = this.shellWindowRegistry.getByNodeId(nodeId)
+    ipcMain.handle('focus-node-window', async (_event, entryId: string) => {
+      this.ensureNodeExists(entryId)
+      const existing = this.shellWindowRegistry.getByEntryId(entryId)
       return existing
         ? { focused: this.shellWindowRegistry.focusShell(existing.shellId) }
         : { focused: false, reason: 'not-found' }
@@ -343,22 +365,22 @@ export class ElectronApplication {
   }
 
   private installLifecycleHandlers(): void {
-    app.on('before-quit', () => {
-      this.shellWindowRegistry.broadcast('app-quitting', undefined)
-      this.shutdownTimer = setTimeout(() => app.quit(), shutdownTimeoutMs)
-    })
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') app.quit()
     })
-    app.on('will-quit', () => {
-      void this.stop()
+    app.on('will-quit', event => {
+      this.shutdown.quit(event,
+        () => this.shellWindowRegistry.broadcast('app-quitting', undefined),
+        () => app.quit(), () => app.exit(1))
     })
     app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) this.openNodeWindow(EMBEDDED_NODE_ID)
+      if (BrowserWindow.getAllWindows().length === 0) this.openNodeWindow(EMBEDDED_ENTRY_ID)
     })
   }
 
   async start(): Promise<void> {
+    // autobyteus-290 SM-6: the stored node list's names follow the code before anything reads it.
+    runElectronFileMigrations(app.getPath('userData'), logger)
     this.nodeRegistrySnapshot = loadNodeRegistrySnapshot(
       app.getPath('userData'),
       this.activeEmbeddedBaseUrl,
@@ -380,7 +402,16 @@ export class ElectronApplication {
         error,
       ),
     })
+    // Before any window loads: the app windows' requests to nodes carry their credentials (autobyteus-437).
+    this.nodeAccess = startDesktopNodeAccess({
+      userDataPath: app.getPath('userData'),
+      nodes: () => this.nodeRegistrySnapshot.nodes,
+      embedded: () => ({ baseUrl: this.activeEmbeddedBaseUrl, credential: this.serverManager.getLaunchOwnerCredential() }),
+      onLaunchCredentialChanged: (listener) => { this.serverManager.on('launch-credential-changed', listener) },
+      broadcast: (channel, states) => this.shellWindowRegistry.broadcast(channel, states),
+    })
     this.installIpcHandlers()
+    this.startNodeAutoUpdates()
     this.serverStatusManager.on('status-change', (status) => {
       this.shellWindowRegistry.broadcast('server-status', status)
     })
@@ -391,35 +422,61 @@ export class ElectronApplication {
 
     if (this.profile.name === 'e2e') {
       await this.serverStatusManager.initializeServer()
-      this.openNodeWindow(EMBEDDED_NODE_ID)
+      this.openNodeWindow(EMBEDDED_ENTRY_ID)
       // Only with an explicit test update feed; the disabled updater schedules nothing.
       this.appUpdateController.startAutoCheck()
       return
     }
 
-    this.openNodeWindow(EMBEDDED_NODE_ID)
+    this.openNodeWindow(EMBEDDED_ENTRY_ID)
     this.appUpdateController.startAutoCheck()
     void this.serverStatusManager.initializeServer().catch((error) => {
       logger.error('Server initialization failed in background:', error)
     })
   }
 
-  async stop(): Promise<void> {
-    if (this.hasShutdownRun) return
-    this.hasShutdownRun = true
-    if (this.shutdownTimer) clearTimeout(this.shutdownTimer)
-    this.shutdownTimer = null
-    try {
-      await this.serverManager.stopServer()
-    } catch (error) {
-      logger.error('Error during server shutdown:', error)
+  stop(): Promise<void> { return this.shutdown.stop() }
+  /**
+   * "Install update and restart": an incomplete stop (already reported by the shutdown) still installs
+   * when the server process is confirmed gone; otherwise the error stands and nothing is installed.
+   */
+  private async prepareForInstall(): Promise<void> {
+    try { await this.shutdown.stop() }
+    catch (error) {
+      if (!this.serverManager.isServerProcessGone()) throw error
+      this.shutdown.acceptIncompleteStopForInstall()
     }
-    try {
-      await this.browserRuntime?.stop()
-    } catch (error) {
-      logger.error('Error during browser runtime shutdown:', error)
-    } finally {
-      logger.close()
+  }
+  /**
+   * After a failed automatic install (autobyteus-356): the old version starts again with its server, but only when the
+   * server is gone; an unconfirmed exit never relaunches, so no second server starts on the same data (284).
+   */
+  private recoverAfterFailedInstall(): void {
+    if (!this.serverManager.isServerProcessGone()) {
+      logger.error('The automatic update did not install and the server exit is not confirmed; the app stays open.')
+      return
     }
+    logger.warn('The automatic update did not install; relaunching this version.')
+    app.relaunch()
+    app.exit(0)
+  }
+  /** Automatic node updates run in the main process, with or without a window (autobyteus-356, DS-003). */
+  private startNodeAutoUpdates(): void {
+    const record = new NodeAutoUpdateRecord(app.getPath('userData'))
+    const broadcast = (entries: NodeAutoUpdateEntries) => this.shellWindowRegistry.broadcast(NODE_AUTO_UPDATE_CHANGED_CHANNEL, entries)
+    const updater = new NodeAutoUpdater({ getNodes: () => this.nodeRegistrySnapshot.nodes, appVersion: app.getVersion(),
+      isPackaged: app.isPackaged, record,
+      client: createNodeUpdateClient({ credentialFor: (baseUrl) => this.nodeAccess?.credentialFor(baseUrl) ?? null }), onChange: broadcast })
+    this.nodeAutoUpdater = updater
+    registerNodeAutoUpdateIpc(ipcMain, record, broadcast, (entryId) => void updater.recheckFailure(entryId))
+    updater.nodesChanged()
+    updater.start()
+  }
+  private async stopResources(): Promise<void> {
+    this.nodeAutoUpdater?.stop()
+    const errors: unknown[] = []
+    try { await this.serverManager.stopServer() } catch (error) { errors.push(error); logger.error('Backend shutdown incomplete', error) }
+    try { await this.browserRuntime?.stop() } catch (error) { errors.push(error); logger.error('Browser shutdown incomplete', error) }
+    if (errors.length) throw new AggregateError(errors, 'Application shutdown incomplete')
   }
 }

@@ -1,0 +1,9 @@
+# API-R4 suites on a clean checkout of 482e9ce797 (merge 08984df524), 2026-11-02T13:19:02Z. First attempt ran before .nuxt existed (setup only; 0 failed tests); rerun after the build generated it
+## pnpm -C autobyteus-web test:electron run
+ Test Files  60 passed | 1 skipped (61)
+      Tests  407 passed | 1 skipped (408)
+exit=0
+## vitest run components/settings/nodes components/notifications stores
+ Test Files  122 passed (122)
+      Tests  1212 passed (1212)
+exit=0

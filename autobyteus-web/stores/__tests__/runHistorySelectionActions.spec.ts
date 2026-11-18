@@ -15,7 +15,7 @@ const {
   isReopenRequiredMock: vi.fn(),
   reopenMock: vi.fn(),
   openMock: vi.fn(),
-  selectionMock: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectRun: vi.fn() },
+  selectionMock: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectRun: vi.fn(), selectRunWithoutShellNavigation: vi.fn() },
   teamConfigMock: { clearConfig: vi.fn() },
   agentConfigMock: { clearConfig: vi.fn() },
 }));
@@ -29,7 +29,7 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
   useAgentTeamRunStore: () => ({ isTeamStreamReopenRequired: isReopenRequiredMock }),
 }));
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => selectionMock }));
-vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getRun: vi.fn() }) }));
+vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getRun: (runId: string) => runId === 'local-run' ? {} : undefined }) }));
 vi.mock('~/stores/teamRunConfigStore', () => ({ useTeamRunConfigStore: () => teamConfigMock }));
 vi.mock('~/stores/agentRunConfigStore', () => ({ useAgentRunConfigStore: () => agentConfigMock }));
 vi.mock('~/services/runOpen/teamRunOpenCoordinator', () => ({
@@ -169,5 +169,26 @@ describe('runHistorySelectionActions failed Team stream recovery', () => {
     expect(store.error).toBeNull();
     expect(store.selectedTeamRunId).toBe('team-recovery');
     expect(store.selectedTeamMemberAddress).toBe('/member-a');
+  });
+});
+
+// autobyteus-277: a run of this session (no history row yet) opens on the phone without shell navigation.
+describe('selectTreeRunFromHistory, a local run', () => {
+  beforeEach(() => vi.clearAllMocks());
+  const localRow = { runId: 'local-run', source: 'local' } as never;
+
+  it('the phone selects it without shell navigation', async () => {
+    const store = buildStore();
+    await expect(selectTreeRunFromHistory(store as never, localRow, { selectionMode: 'mobile' })).resolves.toEqual({ disposition: 'committed' });
+    expect(selectionMock.selectRunWithoutShellNavigation).toHaveBeenCalledWith('local-run', 'agent');
+    expect(selectionMock.selectRun).not.toHaveBeenCalled();
+    expect(store.selectedRunId).toBe('local-run');
+  });
+
+  it('the desktop (no mode) selects it with shell navigation, as before', async () => {
+    const store = buildStore();
+    await selectTreeRunFromHistory(store as never, localRow);
+    expect(selectionMock.selectRun).toHaveBeenCalledWith('local-run', 'agent');
+    expect(selectionMock.selectRunWithoutShellNavigation).not.toHaveBeenCalled();
   });
 });

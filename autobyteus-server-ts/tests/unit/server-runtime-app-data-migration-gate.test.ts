@@ -2,7 +2,7 @@ const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const READABLE_MIGRATION_ID = "20260803_custom_provider_readable_identity";
-const ALL_READY = { token_usage_history: true, custom_llm_providers: true };
+const ALL_READY = { token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true };
 
 const mocks = vi.hoisted(() => {
   const app = {
@@ -19,15 +19,36 @@ const mocks = vi.hoisted(() => {
   const agentToolsMcpHost = {
     listen: vi.fn(async () => "http://127.0.0.1:54321"),
   };
+  const credentialProxyHost = {
+    listen: vi.fn(async () => "http://127.0.0.1:54322"),
+  };
+  // autobyteus-285/448: the take of the previous session and this session's recorder (right after the build), its
+  // final write (first step of the cleanup), and the wake (after recovery).
+  const previousSession = { recorded: 1, updateEntries: [] };
+  const restartResume = {
+    recorder: { startSession: vi.fn(), record: vi.fn(async () => undefined) },
+    resumer: {
+      takePreviousSession: vi.fn(async () => previousSession),
+      resumeAfterRestart: vi.fn(async () => ({ recorded: 0, reminded: 0, skipped: 0, resumed: 0, failed: 0 })),
+    },
+  };
+  // autobyteus-524 FU-007: the shutdown cleanup ends the studio's file watches for the exit before the close.
+  const stopFileWatchesForProcessExit = vi.fn();
   return {
     app,
     lifecycle,
+    stopFileWatchesForProcessExit,
     agentToolsMcpHost,
+    credentialProxyHost,
+    restartResume,
     buildStudioServer: vi.fn(async () => ({
       fastify: app,
       applicationRuntime: { lifecycle },
       agentToolsMcpHost,
+      credentialProxyHost,
       packageRegistryService: {},
+      restartResume,
+      stopFileWatchesForProcessExit,
     })),
     initializePrisma: vi.fn(async () => undefined),
     disableEnvironmentKeySource: vi.fn(),
@@ -44,6 +65,8 @@ const mocks = vi.hoisted(() => {
     loggerError: vi.fn(),
     loggerWarn: vi.fn(),
     scheduleStudioBackgroundTasks: vi.fn(async () => undefined),
+    terminateServerProcessTree: vi.fn(async () => ({ outcome: "confirmed" as const, targets: 0 })),
+    removeEmptyNeverStartedRuns: vi.fn(async () => []),
   };
 });
 
@@ -67,6 +90,14 @@ vi.mock("../../src/token-usage/providers/token-usage-capability.js", () => ({
 }));
 vi.mock("../../src/startup/background-runner.js", () => ({
   scheduleStudioBackgroundTasks: mocks.scheduleStudioBackgroundTasks,
+}));
+// startConfiguredServer runs in this test worker: never read its process table or signal its children.
+vi.mock("../../src/shutdown/server-process-tree-sweep.js", () => ({
+  terminateServerProcessTree: mocks.terminateServerProcessTree,
+}));
+// autobyteus-349: the startup removal of empty never-started runs, through the process AgentRunService.
+vi.mock("../../src/agent-execution/services/agent-run-service.js", () => ({
+  getAgentRunService: () => ({ removeEmptyNeverStartedRuns: mocks.removeEmptyNeverStartedRuns }),
 }));
 vi.mock("../../src/compositions/build-studio-server.js", () => ({
   buildStudioServer: mocks.buildStudioServer,
@@ -139,7 +170,7 @@ const terminalReadableStatus = (status: "SUCCEEDED" | "SUCCEEDED_WITH_WARNINGS")
 describe("Studio app-data migration startup", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(process, "once").mockReturnValue(process);
+    vi.spyOn(process, "on").mockReturnValue(process);
     vi.spyOn(process, "exit").mockImplementation(((code: number) => {
       throw new Error(`process.exit:${code}`);
     }) as never);
@@ -186,12 +217,33 @@ describe("Studio app-data migration startup", () => {
       expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
       expect(mocks.buildStudioServer).toHaveBeenCalledTimes(1);
+      // autobyteus-349: empty never-started runs are removed after the services are bound, before any request.
+      expect(mocks.removeEmptyNeverStartedRuns).toHaveBeenCalledTimes(1);
+      expect(mocks.buildStudioServer.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.removeEmptyNeverStartedRuns.mock.invocationCallOrder[0]!);
+      expect(mocks.removeEmptyNeverStartedRuns.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.lifecycle.prepareBeforeListen.mock.invocationCallOrder[0]!);
       expect(mocks.lifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0]!);
       expect(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
+      // The credential proxy listens before the HTTP server, so a run started at once gets its address.
+      expect(mocks.credentialProxyHost.listen.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
       expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
       expect(mocks.lifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
+      // autobyteus-448: the previous session is taken right after the build, before this session records anything and
+      // before anything can listen; the wake starts after recovery, in the background, before the background tasks.
+      const { resumer, recorder } = mocks.restartResume;
+      expect(mocks.buildStudioServer.mock.invocationCallOrder[0]).toBeLessThan(resumer.takePreviousSession.mock.invocationCallOrder[0]!);
+      expect(resumer.takePreviousSession.mock.invocationCallOrder[0]).toBeLessThan(recorder.startSession.mock.invocationCallOrder[0]!);
+      expect(recorder.startSession.mock.invocationCallOrder[0]).toBeLessThan(mocks.removeEmptyNeverStartedRuns.mock.invocationCallOrder[0]!);
+      expect(resumer.resumeAfterRestart).toHaveBeenCalledExactlyOnceWith(await resumer.takePreviousSession.mock.results[0]!.value);
+      expect(mocks.lifecycle.recoverAfterListen.mock.invocationCallOrder[0])
+        .toBeLessThan(resumer.resumeAfterRestart.mock.invocationCallOrder[0]!);
+      expect(resumer.resumeAfterRestart.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.scheduleStudioBackgroundTasks.mock.invocationCallOrder[0]!);
+      expect(mocks.restartResume.recorder.record).not.toHaveBeenCalled();
       expect(mocks.scheduleStudioBackgroundTasks).toHaveBeenCalledTimes(1);
       expect(mocks.closeSecretVault).not.toHaveBeenCalled();
       expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
@@ -242,7 +294,7 @@ describe("Studio app-data migration startup", () => {
     "starts with only custom providers held back while the readable identity migration is %s (AC-004)",
     async (_label, statuses) => {
       mocks.runPending.mockResolvedValueOnce([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, ...statuses]);
-      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false });
+      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false, node_identity: true, memory_sync: true });
 
       await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
         .resolves.toBeUndefined();
@@ -278,4 +330,44 @@ describe("Studio app-data migration startup", () => {
     expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
   });
+  it.each(['prisma', 'build', 'removeEmpty', 'prepare', 'listen', 'recover', 'background'] as const)(
+    'cancels during %s without concurrent cleanup or subsequent startup stages', async phase => {
+      const handlers = new Map<string, (...args: any[]) => void>();
+      vi.mocked(process.on).mockImplementation(((event: string, handler: (...args: any[]) => void) => {
+        handlers.set(event, handler); return process;
+      }) as never);
+      vi.mocked(process.exit).mockImplementation((() => undefined) as never);
+      const stage = { prisma: mocks.initializePrisma, build: mocks.buildStudioServer, removeEmpty: mocks.removeEmptyNeverStartedRuns,
+        prepare: mocks.lifecycle.prepareBeforeListen, listen: mocks.app.listen,
+        recover: mocks.lifecycle.recoverAfterListen, background: mocks.scheduleStudioBackgroundTasks }[phase];
+      let enter!: () => void, finish!: (value: any) => void;
+      const entered = new Promise<void>(resolve => enter = resolve);
+      stage.mockImplementationOnce((() => { enter(); return new Promise(resolve => finish = resolve); }) as never);
+      const starting = startConfiguredServer({ host: '127.0.0.1', port: 0 });
+      await entered; handlers.get('SIGTERM')!();
+      expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost, restartResume: mocks.restartResume, stopFileWatchesForProcessExit: mocks.stopFileWatchesForProcessExit } : undefined);
+      await starting; await vi.waitFor(() => expect(process.exit).toHaveBeenCalled());
+      if (phase === 'prisma') {
+        expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();
+      } else {
+        expect(mocks.app.close).toHaveBeenCalledOnce(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+        // autobyteus-285: the busy runs are recorded before the close interrupts anything.
+        expect(mocks.restartResume.recorder.record).toHaveBeenCalledOnce();
+        expect(mocks.restartResume.recorder.record.mock.invocationCallOrder[0])
+          .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
+        // autobyteus-524 FU-007: record, then the file watches end for the exit, then the close.
+        expect(mocks.stopFileWatchesForProcessExit).toHaveBeenCalledOnce();
+        expect(mocks.stopFileWatchesForProcessExit.mock.invocationCallOrder[0])
+          .toBeGreaterThan(mocks.restartResume.recorder.record.mock.invocationCallOrder[0]!);
+        expect(mocks.stopFileWatchesForProcessExit.mock.invocationCallOrder[0])
+          .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
+      }
+      if (phase !== 'background') expect(mocks.restartResume.resumer.resumeAfterRestart).not.toHaveBeenCalled();
+      expect(process.exit).toHaveBeenCalledWith(0);
+      expect(mocks.terminateServerProcessTree).toHaveBeenCalledOnce();
+      if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();
+      if (phase === 'removeEmpty') expect(mocks.lifecycle.prepareBeforeListen).not.toHaveBeenCalled();
+    });
+
 });

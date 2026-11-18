@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { Icon } from '@iconify/vue'
 
 import ProviderModelBrowser from '../ProviderModelBrowser.vue'
 
@@ -144,7 +145,8 @@ describe('ProviderModelBrowser', () => {
     expect(draftButton).toBeTruthy()
     expect(draftButton!.attributes('title')).toBeUndefined()
     expect(draftButton!.attributes('aria-label')).toBeUndefined()
-    expect(draftButton!.find('.i-heroicons-plus-20-solid').exists()).toBe(false)
+    // The draft row is a standard entry: no plus icon (nor any icon).
+    expect(draftButton!.findAllComponents(Icon)).toHaveLength(0)
     expect(draftButton!.text()).toContain('New Provider')
     expect(draftButton!.text()).toContain('0')
   })
@@ -165,7 +167,7 @@ describe('ProviderModelBrowser', () => {
       isLoadingModels: true,
       hasSuccessfulPayload: false,
     })
-    expect(wrapper.get('[data-testid="config-slot"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="config-slot"]').exists()).toBe(true)
     expect(wrapper.get('[role="status"]').text()).toContain('Loading models...')
     expect(wrapper.text()).not.toContain('No Models Found')
   })
@@ -174,13 +176,13 @@ describe('ProviderModelBrowser', () => {
     const wrapper = mountComponent({ isRefreshingModels: true })
     expect(wrapper.text()).toContain('Refreshing models...')
     expect(wrapper.text()).toContain('gpt-4o')
-    expect(wrapper.get('[data-testid="config-slot"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="config-slot"]').exists()).toBe(true)
   })
 
   it('shows partial, unavailable/retry, and successful empty states in the model area', async () => {
     const partial = mountComponent({ hasPartialResult: true })
     expect(partial.text()).toContain('Some model sources are unavailable.')
-    expect(partial.get('[role="status"]').exists()).toBe(true)
+    expect(partial.find('[role="status"]').exists()).toBe(true)
 
     const emptyPartial = mountComponent({
       llmModels: [], audioModels: [], imageModels: [], videoModels: [],

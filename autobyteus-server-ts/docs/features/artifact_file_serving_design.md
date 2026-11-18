@@ -45,8 +45,9 @@ owner's tree and never searches all saved runs:
 | Standalone run | `getRunFileChanges(runId)` | `/runs/:runId/file-change-content?path=...` |
 | Team member (configured member or team task agent) | `getTeamMemberFileChanges(teamRunId, agentRunId)` | `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content?path=...` |
 | Org member (direct agent, member-team member or task agent) | `getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)` | `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...` |
-| Delegated copy under a standalone run (hub) | `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` | `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...` |
 
+- A run another run delegated to on this node is a run of its own (autobyteus-461): its artifacts are read by its own
+  identity (the run-id reads, or its team run's member reads); a run on a peer node keeps its artifacts there.
 - The run-id reads serve standalone runs only. A run is standalone exactly when
   it has standalone run metadata, whether it is running or saved; being active
   does not decide it, because collaboration members share the same activation
@@ -98,18 +99,19 @@ the next event writes. Reads never wait for the event queue.
 1. `send_message_to(recipient_address=...)` accepts natural `content` plus optional
    explicit `reference_files` absolute local paths.
 2. Accepted team-route delivery emits one `INTER_AGENT_MESSAGE` payload with
-   message id, address-first sender/receiver identity, content, message type,
-   team projection fields, and structured reference metadata. Structural,
-   task-Team, and task-Agent senders/receivers use the exact four-field
-   `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
-   `memberAddress`, and nullable `taskAgentRunId`).
+   message id, the sender and receiver AgentRun IDs, content, message type,
+   team projection fields, and structured reference metadata. Configured,
+   task-Team and task-Agent senders/receivers are all identified by their
+   AgentRun ID, unique within the root TeamRun.
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
-4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
-   team events and persists one message-first projection at
-   `agent_teams/<teamRunId>/team_communication_messages_*.jsonl`.
-5. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
-   hydration.
+4. Team teammate delivery (`RootCommunicationEngine` with the `RootTeamRun`
+   port) saves one message-first record at
+   `agent_teams/<teamRunId>/team_communication_messages_*.jsonl` before the
+   recipient may run the message (see
+   [Teammate Delivery Path](../modules/agent_communication.md#teammate-delivery-path)).
+5. GraphQL exposes `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)`: one participant's
+   messages, which the Team tab loads when it is shown (autobyteus-358).
 6. Reference bytes are served by message-owned identity:
    `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 
@@ -129,7 +131,7 @@ intentionally omit the team projection fields consumed by this flow.
 | Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
 | Team communication API | `src/api/graphql/types/team-communication.ts`, `src/api/rest/team-communication.ts` | Hydrate messages and stream child reference content. |
 | Mixed team member event bridge | `src/agent-team-execution/backends/mixed/**` plus runtime AgentRun event converters | Converts/enriches member runtime events once before team fan-out. |
-| Team Agent event projection | `src/services/agent-streaming/team-agent-event-websocket-projector.ts` | Projects canonical Agent events with one strict `agent_execution` binding before WebSocket fan-out. |
+| Team Agent event projection | `src/services/agent-streaming/team-agent-event-websocket-projector.ts` | Projects canonical Agent events with the member's `agent_run_id` before WebSocket fan-out. |
 
 ## Storage
 

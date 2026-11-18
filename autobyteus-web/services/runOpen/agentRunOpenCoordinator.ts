@@ -123,6 +123,7 @@ export async function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<
   }
 
   if (shouldTreatAsLive) {
+    // Its stream starts with the run's own snapshot (SR-087), which catches up what the open's read missed.
     agentRunStore.connectToAgentStream(input.runId);
   } else if (streamConnected) {
     agentRunStore.disconnectAgentStream(input.runId);

@@ -1,5 +1,11 @@
 <template>
-  <div class="flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4" data-testid="agent-event-monitor">
+  <!-- On the phone (autobyteus-506): the phone conversation layout, at the phone's Text size through the root font size
+       (autobyteus-525); the desktop keeps its own. -->
+  <div
+    class="flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4"
+    :class="{ 'phone-conversation': phoneConversation }"
+    data-testid="agent-event-monitor"
+  >
     <AgentConversationFeed
       class="min-h-0 flex-1"
       :conversation="conversation"
@@ -20,9 +26,9 @@
       @jump-to-latest="browse.jumpToLatest"
     />
 
-    <div v-if="!readOnly" class="shrink-0">
+    <!-- Why a file link did not open: on read-only conversations too (autobyteus-426 REQ-019). -->
+    <div v-if="filePreviewStatus" class="shrink-0">
       <p
-        v-if="filePreviewStatus"
         class="mb-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800"
         role="status"
         aria-live="polite"
@@ -30,6 +36,8 @@
       >
         {{ filePreviewStatus }}
       </p>
+    </div>
+    <div v-if="!readOnly" class="shrink-0">
       <slot name="composerContext" />
       <!-- A mentioned unit that could not be involved in this run (REQ-008); hidden otherwise. -->
       <CollaboratorAddFailureNotice />
@@ -41,8 +49,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRef } from 'vue';
+import { computed, onBeforeUnmount, provide, ref, toRef } from 'vue';
 import { useWorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
+import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import '~/assets/css/phone-conversation.css';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import CollaboratorAddFailureNotice from '~/components/agentInput/CollaboratorAddFailureNotice.vue';
@@ -54,7 +65,7 @@ import {
   useEventMonitorActiveTraceBrowse,
 } from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
 import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
-import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun';
+import { FILE_ON_OTHER_NODE_MESSAGE_KEY, RUN_VIEW_FILES_KEY, remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
 import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
@@ -79,6 +90,10 @@ const effectiveRunId = computed(() => props.runId || props.conversation.id);
 const compactionActivities = computed(() => activityStore.getCompactionActivities(effectiveRunId.value));
 const filePreviewStatus = ref('');
 const revealTool = useWorkspaceToolReveal();
+// Taken in setup: it reads the route through inject, which the lazily created opener cannot (autobyteus-427).
+const mobileNavigation = isMobileRemoteAccessRuntime() ? useMobileNavigation() : null;
+/** The phone's conversation layout; never on the desktop. */
+const phoneConversation = isMobileRemoteAccessRuntime();
 let isLive = true;
 onBeforeUnmount(() => { isLive = false; });
 const browse = useEventMonitorActiveTraceBrowse({
@@ -87,18 +102,24 @@ const browse = useEventMonitorActiveTraceBrowse({
   presentationRevision: () => props.presentationRevision ?? 0,
 });
 
-// autobyteus-278: a file path in a remote run's conversation names a file on the other node.
-const remote = useRemoteRun(() => effectiveRunId.value);
 const { t } = useLocalization();
+// A path attachment of a message in a remote run is on that run's node: this status line says so and nothing is read
+// (autobyteus-471 REQ-003). File links decide the same in `useEventMonitorFilePreview`.
+provide(RUN_VIEW_FILES_KEY, {
+  refuseRemoteRunPath: () => {
+    const node = remoteRunFileNode(effectiveRunId.value);
+    if (node) filePreviewStatus.value = t(FILE_ON_OTHER_NODE_MESSAGE_KEY, { node });
+    return node !== null;
+  },
+});
 const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<void> => {
-  if (remote.value) { filePreviewStatus.value = t('remote.filePath', { node: remote.value.nodeName }); return; }
   // Keep the launcher effect boundary out of Markdown rendering and passive
   // message arrival. It is created only for explicit user activation.
   const originRunId = effectiveRunId.value;
   const isOriginCurrent = () => isLive && effectiveRunId.value === originRunId;
   const { useEventMonitorFilePreview } = await import('~/composables/useEventMonitorFilePreview');
   if (!isOriginCurrent()) return;
-  const result = await useEventMonitorFilePreview({ revealTool, isOriginCurrent }).openPath(action);
+  const result = await useEventMonitorFilePreview({ revealTool, mobileNavigation, isOriginCurrent, originRunId: () => originRunId }).openPath(action);
   if (!isOriginCurrent()) return;
   filePreviewStatus.value = result.status === 'opened' ? '' : result.message;
 };

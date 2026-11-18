@@ -1,0 +1,30 @@
+#!/bin/bash
+# Delivery AC-032: clean clone of the final branch, install, prepare, suites.
+set -u
+WT=/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294
+LOG=$WT/tickets/in-progress/test-and-tooling-hygiene-294/evidence/DEL-01-clean-clone-final-branch.log
+ROOT=$(mktemp -d "${TMPDIR:-/tmp}/ab294-del-clone.XXXXXX")
+exec >"$LOG" 2>&1
+step() { echo; echo "===== $(date -u +%FT%TZ) STEP: $*"; local s=$(date +%s); "$@"; local rc=$?; echo "===== exit: $rc ($(( $(date +%s) - s ))s) :: $*"; return $rc; }
+echo "clone root: $ROOT"
+cd "$ROOT" || exit 1
+step git clone --quiet --branch codex/test-and-tooling-hygiene-294 "$WT" repo
+cd repo
+echo "HEAD: $(git rev-parse HEAD)"
+step pnpm install --frozen-lockfile
+step pnpm -C autobyteus-server-ts prebuild
+step pnpm -C autobyteus-web exec nuxt prepare
+step pnpm -C autobyteus-server-ts typecheck
+step pnpm -C autobyteus-server-ts test:unit
+step pnpm -C autobyteus-server-ts test:integration:prepare
+step pnpm -C autobyteus-server-ts test:integration
+step pnpm -C autobyteus-web test:nuxt --run
+step pnpm -C autobyteus-web test:electron --run || { echo "test:electron run 1 failed; rerun once (FU-011 lazy Electron download race)"; step pnpm -C autobyteus-web test:electron --run; }
+step pnpm -C autobyteus-web typecheck
+step pnpm -C autobyteus-web guard:web-boundary
+step pnpm -C autobyteus-web guard:localization-boundary
+step pnpm -C autobyteus-web audit:localization-literals
+( cd autobyteus-message-gateway && step pnpm install --frozen-lockfile && step pnpm build && step pnpm typecheck && step pnpm test )
+echo "===== exit-summary"; grep -E "^===== exit:" "$LOG"
+cd / && rm -rf "$ROOT" && echo "clone root removed: $ROOT"
+echo "===== DONE $(date -u +%FT%TZ)"

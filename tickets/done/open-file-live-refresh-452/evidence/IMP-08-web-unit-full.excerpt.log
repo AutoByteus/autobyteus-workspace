@@ -1,0 +1,14 @@
+# Check: IMP-08
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run (full web suite)
+# Commit: base 827f1e68dc + working tree = e0bb6399c7
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11
+
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts (24 tests) 55ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts (16 tests) 321ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts (6 tests) 77ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts (6 tests) 31ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts (2 tests) 66ms
+ Test Files  750 passed (750)
+      Tests  5668 passed | 2 skipped (5670)
+exit 0

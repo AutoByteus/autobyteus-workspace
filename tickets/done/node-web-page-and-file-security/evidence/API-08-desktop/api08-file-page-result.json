@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "step": "api08-file-page",
+  "at": "2026-11-07T21:54:29.741Z",
+  "result": {
+    "url": "file:///tmp/api416-fixtures-hofA/attack/api08-attack.html?node=http%3A%2F%2F127.0.0.1%3A57277",
+    "load1": {
+      "loaded": "API08 LOCAL PAGE LOADED",
+      "origin": "file://",
+      "popupOpened": false
+    },
+    "load2": {
+      "loaded": "API08 LOCAL PAGE LOADED",
+      "origin": "file://",
+      "popupOpened": true
+    },
+    "popupPages": 2,
+    "matrix": {
+      "top-fetch": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "status 403",
+        "load2": "status 403"
+      },
+      "top-xhr": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "status 403",
+        "load2": "status 403"
+      },
+      "top-ws": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "closed 1006",
+        "load2": "closed 1006"
+      },
+      "top-gqlws": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "closed 1006",
+        "load2": "closed 1006"
+      },
+      "blank-fetch": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "status 403",
+        "load2": "status 403"
+      },
+      "blank-xhr": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "status 403",
+        "load2": "status 403"
+      },
+      "blank-ws": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "closed 1006",
+        "load2": "closed 1006"
+      },
+      "blank-gqlws": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "closed 1006",
+        "load2": "closed 1006"
+      },
+      "srcdoc-fetch": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "status 403",
+        "load2": "status 403"
+      },
+      "srcdoc-xhr": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "status 403",
+        "load2": "status 403"
+      },
+      "srcdoc-ws": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "closed 1006",
+        "load2": "closed 1006"
+      },
+      "srcdoc-gqlws": {
+        "lines": 2,
+        "refusedOriginNull": true,
+        "load1": "closed 1006",
+        "load2": "closed 1006"
+      },
+      "popup-fetch": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "load1": null,
+        "load2": "status 403"
+      },
+      "popup-xhr": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "load1": null,
+        "load2": "status 403"
+      },
+      "popup-ws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "load1": null,
+        "load2": "closed 1006"
+      },
+      "popup-gqlws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "load1": null,
+        "load2": "closed 1006"
+      }
+    },
+    "refusalLines": [
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-popup?f=popup-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=popup-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null"
+    ],
+    "ar002": {
+      "textShown": "API10 PLAIN TEXT LINE",
+      "pdfDoc": {
+        "embeds": [],
+        "contentType": "application/pdf"
+      },
+      "navRefusals": []
+    }
+  }
+}

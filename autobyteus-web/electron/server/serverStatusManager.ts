@@ -1,3 +1,6 @@
+import { PortConflictError } from './backendPortAvailability'
+import { ShutdownIncompleteError } from './managedBackendStop'
+import type { ServerDiagnostic } from '../../types/serverStatus'
 import { EventEmitter } from 'events'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
@@ -18,6 +21,7 @@ export class ServerStatusManager extends EventEmitter {
   private healthCheckStatus: string = ''
   private currentStatus: ServerStatus = ServerStatus.STARTING
   private statusMessage?: string
+  private diagnostic?: ServerDiagnostic
   
   constructor(serverManager: BaseServerManager) {
     super()
@@ -37,7 +41,7 @@ export class ServerStatusManager extends EventEmitter {
     
     this.manager.on('error', (error: Error) => {
       logger.error('ServerStatusManager: Server error:', error)
-      this.emitStatusChange(ServerStatus.ERROR, error.message)
+      this.emitStatusChange(ServerStatus.ERROR, error.message, this.errorDiagnostic(error))
     })
   }
   
@@ -90,8 +94,8 @@ export class ServerStatusManager extends EventEmitter {
       const errorMessage = error instanceof Error ? error.message : String(error)
       // BaseServerManager emits the generation's startup error before rejecting.
       // Retain that one detailed transition; only synthesize one if restart failed earlier.
-      if (this.currentStatus !== ServerStatus.ERROR) {
-        this.emitStatusChange(ServerStatus.ERROR, errorMessage)
+      if (this.currentStatus !== ServerStatus.ERROR || error instanceof ShutdownIncompleteError) {
+        this.emitStatusChange(ServerStatus.ERROR, errorMessage, this.errorDiagnostic(error))
       }
       return this.getStatus()
     }
@@ -104,20 +108,21 @@ export class ServerStatusManager extends EventEmitter {
     try {
       logger.info('ServerStatusManager: Checking server health')
       if (!this.manager.isRunning()) {
-        // If not running, the status will be handled by the 'error' or 'starting' state
-        // This check is mainly for when it's supposed to be running.
-        return {
-          status: 'starting',
-          message: 'Server is not running or still starting'
-        }
+        // ERROR is a stopped state: say so truthfully instead of reusing the
+        // STARTING-era text. Every other non-running status is still starting up.
+        return this.currentStatus === ServerStatus.ERROR
+          ? { status: 'error', message: 'Server is not running' }
+          : { status: 'starting', message: 'Server is not running or still starting' }
       }
-      
+
       const urls = this.manager.getServerUrls()
       const response = await axios.get(urls.health, { timeout: 5000 })
       // A diagnostic request from a previous running child must not revive a
       // stopped, failed, or restarting startup while its response was in flight.
       if (!this.manager.isRunning() || this.currentStatus !== ServerStatus.RUNNING) {
-        return { status: 'starting', message: 'Server is not running or still starting' }
+        return this.currentStatus === ServerStatus.ERROR
+          ? { status: 'error', message: 'Server is not running' }
+          : { status: 'starting', message: 'Server is not running or still starting' }
       }
       
       if (response.status === 200) {
@@ -158,6 +163,7 @@ export class ServerStatusManager extends EventEmitter {
       baseUrl: this.manager.getServerBaseUrl(),
       urls,
       healthCheckStatus: this.healthCheckStatus,
+      diagnostic: this.diagnostic,
       message: this.statusMessage
     }
   }
@@ -165,7 +171,11 @@ export class ServerStatusManager extends EventEmitter {
   /**
    * Emit status change event.
    */
-  private emitStatusChange(status: ServerStatus, message?: string): void {
+  private errorDiagnostic(error: unknown): ServerDiagnostic | undefined {
+    return error instanceof PortConflictError || error instanceof ShutdownIncompleteError ? error.diagnostic : undefined
+  }
+  private emitStatusChange(status: ServerStatus, message?: string, diagnostic?: ServerDiagnostic): void {
+    this.diagnostic = diagnostic
     this.currentStatus = status
     this.statusMessage = message
     const urls = this.manager.getServerUrls()
@@ -174,7 +184,8 @@ export class ServerStatusManager extends EventEmitter {
       baseUrl: this.manager.getServerBaseUrl(),
       urls,
       message,
-      healthCheckStatus: this.healthCheckStatus
+      healthCheckStatus: this.healthCheckStatus,
+      diagnostic: this.diagnostic
     }
     
     logger.info(`ServerStatusManager: Emitting status change: ${status}`)

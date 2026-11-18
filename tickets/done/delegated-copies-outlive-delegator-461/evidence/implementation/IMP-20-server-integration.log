@@ -1,0 +1,68 @@
+# IMP-20 server integration suite
+# command: (autobyteus-server-ts) pnpm test:integration:prepare && pnpm test:integration
+# commit: 4a3f221c72; macOS, Node v22.23.1; 2026-11-11T22:38Z
+
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+
+> autobyteus-server-ts@0.1.1 test:integration /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration .integration.test.ts
+
+Integration test prerequisites are present.
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-HUx81I' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-HUx81I' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-HUx81I' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-HUx81I
+
+stdout | tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-HUx81I
+
+ ❯ tests/integration/file-explorer/file-system-watcher.integration.test.ts (14 tests | 1 failed) 23712ms
+     × respects root .gitignore files 8057ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+Error: Timed out waiting for event
+ ❯ Timeout.<anonymous> tests/integration/file-explorer/file-system-watcher.integration.test.ts:26:14
+     24|     const timeout = setTimeout(() => {
+     25|       clearTimeout(timeout);
+     26|       reject(new Error("Timed out waiting for event"));
+       |              ^
+     27|     }, timeoutMs);
+     28|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  1 failed | 482 passed | 69 skipped (552)
+   Start at  23:38:48
+   Duration  175.56s (transform 8.33s, setup 2.32s, import 71.48s, tests 92.26s, environment 5ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+## Rerun of the failing file alone (file-watcher timing; module untouched by this ticket)
+ Test Files  1 passed (1)
+      Tests  14 passed (14)

@@ -1,0 +1,114 @@
+// Temporary API/E2E journey (autobyteus-294, API-25, AC-029): in the packaged desktop app (isolated instance of the
+// worktree build), open the pages that used the former `i-heroicons-*` classes and assert each named control renders
+// a heroicons SVG with a path and a visible box. Usage: node api25-desktop-icons.mjs <controlEndpoint> <evidenceDir>
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/package.json');
+const { chromium } = require('playwright-core');
+const [endpoint, evidenceDir] = process.argv.slice(2);
+const result = { startedAt: new Date().toISOString(), endpoint, steps: [], result: 'Fail', error: null };
+const browser = await chromium.connectOverCDP(endpoint);
+const page = browser.contexts()[0].pages().find((p) => p.url().includes('index.html'));
+const consoleErrors = [];
+page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text().slice(0, 300)); });
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const shot = async (name) => { const file = `API-25-${name}.png`; await page.screenshot({ path: path.join(evidenceDir, file) }); return file; };
+
+// Reads the heroicons SVG inside each element matched by the locator.
+const iconOf = (locator) => locator.evaluate((el) => {
+  const svg = el.querySelector('svg.iconify--heroicons') ?? (el.matches('svg.iconify--heroicons') ? el : null);
+  if (!svg) return { svg: false, html: el.outerHTML.slice(0, 200) };
+  const box = svg.getBoundingClientRect();
+  return { svg: true, paths: svg.querySelectorAll('path').length, width: Math.round(box.width), height: Math.round(box.height), cls: svg.getAttribute('class') };
+});
+const leftovers = () => page.evaluate(() => document.querySelectorAll('[class*="i-heroicons-"]').length);
+const heroCount = () => page.evaluate(() => document.querySelectorAll('svg.iconify--heroicons').length);
+
+const check = async (step, label, locator) => {
+  await locator.first().waitFor({ state: 'visible', timeout: 20000 });
+  let icon;
+  const deadline = Date.now() + 20000; // icon data loads on first show (FU-002)
+  do { icon = await iconOf(locator.first()); if (icon.svg && icon.paths > 0 && icon.width > 0) break; await sleep(250); } while (Date.now() < deadline);
+  const ok = icon.svg && icon.paths > 0 && icon.width > 0 && icon.height > 0;
+  step.checks.push({ label, ok, ...icon });
+  if (!ok) throw new Error(`${step.id} ${label}: no rendered heroicon (${JSON.stringify(icon)})`);
+};
+
+const run = async (id, title, body) => {
+  const step = { id, title, checks: [], result: 'Fail' };
+  result.steps.push(step);
+  await body(step);
+  step.leftoverClassElements = await leftovers();
+  step.heroiconSvgsOnPage = await heroCount();
+  if (step.leftoverClassElements !== 0) throw new Error(`${id}: ${step.leftoverClassElements} elements still carry i-heroicons- classes`);
+  step.screenshot = await shot(id);
+  step.result = 'Pass';
+};
+
+try {
+  const base = page.url().split('#')[0];
+  await run('D-01', 'Settings navigation icons', async (step) => {
+    await page.goto(`${base}#/settings`); await sleep(1500);
+    for (const name of ['API Keys', 'Agent Runtimes', 'Model Routing', 'Token Statistics', 'Display', 'Language', 'Local Tools', 'MCP Servers', 'Server Settings']) {
+      await check(step, `nav: ${name}`, page.locator('button, a').filter({ hasText: new RegExp(`^\\s*${name}\\s*$`) }));
+    }
+  });
+  await run('D-02', 'MCP Servers: Bulk Import and Add Server buttons', async (step) => {
+    await page.locator('button, a').filter({ hasText: /^\s*MCP Servers\s*$/ }).first().click(); await sleep(1500);
+    await check(step, 'button: Bulk Import', page.getByRole('button', { name: /Bulk Import/ }));
+    await check(step, 'button: Add Server', page.getByRole('button', { name: /Add Server/ }));
+  });
+  await run('D-03', 'Add MCP Server form: Add Argument and the argument delete button', async (step) => {
+    await page.getByRole('button', { name: /Add Server/ }).first().click(); await sleep(1000);
+    await check(step, 'button: Add Argument', page.getByRole('button', { name: /Add Argument/ }));
+    await page.getByRole('button', { name: /Add Argument/ }).first().click(); await sleep(500);
+    const deleteButton = page.locator('button').filter({ has: page.locator('svg.iconify--heroicons') }).filter({ hasNotText: /\S/ });
+    step.iconOnlyButtonsInForm = await deleteButton.count();
+    await check(step, 'icon-only button: argument delete (trash)', deleteButton.last());
+  });
+  await run('D-04', 'Bulk Import view: back button', async (step) => {
+    const cancel = page.getByRole('button', { name: /^\s*Cancel\s*$/ });
+    if (await cancel.count()) await cancel.first().click(); else await page.keyboard.press('Escape');
+    await sleep(800);
+    await page.getByRole('button', { name: /Bulk Import/ }).first().click(); await sleep(1000);
+    await page.getByText('Bulk Import MCP Servers').first().waitFor({ state: 'visible', timeout: 20000 });
+    const back = page.getByRole('button', { name: /^\s*Back\s*$/ });
+    step.backButtonText = (await back.first().textContent())?.trim().slice(0, 60);
+    await check(step, 'Bulk Import view button: Back (arrow-left)', back);
+  });
+  await run('D-05', 'Local Tools workspace', async (step) => {
+    await page.goto(`${base}#/settings`); await sleep(1000);
+    await page.locator('button, a').filter({ hasText: /^\s*Local Tools\s*$/ }).first().click(); await sleep(2000);
+    // ToolCard: the computed icon name (wrench-screwdriver/indigo for category LOCAL, else cloud-arrow-down/purple).
+    const toolIcons = page.locator('svg.iconify--heroicons.text-indigo-600, svg.iconify--heroicons.text-purple-600');
+    await toolIcons.first().waitFor({ state: 'visible', timeout: 20000 });
+    step.localToolCardIcons = await toolIcons.count();
+    await check(step, 'ToolCard icons (computed name)', toolIcons);
+  });
+  await run('D-06', 'Agent detail: Run, Edit, Delete buttons', async (step) => {
+    await page.goto(`${base}#/agents`); await sleep(2000);
+    const card = page.getByText(/Daily Assistant/).first();
+    await card.waitFor({ state: 'visible', timeout: 20000 });
+    await page.getByText(/View Details/).first().click(); await sleep(1500);
+    step.url = page.url().split('#')[1];
+    await check(step, 'button: Run Agent', page.getByRole('button', { name: /Run Agent/ }));
+    for (const name of ['Edit', 'Delete']) {
+      const b = page.getByRole('button', { name: new RegExp(`^\\s*${name}\\s*$`) });
+      if (await b.count()) await check(step, `button: ${name}`, b);
+      else step.checks.push({ label: `button: ${name}`, ok: null, note: 'not shown for this agent' });
+    }
+  });
+  result.result = result.steps.every((s) => s.result === 'Pass') ? 'Pass' : 'Fail';
+} catch (error) {
+  result.error = String(error?.stack ?? error).slice(0, 2000);
+  try { result.failureScreenshot = await shot('failure'); } catch {}
+} finally {
+  result.consoleErrors = consoleErrors;
+  result.finishedAt = new Date().toISOString();
+  await fs.writeFile(path.join(evidenceDir, 'API-25-desktop-icons-result.json'), `${JSON.stringify(result, null, 2)}\n`);
+  console.log(JSON.stringify({ result: result.result, error: result.error, steps: result.steps.map((s) => [s.id, s.result, s.checks.length]) }));
+  process.exit(0); // disconnect only; the instance is stopped with isolated-app stop
+}

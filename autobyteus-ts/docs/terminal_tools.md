@@ -1,6 +1,6 @@
 # Terminal Tools
 
-Terminal tools provide stateless non-interactive command execution for agents plus PID-keyed background process management. Interactive PTY terminal sessions are a separate server/web terminal capability and are not used by the agent `run_bash` tool.
+The `run_bash` tool provides stateless non-interactive command execution for agents, in the foreground or as background tasks that report how they ended. Interactive PTY terminal sessions are a separate server/web terminal capability and are not used by the agent `run_bash` tool.
 
 ## Design References
 
@@ -22,18 +22,20 @@ Terminal tools provide stateless non-interactive command execution for agents pl
   behavior is separate from generic file-tool path policy and is not a
   sandbox.
 - **Foreground execution is non-PTY** — command output is captured from process pipes, avoiding terminal prompt/echo/wrapping artifacts.
-- **Background processes use PID identity** — managed background processes are returned and queried by `pid` only.
-- **Long-running commands use normal shell syntax** — for example, `npm run dev > server.log 2>&1 &`. If an ordinary live descendant remains after the shell exits, it is adopted and returned in `backgroundProcesses`.
+- **Background tasks are addressed by PID** — `kill <pid>` stops one; platform stops (run end, app quit) come from a retained owned command scope and live identity checks, not the numeric PID or an occupied port alone.
+- **Long-running commands run in the background** — `run_in_background`, or normal shell syntax such as `npm run dev &`: the call returns when its foreground part ends, and each background task's end is reported to the agent.
 - **Interactive terminals remain PTY-backed elsewhere** — server/web xterm sessions use the interactive `TerminalSession` backends selected by `session-factory.ts`.
 
 ## Tools
 
 ### `run_bash`
 
-Execute a stateless command in a working directory.
+Execute a stateless command in a working directory, in the foreground or in the background. It is the only
+terminal tool: background commands are started, read and stopped with ordinary shell commands through it.
 
 ```ts
 const result = await runBash(context, "npm install", "/absolute/path/to/apps/web", 120);
+const started = await runBash(context, "npm run dev", "/absolute/path/to/apps/web", 30, true);
 ```
 
 **Parameters:**
@@ -43,28 +45,34 @@ const result = await runBash(context, "npm install", "/absolute/path/to/apps/web
   directory, including one outside the agent workspace. If omitted, the
   workspace root is used when available; otherwise the system temporary
   directory is used. The value applies only to this invocation.
-- `timeout_seconds` (number, optional): maximum execution time, default `30`.
+- `timeout_seconds` (number, optional): maximum time of the command's foreground part, default `30`. A timeout stops
+  the whole command group. It does not apply with `run_in_background`.
+- `run_in_background` (boolean, optional, default `false`): run the whole command as a background task.
 
-**Returns:** `TerminalResult`
+**Returns (foreground):** `TerminalResult`
 
 ```ts
 {
-  stdout?: string;
+  stdout?: string;              // bytes before the foreground end
   stderr?: string;
-  exitCode: number | null;
+  exitCode: number | null;      // the foreground part's exit code
   timedOut?: boolean;
   effectiveCwd: string;
-  backgroundProcesses?: Array<{
-    pid: number;
-    status: "running" | "exited" | "stopped";
-    command: string;
-    startedAt: string;
-    effectiveCwd: string;
-  }>;
+  backgroundTasksStarted?: BackgroundTaskStart[]; // & jobs still running when the foreground part ended
+  backgroundTasksEnded?: BackgroundTaskEnd[];     // this agent's background tasks that ended during this call
 }
+type BackgroundTaskStart = { pid: number; command: string; effectiveCwd: string; outputFile: string; startedAt: string };
+type BackgroundTaskEnd = {
+  pid: number; command: string; durationMs: number; outputFile: string;
+  outcome: { exitCode: number } | { signal: string } | { error: string };
+  lastLines: string;            // the output file's last 20 lines (at most 2,000 characters) when it ended
+};
 ```
 
-*Note: Empty or default values for `stdout`, `stderr`, `timedOut`, and `backgroundProcesses` are omitted from the JSON payload to reduce LLM context token usage.*
+**Returns (`run_in_background`):** `{ pid, status: "running", effectiveCwd, outputFile }`, as soon as the command
+started.
+
+*Note: Empty or default values of a foreground result are omitted from the JSON payload to reduce LLM context token usage.*
 
 **Key behavior:**
 
@@ -74,88 +82,123 @@ const result = await runBash(context, "npm install", "/absolute/path/to/apps/web
 - An existing but inaccessible cwd is rejected before the target shell/process
   is created with a working-directory validation error; no probe process is
   started to test access.
-- A foreground timeout stops the spawned shell process group when possible.
-- The tool does not parse shell text to infer intent. It only adopts actual live ordinary background descendants after the shell exits.
-- Commands that redirect output to files may produce little or no captured background output; read the log file with a later `run_bash` call.
+- **The call returns when the command's foreground part ends.** An `&` job still running then is a background task:
+  the result lists it in `backgroundTasksStarted` (its pid, the call's command text and the call's output file), and
+  everything the call's stdout and stderr receive afterwards goes to that output file.
+- **Background tasks report how they ended.** A task's end (exit code, signal, or `error` when its end could not be
+  observed) is reported once: in the result of the agent's own `run_bash` call that was running when it ended
+  (`backgroundTasksEnded`, for example the agent's `kill <pid>`), otherwise in a background task notice the server
+  delivers to the run (see the server's Agent Execution docs).
+- **Read output with ordinary commands:** `tail -n 50 <outputFile>`. Every task of one call shares the call's output
+  file. Output files live in this node's OS temp area (`autobyteus-background-tasks/<agent id>/`) and are removed
+  when the run ends.
+- **Stop with `kill <pid>`.** For a `run_in_background` command the pid's process forwards `TERM` to everything the
+  command started, so nothing of the command remains. For a plain `&` job `kill <pid>` stops that process only;
+  processes it started stay until the agent kills them or the run ends. `kill -9 <pid>` cannot be forwarded.
+- Processes that detach themselves (`nohup`, `setsid`, `disown`, daemons) are not tracked: they are stopped at run
+  end and app quit while they stay in the command's process group, and escape when they leave it.
+- On the POSIX `sh` fallback (no bash on `PATH`, e.g. Android) foreground calls run unwrapped and track no `&` jobs;
+  `run_in_background` works there too.
 
 Example long-running command:
 
 ```xml
-<run_bash cwd="/absolute/path/to/apps/web">
-npm run dev > server.log 2>&1 &
+<run_bash cwd="/absolute/path/to/apps/web" run_in_background="true">
+npm run dev
 </run_bash>
 ```
 
----
+### The command wrapper
 
-### `start_background_process`
+Every call runs through `command-execution/command-wrapper.ts`. The user's text is appended as written, never
+parsed. The foreground form (bash) runs it in the wrapper shell with fds 62/63 kept as the original stdout/stderr
+(closed for the user's block, so the processes it starts do not inherit them on bash 4+). When the foreground part
+ends, the wrapper resets the shell state (`set +e +u +o pipefail`, default `IFS`, `set -x` off, ERR/DEBUG traps
+cleared), runs the user's EXIT trap, writes the stdout end marker and a `FOREGROUND_DONE` frame with the exit code
+and the pids of the `&` jobs still running, then stays their parent and writes one `JOB_ENDED` frame per job. The
+background form (any POSIX shell) runs the command as the one job, with a `TERM` trap that stops its whole process
+group. Frames are nonce-framed (`\x1e<nonce>:BODY\x1f`) on stderr and decoded by `AnchorControlDecoder` for host and
+WSL commands. A command that replaces the wrapper (`exec cmd`) returns at the shell's exit instead, with no task list.
 
-Convenience tool for starting a long-running process when shell `&` syntax is not desired.
+## Owned command lifetime and host shutdown
 
-```ts
-const info = await startBackgroundProcess(context, "yarn dev", "/absolute/path/to/apps/web");
-// info.pid is the PID to use with the other background tools
-```
+`NativeCommandProcessScope` is the lifetime owner for native non-interactive
+commands. Studio and standalone application hosts inject their scope through the
+native backend into agent configuration. Each agent's `BackgroundProcessManager`
+owns the command groups its calls left behind: at run end (Terminate, delete,
+Task close, root stop, idle shutdown) the agent's `BackgroundProcessCleanupStep`
+stops them through the scope, records their ends as never reportable and removes
+the agent's output files. Interrupting a turn (Stop) stops only the foreground
+part; background tasks keep running. Host/backend close drains every remaining
+command at app quit.
 
-**Parameters:**
+Before user code runs, an internal anchor establishes the owned process
+group/session. It remains alive beyond the shell's RESULT and agent context so
+quick shell exit cannot erase cleanup authority. POSIX and WSL launchers keep
+that anchor separate from the user command result; WSL establishes its session
+explicitly. Foreground output capture and command completion remain distinct
+from ownership retirement.
 
-- `command` (string): command to run.
-- `cwd` (string, optional): an absolute path to any existing accessible local
-  directory, including one outside the agent workspace. If omitted, the
-  workspace root is used when available; otherwise the system temporary
-  directory is used. The value applies only to this process.
+Close blocks new work, drains groups together within bounded graceful/forced
+phases, and verifies the owned resources are absent. A signalled parent or a
+released port alone is not proof of cleanup. Observation or identity uncertainty
+returns an unconfirmed result rather than signalling an unrelated PID/group or
+claiming success. Host composition still attempts other resource cleanup and
+reports aggregate failure. No port scan grants termination authority; escaped
+untracked daemons, machine crashes and power loss are outside this guarantee.
 
-**Returns:** `BackgroundProcessInfo` with `pid`, `status`, `command`, `startedAt`, and `effectiveCwd`.
+### Command time limits
 
----
+The scope's limits are named in one file, `command-execution/command-deadline.ts`, each with what it bounds. They
+were measured on a loaded machine (200 commands starting at once at load ~160: a healthy start took up to 18.4 s and
+one `ps` read several seconds), so a command that would start does start under load.
 
-### `get_background_processes`
+| Limit | Value | Bounds |
+| --- | --- | --- |
+| Start (`COMMAND_START_LIMIT_MS`) | 30 s, or the call's `timeout_seconds` when that is shorter | launch until START is confirmed (pid, process-group check, START) |
+| Observation (`COMMAND_OBSERVATION_LIMIT_MS`) | 10 s | inspecting a command's group; confirming a finished command's group is empty |
+| Stop (`COMMAND_STOP_LIMIT_MS`) | 30 s | TERM, then KILL if needed, until the group is confirmed gone |
+| Host shutdown (`COMMAND_SCOPE_SHUTDOWN_BUDGET_MS`) | 3 s | the whole scope's close; commands not confirmed by then are `unconfirmed` |
 
-List managed background processes for the current agent context.
+- **No limit of its own for one `ps` or WSL run.** A read is bounded only by the deadline of the step it serves, so a
+  step has one limit, not a second one hidden inside it.
+- **Graces are not limits.** The cancel-gate wait, TERM→KILL (500 ms each) and the stdout end marker (1 s) end by
+  design and are named next to the limits.
+- **A launch that fails outright fails at once** with its own reason; only a start that never completes waits for its
+  limit. A start that does not complete returns `exitCode: null`, no output and stderr
+  `Command did not start within N s: <reason>` (N is the limit applied, 30 or the call's timeout).
+- **A Stop during the start ends the call as that Stop** (`stderr` `tool-abort`, `timedOut: true`), as for a running
+  command, not as a failed start. The call returns once the cleanup stop of the half-started command is confirmed,
+  which on a busy machine takes longer (measured: at most 0.7 s with 10 calls starting at once, 2.8 s with 60, about
+  11 s with 200).
+- **A run end confirms each command's stop for up to 30 s** (in parallel), so an agent stop on a busy machine can take
+  longer than a short caller timeout; the host-close budget is separate and stays 3 s.
 
-```ts
-const result = await getBackgroundProcesses(context);
-// result: { processes: [{ pid, status, command, startedAt, effectiveCwd }] }
-```
-
----
-
-### `get_process_output`
-
-Read recent captured output from a managed background process.
-
-```ts
-const result = await getProcessOutput(context, pid, 50);
-// result: { output: "...", isRunning: true, pid, status: "running" }
-```
-
-**Parameters:**
-
-- `pid` (number): PID returned by `run_bash`, `start_background_process`, or `get_background_processes`.
-- `lines` (number): number of recent lines to return, default `100`.
-
----
-
-### `stop_background_process`
-
-Stop a managed background process by PID.
-
-```ts
-const result = await stopBackgroundProcess(context, pid);
-// result: { status: "stopped", pid }
-```
+Provider-owned Codex/Claude commands retain their provider shutdown owners;
+this native scope is not a replacement for those runtimes. The read-only Codex
+Background Tasks panel is documented in the server's
+[Agent Execution](../../autobyteus-server-ts/docs/modules/agent_execution.md#read-only-codex-background-task-inspection).
 
 ## Architecture
 
 ```
 src/tools/terminal/
 ├── command-execution/
+│   ├── native-command-process-scope.ts   # host lifetime, leases and collective drain
+│   ├── command-deadline.ts               # the scope's named time limits and graces
+│   ├── anchored-command-launcher.ts      # owned anchor/command launch
+│   ├── anchor-control-protocol.ts        # anchor and wrapper control frames
+│   ├── command-wrapper.ts                # the wrapper every run_bash call runs through
+│   ├── posix-command-anchor-script.ts   # POSIX session/group anchor
+│   ├── wsl-command-anchor-script.ts     # WSL session/group anchor
+│   ├── process-identity.ts              # live ownership identity
 │   ├── non-interactive-shell-resolver.ts # bash/WSL shell invocation
 │   ├── process-group-observer.ts         # process-group scan/status/stop
-│   └── shell-command-executor.ts         # foreground run_bash lifecycle
-├── background-process-manager.ts         # PID registry and output buffers
-├── types.ts                              # TerminalResult and PID process types
-├── output-buffer.ts                      # bounded output ring buffer
+│   └── shell-command-executor.ts         # one call up to its foreground end
+├── background-process-manager.ts         # per-agent background tasks: start, end, reporting, run-end stop
+├── background-output-log.ts              # per-call output file and its tail
+├── types.ts                              # TerminalResult, BackgroundTaskStart/End
+├── output-buffer.ts                      # bounded output ring buffer (interactive sessions)
 ├── terminal-session-manager.ts           # agent-side interactive command manager
 ├── session-factory.ts                    # server/web interactive backend selection
 ├── session-startup.ts                    # primary/fallback backend startup

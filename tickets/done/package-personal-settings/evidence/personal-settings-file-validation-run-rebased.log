@@ -1,0 +1,40 @@
+== V-A identity: keys per root and across roots
+PASS base: 126 definitions, keys unique within the root
+PASS base: every key parses to a known kind at its first ':'
+PASS new: 129 definitions, keys unique within the root
+PASS new: every key parses to a known kind at its first ':'
+PASS autobyteus-agents: 132 definitions, keys unique within the root
+PASS autobyteus-agents: every key parses to a known kind at its first ':'
+PASS autobyteus-private-agents: 66 definitions, keys unique within the root
+PASS autobyteus-private-agents: every key parses to a known kind at its first ':'
+   keys present in more than one of [new, local roots]: 129 [
+  [ 'agent:agent-package-creator', [ 'new', 'autobyteus-agents' ] ],
+  [
+    'agent:chemistry-teaching-assistant',
+    [ 'new', 'autobyteus-agents' ]
+  ],
+  [ 'agent:computer-use-operator', [ 'new', 'autobyteus-agents' ] ],
+  [ 'agent:data-engineer', [ 'new', 'autobyteus-agents' ] ],
+  [ 'agent:deep-researcher', [ 'new', 'autobyteus-agents' ] ]
+]
+   of them Team/Org keys (the app refuses these as DEFINITION_IDENTITY_DUPLICATED): 25
+== V-B tolerant reader
+PASS valid records kept: agent:solution-designer, agent_team:software-engineering-team
+PASS exactly the 7 invalid records dropped: agent:, agent:bad-launch, agent:dup-list, agent:empty-list, agent:overlap, agent_team:bad-field, unknown:thing (skip log: 12 entries)
+PASS unreadable file shape → no personal settings
+== V-C real update: user edits on the installed revision survive the update to the new revision
+   subject agent:agent-package-creator; author added ["search_memory"], removed []
+   captured record {"toolsAdded":["github_create_issue"],"toolsRemoved":["edit_file"],"avatarUrl":"/rest/files/images/mine.png","defaultLaunchConfig":{"runtimeKind":"claude_agent_sdk","llmModelIdentifier":"claude-opus","llmConfig":null}}
+PASS user's added tool present after update
+PASS user's removed tool absent after update
+PASS every tool of the new revision present (except the user's removal)
+PASS user's avatar and runtime/model kept as one unit
+PASS skills follow the new revision when the user changed none
+PASS the captured record passes the reader
+PASS capture on an unchanged file yields nothing (safe to run at every update)
+PASS capture keeps an existing record unchanged
+PASS a definition the new revision dropped (agent:chemistry-module-designer) leaves its record unused, not an error
+== V-D every real config reads into the four package values
+PASS 129 config files of the new revision read; effective values with no personal record equal the package's
+
+ALL PASS

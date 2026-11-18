@@ -1,0 +1,101 @@
+# IMP-12 web-electron-tests
+# Command: pnpm -C autobyteus-web exec vitest run --config ./electron/vitest.config.ts
+# Environment mode: shell
+# Commit: d20340e5c3 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T15:09:32Z
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/electron
+
+ ✓ __tests__/logger.spec.ts (4 tests) 109ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 135ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (16 tests) 222ms
+ ✓ server/__tests__/serverProcessTree.spec.ts (5 tests) 108ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts (7 tests) 415ms
+   ✓ nodeUpdateClient (C1) > gives up on a node that does not answer within the timeout (real fetch)  411ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 91ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 79ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (12 tests) 116ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (4 tests) 842ms
+   ✓ reports a conflict from an [::] dual-stack holder (the incident shape) without killing it; recovers once it exits (AC-005)  396ms
+   ✓ reports real loopback conflict without killing listener; fresh retry succeeds  444ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 103ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 125ms
+stdout | server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+AC002 actual deadline receipt {"elapsedMs":1014,"pid":25714,"absent":true}
+
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 118ms
+ ✓ __tests__/preload.spec.ts (5 tests) 35ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 84ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts (32 tests) 104ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 32ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (14 tests) 29ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts (5 tests) 7ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 22ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 7ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (4 tests) 21ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (19 tests) 6ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (5 tests) 15ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts (10 tests) 16ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 14ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 16ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (12 tests) 11ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (5 tests) 6ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 19ms
+ ✓ server/__tests__/ServerForceStopTree.spec.ts (2 tests) 1940ms
+   ✓ force-stops a wedged server and its whole tree, leaving no process behind  1939ms
+ ✓ __tests__/nodeRegistryStore.spec.ts (9 tests) 9ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 8ms
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 8ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 8ms
+ ✓ nodeAccess/__tests__/nodeCredentialStore.spec.ts (3 tests) 6ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 7ms
+ ✓ updater/__tests__/appUpdateAutomaticStore.spec.ts (4 tests) 8ms
+ ✓ nodeAccess/__tests__/nodeConnectService.spec.ts (4 tests) 6ms
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 7ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 5ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 9ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts (36 tests) 7ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateIpc.spec.ts (4 tests) 7ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (7 tests) 7ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (2 tests) 4ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (5 tests) 4ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (3 tests) 3ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 5ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts (3 tests) 4ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 3ms
+ ✓ nodeAccess/__tests__/nodeCredentialAttacher.spec.ts (4 tests) 3ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 4ms
+ ✓ browser/__tests__/register-browser-shell-ipc-handlers.spec.ts (2 tests) 4ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 3ms
+ ✓ browser/__tests__/browser-file-document-request.spec.ts (25 tests) 3ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 3ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 2ms
+ ✓ browser/__tests__/browser-tab-observers.spec.ts (1 test) 2ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 1ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 1ms
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 3471ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  2345ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  754ms
+   ✓ ManagedExtensionService > marks a broken installation as requiring attention  371ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts (11 tests) 4141ms
+   ✓ actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child  1018ms
+   ✓ actual advisory inspector faults > rejects over-32KiB output rather than publishing a truncated owner  320ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p0\ncnode\n" does not fabricate an owner  328ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "pNaN\ncnode\n" does not fabricate an owner  385ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p9007199254740992\ncnode\n" does not fabricate an owner  407ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p12\ncnode\npbad\n" does not fabricate an owner  373ms
+   ✓ actual advisory inspector faults > discards racing/nonzero partial evidence, recovers fresh, then forgets vanished owners  704ms
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts (4 tests) 10294ms
+
+ Test Files  66 passed | 1 skipped (67)
+      Tests  492 passed | 1 skipped (493)
+   Start at  16:09:32
+   Duration  10.97s (transform 1.42s, setup 0ms, collect 4.39s, tests 22.91s, environment 9ms, prepare 4.22s)
+
+# Exit status: 0

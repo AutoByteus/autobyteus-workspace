@@ -1,0 +1,5 @@
+# REL-03 build-only release run (pnpm release:test --ref personal) on e241868162
+run 41453287610, attempt 1: Windows x64, Linux x64, Linux ARM64, macOS Intel x64 success; macOS ARM64 cancelled after 15 min with no steps:
+  annotation: "The job was not acquired by Runner of type hosted even after multiple attempts" (macOS arm64 capacity notices)
+  transient per RELEASE.md Recovery: gh run rerun 41453287610 --failed
+attempt 2: macOS ARM64 success; run conclusion success; Publish GitHub Release skipped (build-only)

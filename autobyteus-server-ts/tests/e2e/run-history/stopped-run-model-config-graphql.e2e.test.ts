@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { WorkingContextFinalizer } from "autobyteus-ts/memory/working-context-finalizer.js";
@@ -12,6 +13,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
@@ -39,11 +41,14 @@ const makeTarget = (label: string) => {
   return { runtimeRoot, database, isolatedHome };
 };
 
-const startServer = async (target: ReturnType<typeof makeTarget>): Promise<RunningTestServer> => {
+const startServer = async (
+  target: ReturnType<typeof makeTarget>,
+  extraEnvironment: Record<string, string> = {},
+): Promise<RunningTestServer> => {
   const server = await startBuiltTestServer({
     runtimeRoot: target.runtimeRoot,
     databaseUrlOverride: target.database.databaseUrl,
-    environment: createSanitizedTestEnvironment({ HOME: target.isolatedHome }),
+    environment: createSanitizedTestEnvironment({ HOME: target.isolatedHome, ...extraEnvironment }),
   });
   ownedServers.add(server);
   return server;
@@ -124,55 +129,59 @@ const autoByteusReasoningModel = async (serverUrl: string): Promise<string> => {
 
 const updateAgent = (serverUrl: string, input: {
   agentRunId: string;
+  runtimeKind?: string;
   llmModelIdentifier: string;
   llmConfig: JsonRecord | null;
 }) => executeGraphql<{
-  updateStoppedAgentRunModelConfig: {
+  updateStoppedAgentRunSelection: {
     success: boolean;
     outcome: string;
+    message: string;
     isActive: boolean;
     editability: { editable: boolean; reason: string | null };
     canonicalSelection: { llmModelIdentifier: string; llmConfig: JsonRecord | null } | null;
     fieldErrors: Array<{ path: string; message: string }>;
   };
 }>(serverUrl, `
-  mutation UpdateStoppedAgent($input: UpdateStoppedAgentRunModelConfigInput!) {
-    updateStoppedAgentRunModelConfig(input: $input) {
-      success outcome isActive
+  mutation UpdateStoppedAgent($input: UpdateStoppedAgentRunSelectionInput!) {
+    updateStoppedAgentRunSelection(input: $input) {
+      success outcome message isActive
       editability { editable reason }
       canonicalSelection { llmModelIdentifier llmConfig }
       fieldErrors { path message }
     }
   }
-`, { input }).then((result) => result.updateStoppedAgentRunModelConfig);
+`, { input: { runtimeKind: "autobyteus", ...input } }).then((result) => result.updateStoppedAgentRunSelection);
 
 const updateTeam = (serverUrl: string, input: {
   teamRunId: string;
-  patches: Array<{
+  selectionPatches: Array<{
     scopeKind: "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
     scopeAddress: string;
+    runtimeKind: string;
     llmModelIdentifier: string;
     llmConfig: JsonRecord | null;
   }>;
 }) => executeGraphql<{
-  updateStoppedTeamRunModelConfigs: {
+  updateStoppedTeamRunSelections: {
     success: boolean;
     outcome: string;
+    message: string;
     isActive: boolean;
     editability: { editable: boolean; reason: string | null };
     canonicalExecutionTree: JsonRecord | null;
     fieldErrors: Array<{ path: string; message: string }>;
   };
 }>(serverUrl, `
-  mutation UpdateStoppedTeam($input: UpdateStoppedTeamRunModelConfigsInput!) {
-    updateStoppedTeamRunModelConfigs(input: $input) {
-      success outcome isActive
+  mutation UpdateStoppedTeam($input: UpdateStoppedTeamRunSelectionsInput!) {
+    updateStoppedTeamRunSelections(input: $input) {
+      success outcome message isActive
       editability { editable reason }
       canonicalExecutionTree
       fieldErrors { path message }
     }
   }
-`, { input }).then((result) => result.updateStoppedTeamRunModelConfigs);
+`, { input }).then((result) => result.updateStoppedTeamRunSelections);
 
 const agentResume = (serverUrl: string, runId: string) => executeGraphql<{
   getAgentRunResumeConfig: {
@@ -211,9 +220,12 @@ const teamResume = (serverUrl: string, teamRunId: string) => executeGraphql<{
   }
 `, { teamRunId }).then((result) => result.getTeamRunResumeConfig);
 
+/** autobyteus-461 CR-461-078 (V-11): a Settings edit is recorded as the run's own launch, with origin "settings". */
+const SETTINGS_ORIGIN = { origin: "settings", fallbacks: [] };
 const withoutAgentLlmConfig = (metadata: JsonRecord): JsonRecord => {
   const clone = structuredClone(metadata);
   delete clone.llmConfig;
+  delete clone.launchSource;
   return clone;
 };
 
@@ -223,9 +235,9 @@ const withoutSelectedTeamLlmConfigs = (
 ): JsonRecord => {
   const clone = structuredClone(tree);
   const targets = new Set(addresses);
-  if (targets.has(clone.rootTeam.address)) delete clone.rootTeam.defaultLaunchConfiguration.llmConfig;
+  if (targets.has(clone.rootTeam.address)) { delete clone.rootTeam.defaultLaunchConfiguration.llmConfig; delete clone.rootTeam.defaultLaunchSource; }
   for (const member of clone.rootTeam.members as JsonRecord[]) {
-    if (targets.has(member.address)) delete member.launchConfiguration.llmConfig;
+    if (targets.has(member.address)) { delete member.launchConfiguration.llmConfig; delete member.launchSource; }
   }
   return clone;
 };
@@ -234,6 +246,28 @@ const findPersistedScopeConfig = (tree: JsonRecord, address: string): JsonRecord
   if (tree.rootTeam.address === address) return tree.rootTeam.defaultLaunchConfiguration.llmConfig;
   return tree.rootTeam.members.find((member: JsonRecord) => member.address === address)
     ?.launchConfiguration.llmConfig ?? null;
+};
+
+const FAKE_RUNTIME_CLI = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../fixtures/agent-runtimes-fake-cli.mjs",
+);
+const CLAUDE_SDK = "claude_agent_sdk";
+
+/**
+ * A scripted Claude Code CLI (`agent-runtimes-fake-cli.mjs` linked as `claude`) whose offered models the test changes
+ * while the server runs: the `claude-models` state file holds comma-separated model ids, `none` makes it offer no model.
+ * `CLAUDE_CODE_EXECUTABLE_PATH` points the server's Claude Agent SDK runtime at it; no account or network is involved.
+ */
+const makeFakeClaude = (target: ReturnType<typeof makeTarget>) => {
+  const stateDir = path.join(target.runtimeRoot, "fake-claude");
+  fs.mkdirSync(stateDir, { recursive: true, mode: 0o700 });
+  const executable = path.join(stateDir, "claude");
+  fs.symlinkSync(FAKE_RUNTIME_CLI, executable);
+  return {
+    environment: { CLAUDE_CODE_EXECUTABLE_PATH: executable, FAKE_RUNTIME_STATE_DIR: stateDir },
+    offer: (models: string) => fs.writeFileSync(path.join(stateDir, "claude-models"), models),
+  };
 };
 
 afterEach(async () => {
@@ -333,15 +367,15 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     // AC-004/007: the current contract requires both fields, even for settings-only Save.
     // Use raw HTTP so omission is exercised through GraphQL coercion and the resolver.
     for (const [input, expectedError] of [
-      [{ agentRunId: runId, llmConfig: null }, "llmModelIdentifier"],
-      [{ agentRunId: runId, llmModelIdentifier: model }, null],
+      [{ agentRunId: runId, runtimeKind: "autobyteus", llmConfig: null }, "llmModelIdentifier"],
+      [{ agentRunId: runId, runtimeKind: "autobyteus", llmModelIdentifier: model }, null],
     ] as const) {
       const response = await fetch(`${first.serverUrl}/graphql`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          query: `mutation RequiredAgentPair($input: UpdateStoppedAgentRunModelConfigInput!) {
-            updateStoppedAgentRunModelConfig(input: $input) { success outcome message }
+          query: `mutation RequiredAgentPair($input: UpdateStoppedAgentRunSelectionInput!) {
+            updateStoppedAgentRunSelection(input: $input) { success outcome message }
           }`,
           variables: { input },
         }),
@@ -350,8 +384,8 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       // A missing nullable config is rejected as a failed result;
       // missing non-null model is rejected by GraphQL before reaching the owner.
       if (expectedError) expect(JSON.stringify(payload)).toContain(expectedError);
-      else expect(payload.data.updateStoppedAgentRunModelConfig.success).toBe(false);
-      expect(payload.data?.updateStoppedAgentRunModelConfig?.success ?? false).toBe(false);
+      else expect(payload.data.updateStoppedAgentRunSelection.success).toBe(false);
+      expect(payload.data?.updateStoppedAgentRunSelection?.success ?? false).toBe(false);
       expect(fs.readFileSync(metadataPath, "utf8")).toBe(stoppedFile);
     }
     await expect(updateAgent(first.serverUrl, {
@@ -378,11 +412,11 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     await expect(updateAgent(first.serverUrl, {
       agentRunId: runId,
       llmModelIdentifier: model,
-      llmConfig: { unsupported_setting: true },
+      llmConfig: { reasoning_effort: "not-a-level" },
     })).resolves.toMatchObject({
       success: false,
       outcome: "VALIDATION_FAILED",
-      fieldErrors: [{ path: "llmConfig.unsupported_setting" }],
+      fieldErrors: [{ path: "llmConfig.reasoning_effort" }],
       canonicalSelection: { llmModelIdentifier: model, llmConfig: INITIAL_CONFIG },
     });
     expect(fs.readFileSync(metadataPath, "utf8")).toBe(stoppedFile);
@@ -402,6 +436,7 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const afterUpdate = readJson(metadataPath);
     expect(afterUpdate.llmConfig).toEqual(UPDATED_CONFIG);
     expect(withoutAgentLlmConfig(afterUpdate)).toEqual(withoutAgentLlmConfig(beforeUpdate));
+    expect(afterUpdate.launchSource, "the edit is recorded as one (CR-461-078)").toEqual(SETTINGS_ORIGIN);
 
     const schema = await executeGraphql<{
       agentInput: { inputFields: Array<{ name: string }> };
@@ -412,13 +447,13 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       exactCurrentResult: { fields: Array<{ name: string }> };
     }>(first.serverUrl, `
       query StoppedConfigSchema {
-        agentInput: __type(name: "UpdateStoppedAgentRunModelConfigInput") {
+        agentInput: __type(name: "UpdateStoppedAgentRunSelectionInput") {
           inputFields { name }
         }
-        agentResult: __type(name: "UpdateStoppedAgentRunModelConfigResult") {
+        agentResult: __type(name: "UpdateStoppedAgentRunSelectionResult") {
           fields { name }
         }
-        teamInput: __type(name: "UpdateStoppedTeamRunModelConfigsInput") {
+        teamInput: __type(name: "UpdateStoppedTeamRunSelectionsInput") {
           inputFields { name }
         }
         optionResult: __type(name: "RunModelOptionsObject") {
@@ -436,15 +471,17 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       "agentRunId",
       "llmConfig",
       "llmModelIdentifier",
+      "runtimeKind",
     ]);
     expect(schema.teamInput.inputFields.map(({ name }) => name).sort()).toEqual([
-      "patches",
+      "selectionPatches",
       "teamRunId",
     ]);
     expect(schema.agentResult.fields.map(({ name }) => name)).not.toContain("configurationRevision");
     expect(schema.optionResult.fields.map(({ name }) => name).sort()).toEqual([
       "currentModel",
       "currentModelIdentifier",
+      "modelListReadable",
       "replacements",
       "unavailableReason",
     ]);
@@ -541,16 +578,16 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     );
     const activeFile = fs.readFileSync(treePath, "utf8");
     const patches = [
-      { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
-      { scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
+      { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
+      { scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
       {
         scopeKind: "CONFIGURED_AGENT" as const,
-        scopeAddress: "/reviewer", llmModelIdentifier: model,
+        scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model,
         llmConfig: UPDATED_CONFIG,
       },
     ];
 
-    await expect(updateTeam(first.serverUrl, { teamRunId, patches })).resolves.toMatchObject({
+    await expect(updateTeam(first.serverUrl, { teamRunId, selectionPatches: patches })).resolves.toMatchObject({
       success: false,
       outcome: "RUN_ACTIVE",
       isActive: true,
@@ -575,44 +612,44 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const stoppedFile = fs.readFileSync(treePath, "utf8");
     // AC-004/007 applies to each configured patch, not only standalone commands.
     for (const patch of [
-      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", llmConfig: null },
-      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", llmModelIdentifier: model },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmConfig: null },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model },
     ]) {
       const response = await fetch(`${first.serverUrl}/graphql`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          query: `mutation RequiredTeamPair($input: UpdateStoppedTeamRunModelConfigsInput!) {
-            updateStoppedTeamRunModelConfigs(input: $input) { success outcome }
+          query: `mutation RequiredTeamPair($input: UpdateStoppedTeamRunSelectionsInput!) {
+            updateStoppedTeamRunSelections(input: $input) { success outcome }
           }`,
-          variables: { input: { teamRunId, patches: [patch] } },
+          variables: { input: { teamRunId, selectionPatches: [patch] } },
         }),
       });
       const payload = await response.json();
       if (!Object.hasOwn(patch, "llmModelIdentifier")) {
         expect(JSON.stringify(payload.errors)).toContain("llmModelIdentifier");
       } else {
-        expect(payload.data.updateStoppedTeamRunModelConfigs.success).toBe(false);
+        expect(payload.data.updateStoppedTeamRunSelections.success).toBe(false);
       }
       expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
     }
     await expect(updateTeam(first.serverUrl, {
       teamRunId,
-      patches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG }],
+      selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG }],
     })).resolves.toMatchObject({ success: true, outcome: "UNCHANGED" });
     expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
 
     await expect(updateTeam(first.serverUrl, {
       teamRunId,
-      patches: [{
+      selectionPatches: [{
         scopeKind: "CONFIGURED_AGENT",
-        scopeAddress: "/reviewer", llmModelIdentifier: model,
-        llmConfig: { unsupported_setting: true },
+        scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model,
+        llmConfig: { reasoning_effort: "not-a-level" },
       }],
     })).resolves.toMatchObject({
       success: false,
       outcome: "VALIDATION_FAILED",
-      fieldErrors: [{ path: "patches[/reviewer].llmConfig.unsupported_setting" }],
+      fieldErrors: [{ path: "selectionPatches[/reviewer].llmConfig.reasoning_effort" }],
     });
     expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
 
@@ -629,11 +666,11 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     ]) {
       await expect(updateTeam(first.serverUrl, {
         teamRunId,
-        patches: [patches[0]!, { ...invalidScope, llmModelIdentifier: model, llmConfig: UPDATED_CONFIG }],
+        selectionPatches: [patches[0]!, { ...invalidScope, runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG }],
       })).resolves.toMatchObject({ success: false });
       expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
     }
-    await expect(updateTeam(first.serverUrl, { teamRunId, patches })).resolves.toMatchObject({
+    await expect(updateTeam(first.serverUrl, { teamRunId, selectionPatches: patches })).resolves.toMatchObject({
       success: true,
       outcome: "UPDATED",
       isActive: false,
@@ -653,6 +690,13 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       "/coordinator",
       "/reviewer",
     ]));
+    // CR-461-078: each edited scope records the edit as its own launch; the unedited member keeps what it had.
+    expect(afterUpdate.rootTeam.defaultLaunchSource, "team default edit recorded").toEqual(SETTINGS_ORIGIN);
+    for (const address of ["/coordinator", "/reviewer"]) {
+      expect(afterUpdate.rootTeam.members.find((m: JsonRecord) => m.address === address)?.launchSource, `${address} edit recorded`).toEqual(SETTINGS_ORIGIN);
+    }
+    expect(afterUpdate.rootTeam.members.find((m: JsonRecord) => m.address === "/lead")?.launchSource)
+      .toEqual(beforeUpdate.rootTeam.members.find((m: JsonRecord) => m.address === "/lead")?.launchSource);
 
     await stopServer(first);
     const second = await startServer(target);
@@ -666,18 +710,241 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     expect(projectedRoot.team_run_id).toBe(teamRunId);
     expect(projectedRoot.default_launch_configuration.llm_config).toEqual(UPDATED_CONFIG);
 
-    const restored = await executeGraphql<{
-      restoreAgentTeamRun: { success: boolean; teamRunId: string | null };
-    }>(second.serverUrl, `
-      mutation RestoreStoppedConfigTeam($teamRunId: String!) {
-        restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId }
-      }
-    `, { teamRunId });
-    expect(restored.restoreAgentTeamRun).toEqual({ success: true, teamRunId });
+    // The user continues the stopped team by a message to one of its members on its view (autobyteus-461 CR-461-008).
+    await restoreByMemberMessage({ url: second.serverUrl, gql: (query, variables) => executeGraphql(second.serverUrl, query, variables ?? {}),
+      kind: "team", runId: teamRunId, memberRunId: (projectedRoot.members as any[])[0].agent_run_id });
     await expect(teamResume(second.serverUrl, teamRunId)).resolves.toMatchObject({
       teamRunId,
       isActive: true,
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
     });
+  }, 180_000);
+
+  // MSR-001 (autobyteus-9, AC-012, AC-013): the model list of the runtime a stopped run is saved onto is read fresh on every
+  // Save. The scripted Claude CLI starts offering a model while the server runs, then offers none (an unreadable list), and
+  // the run is saved back onto its first runtime (a runtime switch there and back, TESTING.md Rule 10).
+  it("MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list", async () => {
+    const target = makeTarget("stopped-claude-offered-models");
+    const claude = makeFakeClaude(target);
+    const server = await startServer(target, claude.environment);
+    const NEW_MODEL = "claude-new-model";
+    const notOffered = (model: string, scope = "") =>
+      `'${model}' is not offered by Claude Agent SDK now${scope}. Refresh the model list and choose again. Saved settings were not changed.`;
+    // A diagnostic follows "could not be read" only where the runtime has its own (Antigravity, Grok Build, DeepSeek Harness).
+    const unreadable = "The model list of Claude Agent SDK could not be read. Try again. Saved settings were not changed.";
+    const model = await autoByteusReasoningModel(server.serverUrl);
+    const workspaceRootPath = path.join(target.runtimeRoot, "workspaces", "msr");
+    fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+
+    // The stopped standalone agent.
+    const definitionId = await createAgentDefinition(server.serverUrl, `msr-agent-${Date.now()}`);
+    const created = await executeGraphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+      server.serverUrl, `
+      mutation CreateMsrAgentRun($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }
+    `, { input: { agentDefinitionId: definitionId, workspaceRootPath, llmModelIdentifier: model, llmConfig: INITIAL_CONFIG,
+      autoExecuteTools: false, runtimeKind: "autobyteus" } });
+    if (!created.createAgentRun.success || !created.createAgentRun.runId) throw new Error(created.createAgentRun.message);
+    const runId = created.createAgentRun.runId;
+    const metadataPath = path.join(target.runtimeRoot, "memory", "agents", runId, "run_metadata.json");
+    const snapshot = new WorkingContextFinalizer().finalize({
+      messages: [new Message(MessageRole.SYSTEM, { content: "Owned API/E2E snapshot" })],
+    });
+    fs.writeFileSync(
+      path.join(path.dirname(metadataPath), "working_context_snapshot.json"),
+      JSON.stringify(WorkingContextSnapshotSerializer.serialize(snapshot, { agent_id: runId })),
+      "utf8",
+    );
+    await executeGraphql(server.serverUrl, `mutation($runId: String!) { terminateAgentRun(agentRunId: $runId) { success } }`, { runId });
+    const stoppedAgentFile = fs.readFileSync(metadataPath, "utf8");
+    const toClaude = (llmModelIdentifier: string) => ({ agentRunId: runId, runtimeKind: CLAUDE_SDK, llmModelIdentifier, llmConfig: null });
+
+    // The CLI does not offer the model yet: a refusal that names it, says what to do and that nothing was saved.
+    await expect(updateAgent(server.serverUrl, toClaude(NEW_MODEL))).resolves.toMatchObject({
+      success: false, outcome: "MODEL_UNAVAILABLE", message: notOffered(NEW_MODEL),
+    });
+    expect(fs.readFileSync(metadataPath, "utf8")).toBe(stoppedAgentFile);
+    // The CLI starts offering it while the server runs: the next Save finds it and records the choice.
+    claude.offer(`claude-fake-sonnet,${NEW_MODEL}`);
+    const saved = await updateAgent(server.serverUrl, toClaude(NEW_MODEL));
+    expect(saved).toMatchObject({ success: true, outcome: "UPDATED" });
+    const switched = fs.readFileSync(metadataPath, "utf8");
+    expect(switched).not.toBe(stoppedAgentFile);
+    expect(JSON.stringify(readJson(metadataPath))).toContain(NEW_MODEL);
+    // The CLI offers nothing (it failed or is signed out): an unreadable list, not "the model is not offered".
+    claude.offer("none");
+    await expect(updateAgent(server.serverUrl, toClaude(NEW_MODEL))).resolves.toMatchObject({
+      success: false, outcome: "MODEL_LIST_UNAVAILABLE", message: unreadable,
+    });
+    expect(fs.readFileSync(metadataPath, "utf8")).toBe(switched);
+    // Back to the first runtime: the run is saved on it again.
+    await expect(updateAgent(server.serverUrl, {
+      agentRunId: runId, runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG,
+    })).resolves.toMatchObject({ success: true, outcome: "UPDATED", canonicalSelection: { llmModelIdentifier: model, llmConfig: INITIAL_CONFIG } });
+    expect(JSON.stringify(readJson(metadataPath))).not.toContain(NEW_MODEL);
+
+    // A stopped Team run: one member saved onto the Claude Agent SDK runtime.
+    claude.offer("claude-fake-sonnet");
+    const label = `msr-team-${Date.now()}`;
+    const leadId = await createAgentDefinition(server.serverUrl, `${label}-lead`);
+    const reviewerId = await createAgentDefinition(server.serverUrl, `${label}-reviewer`);
+    const teamDefinitionId = await createTeamDefinition(server.serverUrl, {
+      name: `${label}-root`,
+      coordinatorMemberName: "lead",
+      nodes: [
+        { memberName: "lead", ref: leadId, refScope: "SHARED" },
+        { memberName: "reviewer", ref: reviewerId, refScope: "SHARED" },
+      ],
+    });
+    const launch = { runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG, autoExecuteTools: false, workspaceRootPath };
+    const team = await executeGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
+      server.serverUrl, `
+      mutation CreateMsrTeamRun($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }
+    `, { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...launch }], memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: leadId, ...launch },
+      { memberAddress: "/reviewer", agentDefinitionId: reviewerId, ...launch },
+    ] } });
+    if (!team.createAgentTeamRun.success || !team.createAgentTeamRun.teamRunId) throw new Error(team.createAgentTeamRun.message);
+    const teamRunId = team.createAgentTeamRun.teamRunId;
+    const treePath = path.join(target.runtimeRoot, "memory", "agent_teams", teamRunId, "team_run_execution_tree.json");
+    await executeGraphql(server.serverUrl, `mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success } }`, { teamRunId });
+    const stoppedTreeFile = fs.readFileSync(treePath, "utf8");
+    const reviewerToClaude = (llmModelIdentifier: string) => ({
+      teamRunId,
+      selectionPatches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/reviewer", runtimeKind: CLAUDE_SDK, llmModelIdentifier, llmConfig: null }],
+    });
+    const teamRefusal = await updateTeam(server.serverUrl, reviewerToClaude(NEW_MODEL));
+    expect(teamRefusal).toMatchObject({ success: false, outcome: "MODEL_UNAVAILABLE" });
+    expect(teamRefusal.message).toBe(notOffered(NEW_MODEL, " (for '/reviewer')"));
+    expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedTreeFile);
+    claude.offer(`claude-fake-sonnet,${NEW_MODEL}`);
+    await expect(updateTeam(server.serverUrl, reviewerToClaude(NEW_MODEL))).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
+    const switchedTree = fs.readFileSync(treePath, "utf8");
+    expect(switchedTree).not.toBe(stoppedTreeFile);
+    expect(JSON.stringify(readJson(treePath))).toContain(NEW_MODEL);
+    claude.offer("none");
+    const teamUnreadable = await updateTeam(server.serverUrl, reviewerToClaude(NEW_MODEL));
+    expect(teamUnreadable).toMatchObject({ success: false, outcome: "MODEL_LIST_UNAVAILABLE" });
+    expect(teamUnreadable.message).toBe(unreadable);
+    expect(fs.readFileSync(treePath, "utf8")).toBe(switchedTree);
+    await expect(updateTeam(server.serverUrl, {
+      teamRunId,
+      selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG }],
+    })).resolves.toMatchObject({ success: true });
+    expect(JSON.stringify(readJson(treePath))).not.toContain(NEW_MODEL);
+  }, 180_000);
+
+  // MSR-002 (autobyteus-9, AC-008): a new run stores the settings its model declares and nothing else, so no undeclared key
+  // is stored or reaches a provider later; a launch that carries only undeclared keys still starts and stores none.
+  it("MSR-002: a new agent run and a new Team run store only the settings the model declares", async () => {
+    const target = makeTarget("new-run-declared-settings");
+    const server = await startServer(target);
+    const model = await autoByteusReasoningModel(server.serverUrl);
+    const workspaceRootPath = path.join(target.runtimeRoot, "workspaces", "declared");
+    fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+    const submitted = { ...INITIAL_CONFIG, thinking_enabled: false, thinking_display: "omitted", extra_params: { reasoning_effort: "high", top_k: 5 } };
+    const launch = (llmConfig: JsonRecord | null) => ({ runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig, autoExecuteTools: false, workspaceRootPath });
+
+    const agentDefinitionId = await createAgentDefinition(server.serverUrl, `msr-declared-agent-${Date.now()}`);
+    const createAgent = async (llmConfig: JsonRecord | null) => {
+      const created = await executeGraphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(server.serverUrl, `
+        mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }
+      `, { input: { agentDefinitionId, ...launch(llmConfig) } });
+      if (!created.createAgentRun.success || !created.createAgentRun.runId) throw new Error(created.createAgentRun.message);
+      return created.createAgentRun.runId;
+    };
+    // The top-level value of a declared key wins over the same key inside the extra_params container; undeclared keys are dropped.
+    const kept = await agentResume(server.serverUrl, await createAgent(submitted));
+    expect(kept.metadataConfig.llmConfig).toEqual(INITIAL_CONFIG);
+    // Only undeclared keys: the launch succeeds and stores nothing.
+    const none = await agentResume(server.serverUrl, await createAgent({ thinking_enabled: false, thinking_display: "omitted", top_k: 5 }));
+    expect(none.metadataConfig.llmConfig).toBeNull();
+
+    const leadId = await createAgentDefinition(server.serverUrl, `msr-declared-lead-${Date.now()}`);
+    const helperId = await createAgentDefinition(server.serverUrl, `msr-declared-helper-${Date.now()}`);
+    const teamDefinitionId = await createTeamDefinition(server.serverUrl, {
+      name: `msr-declared-team-${Date.now()}`, coordinatorMemberName: "lead",
+      nodes: [{ memberName: "lead", ref: leadId, refScope: "SHARED" }, { memberName: "helper", ref: helperId, refScope: "SHARED" }],
+    });
+    const team = await executeGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(server.serverUrl, `
+      mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }
+    `, { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...launch(submitted) }], memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: leadId, ...launch(submitted) },
+      { memberAddress: "/helper", agentDefinitionId: helperId, ...launch({ thinking_display: "omitted" }) },
+    ] } });
+    if (!team.createAgentTeamRun.success || !team.createAgentTeamRun.teamRunId) throw new Error(team.createAgentTeamRun.message);
+    const treePath = path.join(target.runtimeRoot, "memory", "agent_teams", team.createAgentTeamRun.teamRunId, "team_run_execution_tree.json");
+    const tree = readJson(treePath);
+    expect(findPersistedScopeConfig(tree, "/")).toEqual(INITIAL_CONFIG);
+    expect(findPersistedScopeConfig(tree, "/lead")).toEqual(INITIAL_CONFIG);
+    expect(findPersistedScopeConfig(tree, "/helper")).toBeNull();
+    expect(JSON.stringify(tree)).not.toMatch(/thinking_display|thinking_enabled|top_k/);
+  }, 180_000);
+
+  // MSR-003 (autobyteus-9, SR-004 / CR-004, REQ-011, REQ-013, QR-001): a saved run's options answer says whether the runtime's
+  // model list was read. A list that cannot be read is an explicit answer (`modelListReadable: false`, no current model, no
+  // replacements, the owner's text), never "the model is not offered" and never an empty readable list; it is not sticky.
+  it("MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read", async () => {
+    const target = makeTarget("saved-run-options-readable");
+    const claude = makeFakeClaude(target);
+    const server = await startServer(target, claude.environment);
+    const workspaceRootPath = path.join(target.runtimeRoot, "workspaces", "options");
+    fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+    const launch = { runtimeKind: CLAUDE_SDK, llmModelIdentifier: "claude-fake-sonnet", llmConfig: null, autoExecuteTools: false, workspaceRootPath };
+    claude.offer("claude-fake-sonnet,claude-new-model");
+
+    const agentDefinitionId = await createAgentDefinition(server.serverUrl, `msr-options-agent-${Date.now()}`);
+    const createdAgent = await executeGraphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(server.serverUrl, `
+      mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }
+    `, { input: { agentDefinitionId, ...launch } });
+    if (!createdAgent.createAgentRun.success || !createdAgent.createAgentRun.runId) throw new Error(createdAgent.createAgentRun.message);
+    const runId = createdAgent.createAgentRun.runId;
+    await executeGraphql(server.serverUrl, `mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }`, { id: runId });
+
+    const leadId = await createAgentDefinition(server.serverUrl, `msr-options-lead-${Date.now()}`);
+    const helperId = await createAgentDefinition(server.serverUrl, `msr-options-helper-${Date.now()}`);
+    const teamDefinitionId = await createTeamDefinition(server.serverUrl, {
+      name: `msr-options-team-${Date.now()}`, coordinatorMemberName: "lead",
+      nodes: [{ memberName: "lead", ref: leadId, refScope: "SHARED" }, { memberName: "helper", ref: helperId, refScope: "SHARED" }],
+    });
+    const createdTeam = await executeGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(server.serverUrl, `
+      mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }
+    `, { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...launch }], memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: leadId, ...launch },
+      { memberAddress: "/helper", agentDefinitionId: helperId, ...launch },
+    ] } });
+    if (!createdTeam.createAgentTeamRun.success || !createdTeam.createAgentTeamRun.teamRunId) throw new Error(createdTeam.createAgentTeamRun.message);
+    const teamRunId = createdTeam.createAgentTeamRun.teamRunId;
+    await executeGraphql(server.serverUrl, `mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }`, { id: teamRunId });
+
+    const fields = "currentModelIdentifier modelListReadable unavailableReason currentModel { llmModelIdentifier } replacements { llmModelIdentifier }";
+    const agentOptions = async () => (await executeGraphql<{ agentRunModelOptions: JsonRecord }>(server.serverUrl,
+      `query($id: String!) { agentRunModelOptions(agentRunId: $id) { ${fields} } }`, { id: runId })).agentRunModelOptions;
+    const teamOptions = async () => (await executeGraphql<{ teamRunModelOptions: JsonRecord[] }>(server.serverUrl,
+      `query($id: String!) { teamRunModelOptions(teamRunId: $id) { scopeAddress ${fields} } }`, { id: teamRunId })).teamRunModelOptions;
+    const unreadable = {
+      currentModelIdentifier: "claude-fake-sonnet", modelListReadable: false, currentModel: null, replacements: [],
+      unavailableReason: "The model list of Claude Agent SDK could not be read. Try again.",
+    };
+
+    // Readable: the current model and its replacements.
+    const readableAgent = await agentOptions();
+    expect(readableAgent).toMatchObject({ currentModelIdentifier: "claude-fake-sonnet", modelListReadable: true, unavailableReason: null,
+      currentModel: { llmModelIdentifier: "claude-fake-sonnet" } });
+    expect((readableAgent.replacements as JsonRecord[]).map((row) => row.llmModelIdentifier)).toEqual(["claude-new-model"]);
+    const readableTeam = await teamOptions();
+    expect(readableTeam.length).toBeGreaterThanOrEqual(3);
+    for (const row of readableTeam) expect(row, `scope ${String(row.scopeAddress)}`).toMatchObject({ modelListReadable: true, unavailableReason: null });
+
+    // The CLI offers nothing: every scope says the list could not be read, with no model and no replacement.
+    claude.offer("none");
+    expect(await agentOptions()).toEqual(unreadable);
+    const unreadableTeam = await teamOptions();
+    expect(unreadableTeam.map((row) => row.scopeAddress)).toEqual(readableTeam.map((row) => row.scopeAddress));
+    for (const row of unreadableTeam) expect(row, `scope ${String(row.scopeAddress)}`).toMatchObject(unreadable);
+
+    // The CLI works again: the next read is readable again (the unreadable answer is not sticky).
+    claude.offer("claude-fake-sonnet,claude-new-model");
+    expect(await agentOptions()).toMatchObject({ modelListReadable: true, currentModel: { llmModelIdentifier: "claude-fake-sonnet" } });
+    expect((await teamOptions()).every((row) => row.modelListReadable === true)).toBe(true);
   }, 180_000);
 });

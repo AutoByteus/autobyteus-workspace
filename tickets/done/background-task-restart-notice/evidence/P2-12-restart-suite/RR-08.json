@@ -1,0 +1,47 @@
+{
+  "runId": "restart_reminder_codex_app_server_482d166c_23458c4036de4a85961e8c3d00a68e07",
+  "runtimeKind": "codex_app_server",
+  "modelId": "gpt-6.1-terra",
+  "runningTask": null,
+  "live": null,
+  "stopped": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_codex_app_server_482d166c_23458c4036de4a85961e8c3d00a68e07"
+        },
+        "agentRunId": "restart_reminder_codex_app_server_482d166c_23458c4036de4a85961e8c3d00a68e07",
+        "place": "host",
+        "status": "idle",
+        "backgroundTasks": true,
+        "recordedAt": "2026-11-17T19:34:25.975Z",
+        "version": "1.5.13-beta.8"
+      }
+    ],
+    "shutdownAt": "2026-11-17T19:34:25.977Z"
+  },
+  "afterTake": {
+    "reminders": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "restart_reminder_codex_app_server_482d166c_23458c4036de4a85961e8c3d00a68e07"
+        },
+        "agentRunId": "restart_reminder_codex_app_server_482d166c_23458c4036de4a85961e8c3d00a68e07",
+        "place": "host",
+        "cause": "restart",
+        "version": "1.5.13-beta.8",
+        "restartedAt": "2026-11-17T19:34:30.285Z",
+        "interruptedTurn": false
+      }
+    ]
+  },
+  "notice": {
+    "sender_id": "system.restart_resume",
+    "content": "[Platform notice — application restarted]\n\nThe application restarted at 2026-11-17 19:34 UTC (reason: a restart).\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.",
+    "turn_id": "01a1eb00-f4dd-7492-ac65-d18ecb7b8e00"
+  },
+  "reply": "\",\"media\":null,\"ts\":1794944070.889},{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"[Platform notice — application restarted]\\n\\nThe application restarted at 2026-11-17 19:34 UTC (reason: a restart).\\nIf you started any background tasks, the restart stopped them. Check what you still need: restart it, or continue your work.\",\"ts\":1794944070.89},{\"kind\":\"message\",\"role\":\"assistant\",\"turnId\":\"01a1eb00-f4dd-7492-ac65-d18ecb7b8e00\",\"content\":\"The application restart stopped the `sleep 600` command.\",\"media\":null,\"ts\":1794944073.851}]",
+  "remindersAfter": null
+}

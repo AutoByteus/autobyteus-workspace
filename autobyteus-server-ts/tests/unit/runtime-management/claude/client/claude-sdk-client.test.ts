@@ -5,7 +5,7 @@ import { ClaudeSdkInputChannel } from "../../../../../src/runtime-management/cla
 import {
   buildClaudeSdkSpawnEnvironment,
   resolveClaudeSdkAuthMode,
-} from "../../../../../src/runtime-management/claude/client/claude-sdk-auth-environment.js";
+} from "../../../../../src/runtime-management/claude/client/claude-sdk-spawn-environment.js";
 
 const createMockQuery = () => {
   const query = {
@@ -89,53 +89,99 @@ describe("ClaudeSdkClient", () => {
     expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "unsupported-mode" })).toBe("cli");
   });
 
-  it.each(["auto", "cli"] as const)(
-    "does not resolve a vault key for %s and preserves caller-supplied launch environment",
-    async (mode) => {
+  const stubProcessEnvironment = (values: Record<string, string>): void => {
+    for (const [key, value] of Object.entries(values)) vi.stubEnv(key, value);
+  };
+  /** The defaults AutoByteus adds to every Claude Code child environment (autobyteus-273, autobyteus-483). */
+  const CHILD_DEFAULTS = { ENABLE_PROMPT_CACHING_1H: "1", BASH_DEFAULT_TIMEOUT_MS: "7200000", BASH_MAX_TIMEOUT_MS: "7200000" };
+
+  it.each([
+    // cli: the CLI's own sign-in is used, so inherited API keys are removed.
+    ["cli", (env: NodeJS.ProcessEnv) => {
+      const { ANTHROPIC_API_KEY: _removed, ...kept } = env;
+      return { ...kept, ...CHILD_DEFAULTS };
+    }],
+    // auto without an OAuth token: the inherited environment is kept.
+    ["auto", (env: NodeJS.ProcessEnv) => ({ ...env, ...CHILD_DEFAULTS })],
+  ] as const)(
+    "does not resolve a vault key for %s and launches with the process environment under the auth policy",
+    async (mode, expectedSpawnEnvironment) => {
       const resolveApiKey = vi.fn();
       const queryFn = vi.fn(() => createMockQuery());
       const client = new ClaudeSdkClient(resolveApiKey);
       client.setCachedModuleForTesting({ query: queryFn });
-      const env = {
+      stubProcessEnvironment({
         CLAUDE_AGENT_SDK_AUTH_MODE: mode,
         HOME: "/synthetic/home",
         PATH: "/synthetic/bin",
         ANTHROPIC_API_KEY: "synthetic-inherited-value",
         CALLER_ADDITION: "preserved",
-      };
+      });
+      const expected = expectedSpawnEnvironment({ ...process.env });
 
       await client.beginStreamingSession({ resolveOptions: () => ({
-      systemPrompt: "",
+        systemPrompt: "",
         sessionBinding: createSessionBinding(),
         model: "haiku",
         workingDirectory: "/tmp/claude-original-mode",
-        env,
       }) }).open();
 
       expect(resolveApiKey).not.toHaveBeenCalled();
       const call = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } };
-      expect(call.options.env).toEqual(env);
+      expect(call.options.env).toEqual(expected);
+      expect(call.options.env.CALLER_ADDITION).toBe("preserved");
     },
   );
 
-  it("sets neither v1.4.78 policy variable, so Claude CLI background-task and Bash timeout defaults apply (AC-010)", async () => {
-    vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
-    vi.stubEnv("BASH_MAX_TIMEOUT_MS", undefined);
+  it("adds the run's integration variables to the run session's CLI spawn only", async () => {
     const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(vi.fn());
     client.setCachedModuleForTesting({ query: queryFn });
-    const env = { CLAUDE_AGENT_SDK_AUTH_MODE: "cli", HOME: "/synthetic/home" };
+    stubProcessEnvironment({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", HOME: "/synthetic/home" });
+    const extraEnvironment = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
 
-    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), env }) }).open();
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), extraEnvironment }) }).open();
+
+    const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> & { env: Record<string, string> } };
+    expect(call.options.env).toEqual({ ...process.env, ...CHILD_DEFAULTS, ...extraEnvironment });
+    expect(call.options).not.toHaveProperty("extraEnvironment");
+    expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
+  });
+
+  it("keeps CLI background tasks on and gives every launch the 2-hour shell time limits (autobyteus-483, AC-004)", async () => {
+    vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
+    vi.stubEnv("BASH_MAX_TIMEOUT_MS", undefined);
+    vi.stubEnv("BASH_DEFAULT_TIMEOUT_MS", undefined);
+    const queryFn = vi.fn(() => createMockQuery());
+    const client = new ClaudeSdkClient(vi.fn());
+    client.setCachedModuleForTesting({ query: queryFn });
+    stubProcessEnvironment({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", HOME: "/synthetic/home" });
+
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
     await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
 
     for (const call of queryFn.mock.calls) {
       const spawnEnv = (call[0] as { options: { env: Record<string, string | undefined> } }).options.env;
       expect(spawnEnv).not.toHaveProperty("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS");
-      expect(spawnEnv).not.toHaveProperty("BASH_MAX_TIMEOUT_MS");
-      expect(spawnEnv).not.toHaveProperty("BASH_DEFAULT_TIMEOUT_MS");
+      expect(spawnEnv).toMatchObject({ BASH_DEFAULT_TIMEOUT_MS: "7200000", BASH_MAX_TIMEOUT_MS: "7200000" });
     }
-    expect((queryFn.mock.calls[0]?.[0] as { options: { env: unknown } }).options.env).toEqual(env);
+    expect((queryFn.mock.calls[0]?.[0] as { options: { env: unknown } }).options.env).toEqual({
+      ...process.env,
+      ...CHILD_DEFAULTS,
+    });
+  });
+
+  it("keeps a shell time limit the server's environment sets (autobyteus-483, AC-003)", async () => {
+    vi.stubEnv("BASH_DEFAULT_TIMEOUT_MS", undefined);
+    const queryFn = vi.fn((_input: { options: { env: Record<string, string> } }) => createMockQuery());
+    const client = new ClaudeSdkClient(vi.fn());
+    client.setCachedModuleForTesting({ query: queryFn });
+    stubProcessEnvironment({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", BASH_MAX_TIMEOUT_MS: "900000" });
+
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
+
+    expect(queryFn.mock.calls[0]?.[0].options.env)
+      .toMatchObject({ BASH_MAX_TIMEOUT_MS: "900000", BASH_DEFAULT_TIMEOUT_MS: "7200000" });
   });
 
   it("warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2)", async () => {
@@ -144,40 +190,40 @@ describe("ClaudeSdkClient", () => {
       const queryFn = vi.fn(() => createMockQuery());
       const client = new ClaudeSdkClient(vi.fn());
       client.setCachedModuleForTesting({ query: queryFn });
-      const env = { CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1" };
-
-      await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), env }) }).open();
-      await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), env: { CLAUDE_AGENT_SDK_AUTH_MODE: "cli" } }) }).open();
+      stubProcessEnvironment({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1" });
+      await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
+      vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
+      await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions() }) }).open();
 
       const warnings = warn.mock.calls.filter((call) => String(call[0]).includes("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS"));
       expect(warnings).toHaveLength(1);
       expect((queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } }).options.env)
-        .toEqual(env);
+        .toMatchObject({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1" });
     } finally {
       warn.mockRestore();
     }
   });
 
-  it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
+  it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY besides the one-hour cache default", async () => {
     const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
     const queryFn = vi.fn(() => createMockQuery());
     const client = new ClaudeSdkClient(resolveApiKey);
     client.setCachedModuleForTesting({ query: queryFn });
-    const env = {
+    stubProcessEnvironment({
       CLAUDE_AGENT_SDK_AUTH_MODE: "api-key",
       HOME: "/synthetic/home",
       PATH: "/synthetic/bin",
       ANTHROPIC_API_KEY: "synthetic-ambient-key",
       CLAUDE_CODE_API_KEY: "synthetic-caller-owned-value",
       CALLER_ADDITION: "preserved",
-    };
+    });
+    const env = { ...process.env };
 
     await client.beginStreamingSession({ resolveOptions: () => ({
       systemPrompt: "",
       sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-api-key-mode",
-      env,
       mcpServers: { demo: { transport: "mock" } },
       allowedTools: ["Bash"],
     }) }).open();
@@ -187,6 +233,7 @@ describe("ClaudeSdkClient", () => {
     expect(call.options.env).toEqual({
       ...env,
       ANTHROPIC_API_KEY: "synthetic-vault-key",
+      ...CHILD_DEFAULTS,
     });
     expect(call.options).toEqual(expect.objectContaining({
       mcpServers: { demo: { transport: "mock" } },
@@ -198,6 +245,7 @@ describe("ClaudeSdkClient", () => {
   });
 
   it("fails value-free before SDK launch when explicit api-key resolution fails", async () => {
+    vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "api-key");
     const resolveApiKey = vi.fn(async () => {
       throw new Error("synthetic-secret-bearing-cause");
     });
@@ -210,7 +258,6 @@ describe("ClaudeSdkClient", () => {
       sessionBinding: createSessionBinding(),
       model: "haiku",
       workingDirectory: "/tmp/claude-api-key-failure",
-      env: { CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" },
     }) }).open()).rejects.toThrow("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE");
     expect(resolveApiKey).toHaveBeenCalledOnce();
     expect(queryFn).not.toHaveBeenCalled();
@@ -229,6 +276,7 @@ describe("ClaudeSdkClient", () => {
       CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
       CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
       KEEP_ME: "preserved",
+      ...CHILD_DEFAULTS,
     });
   });
 
@@ -290,6 +338,21 @@ describe("ClaudeSdkClient", () => {
     expect(firstCall.options?.tools).toEqual(EXPECTED_ENABLED_BUILT_IN_TOOLS);
     expect(firstCall.options?.disallowedTools).toEqual(EXPECTED_DISALLOWED_BUILT_IN_TOOLS);
     expect(firstCall.options).not.toHaveProperty("sessionId");
+    expect(firstCall.options).not.toHaveProperty("additionalDirectories");
+  });
+
+  it("passes additional directories to the SDK when the session has them (semantic memory, REQ-006)", async () => {
+    const client = new ClaudeSdkClient();
+    const queryFn = vi.fn((_input: unknown) => createMockQuery());
+    client.setCachedModuleForTesting({ query: queryFn });
+    const folder = "/home/u/.autobyteus/server-data/memory/semantic/computer-use-operator";
+    await client.beginStreamingSession({ resolveOptions: () => ({
+      systemPrompt: "", sessionBinding: { kind: "resume", sessionId: RESERVED_SESSION_ID }, model: "haiku",
+      workingDirectory: "/tmp/claude-client-query-options", additionalDirectories: [folder], permissionMode: "default",
+    }) }).open();
+    const firstCall = queryFn.mock.calls[0]?.[0] as { options?: Record<string, unknown> };
+    expect(firstCall.options?.cwd).toBe("/tmp/claude-client-query-options");
+    expect(firstCall.options?.additionalDirectories).toEqual([folder]);
   });
 
   it("passes only SDK sessionId for a caller-reserved first conversation", async () => {
@@ -333,7 +396,7 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
-  it("forwards typed thinking and effort options to the pinned Claude SDK", async () => {
+  it("forwards the typed effort option to the pinned Claude SDK and sets no thinking option", async () => {
     const client = new ClaudeSdkClient();
     const queryFn = vi.fn(() => createMockQuery());
     client.setCachedModuleForTesting({ query: queryFn });
@@ -343,16 +406,16 @@ describe("ClaudeSdkClient", () => {
       sessionBinding: createSessionBinding(),
       model: "opus",
       workingDirectory: "/tmp/claude-client-reasoning",
-      thinking: { type: "adaptive" },
       effort: "high",
     }) }).open();
 
     expect(queryFn).toHaveBeenCalledWith(expect.objectContaining({
       options: expect.objectContaining({
-        thinking: { type: "adaptive" },
         effort: "high",
       }),
     }));
+    const options = (queryFn.mock.calls[0] as unknown as [{ options: Record<string, unknown> }])[0].options;
+    expect(options).not.toHaveProperty("thinking");
   });
 
 
@@ -399,14 +462,16 @@ describe("ClaudeSdkClient", () => {
 
     expect(models[0]?.model_identifier).toBe("deepseek-v4-flash");
     expect(queryFn).toHaveBeenCalledWith({
-      prompt: expect.any(String),
+      prompt: expect.anything(),
       options: expect.objectContaining({
-        maxTurns: 0,
         permissionMode: "plan",
         settingSources: ["user"],
       }),
     });
-    const discoveryCall = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    const discoveryCall = queryFn.mock.calls[0]?.[0] as { prompt: unknown; options: Record<string, unknown> };
+    // A string prompt is written to the CLI as a user turn (C-15): discovery sends no message at all.
+    expect(typeof discoveryCall.prompt).not.toBe("string");
+    expect(discoveryCall.options).not.toHaveProperty("maxTurns");
     expect(discoveryCall.options).not.toHaveProperty("tools");
     expect(discoveryCall.options).not.toHaveProperty("disallowedTools");
   });

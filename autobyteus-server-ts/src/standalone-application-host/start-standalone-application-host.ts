@@ -1,3 +1,4 @@
+import { NativeCommandShutdown } from "../compositions/native-command-shutdown.js";
 import "reflect-metadata";
 import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
@@ -63,10 +64,13 @@ import { getLlmProviderService } from "../llm-management/llm-providers/services/
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
+import { composeCollaboration, composeTaskSide, type Collaboration } from "../compositions/collaboration-composition.js";
+import { createEpisodicCatalog, type EpisodicCatalog } from "../agent-episodic-catalog/services/episodic-catalog.js";
+import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
+import { createCollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
-import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
+import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
+import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -191,14 +195,16 @@ export const startStandaloneApplicationHost = async (
     packageRoot: config.packageRoot,
     localApplicationId: config.localApplicationId,
   });
+  const nativeShutdown = new NativeCommandShutdown();
   let app: FastifyInstance | null = null;
   let processResources: StandaloneProcessResources | null = null;
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
-  let skillUpdateNotices: SkillUpdateNotices | null = null;
-  let taskExecutionResources: TaskExecutionResourcePort | null = null;
+  let platformNotices: PlatformNoticeSources | null = null;
+  let collaboration: Collaboration | null = null;
+  let episodicCatalog: EpisodicCatalog | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
@@ -222,7 +228,7 @@ export const startStandaloneApplicationHost = async (
       loggingConfig: processResources.loggingConfig,
     });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
-      workspaceManager,
+      workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
     const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
@@ -236,10 +242,16 @@ export const startStandaloneApplicationHost = async (
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    taskExecutionResources = await composeProjectTaskExecutionResources({
-      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
-    skillUpdateNotices = createSkillUpdateNotices({
+    // autobyteus-461 SR-047, SR-052: the same composition steps as the studio. Steps 1–2 here; 4–8 after the run services.
+    const taskSide = await composeTaskSide({ appDataDir: processResources.appConfig.getAppDataDir(), memoryDir: processResources.appConfig.getMemoryDir() });
+    // autobyteus-493: the episodic catalogs of this host's own memory folder, as in the studio (started after step 8).
+    const currentEpisodicCatalog = episodicCatalog = createEpisodicCatalog({ memoryDir: processResources.appConfig.getMemoryDir(),
+      journals: getWorkJournalService(), tasks: taskSide.tree });
+    platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+      definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+      // No credential proxy on this host: its runs use no integration.
+      integrationRunAccess: null,
     });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
@@ -251,14 +263,33 @@ export const startStandaloneApplicationHost = async (
         definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
         workspaceManager,
         agentProviderFactoryBuilder,
+        // The standalone application host runs no credential proxy: no integration access, no provider relays
+        // (their runtimes are refused before they start), no passes.
+        integrationRunAccess: null,
+        providerRelayAccess: null,
+        runPasses: null,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
-        taskExecutionResources,
-        platformInputNotices: skillUpdateNotices.service,
+        taskRecords: taskSide.taskRecords,
+        delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
+        episodicCatalog: currentEpisodicCatalog,
+        // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
+        platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
       });
     generalProcessAuthority = null;
+    collaboration = await composeCollaboration({ memoryDir: processResources.appConfig.getMemoryDir(), taskSide, runs: generalProcessRunSupervisor,
+      rootResolver: createCollaborationRootResolver({ standaloneRoots: generalProcessRunSupervisor.standaloneRootManager,
+        teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService }),
+      activeRoots: getActiveCollaborationRootDirectory(),
+      // This host has no peer nodes (ARCH-REV-027: its real equivalent, as at base).
+      remoteChannel: () => null,
+      episodicCatalog: currentEpisodicCatalog });
+    currentEpisodicCatalog.start({ taskTitles: collaboration.tasks });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
+      delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
+     
+      taskRecords: taskSide.taskRecords,
       contextFilePathEnvironment,
       bundleService,
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
@@ -269,6 +300,8 @@ export const startStandaloneApplicationHost = async (
       runtimeAvailabilityService: getRuntimeAvailabilityService(),
       modelCatalogService,
       modelSelectionValidator,
+      providerRelayAccess: null,
+      runPasses: null,
       modelAvailabilityService: getModelAvailabilityService(),
       llmProviderService: getLlmProviderService(),
       codexClientManager: getCodexAppServerClientManager(),
@@ -282,6 +315,7 @@ export const startStandaloneApplicationHost = async (
       applicationRuntime,
       loggingConfig: processResources.loggingConfig,
     });
+    nativeShutdown.install(app);
     await applicationRuntime.lifecycle.prepareBeforeListen();
     await agentToolsMcpHost.listen();
     const url = await app.listen({ host: config.host, port: config.port });
@@ -289,16 +323,18 @@ export const startStandaloneApplicationHost = async (
 
     let closePromise: Promise<void> | null = null;
     const close = (): Promise<void> => {
-      closePromise ??= (async () => {
+      closePromise ??= nativeShutdown.close(async () => {
         try {
           await app!.close();
         } finally {
-          // Skill notices stop first, so none go out while runs stop.
-          await skillUpdateNotices?.close().catch((error) => console.warn("SKILL_UPDATE_NOTICES_CLOSE_FAILED", error));
+          // Platform notices stop first, so none go out while runs stop.
+          await platformNotices?.close();
+          await episodicCatalog?.stop();
+          // Reverse order: steps 8 … 4, then the run services.
+          collaboration?.release();
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
-            releaseProjectTaskExecutionResources(taskExecutionResources!);
             try {
               await agentToolsMcpHost!.close();
             } finally {
@@ -314,7 +350,7 @@ export const startStandaloneApplicationHost = async (
             }
           }
         }
-      })();
+      });
       return closePromise;
     };
     return Object.freeze({
@@ -324,17 +360,19 @@ export const startStandaloneApplicationHost = async (
       close,
     });
   } catch (error) {
+    await nativeShutdown.close(async () => {
     try {
       if (app) {
         await app.close();
       }
     } finally {
-      await skillUpdateNotices?.close().catch(() => undefined);
+      await platformNotices?.close();
+      await episodicCatalog?.stop();
+      collaboration?.release();
       if (processResources) {
         try {
           await generalProcessRunSupervisor?.close();
         } finally {
-          if (taskExecutionResources) releaseProjectTaskExecutionResources(taskExecutionResources);
           try {
             generalProcessAuthority?.close();
           } finally {
@@ -355,6 +393,7 @@ export const startStandaloneApplicationHost = async (
         }
       }
     }
+    });
     throw error;
   }
 };

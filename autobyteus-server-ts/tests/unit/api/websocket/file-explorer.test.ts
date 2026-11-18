@@ -6,19 +6,14 @@ const mockStreamHandler = vi.hoisted(() => ({
   disconnect: vi.fn(),
   handleMessage: vi.fn(),
 }));
-const mockAuthorizeRemoteAccessWebSocket = vi.hoisted(() => vi.fn());
-const mockCloseSocketForRemoteAccessRejection = vi.hoisted(() => vi.fn());
 
 vi.mock("../../../../src/services/file-explorer-streaming/index.js", () => ({
   getFileExplorerStreamHandler: () => mockStreamHandler,
 }));
 
-vi.mock("../../../../src/api/websocket/remote-access-websocket-auth.js", () => ({
-  authorizeRemoteAccessWebSocket: mockAuthorizeRemoteAccessWebSocket,
-  closeSocketForRemoteAccessRejection: mockCloseSocketForRemoteAccessRejection,
-}));
-
 const { registerFileExplorerWebsocket } = await import("../../../../src/api/websocket/file-explorer.js");
+const { setWebSocketRefusal } = await import("../../../../src/api/security/node-access-gate.js");
+const { NODE_ACCESS_REFUSALS } = await import("../../../../src/node-access/domain/node-access-refusal.js");
 
 class MockSocket extends EventEmitter {
   send = vi.fn();
@@ -38,8 +33,6 @@ describe("registerFileExplorerWebsocket", () => {
     mockStreamHandler.connect.mockReset();
     mockStreamHandler.disconnect.mockReset().mockResolvedValue(undefined);
     mockStreamHandler.handleMessage.mockReset().mockResolvedValue(null);
-    mockAuthorizeRemoteAccessWebSocket.mockReset().mockResolvedValue({ mode: "loopback", isAuthenticated: true });
-    mockCloseSocketForRemoteAccessRejection.mockReset();
 
     const app = {
       get: vi.fn((_path, _options, handler) => {
@@ -50,7 +43,8 @@ describe("registerFileExplorerWebsocket", () => {
   });
 
   const attach = (socket: MockSocket) => {
-    routeHandler?.({ socket }, {
+    // The node access gate admitted the upgrade before the route runs; the route receives the socket itself.
+    routeHandler?.(socket, {
       params: { workspaceId: "ws-1" },
       raw: { socket: { remoteAddress: "127.0.0.1" } },
       url: "/ws/file-explorer/ws-1",
@@ -85,15 +79,15 @@ describe("registerFileExplorerWebsocket", () => {
     expect(mockStreamHandler.disconnect).toHaveBeenCalledWith("session-1");
   });
 
-  it("does not start backend connect after an authorization rejection closes the socket", async () => {
+  it("does not start backend connect when the node access gate refused the upgrade (closed with its code)", async () => {
     const socket = new MockSocket();
-    const rejection = { code: 4401, reason: "REMOTE_ACCESS_AUTH_INVALID" };
-    mockAuthorizeRemoteAccessWebSocket.mockRejectedValue(rejection);
+    const request = { params: { workspaceId: "ws-1" }, raw: {}, url: "/ws/file-explorer/ws-1" };
+    setWebSocketRefusal(request as never, NODE_ACCESS_REFUSALS.credentialRequired);
 
-    attach(socket);
+    routeHandler?.(socket, request);
     await flushPromises();
 
-    expect(mockCloseSocketForRemoteAccessRejection).toHaveBeenCalledWith(socket, rejection, expect.anything());
+    expect(socket.close).toHaveBeenCalledWith(4401, "NODE_CREDENTIAL_REQUIRED");
     expect(mockStreamHandler.connect).not.toHaveBeenCalled();
   });
 });

@@ -10,19 +10,21 @@ vi.mock('~/services/projects/projectChangeFeed', () => ({ getProjectChangeFeed: 
 
 import { useTaskWorkerTaskStore } from '../taskWorkerTaskStore'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
-import type { ProjectTask, TaskWorkerRef, TaskWorkerTask } from '~/types/project'
+import type { ProjectTask, TaskWorkerRef, TaskWorkerTask, ProjectChangeMessage } from '~/types/project'
 
 const agent: TaskWorkerRef = { kind: 'agent', agentRunId: 'a1' }
 const team: TaskWorkerRef = { kind: 'team', teamRunId: 't1' }
 const workerTask = (taskId: string, projectId: string | null = 'p1', status: TaskWorkerTask['status'] = 'IN_PROGRESS'): TaskWorkerTask =>
-  ({ taskId, projectId, description: `Task ${taskId}`, status })
+  projectId === null ? { taskId, projectId, title: null, description: `Task ${taskId}`, status }
+    : { taskId, projectId, title: `Title of ${taskId}`, description: `Task ${taskId}`, status }
 type Answer = { workerKind: 'agent' | 'team'; workerRunId: string; task: TaskWorkerTask | null }
 const answering = (...answers: Answer[]) => ({ data: { taskWorkerTasks: answers } })
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
-const upserted = (taskId: string, root: Partial<NonNullable<ProjectTask['root']>> | null) => ({
-  type: 'task_upserted' as const, scope: { kind: 'project' as const, projectId: 'p1' },
-  task: { taskId, projectId: 'p1', taskKey: `p1-${taskId}`, description: 'd', status: 'TODO' as const, dependsOnTaskIds: [], contextFiles: [], createdAt: '', updatedAt: '',
-    root: root && { kind: 'agent', recipientAddress: null, ingressAgentRunId: 'x', teamRunId: null, hostRoot: { kind: 'agent', runId: 'h' },
+const upserted = (taskId: string, root: Partial<NonNullable<ProjectTask['root']>> | null): ProjectChangeMessage => ({
+  type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' },
+  task: { taskId, projectId: 'p1', taskKey: `p1-${taskId}`, title: `Task ${taskId}`, description: 'd', status: 'TODO', dependsOnTaskIds: [],
+    partOfTaskId: null, comments: [], contextFiles: [], createdAt: '', updatedAt: '',
+    root: root && { kind: 'agent', recipientAddress: null, ingressAgentRunId: 'x', teamRunId: null, delegatingRun: { kind: 'agent', runId: 'h' }, topRun: { kind: 'agent', runId: 'h' },
       start: 'started', startError: null, closed: false, status: 'idle', ...root } as NonNullable<ProjectTask['root']> },
 })
 const lastVariables = () => apolloClientMock.query.mock.calls.at(-1)?.[0]?.variables
@@ -32,6 +34,30 @@ describe('taskWorkerTaskStore (delegated-copy-task-locator DS-001, DS-003)', () 
     setActivePinia(createPinia())
     vi.clearAllMocks()
     vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockResolvedValue(true)
+  })
+
+  it('stores a Project-Task worker\'s Task with its title and a Temp-task worker\'s with no title (autobyteus-260 CR-002)', async () => {
+    // The server's answer: GraphQL fields only, the Temp task's title null.
+    apolloClientMock.query.mockResolvedValue(answering(
+      { workerKind: 'agent', workerRunId: 'a1', task: { taskId: 'task-a', projectId: 'p1', title: 'Release the desktop app', description: 'Build it.\nThen ship.', status: 'IN_PROGRESS' } },
+      { workerKind: 'team', workerRunId: 't1', task: { taskId: 'ad_hoc_task_1', projectId: null, title: null, description: 'Review it', status: 'TODO' } },
+    ))
+    const store = useTaskWorkerTaskStore()
+    store.retain([agent, team])
+    await settle(); await settle()
+    expect(store.taskOf(agent)).toEqual({ taskId: 'task-a', projectId: 'p1', title: 'Release the desktop app', description: 'Build it.\nThen ship.', status: 'IN_PROGRESS' })
+    expect(store.taskOf(team)).toEqual({ taskId: 'ad_hoc_task_1', projectId: null, title: null, description: 'Review it', status: 'TODO' })
+  })
+
+  it('refuses a Project-Task answer without its title rather than store a Task the tree cannot label', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    apolloClientMock.query.mockResolvedValue(answering(
+      { workerKind: 'agent', workerRunId: 'a1', task: { taskId: 'task-a', projectId: 'p1', description: 'd', status: 'TODO' } as never }))
+    const store = useTaskWorkerTaskStore()
+    store.retain([agent])
+    await settle(); await settle()
+    expect(store.taskOf(agent)).toBeUndefined()
+    expect(warn).toHaveBeenCalled()
   })
 
   it('reads newly shown workers in one batched query and caches each answer (QR-001)', async () => {

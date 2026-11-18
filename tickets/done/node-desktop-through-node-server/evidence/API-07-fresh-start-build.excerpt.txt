@@ -1,0 +1,41 @@
+# Case: API-07 — fresh-start build (excerpt)
+# Commands: API-07-fresh-start-build.sh — git clone --no-local <worktree> + checkout 952bc1fcd0; docker buildx build --builder desktop-linux --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=<dir> .; python3 scripts/check_repository_artifact_hygiene.py; python3 scripts/check_licensing.py; pnpm install --frozen-lockfile; cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64; the job's Prisma and terminal-runtime verify steps
+# Commit: 952bc1fcd0 (source identical to ce13fa9727)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm 10.28.2, Docker 29.0.1 (buildx desktop-linux); unsigned
+# Date: 2026-11-06
+
+2:== HEAD: 952bc1fcd0cf9c4ec5c73169d38f5888634fe766; untracked files: 0
+3:== step: docker buildx build --builder desktop-linux --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=/private/tmp/abx405-api/server-package .
+44:exit=0
+54:server package version: 0.1.1
+57:node-desktop-availability.js
+60:node-desktop-stream.js
+64:== step: python3 scripts/check_repository_artifact_hygiene.py
+69:exit=0
+70:== step: python3 scripts/check_licensing.py
+73:exit=0
+74:== step: pnpm install --frozen-lockfile
+103:exit=0
+104:== step: pnpm build:electron:mac -- --arm64
+107:> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+113:[guard:web-boundary] Passed.
+118:[guard:localization-boundary] Passed.
+120:> autobyteus@1.5.12-beta.3 audit:localization-literals /private/tmp/abx405-api/fresh-clone/autobyteus-web
+123:[audit:localization-literals] Passed with zero unresolved findings.
+170:[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 31.4s
+171:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+172:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+173:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.2s
+174:[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+175:[typecheck] PASS
+989:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.3.dmg
+1000:exit=0
+1001:== step: Verify bundled Prisma ARM64 engine target
+1002:prisma engine ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+1003:prisma client ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+1004:== step: Verify packaged terminal runtime ARM64
+1008:exit=0
+1012:exit=0
+1016:[terminal-runtime] ok: node-pty spawn probe
+1017:exit=0
+1019:== ALL DONE 2026-11-06T17:45:07Z

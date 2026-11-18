@@ -14,6 +14,10 @@
 // target_team_run_id / target_agent_run_id brings its row back live (tree and board), a repeated close of the earlier Task
 // never removes it, real backend restarts keep the assignment (BR-015), and damaged Task data detected at load refuses the
 // assignment until the file is restored (BR-016). BR-015 and BR-016 need BR-012..BR-014 in the same run.
+// autobyteus-469 (a top run's tree is built from its open Tasks): BR-001..BR-003 also check that the root's tree file on
+// disk holds no local delegated run after a closure (AC-001), and that the Manager's Team/Org tab shows the same message
+// rows with the same counterpart names before and after each closure, sampling it per frame while Task B closes (AC-011);
+// BR-005 compares those rows again after a reload and after a real backend restart.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
 // them in finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -25,6 +29,12 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -88,7 +98,7 @@ const spawnLogged = (cmd, args, cwd, env, name) => {
 };
 const backendEnv = () => {
   const keys = { APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataRoot, 'db', 'development.db')}`,
-    AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
+    AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(stack.dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(stack.dataRoot, 'temp_workspace') };
   return keys;
 };
@@ -97,7 +107,7 @@ const startBackend = async (port) => {
   const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_'))), ...backendEnv(),
     ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', stack.dataRoot],
-    serverDir, env, `backend-${stack.backendStarts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.backendStarts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -115,7 +125,7 @@ const startStack = async () => {
   stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
     { ...process.env, NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1', BACKEND_NODE_BASE_URL: stack.backendUrl,
       BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
-      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
       BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
   await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240000);
   evidence.stack = { backendUrl: stack.backendUrl, frontendUrl: stack.frontendUrl, dataRoot: stack.dataRoot };
@@ -168,9 +178,11 @@ const ensureWorkspace = async () => {
 };
 /** Each created Task's key: agent-facing texts name Project Tasks by key, not by taskId (task-keys REQ-018). */
 const taskKeys = new Map();
-const createTask = async (projectId, description) => {
+/** autobyteus-260: a Project Task has a title; by default its description's first line. */
+const firstLine = (description) => description.split('\n').map((line) => line.trim()).find(Boolean);
+const createTask = async (projectId, description, title = firstLine(description)) => {
   const created = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId taskKey}}',
-    { input: { projectId, description } })).createProjectTask;
+    { input: { projectId, title, description } })).createProjectTask;
   taskKeys.set(created.taskId, created.taskKey);
   return created.taskId;
 };
@@ -179,7 +191,7 @@ const assignedText = (taskId) => `New Task assigned to you: ${taskKeys.get(taskI
 const createProject = async (label) => {
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}',
     { input: { name: `Prototype Launch ${label} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
-  const task = (description) => createTask(projectId, description);
+  const task = (description, title) => createTask(projectId, description, title);
   return { projectId, task };
 };
 const taskStatus = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status}}', { id: projectId }))
@@ -216,10 +228,26 @@ const createRoot = async (kind, ids) => {
   const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
   return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m) => m.address === '/manager').agentRunId };
 };
-const storedTree = async (root) => {
-  if (root.kind === 'agent') return (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
-  if (root.kind === 'team') return (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree;
-  return (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory.org;
+// autobyteus-461 SR-084: the root's delegated runs, as its tree lists them (`runTree`; a view carries its own parts only),
+// each marked listed for the walkers below.
+const storedTree = async (root) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, root.kind, root.rootId)).map((node) => ({ ...node, startedAt: 'listed' })) });
+/** autobyteus-469 AC-001: the root's tree file on disk; every stored entry without `nodeId` in a `taskExecutions` list. */
+const storedTreeFile = (root) => path.join(stack.dataRoot, 'memory', ...(root.kind === 'agent' ? ['agents', root.rootId, 'collaboration', 'collaboration_tree.json']
+  : root.kind === 'team' ? ['agent_teams', root.rootId, 'team_run_execution_tree.json'] : ['agent_orgs', root.rootId, 'agent_org_run_execution_tree.json']));
+const storedLocalEntries = async (root) => {
+  const found = [];
+  const visit = (v) => {
+    if (Array.isArray(v)) return v.forEach(visit);
+    if (!v || typeof v !== 'object') return;
+    for (const [key, inner] of Object.entries(v)) {
+      if (key === 'taskExecutions' && Array.isArray(inner)) found.push(...inner.filter((entry) => !('nodeId' in entry)));
+      visit(inner);
+    }
+  };
+  // autobyteus-461 (contract §6): an Agent run has no collaboration tree file; it stores no delegated run.
+  if (root.kind === 'agent' && !fs.existsSync(storedTreeFile(root))) return found;
+  visit(JSON.parse(await fsp.readFile(storedTreeFile(root), 'utf8')));
+  return found;
 };
 const terminate = async (root) => Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}'
   : root.kind === 'team' ? 'mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}'
@@ -229,7 +257,12 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
+  // A Team or Org view takes input once its snapshot is sent (a client's composer is shown after it): wait for it.
+  if (root.kind !== 'agent') await until(`${root.kind} view snapshot before input`, () => frames.some((f) => /SNAPSHOT$/.test(String(f.type))), 30000);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -244,7 +277,7 @@ const setupRoot = async (kind, label, { withB = true, withPlain = true } = {}) =
   const { projectId, task } = await createProject(label);
   const at = (member, catalogName) => (kind !== 'org' ? `/${segment(catalogName)}` : `/${member}`);
   const taskA = await task(callTool('delegate_task', { recipient_address: at('helper', names.helper),
-    description: callTool('delegate_task', { recipient_address: `/${segment(names.assistant)}`, description: 'Collect the changelog links.' }) }));
+    description: callTool('delegate_task', { recipient_address: `/${segment(names.assistant)}`, description: 'Collect the changelog links.' }) }), 'Prepare the release notes.');
   const taskB = await task('Review the docs site.');
   const root = await createRoot(kind, ids);
   const input = await managerInput(root);
@@ -269,6 +302,7 @@ const setupRoot = async (kind, label, { withB = true, withPlain = true } = {}) =
 let browser;
 const newPage = async ({ reducedMotion = 'no-preference', initScript } = {}) => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion, locale: 'en-US' });
+  await attachToBrowserContext(context);
   if (initScript) await context.addInitScript(initScript);
   const page = await context.newPage();
   const errors = [];
@@ -281,7 +315,8 @@ const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${nam
 /** Opens a root's run in the Workspaces tree. `requireTaskTree: false` when an Agent run may have no task rows (no tree). */
 const openRoot = async (page, root, names, { requireTaskTree = true } = {}) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
-  await until('workspace rows', async () => (await page.locator('[data-test="workspace-row"]').count()) >= 2, 60000);
+  // A folder is listed only while it has a run (workspace-tree-vs-chooser REQ-009), so Temp may be absent: wait for the folder used here.
+  await until('workspace row', async () => (await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).count()) >= 1, 60000);
   await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
   if (root.kind === 'agent') {
     await page.locator('[data-test="workspace-agent-row"]', { hasText: names.manager }).click();
@@ -305,7 +340,7 @@ const openRoot = async (page, root, names, { requireTaskTree = true } = {}) => {
   return runRow;
 };
 const rowSelector = (kind, ref) => {
-  if (kind === 'org') return ref.teamRunId ? `[data-test="agent-org-task-team-row-${ref.teamRunId}"]` : `[data-test="agent-org-task-agent-row-${ref.agentRunId}"]`;
+  // autobyteus-461 SR-084: an Org's delegated rows are the same tree rows as in every other view.
   // Transient rows expose no node Team run ID; each probe root has exactly one task Team.
   return ref.teamRunId ? '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]'
     : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${ref.agentRunId}"]`;
@@ -334,6 +369,35 @@ const analyzeLeave = (frames) => {
     moveClassAtLeaveStart: firstHidden ? firstHidden.rows.map((r) => !!r && r.cls.includes('tree-row-move')) : null,
     activeAtFirstHidden: firstHidden?.active ?? null };
 };
+/**
+ * autobyteus-469 AC-011: the selected agent's Team/Org tab. Each message row as `direction | "to/from <counterpart name>" |
+ * content` (the timestamp is left out). `startCommSampler` records the rows every frame, so a row that drops out or loses
+ * its counterpart name while the view rebuilds after a closure is seen (code review residual risk C-06).
+ */
+const openCommTab = (page, kind) => page.locator('[data-test="right-side-tab-list"]').getByText(kind === 'org' ? 'Org' : 'Team', { exact: true }).click();
+const COMM_ROWS = `() => [...document.querySelectorAll('[data-test="workspace-right-panel"] [data-test="team-communication-message-summary"]')]
+  .map((row) => [row.querySelector('[data-test="team-communication-direction-icon"]')?.getAttribute('data-icon') ?? '',
+    ...[...row.querySelectorAll('p')].map((p) => p.textContent.replace(/\\s+/g, ' ').trim())].join(' | '))`;
+const commRows = (page) => page.evaluate(`(${COMM_ROWS})()`);
+const startCommSampler = (page) => page.evaluate(`(() => { const rows = ${COMM_ROWS}; window.__comm = []; const t0 = performance.now();
+  const tick = () => { window.__comm.push({ t: Math.round(performance.now() - t0), rows: rows() }); if (performance.now() - t0 < 5000) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick); })()`);
+const commSamples = (page, expected) => page.evaluate((exp) => {
+  const key = JSON.stringify(exp);
+  const off = window.__comm.filter((f) => JSON.stringify(f.rows) !== key);
+  return { frames: window.__comm.length, framesDiffering: off.length, firstDiffering: off[0] ?? null,
+    unknownTeammateFrames: window.__comm.filter((f) => f.rows.some((r) => r.includes('Unknown teammate'))).length };
+}, expected);
+/** Selects the Manager (agent root: its run row) and opens its Team/Org tab; returns its rows once `ready` holds. */
+const managerCommRows = async (page, kind, root, runRow, ready) => {
+  const managerRow = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`)
+    : kind === 'org' ? page.locator(`[data-test="agent-org-agent-row-${root.managerRunId}"]`) : runRow;
+  await managerRow.click();
+  await openCommTab(page, kind);
+  let rows = [];
+  await until('Manager Team tab rows', async () => ready(rows = await commRows(page)), 20000);
+  return rows;
+};
 const goneAll = (page, selectors) => async () => { for (const sel of selectors) if (await page.locator(sel).count()) return false; return true; };
 const runs = {};
 
@@ -348,6 +412,8 @@ const liveDone = async (kind, label) => {
     for (const sel of aSel) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
     if (kind === 'org' && (await page.locator(rowSelector(kind, s.bRef)).getAttribute('aria-expanded')) === 'false') await page.locator(rowSelector(kind, s.bRef)).click();
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.aAssigned.agentRunId, content: 'Status of the release notes?' }));
+    // autobyteus-469 AC-011, before Task A closes: the Manager's Team/Org tab rows, the message to the worker among them.
+    const commBeforeA = await managerCommRows(page, kind, s.root, runRow, (rows) => rows.some((row) => row.includes('Status of the release notes?')));
     const worker = page.locator(rowSelector(kind, { agentRunId: s.aAssigned.agentRunId }));
     await worker.click();
     await until('worker conversation open', async () => /You have a new task from/.test(await page.locator('[data-test="workspace-center-pane"]').innerText()), 30000);
@@ -376,6 +442,13 @@ const liveDone = async (kind, label) => {
     // The root's communication tab is "Team" for Agent and Team roots and "Org" for Agent Org roots.
     await page.locator('[data-test="right-side-tab-list"]').getByText(kind === 'org' ? 'Org' : 'Team', { exact: true }).click();
     await until('Team tab message kept', async () => /Status of the release notes\?/.test(await page.locator('[data-test="workspace-right-panel"]').innerText()), 10000);
+    // autobyteus-469 AC-011: the same rows, each with the same counterpart name, after the closure; AC-001: the tree file
+    // on disk holds no local delegated run.
+    await until('Team tab rows as before the closure', async () => JSON.stringify(await commRows(page)) === JSON.stringify(commBeforeA), 10000).catch(() => undefined);
+    const commAfterA = await commRows(page);
+    assert(JSON.stringify(commAfterA) === JSON.stringify(commBeforeA), 'Team tab rows changed by the closure of Task A (AC-011)', { commBeforeA, commAfterA });
+    const storedAfterA = await storedLocalEntries(s.root);
+    assert(storedAfterA.length === 0, 'the tree file holds local delegated runs after the closure (AC-001)', storedAfterA);
     await shot(page, `${kind}-team-tab-after`);
     // Reopen + delegate again: the new run appears; the closed ones stay hidden (AC-006).
     s.input.send(callTool('update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
@@ -391,22 +464,33 @@ const liveDone = async (kind, label) => {
     if ((await bRow.getAttribute('aria-expanded')) === 'false') await (kind === 'org' ? bRow : bRow.locator('[data-test="workspace-team-transient-disclosure"]')).click();
     const memberSel = s.bMembers.map((id) => rowSelector(kind, { agentRunId: id }));
     await until('Task B members visible', async () => { for (const sel of memberSel) if (!(await page.locator(sel).count())) return false; return true; }, 30000);
-    await (managerRow ?? runRow).click();
+    // autobyteus-469 AC-011, before Task B closes: the Manager's rows (a delegation adds none: it is not a Team-tab message).
+    const commBeforeB = await managerCommRows(page, kind, s.root, runRow, (rows) => rows.length >= commAfterA.length);
     await sleep(800);
     const composer = page.locator('[data-test="workspace-center-pane"] textarea').first();
     await composer.fill(callTool('update_task', { task_id: s.taskB, status: 'DONE' }));
     await startSampler(page, [bSel, ...memberSel]);
+    await startCommSampler(page);
     await composer.press('Enter');
     await until('Task B Team and members gone', goneAll(page, [bSel, ...memberSel]), 60000);
     await sleep(400);
     const bLeave = analyzeLeave(await page.evaluate(() => window.__samples));
+    // The rows stay, with the Docs Review Team still named, after its run leaves the tree; any frame that differed while the
+    // view rebuilt is recorded (C-06).
+    await until('Team tab rows as before Task B closed', async () => JSON.stringify(await commRows(page)) === JSON.stringify(commBeforeB), 10000).catch(() => undefined);
+    const commAfterB = await commRows(page);
+    assert(JSON.stringify(commAfterB) === JSON.stringify(commBeforeB), 'Team tab rows changed by the closure of Task B (AC-011)', { commBeforeB, commAfterB });
+    await sleep(4000);
+    const commDuringB = await commSamples(page, commBeforeB);
     assert(bLeave.hiddenAndInertAtOnce && bLeave.midOpacityFrames >= 3, 'Task Team rows did not leave with motion', bLeave);
     assert((await taskStatus(s.projectId, s.taskB)) === 'DONE', 'Task B not DONE through the composer');
     assert(await page.locator(rowSelector(kind, s.plainRef)).count() === 1, 'non-Task row left with Task B');
     await shot(page, `${kind}-task-team-closed-via-composer`);
     assert(errors.length === 0, 'browser errors', errors);
-    runs[kind] = { root: s.root, names: s.names, aRefs: s.aRefs, bRef: s.bRef, bMembers: s.bMembers, plainRef: s.plainRef, redelegated: { agentRunId: fresh.agentRunId } };
-    return { root: s.root, latencyMs, leave, bLeave, selection, active };
+    runs[kind] = { root: s.root, names: s.names, aRefs: s.aRefs, bRef: s.bRef, bMembers: s.bMembers, plainRef: s.plainRef, redelegated: { agentRunId: fresh.agentRunId },
+      comm: commAfterB };
+    return { root: s.root, latencyMs, leave, bLeave, selection, active, storedLocalEntriesAfterA: storedAfterA.length,
+      teamTab: { beforeA: commBeforeA, afterA: commAfterA, beforeB: commBeforeB, afterB: commAfterB, duringB: commDuringB } };
   } finally { s.input.close(); await context.close(); }
 };
 /** AC-010 reduced motion: removed without a fade; focus still moves to the run row. */
@@ -476,15 +560,21 @@ const reloadAndRestart = async () => {
       const r = runs[kind];
       const { page, errors, context } = await newPage({ initScript: watchClosed(closedIdsOf(r)) });
       try {
-        await openRoot(page, r.root, r.names);
+        const runRow = await openRoot(page, r.root, r.names);
         await page.locator(rowSelector(kind, r.plainRef)).waitFor({ state: 'visible', timeout: 30000 });
         await page.locator(rowSelector(kind, r.redelegated)).waitFor({ state: 'visible', timeout: 30000 });
         await sleep(1500);
         const seen = await page.evaluate(() => window.__closedSeen);
         assert(seen.length === 0, `${kind}: closed rows rendered (${label})`, { seen });
         await shot(page, `${kind}-${label}`);
+        // autobyteus-469 AC-011: the Manager's Team/Org tab shows the same rows and names as right after the closures.
+        let comm = [];
+        await until('Team tab rows as after the closures', async () => JSON.stringify(comm = await managerCommRows(page, kind, r.root, runRow, (rows) => rows.length >= r.comm.length)) === JSON.stringify(r.comm), 20000)
+          .catch(() => undefined);
+        assert(JSON.stringify(comm) === JSON.stringify(r.comm), `${kind}: Team tab rows differ (${label}, AC-011)`, { expected: r.comm, comm });
+        await shot(page, `${kind}-${label}-team-tab`);
         assert(errors.length === 0, `${kind}: browser errors`, errors);
-        out[kind] = { closedIds: closedIdsOf(r).length, seen };
+        out[kind] = { closedIds: closedIdsOf(r).length, seen, teamTabRows: comm.length };
       } finally { await context.close(); }
     }
     return out;
@@ -498,7 +588,7 @@ const reloadAndRestart = async () => {
 const orgHistoryFirstRender = async () => {
   const r = runs.org; assert(r, 'BR-007 needs BR-003 in the same run');
   const t = await terminate(r.root);
-  const item = (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){is_active closed_task_executions}}', { id: r.root.rootId })).getAgentOrgRootHistory;
+  const item = (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){is_active}}', { id: r.root.rootId })).getAgentOrgRootHistory;
   assert(item.is_active === false, 'Org root still active', { t, item });
   const { page, errors, context } = await newPage({ initScript: watchClosed(closedIdsOf(r)) });
   try {
@@ -512,7 +602,8 @@ const orgHistoryFirstRender = async () => {
     assert(seen.length === 0, 'closed Org rows rendered from the history list', { seen });
     await shot(page, 'org-history-first-render');
     assert(errors.length === 0, 'browser errors', errors);
-    return { closedIds: closedIdsOf(r).length, seen, historyItemClosed: item.closed_task_executions };
+    // autobyteus-461 SR-084: the history item carries the run's own parts only (no closed rows); the check is the render.
+    return { closedIds: closedIdsOf(r).length, seen };
   } finally { await context.close(); }
 };
 
@@ -535,12 +626,35 @@ const teamMembersOf = (tree, teamRunId) => {
 const watchRows = (ids) => `(() => { const ids = ${JSON.stringify(ids)}; window.__rowsSeen = [];
   const check = () => { for (const id of ids) if (document.querySelector('[data-agent-run-id="' + id + '"], [data-test$="-row-' + id + '"]')) window.__rowsSeen.push(id); };
   new MutationObserver(check).observe(document, { subtree: true, childList: true, attributes: true }); })();`;
-/** What the app does before a send to a stopped root (after a restart): the root's restore mutation. */
+/**
+ * What the app does before a send to a stopped root (after a restart). An agent run: its restore mutation. A Team or Org run
+ * (autobyteus-461 CR-461-008, SR-046 … SR-048: their restore mutations are gone): its view serves the stopped run from its
+ * stored file, and the user's message to one of its own members restores it.
+ */
 const restoreRoot = async (root) => {
-  const r = Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}'
-    : root.kind === 'team' ? 'mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}'
-      : 'mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
-  assert(r.success, `restore ${root.kind} root failed: ${r.message}`);
+  if (root.kind === 'agent') {
+    const r = (await gql('mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}', { id: root.rootId })).restoreAgentRun;
+    assert(r.success, `restore agent root failed: ${r.message}`);
+    return;
+  }
+  const route = root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
+  const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
+  try {
+    await until(`${root.kind} view snapshot`, () => frames.some((f) => /SNAPSHOT$/.test(String(f.type))), 30000);
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
+      ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
+        message_id: randomUUID(), dedupe_key: randomUUID(), content: 'Continue.', context_file_paths: [], image_urls: [] }
+      : { agent_run_id: root.managerRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`,
+        content: 'Continue.', context_file_paths: [], image_urls: [] } }));
+    const active = async () => root.kind === 'team'
+      ? Boolean((await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}', { id: root.rootId })).getTeamRunResumeConfig?.isActive)
+      : Boolean((await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){isActive}}', { id: root.rootId })).getAgentOrgRunConfig?.isActive);
+    await until(`${root.kind} root restored by the member message`, active, 60000);
+  } finally { socket.close(); }
 };
 const centerText = (page) => page.locator('[data-test="workspace-center-pane"]').innerText();
 /** The rendered status of one member row: an Org row's `data-status`, else the colour of its status dot. */
@@ -706,7 +820,13 @@ const reactivationAcrossRestart = async () => {
       await page.locator(rowSelector(kind, r.worker)).waitFor({ state: 'visible', timeout: 90000 });
       await page.locator(rowSelector(kind, r.worker)).click();
       await until(`${kind}: conversation after restart`, async () => { const t = await centerText(page);
-        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000);
+        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000)
+        .catch(async (error) => {
+          // Diagnostics (CRR-048): which markers the window shows, and where it is.
+          const t = await centerText(page).catch(() => '');
+          await shot(page, `${kind}-conversation-after-restart-failure`).catch(() => undefined);
+          throw Object.assign(error, { details: { url: page.url(), markers: { preDone: t.includes('PRE-DONE-7731'), postReopen: t.includes('POST-REOPEN-9902'), postRestart: t.includes('POST-RESTART-4242') }, centerText: t.slice(0, 1500) } });
+        });
       for (const ref of r.helperRefs) assert(await page.locator(rowSelector(kind, ref)).count() === 0, `${kind}: helper row listed after restart`);
       await shot(page, `${kind}-reactivated-after-second-restart`);
       assert(errors.length === 0, `${kind}: browser errors after the second restart`, errors);

@@ -1,6 +1,7 @@
 import type { Client } from '@modelcontextprotocol/client';
 import { BaseManagedMcpServer } from './base-managed-mcp-server.js';
 import type { StdioMcpServerConfig } from '../types.js';
+import { resolveMcpValues } from '../mcp-secret-resolver.js';
 
 export class StdioManagedMcpServer extends BaseManagedMcpServer {
   protected async createClientSession(): Promise<Client> {
@@ -11,10 +12,11 @@ export class StdioManagedMcpServer extends BaseManagedMcpServer {
       import('@modelcontextprotocol/client/stdio')
     ]);
 
+    // Secret references become values only here, for this one child process's environment.
     const transport = new StdioClientTransport({
       command: config.command,
       args: config.args,
-      env: config.env,
+      env: await resolveMcpValues(config.env, 'env', config.server_id, this.secretResolver),
       cwd: config.cwd ?? undefined
     });
     this.registerCleanup(() => transport.close());

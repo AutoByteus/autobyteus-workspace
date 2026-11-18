@@ -42,7 +42,7 @@ const createDispatcher = (globalResult = {
   } as unknown as GlobalAgentRunMessageRouter;
   return {
     globalRouter,
-    dispatcher: new SendMessageToDispatcher({ globalRouter }),
+    dispatcher: new SendMessageToDispatcher({ tree: { collaborationTreeOf: () => ({ resolve: async () => null }) } as never, globalRouter }),
   };
 };
 
@@ -53,7 +53,7 @@ describe("AutoByteus server-owned send_message_to", () => {
 
   it("projects work/result/blocker guidance through native and MCP tool contracts without changing fields", () => {
     const { dispatcher } = createDispatcher();
-    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const adapter = new SendMessageToMcpAdapterProvider(() => (dispatcher)).getAdapters()[0]!;
     expect(AutoByteusSendMessageToTool.getDescription()).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
     expect(adapter.definition.description).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
     expect(adapter.definition.description).toContain("self-contained request, result, question or blocker");
@@ -106,6 +106,44 @@ describe("AutoByteus server-owned send_message_to", () => {
       content: "Please review this handoff.",
       messageType: "handoff",
       referenceFiles: [],
+    });
+  });
+
+  describe("autobyteus-461 contract §2.3: after the sender's own run misses", () => {
+    const notFound = () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "No agent or agent team you can talk with has the address /x."); };
+    const toolWith = (resolve: (identity: unknown, address: string) => Promise<string | null>) => {
+      const memberExecutionContext = createMemberExecutionContext(vi.fn(async () => notFound()));
+      const globalRouter = { deliver: vi.fn(async () => ({ accepted: true, code: "DELIVERED", message: "Delivered message to /project_task_manager.", agentRunId: "manager" })) };
+      // The sender's collaboration tree resolves beyond its own run (SR-060).
+      const map = { resolve: vi.fn((address: string) => resolve(undefined, address)) };
+      const collaborationTreeOf = vi.fn(() => map);
+      const dispatcher = new SendMessageToDispatcher({ globalRouter: globalRouter as unknown as GlobalAgentRunMessageRouter, tree: { collaborationTreeOf } as never });
+      const tool = createBoundAutoByteusSendMessageToTool(buildAgentRunMessageSenderContext({ senderRunId: "run-professor", senderName: "professor",
+        runtimeKind: RuntimeKind.AUTOBYTEUS, memberExecutionContext }), dispatcher);
+      return { tool, globalRouter, map, collaborationTreeOf, memberExecutionContext };
+    };
+
+    it("B-1: step 2 finds the assigner's agent; the message goes between the two runs, shown as the address written", async () => {
+      const h = toolWith(async () => "manager");
+      const result = parseEnvelope(await h.tool.execute({}, { recipient_address: "/project_task_manager", content: "Done." }));
+      expect(result).toEqual({ accepted: true, code: "DELIVERED", message: "Delivered message to /project_task_manager.", target_agent_run_id: "manager" });
+      expect(h.collaborationTreeOf).toHaveBeenCalledWith(h.memberExecutionContext.identity.root);
+      expect(h.map.resolve).toHaveBeenCalledWith("/project_task_manager");
+      expect(h.globalRouter.deliver).toHaveBeenCalledWith(expect.objectContaining({ targetAgentRunId: "manager", content: "Done.", shownAs: "/project_task_manager" }));
+    });
+
+    it("A-6: the correction is the refusal the agent reads", async () => {
+      const h = toolWith(async () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "/team/x is no longer an address: your team is addressed from its own root. Use /x."); });
+      expect(parseEnvelope(await h.tool.execute({}, { recipient_address: "/team/x", content: "Hi" }))).toMatchObject({
+        accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: "/team/x is no longer an address: your team is addressed from its own root. Use /x." });
+      expect(h.globalRouter.deliver).not.toHaveBeenCalled();
+    });
+
+    it("C-4: not found there either (or a run that works on no Task): the root's refusal stands", async () => {
+      const h = toolWith(async () => null);
+      expect(parseEnvelope(await h.tool.execute({}, { recipient_address: "/x", content: "Hi" }))).toMatchObject({
+        accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: "No agent or agent team you can talk with has the address /x." });
+      expect(h.globalRouter.deliver).not.toHaveBeenCalled();
     });
   });
 
@@ -172,7 +210,6 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: false,
       code: "COLLABORATION_TARGET_NOT_FOUND",
       message: "Collaboration target '/missing' was not found.",
-      target_agent_run_id: null,
     });
   });
 
@@ -193,7 +230,6 @@ describe("AutoByteus server-owned send_message_to", () => {
     }))).toMatchObject({
       accepted: false,
       code: "COLLABORATION_CONTEXT_REQUIRED",
-      target_agent_run_id: null,
     });
   });
 
@@ -226,7 +262,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const input = { recipient_address: "/writer", content: "Provider parity." };
     const nativeTool = createBoundAutoByteusSendMessageToTool(sender, dispatcher);
     const nativeText = await nativeTool.execute({}, input);
-    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const adapter = new SendMessageToMcpAdapterProvider(() => (dispatcher)).getAdapters()[0]!;
 
     const projected = await adapter.execute({
       session: { sender } as never,
@@ -252,11 +288,10 @@ describe("AutoByteus server-owned send_message_to", () => {
       accepted: false,
       code: "COLLABORATION_ADDRESS_INVALID",
       message: "'research_lead' is not a valid address (a canonical rooted value beginning with '/' is required). An address is exact and begins with '/', for example /team/agent. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id.",
-      target_agent_run_id: null,
     };
     const nativeText = await createBoundAutoByteusSendMessageToTool(sender, dispatcher).execute({}, input);
     expect(parseEnvelope(nativeText)).toEqual(expected);
-    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const adapter = new SendMessageToMcpAdapterProvider(() => (dispatcher)).getAdapters()[0]!;
     const projected = await adapter.execute({ session: { sender } as never, rawArguments: input });
     if (projected.kind !== "mcp_tool_result") throw new Error("Expected MCP tool result.");
     expect(projected.result.structuredContent).toEqual(expected);

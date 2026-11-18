@@ -27,6 +27,22 @@ describe('LocalEnvironmentSourceReader', () => {
     await fs.rm(directory, { recursive: true, force: true });
   });
 
+  it('maps the test-only GitHub alias for test-vault setup, and refuses it for an application import', async () => {
+    const sourcePath = path.join(directory, 'github-test.env');
+    await privateFile(sourcePath, 'AUTOBYTEUS_TEST_GITHUB_TOKEN=synthetic-github\nOPENAI_API_KEY=synthetic-openai\n');
+
+    const testVault = await new LocalEnvironmentSourceReader(undefined, undefined, 'testVault').read(sourcePath);
+    expect(testVault.credentials.map((credential) => String(credential.secretId))).toEqual([
+      'test.github.token',
+      'provider.openai.api-key',
+    ]);
+    testVault.release();
+
+    await expect(new LocalEnvironmentSourceReader().read(sourcePath)).rejects.toMatchObject({
+      code: 'IMPORT_MAPPING_INVALID',
+    });
+  });
+
   it('accepts an arbitrary filename under the one literal assignment grammar and releases owned buffers', async () => {
     const sourcePath = path.join(directory, 'renamed-credential-source.data');
     await privateFile(sourcePath, [

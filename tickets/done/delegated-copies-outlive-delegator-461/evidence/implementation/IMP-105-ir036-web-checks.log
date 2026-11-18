@@ -1,0 +1,48 @@
+IMP-105 — IR-036 web checks (CR-461-099, SR-090, C35-08)
+Code: the tree committed as 6acf35eb4a; macOS, Node 22.23; 2026-11-15
+Commands: pnpm -C autobyteus-web typecheck; /tmp/vt.sh (vitest run --no-watch <files>, 300 s bound)
+
+## web type gate
+[typecheck] Nuxt app (tsconfig.json): 60 errors, exit 2, 34.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 20.9s
+[typecheck] production errors: 0; test-file errors: 87 in 37 files (baseline 87 in 37 files)
+[typecheck] PASS
+
+## batch vt-9301.log
+ ✓ components/workspace/history/__tests__/WorkspaceTransientExecutionRowRemote.spec.ts (5 tests) 34ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+
+## batch vt-9977.log
+ ✓ components/workspace/agent/__tests__/AgentWorkspaceSurfaceRemote.spec.ts (2 tests) 23ms
+ ✓ components/workspace/remote/__tests__/RemoteRunViewAffordances.spec.ts (8 tests) 40ms
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+
+## batch vt-12883.log
+ ✓ stores/__tests__/delegatedRunsStore.spec.ts (5 tests) 10ms
+ ✓ services/runHydration/__tests__/memberRunStateHydration.spec.ts (9 tests) 17ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (25 tests) 27ms
+ ✓ services/runStatus/__tests__/runStatusFeed.spec.ts (12 tests) 12ms
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (22 tests) 162ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts (9 tests) 10ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.remoteRunFiles.spec.ts (4 tests) 175ms
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts (14 tests) 165ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (24 tests) 129ms
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTracePageService.spec.ts (3 tests) 5ms
+ ✓ stores/__tests__/runTreeStore.spec.ts (5 tests) 10ms
+ ✓ composables/agentInput/__tests__/peerComposerMentionScope.spec.ts (4 tests) 8ms
+ Test Files  12 passed (12)
+      Tests  136 passed (136)
+
+## batch vt-13272.log
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (23 tests) 97ms
+ Test Files  1 passed (1)
+      Tests  23 passed (23)
+
+## the whole web suite (the `__tests__` path filter matches every spec), at 4dec092f80's web tree (= 6acf35eb4a)
+ Test Files  740 passed (740)
+      Tests  5496 passed | 2 skipped (5498)
+(directory batches before it: stores+services 1924/1924; composables+utils+types 1156/1156; components/workspace 533/533; other components 1686/1686)

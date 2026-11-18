@@ -1,0 +1,5 @@
+# IMP-06 docs check (AC-009)
+command: rg -n "gemini-3.5-flash|kimi-k2" autobyteus-ts/docs ; echo exit=$?
+commit tested: f31fa1821
+date: 2026-11-10
+exit=1 (1 = no match)

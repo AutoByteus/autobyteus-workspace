@@ -1,0 +1,28 @@
+# IMP-08 wrapper probe cases, R-0 list and CR-001 logout check on Linux bash and dash, through the real runBash and launcher (autobyteus-ts/dist)
+# Command: pnpm -C autobyteus-ts build; docker run --rm -v "$PWD:$PWD:ro" -w "$PWD" node:22-bookworm node tickets/in-progress/run-bash-background/evidence/IMP-08-linux-wrapper-harness.mjs
+# Commit: ddd594d07b (dist built from it); Docker Desktop linux arm64 (debian bookworm, bash 5.2, /bin/sh = dash); 2026-11-10T11:00Z
+{"bash":"5.2.15(1)-release","node":"v22.23.4","kernel":"6.12.54-linuxkit","passed":23,"failed":0}
+PASS 1 plain command exit 3
+PASS 2 set -e + failing & job reports 3
+PASS 3 set -e failing foreground rc 1
+PASS 4 set -x only user trace
+PASS 5 user EXIT trap stops server (R-7)
+PASS 6 exec >/dev/null 2>&1 then a job
+PASS 7 two jobs 3 and 7
+PASS 8 background form kill <pid> leaves nothing, reported in place
+PASS 10 kill of & job reported in the kill result
+PASS 11 & job with children: kill <pid> stops that process only; run end stops the rest
+PASS 12 strict mode IFS=newline-tab two jobs
+PASS R-0 bytes identical apart from frames
+PASS R-0 exit N, quoting, cd, pipeline, heredoc
+PASS R-0 a & b & wait: no tasks
+PASS R-0 user functions jobs/kill/wait/printf/test/echo
+PASS R-0 user EXIT trap sees $? and exits with it
+PASS R-0 exec cmd falls back to shell exit
+PASS R-0 timeout and Stop: whole group stopped, no wrapper output
+PASS CR-001 ~/.bash_logout read as often as the plain login shell, same exit code [command, exit code, logout reads]: [["echo hi",0,0],["(sleep 0.2; exit 3) & echo started",0,0],["exit 3",3,1],["set -e; false; echo no",1,0],["trap 'exit 4' EXIT; true",4,1],["trap 'echo t' EXIT; (sleep 0.2; exit 3) & exit 5",5,1]]
+PASS R-0 empty and comment-only commands
+PASS R-6 jobs do not inherit fds 62/63 (bash 4+)
+PASS background output file and tail
+PASS sh fallback (/usr/bin/dash): background form exit 5; foreground unwrapped
+exit=0

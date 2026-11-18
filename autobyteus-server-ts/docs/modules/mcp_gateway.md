@@ -58,28 +58,32 @@ non-MCP-origin tools fail before tool execution.
 
 ## Access Model
 
-Production or non-local use should configure a gateway bearer token with:
+Every gateway request needs network admission and the gateway token ([Node Access
+Model](../design/node_access_model.md) NA-3, NA-12); `OPTIONS` preflights need
+admission only. The token is:
 
-```env
-AUTOBYTEUS_MCP_GATEWAY_TOKEN=replace-with-a-long-random-token
-```
+- the node setting `AUTOBYTEUS_MCP_GATEWAY_TOKEN`, when it is set; or
+- a token (`mcpg_…`) the node creates the first time the gateway or its owner
+  needs one, kept in `<data>/mcp-gateway/token.json` (file mode 0600)
+  (`src/mcp-gateway/mcp-gateway-token-service.ts`).
 
-When this environment variable is set, every non-`OPTIONS` gateway request must
-include the matching bearer token:
+Every non-`OPTIONS` request must send it:
 
 ```http
-Authorization: Bearer replace-with-a-long-random-token
+Authorization: Bearer <gateway token>
 ```
 
-When `AUTOBYTEUS_MCP_GATEWAY_TOKEN` is not set, the gateway is available only to
-local loopback requests. The request must come from a loopback client address
-and use a loopback/localhost `Host` header. Remote-style requests without a
-configured token are rejected. This no-token mode exists for local development
-and local desktop clients only; do not rely on it for LAN, tailnet, or public
-access.
+A missing or wrong token is refused 401 `MCP_GATEWAY_TOKEN_REQUIRED`; a client
+from a network the node does not admit, 403 `NODE_NETWORK_REFUSED`. There is no
+loopback exception: any program on this computer needs the token too.
 
-CORS origin handling is also local-only: if an `Origin` header is present, it
-must be a loopback HTTP/HTTPS origin.
+The node's owner reads the token with `GET /rest/mcp-gateway/token` and replaces
+a node-created token with `POST /rest/mcp-gateway/token/regenerate` (a token from
+the environment is changed there, `MCP_GATEWAY_TOKEN_FROM_ENVIRONMENT`). Both are
+owner actions.
+
+CORS origin handling is the tool endpoints' rule: no `Origin`, or one listed in
+`AUTOBYTEUS_ALLOWED_ORIGINS`.
 
 ## Tool Scope And Execution
 
@@ -105,7 +109,7 @@ execution scope id `mcp-gateway/default`; it does not create or require an
 
 The first gateway version exposes all currently registered MCP-origin tools to a
 client that passes the access gate. It does not implement per-client profiles,
-per-user subsets, persisted gateway sessions, or token-management UI.
+per-user subsets or persisted gateway sessions.
 
 ## Client Configuration Example
 
@@ -118,15 +122,12 @@ Use the server base URL that matches the client network path:
       "type": "streamable-http",
       "url": "http://localhost:8000/mcp/gateway",
       "headers": {
-        "Authorization": "Bearer <configured gateway token>"
+        "Authorization": "Bearer <gateway token>"
       }
     }
   }
 }
 ```
-
-For local no-token development, omit `headers.Authorization` and keep the client
-connected through loopback, for example `http://localhost:8000/mcp/gateway`.
 
 ## Frontend Visibility
 
@@ -135,20 +136,19 @@ management tabs. The panel displays:
 
 - the resolved `/mcp/gateway` endpoint based on the configured server base URL;
 - a Streamable HTTP client config snippet;
-- bearer-token guidance; and
+- the gateway token, hidden until shown, with Copy and Regenerate (the owner
+  routes above); and
 - the current list/count of exposed MCP-origin tools.
 
 The panel's tool list is informational. It fetches `tools(origin: MCP)` through
-the existing GraphQL tools query and does not grant gateway access or manage the
-gateway token.
+the existing GraphQL tools query.
 
 ## Current Out Of Scope
 
 - exposing AutoByteus internal/run-scoped tools through `/mcp/gateway`;
 - replacing `/mcp/agent-tools/:sessionId` for Claude SDK or Codex runtime
   materialization;
-- gateway profiles, per-client tool subsets, user/principal models, or token
-  management UI;
+- gateway profiles, per-client tool subsets or user/principal models;
 - persisted gateway sessions or durable bearer-token materialization files; and
 - automated launch validation for external desktop clients such as Cursor,
   Antigravity, or Claude Code.

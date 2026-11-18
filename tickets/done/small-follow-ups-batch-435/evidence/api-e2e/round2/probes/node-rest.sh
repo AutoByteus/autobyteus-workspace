@@ -1,0 +1,7 @@
+# autobyteus-435 API/E2E: the test node's REST/GraphQL with the run's owner credential (never printed).
+B=/private/tmp/abx435-api2
+nrest() { local base=${NODE_BASE:-http://127.0.0.1:$(cat $B/node-port)}; curl -s -X "$1" "$base/rest$2" -H "authorization: Bearer $(cat $B/owner-credential)" -H 'content-type: application/json' ${3:+-d "$3"}; }
+ngql() { local base=${NODE_BASE:-http://127.0.0.1:$(cat $B/node-port)}; curl -s -X POST "$base/graphql" -H "authorization: Bearer $(cat $B/owner-credential)" -H 'content-type: application/json' -d "$1"; }
+# A pairing link for <serverBaseUrl> <name>, written to $B/pairing-link (mode 600), never printed.
+pairlink() { nrest PUT /remote-access/settings '{"phoneAccessEnabled":true}' >/dev/null; nrest POST /remote-access/pairing-sessions "{\"connectionWay\":\"local_network\",\"serverBaseUrl\":\"$1\",\"serverName\":\"$2\",\"trustedPrivateHttpAcknowledged\":true}" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const b=JSON.parse(s);require("fs").writeFileSync(process.argv[1],b.mobileUrl,{mode:0o600});console.log("pairing link for",new URL(b.mobileUrl).origin,"written (code not shown)")})' "$B/pairing-link"; }
+share() { $A shell am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT "'$(cat $B/pairing-link)'" -n org.autobyteus.mobile/.MainActivity >/dev/null 2>&1; echo "shared the pairing link into the app"; }

@@ -1,0 +1,11 @@
+# API-11 node log excerpt (isolated instance iso-50112-c4ac); window 04:56:55-04:57:40Z 2026-11-07; agent_ws ids shortened; app GraphQL 200s omitted
+# Command: python3 accesslog.py <instance log> 2026-11-07T04:56:55 2026-11-07T04:57:40
+2026-11-07T04:57:04.761Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/hostile-artifact?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers origin null
+2026-11-07T04:57:04.761Z GET /ws/terminal/hostile-artifact?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers 403
+2026-11-07T04:57:04.762Z GET /graphql?query=mutation%7BcreateAgentDefinition%28input%3A%7Bname%3A%22HOSTILE-GET-artifact%22%2Crole%3A%22assistant%22%2Cdescription%3A%22api417+hostile+probe%22%2Cinstr 405
+2026-11-07T04:57:04.763Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null
+2026-11-07T04:57:04.763Z OPTIONS /graphql 403
+2026-11-07T04:57:04.763Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null
+2026-11-07T04:57:04.763Z POST /graphql 403
+2026-11-07T04:57:04.763Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null
+2026-11-07T04:57:04.764Z OPTIONS /graphql 403

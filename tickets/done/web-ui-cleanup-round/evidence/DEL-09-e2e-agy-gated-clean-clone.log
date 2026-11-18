@@ -1,0 +1,14 @@
+# Summary of the clean-clone run (/tmp/ab320-clone at a2a431fcd1); the full log was DEL-09-e2e-agy-gated.log (158205 bytes), trimmed to summaries, skips and failures.
+== tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  19:30:58
+   Duration  26.85s (transform 6.66s, setup 35ms, import 9.13s, tests 17.22s, environment 0ms)
+exit=0
+== tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts
+     ✓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within the 50 s start bound, nothing started  87065ms
+ Test Files  1 passed (1)
+      Tests  41 passed (41)
+   Start at  19:31:26
+   Duration  440.32s (transform 133ms, setup 39ms, import 182ms, tests 439.64s, environment 0ms)
+exit=0

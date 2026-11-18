@@ -1,0 +1,3 @@
+# R02/R03/C01 API003; 2026-10-26; ccc0c56d; macOSarm64 Node22.23.1
+# node evidence/R02-03-browser.mjs R02-03-attempt-3 --lifecycle-only
+{"result":"Pass","scenarios":1,"cleanup":{"browserClosed":true,"nuxtExit":null,"nuxtSignal":"SIGTERM","serverGroupRows":[],"ownedRootRemoved":true,"productSourceChanges":""}}

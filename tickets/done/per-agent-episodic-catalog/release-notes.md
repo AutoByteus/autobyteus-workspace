@@ -1,0 +1,8 @@
+## Every agent gets a catalog of its past runs
+
+- The server now keeps, for each agent, one readable file that lists all of that agent's runs on this computer, oldest first: `episodic/<agent folder name>/catalog.md` in the memory folder, next to the agent's semantic memory folder (it has the same folder name). An overview file, `episodic/index.md`, lists every agent that has a catalog. An agent that analyses its own history, or a memory-analysis agent, can read one file instead of searching hundreds of run folders.
+- Each run is one entry: when it started and when it last worked, the run ID, the title of the Project Task it worked on (when it worked on one), its workspace, and each of its work-journal files with its path, time range and size. Runs of every kind appear in the catalog of their agent: standalone runs, delegated copies, team members, task agents and organization members.
+- A catalog never contains text from a conversation, a tool call or a Task description, and never the run list's summary line.
+- Catalogs stay current on their own: a new run or a new turn appears within a minute, and a deleted run (agent, team or organization) disappears within a minute. Archiving a run changes nothing, because its journals are still there. Server start and runs are never delayed.
+- The first start after updating builds every catalog in the background (about 12 seconds for around 4,000 runs on our test machine). Nothing in any run folder is changed: the catalogs are the only files written, and they can be deleted at any time; they are rebuilt at the next start.
+- A run whose saved records cannot be read is left out, with a line in the server log that names it, and the other runs are still listed.

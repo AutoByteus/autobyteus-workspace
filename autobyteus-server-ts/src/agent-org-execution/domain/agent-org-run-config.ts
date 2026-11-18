@@ -1,16 +1,17 @@
-import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentOrgRunExecutionTreeFile } from "./agent-org-run-execution-tree.js";
 import type { RunModelConfigEditability, RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
-import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 
-export type AgentOrgRunModelConfigScopeKind =
+export type AgentOrgRunSelectionScopeKind =
   | "CONFIGURED_ORG"
   | "CONFIGURED_TEAM"
   | "CONFIGURED_AGENT";
 
-export type AgentOrgRunModelConfigPatch = Readonly<{
-  scopeKind: AgentOrgRunModelConfigScopeKind;
+export type AgentOrgRunSelectionPatch = Readonly<{
+  scopeKind: AgentOrgRunSelectionScopeKind;
   scopeAddress: string;
+  /** The agent runtime to save the scope with: its own (a model edit), the previous one (undo) or another (a switch). */
+  runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
 }>;
@@ -22,11 +23,6 @@ export type AgentOrgRunConfig = Readonly<{
   editability: RunModelConfigEditability;
 }>;
 
-export type AgentOrgRunModelOption = RunModelOptions & Readonly<{
-  scopeKind: AgentOrgRunModelConfigScopeKind;
-  scopeAddress: string;
-}>;
-
 export type AgentOrgRunConfigResult = RunModelConfigUpdateResult<AgentOrgRunExecutionTreeFile | null>;
 
 export type TeamWorkspacePatch = Readonly<{
@@ -36,8 +32,6 @@ export type TeamWorkspacePatch = Readonly<{
 
 export type UpdateStoppedAgentOrgRunConfig = Readonly<{
   orgRunId: string;
-  modelPatches: readonly AgentOrgRunModelConfigPatch[];
+  selectionPatches: readonly AgentOrgRunSelectionPatch[];
   teamWorkspacePatches: readonly TeamWorkspacePatch[];
-  /** AR-004: user model choices of delegated copies, saved with the rest in one write. */
-  delegatedChanges?: readonly DelegatedLaunchChange[];
 }>;

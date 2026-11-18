@@ -1,0 +1,226 @@
+# Case: API-E01 recheck of F-16 … F-20 on 262afbd6bb (API-REV-004, round 4)
+# Command: pnpm exec vitest run (delegated-launch-config-defaults, task-reactivation-root-visibility, task-existing-copy-assignment, teammate-delivery-task-closure-race) --no-watch --no-file-parallelism (clean env, scripted AGY)
+# Look for: F-16 '/dlc_badsettings_…' is not the address of an available agent (delegated team's lead; the Manager is delegated: see F16-diag); F-17 'Timed out waiting for live task_executions_reopened'; F-18 CONFLICT vs CLOSED; F-19 TARGET_AGENT_RUN_NOT_ACTIVE vs TARGET_IS_TEAM_RUN; F-20 'was not delivered (ENOENT'
+
+AssertionError: expected [ …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "agent: AssertionError: {\"delegated\":false,\"message\":\"'/dlc_badsettings_bddccb' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\"}: expected { delegated: false, …(1) } to match object { delegated: true, …(1) }
++ (1 matching property omitted from actual)
++     at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/node_modules/.pnpm/@vitest+expect@4.1.12/node_modules/@vitest/expect/dist/index.js:1283:10)
++     at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/node_modules/.pnpm/@vitest+expect@4.1.12/node_modules/@vitest/expect/dist/index.js:1156:15)
++     at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/node_modules/.pnpm/chai@6.3.0/node_modules/chai/index.js:1737:25)
+-----
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_worker_a7d420_ff8ba8383bdc4a6bb31908f59fe1cc4e is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
++   "message": "exc_worker_a7d420_ff8ba8383bdc4a6bb31908f59fe1cc4e is a member of task agent team exc_squad_a7d420_0976d49a3bfa4964831b55e4261a07a8; to give that team a Task, use target_team_run_id \"exc_squad_a7d420_0976d49a3bfa4964831b55e4261a07a8\".",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:487:38
+-----
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_worker_a7d420_ce7704dee14645b8876f1d1a2b256dd8 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
++   "message": "exc_worker_a7d420_ce7704dee14645b8876f1d1a2b256dd8 is a member of task agent team exc_squad_a7d420_34981d9f3dcf4ed8b15acda5c86c4ddf; to give that team a Task, use target_team_run_id \"exc_squad_a7d420_34981d9f3dcf4ed8b15acda5c86c4ddf\".",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:487:38
+-----
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_worker_a7d420_659c22b9cbe746e28e4e4e453f5bb32d is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
++   "message": "exc_worker_a7d420_659c22b9cbe746e28e4e4e453f5bb32d is a member of task agent team exc_squad_a7d420_e19e43741c34423b8e3d1da3df808ce5; to give that team a Task, use target_team_run_id \"exc_squad_a7d420_e19e43741c34423b8e3d1da3df808ce5\".",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:487:38
+-----
+AssertionError: expected { accepted: false, …(2) } to match object { accepted: false, …(2) }
+
+- Expected
++ Received
+
+  {
+    "accepted": false,
+-   "code": "TARGET_IS_TEAM_RUN",
+-   "message": "exc_squad_a7d420_11c3714afb094feca710313bf797e705 is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: exc_worker_a7d420_23edc64124a042b78e500ddbf1557a1b.",
++   "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
++   "message": "No running agent has the run id 'exc_squad_a7d420_11c3714afb094feca710313bf797e705', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you.",
+  }
+-----
+AssertionError: expected 'Task existing-copy-lost-conversation-…' to match /cannot be restored: it has no saved c…/
+
+- Expected:
+/cannot be restored: it has no saved conversation to continue\. Start a new delegation/
+
++ Received:
+"Task existing-copy-lost-conversation-383e6bb6-2 was given to the task agent, but the message with its work was not delivered (ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-6inUeY/memory/agents/exc_helper_a7d420_fc0e4e4e97ca42dba4ee0bb75406b3a8/agy-project/manifest.json'). Message the task agent's run id exc_helper_a7d420_fc0e4e4e9
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:863:26
+    861|     const lost = await root.managerCalls(callTool("delegate_task", { t…
+    862|     expect(lost).toMatchObject({ delegated: false });
+    863|     expect(lost.message).toMatch(/cannot be restored: it has no saved …
+-----
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: true, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "delegated": true,
+-   "target_agent_run_id": "exc_worker_a7d420_69adcd68d0194aa78b62fdf0fdd0aba8",
+-   "target_kind": "agent",
++   "delegated": false,
++   "message": "exc_worker_a7d420_69adcd68d0194aa78b62fdf0fdd0aba8 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
+  }
+-----
+Error: Timed out waiting for live task_executions_reopened after a CANCELLED reopen
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ cancelledScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:678:5
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:727:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯
+-----
+Error: Timed out waiting for live task_executions_reopened after a CANCELLED reopen
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ cancelledScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:678:5
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:731:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/16]⎯
+-----
+AssertionError: expected { accepted: false, …(2) } to match object { accepted: false, …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "accepted": false,
+-   "code": "TASK_AGENT_RESOURCE_CLOSED",
++   "code": "TASK_AGENT_RESOURCE_CONFLICT",
+  }
+
+-----
+Error: Timed out waiting for live task_executions_reopened
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:446:5
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:739:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/16]⎯
+-----
+Error: Timed out waiting for live task_executions_reopened
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:446:5
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:743:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/16]⎯
+-----
+AssertionError: {"accepted":false,"code":"COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES","message":"This work is stopping or has stopped, so the message or delegation was not sent. tra_worker_a4d243_cd8bf519028d453cb99841c1b37fe8d3 continues with its conversation (its Task is open again) but did not receive this message; send it again."}: expected 'unexpected' not to be 'unexpected' // Object.is equal
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:781:52
+    779|           ? `done-after-commit:${message.code}`
+    780|           : message.code === "TASK_AGENT_RESOURCE_CLOSED" && /This Tas…
+    781|       expect(outcome, JSON.stringify(message)).not.toBe("unexpected");
+       |                                                    ^
+    782|       if (outcome === "reactivated-then-done") expect(message.message)…
+    783|       // No runtime process of the worker is left running (each AGY ru…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/16]⎯
+
+ FAIL  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > agent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+-----
+Error: [{"message":"AgentRun 'tdr_worker_16445b_75b26b4af1f14ec4ad4dde7e56b79b0f' is not a participant of agent run 'tdr_manager_16445b_50061bda7d4045dc84fc6d46f1878484'.","locations":[{"line":1,"column":65}],"path":["collaborationParticipantMessages"]}]
+ ❯ graphql tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:182:66
+    180|       headers: { "content-type": "application/json" }, body: JSON.stri…
+    181|     const body = await response.json() as { data?: T; errors?: unknown…
+    182|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+    183|     return body.data;
+    184|   };
+ ❯ readParticipantMessages tests/helpers/collaboration-participant-messages.ts:20:4
+ ❯ readRootMessages tests/helpers/collaboration-participant-messages.ts:43:27
+ ❯ Object.snapshotMessages tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:350:20
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:479:12
+-----
+Error: [{"message":"AgentRun 'tdr_worker_16445b_5f88ffc34e8e4ba999177cd73b7c3926' is not a participant of agent_team run 'tdr_team_16445b_698698e41f96449c902322e6d405045f'.","locations":[{"line":1,"column":65}],"path":["collaborationParticipantMessages"]}]
+ ❯ graphql tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:182:66
+    180|       headers: { "content-type": "application/json" }, body: JSON.stri…
+    181|     const body = await response.json() as { data?: T; errors?: unknown…
+    182|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+    183|     return body.data;
+    184|   };
+ ❯ readParticipantMessages tests/helpers/collaboration-participant-messages.ts:20:4
+ ❯ readRootMessages tests/helpers/collaboration-participant-messages.ts:43:27
+ ❯ Object.snapshotMessages tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:350:20
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:479:12
+-----
+Error: Timed out waiting for agent-org stream ready
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9
+     19|   const deadline = Date.now() + ms;
+     20|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     21|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     22| };
+     23|
+ ❯ connect tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:200:5
+ ❯ Object.snapshotMessages tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:346:20
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:479:12
+ ❯ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:554:5
+-----
+
+## F-16 diagnostic on 49f3db1047 (the root's Manager delegates to the same address)
+DIAG-461 manager delegate: {"delegated":true,"target_kind":"agent","target_agent_run_id":"dlc_badsettings_723f95_7e8ccced3ba34c8d8fe15f888b0af57a","task_id":"ad_hoc_task_a8d07e5c-fa89-48a7-880a-f7e2e4391222","launch_notes":["DLC badsettings 723f95: its agent default Grok Build / grok-4.7 could not be used (Its model settings are invalid: Value is not one of the supported options); it runs on Antigravity CLI / gemini-3.8-flash-low (inherited from the run)."]}
+DIAG-461 manager delegate: {"delegated":true,"target_kind":"agent","target_agent_run_id":"dlc_badsettings_723f95_61fedc3b99c647dfbd29d0abdec91e01","task_id":"ad_hoc_task_0a0b58cd-ed77-4b5a-a676-22dbf818d014","launch_notes":["DLC badsettings 723f95: its agent default Grok Build / grok-4.7 could not be used (Its model settings are invalid: Value is not one of the supported options); it runs on Antigravity CLI / gemini-3.8-flash-low (inherited from the run)."]}
+DIAG-461 manager delegate: {"delegated":true,"target_kind":"agent","target_agent_run_id":"dlc_badsettings_723f95_8622f8e185934295b5793a17fcb957a1","task_id":"ad_hoc_task_a2906f25-bd69-440e-9d41-ed6a8c853636","launch_notes":["DLC badsettings 723f95: its agent default Grok Build / grok-4.7 could not be used (Its model settings are invalid: Value is not one of the supported options); it runs on Antigravity CLI / gemini-3.8-flash-low (inherited from the run)."]}
++   "agent: AssertionError: {\"delegated\":false,\"message\":\"'/dlc_badsettings_723f95' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\"}: expected { delegated: false, …(1) } to match object { delegated: true, …(1) }
++   "team: AssertionError: {\"delegated\":false,\"message\":\"'/dlc_badsettings_723f95' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\"}: expected { delegated: false, …(1) } to match object { delegated: true, …(1) }
++   "org: AssertionError: {\"delegated\":false,\"message\":\"'/dlc_badsettings_723f95' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.\"}: expected { delegated: false, …(1) } to match object { delegated: true, …(1) }
+
+## F-17 frames after the reactivation (Team root, 49f3db1047)
+DIAG-461 frames after reactivation: [["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"initializing\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":213,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["AGENT_INPUT_STATE",null,"{\"run_instance_id\":\"6a8812f3-43f1-492b-9be2-cb8f29482c1a\",\"revision\":34,\"entries\":[{\"sequence\":9,\"message_id\":\"e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"dedupe_key\":\"agent_run_input:e2e:e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"turn_id\":n"],["MEMBER_INPUT_MESSAGE",null,"{\"change_sequence\":215,\"recipient_agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\",\"message_id\":\"e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"dedupe_key\":\"agent_run_input:e2e:e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"conte"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":216,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["TURN_STARTED",null,"{\"turn_id\":\"7f63e170-8851-483c-a71d-2e37049b13f5\",\"change_sequence\":217,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["AGENT_INPUT_STATE",null,"{\"run_instance_id\":\"6a8812f3-43f1-492b-9be2-cb8f29482c1a\",\"revision\":35,\"entries\":[{\"sequence\":9,\"message_id\":\"e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"dedupe_key\":\"agent_run_input:e2e:e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"turn_id\":\""],["AGENT_INPUT_STATE",null,"{\"run_instance_id\":\"6a8812f3-43f1-492b-9be2-cb8f29482c1a\",\"revision\":36,\"entries\":[{\"sequence\":9,\"message_id\":\"e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"dedupe_key\":\"agent_run_input:e2e:e2e-563c070d-291f-48cf-91b0-9eec2ef5a7ed\",\"turn_id\":\""],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":220,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["TASK_EXECUTION_STARTED",null,"{\"change_sequence\":221,\"parent_team_run_id\":\"tra_team_5e384f_ffd7d05ac906403e9d5b6e9ceeb42119\",\"execution\":{\"kind\":\"task_agent\",\"address\":\"/tra_worker_5e384f\",\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\",\"platform_age"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"idle\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":222,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"initializing\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":223,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":224,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":225,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":226,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":227,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":228,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"idle\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":229,\"agent_run_id\":\"tra_worker_5e384f_78b3b7741ce7478aa72f0bb14ed0db69\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":230,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["SEGMENT_START",null,"{\"segment_id\":\"agy-text-7f63e170-8851-483c-a71d-2e37049b13f5-90\",\"turn_id\":\"7f63e170-8851-483c-a71d-2e37049b13f5\",\"segment_type\":\"text\",\"metadata\":null,\"change_sequence\":231,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"running\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":232,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["SEGMENT_CONTENT_BATCH",null,"{\"change_sequence\":233,\"change_sequence_through\":234,\"items\":[{\"segment_id\":\"agy-text-7f63e170-8851-483c-a71d-2e37049b13f5-90\",\"turn_id\":\"7f63e170-8851-483c-a71d-2e37049b13f5\",\"segment_type\":\"text\",\"delta\":\"CALLED:{\\\"content\\\":[{\\\"type\\\":\\\""],["SEGMENT_END",null,"{\"segment_id\":\"agy-text-7f63e170-8851-483c-a71d-2e37049b13f5-90\",\"turn_id\":\"7f63e170-8851-483c-a71d-2e37049b13f5\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null,\"change_sequence\":235,\"agent_run_id\":\"tra_manage"],["TURN_COMPLETED",null,"{\"turn_id\":\"7f63e170-8851-483c-a71d-2e37049b13f5\",\"reason\":null,\"change_sequence\":236,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["AGENT_STATUS",null,"{\"recoverableBlock\":null,\"status\":\"idle\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_details\":null,\"change_sequence\":237,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"],["AGENT_INPUT_STATE",null,"{\"run_instance_id\":\"6a8812f3-43f1-492b-9be2-cb8f29482c1a\",\"revision\":37,\"entries\":[],\"recoverableBlock\":null,\"change_sequence\":238,\"agent_run_id\":\"tra_manager_5e384f_1be6db87ffa2483d87a64206329bc9e2\"}"]]
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for live task_executions_reopened
+      Tests  1 failed | 6 skipped (7)

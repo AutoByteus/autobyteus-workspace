@@ -1,0 +1,9 @@
+# IMP-08 team-stream-contracts build and tests (IR-002)
+# Command: pnpm -C autobyteus-team-stream-contracts test
+# Code: commit fa48d74a3e; macOS, 2026-11-11
+
+# Subtest: TASK_EXECUTIONS_REOPENED carries each reopened execution's record with its parent Team run (autobyteus-469 D-8)
+ok 17 - TASK_EXECUTIONS_REOPENED carries each reopened execution's record with its parent Team run (autobyteus-469 D-8)
+# tests 22
+# pass 22
+# fail 0

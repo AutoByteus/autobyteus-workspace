@@ -1,0 +1,9 @@
+# IMP-01 server full unit suite
+# command: pnpm -C autobyteus-server-ts test:unit (on the working tree later committed as d92d94472f; server code unchanged since)
+# 2026-11-07, macOS Darwin 25.5, Node v22.23.1
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+     × finds no tracked code importing an untracked file in this repository 1416ms
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ Test Files  1 failed | 941 passed | 5 skipped (947)
+      Tests  1 failed | 8068 passed | 9 skipped (8078)
+# the one failure: tests/architecture/tracked-imports.test.ts flagged the new files as untracked before they were staged; rerun after staging passes (see IMP-02)

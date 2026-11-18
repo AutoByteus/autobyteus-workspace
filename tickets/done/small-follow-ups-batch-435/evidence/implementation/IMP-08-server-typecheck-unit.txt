@@ -1,0 +1,19 @@
+# IMP-08 server: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts test:unit
+# Commit e5ca0e1da7 (then the one failing file rerun on 6ca743fee0 after pnpm -C autobyteus-web codegen:local); macOS darwin 25.5.0, Node v22.23.1; 2026-11-10.
+
+## typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.4s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 27.3s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
+
+## test:unit on e5ca0e1da7
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/web-generated-graphql-current.test.ts > autobyteus-web/generated/graphql.ts > equals the web codegen output for the current server schema, and the check fails on a changed schema
+ Test Files  1 failed | 968 passed | 5 skipped (974)
+      Tests  1 failed | 8264 passed | 9 skipped (8274)
+Cause: the GraphQL field description (AR-004) changed the schema; autobyteus-web/generated/graphql.ts was not regenerated. Fixed in 6ca743fee0 (one comment line).
+
+## rerun on 6ca743fee0: pnpm -C autobyteus-server-ts exec vitest run tests/architecture/web-generated-graphql-current.test.ts --no-watch
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

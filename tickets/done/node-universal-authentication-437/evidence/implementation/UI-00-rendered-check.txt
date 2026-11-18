@@ -1,0 +1,19 @@
+# UI-00 rendered-result check: isolated desktop instance of this worktree
+# Steps: pnpm --silent isolated-app start --build (instance iso-54672-5c42, own data root, backend 127.0.0.1:54673); browser-automation attach-only on control port 54672; test-owned built node on 127.0.0.1:39555 (temp data folder, no launch credential); node dist/node-access-cli.js setup-code for it; isolated-app stop afterwards (data root removed).
+# Build: commit d20340e5c3 (before the NodeRow and owner-credential file-mode fixes)
+# Environment: macOS 26 (Darwin 25.5), arm64
+# Date: 2026-11-08T15:21:47Z
+
+Embedded node, no credential: POST /graphql -> 401; /rest/health -> 200 (curl).
+UI-01-app-start.png: the app window loaded its node's agents and models (Daily Assistant, claude-fable-5) under enforcement (NAS-01).
+UI-02-nodes-page.png: Nodes page, this node, pairing wording of Remote collaboration.
+UI-03-remote-needs-connecting.png: added node test-remote -> 'Needs connecting' notice with the setup-code field (NAS-02). Defect seen: the row also said 'Not reachable.' (server update cell; its owner read is refused without a key) -> fixed after this build (NodeRow hides the server cell and notice while needs connecting; NodeRow.spec NAS-02 case).
+Entered a setup code from the node's CLI -> notice gone, 'Server version unknown' (NAS-03); the node's owner-credentials.json held one record for desktop 'MacBookPro' (hash only). Defect seen: that file was mode 0644 (folder 0700) -> fixed (written 0600; owner-credential-service unit test).
+UI-04-remote-connected.png: connected row.
+Disconnect icon -> the node's owner-credentials.json became [] and the row showed 'Needs connecting' again (NAS-33).
+UI-05-remote-disconnected.png: disconnected row.
+UI-06-mcp-gateway-token.png: MCP gateway panel: token masked by default with Show, Copy, Regenerate (NAS-25). The token was not revealed or captured.
+
+Test node refusal log lines while not connected (codes only, no credential):
+   8 Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 127.0.0.1
+   3 Node request refused NODE_CREDENTIAL_REQUIRED /rest/node-update?target=1.5.12-beta.8 from 127.0.0.1

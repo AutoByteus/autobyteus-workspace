@@ -1,0 +1,16 @@
+IMP-20 — manual current-build rendered inspection; commit10990feb1, macOS arm64/Electron42.11.16, 2026-10-24; see IMP-20-rendered-notes.md for steps and limitations.
+
+❌
+Application Error
+
+Backend port 52504 is already in use.
+
+node (PID 83231)
+
+Restart Server controls only this app’s managed backend. It cannot stop another application’s listener. Verify which application owns this port, stop or reconfigure it, then retry. The identity shown is a current snapshot, not permission to stop an unfamiliar process.
+
+Resetting server data will not free this port. Your data does not need to be reset.
+
+Restart Server
+Check Server Health
+Show technical details

@@ -1,0 +1,26 @@
+{
+  "round": "API-REV-002",
+  "date": "2026-10-26T09:59:24.100351+00:00",
+  "source": "2c47bcd646ccd371a180dbc510fd1e30aee9144f",
+  "reviewHead": "f4e7eb4eb1d4e600b286f2e22ca381e3903894ca",
+  "integratedBase": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "buildReceipt": "../IMP-56-artifact-provenance.json",
+  "directBuildIdentity": "API-build-identity.json",
+  "durableSuiteUnchangedSinceCRR004": {
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts": true,
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs": true
+  },
+  "fileSha256": {
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts": "03160e0d953fc4994e576a6a3a3817edf987dbe6be9a83368a7e3dab6a949386",
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs": "c513e49dca179067ff9232615ce7f3535facc769940fada9eb755e4ec36c0e40",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-05-conflict-recovery.mjs": "41ece542b047b076ac1c826632fa90c2f6318ff2e45298237e3cedb4429021c4",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-06B-desktop-native-current.mjs": "df38208b557b16d2c882959349397051fb9047db2512ccd1f0c9dfba0a747205",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs": "2c0bd268659f2bc32984076b14303d54cd51551888db4ef9015fd8aa7cd9f7c1",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-09-desktop-visibility.mjs": "babe60ae5b210812d9af3d304bcc39fa8883e2792d30829c8c5da0147982b71b",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-09B-selection-lifecycle.mjs": "cab147c3e6fb6887bb2ce0a4d580230d9e66d24ef4a47988b0417335113d8db7",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-10-provider-unavailable.mjs": "45b1a629996bda1b5ffb1a98496db9fdf5c2e61eb90cbcf01d699310394a04a7",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-REV-002/API-run-integrated.mjs": "7481745c76af4e301ccce526795c48335380e5dc151115ba9810c51b1712018e"
+  },
+  "repositoryReuse": "854 unique IMP52/53/54/55 current foundation checks; exact commands ../IMP-60-checks.json",
+  "cleanup": "API-final-cleanup.json"
+}

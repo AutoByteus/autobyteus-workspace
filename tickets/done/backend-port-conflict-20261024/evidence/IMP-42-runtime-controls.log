@@ -1,0 +1,328 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.27                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts [2m([22m[2m48 tests[22m[2m)[22m[32m 170[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-execution/agent-run.test.ts[2m > [22m[2mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22m[2mgives each new subscriber the current snapshot without repeating it to existing subscribers (AC-004a)
+[22m[39m[AgentSegmentLifecycleRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'agent-run-1'[39m,
+  turnId: [32m'turn-1'[39m,
+  eventType: [32m'SEGMENT_CONTENT'[39m,
+  segmentId: [32m'segment-1'[39m,
+  reason: [32m'SEGMENT_NOT_STARTED'[39m
+}
+
+[90mstderr[2m | tests/unit/agent-execution/agent-run.test.ts[2m > [22m[2mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22m[2mbroadcasts a revision first produced by a pull read on the next publish (AC-004b)
+[22m[39m[AgentSegmentLifecycleRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'agent-run-1'[39m,
+  turnId: [32m'turn-1'[39m,
+  eventType: [32m'SEGMENT_CONTENT'[39m,
+  segmentId: [32m'segment-1'[39m,
+  reason: [32m'SEGMENT_NOT_STARTED'[39m
+}
+
+[90mstderr[2m | tests/unit/agent-execution/agent-run.test.ts[2m > [22m[2mAgentRun input-state publication (agent-input-state-content-cadence)[2m > [22m[2mbroadcasts a revision first produced by a subscribe snapshot to existing subscribers before the new snapshot (AC-004b)
+[22m[39m[AgentSegmentLifecycleRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'agent-run-1'[39m,
+  turnId: [32m'turn-1'[39m,
+  eventType: [32m'SEGMENT_CONTENT'[39m,
+  segmentId: [32m'segment-1'[39m,
+  reason: [32m'SEGMENT_NOT_STARTED'[39m
+}
+
+ [32m✓[39m tests/unit/agent-execution/agent-run.test.ts [2m([22m[2m47 tests[22m[2m)[22m[33m 1606[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mkeeps a new run private until synchronous candidate publication
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mtells the lifecycle observer about a run only once it is published, with its activation kind
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mclaims the run id before the first backend await and rejects overlapping preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mallows retry only after candidate abort confirms inactivity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines an uncertain candidate cleanup and rejects same-process replacement
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores codex_app_server from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores claude_agent_sdk from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2maborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrolls back already-attached run resources when a later attachment fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates exactly once when a post-activation backend identity mismatch fails before attachment
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines attachment rollback when exact-run session deactivation fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation create failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation restore failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines with primary then deactivation cleanup evidence
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrejects another candidate after publication without replacing the active run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdetaches run resources and invokes exact-run MCP cleanup after accepted termination
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mallows only one non-waiting quiescence preparation attempt per exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcancels through the exact run without releasing it and permits a fresh preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries only after a rejected finish and releases once after acceptance
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcoalesces one committed finish attempt and caches successful finalization
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretains accepted-but-active failure without removing the exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries exact retained component cleanup after physical release without stopping twice
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal not_found as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal identity_mismatch as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mrejects a missing or different exact instance before lower-level preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mdoes nothing for an unknown id or a live published run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mexact-releases a run that went offline so its replacement can be claimed (AC-003)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mkeeps the release owed and retryable when the previous runtime's stop throws (AC-008)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mkeeps the release owed and retryable when the previous runtime's stop is not accepted (AC-008)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mreleaseRetiredRun[2m > [22m[2mjoins an in-flight release instead of stopping the previous runtime twice (AC-005)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mroutes stop-all active runs through the managed prepared boundary
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-manager.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts [2m([22m[2m37 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-model-call-timing.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-background-task-view.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/thread/codex-background-inspection.test.ts[2m > [22m[2mCodexThread read-only inspection boundary[2m > [22m[2mobserves matched completion after the strict transcript gate closes without publishing it
+[22m[39m[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'run-1'[39m,
+  nativeEventName: [32m'item/completed'[39m,
+  reasonCode: [32m'CODEX_SEGMENT_TURN_INACTIVE'[39m,
+  itemType: [32m'commandExecution'[39m,
+  turnId: [32m'turn-1'[39m,
+  activeTurnId: [1mnull[22m
+}
+
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/thread/codex-background-inspection.test.ts[2m > [22m[2mCodexThread read-only inspection boundary[2m > [22m[2mshares one page walk and reconciles a newly observed completion during its pending response
+[22m[39m[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'run-1'[39m,
+  nativeEventName: [32m'item/completed'[39m,
+  reasonCode: [32m'CODEX_SEGMENT_TURN_INACTIVE'[39m,
+  itemType: [32m'commandExecution'[39m,
+  turnId: [32m'turn-1'[39m,
+  activeTurnId: [1mnull[22m
+}
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-background-inspection.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/agent-background-task-view.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/api/graphql/agent-background-task-view.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[32m 25[2mms[22m[39m
+     [32m✓[39m uses only the observational run lookup and exact instance read[32m 2[2mms[22m[39m
+     [32m✓[39m does not inspect or prune an inactive published run[32m 1[2mms[22m[39m
+     [32m✓[39m discards a response when the captured run is inactive during await, with no replacement retry[32m 0[2mms[22m[39m
+     [32m✓[39m discards a response when the captured run is replaced during await, with no replacement retry[32m 0[2mms[22m[39m
+     [32m✓[39m discards a response when the captured run is removed during await, with no replacement retry[32m 0[2mms[22m[39m
+     [32m✓[39m rechecks identity even after an exception and never exposes its payload[32m 0[2mms[22m[39m
+[31m     [31m×[31m serializes 'snapshot' through the actual typed union[39m[32m 14[2mms[22m[39m
+[31m     [31m×[31m serializes 'event-stream' through the actual typed union[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m serializes 'unsupported' through the actual typed union[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m serializes 'unavailable' through the actual typed union[39m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-admission.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-segment-turn-rejection-accounts.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/agent-background-task-view.test.ts[2m > [22mbackground view GraphQL serialization[2m > [22mserializes 'snapshot' through the actual typed union
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/agent-background-task-view.test.ts[2m > [22mbackground view GraphQL serialization[2m > [22mserializes 'event-stream' through the actual typed union
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/agent-background-task-view.test.ts[2m > [22mbackground view GraphQL serialization[2m > [22mserializes 'unsupported' through the actual typed union
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/agent-background-task-view.test.ts[2m > [22mbackground view GraphQL serialization[2m > [22mserializes 'unavailable' through the actual typed union
+[31m[1mError[22m: Cannot use GraphQLSchema "{ __validationErrors: [], description: undefined, extensions: {}, astNode: undefined, extensionASTNodes: [], _queryType: Query, _mutationType: undefined, _subscriptionType: undefined, _directives: [@include, @skip, @deprecated, @specifiedBy, @oneOf], _typeMap: { Query: Query, AgentBackgroundTaskView: AgentBackgroundTaskView, AgentBackgroundTaskSnapshot: AgentBackgroundTaskSnapshot, String: String, AgentBackgroundTaskViewRow: AgentBackgroundTaskViewRow, BackgroundTaskViewStatus: BackgroundTaskViewStatus, Int: Int, AgentBackgroundTaskEventStream: AgentBackgroundTaskEventStream, AgentBackgroundTaskUnsupported: AgentBackgroundTaskUnsupported, BackgroundTaskViewReason: BackgroundTaskViewReason, AgentBackgroundTaskUnavailable: AgentBackgroundTaskUnavailable, Boolean: Boolean, __Schema: __Schema, __Type: __Type, __TypeKind: __TypeKind, __Field: __Field, __InputValue: __InputValue, __EnumValue: __EnumValue, __Directive: __Directive, __DirectiveLocation: __DirectiveLocation }, _subTypeMap: {}, _implementationsMap: {} }" from another module or realm.
+
+Ensure that there is only one instance of "graphql" in the node_modules
+directory. If different versions of "graphql" are the dependencies of other
+relied on modules, use "resolutions" to ensure only one version is installed.
+
+https://yarnpkg.com/en/docs/selective-version-resolutions
+
+Duplicate "graphql" modules cannot be used at the same time since different
+versions may have different capabilities and behavior. The data from one
+version used in the function from another could produce confusing and
+spurious results.[39m
+[90m [2m❯[22m instanceOf ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/jsutils/instanceOf.mjs:[2m41:19[22m[39m
+[90m [2m❯[22m isSchema ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/schema.mjs:[2m21:10[22m[39m
+[90m [2m❯[22m assertSchema ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/schema.mjs:[2m24:8[22m[39m
+[90m [2m❯[22m validateSchema ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/type/validate.mjs:[2m31:3[22m[39m
+[90m [2m❯[22m graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.mjs:[2m86:34[22m[39m
+[90m [2m❯[22m ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.mjs:[2m49:43[22m[39m
+[90m [2m❯[22m graphql ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.mjs:[2m49:10[22m[39m
+[36m [2m❯[22m tests/unit/api/graphql/agent-background-task-view.test.ts:[2m69:26[22m[39m
+    [90m 67|[39m     const { run } = fixture(); run.inspectBackgroundTasks.mockResolved…
+    [90m 68|[39m     const schema = await buildSchema({ resolvers: [AgentBackgroundTask…
+    [90m 69|[39m     const result = await graphql({ schema, source, variableValues: { i…
+    [90m   |[39m                          [31m^[39m
+    [90m 70|[39m     [34mexpect[39m(result[33m.[39merrors)[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+    [90m 71|[39m     expect(result.data?.agentBackgroundTaskView).toMatchObject({ agent…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m14 passed[39m[22m[90m (15)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m251 passed[39m[22m[90m (255)[39m
+[2m   Start at [22m 09:24:59
+[2m   Duration [22m 9.45s[2m (transform 2.56s, setup 164ms, import 5.29s, tests 1.90s, environment 1ms)[22m
+

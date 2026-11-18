@@ -1,0 +1,8 @@
+# IMP-10 IR-002 new tests on base (FO-001, FO-002): the two fix files stashed
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/agents/__tests__/AgentDetail.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts --run
+# base: the two components at b34c2a36ea  env: macOS, Node v22.23.1  date: 2026-10-28
+
+   × ApplicationLaunchSetupPanel > reopens a saved Claude exact-default Agent resource through the real slot editor 19ms
+   × AgentDetail > names the default runtime by its full name, and says Not set without one (autobyteus-320, CRR-001 FO-002) 11ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 7 passed (9)

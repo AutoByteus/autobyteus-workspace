@@ -1,0 +1,8 @@
+API-06 phone company host: Pass
+{
+ "handshakes": 3,
+ "badHandshakes": [],
+ "badProxyUpgrades": [],
+ "journeyRefusals": 0,
+ "unknownErrors": []
+}

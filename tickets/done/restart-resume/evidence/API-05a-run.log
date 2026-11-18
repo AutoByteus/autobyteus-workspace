@@ -1,0 +1,20 @@
+[+9.3s] isolated-app {"args":["start","--app","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app","--data-root","<own>/data-root"],"exit":0,"ok":true}
+[+9.3s] instance started {"label":"X","instanceId":"iso-62924-dd0d","electronPid":74185,"serverPort":62925}
+[+10.4s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+14.3s] busy {"label":"sa-codex","pid":79698}
+[+14.7s] busy {"label":"sa-claude","pid":79925}
+[+15.9s] busy {"label":"team-codex","pid":80074}
+[+18.0s] busy {"label":"org-claude","pid":80679}
+[+23.8s] busy {"label":"host","pid":82906}
+[+23.8s] busy {"label":"copy","pid":82415}
+[+31.0s] isolated-app {"args":["stop","iso-62924-dd0d"],"exit":0,"ok":true}
+[+31.0s] quit {"label":"quit X (busy)","electronGoneMs":4696}
+[+31.0s] record after quit {"entries":[{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"ba82bb7484"},{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"84cc00db69"},{"kind":"agent_team","place":"member","version":"1.5.11-beta.9","run":"f099b4734b"},{"kind":"agent_org","place":"member","version":"1.5.11-beta.9","run":"050510a668"},{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"ccf42f0a5b"},{"kind":"agent","place":"delegated","version":"1.5.11-beta.9","run":"cbf887322f"}],"lines":["[2026-11-01T06:58:35.077Z] [INFO] [electron.embedded-server.stdout] Recorded 6 busy run(s) for re
+[+31.0s] stamp in app copy "1.5.11-beta.9-rr285next"
+[+34.8s] isolated-app {"args":["start","--app","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app","--data-root","<own>/data-root"],"exit":0,"ok":true}
+[+34.8s] instance started {"label":"X1","instanceId":"iso-63184-3eae","electronPid":83338,"serverPort":63185}
+[+55.4s] after X1 start {"lines":["[2026-11-01T06:58:43.221Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69' of agent 'desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69'","[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484' of agent 'desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484'","[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285
+[+75.4s] ui step failed "TimeoutError: locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByText('Desk Team RR285Dmvxhah88').first() to be visible\n"
+[+77.4s] isolated-app {"args":["stop","iso-63184-3eae"],"exit":0,"ok":true}
+[+77.4s] quit {"label":"quit X1","electronGoneMs":1926}
+{"result":"Completed","error":null,"fallbackCleanup":0}

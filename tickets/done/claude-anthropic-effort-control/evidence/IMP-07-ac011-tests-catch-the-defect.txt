@@ -1,0 +1,15 @@
+# IMP-07 the AC-011 tests fail when stored config keys are forwarded (mutation check)
+# steps: inserted into autobyteus-ts/src/llm/api/anthropic-llm.ts, right after `readOwnedConfig(...)`, a line copying every
+#        non-owned config key onto the request (the pre-SR-002 raw forwarding); ran the AC-011 server resume test (synthetic mode);
+#        restored the file (checked: 0 occurrences of the marker afterwards).
+# command: env -i PATH HOME=<temp> TMPDIR corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts --no-watch
+# commit: 574aa0bd7 working tree + the temporary line; date: 2026-10-29
+# note: a first attempt edited autobyteus-ts/dist instead and still passed, because server Vitest resolves autobyteus-ts to src
+#       (autobyteus-server-ts/tsconfig.json paths); the check was redone on src.
+result with the forwarding line:
+     × claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+     × claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AssertionError: expected { model: 'claude-opus-5-5', …(9) } to not have property "thinking_display"
+AssertionError: expected { model: 'claude-sonnet-5-5', …(9) } to not have property "thinking_display"
+      Tests  2 failed (2)
+result after restoring the file: Tests 2 passed (2)

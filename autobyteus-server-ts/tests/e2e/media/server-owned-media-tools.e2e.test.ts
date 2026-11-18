@@ -383,6 +383,12 @@ describe("server-owned media tools API/E2E boundary", () => {
     const generateSpeechTool = defaultToolRegistry.createTool(GENERATE_SPEECH_TOOL_NAME);
     const generateVideoTool = defaultToolRegistry.createTool(GENERATE_VIDEO_TOOL_NAME);
 
+    // autobyteus-260 REQ-001/002: a native media tool returns its result as the one rule's compact JSON text.
+    const asResult = (text: unknown) => {
+      expect(typeof text).toBe("string");
+      expect(JSON.stringify(JSON.parse(text as string))).toBe(text);
+      return JSON.parse(text as string) as { file_path: string };
+    };
     const generated = await generateImageTool.execute(
       { agentId: "agent-auto", runId: "run-auto", workspaceRootPath: workspaceRoot } as any,
       {
@@ -391,7 +397,7 @@ describe("server-owned media tools API/E2E boundary", () => {
         output_file_path: generatedOutputPath,
         generation_config: { style: "watercolor" },
       },
-    ) as { file_path: string };
+    ).then(asResult);
     const edited = await editImageTool.execute(
       { agentId: "agent-auto", runId: "run-auto", workspaceRootPath: workspaceRoot } as any,
       {
@@ -400,7 +406,7 @@ describe("server-owned media tools API/E2E boundary", () => {
         mask_image: pathToFileURL(externalMaskPath).href,
         output_file_path: editedOutputPath,
       },
-    ) as { file_path: string };
+    ).then(asResult);
     const speech = await generateSpeechTool.execute(
       { agentId: "agent-auto", runId: "run-auto", workspaceRootPath: workspaceRoot } as any,
       {
@@ -408,7 +414,7 @@ describe("server-owned media tools API/E2E boundary", () => {
         output_file_path: speechOutputPath,
         generation_config: { voice: "Test" },
       },
-    ) as { file_path: string };
+    ).then(asResult);
     const video = await generateVideoTool.execute(
       { agentId: "agent-auto", runId: "run-auto", workspaceRootPath: workspaceRoot } as any,
       {
@@ -417,7 +423,7 @@ describe("server-owned media tools API/E2E boundary", () => {
         output_file_path: videoOutputPath,
         generation_config: { aspect_ratio: "9:16", task: "reference_to_video" },
       },
-    ) as { file_path: string };
+    ).then(asResult);
 
     expectFileBytes(generated.file_path, IMAGE_BYTES);
     expectFileBytes(edited.file_path, EDIT_IMAGE_BYTES);

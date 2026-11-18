@@ -1,0 +1,204 @@
+{
+  "_header": {
+    "case": "DAC-01..DAC-06",
+    "command": "see DAC-suite-pass.log",
+    "commit": "fbc9b3c2e9 + new suite",
+    "date": "2026-11-10"
+  },
+  "DAC-01": {
+    "shown=false": {
+      "agents": [
+        {
+          "name": "Daily Assistant",
+          "kind": "agent",
+          "address": "/daily_assistant",
+          "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+        },
+        {
+          "name": "DAC Helper fa379e",
+          "kind": "agent",
+          "address": "/dac_helper_fa379e",
+          "description": "DAC Helper fa379e (collaboration prompt E2E)"
+        }
+      ],
+      "modelRouterDelegation": {
+        "delegated": false,
+        "message": "'/model_router' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.",
+        "isError": false
+      }
+    },
+    "shown=true": {
+      "agents": [
+        {
+          "name": "Daily Assistant",
+          "kind": "agent",
+          "address": "/daily_assistant",
+          "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+        },
+        {
+          "name": "DAC Helper fa379e",
+          "kind": "agent",
+          "address": "/dac_helper_fa379e",
+          "description": "DAC Helper fa379e (collaboration prompt E2E)"
+        }
+      ],
+      "modelRouterDelegation": {
+        "delegated": false,
+        "message": "'/model_router' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.",
+        "isError": false
+      }
+    }
+  },
+  "DAC-02": {
+    "taskId": "project_task_f03f4edf-dc66-49d1-b9bb-a47f54eb6c8d",
+    "delegated": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "daily_assistant_2a099af4dbc14dc7a3894f354246b6f5",
+      "isError": false
+    },
+    "agent": {
+      "agentRunId": "daily_assistant_2a099af4dbc14dc7a3894f354246b6f5",
+      "address": "/daily_assistant",
+      "delegatorAgentRunId": "dac_project_manager_fa379e_dec9ffb08618405cae4d877d22365792",
+      "members": []
+    },
+    "launch": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/daily-assistant-collaborator-e2e-nJYk2R/project-folder-F"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/daily-assistant-collaborator-e2e-nJYk2R/project-folder-F",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/daily-assistant-collaborator-e2e-nJYk2R/project-folder-F"
+      ]
+    },
+    "reply": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Message delivered.",
+      "target_agent_run_id": "dac_project_manager_fa379e_dec9ffb08618405cae4d877d22365792",
+      "isError": false
+    },
+    "receivedAtPm": "You received a message from the agent with sender run id \"daily_assistant_2a099af4dbc14dc7a3894f354246b6f5\".\nmessage:\nTask done. DA-REPORT-1d672821",
+    "copyTools": [
+      "edit_image",
+      "generate_image",
+      "generate_speech",
+      "list_available_agents",
+      "send_message_to",
+      "delegate_task"
+    ],
+    "promptStart": "## Agent Identity\n\n- Name: Daily Assistant\n- Description: General-purpose agent for practical tasks, with awareness of available specialist agents and teams.\n\n### Responsibilities and Boundaries\n\nYou "
+  },
+  "DAC-03": {
+    "delegated": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "daily_assistant_362b0e31d48e435d8f050572963822ef",
+      "task_id": "ad_hoc_task_de1ceff4-94bc-412d-aea3-f578641083a0",
+      "isError": false
+    },
+    "launch": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/daily-assistant-collaborator-e2e-nJYk2R/workspace"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/daily-assistant-collaborator-e2e-nJYk2R/workspace",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/daily-assistant-collaborator-e2e-nJYk2R/workspace"
+      ]
+    },
+    "receivedAtPm": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/daily_assistant\",\"description\":\"CALL_TOOL:{\\\"name\\\":\\\"send_message_to\\\",\\\"arguments\\\":{\\\"target_agent_run_id\\\":\\\"dac_project_manager_fa379e_f6b7f720d6b24167b041325ebcd34954\\\",\\\"content\\\":\\\"Ad-hoc done. DA-ADHOC-528471c7\\\"}}\"}}"
+  },
+  "DAC-04": {
+    "teamList": [
+      {
+        "name": "Daily Assistant",
+        "kind": "agent",
+        "address": "/mate",
+        "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+      },
+      {
+        "name": "DAC Project Manager fa379e",
+        "kind": "agent",
+        "address": "/manager",
+        "description": "DAC Project Manager fa379e (collaboration prompt E2E)"
+      },
+      {
+        "name": "DAC Helper fa379e",
+        "kind": "agent",
+        "address": "/dac_helper_fa379e",
+        "description": "DAC Helper fa379e (collaboration prompt E2E)"
+      }
+    ],
+    "refused": {
+      "delegated": false,
+      "message": "'/daily_assistant' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.",
+      "isError": false
+    },
+    "second": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "daily_assistant_2a099af4dbc14dc7a3894f354246b6f5",
+      "isError": false
+    },
+    "receivedAtCopy": "You received a message from the agent with sender address \"/dac_project_manager_fa379e\" and sender run id \"dac_project_manager_fa379e_dec9ffb08618405cae4d877d22365792\".\nmessage:\nNew Task assigned to you: dac-personal-fa379e-2. Your Task dac-personal-fa379e-1 is still open; name the Task key in each report.\n\nTask: dac-personal-fa379e-2 in Project project_5ec2e8a6-db2f-4f76-b6a6-e4d92d372eb1\nIf you "
+  },
+  "DAC-05": {
+    "agents": [
+      {
+        "name": "DAC Project Manager fa379e",
+        "kind": "agent",
+        "address": "/dac_project_manager_fa379e",
+        "description": "DAC Project Manager fa379e (collaboration prompt E2E)"
+      },
+      {
+        "name": "DAC Helper fa379e",
+        "kind": "agent",
+        "address": "/dac_helper_fa379e",
+        "description": "DAC Helper fa379e (collaboration prompt E2E)"
+      },
+      {
+        "name": "DAC Team 68fdb9",
+        "kind": "agent_team",
+        "address": "/dac_team_68fdb9",
+        "description": "Collaboration prompt E2E team"
+      }
+    ],
+    "refused": {
+      "error": {
+        "code": "COLLABORATION_SELF_TARGET_REJECTED",
+        "message": "/daily_assistant is in your own team; you can't delegate to it. Talk with it using send_message_to."
+      },
+      "isError": true
+    }
+  },
+  "DAC-06": {
+    "views": {
+      "shown=false": {
+        "pm": [
+          "autobyteus-daily-assistant",
+          "dac-helper-fa379e",
+          "dac-team-68fdb9"
+        ],
+        "da": [
+          "dac-project-manager-fa379e",
+          "dac-helper-fa379e",
+          "dac-team-68fdb9"
+        ]
+      },
+      "shown=true": {
+        "pm": [
+          "autobyteus-daily-assistant",
+          "dac-helper-fa379e",
+          "dac-team-68fdb9"
+        ],
+        "da": [
+          "dac-project-manager-fa379e",
+          "dac-helper-fa379e",
+          "dac-team-68fdb9"
+        ]
+      }
+    },
+    "stored": "Please involve the assistant. MENTION-6f6c96cd\n\n[Mentioned agents]\n- Daily Assistant (agent) at /daily_assistant: delegate the task to it with delegate_task; it returns a run id to follow up with."
+  }
+}

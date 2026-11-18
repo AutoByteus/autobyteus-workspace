@@ -1,0 +1,22 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/anchored-launch.probe.test.ts[2m > [22m[2mP-007 node-posix: anchor overlaps quick shell return and retained survivor
+[22m[39m{"check":"P-007","mode":"node-posix","receipts":[{"anchor":63627,"command":63642,"survivor":63643,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":63693,"command":63708,"survivor":63709,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":63760,"command":63777,"survivor":63778,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":63828,"command":63844,"survivor":63845,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":63896,"command":63911,"survivor":63912,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true}]}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/anchored-launch.probe.test.ts[2m > [22m[2mP-007 bash-local-model: anchor overlaps quick shell return and retained survivor
+[22m[39m{"check":"P-007","mode":"bash-local-model","receipts":[{"anchor":63963,"command":63978,"survivor":63979,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":64029,"command":64045,"survivor":64046,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":64097,"command":64112,"survivor":64113,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":64168,"command":64186,"survivor":64187,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true},{"anchor":64237,"command":64253,"survivor":64254,"resultBeforeAnchorExit":true,"anchorSurvivedTerm":true}]}
+
+ [32m✓[39m tickets/in-progress/backend-port-conflict-20261024/evidence/anchored-launch.probe.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 786[2mms[22m[39m
+   [33m[2m✓[22m[39m P-007 node-posix: anchor overlaps quick shell return and retained survivor [33m 553[2mms[22m[39m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/group-stop.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (6)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[2m | [22m[33m6 skipped[39m[90m (8)[39m
+[2m   Start at [22m 20:21:05
+[2m   Duration [22m 1.74s[2m (transform 146ms, setup 0ms, import 268ms, tests 786ms, environment 0ms)[22m
+

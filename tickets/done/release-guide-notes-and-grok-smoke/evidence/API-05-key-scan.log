@@ -1,0 +1,7 @@
+# API-05 key scan of the API-02/03 runs (all step logs: live, antigravity, autobyteus; console logs)
+# Commands: gitleaks dir <run log dir> (gitleaks 8.30.1); grep -E for sk-ant-/sk-/xai-/ghp_/AKIA/PRIVATE KEY/access_token/refresh_token
+# Commit: 23d722096a; Date: 2026-11-01
+
+gitleaks dir release-smoke-3pe_zfs4: no leaks found
+gitleaks dir release-smoke-vzapci0z: no leaks found
+key-shape grep over 8 files: 0 matches

@@ -1,0 +1,15 @@
+# IMP-03 image build, linux/arm64
+# Command: docker buildx build --builder desktop-linux --load --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server-305-test:step1 .
+# Commit: 01c56f1b95 (build inputs: Dockerfile blob cb65611404, describe-server-package.mjs blob f4deabae2a, same as the commit)
+# Environment: macOS 26 arm64 host, Docker 29.0.1 (desktop-linux buildx); native arm64
+# Date: 2026-10-30
+
+## Excerpt
+#40 22.01 Removed 127 MB of onnxruntime-web browser builds
+#40 22.26 Embedding runtime validation passed
+#40 22.46 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 61 migrations
+#54 naming to docker.io/library/autobyteus-server-305-test:step1 done
+exit 0
+image id sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce os/arch linux/arm64
+
+## Full log: IMP-03-image-build-arm64.full.log

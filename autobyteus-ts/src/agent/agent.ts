@@ -22,6 +22,8 @@ import {
   normalizeToolResultInvocationId,
   type PostToolResultResult
 } from './tool-result-posting.js';
+import type { BaseTool } from '../tools/base-tool.js';
+import { buildToolInstanceMap, cleanupToolInstance } from './context/agent-tool-instances.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -54,6 +56,34 @@ export class Agent {
   getCompactionRecovery() { return this.runtime.getCompactionRecovery(); }
   authorizeCompactionRetry(input: CompactionRetryRequest) { return this.runtime.authorizeCompactionRetry(input); }
   revokeUnusedCompactionRetry(input: CompactionRetryRequest) { return this.runtime.revokeUnusedCompactionRetry(input); }
+
+  /**
+   * Replaces the agent's tool list from its next LLM call. A tool whose name stays keeps its
+   * **existing** instance (some hold state while they run, such as a browser session); only added
+   * names take the given instances. Removed instances, and given instances not used because their
+   * name stayed, are cleaned up as at shutdown. A tool call already running keeps its instance.
+   */
+  async replaceTools(tools: readonly BaseTool[]): Promise<void> {
+    const state = this.runtime.context.state;
+    const previous = state.toolInstances ?? {};
+    const given = buildToolInstanceMap(this.agentId, tools);
+    const next: Record<string, BaseTool> = {};
+    const unused: Array<[string, BaseTool]> = [];
+    for (const [toolName, tool] of Object.entries(given)) {
+      const existing = previous[toolName];
+      if (existing) {
+        next[toolName] = existing;
+        if (existing !== tool) unused.push([toolName, tool]);
+      } else {
+        next[toolName] = tool;
+      }
+    }
+    state.toolInstances = next;
+    for (const [toolName, tool] of Object.entries(previous)) {
+      if (!(toolName in next)) await cleanupToolInstance(this.agentId, toolName, tool);
+    }
+    for (const [toolName, tool] of unused) await cleanupToolInstance(this.agentId, toolName, tool);
+  }
 
   async postUserMessage(agentInputUserMessage: AgentInputUserMessage): Promise<void> {
     const event = new UserMessageReceivedEvent(agentInputUserMessage);

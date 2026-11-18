@@ -100,4 +100,15 @@ describe('agentOrgDefinitionStore', () => {
     expect(outbound.handoffs).toEqual(handoffs)
     expect(members.map((member) => member.__typename)).toEqual(['AgentOrgMember', 'AgentOrgMember'])
   })
+  it('resets one personal setting of an Org and publishes the returned definition (package-personal-settings)', async () => {
+    const reset = { id: 'my-org', name: 'My Org', description: '', instructions: 'Run.', revision: 'r1', members: [], handoffs: [],
+      avatarUrl: null, personalSettings: [], personalSettingsBase: 'PACKAGE' }
+    mockMutate.mockResolvedValue({ data: { resetAgentOrgPersonalSetting: reset }, errors: [] })
+    const store = useAgentOrgDefinitionStore()
+
+    await expect(store.resetPersonalSetting('my-org', 'AVATAR')).resolves.toEqual(reset)
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { definitionId: 'my-org', setting: 'AVATAR' } }))
+    expect(store.byId('my-org')).toEqual(reset)
+  })
 })

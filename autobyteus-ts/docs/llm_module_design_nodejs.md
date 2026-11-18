@@ -122,16 +122,13 @@ Two OpenAI-style paths coexist:
   preserves explicit lower-level `tool_choice` pass-through. The default
   agent/server path leaves `tool_choice` unset.
 - `src/llm/api/provider-request-kwargs.ts` owns shared external-provider
-  filtering for internal invocation fields such as `logicalConversationId`,
-  `logical_conversation_id`, `conversationId`, `agentId`, `turnId`,
-  and `requestId`. Provider adapters name their own
+  filtering for internal invocation fields such as `conversationId`, `agentId`,
+  `turnId` and `requestId`. Provider adapters name their own
   controlled fields; the sanitizer must not own provider-specific model policy.
 - Provider adapters keep provider-specific request legality local before
-  delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
-  requests to Moonshot-safe temperature defaults and applies separate
-  fixed sampling/tool-choice constraints for both K2.7 Code official IDs:
-  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed`. `GlmLLM` maps the flat GLM
-  thinking schema to provider-native request fields.
+  delegating to that builder. `KimiLLM`, for example, owns the Kimi K3 thinking
+  request shape (`thinking: { type: "enabled", reasoning_effort }`), and `GlmLLM`
+  maps the flat GLM thinking schema to provider-native request fields.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -171,18 +168,25 @@ The second argument has two meanings:
 
 The raw override applier maps standard keys such as `temperature`, `top_p`,
 `max_tokens`, penalties, and stop sequences into first-class `LLMConfig`
-fields. Missing fields preserve model defaults, unknown provider-specific keys
-flow into `extraParams`, and standard/reserved keys are filtered out of nested
-`extra_params` / `extraParams` containers so they cannot collide with
-first-class fields later. Server-side AutoByteus run assembly should pass raw
-persisted `llmConfig` objects to `LLMFactory`; it should not wrap the entire
+fields. Before it runs, `projectRawLlmConfig` cuts the record to what the
+selected model declares: a settings key survives only when the model's
+`configSchema` declares it (stored at the top level or inside an
+`extra_params` / `extraParams` container, written as a top-level key, a
+top-level value winning over a container value), standard/reserved keys keep
+their handling and are filtered out of nested containers so they cannot collide
+with first-class fields later, and every other key is dropped. Missing fields
+preserve model defaults. A model without a schema sends no stored settings, and
+a key a model no longer declares in a saved run never reaches a provider.
+`LLMFactory.canonicalRunLlmConfig(modelIdentifier, raw)` gives a new run's stored
+config the same canonical form. Server-side AutoByteus run assembly should pass
+raw persisted `llmConfig` objects to `LLMFactory`; it should not wrap the entire
 record as `new LLMConfig({ extraParams: llmConfig })`.
 
 Provider/model invariants are enforced after this factory composition and
-before request construction. The Kimi K2.7 Code policy is the concrete example:
-both `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` seed fixed defaults from
-the catalog and are still normalized by `KimiLLM` before the OpenAI-compatible
-request builder runs.
+before request construction. The Kimi K3 request shape is the concrete example:
+the catalog seeds `reasoning_effort: max` and `thinking_type: enabled`, and
+`KimiLLM` rewrites them into the provider's `thinking` object before the
+OpenAI-compatible request builder runs.
 
 ## 4. Provider Implementations
 
@@ -271,23 +275,21 @@ The current latest-model support set is summarized in
 - Anthropic `claude-opus-5-5` (verified 2026-09-23),
   `claude-opus-5` (verified 2026-07-31; standard pricing effective
   2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
-  `claude-opus-4.8`, `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
+  `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
   2026-10-09), and `claude-sonnet-5`
   with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
   or fallback.
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
-- Gemini `gemini-3.5-flash` with the same provider value for API-key and
-  Vertex runtimes (verified 2026-05-20).
+- Gemini `gemini-3.8-flash` (verified 2026-09-02), with introductory and
+  standard pricing schedules.
 - xAI Grok `grok-4.7` as the sole built-in Grok row (verified 2026-09-26),
   using the existing Chat Completions path with always-on low/medium/high/xhigh
   reasoning and no legacy alias.
-- Moonshot/Kimi `kimi-k2.6` general-purpose model plus the K2.7 Code
-  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` serving routes. HighSpeed is
-  a distinct official provider identifier for the faster K2.7 Code route, not a
-  compatibility alias (standard K2.7 verified 2026-06-16; HighSpeed verified
-  2026-06-26).
-- Zhipu GLM `glm-5.2` (verified 2026-06-16).
+- Moonshot/Kimi `kimi-k3` (verified 2026-08-22), with thinking always enabled
+  and `low`/`high`/`max` effort.
+- Zhipu GLM `glm-5.3`, with thinking always enabled and `low`/`high`/`max`
+  effort. `glm-5.2` is served only through the Qwen provider's static rows.
 - MiniMax `minimax-m3` / `MiniMax-M3` (verified 2026-06-24). MiniMax M2.7 is
   removed and must not be retained as an alias.
 
@@ -298,16 +300,19 @@ Provider adapters own request-shape differences:
   `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` shapes requests from one exact-value per-model table,
   `anthropic-model-request-policy.ts` (thinking mode, toggle-off shape, forced
-  `tool_choice` rejection); every catalog row has an explicit entry, including
-  the fixed-budget `claude-sonnet-4-6`.
+  `tool_choice` rejection) and the effort vocabulary; every catalog row has an
+  explicit entry and any other model value fails locally.
   Sonnet 5.5 with thinking off sends `{ type: "between_tools" }` and rejects a
   forced `tool_choice` locally; Haiku 5.5 and Sonnet 5 send `{ type: "disabled" }`.
-- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
-  Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Haiku 5.5, and Fable 5 without sending fixed thinking budgets,
-  manual-budget overrides, or unsupported sampling fields (`temperature`,
-  `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
-  before Anthropic Messages API calls. Older Claude rows keep the legacy
-  fixed-budget path unless a separate provider migration changes them.
+- `AnthropicLLM` maps Claude adaptive-thinking config for every catalog row
+  without sending fixed thinking budgets, manual-budget overrides, or
+  unsupported sampling fields (`temperature`, `top_p`, `top_k`). It maps a
+  configured `reasoning_effort` to `output_config.effort` (never a top-level
+  field; nothing when unset or while thinking is off) and fails locally on an
+  unknown level. From the run config it reads only `thinking_enabled` and
+  `reasoning_effort` and sends no other config key; it never sends
+  `thinking.display`. It also filters AutoByteus-internal invocation kwargs
+  before Anthropic Messages API calls.
 - Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking,
   unsupported sampling parameters and forced `tool_choice` are rejected before
   the Messages SDK call.
@@ -326,33 +331,30 @@ Provider adapters own request-shape differences:
   and is rendered as user-role text, so the cached system prefix never changes
   mid-conversation. `cache_control` is adapter-owned: it is dropped from
   invocation kwargs and config `extraParams`.
-- The `claude-fable-5-1` definition exposes no manual thinking schema because
-  adaptive thinking is always on. Its exact 1M context/input and 128k output
+- Anthropic thinking settings are real or absent. Opus 5, Sonnet 5, Sonnet 5.5
+  and Haiku 5.5 expose a `thinking_enabled` switch that defaults to On; Off sends
+  the model's own off shape (`disabled`, or `between_tools` on Sonnet 5.5) and no
+  effort, and thinking really stops. Opus 5.5, Fable 5 and Fable 5.1 are always
+  on: their definitions expose effort only and the adapter always sends adaptive
+  thinking, rejecting manual enabled/disabled thinking and unsupported sampling
+  fields locally. The `claude-fable-5-1` exact 1M context/input and 128k output
   limits plus Standard `10/50/0.25/12.5/20`
   input/output/cache-read/5-minute-write/1-hour-write prices are static catalog
-  metadata; the existing Fable-family request policy still rejects manual
-  enabled/disabled thinking and unsupported sampling fields.
+  metadata.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
   maps the flat user-facing `thinking_type` config to
   top-level `thinking.type` before the shared request builder runs, dropping
   stale caller-supplied `thinking` / `extra_body.thinking` values.
-- `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
-  modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
-  Gemini thinking config schema.
+- `GeminiLLM` uses the exact `gemini-3.8-flash` ID and shares the existing
+  Gemini thinking config schema (`thinking_level`, `include_thoughts`).
 - `GrokLLM` keeps the xAI Chat Completions transport, defaults reasoning to
   `high`, and strips provider-invalid stop and penalty fields from copied config
   and invocation kwargs before the shared request builder runs.
-- `GlmLLM` maps GLM `thinking_type` to provider-native `thinking.type`, sends
-  `reasoning_effort` for enabled thinking, and omits stale effort values when
-  thinking is disabled.
-- `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
-  thinking when tool workflows have no explicit thinking override. Kimi also
-  normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
-  workflows and `1` for non-tool requests, while preserving explicit
-  per-request temperature kwargs. For `kimi-k2.7-code` and
-  `kimi-k2.7-code-highspeed`, it keeps thinking on and normalizes fixed
-  sampling/tool-choice fields to provider-valid values through the shared Kimi
-  K2.7 policy.
+- `GlmLLM` always sends provider-native `thinking.type: enabled` with a valid
+  `reasoning_effort` (`low`/`high`/`max`, default `max`).
+- `KimiLLM` always sends `thinking: { type: "enabled", reasoning_effort }` with
+  a valid effort (`low`/`high`/`max`, default `max`) and removes the flat
+  `thinking_type` / `reasoning_effort` keys from the request body.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
@@ -411,7 +413,7 @@ text-history fallback remains. Text-only tool-result continuations render the ex
 and do not append an extra aggregate `role: "user"` message containing tool
 results. If a processed tool result includes context-file media, the request
 keeps a user/media carrier so the media can be sent; that carrier uses semantic
-completed-tool wording such as `The read_media_file tool call completed
+completed-tool wording such as `The read_file tool call completed
 successfully.` rather than internal continuation labels or generated tool-call
 formatting instructions.
 
@@ -481,7 +483,7 @@ converted, the renderer must fail before provider invocation with an actionable
 media-conversion error rather than silently sending a text-only request.
 
 The direct-Gemini `.m4a` path has an opt-in live proof in
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts`. Default test
 runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
 fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
 sample; the live test renders the assembled request's exact local file bytes
@@ -544,10 +546,10 @@ the old synthetic aggregate user message. Renderer unit coverage also verifies
 semantic media-carrier wording for OpenAI-compatible and Gemini payloads. Broader integration tests remain under `tests/integration/llm/...`.
 
 Direct-Gemini media continuation coverage also includes
-`tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
-local `read_media_file -> LLMUserMessage.audio_urls -> Gemini inlineData` path
+`tests/integration/agent/read-file-media-continuation-flow.test.ts` for the
+local `read_file (media) -> LLMUserMessage.audio_urls -> Gemini inlineData` path
 and the env-gated
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts` for live
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts` for live
 `.m4a` provider acceptance.
 
 ## 10. Where to Update

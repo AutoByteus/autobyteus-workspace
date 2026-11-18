@@ -1,0 +1,30 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-03 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/done/embedded-browser-history/evidence/DR-native",
+  "commit": "763265ab81fbb58e532bda75d7b374c47dd40e28",
+  "date": "2026-10-26T17:39:03.839Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "tickets/done/embedded-browser-history/follow-ups.md",
+  "caseId": "API-08",
+  "stop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-52218-1402",
+      "wasRunning": true,
+      "forced": true,
+      "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-6oG171",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "dataRootRemoved": true,
+  "ports": {
+    "52217": true,
+    "52218": true,
+    "52219": true
+  },
+  "result": "Pass"
+}

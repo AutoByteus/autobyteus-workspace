@@ -1,0 +1,12 @@
+# Case: API-10 — AC-018 independent rerun: the implementation's browser probe (evidence/browser-probe.mjs) against this round's node, with one change: the model search term 'lmstudio' -> 'qwen3-max' (this node lists catalog models only; the run is a draft, no message)
+# Command: node browser-probe-rerun.mjs <playwright-core> <pairing URL abx407-node.lan:56465> abx407-api-node <out>
+# Commit: 165de82af4; headless system Chrome 1280x800; node abx407-api-node
+# Date: 2026-11-06T23:30:10Z
+
+{"name":"opened","query":"?screen=desktop","status":"Connected · View only","dimensions":"1920x1080"}
+{"name":"view-only-clicks","mouseOnNode":"x:300 y:300","expected":"x:300 y:300"}
+{"name":"zoom","zoomed":"translate(-1920px, -1068px) scale(4)","panned":"translate(-1800px, -1008px) scale(4)","fitVisible":true,"fitted":"translate(0px, 0px) scale(1)","afterDoubleTap":"translate(0px, 0px) scale(1)","mouseOnNode":"x:300 y:300","dimensions":"1920x1080"}
+{"name":"full-screen-view-only","fullQuery":"?screen=desktop&full=1","barHidden":true,"afterTapQuery":"?screen=desktop","barBack":true}
+{"name":"control-click","mouseOnNode":"x:959 y:540","expectedNear":"x:960 y:540","canvas":{"x":7.125,"y":88,"width":1265.765625,"height":712},"sockets":["ws://abx407-node.lan:56465/ws/agent-package-definitions?access_token=<redacted>","ws://abx407-node.lan:56465/ws/node-desktop?mode=view&access_token=<redacted>","ws://abx407-node.lan:56465/ws/node-desktop?mode=control&access_token=<redacted>"]}
+{"name":"full-screen-control","handleVisible":true,"afterHandleQuery":"?screen=desktop","barBack":true}
+{"result":"done","error":null}

@@ -1,0 +1,7 @@
+# DEL-10-web-unit — web unit/component suite (excerpt)
+### pnpm -C autobyteus-web test:nuxt --run
+# State: merge 5a62a061b4 (ticket code 2c4ba2c51e + tests f3e36e274c + origin/personal 51ec39d86c); macOS 26 arm64, Node v22.23.1; 2026-11-09
+
+ Test Files  730 passed (730)
+      Tests  5492 passed (5492)
+exit 0

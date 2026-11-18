@@ -1,0 +1,11 @@
+# Check: IMP-02
+# Command: cd autobyteus-server-ts && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" node ./scripts/typecheck.mjs
+# Commit: 0d3c31c4ae
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 21:14 CET
+# Full output: this file
+
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 1184 in 366 files (baseline 1184 in 366 files)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.6s
+[typecheck] server tests (tsconfig.tests.json): 1184 errors, exit 2, 27.8s

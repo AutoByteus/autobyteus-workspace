@@ -1,0 +1,4 @@
+15a Control (portrait) | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · Control\",\"bar\":true,\"handle\":false,\"viewport\":[412,839],\"canvas\":[0,348,412,232],\"picture\":\"none\"}"
+15b Keyboard tapped: mInputShown=true focus="mobile-node-desktop-keyboard-input"
+15c full screen tapped with the keyboard open | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"none\"}"
+15d mInputShown=false focus={"result":{"type":"object","subtype":"null","value":null}} keyboard button=false clipboard button=false

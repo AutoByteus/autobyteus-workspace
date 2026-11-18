@@ -1,0 +1,11 @@
+- id: system-prompt
+  config:
+    personaPrefix: "AUTOBYTEUS-PROBE-PERSONA: you are the agent defined by AutoByteus."
+- id: tool-subagent
+  disabled: true
+- id: tool-plugin-manager
+  disabled: true
+- id: acp
+  config:
+    provider: deepseek-official
+    model: deepseek-v4-pro

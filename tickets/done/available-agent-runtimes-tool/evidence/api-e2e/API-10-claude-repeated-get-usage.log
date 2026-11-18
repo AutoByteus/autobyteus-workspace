@@ -1,0 +1,90 @@
+# API-10 — repeated live Claude get_usage reads on an idle-input query (as the product reads; script API-10-claude-repeat.mjs.txt)
+# Command: node claude-repeat.mjs <worktree>/autobyteus-server-ts/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs (SDK 0.3.280, Claude Code 2.1.310, host login)
+# 6 reads 4 s apart; 11 other claude processes (the user's own agents) were running on the same account at the start; macOS darwin 25.5; 2026-10-25T07:58Z
+
+[
+ {
+  "at": "2026-10-25T07:58:00.669Z",
+  "ms": 442,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=13%",
+   "weekly_all=50%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 13,
+  "seven_day_utilization": 50
+ },
+ {
+  "at": "2026-10-25T07:58:05.231Z",
+  "ms": 558,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=13%",
+   "weekly_all=50%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 13,
+  "seven_day_utilization": 50
+ },
+ {
+  "at": "2026-10-25T07:58:09.738Z",
+  "ms": 505,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=13%",
+   "weekly_all=50%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 13,
+  "seven_day_utilization": 50
+ },
+ {
+  "at": "2026-10-25T07:58:14.176Z",
+  "ms": 436,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=13%",
+   "weekly_all=50%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 13,
+  "seven_day_utilization": 50
+ },
+ {
+  "at": "2026-10-25T07:58:18.619Z",
+  "ms": 441,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=13%",
+   "weekly_all=50%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 13,
+  "seven_day_utilization": 50
+ },
+ {
+  "at": "2026-10-25T07:58:23.076Z",
+  "ms": 454,
+  "session_total_cost_usd": 0,
+  "session_model_usage": {},
+  "session_api_ms": 0,
+  "limits": [
+   "session=13%",
+   "weekly_all=50%",
+   "weekly_scoped:Fable=0%"
+  ],
+  "five_hour_utilization": 13,
+  "seven_day_utilization": 50
+ }
+]

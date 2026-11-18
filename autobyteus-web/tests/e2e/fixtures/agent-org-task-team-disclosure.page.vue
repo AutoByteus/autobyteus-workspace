@@ -18,6 +18,8 @@ import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryT
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees, type RecordedOrgTree } from '~/test-support/runTreeFixtures';
 
 definePageMeta({ layout: false });
 
@@ -32,9 +34,14 @@ const agent = (address: string, agentRunId: string) => ({
 });
 const mountedTeam = (address: string, teamRunId: string, coordinator: string, members: ReturnType<typeof agent>[]) => ({
   address, teamDefinitionId: `definition-${teamRunId}`, role: null, description: null, teamRunId,
-  coordinatorAddress: coordinator, defaultLaunchConfiguration: launch, members, taskExecutions: [],
+  coordinatorAddress: coordinator, defaultLaunchConfiguration: launch, members,
 });
 const taskMember = (address: string, agentRunId: string) => ({ address, agentRunId, platformAgentRunId: null });
+// Baseline fix (autobyteus-385 API/E2E): a Team copy records the source it started from (7d689455ad); its coordinator is
+// named there.
+const teamSource = (teamDefinitionId: string, coordinatorAddress: string) => ({
+  kind: 'agent_team', teamDefinitionId, coordinatorAddress, members: [], handoffs: [], defaultLaunchConfiguration: launch,
+});
 const executionTree = {
   subjectKind: 'agent_org', createdAt: '2026-09-29T08:00:00.000Z', archivedAt: null, applicationBinding: null, handoffs: [],
   rootOrg: {
@@ -51,14 +58,17 @@ const executionTree = {
     taskExecutions: [
       {
         address: '/StudentStudyGroup', teamRunId: 'ssg-task-1', delegatorAgentRunId: 'teacher-run', startedAt: '2026-09-29T08:01:00.000Z',
+        source: teamSource('definition-ssg-configured', '/StudentStudyGroup/student_one'),
         members: [taskMember('/StudentStudyGroup/student_one', 'ssg1-s1'), taskMember('/StudentStudyGroup/student_two', 'ssg1-s2')],
         taskExecutions: [{
           address: '/Reviewers', teamRunId: 'reviewers-task-nested', delegatorAgentRunId: 'ssg1-s1', startedAt: '2026-09-29T08:02:00.000Z',
+          source: teamSource('definition-reviewers-configured', '/Reviewers/chair'),
           members: [taskMember('/Reviewers/chair', 'reviewers-nested-chair')], taskExecutions: [],
         }],
       },
       {
         address: '/StudentStudyGroup', teamRunId: 'ssg-task-2', delegatorAgentRunId: 'teacher-run', startedAt: '2026-09-29T08:03:00.000Z',
+        source: teamSource('definition-ssg-configured', '/StudentStudyGroup/student_one'),
         members: [taskMember('/StudentStudyGroup/student_one', 'ssg2-s1'), taskMember('/StudentStudyGroup/student_two', 'ssg2-s2')],
         taskExecutions: [],
       },
@@ -69,9 +79,13 @@ const executionTree = {
 
 const groups = reactive<AgentOrgHistoryDefinitionGroup[]>([{
   stableKey: 'agent_org_definition:ttrc-org-definition', definitionId: 'ttrc-org-definition', name: 'Nested Classroom Test Org',
-  runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z',
-    archivedAt: null, isActive: false, summary: 'Classroom run', executionTree, closedTaskExecutions: [] }],
+  runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z', lastActivityAt: '2026-09-29T08:00:00.000Z',
+    archivedAt: null, isActive: false, summary: 'Classroom run', executionTree }],
 }]);
+
+// autobyteus-461 SR-084: the Org's delegated runs are its tree's rows, as the server builds them from the recorded runs.
+const trees = useRunTreeStore();
+seedOrgRunTrees(trees, [{ rootRunId: ROOT, executionTree: executionTree as unknown as RecordedOrgTree }]);
 
 const tree = useWorkspaceHistoryTreeState({ runHistoryStore: useRunHistoryStore(), selectionStore: useAgentSelectionStore() });
 tree.toggleAgentOrgDefinition('ttrc-ws', 'ttrc-org-definition');
@@ -93,7 +107,6 @@ const actions = {
 } as never;
 const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: noop };
 
-const teamRunIds = ['ssg-task-1', 'reviewers-task-nested', 'ssg-task-2'];
 const probe = {
   /** Emulates a live snapshot: the run becomes active and a new member joins the first delegation. */
   addLateMember: () => {
@@ -101,9 +114,10 @@ const probe = {
     const next = structuredClone(toRaw(run.executionTree)) as any;
     next.rootOrg.taskExecutions[0].members.push(taskMember('/StudentStudyGroup/student_two', 'ssg1-late'));
     groups[0]!.runs[0] = { ...run, isActive: true, executionTree: next };
+    // The Org's open view tells its tree's change (SR-084): the rows as the server builds them now.
+    seedOrgRunTrees(trees, [{ rootRunId: ROOT, executionTree: next as RecordedOrgTree }]);
   },
   state: () => ({
-    taskTeams: Object.fromEntries(teamRunIds.map((id) => [id, tree.isAgentOrgTaskTeamExpanded(ROOT, id)])),
     mountedTeams: { '/StudentStudyGroup': tree.isAgentOrgTeamExpanded(ROOT, '/StudentStudyGroup'), '/Reviewers': tree.isAgentOrgTeamExpanded(ROOT, '/Reviewers') },
     calls: JSON.parse(JSON.stringify(calls)),
   }),

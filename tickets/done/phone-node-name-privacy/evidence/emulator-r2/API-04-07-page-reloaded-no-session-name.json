@@ -1,0 +1,35 @@
+{
+ "pageUrl": "http://hostbox-9f3.home.arpa:47331/mobile/",
+ "value": {
+  "headerName": "Test Desktop",
+  "headerState": "Connected",
+  "headerAria": "Test Desktop, Connected. Connection",
+  "banner": null,
+  "sheetOpen": false,
+  "sheetText": null,
+  "sheetAddressLine": false,
+  "bodyText": "Test Desktop\nConnected\n\nNo runs yet\n\nStart with New run. Work an agent delegates appears under its run and leaves when it is done.",
+  "ariaLabels": [
+   "Test Desktop, Connected. Connection",
+   "New run"
+  ],
+  "titles": [
+   "New run"
+  ],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 1,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": "Test Desktop"
+  },
+  "sessionNodeName": "(absent)",
+  "sessionKeys": [
+   "entryId",
+   "serverBaseUrl",
+   "credential",
+   "device",
+   "pairedAt"
+  ]
+ }
+}

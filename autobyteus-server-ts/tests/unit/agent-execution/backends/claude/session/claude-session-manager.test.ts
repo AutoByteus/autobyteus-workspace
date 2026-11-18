@@ -9,15 +9,16 @@ import { ClaudeSessionManager } from "../../../../../../src/agent-execution/back
 import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
-const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) }) =>
+const createManager = (sdkClient: unknown, activator: unknown = createAgentToolMcpRunSessionsStub()) =>
   new ClaudeSessionManager(
     activator as never,
     {} as never,
     sdkClient as never,
-    { cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined) } as never,
   );
 
 const createRunContext = (input: { runId: string; sessionId?: string }) =>
@@ -29,7 +30,7 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
       autoExecuteTools: false,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       carpenterSystemPrompt: "## Agent Identity\n\n- Name: Test agent",
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",

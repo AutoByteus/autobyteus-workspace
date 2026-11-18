@@ -1,3 +1,4 @@
+import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
@@ -19,7 +20,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
  */
 
 const TEMP = "/data/temp_workspace";
-const delegatedFrom = { nodeId: "srv_node_a", coordinatingRun: { kind: "agent" as const, runId: "assistant_a1" }, delegatorAgentRunId: "assistant_a1" };
+const delegatedFrom = { nodeId: "srv_node_a", delegatingRun: { kind: "agent" as const, runId: "assistant_a1" }, delegatorAgentRunId: "assistant_a1" };
 const agent = (id: string, defaultLaunchConfig: AgentDefinition["defaultLaunchConfig"] = null) =>
   new AgentDefinition({ id, name: id, description: id, instructions: "x", ownershipScope: "shared", defaultLaunchConfig });
 
@@ -37,6 +38,7 @@ const setup = () => {
   const definitions = new Map<string, AgentTeamDefinition>([["studio", team]]);
   const catalog: CollaboratorDefinitionCatalog = {
     listAgentDefinitions: async () => agents, listTeamDefinitions: async () => [...definitions.values()],
+    isAgentHidden: () => false,
     getAgentDefinition: async (id) => agents.find((item) => item.id === id) ?? null, getTeamDefinition: async (id) => definitions.get(id) ?? null,
   };
   const validator = { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>
@@ -75,7 +77,7 @@ const setup = () => {
     tokenUsageReadiness: { assertCurrentSchemaReady: vi.fn(), assertExistingRunRestoreReady: vi.fn() },
     definitionAdmissionService: { requireAvailable: vi.fn(async (_kind: string, id: string) => ({ status: "available", subjectKind: "agent_team", definition: definitions.get(id) })) } as never,
   });
-  const starter = new RemoteTeamRunStarter({ teamRuns });
+  const starter = new RemoteTeamRunStarter({ starter: new DelegatedRunStarter({ agentRuns: {} as never, teamRuns }) });
   const start = async (address = "/studio_team") => starter.start({ source: await resolve(address), address: address as never, name: "Studio Team", delegatedFrom });
   return { start, resolve, created, roots, manager, definitions, team, override, starter, teamRuns, delegatedFrom };
 };
@@ -85,9 +87,10 @@ describe("RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9)",
     const node = setup();
     const answer = await node.start();
     expect(answer).toEqual({
-      accepted: true, kind: "agent_team", teamRunId: "studio_team_run", coordinatorAddress: "/studio_team/lead",
-      members: [{ address: "/studio_team/lead", agentRunId: "lead_run_1" }, { address: "/studio_team/writer", agentRunId: "writer_run_2" },
-        { address: "/studio_team/checker", agentRunId: "checker_run_3" }],
+      // SR-030: the members by their team-local addresses (the delegating node reaches them by run ID only).
+      accepted: true, kind: "agent_team", teamRunId: "studio_team_run", coordinatorAddress: "/lead",
+      members: [{ address: "/lead", agentRunId: "lead_run_1" }, { address: "/writer", agentRunId: "writer_run_2" },
+        { address: "/checker", agentRunId: "checker_run_3" }],
     });
     const tree = node.roots.get("studio_team_run")!.getExecutionTreeSnapshot() as never as {
       delegatedFrom: unknown; rootTeam: { coordinatorAddress: string; defaultLaunchConfiguration: unknown; members: Array<Record<string, unknown>> } };

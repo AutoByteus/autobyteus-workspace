@@ -1,0 +1,8 @@
+# API-16 internal-agents: node tests/e2e/internal-agents-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/internal-agents
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T18:57:20Z
+Pass IP-01 While hidden: Agents page, the agent store (every picker), the featured-items picker and run history leave the internal agent out; normal agents unchanged (AC-001, REQ-003, REQ-004)
+Pass IP-02 While hidden, its run opens by URL and shows the agent's reply (REQ-008, SCN-A1)
+Fail IP-03 Basics "Internal agents" toggled on: saved; without a reload the Agents page shows it with the "Internal" badge, the store and featured picker have it, run history lists its run (AC-005, REQ-007): badge: [{"text":"Internal","title":"The system's own helper agent, shown because \"Show internal agents\" is on."},{"text":"Internal","title":"The system's own helper agent, shown because \"Show internal agents\" is on."}]
+Pass IP-04 Toggled off again: gone from the Agents page, store, featured picker and run history, without a reload
+Pass IP-05 zh-CN: the card in Chinese
+Result: Fail (/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/internal-agents/result.json)

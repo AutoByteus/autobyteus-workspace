@@ -1,0 +1,35 @@
+API/E2E round 14 (API-REV-014), on CRR-047. Code under test 4062c809d2 (HEAD 84ef73e99f: docs only since).
+Server dist/ rebuilt this round; web from source. Clean env for every run; never the user's app or ~/.autobyteus.
+Raw logs: /tmp/api461/r14 (chains A, B), /tmp/api461/r14c (reruns).
+
+Server (RUN_AGY_FAILURE_E2E=1, scripted AGY):
+  remote-collaboration folder           45/45 Pass (RC-31 … RC-37: peer statuses and output)
+  projects folder                       178 passed, 3 failed -> stale test parts fixed, rerun alone:
+                                          ad-hoc-task-delegation 3/3 (the second root's copy stopped by its own Stop before
+                                          its delete, REQ-001/REQ-007), collaboration-contract-stories 3/3 (send after CONNECTED)
+  runtime-switch-members-extended       5/5 Pass, twice (held item cleared)
+  typecheck                             production 0, tests 1012 in 316 (baseline)
+
+Web probes:
+  remote-runs-in-tree   RTP-01 … RTP-04, RTP-06, RTP-07 Pass (RTP-04: the peer's live answer, F-71 resolved);
+                        RTP-05 Fail twice (the row reads offline; in the second run the stop icon showed within 30 s, then was
+                        gone when clicked); RTP-08 Fail twice (after the outage, Retry and a turn on beta: no status change;
+                        run 1 started `idle`, run 2 `offline`)                                                    -> F-70
+  API-P04               46/65 identical; peer row shapes as round 13 (open_target added, launches on both); base-only peer
+                        frames: none apart from AGENT_STATUS on the Team stream (statuses moved to /ws/run-status, SR-082)
+  remote-run-title      3/3 Pass (RRT-05 Pass each time: F-72 not seen)
+  delegated-launch-defaults  full run 20/29; reruns: DCP-001/002/003/005, DCR-002 Pass after stale checks updated
+                        (V-11 "settings" origin; F-39 the lead resumes on its own launch; rule 2 copy reads; TC-12 `/lead`);
+                        LRL-001 … 005 Pass; DLP-006 retired; SIR-001/002 as classified
+                        AFS-002: the Org copy's card shows; D-IMP-1 (Settings closed on focusing the running Org's copy) in
+                        3 of 3 runs
+  SSR                   4/4 Pass; SSR-002 Pass in 3 of 3 runs (no Stop failure: F-68 not seen)
+  RSM 7/7, SDV 7/7, PMU 25/25 (rerun; first run lost its backend fetch once), osfr not rerun
+  projects-left-navigation   PLN-09 Pass (F-67 resolved: the reason shown; after its delegated runs are stopped, Archive
+                        all empties P); PLN-04 not 461
+  task-closure-tree     BR-008 … BR-010 Pass; BR-011 Fail, the same step as rounds 12 and 13
+  mobile-shell          49/55 (F-73 resolved: MSP-02/03/05/06/08/11/14/16/20/33/43 Pass); reruns: MSP-13, -17, -34 Pass;
+                        MSP-25 Fail twice (F-75); MSP-32 Fail twice (F-74: 980 refused /ws/run-status sockets in 17 min,
+                        77 in the short rerun); MSP-50/51 not 461
+Live: LE-O1 blocked: DeepSeek answered "402 Insufficient Balance" (the test vault's DeepSeek account), twice.
+API-F01: Pass (fresh clone at HEAD; Prisma and packaged terminal checks).

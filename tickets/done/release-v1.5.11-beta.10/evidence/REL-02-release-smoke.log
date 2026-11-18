@@ -1,0 +1,33 @@
+# REL-02 release smoke on 2e8fd1a6cf (origin/personal 746b2f5016 + docs commit), after pnpm install --frozen-lockfile and server prebuild (REL-01), 2026-11-01T09:20:32Z; load: 42.43 34.68 31.85
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 61292
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    2e8fd1a6cf60dd15666bad5eaaae236717c07055
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 95s, antigravity 19s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-50pm0sdh
+exit=1
+
+## Grok refusal detail: tokens (actual/limit): 612927/600000 (rolling 24 h). Earlier Grok use in the window: v1.5.11-beta.8 smoke (from ~2026-10-31T18:35Z, three runs) and v1.5.11-beta.9 smoke (2026-10-31T22:05Z).
+
+## Runtime waiver (RELEASE.md § Release smoke check)
+The user, 2026-11-01, in the delivery engineer's conversation, verbatim: "Waive Grok for this release"
+Scope: the Grok runtime, for v1.5.11-beta.10 only. Grok's 2/3 cases passed in REL-02 before the quota refusal; its third case ("different same-named skill") did not run to completion. Claude, Codex, Antigravity and AutoByteus passed in full.

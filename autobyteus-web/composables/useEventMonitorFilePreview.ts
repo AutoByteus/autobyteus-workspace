@@ -1,56 +1,49 @@
 import type { WorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { useLocalization } from '~/composables/useLocalization';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
-import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { FILE_ON_OTHER_NODE_MESSAGE_KEY, remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
 import { normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata';
-import { mobileWorkContextKey } from '~/types/mobileWork';
+import type { MobileFileNavigation } from '~/composables/mobile/useMobileNavigation';
+import { openMobileFilePath } from '~/composables/mobile/mobileFileOpening';
 
 export type EventMonitorFilePreviewResult =
   | { status: 'opened'; path: string }
   | { status: 'unavailable' | 'failed'; message: string };
 
+/**
+ * How a path opens in a desktop window: by its absolute path (the Files panel reads it as a local file in the embedded
+ * window that can, as a node file in every other window, autobyteus-471), or inside the run's folder as a workspace file.
+ */
 type EventMonitorPreviewLocator =
-  | { kind: 'local-absolute'; workspaceId: string; path: string }
+  | { kind: 'absolute'; workspaceId: string; path: string }
   | { kind: 'workspace-relative'; workspaceId: string; relativePath: string };
-
-const contextWorkspace = (context: ReturnType<typeof useMobileWorkStore>['currentContext']) => {
-  if (!context) return null;
-  if (context.kind === 'workspace') {
-    return {
-      workspaceId: context.workspaceId,
-      workspaceRootPath: context.rootPath,
-    };
-  }
-  if (context.kind === 'agent-run' || context.kind === 'team-run') {
-    return {
-      workspaceId: '',
-      workspaceRootPath: context.workspaceRootPath,
-    };
-  }
-  return null;
-};
 
 export function useEventMonitorFilePreview(options: {
   revealTool: WorkspaceToolReveal | null;
+  /** The phone opens a conversation's file on its Files screen (autobyteus-277 DS-008); null off the phone. */
+  mobileNavigation: MobileFileNavigation | null;
   isOriginCurrent: () => boolean;
+  /** The run whose conversation names the path. */
+  originRunId: () => string | null | undefined;
 }) {
   const fileExplorerStore = useFileExplorerStore();
-  const mobileWorkStore = useMobileWorkStore();
+  const { mobileNavigation } = options;
   const windowNodeContextStore = useWindowNodeContextStore();
   const workspaceStore = useWorkspaceStore();
   const activeContextStore = useActiveContextStore();
   const { t } = useLocalization();
 
-  const unavailable = (key: string): EventMonitorFilePreviewResult => ({
+  /** A run another node runs: its paths are that node's (autobyteus-471 REQ-003). */
+  const onOtherNode = (nodeName: string): EventMonitorFilePreviewResult => ({
     status: 'unavailable',
-    message: t(key),
+    message: t(FILE_ON_OTHER_NODE_MESSAGE_KEY, { node: nodeName }),
   });
 
   const failed = (): EventMonitorFilePreviewResult => ({
@@ -58,45 +51,21 @@ export function useEventMonitorFilePreview(options: {
     message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'),
   });
 
+  /** The phone opens the path on its Files screen (`openMobileFilePath`, shared with attachments). */
   const openMobilePath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
-    const context = mobileWorkStore.currentContext;
-    const workspace = contextWorkspace(context);
-    if (!context || !workspace?.workspaceRootPath) {
-      return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-    }
-
-    let workspaceId = workspace.workspaceId;
-    if (!workspaceId) {
-      const metadata = await workspaceStore.resolveWorkspaceMetadataByRootPath(workspace.workspaceRootPath);
-      workspaceId = metadata?.workspaceId || '';
-    }
-    if (!workspaceId) {
-      return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-    }
-
-    const locator = mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, {
-      workspaceId,
-      workspaceRootPath: workspace.workspaceRootPath,
+    if (!mobileNavigation) return failed();
+    const outcome = await openMobileFilePath({
+      absolutePath: action.normalizedCandidate, mobileNavigation, isOriginCurrent: options.isOriginCurrent,
     });
-    if (!locator) {
-      return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-    }
-
-    if (!options.isOriginCurrent()) return failed();
-    mobileWorkStore.requestFilePreview({
-      contextKey: mobileWorkContextKey(context),
-      workspaceId: locator.workspaceId,
-      relativePath: locator.relativePath,
-      source: 'event-monitor',
-      readOnly: true,
-      presentation: 'inline',
-    });
-    return { status: 'opened', path: locator.relativePath };
+    if (outcome.status === 'opened') return outcome;
+    return outcome.status === 'unavailable' ? onOtherNode(outcome.nodeName) : failed();
   };
 
   const openPath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
     try {
       if (!options.isOriginCurrent()) return failed();
+      const remoteNode = remoteRunFileNode(options.originRunId());
+      if (remoteNode) return onOtherNode(remoteNode);
       if (isMobileRemoteAccessRuntime()) {
         return await openMobilePath(action);
       }
@@ -125,14 +94,11 @@ export function useEventMonitorFilePreview(options: {
         if (!isCurrent() || !activeMetadata) return failed();
         workspaceId = workspaceTarget.context.config.workspaceId || '';
       }
-      if (!workspaceId) {
-        return workspaceTarget ? failed()
-          : unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-      }
+      if (!workspaceId) return failed();
 
       let locator: EventMonitorPreviewLocator | null = null;
       if (windowNodeContextStore.isEmbeddedWindow && hasTrustedElectronLocalFileCapability()) {
-        locator = { kind: 'local-absolute', workspaceId, path: action.normalizedCandidate };
+        locator = { kind: 'absolute', workspaceId, path: action.normalizedCandidate };
       } else {
         const mappedLocator = mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, {
           workspaceId,
@@ -146,12 +112,11 @@ export function useEventMonitorFilePreview(options: {
           };
         }
       }
-      if (!locator) {
-        return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-      }
+      // Anywhere else on the window's node: a node file, read-only, by its absolute path (autobyteus-471 REQ-001).
+      locator ??= { kind: 'absolute', workspaceId, path: action.normalizedCandidate };
 
       if (!isCurrent()) return failed();
-      const previewPath = locator.kind === 'local-absolute' ? locator.path : locator.relativePath;
+      const previewPath = locator.kind === 'absolute' ? locator.path : locator.relativePath;
       await fileExplorerStore.openFilePreview(previewPath, locator.workspaceId, {
         accessIntent: { source: 'event-monitor', readOnly: true },
       });

@@ -1,0 +1,1 @@
+export default async ({ page, shot }) => { await page.waitForTimeout(2000); await shot(page, 'API-08-32-docker-window'); return { text: (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ').slice(0, 400) }; };

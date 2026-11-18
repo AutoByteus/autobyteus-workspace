@@ -1,0 +1,9 @@
+# API-06 reproduction run on the FIX: commit 8ab3a2129a, 2026-10-24T17:30:02Z, ENV macOS Node v22.23.1
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/repro-ab238-reload-reentry.e2e.test.ts --no-watch
+[AB238-PROBE] startup view 200 {"applicationId":"<id>","slots":[{"slot":{"slotKey":"draftingTeam","name":"Drafting Team","description":"Team resource used when Brief Studio launches a new drafting run.","allowedExecutionResourceKinds":["AGENT_TEAM"],"allowedExecutionResourceSources":["bundle","shared"],"required":true,"supportedL
+[AB238-PROBE] reload errors null
+[AB238-PROBE] after package reload 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+     × a package reload, then a repair, leave the application ACTIVE and its launch settings readable 791ms
+AssertionError: {"detail":"Application '<id>' : expected 503 to be 200 // Object.is equality
+     56|     console.log("[AB238-PROBE] reload errors", JSON.stringify(reloaded…
+exit=1

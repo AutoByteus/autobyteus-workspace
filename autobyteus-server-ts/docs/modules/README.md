@@ -12,6 +12,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Definition | [agent_definition.md](./agent_definition.md) |
 | Agent Execution | [agent_execution.md](./agent_execution.md) |
 | Agent Memory | [agent_memory.md](./agent_memory.md) |
+| Agent Episodic Catalog (each agent's runs on the node, in time order, pointing to their Work Journals) | [agent_episodic_catalog.md](./agent_episodic_catalog.md) |
 | Agent Work Journal | [agent_work_journal.md](./agent_work_journal.md) |
 | Agent Packages | [agent_packages.md](./agent_packages.md) |
 | Agent Runtimes (Settings -> Agent Runtimes: versions, updates and sign-in of Codex, Claude, Antigravity, Grok) | [agent_runtimes.md](./agent_runtimes.md) |
@@ -31,6 +32,8 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Application Storage | [application_storage.md](./application_storage.md) |
 | Applications | [applications.md](./applications.md) |
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
+| Credential Proxy (Integrations and Provider Relays) | [credential_proxy.md](./credential_proxy.md) |
+| DeepSeek Harness Runtime | [deepseek_harness_runtime.md](./deepseek_harness_runtime.md) |
 | Agent Package Definitions (live agent/team/org definitions from agent packages, package folder watching) | [agent_package_definitions.md](./agent_package_definitions.md) |
 | Embeddings (local meaning search: models, collections, vector store) | [embeddings.md](./embeddings.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |
@@ -38,14 +41,19 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |
 | LLM Management | [llm_management.md](./llm_management.md) |
 | MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
+| Memory Search (search past work in every run's Work Journal: index, `search_memory`, Memory page search) | [memory_search.md](./memory_search.md) |
+| Model Routing (the Model Router agent chooses runtimes/models of delegated copies; decision records) | [model_routing.md](./model_routing.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
 | Projects | [projects.md](./projects.md) |
+| Personal Settings (tools, skills, avatar and runtime/model of package and built-in definitions, kept outside their files) | [personal_settings.md](./personal_settings.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
 | Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |
+| Restart Resume (busy runs are told after a restart; woken after an update) | [restart_resume.md](./restart_resume.md) |
 | Skills | [skills.md](./skills.md) |
+| Node Desktop (a Docker node's desktop in the VNC Viewer, through the node's server) | [node_desktop.md](./node_desktop.md) |
 | Terminal | [terminal.md](./terminal.md) |
 | Token Usage | [token_usage.md](./token_usage.md) |
 | Update Notifications (background update checks of imported GitHub packages and skill sources, one notification per source) | [update_notifications.md](./update_notifications.md) |

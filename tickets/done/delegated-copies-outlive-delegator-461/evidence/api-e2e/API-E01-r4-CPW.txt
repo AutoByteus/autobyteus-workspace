@@ -1,0 +1,23 @@
+# Case: CPW collaboration-prompt-wording (API-REV-004, round 4) — recheck of F-11, F-12, F-13
+# Commit: code 49f3db1047 (head f6df9f824b); in-process Studio server, real HTTP/WS/GraphQL/scoped MCP
+# Environment: ENV-1, clean env, scripted AGY CLI (linked_skills)
+# Date: 2026-11-13
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts --no-watch
+# Look for: Tests 13 passed (13); CPW-P1..P3 (prompt rows, F-11), CPW-H1 (sender address, F-12), CPW-M2/M4/M5 (mentions to a child on its own run, F-13), CPW-M6 (SR-059)
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (13 tests) 27573ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  1183ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  4720ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1606ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1455ms
+     ✓ CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text  1016ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  680ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1196ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  4104ms
+     ✓ CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated  4642ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  678ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  400ms
+     ✓ CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)  1636ms
+     ✓ CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy  2524ms
+ Test Files  1 passed (1)
+      Tests  13 passed (13)

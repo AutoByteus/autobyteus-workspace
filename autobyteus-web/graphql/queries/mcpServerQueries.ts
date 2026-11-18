@@ -11,7 +11,11 @@ export const GET_MCP_SERVERS = gql`
         toolNamePrefix
         command
         args
-        env
+        env {
+          name
+          value
+          state
+        }
         cwd
       }
       ... on StreamableHttpMcpServerConfig {
@@ -20,8 +24,12 @@ export const GET_MCP_SERVERS = gql`
         enabled
         toolNamePrefix
         url
-        token
-        headers
+        tokenState
+        headers {
+          name
+          value
+          state
+        }
       }
     }
   }
@@ -33,6 +41,28 @@ export const PREVIEW_MCP_SERVER_TOOLS = gql`
       __typename
       name
       description
+    }
+  }
+`
+
+export const GET_MCP_SECRET_SUGGESTION_RULE = gql`
+  query GetMcpSecretSuggestionRule {
+    mcpSecretSuggestionRule {
+      __typename
+      nameKeywords
+      valuePrefixes
+      alwaysSecretFields
+    }
+  }
+`
+
+export const GET_MCP_SECRET_MOVE_CANDIDATES = gql`
+  query GetMcpSecretMoveCandidates {
+    mcpSecretMoveCandidates {
+      __typename
+      serverId
+      field
+      matchedBy
     }
   }
 `

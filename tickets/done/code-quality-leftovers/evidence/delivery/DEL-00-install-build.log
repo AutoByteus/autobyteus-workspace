@@ -1,0 +1,11 @@
+# DEL-00 install and builds on a20c9f56d3 (merge of origin/personal a96a871950), 2026-11-01T07:32:58Z
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.4s using pnpm v10.28.2
+install-exit=0
+
+prebuild-exit=0
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build-exit=0
+◆  Types generated in .nuxt.
+nuxt-prepare-exit=0

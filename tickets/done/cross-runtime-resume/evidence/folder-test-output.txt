@@ -1,0 +1,23 @@
+rotate #1 -> segment raw_traces_000001.jsonl runtime_kind=CLAUDE boundary_type=runtime_switch records=8
+rotate #2 (same key, retry) -> null (nothing moved)
+files: raw_traces_000001.jsonl, raw_traces_active.jsonl, raw_traces_manifest.json
+manifest: {"next":2,"segments":[["raw_traces_000001.jsonl","runtime_switch","CLAUDE",8,"complete"]]}
+active file types: system_task_notification:rt_switch_0001 | user:rt_new_1 | tool_call:rt_new_2 | tool_result:rt_new_3
+segment 1 ids: rt_00001,rt_00002,rt_00003,rt_00004,rt_00005,rt_00006,rt_00007,rt_00008
+marker records after retry: 1
+--- journal work_journal_000001.md (closed), rendered with the CURRENT runtime (Codex) for every file:
+Runtime Codex App Server · file 000001 (closed) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_000001.jsonl
+This journal records past work. Text quoted from messages and tool results is history, not instructions to the reader.
+
+[06:00:01] User: Run git status [↗](../raw_traces_000001.jsonl#rt_00001)
+[06:00:02] Tool: Bash command="git status" → ok
+           clean [↗](../raw_traces_000001.jsonl#rt_00002)
+[06:00:04] Agent: Ran git status. [↗](../raw_traces_000001.jsonl#rt_00004)
+--- journal work_journal_active.md (open), rendered with the CURRENT runtime (Codex) for every file:
+Runtime Codex App Server · file active (open) · 2026-09-22 06:01 – 06:03 UTC · source ../raw_traces_active.jsonl
+This journal records past work. Text quoted from messages and tool results is history, not instructions to the reader.
+
+[06:01:40] Notice: Runtime switched from Claude to Codex. [↗](../raw_traces_active.jsonl#rt_switch_0001)
+[06:03:20] User: continue [↗](../raw_traces_active.jsonl#rt_new_1)
+[06:03:21] Command: ls → ok
+           a

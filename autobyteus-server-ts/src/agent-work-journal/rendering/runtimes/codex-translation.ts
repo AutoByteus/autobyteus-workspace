@@ -1,9 +1,17 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { asText, curlCommand } from "../command-text.js";
-import { commandLine, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
+import { commandLine, confirmedOutcome, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
 import { normalizeRecordedResult } from "../result-envelopes.js";
 import { readPatch } from "../text-diff.js";
 import { NO_RESULT, okWith, type NormalizedToolResult } from "../tool-outcome.js";
-import type { BuiltInConverter, BuiltInLine, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
+import type {
+  BuiltInConverter,
+  BuiltInLine,
+  QualifiedToolName,
+  RecordedResult,
+  RuntimeTranslation,
+} from "./runtime-translation.js";
 
 /** Codex App Server: contract §4 (Codex table). Codex records no exit code and no search results. */
 
@@ -96,12 +104,52 @@ const searchWeb: BuiltInConverter = (call, result): BuiltInLine => {
   return searchWebLine(queries.length ? queries : query ? [query] : [], searchOutcome(result, "results not recorded"));
 };
 
+/** `js` runs JavaScript in a computer-use environment: its title in the head, the code and the result below. */
+const js: BuiltInConverter = (call, result) => {
+  const title = asText(call.args.title);
+  const recorded = normalize(result) ?? NO_RESULT;
+  const code = asText(call.args.code);
+  return {
+    head: `Run JavaScript${title ? `: ${title}` : ""}`,
+    outcome: recorded.outcome,
+    parts: [
+      ...(code ? [{ kind: "message" as const, text: code }] : []),
+      ...(recorded.output ? [{ kind: "output" as const, text: recorded.output }] : []),
+    ],
+  };
+};
+
+const confirmed = (head: string, result: RecordedResult | null): BuiltInLine => {
+  const { outcome, parts } = confirmedOutcome(normalize(result));
+  return { head, outcome, parts };
+};
+
+const jsReset: BuiltInConverter = (_call, result) => confirmed("Reset JavaScript environment", result);
+
+const jsAddNodeModuleDir: BuiltInConverter = (call, result) =>
+  confirmed(`Add JavaScript module folder: ${asText(call.args.path) ?? "(path not recorded)"}`, result);
+
+const speak: BuiltInConverter = (call, result) =>
+  confirmed(`Speak: ${JSON.stringify(asText(call.args.text) ?? "")}${call.args.play === false || call.args.play === "false" ? " (not played)" : ""}`, result);
+
+/** Codex qualifies another server's tool as `<server>.<tool>`. */
+const QUALIFIED = /^([A-Za-z0-9_-]+)\.(.+)$/;
+const splitToolName = (name: string): QualifiedToolName | null => {
+  const match = QUALIFIED.exec(name);
+  return match ? { server: match[1]!, tool: match[2]! } : null;
+};
+
 export const codexTranslation: RuntimeTranslation = Object.freeze({
-  label: "Codex",
+  label: agentRuntimeName(RuntimeKind.CODEX_APP_SERVER),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_bash", runBash],
     ["edit_file", editFile],
     ["search_web", searchWeb],
+    ["js", js],
+    ["js_reset", jsReset],
+    ["js_add_node_module_dir", jsAddNodeModuleDir],
+    ["speak", speak],
   ]),
   normalizeResult: (result: RecordedResult) => normalizeRecordedResult(result),
+  splitToolName,
 });

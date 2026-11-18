@@ -17,16 +17,22 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 import org.autobyteus.mobile.connection.ConnectionDiagnosticMapper
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 
 class AutoByteusWebView(
     private val context: Context,
-    val profile: SavedNodeProfile,
+    val entry: SavedNodeEntry,
     private val fileChooserCoordinator: WebFileChooserCoordinator,
-    private val onPageStarted: (String) -> Unit,
-    private val onPageFinished: (String) -> Unit,
+    /** The shell bridge for this entry's origin; registered before the first page loads. */
+    private val shellBridge: ShellBridge?,
+    /**
+     * A main-frame document starts loading: only for autobyteus-432's full-screen reset. It decides nothing about
+     * whether the page shows (only the page's `pageReady` does, autobyteus-433 DS-006).
+     */
+    private val onPageStarted: () -> Unit,
     private val onDiagnostic: (ConnectionDiagnostic) -> Unit,
-    private val onExternalUrl: (String) -> Unit,
+    /** A link or download is opening in another app; the toast says so without its URL. */
+    private val onOpenedOutside: () -> Unit,
 ) {
     lateinit var webView: WebView
         private set
@@ -56,15 +62,17 @@ class AutoByteusWebView(
             webViewClient = Client()
             setDownloadListener(DownloadListener { url, _, _, _, _ -> openExternal(url) })
         }
+        shellBridge?.register(webView)
         loadTrusted(initialUrl)
         return webView
     }
 
     fun loadTrusted(url: String) {
-        when (TrustedNavigationPolicy.classify(url, profile).type) {
+        when (TrustedNavigationPolicy.classify(url, entry, isMainFrame = true).type) {
             NavigationDecisionType.AllowInWebView -> webView.loadUrl(url)
             NavigationDecisionType.OpenExternal -> openExternal(url)
-            NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
+            NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.linkBlocked())
+            NavigationDecisionType.KeepPage -> Unit
         }
     }
 
@@ -85,19 +93,19 @@ class AutoByteusWebView(
     }
 
     private fun openExternal(url: String) {
-        onExternalUrl(url)
+        onOpenedOutside()
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             context.startActivity(intent)
         } catch (_: ActivityNotFoundException) {
-            onDiagnostic(ConnectionDiagnosticMapper.webViewLoadFailed("No installed app can open $url"))
+            onDiagnostic(ConnectionDiagnosticMapper.noAppForLink())
         }
     }
 
     private inner class Client : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             val url = request.url.toString()
-            val decision = TrustedNavigationPolicy.classify(url, profile)
+            val decision = TrustedNavigationPolicy.classify(url, entry, request.isForMainFrame)
             return when (decision.type) {
                 NavigationDecisionType.AllowInWebView -> false
                 NavigationDecisionType.OpenExternal -> {
@@ -105,34 +113,15 @@ class AutoByteusWebView(
                     true
                 }
                 NavigationDecisionType.Block -> {
-                    onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
+                    onDiagnostic(ConnectionDiagnosticMapper.linkBlocked())
                     true
                 }
-            }
-        }
-
-        @Deprecated("Deprecated in Android framework")
-        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            val decision = TrustedNavigationPolicy.classify(url, profile)
-            return when (decision.type) {
-                NavigationDecisionType.AllowInWebView -> false
-                NavigationDecisionType.OpenExternal -> {
-                    openExternal(url)
-                    true
-                }
-                NavigationDecisionType.Block -> {
-                    onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
-                    true
-                }
+                NavigationDecisionType.KeepPage -> true
             }
         }
 
         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
-            onPageStarted(url)
-        }
-
-        override fun onPageFinished(view: WebView, url: String) {
-            onPageFinished(url)
+            onPageStarted()
         }
 
         override fun onReceivedError(
@@ -141,7 +130,7 @@ class AutoByteusWebView(
             error: WebResourceError,
         ) {
             if (request.isForMainFrame) {
-                onDiagnostic(ConnectionDiagnosticMapper.webViewLoadFailed(error.description.toString()))
+                onDiagnostic(ConnectionDiagnosticMapper.pageLoadFailed(entry.shownName))
             }
         }
 
@@ -151,7 +140,7 @@ class AutoByteusWebView(
             errorResponse: WebResourceResponse,
         ) {
             if (request.isForMainFrame) {
-                onDiagnostic(ConnectionDiagnosticMapper.fromHttpStatus(errorResponse.statusCode))
+                onDiagnostic(ConnectionDiagnosticMapper.fromHttpStatus(errorResponse.statusCode, entry.shownName))
             }
         }
     }

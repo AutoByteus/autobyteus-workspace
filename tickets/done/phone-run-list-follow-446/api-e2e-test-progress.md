@@ -1,0 +1,20 @@
+# API/E2E Test Progress — autobyteus-446
+
+- Execution coverage report: `api-e2e-execution-coverage-report.md`
+- Planned cases: the coverage investigation's Planned Cases (same case IDs)
+
+| Time | Case ID | Event | Result | Note |
+| --- | --- | --- | --- | --- |
+| 07:13 | — | Checkpoint | — | Builds verified current (IMP-11 from 8e686b7f36; since then a doc comment and documents only; bundle files with closedTaskExecutionsDigest: 1). Reused API-01…07 from the handoff. |
+| 07:13 | MSP-24…27 | Started | — | Debug run (not evidence): `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-24,MSP-25,MSP-26,MSP-27 --output-dir=/tmp/api446-dev-1` |
+| 07:23 | MSP-24…27 | Completed | Fail (debug) | /tmp debug run: MSP-24 AC-001/004/005 Pass (other 4.2/3.3 s, host before the call returned, quiet 10/10/0); AC-003 row not back after TODO: on the node a Task set to TODO keeps its copy closed until the delegator reactivates it (`reactivateClosedTarget`, `task_executions_reopened`), so the case now reopens with TODO + a message to the copy and checks both phones agree. MSP-25 failed only because of that. MSP-26 Pass. MSP-27: cold nuxt dev (504 Outdated Optimize Dep; MSP-01's warm-up does not run in a subset) → waits and warms up now, diagnostics on failure. 7 × 401 /favicon.ico (unauthenticated favicon since 437) → favicon rule accepts 401/404 by source location. |
+| 07:23 | MSP-24…27 | Started | — | Debug run 2: `--cases=MSP-24,MSP-25,MSP-26,MSP-27 --output-dir=/tmp/api446-dev-2` |
+| 07:31 | MSP-24…27 | Completed | Fail (debug) | /tmp debug run 2: MSP-25, MSP-26 Pass; MSP-24 failed on my own node check (read `closed_task_executions` at the view's top level; now matched anywhere in the view JSON); MSP-27 Team row exists but carries the host's ID (`data-team-run-id` = PTM) → selected by `data-transient-kind=task_team` + `data-member-address=/docs_review_team`. Hidden window had one `GetTaskWorkerTasks` (Projects change feed → task-worker store, untouched by this ticket); MSP-25 now records each hidden read. |
+| 07:31 | MSP-24…27 | Started | — | Debug run 3 → /tmp/api446-dev-3 |
+| 07:39 | MSP-24…27 | Completed | MSP-24…26 Pass; MSP-27 Fail (debug) | /tmp debug run 3: MSP-24 Pass (other 4.2/3.3 s; host before the call returned; quiet 10/10/0; 1 view read after the closes, 0 after; TODO alone: node still closed, phones agree; reactivation: back on other in 965 ms); MSP-25 Pass (hidden reads: only GetTaskWorkerTasks at +2.35 s, the change feed's push of the close); MSP-26 Pass. MSP-27: my unfold clicked the PTM row's own button and opened the PTM → now only its disclosure; open run checked before the close and at the end. |
+| 07:39 | MSP-27 | Started | — | Debug run 4 → /tmp/api446-dev-4 (`--cases=MSP-27`) |
+| 07:40 | MSP-27 | Completed | Pass (debug) | /tmp debug run 4: open run plain throughout; quiet 0 view / 2 statuses reads; Team row gone 1344 ms after the close; 1 view read after the close. |
+| 07:40 | API-08, MSP-24…27 | Started | — | Full probe (evidence): `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<ticket>/evidence/API-08-mobile-shell-probe` |
+| 07:58 | API-08, MSP-24…27 | Completed | Cases 27/27 Pass; probe verdict Fail (48 unknown lines) | `evidence/API-08-mobile-shell-probe/`: every case Pass incl. MSP-24…27; 48 unknown `401 (Unauthorized)` lines from the probe's main phone (`phone`, alpha) in MSP-21…26, after MSP-13 revoked its credential; alpha's log has no access lines. Diagnosing: temporary copy of the probe that adds each line's source URL, `--cases=MSP-13,MSP-21`. |
+| 08:04 | API-09 | Completed | Pass (classification) | Temporary copy of the probe (source URL + 401 GraphQL ops), `--cases=MSP-13,MSP-21`: the 401s are the agent streams' catch-up reads (`GetRunProjection` + `GetRunFileChanges`, 15 + 15 in 46 s) of the probe's main phone after MSP-13 revoked it; the node closes revoked sockets with 4403, the client ends retrying only on 4004/4005. Pre-existing (434 × 437), not this ticket → FU-003. Copy removed. |
+| 08:07 | — | Checkpoint | — | Reports written (Pass, 95.6%). Committing tests, documents and evidence. |

@@ -1,0 +1,14 @@
+# API-07b gated live suite autobyteus-anthropic-prompt-caching-live (Opus 5.5, preserved thinking with display omitted under Anthropic's strict prefix check)
+# command (autobyteus-server-ts): env -i PATH="$PATH" HOME=/tmp/api-e2e-home TMPDIR=/tmp AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault RUN_ANTHROPIC_CACHE_E2E=1 AUTOBYTEUS_LIVE_STRICT=1 ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts --no-watch
+# commit: a2a5d0e47 (suite + production code unchanged since 574aa0bd7); env: Linux, Node v22.23.3, real Anthropic (~40 Opus 5.5 calls); date: 2026-10-29
+
+[2026-10-29T20:45:49.164Z] [INFO] [secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)
+ ✓ tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts (7 tests) 210379ms
+     ✓ APC-E2E-001: a new turn reads the whole previous history from cache, writes only new input and keeps earlier thinking  132546ms
+     ✓ APC-E2E-002: an interruption note is appended after the history and leaves the top-level system unchanged  13339ms
+     ✓ APC-E2E-005: Stop and reopen a run holding thinking: the first request strips once, is accepted, then append-only  34547ms
+     ✓ APC-E2E-004: a Settings media-model change while a thinking tool_use awaits approval strips thinking once and is accepted  23595ms
+     ✓ APC-E2E-008: control — the strict harness accepts the unchanged request and rejects kept thinking under a changed tool  4882ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Duration  259.45s (transform 31.87s, setup 226ms, import 45.94s, tests 210.38s, environment 0ms)

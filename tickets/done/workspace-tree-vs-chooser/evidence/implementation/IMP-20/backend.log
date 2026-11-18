@@ -1,0 +1,277 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:56127
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:56127
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/db/development.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.30                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:77297) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-05T20:20:47.646Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793910047932,"pid":77297,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56147"}
+{"level":30,"time":1793910047958,"pid":77297,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56127"}
+[2026-11-05T20:20:47.958Z] [INFO] [server.runtime] Server listening on 127.0.0.1:56127
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal.
+Created and registered workspace ID: agent_ws_80340b753bb3dd9b2791dc9b28a5f79ece5bedfd8af2c44473bf71aa40355ce2
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/docs-site
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/docs-site.
+Created and registered workspace ID: agent_ws_76108a52d1ae84478f900368279d609026b8e01164890f1f40734003e1762989
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes.
+Created and registered workspace ID: agent_ws_c9da68e74dd6c1fb6a1b901f58b135db6c245aaeaaf4f0af5a25c94b9d9a69e9
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace.
+Created and registered workspace ID: agent_ws_a0c9a2f0b4d27dac25439324f7e918eb31aeaf9e64058887c614f19e54545fd6
+Agent Definition created successfully with ID: daily-writer
+Created terminal session 09c9a3bf-5e9f-49ae-8a75-e3c1fb5a19af using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 09c9a3bf-5e9f-49ae-8a75-e3c1fb5a19af
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed PTY session 09c9a3bf-5e9f-49ae-8a75-e3c1fb5a19af
+Terminal WebSocket disconnected: 09c9a3bf-5e9f-49ae-8a75-e3c1fb5a19af
+Created terminal session 366fb9a1-2559-4288-9f1a-39bfc7738ada using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 366fb9a1-2559-4288-9f1a-39bfc7738ada
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed PTY session 366fb9a1-2559-4288-9f1a-39bfc7738ada
+Terminal WebSocket disconnected: 366fb9a1-2559-4288-9f1a-39bfc7738ada
+Created terminal session 10da3247-7e51-4ae9-bdb4-a91fe194dff6 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 10da3247-7e51-4ae9-bdb4-a91fe194dff6
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed PTY session 10da3247-7e51-4ae9-bdb4-a91fe194dff6
+Terminal WebSocket disconnected: 10da3247-7e51-4ae9-bdb4-a91fe194dff6
+Created terminal session ae91bba3-f2a0-480d-ac65-3517aff0c6d2 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: ae91bba3-f2a0-480d-ac65-3517aff0c6d2
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal.
+Reusing registered workspace ID: agent_ws_80340b753bb3dd9b2791dc9b28a5f79ece5bedfd8af2c44473bf71aa40355ce2
+Closed PTY session ae91bba3-f2a0-480d-ac65-3517aff0c6d2
+Terminal WebSocket disconnected: ae91bba3-f2a0-480d-ac65-3517aff0c6d2
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal.
+Reusing registered workspace ID: agent_ws_80340b753bb3dd9b2791dc9b28a5f79ece5bedfd8af2c44473bf71aa40355ce2
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace.
+Reusing registered workspace ID: agent_ws_a0c9a2f0b4d27dac25439324f7e918eb31aeaf9e64058887c614f19e54545fd6
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session 26773ddd-a123-4b76-b650-beb3a3053c2e for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=26773ddd-a123-4b76-b650-beb3a3053c2e, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace.
+Reusing registered workspace ID: agent_ws_a0c9a2f0b4d27dac25439324f7e918eb31aeaf9e64058887c614f19e54545fd6
+AGY compaction detection off for run daily_writer_c9994e2179df421d8e881e50e7942820: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 26773ddd-a123-4b76-b650-beb3a3053c2e
+Agent WebSocket disconnected: 26773ddd-a123-4b76-b650-beb3a3053c2e
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session 901ac216-28d5-4ffb-bbd0-07633349089e for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=901ac216-28d5-4ffb-bbd0-07633349089e, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Created terminal session 45365768-3ae7-494a-9f92-57b00e1d334b using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 45365768-3ae7-494a-9f92-57b00e1d334b
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed agent session 901ac216-28d5-4ffb-bbd0-07633349089e
+Agent WebSocket disconnected: 901ac216-28d5-4ffb-bbd0-07633349089e
+Closed PTY session 45365768-3ae7-494a-9f92-57b00e1d334b
+Terminal WebSocket disconnected: 45365768-3ae7-494a-9f92-57b00e1d334b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session f04d0a4c-c298-4dcc-9990-3f4e821e4c3a for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=f04d0a4c-c298-4dcc-9990-3f4e821e4c3a, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Created terminal session c1783e65-83ac-48a1-9f84-762f972d4852 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: c1783e65-83ac-48a1-9f84-762f972d4852
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed agent session f04d0a4c-c298-4dcc-9990-3f4e821e4c3a
+Agent WebSocket disconnected: f04d0a4c-c298-4dcc-9990-3f4e821e4c3a
+Closed PTY session c1783e65-83ac-48a1-9f84-762f972d4852
+Terminal WebSocket disconnected: c1783e65-83ac-48a1-9f84-762f972d4852
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session eeeaefdd-bf99-4296-a2dc-b1be4cfc64d6 for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=eeeaefdd-bf99-4296-a2dc-b1be4cfc64d6, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Created terminal session 90b08ae8-7293-46f2-b50c-ebb8d6381aad using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 90b08ae8-7293-46f2-b50c-ebb8d6381aad
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed agent session eeeaefdd-bf99-4296-a2dc-b1be4cfc64d6
+Agent WebSocket disconnected: eeeaefdd-bf99-4296-a2dc-b1be4cfc64d6
+Closed PTY session 90b08ae8-7293-46f2-b50c-ebb8d6381aad
+Terminal WebSocket disconnected: 90b08ae8-7293-46f2-b50c-ebb8d6381aad
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session e57815b1-6196-4ebd-ab13-3b0373592813 for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=e57815b1-6196-4ebd-ab13-3b0373592813, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Created terminal session 47323417-4b1e-4f8d-812a-84adbccd1bbe using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 47323417-4b1e-4f8d-812a-84adbccd1bbe
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed agent session e57815b1-6196-4ebd-ab13-3b0373592813
+Agent WebSocket disconnected: e57815b1-6196-4ebd-ab13-3b0373592813
+Closed PTY session 47323417-4b1e-4f8d-812a-84adbccd1bbe
+Terminal WebSocket disconnected: 47323417-4b1e-4f8d-812a-84adbccd1bbe
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session c27a2dca-6d4f-4835-b6cc-13c2e41c8e70 for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=c27a2dca-6d4f-4835-b6cc-13c2e41c8e70, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Created terminal session 75f30e21-2ae1-4f42-b8f6-b09341ec9b3f using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Terminal WebSocket connected: 75f30e21-2ae1-4f42-b8f6-b09341ec9b3f
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/home
+Closed agent session c27a2dca-6d4f-4835-b6cc-13c2e41c8e70
+Agent WebSocket disconnected: c27a2dca-6d4f-4835-b6cc-13c2e41c8e70
+Closed PTY session 75f30e21-2ae1-4f42-b8f6-b09341ec9b3f
+Terminal WebSocket disconnected: 75f30e21-2ae1-4f42-b8f6-b09341ec9b3f
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session 69ea0503-c0b7-44e2-930c-7778283124d5 for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=69ea0503-c0b7-44e2-930c-7778283124d5, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Closed agent session 69ea0503-c0b7-44e2-930c-7778283124d5
+Agent WebSocket disconnected: 69ea0503-c0b7-44e2-930c-7778283124d5
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session 11a56a5b-e682-4090-aedb-1ccb3400732b for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=11a56a5b-e682-4090-aedb-1ccb3400732b, run=daily_writer_c9994e2179df421d8e881e50e7942820
+GraphQL mutation to remove registered workspace
+Closing FileSystemWorkspace agent_ws_76108a52d1ae84478f900368279d609026b8e01164890f1f40734003e1762989
+Closed agent session 11a56a5b-e682-4090-aedb-1ccb3400732b
+Agent WebSocket disconnected: 11a56a5b-e682-4090-aedb-1ccb3400732b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session a97d80fa-dd68-4e08-999b-f0ed6a417239 for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=a97d80fa-dd68-4e08-999b-f0ed6a417239, run=daily_writer_c9994e2179df421d8e881e50e7942820
+GraphQL mutation to remove registered workspace
+Closed agent session a97d80fa-dd68-4e08-999b-f0ed6a417239
+Agent WebSocket disconnected: a97d80fa-dd68-4e08-999b-f0ed6a417239
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/memory/agents/daily_writer_c9994e2179df421d8e881e50e7942820/raw_traces_manifest.json
+Agent websocket attached for run daily_writer_c9994e2179df421d8e881e50e7942820
+Created agent session 6f793e63-0dce-423c-9f57-531479763edf for run daily_writer_c9994e2179df421d8e881e50e7942820
+Agent WebSocket connected: session=6f793e63-0dce-423c-9f57-531479763edf, run=daily_writer_c9994e2179df421d8e881e50e7942820
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes.
+Reusing registered workspace ID: agent_ws_c9da68e74dd6c1fb6a1b901f58b135db6c245aaeaaf4f0af5a25c94b9d9a69e9
+Agent websocket attached for run daily_writer_562a99b08a754698b2a6a3fd4df89a1c
+Created agent session e1289245-7128-478c-9621-f0feb7a525f6 for run daily_writer_562a99b08a754698b2a6a3fd4df89a1c
+Agent WebSocket connected: session=e1289245-7128-478c-9621-f0feb7a525f6, run=daily_writer_562a99b08a754698b2a6a3fd4df89a1c
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes.
+Reusing registered workspace ID: agent_ws_c9da68e74dd6c1fb6a1b901f58b135db6c245aaeaaf4f0af5a25c94b9d9a69e9
+AGY compaction detection off for run daily_writer_562a99b08a754698b2a6a3fd4df89a1c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 6f793e63-0dce-423c-9f57-531479763edf
+Agent WebSocket disconnected: 6f793e63-0dce-423c-9f57-531479763edf
+Closed agent session e1289245-7128-478c-9621-f0feb7a525f6
+Agent WebSocket disconnected: e1289245-7128-478c-9621-f0feb7a525f6

@@ -1,0 +1,8 @@
+# API-04 AFTER adding the manifest assertion. command: env -i PATH HOME=<temp> RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/stored-runtime-names/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts --no-watch
+# commit dd56f6de6c + test update; date 2026-10-30T18:47:58Z
+
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 755ms
+     ✓ shows one completed compaction, rotates raw traces once and reopens history at the boundary  397ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  9.97s (transform 6.57s, setup 38ms, import 8.77s, tests 755ms, environment 0ms)

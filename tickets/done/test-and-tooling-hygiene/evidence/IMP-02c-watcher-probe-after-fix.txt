@@ -1,0 +1,6 @@
+IMP-02c — post-fix watcher probe (autobyteus-253, W-02, AC-004)
+Command: PROBE_N=80 PROBE_DELAY=0 pnpm -C autobyteus-server-ts exec vitest run tests/tmp-probe/watch-probe.test.ts --no-watch --reporter=verbose
+Probe: temporary adaptation of evidence/probes/SD-watcher-probe.test.ts (not committed): writes agents/scout and agent-teams/squad right after whenReady(); found = a squad mark or a reconcilePackageFolder request at/after the last write; then edits agents/scout/agent.md 350 ms later; edit found = an agent:scout mark or a later reconcile.
+Load: 2 x ncpu 'yes' (10 cores), macOS, Node 22. Commit: af81b3d7d2. Date: 2026-10-24.
+Look for: teamMiss 0, editMiss 0; viaCatchUp = iterations where the OS event was lost and only the catch-up found the Team (before the fix: ~50% MISS, SD-reproduction-results.txt).
+RESULT {"N":80,"DELAY":0,"teamMiss":0,"teamOk":80,"viaEvent":42,"viaCatchUp":38,"editMiss":0,"editOk":80}

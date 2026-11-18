@@ -1,0 +1,3 @@
+FROM autobyteus/autobyteus-server:beta
+RUN rm -rf /opt/autobyteus/server-package
+COPY server-package /opt/autobyteus/server-package

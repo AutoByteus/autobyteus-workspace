@@ -1,0 +1,14 @@
+// autobyteus-303 API-03 diagnosis: a timer set for (endsAt - Date.now()) ms runs on the monotonic clock; does Date.now()
+// (the wall clock the deadline uses) sometimes show less elapsed time when it fires, so timeLeft(deadline) > 0?
+const rows = [];
+for (let i = 0; i < 30; i += 1) {
+  const ms = 997 + (i % 5);
+  const endsAt = Date.now() + ms;
+  const h0 = process.hrtime.bigint();
+  await new Promise((resolve) => setTimeout(resolve, Math.max(0, endsAt - Date.now())));
+  const wallLeft = endsAt - Date.now();
+  const monoElapsed = Number(process.hrtime.bigint() - h0) / 1e6;
+  rows.push({ wallLeft, monoElapsed: Math.round(monoElapsed * 1000) / 1000 });
+}
+console.log(JSON.stringify({ runs: rows.length, timeLeftAbove0: rows.filter((r) => r.wallLeft > 0).length,
+  minMonoElapsedMinusTarget: Math.min(...rows.map((r, i) => r.monoElapsed - (997 + (i % 5)))), rows: rows.filter((r) => r.wallLeft > 0) }));

@@ -1,0 +1,4 @@
+# IMP-05 real-host network facts probe (shapes only; no names or addresses recorded)
+# command: node /tmp/osp-nn/probe.mjs <worktree>/autobyteus-server-ts  (imports dist NodeNetworkService with the system facts source, a temp allowed-networks file)
+# commit: working tree on 828d57e2a0; macOS (Darwin 25.5), Node v22.23.1; date 2026-11-07
+{"ms":16,"computerNameNonEmpty":true,"runsInContainer":false,"configuredBaseUrl":null,"tailscale":{"inTailscaleRange":true,"dnsNameEndsTsNet":true},"vpnCount":0,"local":{"networkIdShape":"gw_<16hex>","count":1,"allPrivate":true,"allowed":false}}

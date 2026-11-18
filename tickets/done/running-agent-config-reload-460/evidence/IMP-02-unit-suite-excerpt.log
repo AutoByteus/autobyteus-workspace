@@ -1,0 +1,17 @@
+# IMP-02
+# Command: pnpm -C autobyteus-server-ts test:unit (excerpt; full log not kept in the repository)
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-13 12:42
+
+     × releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005) 6945ms
+     × finds no tracked code importing an untracked file in this repository 2313ms
+     × contains no xAI/Grok names, `_x.ai` handling or Grok imports 17ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005)
+ FAIL  tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > contains no xAI/Grok names, `_x.ai` handling or Grok imports
+ Test Files  3 failed | 984 passed | 5 skipped (992)
+      Tests  3 failed | 8436 passed | 9 skipped (8448)
+
+Causes: tracked-imports = new files not yet staged; acp-layer-neutrality = a comment naming Grok in the shared ACP layer (both fixed, IMP-03); skill-folder-watcher = real chokidar under load 78-112 with fseventsd at 186% CPU (passes at load 15, IMP-10).

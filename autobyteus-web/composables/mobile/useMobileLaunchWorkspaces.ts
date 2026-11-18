@@ -1,22 +1,12 @@
 import { computed, ref } from 'vue'
 import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace'
 import type { MobileLaunchPickerItem } from '~/types/mobileLaunch'
+import { useLocalization } from '~/composables/useLocalization'
+import { readWorkspacePathRefusal, workspacePathRefusalText } from '~/utils/workspace/workspacePathRefusal'
 
 export interface MobileLaunchWorkspaceLoadResult {
   workspaceId: string
   rootPath: string
-}
-
-const normalizeRootPath = (value: string | null | undefined): string => {
-  const source = (value || '').trim()
-  if (!source) {
-    return ''
-  }
-  const normalized = source.replace(/\\/g, '/')
-  if (normalized === '/') {
-    return normalized
-  }
-  return normalized.replace(/\/+$/, '')
 }
 
 const workspaceRootPath = (workspace: WorkspaceInfo): string => (
@@ -44,7 +34,6 @@ const errorMessage = (cause: unknown, fallback: string): string => {
 
 export function useMobileLaunchWorkspaces() {
   const workspaceStore = useWorkspaceStore()
-  const isRefreshing = ref(false)
   const isLoadingPath = ref(false)
   const error = ref<string | null>(null)
 
@@ -54,32 +43,16 @@ export function useMobileLaunchWorkspaces() {
       id: workspace.workspaceId,
       label: workspace.name || rootPath || 'Workspace',
       detail: rootPath || workspace.workspaceId,
-      group: workspace.isTemp ? 'Temporary workspaces' : 'All workspaces',
     }
   }))
 
-  const workspaceRootPathById = computed(() => new Map(
-    workspaceStore.allWorkspaces.map((workspace) => [workspace.workspaceId, workspaceRootPath(workspace)] as const),
-  ))
-
-  const workspaceIdByRootPath = computed(() => {
-    const entries = workspaceStore.allWorkspaces.flatMap((workspace) => {
-      const normalized = normalizeRootPath(workspaceRootPath(workspace))
-      return normalized ? [[normalized, workspace.workspaceId] as const] : []
-    })
-    return new Map(entries)
-  })
-
   async function refresh(force = false): Promise<void> {
-    isRefreshing.value = true
     error.value = null
     try {
       await workspaceStore.fetchAllWorkspaces(force)
     } catch (cause) {
       error.value = errorMessage(cause, 'Could not load workspaces.')
       throw cause
-    } finally {
-      isRefreshing.value = false
     }
   }
 
@@ -96,31 +69,21 @@ export function useMobileLaunchWorkspaces() {
       const workspaceId = await workspaceStore.createWorkspace({ root_path: rootPath })
       return { workspaceId, rootPath }
     } catch (cause) {
-      error.value = errorMessage(cause, 'Could not load that workspace path.')
+      const refusal = readWorkspacePathRefusal(cause)
+      error.value = refusal
+        ? workspacePathRefusalText(refusal, rootPath, useLocalization().t)
+        : errorMessage(cause, 'Could not load that workspace path.')
       throw cause
     } finally {
       isLoadingPath.value = false
     }
   }
 
-  function getWorkspaceIdForRootPath(path: string | null | undefined): string {
-    return workspaceIdByRootPath.value.get(normalizeRootPath(path)) || ''
-  }
-
-  function getRootPathForWorkspaceId(workspaceId: string): string {
-    return workspaceRootPathById.value.get(workspaceId) || ''
-  }
-
   return {
     workspaceItems,
-    workspaceRootPathById,
-    workspaceIdByRootPath,
-    isRefreshing,
     isLoadingPath,
     error,
     refresh,
     loadByPath,
-    getWorkspaceIdForRootPath,
-    getRootPathForWorkspaceId,
   }
 }

@@ -1,0 +1,41 @@
+# API-03 npm-before refusals through the real prepare-server.mjs (SCN-004). commit 92ff204d33; macOS; date 2026-11-01T06:44:36Z
+# the script reads the time right after checking the server folder and BEFORE buildWorkspaceArtifacts, so a refusal must print nothing from any build step
+
+== invalid  (AUTOBYTEUS_NPM_BEFORE=yesterday)
+$ env -i PATH HOME AUTOBYTEUS_NPM_BEFORE=yesterday node autobyteus-web/scripts/prepare-server.mjs
+[32m=======================================[0m
+[32m   Preparing AutoByteus Server Files   [0m
+[32m=======================================[0m
+[31m
+Error: AUTOBYTEUS_NPM_BEFORE='yesterday' is not an ISO 8601 date or time (for example 2026-11-01T09:12:44+01:00).[0m
+EXIT=1 SECONDS=0
+
+== invalid-number  (AUTOBYTEUS_NPM_BEFORE=1730000000)
+$ env -i PATH HOME AUTOBYTEUS_NPM_BEFORE=1730000000 node autobyteus-web/scripts/prepare-server.mjs
+[32m=======================================[0m
+[32m   Preparing AutoByteus Server Files   [0m
+[32m=======================================[0m
+[31m
+Error: AUTOBYTEUS_NPM_BEFORE='1730000000' is not an ISO 8601 date or time (for example 2026-11-01T09:12:44+01:00).[0m
+EXIT=1 SECONDS=0
+
+== invalid-date  (AUTOBYTEUS_NPM_BEFORE=2026-13-45)
+$ env -i PATH HOME AUTOBYTEUS_NPM_BEFORE=2026-13-45 node autobyteus-web/scripts/prepare-server.mjs
+[32m=======================================[0m
+[32m   Preparing AutoByteus Server Files   [0m
+[32m=======================================[0m
+[31m
+Error: AUTOBYTEUS_NPM_BEFORE='2026-13-45' is not an ISO 8601 date or time (for example 2026-11-01T09:12:44+01:00).[0m
+EXIT=1 SECONDS=0
+
+== neither  (GIT_DIR=/nonexistent-git-dir)
+$ env -i PATH HOME GIT_DIR=/nonexistent-git-dir node autobyteus-web/scripts/prepare-server.mjs
+[32m=======================================[0m
+[32m   Preparing AutoByteus Server Files   [0m
+[32m=======================================[0m
+[31m
+Error: Cannot bound the staging npm install: the commit time of /Users/normy/autobyteus_org/autobyteus-worktrees/packaging-dependencies-build could not be read (Command failed: git -C /Users/normy/autobyteus_org/autobyteus-worktrees/packaging-dependencies-build log -1 --format=%cI
+fatal: not a git repository: '/nonexistent-git-dir'
+). Set AUTOBYTEUS_NPM_BEFORE to an ISO 8601 time.[0m
+EXIT=1 SECONDS=1
+

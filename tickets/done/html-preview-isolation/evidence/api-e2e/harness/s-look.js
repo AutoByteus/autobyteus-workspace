@@ -1,0 +1,2 @@
+await page.screenshot({ path: args[0] });
+return await page.evaluate(() => [...document.querySelectorAll('*')].filter(e => e.children.length === 0 && /hostile\.html|artifact\.html/.test(e.textContent)).map(e => ({ tag: e.tagName, cls: e.className, visible: !!(e.offsetWidth || e.offsetHeight), parentTestId: e.closest('[data-testid]')?.getAttribute('data-testid') ?? null, parentCls: e.parentElement.className })));

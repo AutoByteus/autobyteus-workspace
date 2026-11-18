@@ -1,0 +1,41 @@
+# API-05 summary (autobyteus-416 AC-004). Probe: probes/api-05-phone-tailscale-probe.mjs on mobile-shell-probe.mjs --hold
+# Commit da207045a5 (server dist API-01, phone bundle build:mobile-web); macOS, Chrome + Playwright WebKit; 2026-11-07T21:40:41.289Z
+# Command: env -i PATH HOME TMPDIR node probes/api-05-phone-tailscale-probe.mjs <worktree> evidence/API-05-phone-hosts
+
+Host controls (Chrome via the Host-preserving TLS proxy):
+  pre-ts-unpaired: alpha.tail-probe.ts.net /mobile -> 200 
+  pre-corp-unpaired: node.corp-probe.example /mobile -> 403 REMOTE_ACCESS_HOST_REFUSED
+  post-other-corp-unpaired: other.corp-probe.example /mobile -> 403 REMOTE_ACCESS_HOST_REFUSED
+  post-corp-paired: node.corp-probe.example /mobile -> 200 
+Control refusal lines (pre):
+  Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /mobile host node.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+  Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /favicon.ico host node.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+Control refusal lines (post):
+  Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /mobile host other.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+  Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /favicon.ico host other.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+
+journey chrome-lan origin http://192.168.77.10:53680: steps {'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  WebSocket handshakes (CDP): 14, non-101: []
+journey chrome-tailscale origin https://alpha.tail-probe.ts.net:53794: steps {'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  WebSocket handshakes (CDP): 15, non-101: []
+journey webkit-tailscale origin https://alpha.tail-probe.ts.net:53794: steps {'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  WebSocket handshakes (CDP): 0, non-101: []
+journey chrome-company-paired origin https://node.corp-probe.example:53794: steps {'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  WebSocket handshakes (CDP): 17, non-101: []
+proxy upgrades (journey, Host, node status):
+  ('chrome-tailscale', 'alpha.tail-probe.ts.net', 'HTTP/1.1 101'): 15
+  ('webkit-tailscale', 'alpha.tail-probe.ts.net', 'HTTP/1.1 101'): 16
+  ('chrome-company-paired', 'node.corp-probe.example', 'HTTP/1.1 101'): 17
+refusal lines on alpha/beta during journeys: {'alpha': [], 'beta': []}
+phone WebSocket routes used: ['/ws/agent-collaboration/:runId', '/ws/agent-org/:orgRunId', '/ws/agent-package-definitions', '/ws/agent-team/:teamRunId', '/ws/agent/:runId', '/ws/file-explorer/:workspaceId', '/ws/projects'] outside the phone list: []
+
+Probe verdict field: 'Fail' only through its browser-error filter (written for 403's message format). Classification of every error line:
+  chrome-lan x1: console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health -> the probe-blocked localhost:8000 definitions feed of the phone bundle (known, pre-existing; 403 filter expects the line without its URL)
+  chrome-tailscale x1: console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health -> the probe-blocked localhost:8000 definitions feed of the phone bundle (known, pre-existing; 403 filter expects the line without its URL)
+  webkit-tailscale x36: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) -> icon API requests (api.iconify.design, api.simplesvg.com, api.unisvg.com) refused by the probe CONNECT proxy, which tunnels only the test hosts
+  webkit-tailscale x1: console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:53794/mobile/_nuxt/URSIBdkg.js -> WebKit's console half of the same blocked localhost:8000/health request: it names the requesting script; the pageerror line below names the URL ("/localhost:8000/health due to access control checks")
+  webkit-tailscale x1: pageerror: /localhost:8000/health due to access control checks. -> the probe-blocked localhost:8000 definitions feed of the phone bundle (known, pre-existing; 403 filter expects the line without its URL)
+  chrome-company-paired x1: console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health -> the probe-blocked localhost:8000 definitions feed of the phone bundle (known, pre-existing; 403 filter expects the line without its URL)
+CONNECT proxy refusals: {'api.iconify.design:443': 12, 'api.simplesvg.com:443': 12, 'api.unisvg.com:443': 12}
+cleanup: {'holdExited': True, 'holdCleanup': {'frontendExited': True, 'serversLeft': 0, 'rootRemoved': True}, 'proxiesClosed': True}
+API-05 classified result: Pass (every journey step Pass, host controls as expected, 0 refusal lines during journeys, every WS 101)

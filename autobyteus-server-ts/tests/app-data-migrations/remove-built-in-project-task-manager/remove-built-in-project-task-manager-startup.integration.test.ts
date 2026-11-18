@@ -151,7 +151,7 @@ describe("Retired built-in Project Task Manager on the startup path", () => {
     expect(first.migrationStatus).toMatchObject({ migrationId: MIGRATION_ID, status: "SUCCEEDED", attempts: 1 });
     expect(await exists(installedCopyDir())).toBe(false);
     expect(first.bootstrap.builtInAgents.map((item) => item.agentDefinitionId).sort())
-      .toEqual(["autobyteus-daily-assistant"]);
+      .toEqual(["autobyteus-daily-assistant", "autobyteus-model-router"]);
     expect(projectTaskManagers(first.visible)).toEqual([REPOSITORY_ID]);
     expect(first.visible.some((definition) => definition.id === RETIRED_ID)).toBe(false);
     expect(first.visible.some((definition) => definition.id === "my-user-agent")).toBe(true);

@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises } from '@vue/test-utils'
+import type { AgentMemberRefScope } from '~/stores/agentTeamDefinitionStore'
 
 const mocks = vi.hoisted(() => ({
   definitions: [] as Array<{ id: string; name: string; avatarUrl?: string | null; defaultLaunchConfig?: unknown; ownershipScope?: string }>,
-  teams: [] as Array<{ id: string; name: string; coordinatorMemberName: string; nodes: Array<{ memberName: string; ref: string; refScope?: string }>; defaultLaunchConfig?: unknown }>,
+  teams: [] as Array<{ id: string; name: string; coordinatorMemberName: string; nodes: Array<{ memberName: string; ref: string; refScope?: AgentMemberRefScope }>; defaultLaunchConfig?: unknown }>,
   enabledRuntimes: new Set<string>(['autobyteus', 'codex_app_server']),
   modelsByRuntime: {} as Record<string, string[]>,
   workspacesByRoot: {} as Record<string, { workspaceId: string }>,
@@ -326,7 +327,7 @@ describe('chatDraftStore', () => {
       temperature: { type: 'number', default: 0.7 },
       max_tokens: { type: 'integer' },
       thinking_enabled: { type: 'boolean', default: false },
-      thinking_budget_tokens: { type: 'integer', default: 1024 },
+      reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' },
     }
 
     it('records a thinking-only schema’s default thinking explicitly, never null or {}', async () => {
@@ -349,17 +350,16 @@ describe('chatDraftStore', () => {
       const launchForm = applyModelConfigSchemaDefaults(claudeSchema as any, null)!
       // Non-thinking keys equal the launch form; thinking keys equal the schema defaults.
       expect({ temperature: recorded.temperature }).toEqual(launchForm)
-      expect(recorded.thinking_enabled).toBe(false)
-      expect(recorded).not.toHaveProperty('thinking_budget_tokens')
+      expect(recorded).toMatchObject({ thinking_enabled: false, reasoning_effort: 'high' })
     })
 
     it('records the default resolution’s model config too, keeping a preset’s own thinking', async () => {
       mocks.schemas['autobyteus/claude-sonnet-5'] = claudeSchema
       mocks.definitions[0]!.defaultLaunchConfig = { runtimeKind: 'autobyteus', llmModelIdentifier: 'claude-sonnet-5',
-        llmConfig: { thinking_enabled: true, thinking_budget_tokens: 4096 } }
+        llmConfig: { thinking_enabled: true, reasoning_effort: 'max' } }
       const draft = useChatDraftStore().startNewChat()
       await flushPromises()
-      expect(draft.context.config.llmConfig).toEqual({ temperature: 0.7, thinking_enabled: true, thinking_budget_tokens: 4096 })
+      expect(draft.context.config.llmConfig).toEqual({ temperature: 0.7, thinking_enabled: true, reasoning_effort: 'max' })
     })
 
     it('keeps null for a model without a config schema', async () => {

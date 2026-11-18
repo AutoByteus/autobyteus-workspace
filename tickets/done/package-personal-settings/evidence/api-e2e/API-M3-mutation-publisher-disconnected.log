@@ -1,0 +1,31 @@
+# Excerpt: test results and failure section (full log was 556 KB of server output).
+# Mutation: personalSettings.setPublisher(announce) -> setPublisher(() => undefined) in agent-package-definition-feed-composition.ts; restored after the run.
+     ✓ API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed  815ms
+     × API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart 66147ms
+     ✓ API-10c (AC-006): a delegated copy of the package agent has its effective tools  789ms
+     ✓ API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools  841ms
+     ✓ API-10e (AC-001): the package checkout stays clean; the personal tools are in personal-settings.json 25ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart
+Error: Timed out waiting for TOOLS: reply to LIST_TOOLS
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:20:9
+     18|   const deadline = Date.now() + ms;
+     19|   while (Date.now() < deadline) { if (await predicate()) return; await…
+     20|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+     21| };
+     22|
+ ❯ Object.ask tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts:90:7
+ ❯ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts:174:47
+ ❯ until tests/e2e/helpers/agy-runtime-error-fixture.ts:19:39
+ ❯ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts:174:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  09:50:37
+   Duration  80.49s (transform 7.69s, setup 69ms, import 10.25s, tests 69.68s, environment 0ms)
+

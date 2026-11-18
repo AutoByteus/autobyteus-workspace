@@ -15,8 +15,12 @@ vi.mock('~/stores/runHistoryStore', () => ({useRunHistoryStore:()=>({ markRunAsI
 vi.mock('~/services/agentStreaming', async original => {
   const actual = await original<any>();
   class Stream { connectionState='connected'; connect=vi.fn(); disconnect=vi.fn(); attachContext=vi.fn(); constructor(..._args: any[]) {} }
-  return {...actual, AgentStreamingService:Stream,TeamStreamingService:Stream};
+  return {...actual, TeamStreamingService:Stream};
 });
+// The agent run store builds its stream through `createAgentRunStream`, which constructs the service from its own module.
+vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
+  AgentStreamingService: class { connectionState='connected'; connect=vi.fn(); disconnect=vi.fn(); attachContext=vi.fn(); onConnectionChange=() => () => undefined; constructor(..._args: any[]) {} },
+}));
 const ROOT='native-team';
 beforeEach(()=>{setActivePinia(createPinia());vi.clearAllMocks();io.bindingRevision=1;});
 afterEach(()=>{useAgentRunStore().disconnectAgentStream('lead');useAgentTeamRunStore().disconnectTeamStream(ROOT);});
@@ -24,14 +28,14 @@ const seed = (context:AgentContext,id='op',phase:'requested'|'started'|'complete
   handleCompactionStatus({ phase, compaction_operation_id:id,turn_id:'turn-7',requested_turn_id:'turn-6',execution_turn_id:'turn-7',raw_trace_count:12,compaction_model_identifier:'native-model' },context);
 };
 const setup=()=>{
-  const raw=buildTestTeamContext({teamRunId:ROOT,coordinatorAddress:'/lead',delegations:[{delegatorAgentRunId:'lead',recipientAddress:'/worker',target:{agentRunId:'task-before'}}],rootChildren:['lead','worker','external','empty'].map(id=>testAgentNode(`/${id}`,{agentRunId:id,runtimeKind:id==='external'?'codex_app_server':'autobyteus'}))});
+  const raw=buildTestTeamContext({teamRunId:ROOT,coordinatorAddress:'/lead',rootChildren:['lead','worker','external','empty'].map(id=>testAgentNode(`/${id}`,{agentRunId:id,runtimeKind:id==='external'?'codex_app_server':'autobyteus'}))});
   useAgentTeamContextsStore().teams=new Map([[ROOT,raw]]);
   const team=useAgentTeamContextsStore().getTeamContextById(ROOT)!;
   const context=team.view.getAgentContext('lead')!;
   useAgentContextsStore().runs=new Map([['lead',context]]);
   const lead=useAgentContextsStore().getRun('lead')!;
   lead.state.inputProjection={runInstanceId:'runtime-A',revision:1};
-  seed(lead);seed(team.view.getAgentContext('task-before')!,'retained-task');seed(team.view.getAgentContext('worker')!,'worker');seed(team.view.getAgentContext('external')!,'external');
+  seed(lead);seed(team.view.getAgentContext('worker')!,'worker');seed(team.view.getAgentContext('external')!,'external');
   return {team,lead,activities:useAgentActivityStore()};
 };
 const response=(kind:'agent'|'team',success=true)=>({data:{[kind==='agent'?'terminateAgentRun':'terminateAgentTeamRun']:{success}}});
@@ -46,7 +50,6 @@ it.each(['agent','team'] as const)('%s success before final event settles exact 
   expect(lead.state.currentStatus).toBe('offline');
   expect(activities.getCompactionActivities('external')[0].phase).toBe('started');expect(activities.getActivities('empty')).toEqual([]);
   expect(activities.getCompactionActivities('worker')[0].phase).toBe(kind==='team'?'stopped':'started');
-  expect(activities.getCompactionActivities('task-before')[0].phase).toBe(kind==='team'?'stopped':'started');
   expect(team.view.isRootTeamActive()).toBe(kind!=='team');
 });
 it.each(['completed','failed'] as const)('event %s before response keeps real result while newly observed pending operation is settled',async phase=>{
@@ -83,12 +86,4 @@ it.each(['binding','member-state','member-instance','root','transport'] as const
   expect(team.view.isRootTeamActive()).toBe(true);expect(io.teamInactive).not.toHaveBeenCalled();
 });
 
-it('Team includes a newly published native task member from the same root/service while Stop is pending',async()=>{
-  const {team,activities}=setup();const finish=deferred();const pending=useAgentTeamRunStore().terminateTeamRun(ROOT);
-  expect(team.view.applyMessage({type:'TASK_EXECUTION_STARTED',payload:{change_sequence:1,parent_team_run_id:ROOT,
-    execution:{kind:'task_agent',address:'/worker',agent_run_id:'task-during',platform_agent_run_id:null,delegator_agent_run_id:'lead',started_at:'2026-10-01T00:00:00Z',
-    source:{kind:'agent',agent_definition_id:'worker',launch_source:{origin:'configured',fallbacks:[]},launch_configuration:{runtime_kind:'autobyteus',llm_model_identifier:'gpt-5',llm_config:null,auto_execute_tools:false,workspace_root_path:null}}}}})).toMatchObject({disposition:'applied'});
-  const task=team.view.getAgentContext('task-during')!;seed(task,'during-request');
-  finish(response('team'));expect(await pending).toBe(true);
-  expect(activities.getCompactionActivities('task-during')[0].phase).toBe('stopped');expect(task.state.currentStatus).toBe('offline');
-});
+// autobyteus-461 rule 2: a run a member delegated is a run of its own; the Team's Stop never reaches it.

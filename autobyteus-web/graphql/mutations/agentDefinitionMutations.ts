@@ -25,6 +25,11 @@ const AgentDefinitionMutationFields = gql`
     ownerApplicationName
     ownerPackageId
     ownerLocalApplicationId
+    internal
+    semanticMemoryEnabled
+    semanticMemoryPath
+    personalSettings
+    personalSettingsBase
     defaultLaunchConfig {
       llmModelIdentifier
       runtimeKind
@@ -46,6 +51,15 @@ export const CreateAgentDefinition = gql`
 export const UpdateAgentDefinition = gql`
   mutation UpdateAgentDefinition($input: UpdateAgentDefinitionInput!) {
     updateAgentDefinition(input: $input) {
+      ...AgentDefinitionMutationFields
+    }
+  }
+  ${AgentDefinitionMutationFields}
+`
+
+export const ResetAgentPersonalSetting = gql`
+  mutation ResetAgentPersonalSetting($definitionId: String!, $setting: PersonalSetting!) {
+    resetAgentPersonalSetting(definitionId: $definitionId, setting: $setting) {
       ...AgentDefinitionMutationFields
     }
   }

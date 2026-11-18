@@ -1,0 +1,23 @@
+# IMP-03 Cause check of an intermittent failure seen in the targeted unit run (FU-010)
+# Test: autobyteus-server-ts/tests/unit/agent-execution/backends/claude/claude-provider-turn-race.test.ts
+# Commands: pnpm -C autobyteus-server-ts exec vitest run <test> --no-watch (repeated, one at a time)
+# Environment: Linux 6.12 container, Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+#
+# With this ticket's source (working tree equal to 785ff7c95 src):
+#   run 1 (inside the 76-file targeted run): 2 failed | ... ("delivers and records the second turn's text…", "keeps the first provider turn's queued text…")
+#   run 2 alone:  Tests  1 failed | 1 passed (2)
+#   runs 3-5:     Tests  2 passed (2)  x3
+# With autobyteus-server-ts/src stashed (base f78b60ddd source), 8 runs alone:
+#   Tests  2 passed (2)  x6
+#   Tests  1 failed | 1 passed (2)   (run 7)
+#   Tests  2 passed (2)  (run 8)
+#   base_fails=1
+# Failing assertion (both sources):
+#   AssertionError: expected [ Array(1) ] to deeply equal [ …(3) ]
+#   - "The stack is ready; continuing the rendered board check."
+#   - "Seeding the test Project now."
+#   ❯ claude-provider-turn-race.test.ts:133:45  expect(deliveredText(harness.observed)).toEqual([...])
+# Reach: the test builds its session config with buildClaudeSessionConfig (additionalDirectories: []); the only
+# changed code on its path is the synchronous `additionalDirectories` spread in resolveClaudeSessionQueryOptions,
+# which adds no await. The test waits a fixed budget, settle() = 20 x (flushClaudeSession: 8 setImmediate + 1 ms).
+# Conclusion: not caused by this ticket; recorded as FU-010 (the slow step was not pinned down).

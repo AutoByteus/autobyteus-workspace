@@ -1,0 +1,533 @@
+{
+  "case": "API-02-r2",
+  "mode": "live-update",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/clean/autobyteus-server-ts",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T08:08:03.168Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-tWhlCW",
+  "tag": "RR285mvxjsdpc",
+  "steps": [
+    {
+      "at": "0.01",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "2.05",
+      "step": "server started",
+      "value": {
+        "label": "X",
+        "pid": 18461,
+        "port": 58899
+      }
+    },
+    {
+      "at": "3.29",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:58898",
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "13.44",
+      "step": "busy",
+      "value": {
+        "label": "copy",
+        "pid": 22722
+      }
+    },
+    {
+      "at": "13.48",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "pid": 20458
+      }
+    },
+    {
+      "at": "13.53",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "pid": 20954
+      }
+    },
+    {
+      "at": "13.57",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "pid": 20582
+      }
+    },
+    {
+      "at": "18.53",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "pid": 23632
+      }
+    },
+    {
+      "at": "37.52",
+      "step": "busy",
+      "value": {
+        "label": "host",
+        "pid": 26955
+      }
+    },
+    {
+      "at": "40.93",
+      "step": "server stopped",
+      "value": {
+        "label": "X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793520523968
+        },
+        "ms": 1276
+      }
+    },
+    {
+      "at": "40.93",
+      "step": "record after quit",
+      "value": {
+        "entries": [
+          {
+            "kind": "agent",
+            "place": "host",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "f81800f7e1"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "9779d3472b"
+          },
+          {
+            "kind": "agent_team",
+            "place": "member",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "53ffd0db02"
+          },
+          {
+            "kind": "agent_org",
+            "place": "member",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "db2c71e85b"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "08c02f5f9c"
+          },
+          {
+            "kind": "agent",
+            "place": "delegated",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "41b5a7ddd4"
+          }
+        ],
+        "lines": [
+          "[39.55] Recorded 6 busy run(s) for restart resume"
+        ]
+      }
+    },
+    {
+      "at": "40.93",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "42.76",
+      "step": "server started",
+      "value": {
+        "label": "X1",
+        "pid": 27087,
+        "port": 59066
+      }
+    },
+    {
+      "at": "68.25",
+      "step": "after X1 start",
+      "value": {
+        "lines": [
+          "[42.64] Restart resume resumed host run 'probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b' of agent 'probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b'",
+          "[42.80] Restart resume resumed host run 'probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1' of agent 'probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1'",
+          "[42.82] Restart resume resumed delegated run 'probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4' of agent 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c'",
+          "[42.88] Restart resume resumed host run 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c' of agent 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c'",
+          "[42.91] Restart resume resumed member run 'org_manager_org_claude_rr285mvxjsdpc_da0bac928ef1430aa9c083db2c71e85b' of agent_org 'probe_org_org_claude_rr285mvxjsdpc_000f507b02534eccb3a82cb2e29b6501'",
+          "[42.94] Restart resume resumed member run 'team_coordinator_team_codex_rr285mvxjsdpc_e13a18d9efc94b918348ba53ffd0db02' of agent_team 'probe_team_team_codex_rr285mvxjsdpc_6533a229fe194f27860efd434fcf6b0c'",
+          "[42.94] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed"
+        ],
+        "recordAfterStart": null,
+        "after": {
+          "sa-codex": {
+            "runId": "probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null,
+            "entriesAfterX1Start": 0,
+            "lastEntries": [
+              "{\"kind\":\"reasoning\",\"role\":null,\"content\":\"**Checking broader context**\",\"media\":null,\"ts\":1793520531.725}",
+              "{\"kind\":\"tool_call\",\"invocationId\":\"exec-439c8585-a775-43ea-8155-0b6dfe457abf\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"ps -eo pid,etime,args | grep '[R]R285mvxjsdpc_sa-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-tWhlCW/workspace\"},\"toolResult\":null,\"toolError\":\"Command exited with code 1.\",\"media\":null,\"ts\":1793520531.725}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The command is no longer running, but I can’t verify whether it finished or was interrupted.\",\"media\":null,\"ts\":1793520532.833}"
+            ]
+          },
+          "sa-claude": {
+            "runId": "probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null,
+            "entriesAfterX1Start": 0,
+            "lastEntries": [
+              "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01KwrrtL6YpP5YJMHWnsHu2n\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjsdpc_sa-claude\",\"timeout\":600000},\"toolResult\":null,\"toolError\":\"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed. Correction to the text",
+              "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\",\"ts\":1793520525.883}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Understood. The previous tool call was interrupted by the application restart. I'm ready to proceed with new instructions. What would you like me to do?\",\"media\":null,\"ts\":1793520528.404}"
+            ]
+          },
+          "team-codex": {
+            "runId": "team_coordinator_team_codex_rr285mvxjsdpc_e13a18d9efc94b918348ba53ffd0db02",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 1,
+            "turnFrames": 1,
+            "busyAgain": false,
+            "projectionError": null,
+            "entriesAfterX1Start": 0,
+            "lastEntries": [
+              "{\"kind\":\"reasoning\",\"role\":null,\"content\":\"**Checking cell**\",\"media\":null,\"ts\":1793520532.555}",
+              "{\"kind\":\"tool_call\",\"invocationId\":\"exec-37256777-21a2-4298-846a-55e9bc389046\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"pgrep -fl 'RR285mvxjsdpc_team-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-tWhlCW/workspace\"},\"toolResult\":null,\"toolError\":\"Command exited with code 1.\",\"media\":null,\"ts\":1793520532.557}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The interrupted command is no longer running. I can’t verify whether it finished.\",\"media\":null,\"ts\":1793520534.564}"
+            ]
+          },
+          "org-claude": {
+            "runId": "org_manager_org_claude_rr285mvxjsdpc_da0bac928ef1430aa9c083db2c71e85b",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null,
+            "entriesAfterX1Start": 0,
+            "lastEntries": [
+              "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01T4DpXZWj4YZVEAvWkXDiTJ\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjsdpc_org-claude\"},\"toolResult\":null,\"toolError\":\"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed. Correction to the text above: this cal",
+              "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\",\"ts\":1793520526.084}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"I'm ready to proceed. My previous command execution was interrupted when the application restarted. Waiting for your instructions.\",\"media\":null,\"ts\":1793520528.772}"
+            ]
+          },
+          "host": {
+            "runId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c",
+            "notices": 1,
+            "listsDelegated": true,
+            "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: probe_worker_rr285mvxjsdpc (probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4).",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null,
+            "entriesAfterX1Start": 0,
+            "lastEntries": [
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The application has restarted. My previous attempt to run the shell command was interrupted by the restart at 2026-11-01T08:08:45.748Z.\\n\\nI'm ready to proceed with your instructions. What would you like me to do?\",\"media\":null,\"ts\":1793520530.217}",
+              "{\"kind\":\"inter_agent_message\",\"role\":\"user\",\"senderAgentRunId\":\"probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4\",\"senderAddress\":null,\"content\":\"You received a message from the agent with sender run id \\\"probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4\\\".\\nmessage:\\nThe command was interrupted by the application restart; its completion status is unknown. No matching process is currently running.\",\"media\":null,\"ts\":1793520534.752}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Acknowledged. The delegated task to the probe_worker agent reports that the command was interrupted by the application restart and is no longer running.\\n\\nWaiting for your next instructions.\",\"media\":null,\"ts\":1793520537.637}"
+            ]
+          },
+          "copy": {
+            "runId": "probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null,
+            "entriesAfterX1Start": 0,
+            "lastEntries": [
+              "{\"kind\":\"reasoning\",\"role\":null,\"content\":\"**Reporting the interruption**\",\"media\":null,\"ts\":1793520534.686}",
+              "{\"kind\":\"tool_call\",\"invocationId\":\"exec-f7a5bca5-5f0b-4853-bdf6-c42502b94e42\",\"role\":null,\"content\":\"\",\"toolName\":\"send_message_to\",\"toolArgs\":{\"recipient_address\":\"/probe_host_rr285mvxjsdpc\",\"content\":\"The command was interrupted by the application restart; its completion status is unknown. No matching process is currently running.\"},\"toolResult\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /probe_host_rr285mvxjsdpc.\",\"target_agent_run_id\":\"probe_host_rr285mvxjsdpc_80ec3",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The command was interrupted; its completion status is unknown. No matching process is currently running.\",\"media\":null,\"ts\":1793520535.986}"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "at": "69.45",
+      "step": "server stopped",
+      "value": {
+        "label": "X1",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793520552512
+        },
+        "ms": 1097
+      }
+    }
+  ],
+  "roots": [
+    {
+      "label": "sa-codex",
+      "kind": "agent",
+      "place": "host",
+      "runtime": "codex",
+      "runId": "probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1",
+      "rootId": "probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1",
+      "marker": "RR285mvxjsdpc_sa-codex"
+    },
+    {
+      "label": "sa-claude",
+      "kind": "agent",
+      "place": "host",
+      "runtime": "claude",
+      "runId": "probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b",
+      "rootId": "probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b",
+      "marker": "RR285mvxjsdpc_sa-claude"
+    },
+    {
+      "label": "team-codex",
+      "place": "member",
+      "runtime": "codex",
+      "marker": "RR285mvxjsdpc_team-codex",
+      "kind": "team",
+      "runId": "team_coordinator_team_codex_rr285mvxjsdpc_e13a18d9efc94b918348ba53ffd0db02",
+      "rootId": "probe_team_team_codex_rr285mvxjsdpc_6533a229fe194f27860efd434fcf6b0c"
+    },
+    {
+      "label": "org-claude",
+      "place": "member",
+      "runtime": "claude",
+      "marker": "RR285mvxjsdpc_org-claude",
+      "kind": "org",
+      "runId": "org_manager_org_claude_rr285mvxjsdpc_da0bac928ef1430aa9c083db2c71e85b",
+      "rootId": "probe_org_org_claude_rr285mvxjsdpc_000f507b02534eccb3a82cb2e29b6501"
+    },
+    {
+      "label": "host",
+      "kind": "agent",
+      "place": "host",
+      "runtime": "claude",
+      "runId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c",
+      "rootId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c",
+      "marker": "RR285mvxjsdpc_host"
+    }
+  ],
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1"
+        },
+        "agentRunId": "probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:08:42.699Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b"
+        },
+        "agentRunId": "probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:08:42.699Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "probe_team_team_codex_rr285mvxjsdpc_6533a229fe194f27860efd434fcf6b0c"
+        },
+        "agentRunId": "team_coordinator_team_codex_rr285mvxjsdpc_e13a18d9efc94b918348ba53ffd0db02",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:08:42.699Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "probe_org_org_claude_rr285mvxjsdpc_000f507b02534eccb3a82cb2e29b6501"
+        },
+        "agentRunId": "org_manager_org_claude_rr285mvxjsdpc_da0bac928ef1430aa9c083db2c71e85b",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:08:42.699Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c"
+        },
+        "agentRunId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:08:42.699Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c"
+        },
+        "agentRunId": "probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4",
+        "place": "delegated",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:08:42.699Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "quitLines": [
+    "[39.55] Recorded 6 busy run(s) for restart resume"
+  ],
+  "exitX": {
+    "code": 0,
+    "signal": null,
+    "at": 1793520523968
+  },
+  "recordAfterStart": null,
+  "startLines": [
+    "[42.64] Restart resume resumed host run 'probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b' of agent 'probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b'",
+    "[42.80] Restart resume resumed host run 'probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1' of agent 'probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1'",
+    "[42.82] Restart resume resumed delegated run 'probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4' of agent 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c'",
+    "[42.88] Restart resume resumed host run 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c' of agent 'probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c'",
+    "[42.91] Restart resume resumed member run 'org_manager_org_claude_rr285mvxjsdpc_da0bac928ef1430aa9c083db2c71e85b' of agent_org 'probe_org_org_claude_rr285mvxjsdpc_000f507b02534eccb3a82cb2e29b6501'",
+    "[42.94] Restart resume resumed member run 'team_coordinator_team_codex_rr285mvxjsdpc_e13a18d9efc94b918348ba53ffd0db02' of agent_team 'probe_team_team_codex_rr285mvxjsdpc_6533a229fe194f27860efd434fcf6b0c'",
+    "[42.94] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed"
+  ],
+  "copyRunId": "probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4",
+  "after": {
+    "sa-codex": {
+      "runId": "probe_agent_rr285mvxjsdpc_4e8501807e954bd29465b5f81800f7e1",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null,
+      "entriesAfterX1Start": 0,
+      "lastEntries": [
+        "{\"kind\":\"reasoning\",\"role\":null,\"content\":\"**Checking broader context**\",\"media\":null,\"ts\":1793520531.725}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"exec-439c8585-a775-43ea-8155-0b6dfe457abf\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"ps -eo pid,etime,args | grep '[R]R285mvxjsdpc_sa-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-tWhlCW/workspace\"},\"toolResult\":null,\"toolError\":\"Command exited with code 1.\",\"media\":null,\"ts\":1793520531.725}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The command is no longer running, but I can’t verify whether it finished or was interrupted.\",\"media\":null,\"ts\":1793520532.833}"
+      ]
+    },
+    "sa-claude": {
+      "runId": "probe_agent_rr285mvxjsdpc_829825ac28d84b17bf31ed9779d3472b",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null,
+      "entriesAfterX1Start": 0,
+      "lastEntries": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01KwrrtL6YpP5YJMHWnsHu2n\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjsdpc_sa-claude\",\"timeout\":600000},\"toolResult\":null,\"toolError\":\"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed. Correction to the text",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\",\"ts\":1793520525.883}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Understood. The previous tool call was interrupted by the application restart. I'm ready to proceed with new instructions. What would you like me to do?\",\"media\":null,\"ts\":1793520528.404}"
+      ]
+    },
+    "team-codex": {
+      "runId": "team_coordinator_team_codex_rr285mvxjsdpc_e13a18d9efc94b918348ba53ffd0db02",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 1,
+      "turnFrames": 1,
+      "busyAgain": false,
+      "projectionError": null,
+      "entriesAfterX1Start": 0,
+      "lastEntries": [
+        "{\"kind\":\"reasoning\",\"role\":null,\"content\":\"**Checking cell**\",\"media\":null,\"ts\":1793520532.555}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"exec-37256777-21a2-4298-846a-55e9bc389046\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"pgrep -fl 'RR285mvxjsdpc_team-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-tWhlCW/workspace\"},\"toolResult\":null,\"toolError\":\"Command exited with code 1.\",\"media\":null,\"ts\":1793520532.557}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The interrupted command is no longer running. I can’t verify whether it finished.\",\"media\":null,\"ts\":1793520534.564}"
+      ]
+    },
+    "org-claude": {
+      "runId": "org_manager_org_claude_rr285mvxjsdpc_da0bac928ef1430aa9c083db2c71e85b",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null,
+      "entriesAfterX1Start": 0,
+      "lastEntries": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01T4DpXZWj4YZVEAvWkXDiTJ\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjsdpc_org-claude\"},\"toolResult\":null,\"toolError\":\"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed. Correction to the text above: this cal",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\",\"ts\":1793520526.084}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"I'm ready to proceed. My previous command execution was interrupted when the application restarted. Waiting for your instructions.\",\"media\":null,\"ts\":1793520528.772}"
+      ]
+    },
+    "host": {
+      "runId": "probe_host_rr285mvxjsdpc_80ec3685c8dc4cefacc01f08c02f5f9c",
+      "notices": 1,
+      "listsDelegated": true,
+      "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: probe_worker_rr285mvxjsdpc (probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4).",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null,
+      "entriesAfterX1Start": 0,
+      "lastEntries": [
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The application has restarted. My previous attempt to run the shell command was interrupted by the restart at 2026-11-01T08:08:45.748Z.\\n\\nI'm ready to proceed with your instructions. What would you like me to do?\",\"media\":null,\"ts\":1793520530.217}",
+        "{\"kind\":\"inter_agent_message\",\"role\":\"user\",\"senderAgentRunId\":\"probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4\",\"senderAddress\":null,\"content\":\"You received a message from the agent with sender run id \\\"probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4\\\".\\nmessage:\\nThe command was interrupted by the application restart; its completion status is unknown. No matching process is currently running.\",\"media\":null,\"ts\":1793520534.752}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Acknowledged. The delegated task to the probe_worker agent reports that the command was interrupted by the application restart and is no longer running.\\n\\nWaiting for your next instructions.\",\"media\":null,\"ts\":1793520537.637}"
+      ]
+    },
+    "copy": {
+      "runId": "probe_worker_rr285mvxjsdpc_c797528a35c34af8bd6b8b41b5a7ddd4",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:08:45.748Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null,
+      "entriesAfterX1Start": 0,
+      "lastEntries": [
+        "{\"kind\":\"reasoning\",\"role\":null,\"content\":\"**Reporting the interruption**\",\"media\":null,\"ts\":1793520534.686}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"exec-f7a5bca5-5f0b-4853-bdf6-c42502b94e42\",\"role\":null,\"content\":\"\",\"toolName\":\"send_message_to\",\"toolArgs\":{\"recipient_address\":\"/probe_host_rr285mvxjsdpc\",\"content\":\"The command was interrupted by the application restart; its completion status is unknown. No matching process is currently running.\"},\"toolResult\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /probe_host_rr285mvxjsdpc.\",\"target_agent_run_id\":\"probe_host_rr285mvxjsdpc_80ec3",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The command was interrupted; its completion status is unknown. No matching process is currently running.\",\"media\":null,\"ts\":1793520535.986}"
+      ]
+    }
+  },
+  "copyAddress": "/probe_worker_rr285mvxjsdpc",
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "stampRestored": true,
+  "modelCalls": 0,
+  "scriptedNotices": [],
+  "rootRemoved": true
+}

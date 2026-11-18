@@ -1,7 +1,9 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { seedOrgRunTrees } from '~/test-support/runTreeFixtures';
 import { createPinia, setActivePinia } from 'pinia';
 import { mount, flushPromises } from '@vue/test-utils';
-import Panel from '../WorkspaceAgentRunsTreePanel.vue';
+import Panel from '../RunSectionPanel.vue';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -23,10 +25,8 @@ const orgInspectionResponse = (id = 'org-history') => {
   return { data: { getAgentOrgRunInspection: {
     root_subject_kind: 'agent_org', root_run_id: id,
     root_org: {
-      base_change_sequence: 0, is_active: false, closed_task_executions: [], execution_tree: row.org,
-      communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] },
-      agent_statuses: [], agent_input_states: [], remote_task_executions: [],
-    },
+      base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null, is_active: false, execution_tree: row.org,
+      agent_statuses: [], agent_input_states: [] },
   } } };
 };
 const workspaceResponse = (active = false) => ({ data: { listWorkspaceRunHistory: [historyWorkspaceFixture(active)] } });
@@ -40,7 +40,7 @@ beforeEach(() => {
   vi.spyOn(useAgentDefinitionStore(),'fetchAllAgentDefinitions').mockImplementation(() => avatar.promise);
   vi.spyOn(useAgentTeamDefinitionStore(),'fetchAllAgentTeamDefinitions').mockImplementation(() => catalog.promise);
   vi.spyOn(useAgentOrgDefinitionStore(),'fetchAll').mockImplementation(() => catalog.promise);
-  vi.spyOn(useAgentRunStore(),'connectToAgentStream').mockImplementation(() => undefined);
+  vi.spyOn(useAgentRunStore(),'connectToAgentStream').mockImplementation(() => null);
   io.hydrate.mockImplementation(() => hydration.promise);
   io.query.mockImplementation(({ query, variables }) => {
     const name=query.definitions.find((d:any)=>d.name)?.name.value;
@@ -64,10 +64,13 @@ afterEach(async () => {
   avatar.resolve();catalog.resolve();hydration.resolve();await flushPromises();
   wrapper?.unmount();wrapper=undefined;vi.restoreAllMocks();
 });
-const start = async (render = true, knownWorkspace = false) => {
-  if (knownWorkspace) useWorkspaceStore().workspaces.ws = {
-    workspaceId:'ws', name:'Fixture Workspace', absolutePath:'/fixture', workspaceConfig:{root_path:'/fixture'},
-  };
+// The folder both families' runs are in, already known to the workspace store (its catalog read is the pending one).
+// The Workspaces view lists runs only under a registered folder, Org runs included (workspace-tree-vs-chooser CR-001).
+const registerFixtureWorkspace = () => { useWorkspaceStore().workspaces.ws = {
+  workspaceId:'ws', name:'Fixture Workspace', absolutePath:'/fixture', workspaceConfig:{root_path:'/fixture'},
+}; };
+const start = async (render = true) => {
+  registerFixtureWorkspace();
   const store=useRunHistoryStore();
   store.refreshRunNavigationTopology('initialized-before-response');
   expect(store.getTreeNodes().flatMap(w=>w.agents)).toEqual([]);
@@ -84,7 +87,7 @@ async function expandWorkspace() {
 }
 describe('independent family publication through real initialized Pinia projection and sidebar', () => {
   it.each(['org','workspace'])('renders ready %s while other query and catalogs remain pending', async first => {
-    const {store,completion}=await start(true, first==='workspace');let complete=false;void completion.then(()=>complete=true);
+    const {store,completion}=await start(true);let complete=false;void completion.then(()=>complete=true);
     if(first==='org') org.resolve(orgResponse());else workspace.resolve(workspaceResponse());
     await flushPromises();
     // Check the cached read model BEFORE expansion can request a scoped refresh.
@@ -97,6 +100,8 @@ describe('independent family publication through real initialized Pinia projecti
       expect(orgIds()).toEqual(['org-history']);
       await wrapper!.get('[data-test="agent-org-definition-org-definition"]').trigger('click');
       expect(wrapper!.find('[data-test="agent-org-run-open-org-history"]').exists()).toBe(true);
+      // The Org run's tree as the server builds it (SR-084), from its listed history row.
+      seedOrgRunTrees(useRunTreeStore(), store.agentOrgHistory);
       await wrapper!.get('[data-test="agent-org-run-open-org-history"]').trigger('click');
       await flushPromises();
       expect(wrapper!.find('[data-test="agent-org-agent-row-writer-org-history"]').exists()).toBe(true);
@@ -105,7 +110,7 @@ describe('independent family publication through real initialized Pinia projecti
   });
   it('publishes both families before avatar enrichment and awaits later active hydration/connection', async () => {
     const selection=useAgentSelectionStore();selection.selectRun('retained-selection','agent');const selected=selection.subject;
-    const {store,completion}=await start(true,true);let complete=false;void completion.then(()=>complete=true);
+    const {store,completion}=await start(true);let complete=false;void completion.then(()=>complete=true);
     const recovery=vi.spyOn(useAgentOrgContextsStore(),'reconcileRetainedHistory').mockImplementation(ids=>{expect(orgIds()).toEqual(ids);});
     workspace.resolve(workspaceResponse(true));org.resolve(orgResponse());await flushPromises();await expandWorkspace();
     expect(wrapper!.text()).toContain('History Org');expect(wrapper!.text()).toContain('History Agent');
@@ -120,7 +125,7 @@ describe('independent family publication through real initialized Pinia projecti
     expect(selection.subject).toBe(selected);expect(wrapper!.get('[data-test="workspace-row"]').attributes('aria-expanded')).toBe('true');
   });
   it('publishes a later Org response while existing active hydration is already blocked', async () => {
-    const {store,completion}=await start(true,true);let complete=false;void completion.then(()=>complete=true);
+    const {store,completion}=await start(true);let complete=false;void completion.then(()=>complete=true);
     workspace.resolve(workspaceResponse(true));avatar.resolve();await flushPromises();
     expect(io.hydrate).toHaveBeenCalledTimes(1);expect(orgIds()).toEqual([]);
     org.resolve(orgResponse());await flushPromises();await expandWorkspace();
@@ -151,8 +156,8 @@ describe('independent family publication through real initialized Pinia projecti
     workspace.resolve(workspaceResponse());avatar.resolve();await completion;expect(orgIds()).toEqual(fail?[]:['winner']);
   });
   it('quiet partial failure retains legacy global error while other accepted family publishes', async () => {
-    const store=useRunHistoryStore();store.error='prior';store.refreshRunNavigationTopology('initial');
-    const completion=store.fetchTree(6,{quiet:true});workspace.reject(Error('workspace quiet failure'));org.resolve(orgResponse());await completion;
+    registerFixtureWorkspace();const store=useRunHistoryStore();store.error='prior';store.refreshRunNavigationTopology('initial');
+    const completion=store.fetchTree({quiet:true});workspace.reject(Error('workspace quiet failure'));org.resolve(orgResponse());await completion;
     expect(store.loading).toBe(false);expect(store.error).toBe('prior');expect(store.historyFamilyErrors.workspace).toBe('workspace quiet failure');expect(orgIds()).toEqual(['org-history']);
   });
 });

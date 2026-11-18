@@ -8,7 +8,6 @@ public enum ConnectionFailureKind: String, Codable, Equatable, CaseIterable {
     case authRequired
     case deviceRevoked
     case webSocketBlocked
-    case serverVersionIncompatible
     case unsafeNavigationBlocked
     case webViewLoadFailed
     case cameraPermissionDenied
@@ -106,8 +105,6 @@ public enum ConnectionDiagnosticMapper {
                 message: "Phone Access may be disabled or this phone may have been revoked on the desktop node.",
                 recoveryAction: "Enable Phone Access or revoke/re-pair from the desktop Phone Access card."
             )
-        case 426:
-            return incompatibleServer()
         default:
             return ConnectionDiagnostic(
                 kind: .webViewLoadFailed,
@@ -139,15 +136,6 @@ public enum ConnectionDiagnosticMapper {
             recoveryAction: likelyTLS
                 ? "Use a valid Tailscale Serve HTTPS URL, or acknowledge private HTTP if you are using a LAN/tailnet URL."
                 : "Connect Tailscale, confirm the desktop is online and awake, check split tunneling, then retry."
-        )
-    }
-
-    public static func incompatibleServer() -> ConnectionDiagnostic {
-        ConnectionDiagnostic(
-            kind: .serverVersionIncompatible,
-            title: "Desktop node needs an update",
-            message: "The iOS shell and desktop node reported incompatible remote-access versions.",
-            recoveryAction: "Update AutoByteus on the desktop and rebuild/reinstall the iOS app if needed."
         )
     }
 

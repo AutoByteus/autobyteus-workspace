@@ -1,0 +1,175 @@
+# Code Review Revision Record — node-universal-authentication-437 (autobyteus-437)
+
+## Revision Index
+
+| Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
+| --- | --- | --- | --- | --- | --- |
+| CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail (Local Fix) | CR-001, CR-002 |
+| CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002 Local Fix) | Fail (Local Fix) | Pass | CR-001, CR-002 |
+| CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001: API-15, API-03 MSP-08, API-08 NVP-05) | Pass | Fail (Local Fix, implementation) | CR-003, CR-004, CR-005 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003 Local Fix) | Fail (Local Fix) | Pass | CR-003, CR-004, CR-005 |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E pass (API-REV-002) | N/A (first test review) | Pass | None |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, delivery re-entry (API-REV-003, DR-001) | Pass | Pass | None |
+
+## Revision Entries
+
+### CRR-001 — Initial implementation review of slice 1
+
+- Canonical review report updated: `tickets/in-progress/node-universal-authentication-437/code-review-report.md`
+- Review entry point and round: Implementation Review, round 1
+- Review scope: `Full Review`
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-001, HEAD `60d0b0d859`)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A
+- Current authoritative result: Fail, Local Fix (implementation)
+- What changed in the review result and why: baseline. The gate, credentials, admission, pairing, revocation and Electron attachment follow the design. One preserved-behavior defect: peer signing covers a deployment base path the receiving node never sees (CR-001). The contract text disagrees with two accepted deviations (CR-002).
+- Supported product scenario / material-premise basis changes: new premise CR-P1 (peers at a deployment base-path address), Supported Explicit Edge, reachable. Rejected candidates C-03…C-08 (OPTIONS reaching application routes is not reachable: `@fastify/cors` answers every OPTIONS first).
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: CR-001, CR-002
+- Material score or classification changes: Runtime Correctness 8.6, Naming 9.0, API/E2E Readiness 9.0
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: UNK-006 and Linux Docker; Windows pipe and PowerShell unexecuted; `build-studio-server.ts` at 500 lines; browser/Electron probes need updating in API/E2E.
+
+### CRR-002 — Targeted delta review of the CR-001/CR-002 Local Fix
+
+- Canonical review report updated: `tickets/in-progress/node-universal-authentication-437/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review` — `git diff 60d0b0d859..b6a57ab154` stays in the CR-001/CR-002 files (signer helper, two call sites, contract and CM-12 text, four test files); no shared interface or other spine changed
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002, HEAD `b6a57ab154`); CR-001, CR-002
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (Local Fix), CRR-001
+- Current authoritative result: Pass
+- What changed in the review result and why: both findings resolved; the signed path is one node-relative rule on both sides, with unit and e2e coverage through a prefix-stripping gateway; the contract states the implemented identity, permissions and signed path.
+- Supported product scenario / material-premise basis changes: CR-P1 satisfied.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (Local Fix) | Resolved | IR-002, `dfa41de41c` | Code read of `peerRequestTarget` and both call sites; NAS-20 base-path unit/e2e tests; `evidence/implementation/IR002-03`, `-04`, `-06` pass |
+| CR-002 | Open (Local Fix) | Resolved | IR-002, `1e02bea41e` | `node_access_model.md` §1, NA-7, NA-9; `collaboration_model.md` CM-12 |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Runtime Correctness 8.6 → 9.4, Naming 9.0 → 9.4, API/E2E Readiness 9.0 → 9.3, Interface Clarity 9.3 → 9.4
+- Recommended recipient: API/E2E engineer (informational notice to implementation engineer)
+- Remaining risks or uncertainty: UNK-006 and Linux Docker; Windows pipe and PowerShell unexecuted; `build-studio-server.ts` at 500 lines; web e2e probes to update.
+
+### CRR-003 — Failure-origin review of API-REV-001
+
+- Canonical review report updated: `code-review-report.md` § API/E2E Failure-Origin Review (Round 3) and Latest Authoritative Result
+- Review entry point and round: API/E2E Failure-Origin Review, round 3
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md`; F-1 (API-15), F-2 (API-03 MSP-08), F-3 (API-08 NVP-05); observations O-1…O-3
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002)
+- Current authoritative result: Fail, Local Fix (implementation)
+- What changed in the review result and why: all three failures are implementation defects introduced by this change. CR-003: Nuxt's dev server does not route upgrades to `vite.server.proxy`. CR-004: the gate's async `preValidation` hook lets the request be destroyed before Mercurius builds the context; `createRequestAbortSignal` treats that as an abort. CR-005: the `statusCode = 503` property makes Mercurius answer HTTP 503. O-1 and O-2 are added to the fix; O-3 is accepted.
+- Supported product scenario / material-premise basis changes: none; the three scenarios remain approved behavior. O-3's race (NP-07) is a constructed concurrent action, not a supported workflow.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Resolved (reconfirmed by API-11 through a real nginx gateway) | IR-002, API-REV-001 | `api-e2e-execution-coverage-report.md` API-11 |
+| CR-002 | Resolved | Resolved | IR-002 | unchanged |
+
+- New or remaining finding IDs: CR-003, CR-004, CR-005 (plus O-1, O-2 in the same fix)
+- Material score or classification changes: not rescored; Runtime Correctness and API/E2E Readiness reopened
+- Recommended recipient: implementation engineer
+- Remaining risks or uncertainty: AC-008 from a second physical device only the user can do; API-16 and API-FS open with API/E2E.
+
+### CRR-004 — Targeted delta review of IR-003 (CR-003…CR-005, O-1, O-2)
+
+- Canonical review report updated: `code-review-report.md` § Implementation Review Round 4 and Latest Authoritative Result
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Targeted Delta Review`. `git diff b28e5c0864..32e9ad944c` stays in the findings' files.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003, HEAD `32e9ad944c`)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail, Local Fix (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: each defect is fixed at its owner. Nitro `devProxy` carries upgrades; the abort-signal rule recognises only a real disconnect; the error property that Mercurius turned into a 503 is removed. Real-runtime tests now cover each seam.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (Local Fix) | Resolved | IR-003, `75f1b6300e` | `nuxt.config.ts` devProxy; `IR003-08` probe 4/4 |
+| CR-004 | Open (Local Fix) | Resolved | IR-003, `eae14ea940` | `graphql-request-context.ts`; unit + `search-files-through-gate.e2e` (`IR003-03`, `-05`) |
+| CR-005 | Open (Local Fix) | Resolved | IR-003, `8914f21745` | `memory-sync-held-back-graphql.e2e`, NV-03 200 (`IR003-05`, `-07`) |
+| O-1, O-2 | Open (with the fix) | Resolved | IR-003, `0c755805d3` | launcher text; `nodeDesktopClient.spec.ts` |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Runtime Correctness 9.4, API/E2E Readiness 9.3 restored
+- Recommended recipient: API/E2E engineer (informational notice to implementation engineer)
+- Remaining risks or uncertainty: AC-008 from a second physical device (user); API-16 and API-FS open with API/E2E.
+
+### CRR-005 — Proportional test-code review after API/E2E pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass, 95%)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (source review CRR-004 Pass)
+- Current authoritative result: Pass
+- What changed in the review result and why: the durable test changes are one shared credential fixture plus mechanical, consistent probe updates, two minimal baseline fixes and one launcher case. Assertions for removed APIs were deleted with reasons, and phone contexts keep their own credential.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: 7 live probes not run; FU-003, FU-004 pre-existing; AC-008 from a second device remains the user's check; the Windows launcher has not run on Windows.
+
+### CRR-006 — Test-code review of the delivery re-entry (API-REV-003)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` § Round 2
+- Review entry point and round: Successful API/E2E test-code review, round 2 (delivery re-entry)
+- Review scope: `N/A` (test review): `mobile-live-reconnect-cases.mjs` (`43e6d41eb0`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` Round 3; MSP-21…23
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Pass
+- What changed in the review result and why: the merged base's new phone cases now carry the probe's owner credential on their node-side sockets. Their favicon known-error expectation follows the approved deny-by-default answer (401), matched exactly as before.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: unchanged from CRR-005.

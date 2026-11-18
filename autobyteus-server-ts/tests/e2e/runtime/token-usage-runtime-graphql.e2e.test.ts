@@ -10,6 +10,7 @@ import { rootPrismaClient } from "repository_prisma";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { getModelCatalogService } from "../../../src/llm-management/services/model-catalog-service.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -23,7 +24,8 @@ const runRealRuntimeTokenUsageE2e = process.env.RUN_RUNTIME_TOKEN_USAGE_E2E === 
 const REAL_RUNTIME_TIMEOUT_MS = Number(process.env.RUNTIME_TOKEN_USAGE_E2E_TIMEOUT_MS || 300_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.RUNTIME_TOKEN_USAGE_E2E_EVENT_WAIT_TIMEOUT_MS || 180_000);
 const GRAPHQL_PERSISTENCE_TIMEOUT_MS = Number(process.env.RUNTIME_TOKEN_USAGE_E2E_GRAPHQL_WAIT_TIMEOUT_MS || 60_000);
-const DEFAULT_LMSTUDIO_QWEN_TARGET = "qwen3.5";
+// The small, fast local model TESTING.md names for LM Studio suites; LMSTUDIO_TARGET_TEXT_MODEL overrides it.
+const DEFAULT_LMSTUDIO_QWEN_TARGET = "qwen3.6-35b-a3b";
 
 type RuntimeKindUnderTest = "autobyteus" | "codex_app_server" | "claude_agent_sdk";
 
@@ -33,7 +35,10 @@ type RuntimeSpec = {
   expectedIngestionKind: string;
   resolveModelIdentifier: () => Promise<string>;
   llmConfig?: Record<string, unknown> | null;
+  /** The API cost statuses the runtime's turn may report: a local model has no API bill. */
+  expectedApiCostStatuses: readonly string[];
 };
+const PROVIDER_API_COST_STATUSES = ["estimated", "price_missing", "partial_price_missing"] as const;
 
 type WsMessage = {
   type: string;
@@ -237,7 +242,9 @@ const resolveAutoByteusLmStudioQwenModelIdentifier = async (): Promise<string> =
     return override;
   }
 
-  await LLMFactory.reinitialize();
+  // LM Studio models are discovered by the server's model catalog (LMSTUDIO_HOSTS, default 127.0.0.1:1234), which
+  // registers them with LLMFactory; LLMFactory itself no longer discovers them.
+  await getModelCatalogService().reloadProviderModelCatalog("LMSTUDIO", "autobyteus");
   const models = await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO);
   if (!models.length) {
     throw new Error("No LM Studio models were discovered for AutoByteus runtime token usage E2E.");
@@ -250,7 +257,6 @@ const resolveAutoByteusLmStudioQwenModelIdentifier = async (): Promise<string> =
   });
   const selected =
     usableModels.find((model) => model.model_identifier.toLowerCase().includes(target)) ??
-    usableModels.find((model) => model.model_identifier.toLowerCase().includes("qwen3.5")) ??
     usableModels.find((model) => model.model_identifier.toLowerCase().includes("qwen")) ??
     usableModels[0] ??
     models[0];
@@ -551,6 +557,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       expectedIngestionKind: "autobyteus_llm_phase",
       resolveModelIdentifier: resolveAutoByteusLmStudioQwenModelIdentifier,
       llmConfig: null,
+      expectedApiCostStatuses: ["local_no_api_bill"],
     },
     {
       id: "codex-app-server",
@@ -558,6 +565,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       expectedIngestionKind: "codex_thread_token_usage",
       resolveModelIdentifier: () => fetchRuntimeModelIdentifier("codex_app_server", chooseCodexModelIdentifier),
       llmConfig: { reasoning_effort: "medium" },
+      expectedApiCostStatuses: PROVIDER_API_COST_STATUSES,
     },
     {
       id: "claude-agent-sdk",
@@ -567,6 +575,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       expectedIngestionKind: "claude_sdk_call",
       resolveModelIdentifier: () => fetchRuntimeModelIdentifier("claude_agent_sdk", chooseClaudeModelIdentifier),
       llmConfig: null,
+      expectedApiCostStatuses: PROVIDER_API_COST_STATUSES,
     },
   ];
 
@@ -673,7 +682,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           // The meter keeps the runtime's own reading for the latest model call.
           expect(summary.latestPromptTokens).toBe(asNumber(lastCall?.payload.latest_prompt_tokens));
           expect(["positive", "zero_reported", "not_reported", "unsupported_or_local", "unknown"]).toContain(summary.cacheState);
-          expect(["estimated", "price_missing", "partial_price_missing"]).toContain(summary.apiCostStatus);
+          expect(spec.expectedApiCostStatuses).toContain(summary.apiCostStatus);
 
           const usageWindowEnd = new Date(Date.now() + 5_000);
           const statistics = await queryStatistics(usageWindowStart, usageWindowEnd);

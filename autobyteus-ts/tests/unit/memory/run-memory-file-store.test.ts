@@ -144,7 +144,7 @@ describe('RunMemoryFileStore', () => {
     ]);
     const manifest = store.readRawTraceArchiveManifest();
     expect(manifest.segments).toHaveLength(1);
-    expect(manifest.segments[0]).toMatchObject({ boundary_type: 'native_compaction', status: 'complete', record_count: 1 });
+    expect(manifest.segments[0]).toMatchObject({ boundary_type: 'native_compaction', runtime_kind: 'autobyteus', status: 'complete', record_count: 1 });
     expect(manifest.segments[0].file_name).toMatch(ROTATED_RAW_TRACE_FILE_NAME_PATTERN);
     expect(await pathExists(path.join(memoryDir, manifest.segments[0].file_name))).toBe(true);
     expect(await pathExists(store.getRawTracesArchiveDirPath())).toBe(false);
@@ -168,6 +168,7 @@ describe('RunMemoryFileStore', () => {
       expect.objectContaining({
         boundary_type: 'native_compaction',
         boundary_key: `native_compaction_selection:${selectionDigest}`,
+        runtime_kind: 'autobyteus',
         record_count: 2,
         status: 'complete',
       }),
@@ -227,7 +228,7 @@ describe('RunMemoryFileStore', () => {
       boundaryType: 'provider_compaction_boundary',
       boundaryKey: 'codex:thread:boundary',
       boundaryTraceId: 'rt-marker',
-      runtimeKind: 'CODEX',
+      runtimeKind: 'codex_app_server',
       sourceEvent: 'codex.thread_compacted',
     });
 
@@ -261,7 +262,7 @@ describe('RunMemoryFileStore', () => {
       boundaryType: 'provider_compaction_boundary',
       boundaryKey: 'codex:thread:boundary',
       boundaryTraceId: 'rt-marker-1',
-      runtimeKind: 'CODEX',
+      runtimeKind: 'codex_app_server',
       sourceEvent: 'codex.thread_compacted',
     });
 
@@ -279,7 +280,7 @@ describe('RunMemoryFileStore', () => {
       boundaryType: 'provider_compaction_boundary',
       boundaryKey: 'codex:thread:boundary',
       boundaryTraceId: 'rt-marker-2',
-      runtimeKind: 'CODEX',
+      runtimeKind: 'codex_app_server',
       sourceEvent: 'codex.thread_compacted',
     });
 

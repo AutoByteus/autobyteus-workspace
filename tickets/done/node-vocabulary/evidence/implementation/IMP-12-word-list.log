@@ -1,0 +1,195 @@
+# IMP-12 AC-901 word list (design § Verification)
+# command: grep -rnE <word> over the repository, excluding node_modules, build output, .git and tickets/
+# commit: cb37d82fab, date: 2026-10-24T10:53:37Z
+
+## serverInstanceId
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:8: * autobyteus-290 SM-1: `remote-access/server-instance.json` {serverInstanceId} →
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:39:    await writeReleased({ serverInstanceId: NODE_ID, createdAt: CREATED_AT });
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:51:    expect(JSON.parse(await fs.readFile(path.join(folder(), backup), "utf-8"))).to
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:57:    await writeReleased({ serverInstanceId: NODE_ID, createdAt: CREATED_AT });
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:64:    await writeReleased({ serverInstanceId: NODE_ID, createdAt: CREATED_AT });
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:73:    await writeReleased({ serverInstanceId: NODE_ID, createdAt: CREATED_AT });
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:97:    await writeReleased({ serverInstanceId: NODE_ID });
+./autobyteus-server-ts/docs/features/remote_access.md:125:- `remote-access/node-identity.json` stores the stable node ID (`nodeId`) used for same-node advertised URL verification. A node released befo
+./autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/node-identity-file-name-migration.ts:64: * SM-1 (autobyteus-290): the node identity file follows the code's name. `ser
+./autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/node-identity-file-name-migration.ts:73:  readonly description = "Renames remote-access/server-instance.json {serverIn
+./autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/node-identity-file-name-migration.ts:90:    if (!isReleasedNodeId(released.serverInstanceId)) {
+./autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/node-identity-file-name-migration.ts:93:    const nodeId = released.serverInstanceId;
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-node-identity-file.ts:3: * `<app data>/remote-access/server-instance.json` holding `{ serverInstanceId, createdAt }`.
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-node-identity-file.ts:8:  serverInstanceId?: unknown;
+./autobyteus-web/client-data-migrations/migrations/node-registry-entry-names/node-registry-entry-names.ts:25:  const { serverInstanceId, isSystem: _isSystem, ...rest } = record;
+./autobyteus-web/client-data-migrations/migrations/node-registry-entry-names/node-registry-entry-names.ts:26:  return 'serverInstanceId' in record ? { ...rest, nodeId: serverInstanceId } : rest;
+./autobyteus-web/client-data-migrations/__tests__/releasedFixtures.ts:15:  serverInstanceId: 'srv_ownEmbeddedAAAAAAAAAAAAAAAAAAAAAAAAAA',
+./autobyteus-web/client-data-migrations/__tests__/releasedFixtures.ts:27:  serverInstanceId: SRV_BETA,
+./autobyteus-web/client-data-migrations/__tests__/releasedFixtures.ts:30:/** A remote entry not reached yet: no `serverInstanceId`. */
+./autobyteus-web/client-data-migrations/__tests__/conversions.spec.ts:20:  it('renames serverInstanceId to nodeId and drops isSystem, keeping id and every other value', () => {
+./autobyteus-web/client-data-migrations/__tests__/conversions.spec.ts:41:      { id: 'old', name: 'Old', baseUrl: 'http://x', nodeType: 'remote', registrationSource: 'discovered', isSystem: false, ser
+./autobyteus-web/client-data-migrations/frozen/released-node-registry.ts:12:/** One record as the released writers wrote it. `id` is the entry's own ID; `serverInstanceId` is the node's ID. */
+./autobyteus-web/client-data-migrations/frozen/released-node-registry.ts:18:  serverInstanceId?: string;
+
+## sourceNodeId
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:37:const releasedConfig = (sourceNodeId: string | null) => ({
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:40:  source: { enabled: true, sourceNodeId, displayName: "Laptop", hubBaseUrl
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:43:const releasedState = (sourceNodeId: string) => ({ schemaVersion: 1, hubKe
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:50:const releasedSourceMetadata = (sourceNodeId: string) => ({ schemaVersion:
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:53:const releasedManifest = (sourceNodeId: string) => ({ schemaVersion: 1, so
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:93:    expect(config.source).toEqual({ ...releasedConfig("laptop-1").source, 
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:94:    expect(Object.keys(config.source)).toEqual(Object.keys(releasedConfig(
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:128:    await writeJson(path.join(importDir("laptop-1"), "source.json"), { ..
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:139:    await writeJson(path.join(syncDir(), "source-state", `${hubKey}--x.js
+./autobyteus-server-ts/tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts:28:  sourceNodeId: string;
+./autobyteus-server-ts/tests/app-data-migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.test.ts:87:      sourceNodeId: "source-a",
+./autobyteus-server-ts/docs/features/memory_sync.md:82:Data released before autobyteus-290 used the names `sourceNodeId`,
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:85:/** SM-2: `source.sourceNodeId` in the config. */
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:110: * SM-2 … SM-5 (autobyteus-290): Memory Sync's stored names follow 
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:119:    "Renames Memory Sync's stored sourceNodeId to sourceId (config, s
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:170:  /** SM-5: `source-node.json` `{sourceNodeId}` → `source.json` `{s
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:5: * - `<appData>/memory-sync/memory-sync-config.json`: `source.sourceNodeId` (`memory-sync-config-service.ts`);
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:6: * - `<appData>/memory-sync/source-state/<hubKey>--<id>.json`: `sourceNodeId` (`local-file-memory-sync-state-store
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:9: * - `<memory>/imports/<id>/source-node.json` `{schemaVersion, sourceNodeId, displayName, …}` and
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:10: *   `<memory>/imports/<id>/sync-manifest.json` with `sourceNodeId` (`local-file-memory-import-store.ts`).
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:14:export const RELEASED_MEMORY_SYNC_SOURCE_ID_FIELD = "sourceNodeId";
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:20:  source?: { sourceNodeId?: string | null; [field: string]: unknown };
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:24:export type ReleasedMemorySyncSourceState = { sourceNodeId?: string; [field: string]: unknown };
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:28:export type ReleasedMemoryImportSourceMetadata = { sourceNodeId?: string; [field: string]: unknown };
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:30:export type ReleasedMemorySyncManifest = { sourceNodeId?: string; [field: string]: unknown };
+
+## source-node\.json
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:63:    await writeJson(path.join(importDir(id), "source-node.json"), released
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:97:    expect(importFiles.filter((name) => name.includes(".backup-")).map((na
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:126:  it("finishes source-node.json interrupted after source.json was written
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:127:    await writeJson(path.join(importDir("laptop-1"), "source-node.json"),
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:135:    await writeJson(path.join(importDir("laptop-1"), "source-node.json"),
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:145:    expect(result.errorMessage).toContain(path.join(importDir("laptop-1")
+./autobyteus-server-ts/tests/app-data-migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.test.ts:148:    expect(await files(importDir("laptop-1"))).toEqual(["source-node.json
+./autobyteus-server-ts/docs/features/memory_sync.md:83:`boundSourceNodeId` and `source-node.json`. The sealed startup migration
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:111: * `boundSourceNodeId` → `boundSourceId`, `source-node.json` → `s
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:119:    "Renames Memory Sync's stored sourceNodeId to sourceId (config, s
+./autobyteus-server-ts/src/app-data-migrations/migrations/memory-sync-source-id-names/memory-sync-source-id-names-migration.ts:170:  /** SM-5: `source-node.json` `{sourceNodeId}` → `source.json` `{s
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:9: * - `<memory>/imports/<id>/source-node.json` `{schemaVersion, sourceNodeId, displayName, …}` and
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-memory-sync-files.ts:16:export const RELEASED_MEMORY_IMPORT_SOURCE_METADATA_FILE_NAME = "source-node.json";
+
+## server-instance\.json
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:8: * autobyteus-290 SM-1: `remote-access/server-instance.json` {serverInstanceId} →
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:18:const oldFile = () => path.join(folder(), "server-instance.json");
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:50:    const backup = files.find((name) => name.startsWith("server-instance.json.back
+./autobyteus-server-ts/tests/app-data-migrations/node-identity-file-name/node-identity-file-name-migration.test.ts:79:    expect(result.errorMessage).toContain("server-instance.json");
+./autobyteus-server-ts/docs/features/remote_access.md:125:- `remote-access/node-identity.json` stores the stable node ID (`nodeId`) used for same-node advertised URL verification. A node released befo
+./autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/node-identity-file-name-migration.ts:64: * SM-1 (autobyteus-290): the node identity file follows the code's name. `ser
+./autobyteus-server-ts/src/app-data-migrations/migrations/node-identity-file-name/node-identity-file-name-migration.ts:73:  readonly description = "Renames remote-access/server-instance.json {serverIn
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-node-identity-file.ts:3: * `<app data>/remote-access/server-instance.json` holding `{ serverInstanceId, createdAt }`.
+./autobyteus-server-ts/src/app-data-migrations/frozen/released-node-identity-file.ts:5:export const RELEASED_NODE_IDENTITY_FILE_NAME = "server-instance.json";
+
+## node-registry\.v1
+./autobyteus-web/client-data-migrations/__tests__/electron-file-runner.spec.ts:20:const OLD = 'node-registry.v1.json';
+./autobyteus-web/client-data-migrations/__tests__/electron-file-runner.spec.ts:22:const BAK = 'node-registry.v1.json.bak';
+./autobyteus-web/client-data-migrations/frozen/released-node-registry.ts:7:export const RELEASED_NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json';
+
+## node_registry\.v1
+./autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:74:const RELEASED_REGISTRY_KEY = 'autobyteus.node_registry.v1';
+./autobyteus-web/client-data-migrations/__tests__/browser-storage-runner.spec.ts:19:const OLD_LIST = 'autobyteus.node_registry.v1';
+./autobyteus-web/client-data-migrations/frozen/released-node-registry.ts:10:export const RELEASED_NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry.v1';
+
+## mobile_session\.v1
+./autobyteus-web/client-data-migrations/__tests__/browser-storage-runner.spec.ts:21:const OLD_SESSION = 'autobyteus.remote_access.mobile_session.v1';
+./autobyteus-web/client-data-migrations/frozen/released-mobile-session.ts:6:export const RELEASED_MOBILE_SESSION_STORAGE_KEY = 'autobyteus.remote_access.mobile_session.v1';
+
+## saved-node-profiles
+./autobyteus-ios/AutoByteusMobileCore/DataMigrations/SavedNodeEntryKeysMigration.swift:13:        ("autobyteus.saved-node-profiles", "autobyteus.saved-node-entries"),
+./autobyteus-ios/AutoByteusMobileCoreTests/SavedNodeEntryKeysMigrationTests.swift:6:    private let oldEntries = "autobyteus.saved-node-profiles"
+./autobyteus-ios/AutoByteusMobileCoreTests/SavedNodeEntryKeysMigrationTests.swift:94:            if source.contains("saved-node-profiles") || source.contains("selected-node-profile-id") { oldKeyUses.a
+
+## selected-node-profile-id
+./autobyteus-ios/AutoByteusMobileCore/DataMigrations/SavedNodeEntryKeysMigration.swift:14:        ("autobyteus.selected-node-profile-id", "autobyteus.selected-node-entry-id"),
+./autobyteus-ios/AutoByteusMobileCoreTests/SavedNodeEntryKeysMigrationTests.swift:7:    private let oldSelected = "autobyteus.selected-node-profile-id"
+./autobyteus-ios/AutoByteusMobileCoreTests/SavedNodeEntryKeysMigrationTests.swift:94:            if source.contains("saved-node-profiles") || source.contains("selected-node-profile-id") { oldKeyUses.a
+
+## selected_profile_id
+./autobyteus-android/app/src/test/java/org/autobyteus/mobile/datamigrations/SavedNodeEntryKeysMigrationTest.kt:18:        val preferences = MemoryPreferences(mutableMapOf("profiles" to releasedEntries
+./autobyteus-android/app/src/test/java/org/autobyteus/mobile/datamigrations/SavedNodeEntryKeysMigrationTest.kt:27:                "selected_profile_id:backup" to "https://one.tailnet.ts.net",
+./autobyteus-android/app/src/test/java/org/autobyteus/mobile/datamigrations/SavedNodeEntryKeysMigrationTest.kt:77:        val oldKeys = sources.filter { source -> source.readText().let { "\"profiles\"
+./autobyteus-android/app/src/main/java/org/autobyteus/mobile/datamigrations/SavedNodeEntryKeysMigration.kt:20:        "selected_profile_id" to "selected_entry_id",
+
+## list_available_nodes
+./.github/release-notes/release-notes.md:11:  - **Let agents find the other node themselves.** Give an agent the new **list_available_nodes** and **list_available_agents** tools: it can then list the 
+
+## \bAvailableNode\b
+
+## RemoteNodeDiscovery
+
+## RemoteDiscoveryChannel
+
+## \bRemotePeer\b
+
+## PeerAddress\b
+./autobyteus-server-ts/tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts:75:  it("resolvePeerAddress and changePeerAddress go through their owners; a refusal carries its details as exte
+./autobyteus-server-ts/tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts:81:    const error = await resolver.resolvePeerAddress("srv_b", ["http://127.0.0.1:29695"]).catch((e) => e);
+./autobyteus-server-ts/tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts:85:    await expect(resolver.changePeerAddress("srv_b", "http://host.docker.internal:8001")).resolves.toMatchObj
+./autobyteus-server-ts/docs/modules/remote_collaboration.md:39:  (`changePeerAddress`) checks the pinned node answers at the new one.
+./autobyteus-server-ts/docs/modules/remote_collaboration.md:42:  `localhost:8001`; the Docker node reaches the desktop only at `host.docker.internal:29695`). `resolvePeerAddress(nodeId,
+./autobyteus-server-ts/docs/modules/remote_collaboration.md:65:  `renamePeerNode`, `changePeerAddress`, `removePeerNode`, `peerNodeOffer(nodeId)` (autobyteus-267),
+./autobyteus-server-ts/docs/modules/remote_collaboration.md:66:  `peerNodeAvailability(nodeId)`, `peerAddressCandidates` and `resolvePeerAddress(nodeId, baseUrls)` (one-nodes-tab).
+./autobyteus-server-ts/src/api/graphql/types/remote-collaboration-settings.ts:129:  resolvePeerAddress(
+./autobyteus-server-ts/src/api/graphql/types/remote-collaboration-settings.ts:142:  changePeerAddress(@Arg("nodeId", () => String) nodeId: string, @Arg("baseUrl", () => String) baseUrl: string): Promi
+./autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:30://   `resolvePeerAddress` reports each attempt's result, with `loopbackInContainer`.
+./autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:356:    const saves = evidence.requests.filter(entry => entry.at >= useAt && entry.op === 'ChangePeerAddress').map(entry => entry.variables);
+./autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:388:    const resolveErrors = await gqlErrors(docker.gql, 'query($id:String!,$u:[String!]!){resolvePeerAddress(nodeId:$id,baseUrls:$u)}',
+./autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:400:      `resolvePeerAddress from inside the container: ${JSON.stringify(extensions)}`);
+./autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:263:    'GetPeerAddressCandidates', 'ResolvePeerAddress']);
+./autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:678:      'GetRemoteCollaborationSettings', 'RemovePeerNode', 'ResolvePeerAddress', 'SetRemoteCollaborationEnabled'];
+./autobyteus-web/stores/remoteCollaborationStore.ts:7:  ResolvePeerAddress,
+./autobyteus-web/stores/remoteCollaborationStore.ts:9:import { AddPeerNode, ChangePeerAddress, RemovePeerNode, RenamePeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
+./autobyteus-web/stores/remoteCollaborationStore.ts:44:      const data = await this.query<{ resolvePeerAddress?: string }>(ResolvePeerAddress, { nodeId, baseUrls })
+./autobyteus-web/stores/remoteCollaborationStore.ts:45:      if (!data?.resolvePeerAddress) throw new Error('No address was returned.')
+./autobyteus-web/stores/remoteCollaborationStore.ts:46:      return data.resolvePeerAddress
+./autobyteus-web/stores/remoteCollaborationStore.ts:60:      return this.replace((await this.mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, baseUrl })).changePeerAddress)
+./autobyteus-web/stores/__tests__/remoteCollaborationStore.spec.ts:61:    apolloClientMock.mutate.mockResolvedValueOnce({ data: { changePeerAddress: { ...peer, name: 'nas', baseUrl: 'http://host.docke
+./autobyteus-web/stores/__tests__/remoteCollaborationStore.spec.ts:66:    apolloClientMock.query.mockResolvedValueOnce({ data: { resolvePeerAddress: 'http://localhost:8001' } })
+./autobyteus-web/docs/settings.md:270:  other node's window address and advertised candidates (`resolvePeerAddress`); a side whose
+./autobyteus-web/graphql/mutations/remoteCollaborationMutations.ts:32:export const ChangePeerAddress = gql`
+./autobyteus-web/graphql/mutations/remoteCollaborationMutations.ts:33:  mutation ChangePeerAddress($nodeId: String!, $baseUrl: String!) {
+./autobyteus-web/graphql/mutations/remoteCollaborationMutations.ts:34:    changePeerAddress(nodeId: $nodeId, baseUrl: $baseUrl) {
+./autobyteus-web/graphql/queries/remoteCollaborationQueries.ts:72:export const ResolvePeerAddress = gql`
+./autobyteus-web/graphql/queries/remoteCollaborationQueries.ts:73:  query ResolvePeerAddress($nodeId: String!, $baseUrls: [String!]!) {
+./autobyteus-web/graphql/queries/remoteCollaborationQueries.ts:74:    resolvePeerAddress(nodeId: $nodeId, baseUrls: $baseUrls)
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationConnector.ts:29:    changePeerAddress(nodeId: string, baseUrl: string): Promise<unknown>
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationConnector.ts:153:      current.address = await api(plan).resolvePeerAddress(requireId(plan.here.nodeId, plan.here.name),
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationConnector.ts:188:        await deps.here.changePeerAddress(requireId(nodeId, plan.target.name), current.address!)
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationApi.ts:8:  ResolvePeerAddress,
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationApi.ts:10:import { AddPeerNode, ChangePeerAddress, RemovePeerNode, SetRemoteCollaborationEnabled } from '~/graphql/mutations/remoteCollabor
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationApi.ts:30:  resolvePeerAddress(nodeId: string, baseUrls: string[]): Promise<string>
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationApi.ts:33:  changePeerAddress(nodeId: string, baseUrl: string): Promise<PeerNode>
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationApi.ts:65:    resolvePeerAddress: async (nodeId, baseUrls) => (await query<{ resolvePeerAddress: string }>(ResolvePeerAddress, { nodeId, ba
+./autobyteus-web/services/nodeCollaboration/nodeCollaborationApi.ts:68:    changePeerAddress: async (nodeId, address) => (await mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, bas
+./autobyteus-web/services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts:27:    resolvePeerAddress: vi.fn(async (nodeId, urls) => { log(`there.resolve(${nodeId},${urls.join(' ')})`); r
+./autobyteus-web/services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts:30:    changePeerAddress: vi.fn(),
+./autobyteus-web/services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts:43:      changePeerAddress: vi.fn(async (nodeId, url) => log(`here.changeAddress(${nodeId},${url})`)),
+./autobyteus-web/services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts:128:    vi.mocked(f.there.resolvePeerAddress).mockRejectedValueOnce(refusal('PEER_UNREACHABLE', { address: 'htt
+./autobyteus-web/services/nodeCollaboration/__tests__/nodeCollaborationConnector.spec.ts:214:    vi.mocked(f.deps.here.changePeerAddress).mockRejectedValueOnce(
+./autobyteus-web/services/nodeCollaboration/__tests__/nodeCollaborationApi.spec.ts:38:    const refused = await api.resolvePeerAddress('srv_a', ['http://127.0.0.1:29695']).catch((e) => e)
+./autobyteus-web/services/nodeCollaboration/windowNodeCollaborationConnector.ts:29:      changePeerAddress: (nodeId, baseUrl) => useRemoteCollaborationStore().changeAddress(nodeId, baseUrl),
+
+## \bisSystem\b
+./autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:209:    capabilities: { terminal: true, fileExplorerStreaming: true }, capabilityProbeState: 'ready', isSystem: nodeType === 'embedded', createdA
+./autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:360:    expect(releasedLeft === null && !stored.nodes.some(node => 'isSystem' in node), `autobyteus-290 SM-7 converted the released list: ${relea
+./autobyteus-web/client-data-migrations/migrations/node-registry-entry-names/node-registry-entry-names.ts:8: * say `nodeId` for the node's ID, and the unread `isSystem` is dropped. `id` (the entry's o
+./autobyteus-web/client-data-migrations/migrations/node-registry-entry-names/node-registry-entry-names.ts:25:  const { serverInstanceId, isSystem: _isSystem, ...rest } = record;
+./autobyteus-web/client-data-migrations/__tests__/releasedFixtures.ts:12:  isSystem: true,
+./autobyteus-web/client-data-migrations/__tests__/releasedFixtures.ts:24:  isSystem: false,
+./autobyteus-web/client-data-migrations/__tests__/releasedFixtures.ts:36:  isSystem: false,
+./autobyteus-web/client-data-migrations/__tests__/conversions.spec.ts:20:  it('renames serverInstanceId to nodeId and drops isSystem, keeping id and every other value', () => {
+./autobyteus-web/client-data-migrations/__tests__/conversions.spec.ts:36:    expect(converted(releasedSnapshotText([releasedRemoteUnidentified])).nodes[0]).not.toHaveProperty('isSystem');
+./autobyteus-web/client-data-migrations/__tests__/conversions.spec.ts:41:      { id: 'old', name: 'Old', baseUrl: 'http://x', nodeType: 'remote', registrationSource: 'discovered', isSystem: false, ser
+./autobyteus-web/client-data-migrations/__tests__/electron-file-runner.spec.ts:57:    expect(snapshot.nodes.some((entry) => 'isSystem' in entry)).toBe(false);
+./autobyteus-web/client-data-migrations/__tests__/browser-storage-runner.spec.ts:36:    expect(nodes[1]).not.toHaveProperty('isSystem');
+./autobyteus-web/client-data-migrations/frozen/released-node-registry.ts:19:  isSystem: boolean;
+
+## \bNodeProfile\b
+
+## SavedNodeProfile
+./autobyteus-ios/AutoByteusMobileCoreTests/SavedNodeEntryKeysMigrationTests.swift:11:    /// The released writer's exact output (`JSONEncoder` of the released `SavedNodeProfile`, same fields).
+
+## MOBILE_NODE_ID
+
+## EMBEDDED_NODE_ID
+

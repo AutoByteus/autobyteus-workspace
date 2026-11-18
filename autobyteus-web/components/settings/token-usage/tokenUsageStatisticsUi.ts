@@ -1,14 +1,8 @@
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import type { TokenUsageCostSummaryAggregate } from '~/types/tokenUsageCostSummary';
 import type { TokenUsageApiCostStatus } from '~/types/tokenUsageMeter';
 
 export type TokenUsageTranslator = (key: string, params?: Record<string, string | number>) => string;
-
-const runtimeLabels: Record<string, string> = {
-  autobyteus: 'Autobyteus',
-  codex_app_server: 'Codex',
-  claude_agent_sdk: 'Claude SDK',
-  grok_build: 'Grok Build',
-};
 
 export const shortId = (value: string | null | undefined): string => {
   const normalized = value?.trim();
@@ -90,7 +84,7 @@ export const createTokenUsageStatisticsFormatter = (
     return `${base} bg-amber-50 text-amber-700 ring-amber-100`;
   };
 
-  const formatRuntimeKind = (runtimeKind: string): string => runtimeLabels[runtimeKind] ?? runtimeKind;
+  const formatRuntimeKind = (runtimeKind: string): string => agentRuntimeName(runtimeKind);
 
   const formatDistinctValues = (values: string[], kind: 'runtime' | 'model'): string => {
     const normalized = values.filter(Boolean);

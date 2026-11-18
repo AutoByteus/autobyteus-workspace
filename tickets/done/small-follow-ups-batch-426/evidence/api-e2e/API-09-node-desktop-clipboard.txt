@@ -1,0 +1,35 @@
+# API-09 phone ↔ node desktop clipboard in the Android app (AC-005, REQ-005, U-01)
+# node: test-owned container api426-node from autobyteus/autobyteus-server:beta (arm64), published on 127.0.0.1:60331 only, no volumes
+#       (fresh container filesystem), this worktree's server package mounted read-only over /opt/autobyteus/server-package:
+#       docker buildx build --builder desktop-linux --platform linux/arm64 -f <copy of autobyteus-server-ts/docker/Dockerfile.monorepo
+#       without its "# syntax=docker/dockerfile:1" line> --target server-package --output type=local,dest=/tmp/426-server-package .
+#       (the daemon's Docker Hub lookup for the dockerfile:1 frontend hung, so the built-in frontend was used; the build steps
+#       are unchanged: API-09-Dockerfile.monorepo.nosyntax.txt). server-package.json "version": "1.5.12-beta.7";
+#       running: "/usr/bin/node /opt/autobyteus/server-package/dist/app.js --host 0.0.0.0 --port 8000 …"; desktop Xvnc :99, copyq
+# app: worktree debug APK on emulator autobyteus277_api35 (Android 15, WebView 124.0.6367.219); paired by a pairing link made
+#       inside the container (loopback, as the desktop does) for http://10.0.2.2:60331; one run created by GraphQL (no message)
+# page environment (CDP): {"href":"http://10.0.2.2:60331/mobile/","clipboardApi":"undefined","permissions":"undefined","secure":false}
+# date: 2026-11-08 00:25-00:35 (local)
+
+## View only
+run → ⋮ → VNC Viewer: status "Connected · View only"; bar buttons: clipboard-open false, keyboard false, mode true (API-09-1-view-mode.png)
+
+## Control
+mode → Control: status "Connected · Control"; "Clipboard" button present (API-09-2-control-mode.png)
+
+## Paste (phone → node desktop)
+desktop clipboard before: BEFORE-426 (xclip, set in the container)
+Clipboard → tap the Paste box (real tap, the system keyboard opens) → typed "PHONE-TO-DESKTOP-426" with the system keyboard
+  (adb input text; the emulator has no shell command to put text on the phone clipboard for a paste) → value "PHONE-TO-DESKTOP-426" (API-09-3-paste-typed.png)
+tap "Send to desktop" → docker exec -u vncuser api426-node sh -c 'DISPLAY=:99 xclip -o -selection clipboard' → "PHONE-TO-DESKTOP-426"
+  sheet closed after the send; status still "Connected · Control" (API-09-4-after-send.png)
+
+## Copy (node desktop → phone)
+in the container: printf DESKTOP-TO-PHONE-426 | DISPLAY=:99 xclip -selection clipboard
+Clipboard sheet: remote text "DESKTOP-TO-PHONE-426", Copy enabled (API-09-5-copy-sheet.png)
+tap "Copy" (real tap) → button "Copied", no fallback line (API-09-6-after-copy.png)  — programmatic copy works on http:// in this WebView (U-01)
+phone clipboard check: tap the Paste box, clear it, KEYCODE_PASTE (the system paste) → value "DESKTOP-TO-PHONE-426" (API-09-7-phone-clipboard-pasted.png)
+
+## not covered here
+"not connected → no Clipboard" and "no clipboard read on open": component specs (IMP-09, useVncSession / MobileNodeDesktop / sheet specs);
+in this environment navigator.clipboard and navigator.permissions are undefined, so the page has no clipboard read API at all.

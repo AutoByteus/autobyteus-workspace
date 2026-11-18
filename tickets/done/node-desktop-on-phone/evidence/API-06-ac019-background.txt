@@ -1,0 +1,17 @@
+# Case: API-06 — AC-019 on the emulator (independent rerun): Home ends the stream, return reconnects in View only
+# Steps: VNC Viewer in Control; KEYCODE_HOME; sample node upstream (:5900) every ~0.5 s; node log; pid; re-open the app from the launcher (am start, the same task); wait; status, mode, upstream
+# Commit: 165de82af4; emulator autobyteus277_api35; node abx407-api-node
+# Date: 2026-11-06T23:23:35Z
+
+before: Connected · Control | ?screen=desktop up=1 pid=4335
+  +0.56s up=1
+  +1.21s up=0
+  +1.85s up=0
+  +2.47s up=0
+  +3.09s up=0
+  +3.72s up=0
+node log: [node-desktop] stream ended mode=control viewer=mobile durationMs=151193 toViewer=2568609 fromViewer=3834 reason=viewer-closed
+pid while in background: 4335
+up after 3 s more: 0
+Warning: Activity not started, its current task has been brought to the front
+after return: Connected · View only | ?screen=desktop up=1 pid=4335

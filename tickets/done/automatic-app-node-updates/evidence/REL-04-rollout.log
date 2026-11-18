@@ -1,0 +1,33 @@
+# REL-04 rollout of v1.5.11-beta.12 (tag pushed 14:28:52Z on 260d4e3fc4)
+Desktop Release run 41462342231: success (attempt 1)
+Android APK Release run 41462342462: success (attempt 1)
+Server Docker Release run 41462342573: success (attempt 1)
+iOS App Store Connect Release run 41462342764: success (attempt 2)
+iOS attempt 1 failed only the simulator UI test testFakeNodeOpensAndRestoresWithFakeMobileMarker ("Timed out while evaluating UI query"; BUILD SUCCEEDED, 27 unit tests passed; no iOS file changed since v1.5.11-beta.11, whose iOS run passed; the test uses a fake node, the workflow does not build autobyteus-web). Transient per RELEASE.md Recovery: gh run rerun 41462342764 --failed; attempt 2 succeeded incl. Archive And Upload To App Store Connect.
+
+gh release view v1.5.11-beta.12: isPrerelease=true, assets=23:
+  AutoByteus_personal_android-1.5.11-beta.12-release.apk
+  AutoByteus_personal_android-1.5.11-beta.12-release.apk.sha256
+  AutoByteus_personal_linux-arm64-1.5.11-beta.12.AppImage
+  AutoByteus_personal_linux-x64-1.5.11-beta.12.AppImage
+  AutoByteus_personal_macos-arm64-1.5.11-beta.12.dmg
+  AutoByteus_personal_macos-arm64-1.5.11-beta.12.dmg.blockmap
+  AutoByteus_personal_macos-arm64-1.5.11-beta.12.zip
+  AutoByteus_personal_macos-arm64-1.5.11-beta.12.zip.blockmap
+  AutoByteus_personal_macos-x64-1.5.11-beta.12.dmg
+  AutoByteus_personal_macos-x64-1.5.11-beta.12.dmg.blockmap
+  AutoByteus_personal_macos-x64-1.5.11-beta.12.zip
+  AutoByteus_personal_macos-x64-1.5.11-beta.12.zip.blockmap
+  AutoByteus_personal_windows-1.5.11-beta.12.exe
+  autobyteus-server-1.5.11-beta.12-linux-arm64.json
+  autobyteus-server-1.5.11-beta.12-linux-arm64.json.sig
+  autobyteus-server-1.5.11-beta.12-linux-arm64.tar.gz
+  autobyteus-server-1.5.11-beta.12-linux-x64.json
+  autobyteus-server-1.5.11-beta.12-linux-x64.json.sig
+  autobyteus-server-1.5.11-beta.12-linux-x64.tar.gz
+  latest-linux-arm64.yml
+  latest-linux.yml
+  latest-mac.yml
+  latest.yml
+
+Beta notes: GitHub generated notes; no ticket in v1.5.11-beta.11..v1.5.11-beta.12 has a '## What you need to do' section, so no notes edit.

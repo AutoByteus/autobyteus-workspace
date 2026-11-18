@@ -1,0 +1,25 @@
+# Case: API-08 (b) — Android 14: rotation keeps the page; insets per orientation; no MainActivity relaunch
+# Steps: app installed (debug, dd129696a4), paired through the access proxy (share intent, HTTP acknowledgement, Pair this phone), relaunched from the launcher; Files -> Temp Workspace -> abx415-rotation-notes.md; page marked; adb emu rotate until landscape and back to 0°; at each stop: page state, preview shown, node GET /mobile count (access proxy), inset frames + WebView bounds (dumpsys window, uiautomator); finally logcat relaunch lines
+# Commit: dd129696a4; emulator autobyteus277_api34 (Pixel 6, Android 14); node abx415-api-node via proxy 10.0.2.2:50364
+# Date: 2026-11-06T20:53:42Z
+
+0°: {"href":"http://10.0.2.2:50364/mobile/","marker":"api08-before-rotation","navigationStart":1793998387786,"viewport":"412x842","title":"","heading":"Temp Workspace"} node[GET /mobile, all]=7 378
+    insets: type=displayCutout frame=[0,0][1080,128] type=navigationBars frame=[0,2337][1080,2400] type=statusBars frame=[0,0][1080,128] webview bounds="[0,128][1080,2337]"
+mRotation=3: {"href":"http://10.0.2.2:50364/mobile/","marker":"api08-before-rotation","navigationStart":1793998387786,"viewport":"866x364","title":"","heading":"Temp Workspace"} previewShown=true node[GET /mobile, all]=7 378
+    insets: type=displayCutout frame=[2272,0][2400,1080] type=navigationBars frame=[0,1017][2400,1080] type=statusBars frame=[0,0][2400,63] webview bounds="[0,63][2272,1017]"
+mRotation=3: {"href":"http://10.0.2.2:50364/mobile/","marker":"api08-before-rotation","navigationStart":1793998387786,"viewport":"866x364","title":"","heading":"Temp Workspace"} previewShown=true node[GET /mobile, all]=7 378
+    insets: type=displayCutout frame=[2272,0][2400,1080] type=navigationBars frame=[0,1017][2400,1080] type=statusBars frame=[0,0][2400,63] webview bounds="[0,63][2272,1017]"
+mRotation=1: {"href":"http://10.0.2.2:50364/mobile/","marker":"api08-before-rotation","navigationStart":1793998387786,"viewport":"866x364","title":"","heading":"Temp Workspace"} previewShown=true node[GET /mobile, all]=7 378
+    insets: type=displayCutout frame=[0,0][128,1080] type=navigationBars frame=[0,1017][2400,1080] type=statusBars frame=[0,0][2400,63] webview bounds="[128,63][2400,1017]"
+mRotation=0: {"href":"http://10.0.2.2:50364/mobile/","marker":"api08-before-rotation","navigationStart":1793998387786,"viewport":"412x842","title":"","heading":"Temp Workspace"} previewShown=true node[GET /mobile, all]=7 378
+    insets: type=displayCutout frame=[0,0][1080,128] type=navigationBars frame=[0,2337][1080,2400] type=statusBars frame=[0,0][1080,128] webview bounds="[0,128][1080,2337]"
+
+MainActivity relaunches on this emulator (logcat):
+(none above = no relaunch)
+
+## positive control for the logcat check on API 34: dark mode on/off (uiMode, recreates by design)
+Night mode: yes
+Night mode: no
+11-06 21:54:23.132   539  1970 I WindowManager: finishDrawing of relaunch: Window{9ff9b43 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} 478ms
+11-06 21:54:30.988   539  1970 I WindowManager: finishDrawing of relaunch: Window{db17ed0 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} 224ms
+reading: API 34 logs a relaunch line for each real recreation, so the rotations above (none logged) did not recreate MainActivity

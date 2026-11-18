@@ -1,0 +1,39 @@
+Check: IMP-11
+Command: same gate; vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (DCM-001..008 rerun with required runtimeKind; DCM-009 new)
+Commit: a199e9d543
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 20378ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  2831ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1219ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  2744ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model  7431ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  2870ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1566ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+--- DCM-009 only (it.each team, org, agent)
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests | 6 skipped) 5097ms
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1394ms
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1140ms
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1056ms
+ Test Files  1 passed (1)
+      Tests  3 passed | 6 skipped (9)
+Check: IMP-11 (full file rerun)
+Command: same gate; vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts
+Commit: d3463e0a7e (dist from a199e9d543; tests-only change between)
+Date: 2026-11-01
+
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 25081ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  3028ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1237ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  2808ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model  7898ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  2807ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1767ms
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1169ms
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1259ms
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1190ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)

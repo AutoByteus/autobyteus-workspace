@@ -1,0 +1,318 @@
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-30T12:36:26.602Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793363786941,"pid":88230,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57138"}
+{"level":30,"time":1793363786959,"pid":88230,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57115"}
+{"level":30,"time":1793363786959,"pid":88230,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57115"}
+{"level":30,"time":1793363786959,"pid":88230,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57115"}
+[2026-10-30T12:36:26.959Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57115
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 32 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: desk-agent-bq284dmvuyhrxo
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Created and registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Created agent session 695634ce-0ce2-4ae7-8bc3-45e6daa52519 for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Agent WebSocket connected: session=695634ce-0ce2-4ae7-8bc3-45e6daa52519, run=desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Created agent session 67b291cc-ee72-4f0b-962b-d334ee556a10 for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent WebSocket connected: session=67b291cc-ee72-4f0b-962b-d334ee556a10, run=desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent Definition created successfully with ID: desk-team-coordinator-bq284dmvuyhrxo
+Agent Team Definition created successfully with ID: desk-team-bq284dmvuyhrxo
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent team websocket attached for team run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Created agent session abe400f5-7fe9-4c53-add2-0f272f307679 for run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Agent Team WebSocket connected: session=abe400f5-7fe9-4c53-add2-0f272f307679, run=desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+{"level":40,"time":1793363789227,"pid":88230,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_8SBoV6er_u8dzbIJhK4BWw-G9h4v96CemUXlWl6uzeA","statusCode":400,"elapsedMs":0.31416600000011385,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent Definition created successfully with ID: desk-org-manager-bq284dmvuyhrxo
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+{"level":40,"time":1793363791748,"pid":88230,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_S7LG5YpBEgZX90VeAzbohafSe7PyzNzM2ge5xTM4Uo4","statusCode":400,"elapsedMs":0.22666600000047765,"msg":"http request completed"}
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Created agent session 7891b928-553a-4b4e-9c96-b01f53aa5c7b for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent WebSocket connected: session=7891b928-553a-4b4e-9c96-b01f53aa5c7b, run=desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Created agent session 57577da2-9514-421c-9e16-239b8ca8a738 for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Agent WebSocket connected: session=57577da2-9514-421c-9e16-239b8ca8a738, run=desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Agent team websocket attached for team run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Created agent session 7c642f76-7c03-4718-821b-0d46bb82f26c for run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Agent Team WebSocket connected: session=7c642f76-7c03-4718-821b-0d46bb82f26c, run=desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Closed agent session 695634ce-0ce2-4ae7-8bc3-45e6daa52519
+Agent WebSocket disconnected: 695634ce-0ce2-4ae7-8bc3-45e6daa52519
+Closed agent session 7c642f76-7c03-4718-821b-0d46bb82f26c
+Closed agent session 57577da2-9514-421c-9e16-239b8ca8a738
+Agent WebSocket disconnected: 57577da2-9514-421c-9e16-239b8ca8a738
+Closed agent session 7891b928-553a-4b4e-9c96-b01f53aa5c7b
+Agent WebSocket disconnected: 7891b928-553a-4b4e-9c96-b01f53aa5c7b
+Closed agent session abe400f5-7fe9-4c53-add2-0f272f307679
+Closed agent session 67b291cc-ee72-4f0b-962b-d334ee556a10
+Agent WebSocket disconnected: 67b291cc-ee72-4f0b-962b-d334ee556a10
+[CodexAppServerClient] stderr: [2m2026-10-30T12:36:48.953509Z[0m [31mERROR[0m [2mcodex_core::session[0m[2m:[0m failed to record rollout items: thread 01a18ccf-c8b3-7843-a5e8-ff33b460f05a not found
+[CodexAppServerClient] stderr: [2m2026-10-30T12:36:48.954900Z[0m [31mERROR[0m [2mcodex_core::session[0m[2m:[0m failed to record rollout items: thread 01a18ccf-c313-7091-a746-931397829e6b not found
+Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-30T12:36:53.018Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793363813140,"pid":93514,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57313"}
+{"level":30,"time":1793363813157,"pid":93514,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57294"}
+{"level":30,"time":1793363813157,"pid":93514,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57294"}
+{"level":30,"time":1793363813157,"pid":93514,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57294"}
+[2026-10-30T12:36:53.157Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57294
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 32 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Created and registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Created agent session d2d2ce56-19a5-4f3f-b69b-20ac1162a81d for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Agent WebSocket connected: session=d2d2ce56-19a5-4f3f-b69b-20ac1162a81d, run=desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Created agent session 0182666d-55fa-4d72-80f2-0cd5078eb047 for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent WebSocket connected: session=0182666d-55fa-4d72-80f2-0cd5078eb047, run=desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+{"level":40,"time":1793363817151,"pid":93514,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_8SBoV6er_u8dzbIJhK4BWw-G9h4v96CemUXlWl6uzeA","statusCode":400,"elapsedMs":0.30262499999935244,"msg":"http request completed"}
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Created agent session f9242ed6-978a-4875-a727-befb09435bea for run desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent WebSocket connected: session=f9242ed6-978a-4875-a727-befb09435bea, run=desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8
+Agent websocket attached for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Created agent session 6b7fa9a3-3d5c-4467-80a6-b67db80de97a for run desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Agent WebSocket connected: session=6b7fa9a3-3d5c-4467-80a6-b67db80de97a, run=desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec
+Agent team websocket attached for team run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Created agent session 5fe7b77a-492b-46f7-ad6b-2cd246837aa8 for run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Agent Team WebSocket connected: session=5fe7b77a-492b-46f7-ad6b-2cd246837aa8, run=desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+Agent team websocket attached for team run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Created agent session 451ca4c2-35ff-42fc-950f-ba059f1b11e2 for run desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Agent Team WebSocket connected: session=451ca4c2-35ff-42fc-950f-ba059f1b11e2, run=desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/workspace.
+Reusing registered workspace ID: agent_ws_93391d87851a1107aa85aa7a954ad068f75c9c72d0ef34aa0d00f51509582dc5
+{"level":40,"time":1793363825207,"pid":93514,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_S7LG5YpBEgZX90VeAzbohafSe7PyzNzM2ge5xTM4Uo4","statusCode":400,"elapsedMs":0.2813339999993332,"msg":"http request completed"}
+Closed agent session 5fe7b77a-492b-46f7-ad6b-2cd246837aa8
+Closed agent session 0182666d-55fa-4d72-80f2-0cd5078eb047
+Agent WebSocket disconnected: 0182666d-55fa-4d72-80f2-0cd5078eb047
+Closed agent session d2d2ce56-19a5-4f3f-b69b-20ac1162a81d
+Agent WebSocket disconnected: d2d2ce56-19a5-4f3f-b69b-20ac1162a81d
+Closed agent session 451ca4c2-35ff-42fc-950f-ba059f1b11e2
+Closed agent session 6b7fa9a3-3d5c-4467-80a6-b67db80de97a
+Agent WebSocket disconnected: 6b7fa9a3-3d5c-4467-80a6-b67db80de97a
+Closed agent session f9242ed6-978a-4875-a727-befb09435bea
+Agent WebSocket disconnected: f9242ed6-978a-4875-a727-befb09435bea
+Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.

@@ -41,7 +41,12 @@
         :disabled="disabled || !availableProviderGroups.length"
         :placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
         search-placeholder="Search models..."
+        refreshable
+        :refreshing="modelListRefreshing"
+        :refresh-failed="modelListRefreshFailed"
         @update:model-value="updateModel"
+        @open="refreshModelsOnOpen"
+        @refresh="refreshModels"
       />
       <p class="mt-1 text-xs text-slate-500">
         {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') }}
@@ -118,7 +123,11 @@ const {
   effectiveRuntimeKind,
   groupedModelOptions,
   hasModelIdentifier,
+  modelListRefreshFailed,
+  modelListRefreshing,
   normalizedStoredRuntimeKind,
+  refreshModels,
+  refreshModelsOnOpen,
   runtimeOptions,
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({

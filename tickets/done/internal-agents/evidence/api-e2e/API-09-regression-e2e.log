@@ -1,0 +1,21 @@
+# API-09 — regression: existing E2E files over the changed owners (agent definitions, Memory page, run history, collaboration eligibility, server settings)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts tests/e2e/memory/memory-explorer-graphql.e2e.test.ts tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts tests/e2e/memory/memory-view-graphql.e2e.test.ts tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts tests/e2e/projects/collaboration-model-contract.e2e.test.ts tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts tests/e2e/server-settings --no-watch
+# Commit: 692e884b77 (code 813f7208d2); macOS darwin 25.5; 2026-10-25T21:38Z
+
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 13546ms
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 265ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 217ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 745ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 10743ms
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (12 tests) 91ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 553ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4291ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 126ms
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 149ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 4530ms
+ ✓ tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts (1 test) 137ms
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 130ms
+ ✓ tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts (2 tests) 95ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (1 test) 95ms
+ Test Files  15 passed (15)
+      Tests  79 passed (79)

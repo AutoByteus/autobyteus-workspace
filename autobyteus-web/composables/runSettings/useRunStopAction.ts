@@ -1,6 +1,7 @@
 import { computed, ref, watch, type Ref } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions'
+import type { WorkspaceHistoryShell } from '~/composables/useWorkspaceHistorySelectionActions'
 import { useAgentRunStore } from '~/stores/agentRunStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 
@@ -14,11 +15,11 @@ export type RunStopSubject =
  * REQ-014: the stop icon in saved-run settings. It invokes the same terminate action as the
  * workspace tree, with the tree's wording per run type (DEC-003): Agent "Terminate run", Team
  * "Terminate team", Org "Stop Agent Org". `onStopped` re-reads the run so editability comes from
- * the server.
+ * the server. `shell` is the caller's: an Org stop navigates on the desktop only (the phone's Settings stays open).
  */
-export function useRunStopAction(subject: Ref<RunStopSubject | null>, options: { onStopped?: () => Promise<void> | void } = {}) {
+export function useRunStopAction(subject: Ref<RunStopSubject | null>, options: { onStopped?: () => Promise<void> | void; shell?: WorkspaceHistoryShell } = {}) {
   const { t } = useLocalization()
-  const subjectActions = useWorkspaceHistorySubjectActions()
+  const subjectActions = useWorkspaceHistorySubjectActions({ shell: options.shell })
   const pending = ref(false)
   const failed = ref(false)
   watch(subject, () => { failed.value = false })

@@ -1,0 +1,25 @@
+# IMP-10
+# Command: pnpm test-vault setup --source ~/.autobyteus-test/secrets/github-mcp-test.env, then pnpm test-vault status (IDs only)
+# Commit: bdac653cb6+ (alias added there)
+# Environment: macOS Darwin 25.5.0, Node v22.23.1, pnpm; clean env (env -i PATH HOME=<temp> TMPDIR) unless noted
+# Date: 2026-10-26
+# Note: setup printed: SECRET test.github.token / CONFIGURED 1; no value printed (0 token-like strings)
+
+TEST_VAULT /Users/normy/.autobyteus-test/vault
+STATE READY
+CONFIGURED provider.anthropic.api-key
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.glm.api-key
+CONFIGURED provider.google.ai-studio.api-key
+CONFIGURED provider.google.vertex-express.api-key
+CONFIGURED provider.grok.api-key
+CONFIGURED provider.kimi.api-key
+CONFIGURED provider.openai.api-key
+CONFIGURED search.serpapi.api-key
+CONFIGURED test.github.token
+MISSING provider.lmstudio.api-key
+MISSING provider.minimax.api-key
+MISSING provider.mistral.api-key
+MISSING provider.qwen.api-key
+MISSING search.serper.api-key
+MISSING search.vertex-ai.api-key

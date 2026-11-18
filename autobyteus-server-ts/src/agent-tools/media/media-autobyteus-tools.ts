@@ -1,13 +1,13 @@
 import { BaseTool } from "autobyteus-ts";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type {
   MediaToolExecutionContext,
   MediaToolName,
-  MediaToolResult,
 } from "./media-tool-contract.js";
 import { MEDIA_TOOL_MANIFEST, type MediaToolManifestEntry } from "./media-tool-manifest.js";
 import { getMediaGenerationService } from "./media-generation-service.js";
@@ -20,7 +20,7 @@ type ToolContextLike = MediaToolExecutionContext;
 class MediaAutobyteusTool extends BaseTool<
   ToolContextLike,
   Record<string, unknown>,
-  MediaToolResult
+  string
 > {
   constructor(
     private readonly entry: MediaToolManifestEntry,
@@ -49,9 +49,9 @@ class MediaAutobyteusTool extends BaseTool<
     context: ToolContextLike,
     rawArguments: Record<string, unknown> = {},
     options: import('autobyteus-ts/tools/base-tool.js').ToolExecutionOptions = {},
-  ): Promise<MediaToolResult> {
+  ): Promise<string> {
     const input = this.entry.parseInput(rawArguments);
-    return this.entry.execute(getMediaGenerationService(), context, input, options);
+    return toToolResultJson(await this.entry.execute(getMediaGenerationService(), context, input, options));
   }
 }
 

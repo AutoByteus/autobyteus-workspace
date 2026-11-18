@@ -10,7 +10,7 @@
           class="flex items-center text-gray-400 transition-transform duration-200"
           :class="expanded ? 'rotate-90' : ''"
         >
-          <span class="i-heroicons-chevron-right-20-solid h-3 w-3" />
+          <Icon icon="heroicons:chevron-right-20-solid" class="h-3 w-3" />
         </span>
         <TeamActivityDot
           :is-active="teamRun.view.isRootTeamActive()"
@@ -53,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { computed, ref, watch } from 'vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';

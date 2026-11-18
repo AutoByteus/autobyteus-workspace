@@ -1,0 +1,49 @@
+{
+  "startedAt": "2026-10-30T08:33:32.652Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "GHC-001": {
+      "title": "Not connected card renders with the agents, none ticked",
+      "result": "Pass",
+      "ms": 3057
+    },
+    "GHC-002": {
+      "title": "An agent tick is saved on the node and survives a reload",
+      "result": "Pass",
+      "ms": 1069
+    },
+    "GHC-003": {
+      "title": "A token GitHub rejects shows the plain error and stores nothing",
+      "result": "Pass",
+      "ms": 665
+    },
+    "GHC-004": {
+      "title": "Connected state renders login, Test and Remove (intercepted status)",
+      "result": "Pass",
+      "ms": 1444
+    },
+    "GHC-005": {
+      "title": "zh-CN copy and a narrow layout render",
+      "result": "Pass",
+      "ms": 832
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:91428",
+    "backend": "terminated:91401",
+    "tempRoot": "removed:true"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-github-card-e2e-hjcxE1",
+    "backend": "http://127.0.0.1:59069",
+    "frontend": "http://127.0.0.1:59090"
+  },
+  "browserVersion": "156.0.8078.74",
+  "finishedAt": "2026-10-30T08:34:07.040Z"
+}

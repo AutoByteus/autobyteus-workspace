@@ -2,14 +2,9 @@
   <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
     <div class="flex flex-col items-start gap-4 lg:flex-row lg:justify-between">
       <div class="space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-            <span class="i-heroicons-microphone-20-solid h-5 w-5"></span>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900">{{ extension.name }}</h3>
-            <p class="text-sm text-gray-500">{{ extension.description }}</p>
-          </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900">{{ extension.name }}</h3>
+          <p class="text-sm text-gray-500">{{ extension.description }}</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -269,7 +264,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import type { ManagedExtensionState } from '~/electron/extensions/types';
+import type { ManagedExtensionState, VoiceInputLanguageMode } from '~/electron/extensions/types';
 import { useLocalization } from '~/composables/useLocalization';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 
@@ -286,7 +281,7 @@ const emit = defineEmits<{
   remove: [];
   reinstall: [];
   openFolder: [];
-  updateLanguageMode: [value: string];
+  updateLanguageMode: [value: VoiceInputLanguageMode];
   updateAudioInputDevice: [value: string | null];
 }>();
 
@@ -521,11 +516,9 @@ const extensionStatusMessage = computed(() => {
 });
 
 function handleLanguageModeChange(event: Event): void {
-  const target = event.target as HTMLSelectElement | null;
-  if (!target) {
-    return;
-  }
-  emit('updateLanguageMode', target.value);
+  // The select's options: auto, en, zh.
+  const value = (event.target as HTMLSelectElement | null)?.value;
+  if (value === 'auto' || value === 'en' || value === 'zh') emit('updateLanguageMode', value);
 }
 
 function handleAudioInputDeviceChange(event: Event): void {

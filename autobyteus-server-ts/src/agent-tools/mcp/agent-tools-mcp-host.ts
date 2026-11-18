@@ -8,6 +8,7 @@ import { AgentToolsMcpResultMapper } from "./agent-tools-mcp-result-mapper.js";
 import { AgentToolsMcpSchemaMapper } from "./agent-tools-mcp-schema-mapper.js";
 import { AgentToolsMcpLocalAccessGate } from "./agent-tools-mcp-local-access.js";
 import { AgentToolsMcpLocalServer } from "./agent-tools-mcp-local-server.js";
+import { AgentToolsMcpSessionStreams } from "./agent-tools-mcp-session-streams.js";
 import { ConfiguredMcpAgentToolSourceResolver } from "./configured-mcp/configured-mcp-agent-tool-source-resolver.js";
 import { buildDefaultAgentToolMcpAdapterProviders } from "./providers/default-agent-tool-mcp-adapter-providers.js";
 import type { AgentToolMcpSessionAuthorityFactory } from "./agent-tool-mcp-session-authority.js";
@@ -42,6 +43,7 @@ class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
   readonly sessionAuthorities: AgentToolMcpSessionAuthorityFactory;
   readonly staticAdapterToolNames: ReadonlySet<string>;
   private readonly registry = new AgentToolMcpSessionRegistry();
+  private readonly streams = new AgentToolsMcpSessionStreams();
   private readonly localServer: AgentToolsMcpLocalServer;
   private closing = false;
   private closed = false;
@@ -70,11 +72,13 @@ class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
         registry: this.registry,
         dispatcher,
         localAccessGate: new AgentToolsMcpLocalAccessGate(),
+        streams: this.streams,
       }),
     });
     this.sessionAuthorities = createAgentToolMcpSessionAuthorityFactory({
       registry: this.registry,
       catalog,
+      streams: this.streams,
       getLocalBaseUrl: () => this.localServer.requireBaseUrl(),
       assertHostOpen: () => this.assertOpen(),
     });
@@ -93,6 +97,8 @@ class DefaultAgentToolsMcpHost implements AgentToolsMcpHost {
   private async closeInternal(): Promise<void> {
     this.closing = true;
     try {
+      // Held GET streams would keep the local server from closing.
+      this.streams.closeAll();
       await this.localServer.close();
     } finally {
       this.registry.clear();

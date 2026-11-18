@@ -1,0 +1,29 @@
+# Check: IMP-04
+# Steps: After APK, page open: per rotation, adb shell dumpsys window InsetsSource frames (statusBars, navigationBars, displayCutout) and the WebView bounds from uiautomator; then the run screen (Daily Assistant New run) with a typed server path, screenshots at 0, 90, 270 and back to 0 degrees
+# Build: worktree with the manifest change (committed as the implementation commit)
+# Environment: Emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, 136 px top cutout, Android 15 / API 35, google_apis arm64), started -no-window -wipe-data; debug APK built in this worktree; isolated test node abx415-rotation-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:62261:8000, fresh volumes, test data only) reached from the emulator at http://10.0.2.2:62261, paired through its own REST routes
+# Date: 2026-11-06
+
+== rot0 cur=1080x2400
+type=navigationBars frame=[0,2337][1080,2400]
+type=displayCutout frame=[0,0][1080,136]
+type=statusBars frame=[0,0][1080,136]
+webview bounds="[0,136][1080,2337]"
+== rot90 cur=2400x1080
+type=navigationBars frame=[0,1017][2400,1080]
+type=displayCutout frame=[2264,0][2400,1080]
+type=statusBars frame=[0,0][2400,74]
+webview bounds="[0,74][2264,1017]"
+== rot270 cur=2400x1080
+type=navigationBars frame=[0,1017][2400,1080]
+type=displayCutout frame=[0,0][136,1080]
+type=statusBars frame=[0,0][2400,74]
+webview bounds="[136,74][2400,1017]"
+== rot0-again cur=1080x2400
+type=navigationBars frame=[0,2337][1080,2400]
+type=displayCutout frame=[0,0][1080,136]
+type=statusBars frame=[0,0][1080,136]
+webview bounds="[0,136][1080,2337]"
+{"href":"http://10.0.2.2:62261/mobile/","marker":"before-rotation","navigationStart":1793996264747,"navigationType":"navigate","viewport":"412x839","heading":"AutoByteus"}
+
+Reading: in every orientation the WebView bounds exclude exactly the status bar, the navigation bar and the cutout (right at 90, left at 270).

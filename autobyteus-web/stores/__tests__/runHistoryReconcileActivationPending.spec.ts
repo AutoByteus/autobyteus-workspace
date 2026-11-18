@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { fetchRunHistoryTree, reconcileDiscoveredActiveRuns, type RunHistoryFetchStoreLike } from '~/stores/runHistoryLoadActions'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
@@ -41,8 +41,9 @@ const snapshot = (run: { isActive: boolean; shouldConnectStream?: boolean }) => 
 }) as unknown as RunHistoryFetchStoreLike
 
 describe('reconcileDiscoveredActiveRuns and the activation-pending marker (D-14)', () => {
-  let disconnect: ReturnType<typeof vi.spyOn>
-  let connect: ReturnType<typeof vi.spyOn>
+  type RunStore = ReturnType<typeof useAgentRunStore>
+  let disconnect: MockInstance<RunStore['disconnectAgentStream']>
+  let connect: MockInstance<RunStore['connectToAgentStream']>
 
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -108,11 +109,11 @@ describe('reconcileDiscoveredActiveRuns and the activation-pending marker (D-14)
     })
     const store = {
       workspaceGroups: [], agentOrgHistory: [], historyFamilyErrors: { workspace: null, agentOrg: null },
-      agentOrgRequestGeneration: 0, workspaceRequestGeneration: 0, agentAvatarByDefinitionId: {},
+      agentOrgRequestGeneration: 0, workspaceRequestGeneration: 0, historyWindow: 6, agentAvatarByDefinitionId: {},
       refreshRunNavigationTopology: vi.fn(), loading: false, error: null,
     } as unknown as RunHistoryFetchStoreLike
-    const older = fetchRunHistoryTree(store, 6, { quiet: true })
-    const newer = fetchRunHistoryTree(store, 6, { quiet: true })
+    const older = fetchRunHistoryTree(store, { quiet: true })
+    const newer = fetchRunHistoryTree(store, { quiet: true })
     await vi.waitFor(() => expect(pending).toHaveLength(2))
 
     // The newer snapshot (run active) lands first; the older one (taken before activation) lands last.

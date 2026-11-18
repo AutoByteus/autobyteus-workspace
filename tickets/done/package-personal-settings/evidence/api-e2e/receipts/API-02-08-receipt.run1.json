@@ -1,0 +1,347 @@
+{
+  "api02": {
+    "settings": {
+      "agent:writer": {
+        "toolsAdded": [
+          "generate_image"
+        ],
+        "toolsRemoved": [
+          "write_file"
+        ],
+        "skillsAdded": [
+          "review"
+        ],
+        "avatarUrl": "/rest/files/images/pps-e2e-personal.png",
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        }
+      },
+      "agent_team:crew": {
+        "avatarUrl": "/rest/files/images/pps-e2e-personal.png",
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        }
+      }
+    },
+    "writer": {
+      "__typename": "AgentDefinition",
+      "id": "writer",
+      "name": "writer",
+      "role": null,
+      "description": "writer agent",
+      "instructions": "writer instructions, revision 2.\n",
+      "category": null,
+      "avatarUrl": "/rest/files/images/pps-e2e-personal.png",
+      "toolNames": [
+        "read_file",
+        "tool_r2",
+        "generate_image"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "toolInvocationPreprocessorNames": [],
+      "lifecycleProcessorNames": [],
+      "skillNames": [
+        "design",
+        "review"
+      ],
+      "skillScope": "CONFIGURED",
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "ownerApplicationId": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "internal": false,
+      "personalSettings": [
+        "TOOLS",
+        "SKILLS",
+        "AVATAR",
+        "DEFAULT_LAUNCH_CONFIG"
+      ],
+      "personalSettingsBase": "PACKAGE",
+      "defaultLaunchConfig": {
+        "llmModelIdentifier": "gpt-5.6-luna",
+        "runtimeKind": "codex_app_server",
+        "llmConfig": null
+      },
+      "loadIssue": null
+    }
+  },
+  "api03": {
+    "settings": {
+      "agent:writer": {
+        "toolsAdded": [
+          "generate_image",
+          "mcp_local"
+        ],
+        "toolsRemoved": [
+          "write_file"
+        ],
+        "skillsAdded": [
+          "review"
+        ],
+        "avatarUrl": "/rest/files/images/pps-e2e-personal.png",
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        }
+      },
+      "agent_team:crew": {
+        "avatarUrl": "/rest/files/images/pps-e2e-personal.png",
+        "defaultLaunchConfig": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": null
+        }
+      },
+      "agent:reviewer": {
+        "toolsAdded": [
+          "search_web"
+        ],
+        "toolsRemoved": [
+          "read_file"
+        ],
+        "avatarUrl": "/rest/files/images/file-edit.png",
+        "defaultLaunchConfig": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "claude-fake-sonnet",
+          "llmConfig": null
+        }
+      }
+    },
+    "backup": "20261109T084858Z",
+    "backupFiles": [
+      "agents/reviewer/agent-config.json",
+      "agents/reviewer/agent.md",
+      "agents/writer/agent-config.json"
+    ]
+  },
+  "api06": {
+    "before": [
+      "20261109T084858Z",
+      "20261109T092559Z"
+    ],
+    "after": [
+      "20261109T092559Z",
+      "20261109T092659Z",
+      "20261109T092759Z",
+      "20261109T092859Z",
+      "20261109T092959Z"
+    ]
+  },
+  "api05": {
+    "refused": "HTTP 404 ",
+    "notification": {
+      "kind": "AGENT_PACKAGE",
+      "sourceId": "github:pps-e2e/agents",
+      "name": "pps-e2e/agents",
+      "repositoryUrl": "https://github.com/pps-e2e/agents",
+      "defaultBranch": "main",
+      "installedRevision": "0000000000000000000000000000000000000008",
+      "latestRevision": "0000000000000000000000000000000000000009",
+      "foundAt": "2026-11-09T10:06:59.598Z",
+      "read": false,
+      "state": "WAITING",
+      "handledRevision": null,
+      "handledAt": null,
+      "outcome": "AUTO_FAILED",
+      "outcomeReason": "HTTP 404 ",
+      "outcomeAt": "2026-11-09T10:06:59.618Z"
+    }
+  },
+  "api08": {
+    "kept": [
+      "personal-settings.json.unreadable-20261109T100659Z"
+    ]
+  },
+  "requests": [
+    {
+      "url": "https://api.github.com/repos/pps-e2e/agents",
+      "method": "GET",
+      "phase": "import",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/pps-e2e/agents/branches/main",
+      "method": "GET",
+      "phase": "import",
+      "answered": "branch 1"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000001",
+      "method": "GET",
+      "phase": "import",
+      "answered": "archive 1"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click",
+      "answered": "head 2"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000001",
+      "method": "GET",
+      "phase": "update-click",
+      "answered": "archive 1"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000002",
+      "method": "GET",
+      "phase": "update-click",
+      "answered": "archive 2"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click-with-file-edits",
+      "answered": "head 3"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000002",
+      "method": "GET",
+      "phase": "update-click-with-file-edits",
+      "answered": "archive 2"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000003",
+      "method": "GET",
+      "phase": "update-click-with-file-edits",
+      "answered": "archive 3"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "automatic-pass",
+      "answered": "head 4"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "automatic-pass",
+      "answered": "head 4"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000003",
+      "method": "GET",
+      "phase": "automatic-pass",
+      "answered": "archive 3"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000004",
+      "method": "GET",
+      "phase": "automatic-pass",
+      "answered": "archive 4"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click-5",
+      "answered": "head 5"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000004",
+      "method": "GET",
+      "phase": "update-click-5",
+      "answered": "archive 4"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000005",
+      "method": "GET",
+      "phase": "update-click-5",
+      "answered": "archive 5"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click-6",
+      "answered": "head 6"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000005",
+      "method": "GET",
+      "phase": "update-click-6",
+      "answered": "archive 5"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000006",
+      "method": "GET",
+      "phase": "update-click-6",
+      "answered": "archive 6"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click-7",
+      "answered": "head 7"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000006",
+      "method": "GET",
+      "phase": "update-click-7",
+      "answered": "archive 6"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000007",
+      "method": "GET",
+      "phase": "update-click-7",
+      "answered": "archive 7"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click-8",
+      "answered": "head 8"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000007",
+      "method": "GET",
+      "phase": "update-click-8",
+      "answered": "archive 7"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008",
+      "method": "GET",
+      "phase": "update-click-8",
+      "answered": "archive 8"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "update-click-installed-unavailable",
+      "answered": "head 9"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008",
+      "method": "GET",
+      "phase": "update-click-installed-unavailable",
+      "answered": "404 8"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "automatic-installed-unavailable",
+      "answered": "head 9"
+    },
+    {
+      "url": "https://github.com/pps-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "phase": "automatic-installed-unavailable",
+      "answered": "head 9"
+    },
+    {
+      "url": "https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008",
+      "method": "GET",
+      "phase": "automatic-installed-unavailable",
+      "answered": "404 8"
+    }
+  ]
+}

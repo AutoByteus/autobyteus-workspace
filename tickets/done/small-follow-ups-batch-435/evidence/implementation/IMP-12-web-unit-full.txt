@@ -1,0 +1,6 @@
+# IMP-12 full web unit suite rerun: pnpm -C autobyteus-web test:nuxt --run
+# Commit 6ca743fee0 (= e5ca0e1da7 + regenerated GraphQL comment); macOS darwin 25.5.0, Node v22.23.1; 2026-11-10.
+
+ Test Files  739 passed (739)
+      Tests  5581 passed | 2 skipped (5583)
+   Duration  318.10s (transform 30.06s, setup 2141.76s, collect 198.10s, tests 92.63s, environment 183.10s, prepare 101.26s)

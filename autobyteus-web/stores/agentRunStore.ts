@@ -12,6 +12,7 @@ import {
   type InterruptCommandTransportFailure,
   type SendMessageCommandAckPayload,
 } from '~/services/agentStreaming';
+import { createAgentRunStream, type AgentRunStream } from '~/services/agentStreaming/agentRunStreamReconnection';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -26,9 +27,7 @@ import {
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { ConnectionState } from '~/services/agentStreaming';
-import {
-  applyOfflineOrTerminalCleanup,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import {
   acceptLocalSubmission,
@@ -39,6 +38,8 @@ import {
 } from '~/services/runSubmission/localUserSubmission';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { createRandomId } from '~/utils/randomId';
+import { sameRunInstance } from '~/utils/runInstanceOwnership';
 
 interface PrepareAgentRunMutationResultPayload {
   prepareAgentRun: {
@@ -50,13 +51,7 @@ interface PrepareAgentRunMutationResultPayload {
   };
 }
 
-const createClientMessageId = (): string => {
-  const randomId =
-    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-      ? crypto.randomUUID()
-      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-  return `client_${randomId}`;
-};
+const createClientMessageId = (): string => `client_${createRandomId()}`;
 
 const createClientInterruptCommandId = (): string =>
   createClientMessageId().replace(/^client_/, 'client_interrupt_');
@@ -80,8 +75,8 @@ const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure
   }), 'error');
 };
 
-// Maintain a map of streaming services per agent
-const streamingServices = new Map<string, AgentStreamingService>();
+// Each agent run's stream: its streaming service and its reconnection (autobyteus-434)
+const streamingServices = new Map<string, AgentRunStream>();
 
 /**
  * Runs this client sent to while it did not consider them live (a first send or a resume of an
@@ -106,17 +101,18 @@ export const useAgentRunStore = defineStore('agentRun', {
     /**
      * @action sendUserInputAndSubscribe
      * @description Creates a new agent run when needed, then sends the user's message over
-     * WebSocket and keeps the stream connected for live updates.
+     * WebSocket and keeps the stream connected for live updates. `runId` names a loaded run that is not the
+     * selected one: a delegated run, reached by its own run ID from its delegator's view (autobyteus-461 rule 2).
      */
-    async sendUserInputAndSubscribe(): Promise<void> {
+    async sendUserInputAndSubscribe(runIdToSend?: string): Promise<void> {
       const agentContextsStore = useAgentContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const workspaceStore = useWorkspaceStore();
       const contextFileUploadStore = useContextFileUploadStore();
-      const currentAgent = agentContextsStore.activeRun;
+      const currentAgent = runIdToSend ? agentContextsStore.getRun(runIdToSend) : agentContextsStore.activeRun;
 
       if (!currentAgent) {
-        throw new Error('No active agent selected.');
+        throw new Error(runIdToSend ? `Agent run '${runIdToSend}' is not loaded.` : 'No active agent selected.');
       }
 
       const { config, state } = currentAgent;
@@ -199,6 +195,7 @@ export const useAgentRunStore = defineStore('agentRun', {
                 llmConfig: config.llmConfig ?? null,
                 runtimeKind: config.runtimeKind,
                 initialSummary,
+                projectId: config.projectId ?? undefined,
               }
             }
           });
@@ -300,20 +297,16 @@ export const useAgentRunStore = defineStore('agentRun', {
 
       if (!agent) return null;
 
-      const existingService = streamingServices.get(runId);
-      if (existingService) {
-        existingService.attachContext(agent);
-        if (existingService.connectionState === ConnectionState.DISCONNECTED) {
-          existingService.connect(runId, agent);
-        }
-        return existingService;
+      // Every connection starts with the run's own stream snapshot (autobyteus-461 SR-087): it is the catch-up.
+      const existing = streamingServices.get(runId);
+      if (existing) {
+        existing.service.attachContext(agent);
+        // A stream in a loss streak connects only through its reconnection (the Agent Connect Rule).
+        existing.reconnection.requestConnect();
+        return existing.service;
       }
 
-      const windowNodeContextStore = useWindowNodeContextStore();
-      const wsEndpoint = windowNodeContextStore.getBoundEndpoints().agentWs;
-
-      // Create streaming service for this agent
-      const service = new AgentStreamingService(wsEndpoint, {
+      const stream = createAgentRunStream(runId, useWindowNodeContextStore().getBoundEndpoints().agentWs, {
         onInterruptCommandResult: showInterruptCommandResult,
         onInterruptCommandTransportFailure: showInterruptTransportFailure,
         onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => {
@@ -321,10 +314,9 @@ export const useAgentRunStore = defineStore('agentRun', {
           if (!ack.accepted) this.clearActivationPending(ack.run_id || runId);
         },
       });
-      streamingServices.set(runId, service);
-
-      service.connect(runId, agent);
-      return service;
+      streamingServices.set(runId, stream);
+      stream.reconnection.requestConnect();
+      return stream.service;
     },
 
     markActivationPending(runId: string): void {
@@ -340,7 +332,7 @@ export const useAgentRunStore = defineStore('agentRun', {
     },
 
     isAgentStreamReady(runId: string): boolean {
-      return streamingServices.get(runId)?.connectionState === ConnectionState.CONNECTED;
+      return streamingServices.get(runId)?.service.connectionState === ConnectionState.CONNECTED;
     },
 
     async ensureAgentStreamConnected(runId: string): Promise<AgentStreamingService> {
@@ -365,25 +357,22 @@ export const useAgentRunStore = defineStore('agentRun', {
     },
 
     disconnectAgentStream(runId: string): void {
-      const service = streamingServices.get(runId);
-      if (!service) {
-        return;
-      }
-
-      const agentContextsStore = useAgentContextsStore();
-      const agent = agentContextsStore.getRun(runId);
-
-      service.disconnect();
+      const stream = streamingServices.get(runId);
+      if (!stream) return;
+      stream.reconnection.dispose();
+      stream.service.disconnect();
       streamingServices.delete(runId);
-
     },
+
+    /** Closes every agent stream this page holds: the phone's session ended (autobyteus-435 REQ-010). */
+    disconnectAllAgentStreams(): void { for (const runId of [...streamingServices.keys()]) this.disconnectAgentStream(runId); },
 
     /**
      * @action postToolExecutionApproval
      * @description Sends the user's approval or denial for a tool call via WebSocket.
      */
     async postToolExecutionApproval(runId: string, invocationId: string, isApproved: boolean, _reason: string | null = null) {
-      const service = streamingServices.get(runId);
+      const service = streamingServices.get(runId)?.service;
       const agentContextsStore = useAgentContextsStore();
       const agent = agentContextsStore.getRun(runId);
 
@@ -410,7 +399,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         return false;
       }
 
-      const service = streamingServices.get(resolvedRunId);
+      const service = streamingServices.get(resolvedRunId)?.service;
       if (!service) {
         console.warn(`Cannot interrupt generation: no streaming service for run '${resolvedRunId}'.`);
         return false;
@@ -430,14 +419,14 @@ export const useAgentRunStore = defineStore('agentRun', {
       const context = agentContextsStore.getRun(runId);
       const state = context?.state;
       const instance = state?.inputProjection?.runInstanceId;
-      const service = streamingServices.get(runId);
+      const service = streamingServices.get(runId)?.service;
       const binding = useWindowNodeContextStore().bindingRevision;
       const activities = useAgentActivityStore();
       const activityIds = activities.getNativeCompactionActivityIds(runId);
       const ownsRequest = () => agentContextsStore.getRun(runId) === context
-        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId) === service
+        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId)?.service === service
         && useWindowNodeContextStore().bindingRevision === binding
-        && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);
+        && sameRunInstance(instance, state?.inputProjection?.runInstanceId);
 
       const teardownLocalRuntime = () => {
         this.clearActivationPending(runId);
@@ -456,9 +445,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
-      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+      let hostStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
       try {
-        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+        hostStop = useAgentRunCollaborationStore().beginHostTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -475,7 +464,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (!ownsRequest()) return false;
-        childStop.confirm();
+        hostStop.confirm();
         if (context?.config.runtimeKind === 'autobyteus' && state) {
           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
@@ -488,7 +477,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
       } finally {
-        childStop?.finish();
+        hostStop?.finish();
       }
     },
 

@@ -16,7 +16,7 @@ const active = (applicationId: string) => ({
 });
 
 describe("ApplicationReentryService application-tool participant lifecycle", () => {
-  it("closes only target admission, drains an admitted call, then stops and recovers the worker", async () => {
+  it("closes only target admission, drains an admitted call, stops the worker, then recovers, activates and dispatches with the worker stopped", async () => {
     const order: string[] = [];
     const lifecycle = new ApplicationAgentToolCallLifecycle();
     lifecycle.open("app-a");
@@ -66,9 +66,6 @@ describe("ApplicationReentryService application-tool participant lifecycle", () 
         stop: vi.fn(async (applicationId: string) => {
           order.push(`${applicationId}.worker.stop`);
         }),
-        ensureReady: vi.fn(async (applicationId: string) => {
-          order.push(`${applicationId}.worker.ready`);
-        }),
       },
       applicationAgentToolCallLifecycle: lifecycle,
     });
@@ -88,12 +85,13 @@ describe("ApplicationReentryService application-tool participant lifecycle", () 
     const token = await preparation;
     expect(order.indexOf("app-a.call.finish")).toBeLessThan(order.indexOf("app-a.worker.stop"));
 
-    await service.recoverParticipants(token, ["app-a"], ["app-a"]);
-    expect(order.slice(-4)).toEqual([
+    await service.recoverParticipants(token, ["app-a"], new Map());
+    // autobyteus-296 (AC-005), as startup: bindings recovered, ACTIVE, then pending events (dispatch needs ACTIVE).
+    // Reentry starts no worker (its launcher dependency is `stop` only); it starts on demand once ACTIVE.
+    expect(order.slice(order.indexOf("app-a.worker.stop") + 1)).toEqual([
       "app-a.recovery.resume",
-      "app-a.worker.ready",
-      "app-a.events.resume",
       "app-a.availability.active",
+      "app-a.events.resume",
     ]);
     await expect(lifecycle.runAdmitted("app-a", async () => "reopened"))
       .resolves.toBe("reopened");
@@ -121,21 +119,53 @@ describe("ApplicationReentryService application-tool participant lifecycle", () 
       },
       engineLauncher: {
         stop: vi.fn(async () => undefined),
-        ensureReady: vi.fn(async () => undefined),
       },
       applicationAgentToolCallLifecycle: lifecycle,
     });
 
     const token = await service.prepareParticipants(["removed", "invalid"]);
-    await service.recoverParticipants(token, ["invalid"], []);
+    const setupRequired = "Application setup is required: invalid/slot:draftingTeam: Codex App Server authentication is unavailable: no logged-in account.";
+    await service.recoverParticipants(token, ["invalid"], new Map([["invalid", setupRequired]]));
 
+    // A not-ready application is quarantined with its readiness reason (autobyteus-296, AC-006).
     expect(quarantined).toEqual([
       { applicationId: "removed", detail: "Application is no longer present in the current catalog." },
-      { applicationId: "invalid", detail: "Application setup is required after catalog transition." },
+      { applicationId: "invalid", detail: setupRequired },
     ]);
     await expect(lifecycle.runAdmitted("removed", async () => undefined))
       .rejects.toMatchObject({ code: "APPLICATION_TOOL_UNAVAILABLE" });
     await expect(lifecycle.runAdmitted("invalid", async () => undefined))
+      .rejects.toMatchObject({ code: "APPLICATION_TOOL_UNAVAILABLE" });
+  });
+
+  it("quarantines with the recovery failure, stops the worker and keeps tools closed when returning a participant fails", async () => {
+    const lifecycle = new ApplicationAgentToolCallLifecycle();
+    lifecycle.open("app-a");
+    const stop = vi.fn(async () => undefined);
+    const quarantineApplication = vi.fn((applicationId: string, detail: string) => ({
+      ...active(applicationId), state: "QUARANTINED" as const, detail,
+    }));
+    const activateApplication = vi.fn((applicationId: string) => active(applicationId));
+    const service = new ApplicationReentryService({
+      availabilityService: {
+        getAvailability: vi.fn(async (applicationId: string) => active(applicationId)),
+        beginReentry: vi.fn((applicationId: string) => active(applicationId)),
+        activateApplication,
+        quarantineApplication,
+      } as never,
+      recoveryService: { resumeApplication: vi.fn(async () => { throw new Error("binding recovery failed"); }) },
+      eventDispatchService: { suspendApplication: vi.fn(), resumePendingEventsForApplication: vi.fn(async () => undefined) },
+      engineLauncher: { stop },
+      applicationAgentToolCallLifecycle: lifecycle,
+    });
+
+    const token = await service.prepareParticipants(["app-a"]);
+    const results = await service.recoverParticipants(token, ["app-a"], new Map());
+
+    expect(results.get("app-a")).toMatchObject({ state: "QUARANTINED", detail: "binding recovery failed" });
+    expect(activateApplication).not.toHaveBeenCalled();
+    expect(stop).toHaveBeenCalledTimes(2); // preparation, then the failure path
+    await expect(lifecycle.runAdmitted("app-a", async () => undefined))
       .rejects.toMatchObject({ code: "APPLICATION_TOOL_UNAVAILABLE" });
   });
 });

@@ -10,11 +10,11 @@
         :class="toastClasses[toast.type]"
       >
         <div class="flex items-center">
-          <span :class="toast.type === 'success' ? 'i-heroicons-check-circle-20-solid' : toast.type === 'error' ? 'i-heroicons-x-circle-20-solid' : 'i-heroicons-information-circle-20-solid'" class="w-5 h-5 mr-3 flex-shrink-0"></span>
+          <Icon :icon="toast.type === 'success' ? 'heroicons:check-circle-20-solid' : toast.type === 'error' ? 'heroicons:x-circle-20-solid' : 'heroicons:information-circle-20-solid'" class="w-5 h-5 mr-3 flex-shrink-0" />
           <span>{{ toast.message }}</span>
         </div>
         <button @click="removeToast(toast.id)" class="ml-4 -mr-1 p-1 rounded-full hover:bg-white/20">
-            <span class="i-heroicons-x-mark-20-solid w-5 h-5"></span>
+            <Icon icon="heroicons:x-mark-20-solid" class="w-5 h-5" />
         </button>
       </div>
     </transition-group>
@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { useToasts, type Toast } from '~/composables/useToasts';
 
 const { toasts, removeToast } = useToasts();

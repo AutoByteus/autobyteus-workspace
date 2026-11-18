@@ -19,12 +19,12 @@ public struct PairingPayload: Codable, Equatable {
 }
 
 public struct ParsedPairingInput: Equatable {
-    public let profile: SavedNodeProfile
+    public let entry: SavedNodeEntry
     public let webViewURL: String
     public let hasPairingPayload: Bool
 
-    public init(profile: SavedNodeProfile, webViewURL: String, hasPairingPayload: Bool) {
-        self.profile = profile
+    public init(entry: SavedNodeEntry, webViewURL: String, hasPairingPayload: Bool) {
+        self.entry = entry
         self.webViewURL = webViewURL
         self.hasPairingPayload = hasPairingPayload
     }
@@ -45,13 +45,13 @@ public enum PairingLinkParser {
             let payload = try parsePairingPayload(text)
             let encoded = try encodePairingPayload(raw: text, payload: payload)
             let normalized = try NodeURLNormalizer.normalize(payload.serverBaseURL)
-            let profile = SavedNodeProfile.fromNormalized(
+            let entry = SavedNodeEntry.fromNormalized(
                 normalized,
                 displayName: payload.serverName,
                 httpAcknowledged: normalized.scheme == "https"
             )
             return ParsedPairingInput(
-                profile: profile,
+                entry: entry,
                 webViewURL: "\(normalized.mobileURL)?pairing=\(encoded)",
                 hasPairingPayload: true
             )
@@ -59,7 +59,7 @@ public enum PairingLinkParser {
             do {
                 let normalized = try NodeURLNormalizer.normalize(text)
                 return ParsedPairingInput(
-                    profile: SavedNodeProfile.fromNormalized(normalized),
+                    entry: SavedNodeEntry.fromNormalized(normalized),
                     webViewURL: normalized.mobileURL,
                     hasPairingPayload: false
                 )
@@ -105,13 +105,13 @@ public enum PairingLinkParser {
         if let pairingParam, !pairingParam.isEmpty {
             let payload = try parsePairingPayload(pairingParam)
             let normalized = try NodeURLNormalizer.normalize(payload.serverBaseURL)
-            let profile = SavedNodeProfile.fromNormalized(
+            let entry = SavedNodeEntry.fromNormalized(
                 normalized,
                 displayName: payload.serverName,
                 httpAcknowledged: normalized.scheme == "https"
             )
             return ParsedPairingInput(
-                profile: profile,
+                entry: entry,
                 webViewURL: "\(normalized.mobileURL)?pairing=\(pairingParam)",
                 hasPairingPayload: true
             )
@@ -119,7 +119,7 @@ public enum PairingLinkParser {
 
         let normalized = try NodeURLNormalizer.normalize(url)
         return ParsedPairingInput(
-            profile: SavedNodeProfile.fromNormalized(normalized),
+            entry: SavedNodeEntry.fromNormalized(normalized),
             webViewURL: normalized.mobileURL,
             hasPairingPayload: false
         )

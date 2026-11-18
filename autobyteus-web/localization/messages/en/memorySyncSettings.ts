@@ -2,7 +2,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const memorySyncSettingsMessages = {
   'settings.components.settings.MemorySyncCard.targetNodeTitle': 'Memory Sync target node',
-  'settings.components.settings.MemorySyncCard.targetNodeDescription': 'Configure this backend as a Memory Hub, a Memory Sync source, or both. Frontend node names are only navigation labels; the source node id below is the stable import identity.',
+  'settings.components.settings.MemorySyncCard.targetNodeDescription': 'Configure this backend as a Memory Hub, a Memory Sync source, or both. Frontend node names are only navigation labels; the Memory Sync source ID below is the stable import identity.',
   'settings.components.settings.MemorySyncCard.hubTitle': 'Memory Hub',
   'settings.components.settings.MemorySyncCard.hubDescriptionPrefix': 'Receive imported memory under',
   'settings.components.settings.MemorySyncCard.enableHub': 'Enable hub',
@@ -26,7 +26,7 @@ const memorySyncSettingsMessages = {
   'settings.components.settings.MemorySyncCard.sourceDescriptionAnd': 'and',
   'settings.components.settings.MemorySyncCard.sourceDescriptionSuffix': 'memory to a hub.',
   'settings.components.settings.MemorySyncCard.enableSource': 'Enable source',
-  'settings.components.settings.MemorySyncCard.sourceNodeId': 'Source node id',
+  'settings.components.settings.MemorySyncCard.memorySyncSourceId': 'Memory Sync source ID',
   'settings.components.settings.MemorySyncCard.displayName': 'Display name',
   'settings.components.settings.MemorySyncCard.hubBaseUrl': 'Hub base URL',
   'settings.components.settings.MemorySyncCard.hubToken': 'Hub token',
@@ -45,6 +45,10 @@ const memorySyncSettingsMessages = {
   'settings.components.settings.MemorySyncCard.success': 'success',
   'settings.components.settings.MemorySyncCard.error': 'error',
   'settings.components.settings.MemorySyncCard.notSyncedYet': 'not synced yet',
+  'settings.components.settings.MemorySyncCard.fileFailuresTitle': '{{count}} files could not be synced',
+  'settings.components.settings.MemorySyncCard.fileFailuresTitleOne': '{{count}} file could not be synced',
+  'settings.components.settings.MemorySyncCard.fileFailuresMore': 'and {{count}} more',
+  'settings.components.settings.MemorySyncCard.nextAttempt': 'next attempt',
   'settings.components.settings.MemorySyncCard.testingSavedSettings': 'Testing saved settings…',
   'settings.components.settings.MemorySyncCard.testingDraftToken': 'Testing draft token…',
   'settings.components.settings.MemorySyncCard.connectionTestSucceeded': 'Connection test succeeded',

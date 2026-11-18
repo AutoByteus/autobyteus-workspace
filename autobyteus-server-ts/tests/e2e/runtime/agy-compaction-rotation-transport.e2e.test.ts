@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // AGY automatic compaction (checkpoint DONE step) through the real server: WebSocket, memory and history
 // (REQ-A01/A02, AC-A01b). Fake AGY transport tests/fixtures/agy-failure-cli.mjs, case auto_compaction
@@ -40,8 +41,7 @@ suite("AGY automatic compaction through app WebSocket, memory and history", () =
     return body.data;
   };
   const memoryView = async (includeArchive: boolean): Promise<MemoryView> => (await graphql<{ getAgentRunMemoryView: MemoryView }>(
-    `query($runId: String!, $includeArchive: Boolean!) { getAgentRunMemoryView(runId: $runId, includeWorkingContext: false,
-      includeEpisodic: false, includeSemantic: false, includeRawTraces: true, includeRawTraceFiles: true,
+    `query($runId: String!, $includeArchive: Boolean!) { getAgentRunMemoryView(runId: $runId, includeRawTraces: true, includeRawTraceFiles: true,
       includeArchive: $includeArchive) { rawTraces { traceType content toolResult } rawTraceFiles { fileName kind } } }`,
     { runId, includeArchive })).getAgentRunMemoryView;
   const projection = async () => (await graphql<{ getRunProjection: { conversation: Array<Record<string, unknown>> } }>(
@@ -89,9 +89,8 @@ suite("AGY automatic compaction through app WebSocket, memory and history", () =
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
-            ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore only malformed diagnostic transport rows. */ }
     });
     await new Promise<void>((resolve, reject) => { socket!.once("open", resolve); socket!.once("error", reject); });
@@ -111,7 +110,7 @@ suite("AGY automatic compaction through app WebSocket, memory and history", () =
     expect(compactions).toHaveLength(1);
     const conversationId = String(compactions[0]!.payload["provider_session_id"]);
     expect(compactions[0]!.payload).toMatchObject({
-      kind: "provider_compaction_boundary", runtime_kind: "ANTIGRAVITY", provider: "antigravity",
+      kind: "provider_compaction_boundary", runtime_kind: "antigravity_cli", provider: "antigravity",
       source_surface: "antigravity.checkpoint", boundary_key: `agy:${conversationId}:checkpoint:4`,
       provider_event_id: "checkpoint:4", status: "compacted", trigger: "auto", rotation_eligible: true, duration_ms: 7293,
     });
@@ -126,6 +125,12 @@ suite("AGY automatic compaction through app WebSocket, memory and history", () =
       "archive segment written");
     const full = await memoryView(true);
     expect((full.rawTraceFiles ?? []).filter((file) => file.kind === "segment")).toHaveLength(1);
+    // The archive manifest holds the RuntimeKind value of the payload, not a short label (autobyteus-343, REQ-001).
+    const manifestPath = path.join(dataDir, "memory", "agents", runId, "raw_traces_manifest.json");
+    const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8")) as { segments: Array<{ runtime_kind: unknown; boundary_key: string }> };
+    expect(manifest.segments.map((segment) => [segment.runtime_kind, segment.boundary_key]))
+      .toEqual([[compactions[0]!.payload["runtime_kind"], `agy:${conversationId}:checkpoint:4`]]);
+    expect(manifest.segments[0]!.runtime_kind).toBe("antigravity_cli");
     const markers = (full.rawTraces ?? []).filter((trace) => trace.traceType === "provider_compaction_boundary");
     expect(markers).toHaveLength(1);
     expect(markers[0]!.toolResult).toMatchObject({ provider: "antigravity", status: "compacted",

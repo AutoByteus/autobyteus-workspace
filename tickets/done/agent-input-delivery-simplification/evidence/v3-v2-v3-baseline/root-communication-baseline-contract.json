@@ -1,0 +1,1386 @@
+{
+  "baselineCommit": "0216c6fb14",
+  "standalone.deliver": {
+    "copyRunId": "code-reviewer-run-1",
+    "byRunId": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "code-reviewer-run-1",
+        "displayName": "code_reviewer"
+      },
+      "events": [
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy",
+            "senderAgentRunId": "research-assistant-run",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "Baseline teammate message",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:00.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "research-assistant-run"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "code-reviewer-run-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_rOmEWdIw9_2PlJl-Hml3dEh-Plb74Ex_",
+              "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_rOmEWdIw9_2PlJl-Hml3dEh-Plb74Ex_",
+              "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nBaseline teammate message",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-24T08:00:00.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "research-assistant-run",
+              "parent_communication_message_id": "collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy"
+            }
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n"
+      }
+    },
+    "byRunIdRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nBaseline teammate message",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_rOmEWdIw9_2PlJl-Hml3dEh-Plb74Ex_",
+        "recipient_input_message_id": "memberinput_rOmEWdIw9_2PlJl-Hml3dEh-Plb74Ex_",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_rOmEWdIw9_2PlJl-Hml3dEh-Plb74Ex_",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "research-assistant-run",
+        "sender_agent_name": "research_assistant",
+        "sender_member_address": "/research_assistant",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent",
+        "root_run_id": "research-assistant-run",
+        "parent_communication_message_id": "collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "duplicate": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with the current Agent root state."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n"
+      }
+    },
+    "byAddress": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "research-assistant-run",
+        "displayName": "research_assistant"
+      },
+      "events": [
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL",
+            "senderAgentRunId": "code-reviewer-run-1",
+            "receiverAgentRunId": "research-assistant-run",
+            "content": "Baseline message by address",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:01.000Z"
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n"
+      }
+    },
+    "byAddressRecipientInput": {
+      "content": "You received a message from the agent with sender run id \"code-reviewer-run-1\".\nmessage:\nBaseline message by address",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_HMOLw0ql4gq4jhNY5jQrdRrphL6pzWAV",
+        "recipient_input_message_id": "memberinput_HMOLw0ql4gq4jhNY5jQrdRrphL6pzWAV",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:research-assistant-run:memberinput_HMOLw0ql4gq4jhNY5jQrdRrphL6pzWAV",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "code-reviewer-run-1",
+        "sender_agent_name": "code_reviewer",
+        "sender_member_address": "/code_reviewer",
+        "receiver_member_address": "/research_assistant",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent",
+        "root_run_id": "research-assistant-run",
+        "parent_communication_message_id": "collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "recipientNotAccepting": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        "message": "AgentRun is not accepting input."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n"
+      }
+    },
+    "historyWriteFailed": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED",
+        "message": "Controlled history write failure"
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n"
+      }
+    },
+    "indeterminateWrite": {
+      "result": {
+        "thrown": {
+          "name": "RootTaskPersistenceFinalizationIndeterminateError",
+          "code": null,
+          "message": "agent task persistence 'communication_messages' is indeterminate at 'directory_sync'."
+        }
+      },
+      "events": [
+        {
+          "kind": "lifecycle",
+          "isActive": false
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_MQN5UIpbhQVjBxmnuVYvoIXBDkLIfwuy\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_n5-bXwUbfwfTKeOUnWtScYSs8o5Ja6WL\",\"senderAgentRunId\":\"code-reviewer-run-1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n"
+      }
+    }
+  },
+  "standalone.taskWork": {
+    "taskClosedBeforeSend": {
+      "result": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": ""
+      }
+    },
+    "existingCopyAssignment": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "code-reviewer-run-1"
+        }
+      },
+      "events": [
+        {
+          "kind": "task_executions_reopened",
+          "taskExecutions": [
+            {
+              "agentRunId": "code-reviewer-run-1"
+            }
+          ]
+        },
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu",
+            "senderAgentRunId": "research-assistant-run",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "messageType": "task_assignment",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:02.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent",
+              "rootRunId": "research-assistant-run"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "code-reviewer-run-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
+              "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
+              "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-24T08:00:02.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "research-assistant-run",
+              "parent_communication_message_id": "collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu"
+            }
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n"
+      }
+    },
+    "existingCopyRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/research_assistant\" and sender run id \"research-assistant-run\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
+        "recipient_input_message_id": "memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:code-reviewer-run-1:memberinput_aeQHUFRH8SmY8iT0O0efAxeGzvLeHfKj",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "research-assistant-run",
+        "sender_agent_name": "research_assistant",
+        "sender_member_address": "/research_assistant",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "task_assignment",
+        "root_subject_kind": "agent",
+        "root_run_id": "research-assistant-run",
+        "parent_communication_message_id": "collabmsg_HR92qLjaBAtZCLvVVPXI5HYZLbfYk6zu",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    }
+  },
+  "standalone.remote": {
+    "delegated": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "publisher_r1"
+        },
+        "taskId": "ad_hoc_task_1",
+        "node": "docker"
+      },
+      "events": [
+        {
+          "kind": "remote_task_execution_started",
+          "execution": {
+            "kind": "agent",
+            "address": "/publisher",
+            "nodeId": "srv_node_peer_0000000000000000000000000",
+            "delegatorAgentRunId": "research-assistant-run",
+            "startedAt": "2026-10-24T08:00:00.000Z",
+            "agentRunId": "publisher_r1",
+            "nodeName": "docker"
+          }
+        }
+      ],
+      "transmissions": [
+        {
+          "nodeId": "srv_node_peer_0000000000000000000000000",
+          "kind": "work_packet",
+          "senderAgentRunId": "research-assistant-run",
+          "targetRoot": {
+            "kind": "agent",
+            "runId": "publisher_r1"
+          },
+          "targetAgentRunId": "publisher_r1",
+          "content": "Publish the report",
+          "messageType": "task_work_packet",
+          "createdAt": "2026-10-24T08:00:00.000Z"
+        }
+      ],
+      "files": {
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    },\n    {\n      \"address\": \"/publisher\",\n      \"agentRunId\": \"publisher_r1\",\n      \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": ""
+      }
+    },
+    "sentToRemote": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "publisher_r1",
+        "displayName": "publisher",
+        "message": "Delivered message to publisher_r1 on node \"docker\"."
+      },
+      "events": [],
+      "transmissions": [
+        {
+          "nodeId": "srv_node_peer_0000000000000000000000000",
+          "kind": "message",
+          "messageId": "collabmsg_GosMQu09Fi_3zTXldss4OWq4f7csVGY1",
+          "senderAgentRunId": "research-assistant-run",
+          "targetRoot": {
+            "kind": "agent",
+            "runId": "publisher_r1"
+          },
+          "targetAgentRunId": "publisher_r1",
+          "content": "Baseline message to the remote run",
+          "messageType": "agent_message",
+          "createdAt": "2026-10-24T08:00:01.000Z"
+        }
+      ],
+      "files": {
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    },\n    {\n      \"address\": \"/publisher\",\n      \"agentRunId\": \"publisher_r1\",\n      \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_GosMQu09Fi_3zTXldss4OWq4f7csVGY1\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n"
+      }
+    },
+    "fromRemote": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "research-assistant-run",
+        "displayName": "research_assistant"
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    },\n    {\n      \"address\": \"/publisher\",\n      \"agentRunId\": \"publisher_r1\",\n      \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_GosMQu09Fi_3zTXldss4OWq4f7csVGY1\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n{\"messageId\":\"msg_from_remote_1\",\"senderAgentRunId\":\"publisher_r1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline reply from the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n"
+      }
+    },
+    "fromRemoteRecipientInput": {
+      "content": "You received a message from the agent with sender run id \"publisher_r1\" on node \"docker\".\nmessage:\nBaseline reply from the remote run",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_znMvrF82Kwmj3w-lLpd1XUApAu0tuGLP",
+        "recipient_input_message_id": "memberinput_znMvrF82Kwmj3w-lLpd1XUApAu0tuGLP",
+        "dedupe_key": "member_input:agent\u0000research-assistant-run:research-assistant-run:memberinput_znMvrF82Kwmj3w-lLpd1XUApAu0tuGLP",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "publisher_r1",
+        "sender_agent_name": "publisher_r1",
+        "sender_node_name": "docker",
+        "receiver_member_address": "/research_assistant",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent",
+        "root_run_id": "research-assistant-run",
+        "parent_communication_message_id": "msg_from_remote_1",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "fromRemoteDuplicate": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with the current Agent root state."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": \"/work\",\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"gpt-host\",\n  \"llmConfig\": {\n    \"effort\": \"high\"\n  },\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent\",\n      \"runId\": \"research-assistant-run\"\n    },\n    \"delegatorAgentRunId\": \"research-assistant-run\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n",
+        "agents/research-assistant-run/collaboration/collaboration_tree.json": "{\n  \"subjectKind\": \"agent\",\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"host\": {\n    \"address\": \"/research_assistant\",\n    \"agentRunId\": \"research-assistant-run\",\n    \"agentDefinitionId\": \"research-assistant\"\n  },\n  \"taskExecutions\": [\n    {\n      \"address\": \"/code_reviewer\",\n      \"agentRunId\": \"code-reviewer-run-1\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    },\n    {\n      \"address\": \"/publisher\",\n      \"agentRunId\": \"publisher_r1\",\n      \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n      \"delegatorAgentRunId\": \"research-assistant-run\",\n      \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n    }\n  ]\n}\n",
+        "agents/research-assistant-run/collaboration/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_GosMQu09Fi_3zTXldss4OWq4f7csVGY1\",\"senderAgentRunId\":\"research-assistant-run\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n{\"messageId\":\"msg_from_remote_1\",\"senderAgentRunId\":\"publisher_r1\",\"receiverAgentRunId\":\"research-assistant-run\",\"content\":\"Baseline reply from the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n"
+      }
+    }
+  },
+  "standalone.notAccepting": {
+    "deliverAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "sendToRemoteAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "fromRemoteAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "deliverAfterFailStop": {
+      "thrown": {
+        "name": "Error",
+        "code": null,
+        "message": "Agent root 'research-assistant-run' is not accepting execution operations."
+      }
+    },
+    "closedWhileReserved": {
+      "accepted": false,
+      "code": "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT",
+      "message": "Message append conflicts with the current Agent root state."
+    },
+    "closedWhileReservedSlot": {
+      "cancelled": 1,
+      "committed": 0
+    }
+  },
+  "org.deliver": {
+    "copyRunId": "task-agent-1",
+    "byRunId": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "task-agent-1",
+        "displayName": "code_reviewer"
+      },
+      "events": [
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF",
+            "senderAgentRunId": "director",
+            "receiverAgentRunId": "task-agent-1",
+            "content": "Baseline teammate message",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:00.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "org-collaborators"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "task-agent-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_bflQojTGiH2t-CFSdyREiM9XvWqsh884",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_bflQojTGiH2t-CFSdyREiM9XvWqsh884",
+              "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nBaseline teammate message",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-24T08:00:00.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "director",
+              "parent_communication_message_id": "collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF"
+            }
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "byRunIdRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nBaseline teammate message",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_bflQojTGiH2t-CFSdyREiM9XvWqsh884",
+        "recipient_input_message_id": "memberinput_bflQojTGiH2t-CFSdyREiM9XvWqsh884",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_bflQojTGiH2t-CFSdyREiM9XvWqsh884",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "director",
+        "sender_agent_name": "director",
+        "sender_member_address": "/director",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-collaborators",
+        "parent_communication_message_id": "collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "duplicate": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ORG_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with current AgentOrg state."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "byAddress": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "configured-lead",
+        "displayName": "lead"
+      },
+      "events": [
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ",
+            "senderAgentRunId": "director",
+            "receiverAgentRunId": "configured-lead",
+            "content": "Baseline message by address",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:01.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "org-collaborators"
+            },
+            "memberAddress": "/target/lead",
+            "agentRunId": "configured-lead"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_LCt-yPtvvg0sL33cblbyTHYR03ArALkl",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:configured-lead:memberinput_LCt-yPtvvg0sL33cblbyTHYR03ArALkl",
+              "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nBaseline message by address",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-24T08:00:01.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "director",
+              "parent_communication_message_id": "collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ"
+            }
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"configured-lead\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "byAddressRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nBaseline message by address",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_LCt-yPtvvg0sL33cblbyTHYR03ArALkl",
+        "recipient_input_message_id": "memberinput_LCt-yPtvvg0sL33cblbyTHYR03ArALkl",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:configured-lead:memberinput_LCt-yPtvvg0sL33cblbyTHYR03ArALkl",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "director",
+        "sender_agent_name": "director",
+        "sender_member_address": "/director",
+        "receiver_member_address": "/target/lead",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-collaborators",
+        "parent_communication_message_id": "collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "recipientNotAccepting": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        "message": "AgentRun is not accepting input."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"configured-lead\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "historyWriteFailed": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED",
+        "message": "Controlled history write failure"
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"configured-lead\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "indeterminateWrite": {
+      "result": {
+        "thrown": {
+          "name": "RootTaskPersistenceFinalizationIndeterminateError",
+          "code": null,
+          "message": "agent_org task persistence 'communication_messages' is indeterminate at 'directory_sync'."
+        }
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_HAQlK6X87zjb2buu3dHIFoDpuiIoAIkF\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg__lY4iwugDIVhNWGPvkg0-ezs-pW9cywZ\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"configured-lead\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    }
+  },
+  "org.taskWork": {
+    "taskClosedBeforeSend": {
+      "result": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "existingCopyAssignment": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "task-agent-1"
+        }
+      },
+      "events": [
+        {
+          "kind": "task_executions_reopened",
+          "taskExecutions": [
+            {
+              "agentRunId": "task-agent-1"
+            }
+          ]
+        },
+        {
+          "kind": "communication",
+          "message": {
+            "messageId": "collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC",
+            "senderAgentRunId": "director",
+            "receiverAgentRunId": "task-agent-1",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "messageType": "task_assignment",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:02.000Z"
+          }
+        },
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "org-collaborators"
+            },
+            "memberAddress": "/code_reviewer",
+            "agentRunId": "task-agent-1"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
+              "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-24T08:00:02.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "director",
+              "parent_communication_message_id": "collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC"
+            }
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"task-agent-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "existingCopyRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/director\" and sender run id \"director\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
+        "recipient_input_message_id": "memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:task-agent-1:memberinput_cU_EVHv1U77cU5WGeGmJARoKs7CJpHHR",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "director",
+        "sender_agent_name": "director",
+        "sender_member_address": "/director",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "task_assignment",
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-collaborators",
+        "parent_communication_message_id": "collabmsg_2hhmtHz_E7mILnnFQ2CMz1ezTGVPMxcC",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    }
+  },
+  "org.remote": {
+    "delegated": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "publisher_r1"
+        },
+        "taskId": "ad_hoc_task_1",
+        "node": "docker"
+      },
+      "events": [
+        {
+          "kind": "remote_task_execution_started",
+          "execution": {
+            "kind": "agent",
+            "address": "/publisher",
+            "nodeId": "srv_node_peer_0000000000000000000000000",
+            "delegatorAgentRunId": "director",
+            "startedAt": "2026-10-24T08:00:00.000Z",
+            "agentRunId": "publisher_r1",
+            "nodeName": "docker"
+          }
+        }
+      ],
+      "transmissions": [
+        {
+          "nodeId": "srv_node_peer_0000000000000000000000000",
+          "kind": "work_packet",
+          "senderAgentRunId": "director",
+          "targetRoot": {
+            "kind": "agent",
+            "runId": "publisher_r1"
+          },
+          "targetAgentRunId": "publisher_r1",
+          "content": "Publish the report",
+          "messageType": "task_work_packet",
+          "createdAt": "2026-10-24T08:00:00.000Z"
+        }
+      ],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "sentToRemote": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "publisher_r1",
+        "displayName": "publisher",
+        "message": "Delivered message to publisher_r1 on node \"docker\"."
+      },
+      "events": [],
+      "transmissions": [
+        {
+          "nodeId": "srv_node_peer_0000000000000000000000000",
+          "kind": "message",
+          "messageId": "collabmsg_cZozHWSzRF2Qt-x-g_5qK4eusx7unQuI",
+          "senderAgentRunId": "director",
+          "targetRoot": {
+            "kind": "agent",
+            "runId": "publisher_r1"
+          },
+          "targetAgentRunId": "publisher_r1",
+          "content": "Baseline message to the remote run",
+          "messageType": "agent_message",
+          "createdAt": "2026-10-24T08:00:01.000Z"
+        }
+      ],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_cZozHWSzRF2Qt-x-g_5qK4eusx7unQuI\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "fromRemote": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "director",
+        "displayName": "director"
+      },
+      "events": [
+        {
+          "kind": "agent_presentation",
+          "execution": {
+            "root": {
+              "rootSubjectKind": "agent_org",
+              "rootRunId": "org-collaborators"
+            },
+            "memberAddress": "/director",
+            "agentRunId": "director"
+          },
+          "message": {
+            "type": "MEMBER_INPUT_MESSAGE",
+            "payload": {
+              "message_id": "memberinput_MyP8uvJE4L3iOqTjs4wMnwyTnAh5QjQe",
+              "dedupe_key": "member_input:agent_org\u0000org-collaborators:director:memberinput_MyP8uvJE4L3iOqTjs4wMnwyTnAh5QjQe",
+              "content": "You received a message from the agent with sender run id \"publisher_r1\" on node \"docker\".\nmessage:\nBaseline reply from the remote run",
+              "input_origin": "inter_agent_delivery",
+              "received_at": "2026-10-24T08:00:02.000Z",
+              "context_file_paths": [],
+              "sender_agent_run_id": "publisher_r1",
+              "parent_communication_message_id": "msg_from_remote_1"
+            }
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_cZozHWSzRF2Qt-x-g_5qK4eusx7unQuI\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n{\"messageId\":\"msg_from_remote_1\",\"senderAgentRunId\":\"publisher_r1\",\"receiverAgentRunId\":\"director\",\"content\":\"Baseline reply from the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    },
+    "fromRemoteRecipientInput": {
+      "content": "You received a message from the agent with sender run id \"publisher_r1\" on node \"docker\".\nmessage:\nBaseline reply from the remote run",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_MyP8uvJE4L3iOqTjs4wMnwyTnAh5QjQe",
+        "recipient_input_message_id": "memberinput_MyP8uvJE4L3iOqTjs4wMnwyTnAh5QjQe",
+        "dedupe_key": "member_input:agent_org\u0000org-collaborators:director:memberinput_MyP8uvJE4L3iOqTjs4wMnwyTnAh5QjQe",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "publisher_r1",
+        "sender_agent_name": "publisher_r1",
+        "sender_node_name": "docker",
+        "receiver_member_address": "/director",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent_org",
+        "root_run_id": "org-collaborators",
+        "parent_communication_message_id": "msg_from_remote_1",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "fromRemoteDuplicate": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_ORG_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with current AgentOrg state."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_org_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_cZozHWSzRF2Qt-x-g_5qK4eusx7unQuI\",\"senderAgentRunId\":\"director\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n{\"messageId\":\"msg_from_remote_1\",\"senderAgentRunId\":\"publisher_r1\",\"receiverAgentRunId\":\"director\",\"content\":\"Baseline reply from the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_org_run_execution_tree.json": "{\n  \"subjectKind\": \"agent_org\",\n  \"createdAt\": \"2026-09-01T00:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootOrg\": {\n    \"address\": \"/\",\n    \"orgDefinitionId\": \"definition-org-collaborators\",\n    \"orgDefinitionName\": \"Test Org\",\n    \"orgRunId\": \"org-collaborators\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"autobyteus\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": \"/workspace\"\n    },\n    \"members\": [\n      {\n        \"address\": \"/director\",\n        \"agentDefinitionId\": \"definition-director\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"director\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        }\n      },\n      {\n        \"address\": \"/target\",\n        \"teamDefinitionId\": \"definition-configured-team\",\n        \"role\": null,\n        \"description\": null,\n        \"teamRunId\": \"configured-team\",\n        \"coordinatorAddress\": \"/target/lead\",\n        \"defaultLaunchConfiguration\": {\n          \"runtimeKind\": \"autobyteus\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": \"/workspace\"\n        },\n        \"members\": [\n          {\n            \"address\": \"/target/lead\",\n            \"agentDefinitionId\": \"definition-configured-lead\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-lead\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          },\n          {\n            \"address\": \"/target/writer\",\n            \"agentDefinitionId\": \"definition-configured-writer\",\n            \"role\": null,\n            \"description\": null,\n            \"agentRunId\": \"configured-writer\",\n            \"platformAgentRunId\": null,\n            \"launchConfiguration\": {\n              \"runtimeKind\": \"autobyteus\",\n              \"llmModelIdentifier\": \"test-model\",\n              \"llmConfig\": null,\n              \"autoExecuteTools\": true,\n              \"workspaceRootPath\": \"/workspace\"\n            }\n          }\n        ],\n        \"taskExecutions\": []\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"task-agent-1\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"director\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n"
+      }
+    }
+  },
+  "org.notAccepting": {
+    "deliverAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "sendToRemoteAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "fromRemoteAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "deliverAfterFailStop": {
+      "thrown": {
+        "name": "Error",
+        "code": null,
+        "message": "AgentOrg 'org-collaborators' is not accepting execution operations."
+      }
+    },
+    "closedWhileReserved": {
+      "accepted": false,
+      "code": "AGENT_ORG_MESSAGE_COMMIT_CONFLICT",
+      "message": "Message append conflicts with current AgentOrg state."
+    },
+    "closedWhileReservedSlot": {
+      "cancelled": 1,
+      "committed": 0
+    }
+  },
+  "team.deliver": {
+    "copyRunId": "code-reviewer-run-1",
+    "byRunId": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "code-reviewer-run-1",
+        "displayName": "code_reviewer"
+      },
+      "events": [
+        {
+          "eventSourceType": "COMMUNICATION",
+          "payload": {
+            "messageId": "collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1",
+            "senderAgentRunId": "run-coordinator",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "Baseline teammate message",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:00.000Z"
+          }
+        },
+        {
+          "eventSourceType": "MEMBER_INPUT",
+          "agentRunId": "code-reviewer-run-1",
+          "payload": {
+            "recipientAgentRunId": "code-reviewer-run-1",
+            "messageId": "memberinput_qLbR1nhqAJlqWYdF51GAsnAMoLF7Bvah",
+            "dedupeKey": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_qLbR1nhqAJlqWYdF51GAsnAMoLF7Bvah",
+            "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nBaseline teammate message",
+            "inputOrigin": "inter_agent_delivery",
+            "receivedAt": "2026-10-24T08:00:00.000Z",
+            "contextFilePaths": [],
+            "senderAgentRunId": "run-coordinator",
+            "parentCommunicationMessageId": "collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1"
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "byRunIdRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nBaseline teammate message",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_qLbR1nhqAJlqWYdF51GAsnAMoLF7Bvah",
+        "recipient_input_message_id": "memberinput_qLbR1nhqAJlqWYdF51GAsnAMoLF7Bvah",
+        "dedupe_key": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_qLbR1nhqAJlqWYdF51GAsnAMoLF7Bvah",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "run-coordinator",
+        "sender_agent_name": "coordinator",
+        "sender_member_address": "/coordinator",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "agent_message",
+        "team_run_id": "team-root-collaborators",
+        "parent_communication_message_id": "collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "duplicate": {
+      "result": {
+        "accepted": false,
+        "code": "TEAM_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with current root state."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "byAddress": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "run-worker",
+        "displayName": "worker"
+      },
+      "events": [
+        {
+          "eventSourceType": "COMMUNICATION",
+          "payload": {
+            "messageId": "collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ",
+            "senderAgentRunId": "run-coordinator",
+            "receiverAgentRunId": "run-worker",
+            "content": "Baseline message by address",
+            "messageType": "agent_message",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:01.000Z"
+          }
+        },
+        {
+          "eventSourceType": "MEMBER_INPUT",
+          "agentRunId": "run-worker",
+          "payload": {
+            "recipientAgentRunId": "run-worker",
+            "messageId": "memberinput_VHvQvX0PsQqUZVdDp9vMigqNjMGylij_",
+            "dedupeKey": "member_input:team-root-collaborators:run-worker:memberinput_VHvQvX0PsQqUZVdDp9vMigqNjMGylij_",
+            "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nBaseline message by address",
+            "inputOrigin": "inter_agent_delivery",
+            "receivedAt": "2026-10-24T08:00:01.000Z",
+            "contextFilePaths": [],
+            "senderAgentRunId": "run-coordinator",
+            "parentCommunicationMessageId": "collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ"
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"run-worker\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "byAddressRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nBaseline message by address",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_VHvQvX0PsQqUZVdDp9vMigqNjMGylij_",
+        "recipient_input_message_id": "memberinput_VHvQvX0PsQqUZVdDp9vMigqNjMGylij_",
+        "dedupe_key": "member_input:team-root-collaborators:run-worker:memberinput_VHvQvX0PsQqUZVdDp9vMigqNjMGylij_",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "run-coordinator",
+        "sender_agent_name": "coordinator",
+        "sender_member_address": "/coordinator",
+        "receiver_member_address": "/worker",
+        "original_message_type": "agent_message",
+        "team_run_id": "team-root-collaborators",
+        "parent_communication_message_id": "collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "recipientNotAccepting": {
+      "result": {
+        "accepted": false,
+        "code": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+        "message": "AgentRun is not accepting input."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"run-worker\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "historyWriteFailed": {
+      "result": {
+        "accepted": false,
+        "code": "TEAM_MESSAGE_HISTORY_COMMIT_FAILED",
+        "message": "Controlled history write failure"
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"run-worker\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "indeterminateWrite": {
+      "result": {
+        "thrown": {
+          "name": "Error",
+          "code": null,
+          "message": "Team message finalization is indeterminate at 'directory_sync'."
+        }
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n{\"messageId\":\"collabmsg_RNm7zSo-Oxbi9TDWUEZ_pDbpDjby3eEQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"run-worker\",\"content\":\"Baseline message by address\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_xT8JfkbUyWus7rOctwHVHAS6_bfqsZM1\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"Baseline teammate message\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:00.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    }
+  },
+  "team.taskWork": {
+    "taskClosedBeforeSend": {
+      "result": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "existingCopyAssignment": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "code-reviewer-run-1"
+        }
+      },
+      "events": [
+        {
+          "eventSourceType": "TASK_EXECUTIONS_REOPENED",
+          "taskExecutions": [
+            {
+              "agentRunId": "code-reviewer-run-1"
+            }
+          ]
+        },
+        {
+          "eventSourceType": "COMMUNICATION",
+          "payload": {
+            "messageId": "collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU",
+            "senderAgentRunId": "run-coordinator",
+            "receiverAgentRunId": "code-reviewer-run-1",
+            "content": "New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "messageType": "task_assignment",
+            "referenceFiles": [],
+            "createdAt": "2026-10-24T08:00:02.000Z"
+          }
+        },
+        {
+          "eventSourceType": "MEMBER_INPUT",
+          "agentRunId": "code-reviewer-run-1",
+          "payload": {
+            "recipientAgentRunId": "code-reviewer-run-1",
+            "messageId": "memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
+            "dedupeKey": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
+            "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+            "inputOrigin": "inter_agent_delivery",
+            "receivedAt": "2026-10-24T08:00:02.000Z",
+            "contextFilePaths": [],
+            "senderAgentRunId": "run-coordinator",
+            "parentCommunicationMessageId": "collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU"
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"code-reviewer-run-1\",\"content\":\"New Task assigned to you: B. Your previous Task is closed; this is the work to do now.\\n\\nDescription:\\nFollow-up cleanup\",\"messageType\":\"task_assignment\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "existingCopyRecipientInput": {
+      "content": "You received a message from the agent with sender address \"/coordinator\" and sender run id \"run-coordinator\".\nmessage:\nNew Task assigned to you: B. Your previous Task is closed; this is the work to do now.\n\nDescription:\nFollow-up cleanup",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
+        "recipient_input_message_id": "memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
+        "dedupe_key": "member_input:team-root-collaborators:code-reviewer-run-1:memberinput_ny3mr8q9NFAJfrMB3ubvKehwOfKAxmka",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "run-coordinator",
+        "sender_agent_name": "coordinator",
+        "sender_member_address": "/coordinator",
+        "receiver_member_address": "/code_reviewer",
+        "original_message_type": "task_assignment",
+        "team_run_id": "team-root-collaborators",
+        "parent_communication_message_id": "collabmsg_hAkrvP86sW-VxS72_BRvGWYPOQtg--DU",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    }
+  },
+  "team.remote": {
+    "delegated": {
+      "result": {
+        "delegated": true,
+        "copy": {
+          "kind": "agent",
+          "agentRunId": "publisher_r1"
+        },
+        "taskId": "ad_hoc_task_1",
+        "node": "docker"
+      },
+      "events": [
+        {
+          "eventSourceType": "REMOTE",
+          "event": {
+            "kind": "remote_task_execution_started",
+            "execution": {
+              "kind": "agent",
+              "address": "/publisher",
+              "nodeId": "srv_node_peer_0000000000000000000000000",
+              "delegatorAgentRunId": "run-coordinator",
+              "startedAt": "2026-10-24T08:00:00.000Z",
+              "agentRunId": "publisher_r1",
+              "nodeName": "docker"
+            }
+          }
+        }
+      ],
+      "transmissions": [
+        {
+          "nodeId": "srv_node_peer_0000000000000000000000000",
+          "kind": "work_packet",
+          "senderAgentRunId": "run-coordinator",
+          "targetRoot": {
+            "kind": "agent",
+            "runId": "publisher_r1"
+          },
+          "targetAgentRunId": "publisher_r1",
+          "content": "Publish the report",
+          "messageType": "task_work_packet",
+          "createdAt": "2026-10-24T08:00:00.000Z"
+        }
+      ],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "sentToRemote": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "publisher_r1",
+        "displayName": "publisher",
+        "message": "Delivered message to publisher_r1 on node \"docker\"."
+      },
+      "events": [],
+      "transmissions": [
+        {
+          "nodeId": "srv_node_peer_0000000000000000000000000",
+          "kind": "message",
+          "messageId": "collabmsg_aXC8FldvNDe9gCWfwHWFRxkm9LsYVZdQ",
+          "senderAgentRunId": "run-coordinator",
+          "targetRoot": {
+            "kind": "agent",
+            "runId": "publisher_r1"
+          },
+          "targetAgentRunId": "publisher_r1",
+          "content": "Baseline message to the remote run",
+          "messageType": "agent_message",
+          "createdAt": "2026-10-24T08:00:01.000Z"
+        }
+      ],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_aXC8FldvNDe9gCWfwHWFRxkm9LsYVZdQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "fromRemote": {
+      "result": {
+        "accepted": true,
+        "agentRunId": "run-coordinator",
+        "displayName": "coordinator"
+      },
+      "events": [
+        {
+          "eventSourceType": "MEMBER_INPUT",
+          "agentRunId": "run-coordinator",
+          "payload": {
+            "recipientAgentRunId": "run-coordinator",
+            "messageId": "memberinput_ykgGAntprWaWYzNlTBe4gAypxIDwY73s",
+            "dedupeKey": "member_input:agent_team\u0000team-root-collaborators:run-coordinator:memberinput_ykgGAntprWaWYzNlTBe4gAypxIDwY73s",
+            "content": "You received a message from the agent with sender run id \"publisher_r1\" on node \"docker\".\nmessage:\nBaseline reply from the remote run",
+            "inputOrigin": "inter_agent_delivery",
+            "receivedAt": "2026-10-24T08:00:02.000Z",
+            "contextFilePaths": [],
+            "senderAgentRunId": "publisher_r1",
+            "parentCommunicationMessageId": "msg_from_remote_1"
+          }
+        }
+      ],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_aXC8FldvNDe9gCWfwHWFRxkm9LsYVZdQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n{\"messageId\":\"msg_from_remote_1\",\"senderAgentRunId\":\"publisher_r1\",\"receiverAgentRunId\":\"run-coordinator\",\"content\":\"Baseline reply from the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    },
+    "fromRemoteRecipientInput": {
+      "content": "You received a message from the agent with sender run id \"publisher_r1\" on node \"docker\".\nmessage:\nBaseline reply from the remote run",
+      "senderType": "agent",
+      "contextFiles": null,
+      "metadata": {
+        "message_id": "memberinput_ykgGAntprWaWYzNlTBe4gAypxIDwY73s",
+        "recipient_input_message_id": "memberinput_ykgGAntprWaWYzNlTBe4gAypxIDwY73s",
+        "dedupe_key": "member_input:agent_team\u0000team-root-collaborators:run-coordinator:memberinput_ykgGAntprWaWYzNlTBe4gAypxIDwY73s",
+        "input_origin": "inter_agent_delivery",
+        "sender_agent_id": "publisher_r1",
+        "sender_agent_name": "publisher_r1",
+        "sender_node_name": "docker",
+        "receiver_member_address": "/coordinator",
+        "original_message_type": "agent_message",
+        "root_subject_kind": "agent_team",
+        "root_run_id": "team-root-collaborators",
+        "parent_communication_message_id": "msg_from_remote_1",
+        "reference_files": []
+      },
+      "recordingFileAttachments": null
+    },
+    "fromRemoteDuplicate": {
+      "result": {
+        "accepted": false,
+        "code": "TEAM_MESSAGE_COMMIT_CONFLICT",
+        "message": "Message append conflicts with current root state."
+      },
+      "events": [],
+      "transmissions": [],
+      "files": {
+        "agent_teams/team-root-collaborators/team_communication_messages_active.jsonl": "{\"messageId\":\"collabmsg_aXC8FldvNDe9gCWfwHWFRxkm9LsYVZdQ\",\"senderAgentRunId\":\"run-coordinator\",\"receiverAgentRunId\":\"publisher_r1\",\"content\":\"Baseline message to the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:01.000Z\"}\n{\"messageId\":\"msg_from_remote_1\",\"senderAgentRunId\":\"publisher_r1\",\"receiverAgentRunId\":\"run-coordinator\",\"content\":\"Baseline reply from the remote run\",\"messageType\":\"agent_message\",\"referenceFiles\":[],\"createdAt\":\"2026-10-24T08:00:02.000Z\"}\n",
+        "agent_teams/team-root-collaborators/team_run_execution_tree.json": "{\n  \"createdAt\": \"2026-10-24T08:00:00.000Z\",\n  \"archivedAt\": null,\n  \"applicationBinding\": null,\n  \"handoffs\": [],\n  \"rootTeam\": {\n    \"address\": \"/\",\n    \"teamDefinitionId\": \"se-team\",\n    \"teamDefinitionName\": \"SE Team\",\n    \"teamRunId\": \"team-root-collaborators\",\n    \"coordinatorAddress\": \"/coordinator\",\n    \"defaultLaunchConfiguration\": {\n      \"runtimeKind\": \"codex_app_server\",\n      \"llmModelIdentifier\": \"test-model\",\n      \"llmConfig\": null,\n      \"autoExecuteTools\": true,\n      \"workspaceRootPath\": null\n    },\n    \"members\": [\n      {\n        \"address\": \"/coordinator\",\n        \"agentDefinitionId\": \"agent-coordinator\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-coordinator\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      },\n      {\n        \"address\": \"/worker\",\n        \"agentDefinitionId\": \"agent-worker\",\n        \"role\": null,\n        \"description\": null,\n        \"agentRunId\": \"run-worker\",\n        \"platformAgentRunId\": null,\n        \"launchConfiguration\": {\n          \"runtimeKind\": \"codex_app_server\",\n          \"llmModelIdentifier\": \"test-model\",\n          \"llmConfig\": null,\n          \"autoExecuteTools\": true,\n          \"workspaceRootPath\": null\n        }\n      }\n    ],\n    \"taskExecutions\": [\n      {\n        \"address\": \"/code_reviewer\",\n        \"agentRunId\": \"code-reviewer-run-1\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      },\n      {\n        \"address\": \"/publisher\",\n        \"agentRunId\": \"publisher_r1\",\n        \"nodeId\": \"srv_node_peer_0000000000000000000000000\",\n        \"delegatorAgentRunId\": \"run-coordinator\",\n        \"startedAt\": \"2026-10-24T08:00:00.000Z\"\n      }\n    ]\n  }\n}\n",
+        "agents/code-reviewer-run-1/run_metadata.json": "{\n  \"runId\": \"code-reviewer-run-1\",\n  \"agentDefinitionId\": \"code-reviewer\",\n  \"workspaceRootPath\": null,\n  \"memoryDir\": \"<TMP>/agents/code-reviewer-run-1\",\n  \"llmModelIdentifier\": \"test-model\",\n  \"llmConfig\": null,\n  \"autoExecuteTools\": true,\n  \"runtimeKind\": \"codex_app_server\",\n  \"platformAgentRunId\": null,\n  \"startedAt\": \"2026-10-24T08:00:00.000Z\",\n  \"taskAgent\": {\n    \"coordinatingRun\": {\n      \"kind\": \"agent_team\",\n      \"runId\": \"team-root-collaborators\"\n    },\n    \"delegatorAgentRunId\": \"run-coordinator\",\n    \"address\": \"/code_reviewer\",\n    \"launchSource\": {\n      \"origin\": \"inherited\",\n      \"fallbacks\": []\n    }\n  }\n}\n"
+      }
+    }
+  },
+  "team.notAccepting": {
+    "deliverAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "TEAM_RUN_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "sendToRemoteAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "fromRemoteAfterAdmissionClosed": {
+      "accepted": false,
+      "code": "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES",
+      "message": "This work is stopping or has stopped, so the message or delegation was not sent."
+    },
+    "deliverAfterFailStop": {
+      "thrown": {
+        "name": "Error",
+        "code": null,
+        "message": "RootTeamRun 'team-root-collaborators' is not accepting materializing operations."
+      }
+    },
+    "closedWhileReserved": {
+      "accepted": false,
+      "code": "TEAM_MESSAGE_COMMIT_CONFLICT",
+      "message": "Message append conflicts with current root state."
+    },
+    "closedWhileReservedSlot": {
+      "cancelled": 1,
+      "committed": 0
+    }
+  }
+}

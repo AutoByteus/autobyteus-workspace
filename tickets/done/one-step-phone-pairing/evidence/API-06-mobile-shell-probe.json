@@ -1,0 +1,293 @@
+{
+  "startedAt": "2026-11-07T09:28:30.618Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 64442,
+      "nodeId": "srv_cJ_K85vWZ0jaQG1I5fvKoOIpeq__c-f8",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 64441,
+      "nodeId": "srv_N1zDlVmcsuEZv4udm1bgsmBkpp1N1l7Y",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_e4396b260911404cb3cb6d83e1b7f2bb",
+    "writerRun": "release_notes_writer_2c46ade1ad644d04a808b0cba0d788be",
+    "squadRun": "docs_review_team_b590d78c694348878abac224749c41c9",
+    "reviewer": "release_notes_writer_91ba0451a7bf41da8effdb4a4a5652b9",
+    "memberDelegated": "fact_checker_ff7fcc89e03d4b32bde1818f5610ac74",
+    "remoteAgentRun": "publisher_578d715632f246a39c20539d83cc9e49",
+    "remoteTeamRun": "studio_team_66fece748ea34db1a976fcb2106b4ab5",
+    "plain": [
+      "fact_checker_29ffc7a5704b4e52996b501de1b0dd26",
+      "fact_checker_1d0a1a37d37a428183a959231f830b24",
+      "fact_checker_248a746e3de3462e8c8699872becdd2a"
+    ],
+    "org": "delivery_org_2bd0e1e105b04eba8b302be72474c352",
+    "orgPlanner": "release_notes_writer_0ed6de76091341a8b7f99dde8a646541",
+    "reviewOrg": "review_org_884c6ce4a58e42a28544292187cc8d13",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_335a86e7abb846fabfebd86e170a1bf6",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_db9d6560df3846f9a530c97270b63046",
+    "deliveryLead": "fact_checker_71b55f9207a3403c86a03379d71393e7",
+    "deliveryMate": "release_notes_writer_81c953cf8bcc4e0386a0f4ddcb28283e",
+    "leadDelegated": "changelog_helper_cbe2370be0024b23927b36c01ddb6411",
+    "approver": "approver_d9fef5e97bd54155ba0c47ecb3b44a60",
+    "taskA": "launch-aea648-1",
+    "taskB": "launch-aea648-2"
+  },
+  "cases": {
+    "MSP-06": {
+      "result": "Pass",
+      "seconds": 7,
+      "onBeta": true,
+      "sendErrors": [],
+      "row": {
+        "key": "agent:project_task_manager_e4396b260911404cb3cb6d83e1b7f2bb/agent:publisher_578d715632f246a39c20539d83cc9e49",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Idle"
+      },
+      "opened": {
+        "state": "open",
+        "name": "publisher",
+        "subtitle": "Idle · in Project Task Manager",
+        "chip": "beta-node",
+        "query": "?screen=run"
+      },
+      "placeholder": "Message publisher on beta-node…",
+      "uploads": 0,
+      "mention": {
+        "role": null,
+        "expanded": null
+      },
+      "live": true,
+      "down": [
+        {
+          "key": "agent:project_task_manager_e4396b260911404cb3cb6d83e1b7f2bb/agent:publisher_578d715632f246a39c20539d83cc9e49",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "error",
+          "name": "publisher",
+          "title": "Publish the draft. Marker REMOTE-AGENT.",
+          "chip": "beta-nodeNot reachable",
+          "unreachable": true,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Not reachable"
+        },
+        {
+          "key": "agent:project_task_manager_e4396b260911404cb3cb6d83e1b7f2bb/team:studio_team_66fece748ea34db1a976fcb2106b4ab5",
+          "depth": 1,
+          "expanded": "false",
+          "current": null,
+          "status": "error",
+          "name": "studio team",
+          "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+          "chip": "beta-nodeNot reachable",
+          "unreachable": true,
+          "age": null,
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Not reachable"
+        }
+      ],
+      "notice": "beta-node isn't reachable This run's conversation can't be loaded right now. Your other runs work. Retry when the node is back. Retry",
+      "recovered": true
+    },
+    "MSP-09": {
+      "result": "Pass",
+      "seconds": 21.2,
+      "dialogName": "Alpha Test Node",
+      "info": {
+        "name": "Alpha Test Node",
+        "url": "http://192.168.77.10:64441",
+        "status": "Connected",
+        "peerRows": 0,
+        "mentionsPeer": false,
+        "check": {
+          "label": "Check connection",
+          "text": ""
+        },
+        "switchNode": 0,
+        "unpair": "Unpair from Alpha Test Node"
+      },
+      "afterCheck": "Connected",
+      "sheetDown": "Not reachable",
+      "checkDown": {
+        "label": null,
+        "text": "Retry"
+      },
+      "barDown": "Not reachable",
+      "bannerDown": "Can’t reach Alpha Test Node. Check",
+      "rowsWhileDown": 18,
+      "c06": {
+        "bar": "Connected",
+        "banner": 0,
+        "rows": 18,
+        "pollsAfterBack": 5
+      },
+      "sheetBack": "Connected",
+      "checkBack": {
+        "label": "Check connection",
+        "text": ""
+      },
+      "barBack": "Connected",
+      "bannerBack": 0,
+      "pairingPage": {
+        "name": "Alpha Test Node",
+        "button": "Connect to Alpha Test Node",
+        "getApp": "https://github.com/AutoByteus/autobyteus-workspace/releases/latest",
+        "visibleInputs": 0
+      },
+      "pairedSession": {
+        "nodeName": "Alpha Test Node",
+        "hasCredential": true
+      },
+      "otherUnpair": "Unpair from Alpha Test Node",
+      "confirmText": "Unpair this phone? This removes only the local phone session. Use desktop Phone Access to revoke credentials for all devices. Cancel Unpair",
+      "confirmOnTop": {
+        "onTop": true,
+        "hit": "Unpair"
+      },
+      "sessionLeft": null,
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone-unpair console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-06": "Pass",
+      "MSP-09": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-07T09:29:56.397Z"
+}

@@ -1,0 +1,13 @@
+# Case: API-05 step 06 — Maximize in the desktop app, and two raw viewers sending SetDesktopSize 800x600 while the app viewer is connected (AC-008, AC-009)
+# Steps: click the tile's Maximize button (title 'Maximize view'), read the tile and node size, screenshot; node API-05-raw-resize.mjs <ws pkg> http://192.168.2.158:62053 (view, then control); read node size and the app tile; Escape to restore
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:54:49Z
+
+before:  dimensions: 1920x1080 pixels (508x286 millimeters)
+"{\"maximizedClass\":true,\"canvasCss\":\"1510x849\",\"status\":\"Connected · View only\"}"
+while maximized:  dimensions: 1920x1080 pixels (508x286 millimeters)
+raw viewers: [{"mode":"view","initSize":"1920x1080","openAfterSetDesktopSize":true,"closed":{"code":1000,"reason":""}},{"mode":"control","initSize":"1920x1080","openAfterSetDesktopSize":true,"closed":{"code":1000,"reason":""}}]
+after raw SetDesktopSize:  dimensions: 1920x1080 pixels (508x286 millimeters)
+app tile: "Connected · View only"
+"{\"maximizedAfterRestore\":false,\"status\":\"Connected · View only\"}"
+final:  dimensions: 1920x1080 pixels (508x286 millimeters)

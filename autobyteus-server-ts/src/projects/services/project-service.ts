@@ -16,6 +16,7 @@ import type {
   UpdateProjectWorkspaceCommand,
 } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
+import { toProjectSummary, type ProjectSummary } from "../domain/project-summary.js";
 import { isTerminalTaskStatus } from "../domain/task-status.js";
 import { taskKeyPrefixOf, uniqueTaskKeyPrefix } from "../domain/task-keys.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
@@ -120,8 +121,8 @@ export class ProjectService {
     return views.sort(compareByName);
   }
 
-  async listProjectSummaries(): Promise<Array<Pick<ProjectView, "projectId" | "name" | "description">>> {
-    return (await this.store.listProjects()).map(({projectId, name, description}) => ({projectId, name, description})).sort(compareByName);
+  async listProjectSummaries(): Promise<ProjectSummary[]> {
+    return (await this.store.listProjects()).map(toProjectSummary).sort(compareByName);
   }
 
   async getProject(projectId: string): Promise<ProjectView | null> {

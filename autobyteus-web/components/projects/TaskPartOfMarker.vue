@@ -1,6 +1,6 @@
 <template>
   <!-- On a part's card: a quiet "Part of <key>" line (no pill: it informs, it does not ask for attention). The key refers
-       to the parent; hovering gives the parent's summary and status. -->
+       to the parent; hovering gives the parent's title and status. -->
   <span
     v-if="parent"
     class="inline-flex min-w-0 max-w-full items-center gap-1 text-xs text-slate-500"
@@ -20,13 +20,13 @@ import { useLocalization } from '~/composables/useLocalization'
 import type { ProjectTask } from '~/types/project'
 import { parentOf } from '~/utils/projects/taskParts'
 import { TASK_STATUS_LABEL_KEYS } from '~/utils/projects/taskStatusPresentation'
-import { taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { taskTitleLabel } from '~/utils/projects/taskText'
 import TaskKey from './TaskKey.vue'
 
 const props = defineProps<{ task: ProjectTask; tasks: readonly ProjectTask[] }>()
 const { t } = useLocalization()
 const parent = computed(() => parentOf(props.task, props.tasks))
 const title = computed(() => parent.value
-  ? t('projects.parts.markerTitle', { key: parent.value.taskKey, summary: taskSummaryLabel(parent.value.description), status: t(TASK_STATUS_LABEL_KEYS[parent.value.status]) })
+  ? t('projects.parts.markerTitle', { key: parent.value.taskKey, title: taskTitleLabel(parent.value.title), status: t(TASK_STATUS_LABEL_KEYS[parent.value.status]) })
   : '')
 </script>

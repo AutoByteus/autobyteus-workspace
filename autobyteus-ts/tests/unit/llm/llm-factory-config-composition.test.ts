@@ -5,6 +5,7 @@ import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../src/llm/utils/response-types.js';
+import { ParameterDefinition, ParameterSchema, ParameterType } from '../../../src/utils/parameter-schema.js';
 import type { ProviderApiKeyResolver } from '../../../src/secrets/provider-api-key-resolver.js';
 import { providerApiKeyResolver } from '../provider-api-key-resolver-test-helpers.js';
 
@@ -34,7 +35,7 @@ const factoryAny = LLMFactory as unknown as {
   modelsByProvider: Map<LLMProvider, LLMModel[]>;
 };
 
-const buildModel = (name: string, defaultConfig: LLMConfig) =>
+const buildModel = (name: string, defaultConfig: LLMConfig, configSchema?: ParameterSchema) =>
   new LLMModel({
     name,
     value: name,
@@ -42,7 +43,13 @@ const buildModel = (name: string, defaultConfig: LLMConfig) =>
     canonicalName: name,
     llmClass: CapturingLLM,
     defaultConfig,
+    configSchema,
   });
+
+const declaredSettingsSchema = (...names: string[]) =>
+  new ParameterSchema(names.map((name) => new ParameterDefinition({
+    name, type: ParameterType.STRING, description: name, required: false,
+  })));
 
 describe('LLMFactory config composition', () => {
   let originalInitialized: boolean;
@@ -91,16 +98,13 @@ describe('LLMFactory config composition', () => {
     const resolver = providerApiKeyResolver();
     const llm = await LLMFactory.createLLM(
       'model-default-temperature',
-      { provider_specific_flag: 'kept' },
+      { provider_specific_flag: 'dropped' },
       resolver,
     );
 
     expect(llm.config.temperature).toBe(1);
     expect(llm.config.topP).toBe(0.95);
-    expect(llm.config.extraParams).toEqual({
-      model_default_extra: true,
-      provider_specific_flag: 'kept',
-    });
+    expect(llm.config.extraParams).toEqual({ model_default_extra: true });
     expect((llm as CapturingLLM).resolver).toBe(resolver);
   });
 
@@ -113,6 +117,7 @@ describe('LLMFactory config composition', () => {
           maxTokens: 2048,
           extraParams: { model_default_extra: true },
         }),
+        declaredSettingsSchema('declared_provider_option'),
       ),
     );
 
@@ -121,7 +126,8 @@ describe('LLMFactory config composition', () => {
       {
         temperature: 0.2,
         max_tokens: 512,
-        unknown_provider_option: 'kept',
+        declared_provider_option: 'kept',
+        unknown_provider_option: 'dropped',
       },
       providerApiKeyResolver(),
     );
@@ -130,7 +136,62 @@ describe('LLMFactory config composition', () => {
     expect(llm.config.maxTokens).toBe(512);
     expect(llm.config.extraParams).toEqual({
       model_default_extra: true,
-      unknown_provider_option: 'kept',
+      declared_provider_option: 'kept',
+    });
+  });
+
+  it('reads declared settings from the extra_params container and drops undeclared ones', async () => {
+    LLMFactory.registerModel(
+      buildModel('container-settings', new LLMConfig(), declaredSettingsSchema('declared_provider_option')),
+    );
+
+    const llm = await LLMFactory.createLLM(
+      'container-settings',
+      { extra_params: { declared_provider_option: 'from-container', undeclared_option: 'dropped' } },
+      providerApiKeyResolver(),
+    );
+
+    expect(llm.config.extraParams).toEqual({ declared_provider_option: 'from-container' });
+  });
+
+  describe('canonicalRunLlmConfig', () => {
+    it('stores standard fields as given and declared settings as top-level keys, with no container', async () => {
+      LLMFactory.registerModel(
+        buildModel('canonical-run-config', new LLMConfig(), declaredSettingsSchema('declared_a', 'declared_b')),
+      );
+
+      const canonical = await LLMFactory.canonicalRunLlmConfig('canonical-run-config', {
+        temperature: 0.2,
+        declared_a: 'top',
+        undeclared: 'dropped',
+        extra_params: { declared_a: 'container', declared_b: 'lifted', undeclared_in_container: 'dropped' },
+      });
+
+      expect(canonical).toEqual({ temperature: 0.2, declared_a: 'top', declared_b: 'lifted' });
+    });
+
+    it('lets a top-level value win over the same key in the extra_params container', async () => {
+      LLMFactory.registerModel(
+        buildModel('canonical-precedence', new LLMConfig(), declaredSettingsSchema('declared_a')),
+      );
+
+      await expect(LLMFactory.canonicalRunLlmConfig('canonical-precedence', {
+        declared_a: 'top',
+        extraParams: { declared_a: 'container' },
+      })).resolves.toEqual({ declared_a: 'top' });
+      await expect(LLMFactory.canonicalRunLlmConfig('canonical-precedence', {
+        extra_params: { declared_a: 'container' },
+      })).resolves.toEqual({ declared_a: 'container' });
+    });
+
+    it('returns null when nothing declared remains and keeps the raw config of an unregistered model', async () => {
+      LLMFactory.registerModel(buildModel('canonical-no-schema', new LLMConfig()));
+
+      await expect(LLMFactory.canonicalRunLlmConfig('canonical-no-schema', { thinking_display: 'x' }))
+        .resolves.toBeNull();
+      await expect(LLMFactory.canonicalRunLlmConfig('canonical-no-schema', null)).resolves.toBeNull();
+      const raw = { thinking_display: 'x' };
+      await expect(LLMFactory.canonicalRunLlmConfig('not-registered', raw)).resolves.toBe(raw);
     });
   });
 

@@ -1,0 +1,180 @@
+# IMP-02 web unit tests: changed specs and every phone (/mobile) and remote-access suite
+# command: cd autobyteus-web && pnpm exec vitest run components/mobile composables/mobile utils/remoteAccess stores/__tests__/mobileNodeSessionStore --reporter=verbose
+# commit: ba3ba5b23e
+# env: macOS 26.5.2, Node v22.23.1, vitest 3.2.7
+# date: 2026-11-08T06:47Z
+
+ ✓ components/mobile/connection/__tests__/MobileConnectionSheet.spec.ts > MobileConnectionSheet > in a browser: a refresh icon while reachable, no Switch node, no peers, and Unpair from the node
+ ✓ components/mobile/connection/__tests__/MobileConnectionSheet.spec.ts > MobileConnectionSheet > shows the node's name and state and no address (connected)
+ ✓ components/mobile/connection/__tests__/MobileConnectionSheet.spec.ts > MobileConnectionSheet > shows the node's name and state and no address (not reachable, with its diagnostic)
+ ✓ components/mobile/connection/__tests__/MobileConnectionSheet.spec.ts > MobileConnectionSheet > not reachable: amber "Not reachable" and the word Retry
+ ✓ components/mobile/connection/__tests__/MobileConnectionSheet.spec.ts > MobileConnectionSheet > in the Android app: Switch node with the phone's node count asks the app for its node list
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > in a browser, a pairing link shows the node and pairs with one tap (REQ-018)
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > in the app, a pairing link pairs at once with the phone's name and tells the app it paired (REQ-010)
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > a QR without a name: the page says "AutoByteus node" and shows no part of its address
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > in the app, a QR without a name reports no name to the app, so it never stores the label as the node's name
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > in the app, a refused code (400 REMOTE_ACCESS_PAIRING_CONSUMED) shows the reason, Scan again and the way back; nothing is reported paired
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > in the app, a refused code (400 REMOTE_ACCESS_PAIRING_EXPIRED) shows the reason, Scan again and the way back; nothing is reported paired
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > in the app, a refused code (400 REMOTE_ACCESS_PAIRING_INVALID) shows the reason, Scan again and the way back; nothing is reported paired
+ ✓ components/mobile/__tests__/MobilePairingBootstrap.spec.ts > MobilePairingBootstrap > without a link: instructions, the app download and a closed paste field
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > opens View only and fitted, with the gesture layer and no keyboard (REQ-014, REQ-015)
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > switches to Control only by the switch: the gesture layer goes, Keyboard comes
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > shows "too many viewers" with Retry, which opens View only (AC-021)
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > keyboard bridge (REQ-S3-2, AR-S3-009) > opens the keyboard on the hidden input, reset to the sentinel with the caret at its end
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > keyboard bridge (REQ-S3-2, AR-S3-009) > sends typed text and Enter, then Backspace after a reset, and repeated Backspace
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > keyboard bridge (REQ-S3-2, AR-S3-009) > follows the caret when the keyboard leaves it inside the sentinel after a reset (Gboard)
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > keyboard bridge (REQ-S3-2, AR-S3-009) > sends a composition letter by letter as it grows, corrects a replaced word, and resets when it ends
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3) > hides the bars; in View only one tap shows them again
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3) > in Control a tap is the desktop's, so a handle outside the canvas shows the controls
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > clipboard (autobyteus-426 REQ-005, AC-005) > offers Clipboard next to Keyboard in Control only while connected
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > clipboard (autobyteus-426 REQ-005, AC-005) > opens the sheet without touching the phone clipboard; Copy waits for the desktop
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > clipboard (autobyteus-426 REQ-005, AC-005) > sends pasted text to the desktop clipboard and closes
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > clipboard (autobyteus-426 REQ-005, AC-005) > copies the desktop text on a tap, with the selection copy where the async clipboard is missing
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > clipboard (autobyteus-426 REQ-005, AC-005) > shows the text selectable with a long-press hint when the phone refuses the copy
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > ends the stream when it leaves
+ ✓ components/mobile/views/__tests__/MobileArtifactsContentViewerIntegration.spec.ts > MobileArtifacts content viewer integration > fetches selected text, PDF, and SVG artifact content through the active mobile credential
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > preselects the agent of the run opened before
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > with no run opened before, preselects the Project Task Manager, and the first folder
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > shows the open agent's folder with its path line; a folder row loads and enters it; no filters, no Attach
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > a folder that does not resolve says so, with Retry, and never shows another folder
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > renders the rows as one tree; nested rows carry their level, rails and node; the open row is marked
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > with no run listed it shows the loading state (VIS-021…023)
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > without a Project Task Manager, the first agent
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > starts agent runs only: no Agent | Team switch, no team rows
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > a row opens its bottom sheet; one tap picks and closes
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > Create run is disabled with the reason while a model is missing
+ ✓ components/mobile/newRun/__tests__/MobileNewRun.spec.ts > New run > Create run creates the agent run with the chosen agent and folder and reports it
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > one search over the whole workspace: the search icon opens a focused field, its results show their path
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > a tapped file opens full screen as a history entry; ← returns to the folder
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > with no run listed it shows the empty state (VIS-021…023)
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > with no run listed it shows the read error state (VIS-021…023)
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > shows the connected state in the bar and banner
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > shows the unreachable state in the bar and banner
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > shows the phone_access_off state in the bar and banner
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > a run on another node: its files are on that node (278 wording)
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Messages > keeps the source's loading state (autobyteus-358)
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Messages > keeps the source's error state (autobyteus-358)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > while an open is pending it shows "Opening…" only, never the previous target
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > then the open target: its name, its state and where it is, and its conversation
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > hosts the conversation in a clipping root (overflow: clip, not hidden)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a top-level run has no "in"
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Messages > keeps the source's loaded state (autobyteus-358)
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Messages > lists "From <name>" with the text and its file references; a reference opens full screen and ← closes it first
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Artifacts and Activity > Artifacts: empty says so; one is shown directly
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Artifacts and Activity > Artifacts of a run on another node say its files are on that node
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Artifacts and Activity > Activity with nothing yet says "No activity yet"
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > keeps the conversation open when the run's temporary id is promoted
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a failed open goes back to the list
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > with neither an open pending nor a target (a reload) it is replaced by the list
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a standalone_agent offers Messages=false
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a agent_run_task_agent offers Messages=false
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a standalone_team_member offers Messages=true
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > lands a paired phone on the run list with the node's name from its QR (REQ-011)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > the ⋮ menu of a agent_run_task_team_member offers Messages=true
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > VNC Viewer is offered when the node desktop is available and the run is remote=false: true (AC-S3-2)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > VNC Viewer is offered when the node desktop is unavailable and the run is remote=false: false (AC-S3-2)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > VNC Viewer is offered when the node desktop is loading and the run is remote=false: false (AC-S3-2)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > VNC Viewer is offered when the node desktop is error and the run is remote=false: false (AC-S3-2)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > VNC Viewer is offered when the node desktop is available and the run is remote=true: false (AC-S3-2)
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > VNC Viewer opens the desktop screen
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a menu item opens its view screen
+ ✓ components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts > MobileRunScreen > a run on a node that does not answer shows the remote notice instead of the conversation
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > a session paired before the name was kept, in a browser, shows "AutoByteus node", never the address (autobyteus-433 AC-003)
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, names the node by the app's name over a session without one, never by its address
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, names the node by the app's name over the session's QR name, never by its address
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, names the node by the session's QR name when the app has no name for the node, never by its address
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, names the node by "AutoByteus node" when neither has a name, never by its address
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, not reachable: the banner names the node by the app's name, with no address (AC-001)
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in a browser, a session at a tailnet address shows its QR name and no part of the address (AC-003)
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > has no Home, Switch work, tabs, view switch, Team or Org start, row actions or explanatory filler
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > shows the unsupported-route notice above the run list with the spec's text
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > reads the complete history (no window) and polls only while the list is on screen and the page in front
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > rejects the local session when the first credential check is refused, without a second read
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > keeps the session when Phone Access is off and says so; Check loads the runs once it is on (AC-003)
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > takes the outcome from the credential check only, whatever the history read during the check answers
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > records the node reachable when the first read succeeds; the node name opens the sheet and Check connection reads again
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > Unpair from <node> asks the baseline confirmation, then removes the local session
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > the paired node not reachable: the bar says so and a banner offers Check (VIS-024)
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > lets a fresh QR replace an existing session: the pairing screen shows for a pairing link
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > an unpaired phone shows the pairing screen and loads no history
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > keeps the phone shell free from desktop shell components, workspace routing and the old phone model
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > the list is the entry without a screen; opening a run pushes the run screen, and Back returns to the list
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > opening an Org run writes its keys on the list entry too, so Back keeps the Org open (MP-003)
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > opening an agent run afterwards clears the Org keys from the list entry and the run entry
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > keeps keys it does not own (the unsupported notice) on the list entry only
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > the system Back walks file → view → run → list; views keep the open Org's keys
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > a Messages reference is its own entry; ← closes it first
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > ← on a screen entered without an entry under it (a reload) goes to its parent screen
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > VNC Viewer full screen is its own entry: Back leaves full screen, then the view, then the run (REQ-S3-3)
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > ← in VNC Viewer full screen entered by a reload goes to the view, then the run
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > full=1 means nothing on another screen
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > toList replaces a screen whose subject is gone with the list
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > Create run on New run: Back from the new run returns to the list, not to New run
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.recordCheckOutcome > sets Phone Access off and reachability together, so a later check always replaces "off"
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.recordCheckOutcome > forgets Phone Access off when the session ends
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > sends one small authorized GraphQL read with the session's own credential
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > classifies a revoked device
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > classifies Phone Access off
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > classifies a 401 without a body
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > classifies another refusal
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > classifies a gateway error
+ ✓ stores/__tests__/mobileNodeSessionStore.checks.spec.ts > mobileNodeSessionStore.checkCredential > is unreachable when the read does not get through
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > pinches to zoom around the pinch centre and clamps to 1×–4×
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > pans a zoomed picture, clamped to the picture, and does not pan at fit
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > a double tap returns to fit and is not a single tap
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > lifting the fingers of a pinch is no tap
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > a single tap waits out the double-tap window; a drag is no tap
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > Ctrl+wheel zooms around the pointer and keeps the page from zooming; a plain wheel does nothing
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > returns to fit on a resize or rotation
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > returns to fit when the layer goes away (Control)
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Image workspace files through the shared read-only FileViewer
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Image workspace files through the shared read-only FileViewer
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Audio workspace files through the shared read-only FileViewer
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Video workspace files through the shared read-only FileViewer
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected PDF workspace files through the shared read-only FileViewer
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Excel workspace files through the shared read-only FileViewer
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > keeps HTML workspace files in raw read-only mode on mobile instead of static iframe preview
+ ✓ utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts > authorized resource URLs > classifies protected REST resource URL families
+ ✓ utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts > authorized resource URLs > loads protected resources through authorized fetch when a mobile credential is active
+ ✓ utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts > authorized resource URLs > classifies protected resources from the supplied credential snapshot
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > shows the spec's line while loading (TR-019)
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > shows the spec's line while an error (TR-019)
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > shows the spec's line while an unsupported file (TR-019)
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > its bar is ← and the file name
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > builds the shared actions in the phone shell
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > marks the open pending and pushes the run screen before the shared action runs; its notification commits
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > an action that returns without committing (superseded, rejected) fails the open
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > an action that throws fails the open
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > a Team run, a member and a task row each open through their shared action
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > a task row whose run view is not loaded selects nothing and fails
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > an Org member opens with its keys on the list entry and the run entry; the subject action commits
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > a failed Org open fails the pending open and leaves the list entry rewritten with its keys
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > an Org run row selects the Org's first configured member, with that address on both entries
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > Team stream recovery shows the desktop's toast, and the open fails
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts > useMobileRunOpening > an earlier open's late outcome does not end the newer open (superseded)
+ ✓ utils/remoteAccess/__tests__/authorizedTransport.spec.ts > authorized transport credential selection > uses the paired mobile credential when a mobile session is active
+ ✓ utils/remoteAccess/__tests__/authorizedTransport.spec.ts > authorized transport credential selection > does not attach extra trusted-node credentials for remote-node windows
+ ✓ utils/remoteAccess/__tests__/authorizedTransport.spec.ts > authorized transport credential selection > uses exactly the supplied credential snapshot
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts > useMobileLaunchWorkspaces > refreshes through the workspace store and maps every store workspace as a launch choice
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts > useMobileLaunchWorkspaces > loads an unlisted server-side path through workspaceStore.createWorkspace
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts > useMobileLaunchWorkspaces > shows the node's refusal reason under the path field and registers nothing (autobyteus-426 AC-008)
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts > useMobileLaunchWorkspaces > keeps the request's own message for any other failure
+ ✓ composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts > useMobileLaunchWorkspaces > rejects empty path loads with local picker error state
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts > mobile session bootstrap > detects mobile runtime paths and strips the static mobile prefix
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts > mobile session bootstrap > restores persisted mobile session before global GraphQL/auth transports are used
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts > mobile session bootstrap > binds mobile transports to the paired remote node origin instead of the embedded host
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts > mobile session bootstrap > does not bind stored phone credentials outside mobile runtime paths
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts > mobile session bootstrap > treats the mobile static build root as the phone runtime entry
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts > mobile connection diagnostics > maps disabled and revoked HTTP failures to actionable states
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts > mobile connection diagnostics > maps websocket auth close codes
+ ✓ utils/remoteAccess/__tests__/remoteAccessReadRefusal.spec.ts > remoteAccessReadRefusal > rejects the session for a revoked device, a 401 or the auth codes
+ ✓ utils/remoteAccess/__tests__/remoteAccessReadRefusal.spec.ts > remoteAccessReadRefusal > names Phone Access off without rejecting the session
+ ✓ utils/remoteAccess/__tests__/remoteAccessReadRefusal.spec.ts > remoteAccessReadRefusal > treats every other answer as reachability
+ ✓ utils/remoteAccess/__tests__/nodeName.spec.ts > nodeNameOrDefault > takes the first non-blank name, in the given order
+ ✓ utils/remoteAccess/__tests__/nodeName.spec.ts > nodeNameOrDefault > trims the name it takes and skips names that are only spaces
+ ✓ utils/remoteAccess/__tests__/nodeName.spec.ts > nodeNameOrDefault > is "AutoByteus node" when no name is given
+ ✓ utils/remoteAccess/__tests__/websocketAuth.spec.ts > remote access websocket auth helper > adds access_token while preserving existing query params
+ ✓ utils/remoteAccess/__tests__/websocketAuth.spec.ts > remote access websocket auth helper > redacts access_token in diagnostic URLs
+ Test Files  22 passed (22)
+      Tests  172 passed (172)

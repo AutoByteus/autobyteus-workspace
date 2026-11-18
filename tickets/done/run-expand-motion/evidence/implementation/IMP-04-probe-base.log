@@ -1,0 +1,12 @@
+# Check: IMP-04
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -s test:e2e:run-expand-motion --output-dir <ticket>/evidence/implementation/IMP-04-probe-base
+# Commit: c5cc87d89d with autobyteus-web/components/runList/RunListRow.vue from base 4500e7278d (v-show)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack, Google Chrome headless (playwright-core); env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: IMP-04-probe-base/evidence.json, IMP-04-probe-base/nuxt.log, IMP-04-probe-base/*.png
+
+REM-01 Pass Expanded at first: twelve delegated rows, at rest
+REM-02 Fail Collapse: the delegated rows are gone at once (AC-002) — Delegated rows are still in the DOM after collapse (hidden, not removed)
+REM-03 Fail Expand: from the first frame, every row is at its final place with no transform (AC-001; 4 frames) — 48 row samples moved from elsewhere on screen
+REM-04 Pass No browser errors during the cases
+{"result":"Fail","evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/run-expand-motion/tickets/in-progress/run-expand-motion/evidence/implementation/IMP-04-probe-base/evidence.json","cleanup":{"browserClosed":true,"nuxt":"SIGTERM","installedPageRemoved":true}}

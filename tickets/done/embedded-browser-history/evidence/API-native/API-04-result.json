@@ -1,0 +1,223 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-04,API-05,API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+  "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+  "date": "2026-10-26T17:20:57.744Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "autobyteus-web/package.json",
+  "caseId": "API-04",
+  "instanceId": "iso-50065-1066",
+  "fixtureOrigin": "http://127.0.0.1:50064",
+  "observations": [
+    {
+      "label": "Back committed /spa/base",
+      "time": "2026-10-26T17:21:01.440Z",
+      "shell": {
+        "activeTabId": "21caa6",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "21caa6",
+            "title": "Fixture /spa",
+            "url": "http://127.0.0.1:50064/spa",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/spa",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/spa",
+        "title": "Fixture /spa",
+        "heading": "Page /spa",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "Forward committed /spa#anchor/base",
+      "time": "2026-10-26T17:21:01.473Z",
+      "shell": {
+        "activeTabId": "21caa6",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "21caa6",
+            "title": "Fixture /spa",
+            "url": "http://127.0.0.1:50064/spa#anchor",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/spa#anchor",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/spa#anchor",
+        "title": "Fixture /spa",
+        "heading": "Page /spa",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "same URL Back committed, draft retained",
+      "time": "2026-10-26T17:21:01.610Z",
+      "shell": {
+        "activeTabId": "21caa6",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": true,
+            "tab_id": "21caa6",
+            "title": "Fixture /spa",
+            "url": "http://127.0.0.1:50064/spa-push",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "unfinished.example/path",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/spa-push",
+        "title": "Fixture /spa",
+        "heading": "Page /spa",
+        "state": {
+          "step": "push"
+        },
+        "length": 4,
+        "marker": "push",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "replace does not append",
+      "time": "2026-10-26T17:21:01.655Z",
+      "shell": {
+        "activeTabId": "21caa6",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "21caa6",
+            "title": "Fixture /spa",
+            "url": "http://127.0.0.1:50064/spa-replaced",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/spa-replaced",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/spa-replaced",
+        "title": "Fixture /spa",
+        "heading": "Page /spa",
+        "state": {
+          "step": "replaced"
+        },
+        "length": 4,
+        "marker": "replaced",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "new link truncates forward",
+      "time": "2026-10-26T17:21:01.718Z",
+      "shell": {
+        "activeTabId": "21caa6",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "21caa6",
+            "title": "Fixture /C",
+            "url": "http://127.0.0.1:50064/C",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/C",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/C",
+        "title": "Fixture /C",
+        "heading": "Page /C",
+        "state": null,
+        "length": 4,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    },
+    {
+      "label": "new address truncates forward",
+      "time": "2026-10-26T17:21:01.781Z",
+      "shell": {
+        "activeTabId": "21caa6",
+        "sessions": [
+          {
+            "canGoBack": true,
+            "canGoForward": false,
+            "tab_id": "21caa6",
+            "title": "Fixture /D",
+            "url": "http://127.0.0.1:50064/D",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50064/D",
+      "buttons": {
+        "backDisabled": false,
+        "forwardDisabled": true
+      },
+      "document": {
+        "url": "http://127.0.0.1:50064/D",
+        "title": "Fixture /D",
+        "heading": "Page /D",
+        "state": null,
+        "length": 4,
+        "marker": "base",
+        "loads": "Request 1"
+      }
+    }
+  ],
+  "startedAt": "2026-10-26T17:21:01.207Z",
+  "result": "Pass",
+  "completedAt": "2026-10-26T17:21:01.787Z"
+}

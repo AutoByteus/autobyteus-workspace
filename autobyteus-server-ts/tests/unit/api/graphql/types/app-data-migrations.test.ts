@@ -44,7 +44,7 @@ const retried = (migrationId: string, status: "SUCCEEDED" | "SUCCEEDED_WITH_WARN
 describe("AppDataMigrationResolver", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    runnerMock.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true });
+    runnerMock.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 
   it("publishes the runner-owned recovery action and derived retry capability through GraphQL", async () => {
@@ -113,7 +113,7 @@ describe("AppDataMigrationResolver", () => {
   });
 
   it("rebuilds admission and refreshes capabilities after a retry of any migration, so it takes effect without a restart (DS-003)", async () => {
-    applyCapabilityReadiness({ token_usage_history: false, custom_llm_providers: false });
+    applyCapabilityReadiness({ token_usage_history: false, custom_llm_providers: false, node_identity: true, memory_sync: true });
     runnerMock.runMigration.mockResolvedValue(retried("20260803_custom_provider_readable_identity", "SUCCEEDED_WITH_WARNINGS"));
 
     await expect(new AppDataMigrationResolver().runAppDataMigration("20260803_custom_provider_readable_identity"))
@@ -128,7 +128,7 @@ describe("AppDataMigrationResolver", () => {
   });
 
   it("leaves admission and capabilities untouched after a failed retry", async () => {
-    applyCapabilityReadiness({ token_usage_history: false, custom_llm_providers: true });
+    applyCapabilityReadiness({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
     runnerMock.runMigration.mockResolvedValue(retried("20260819_token_usage_run_records_v1", "FAILED"));
 
     await expect(new AppDataMigrationResolver().runAppDataMigration("20260819_token_usage_run_records_v1"))
@@ -137,6 +137,6 @@ describe("AppDataMigrationResolver", () => {
     expect(rebuildTeamRunCatalog).not.toHaveBeenCalled();
     expect(runnerMock.capabilityReadiness).not.toHaveBeenCalled();
     expect(getTokenUsageCapabilityState()).toEqual({ kind: "HISTORY_MIGRATION_PENDING" });
-    applyCapabilityReadiness({ token_usage_history: true, custom_llm_providers: true });
+    applyCapabilityReadiness({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 });

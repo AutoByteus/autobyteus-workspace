@@ -30,7 +30,7 @@ describe("application backend REST routes under /rest prefix", () => {
       state: "ready",
     });
 
-    const app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
+    const app = fastify({ routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH } });
     await app.register(async (restApp) => {
       await registerApplicationAvailabilityRoutes(restApp, {
         gateway: applicationBackendApiGatewayMock as never,
@@ -58,7 +58,7 @@ describe("application backend REST routes under /rest prefix", () => {
       briefs: [{ briefId: "brief::session-1" }],
     });
 
-    const app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
+    const app = fastify({ routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH } });
     await app.register(async (restApp) => {
       await registerApplicationBackendRoutes(restApp, {
         gateway: applicationBackendApiGatewayMock as never,

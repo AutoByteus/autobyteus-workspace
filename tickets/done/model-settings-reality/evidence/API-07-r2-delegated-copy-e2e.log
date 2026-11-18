@@ -1,0 +1,18 @@
+# API-07 rerun (round 2) — delegated-copy-model-change.e2e.test.ts (DCM-001..010), scripted AGY + scripted claude, code dfa0faa76
+# Command: env -i PATH=$PATH HOME=/root TMPDIR=/tmp RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts --no-watch   (cwd: worktree root)
+# Commit: dfa0faa76 · ENV-1 · 2026-11-10
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (11 tests) 26508ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  2048ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  886ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  1801ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model  12979ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  2167ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1181ms
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  732ms
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  791ms
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  693ms
+     ✓ DCM-010: team root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal says what to do and saves nothing  786ms
+     ✓ DCM-010: agent root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal says what to do and saves nothing  703ms
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Duration  41.63s (transform 10.47s, setup 95ms, import 14.25s, tests 26.51s, environment 0ms)

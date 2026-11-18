@@ -1,0 +1,21 @@
+# IMP-16 IR-002 (CRR-001: CR-001, CR-002) checks
+# Commands: pnpm -C autobyteus-web exec vitest run components/settings stores tests/stores --run; pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects tests/unit/agent-tools/project-tasks tests/architecture --no-watch; search for the removed names
+# Commit: working tree on 313bff2c8c (IR-002 changes, committed right after)
+# Date: 2026-11-01T06:51Z
+
+## web specs
+ Test Files  170 passed (170)
+      Tests  1466 passed (1466)
+## web typecheck
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 58.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+## server typecheck
+exit=0
+## server projects tests
+ Test Files  42 passed (42)
+      Tests  493 passed (493)
+## searches
+(end)

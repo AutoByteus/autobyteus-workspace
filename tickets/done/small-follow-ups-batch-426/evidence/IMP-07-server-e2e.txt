@@ -1,0 +1,26 @@
+# IMP-07 server E2E (item-14 files, D-08, RR-03, D-06 route, D-18 Memory Sync candidates)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts tests/e2e/memory-sync/memory-sync-api.e2e.test.ts --no-watch
+# Commit: b1d92c7ced
+# Environment: macOS, Node v22.23.1, clean env; 2026-11-07
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 388ms
+ ✓ tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts (4 tests) 2858ms
+     ✓ returns backend-owned runtime capability metadata for all six runtime kinds  947ms
+     ✓ enables grok_build with no reason when a supported Grok CLI answers the bounded probe (AC-001)  630ms
+     ✓ disables grok_build with a safe classified reason when the Grok command is missing (AC-001, QR-001)  592ms
+     ✓ disables grok_build as unsupported below the minimum Grok CLI version (AC-001)  630ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (13 tests) 108ms
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 63ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 40541ms
+     ✓ ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)  20060ms
+     ✓ ends open phone streams within 25 s of Phone Access being turned off (AC-012)  20050ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 19320ms
+     ✓ AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006)  2340ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  733ms
+     ✓ AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003)  3229ms
+     ✓ AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011)  333ms
+     ✓ AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003)  9210ms
+     ✓ AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005)  2411ms
+ ✓ tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts (1 test) 249ms
+ Test Files  7 passed (7)
+      Tests  48 passed (48)
+exit=0

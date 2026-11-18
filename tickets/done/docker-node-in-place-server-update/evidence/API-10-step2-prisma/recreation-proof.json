@@ -1,0 +1,26 @@
+{
+  "firstId": "9a39c356a667bd9bb3f57fcbf2dcb60953b44a3812ed79b9d737b72365b4d38d",
+  "recreatedId": "23ab796aa082233143f9c12daf9c79e230f109750c067a46a4df8a33ca2bec53",
+  "home": "/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/home",
+  "data": "/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/data",
+  "image": "sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9",
+  "read": {
+    "agentDefinition": {
+      "id": "api-prisma-a73a37eb-fc6",
+      "name": "api-prisma-a73a37eb-fc6",
+      "description": "Retained-data proof; no model execution",
+      "instructions": "Do not run"
+    }
+  },
+  "wrongBefore": {
+    "libquery-engine": "3de76598179b95c6910e28547ee3af9236d978cd3e0917b63a3b531f84bfb8d0",
+    "schema-engine": "95ebf7a1c1b2378d66c9e0974e929736344381f82e0a1fb1b9a7e7fef91cef22"
+  },
+  "wrongAfter": {
+    "libquery-engine": "3de76598179b95c6910e28547ee3af9236d978cd3e0917b63a3b531f84bfb8d0",
+    "schema-engine": "95ebf7a1c1b2378d66c9e0974e929736344381f82e0a1fb1b9a7e7fef91cef22"
+  },
+  "noPins": true,
+  "signedOut": true,
+  "distUnchanged": true
+}

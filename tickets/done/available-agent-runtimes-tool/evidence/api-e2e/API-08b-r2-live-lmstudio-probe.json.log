@@ -1,0 +1,92 @@
+# API-08b round 2 — LM Studio listed on a fresh server before anything loads its catalog (script API-08-live-lmstudio-probe.mjs.txt)
+# Node: built dist at source 7ece4e2069 (HEAD 5a87647318), own data root, 127.0.0.1:<free>, real HOME/USER/LOGNAME (codex-cli 0.164.0, Claude Code 2.1.310, agy 1.4.7, grok 1.0.70), read-only test vault; LM Studio on localhost:1234; macOS darwin 25.5; 2026-10-25
+
+{
+  "startedAt": "2026-10-25T09:26:18.755Z",
+  "worktreeHead": "5a87647318",
+  "steps": {
+    "startupMs": 2289,
+    "lmStudioDirect": [
+      "google/gemma-4-26b-a4b",
+      "qwen/qwen3.6-35b-a3b",
+      "text-embedding-nomic-embed-text-v1.5",
+      "deepseek-ocr"
+    ],
+    "beforeEnsure": {
+      "ms": 4311,
+      "providers": [
+        "Anthropic",
+        "DeepSeek",
+        "Gemini",
+        "GLM",
+        "Grok",
+        "Kimi",
+        "LM Studio",
+        "OpenAI"
+      ],
+      "lmStudio": {
+        "provider": "LM Studio",
+        "limits": "not reported",
+        "models": [
+          {
+            "id": "deepseek-ocr:lmstudio@127.0.0.1:1234",
+            "name": "deepseek-ocr",
+            "contextTokens": 8192
+          },
+          {
+            "id": "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+            "name": "google/gemma-4-26b-a4b",
+            "contextTokens": 262144
+          },
+          {
+            "id": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            "name": "qwen/qwen3.6-35b-a3b",
+            "contextTokens": 262144
+          },
+          {
+            "id": "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234",
+            "name": "text-embedding-nomic-embed-text-v1.5",
+            "contextTokens": 2048
+          }
+        ]
+      }
+    },
+    "lmStudioCredentialSetting": {
+      "provider": {
+        "id": "LMSTUDIO",
+        "name": "LM Studio"
+      },
+      "apiKeyConfigured": false
+    },
+    "ensure": "ok",
+    "afterEnsure": {
+      "ms": 4228,
+      "providers": [
+        "Anthropic",
+        "DeepSeek",
+        "Gemini",
+        "GLM",
+        "Grok",
+        "Kimi",
+        "LM Studio",
+        "OpenAI"
+      ],
+      "lmStudio": {
+        "provider": "LM Studio",
+        "limits": "not reported",
+        "models": [
+          "deepseek-ocr:lmstudio@127.0.0.1:1234",
+          "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+          "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "serverPid": 85551,
+    "serverExited": true,
+    "tempRoot": "removed"
+  },
+  "finishedAt": "2026-10-25T09:26:33.231Z"
+}

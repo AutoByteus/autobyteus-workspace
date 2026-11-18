@@ -1,0 +1,35 @@
+# Case: API-01
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<fresh> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts --no-watch
+# Commit: 4408d54504 (code = 9833f51bf9; the new test files are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, built server (pnpm build exit 0), owned temp data root, private HOME
+# Date: 2026-11-08
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (9 tests) 37090ms
+     ✓ RS-01: native -> Antigravity -> native on one run: each archived segment holds the previous agent's records only, the native candidate's own instruction opens the new file after the marker, the reopened chat shows everything  2681ms
+     ✓ RS-09 (autobyteus-440): Antigravity -> native -> Antigravity -> native -> Antigravity on one run: every hop completes, each archived segment holds only the previous agent's records, one marker per switch, and the earlier Antigravity capsule is replaced  4595ms
+     ✓ RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first message makes it  2174ms
+     ✓ RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and cannot switch  2111ms
+     ✓ RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet delivered still delivers it, once, after a restart  10129ms
+     ✓ RS-05: a failed switch attempt (the archive step fails after the native candidate wrote its instruction) leaves the previous agent's file as it was; the retry completes  2193ms
+     ✓ RS-06: Grok as the switch target: its captured instructions belong to the new file; a failed attempt leaves nothing behind and the retry completes  2076ms
+     ✓ RS-07: a Grok start that fails after the switch became durable (the Grok process ends before the run is published) leaves a completed switch; the retry restores the Grok session and still carries the notice  6325ms
+     ✓ RS-08: a model edit while a switch to the native runtime is pending is a fresh selection (the never-started candidate is not a current model), and the first message runs on it  1471ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  20:44:14
+   Duration  37.78s (transform 79ms, setup 47ms, import 129ms, tests 37.09s, environment 0ms)
+
+exit 0

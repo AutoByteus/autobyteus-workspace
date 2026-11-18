@@ -1,3 +1,4 @@
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import fs from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
@@ -9,6 +10,12 @@ import {
   parseFinalContextFileOwnerDescriptor,
 } from "../../context-files/domain/context-file-owner-types.js";
 import { ContextFileDraftCleanupService } from "../../context-files/services/context-file-draft-cleanup-service.js";
+import {
+  audioVideoContextFileMimeTypes, contextFileUploadCapBytes,
+} from "../../context-files/domain/context-file-upload-policy.js";
+import { ContextFileTooLargeError, UnsupportedContextFileTypeError } from "../../context-files/domain/context-file-upload-errors.js";
+import { discardUploadedFile } from "../../context-files/services/context-file-upload-writer.js";
+import { resolveContextFileSizeLimits } from "../../config/context-file-size-limit-settings.js";
 import { ContextFileUploadService } from "../../context-files/services/context-file-upload-service.js";
 import { ContextFileFinalizationService } from "../../context-files/services/context-file-finalization-service.js";
 import { ContextFileReadService } from "../../context-files/services/context-file-read-service.js";
@@ -24,13 +31,14 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../run-histo
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
-import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
+import { sendUserFile, type UserFileContent } from "./user-file-reply.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const buildServices = () => {
+const buildServices = (tree: Pick<DelegationIndex, "childrenOf">) => {
   const config = appConfigProvider.config;
   const memoryDir = config.getMemoryDir();
   const layout = new ContextFileLayout({
@@ -42,7 +50,7 @@ const buildServices = () => {
     locations: new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
-      agents: new StandaloneRootLocationService({ memoryDir }),
+      agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir), tree }),
     }),
   });
   const cleanupService = new ContextFileDraftCleanupService(layout);
@@ -76,22 +84,37 @@ const sendDraftRouteError = (error: unknown, reply: { code(status: number): { se
   throw error;
 };
 
-const sendFile = async (filePath: string, reply: { type: (mimeType: string) => void; send: (data: unknown) => unknown }) => {
-  const mimeType = lookupMime(filePath) || "application/octet-stream";
-  reply.type(String(mimeType));
-  return reply.send(fs.createReadStream(filePath));
-};
+const contextFileContent = (filePath: string): UserFileContent => ({
+  mimeType: String(lookupMime(filePath) || "application/octet-stream"),
+  body: fs.createReadStream(filePath),
+});
 
-export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {
-  const { uploadService, finalizationService, readService } = buildServices();
+export async function registerContextFileRoutes(app: FastifyInstance, tree: Pick<DelegationIndex, "childrenOf">): Promise<void> {
+  const { uploadService, finalizationService, readService } = buildServices(tree);
+
+  /** The node's current per-type size limits, so a client can refuse an over-limit file before sending it. */
+  app.get("/context-files/size-limits", async (_request, reply) => {
+    const limits = resolveContextFileSizeLimits();
+    return reply.send({
+      otherFileMaxBytes: limits.otherFileMaxBytes,
+      audioVideoMaxBytes: limits.audioVideoMaxBytes,
+      audioVideoMimeTypes: audioVideoContextFileMimeTypes,
+    });
+  });
 
   app.post("/context-files/upload", async (request, reply) => {
+    const limits = resolveContextFileSizeLimits();
+    let file: Awaited<ReturnType<typeof request.file>>;
     try {
-      const file = await request.file();
-      if (!file) {
-        return reply.code(400).send({ detail: "No file uploaded." });
-      }
-
+      file = await request.file({ limits: { fileSize: contextFileUploadCapBytes(limits) } });
+    } catch (error) {
+      logger.error(`Failed to read context file upload: ${String(error)}`);
+      return reply.code(400).send({ detail: error instanceof Error ? error.message : "Upload failed." });
+    }
+    if (!file) {
+      return reply.code(400).send({ detail: "No file uploaded." });
+    }
+    try {
       const ownerField = file.fields.owner;
       const ownerPart = Array.isArray(ownerField) ? ownerField[0] : ownerField;
       const ownerValue = ownerPart && "value" in ownerPart ? ownerPart.value : null;
@@ -99,10 +122,17 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
         throw new Error("owner is required.");
       }
       const owner = parseDraftContextFileOwnerDescriptor(JSON.parse(ownerValue));
-      const uploadedAttachment = await uploadService.uploadDraftAttachment(owner, file);
+      const uploadedAttachment = await uploadService.uploadDraftAttachment(owner, file, limits);
       return reply.send(uploadedAttachment);
     } catch (error) {
       logger.error(`Failed to upload context file: ${String(error)}`);
+      await discardUploadedFile(file);
+      if (error instanceof ContextFileTooLargeError) {
+        return reply.code(413).send({ code: "CONTEXT_FILE_TOO_LARGE", detail: error.message, maxBytes: error.maxBytes });
+      }
+      if (error instanceof UnsupportedContextFileTypeError) {
+        return reply.code(415).send({ code: "CONTEXT_FILE_TYPE_UNSUPPORTED", detail: error.message });
+      }
       return reply.code(400).send({ detail: error instanceof Error ? error.message : "Upload failed." });
     }
   });
@@ -146,7 +176,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       const { owner, storedFilename } = parseDraftRequest(request.url);
       const filePath = await readService.getDraftFilePath(owner, storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       return sendDraftRouteError(error, reply);
     }
@@ -173,7 +203,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       if (!filePath) {
         return reply.code(404).send({ detail: "File not found." });
       }
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
       if (error instanceof StandaloneContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
@@ -200,7 +230,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
     try {
       const filePath = await readService.getFinalFilePath(owner, request.params.storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
       if (error instanceof TeamContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
@@ -215,7 +245,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       const owner = parseFinalContextFileOwnerDescriptor({ kind: "org_member_final", orgRunId, agentRunId });
       const filePath = await readService.getFinalFilePath(owner, storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       if (error instanceof OrgContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
       if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
@@ -234,7 +264,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
           storedFilename,
         );
         if (!filePath) return reply.code(404).send({ detail: "File not found." });
-        return sendFile(filePath, reply);
+        return sendUserFile(reply, contextFileContent(filePath));
       } catch (error) {
         if (error instanceof AgentCollaborationContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
         if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });

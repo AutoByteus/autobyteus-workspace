@@ -39,7 +39,7 @@ export class WriteFileOperation extends BaseFileOperation {
     }
 
     const synchronizer = fileExisted
-      ? new ModifyNodeSynchronizer(this.fileExplorer, this.filePath)
+      ? new ModifyNodeSynchronizer(this.fileExplorer, normalizedPath)
       : new AddNodeSynchronizer(this.fileExplorer, this.filePath, true);
 
     return synchronizer.sync();

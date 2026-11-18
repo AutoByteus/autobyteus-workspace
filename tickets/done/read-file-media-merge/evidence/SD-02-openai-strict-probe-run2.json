@@ -1,0 +1,190 @@
+[
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "file": "png",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/red.png",
+   "base_dir": "/",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "file": "png",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/red.png",
+   "base_dir": "/tmp",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "file": "txt",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "base_dir": "/",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "file": "txt",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "base_dir": "/tmp/strict328/files",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "file": "png",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/red.png"
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "file": "png",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/red.png"
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "file": "txt",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "file": "txt",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "file": "png",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/red.png",
+   "base_dir": "/tmp/strict328/files",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "file": "png",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/red.png",
+   "base_dir": "/tmp/strict328/files",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": true
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "file": "txt",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "base_dir": "",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": false
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "file": "txt",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "base_dir": "/tmp/strict328/files",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": false
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "file": "png",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/red.png"
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "file": "png",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/red.png"
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "file": "txt",
+  "trial": 0,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": false
+  }
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "file": "txt",
+  "trial": 1,
+  "args": {
+   "path": "/tmp/strict328/files/notes.txt",
+   "start_line": 1,
+   "end_line": 1,
+   "include_line_numbers": false
+  }
+ }
+]

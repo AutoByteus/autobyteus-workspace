@@ -1,0 +1,64 @@
+# API-09 regression round 2: the same 56 scripted-AGY E2E files, alone (no other heavy run)
+# Commit: 289209272f
+# Command: env -i PATH HOME=<disposable> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run <the 56 files> --no-watch
+# Environment: ENV-1
+# Date: 2026-10-27
+# Look for: "Test Files  3 failed | 44 passed | 9 skipped (56)"; the failures are exactly FU-007 (delegated-launch-config-defaults, 2), FU-008 (agy-native-image E-002/E-004), FU-009 (SUN-E2E-003), each failing on base d74f75a51a in round 1
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 9784ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 195376ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 28185ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1966ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 2 failed) 9635ms
+     × in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values 1660ms
+     × Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009) 4404ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 21576ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 98393ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 9609ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 12787ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 34001ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 14717ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 14023ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 35620ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162394ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3414ms
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (8 tests) 7024ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 76477ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 11182ms
+ ❯ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests | 1 failed) 71605ms
+     × SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched 684ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 13032ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4743ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4829ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2358ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 2491ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 2439ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 3074ms
+ ❯ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests | 1 failed) 1587ms
+     × E-002/E-004 Team member: images previewable during the turn and after the team run is terminated 351ms
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 9125ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 4128ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3640ms
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 973ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 5689ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 873ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 439ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2653ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 6602ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 10885ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 24587ms
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 2640ms
+ ✓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests) 1754ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 9990ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 9572ms
+ ✓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test) 1516ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 878ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 1282ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1501ms
+ ✓ tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts (3 tests) 3003ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:521:22
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:639:22
+ ❯ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts:287:5
+ ❯ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts:383:22
+ Test Files  3 failed | 44 passed | 9 skipped (56)
+      Tests  4 failed | 204 passed | 32 skipped (240)
+exit 1

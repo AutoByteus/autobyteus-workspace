@@ -1,0 +1,19 @@
+
+> autobyteus@1.5.9-beta.4 codegen /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> graphql-codegen --require dotenv/config --config codegen.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to ./generated/graphql.ts
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[FAILED] GraphQL Document Validation failed with 1 errors;
+[FAILED]   Error 0: Fields "reason" conflict because they return conflicting types "String!" and "BackgroundTaskUnavailableReason!". Use different aliases on the fields to fetch both if this was intentional.
+[FAILED]     at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/graphql/queries/agentBackgroundTaskQueries.ts:10:58
+[FAILED]     at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/graphql/queries/agentBackgroundTaskQueries.ts:11:58
+[SUCCESS] Generate outputs
+ ELIFECYCLE  Command failed with exit code 1.

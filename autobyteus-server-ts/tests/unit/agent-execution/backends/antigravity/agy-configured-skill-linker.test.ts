@@ -12,6 +12,7 @@ import type { InstalledSkillRecord } from "../../../../../src/skills/domain/inst
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { ConfiguredAgentSkillResolver } from "../../../../../src/skills/services/configured-agent-skill-resolver.js";
 import { SkillLoader } from "../../../../../src/skills/loader.js";
+import { stubAgentToolMcpDescriptor } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const tempRoots: string[] = [];
 afterEach(async () => {
@@ -38,10 +39,13 @@ const writeSkill = async (dir: string, name: string, body = `# ${name}`): Promis
 const resolved = (name: string, rootPath: string): ConfiguredAgentSkillBinding =>
   ({ kind: "resolved", skill: new Skill({ name, description: name, content: "", rootPath }) });
 const memoryDir = (root: Root, runId: string): string => path.join(root.base, `memory-${runId}`);
-const create = (root: Root, bindings: ConfiguredAgentSkillBinding[], policy: WorkspaceCollisionPolicy, runId = "run") =>
-  createAgyRunCapsule({ agentDefinitionId: "test-agent", runId, memoryDir: memoryDir(root, runId),
+const create = (root: Root, bindings: ConfiguredAgentSkillBinding[], policy: WorkspaceCollisionPolicy, runId = "run") => {
+  // The capsule checks the user-level AGY MCP config for a name collision: keep it in the fixture.
+  vi.spyOn(os, "homedir").mockReturnValue(root.base);
+  return createAgyRunCapsule({ agentDefinitionId: "test-agent", runId, memoryDir: memoryDir(root, runId),
     workspacePath: root.workspace, identity: "Identity", configuredSkillBindings: bindings,
-    workspaceCollisionPolicy: policy, mcpDescriptor: null });
+    workspaceCollisionPolicy: policy, mcpDescriptor: stubAgentToolMcpDescriptor(runId) });
+};
 const capsuleSkill = (capsulePath: string, name: string): string => path.join(capsulePath, ".agents", "skills", name);
 
 describe("AGY configured skill linker", () => {

@@ -47,6 +47,7 @@ export const strategy = (runtimeKind: AgentRuntimeKind, input: FakeStrategyInput
   readVersion: vi.fn(async () => "1.0.0"),
   readLatestVersion: vi.fn(async () => "1.0.0"),
   readSignIn: vi.fn(async () => ({ state: "signedIn" }) as SignInReading),
+  readUsageLimits: vi.fn(async () => ({ state: "not_reported" }) as const),
   updateArgv: (executable) => [executable, "update"],
   ...(runtimeKind === CODEX || runtimeKind === GROK ? { signInArgv: (executable: string) => [executable, "login"] } : {}),
   ...input,

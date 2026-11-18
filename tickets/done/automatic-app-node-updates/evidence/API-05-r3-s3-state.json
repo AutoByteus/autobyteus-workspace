@@ -1,0 +1,12 @@
+{
+  "aria": "true",
+  "download": false,
+  "status": "error",
+  "availableVersion": "1.5.11-beta.11",
+  "automaticUpdate": true,
+  "currentVersion": "1.5.11-beta.10",
+  "message": "AutoByteus could not prepare this update for installing. It keeps running on this version.",
+  "errorOperation": "install",
+  "outcome": "AUTO_FAILED",
+  "outcomeReason": "The system updater could not prepare this update."
+}

@@ -1,0 +1,19 @@
+# IMP-03 server unit suite
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: working tree of da207045a5 before commit (src identical to da207045a5; new files then untracked, hence the tracked-imports failure; rerun as IMP-04 on the commit)
+# Environment: macOS (Darwin 25.5.0), node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07
+
+## Summary (last lines of the run)
+
+ Test Files  1 failed | 948 passed | 5 skipped (954)
+      Tests  1 failed | 8149 passed | 9 skipped (8159)
+   Start at  21:33:06
+   Duration  681.27s (transform 16.29s, setup 9.81s, import 288.26s, tests 299.67s, environment 791ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+## Failures
+ ❯ tests/architecture/tracked-imports.test.ts (2 tests | 1 failed) 2139ms
+     × finds no tracked code importing an untracked file in this repository 1914ms
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository

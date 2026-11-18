@@ -1,0 +1,402 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+  "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+  "date": "2026-10-26T17:24:00.070Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "autobyteus-web/package.json",
+  "caseId": "API-07",
+  "instanceId": "iso-50653-7b85",
+  "fixtureOrigin": "http://127.0.0.1:50652",
+  "observations": [
+    {
+      "label": "keyboard Back, disabled skipped",
+      "time": "2026-10-26T17:24:04.199Z",
+      "shell": {
+        "activeTabId": "af8a20",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "af8a20",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:50652/A",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50652/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50652/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    },
+    {
+      "label": "normal panel",
+      "formWidth": 434,
+      "scrollWidth": 434,
+      "clientWidth": 434,
+      "inputWidth": 166,
+      "controls": [
+        {
+          "title": "Open new tab",
+          "disabled": false,
+          "x": 758,
+          "width": 38,
+          "right": 796
+        },
+        {
+          "title": "Back",
+          "disabled": true,
+          "x": 804,
+          "width": 34,
+          "right": 838
+        },
+        {
+          "title": "Forward",
+          "disabled": false,
+          "x": 846,
+          "width": 34,
+          "right": 880
+        },
+        {
+          "title": "",
+          "disabled": false,
+          "x": 888,
+          "width": 166,
+          "right": 1054
+        },
+        {
+          "title": "Refresh active tab",
+          "disabled": false,
+          "x": 1062,
+          "width": 38,
+          "right": 1100
+        },
+        {
+          "title": "Switch active tab to mobile view",
+          "disabled": false,
+          "x": 1108,
+          "width": 38,
+          "right": 1146
+        },
+        {
+          "title": "Close active tab",
+          "disabled": false,
+          "x": 1154,
+          "width": 38,
+          "right": 1192
+        }
+      ],
+      "right": 1192
+    },
+    {
+      "label": "normal docked panel",
+      "formWidth": 434,
+      "scrollWidth": 434,
+      "clientWidth": 434,
+      "inputWidth": 166,
+      "controls": [
+        {
+          "title": "Open new tab",
+          "disabled": false,
+          "x": 758,
+          "width": 38,
+          "right": 796
+        },
+        {
+          "title": "Back",
+          "disabled": true,
+          "x": 804,
+          "width": 34,
+          "right": 838
+        },
+        {
+          "title": "Forward",
+          "disabled": false,
+          "x": 846,
+          "width": 34,
+          "right": 880
+        },
+        {
+          "title": "",
+          "disabled": false,
+          "x": 888,
+          "width": 166,
+          "right": 1054
+        },
+        {
+          "title": "Refresh active tab",
+          "disabled": false,
+          "x": 1062,
+          "width": 38,
+          "right": 1100
+        },
+        {
+          "title": "Switch active tab to mobile view",
+          "disabled": false,
+          "x": 1108,
+          "width": 38,
+          "right": 1146
+        },
+        {
+          "title": "Close active tab",
+          "disabled": false,
+          "x": 1154,
+          "width": 38,
+          "right": 1192
+        }
+      ],
+      "right": 1192
+    },
+    {
+      "label": "minimum 400px panel",
+      "formWidth": 384,
+      "scrollWidth": 384,
+      "clientWidth": 384,
+      "inputWidth": 116,
+      "controls": [
+        {
+          "title": "Open new tab",
+          "disabled": false,
+          "x": 808,
+          "width": 38,
+          "right": 846
+        },
+        {
+          "title": "Back",
+          "disabled": true,
+          "x": 854,
+          "width": 34,
+          "right": 888
+        },
+        {
+          "title": "Forward",
+          "disabled": false,
+          "x": 896,
+          "width": 34,
+          "right": 930
+        },
+        {
+          "title": "",
+          "disabled": false,
+          "x": 938,
+          "width": 116,
+          "right": 1054
+        },
+        {
+          "title": "Refresh active tab",
+          "disabled": false,
+          "x": 1062,
+          "width": 38,
+          "right": 1100
+        },
+        {
+          "title": "Switch active tab to mobile view",
+          "disabled": false,
+          "x": 1108,
+          "width": 38,
+          "right": 1146
+        },
+        {
+          "title": "Close active tab",
+          "disabled": false,
+          "x": 1154,
+          "width": 38,
+          "right": 1192
+        }
+      ],
+      "right": 1192
+    },
+    {
+      "label": "full-view",
+      "formWidth": 1184,
+      "scrollWidth": 1184,
+      "clientWidth": 1184,
+      "inputWidth": 916,
+      "controls": [
+        {
+          "title": "Open new tab",
+          "disabled": false,
+          "x": 8,
+          "width": 38,
+          "right": 46
+        },
+        {
+          "title": "Back",
+          "disabled": true,
+          "x": 54,
+          "width": 34,
+          "right": 88
+        },
+        {
+          "title": "Forward",
+          "disabled": false,
+          "x": 96,
+          "width": 34,
+          "right": 130
+        },
+        {
+          "title": "",
+          "disabled": false,
+          "x": 138,
+          "width": 916,
+          "right": 1054
+        },
+        {
+          "title": "Refresh active tab",
+          "disabled": false,
+          "x": 1062,
+          "width": 38,
+          "right": 1100
+        },
+        {
+          "title": "Switch active tab to mobile view",
+          "disabled": false,
+          "x": 1108,
+          "width": 38,
+          "right": 1146
+        },
+        {
+          "title": "Close active tab",
+          "disabled": false,
+          "x": 1154,
+          "width": 38,
+          "right": 1192
+        }
+      ],
+      "right": 1192
+    },
+    {
+      "label": "mobile emulation same native content",
+      "time": "2026-10-26T17:24:07.707Z",
+      "shell": {
+        "activeTabId": "af8a20",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "af8a20",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:50652/A",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50652/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50652/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 3"
+      }
+    },
+    {
+      "mobile": {
+        "width": 390,
+        "dpr": 3,
+        "url": "http://127.0.0.1:50652/A"
+      }
+    },
+    {
+      "label": "restored panel",
+      "formWidth": 384,
+      "scrollWidth": 384,
+      "clientWidth": 384,
+      "inputWidth": 116,
+      "controls": [
+        {
+          "title": "Open new tab",
+          "disabled": false,
+          "x": 808,
+          "width": 38,
+          "right": 846
+        },
+        {
+          "title": "Back",
+          "disabled": true,
+          "x": 854,
+          "width": 34,
+          "right": 888
+        },
+        {
+          "title": "Forward",
+          "disabled": false,
+          "x": 896,
+          "width": 34,
+          "right": 930
+        },
+        {
+          "title": "",
+          "disabled": false,
+          "x": 938,
+          "width": 116,
+          "right": 1054
+        },
+        {
+          "title": "Refresh active tab",
+          "disabled": false,
+          "x": 1062,
+          "width": 38,
+          "right": 1100
+        },
+        {
+          "title": "Switch active tab to mobile view",
+          "disabled": false,
+          "x": 1108,
+          "width": 38,
+          "right": 1146
+        },
+        {
+          "title": "Close active tab",
+          "disabled": false,
+          "x": 1154,
+          "width": 38,
+          "right": 1192
+        }
+      ],
+      "right": 1192
+    },
+    {
+      "label": "empty buttons disabled",
+      "time": "2026-10-26T17:24:08.263Z",
+      "shell": {
+        "activeTabId": null,
+        "sessions": []
+      },
+      "address": "",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": true
+      }
+    }
+  ],
+  "startedAt": "2026-10-26T17:24:03.950Z",
+  "result": "Pass",
+  "completedAt": "2026-10-26T17:24:08.267Z"
+}

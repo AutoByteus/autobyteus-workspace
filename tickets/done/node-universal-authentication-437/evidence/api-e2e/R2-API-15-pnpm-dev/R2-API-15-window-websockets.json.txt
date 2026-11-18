@@ -1,0 +1,53 @@
+# R2 API-15 headless Chrome on the pnpm dev window (devcheck.mjs, as round 1)
+{
+ "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nIntegrations\nWorkspaces\n\nNo runs in any folder yet\n\nA folder is listed here once it has a run. Start one with Chat and choose its folder.\n\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate ",
+ "gqlStatuses": [
+  200
+ ],
+ "gqlCount": 67,
+ "events": [
+  {
+   "ev": "closed",
+   "at": 16
+  },
+  {
+   "ev": "closed",
+   "at": 16
+  },
+  {
+   "ev": "closed",
+   "at": 16
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/_nuxt/?token=P4nq3RaVOJfr",
+   "at": 42
+  },
+  {
+   "ev": "handshake",
+   "status": 101,
+   "at": 58
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/agent-package-definitions",
+   "at": 302
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/update-notifications",
+   "at": 302
+  },
+  {
+   "ev": "handshake",
+   "status": 101,
+   "at": 305
+  },
+  {
+   "ev": "handshake",
+   "status": 101,
+   "at": 333
+  }
+ ],
+ "errors": []
+}

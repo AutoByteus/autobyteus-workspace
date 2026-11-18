@@ -1,0 +1,8 @@
+# IMP-08 mutation drop-options (the member handle drops the post options; tests from 7d9a305627)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch --testTimeout=8000
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × N-12: a restored member starts on the notice and reserves nothing before it; the options pass through 7ms
+      Tests  1 failed | 38 passed (39)

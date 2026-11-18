@@ -1,0 +1,35 @@
+# API-05 — commit 590cddaff1 + temporary probe tests/e2e/runtime/zz-api05-list-projects-live.e2e.test.ts, 2026-11-05T06:24:37Z
+# env -i PATH HOME=<fresh temp> TMPDIR API05_OUT=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-api05-list-projects-live.e2e.test.ts --no-watch; LM Studio localhost:1234, qwen3.6-35b-a3b; before: No models are currently loaded.
+# Look for: '✓ … the agent sees each Project's folders …', exit=0; report: the list_projects tool_result with workspaces, and 'answer' naming the Shop projectId
+ ✓ tests/e2e/runtime/zz-api05-list-projects-live.e2e.test.ts (1 test) 40380ms
+     ✓ the agent sees each Project's folders and names the Project a folder belongs to  40128ms
+      Tests  1 passed (1)
+   Duration  48.98s (transform 5.97s, setup 37ms, import 8.12s, tests 40.38s, environment 0ms)
+exit=0 seconds=51
+# loaded after the run: qwen/qwen3.6-35b-a3b    qwen/qwen3.6-35b-a3b    IDLE      20.43 GB    262144     4           LM Studio      Local     60m / 1h
+
+===== report.json (data dir shown as <data>)
+{
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+  "question": "I want to start work in the folder <data>/work/shop/web/src/cart. Which existing Project does this folder belong to? Use list_projects to check, then reply with only that Project's projectId, or NONE if no Project has it.",
+  "expected": {
+    "shopId": "project_592d0782-8613-4e8e-ba15-43aea78e94a3",
+    "docsId": "project_6b7d9675-93b3-4bd2-a87e-2c349f2733f2",
+    "emptyId": "project_fe897aab-dae7-4dc1-aff7-2875d0c58c84"
+  },
+  "calls": [
+    {
+      "tool": "list_projects",
+      "args": {}
+    }
+  ],
+  "results": [
+    {
+      "tool": "list_projects",
+      "result": "{\"projects\":[{\"projectId\":\"project_fe897aab-dae7-4dc1-aff7-2875d0c58c84\",\"name\":\"Billing\",\"description\":\"Invoices\"},{\"projectId\":\"project_6b7d9675-93b3-4bd2-a87e-2c349f2733f2\",\"name\":\"Docs site\",\"workspaces\":[{\"workspaceRootPath\":\"<data>/work/docs\"}]},{\"projectId\":\"project_592d0782-8613-4e8e-ba15-43aea78e94a3\",\"name\":\"Shop\",\"description\":\"Online shop\",\"workspaces\":[{\"workspaceRootPath\":\"<data>/work/shop/web\",\"description\":\"Storefront UI\"},{\"workspaceRootPath\":\"<data>/work/shop/api\"}]}]}"
+    }
+  ],
+  "answer": "\n\nproject_592d0782-8613-4e8e-ba15-43aea78e94a3",
+  "errors": [],
+  "turnEnded": true
+}unloaded after the run (lms unload --all): No models are currently loaded.

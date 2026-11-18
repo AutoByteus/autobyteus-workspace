@@ -1,0 +1,12 @@
+# Round 4 cleanup 2026-11-02T13:23:48Z
+instance stopped
+proxy and release source stopped
+node container and volumes removed
+image removed
+test containers/volumes above (expect none)
+run processes above (expect none)
+checkout removed
+run root removed (incl. throwaway key)
+autobyteus-server-2 Up 32 hours
+autobyteus-server-1 Up 32 hours
+autobyteus-server-0 Up 32 hours

@@ -1,11 +1,12 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import type { ApplicationAgentBindingRecord } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { describe, expect, it, vi } from "vitest";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 const applicationId = "app-1";
 const bindingId = "binding-1";
@@ -53,10 +54,7 @@ const buildRootTeamRuntime = () => {
     createdAt: "2026-04-19T09:10:00.000Z",
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
-  const root = new RootTeamRun({
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
-      allocateForAgentDefinition: async () => "application-task-agent-run",
-    }),
+  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
     rootRun: {
       teamRunId,
       isActive: vi.fn(() => true),
@@ -75,12 +73,12 @@ const buildRootTeamRuntime = () => {
     persistence: {
       commitTaskMutation: vi.fn(),
       commitTaskSettlement: vi.fn(),
-      commitReservedMessageAppend: vi.fn(),
+      commitMessageAppend: vi.fn(),
       commitExecutionTreeMutation: vi.fn(),
       readConsistent: vi.fn(),
       enterRootFailStop: vi.fn(),
     } as never,
-    publisher: new TeamRunEventPublisher(),
+    publisher: new TeamRunEventPublisher({ isMessageEvent: isTeamRunMessageEvent }),
   });
   return { root, executeDirectAgentCommand };
 };

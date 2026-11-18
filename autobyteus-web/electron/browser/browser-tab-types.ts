@@ -4,6 +4,9 @@ import type { BrowserDomSnapshotElement } from './browser-dom-snapshot-script'
 import type { BrowserScreenshotArtifactWriter } from './browser-screenshot-artifact-writer'
 import type { BrowserViewFactory } from './browser-view-factory'
 
+export type BrowserHistoryDirection = 'back' | 'forward'
+export type BrowserHistoryState = { canGoBack: boolean; canGoForward: boolean }
+
 export type BrowserReadyState = 'domcontentloaded' | 'load'
 export type BrowserDeviceEmulationMode = 'desktop' | 'mobile'
 
@@ -152,8 +155,8 @@ export type CloseBrowserResult = {
 }
 
 export type BrowserTabErrorCode =
-  | 'browser_session_closed'
-  | 'browser_session_not_found'
+  | 'browser_tab_closed'
+  | 'browser_tab_not_found'
   | 'browser_navigation_failed'
   | 'browser_popup_session_mismatch'
   | 'browser_page_read_failed'

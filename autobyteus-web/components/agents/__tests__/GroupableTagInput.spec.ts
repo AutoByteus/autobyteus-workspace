@@ -4,7 +4,7 @@ import GroupableTagInput from '../GroupableTagInput.vue';
 
 describe('GroupableTagInput', () => {
   const mockSource = {
-    type: 'flat',
+    type: 'flat' as const,
     tags: ['Tag1', 'Tag2']
   };
 

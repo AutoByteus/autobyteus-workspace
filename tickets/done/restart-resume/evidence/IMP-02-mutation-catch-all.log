@@ -1,0 +1,8 @@
+# IMP-02 mutation catch-all (N-8: every resolver failure reads as not here; tests from b50e2354ab)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/collaboration-root-resolver.test.ts --no-watch --testTimeout=8000
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × throws any other failure as a restore failure (N-8) 3ms
+      Tests  1 failed | 3 passed (4)

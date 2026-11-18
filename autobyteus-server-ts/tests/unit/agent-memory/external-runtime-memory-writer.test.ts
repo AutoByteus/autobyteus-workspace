@@ -98,15 +98,13 @@ describe("ExternalRuntimeMemoryWriter", () => {
     const service = new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }));
     const view = service.getRunMemoryView(path.basename(memoryDir), {
       includeRawTraces: true,
-      includeEpisodic: false,
-      includeSemantic: false,
     });
 
     expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content, trace.sourceEvent])).toEqual([
       ["user", "hello", "test-user"],
       ["assistant", "hi", "test-assistant"],
     ]);
-    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, "working_context_snapshot.json"))).rejects.toThrow();
     const persistedRawTraceKeys = new RunMemoryFileStore(memoryDir)
       .listRawTraceDicts()
       .flatMap((trace) => Object.keys(trace));

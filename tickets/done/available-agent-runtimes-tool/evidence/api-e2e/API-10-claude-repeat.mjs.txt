@@ -1,0 +1,21 @@
+// autobyteus-303 API-10: repeated Claude get_usage reads on an idle-input query (as the product reads it).
+// Prints per read: session cost and token usage of the reading session, and the account's limit percents. No identity.
+const sdkPath = process.argv[2];
+const { query } = await import(sdkPath);
+const reads = [];
+for (let i = 0; i < 6; i += 1) {
+  let release; const idle = new Promise((r) => { release = r; });
+  async function* input() { await idle; }
+  const t0 = Date.now();
+  const q = query({ prompt: input(), options: { pathToClaudeCodeExecutable: "/Users/normy/.local/bin/claude", cwd: "/tmp/routing-probes", permissionMode: "plan" } });
+  try {
+    const u = await q.usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET({ skipBehaviors: true });
+    reads.push({ at: new Date().toISOString(), ms: Date.now() - t0, session_total_cost_usd: u.session?.total_cost_usd, session_model_usage: u.session?.model_usage,
+      session_api_ms: u.session?.total_api_duration_ms, limits: (u.rate_limits?.limits ?? []).map((l) => `${l.kind}${l.scope?.model?.display_name ? `:${l.scope.model.display_name}` : ""}=${l.percent}%`),
+      five_hour_utilization: u.rate_limits?.five_hour?.utilization, seven_day_utilization: u.rate_limits?.seven_day?.utilization });
+  } catch (e) { reads.push({ error: String(e?.message ?? e) }); }
+  release(); q.close?.();
+  await new Promise((r) => setTimeout(r, 4000));
+}
+console.log(JSON.stringify(reads, null, 1));
+process.exit(0);

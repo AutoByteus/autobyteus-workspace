@@ -1,6 +1,12 @@
-import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { SendMessageToDispatcher } from "../../../../../src/agent-communication/services/send-message-to-dispatcher.js";
+import { GlobalAgentRunMessageRouter } from "../../../../../src/agent-communication/services/global-agent-run-message-router.js";
+import { setProcessTaskDelegationToolService, TaskDelegationToolService } from "../../../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
+import { NativeCommandProcessScope } from "autobyteus-ts";
+import { createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NATIVE_LONG_RUNNING_COMMAND_SECTION } from "../../../../../src/agent-execution/prompt/long-running-command-sections.js";
+import { onTestFinished } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -22,6 +28,9 @@ import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberExecutionContext } from "../../../../fixtures/current-team-run-fixtures.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
+import fs from "node:fs";
+import os from "node:os";
+import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -74,10 +83,10 @@ const createMemberExecutionContext = (
   taskAgentContext: TaskAgentContextFacts | null = null,
   sendMessageToEnabled = true,
 ) => {
-  const taskCommands = Object.freeze({
+  const taskCapability = Object.freeze({
     root: createTeamRootExecutionIdentity("team-1"),
-    delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" }, taskId: "task_0008" })),
-    assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+    delegationSource: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+    ownedTaskOf: () => null,
     submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
     reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
   });
@@ -87,7 +96,7 @@ const createMemberExecutionContext = (
     agentRunId: taskAgentContext?.taskAgentRunId ?? "run-professor",
     teamInstruction: "Coordinate as a team.",
     deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
-    taskCommands,
+    taskCapability,
   });
   return context;
 };
@@ -119,7 +128,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         new LLMConfig(),
       ),
     );
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -196,7 +205,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       content: [{ type: "text" as const, text: "application-state" }],
     }));
     const resolveSelectedRoutes = vi.fn(() => new Map([[applicationToolName, route]]));
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
           id: "agent-1",
@@ -279,7 +288,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     ] as any);
     vi.spyOn(LLMFactory, "requiresGeminiRuntimeResolver").mockResolvedValue(false);
     const createLLM = vi.spyOn(LLMFactory, "createLLM").mockResolvedValue(llm);
-    const factory = new AutoByteusAgentRunBackendFactory();
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope() });
 
     await expect(
       (factory as any).createLLM("dummy-model", { temperature: 0.2 }),
@@ -295,7 +304,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("composes server team prompts, and injects primitive team context", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -338,6 +347,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(TeamBackendKind.MIXED),
+        project: { projectId: "project_a1", name: "AutoByteus" },
       }),
       "run-professor", () => undefined
     );
@@ -353,11 +363,16 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "delegate_task",
     ]);
     expect(built.agentConfig.systemPrompt).toContain("## Agent Identity");
+    // autobyteus-483 AC-011: the native Long-Running Commands section ends the prompt.
+    expect(built.agentConfig.systemPrompt.endsWith(`\n\n${NATIVE_LONG_RUNNING_COMMAND_SECTION}`)).toBe(true);
     expect(built.agentConfig.systemPrompt).toContain("## Team Instruction");
     expect(built.agentConfig.systemPrompt).toContain("## AgentTeam Addressing");
     expect(built.agentConfig.systemPrompt).toContain("## Working With Other Agents");
     expect(built.agentConfig.systemPrompt).not.toContain("## Team Runtime");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
+    // REQ-006: a Team member of a Team run started under a Project is told the Project, before the working environment.
+    expect(built.agentConfig.systemPrompt).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
+    expect(built.agentConfig.systemPrompt.indexOf("## Project")).toBeLessThan(built.agentConfig.systemPrompt.indexOf("## Working Environment"));
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual({
       root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/professor",
@@ -368,8 +383,36 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty(removedNativeCommunicationField);
   });
 
+  it("tells an agent with semantic memory its folder between the Project and Working Environment sections (REQ-005)", async () => {
+    const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-semantic-memory-"));
+    try {
+      const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+        agentDefinitionService: { getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: "computer-use-operator", name: "Operator", description: "Operates.", instructions: "Operate.", toolNames: [],
+          semanticMemoryEnabled: true,
+        })) } as any,
+        createLLM: vi.fn(async () => new DummyLLM(new LLMModel({ name: "dummy-model", value: "dummy-model",
+          canonicalName: "dummy-model", provider: LLMProvider.OPENAI }), new LLMConfig())),
+        workspaceManager: { getWorkspaceById: () => null, getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1", getName: () => "Workspace", getBasePath: () => path.join("/tmp", "workspace-1") }) } as any,
+        skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
+        semanticMemory: new AgentSemanticMemory({ memoryDir }),
+      });
+      const built = await (factory as any).buildAgentConfig(new AgentRunConfig({
+        agentDefinitionId: "computer-use-operator", llmModelIdentifier: "dummy-model", autoExecuteTools: false,
+        runtimeKind: RuntimeKind.AUTOBYTEUS, project: { projectId: "project_a1", name: "AutoByteus" },
+      }), "run-operator", () => undefined);
+      const folder = path.join(memoryDir, "semantic", "computer-use-operator");
+      expect(built.agentConfig.systemPrompt).toContain(
+        `another Project.\n\n## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Working Environment`);
+      expect(fs.statSync(folder).isDirectory()).toBe(true);
+    } finally {
+      fs.rmSync(memoryDir, { recursive: true, force: true });
+    }
+  });
+
   it("advertises the strict filesystem-like logical protocol without a flat roster", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -447,7 +490,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("keeps task-management tools for standalone AutoByteus runs without member team context", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -501,15 +544,21 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "send_message_to",
       "assign_task_to",
     ]);
+    // Native tool search (autobyteus-515): the base tools are listed, every other tool is searchable.
+    expect(built.agentConfig.listedToolNames).toEqual(["run_bash", "read_file", "edit_file", "write_file"]);
   });
 
   it("routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery", async () => {
+    // SR-047: the composition root creates the process dispatcher; here, one with no Task relations.
+    const releaseDispatcher = SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null }, coordinators: { teamCoordinatorOf: async () => null } }), tree: { collaborationTreeOf: () => ({ resolve: async () => null }) } as never }));
+    onTestFinished(releaseDispatcher);
     const deliverInterAgentMessage = vi.fn().mockResolvedValue({
       accepted: false,
       code: "TARGET_MEMBER_NOT_FOUND",
       message: "Writer is unavailable.",
     });
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -570,7 +619,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         message_type: "direct_message",
         reference_files: ["/tmp/server-reference.md"],
       }),
-    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","target_agent_run_id":null}');
+    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable."}');
     expect(deliverInterAgentMessage).toHaveBeenCalledWith({
         recipientAddress: "/writer",
         content: "Please investigate.",
@@ -580,7 +629,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("keeps the exact-run send_message_to selector on the canonical Team binding", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -653,19 +702,23 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       taskAgentRunId: "team-1__professor__task_0007",
       taskId: "task_0007",
     };
-    const taskCommands = Object.freeze({
+    const taskCapability = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
-      delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })),
-      assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+      // SR-049: the root answers for its own run; the tool path delegates.
+      delegationSource: vi.fn(async (caller: CollaborationMemberExecutionIdentity) => ({ sender: caller, senderRun: createTeamRootExecutionIdentity("team-1"),
+        resolvePlacement: vi.fn(), peerRunLinked: vi.fn() })),
+      ownedTaskOf: () => null,
     });
+    const delegation = { toNewRun: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })), toExistingRun: vi.fn() };
+    const releaseToolService = setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation: delegation as never, remote: { delegate: vi.fn() } as never }));
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
       memberAddress: "/professor",
       agentRunId: taskAgentContext.taskAgentRunId,
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
-      taskCommands,
+      taskCapability,
     });
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({
@@ -739,22 +792,17 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       recipient_address: "/reviewer",
       description: "Review the exact task result.",
     });
-    expect(taskCommands.delegateToNewCopy).toHaveBeenCalledWith(
-      {
-        root: createTeamRootExecutionIdentity("team-1"),
-        memberAddress: "/professor",
-        agentRunId: "team-1__professor__task_0007",
-      },
-      {
-        recipient_address: "/reviewer",
-        description: "Review the exact task result.",
-        reference_files: [],
-      },
-    );
+    const sender = { root: createTeamRootExecutionIdentity("team-1"), memberAddress: "/professor", agentRunId: "team-1__professor__task_0007" };
+    expect(taskCapability.delegationSource).toHaveBeenCalledWith(sender);
+    expect(delegation.toNewRun).toHaveBeenCalledWith(expect.objectContaining({
+      sender, senderRun: createTeamRootExecutionIdentity("team-1"),
+      spawn: { recipient_address: "/reviewer", description: "Review the exact task result.", reference_files: [] },
+    }));
+    releaseToolService();
   });
 
   it("enables policy-only compaction: the core summarizer always uses the agent's own model", async () => {
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
           new AgentDefinition({

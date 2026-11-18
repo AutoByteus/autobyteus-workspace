@@ -1,0 +1,14 @@
+# R02/R03/C01 API003; 2026-10-26; ccc0c56d; macOSarm64 Node22.23.1
+# node evidence/R02-03-browser.mjs R02-03-attempt-2
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[Error: ENOTEMPTY: directory not empty, rmdir '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-gqNhYF/tmp/node-compile-cache/v22.23.1-arm64-2b4477fa-501'] {
+  errno: -66,
+  code: 'ENOTEMPTY',
+  syscall: 'rmdir',
+  path: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-gqNhYF/tmp/node-compile-cache/v22.23.1-arm64-2b4477fa-501'
+}
+
+Node.js v22.23.1

@@ -1,0 +1,30 @@
+# API-06 baseline fix recheck: the voice input integration test with its own 30 s timeout
+# Command: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run tests/integration/voice-input-extension.integration.test.ts
+# Commit: fddcff0f13 + working-tree baseline fix
+# Date: 2026-11-06T08:33:05Z
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+stderr | tests/integration/voice-input-extension.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/voice-input-extension.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/voice-input-extension.integration.test.ts (2 tests) 2927ms
+   ✓ voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads  1145ms
+   ✓ voice input extension integration > installs, enables, and inserts transcript text into the draft  1780ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  09:33:08
+   Duration  15.63s (transform 6.30s, setup 11.74s, collect 125ms, tests 2.93s, environment 296ms, prepare 198ms)
+
+EXIT 0

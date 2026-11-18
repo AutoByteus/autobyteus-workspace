@@ -10,6 +10,7 @@ const scanAgyTaskExitMessages = vi.hoisted(() => vi.fn());
 vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-task-exit-message-reader.js", () => ({ scanAgyTaskExitMessages }));
 
 import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
+import { runningBackgroundTaskCount } from "../../../../../src/agent-execution/domain/agent-background-task-count.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
@@ -17,6 +18,8 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import { stubAgyAgentTools } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { stubAgyCapsuleSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const conversationId = "3d5ce362-1127-4d6b-8259-4a2c04d7d876";
 class FakeProcess {
@@ -55,7 +58,8 @@ const setup = () => {
   const process = new FakeProcess();
   const backend = new AgyAgentRunBackend({ runId: "run-one", config: {
     runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini-3.8-flash-low",
-  }, runtimeContext: { conversationId } } as never, process as never);
+  }, runtimeContext: { conversationId } } as never, process as never, { compactionDetection: false }, stubAgyAgentTools("run-one"),
+    stubAgyCapsuleSkills("run-one"));
   const events: AgentRunEvent[] = [];
   backend.subscribeToSourceEventBatches(async (batch) => { events.push(...batch); });
   return { process, backend, events };
@@ -216,11 +220,11 @@ describe("AGY daemon background tasks (REQ-011)", () => {
   it("delivers stopped snapshots before terminate resolves (AR-REC-003, AC-013c)", async () => {
     const run = await startDaemonTurn();
     // The open daemon keeps the run from being idle-quiet (hybrid idle shutdown).
-    expect(run.backend.hasRunningBackgroundTasks()).toBe(true);
+    expect(runningBackgroundTaskCount(run.backend.backgroundTaskInspection)).toBe(1);
 
     await run.backend.terminate();
 
-    expect(run.backend.hasRunningBackgroundTasks()).toBe(false);
+    expect(runningBackgroundTaskCount(run.backend.backgroundTaskInspection)).toBe(0);
     expect(taskUpdates(run.events)).toEqual([
       [`${conversationId}/task-2`, "shell", "running", null],
       [`${conversationId}/task-2`, "shell", "stopped", null],

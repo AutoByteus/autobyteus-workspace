@@ -1,0 +1,94 @@
+import { createRequire } from 'node:module';
+// type-graphql loads CommonJS graphql; use the same realm under Vitest's ESM runner.
+const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
+import { buildSchema } from 'type-graphql';
+import 'reflect-metadata';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { AgentRunManager } from '../../../../src/agent-execution/services/agent-run-manager.js';
+import { AgentBackgroundTaskViewResolver } from '../../../../src/api/graphql/types/agent-background-task-view.js';
+
+const snapshot = { kind: 'snapshot', agentRunId: 'run-1', runInstanceId: 'instance-1', observedAt: 'now', tasks: [] };
+const fixture = () => {
+  const run = { isActive: vi.fn(() => true), inspectBackgroundTasks: vi.fn().mockResolvedValue(snapshot), getStatusSnapshot: vi.fn(), forceReleaseRuntime: vi.fn() };
+  const manager = { peekPublishedRun: vi.fn(() => run), getActiveRun: vi.fn(), hasActiveRun: vi.fn(), listActiveRuns: vi.fn(), terminateAgent: vi.fn() };
+  vi.spyOn(AgentRunManager, 'getInstance').mockReturnValue(manager as never);
+  return { run, manager, resolver: new AgentBackgroundTaskViewResolver() };
+};
+afterEach(() => vi.restoreAllMocks());
+describe('selected-run background query (unit boundary, not API acceptance)', () => {
+  it('uses only the observational run lookup and exact instance read', async () => {
+    const { run, manager, resolver } = fixture();
+    expect(await resolver.agentBackgroundTaskView(' run-1 ')).toEqual(snapshot);
+    expect(manager.peekPublishedRun).toHaveBeenCalledTimes(2);
+    expect(manager.peekPublishedRun).toHaveBeenCalledWith('run-1');
+    expect(run.isActive).toHaveBeenCalledTimes(2);
+    expect(manager.getActiveRun).not.toHaveBeenCalled(); expect(manager.hasActiveRun).not.toHaveBeenCalled();
+    expect(run.getStatusSnapshot).not.toHaveBeenCalled(); expect(run.forceReleaseRuntime).not.toHaveBeenCalled();
+  });
+  it('does not inspect or prune an inactive published run', async () => {
+    const { run, manager, resolver } = fixture(); run.isActive.mockReturnValue(false);
+    expect(await resolver.agentBackgroundTaskView('run-1')).toMatchObject({ kind: 'unavailable', reason: 'inactive' });
+    expect(run.inspectBackgroundTasks).not.toHaveBeenCalled(); expect(manager.getActiveRun).not.toHaveBeenCalled();
+    expect(manager.peekPublishedRun('run-1')).toBe(run);
+  });
+  it.each(['inactive', 'replaced', 'removed'])('discards a response when the captured run is %s during await, with no replacement retry', async change => {
+    const { run, manager, resolver } = fixture();
+    run.inspectBackgroundTasks.mockImplementation(async () => {
+      if (change === 'inactive') run.isActive.mockReturnValue(false);
+      else manager.peekPublishedRun.mockReturnValue(change === 'removed' ? null as never : { ...run } as never);
+      return snapshot;
+    });
+    expect(await resolver.agentBackgroundTaskView('run-1')).toMatchObject({ kind: 'unavailable', reason: 'inactive' });
+    expect(run.inspectBackgroundTasks).toHaveBeenCalledTimes(1); expect(run.forceReleaseRuntime).not.toHaveBeenCalled();
+  });
+  it('rechecks identity even after an exception and never exposes its payload', async () => {
+    const { run, manager, resolver } = fixture(); run.inspectBackgroundTasks.mockRejectedValueOnce(new Error('SECRET'));
+    expect(await resolver.agentBackgroundTaskView('run-1')).toEqual({ kind: 'unavailable', agentRunId: 'run-1', reason: 'inspection_failed' });
+    run.inspectBackgroundTasks.mockImplementation(async () => { manager.peekPublishedRun.mockReturnValue(null as never); throw new Error('SECRET'); });
+    expect(await resolver.agentBackgroundTaskView('run-1')).toMatchObject({ kind: 'unavailable', reason: 'inactive' });
+  });
+});
+
+
+describe('background view GraphQL serialization', () => {
+  const source = `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
+    __typename
+    ... on AgentBackgroundTaskSnapshot { agentRunId runInstanceId tasks { taskId status command exitCode } }
+    ... on AgentBackgroundTaskEventStream { agentRunId currentTasks: tasks { taskId kind description command status summary endReason exitCode startedAt } }
+    ... on AgentBackgroundTaskUnsupported { agentRunId reason }
+    ... on AgentBackgroundTaskUnavailable { agentRunId reason }
+  } }`;
+  it.each([
+    { kind: 'snapshot', agentRunId: 'run-1', runInstanceId: 'instance-1', observedAt: 'now', tasks: [
+      { taskId: 'view-1', kind: 'shell', description: 'bash', command: null, exitCode: -1, status: 'failed', startedAt: 'now' },
+    ] },
+    { kind: 'event-stream', agentRunId: 'run-1', tasks: [] },
+    { kind: 'unsupported', agentRunId: 'run-1', reason: 'unsupported' },
+    { kind: 'unavailable', agentRunId: 'run-1', reason: 'incomplete' },
+  ])('serializes $kind through the actual typed union', async view => {
+    const { run } = fixture(); run.inspectBackgroundTasks.mockResolvedValue(view);
+    const schema = await buildSchema({ resolvers: [AgentBackgroundTaskViewResolver] });
+    const result = await graphql({ schema, source, variableValues: { id: 'run-1' } });
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.agentBackgroundTaskView).toMatchObject({ agentRunId: 'run-1' });
+    expect(JSON.stringify(result)).not.toContain('"kind"');
+  });
+});
+
+// autobyteus-473: an event-stream run's view carries its current tasks, so a viewer that opens the run later sees them.
+describe('event-stream view with current tasks', () => {
+  it('serializes each task with its domain fields (kind, status and end reason as enums)', async () => {
+    const tasks = [
+      { taskId: 'bg-1', kind: 'shell', description: 'Run the probe', command: 'pnpm test:e2e', status: 'running', summary: null, endReason: null, exitCode: null, startedAt: '2026-11-12T10:00:00.000Z' },
+      { taskId: 'bg-0', kind: 'shell', description: 'Run the suite', command: null, status: 'failed', summary: null, endReason: null, exitCode: 1, startedAt: '2026-11-12T09:00:00.000Z' },
+      { taskId: 'bg-2', kind: 'shell', description: 'Wait', command: 'bash wait.sh', status: 'stopped', summary: 'Background command "Wait" was stopped after reaching its background time limit', endReason: 'time_limit', exitCode: null, startedAt: '2026-11-12T08:00:00.000Z' },
+    ];
+    const { run } = fixture(); run.inspectBackgroundTasks.mockResolvedValue({ kind: 'event-stream', agentRunId: 'run-1', tasks });
+    const schema = await buildSchema({ resolvers: [AgentBackgroundTaskViewResolver] });
+    const result = await graphql({ schema, source: `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) {
+      __typename ... on AgentBackgroundTaskEventStream { agentRunId tasks { taskId kind description command status summary endReason exitCode startedAt } } } }`,
+    variableValues: { id: 'run-1' } });
+    expect(result.errors).toBeUndefined();
+    expect(result.data?.agentBackgroundTaskView).toEqual({ __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', tasks });
+  });
+});

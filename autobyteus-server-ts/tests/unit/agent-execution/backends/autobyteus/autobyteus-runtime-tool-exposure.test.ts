@@ -18,6 +18,7 @@ describe("autobyteus runtime tool exposure", () => {
       "read_file",
       "edit_file",
       "write_file",
+      "search_memory",
     ]);
   });
 
@@ -34,6 +35,7 @@ describe("autobyteus runtime tool exposure", () => {
       "edit_file",
       "write_file",
       "custom",
+      "search_memory",
     ]);
     expect(configuredToolNames).toEqual([
       " read_file ",
@@ -58,6 +60,7 @@ describe("autobyteus runtime tool exposure", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
+      "search_memory",
     ]);
   });
 
@@ -70,8 +73,7 @@ describe("autobyteus runtime tool exposure", () => {
       "write_file",
       "send_message_to",
       "delegate_task",
+      "search_memory",
     ]);
   });
-
-
 });

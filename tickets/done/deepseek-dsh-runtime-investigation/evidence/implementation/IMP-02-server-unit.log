@@ -1,0 +1,9 @@
+# IMP-02 server unit suite
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 9dd599dfe3
+# Environment: macOS (Darwin 25.5), Node 22.21.1
+# Date: 2026-11-06
+
+ Test Files  930 passed | 5 skipped (935)
+      Tests  7924 passed | 9 skipped (7933)
+   Duration  755.00s (transform 20.54s, setup 12.04s, import 348.43s, tests 299.09s, environment 791ms)

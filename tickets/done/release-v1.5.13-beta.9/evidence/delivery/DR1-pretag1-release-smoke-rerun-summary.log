@@ -1,0 +1,23 @@
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           FAIL    failed: AssertionError: AgentCreationError: ACP_REQUEST_TIMEOUT: initialize did not respond in time.: expected { success: false, …(2) } to match object { success: true, …(1) }
+grok        brand-new team member                                         PASS
+grok        different same-named skill                                    PASS
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       keeps ordinary native tools and configured skill reads expli  FAIL    failed: AssertionError: expected [ '## Agent Identity', …(5) ] to deeply equal [ '## Agent Identity', …(4) ]
+
+commit    1c1f6f27cbcfe2e44327a1744b048b4921156042
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 356s, antigravity 77s, autobyteus 8s
+result    FAIL
+
+[exited with code 0]

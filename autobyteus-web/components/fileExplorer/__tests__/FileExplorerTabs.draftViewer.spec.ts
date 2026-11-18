@@ -43,11 +43,11 @@ const addFile = (workspaceId = 'draft-a', path = 'notes.md') => {
   state.tree.addChild(node)
   state.nodeIdToNode[node.id] = node
   state.openFiles.push({ path, type: 'Text', mode: 'edit', content: `${workspaceId} original`,
-    url: null, relativeResourceContext: { kind: 'workspace', workspaceId }, isLoading: false, error: null })
+    url: null, contentRevision: 0, relativeResourceContext: { kind: 'workspace', workspaceId }, isLoading: false, error: null })
   state.activeFile = path
   const file = state.openFiles.at(-1)!
   const peer = () => store.handleFileSystemChange(workspaceId, {
-    changes: [{ type: 'modify', node_id: node.id, parent_id: state.tree.id }],
+    changes: [{ type: 'modify', path }],
   })
   return { store, state, file, peer }
 }

@@ -1,3 +1,5 @@
+import { testViewStreams } from "./view-streams.js";
+import { noDelegations, openTaskRecords } from "./no-delegations.js";
 import { vi } from "vitest";
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../src/agent-execution/backends/agent-run-backend-factory.js";
@@ -17,6 +19,7 @@ import { AgentOrgRunManager } from "../../src/agent-org-execution/services/agent
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import type { TokenUsageRunStore } from "../../src/token-usage/providers/token-usage-run-store.js";
 import { buildCurrentTokenUsagePayload } from "./token-usage-run-record-fixtures.js";
+import { getAgentStreamSequences } from "../../src/services/agent-streaming/agent-stream-sequence.js";
 
 export const retainedThread = "isolated-retained-provider-thread";
 export const migrationUsage = (ordinal: number) => buildCurrentTokenUsagePayload({
@@ -39,7 +42,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     restored.push(context);
     let active = true, listener: AgentRunSourceEventBatchListener | null = null, ordinal = 0;
     return {
-      runId: context.runId, runtimeKind: context.config.runtimeKind, compactionRecovery: { kind: "unsupported" } as const,
+      runId: context.runId, runtimeKind: context.config.runtimeKind, compactionRecovery: { kind: "unsupported" } as const, backgroundTaskInspection: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: "unsupported" },
       getContext: () => context, getPlatformAgentRunId: () => retainedThread, isActive: () => active,
       getLifecycleSnapshot: () => ({ availability: active ? "active" : "offline", phase: active ? "running" : "idle", currentTurn: { kind: "NONE" } }),
@@ -78,20 +81,20 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     autoByteusBackendFactory: factory, codexBackendFactory: factory, claudeBackendFactory: factory,
     agyBackendFactory: factory,
     grokBackendFactory: factory,
+    deepSeekHarnessBackendFactory: factory,
     memoryRecorder: recorder, agentToolMcpRunSessionDeactivator: sessions,
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,
-      memoryRecorder: recorder, runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never, workJournalUpdater: noAttachment as never,
+      memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), runFileChangeService: noAttachment as never, publishedArtifactRelayService: noAttachment as never, workJournalUpdater: noAttachment as never,
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined } })),
   });
   const dependencies = { agentRunManager: agentManager, memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
     activityInspector: new AgentConversationActivityInspector() };
-  const manager = new AgentOrgRunManager({ memoryDir, tokenUsageRunStore: store,
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir, tokenUsageRunStore: store,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
-    scopeBuilder: new AgentOrgExecutionScopeBuilder({ ...dependencies,
+    scopeBuilder: new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...dependencies,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(dependencies),
       orgDefinitions: { getDefinitionById: unavailable }, teamDefinitions: { getDefinitionById: unavailable },
-      taskExecutionIdentity: { agentRuns: { allocateForAgentDefinition: unavailable }, taskTeams: { create: unavailable } } as never,
     }),
   });
   return { manager, agentManager, recorder, received, restored, failures, restoreBackend };

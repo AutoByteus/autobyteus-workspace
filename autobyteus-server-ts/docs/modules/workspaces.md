@@ -23,6 +23,8 @@ Regular filesystem workspaces are registered in an app-data workspace registry o
 
 Filesystem workspace ids are deterministic `agent_ws_<sha256(canonical-root-path)>` values. Loading the same canonical root path registers or returns the same workspace id. `workspaceMetadata(rootPath)` can resolve deterministic metadata without registering the root; `createWorkspace(input: { rootPath })` registers the root and returns metadata.
 
+A path that is neither registered nor an active workspace must be an existing absolute folder before it is registered (`workspace-folder-check.ts`, checked on the raw trimmed input, before a relative path could resolve against the server's working directory). Otherwise registration is refused with GraphQL code `WORKSPACE_PATH_REFUSED` and `reason` `not_absolute`, `missing` or `not_a_folder`, nothing is registered and no folder is created. This covers `createWorkspace` and every server-internal path that registers a workspace for a run launch. Already registered paths are not checked again: a registered workspace whose folder was deleted still loads in the list and in history restore. Clients show the reason (the web's `utils/workspace/workspacePathRefusal.ts`).
+
 The old `workspace-id-mapping-store.ts` helper has been replaced by `workspace-registry-store.ts`; new code should use the registry store/manager boundary rather than creating a parallel mapping or hidden-workspace list.
 
 ## Registry Persistence Invariants
@@ -59,6 +61,11 @@ The GraphQL `workspaces()` query is the canonical visible workspace-list source 
 - registered filesystem workspaces from the registry; and
 - transient active workspaces such as temp or skill workspaces that are not duplicated by registry entries.
 
+Internal workspaces (`<appData>/internal-workspaces/`, `internal-workspaces.ts`; the Model Router agent's) are left
+out while "Show internal agents" is off (`WorkspaceManager.listVisibleWorkspaces`). Opening a run by ID still
+resolves its workspace. See [Model Routing](./model_routing.md) and
+[Agent Definition: Internal Agents](./agent_definition.md#internal-agents).
+
 Run history is not an authority for top-level workspace visibility. A historical run under an unregistered or removed workspace root must not recreate a top-level workspace row by itself.
 
 The fixed default temp workspace (`temp_ws_default`) is a visible run workspace
@@ -75,7 +82,7 @@ root through the fixed temp workspace identity only.
 
 ## Remove From Workspaces
 
-`removeWorkspace(input: { workspaceId })` removes a registered filesystem workspace from the visible workspace registry. It is intentionally non-destructive:
+`removeWorkspace(input: { workspaceId })` unregisters a filesystem workspace, so it leaves every chooser and every view of the desktop's run section. The web offers it in the chat's folder chooser ("Remove"); the left panel lists only folders with runs and has no remove or add action. It is intentionally non-destructive:
 
 - it does **not** delete the filesystem directory;
 - it does **not** delete run history, team history, memories, raw traces, artifacts, or generated files; and
@@ -83,9 +90,23 @@ root through the fixed temp workspace identity only.
 
 Removal is limited to registered filesystem workspace ids. Temp and skill workspace lifecycles remain owned by their existing transient workspace flows.
 
-Before deleting the registry entry, `WorkspaceRemovalGuard` blocks removal when active standalone agent runs or active team/member runs still use the workspace root. The user must stop active work first. When removal is allowed, `WorkspaceManager.removeRegisteredWorkspace(...)` closes any active in-memory workspace instance for that root, which also releases file-explorer resources, then deletes the registry entry.
+Before deleting the registry entry, `WorkspaceRemovalGuard` blocks removal when active standalone agent runs or active team/member runs still use the workspace root, with the message "Stop active runs before removing this workspace." (the approved copy of the chooser's refusal toast). The user must stop active work first. When removal is allowed, `WorkspaceManager.removeRegisteredWorkspace(...)` closes any active in-memory workspace instance for that root, which also releases file-explorer resources, then deletes the registry entry.
 
 Re-adding/loading the same root later creates the same deterministic workspace id and makes the workspace visible again. Preserved history for that root can be shown again through workspace-scoped history after the workspace is registered.
+
+## Workspace Static Route (HTML Preview)
+
+`GET /rest/workspaces/:workspaceId/static/*` (`src/api/rest/workspaces.ts`)
+serves workspace files for the web app's HTML preview. Its only consumer is the
+preview iframe. Every file it serves carries
+`Content-Security-Policy: sandbox allow-scripts`, so a workspace page runs
+with an opaque origin (`null`) wherever its URL is opened: in the preview, in
+the in-app browser or in a tab. It never runs at this node's origin, and the
+node's Origin rule refuses its WebSocket and API requests
+([Remote Access](../features/remote_access.md)). Do not remove the header or add
+`allow-same-origin` to it. Error replies and the `/content` route do not send
+it. The client side and what previewed pages can and cannot do are in
+`autobyteus-web/docs/file_explorer.md` (HTML Preview Resource Contract).
 
 ## Workspace History Boundary
 

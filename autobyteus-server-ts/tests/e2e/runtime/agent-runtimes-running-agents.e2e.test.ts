@@ -21,6 +21,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { assertBriefStudioPackageBuilt, BRIEF_STUDIO_PACKAGE } from "../helpers/brief-studio-package.js";
 import { createGraphqlClient, fakeRuntimeState, installVendorSourceStub, type AgentRuntimeRow } from "../helpers/agent-runtimes-e2e-harness.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 
@@ -29,13 +30,11 @@ const fake = await vi.hoisted(async () => {
   return prepareFakeRuntimes({ label: "agent-runtimes-agents-e2e", grokInstalled: true });
 });
 
-const BRIEF_STUDIO_PACKAGE = path.resolve(process.cwd(), "..", "applications/brief-studio/dist/importable-package");
-const packageBuilt = fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "brief-studio", "application.json"));
 const CODEX = "codex_app_server";
 const CLAUDE = "claude_agent_sdk";
 const MODEL = "gpt-5.6-luna";
 
-describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)", () => {
+describe("Agent Runtimes running-agent count and Application launch readiness (real studio server, Brief Studio, scripted CLIs)", () => {
   const states = fakeRuntimeState(fake.stateDir);
   let fastify: FastifyInstance;
   let url: URL;
@@ -63,6 +62,7 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
   const row = async (kind: string): Promise<AgentRuntimeRow> => (await client.rows())[kind]!;
 
   beforeAll(async () => {
+    assertBriefStudioPackageBuilt();
     fs.mkdirSync(workspace, { recursive: true });
     states.set("codex-account", "signedIn");
     states.set("codex-models", MODEL);
@@ -123,7 +123,7 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
     const signedOut = await view();
     expect(signedOut.readiness.status).toBe("HOST_REQUIREMENT_MISSING");
     expect(signedOut.readiness.issues.map((entry: any) => [entry.code, entry.memberAddress, entry.message])).toEqual(["/", "/researcher", "/writer"].map((address) =>
-      ["RUNTIME_AUTHENTICATION_UNAVAILABLE", address, "Codex authentication is unavailable: no logged-in account."]));
+      ["RUNTIME_AUTHENTICATION_UNAVAILABLE", address, "Codex App Server authentication is unavailable: no logged-in account."]));
 
     // DEC-008's state (no OpenAI sign-in required) stays launchable, as before.
     states.set("codex-account", "notRequired");
@@ -150,7 +150,7 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
     expect(signedOut.readiness.status).toBe("HOST_REQUIREMENT_MISSING");
     // Today's text for a signed-out Claude: the empty stderr after the prefix (base adapter `describeFailure`).
     expect(new Set(signedOut.readiness.issues.map((entry: any) => `${entry.code}|${entry.message}`)))
-      .toEqual(new Set(["RUNTIME_AUTHENTICATION_UNAVAILABLE|Claude authentication is unavailable: "]));
+      .toEqual(new Set(["RUNTIME_AUTHENTICATION_UNAVAILABLE|Claude Agent SDK authentication is unavailable: "]));
 
     states.set("claude-account", "signedIn");
     expect((await view()).readiness).toEqual({ status: "RUNNABLE", issues: [] });
@@ -186,9 +186,12 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
     // A newer Codex is out again, so Update is offered.
     sources.answers.codex = { status: 302, body: "rust-v0.170.0" };
     states.set("codex-update-to", "0.170.0");
-    // RA-03's update starts its own re-check (AR-006), which stays checking until Codex's sign-in is read; a check
-    // started meanwhile skips the row and the re-check ends with the release it read. Press Check again until the
-    // newer release shows, as a user would.
+    // Press Check once whatever RA-03's automatic re-check already read: a user's check clears finished operations
+    // (checkAll), so RA-03's succeeded update does not linger as this row's operation (L222 asserts none). RA-03's
+    // update starts its own re-check (AR-006), which stays checking until Codex's sign-in is read; a check started
+    // meanwhile skips the row and the re-check ends with the release it read. Press Check again until the newer
+    // release shows, as a user would.
+    await client.mutate("checkAgentRuntimes");
     await until(async () => {
       if ((await row(CODEX)).updates.state === "UPDATE_AVAILABLE") return true;
       await client.mutate("checkAgentRuntimes");

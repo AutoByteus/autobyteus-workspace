@@ -1,0 +1,24 @@
+# API-06 replay observation (FU-004): run memory raw_traces_active.jsonl of the TLU-001 run (--keep rerun, head 5ee923081a, 2026-10-29). Columns: line, trace type, turn id tail, ts, content start.
+0 user 7108025d 1793303363.911 Hello.
+1 assistant 7108025d 1793303363.914 OK
+2 user 374ab116 1793303365.469 CALL_TOOL:{"name":"list_projects","arguments":{}}
+3 assistant 374ab116 1793303365.597 CALLED:{"content":[{"type":"text","text":"{\"projects\":[{\"projectId\
+4 system_task_notification 22de2bf5 1793303375.317 [Platform notice — tools updated]  Your tools changed. Now available: 
+5 user 22de2bf5 1793303375.316 CALL_TOOL:{"name":"list_project_tasks","arguments":{"project_id":"proj
+6 assistant 22de2bf5 1793303375.331 CALLED:{"content":[{"type":"text","text":"{\"projectId\":\"project_f0b
+7 system_task_notification f2a8b79a 1793303384.242 [Platform notice — tools updated]  Your tools changed. No longer avail
+8 user f2a8b79a 1793303384.242 CALL_TOOL:{"name":"list_projects","arguments":{"marker":"TLU-7167-remo
+9 system_task_notification 9f78d8bc 1793303394.392 [Platform notice — tools updated]  Your tools changed. Now available: 
+10 user 9f78d8bc 1793303394.391 CALL_TOOL:{"name":"list_projects","arguments":{}}
+11 assistant 9f78d8bc 1793303394.504 CALLED:{"content":[{"type":"text","text":"{\"projects\":[{\"projectId\
+
+# seen_tool_names.json
+{
+  "version": 1,
+  "toolNames": [
+    "delegate_task",
+    "list_project_tasks",
+    "list_projects",
+    "send_message_to"
+  ]
+}

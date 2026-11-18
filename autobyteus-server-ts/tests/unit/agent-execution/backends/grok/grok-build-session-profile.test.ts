@@ -10,12 +10,10 @@ describe("grokBuildSessionProfile", () => {
       .toEqual({ rules: "You are X", yoloMode: true });
   });
 
-  it("attaches Agent Tools MCP over HTTP and requires its readiness", () => {
+  it("always attaches Agent Tools MCP over HTTP, even with an empty list, and requires its readiness", () => {
     const descriptor = { name: "autobyteus_agent_tools" as const, transport: "streamable_http" as const, serverUrl: "http://h/mcp", enabledTools: [] };
     expect(grokBuildSessionProfile.mcpServers(descriptor)).toEqual([{ type: "http", name: "autobyteus_agent_tools", url: "http://h/mcp", headers: [] }]);
-    expect(grokBuildSessionProfile.mcpServers(null)).toEqual([]);
     expect(grokBuildSessionProfile.mcpReadiness(descriptor)).toEqual({ serverName: "autobyteus_agent_tools", timeoutMs: 15_000 });
-    expect(grokBuildSessionProfile.mcpReadiness(null)).toBeNull();
   });
 
   it("turns response_completed into one per-call usage payload and ignores turn totals and bookkeeping", () => {

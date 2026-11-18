@@ -93,7 +93,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { useAgentOrgLaunchDraftStore } from '~/stores/agentOrgLaunchDraftStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type { RunMemberSettingChange, RunSettingFlags } from '~/types/runSettings/RunSettings'
 import RunMembersLine from './RunMembersLine.vue'
 import RunSettingsCard from './RunSettingsCard.vue'
@@ -142,7 +142,7 @@ const statusText = computed(() => {
   if (!current) return ''
   if (current.phase === 'preparing') return current.sourceOrgRunId ? t('runSettings.orgLaunch.preparing') : ''
   if (current.phase === 'launching') {
-    return t('chat.new.starting', { name: org.value?.name ?? '', runtime: runtimeKindToLabel(current.root.runtimeKind) })
+    return t('chat.new.starting', { name: org.value?.name ?? '', runtime: agentRuntimeName(current.root.runtimeKind) })
   }
   return current.error || blockedReason.value
 })

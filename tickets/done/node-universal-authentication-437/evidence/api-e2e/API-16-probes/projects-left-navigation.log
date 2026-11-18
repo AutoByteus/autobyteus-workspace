@@ -1,0 +1,14 @@
+# API-16 projects-left-navigation: node tests/e2e/projects-left-navigation-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/projects-left-navigation
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:07:28Z
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+PLN-11: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/projects-left-navigation/evidence.json

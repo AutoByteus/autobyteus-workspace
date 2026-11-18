@@ -2,19 +2,20 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { defineStore } from 'pinia'
 import {
   delegatedTargetKey,
-  loadDelegatedLaunchModelOptions,
-  stopDelegatedExecution,
-  updateDelegatedLaunchSelections,
-  type DelegatedConfiguredPatch,
+  loadDelegatedRunOptions,
+  saveDelegatedRuns,
+  terminateDelegatedRun,
   type DelegatedReference,
   type DelegatedRoot,
   type DelegatedTargetKey,
 } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
-import { cloneExistingRunSelection, existingRunSelectionsEqual, selectionAllowed } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import type { DelegatedSaveTarget } from '~/utils/runSettings/delegatedLaunchRows'
+import { cloneExistingAgentRunSelection, existingAgentRunSelectionsEqual, selectionAllowed } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { mergeReloadedOptions } from '~/services/runConfigEditing/existingRunModelOptionsState'
 import type {
   ExistingRunModelConfigFieldError,
   ExistingRunModelOptionsState,
-  ExistingRunModelSelection,
+  ExistingAgentRunSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
 
 const sameRoot = (left: DelegatedRoot | null, right: DelegatedRoot | null): boolean =>
@@ -23,19 +24,22 @@ const rootKey = (root: DelegatedRoot): string => `${root.rootKind}:${root.rootRu
 const stopKey = (root: DelegatedRoot, reference: DelegatedReference): string => `${rootKey(root)}|${delegatedTargetKey(reference)}`
 
 /**
- * DS-001 / DS-002 (SR-007): the user's model choices for a run's delegated copies,
- * edited in Settings next to the run's own settings and saved through the same Save bar, and the
- * per-copy Stop shared by Settings and the sidebar rows. A choice is recorded per agent
- * (`agent:<run ID>`) or per Team (`team:<run ID>`); it is edited only while that copy is stopped.
+ * The user's model choices for a run's delegated runs, edited in Settings next to the run's own settings and saved
+ * through the same Save bar, and the per-run Stop shared by Settings and the sidebar rows (autobyteus-461 rule 2,
+ * SR-064 … SR-066): each delegated run is reached as itself, its options by its own query, its choice by its own
+ * stopped-run save, its Stop by its own terminate. A choice is kept per agent (`agent:<run ID>`) or per Team
+ * (`team:<run ID>`); it is edited only while that run is stopped.
  */
 export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', {
   state: () => ({
     root: null as DelegatedRoot | null,
+    /** Where each shown row's change is saved (the editor's rows; SR-064). */
+    targets: new Map() as ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>,
     bindingRevision: -1,
     saveRequestId: 0,
     /** This edit's choices and the model each target had when it was first edited. */
-    edits: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
-    originals: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
+    edits: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
+    originals: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     optionsByKey: {} as Record<DelegatedTargetKey, ExistingRunModelOptionsState>,
     optionsStatus: 'idle' as 'idle' | 'loading' | 'ready' | 'unavailable',
     optionsRequestId: 0,
@@ -47,13 +51,16 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     stopFeedback: null as { kind: 'info' | 'error'; message: string } | null,
   }),
   getters: {
-    changes(state): readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingRunModelSelection }>[] {
-      return (Object.entries(state.edits) as [DelegatedTargetKey, ExistingRunModelSelection][])
-        .filter(([key, selection]) => !state.originals[key] || !existingRunSelectionsEqual(state.originals[key]!, selection))
-        .map(([key, selection]) => ({ key, selection: cloneExistingRunSelection(selection) }))
+    changes(state): readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingAgentRunSelection }>[] {
+      return (Object.entries(state.edits) as [DelegatedTargetKey, ExistingAgentRunSelection][])
+        .filter(([key, selection]) => !state.originals[key] || !existingAgentRunSelectionsEqual(state.originals[key]!, selection))
+        .map(([key, selection]) => ({ key, selection: cloneExistingAgentRunSelection(selection) }))
     },
     dirty(): boolean { return this.changes.length > 0 },
-    /** Every changed model is one the server offers for that copy (its current one, or a listed replacement). */
+    /**
+     * Every changed model is one the server offers for that copy (its current one, or a listed replacement); another
+     * agent runtime is a fresh selection of it, which the server validates when it is saved.
+     */
     changesAllowed(state): boolean {
       return this.changes.every(({ key, selection }) => selectionAllowed(state.originals[key]!, selection, state.optionsByKey[key]))
     },
@@ -61,7 +68,7 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
   actions: {
     /**
      * Settings opened another run (or closed): this edit and the options start over. Saved choices
-     * are the server's: rows read them from the run (its live view, or Settings' reload after Save).
+     * are the server's: rows read them from the run (its view's row records, and after a Save its own save answer, `saved`).
      */
     bind(root: DelegatedRoot | null): void {
       const binding = useWindowNodeContextStore().bindingRevision
@@ -70,34 +77,49 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
       this.saveRequestId += 1
       this.saving = false
       this.root = root ? { ...root } : null
+      this.targets = new Map()
       this.discard()
       this.optionsByKey = {}
       this.optionsStatus = 'idle'
       this.optionsRequestId += 1
       this.stopFeedback = null
-      if (root) void this.loadOptions()
+    },
+    /** The rows shown changed: their options are read when a row is new (its own run's reads, SR-065). */
+    setTargets(targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): void {
+      const known = this.targets
+      this.targets = targets
+      if (this.root && [...targets.keys()].some((key) => !known.has(key))) void this.loadOptions()
     },
     async loadOptions(): Promise<void> {
-      const root = this.root
-      if (!root) return
+      if (!this.root) return
       const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
       this.optionsStatus = 'loading'
-      try {
-        const options = await loadDelegatedLaunchModelOptions(root)
-        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
-        this.optionsByKey = options
-        this.optionsStatus = 'ready'
-      } catch {
-        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
-        this.optionsByKey = {}
-        this.optionsStatus = 'unavailable'
-      }
+      const { options, complete } = await loadDelegatedRunOptions(this.targets)
+      if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
+      this.optionsByKey = { ...this.optionsByKey, ...options }
+      this.optionsStatus = complete || Object.keys(options).length ? 'ready' : 'unavailable'
     },
-    /** A model or its settings changed on a copy row; `original` is what the target ran with before this edit. */
-    edit(key: DelegatedTargetKey, original: ExistingRunModelSelection, selection: ExistingRunModelSelection): void {
+    /**
+     * Re-reads the copies' options (a picker opened, or Refresh models): the options shown stay until the answer arrives, a
+     * copy the server could not read never replaces options already shown (`mergeReloadedOptions`), and the answer is false
+     * when any copy could not be read. An answer made stale by a newer read is not a failure.
+     */
+    async reloadOptions(): Promise<boolean> {
+      if (!this.root) return true
+      const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
+      const stale = () => requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision
+      const { options, complete } = await loadDelegatedRunOptions(this.targets)
+      if (stale()) return true
+      const merged = mergeReloadedOptions(this.optionsByKey, options)
+      this.optionsByKey = { ...this.optionsByKey, ...merged.options }
+      this.optionsStatus = 'ready'
+      return complete && merged.complete
+    },
+    /** A model, its settings or its agent runtime changed on a copy row; `original` is what the target ran with before this edit. */
+    edit(key: DelegatedTargetKey, original: ExistingAgentRunSelection, selection: ExistingAgentRunSelection): void {
       if (this.saving) return
-      if (!this.originals[key]) this.originals = { ...this.originals, [key]: cloneExistingRunSelection(original) }
-      this.edits = { ...this.edits, [key]: cloneExistingRunSelection(selection) }
+      if (!this.originals[key]) this.originals = { ...this.originals, [key]: cloneExistingAgentRunSelection(original) }
+      this.edits = { ...this.edits, [key]: cloneExistingAgentRunSelection(selection) }
       this.feedback = null
       this.fieldErrors = []
     },
@@ -108,23 +130,34 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
       this.fieldErrors = []
     },
     /**
-     * Saves this edit's choices; on a stopped run, together with the run's own settings in one Save
-     * (AR-004). A running copy refuses the whole Save (`COPY_RUNNING`): stop it and save again.
+     * Saves this edit's choices, each by its own run's stopped-run save, in row order (SR-064; the editor saves the run's
+     * own settings first). A row whose run is running refuses the Save before any write: stop it and save again (its own
+     * save would refuse it too). A refusal names the run, and the runs already saved; the rows are read again.
      */
-    async save(configuredPatches: readonly DelegatedConfiguredPatch[], reconcile: () => Promise<boolean>): Promise<boolean> {
+    async save(rows: Readonly<{ running(key: DelegatedTargetKey): boolean; nameOf(key: DelegatedTargetKey): string }>,
+      reconcile: () => Promise<boolean>): Promise<boolean> {
       const root = this.root
-      if (!root || this.saving || (!this.dirty && !configuredPatches.length)) return false
+      if (!root || this.saving || !this.dirty) return false
       const request = ++this.saveRequestId, binding = useWindowNodeContextStore().bindingRevision
       const current = () => request === this.saveRequestId && binding === useWindowNodeContextStore().bindingRevision && sameRoot(this.root, root)
       this.saving = true
       this.feedback = null
       this.fieldErrors = []
       try {
-        const result = await updateDelegatedLaunchSelections({ ...root, changes: this.changes, configuredPatches })
+        const running = this.changes.filter(({ key }) => rows.running(key)).map(({ key }) => rows.nameOf(key))
+        if (running.length) {
+          this.feedback = { kind: 'error', message: `${running.join(', ')} is running. Stop it, then save again.` }
+          return false
+        }
+        const result = await saveDelegatedRuns({ changes: this.changes, targets: this.targets, nameOf: rows.nameOf })
         if (!current()) return false
+        // Each saved run's row shows what its run now has from the tree's next answer: a save tells the trees that hold its
+        // row (SR-086 G-B1), with no overlay here (also when a later run refused: the runs before it keep their save).
         if (!result.success) {
           this.feedback = { kind: 'error', message: result.message }
           this.fieldErrors = [...result.fieldErrors]
+          void reconcile()
+          void this.loadOptions()
           return false
         }
         void this.loadOptions()
@@ -145,16 +178,15 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     isStopping(root: DelegatedRoot, reference: DelegatedReference): boolean {
       return Boolean(this.stopping[stopKey(root, reference)])
     },
-    /** DS-002: stops one copy (and the copies it started); it stays restorable. */
+    /** Stops one delegated run as itself (rule 2): on this node or on a peer node; it stays restorable. */
     async stop(root: DelegatedRoot, reference: DelegatedReference): Promise<boolean> {
       const key = stopKey(root, reference)
       if (this.stopping[key]) return false
       this.stopping = { ...this.stopping, [key]: true }
       this.stopFeedback = null
       try {
-        const result = await stopDelegatedExecution(root, reference)
+        const result = await terminateDelegatedRun(reference)
         if (!result.success) this.stopFeedback = { kind: 'error', message: result.message }
-        else if (result.notStoppedUnattributed > 0) this.stopFeedback = { kind: 'info', message: result.message }
         if (sameRoot(this.root, root)) void this.loadOptions()
         return result.success
       } catch (error) {

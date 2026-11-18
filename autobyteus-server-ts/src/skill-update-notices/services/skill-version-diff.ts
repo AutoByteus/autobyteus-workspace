@@ -1,19 +1,22 @@
-import type { SkillChange, SkillFileChange, SkillFolderSnapshot } from "../domain/skill-update-notice-types.js";
+import type { SkillFileChange, SkillFolderSnapshot, SkillVersionChange } from "../domain/skill-update-notice-types.js";
 
 /**
  * What changed for one skill between the version a run saw and the current one (null: nothing a
  * run needs to hear about). Files are compared by relative path and digest, so a skill that moved
  * to a new folder with the same files is unchanged, and one that moved with changes is "updated"
- * with its new folder. Each differing file is "changed", "added" or "removed". A skill that no
- * longer resolves is "removed" (when the run had seen it).
+ * with its new folder. Each differing file is "changed", "added" or "removed". A skill the run never
+ * saw that resolves now is "added"; one that no longer resolves is "removed" (when the run had seen it).
  */
 export const diffSkillVersion = (
   skillName: string,
   seen: SkillFolderSnapshot | undefined,
   current: SkillFolderSnapshot | null,
-): SkillChange | null => {
+): SkillVersionChange | null => {
   if (!current) return seen ? Object.freeze({ kind: "removed", skillName }) : null;
-  const before = seen?.files ?? {};
+  if (!seen) {
+    return Object.freeze({ kind: "added", skillName, skillDir: current.skillDir, skillMdPath: current.skillMdPath });
+  }
+  const before = seen.files;
   const files: SkillFileChange[] = [];
   for (const [file, digest] of Object.entries(current.files)) {
     if (!(file in before)) files.push(Object.freeze({ path: file, status: "added" }));

@@ -1,0 +1,199 @@
+# API-02 server X1 pid 66502; temp data root; 2026-11-01T06:43:26.758Z
+[19.95] Platform detection: Windows=false
+[19.95] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts
+[19.95] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data
+[19.95] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/.env
+[19.95] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/.env
+[19.95] ◇ injected env (0) from ../../../rr285-live-update-WAl7dF/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[19.95] Environment variables loaded successfully
+[19.95] Server public base URL configured to: http://127.0.0.1:59911
+[19.95] === Starting logging configuration ===
+[19.95] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/logging_config.ini
+[19.95] ============================================================
+[19.95] SERVER PUBLIC URL: http://127.0.0.1:59911
+[19.95] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts
+[19.95] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data
+[19.95] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/db
+[19.95] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/logs
+[19.95] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/download
+[19.95] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/memory
+[19.95] ============================================================
+[21.68] AgentFactory (Singleton) initialized.
+[21.93] Running Prisma migrations...
+[21.93] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[22.16] Prisma schema loaded from prisma/schema.prisma
+[22.16] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/db/test.db"
+[22.19] 27 migrations found in prisma/migrations
+
+
+[22.19] No pending migrations to apply.
+[22.21] Database migrations completed successfully.
+[22.22] (node:66502) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[22.22] (Use `node --trace-warnings ...` to show where the warning was created)
+[22.22] prisma:info Starting a sqlite pool with 21 connections.
+[22.24] [2026-11-01T06:43:48.999Z] [INFO] [secret-management.vault] Secret vault: application database
+[22.27] Initialized server settings service with 33 predefined settings
+[22.32] AgentRunManager initialized.
+[22.32] AgentRunManager initialized.
+[22.41] Empty never-started run removal skipped 1 folder(s) without a standalone run record
+[22.41] Loading workspace packages to trigger registration...
+[22.41] Successfully loaded workspace packages.
+[22.41] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/temp_workspace
+[22.41] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/temp_workspace.
+[22.41] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/temp_workspace with fixed ID 'temp_ws_default'
+[22.41] Temp workspace created and cached with ID: temp_ws_default
+[22.41] Registering agent customization processors...
+[22.41] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[22.41] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[22.41] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[22.41] Registered input processor 'UserInputContextBuildingProcessor'.
+[22.41] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[22.41] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[22.41] Agent customization processor registration complete.
+[22.41] Successfully registered tool definition: 'read_file'
+[22.41] Successfully registered tool definition: 'write_file'
+[22.41] Successfully registered tool definition: 'edit_file'
+[22.41] Successfully registered tool definition: 'run_bash'
+[22.41] Successfully registered tool definition: 'start_background_process'
+[22.41] Successfully registered tool definition: 'get_background_processes'
+[22.41] Successfully registered tool definition: 'get_process_output'
+[22.41] Successfully registered tool definition: 'stop_background_process'
+[22.41] Successfully registered tool definition: 'search_web'
+[22.41] Successfully registered tool definition: 'download_media'
+[22.41] Successfully registered tool definition: 'read_url'
+[22.41] Registered required tool unit: Core Tools
+[22.42] Successfully registered tool definition: 'get_project_task'
+[22.42] Successfully registered tool definition: 'list_projects'
+[22.42] Successfully registered tool definition: 'list_project_tasks'
+[22.42] Successfully registered tool definition: 'search_project_tasks'
+[22.42] Successfully registered tool definition: 'create_project'
+[22.42] Successfully registered tool definition: 'update_project'
+[22.42] Successfully registered tool definition: 'create_task'
+[22.42] Successfully registered tool definition: 'update_task'
+[22.42] Successfully registered tool definition: 'delegate_task'
+[22.42] Successfully registered tool definition: 'generate_image'
+[22.42] Successfully registered tool definition: 'edit_image'
+[22.42] Successfully registered tool definition: 'generate_speech'
+[22.42] Successfully registered tool definition: 'generate_video'
+[22.42] Registered required tool unit: Project Task Tools
+[22.42] Registered required tool unit: Task Delegation Tools
+[22.42] Registered required tool unit: Media Tools
+[22.43] Successfully registered tool definition: 'list_available_agents'
+[22.43] Successfully registered tool definition: 'list_peer_nodes'
+[22.43] Registered required tool unit: Agent Discovery Tools
+[22.43] Successfully registered tool definition: 'list_available_agent_runtimes'
+[22.43] Successfully registered tool definition: 'submit_launch_choices'
+[22.43] Registered required tool unit: Agent Runtime Tools
+[22.43] Registered required tool unit: Browser Tools
+[22.43] Successfully registered tool definition: 'publish_artifacts'
+[22.43] Registered required tool unit: Published Artifact Tools
+[22.43] Successfully registered tool definition: 'search_memory'
+[22.43] Registered required tool unit: Memory Tools
+[22.43] Successfully registered tool definition: 'send_message_to'
+[22.43] Successfully registered tool definition: 'get_handoff_rules'
+[22.43] Registered required tool unit: Agent Communication Tools
+[22.43] Overwriting existing tool definition for name: 'search_web'
+[22.43] Successfully registered tool definition: 'search_web'
+[22.43] Registered required tool unit: Search Tools
+[22.45] {"level":30,"time":1793515429202,"pid":66502,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59932"}
+[22.47] {"level":30,"time":1793515429228,"pid":66502,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59911"}
+[22.47] {"level":30,"time":1793515429228,"pid":66502,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:59911"}
+[22.47] {"level":30,"time":1793515429229,"pid":66502,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:59911"}
+[22.47] [2026-11-01T06:43:49.229Z] [INFO] [server.runtime] Server listening on 0.0.0.0:59911
+[22.47] Scheduling Studio-only non-critical startup tasks...
+[22.48] Background cache pre-loading process has started.
+[22.48] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[22.48] Populating MCP server config cache for the first time...
+[22.48] Running MCP tool registration background task...
+[22.48] Loading and registering all MCP server configurations from file...
+[22.48] Background task 'Memory Sync Worker' completed successfully.
+[22.48] Background task 'Memory Search' completed successfully.
+[22.48] MCP server config cache populated with 0 items.
+[22.48] Found 0 total MCP server configs.
+[22.48] Synchronized cached configurations with the core MCP config service.
+[22.48] Pre-loaded 0 MCP server configs into cache.
+[22.48] Finished loading and registering all MCP server configurations.
+[22.48] Background task 'MCP Tool Registration' completed successfully.
+[22.48] Pre-loaded 33 LLM models into cache.
+[22.48] Pre-loaded 7 image models into cache.
+[22.48] Pre-loaded 3 audio models into cache.
+[22.48] Background application cache pre-loading completed.
+[22.48] Background task 'Cache Pre-loading' completed successfully.
+[22.49] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace
+[22.49] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace.
+[22.49] Created and registered workspace ID: agent_ws_0de7a45cdad6f16bd9533c9be9c13de9dc195628b17ab7b4f9d4229955f7addc
+[22.49] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace
+[22.49] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace.
+[22.49] Reusing registered workspace ID: agent_ws_0de7a45cdad6f16bd9533c9be9c13de9dc195628b17ab7b4f9d4229955f7addc
+[22.50] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace
+[22.50] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace.
+[22.50] Reusing registered workspace ID: agent_ws_0de7a45cdad6f16bd9533c9be9c13de9dc195628b17ab7b4f9d4229955f7addc
+[22.57] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26' of agent 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26'
+[22.65] Agent websocket attached for run probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1
+[22.66] Agent websocket attached for run probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26
+[22.66] Created agent session e579b96a-d2bd-4d73-9650-dc5825a4d9b6 for run probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26
+[22.66] Agent WebSocket connected: session=e579b96a-d2bd-4d73-9650-dc5825a4d9b6, run=probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26
+[22.66] Agent team websocket attached for team run probe_team_team_codex_rr285mvxgrkpy_63b838c1cf3b4e528155290d538ca40a
+[22.66] Created agent session 988c4bf3-ada3-4a44-a228-e57c569b2850 for run probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1
+[22.66] Agent WebSocket connected: session=988c4bf3-ada3-4a44-a228-e57c569b2850, run=probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1
+[22.66] [CodexClientThreadRouter] app-server message was not routed {
+[22.66]   kind: 'notification',
+[22.66]   method: 'deprecationNotice',
+[22.66]   requestId: undefined,
+[22.66]   threadCount: 2,
+[22.66]   paramKeys: [ 'summary', 'details' ]
+[22.66] }
+[22.67] Agent websocket attached for run probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8
+[22.67] [CodexClientThreadRouter] app-server message was not routed {
+[22.67]   kind: 'notification',
+[22.67]   method: 'deprecationNotice',
+[22.67]   requestId: undefined,
+[22.67]   threadCount: 2,
+[22.67]   paramKeys: [ 'summary', 'details' ]
+[22.67] }
+[22.67] Created agent session 0c0bc1dc-890a-4092-9eed-a7b28ed6c77d for run probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8
+[22.67] Agent WebSocket connected: session=0c0bc1dc-890a-4092-9eed-a7b28ed6c77d, run=probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8
+[22.70] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace
+[22.70] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace.
+[22.70] Reusing registered workspace ID: agent_ws_0de7a45cdad6f16bd9533c9be9c13de9dc195628b17ab7b4f9d4229955f7addc
+[22.76] Restart resume resumed delegated run 'probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'
+[22.81] [CodexClientThreadRouter] app-server message was not routed {
+[22.81]   kind: 'notification',
+[22.81]   method: 'deprecationNotice',
+[22.81]   requestId: undefined,
+[22.81]   threadCount: 3,
+[22.81]   paramKeys: [ 'summary', 'details' ]
+[22.81] }
+[22.81] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace
+[22.81] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace.
+[22.82] Reusing registered workspace ID: agent_ws_0de7a45cdad6f16bd9533c9be9c13de9dc195628b17ab7b4f9d4229955f7addc
+[22.82] [CodexClientThreadRouter] app-server message was not routed {
+[22.82]   kind: 'notification',
+[22.82]   method: 'account/updated',
+[22.82]   requestId: undefined,
+[22.82]   threadCount: 3,
+[22.82]   paramKeys: [ 'authMode', 'planType' ]
+[22.82] }
+[22.83] Restart resume resumed member run 'org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' of agent_org 'probe_org_org_claude_rr285mvxgrkpy_0352871cce5a470b9a520a629ede97c8'
+[22.84] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace
+[22.84] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/workspace.
+[22.84] Reusing registered workspace ID: agent_ws_0de7a45cdad6f16bd9533c9be9c13de9dc195628b17ab7b4f9d4229955f7addc
+[22.84] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1' of agent 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1'
+[22.90] Restart resume resumed host run 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'
+[23.01] Restart resume resumed member run 'team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' of agent_team 'probe_team_team_codex_rr285mvxgrkpy_63b838c1cf3b4e528155290d538ca40a'
+[23.01] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed
+[23.12] {"level":40,"time":1793515429875,"pid":66502,"hostname":"MacBookPro","reqId":"req-a","method":"POST","url":"/mcp/agent-tools/agtrun_HRGB0i5g_YWb6zNZY5on0JltyPO-ltWm0-u_Q7GsK78","statusCode":400,"elapsedMs":0.47862499999973807,"msg":"http request completed"}
+[23.35] {"level":40,"time":1793515430108,"pid":66502,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/mcp/agent-tools/agtrun_cMv7otUiSv3sIbq8wGFhXd1smDRubkuzukNpm7PHI1w","statusCode":400,"elapsedMs":0.2889170000003105,"msg":"http request completed"}
+[23.41] {"level":40,"time":1793515430168,"pid":66502,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/mcp/agent-tools/agtrun_Zx5_YGvKrmdIh_oM5BriHBudsNGQtbP4ATFCMWWWkZc","statusCode":400,"elapsedMs":0.25841700000000856,"msg":"http request completed"}
+[48.09] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/memory/agents/probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1/raw_traces_manifest.json
+[48.14] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/memory/agents/probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26/raw_traces_manifest.json
+[48.19] {"level":30,"time":1793515454945,"pid":66502,"hostname":"MacBookPro","reqId":"req-9","err":{"type":"GraphQLError","message":"Run package 'agent:team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' is unavailable.","stack":"Error: Run package 'agent:team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' is unavailable.\n    at RootRunPackageReadinessIndex.assertAdmitted (file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/dist/run-history/services/root-run-package-readiness-index.js:31:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentRunViewProjectionService.getProjection (file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/dist/run-history/services/agent-run-view-projection-service.js:32:9)","path":["getRunProjection"],"locations":[{"line":1,"column":20}],"extensions":{}},"msg":"Run package 'agent:team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' is unavailable."}
+[48.24] {"level":30,"time":1793515454998,"pid":66502,"hostname":"MacBookPro","reqId":"req-a","err":{"type":"GraphQLError","message":"Run package 'agent:org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' is unavailable.","stack":"Error: Run package 'agent:org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' is unavailable.\n    at RootRunPackageReadinessIndex.assertAdmitted (file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/dist/run-history/services/root-run-package-readiness-index.js:31:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentRunViewProjectionService.getProjection (file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/dist/run-history/services/agent-run-view-projection-service.js:32:9)","path":["getRunProjection"],"locations":[{"line":1,"column":20}],"extensions":{}},"msg":"Run package 'agent:org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' is unavailable."}
+[48.28] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF/data/memory/agents/probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8/raw_traces_manifest.json
+[48.33] {"level":30,"time":1793515455087,"pid":66502,"hostname":"MacBookPro","reqId":"req-c","err":{"type":"GraphQLError","message":"Run package 'agent:probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' is unavailable.","stack":"Error: Run package 'agent:probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' is unavailable.\n    at RootRunPackageReadinessIndex.assertAdmitted (file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/dist/run-history/services/root-run-package-readiness-index.js:31:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentRunViewProjectionService.getProjection (file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/dist/run-history/services/agent-run-view-projection-service.js:32:9)","path":["getRunProjection"],"locations":[{"line":1,"column":20}],"extensions":{}},"msg":"Run package 'agent:probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' is unavailable."}
+[48.37] Closed agent session 988c4bf3-ada3-4a44-a228-e57c569b2850
+[48.37] Agent WebSocket disconnected: 988c4bf3-ada3-4a44-a228-e57c569b2850
+[48.38] Closed agent session 0c0bc1dc-890a-4092-9eed-a7b28ed6c77d
+[48.38] Agent WebSocket disconnected: 0c0bc1dc-890a-4092-9eed-a7b28ed6c77d
+[48.38] Closed agent session e579b96a-d2bd-4d73-9650-dc5825a4d9b6
+[48.38] Agent WebSocket disconnected: e579b96a-d2bd-4d73-9650-dc5825a4d9b6

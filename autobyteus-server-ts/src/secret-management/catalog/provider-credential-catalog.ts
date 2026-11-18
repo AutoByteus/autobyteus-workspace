@@ -13,9 +13,29 @@ const SEARCH_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
   vertex_ai_search: "search.vertex-ai.api-key",
 });
 
+/**
+ * Secret IDs that exist only in the test vault, for gated live checks. They are known IDs (test-vault setup and
+ * status), but no consumer is ever authorized to resolve one.
+ */
+export const TEST_ONLY_SECRET_IDS = Object.freeze({
+  githubToken: secretId("test.github.token"),
+});
+
+/**
+ * The vault entry of each integration's credential. Not a fixed ID for batch import or test-vault status: only the
+ * GitHub card stores it (`isKnownSecretId` does not accept it).
+ */
+const INTEGRATION_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
+  github: "integration.github.token",
+});
+
+/** A vault secret ID of an MCP secret: `mcp.<uuid>`, a new one per stored value. */
+const MCP_SECRET_ID_PATTERN = /^mcp\.[0-9a-f-]{36}$/;
+
 const FIXED_SECRET_IDS: readonly string[] = Object.freeze([
   ...FIXED_PROVIDER_SECRET_IDS,
   ...Object.values(SEARCH_BINDINGS),
+  ...Object.values(TEST_ONLY_SECRET_IDS),
 ]);
 
 const notAuthorized = (): Error => new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
@@ -27,10 +47,20 @@ const notAuthorized = (): Error => new Error("SECRET_CONSUMER_NOT_AUTHORIZED");
  */
 export class ProviderCredentialCatalog {
   resolve(consumer: SecretConsumerIdentity): SecretId {
+    if (consumer.kind === "mcpServer") {
+      if (!MCP_SECRET_ID_PATTERN.test(String(consumer.vaultSecretId))) throw notAuthorized();
+      return consumer.vaultSecretId;
+    }
+    if (consumer.kind === "integration") {
+      const mapped = INTEGRATION_BINDINGS[consumer.integrationId];
+      if (!mapped) throw notAuthorized();
+      return secretId(mapped);
+    }
     if (consumer.kind === "agentRuntime") {
-      if (consumer.runtimeKind === "claude_agent_sdk" && consumer.credentialSlot === "apiKey") {
-        return secretId("provider.anthropic.api-key");
-      }
+      if (consumer.credentialSlot !== "apiKey") throw notAuthorized();
+      if (consumer.runtimeKind === "claude_agent_sdk") return secretId("provider.anthropic.api-key");
+      // Read only by the credential proxy's DeepSeek provider relay; dsh never receives it.
+      if (consumer.runtimeKind === "deepseek_harness") return secretId("provider.deepseek.api-key");
       throw notAuthorized();
     }
     if (consumer.kind === "search") {

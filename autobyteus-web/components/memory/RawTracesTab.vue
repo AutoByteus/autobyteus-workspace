@@ -39,7 +39,7 @@
       <div
         v-for="(trace, index) in traces"
         :key="index"
-        class="rounded-md border border-gray-200 p-3"
+        class="rounded-lg border border-gray-200 bg-white p-4"
       >
         <div class="flex items-center justify-between text-xs text-gray-500">
           <span class="font-semibold">{{ trace.traceType }}</span>
@@ -73,8 +73,11 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization';
 import { ref, watch } from 'vue';
 import type { MemoryTraceEvent, RawTraceFileSummary } from '~/types/memory';
+
+const { resolvedLocale } = useLocalization();
 
 const props = withDefaults(defineProps<{
   traces: MemoryTraceEvent[] | null;
@@ -118,7 +121,7 @@ const onFileChange = (event: Event) => {
   emit('selectFile', target.value);
 };
 
-const formatCount = (value: number) => value.toLocaleString();
+const formatCount = (value: number) => value.toLocaleString(resolvedLocale.value);
 
 const formatJson = (payload: unknown) => {
   try {

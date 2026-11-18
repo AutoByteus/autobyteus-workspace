@@ -4,11 +4,20 @@ import { ClaudeSessionEventConverter } from "../../../../../../src/agent-executi
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 
 describe("ClaudeSessionEventConverter", () => {
+  it("autobyteus-526: a Claude notice keeps its one id; a notice without one carries null", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const params = { turnId: "turn-1", sender_id: "system.claude_background_task", content: "Background task completed." };
+    expect(converter.convert({ method: ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION, params: { ...params, message_id: "notice-1" } })[0])
+      .toMatchObject({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, payload: { message_id: "notice-1", turn_id: "turn-1" } });
+    expect(converter.convert({ method: ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION, params })[0])
+      .toMatchObject({ payload: { message_id: null } });
+  });
+
   it("maps a background-task snapshot to a non-activity BACKGROUND_TASK_UPDATED event and rejects invalid snapshots", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const params = {
       task_id: "bg-1", kind: "shell", description: "Sleep 20", command: "sleep 20 && exit 3", status: "failed",
-      summary: "exit 3", started_at: "2026-09-29T16:48:20.000Z",
+      summary: "exit 3", end_reason: null, exit_code: 3, started_at: "2026-09-29T16:48:20.000Z",
     };
 
     expect(converter.convert({ method: ClaudeSessionEventName.BACKGROUND_TASK_UPDATED, params })).toEqual([{
@@ -1040,7 +1049,7 @@ describe("ClaudeSessionEventConverter", () => {
         usage_scope: "per_turn",
         model_provider: "ANTHROPIC",
         provider_name: null,
-        model_identifier: "claude-sonnet-4-6",
+        model_identifier: "claude-sonnet-5",
         reported_input_tokens: 100,
         reported_output_tokens: 20,
         reported_total_tokens: 120,
@@ -1081,7 +1090,7 @@ describe("ClaudeSessionEventConverter", () => {
       statusHint: null,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CLAUDE",
+        runtime_kind: "claude_agent_sdk",
         provider: "claude",
         source_surface: "claude.status_compacting",
         boundary_key: "claude:session-1:claude.status_compacting:op-1:turn-1",
@@ -1116,7 +1125,7 @@ describe("ClaudeSessionEventConverter", () => {
 
     expect(boundary?.payload).toEqual({
       kind: "provider_compaction_boundary",
-      runtime_kind: "CLAUDE",
+      runtime_kind: "claude_agent_sdk",
       provider: "claude",
       source_surface: "claude.compact_boundary",
       boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",

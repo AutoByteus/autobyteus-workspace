@@ -1,0 +1,14 @@
+# IMP-04
+# Command: env -i ... vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (built dist/app.js; RS-01 native -> Antigravity -> native with reload chat, RS-02 settings, RS-03 host with copy)
+# Commit: 1bc6f85506 (worktree build of codex/cross-runtime-resume; the later documents commit changes no code)
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-31
+# Full log: not committed (see excerpt)
+
+# Environment note: worktree build, not a clean clone
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (3 tests) 10265ms
+     ✓ RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, the native candidate writes nothing before the marker  2660ms
+     ✓ RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first message makes it  2030ms
+     ✓ RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and cannot switch  2075ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

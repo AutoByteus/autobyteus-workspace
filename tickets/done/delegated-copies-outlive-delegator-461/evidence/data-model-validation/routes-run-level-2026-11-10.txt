@@ -1,0 +1,9 @@
+  1559  1. on a link (one run delegated to the other)
+  1557  1a.   between the delegator itself and the delegated run
+     2  1b.   another agent of the delegating run (not the delegator) is the sender or receiver
+     6  2. through the Task's record
+     6  2b.   a Task's assigner run and a run of that Task
+    36  3. no route
+    33  3a.   neither run has a Task record
+     3  3b.   other
+  1601  between two runs

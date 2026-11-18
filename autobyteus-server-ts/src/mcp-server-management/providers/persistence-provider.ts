@@ -1,5 +1,9 @@
 import type { BaseMcpConfig } from "autobyteus-ts/tools/mcp/types.js";
-import { FileMcpServerConfigProvider } from "./file-provider.js";
+import {
+  FileMcpServerConfigProvider,
+  type McpReferenceChange,
+  type McpReferenceReplacement,
+} from "./file-provider.js";
 
 export type McpPersistenceProviderContract = {
   getByServerId(serverId: string): Promise<BaseMcpConfig | null>;
@@ -7,6 +11,7 @@ export type McpPersistenceProviderContract = {
   deleteByServerId(serverId: string): Promise<boolean>;
   create(domainObj: BaseMcpConfig): Promise<BaseMcpConfig>;
   update(domainObj: BaseMcpConfig): Promise<BaseMcpConfig>;
+  replaceWithReferences(changes: readonly McpReferenceChange[]): Promise<McpReferenceReplacement>;
 };
 
 export class McpServerPersistenceProvider {
@@ -30,5 +35,9 @@ export class McpServerPersistenceProvider {
 
   async update(domainObj: BaseMcpConfig): Promise<BaseMcpConfig> {
     return this.provider.update(domainObj);
+  }
+
+  async replaceWithReferences(changes: readonly McpReferenceChange[]): Promise<McpReferenceReplacement> {
+    return this.provider.replaceWithReferences(changes);
   }
 }

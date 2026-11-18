@@ -1,0 +1,16 @@
+1587a1588,1602
+>   // ab265 TEMPORARY OBSERVER (untracked copy only): GraphQL ops, Org WebSocket frame types, Save bar text changes.
+>   const obsFile = path.join(outDir, 'observer.log'); await fs.mkdir(outDir, { recursive: true })
+>   const obs = (line) => { try { require('node:fs').appendFileSync(obsFile, `${new Date().toISOString()} ${line}\n`) } catch {} }
+>   const opOf = (req) => { try { const b = req.postDataJSON(); return (Array.isArray(b) ? b : [b]).map(x => x?.operationName ?? '?').join('+') } catch { return '?' } }
+>   page.on('request', (req) => { if (req.url().includes('/graphql')) obs(`gql-req ${opOf(req)}`) })
+>   page.on('response', async (res) => { const req = res.request(); if (!req.url().includes('/graphql')) return
+>     let errs = null; try { const j = await res.json(); errs = (Array.isArray(j) ? j : [j]).flatMap(x => x?.errors ?? []).map(e => e.message).join('|') || null } catch {}
+>     obs(`gql-res ${opOf(req)} status=${res.status()} errors=${errs}`) })
+>   page.on('websocket', (ws) => { const u = ws.url(); obs(`ws-open ${u}`)
+>     ws.on('framereceived', (f) => { const t = /"type"\s*:\s*"([A-Z_]+)"/.exec(String(f.payload))?.[1]; const k = /"root_subject_kind"\s*:\s*"([a-z_]+)"/.exec(String(f.payload).slice(0, 4000))?.[1]; if (t === 'CONNECTED' || t === 'ROOT_EXECUTION_VIEW_SNAPSHOT') obs(`ws ${t} kind=${k} ${u}`) })
+>     ws.on('close', () => obs(`ws-close ${u}`)) })
+>   page.on('console', (m) => { const t = m.text(); if (t.startsWith('[OBS]')) obs(t) })
+>   await context.addInitScript(() => { let last = null; setInterval(() => {
+>     const el = document.querySelector('[data-test="existing-run-save-bar"]'); const t = el ? el.innerText.replace(/\s+/g, ' ').trim() : null
+>     if (t !== last) { last = t; console.log(`[OBS] savebar ${JSON.stringify(t)}`) } }, 100) })

@@ -19,6 +19,11 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { createTaskLocatorCases } from './project-manager-ux-task-locator-cases.mjs';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -78,14 +83,14 @@ const spawnLogged = (cmd, args, cwd, env, name) => {
   return child;
 };
 const backendEnv = () => ({ APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataRoot, 'db', 'development.db')}`,
-  AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
+  AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
   AUTOBYTEUS_MEMORY_DIR: path.join(stack.dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(stack.dataRoot, 'temp_workspace') });
 const startBackend = async (port) => {
   stack.backendStarts += 1;
   const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_') && !k.startsWith('ENABLE_'))), ...backendEnv(),
     ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', stack.dataRoot],
-    serverDir, env, `backend-${stack.backendStarts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.backendStarts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -104,7 +109,7 @@ const startStack = async () => {
     { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('ENABLE_'))), NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1',
       BACKEND_NODE_BASE_URL: stack.backendUrl,
       BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
-      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
       BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
   await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240000);
   evidence.stack = { backendUrl: stack.backendUrl, frontendUrl: stack.frontendUrl, dataRoot: stack.dataRoot };
@@ -175,10 +180,12 @@ const ensureWorkspace = async () => {
   }
 };
 const createProject = async (name) => (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name } })).createProject.projectId;
+/** autobyteus-260: a Project Task has a title; here its description's first line, as its writer would name it. */
+const firstLine = (description) => description.split('\n').map((line) => line.trim()).find(Boolean);
 const createTask = async (projectId, description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-  { input: { projectId, description } })).createProjectTask.taskId;
-const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot{kind runId}}}}', { id: projectId })).projectTasks;
-const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress start closed status}}}')).tasksWithoutProject;
+  { input: { projectId, title: firstLine(description), description } })).createProjectTask.taskId;
+const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot: delegatingRun{kind runId}}}}', { id: projectId })).projectTasks;
+const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress ingressAgentRunId start closed status}}}')).tasksWithoutProject;
 const createRoot = async (kind, ids) => {
   if (kind === 'agent') {
     const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: ids.manager, ...config() } })).createAgentRun;
@@ -206,7 +213,10 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -221,6 +231,7 @@ let browser;
 const openPages = [];
 const newPage = async ({ width = 1440, height = 1000, locale = 'en-US' } = {}) => {
   const context = await browser.newContext({ viewport: { width, height }, locale });
+  await attachToBrowserContext(context);
   const page = await context.newPage();
   openPages.push({ context, page });
   const errors = [];
@@ -233,7 +244,15 @@ const newPage = async ({ width = 1440, height = 1000, locale = 'en-US' } = {}) =
   page.consoleLog = [];
   page.on('console', (m) => { page.consoleLog.push(`${m.type()}: ${m.text()}`.slice(0, 400)); if (page.consoleLog.length > 200) page.consoleLog.shift(); });
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error' && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization/.test(m.text())) errors.push(m.text()); });
+  // DEC-012 (autobyteus-318): the probe's own reload aborts the app's sockets, and the app rightly logs a socket error
+  // for that. Console errors from the probe's own reload are not counted until the reloaded page has loaded.
+  let ownReload = false;
+  page.on('load', () => { ownReload = false; });
+  page.reloadOwn = async (options) => {
+    ownReload = true;
+    try { return await page.reload(options); } catch (error) { ownReload = false; throw error; }
+  };
+  page.on('console', (m) => { if (m.type() === 'error' && !ownReload && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization/.test(m.text())) errors.push(m.text()); });
   return { context, page, errors };
 };
 const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
@@ -304,7 +323,7 @@ const listAndBoardLive = async () => {
     await page.getByTestId(`project-card-${s.projectId}`).click();
     await row(page, s.taskA).waitFor({ timeout: 30000 });
     assert(await rootLine(page, s.taskA).count() === 0, 'an unassigned Task shows no root line');
-    s.input.send(callTool('create_task', { project_id: s.projectId, description: 'Agent-created follow-up' }));
+    s.input.send(callTool('create_task', { project_id: s.projectId, title: 'Agent-created follow-up', description: 'Agent-created follow-up' }));
     const arrived = await until('agent-created Task arrives', async () => {
       const rows = await page.locator('[data-live="arrived"]').evaluateAll((es) => es.map((e) => e.getAttribute('data-testid')));
       return rows.length ? rows : null;
@@ -406,23 +425,31 @@ const teamAndOtherHosts = async () => {
   } finally { /* the runner captures a failing page, then closes it */ }
 };
 
-/** AR-002: a root whose hosting run was deleted from history shows its status but cannot be opened. */
+/** AR-002, revised by autobyteus-461 (REQ-007, TC-3, SR-080): a delegated run whose delegating run was deleted is a run of its own, listed and openable. */
 const deletedHost = async () => {
   const s = await setupAgentRoot();
   const { page, errors, context } = await newPage();
   try {
     assert((await rootOf(s.projectId, s.taskB))?.start === 'started', 'needs PMU-003 (task Team root)');
     assert((await terminate(s.root)).success, 'terminate the Agent run');
+    // autobyteus-461 REQ-001: the task Team outlives its delegator's Stop; it is stopped by its own Stop (and REQ-007 refuses
+    // deleting the host while it works).
+    const taskTeam = await rootOf(s.projectId, s.taskB);
+    const teamStopped = (await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: taskTeam.teamRunId })).terminateAgentTeamRun;
+    assert(teamStopped.success, 'stop the task Team by its own Stop', teamStopped);
     await goto(page, `/projects/${s.projectId}`);
     const listed = await until('terminated host still listed: openable, Offline', async () => { const r = await rootState(page, s.taskB); return r?.state === 'offline' && r.openable === 'true' ? r : null; }, 30000);
     const deleted = (await gql('mutation($id:String!){deleteStoredRun(runId:$id){success message}}', { id: s.root.rootId })).deleteStoredRun;
     assert(deleted.success, 'delete the Agent run', deleted);
     await goto(page, `/projects/${s.projectId}`);
-    const gone = await until('deleted host: not openable', async () => { const r = await rootState(page, s.taskB); return r?.openable === 'false' ? r : null; }, 30000);
-    assert(gone.tag === 'DIV', 'not focusable', gone);
-    await shot(page, 'pmu-004-deleted-host-not-openable');
+    // autobyteus-461 REQ-007 / TC-3 and SR-080: once its delegating run is deleted, the task Team is a run of its own, listed,
+    // so its line stays openable (base's AR-002 hid a hosted copy whose host was deleted) and opens the Team's own view.
+    const own = await until('deleted host: the task Team is a run of its own, openable', async () => { const r = await rootState(page, s.taskB); return r?.openable === 'true' ? r : null; }, 30000);
+    await rootLine(page, s.taskB).click();
+    await until('the task Team opens in its own view', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
+    await shot(page, 'pmu-004-deleted-host-team-of-its-own');
     assertNoBrowserErrors(errors);
-    return { listed, gone, errors };
+    return { listed, own, errors };
   } finally { /* the runner captures a failing page, then closes it */ }
 };
 
@@ -550,6 +577,7 @@ const warmUpFrontend = async () => {
   const reloads = () => (stack.frontend.output.match(/optimized dependencies changed/g) ?? []).length;
   const before = reloads();
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  await attachToBrowserContext(context);
   const page = await context.newPage();
   try {
     for (const route of ['/workspace', '/projects', '/projects/temp-tasks', '/workspace']) {
@@ -723,6 +751,12 @@ const tempReactivationAndChatDeletion = async () => {
     await runRow.locator('[data-test="terminate-agent-run"]').click();
     await until('run inactive', async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })) !== undefined
       && (await runRow.locator('[data-test="terminate-agent-run"]').count()) === 0, 30000);
+    // autobyteus-461 REQ-001 / REQ-007: the chat's delegated copies outlive its Stop, and deleting it is refused while one
+    // works; they are stopped by their own Stop first (K-14: the delete then removes the Temp tasks it assigned).
+    for (const t of [temp, second]) {
+      const copyId = (await tempTasks()).find((x) => x.taskId === t.taskId)?.root?.ingressAgentRunId;
+      if (copyId) await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: copyId });
+    }
     await runRow.hover();
     await runRow.locator('button[title="Delete run permanently"]').click();
     await page.locator('[role="dialog"] button').last().click();
@@ -785,7 +819,7 @@ const orgRootUnhydrated = async () => {
     await line.waitFor({ timeout: 30000 });
     await line.click();
     await until('org worker conversation opened', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
-    const workerRow = page.locator(`[data-test="agent-org-task-agent-row-${hosted.ingressAgentRunId}"]`);
+    const workerRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${hosted.ingressAgentRunId}"]`);
     const selected = await until('org worker row selected', () => isSelected(workerRow), 15000).catch(() => false);
     await shot(page, 'pmu-012-org-root-opened-cold');
     assertNoBrowserErrors(errors);
@@ -883,7 +917,7 @@ const createTaskWithFile = async (projectId, description) => {
   const data = new FormData(); data.set('file', new Blob(['Launch checklist bytes'], { type: 'text/plain' }), 'checklist.txt');
   const file = await (await fetch(`${stack.backendUrl}/rest/projects/${projectId}/task-context-drafts/${draft.draftId}/context-files`, { method: 'POST', body: data })).json();
   return (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-    { input: { projectId, description, contextDraft: { draftId: draft.draftId, storedFilenames: [file.storedFilename] } } })).createProjectTask.taskId;
+    { input: { projectId, title: firstLine(description), description, contextDraft: { draftId: draft.draftId, storedFilenames: [file.storedFilename] } } })).createProjectTask.taskId;
 };
 /** Every part of a card must be inside the card and on screen (nothing pushed out, nothing overflowing sideways). */
 const cardLayout = (page, taskId) => row(page, taskId).evaluate((element) => {
@@ -994,9 +1028,11 @@ const projectsTab = async () => {
   await shot(page, 'pmu-015-tab-board');
   // The manager adds a Task while its chat stays in the center.
   const chatUrl = page.url();
-  input.send(callTool('create_task', { project_id: projectId, description: 'Agent-added from the chat' }));
+  input.send(callTool('create_task', { project_id: projectId, title: 'Agent-added from the chat', description: 'Agent-added from the chat\nWith a second line.' }));
   const added = await until('Task arrives in the tab live', async () => (await projectTasks(projectId)).find((t) => t.taskId !== existing)?.taskId, 30000);
   await panelRow(added).waitFor({ timeout: 15000 });
+  // autobyteus-260 REQ-006: the panel's card shows the agent's title.
+  assert(await panelRow(added).getByTestId('project-task-row-text').innerText() === 'Agent-added from the chat', 'the tab card shows the title');
   assert(page.url() === chatUrl, 'the chat stays in the center');
   // A worker opens in the center; the Projects tab stays selected.
   input.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, task_id: existing }));
@@ -1004,6 +1040,9 @@ const projectsTab = async () => {
   await workerLine.waitFor({ timeout: 60000 });
   await workerLine.click();
   await until('worker conversation in the center', async () => /You have a new task from/.test(await centerText(page)), 30000);
+  // autobyteus-260 REQ-017, AC-015: the worker's first message names its Task and Project (rendered in the center).
+  const firstMessageKey = (await projectTasks(projectId)).find((t) => t.taskId === existing).taskKey;
+  assert((await centerText(page)).includes(`Task: ${firstMessageKey} in Project ${projectId}`) && (await centerText(page)).includes('If you have get_project_task, it reads this Task again, including comments added later.'), 'the first message names the Task and Project', { firstMessageKey });
   assert(await tabButton().getAttribute('aria-selected') === 'true' && await panel.isVisible(), 'the Projects tab stays selected');
   await shot(page, 'pmu-015-worker-open-tab-kept');
   // Card → detail in the tab → back, with search kept.
@@ -1012,6 +1051,8 @@ const projectsTab = async () => {
   await panel.getByTestId('projects-panel-task').waitFor();
   const detail = await panel.getByTestId('projects-panel-task-description').innerText();
   assert(detail === 'Prepare the launch checklist', 'full description in the tab', { detail });
+  // autobyteus-260 DEC-018 (2): the tab's Task view shows the title above the description.
+  assert(await panel.getByTestId('projects-panel-task-title').innerText() === 'Prepare the launch checklist', 'title in the tab Task view');
   // task-keys-and-dependencies (REQ-022): in-app Task links use the key URL.
   const existingKey = (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey}}', { id: projectId })).projectTasks.find((t) => t.taskId === existing).taskKey;
   assert(await panel.getByTestId('projects-panel-task-open-page').getAttribute('href') === `/projects/${projectId}/tasks/${existingKey}`, 'Open in Projects links the Task page by key');
@@ -1026,7 +1067,7 @@ const projectsTab = async () => {
   // The choice survives a reload.
   await panel.getByTestId('projects-panel-picker-select').selectOption('temp');
   await panel.getByTestId('temp-task-board').waitFor();
-  await page.reload({ waitUntil: 'networkidle' });
+  await page.reloadOwn({ waitUntil: 'networkidle' });
   await tabButton().waitFor({ timeout: 60000 });
   if (await tabButton().getAttribute('aria-selected') !== 'true') await tabButton().click();
   await until('Temp tasks remembered after reload', async () => (await panel.getByTestId('projects-panel-picker-select').inputValue().catch(() => '')) === 'temp', 30000);
@@ -1347,8 +1388,11 @@ const selectionState = (page) => page.evaluate(() => {
   const pinia = document.querySelector('#__nuxt')?.__vue_app__?.config.globalProperties.$pinia;
   const selection = pinia?._s.get('agentSelection'); const teams = pinia?._s.get('agentTeamContexts');
   const u = new URL(location.href);
+  // The run the window shows (autobyteus-461 rule 2: a delegated run opens as its own run, not as a focus of its root Team).
+  const target = pinia?._s.get('activeContext')?.activeWorkspaceTarget;
   return { route: `${u.pathname}${u.search}`, subject: JSON.stringify(selection?.subject ?? null),
-    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null };
+    focusedMember: teams?.activeExecutionFocusedMemberAddress ?? null, focusedRunId: teams?.focusedMemberContext?.state?.runId ?? null,
+    activeRunId: target?.agentRunId ?? target?.context?.state?.runId ?? null };
 });
 /** The visible tree's selected rows and its scroll geometry. */
 const treeSummary = (page) => page.evaluate(() => {
@@ -1587,8 +1631,9 @@ const collapsedStripOtherEntries = async () => {
     const squad = await until('team: task Team started', async () => { const r = await rootOf(projectId, teamTask); return r?.start === 'started' && r.teamRunId ? r : null; }, 60000);
     await openTeamRunFromPanel(page, names, teamRoot);
     await tabList.first().waitFor({ timeout: 60000 });
-    // Task-Team member rows carry the host Team run and the member's address under the task Team.
-    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="${squad.recipientAddress}/editor"][data-agent-run-id]`).first();
+    // Task-Team member rows carry the host Team run and the member's address in its own team (autobyteus-461 TC-12: a delegated
+    // team is rooted at `/`, so the member is `/editor`, not `<task Team address>/editor`).
+    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="/editor"][data-agent-run-id]`).first();
     await until('nested task Team member row', async () => {
       if (await editorRow.count()) return true;
       const closed = page.locator('[data-test="workspace-team-transient-disclosure"][aria-expanded="false"]');
@@ -1602,7 +1647,8 @@ const collapsedStripOtherEntries = async () => {
     });
     const nestedMember = { agentRunId: await editorRow.getAttribute('data-agent-run-id'), address: await editorRow.getAttribute('data-member-address'), depth: await editorRow.getAttribute('data-tree-depth') };
     await editorRow.click();
-    await until('nested member selected', async () => (await selectionState(page)).focusedRunId === nestedMember.agentRunId, 30000);
+    // Rule 2: the nested member opens as its own run (the root Team's focus is left alone).
+    await until('nested member opened', async () => (await selectionState(page)).activeRunId === nestedMember.agentRunId, 30000);
     await collapseLeftPanel(page);
     const nestedOpen = await settledOpenRun(page, 'nested member');
     assert(nestedOpen.nav.stripChatLit === false, 'nested member: Chat not lit', nestedOpen.nav);

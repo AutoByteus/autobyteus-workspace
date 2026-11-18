@@ -26,7 +26,7 @@
         :title="$t('workspace.components.workspace.running.RunningTeamGroup.start_new_team_run')"
         @click.stop="$emit('create', definitionId)"
       >
-        <span class="i-heroicons-plus-20-solid h-4 w-4" />
+        <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
       </button>
     </div>
 

@@ -1,0 +1,15 @@
+# IMP-19 CR-001 fix: gate, plugin spec, web suite
+# commands: pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-web exec vitest run plugins/__tests__/apollo.client.spec.ts; pnpm -C autobyteus-web test:nuxt --run
+# commit: 256cee925e
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:50:20Z
+
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+plugins/__tests__/apollo.client.spec.ts: Tests  2 passed (2)
+ Test Files  666 passed (666)
+      Tests  4836 passed | 2 skipped (4838)
+exit 0
+
+git grep for the removed slots outside the plugin and getter:
+(none)

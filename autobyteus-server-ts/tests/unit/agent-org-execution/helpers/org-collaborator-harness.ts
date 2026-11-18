@@ -1,3 +1,5 @@
+import { messageFeedInto } from "../../../helpers/view-streams.js";
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -8,7 +10,6 @@ import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-defi
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
-import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentOrgRun } from "../../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { RootTeamExecutionDirectory } from "../../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -18,12 +19,13 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
-import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -34,8 +36,9 @@ export const cleanupDirectories = () => Promise.all(directories.splice(0).map((d
 
 export const validator = (runnable = true) => ({
   validate: vi.fn(),
-  validateMany: vi.fn(async (inputs: readonly unknown[]) => inputs.map(() => runnable
-    ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
+  // A valid check returns the canonical selection; these launches declare every key, so it equals the input.
+  validateMany: vi.fn(async (inputs: readonly unknown[]) => inputs.map((input) => runnable
+    ? { kind: "valid" as const, selection: (input as { selection: { llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null } }).selection }
     : { kind: "model_unavailable" as const })),
 }) as unknown as RunModelSelectionValidator;
 
@@ -52,6 +55,7 @@ export const admission = (runnable = true) => {
   })];
   return createCollaboratorAdmission({
     listAgentDefinitions: async () => agents,
+    isAgentHidden: () => false,
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
@@ -72,11 +76,14 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   ] });
   const messages = { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: root.rootRunId, messages: [] };
   const executionTreeStore = new AgentOrgRunExecutionTreeStore();
+  // The coordinator's fail-stop callback, observable by tests (the Org root reads its latch on the next write).
+  const enterPersistenceFailStop = vi.fn();
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: root.rootRunId, orgMemoryDir,
-    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
+    executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop });
   await persistence.commitInitial({ tree, messages });
   let run: AgentOrgRun | undefined;
   const resources = new InMemoryTaskExecutionResources();
+  // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
   const callbacks: FlatTeamExecutionCallbacks = {
     buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
     publishAgentEvent: (identity, event) => run?.onAgentExecutionEvent(identity, event),
@@ -91,22 +98,15 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
         physicalScope: { root, ancestorTeamRunIds: [member.teamRunId] }, callbacks, activationMode: "fresh" })).commitAfterDurability();
     }
   }
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
-  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
-    taskExecutionIdentity: {
-      agentRuns: { allocateForAgentDefinition: async () => `task-agent-${++allocation}` },
-      taskTeams: { create: async ({ source }: { source: TeamRunAgentTeamNode }) => {
-        const id = `task-team-${++allocation}`;
-        return { teamNode: { ...source, teamRunId: id,
-          children: source.children.map((child) => ({ ...child, agentRunId: `${id}-${child.address.split("/").at(-1)}`, platformAgentRunId: null })) } };
-      } },
-    } as never,
+  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskExecutionResources: resources,
+    taskRecords: resources,
+    delegationIndex: noDelegations(),
   });
   run.activate();
-  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources };
+  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources, enterPersistenceFailStop };
 };

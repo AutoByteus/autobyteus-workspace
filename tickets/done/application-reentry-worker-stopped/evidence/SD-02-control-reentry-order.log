@@ -1,0 +1,13 @@
+# SD-02 control: TEMPORARY diagnostic in application-reentry-service.ts recoverParticipants: resumeApplication -> activateApplication -> tool lifecycle open -> resumePendingEventsForApplication, no ensureReady (reverted with git checkout right after; never committed). SO still fails only on the quarantine text (FU-002, not part of this control).
+[AB296] reload errors null
+[AB296] after package reload: launch settings (soft) 200 {"applicationId":"<id>","slots":[{"slot":{"slotKey":"draftingTeam","name":"Drafting Team","description":"Team resource used when Brief Studio launches a new drafting run.","allowedExecutionResourceKinds":["AGENT_TEAM"],"allowedExecutionResourceSources":["bundle","shared"],
+[AB296] repair 200 {"applicationId":"<id>","state":"ACTIVE","detail":null,"updatedAt":"2026-10-24T18:24:53.455Z"}
+[AB296] after repair: launch settings 200 {"applicationId":"<id>","slots":[{"slot":{"slotKey":"draftingTeam","name":"Drafting Team","description":"Team resource used when Brief Studio launches a new drafting run.","allowedExecutionResourceKinds":["AGENT_TEAM"],"allowedExecutionResourceSources":["bundle","shared"],"required":true
+[AB296] after repair: ensure-ready 200 {"applicationId":"<id>","state":"ready","ready":true,"startedAt":"2026-10-24T18:24:53.802Z","lastFailure":null,"exposures":{"supportedExposures":{"queries":false,"commands":false,"routes":false,"graphql":true,"notifications":true,"eventHandlers":true,"webSockets":false},"queries":[],"comman
+[AB296] after repair: app graphql 200 {"result":{"data":{"createBrief":{"briefId":"brief-566ac5fa-3d89-4570-8183-707ec92b1782","title":"AB296 after repair","status":"not_started","latestBindingId":null,"latestRunId":null,"latestBindingStatus":null,"lastErrorMessage":null,"createdAt":"2026-10-24T18:24:53.807Z","updatedAt":"2026-1
+[AB296] signed-out import: launch settings 503 {"detail":"Application '<id>' is currently quarantined: Application setup is required after catalog transition.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+     ✓ RR: an ACTIVE application stays usable after a package reload and after a repair  1933ms
+     × SO: imported while Codex is signed out, it says why; after sign-in, the repair returns it to ACTIVE 305ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 'Application \'bundle-app__6170706c696…' to contain 'Codex authentication is unavailable'
+      Tests  1 failed | 1 passed (2)

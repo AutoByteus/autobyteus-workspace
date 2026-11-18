@@ -1,0 +1,14 @@
+# Check: IMP-07
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit (full server unit suite), then the one failing file alone x3
+# Commit: base 827f1e68dc + working tree = e0bb6399c7
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > exchanges a single-use code for a credential and rejects reuse
+ Test Files  1 failed | 894 passed | 4 skipped (899)
+      Tests  1 failed | 7581 passed | 7 skipped (7589)
+## rerun alone x3
+      Tests  14 passed (14)
+      Tests  14 passed (14)
+      Tests  14 passed (14)

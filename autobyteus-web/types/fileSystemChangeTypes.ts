@@ -29,8 +29,8 @@ export interface MoveChange {
   new_parent_id: string
 }
 
+/** A file's content changed on disk; `path` is workspace-relative, whether or not the tree has loaded it. */
 export interface ModifyChange {
   type: 'modify'
-  node_id: string
-  parent_id: string
+  path: string
 }

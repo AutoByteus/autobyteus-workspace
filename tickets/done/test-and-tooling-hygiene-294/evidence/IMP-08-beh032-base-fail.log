@@ -1,0 +1,56 @@
+# IMP-08 BEH-032 specs fail on the base production file and pass with the fix (AC-034)
+# command: per bug, the production file checked out from origin/personal (2f48d85d4d), the spec run, the file restored, the spec run again
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:31:38Z
+
+### BEH-032 (a) — composables/mobile/useMobileRunSetupController.ts with components/mobile/__tests__/MobileRunSetupTeamWorkspacePath.spec.ts
+-- on the base file:
+   × Mobile Team setup: load a workspace by path (BEH-032 a) > makes the loaded workspace the Team setup's workspace 41ms
+   × Mobile Team setup: load a workspace by path (BEH-032 a) > shows a failed load's message in the workspace picker 16ms
+     → Unable to get [data-testid="mobile-run-workspace-error"] within: <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" aria-busy="false">
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { workspaceId: 'workspace-1', …(1) } to match object { …(2) }
+Error: Unable to get [data-testid="mobile-run-workspace-error"] within: <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" aria-busy="false">
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+TypeError: loadingStore.setWorkspaceLoading is not a function
+-- with the fix:
+ ✓ components/mobile/__tests__/MobileRunSetupTeamWorkspacePath.spec.ts (2 tests) 43ms
+      Tests  2 passed (2)
+
+### BEH-032 (b) — utils/teamLaunchReadinessCore.ts with utils/__tests__/teamLaunchReadinessCore.spec.ts
+-- on the base file:
+   × evaluateTeamLaunchProfileReadiness > names a member without a runtime by its display name 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { canSave: false, …(1) } to deeply equal { canSave: false, …(1) }
+      Tests  1 failed (1)
+-- with the fix:
+ ✓ utils/__tests__/teamLaunchReadinessCore.spec.ts (1 test) 2ms
+      Tests  1 passed (1)
+
+### BEH-032 (c) — components/mobile/MobileTeamMessages.vue with components/mobile/__tests__/MobileTeamMessages.spec.ts
+-- on the base file:
+   ✓ MobileTeamMessages current TeamExecutionView > renders exact structured references without linkifying prose paths 25ms
+   × MobileTeamMessages current TeamExecutionView > names the message counterpart by its label 7ms
+   ✓ MobileTeamMessages current TeamExecutionView > opens and closes the exact TeamRun/message/reference identity 14ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 'HandoffApr 12, 12:00 PMFrom teammateP…' to contain 'From solution designer'
+      Tests  1 failed | 2 passed (3)
+-- with the fix:
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (3 tests) 44ms
+      Tests  3 passed (3)
+
+### BEH-032 (d) — components/settings/providerApiKey/customProvider/CustomProviderDetailsCard.vue with components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts
+-- on the base file:
+   ✓ CustomProviderDetailsCard > renders only current custom-provider identity and model-count fields 8ms
+   × CustomProviderDetailsCard > shows an unknown model count as "—" with the loading label 7ms
+     → Unable to get [data-testid="custom-provider-model-count"] within: <section class="rounded-xl border border-gray-200 bg-white shadow-sm px-5 py-4 space-y-4" data-testid="custom-provider-details-card">
+   × CustomProviderDetailsCard > labels a known model count without the loading label 2ms
+     → Unable to get [data-testid="custom-provider-model-count"] within: <section class="rounded-xl border border-gray-200 bg-white shadow-sm px-5 py-4 space-y-4" data-testid="custom-provider-details-card">
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+Error: Unable to get [data-testid="custom-provider-model-count"] within: <section class="rounded-xl border border-gray-200 bg-white shadow-sm px-5 py-4 space-y-4" data-testid="custom-provider-details-card">
+    7279|         throw new Error("Unable to get ".concat(selector, " within: ")…
+-- with the fix:
+ ✓ components/settings/providerApiKey/customProvider/__tests__/CustomProviderDetailsCard.spec.ts (3 tests) 14ms
+      Tests  3 passed (3)
+

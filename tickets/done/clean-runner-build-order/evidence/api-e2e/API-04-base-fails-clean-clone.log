@@ -1,0 +1,57 @@
+# Case: API-04
+# Command: the base of the change (aa93bdcdfb^ = b05dc78c08): same clean-clone steps; the web gate must fail, as in the original incident
+# Commit: b05dc78c08 (code identical to aa93bdcdfb: only DESIGN.md and ticket documents differ)
+# Environment: macOS arm64 (Darwin 25.5), Node v22.23.1, pnpm 10.28.2, fresh clone in /tmp, no node_modules or build output before the run
+# Date: 2026-11-02
+
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.3s using pnpm v10.28.2
+install exit 0
+----
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.11-beta.10 prepare:shared-types /private/tmp/api-crb-base/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /private/tmp/api-crb-base/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/api-crb-base/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/tmp/api-crb-base/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/api-crb-base/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/tmp/api-crb-base/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 31.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 392 errors, exit 2, 19.2s
+
+Production files must have no type errors:
+[typecheck] production errors: 392; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] FAIL
+ ELIFECYCLE  Command failed with exit code 1.
+web typecheck exit 1
+TS2307 lines in the full log: 325
+---- first TS2307 and first Prisma error:
+../autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts(2,44): error TS2307: Cannot find module 'autobyteus-ts/agent/message/agent-input-user-message.js' or its correspondi
+../autobyteus-server-ts/src/secret-management/persistence/secret-encryption-metadata-repository.ts(2,3): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+----
+[typecheck] new test file with errors: tests/integration/app-data-migrations/app-data-migration-summary-schema-migration.integration.test.ts (3)
+[typecheck] new test file with errors: tests/integration/token-usage/repositories/token-usage-analytics-atomicity.integration.test.ts (2)
+[typecheck] new test file with errors: tests/unit/app-data-migrations/app-data-migration-record-repository.test.ts (1)
+[typecheck] new test file with errors: tests/unit/config/prisma-import-lifecycle.test.ts (1)
+[typecheck] new test file with errors: tests/unit/startup/token-meter-context-readings-migration.test.ts (1)
+[typecheck] new test file with errors: tests/unit/startup/token-usage-current-schema-readiness.test.ts (1)
+[typecheck] more errors than the baseline: tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts (5, baseline 4)
+[typecheck] more errors than the baseline: tests/unit/token-usage/services/token-usage-run-accumulator.test.ts (4, baseline 2)
+[typecheck] production errors: 70; test-file errors: 1219 in 386 files (baseline 1185 in 366 files)
+[typecheck] FAIL
+ ELIFECYCLE  Command failed with exit code 1.
+server typecheck exit 1

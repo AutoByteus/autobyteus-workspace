@@ -1,0 +1,9 @@
+Check: IMP-08
+Command: pnpm test in autobyteus-collaboration-stream-contracts and autobyteus-team-stream-contracts (clean clone)
+Commit: d3463e0a7e
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+collaboration: pass 40 fail 0
+team: pass 22 fail 0
+git status: tracked dist/ unchanged after the builds

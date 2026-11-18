@@ -5,10 +5,7 @@ import {
   unknownDistinctValue,
   type DistinctValueSummary,
 } from "../domain/token-usage-distinct-value-summary.js";
-import type {
-  TokenUsageAccountingSummarySource,
-  TokenUsagePricingSummary,
-} from "../domain/token-usage-accounting-summary.js";
+import type { TokenUsageAccountingSummarySource } from "../domain/token-usage-accounting-summary.js";
 import type { TokenUsageRunRecord } from "../domain/token-usage-run-record.js";
 import { compareAdmissionMarkers } from "../domain/token-usage-snapshot-checkpoint.js";
 import {
@@ -17,10 +14,6 @@ import {
   TokenUsageSafeIntegerExceededError,
   type TokenUsageCostSummaryAggregate,
 } from "./token-usage-cost-summary-aggregate.js";
-import {
-  emptyTokenUsagePricingSummary,
-  mergeTokenUsagePricingSummaries,
-} from "./token-usage-pricing-summary.js";
 import { latestSelectedClaudeSdkRawIdFromState } from "./claude-sdk-model-usage-reconciler.js";
 
 export { TokenUsageSafeIntegerExceededError };
@@ -147,12 +140,24 @@ export const buildTokenUsageRunSummaryFromRecords = (input: {
 export const buildStandaloneRunTokenUsageSummaryFromRecords = (input: {
   hostRunId: string;
   records: readonly TokenUsageRunRecord[];
-}): TokenUsageRunSummaryPayload => {
-  const total = buildTokenUsageRunSummaryFromRecords({ runId: input.hostRunId, records: input.records });
-  const host = buildTokenUsageRunSummaryFromRecords({
-    runId: input.hostRunId,
-    records: input.records.filter((record) => record.runId === input.hostRunId),
-  });
+}): TokenUsageRunSummaryPayload => buildRollUpSummary(input.hostRunId, input.records, (record) => record.runId === input.hostRunId);
+
+/**
+ * A team or org run's roll-up (REQ-009, CR-461-004): the totals cover its own records and those of every run delegated
+ * from it; the identity and the latest context stay the run's own (its records name it as their root team run).
+ */
+export const buildTeamRunTokenUsageSummaryFromRecords = (input: {
+  rootTeamRunId: string;
+  records: readonly TokenUsageRunRecord[];
+}): TokenUsageRunSummaryPayload => buildRollUpSummary(input.rootTeamRunId, input.records, (record) => record.rootTeamRunId === input.rootTeamRunId);
+
+const buildRollUpSummary = (
+  runId: string,
+  records: readonly TokenUsageRunRecord[],
+  isOwn: (record: TokenUsageRunRecord) => boolean,
+): TokenUsageRunSummaryPayload => {
+  const total = buildTokenUsageRunSummaryFromRecords({ runId, records });
+  const host = buildTokenUsageRunSummaryFromRecords({ runId, records: records.filter(isOwn) });
   return {
     ...total,
     root_team_run_id: host.root_team_run_id,
@@ -168,10 +173,3 @@ export const buildStandaloneRunTokenUsageSummaryFromRecords = (input: {
     latest_selected_raw_model_id: host.latest_selected_raw_model_id,
   };
 };
-
-export const mergePricingSummariesForRecords = (
-  records: readonly TokenUsageRunRecord[],
-): TokenUsagePricingSummary => records.reduce(
-  (summary, record) => mergeTokenUsagePricingSummaries(summary, record.pricingSummary),
-  emptyTokenUsagePricingSummary(),
-);

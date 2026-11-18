@@ -1,0 +1,25 @@
+# Case API-04 (353 AC-002, AC-001 empty Q); code 60fc6161d2 (HEAD 5c9ed8d4cf); packaged worktree build (isolated-app start --build, Oct 31 22:33:41 2026); instance iso-58711-02ce, data root /tmp/353-iso-root (removed), scripted AGY via server-data/.env; macOS arm64
+# API-04 desktop journey (isolated instance of the worktree build)
+# node API-04-desktop-journey.mjs 58711 http://127.0.0.1:58712 /private/tmp/353-iso-root <out>
+2026-10-31T21:38:13.868Z seed: {"ids":{"manager":"project-task-manager-37b3","writer":"release-notes-writer-37b3","checker":"fact-checker-37b3","squad":"docs-review-team-37b3"},"project":{"projectId":"project_0409b770-6cba-44cf-9188-06176d9de709","name":"Prototype Launch 37b3"},"taskId":"project_task_78baca36-88d7-453a-a824-9c88fe5e85f5","projectQ":{"projectId":"project_8449f761-f7fb-4748-8eac-cc50e58edafd","name":"Docs Site 0d6a"},"qTaskId":"project_task_930070e6-3020-4b2f-a4fa-43705504837b"}
+2026-10-31T21:38:14.005Z AGY catalog (must be the scripted CLI): [{"llmModels":[{"modelIdentifier":"gemini-3.8-flash-low","name":"Gemini test"}]}]
+2026-10-31T21:38:14.084Z window: {"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat","title":""}
+2026-10-31T21:38:14.751Z shot: "01-workspaces-mode"
+2026-10-31T21:38:15.191Z shot: "02-projects-mode"
+2026-10-31T21:38:16.571Z start surface chip: "Prototype Launch 37b3"
+2026-10-31T21:38:16.940Z shot: "03-start-under-project"
+2026-10-31T21:38:17.150Z started under the Project: {"kind":"agent","runId":"project_task_manager_37b3_e468ed08823049f491f122b96eeecf73"}
+2026-10-31T21:38:17.163Z run folder and runtime: {"workspaceRootPath":"/private/tmp/353-iso-root/launch-repo","runtimeKind":"antigravity_cli"}
+2026-10-31T21:38:17.314Z ## Project section: "## Project\n\nYou work in the Project Prototype Launch 37b3 (Project ID project_0409b770-6cba-44cf-9188-06176d9de709). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environme"
+2026-10-31T21:38:17.690Z shot: "04-run-listed-under-project"
+2026-10-31T21:38:18.496Z Team row with Task line: "Review the launch checklist"
+2026-10-31T21:38:18.913Z shot: "05-team-dispatched"
+2026-10-31T21:38:18.950Z opened worker: "release_notes_writer_37b3_3e378f4d292b493792d7bcb1f3f99a84"
+2026-10-31T21:38:19.335Z shot: "06-worker-open"
+2026-10-31T21:38:20.683Z AC-002: {"qWorker":"fact_checker_37b3_53a57b405f4e416c8aa8fcd23605c9fa","rowsOfRunInProjectsMode":1,"qHint":"No runs yet. Use + to run an agent or team for this Project.","qRunRows":0}
+2026-10-31T21:38:21.091Z shot: "06b-p-and-q-work-under-p-q-empty"
+2026-10-31T21:38:22.653Z shot: "07-after-done"
+2026-10-31T21:38:23.483Z Workspaces mode: run marked open: "true"
+2026-10-31T21:38:23.904Z shot: "08-back-to-workspaces"
+2026-10-31T21:38:23.904Z page errors: []
+2026-10-31T21:38:23.904Z result: "Pass"

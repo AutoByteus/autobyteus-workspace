@@ -1,0 +1,23 @@
+# Case: API-06 (existing-run probe, FU-C2 unchanged)
+# Command: cd autobyteus-web && pnpm test:e2e:existing-run-model-config --output-dir <dir>
+# Commit: 3261712e06
+# Environment: macOS arm64, Node 22, Google Chrome headless, owned temp roots
+# Date: 2026-11-02T06:06Z
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:existing-run-model-config /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-web
+> node tests/e2e/existing-run-model-config-probe.mjs --output-dir /tmp/rsm-erm
+
+Existing run model-config probe failed with 4 failure(s). Evidence: /tmp/rsm-erm/existing-run-model-config-evidence.json
+- API-E2E-004-A: locator.waitFor: Timeout 90000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+- API-E2E-004-D: A later fresh Settings load must use the previous successful canonical value
+- API-E2E-004-E: locator.waitFor: Timeout 90000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+- BROWSER-PAGE-ERRORS: Unexpected browser page or console errors
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

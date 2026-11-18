@@ -2,7 +2,6 @@ import path from "node:path";
 import type {
   LocatedExecutionGroup,
   LocatedTeamExecutionKind,
-  LocatedExecutionKind,
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import type {
   CollaborationMemberExecutionKind,
@@ -36,16 +35,15 @@ type LocatedAgentExecution = Readonly<{
   memberAddress: string;
   agentRunId: string;
   configuredPlacement: Readonly<{ agentDefinitionId: string }> | null;
-  executionKind: LocatedExecutionKind;
+  /** A team or org run's own agents only: a run it delegated to is a run of its own (autobyteus-461). */
+  executionKind: "configured";
   startedAt: string | null;
   groupPath: readonly LocatedExecutionGroup[];
   memoryDir: string;
 }>;
 
-const MEMBER_EXECUTION_KIND: Record<LocatedExecutionKind, CollaborationMemberExecutionKind> = {
+const MEMBER_EXECUTION_KIND: Record<LocatedAgentExecution["executionKind"], CollaborationMemberExecutionKind> = {
   configured: "CONFIGURED",
-  task: "TASK_AGENT",
-  task_team_member: "TASK_TEAM_MEMBER",
 };
 
 const GROUP_KIND: Record<LocatedTeamExecutionKind, CollaborationMemoryGroupKind> = {
@@ -82,7 +80,7 @@ export const buildCollaborationMemberMemoryTargets = (
   for (const { memoryDir, ...member } of members) {
     const memoryStore = new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" });
     const memory = new MemoryRunSummaryBuilder(memoryStore).build(path.basename(memoryDir));
-    if (hasMemoryAvailability(memory.availability)) targets.push({ ...member, memory });
+    if (hasMemoryAvailability(memory)) targets.push({ ...member, memory });
   }
   return orderByStructure(targets);
 };
@@ -93,15 +91,8 @@ type StructureNode = {
   children: Map<string, StructureNode>;
 };
 
-const AGENT_KIND_RANK: Record<CollaborationMemberExecutionKind, number> = {
-  CONFIGURED: 0,
-  TASK_AGENT: 1,
-  TASK_TEAM_MEMBER: 2,
-};
-
 const compareAgents = (a: CollaborationMemberMemoryTarget, b: CollaborationMemberMemoryTarget): number =>
   a.displayName.localeCompare(b.displayName) ||
-  AGENT_KIND_RANK[a.executionKind] - AGENT_KIND_RANK[b.executionKind] ||
   (a.startedAt ?? "").localeCompare(b.startedAt ?? "");
 
 /**

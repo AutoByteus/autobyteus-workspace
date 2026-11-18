@@ -1,0 +1,45 @@
+# API-03: gated server E2E regression folders tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs
+# Command: env -i PATH HOME=<tmp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs --no-watch
+# Code: 60fc6161d2 + the updated project-run-history.e2e.test.ts; macOS arm64, Node v22.23.1; Date: 2026-10-31T21:26:18Z
+
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 9223ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 194030ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 28404ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1930ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 19356ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 23094ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 99255ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 320ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 10085ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 860ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 12876ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 33991ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 14964ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 14516ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 33827ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162460ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3401ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 76120ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 11902ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 14251ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 8624ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4887ms
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 7833ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4590ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 2173ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 3035ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 18181ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 3808ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3531ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 769ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 442ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2951ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 5078ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 8153ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 6677ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 2569ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 8290ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1959ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 205ms
+ Test Files  39 passed (39)
+      Tests  179 passed | 4 skipped (183)

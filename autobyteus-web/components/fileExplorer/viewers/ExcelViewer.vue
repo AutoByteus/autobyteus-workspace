@@ -42,11 +42,14 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import * as XLSX from 'xlsx';
+import DOMPurify from 'dompurify';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 const props = defineProps<{
   url: string | null;
   content?: string | null;
+  /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
+  contentRevision?: number;
 }>();
 
 const isLoading = ref(false);
@@ -62,9 +65,14 @@ const sheetHtml = computed(() => {
   const sheet = workbook.value.Sheets[activeSheet.value];
   if (!sheet) return '';
   
-  return XLSX.utils.sheet_to_html(sheet, { 
-    id: 'excel-table',
-    editable: false
+  // Spreadsheets may come from untrusted sources. Only table structure reaches
+  // the DOM: SheetJS cell attributes and hyperlink anchors are stripped, so a
+  // hyperlinked cell shows its text without a link.
+  const tableHtml = XLSX.utils.sheet_to_html(sheet, { header: '', footer: '' });
+  return DOMPurify.sanitize(tableHtml, {
+    ALLOWED_TAGS: ['table', 'thead', 'tbody', 'tr', 'th', 'td', 'br'],
+    ALLOWED_ATTR: ['colspan', 'rowspan'],
+    ALLOW_DATA_ATTR: false,
   });
 });
 
@@ -115,7 +123,7 @@ const loadExcel = async () => {
 };
 
 // Watch for changes in either URL or Content
-watch([() => props.url, () => props.content], () => {
+watch([() => props.url, () => props.content, () => props.contentRevision], () => {
   loadExcel();
 }, { immediate: true });
 

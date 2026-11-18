@@ -89,16 +89,14 @@ describe('localUserSubmission', () => {
       navigationTarget: {
         kind: 'team_member',
         teamRunId: 'team-1',
-        memberRouteKey: 'worker',
-        memberRunId: 'run-1',
+        agentRunId: 'run-1',
       },
     });
 
     expect(applyRunNavigationEffectMock).toHaveBeenCalledWith({
       kind: 'team_member',
       teamRunId: 'team-1',
-      memberRouteKey: 'worker',
-      memberRunId: 'run-1',
+      agentRunId: 'run-1',
       currentStatus: AgentStatus.Idle,
       summary: 'existing summary',
     }, expect.objectContaining({ kind: 'PRESENTATION' }));
@@ -164,8 +162,7 @@ describe('localUserSubmission', () => {
       navigationTarget: {
         kind: 'team_member',
         teamRunId: 'team-1',
-        memberRouteKey: 'worker',
-        memberRunId: 'run-1',
+        agentRunId: 'run-1',
       },
     });
 
@@ -189,7 +186,7 @@ describe('localUserSubmission', () => {
     expect(applyRunNavigationEffectMock.mock.calls[1]?.[0]).toMatchObject({
       kind: 'team_member',
       teamRunId: 'team-1',
-      memberRouteKey: 'worker',
+      agentRunId: 'run-1',
       summary: 'will fail',
     });
   });

@@ -73,7 +73,7 @@ const buildWorkspaceNode = (): RunTreeWorkspaceNode => {
           {
             runId: ACTIVE_ERROR_RUN,
             summary: 'Current error run',
-            createdAt: '2026-09-03T12:03:00.000Z',
+            createdAt: '2026-09-03T12:03:00.000Z', lastActivityAt: '2026-09-03T12:03:00.000Z',
             archivedAt: null,
             terminatedAt: null,
             status: AgentStatus.Error,
@@ -84,7 +84,7 @@ const buildWorkspaceNode = (): RunTreeWorkspaceNode => {
           {
             runId: HEALTHY_RUN,
             summary: 'Healthy sibling run',
-            createdAt: '2026-09-03T12:02:00.000Z',
+            createdAt: '2026-09-03T12:02:00.000Z', lastActivityAt: '2026-09-03T12:02:00.000Z',
             archivedAt: null,
             terminatedAt: null,
             status: AgentStatus.Running,
@@ -95,7 +95,7 @@ const buildWorkspaceNode = (): RunTreeWorkspaceNode => {
           {
             runId: INACTIVE_ERROR_RUN,
             summary: 'Past error evidence',
-            createdAt: '2026-09-03T12:01:00.000Z',
+            createdAt: '2026-09-03T12:01:00.000Z', lastActivityAt: '2026-09-03T12:01:00.000Z',
             archivedAt: null,
             terminatedAt: '2026-09-03T12:01:30.000Z',
             status: AgentStatus.Error,
@@ -221,7 +221,6 @@ const sectionState = reactive<WorkspaceHistorySectionState>({
   isTeamDeleting: () => false,
   isRunArchiving: () => false,
   isTeamArchiving: () => false,
-  isWorkspaceRemoving: () => false,
   isWorkspaceHistoryLoading: () => false,
   workspaceHistoryError: () => null,
   formatRelativeTime: () => 'now',
@@ -236,13 +235,15 @@ const sectionState = reactive<WorkspaceHistorySectionState>({
   toggleTeamMember: () => undefined,
 });
 
+const selectRow = (run: { runId: string }) => {
+  sectionState.selectedRunId = run.runId;
+  selectedEvents.value.push(run.runId);
+};
 const sectionActions: WorkspaceHistorySectionActions = {
-  onRemoveWorkspace: () => undefined,
   onCreateRun: () => undefined,
-  onSelectRun: (run) => {
-    sectionState.selectedRunId = run.runId;
-    selectedEvents.value.push(run.runId);
-  },
+  onSelectRun: selectRow,
+  // The run row opens the run's own agent through the shared action (autobyteus-277); here it records the row.
+  onOpenAgentRun: selectRow,
   onTerminateRun: mutations.onTerminateRun,
   onArchiveRun: () => undefined,
   onDeleteRun: () => undefined,

@@ -1,11 +1,13 @@
+import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
+import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 
 /** Design § Contract Between Nodes / § Ownership Map `PeerClient` (QR-102, REQ-109, REQ-113, AR-004). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z" };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
 
 const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 
@@ -14,7 +16,7 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
   return {
     fetch,
     client: new PeerClient({
-      peers: { findByName: async (name) => name === "docker" ? PEER : null, findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
+      peers: { findByName: async (name) => name === "docker" ? PEER : null, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
       capability: { isEnabled: () => options.enabled ?? true },
       ownNodeId: async () => SELF,
       timeoutMs: options.timeoutMs,
@@ -23,7 +25,8 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
   };
 };
 
-const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" } };
+const WORK = { text: "Publish the video draft.", task: { taskId: null, taskKey: null, projectId: null, title: "Publish the video draft." } };
+const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", delegatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
 const message = {
   nodeId: PEER.nodeId, kind: "message" as const, messageId: "collabmsg_1", senderAgentRunId: "agent_a1",
   targetRoot: { kind: "agent" as const, runId: "publisher_7f3" }, targetAgentRunId: "publisher_7f3",
@@ -31,22 +34,64 @@ const message = {
 };
 
 describe("PeerClient", () => {
-  it("sends the envelope and the request to the peer's pinned URL, with no credential, and returns the peer's run ID", async () => {
-    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent", agentRunId: "publisher_7f3" }));
-    await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3" });
+  it("NAS-20 sends the envelope and the request to the peer's pinned URL, signed with the pair's secret (never sent), and returns the peer's run ID", async () => {
+    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent", agentRunId: "publisher_7f3", launches: [] }));
+    await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3", launches: [] });
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/delegated-runs");
     expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, address: "/publisher",
-      delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" } });
-    expect(init.headers).toEqual({ "content-type": "application/json" });
+      delegator: { agentRunId: "agent_a1" }, delegatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } });
+    const headers = init.headers as Record<string, string>;
+    expect(headers["content-type"]).toBe("application/json");
+    expect(headers).toMatchObject({ "x-autobyteus-peer-from": SELF, "x-autobyteus-peer-to": PEER.nodeId });
+    expect(headers["x-autobyteus-peer-body-sha256"]).toBe(createHash("sha256").update(String(init.body)).digest("hex"));
+    expect(headers["x-autobyteus-peer-signature"]).toMatch(/^[0-9a-f]{64}$/);
+    expect(JSON.stringify(init)).not.toContain("peer-secret-for-tests");
     expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("NAS-20 a peer at a gateway base path: the request goes to the base path and the signature covers the node route", async () => {
+    const gatewayPeer: PeerNode = { ...PEER, baseUrl: "https://gateway.example.com/autobyteus" };
+    const fetch = vi.fn(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const gatewayClient = new PeerClient({
+      peers: { findByName: async () => gatewayPeer, findByNodeId: async () => gatewayPeer, peerSecret: async () => "peer-secret-for-tests" },
+      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: fetch as never,
+    });
+    await expect(gatewayClient.checkAvailability(PEER.nodeId)).resolves.toEqual({ accepted: true });
+    const [url, init] = fetch.mock.calls[0]! as unknown as [string, RequestInit];
+    expect(url).toBe("https://gateway.example.com/autobyteus/rest/remote/availability");
+    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+    await expect(verifier.verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers: init.headers as Record<string, string> }))
+      .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
+  });
+
+  it("NAS-23 refuses locally, sending nothing, when this node holds no secret for the peer (paired before peers paired)", async () => {
+    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const unpaired = new PeerClient({
+      peers: { findByName: async () => PEER, findByNodeId: async () => PEER, peerSecret: async () => null },
+      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: f.fetch as never,
+    });
+    await expect(unpaired.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
+    expect(f.fetch).not.toHaveBeenCalled();
+  });
+
+  it("NAS-23 reads the peer's 401 (it holds no secret for this node) as not paired", async () => {
+    const f = client(async () => ({ ok: false, status: 401, json: async () => ({ code: "NODE_CREDENTIAL_INVALID" }) }) as never);
+    await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
+  });
+
+  it("NAS-36 reads a 401 from another node now at the peer's address as an identity mismatch, not as unpaired", async () => {
+    const f = client(async (url) => url.endsWith("/rest/remote-access/status")
+      ? answer({ nodeId: "srv_other_node_00000000000000000000000", status: "ok" })
+      : ({ ok: false, status: 401, json: async () => ({ code: "NODE_CREDENTIAL_INVALID" }) }) as never);
+    await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_IDENTITY_MISMATCH" });
   });
 
   it("autobyteus-247 G-7: reads a started Team (its coordinator and members); an answer without the run it started is unreachable", async () => {
     const members = [{ address: "/studio/lead", agentRunId: "lead_1" }, { address: "/studio/writer", agentRunId: "writer_1" }];
-    const team = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members }));
+    const team = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members, launches: [] }));
     await expect(team.client.startDelegatedRun({ ...start, address: "/studio" })).resolves.toEqual({
-      accepted: true, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members });
+      accepted: true, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members, launches: [] });
     for (const body of [
       { accepted: true, nodeId: PEER.nodeId, agentRunId: "publisher_7f3" },
       { accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/other", members },
@@ -62,7 +107,7 @@ describe("PeerClient", () => {
     await expect(f.client.deliverMessage({ ...message, targetRoot: { kind: "agent_team", runId: "team_1" }, targetAgentRunId: "lead_1" })).resolves.toEqual({ accepted: true });
     const body = JSON.parse(String(f.fetch.mock.calls[0]![1].body));
     expect(body).toMatchObject({ kind: "message", targetRoot: { kind: "agent_team", runId: "team_1" }, target: { agentRunId: "lead_1" } });
-    expect("coordinatingRun" in body).toBe(false);
+    expect("delegatingRun" in body).toBe(false);
   });
 
   it("autobyteus-261: availability and available agents send only the envelope to their routes", async () => {
@@ -143,24 +188,24 @@ describe("PeerClient", () => {
   });
 
   it("reads a URL's server identity from its public status route, and refuses what is not an AutoByteus node", async () => {
-    const node = client(async () => answer({ serverInstanceId: PEER.nodeId }));
-    await expect(node.client.fetchServerInstanceId("http://peer:29700")).resolves.toBe(PEER.nodeId);
+    const node = client(async () => answer({ nodeId: PEER.nodeId }));
+    await expect(node.client.fetchNodeId("http://peer:29700")).resolves.toBe(PEER.nodeId);
     expect(node.fetch.mock.calls[0]![0]).toBe("http://peer:29700/rest/remote-access/status");
     const other = client(async () => answer({ hello: "world" }));
-    await expect(other.client.fetchServerInstanceId("http://web")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
+    await expect(other.client.fetchNodeId("http://web")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
     const down = client(async () => { throw new TypeError("fetch failed"); });
-    await expect(down.client.fetchServerInstanceId("http://down")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+    await expect(down.client.fetchNodeId("http://down")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
   });
 
   it("one-nodes-tab REQ-707: an identity probe that gets no answer names its cause, never 'fetch failed'", async () => {
     const refused = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" }) }); });
-    await expect(refused.client.fetchServerInstanceId("http://localhost:8003")).rejects.toMatchObject({ code: "PEER_UNREACHABLE",
+    await expect(refused.client.fetchNodeId("http://localhost:8003")).rejects.toMatchObject({ code: "PEER_UNREACHABLE",
       message: "http://localhost:8003 could not be reached: nothing answers at that address and port.",
       details: { reason: "refused", address: "http://localhost:8003" } });
     const unknownHost = client(async () => { throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ENOTFOUND" } }); });
-    await expect(unknownHost.client.fetchServerInstanceId("http://nas.local:29695")).rejects.toMatchObject({ details: { reason: "not_found" } });
+    await expect(unknownHost.client.fetchNodeId("http://nas.local:29695")).rejects.toMatchObject({ details: { reason: "not_found" } });
     const slow = client((_url, init) => new Promise((_resolve, reject) => init.signal!.addEventListener("abort", () => reject(init.signal!.reason))), { timeoutMs: 20 });
-    await expect(slow.client.fetchServerInstanceId("http://blackhole")).rejects.toMatchObject({ details: { reason: "timeout" },
+    await expect(slow.client.fetchNodeId("http://blackhole")).rejects.toMatchObject({ details: { reason: "timeout" },
       message: "http://blackhole could not be reached: it did not answer in time." });
     for (const error of [refused, unknownHost, slow]) expect(JSON.stringify(error.fetch.mock.calls.length)).toBe("1");
   });
@@ -177,12 +222,26 @@ describe("PeerClient", () => {
 
   it("calls a server that answered with a page, or with another status, not an AutoByteus node, never unreachable (CR-002)", async () => {
     const page = client(async () => ({ ok: true, status: 200, json: async () => JSON.parse("<!DOCTYPE html><html></html>") }));
-    await expect(page.client.fetchServerInstanceId("http://127.0.0.1:3000"))
+    await expect(page.client.fetchNodeId("http://127.0.0.1:3000"))
       .rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS", message: "http://127.0.0.1:3000 is not an AutoByteus node." });
     const missing = client(async () => ({ ok: false, status: 404, json: async () => { throw new Error("no body"); } }));
-    await expect(missing.client.fetchServerInstanceId("http://127.0.0.1:8080"))
+    await expect(missing.client.fetchNodeId("http://127.0.0.1:8080"))
       .rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS", message: "http://127.0.0.1:8080 is not an AutoByteus node." });
     const slowBody = client(async () => ({ ok: true, status: 200, json: async () => { throw Object.assign(new Error("aborted"), { name: "TimeoutError" }); } }));
-    await expect(slowBody.client.fetchServerInstanceId("http://slow")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+    await expect(slowBody.client.fetchNodeId("http://slow")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
+  });
+
+  it("autobyteus-426 REQ-020: names a host name the node's Host gate refuses; another 403 stays not an AutoByteus node", async () => {
+    const hostGate = client(async () => answer({ error: "REMOTE_ACCESS_HOST_REFUSED", code: "REMOTE_ACCESS_HOST_REFUSED",
+      message: "Requests addressed to this host name are not accepted by this node." }, 403));
+    await expect(hostGate.client.fetchNodeId("http://lvh.me:29695")).rejects.toMatchObject({
+      code: "PEER_HOST_REFUSED",
+      message: "http://lvh.me:29695 refuses the name lvh.me; add it to AUTOBYTEUS_ALLOWED_HOSTS on that node.",
+      details: { address: "http://lvh.me:29695", host: "lvh.me" },
+    });
+    const otherRefusal = client(async () => answer({ code: "REMOTE_ACCESS_ORIGIN_REFUSED" }, 403));
+    await expect(otherRefusal.client.fetchNodeId("http://peer:29700")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
+    const noBody = client(async () => ({ ok: false, status: 403, json: async () => { throw new Error("no body"); } }));
+    await expect(noBody.client.fetchNodeId("http://peer:29700")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
   });
 });

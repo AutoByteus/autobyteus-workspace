@@ -81,6 +81,19 @@ describe('WorkspaceTransientExecutionRow clean delegated-row style', () => {
     expect(element.find('[data-team-icon="temporary-task-team"]').exists()).toBe(false);
   });
 
+  it('CR-461-104: an agent row with delegated rows opens on click, Enter and Space without folding; its disclosure button folds it', async () => {
+    const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: row({ hasChildren: true }), hasChildren: true, expanded: true } });
+    const element = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
+    await element.trigger('click');
+    await element.trigger('keydown', { key: 'Enter' });
+    await element.trigger('keydown', { key: ' ' });
+    expect(wrapper.emitted('select')).toHaveLength(3);
+    expect(wrapper.emitted('toggle')).toBeUndefined();
+    await wrapper.get('[data-test="workspace-team-transient-disclosure"]').trigger('click');
+    expect(wrapper.emitted('toggle')).toHaveLength(1);
+    expect(wrapper.emitted('select')).toHaveLength(3);
+  });
+
   it('still selects and toggles on click, Enter and Space (AC-002)', async () => {
     const wrapper = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true, expanded: false } });
     const element = wrapper.get('[role="treeitem"]');

@@ -24,27 +24,34 @@ for the scoped primary-key rule used to join new saved and live presentation.
 
 ## Storage Layout
 
-Every run keeps its memory in its own folder, including a task agent (a delegated run): see the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape) and the memory-layout contract of task-agent-own-run (L1).
+Every run keeps its memory in its own folder; a task agent (a delegated run) is an ordinary run (since autobyteus-461): see the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape) and the memory-layout contract of task-agent-own-run (L1).
 
 Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
-- Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own message log (`communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files; see [Run History](./run_history.md), Message logs)
-- Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and its own message log (`team_communication_messages_*.jsonl`); their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
-- Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
-  `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
-  `source-node.json` and sync state in `sync-manifest.json`.
+- Task agents and task agent teams are standalone runs and team runs like the above, with `delegatedFrom` in their own `run_metadata.json` or `team_run_execution_tree.json`.
+- An agent run's message log, user-started or delegated, is in its own folder: `memory/agents/<runId>/communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files (see [Run History](./run_history.md), Message logs); a team run's is `team_communication_messages_*.jsonl` in its folder.
+- Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
+  `memory/imports/<memorySyncSourceId>/agent_teams/...`, with source metadata in
+  `memory-sync-source.json` and sync state in `sync-manifest.json`.
+- Memory Sync staging (a hub only): `memory/memory-sync-staging/<memorySyncSourceId>/<sha256>.partial`, a
+  large file being uploaded by a source. Not a run folder and never part of `imports/`: a file moves into
+  `imports/` only after its size and SHA-256 are verified, and an abandoned partial is removed after 24 h
+  (see [Memory Sync](../features/memory_sync.md#sync-behavior)).
+- Agents' semantic memories: `memory/semantic/<encodeURIComponent(agentDefinitionId)>/` (see
+  [Semantic Memory](#semantic-memory)); not a run folder.
+- Agents' episodic catalogs: `memory/episodic/<encodeURIComponent(agentDefinitionId)>/catalog.md` and the node
+  overview `memory/episodic/index.md` (see [Agent Episodic Catalog](agent_episodic_catalog.md)); not a run folder.
+  Unrelated to the `episodic.jsonl` rows below.
 
 One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
-a part of a run (`run_part`, by its physical scope), a task agent (`task_agent`) or a task agent team's
-member (`task_agent_team_member`). Writers decide it when they build an agent; readers derive it from the
-execution index (`getMemoryPlacementForAgent`); both resolve the path through
-`AgentMemoryLayout.getAgentRunMemoryDirPath`. A task agent's folder is not a run the user started: the
-standalone metadata reader and the team-tree reader treat its own file as absent (G1, G2).
+a part of its run (`run_part`, by its physical scope). Writers decide it when they build an agent; readers derive
+it from the execution index (`getMemoryPlacementForAgent`); both resolve the path through
+`AgentMemoryLayout.getAgentRunMemoryDirPath`.
 
-The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `ancestorTeamRunIds`
+The `runId`, `memberRunId`, `teamRunId`, and `ancestorTeamRunIds`
 segments are opaque stored identifiers. Readers must not parse generated id
 shapes or derive nested member storage from a flattened member list; they should
 use the resolved `memoryDir` or `AgentMemoryLocationService`.
@@ -65,11 +72,12 @@ Common files/directories:
 - `raw_traces_active.jsonl` — active ordered original raw trace records,
   including strict run-scoped `system_instruction` rows when the exact runtime
   handoff was captured.
-- `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
+- `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`. Each segment's `runtime_kind` is the `RuntimeKind` value of the runtime that compacted (for example `codex_app_server`, `autobyteus`), or `null` when none was recorded.
+  A segment archived by an agent runtime switch has `boundary_type: runtime_switch` and the previous agent runtime's `runtime_kind`; it holds only that agent runtime's records (the switch marker, a `system_task_notification` record from sender `system.runtime_handover`, carries the switch key as `correlation_id`). `RuntimeSwitchRecorder` writes it; see [run history](run_history.md).
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
-- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
+- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`. These retired rows are unrelated to the [episodic catalog](agent_episodic_catalog.md); autobyteus-491 removes the library code.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
-- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it. The memory view does not show it; it still counts as memory for listing a run.
 - `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
 - `work_journal/` — the [Work Journal](./agent_work_journal.md): readable Markdown rendered from the raw traces (one file per raw-trace file plus `work_journal_manifest.json`). Derived and disposable: it is rebuilt from the raw traces when missing.
 
@@ -78,6 +86,8 @@ There is no current compacted-memory manifest or pointer. The destructive
 current known fields with zero/one compacted region independently of historical
 category/lineage presence. It performs ordinary active-raw unmatched-tool repair
 before full validation and normal save; it does not generate a new summary.
+
+Startup app-data migration `20261030_raw_trace_manifest_runtime_names` (`raw-trace-manifest-runtime-names`) converts the `runtime_kind` of every manifest segment of this node's own runs (`agents/<run>`, `agent_teams/<team>/<member>`, `agent_orgs/<org>/<team>/<member>`) from the older short labels (`CODEX`, `CLAUDE`, `ANTIGRAVITY`, `GROK_BUILD`, `AUTOBYTEUS`) to the `RuntimeKind` values, through a validated temporary file `raw_traces_manifest.json.tmp` and an atomic rename. A manifest it cannot use is kept as it is and reported (`SUCCEEDED_WITH_WARNINGS`). Memory Sync imports, the label copies inside old trace records, and the archived `raw_traces_archive_manifest.json` backups keep the old spelling and are never read; code reads a segment's runtime with `runtimeKindFromString`, with no mapping. An older build does not read the field, so a rollback works; entries an older build writes after a rollback keep the old spelling after a later re-upgrade, because the migration does not run again.
 
 Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
 
@@ -124,6 +134,32 @@ reset is required for the direct-summary cutover.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
+## Semantic Memory
+
+An agent definition with `semanticMemoryEnabled` (in `agent-config.json`, or a personal setting for package and
+built-in agents) has a semantic memory: one folder of documents with the reusable knowledge the agent learns, shared
+by every run of that definition on this node, standalone, as a team member (`refScope: shared` resolves to the same
+definition ID) or as a delegated run, in any Project. Team-local, Org-owned and application-owned agents are their
+own definitions with their own folders.
+
+- **Folder:** `AgentMemoryLayout.getAgentSemanticMemoryDirPath(agentDefinitionId)` =
+  `<memory>/semantic/<encodeURIComponent(agentDefinitionId)>` (absolute; a team-local ID's `:` becomes `%3A`, so the
+  name is valid on every desktop OS and distinct per definition). The `semantic/` folder sits next to the run roots;
+  the memory explorer, memory search and Memory Sync walk only the run roots, so they never list it.
+- **Owner:** `AgentSemanticMemory` (`src/agent-memory/services/agent-semantic-memory.ts`) holds the rule and is the only
+  caller of the layout's semantic path. `folderOf(definition)` returns the folder or `null` (no file access; GraphQL
+  `semanticMemoryPath` reads it); `prepareForRun(definition)` also creates the folder (`mkdir -p`). An agent without the
+  setting causes no file access.
+- **Runs:** each runtime backend calls `prepareForRun` when it composes a run's instructions (create, and restore where
+  the runtime composes again; Antigravity at create only) and passes the path to the carpenter composer, which adds the
+  `## Semantic Memory` section (exact text in
+  [prompt_engineering.md](prompt_engineering.md)). Codex adds the folder to the `workspace-write` sandbox's
+  `writable_roots`; Claude gets it as an additional directory. Native AutoByteus, Grok and Antigravity already write
+  outside the workspace; the DeepSeek harness asks a sandbox escalation for it while auto-execute is off.
+- **Lifecycle:** the system never deletes or rewrites what is in the folder: turning the setting off, deleting or
+  renaming the agent, or updating its package leaves it; turning it on again gives the same folder. Concurrent runs
+  writing the same document are not coordinated; the agent's skills decide how documents are organized.
+
 ## Conversation Activity Classification For Restore
 
 `AgentConversationActivityInspector` is a read-only activation guard over one
@@ -161,24 +197,12 @@ member with `present` activity but no persisted provider binding fails closed.
 create a replacement run; the member-activation error
 (`COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE`) includes the reason.
 
-Waking a shut-down delegated Agent or Team whose ingress member is not
-`present` is refused with `TASK_EXECUTION_CONTEXT_UNAVAILABLE` by
-`taskExecutionConversationUnavailable`
-(`src/agent-collaboration/execution/task/task-execution-conversation-availability.ts`),
-used by the Team, AgentOrg and standalone task-execution adapters. The message
-names the Agent or Team, its coordinator for a Team, and what to do:
-
-- `none`: "The delegated Agent at '/x' cannot be restored: it has no saved
-  conversation to continue. Start a new delegation for this work."
-- `indeterminate`: "The delegated Team at '/t' cannot be restored: the saved
-  conversation of its coordinator '/t/lead' cannot be read (line 3 of
-  raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a
-  new delegation for this work, or restore its saved conversation from a
-  backup."
+A delegated Agent or Team is woken like any run of its kind (since
+autobyteus-461): its own root restores it, with the same continuation checks.
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
-content is an explicit read-only corpus under `memory/imports/<sourceNodeId>` and
+content is an explicit read-only corpus under `memory/imports/<memorySyncSourceId>` and
 must not be treated as runnable local run history, restore state, or a fallback
 runtime memory provider.
 
@@ -233,7 +257,7 @@ native rows for loaded contexts; it is not durable native cold replay. See
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 
 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and its runtime kind is explicitly Codex App Server or Claude Agent SDK.
-2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
+2. User messages are observed only when the `AgentRun` forwards an admitted input to the runtime, whether it entered through `postUserMessage(...)` or a committed `reserveUserMessage(...)` slot (teammate delivery). Both keep the raw-trace `sourceEvent: "AgentRun.postUserMessage"` literal. `RuntimeMemoryEventAccumulator.recordForwardedUserMessage` passes the forwarded message's `message_id` / `dedupe_key` (normalized by `normalizeAcceptedInputIdentity`) to the writer, which stores them on the user `RawTraceItem`. A client that loads the run during that message's own turn then matches the stored message to the one it already shows and does not show it twice. Older records without these keys still load, and no migration rewrites them.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
 4. `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` records through `RunMemoryFileStore`. It restores only sequence and tool-lifecycle state from active plus complete rotated raw traces; it never loads, constructs, or persists a `WorkingContext`.
 
@@ -339,12 +363,15 @@ The memory explorer is a backend-for-frontend read model for the `/memory` UI. I
 
 Explorer services scan persisted memory roots at request time, derive memory availability flags, enrich with run-history metadata when available, sort by latest memory update, and paginate server-side.
 
+Memory availability (`MemoryAvailabilitySummary`) is `latestMemoryAt`, `hasWorkJournal` (the run has `work_journal/work_journal_manifest.json`), `hasRawTraces` and `hasRawArchive`. A run is listed when it has a Work Journal, raw traces, a raw archive or a working-context snapshot (`hasMemoryAvailability`).
+
 ### Independent Agents
 
 `AgentMemoryExplorerService` reads standalone run directories from `memory/agents/<runId>` and includes only runs with at least one memory artifact. It groups included runs as follows:
 
 - `DEFINITION` groups use `agentDefinitionId` from run metadata or run-history catalog rows.
 - Runs without metadata/history attribution are grouped under `UNATTRIBUTED` / `Unattributed runs` so legacy standalone memory remains discoverable.
+- Runs of an internal agent are left out while "Show internal agents" is off: no group, and not moved under `UNATTRIBUTED` (see [Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 
 Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
 
@@ -364,7 +391,8 @@ Team and org explorers share one catalog policy owner,
   stored-only history manager and never manages live runs.
 
 `TeamMemoryExplorerService` and `AgentOrgMemoryExplorerService` are thin
-family facades over that catalog. The catalog owns: iteration with **exactly
+family facades over that catalog. A delegated team run is listed as the team
+run it is (since autobyteus-461); summaries carry no task-team flags. The catalog owns: iteration with **exactly
 one execution-tree read per root per list request** (linear in stored root
 runs; this replaced an O(N²) per-root all-root rescan), the skip-invalid-root
 rule (a corrupt tree is skipped with a warning while other roots still list),
@@ -380,9 +408,8 @@ timestamp, and merged availability.
 Member targets are built by `buildCollaborationMemberMemoryTargets`
 (`collaboration-member-memory-targets.ts`) from the same tree snapshot. Every
 agent execution located in the tree that has memory on disk becomes a target:
-configured agents (`CONFIGURED`), delegated task agents (`TASK_AGENT`, with
-`startedAt`), and members of delegated task teams at any nesting depth
-(`TASK_TEAM_MEMBER`). Each target carries its own `agentRunId` and a
+the run's own agents (`CONFIGURED`, the one execution kind): a Team or Org tree
+holds its own parts only (since autobyteus-461). Each target carries its own `agentRunId` and a
 `groupPath` of enclosing `CONFIGURED_TEAM` / `TASK_TEAM` groups so clients can
 render the run's execution structure. Groups have no memory of their own.
 Memory folders not referenced by the execution tree are not listed. Team
@@ -406,7 +433,7 @@ different memory root; raw-trace readback depends on that root consistency.
 
 `MemoryExplorerSourceService` owns the Memory UI source boundary. Missing or
 null source input resolves to local memory. Imported source input validates the
-`sourceNodeId`, verifies that `memory/imports/<sourceNodeId>` exists, and roots
+`memorySyncSourceId`, verifies that `memory/imports/<memorySyncSourceId>` exists, and roots
 all agent/team/org explorer and view readers under that import root.
 
 Imported source reads are marked read-only. The backend must not silently fall
@@ -440,8 +467,8 @@ and org queries are additive; existing query names and arguments are unchanged.
 The `source` argument is a `MemoryExplorerSourceInput`:
 
 - `{ type: LOCAL }` reads `memory/agents`, `memory/agent_teams`, and `memory/agent_orgs`.
-- `{ type: IMPORTED, sourceNodeId }` reads the selected
-  `memory/imports/<sourceNodeId>` corpus.
+- `{ type: IMPORTED, memorySyncSourceId }` reads the selected
+  `memory/imports/<memorySyncSourceId>` corpus.
 
 The older flat snapshot queries (`listRunMemorySnapshots` and `listTeamRunMemorySnapshots`) were replaced by these explorer queries for the Memory UI.
 
@@ -480,7 +507,9 @@ GraphQL memory-view queries:
 
 Unknown members resolve to an empty view for the requested `agentRunId`.
 
-All view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+All view queries accept include flags for raw traces, raw-trace file metadata and archive inclusion, `rawTraceLimit`, and an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+
+The view's `workJournal` field is the run's Work Journal, read through `WorkJournalService` (`api/graphql/types/work-journal-view.ts`); it never renders a journal, and it is `null` for a run without one. The optional `workJournal: WorkJournalWindowInput` argument chooses `journalFile` (default: the run's latest file) and the lines `start`–`end` (default: the first 300 lines; at most 400 per read). The answer lists every journal file (`OPEN`/`CLOSED`, size, line count, days with their first line) and the selected window's lines. A run that memory search knows only by its folder is read with `runFolderWorkJournal(runKey)` ([memory_search.md](memory_search.md)).
 
 `MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. `RawTraceFileSummary` exposes safe file-selection metadata: `fileName`, `kind` (`active` or `segment`), `recordCount`, optional `segmentIndex`, and optional first/last timestamps. The selector identity is the backend-listed file name only, for example `raw_traces_active.jsonl` or `raw_traces_000003.jsonl`; callers must not send or expose absolute file paths.
 
@@ -500,7 +529,7 @@ Current archive/rotation behavior:
   record, they rotate with that completed segment so active-file Activity and
   raw inspection remain truthful. Normal Activity does not read the rotated
   copy; the Memory Inspector can still select its completed segment explicitly.
-- Codex/Claude/Antigravity/Grok Build provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
+- Codex/Claude/Antigravity/Grok Build/DeepSeek Harness provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
 - Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
@@ -521,7 +550,7 @@ Current non-goals:
 
 ## Provider Compaction Boundaries
 
-Codex, Claude, Antigravity (AGY) and Grok Build provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
+Codex, Claude, Antigravity (AGY), Grok Build and DeepSeek Harness provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
 
 Normalized provider-boundary handling is storage-only:
 
@@ -535,6 +564,7 @@ Normalized provider-boundary handling is storage-only:
 - All events of one Claude compaction operation share one operation id, emitted as `provider_event_id`, so live clients render a single compaction activity. The recorder persists the optional `post_tokens`, `duration_ms`, and `error_message` fields only when they are reported; Codex markers are unchanged.
 - AGY (CLI ≥ 1.2.16) reports each automatic compaction as one `step_update` with `step_type: "checkpoint"` and `state: "DONE"`; `AgyStreamEventConverter` normalizes it to a single rotation-eligible `antigravity.checkpoint` marker (status `compacted`, trigger `auto`, `duration_ms`) keyed `agy:<conversation_id>:checkpoint:<step_index>`. There is no started phase. Older or unreadable CLI versions keep checkpoint steps ignored. See [Antigravity CLI Runtime](antigravity_cli_runtime.md#automatic-compaction).
 - Grok Build reports compaction through `_x.ai/session_notification` (`auto_compact_started` for automatic compaction only, `auto_compact_completed` for both automatic and manual `/compact`). The ACP session converter pairs them in order into one operation (`provider_event_id` = the start's event id), rotates on the completion (`grok.auto_compact_completed`, with `pre_tokens`, `post_tokens`, `duration_ms`), and closes a start whose turn ends first as a non-rotating failed `grok.compaction_abandoned` marker before the turn event. See [Grok Build Runtime](grok_build_runtime.md#context-compaction).
+- DeepSeek Harness reports no compaction over ACP. The credential proxy's DeepSeek provider relay sees dsh's compaction calls (header `x-deepseek-harness-compact: 1`) and reports them to the run's session: a non-rotating `deepseek_harness.relay_compaction_started` status (status `compacting`) when the call starts, then a rotation-eligible `deepseek_harness.relay_compaction_completed` marker (status `compacted`) when DeepSeek answered it to its end, or otherwise a non-rotating marker with status `failed` and an `error_message` (`deepseek_harness.relay_compaction_failed`, `…_cancelled`, or `…_abandoned` when the turn ends before the call does). One operation id per call is the `provider_event_id`; token counts and duration are not reported. See [DeepSeek Harness Runtime](deepseek_harness_runtime.md#token-usage-compaction-and-liveness).
 - `ProviderCompactionBoundaryRecorder` writes provider-boundary status/marker payloads as raw traces with `semantic_compaction:false` metadata.
 - If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete direct raw-trace segment. The marker remains active, and active plus complete rotated segments remain the complete raw-trace corpus.
 
@@ -575,12 +605,18 @@ above.
 - Raw-trace file selector service: `src/agent-memory/services/raw-trace-file-source-service.ts`
 - Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/collaboration-member-memory-targets.ts`, `src/agent-memory/services/memory-explorer-page.ts`
-- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
+- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts` (falls back to a task team's members)
+- Task-team source: `src/agent-memory/services/task-team-root-memory-source.ts`
 - Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
+- Run-folder discovery (every run folder, attributed from its records; memory search and the episodic catalog):
+  `src/agent-memory/services/run-folder-discovery.ts`, `src/agent-memory/domain/discovered-run.ts`
+- Episodic catalog: [agent_episodic_catalog.md](agent_episodic_catalog.md)
+- Semantic memory owner: `src/agent-memory/services/agent-semantic-memory.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`
-- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`
+- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`, `src/api/graphql/types/work-journal-view.ts`
+- Memory search (index, search, `search_memory`): [memory_search.md](memory_search.md)
 - Recorder: `src/agent-memory/services/agent-run-memory-recorder.ts`
 - Event accumulator: `src/agent-memory/services/runtime-memory-event-accumulator.ts`
 - Provider boundary recorder: `src/agent-memory/services/provider-compaction-boundary-recorder.ts`

@@ -17,11 +17,23 @@ const buildContext = (status: AgentStatus = AgentStatus.Offline) => ({
 }) as any;
 
 describe('agentRuntimeStatusState', () => {
+  it('autobyteus-448: a live status carries the running background task count (a count-only change is a change); offline clears it', () => {
+    const context = buildContext(AgentStatus.Idle);
+    context.state.backgroundTasksRunning = 0;
+    expect(applyLiveAgentStatusEvent(context, { status: 'idle', background_tasks_running: 1 })).toBe(true);
+    expect(context.state.backgroundTasksRunning).toBe(1);
+    expect(applyLiveAgentStatusEvent(context, { status: 'idle', background_tasks_running: 1 })).toBe(false);
+    applyMemberOrHistoryStatusSnapshot(context, AgentStatus.Idle);
+    expect(context.state.backgroundTasksRunning).toBe(1); // a history status carries no count
+    applyMemberOrHistoryStatusSnapshot(context, AgentStatus.Offline);
+    expect(context.state.backgroundTasksRunning).toBe(0);
+  });
+
   it('accepts initializing as authoritative status and clears local submission pending', () => {
     const context = buildContext(AgentStatus.Running);
     context.submissionPending = true;
 
-    applyLiveAgentStatusEvent(context, { status: 'initializing' });
+    applyLiveAgentStatusEvent(context, { status: 'initializing', background_tasks_running: 0 });
 
     expect(context.state.currentStatus).toBe(AgentStatus.Initializing);
     expect(context.submissionPending).toBe(false);
@@ -30,7 +42,7 @@ describe('agentRuntimeStatusState', () => {
   it('recovers error only when a canonical running status event arrives', () => {
     const context = buildContext(AgentStatus.Error);
 
-    applyLiveAgentStatusEvent(context, { status: 'running' });
+    applyLiveAgentStatusEvent(context, { status: 'running', background_tasks_running: 0 });
 
     expect(context.state.currentStatus).toBe(AgentStatus.Running);
     expect(context.submissionPending).toBe(false);
@@ -43,7 +55,7 @@ describe('agentRuntimeStatusState', () => {
     expect(context.state.currentStatus).toBe(AgentStatus.Offline);
     expect(context.submissionPending).toBe(true);
 
-    applyLiveAgentStatusEvent(context, { status: 'initializing' });
+    applyLiveAgentStatusEvent(context, { status: 'initializing', background_tasks_running: 0 });
     expect(context.state.currentStatus).toBe(AgentStatus.Initializing);
     expect(context.submissionPending).toBe(false);
   });

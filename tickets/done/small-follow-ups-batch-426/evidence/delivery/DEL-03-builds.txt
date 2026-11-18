@@ -1,0 +1,14 @@
+# DEL-03 builds on 3551d69ee7 (merged state), 2026-11-08
+## pnpm install --frozen-lockfile
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.2s using pnpm v10.28.2
+install exit 0
+## pnpm -C autobyteus-server-ts build
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+server build exit 0
+## pnpm -C autobyteus-web build:mobile-web
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-web/dist-mobile/public
+mobile build exit 0

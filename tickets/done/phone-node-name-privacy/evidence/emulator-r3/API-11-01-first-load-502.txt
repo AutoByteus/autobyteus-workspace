@@ -1,0 +1,7 @@
+text: AutoByteus returned HTTP 502
+text: The saved node was reached, but the mobile shell could not load successfully.
+
+Verify the saved URL, Phone Access state, and that the desktop server is serving /mobile.
+text: RETRY
+text: EDIT
+text: BROWSER

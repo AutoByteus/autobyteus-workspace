@@ -1,0 +1,47 @@
+API/E2E round 12 (API-REV-012), on CRR-042. Code under test 5b455a9ec7 (HEAD 47efe7fa9b: one docs commit since).
+Server dist/ as rebuilt in round 11 plus no server change since a4641a0985 (web-only changes); web from source (Nuxt dev).
+Clean env for every probe: env -i PATH HOME=<resolved temp> TMPDIR USER. Never the user's app or ~/.autobyteus.
+Raw logs stay under /tmp/api461 (r12-web, r12-web2, r12-b3, r12-web4, r12-base, p04); this file is the redacted summary.
+
+Batch 1 (/tmp/api461/r12-web):
+  runtime-switch-members        7/7 Pass       F-57 resolved (RSM-04, RSM-06)
+  stopped-delegator-views SDV-06 Pass          F-59 resolved: Workspace page and Projects page, Agent/Team/Org delegators
+  project-manager-ux            25/25 Pass
+  delegated-launch-defaults     triage run (stale rewrites listed in the report)
+
+Batch 2 (/tmp/api461/r12-web2), after the rewrites:
+  delegated-launch-defaults     14 Pass, 15 Fail  (F-60, F-61, F-62; LRL-001, LRL-004; stale reads fixed afterwards)
+  SSR-001 … SSR-004 (rewritten) Fail: every Save answered RUN_ACTIVE because the copy was live (status "idle")
+                                while its Settings showed it stopped (F-62); SSR-004 not reached
+  owner-scoped-file-reads       B-001 … B-007 Pass; T-API stale (rule 2 run-id list), rewritten
+  projects-left-navigation      PLN 9/11 (PLN-04 not 461; PLN-09 see batch 4)
+  task-closure-tree BR-011      needs BR-008 … BR-010 in the same run (rerun in batch 4)
+
+Batch 3 (/tmp/api461/r12-b3):
+  API-P04 branch capture        remote-runs-in-tree probe Pass, capture written (28 frame kinds, 35 GraphQL operations)
+  live agent-initiated-collaborators (DeepSeek, test vault; AIC_ROOT_RUNTIMES=autobyteus)
+                                5 failed, 31 skipped (other runtimes' gates). LE-O1: F-63. LE-A1, LE-A2, LE-A3, LE-T1 stale
+                                (see API-L-r12-live-collaborators-extract.txt)
+  API-F01 fresh-start build     Pass: git clone --no-local, checkout 47efe7fa9b, pnpm install --frozen-lockfile,
+                                pnpm build:electron:mac -- --arm64 (unsigned), Verify bundled Prisma ARM64 ok,
+                                Verify packaged terminal runtime ARM64 ok (resources, app bundle, Electron-as-Node spawn probe)
+
+Batch 4 (/tmp/api461/r12-web4):
+  base worktree 827f1e68dc      own pnpm install --frozen-lockfile and server build (its node_modules had been symlinks to the
+                                branch worktree's, so earlier base runs in this round resolved the branch's contract packages;
+                                those runs are discarded)
+  base LRL-001, LRL-004, LRL-005  3/3 Pass at base
+  branch DLP-003                Pass
+  branch DLP-004                Fail: existing-run-subject-card not shown for a Team-root copy (F-61)
+  branch DCP-005                Fail: the member's new model shows "Team default" (F-60); own-file reads now fixed
+  branch LRL-001                Fail (F-64): opening a stopped Team asks GetTeamMemberRunProjection and GetTeamMemberFileChanges
+                                twice per member, for three members across runs; base: once, for the focused member
+  branch LRL-004                Fail (F-65): refusalSeen false, userMessageShown true, composerStillHolds true, run stays stopped;
+                                base: refused with the reason
+  API-P04 base capture          Pass; comparison API-P04-r12-peer-shape-compare.json: 64 kinds, 52 identical;
+                                6 differ only by peer rows' `launches[]` (present at base, absent on the branch: F-66);
+                                StopDelegatedExecution (base) → TerminateAgentRun (branch): rule 2
+  owner-scoped-file-reads       B-001 … B-007 Pass; T-API run-id content now 200 by rule 2 (assertion rewritten after the run)
+  projects-left-navigation      PLN-09: "Archived 1 run. 1 failed." shown; the only archive call captured succeeded; no reason
+                                shown for the failure (Unclear, see report)
+  task-closure-tree             BR-008, BR-009, BR-010 Pass; BR-011 Fail "org: conversation after restart" (step varies across runs)

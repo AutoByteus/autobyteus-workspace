@@ -1,0 +1,23 @@
+# API-03 round 3 Codex live e2e 2026-10-29T20:54:35Z head 6823d55920; codex-cli 0.166.0
+ ✓ tests/e2e/runtime/live-tool-list-updates.e2e.test.ts (1 test) 37572ms
+     ✓ call alpha; add beta; call beta with the conversation kept; remove alpha; alpha is refused  36285ms
+      Tests  1 passed (1)
+exit=0
+
+# summary (summarize.py):
+runtime codex_app_server model gpt-5.6-luna
+== 1 call alpha
+  msg user 'Remember this codeword: OKAPI-4865. Call the list_projects tool once, then reply with exactly: DONE-1'
+  tool list_projects err=  res= {"projects": [{"projectId": "project_0e099d43-bec6-4738-8e5a-eefdda6e20ac", "name": "Tool List Live 3bb4e6"}]}
+  msg assistant 'DONE-1'
+== 2 add beta, call beta
+  msg user 'Call the list_project_tasks tool once with project_id "project_0e099d43-bec6-4738-8e5a-eefdda6e20ac". Then reply with DONE-2 followed by the codeword from my first message.'
+  notice system.tool_list_update_notifier '[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.'
+  tool list_project_tasks err=  res= {"projectId": "project_0e099d43-bec6-4738-8e5a-eefdda6e20ac"}
+  msg assistant 'DONE-2 OKAPI-4865'
+== 3 remove alpha, try alpha
+  msg user 'Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3'
+  notice system.tool_list_update_notifier '[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.'
+  msg assistant 'DONE-3'
+seen [['delegate_task', 'list_project_tasks', 'send_message_to']]
+terminate {'terminateAgentRun': {'success': True, 'message': 'Agent run terminated successfully.'}}

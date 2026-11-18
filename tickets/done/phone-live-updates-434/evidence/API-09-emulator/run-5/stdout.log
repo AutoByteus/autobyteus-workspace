@@ -1,0 +1,27 @@
+{"t":2892,"event":"device","model":"sdk_gphone64_arm64","sdk":"35","webview":"124.0.6367.219"}
+{"t":3673,"event":"apk","versionName":"0.1.0"}
+{"t":16052,"event":"paired through the share intent"}
+{"t":31247,"event":"opened from the launcher, run list shown"}
+{"t":35457,"event":"marker sent","id":"EMU-T-1"}
+{"t":54832,"event":"marker sent","id":"EMU-T-2"}
+{"t":109836,"event":"marker sent","id":"EMU-T-3"}
+{"t":169835,"event":"marker sent","id":"EMU-T-4"}
+Warning: Activity not started, its current task has been brought to the front
+{"t":197162,"event":"marker sent","id":"EMU-T-5"}
+{"t":199253,"event":"cycle","label":"team","kind":"team","doze":false,"sameActivityAndTask":true,"activityBefore":"3351663 task 14","activityAfter":"3351663 task 14","backgroundMs":150002,"screenWakefulnessAfterSleep":"Asleep","markers":["EMU-T-2","EMU-T-3","EMU-T-4"],"producedAllWhileInBackground":true,"shownAfterForegroundMs":5166,"nextMarker":{"id":"EMU-T-5","phoneMinusNodeMs":2086},"liveBeforeBackgroundMs":-29,"streamConnectionsWhileInBackground":[],"streamConnectionsAfterForeground":[{"openedAt":192711,"closedAt":null,"webSocket":true,"path":"/ws/agent-team/emu_team_7171cc82aca246b391bd8401a194ae3e?access_token=…"},{"openedAt":192726,"closedAt":null,"webSocket":true,"path":"/ws/agent/emu_agent_bce03ac39a94422b8fd189cfa8ad01f4?access_token=…"}],"note":"shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"}
+{"t":208464,"event":"marker sent","id":"EMU-A-6"}
+{"t":227888,"event":"marker sent","id":"EMU-A-7"}
+{"t":282886,"event":"marker sent","id":"EMU-A-8"}
+{"t":342885,"event":"marker sent","id":"EMU-A-9"}
+Warning: Activity not started, its current task has been brought to the front
+{"t":370447,"event":"marker sent","id":"EMU-A-10"}
+{"t":372489,"event":"cycle","label":"agent","kind":"agent","doze":false,"sameActivityAndTask":true,"activityBefore":"3351663 task 14","activityAfter":"3351663 task 14","backgroundMs":150003,"screenWakefulnessAfterSleep":"Asleep","markers":["EMU-A-7","EMU-A-8","EMU-A-9"],"producedAllWhileInBackground":true,"shownAfterForegroundMs":5390,"nextMarker":{"id":"EMU-A-10","phoneMinusNodeMs":2040},"liveBeforeBackgroundMs":-38,"streamConnectionsWhileInBackground":[],"streamConnectionsAfterForeground":[{"openedAt":366015,"closedAt":null,"webSocket":true,"path":"/ws/agent-team/emu_team_7171cc82aca246b391bd8401a194ae3e?access_token=…"},{"openedAt":366042,"closedAt":null,"webSocket":true,"path":"/ws/agent/emu_agent_bce03ac39a94422b8fd189cfa8ad01f4?access_token=…"}],"note":"shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"}
+{"t":381647,"event":"marker sent","id":"EMU-A-11"}
+{"t":388248,"event":"doze","forceIdle":"Now forced in to deep idle mode"}
+{"t":401066,"event":"marker sent","id":"EMU-A-12"}
+{"t":456067,"event":"marker sent","id":"EMU-A-13"}
+{"t":516068,"event":"marker sent","id":"EMU-A-14"}
+{"t":536098,"event":"doze end","unforce":"Light state: OVERRIDE, deep state: IDLE\nmForceModeManagerQuickDozeRequest: false\nmForceModeManagerOffBodyState: false"}
+Warning: Activity not started, its current task has been brought to the front
+{"t":544975,"event":"marker sent","id":"EMU-A-15"}
+{"t":547110,"event":"cycle","label":"agent-doze","kind":"agent","doze":true,"sameActivityAndTask":true,"activityBefore":"3351663 task 14","activityAfter":"3351663 task 14","backgroundMs":150064,"screenWakefulnessAfterSleep":"Asleep","markers":["EMU-A-12","EMU-A-13","EMU-A-14"],"producedAllWhileInBackground":true,"shownAfterForegroundMs":6614,"nextMarker":{"id":"EMU-A-15","phoneMinusNodeMs":2133},"liveBeforeBackgroundMs":-31,"streamConnectionsWhileInBackground":[],"streamConnectionsAfterForeground":[{"openedAt":540189,"closedAt":null,"webSocket":true,"path":"/ws/agent-team/emu_team_7171cc82aca246b391bd8401a194ae3e?access_token=…"},{"openedAt":540271,"closedAt":null,"webSocket":true,"path":"/ws/agent/emu_agent_bce03ac39a94422b8fd189cfa8ad01f4?access_token=…"}],"note":"shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"}

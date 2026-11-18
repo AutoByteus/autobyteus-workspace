@@ -1,0 +1,17 @@
+{
+  "runId": "sm_live_plain_codex_eb866eb2_4c3d419d13b34900b85f4f815baa5089",
+  "reply": "OK",
+  "wire": {
+    "method": "thread/start",
+    "sandbox": "workspace-write",
+    "approvalPolicy": "on-request",
+    "cwd": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-plain",
+    "configKeys": [
+      "mcp_servers"
+    ],
+    "sandbox_workspace_write": null,
+    "semanticSection": null
+  },
+  "folderExists": false,
+  "baseInstructionsTail": "structions and skills. Use `send_message_to` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work.\n\n## Project\n\nYou work in the Project SM live A eb866eb2 (Project ID project_cc29df55-1ac6-4b0a-b4e0-be203c0b92c7). Use this Project ID with the Project tools; ask the user before working on another Project."
+}

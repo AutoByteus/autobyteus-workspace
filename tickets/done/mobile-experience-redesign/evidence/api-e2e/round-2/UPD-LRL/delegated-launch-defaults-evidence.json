@@ -1,0 +1,126 @@
+{
+  "startedAt": "2026-11-06T15:18:02.299Z",
+  "cases": {
+    "LRL-004": {
+      "title": "AC-006: a Team run with a damaged stored message log opens; its Team tab and the phone show the messages as unavailable with the reason; a message to it is refused with the reason",
+      "result": "Pass",
+      "ms": 28769,
+      "details": {
+        "names": {
+          "team": "LRL Damaged 1e8d"
+        },
+        "teamDefinitionId": "lrl-damaged-1e8d",
+        "teamRunId": "lrl_damaged_1e8d_64c522c11b734dc2854495a1b482dfc9",
+        "members": {
+          "lead": "lrld_lead_1e8d_c0a231a18bae4d0d9c3f46ed0fe5b321",
+          "worker": "lrld_worker_1e8d_fadb66a2435d43a88e7715724bf85bc4"
+        },
+        "logFiles": [
+          "team_communication_messages_active.jsonl"
+        ],
+        "damaged": {
+          "file": "team_communication_messages_active.jsonl",
+          "line": 2,
+          "nonEmptyLines": 3
+        },
+        "memberRowsShown": 2,
+        "teamTabText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+        "serverReason": "GraphQL: [{\"message\":\"team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"locations\":[{\"line\":1,\"column\":41}],\"path\":[\"collaborationParticipantMessages\"]}]",
+        "expectedReason": "team_communication_messages_active.jsonl:line 2 is not valid JSON",
+        "restoreResponses": [
+          "{\"data\":{\"restoreAgentTeamRun\":{\"__typename\":\"RestoreAgentTeamRunResult\",\"success\":false,\"message\":\"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"teamRunId\":null}}}"
+        ],
+        "resumeConsoleErrors": [
+          "Failed to send message via activeContextStore: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:54745/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:54745/_nuxt/stores/acti",
+          "Error sending requirement: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:54745/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:54745/_nuxt/stores/activeContextStore.ts:11"
+        ],
+        "activeAfterResume": false,
+        "composerStillHolds": true,
+        "reasonVisibleAfterResume": 1,
+        "phoneText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+        "phoneRows": 0
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 78794
+    },
+    {
+      "label": "frontend",
+      "pid": 79305
+    },
+    {
+      "label": "backend-damaged-log",
+      "pid": 95818
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 95818,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 79305,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 78794,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-90gygt"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-90gygt",
+  "backendUrl": "http://127.0.0.1:54744",
+  "frontUrl": "http://127.0.0.1:54745",
+  "definitions": {
+    "ids": {
+      "manager": "manager-785c",
+      "lead": "lead-12bf",
+      "worker": "worker-b051",
+      "plain": "plain-eefc",
+      "engineer": "engineer-f9fe",
+      "reviewer": "reviewer-028e",
+      "writer": "writer-95c3",
+      "offline": "offline-ba35",
+      "unoffered": "unoffered-a89e",
+      "badsettings": "badsettings-630c",
+      "incomplete": "incomplete-7026",
+      "build": "build-team-adaf",
+      "pair": "pair-team-0012",
+      "squad": "squad-team-241c",
+      "home": "home-team-710b",
+      "launchOrg": "launchorg-org-b04d",
+      "hostOrg": "hostorg-org-325d"
+    },
+    "names": {
+      "manager": "Manager 785c",
+      "lead": "Lead 12bf",
+      "worker": "Worker b051",
+      "plain": "Plain eefc",
+      "engineer": "Engineer f9fe",
+      "reviewer": "Reviewer 028e",
+      "writer": "Writer 95c3",
+      "offline": "Offline ba35",
+      "unoffered": "Unoffered a89e",
+      "badsettings": "Badsettings 630c",
+      "incomplete": "Incomplete 7026",
+      "build": "Build Team adaf",
+      "pair": "Pair Team 0012",
+      "squad": "Squad Team 241c",
+      "home": "Home Team 710b",
+      "launchOrg": "LaunchOrg Org b04d",
+      "hostOrg": "HostOrg Org 325d"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0
+  },
+  "completedAt": "2026-11-06T15:19:15.888Z"
+}

@@ -1,0 +1,9 @@
+# API-L08 (round 2): AC-009, a turn's new word is findable by text within about a minute, on the SR-006 search
+# Desktop iso-55187-0f43; Codex chat (Project Task Manager, GPT-6.1-Sol low), started from the UI; 2026-10-27 UTC
+# Command: node probes/API-PROBE-freshness-r2.mjs http://127.0.0.1:55188/graphql lynxcarmine5061 2026-10-27T05:29:35.000Z 240000 (started before the message was sent; GraphQL memorySearch about every 1.2 s)
+Journal lines of the turn: "[05:29:53] User: Please reply OK and note the word lynxcarmine5061 for the shed list; no tools." / "[05:29:56] Agent: OK — noted lynxcarmine5061 for the shed list."
+Result: {"samples": 35, "lastMiss": 40906, "foundAtMs": 42174, "hit": "project_task_manager_d1b22e4cbc764641ba4e88fc34494f11 work_journal_active.md:5-6 TEXT:lynxcarmine5061"}
+→ found 05:30:17.2, 21.2 s after the reply (the 20 s quiet period, then a one-run pass); the match names the word.
+
+## Void first attempt (probe defect, not product)
+A first attempt (word marmotcobalt3390, 05:24) used the round-1 probe API-PROBE-freshness.mjs, which still asked for the removed `strength` field: every poll was a GraphQL error and counted as a miss (foundAtMs null after 180 s). Querying the word with the correct fields at 05:28 returned the run at #1 with "TEXT:marmotcobalt3390", and the index status showed the live pass at 05:25:02.557 (20 s after the 05:24:41 reply). The round-2 probe exits on a GraphQL error instead.

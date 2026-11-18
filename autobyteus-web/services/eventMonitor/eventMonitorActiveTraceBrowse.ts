@@ -25,7 +25,7 @@ const subjectKey = (subject: AgentRunReadSubject): string => {
     case 'run': return `run:${subject.runId}`;
     case 'teamMember': return `team:${subject.teamRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
     case 'agentOrgMember': return `org:${subject.orgRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
-    case 'standaloneMember': return `agent:${subject.hostRunId}:member:${subject.memberAddress}:run:${subject.agentRunId}`;
+    case 'peerRun': return `peer:${subject.nodeId}:${subject.runId}:run:${subject.agentRunId}`;
   }
 };
 

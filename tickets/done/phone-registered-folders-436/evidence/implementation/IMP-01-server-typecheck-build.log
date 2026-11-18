@@ -1,0 +1,8 @@
+# IMP-01 server-typecheck-build
+# Command: pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json
+# Environment mode: shell
+# Commit: 271656acc0 (branch codex/phone-registered-folders-436)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09T04:02:58Z
+
+# Exit status: 0

@@ -1,12 +1,14 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { AcpClientConnection } from "../../../../src/runtime-management/acp/acp-client-connection.js";
-import { fixturePath, readFixture, spawnFakeAgent, waitFor, writeCustomFixture } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
+import { fixturePath, readFixture, removeTestTempDirs, spawnFakeAgent, waitFor, writeCustomFixture } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
 
 const connections: AcpClientConnection[] = [];
 afterEach(async () => {
   vi.restoreAllMocks();
   for (const connection of connections.splice(0)) await connection.close();
 });
+
+afterAll(removeTestTempDirs);
 
 describe("AcpClientConnection", () => {
   it("initializes against the agent and drops responses to requests it never sent", async () => {

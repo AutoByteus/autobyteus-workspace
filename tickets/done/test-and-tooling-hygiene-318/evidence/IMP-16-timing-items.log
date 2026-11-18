@@ -1,0 +1,197 @@
+# IMP-16 — T-30, T-47, T-53: the changed tests pass; T-47 passes 20 of 20 runs
+# Command: env -i ... npx vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.import.test.ts tests/unit/projects/project-task-index-status.test.ts; then 20 x npx vitest run tests/unit/projects/project-task-index-status.test.ts -t "one run per burst"
+# Commit: a0c3c9e705
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "Tests  20 passed (20)"; 20 lines "run N: Tests 1 passed | 7 skipped (8)"
+
+===== timing-server.log =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/run-history/team-member-run-view-projection-service.import.test.ts > team-member-run-view-projection-service import timing > does not resolve the memory dir during module import
+AgentFactory (Singleton) initialized.
+
+(node:60322) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/run-history/team-member-run-view-projection-service.import.test.ts (1 test) 3033ms
+     ✓ does not resolve the memory dir during module import  3032ms
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:60325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts (11 tests) 144ms
+stdout | tests/unit/projects/project-task-index-status.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:60680) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > reads a Project's Tasks only when they changed, it is new, or the model switched (warm poll: no listTasks)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-pcdQGm
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > MP-005: after a finished job, an edit shows Needs update on every poll, and Index all includes the Project
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-oLvy2a
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > MP-006: the poll after the job finishes shows Ready
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-KpKJiA
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > MP-007: a board search that indexes the Project between polls shows as Ready on the next poll
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-8A1q8u
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-lkG31y
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > loads no model for a write that changes no description (CR-003), and indexes a description edit
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-ngRwzd
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > never starts a download after a write: nothing is scheduled when the model is not on disk, nor run after a switch to one
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-TEkBED
+
+stdout | tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > keeps background runs away from writers: failures are contained, a deleted Project is skipped, shutdown drops pending runs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-index-status-HGfSYt
+
+ ✓ tests/unit/projects/project-task-index-status.test.ts (8 tests) 1264ms
+     ✓ never starts a download after a write: nothing is scheduled when the model is not on disk, nor run after a switch to one  307ms
+     ✓ keeps background runs away from writers: failures are contained, a deleted Project is skipped, shutdown drops pending runs  369ms
+
+ Test Files  3 passed (3)
+      Tests  20 passed (20)
+   Start at  11:30:23
+   Duration  6.80s (transform 2.31s, setup 51ms, import 1.76s, tests 4.44s, environment 0ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+===== t47-20.log =====
+run 1:       Tests  1 passed | 7 skipped (8)
+run 2:       Tests  1 passed | 7 skipped (8)
+run 3:       Tests  1 passed | 7 skipped (8)
+run 4:       Tests  1 passed | 7 skipped (8)
+run 5:       Tests  1 passed | 7 skipped (8)
+run 6:       Tests  1 passed | 7 skipped (8)
+run 7:       Tests  1 passed | 7 skipped (8)
+run 8:       Tests  1 passed | 7 skipped (8)
+run 9:       Tests  1 passed | 7 skipped (8)
+run 10:       Tests  1 passed | 7 skipped (8)
+run 11:       Tests  1 passed | 7 skipped (8)
+run 12:       Tests  1 passed | 7 skipped (8)
+run 13:       Tests  1 passed | 7 skipped (8)
+run 14:       Tests  1 passed | 7 skipped (8)
+run 15:       Tests  1 passed | 7 skipped (8)
+run 16:       Tests  1 passed | 7 skipped (8)
+run 17:       Tests  1 passed | 7 skipped (8)
+run 18:       Tests  1 passed | 7 skipped (8)
+run 19:       Tests  1 passed | 7 skipped (8)
+run 20:       Tests  1 passed | 7 skipped (8)
+

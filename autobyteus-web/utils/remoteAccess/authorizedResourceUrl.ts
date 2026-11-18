@@ -7,6 +7,7 @@ const PROTECTED_REST_PREFIXES = [
   '/rest/files/',
   '/rest/media',
   '/rest/workspaces/',
+  '/rest/node-files/',
   '/rest/context-files/',
   '/rest/drafts/',
   '/rest/runs/',

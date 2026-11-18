@@ -1,0 +1,29 @@
+# API-13 built-server suites the implementation did not run (they only gained the launch credential)
+# Command (clean env, HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.ifJEV8mqFS): env -i PATH HOME TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs RUN_BUSY_STOP_NOW_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts --no-watch
+# Commit b6a57ab154; dist built at 1e02bea41e (IR002-05; no server source changed since); 2026-11-08T17:06:35Z
+[22m[39mClosed agent session 5120b197-6a08-4c29-a6a0-f5d9073f3308
+Agent WebSocket disconnected: 5120b197-6a08-4c29-a6a0-f5d9073f3308
+
+ [32m✓[39m tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 11294[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G [33m 470[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-02: a Team copy's default and every member run in F [33m 527[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G [33m 624[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-04: a Task of a Project with no link, and a description-only delegation, run in the top-level run's folder [33m 582[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured placement, run in F; their managers stay in G [33m 1787[2mms[22m[39m
+     [33m[2m✓[22m[39m DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart both keep their folder and wake there [33m 5600[2mms[22m[39m
+[90mstdout[2m | tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts[2m > [22m[2mstop now with a busy run[2m > [22m[2mserver: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind
+[22m[39m{"result":"Pass","error":null,"terminate":{"runId":"busy_stop_bq284_87049_1794157630528_40a12b9550b64c04b8c50b79ca3179ae","result":{"success":true,"message":"Agent run terminated successfully."},"elapsedMs":76,"foregroundGone":true},"shutdown":{"exit":{"code":0,"signal":null,"at":1794157634632},"elapsedMs":805,"survivors":[],"markedLeft":[]},"history":{"terminatedRun":{"runId":"busy_stop_bq284_87049_1794157630528_40a12b9550b64c04b8c50b79ca3179ae","terminatedAt":"2026-11-08T17:07:12.982Z","isActive":false},"shutdownRun":{"runId":"busy_stop_bq284_87049_1794157630528_5314bb1ec7d14b99850bb52eb0d17352","terminatedAt":null,"isActive":false}},"rootRemoved":true}
+
+[90mstdout[2m | tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts[2m > [22m[2mstop now with a busy run[2m > [22m[2mapplication: an application terminating its busy run interrupts the turn
+[22m[39m{"result":"Pass","error":null,"applicationTerminate":{"bindingId":"6612d117-7776-4637-92ef-20a1b51d0e97","result":{"binding":{"bindingId":"6612d117-7776-4637-92ef-20a1b51d0e97","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"busy-1","status":"TERMINATED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-11-08T17:07:18.157Z","updatedAt":"2026-11-08T17:07:18.765Z","terminatedAt":"2026-11-08T17:07:18.765Z","lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_76d83c29e09a4d9186b634f2ae362eee","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}},"elapsedMs":83},"roundTripMs":102,"foregroundGone":true},"close":{"exitCode":0,"closed":true,"elapsedMs":620},"rootRemoved":true}
+
+ [32m✓[39m tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 9041[2mms[22m[39m
+     [33m[2m✓[22m[39m server: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind [33m 5893[2mms[22m[39m
+     [33m[2m✓[22m[39m application: an application terminating its busy run interrupts the turn [33m 3147[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m15 passed[39m[22m[90m (15)[39m
+[2m   Start at [22m 18:06:37
+[2m   Duration [22m 41.89s[2m (transform 6.14s, setup 105ms, import 9.69s, tests 31.50s, environment 0ms)[22m
+
+# Exit status: 0

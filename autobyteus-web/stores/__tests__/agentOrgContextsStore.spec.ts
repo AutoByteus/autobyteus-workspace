@@ -6,7 +6,7 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 const mocks = vi.hoisted(() => ({
   applyAgentOrgActivity: vi.fn(),
   instances: [] as Array<Record<string, any>>,
-  refreshAgentOrgHistoryItem: vi.fn(async () => undefined),
+  refreshAgentOrgHistoryItem: vi.fn(async (_orgRunId: string) => undefined),
 }))
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async ({ variables }: any) => variables.agentRunId
@@ -15,7 +15,6 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async 
     const orgRunId = variables.orgRunId
     const view = structuredClone(taskBearingView())
     view.execution_tree.rootOrg.orgRunId = orgRunId
-    view.communication_messages.orgRunId = orgRunId
     return { data: { getAgentOrgRunInspection: {
       root_subject_kind: 'agent_org', root_run_id: orgRunId, root_org: view,
     } } }
@@ -67,6 +66,19 @@ describe('agentOrgContextsStore lifecycle ownership', () => {
     expect(mocks.refreshAgentOrgHistoryItem).toHaveBeenCalledTimes(3)
     expect(mocks.refreshAgentOrgHistoryItem.mock.calls.every(([id]) => id === 'org-run')).toBe(true)
     store.releaseContext('org-run')
+  })
+
+  it('releaseAll closes every Org stream and releases every Org view (autobyteus-435 REQ-010 (b))', async () => {
+    const store = useAgentOrgContextsStore()
+    await store.openForInspection('org-a')
+    await store.openForInspection('org-b')
+    expect(mocks.instances).toHaveLength(2)
+
+    store.releaseAll()
+
+    expect(mocks.instances.every((instance) => instance.disconnect.mock.calls.length > 0)).toBe(true)
+    expect(store.contextFor('org-a')).toBeNull()
+    expect(store.contextFor('org-b')).toBeNull()
   })
 
   it('retains isolated member drafts across root navigation until the exact root is explicitly released', async () => {

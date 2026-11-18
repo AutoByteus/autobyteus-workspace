@@ -1,0 +1,13 @@
+# IMP-09 CR-001 recheck: supervisor-related tests, typecheck gate, scripted studio E2Es
+# Command: vitest run tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts tests/unit/standalone-application-host tests/architecture/tracked-imports.test.ts tests/integration/agent-execution/agent-run-manager.integration.test.ts; pnpm -C autobyteus-server-ts typecheck; (IMP-04 E2E command)
+# Commit: cb132711f6
+# Environment: macOS (Darwin 25.5), Node 22.21.1
+# Date: 2026-11-06
+
+ Test Files  4 passed (4)
+      Tests  39 passed (39)
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
+ Test Files  4 passed (4)
+      Tests  15 passed (15)
+non-empty lines: general-process-run-supervisor.ts 446 (base 511), general-process-run-supervisor-input.ts 83

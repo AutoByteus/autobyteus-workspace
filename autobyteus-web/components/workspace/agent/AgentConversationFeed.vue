@@ -1,6 +1,6 @@
 <template>
   <div class="relative h-full min-h-0">
-    <div :id="conversationScrollContainerId" ref="conversationScrollContainer" class="h-full min-h-0 overflow-y-auto overscroll-contain"
+    <div :id="conversationScrollContainerId" ref="conversationScrollContainer" class="conv-feed h-full min-h-0 overflow-y-auto overscroll-contain"
       data-testid="agent-conversation-feed" :aria-busy="browseState === 'loading' ? 'true' : undefined"
       @scroll="handleConversationScroll" @wheel="handleWheelInput" @keydown="handleKeyInput"
       @touchstart="handleTouchStart" @touchmove="handleTouchMove"
@@ -9,7 +9,7 @@
       @pointercancel="handlePointerCancel" @lostpointercapture="handlePointerCancel">
       <div class="rounded-xl bg-white">
         <template v-if="showBrowsePresentation">
-          <div v-for="item in browseItems" :key="item.key" class="break-words px-2 py-3">
+          <div v-for="item in browseItems" :key="item.key" class="conv-row break-words px-2 py-3" :data-speaker="item.kind === 'user' ? 'user' : item.kind === 'assistant' ? 'agent' : 'system'">
             <div v-if="item.kind === 'user'" :data-event-monitor-visual-key="item.visualId">
               <UserMessage :message="item.message" user-display-name="You" />
             </div>
@@ -24,7 +24,7 @@
           </div>
         </template>
         <template v-else>
-          <div v-for="item in latestFeedItems" :key="item.key" class="break-words px-2 py-3">
+          <div v-for="item in latestFeedItems" :key="item.key" class="conv-row break-words px-2 py-3" :data-speaker="item.kind === 'message' ? (item.message.type === 'user' ? 'user' : 'agent') : 'system'">
             <template v-if="item.kind === 'message'">
               <div>
                 <UserMessage v-if="item.message.type === 'user'" :message="item.message" user-display-name="You" />
@@ -88,6 +88,7 @@
 
 <script setup lang="ts">
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue';
+import { useOncePerFrame } from '~/composables/useOncePerFrame';
 import { Icon } from '@iconify/vue';
 import type { Conversation } from '~/types/conversation';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
@@ -107,7 +108,7 @@ const props = withDefaults(defineProps<{
   agentName?: string;
   agentAvatarUrl?: string | null;
   interAgentSenderNameById?: Record<string, string>;
-  compactionActivities?: CompactionActivity[];
+  compactionActivities?: readonly CompactionActivity[];
   showTokenCosts?: boolean;
   showTotalUsage?: boolean;
   presentationRevision?: number;
@@ -452,6 +453,7 @@ const syncAutoScrollIfPinned = (): void => {
   if (!el || props.browseState !== 'latest' || !shouldStickToBottom.value || isNearBottom(el)) return;
   scrollToBottom();
 };
+const scheduleAutoScrollCheck = useOncePerFrame(syncAutoScrollIfPinned); // a layout read: once per frame (autobyteus-358)
 const resetForSubject = (): void => {
   beginScrollWork();
   pendingBrowseAnchor.value = null;
@@ -479,7 +481,7 @@ onMounted(() => {
   document.addEventListener('visibilitychange', handleVisibilityChange);
   scrollToBottom();
 });
-onUpdated(syncAutoScrollIfPinned);
+onUpdated(scheduleAutoScrollCheck);
 onBeforeUnmount(() => {
   window.removeEventListener('blur', invalidateForLostInteraction);
   window.removeEventListener('pointerup', handlePointerUp as EventListener);

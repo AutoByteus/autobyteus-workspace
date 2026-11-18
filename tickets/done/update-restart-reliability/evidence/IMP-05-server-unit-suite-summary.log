@@ -1,0 +1,9 @@
+# IMP-05
+# Command: pnpm -C autobyteus-server-ts test:unit (full; summary)
+# Commit: ddb03d0d0b
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ Test Files  885 passed | 5 skipped (890)
+      Tests  7538 passed | 9 skipped (7547)
+   Duration  705.06s (transform 18.91s, setup 11.43s, import 314.41s, tests 287.13s, environment 841ms)

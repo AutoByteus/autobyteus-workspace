@@ -1,0 +1,62 @@
+# NOTE: attempt 1 of AC-002, not a result. Every exit set requestedOrientation back to UNSPECIFIED and showed the bars, but the display stayed at ROTATION_90 because the test harness had changed the phone's own setting: tapsel.sh ran 'uiautomator dump' while the screen was landscape, and UiAutomation freezes the rotation for a dump and afterwards 'restores' it as a locked user rotation (RotationHistory: 'mode=USER_ROTATION_LOCKED, rotation=ROTATION_90, caller=UiAutomationConnection#restoreRotationStateLocked'; settings user_rotation=1). The app then correctly handed the orientation back to that (now landscape) setting. The phone's setting was put back (user_rotation 0) and AC-002 rerun without uiautomator while in landscape (API-05-ac002-exits.txt).
+# Rotation state after attempt 1:
+#   user_rotation=1
+#     mUserRotationMode=USER_ROTATION_LOCKED mUserRotation=ROTATION_90 mCameraRotationMode=0 mAllowAllRotations=unknown
+#           11-08 08:55:02.850: mode=USER_ROTATION_LOCKED, rotation=ROTATION_90, caller=UiAutomationConnection#restoreRotationStateLocked
+#           11-08 08:55:08.279: mode=USER_ROTATION_LOCKED, rotation=ROTATION_90, caller=UiAutomationConnection#restoreRotationStateLocked
+#           11-08 08:55:13.729: mode=USER_ROTATION_LOCKED, rotation=ROTATION_90, caller=UiAutomationConnection#restoreRotationStateLocked
+# Case: API-05 — AC-002 on the emulator: every exit and other screens (API-05-ac002.sh)
+# Commit: d76be54fb0; emulator-5554 autobyteus277_api35 (auto-rotate off, gestural navigation); node abx432-api-node
+# Date: 2026-11-08T07:55:02Z
+
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+TypeError: 'NoneType' object is not subscriptable
+
+Exception occurred while executing 'tap':
+java.lang.IllegalArgumentException: Argument expected after "tap"
+	at com.android.modules.utils.BasicShellCommandHandler.getNextArgRequired(BasicShellCommandHandler.java:295)
+	at com.android.server.input.InputShellCommand.runTap(InputShellCommand.java:480)
+	at com.android.server.input.InputShellCommand.onCommand(InputShellCommand.java:291)
+	at com.android.modules.utils.BasicShellCommandHandler.exec(BasicShellCommandHandler.java:97)
+	at android.os.ShellCommand.exec(ShellCommand.java:38)
+	at com.android.server.input.InputManagerService.onShellCommand(InputManagerService.java:3193)
+	at android.os.Binder.shellCommand(Binder.java:1230)
+	at android.os.Binder.onTransact(Binder.java:1043)
+	at android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:1306)
+	at android.os.Binder.execTransactInternal(Binder.java:1505)
+	at android.os.Binder.execTransact(Binder.java:1444)
+1a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+1b after the handle (real tap) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[915,364],\"canvas\":[212,88,491,276],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+2a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+2b after one tap on the picture (View only, real tap) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[915,364],\"canvas\":[212,88,491,276],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+3a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+3b after the Back key | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[915,364],\"canvas\":[212,88,491,276],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+4a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+4b after one back-gesture swipe from the left edge (immersive: shows the bars transiently) | mDisplayRotation=ROTATION_90 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=true visible=true 
+4c after a second back-gesture swipe | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[915,364],\"canvas\":[212,88,491,276],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+5a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+5b another app shares a link while in full screen (the app shows its connection screen) | mDisplayRotation=ROTATION_90 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false 
+5c Back from the connection screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[915,364],\"canvas\":[212,88,491,276],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+## the real node-list path (Switch node lives in the connection sheet, reachable only outside full screen)
+"?screen=desktop"
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+TypeError: 'NoneType' object is not subscriptable
+
+Exception occurred while executing 'tap':
+java.lang.IllegalArgumentException: Argument expected after "tap"
+	at com.android.modules.utils.BasicShellCommandHandler.getNextArgRequired(BasicShellCommandHandler.java:295)
+	at com.android.server.input.InputShellCommand.runTap(InputShellCommand.java:480)
+	at com.android.server.input.InputShellCommand.onCommand(InputShellCommand.java:291)
+	at com.android.modules.utils.BasicShellCommandHandler.exec(BasicShellCommandHandler.java:97)
+	at android.os.ShellCommand.exec(ShellCommand.java:38)
+	at com.android.server.input.InputManagerService.onShellCommand(InputManagerService.java:3193)
+	at android.os.Binder.shellCommand(Binder.java:1230)
+	at android.os.Binder.onTransact(Binder.java:1043)
+	at android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:1306)
+	at android.os.Binder.execTransactInternal(Binder.java:1505)
+	at android.os.Binder.execTransact(Binder.java:1444)
+tapped mobile-switch-node at device  (webview origin 0,63)
+6 node list via ⋯ node button -> Switch node (real taps) | mDisplayRotation=ROTATION_90 SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true 

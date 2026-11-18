@@ -1,0 +1,11 @@
+# IMP-07 Android debug APK and instrumented-test compile
+# command: cd autobyteus-android && JAVA_HOME=/opt/homebrew/opt/openjdk@17 ANDROID_HOME=~/Library/Android/sdk ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin
+# commit: ba3ba5b23e (checks ran on the working tree that this commit records unchanged)
+# env: macOS 26.5.2, Node v22.23.1, JDK 17
+# date: 2026-11-08T06:46Z
+
+> Task :app:compileDebugAndroidTestKotlin
+> Task :app:assembleDebug
+BUILD SUCCESSFUL in 4s
+-rw-r--r--@ 1 normy  staff  2505970 Nov  8 07:42 autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+9d47eab3db264f49fb3aed37089616b00959b780085731e8ea1b241938e0c99a  autobyteus-android/app/build/outputs/apk/debug/app-debug.apk

@@ -1,0 +1,29 @@
+# IMP-01 contract package test (AC-005)
+# cmd: pnpm -C autobyteus-agent-presentation-contracts test
+# commit: a3dbfcb495  env: macOS, Node v22.23.1  date: 2026-10-28T16:03Z
+
+ok 1 - normalized tagged primary identity never bridges secondary tokens
+ok 2 - accepts a strict root-neutral message and rejects root identity
+ok 3 - accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+ok 4 - compaction carries direct diagnostics separately from provider-native identity
+ok 5 - live token event carries the model-call fact, compaction threshold and summary revision
+ok 6 - live token event carries one model call's TPS or null
+ok 7 - each runtime kind has its full name (autobyteus-320, AC-005)
+ok 8 - an unknown kind is shown as given, including object keys
+ok 9 - composes one line per mention, each with its own guidance, and parses it back (wording §8)
+ok 10 - every presence composes its own line and parses back to the same presence
+ok 11 - a delegate suggestion is never composed for the agent itself, its team or the agent the user started
+ok 12 - a line whose guidance does not match its presence is not parsed
+ok 13 - the composed note names no task tool and never tells the agent to close a task_id
+ok 14 - notes saved by the previous release in every combination keep parsing (saved heading, suffixes, guidance)
+ok 15 - a saved note whose guidance does not match its entries, or from neither release, is not parsed
+ok 16 - notes saved with the collaborator-messaging guidances still parse
+ok 17 - a mention-only message is the note alone
+ok 18 - no mentions leaves the text unchanged; foreign text is not parsed
+ok 19 - mentions are at most 8 and unique by kind and definition
+ok 20 - composes the three worked examples of the complete views (§11) exactly
+ok 21 - a remote execution is an Agent run or a Team run with its mounted members, named by node
+ok 22 - a summary says whether the node answered, with its title and its agents' statuses
+# tests 22
+# pass 22
+# fail 0

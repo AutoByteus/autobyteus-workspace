@@ -1,0 +1,6 @@
+# API-00 debug APK; commit d0ad333141; 2026-11-17T21:49:57Z; ANDROID_HOME=~/Library/Android/sdk ./gradlew :app:assembleDebug
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 24s
+35 actionable tasks: 35 executed
+exit=0

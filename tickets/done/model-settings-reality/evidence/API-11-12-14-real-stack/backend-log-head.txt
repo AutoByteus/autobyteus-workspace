@@ -1,0 +1,56 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-server-ts
+App data directory: /tmp/runtime-switch-members-probe-LRJdvo/server-data
+Config file path: /tmp/runtime-switch-members-probe-LRJdvo/server-data/.env
+Loading environment from: /tmp/runtime-switch-members-probe-LRJdvo/server-data/.env
+◇ injected env (0) from ../../../../../../../tmp/runtime-switch-members-probe-LRJdvo/server-data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:33891
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:33891
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/runtime-switch-members-probe-LRJdvo/server-data
+DB DIRECTORY: /tmp/runtime-switch-members-probe-LRJdvo/server-data/db
+LOGS DIRECTORY: /tmp/runtime-switch-members-probe-LRJdvo/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/runtime-switch-members-probe-LRJdvo/server-data/download
+MEMORY DIRECTORY: /tmp/runtime-switch-members-probe-LRJdvo/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/tmp/runtime-switch-members-probe-LRJdvo/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:5238) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-10T14:52:42.638Z] [INFO] [secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/runtime-switch-members-probe-LRJdvo/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/runtime-switch-members-probe-LRJdvo/server-data/temp_workspace.
+Initialized TempWorkspace at /tmp/runtime-switch-members-probe-LRJdvo/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered to

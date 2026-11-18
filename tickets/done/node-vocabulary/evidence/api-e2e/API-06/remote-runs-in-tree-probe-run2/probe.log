@@ -1,0 +1,4 @@
+remote-runs-in-tree probe: Fail
+Error: Timed out waiting for Send enabled
+    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:61:9)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:380:3

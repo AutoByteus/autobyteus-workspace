@@ -1,0 +1,9 @@
+# TEMPORARY PROBE (not committed): IC-01, IC-02, then package reload and app-scoped repair of the ACTIVE imported Brief Studio (its IC-01 drafting run still live). commit 8ab3a2129a (fix), 2026-10-24T17:28:02Z
+[AB238-PROBE] after package reload 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+[AB238-PROBE] repair of active app 200 {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>' is currently reentering. Please retry after repair/reload completes.","updatedAt":"2026-10-24T17:28:18.012Z"}
+[AB238-PROBE] after repair 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (3 tests) 3410ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1308ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  564ms
+     ✓ TEMPORARY PROBE IC-03 package reload, then repair, of the ACTIVE imported application  785ms
+exit=0

@@ -1,0 +1,15 @@
+# IMP-02 workflow and shell lint, system level check
+# Commands: actionlint .github/workflows/release-server-docker.yml; shellcheck build.sh build-multi-arch.sh entrypoint.sh; node scripts/server-package/check-system-level.mjs; node --check of the changed .mjs files
+# Commit: 5c33c1b7b0
+# Environment: macOS arm64, actionlint 1.7.11, version: 0.11.0
+# Date: 2026-10-30T15:56Z
+
+actionlint: no findings
+shellcheck: no findings
+System level 1: the system part is unchanged (b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562)
+node --check ok: scripts/server-package/check-system-level.mjs
+node --check ok: scripts/server-package/describe-server-package.mjs
+node --check ok: scripts/server-package/generate-signing-key.mjs
+node --check ok: scripts/server-package/sign-server-package.mjs
+node --check ok: autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs
+node --check ok: autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs

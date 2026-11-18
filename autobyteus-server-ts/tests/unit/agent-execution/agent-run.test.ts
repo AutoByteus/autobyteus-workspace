@@ -72,7 +72,10 @@ const createHarness = (options: {
     getPlatformAgentRunId: () => "platform-run-1",
     isActive: () => snapshot.availability === "active",
     getLifecycleSnapshot: () => snapshot,
-    hasRunningBackgroundTasks: vi.fn(() => options.runningBackgroundTasks ?? false),
+    // The quiet check counts the running tasks of the runtime's background-task view (autobyteus-448 part 2).
+    backgroundTaskInspection: { kind: "event-stream" as const, current: vi.fn(() => (options.runningBackgroundTasks
+      ? [{ taskId: "t1", kind: "shell", description: "build", command: "make", status: "running", summary: null, endReason: null, exitCode: null, startedAt: "2026-11-17T10:00:00.000Z" }]
+      : []) as never) },
     subscribeToSourceEventBatches: vi.fn().mockImplementation(
       (next: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
         sourceListener = next;
@@ -105,6 +108,45 @@ const createHarness = (options: {
 };
 
 describe("AgentRun input admission", () => {
+  // autobyteus-285 SR-005: the restart notice is admitted only as the run instance's first input.
+  it("admits an onlyAsFirstInput input as the first input; refuses it once the instance reserved or admitted any input", async () => {
+    const fresh = createHarness();
+    await expect(fresh.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true })).resolves.toMatchObject({ accepted: true });
+    await expect(fresh.run.postUserMessage(new AgentInputUserMessage("notice again"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+    // A user message after the first-input notice is admitted as usual (queued after it).
+    await expect(fresh.run.postUserMessage(new AgentInputUserMessage("user message"))).resolves.toMatchObject({ accepted: true });
+
+    const userFirst = createHarness();
+    await expect(userFirst.run.postUserMessage(new AgentInputUserMessage("user message"))).resolves.toMatchObject({ accepted: true });
+    await expect(userFirst.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+    expect(userFirst.backend.dispatchUserInput).toHaveBeenCalledOnce();
+  });
+
+  it("counts a reserved input (a teammate's delivery) as earlier input; an invalid input does not", async () => {
+    const reserved = createHarness();
+    await expect(reserved.run.reserveUserMessage(new AgentInputUserMessage("teammate message"))).resolves.toMatchObject({ reserved: true });
+    await expect(reserved.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+    await expect(reserved.run.reserveUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ reserved: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+
+    const invalidFirst = createHarness();
+    await expect(invalidFirst.run.postUserMessage(new AgentInputUserMessage(" "))).resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_INVALID" });
+    await expect(invalidFirst.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true })).resolves.toMatchObject({ accepted: true });
+  });
+
+  it("decides concurrent inputs in the run's dispatch queue: whichever is admitted first wins", async () => {
+    const h = createHarness();
+    const [user, notice] = await Promise.all([
+      h.run.postUserMessage(new AgentInputUserMessage("user message")),
+      h.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }),
+    ]);
+    expect(user).toMatchObject({ accepted: true });
+    expect(notice).toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+  });
+
   it("normalizes only the private provider dispatch while observers retain the admitted message", async () => {
     const admittedMessage = new AgentInputUserMessage("logical input");
     const normalizedMessage = new AgentInputUserMessage("provider input");
@@ -901,7 +943,7 @@ describe("AgentRun input admission", () => {
     const harness = createHarness({ runningBackgroundTasks: true });
 
     await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
-    expect(harness.backend.hasRunningBackgroundTasks).toHaveBeenCalled();
+    expect(harness.backend.backgroundTaskInspection.current).toHaveBeenCalled();
     await expect(harness.run.postUserMessage(new AgentInputUserMessage("background task finished")))
       .resolves.toMatchObject({ accepted: true });
     expect(harness.backend.terminate).not.toHaveBeenCalled();
@@ -910,7 +952,8 @@ describe("AgentRun input admission", () => {
   it("prepares an idle run once its background task has ended", async () => {
     let running = true;
     const harness = createHarness({ runningBackgroundTasks: true });
-    harness.backend.hasRunningBackgroundTasks.mockImplementation(() => running);
+    const runningTask = harness.backend.backgroundTaskInspection.current();
+    harness.backend.backgroundTaskInspection.current.mockImplementation(() => (running ? runningTask : []) as never);
     await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
     running = false;
     const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
@@ -922,11 +965,11 @@ describe("AgentRun input admission", () => {
     const stopped = createHarness({ runningBackgroundTasks: true });
     await expect(stopped.run.terminate()).resolves.toEqual({ accepted: true });
     expect(stopped.backend.terminate).toHaveBeenCalledOnce();
-    expect(stopped.backend.hasRunningBackgroundTasks).not.toHaveBeenCalled();
+    expect(stopped.backend.terminate).toHaveBeenCalledOnce();
 
     const fenced = createHarness({ runningBackgroundTasks: true });
     await expect(fenced.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
-    expect(fenced.backend.hasRunningBackgroundTasks).not.toHaveBeenCalled();
+    expect(fenced.backend.terminate).not.toHaveBeenCalled();
   });
 
   it("does not reopen root-fenced admission when an earlier prepared termination is cancelled", async () => {
@@ -1264,5 +1307,28 @@ describe("AgentRun input-state publication (agent-input-state-content-cadence)",
 
     await harness.getSourceListener()?.(contentBatch(harness.run.runId, "next batch"));
     expect(log).toHaveLength(3);
+  });
+});
+
+// autobyteus-473 DS-002: an event-stream run answers the background-task view with the tasks its runtime knows now.
+describe("AgentRun background-task view", () => {
+  const task = Object.freeze({ taskId: "bg-1", kind: "shell" as const, description: "pnpm build", command: "pnpm build",
+    status: "running" as const, summary: null, endReason: null, exitCode: null, startedAt: "2026-11-12T10:00:00.000Z" });
+
+  it("answers an event-stream run with its current tasks, read when asked", async () => {
+    const { backend, run } = createHarness();
+    const current = vi.fn(() => [task]);
+    Object.assign(backend, { backgroundTaskInspection: { kind: "event-stream", current } });
+    expect(current).not.toHaveBeenCalled();
+    expect(await run.inspectBackgroundTasks()).toEqual({ kind: "event-stream", agentRunId: "agent-run-1", tasks: [task] });
+    current.mockReturnValue([]);
+    expect(await run.inspectBackgroundTasks()).toEqual({ kind: "event-stream", agentRunId: "agent-run-1", tasks: [] });
+    expect(current).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps the unsupported answer for a runtime that reports no background tasks", async () => {
+    const { backend, run } = createHarness();
+    Object.assign(backend, { backgroundTaskInspection: { kind: "unsupported" } });
+    expect(await run.inspectBackgroundTasks()).toEqual({ kind: "unsupported", agentRunId: "agent-run-1", reason: "unsupported" });
   });
 });

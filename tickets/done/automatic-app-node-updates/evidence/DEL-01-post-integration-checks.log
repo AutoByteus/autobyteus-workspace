@@ -1,0 +1,22 @@
+# DEL-01 post-integration checks (integrated state 42d74d09c6; pnpm install --frozen-lockfile first)
+
+## Electron main suite (pnpm -C autobyteus-web test:electron run)
+ Test Files  60 passed | 1 skipped (61)
+      Tests  407 passed | 1 skipped (408)
+exit 0
+
+## web typecheck (pnpm -C autobyteus-web typecheck)
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+exit 0
+
+## Electron tsc (tsc -p electron/tsconfig.json --noEmit)
+exit 0
+
+## full web suite (pnpm -C autobyteus-web test:nuxt)
+ Test Files  689 passed (689)
+      Tests  5046 passed (5046)
+   Duration  306.98s (transform 35.51s, setup 2028.16s, collect 218.09s, tests 97.24s, environment 175.53s, prepare 99.74s)
+exit 0
+
+## Secret Gate (scripts/check_secrets.sh origin/personal..HEAD before the first push)
+secret gate: scanning 32 commit(s); PASS (no secrets found)

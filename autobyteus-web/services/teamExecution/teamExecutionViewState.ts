@@ -1,10 +1,8 @@
-import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange';
-import { computed, reactive, ref, shallowRef } from 'vue';
+import { reactive, ref, shallowRef } from 'vue';
 import {
   teamExecutionViewSnapshotPayloadSchema,
-  type TeamCommunicationMessageDto,
   type TeamRunExecutionTreeDto,
   type TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
@@ -12,28 +10,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
-import { insertTaskExecution, recordDelegatedLaunchSelections } from './teamExecutionTreeMutations';
-import { refreshTeamAgentLaunches } from './teamExecutionContextFactory';
-import { createRemoteTeamAgentContext, isKnownRemoteExecution, isRemoteAgentRun, remoteAgentLocations, teamNavigationRowsWithRemote } from './teamRemoteExecutions';
-import { applyRemoteSummaryStatuses } from '~/services/remoteRuns/remoteChildren';
-import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
-import {
-  agentRunKey,
-  collectClosedSubtrees,
-  fromTeamTaskExecutionReference,
-  mergeClosedTaskExecutions,
-  removeReopenedTaskExecutions,
-  taskExecutionReferenceKey,
-  teamRunKey,
-  type TaskExecutionReference,
-} from '~/utils/collaboration/taskExecutionClosure';
-import {
-  collectAgentExecutionLocations,
-  projectNavigationRows,
-  teamTreeRunKeys,
-  teamTreeWalk,
-  type TeamTreeNode,
-} from './teamExecutionTreeSelectors';
+import { collectAgentExecutionLocations, projectNavigationRows } from './teamExecutionTreeSelectors';
 import type {
   TeamAgentContextEntry,
   TeamAgentExecutionLocation,
@@ -42,16 +19,17 @@ import type {
   TeamExecutionEffect,
   TeamExecutionNavigationRow,
 } from './teamExecutionViewModels';
+import { rebuildOfView } from '~/services/collaborationMessages/collaborationParticipantMessages';
+import { sameJsonValue } from '~/utils/sameJsonValue';
 
 type MutationResult = Readonly<{ disposition: 'applied' | 'unchanged' }>
   | Readonly<{ disposition: 'rejected'; code: string; message: string }>;
 
 export interface TeamExecutionViewState {
   getRootTeamRunId(): string;
-  getTeamDefinitionName(): string;
+  /** The Team's name (autobyteus-461 SR-091): a delegated team run's slot, from the server; else its definition's. */
+  getDisplayName(): string;
   getExecutionTree(): TeamRunExecutionTreeDto;
-  /** Task executions whose Task is DONE or CANCELLED (closed copies are stopped and left out of listings). */
-  getClosedTaskExecutions(): readonly TaskExecutionReference[];
   getConfigurationView(): Readonly<TeamRunConfigurationView>;
   getChangeSequence(): number;
   needsStreamRecovery(): boolean;
@@ -70,14 +48,10 @@ export interface TeamExecutionViewState {
   focusAgent(agentRunId: string): MutationResult;
   focusAgentForInspection(agentRunId: string): MutationResult;
   listAgentContextEntries(): readonly TeamAgentContextEntry[];
-  listLiveAgentContextEntries(): readonly TeamAgentContextEntry[];
   listNavigationRows(): readonly TeamExecutionNavigationRow[];
-  /** False for a closed task execution (Task DONE) and every row under one; the Workspaces tree leaves them out. */
-  isTaskExecutionRowListed(row: TeamExecutionNavigationRow): boolean;
-  listCommunicationMessages(): readonly TeamCommunicationMessageDto[];
   applySnapshot(message: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>): TeamExecutionApplyResult;
   applyMessage(message: Exclude<TeamStreamServerMessage,
-    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult;
+    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'RUN_TREE_SNAPSHOT' }>): TeamExecutionApplyResult;
 }
 
 export interface CreateTeamExecutionViewStateInput {
@@ -85,15 +59,12 @@ export interface CreateTeamExecutionViewStateInput {
   rootActive: boolean;
   baseChangeSequence?: number;
   executionTree: TeamRunExecutionTreeDto;
-  /** Task executions of `executionTree` whose Task is DONE. */
-  closedTaskExecutions: readonly TaskExecutionReference[];
-  messages?: readonly TeamCommunicationMessageDto[];
   configuration: Readonly<TeamRunConfigurationView>;
   initialFocusedAgentRunId: string;
   agentContexts: readonly TeamAgentContextEntry[];
   createAgentContext: (agentRunId: string, address: AgentTeamAddress, tree: TeamRunExecutionTreeDto) => AgentContext | null;
-  /** autobyteus-278: the runs this Team delegated to other nodes (the snapshot's list). */
-  remoteTaskExecutions?: readonly RemoteTaskExecutionDto[];
+  /** The server's name for the run (SR-091): a delegated team run's slot; null or absent for one the user started. */
+  displayName?: string | null;
 }
 
 const requiredId = (value: string, label: string): string => {
@@ -111,8 +82,8 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'SEGMENT_CONTENT_BATCH' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED'
-    | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'SEGMENT_CONTENT_BATCH' | 'TEAM_COMMUNICATION_MESSAGE'
+    | 'RUN_TREE_SNAPSHOT' | 'RUN_TREE_CHANGED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
@@ -131,12 +102,9 @@ export const createTeamExecutionViewState = (
   // never expose a Map insertion before the rest of its validated view.
   const publication = shallowRef({
     tree: structuredClone(input.executionTree),
-    closed: [...input.closedTaskExecutions] as readonly TaskExecutionReference[],
-    messages: structuredClone(input.messages ?? []),
     changeSequence: input.baseChangeSequence ?? 0,
     contexts: new Map<string, AgentContext>() as ReadonlyMap<string, AgentContext>,
     locations: new Map<string, TeamAgentExecutionLocation>() as ReadonlyMap<string, TeamAgentExecutionLocation>,
-    remote: structuredClone(input.remoteTaskExecutions ?? []) as readonly RemoteTaskExecutionDto[],
   });
   const streamRecoveryRequired = ref(false);
   const rootActive = ref(input.rootActive);
@@ -156,11 +124,9 @@ export const createTeamExecutionViewState = (
     candidate.set(id, associatedContext);
   };
 
-  const collectValidatedLocations = (
-    nextTree: TeamRunExecutionTreeDto, nextRemote: readonly RemoteTaskExecutionDto[] = publication.value.remote,
-  ): ReadonlyMap<string, TeamAgentExecutionLocation> => {
+  const collectValidatedLocations = (nextTree: TeamRunExecutionTreeDto): ReadonlyMap<string, TeamAgentExecutionLocation> => {
     const nextLocations = new Map<string, TeamAgentExecutionLocation>();
-    for (const rawLocation of [...collectAgentExecutionLocations(nextTree), ...remoteAgentLocations(rootTeamRunId, nextRemote)]) {
+    for (const rawLocation of collectAgentExecutionLocations(nextTree)) {
       const location = Object.freeze({
         agentRunId: requiredId(rawLocation.agentRunId, 'agentRunId'),
         memberAddress: parseAgentTeamAddress(rawLocation.memberAddress),
@@ -182,7 +148,6 @@ export const createTeamExecutionViewState = (
   const planContextAssociations = (
     nextTree: TeamRunExecutionTreeDto,
     nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation>,
-    nextRemote: readonly RemoteTaskExecutionDto[] = publication.value.remote,
   ): readonly TeamAgentContextEntry[] => {
     const unplacedContext = [...publication.value.contexts.keys()].find((agentRunId) => !nextLocations.has(agentRunId));
     if (unplacedContext) {
@@ -191,8 +156,7 @@ export const createTeamExecutionViewState = (
     const planned: TeamAgentContextEntry[] = [];
     for (const location of nextLocations.values()) {
       if (!publication.value.contexts.has(location.agentRunId)) {
-        const context = createRemoteTeamAgentContext(nextRemote, location.agentRunId, location.memberAddress)
-          ?? input.createAgentContext(location.agentRunId, location.memberAddress, nextTree);
+        const context = input.createAgentContext(location.agentRunId, location.memberAddress, nextTree);
         if (!context || context.state.runId !== location.agentRunId) {
           throw new Error(`No exact Agent context could be created for '${location.agentRunId}'.`);
         }
@@ -230,35 +194,9 @@ export const createTeamExecutionViewState = (
     contexts: prepareContextAssociations(planContextAssociations(publication.value.tree, initialLocations)) };
   if (!publication.value.contexts.has(focusedAgentRunId.value)) throw new Error('Initial focused AgentRun is missing.');
 
-  // Every placement in the tree (including shut-down delegated children) is
-  // navigable; a message to a shut-down child restores it.
-  const navigationRows = (): readonly TeamExecutionNavigationRow[] => teamNavigationRowsWithRemote({ tree: publication.value.tree,
-    treeRows: projectNavigationRows({ tree: publication.value.tree, contexts: publication.value.contexts }),
-    executions: publication.value.remote, contexts: publication.value.contexts,
-    addressOf: (agentRunId) => publication.value.locations.get(agentRunId)?.memberAddress ?? null });
-  // Rows under a closed task execution leave the Workspaces listing; navigation rows stay complete.
-  const closedSubtrees = computed(() => collectClosedSubtrees(
-    [publication.value.tree.root_team as TeamTreeNode], publication.value.closed, teamTreeWalk));
-  const isTaskExecutionRowListed = (row: TeamExecutionNavigationRow): boolean =>
-    !(row.agentRunId && closedSubtrees.value.has(agentRunKey(row.agentRunId)))
-    && !(row.teamRunId && closedSubtrees.value.has(teamRunKey(row.teamRunId)));
-  /**
-   * A focused agent whose Task became DONE leaves the main view: focus moves to the member that
-   * delegated the outermost closed execution when it is still listed, else to the root coordinator.
-   */
-  const leaveClosedFocus = (): boolean => {
-    const hiddenBy = closedSubtrees.value.get(agentRunKey(focusedAgentRunId.value));
-    if (!hiddenBy) return false;
-    const delegator = 'delegator_agent_run_id' in hiddenBy ? hiddenBy.delegator_agent_run_id ?? null : null;
-    const coordinatorAddress = publication.value.tree.root_team.coordinator_address;
-    const listed = navigationRows().filter((row) => row.agentRunId && isTaskExecutionRowListed(row));
-    const fallback = listed.find((row) => row.agentRunId === delegator)
-      ?? listed.find((row) => row.kind === 'configured_agent' && row.address === coordinatorAddress)
-      ?? listed[0];
-    if (!fallback?.agentRunId) return false;
-    focusedAgentRunId.value = fallback.agentRunId;
-    return true;
-  };
+  // The Team's own rows (its delegated runs are its tree's rows, SR-084).
+  const navigationRows = (): readonly TeamExecutionNavigationRow[] =>
+    projectNavigationRows({ tree: publication.value.tree, contexts: publication.value.contexts });
   const focusAgent = (agentRunId: string): MutationResult => {
     const id = agentRunId.trim();
     if (!publication.value.contexts.has(id)) return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND', message: `AgentRun '${id}' is not part of this Team execution.` };
@@ -303,11 +241,11 @@ export const createTeamExecutionViewState = (
         || payload.execution_tree.root_team.team_run_id !== rootTeamRunId) {
         return Object.freeze({ disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH', message: 'Snapshot belongs to another root TeamRun.', effects: Object.freeze([]) });
       }
-      const nextLocations = collectValidatedLocations(payload.execution_tree, payload.remote_task_executions);
-      const planned = planContextAssociations(payload.execution_tree, nextLocations, payload.remote_task_executions);
+      const nextLocations = collectValidatedLocations(payload.execution_tree);
+      const planned = planContextAssociations(payload.execution_tree, nextLocations);
       const plannedContexts = new Map(planned.map((entry) => [entry.agentRunId, entry.agentContext]));
       const statusIds = new Set<string>();
-      const validatedStatuses: Array<{ context: AgentContext; status: AgentStatus; recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null }> = [];
+      const validatedStatuses: Array<{ context: AgentContext; status: AgentStatus; backgroundTasksRunning: number; recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null }> = [];
       for (const status of payload.agent_statuses) {
         const location = nextLocations.get(status.agent_run_id);
         if (statusIds.has(status.agent_run_id) || location?.memberAddress !== status.member_address) {
@@ -316,10 +254,11 @@ export const createTeamExecutionViewState = (
         const context = publication.value.contexts.get(status.agent_run_id) ?? plannedContexts.get(status.agent_run_id);
         if (!context) throw new Error(`Agent status target '${status.agent_run_id}' is missing.`);
         statusIds.add(status.agent_run_id);
-        validatedStatuses.push({ context, status: status.status as AgentStatus, recoverableBlock: status.recoverableBlock });
+        validatedStatuses.push({ context, status: status.status as AgentStatus, backgroundTasksRunning: status.background_tasks_running, recoverableBlock: status.recoverableBlock });
       }
-      // Every tree placement reports a status; shut-down children report offline (remote ones: their nodes' summaries).
-      if ([...nextLocations.keys()].some((agentRunId) => !statusIds.has(agentRunId) && !isRemoteAgentRun(payload.remote_task_executions, agentRunId))) {
+      // Every own member reports a status.
+      const ownIds = new Set(payload.execution_tree.root_team.members.map((member) => member.agent_run_id))
+      if ([...ownIds].some((agentRunId) => !statusIds.has(agentRunId))) {
         throw new Error('Snapshot omitted a canonical Agent status.');
       }
       const inputIds = new Set<string>();
@@ -327,14 +266,18 @@ export const createTeamExecutionViewState = (
         if (!nextLocations.has(entry.agent_run_id) || inputIds.has(entry.agent_run_id)) throw new Error('Invalid input-state target.');
         inputIds.add(entry.agent_run_id);
       }
+      // The view the open read, unchanged (CR-461-082, F-64): its rows, and its base, or (read stored, base 0) a Team still
+      // stopped, whose own members are offline: a message to it would have started it.
+      const sameBase = payload.base_change_sequence === publication.value.changeSequence || (publication.value.changeSequence === 0 && !rootActive.value
+        && payload.agent_statuses.every((status) => !ownIds.has(status.agent_run_id) || status.status === 'offline'))
+      const unchanged = sameBase && sameJsonValue(payload.execution_tree, publication.value.tree)
       publication.value = {
-        tree: structuredClone(payload.execution_tree), locations: nextLocations, remote: structuredClone(payload.remote_task_executions),
-        closed: payload.closed_task_executions.map(fromTeamTaskExecutionReference),
-        messages: structuredClone(payload.messages),
+        tree: structuredClone(payload.execution_tree), locations: nextLocations,
         contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
       };
-      validatedStatuses.forEach(({ context, status, recoverableBlock }) => {
+      validatedStatuses.forEach(({ context, status, backgroundTasksRunning, recoverableBlock }) => {
         context.state.currentStatus = status; context.state.recoverableBlock = recoverableBlock;
+        context.state.backgroundTasksRunning = backgroundTasksRunning;
         if (!inputIds.has(context.state.runId)) {
           context.state.inputProjection = null;
           for (const message of context.conversation.messages) if (message.type === 'user') delete message.pendingInput;
@@ -343,11 +286,14 @@ export const createTeamExecutionViewState = (
       for (const entry of payload.agent_input_states) handleAgentInputState(entry.state, publication.value.contexts.get(entry.agent_run_id)!);
       streamRecoveryRequired.value = false;
       repairFocus();
-      leaveClosedFocus();
       return Object.freeze({
         disposition: 'applied',
-        effects: Object.freeze([
+        // Unchanged: the loaded members and the Team tab's lists hold; they follow this live sequence from here.
+        effects: Object.freeze(unchanged ? [{ kind: 'adopt_collaboration_messages' as const, rebuild: rebuildOfView(payload) },
+          { kind: 'reconcile_team_navigation' as const }] : [
           { kind: 'invalidate_team_member_projections' as const },
+          // A rebuilt view: the Team tab's lists load again when a message could have been missed (autobyteus-358).
+          { kind: 'reload_collaboration_messages' as const, rebuild: rebuildOfView(payload) },
           { kind: 'reconcile_team_navigation' as const },
           { kind: 'reconcile_focused_team_member_projection' as const },
         ]),
@@ -358,7 +304,7 @@ export const createTeamExecutionViewState = (
   };
 
   const applyMessage = (message: Exclude<TeamStreamServerMessage,
-    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult => {
+    { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'RUN_TREE_SNAPSHOT' }>): TeamExecutionApplyResult => {
     if (streamRecoveryRequired.value) {
       return Object.freeze({
         disposition: 'rejected', code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
@@ -382,64 +328,16 @@ export const createTeamExecutionViewState = (
             type: 'SEGMENT_CONTENT', payload: { change_sequence: message.payload.change_sequence, agent_run_id: agentRunId, ...content },
           } });
         }
-      } else if (message.type === 'TASK_EXECUTION_STARTED') {
-        const nextTree = insertTaskExecution({
-          tree: publication.value.tree,
-          parentTeamRunId: message.payload.parent_team_run_id,
-          execution: message.payload.execution,
-        });
-        const nextLocations = collectValidatedLocations(nextTree);
-        const planned = planContextAssociations(nextTree, nextLocations);
-        publication.value = { ...publication.value, tree: nextTree, locations: nextLocations,
-          contexts: prepareContextAssociations(planned), changeSequence: sequence ?? publication.value.changeSequence };
-        repairFocus();
-        if (planned.length > 0) {
-          effects.push({
-            kind: 'invalidate_team_member_projection',
-            agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
-          });
-        }
-        effects.push({ kind: 'reconcile_team_navigation' });
-      } else if (message.type === 'REMOTE_TASK_EXECUTION_STARTED') {
-        // autobyteus-278: a new remote run needs its contexts and placements: a fresh snapshot brings them.
-        if (!isKnownRemoteExecution(publication.value.remote, message.payload.execution)) {
-          streamRecoveryRequired.value = true;
-          return Object.freeze({ disposition: 'applied', effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]) });
-        }
-      } else if (message.type === 'REMOTE_TASK_EXECUTION_SUMMARY') {
-        applyRemoteSummaryStatuses(message.payload, (agentRunId) => publication.value.contexts.get(agentRunId) ?? null, publication.value.remote);
-        effects.push({ kind: 'reconcile_team_navigation' });
-      } else if (message.type === 'TASK_EXECUTIONS_CLOSED') {
-        // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
-        const closed = message.payload.task_executions.map(fromTeamTaskExecutionReference);
-        const treeKeys = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
-        const unknown = closed.find((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)));
-        if (unknown) throw new Error(`Closed task execution '${taskExecutionReferenceKey(unknown)}' is not in the execution tree.`);
-        publication.value = { ...publication.value, closed: mergeClosedTaskExecutions(publication.value.closed, closed),
-          changeSequence: sequence ?? publication.value.changeSequence };
-        if (leaveClosedFocus()) effects.push({ kind: 'reconcile_focused_team_member_projection' });
-        effects.push({ kind: 'reconcile_team_navigation' });
-      } else if (message.type === 'TASK_EXECUTIONS_REOPENED') {
-        // Their assigner reactivated them: they are listed again (helpers under them stay closed).
-        const reopened = message.payload.task_executions.map(fromTeamTaskExecutionReference);
-        const treeKeys = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
-        const unknown = reopened.find((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)));
-        if (unknown) throw new Error(`Reopened task execution '${taskExecutionReferenceKey(unknown)}' is not in the execution tree.`);
-        publication.value = { ...publication.value, closed: removeReopenedTaskExecutions(publication.value.closed, reopened),
-          changeSequence: sequence ?? publication.value.changeSequence };
-        effects.push({ kind: 'reconcile_team_navigation' });
-      } else if (message.type === 'DELEGATED_LAUNCH_SELECTIONS_CHANGED') {
-        // A Save on the live run (DS-001): records take the choices; contexts the model their agent now runs with.
-        const nextTree = recordDelegatedLaunchSelections(publication.value.tree, message.payload.selections);
-        publication.value = { ...publication.value, tree: nextTree, changeSequence: sequence ?? publication.value.changeSequence };
-        refreshTeamAgentLaunches(nextTree, publication.value.locations, publication.value.contexts);
+      } else if (message.type === 'RUN_TREE_CHANGED') { effects.push({ kind: 'apply_run_tree_change', change: message.payload }); // SR-084
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
-        if (publication.value.messages.some((entry) => entry.message_id === message.payload.message.message_id)) {
-          return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });
-        }
-        publication.value = { ...publication.value,
-          messages: [...publication.value.messages, structuredClone(message.payload.message)],
-          changeSequence: sequence ?? publication.value.changeSequence };
+        // The Team tab's lists own the messages (autobyteus-358); the view holds none.
+        const live = message.payload.message;
+        effects.push({ kind: 'append_collaboration_message', message: Object.freeze({
+          messageId: live.message_id, senderAgentRunId: live.sender_agent_run_id, receiverAgentRunId: live.receiver_agent_run_id,
+          content: live.content, messageType: live.message_type, referenceFiles: live.reference_files.map((file) => file.path),
+          createdAt: live.created_at,
+        }) });
+        publication.value = { ...publication.value, changeSequence: sequence ?? publication.value.changeSequence };
       } else {
         const agentRunId = targetAgentRunId(message);
         if (agentRunId === null) {
@@ -464,9 +362,8 @@ export const createTeamExecutionViewState = (
 
   return {
     getRootTeamRunId: () => rootTeamRunId,
-    getTeamDefinitionName: () => publication.value.tree.root_team.team_definition_name,
+    getDisplayName: () => input.displayName || publication.value.tree.root_team.team_definition_name,
     getExecutionTree: () => publication.value.tree,
-    getClosedTaskExecutions: () => publication.value.closed,
     getConfigurationView: () => input.configuration,
     getChangeSequence: () => publication.value.changeSequence,
     needsStreamRecovery: () => streamRecoveryRequired.value,
@@ -486,12 +383,8 @@ export const createTeamExecutionViewState = (
       (row) => row.agentRunId === focusedAgentRunId.value,
     ) ?? null,
     getAgentContext: (agentRunId) => publication.value.contexts.get(agentRunId.trim()) ?? null,
-    getAgentWorkspaceRootPath: (agentRunId) => {
-      const location = publication.value.locations.get(agentRunId.trim());
-      return location
-        ? teamAgentSourceOf(publication.value.tree, location.agentRunId)?.launch_configuration.workspace_root_path ?? null
-        : null;
-    },
+    getAgentWorkspaceRootPath: (agentRunId) => publication.value.tree.root_team.members
+      .find((member) => member.agent_run_id === agentRunId.trim())?.launch_configuration.workspace_root_path ?? null,
     getAgentExecutionLocation: (agentRunId) => publication.value.locations.get(agentRunId.trim()) ?? null,
     getMemberAddress: (agentRunId) => publication.value.locations.get(agentRunId.trim())?.memberAddress ?? null,
     hasAgentRun: (agentRunId) => publication.value.contexts.has(agentRunId.trim()),
@@ -500,14 +393,7 @@ export const createTeamExecutionViewState = (
     listAgentContextEntries: () => Object.freeze([...publication.value.contexts].map(([agentRunId, agentContext]) => Object.freeze({
       agentRunId, memberAddress: publication.value.locations.get(agentRunId)!.memberAddress, agentContext,
     }))),
-    // The stream snapshot reports a status for every tree placement.
-    listLiveAgentContextEntries: () => Object.freeze(collectAgentExecutionLocations(publication.value.tree)
-      .map(({ agentRunId, memberAddress }) => Object.freeze({
-        agentRunId, memberAddress, agentContext: publication.value.contexts.get(agentRunId)!,
-      }))),
     listNavigationRows: navigationRows,
-    isTaskExecutionRowListed,
-    listCommunicationMessages: () => Object.freeze([...publication.value.messages]),
     applySnapshot,
     applyMessage,
   };

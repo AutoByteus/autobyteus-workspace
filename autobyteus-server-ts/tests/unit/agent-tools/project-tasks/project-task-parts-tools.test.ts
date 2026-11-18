@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../../src/projects/services/project-service.js";
@@ -12,9 +13,9 @@ import { ProjectTaskContextStore } from "../../../../src/projects/context/projec
 import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-store.js";
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseCreateTaskInput, parseUpdateTaskInput } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 /** task-part-of: `part_of` on create_task / update_task; `partOf`, `parts` and `closedParts` by key in tool results (REQ-013, REQ-014, REQ-017). */
 const tool = async (name: string, args: Record<string, unknown>) => {
@@ -25,6 +26,7 @@ const tool = async (name: string, args: Record<string, unknown>) => {
 };
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 let dir: string, layout: ProjectsLayout, store: ProjectStore, projects: ProjectService, tasks: ProjectTaskService, projectId: string;
+let releases: ReleaseTracker;
 
 beforeEach(async () => {
   dir = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-parts-tools-"));
@@ -32,16 +34,16 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   const changes = { taskChanged() {}, taskRemoved() {}, workerStatusChanged() {}, projectChanged() {}, projectRemoved() {} };
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
-  tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
+  tasks = new ProjectTaskService(withTaskRunResources({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: vi.fn<TaskExecutionReleaseRequest>(async (_root, runs) => runs.map((execution) => ({ execution, stopped: true }))) });
+    requestRelease: (releases = trackReleases()).request }));
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
 });
-afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
+afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
-const create = async (description: string, extra: Record<string, unknown> = {}) => (await tool("create_task", { project_id: projectId, description, ...extra })).task;
+const create = async (description: string, extra: Record<string, unknown> = {}) => (await tool("create_task", { project_id: projectId, title: description, description, ...extra })).task;
 const idOfKey = async (key: string) => (await store.listTasks(projectId)).find((t) => t.taskKey === key)!.taskId;
 /** Creates Tasks until the next key would be `autobyteus-<number>`. */
 const skipTo = async (number: number) => { while ((await store.listTasks(projectId)).length < number - 1) await create("filler"); };
@@ -51,11 +53,11 @@ describe("part_of through the tools (AC-014)", () => {
     const parent = await create("Parent");
     const other = await create("Other parent");
     const part = await create("Part", { part_of: "AutoByteus-1" });
-    expect(part).toEqual({ projectId, taskId: "autobyteus-3", status: "TODO", dependsOn: [], partOf: "autobyteus-1" });
+    expect(part).toEqual({ projectId, taskId: "autobyteus-3", title: "Part", status: "TODO", partOf: "autobyteus-1" });
     expect((await store.readTask(projectId, await idOfKey("autobyteus-3")))!.partOfTaskId).toBe(await idOfKey(parent.taskId));
     expect((await tool("update_task", { task_id: part.taskId, part_of: await idOfKey(other.taskId) })).task.partOf).toBe("autobyteus-2");
     expect((await tool("update_task", { task_id: part.taskId, description: "Part kept" })).task.partOf).toBe("autobyteus-2");
-    expect((await tool("update_task", { task_id: part.taskId, part_of: "" })).task).toEqual({ projectId, taskId: "autobyteus-3", status: "TODO", dependsOn: [], partOf: null });
+    expect((await tool("update_task", { task_id: part.taskId, part_of: "" })).task).toEqual({ projectId, taskId: "autobyteus-3", title: "Part", status: "TODO" });
     expect((await store.readTask(projectId, await idOfKey("autobyteus-3")))!.partOfTaskId).toBeNull();
   });
 
@@ -63,21 +65,21 @@ describe("part_of through the tools (AC-014)", () => {
     const parent = await create("Parent");
     const part = await create("Part", { part_of: parent.taskId });
     const before = await Promise.all([parent, part].map(async (t) => fs.readFile(layout.taskFile(projectId, await idOfKey(t.taskId)), "utf8")));
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     for (const args of [{ task_id: part.taskId, part_of: "autobyteus-99" }, { task_id: part.taskId, part_of: part.taskId },
       { task_id: parent.taskId, part_of: part.taskId }, { task_id: part.taskId, part_of: temp }, { task_id: temp, part_of: parent.taskId }]) {
       expect(await tool("update_task", args)).toMatchObject({ error: { code: "TASK_PARENT_INVALID" } });
     }
-    expect(await tool("create_task", { project_id: projectId, description: "Nested", part_of: part.taskId })).toMatchObject({ error: { code: "TASK_PARENT_INVALID" } });
+    expect(await tool("create_task", { project_id: projectId, title: "Nested", description: "Nested", part_of: part.taskId })).toMatchObject({ error: { code: "TASK_PARENT_INVALID" } });
     expect(await Promise.all([parent, part].map(async (t) => fs.readFile(layout.taskFile(projectId, await idOfKey(t.taskId)), "utf8")))).toEqual(before);
     expect((await store.listTasks(projectId))).toHaveLength(2);
   });
 
   it("checks the argument's shape: create_task needs a non-empty taskId; update_task takes \"\" as a change", () => {
-    expect(parseCreateTaskInput({ project_id: "p", description: "x", part_of: " autobyteus-1 " })).toEqual({ project_id: "p", description: "x", part_of: "autobyteus-1" });
+    expect(parseCreateTaskInput({ project_id: "p", title: "x", description: "x", part_of: " autobyteus-1 " })).toEqual({ project_id: "p", title: "x", description: "x", part_of: "autobyteus-1" });
     for (const part_of of ["", " ", null, 7, ["autobyteus-1"]]) {
-      expect(() => parseCreateTaskInput({ project_id: "p", description: "x", part_of })).toThrow(expect.objectContaining({ code: "PROJECT_TOOL_ARGUMENT_INVALID" }));
+      expect(() => parseCreateTaskInput({ project_id: "p", title: "x", description: "x", part_of })).toThrow(expect.objectContaining({ code: "PROJECT_TOOL_ARGUMENT_INVALID" }));
     }
     expect(parseUpdateTaskInput({ task_id: "t", part_of: "" })).toEqual({ task_id: "t", part_of: "" });
     expect(parseUpdateTaskInput({ task_id: "t", part_of: " autobyteus-1 " })).toEqual({ task_id: "t", part_of: "autobyteus-1" });
@@ -99,7 +101,7 @@ describe("part_of through the tools (AC-014)", () => {
 });
 
 describe("partOf and parts in Task reads (AC-015)", () => {
-  it("list_project_tasks shows each Task's parent key (or null) and its parts' keys in number order, also across a status filter", async () => {
+  it("list_project_tasks shows each Task's parent key and its parts' keys in number order (absent when none), also across a status filter", async () => {
     const parent = await create("Cross-node collaboration");
     expect(parent.taskId).toBe("autobyteus-1");
     await skipTo(9);
@@ -113,12 +115,14 @@ describe("partOf and parts in Task reads (AC-015)", () => {
     const listed = (await tool("list_project_tasks", { project_id: projectId })).tasks as Array<Record<string, unknown>>;
     const byKey = new Map(listed.map((t) => [t.taskId, t]));
     // Number order, as the app lists them: a string sort would put autobyteus-10 first.
-    expect(byKey.get("autobyteus-1")).toMatchObject({ partOf: null, parts: ["autobyteus-2", "autobyteus-9", "autobyteus-10", "autobyteus-11"] });
-    expect(byKey.get("autobyteus-9")).toMatchObject({ partOf: "autobyteus-1", parts: [] });
-    expect(byKey.get("autobyteus-3")).toMatchObject({ partOf: null, parts: [] });
-    expect(JSON.stringify(listed.map(({ contextFiles: _f, ...fields }) => fields))).not.toContain("project_task_");
+    expect(byKey.get("autobyteus-1")).toMatchObject({ parts: ["autobyteus-2", "autobyteus-9", "autobyteus-10", "autobyteus-11"] });
+    expect(byKey.get("autobyteus-1")).not.toHaveProperty("partOf");
+    expect(byKey.get("autobyteus-9")).toMatchObject({ partOf: "autobyteus-1" });
+    expect(byKey.get("autobyteus-9")).not.toHaveProperty("parts");
+    expect(byKey.get("autobyteus-3")).toEqual({ taskId: "autobyteus-3", title: "filler", status: "TODO" });
+    expect(JSON.stringify(listed)).not.toContain("project_task_");
     const done = (await tool("list_project_tasks", { project_id: projectId, status: "DONE" })).tasks;
-    expect(done).toEqual([expect.objectContaining({ taskId: "autobyteus-2", partOf: "autobyteus-1", parts: [] })]);
+    expect(done).toEqual([{ taskId: "autobyteus-2", title: "filler", status: "DONE", partOf: "autobyteus-1" }]);
   });
 
   it("search_project_tasks shows each result's parent and parts by key", async () => {
@@ -128,7 +132,7 @@ describe("partOf and parts in Task reads (AC-015)", () => {
       search: async (id: string) => ({ matches: (await tasks.listTasks(id)).map((task) => ({ task, match: "exact" as const })), meaningSearch: { state: "ready" as const } }),
     }) as never);
     const found = (await tool("search_project_tasks", { project_id: projectId, query: "docker" })).tasks as Array<Record<string, unknown>>;
-    expect(new Map(found.map((t) => [t.taskId, [t.partOf, t.parts]]))).toEqual(new Map([["autobyteus-1", [null, ["autobyteus-2"]]], ["autobyteus-2", ["autobyteus-1", []]]]));
+    expect(new Map(found.map((t) => [t.taskId, [t.partOf, t.parts]]))).toEqual(new Map([["autobyteus-1", [undefined, ["autobyteus-2"]]], ["autobyteus-2", ["autobyteus-1", undefined]]]));
   });
 });
 
@@ -139,11 +143,11 @@ describe("closedParts in the update_task result (AC-018, REQ-017)", () => {
     const b = await create("B", { part_of: parent.taskId });
     await create("C", { part_of: parent.taskId });
     await tool("update_task", { task_id: "autobyteus-4", status: "DONE" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: await idOfKey(b.taskId), assignedBy: "manager", hostRoot, execution: { agentRunId: "b-worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: await idOfKey(b.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "b-worker" } });
     const result = await tool("update_task", { task_id: parent.taskId, status: "CANCELLED" });
-    expect(result).toEqual({ task: { projectId, taskId: "autobyteus-1", status: "CANCELLED", dependsOn: [], partOf: null, closedParts: [a.taskId, b.taskId] } });
+    expect(result).toEqual({ task: { projectId, taskId: "autobyteus-1", title: "Parent", status: "CANCELLED", closedParts: [a.taskId, b.taskId] } });
     expect(tasks.isOpen({ agentRunId: "b-worker" })).toBe(false);
     expect((await store.readTask(projectId, await idOfKey("autobyteus-4")))!.status).toBe("DONE");
-    expect(await tool("update_task", { task_id: parent.taskId, status: "DONE" })).toEqual({ task: { projectId, taskId: "autobyteus-1", status: "DONE", dependsOn: [], partOf: null } });
+    expect(await tool("update_task", { task_id: parent.taskId, status: "DONE" })).toEqual({ task: { projectId, taskId: "autobyteus-1", title: "Parent", status: "DONE" } });
   });
 });

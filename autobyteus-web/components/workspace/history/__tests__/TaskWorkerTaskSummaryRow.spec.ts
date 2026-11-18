@@ -20,8 +20,9 @@ const teamRow = () => row({
   memberAddress: '/docs_review_team', memberKind: 'agent_team', displayName: 'docs review team', currentStatus: null, hasChildren: true,
 });
 // A Temp task (no key): the summary layout and names below are the same for Project Tasks, which add the key first.
-const task: TaskWorkerTask = { taskId: 'task-1', projectId: null, description: 'Ship the summary line\nwith details', status: 'IN_PROGRESS' };
-const projectTask: TaskWorkerTask = { ...task, projectId: 'p1' };
+const task: TaskWorkerTask = { taskId: 'task-1', projectId: null, title: null, description: 'Ship the summary line\nwith details', status: 'IN_PROGRESS' };
+// A Project Task's line is its title, not its description's first line (autobyteus-260 REQ-006).
+const projectTask: TaskWorkerTask = { ...task, projectId: 'p1', title: 'Release the desktop app' };
 const mountRow = (props: Record<string, unknown>) => mount(WorkspaceTransientExecutionRow, { props: { row: row(), ...props } as any });
 const summary = (wrapper: ReturnType<typeof mountRow>) => wrapper.get('[data-test="workspace-task-worker-task-summary"]');
 
@@ -97,14 +98,14 @@ describe('WorkspaceTransientExecutionRow Task summary', () => {
     expect(wrapper.get('[role="treeitem"]').attributes('aria-label')).toMatch(/, 任务：Ship the summary line$/);
   });
 
-  it("a Project Task's summary shows only the summary; tooltip and name carry no key (task-keys-declutter REQ-002)", async () => {
+  it("a Project Task's line shows only its title; tooltip and name carry no key (task-keys-declutter REQ-002, autobyteus-260 REQ-006)", async () => {
     const wrapper = mountRow({ task: projectTask });
     expect(summary(wrapper).find('[data-test="workspace-task-worker-task-key"]').exists()).toBe(false);
-    expect(summary(wrapper).text()).toBe('Ship the summary line');
-    expect(summary(wrapper).attributes('aria-label')).toBe('Show Task in Projects: Ship the summary line');
-    expect(summary(wrapper).attributes('title')).toBe('Show Task in Projects: Ship the summary line');
+    expect(summary(wrapper).text()).toBe('Release the desktop app');
+    expect(summary(wrapper).attributes('aria-label')).toBe('Show Task in Projects: Release the desktop app');
+    expect(summary(wrapper).attributes('title')).toBe('Show Task in Projects: Release the desktop app');
     await localizationRuntime.setPreference('zh-CN');
     await wrapper.vm.$nextTick();
-    expect(summary(wrapper).attributes('aria-label')).toBe('在项目中显示任务：Ship the summary line');
+    expect(summary(wrapper).attributes('aria-label')).toBe('在项目中显示任务：Release the desktop app');
   });
 });

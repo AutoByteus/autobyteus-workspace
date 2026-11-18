@@ -16,14 +16,14 @@ export default defineConfig({
     fileParallelism: false,
     environment: "node",
     include: ["tests/**/*.test.ts"],
-    exclude: [
-      "tests/unit/prompt-engineering/**/*.test.ts",
-      "tests/unit/agent-tools/prompt-engineering/**/*.test.ts",
-      "tests/integration/prompt-engineering/**/*.test.ts",
-    ],
     // The environment isolation must run first: it removes inherited
     // live-app variables before anything under test is imported.
-    setupFiles: ["./tests/setup/test-environment-isolation.ts", "./tests/setup/prisma-env.ts"],
+    setupFiles: [
+      "./tests/setup/test-environment-isolation.ts",
+      "./tests/setup/prisma-env.ts",
+      // After the isolation: the launch owner credential of in-process servers (node access model NA-5).
+      "./tests/setup/test-launch-credential.ts",
+    ],
     globalSetup: "./tests/setup/prisma-global-setup.ts",
   },
 });

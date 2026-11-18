@@ -1,0 +1,65 @@
+{
+  "startedAt": "2026-10-25T08:45:13.224Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "EMB-001": {
+      "title": "Fresh data root: Active · Not downloaded, Projects Not indexed, opening starts nothing (AC-011, REQ-005)",
+      "result": "Pass",
+      "ms": 4383
+    },
+    "EMB-002": {
+      "title": "Download ahead with progress, Cancel deletes it, Download again completes (AC-002)",
+      "result": "Pass",
+      "ms": 4612
+    },
+    "EMB-003": {
+      "title": "Switch dialog for a not-downloaded model; Cancel changes nothing (REQ-004)",
+      "result": "Pass",
+      "ms": 123
+    },
+    "EMB-004": {
+      "title": "Use a downloaded model: setting written, Active Ready, Projects Not indexed (AC-004)",
+      "result": "Pass",
+      "ms": 2248
+    },
+    "EMB-005": {
+      "title": "Index all Projects: progress, then Ready with Task counts (REQ-006)",
+      "result": "Pass",
+      "ms": 2053
+    },
+    "EMB-006": {
+      "title": "A new Task is indexed with no search within 10 s (REQ-011, AC-015); Rebuild with inline confirmation (REQ-006)",
+      "result": "Pass",
+      "ms": 3453
+    },
+    "EMB-007": {
+      "title": "Leave and return: current state shown; restart: Active · Ready with files on disk (REQ-007, AC-013)",
+      "result": "Pass",
+      "ms": 2473
+    },
+    "EMB-008": {
+      "title": "zh-CN copy and narrow layout render",
+      "result": "Pass",
+      "ms": 773
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:22819",
+    "backend": "terminated:23011",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-embedding-settings-e2e-N7kAcz",
+    "backend": "http://127.0.0.1:57574",
+    "frontend": "http://127.0.0.1:57589"
+  },
+  "browserVersion": "156.0.8078.47",
+  "indexedAfterWriteMs": 3298,
+  "finishedAt": "2026-10-25T08:46:10.253Z"
+}

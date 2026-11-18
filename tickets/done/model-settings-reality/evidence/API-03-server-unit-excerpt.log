@@ -1,0 +1,30 @@
+# API-03 — server unit/arch/migrations/work-journal suite at HEAD code 817bd9950
+# Command: env -i PATH=$PATH HOME=/root TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts test:unit --no-watch   (cwd: worktree root; pnpm via /tmp/pnpm-shim)
+# Commit: 817bd9950 (HEAD c491a79bb adds documents only) · Env: ENV-1 (Linux arm64 container, uid 0, node 22.23.3) · Date: 2026-11-10 13:41-14:01 UTC · Case: API-03
+# Full log (1.4 MB, ANSI stripped): API-03-server-unit.full.log.gz next to this file
+# ---- summary ----
+   Duration  1187.45s (transform 33.44s, setup 34.06s, import 684.48s, tests 297.09s, environment 2.66s)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  4 failed | 967 passed | 5 skipped (976)
+      Tests  9 failed | 8289 passed | 12 skipped (8310)
+# ---- failing tests (cause per file at the end) ----
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the new ready
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then recovers
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+ FAIL  tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > exchanges a single-use code for a credential and rejects reuse
+# ---- first error line of each ----
+      1 AssertionError: expected [ 'alpha', 'ext' ] to deeply equal [ 'alpha' ]
+      1 AssertionError: expected 'AUTOBYTEUS_SERVER_HOST=http://localho…' to contain 'AUTOBYTEUS_STREAM_PARSER=json'
+      3 AssertionError: expected [ FakeWatch{ …(3) } ] to have a length of 2 but got 1
+      1 AssertionError: expected null to match object { …(3) }
+      1 AssertionError: expected { state: 'WATCHING', message: null } to deeply equal { state: 'UNAVAILABLE', …(1) }
+      1 Error: ENOTEMPTY: directory not empty, rmdir '/tmp/autobyteus-remote-access-v2bcXn'
+      1 Error: Timed out waiting for the monitor.
+# ---- causes (Rule 9) ----
+# agent-package-folder-watcher.test.ts (5 tests), unreadable-package-root.test.ts (2), app-config.test.ts (1): each chmod()s a folder/file to 000/read-only and expects EACCES; uid 0 ignores permissions (id=0). Environmental; 'Received WATCHING' / 'Received [alpha, ext]'.
+# pairing-auth-service.test.ts 'exchanges a single-use code…': ENOTEMPTY rmdir in afterEach. PhoneCredentialVerifier.verify -> PairedDeviceService.markLastSeen runs 'void this.update(markSeen)' (src/remote-access/services/paired-device-service.ts L89), a fire-and-forget file write the test never awaits, so rm -r races it. Passes 3/3 alone (rerun below). Files untouched by this change. Follow-up FU-008.

@@ -1,0 +1,24 @@
+# API-L08: AC-009 / R-006, a turn's journal change is findable by text within about a minute; CR-002 during the live pass
+# Desktop iso-53567-504c; Codex run project_task_manager_1410f2fab8d84b47b5d6c2387f669092 (API-L07 turn 2 carried the new word "quokkavermilion4471", which occurs in no other run)
+# Command: node probes/API-PROBE-freshness.mjs http://127.0.0.1:53568/graphql quokkavermilion4471 2026-10-26T17:34:19.781Z (GraphQL memorySearch every ~1 s from the turn's end, as the page searches)
+# Turn end (agent Idle, reply rendered): 2026-10-26T17:34:19.781Z
+
+{"word": "quokkavermilion4471", "samples": 12, "lastMiss": 19780, "foundAtMs": 21103,
+ "hit": "project_task_manager_1410f2fab8d84b47b5d6c2387f669092 work_journal_active.md:5-20 TEXT/STRONG;work_journal_active.md:21-27 TEXT/STRONG"}
+
+→ found by text 21.1 s after the turn ended (the 20 s quiet period, then a one-run pass).
+
+## Index status during the live passes (sampler /private/tmp/wjs-api/L01-status.jsonl, every ~4.5 s; Meaning index still embedding the first build)
+17:34:02 READY TEXT_INDEX:DONE:7426/7426 MEANING_INDEX:DONE:1288/7426 updatedAt 17:26:25 coverage "The meaning index covers 1288 of 7426 journal files."
+17:34:12 READY TEXT_INDEX:DONE:7427/7427 MEANING_INDEX:DONE:1312/7427 updatedAt 17:34:07 (live pass after turn 1: the new run's file added)
+17:34:21 … 17:34:39 READY, TEXT_INDEX:DONE:7427/7427 throughout
+17:34:44 READY TEXT_INDEX:DONE:7427/7427 updatedAt 17:34:39.837 (live pass after turn 2)
+No sample shows BUILDING or a text-coverage note during either live pass; the only coverage note is the Meaning index's genuine first-build progress.
+
+## Recheck on the complete index (meaning 7429/7429), 2026-10-26 19:42 UTC
+Codex run project_task_manager_341bfe88… turn: "Thanks. Please just reply OK and note the word heronlattice2207 for later; no tools." (sent 19:42:18.3)
+probes/API-PROBE-freshness.mjs: {"samples": 24, "lastMiss": 24180, "foundAtMs": 25217, "hit": "project_task_manager_341bfe88b8f045c5ac2170979376501a work_journal_active.md:66-68 TEXT/STRONG"} (ms from sending; the reply took a few seconds)
+probes/API-PROBE-index-sampler.mjs … 250 75000 --search "domain updater" (memoryIndexStatus plus a page search per sample, back to back):
+  samples 173 from 19:42:15.464 to 19:43:30.139; states {'READY': 173}; non-null search coverage notes 0; text step always TEXT_INDEX:DONE:7439/7439;
+  updatedAt 19:41:25.963 → 19:42:43.060 (the live pass); statusMs max 27; search ms max 466
+→ CR-002 holds: a live pass changes nothing reported except updatedAt.

@@ -1,0 +1,227 @@
+{
+  "startedAt": "2026-10-29T21:22:20.887Z",
+  "runs": {},
+  "catalog": {
+    "OPENAI": [
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol"
+    ],
+    "GROK": [
+      "grok-4.7"
+    ],
+    "KIMI": [
+      "kimi-k3"
+    ]
+  },
+  "api09": [
+    {
+      "label": "text on gpt-5.4-mini",
+      "model": "gpt-5.4-mini",
+      "runId": "api09_plain_1793308941164_525c0de3aa89401f9259726063b3ad40",
+      "calls": [
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/notes.txt",
+            "base_dir": "/tmp/ab328/fixtures",
+            "start_line": 1,
+            "end_line": 200,
+            "include_line_numbers": true
+          },
+          "error": null,
+          "resultKind": "text (100 chars)"
+        }
+      ],
+      "assistantText": "{\"path\":\"/tmp/ab328/fixtures/notes.txt\",\"base_dir\":\"/tmp/ab328/fixtures\",\"start_line\":1,\"end_line\":200,\"include_line_numbers\":true}line five: echo",
+      "errors": []
+    },
+    {
+      "label": "image on a larger OpenAI model",
+      "model": "gpt-5.5",
+      "runId": "api09_plain_1793308941164_978c8b72c22f45ed978b862b0266735d",
+      "calls": [
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 0,
+            "end_line": 0,
+            "include_line_numbers": true
+          },
+          "error": "Error executing tool 'read_file' (ID: call_GkY5mOcKJacpseLzkRg00Ls9): Error: start_line must be >= 1 when provided; got 0.",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 1,
+            "end_line": 1,
+            "include_line_numbers": true
+          },
+          "error": "Error executing tool 'read_file' (ID: call_tzMK55EVMxFMxFBXZr2JNPDD): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 0,
+            "end_line": 0,
+            "include_line_numbers": false
+          },
+          "error": "Error executing tool 'read_file' (ID: call_Ay5hrJVq1AefIOI7okRTQJX5): Error: start_line must be >= 1 when provided; got 0.",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 1,
+            "end_line": 1,
+            "include_line_numbers": false
+          },
+          "error": "Error executing tool 'read_file' (ID: call_SSCEKjhsIy1zB9AmHRN2jCXA): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 1,
+            "end_line": 999999,
+            "include_line_numbers": true
+          },
+          "error": "Error executing tool 'read_file' (ID: call_1G8QwK1VeVOGuUeVZkW39WtS): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 1,
+            "end_line": 1,
+            "include_line_numbers": true
+          },
+          "error": "Error executing tool 'read_file' (ID: call_r4mhmLO5NHUvYPHdLy7NxYbw): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "/tmp/ab328/fixtures",
+            "start_line": 1,
+            "end_line": 1,
+            "include_line_numbers": true
+          },
+          "error": "Error executing tool 'read_file' (ID: call_Q6ztrvFcCdRHOX7o2g2xCMhB): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 1,
+            "end_line": 2,
+            "include_line_numbers": false
+          },
+          "error": "Error executing tool 'read_file' (ID: call_NmvQOw73Hj1AUgHAoo7Q7kuO): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": 1,
+            "end_line": 1,
+            "include_line_numbers": true
+          },
+          "error": "Error executing tool 'read_file' (ID: call_l6QIw8uTATQdnlLoYviSug4u): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is ",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "",
+            "start_line": -1,
+            "end_line": -1,
+            "include_line_numbers": false
+          },
+          "error": "Error executing tool 'read_file' (ID: call_OMnerLCEhY7yBgynEjPWsjpk): Error: start_line must be >= 1 when provided; got -1.",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png",
+            "base_dir": "/tmp/ab328/fixtures",
+            "start_line": 0,
+            "end_line": 0,
+            "include_line_numbers": false
+          },
+          "error": "Error executing tool 'read_file' (ID: call_StKIPAkp1l3tR0ZiNEsO7KLh): Error: start_line must be >= 1 when provided; got 0.",
+          "resultKind": "undefined"
+        }
+      ],
+      "assistantText": "\",\"start_line\":1,\"end_line\":1,\"include_line_numbers\":true}{\"path\":\"/tmp/ab328/fixtures/red.png\",\"base_dir\":\"\",\"start_line\":-1,\"end_line\":-1,\"include_line_numbers\":false}{\"path\":\"/tmp/ab328/fixtures/red.png\",\"base_dir\":\"/tmp/ab328/fixtures\",\"start_line\":0,\"end_line\":0,\"include_line_numbers\":false}Red",
+      "errors": [
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_GkY5mOcKJacpseLzkRg00Ls9): Error: start_line must be >= 1 when provided; got 0.\",\"details\":\"Error: start_line must be >= 1 when provided; got 0.\\n    at FunctionalTool.readFile [as _originalFunc] (/User",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_tzMK55EVMxFMxFBXZr2JNPDD): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_Ay5hrJVq1AefIOI7okRTQJX5): Error: start_line must be >= 1 when provided; got 0.\",\"details\":\"Error: start_line must be >= 1 when provided; got 0.\\n    at FunctionalTool.readFile [as _originalFunc] (/User",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_SSCEKjhsIy1zB9AmHRN2jCXA): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_1G8QwK1VeVOGuUeVZkW39WtS): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_r4mhmLO5NHUvYPHdLy7NxYbw): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_Q6ztrvFcCdRHOX7o2g2xCMhB): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_NmvQOw73Hj1AUgHAoo7Q7kuO): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_l6QIw8uTATQdnlLoYviSug4u): Error: start_line and end_line apply to text files only; '/tmp/ab328/fixtures/red.png' is a image file.\",\"details\":\"Error: start_line and end_line apply to text files only; '/",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_OMnerLCEhY7yBgynEjPWsjpk): Error: start_line must be >= 1 when provided; got -1.\",\"details\":\"Error: start_line must be >= 1 when provided; got -1.\\n    at FunctionalTool.readFile [as _originalFunc] (/Us",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_StKIPAkp1l3tR0ZiNEsO7KLh): Error: start_line must be >= 1 when provided; got 0.\",\"details\":\"Error: start_line must be >= 1 when provided; got 0.\\n    at FunctionalTool.readFile [as _originalFunc] (/User"
+      ]
+    },
+    {
+      "label": "image on Grok",
+      "model": "grok-4.7",
+      "runId": "api09_plain_1793308941164_b9cb072eb17d493e8b29f62526abee1d",
+      "calls": [
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png"
+          },
+          "error": null,
+          "resultKind": "object {\"uri\":\"/tmp/ab328/fixtures/red.png\",\"fileType\":\"image\",\"fileName\":\"red.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantText": "{\"path\":\"/tmp/ab328/fixtures/red.png\"}red",
+      "errors": []
+    },
+    {
+      "label": "image on Kimi",
+      "model": "kimi-k3",
+      "runId": "api09_plain_1793308941164_e36e37e675fb4eed811d533ccdef4ed5",
+      "calls": [],
+      "assistantText": "",
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"429 Your account org-74d1d929c9544732b71d85bafbbffa20 <ak-f9duodcpffni11frduhi> is suspended due to insufficient balance, please recharge your account or check your plan and billing details\",\"provider_status\":429,\"error_scope\":\"turn\",\"error_effect\":\"diagnostic"
+      ]
+    }
+  ],
+  "finishedAt": "2026-10-29T21:28:09.218Z"
+}

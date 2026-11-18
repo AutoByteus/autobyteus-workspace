@@ -1,0 +1,1 @@
+export default async ({ page, shot }) => { await shot(page, 'API-08-look7'); return { url: page.url(), text: (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ').slice(0, 300) }; };

@@ -1,0 +1,28 @@
+# API-07 Android WebView: the node page's own blob: preview frame (AC-007, RR-01, escalation trigger (b))
+# build: debug APK from the worktree (autobyteus-android :app:assembleDebug, Android unchanged since ea8897ee53; branch head 0bce7bac01)
+# device: emulator autobyteus277_api35 (Android 15), WebView 124.0.6367.219, headless (-no-window), app data cleared before pairing
+# node: mobile-shell probe --hold (probe-owned alpha from the worktree dist, phone bundle of 42a86a5e93) reached at http://10.0.2.2:56731
+# pairing: the hold stack's emulator pairing link shared to the app (ACTION_SEND text/plain) → "Alpha Test Node, Connected"
+# data: the Delivery Team lead wrote preview-426.html (scripted AGY CLI GENERATE_IMAGE, then content written; API-07-hold-html-artifact.mjs.txt);
+#       its script prints typeof AutoByteusShell, location.origin and whether parent.AutoByteusShell is reachable
+# tools: CDP over adb forward tcp:9433 localabstract:webview_devtools_remote_<pid> (API-07-cdp.mjs.txt); uiautomator dumps; adb screencap
+# date: 2026-11-08 00:01-00:05 (local)
+
+## positive control: the node page (main frame)
+eval → {"href":"http://10.0.2.2:56731/mobile/","shell":"object"}
+
+## the product path: Delivery Team (lead) → ⋮ → Artifacts → preview-426.html (ArtifactContentViewer → FileViewer → HtmlPreviewer, no workspace context → blob:)
+iframe → {"src":"blob:http://10.0.2.2:56731/ecb6fd53-c0d2-4e58-9e8e-37d77582802b","sandbox":"allow-scripts","srcIsBlob":true}
+frame tree → depth 1 url "blob:http://10.0.2.2:56731/ecb6fd53-…" (loaded in place; no "Navigation blocked")
+inside the frame → {"selfOrigin":"null","shell":"undefined","parentAccess":"blocked-SecurityError","canReadCookies":"blocked-SecurityError"}
+screen (uiautomator) → text="PREVIEW-426 shell=undefined origin=http://10.0.2.2:56731 parentShell=blocked-SecurityError"   (API-07-preview-loaded.png)
+  (location.origin shows the blob URL's origin; the document's own origin is opaque: self.origin "null")
+→ the WebView asked the policy with isForMainFrame=false for the preview (a main-frame blob: is blocked, below), so escalation trigger (b) does not fire.
+
+## stays blocked
+foreign-origin blob: subframe (blob:http://evil.example:8080/…) → chromium "Not allowed to load local resource: blob:http://evil.example:8080/…"; frame url ":"; nothing loaded (API-07-neg-foreign-blob.png)
+main-frame blob: of the node's own origin → app screen: text="Navigation blocked" text="The app blocked an untrusted in-WebView navigation: blob:http://10.0.2.2:56731/2e63c255-…"; page stays http://10.0.2.2:56731/mobile/?screen=artifacts (API-07-neg-main-frame-blob.png)
+file:///etc/hosts subframe → chromium "Not allowed to load local resource: file:///etc/hosts"; frame url ":" (API-07-neg-file-sub.png)
+file:///etc/hosts main frame → chromium "Not allowed to load local resource: file:///etc/hosts"; page stays on /mobile (API-07-neg-file-main.png)
+javascript: (iframe src, anchor click in the main frame) → executed in the document that ran it (__jsSub=1, __jsMain=1); not a navigation: the WebView does not pass javascript: URLs to shouldOverrideUrlLoading, unchanged by D-07. The policy's javascript: decision (Block) is the unit test TrustedNavigationPolicyTest :45, :73 (IMP-12)
+another origin, main frame (https://example.com/426-other-origin) → ActivityTaskManager "START u0 {act=android.intent.action.VIEW dat=https://example.com/... cmp=com.android.chrome/…IntentDispatcher}"; after Back the app's page is still http://10.0.2.2:56731/mobile/?screen=artifacts (API-07-other-origin-external.png)

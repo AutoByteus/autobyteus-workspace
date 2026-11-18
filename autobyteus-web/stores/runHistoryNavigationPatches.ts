@@ -1,7 +1,6 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { RunHistoryTeamExecutionRow, TeamTreeNode } from './runHistoryTypes';
+import type { RunHistoryTeamExecutionRow, TeamTreeNode, WorkspaceHistoryWorkspaceNode } from './runHistoryTypes';
 import {
   runHistoryExecutionRowIndexKey,
   runHistoryMemberIndexKey,
@@ -86,7 +85,7 @@ const patchStandalone = (
   runs[index.runIndex] = candidate;
   const agents = [...workspace.agents];
   agents[index.agentIndex] = { ...agent, runs };
-  const workspaceNodes: RunTreeWorkspaceNode[] = [...state.workspaceNodes];
+  const workspaceNodes: WorkspaceHistoryWorkspaceNode[] = [...state.workspaceNodes];
   workspaceNodes[index.workspaceIndex] = { ...workspace, agents };
   return { ...state, workspaceNodes };
 };
@@ -150,12 +149,20 @@ const patchTeamRun = (
   return replaceTeam(state, { ...team, isActive: target.isActive });
 };
 
+/**
+ * Patches one run's row in place. A status change of a standalone run the projection does not list (its folder left
+ * the Workspaces view, as a draft-only folder does: workspace-tree-vs-chooser DS-004) asks for a full rebuild instead,
+ * so the rule can list the folder with its first sent message (VIS-017). Activity alone never rebuilds.
+ */
 export const applyRunNavigationEffectToProjection = (
   state: RunHistoryNavigationProjectionState,
   target: RunNavigationTarget,
   effect: RunNavigationEffect,
-): { state: RunHistoryNavigationProjectionState; changed: boolean } => {
+): { state: RunHistoryNavigationProjectionState; changed: boolean; rebuild?: true } => {
   if (effect.kind === 'NONE') return { state, changed: false };
+  if (target.kind === 'standalone' && effect.kind !== 'ACTIVITY' && !state.runIndexById[target.runId]) {
+    return { state, changed: false, rebuild: true };
+  }
   const next = target.kind === 'standalone'
     ? patchStandalone(state, target, effect)
     : target.kind === 'team_member'

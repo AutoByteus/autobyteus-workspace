@@ -1,0 +1,28 @@
+# API-04 read-only check of RELEASE.md "Beta notes with a user action" steps 2-3 (gh release edit NOT run)
+# Commit: 23d722096a; Date: 2026-11-01T05:15:17Z; gh gh version 2.86.0 (2026-01-21)
+
+## step 2: the release's tickets: merges in git log v1.5.11-beta.8..v1.5.11-beta.9
+6b58f3f5af Merge branch 'codex/projects-tree-one-place' into personal (autobyteus-353: a Project lists only the runs started under it)
+42f55cee0f Merge branch 'codex/atomic-agent-run-creation' into personal (autobyteus-349: a failed run start leaves nothing; empty never-started runs removed at 
+7d1bc66ba3 Merge origin/personal into codex/atomic-agent-run-creation (delivery base refresh)
+
+## step 2: their release-notes.md files with a '## What you need to do' section (none existed before this ticket)
+
+## step 3, command 1: gh release view v1.5.11-beta.9 --json body --jq .body > generated.md
+exit 0;        3 lines; first lines:
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.8...v1.5.11-beta.9
+
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.8...v1.5.11-beta.9
+
+## step 3, command 2: { cat actions.md; echo; cat generated.md; } > notes.md
+exit 0; notes.md first 8 lines:
+## What you need to do
+- (sample) Reinstall the Docker launcher, then run `autobyteus-docker upgrade --all`.
+
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.8...v1.5.11-beta.9
+
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.8...v1.5.11-beta.9
+
+## step 3, command 3 (gh release edit --notes-file) not run: it would change a published release. Flag check only:
+  -F, --notes-file file              Read release notes from file (use "-" to read from standard input)
+  $ gh release edit v1.0 --notes-file /path/to/release_notes.md

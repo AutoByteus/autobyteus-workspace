@@ -1,0 +1,10 @@
+await app.getByTestId('node-open-srv_DmENtLWSipOTRw5PxWzn4k1jxopMzN2j').click();
+await new Promise(r => setTimeout(r, 8000));
+const all = browser.contexts().flatMap(c => c.pages());
+const win = all.find(p => p !== app && p.url().includes('renderer/index.html'));
+if (!win) return { pages: all.map(p => p.url()) };
+const responses = [];
+win.on('response', r => { const u = r.url(); if (u.includes(':59849')) responses.push(`${r.status()} ${new URL(u).pathname}`); });
+await win.reload(); await win.waitForTimeout(6000);
+await win.screenshot({ path: '/tmp/abtest437/e18.png' });
+return { url: win.url(), text: (await win.locator('body').innerText()).slice(0, 500), bad: responses.filter(l => /^40[13]/.test(l)), sample: [...new Set(responses)].slice(0, 10) };

@@ -74,8 +74,8 @@ describe("ApplicationEngineController", () => {
     const handle = createHandle();
     controller.attach("app-1", handle as never);
 
-    await controller.stopAttachedEngine("app-1");
-    await controller.stopAttachedEngine("app-1");
+    await controller.stopEngine("app-1");
+    await controller.stopEngine("app-1");
 
     expect(handle.client.request).toHaveBeenCalledOnce();
     expect(handle.client.close).toHaveBeenCalledOnce();
@@ -84,6 +84,26 @@ describe("ApplicationEngineController", () => {
     expect(controller.getStatus("app-1")).toMatchObject({
       state: "stopped",
       ready: false,
+    });
+  });
+
+  it("resets a crashed, detached worker from failed to stopped (autobyteus-296)", async () => {
+    const controller = new ApplicationEngineController();
+    const handle = createHandle();
+    controller.attach("app-1", handle as never);
+    // A crash detaches the handle and records the failure (the launcher's worker-close path).
+    controller.detachIfCurrent("app-1", handle as never);
+    controller.updateStatus("app-1", {
+      applicationId: "app-1", state: "failed", ready: false,
+      startedAt: "2026-10-25T08:00:00.000Z", lastFailure: "worker exited with code 1", exposures: null,
+    });
+
+    await controller.stopEngine("app-1");
+
+    expect(handle.client.request).not.toHaveBeenCalled();
+    expect(controller.hasAttachedEngine("app-1")).toBe(false);
+    expect(controller.getStatus("app-1")).toEqual({
+      applicationId: "app-1", state: "stopped", ready: false, startedAt: null, lastFailure: null, exposures: null,
     });
   });
 });

@@ -1,6 +1,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const SECTION_HEIGHT_STORAGE_KEY = 'autobyteus.app-left-panel.primary-nav-height';
+const USER_SIZED_STORAGE_KEY = 'autobyteus.app-left-panel.primary-nav-user-sized';
 const FALLBACK_PRIMARY_SECTION_HEIGHT = 240;
 const MIN_PRIMARY_SECTION_HEIGHT = 56;
 const MIN_WORKSPACE_SECTION_HEIGHT = 220;
@@ -52,6 +53,9 @@ export function useAppLeftPanelSectionResize() {
   const primaryNavSectionRef = ref<HTMLElement | null>(null);
   const primarySectionHeight = ref(FALLBACK_PRIMARY_SECTION_HEIGHT);
   let removeActiveDragListeners: (() => void) | null = null;
+  // Until the user drags the divider, the section follows the menu's own height,
+  // so an item that appears after mount (Applications, Nodes, Integrations) is never cut off.
+  let navHeightObserver: ResizeObserver | null = null;
 
   const applyPrimarySectionHeight = (requestedHeight: number): void => {
     const clampedHeight = clampPrimarySectionHeight(
@@ -79,6 +83,9 @@ export function useAppLeftPanelSectionResize() {
     }
 
     stopActiveDrag();
+    navHeightObserver?.disconnect();
+    navHeightObserver = null;
+    try { window.localStorage.setItem(USER_SIZED_STORAGE_KEY, '1'); } catch { /* the section then keeps following the menu */ }
     event.preventDefault();
 
     const startY = event.clientY;
@@ -112,10 +119,21 @@ export function useAppLeftPanelSectionResize() {
     await nextTick();
     syncPrimarySectionHeightToContainer();
     window.addEventListener('resize', syncPrimarySectionHeightToContainer);
+
+    const navList = primaryNavSectionRef.value?.firstElementChild;
+    const userSized = (() => { try { return window.localStorage.getItem(USER_SIZED_STORAGE_KEY) === '1'; } catch { return false; } })();
+    if (!userSized && navList && typeof ResizeObserver !== 'undefined') {
+      navHeightObserver = new ResizeObserver(() => {
+        const contentHeight = primaryNavSectionRef.value?.scrollHeight;
+        if (contentHeight && contentHeight > primarySectionHeight.value) applyPrimarySectionHeight(contentHeight);
+      });
+      navHeightObserver.observe(navList);
+    }
   });
 
   onBeforeUnmount(() => {
     stopActiveDrag();
+    navHeightObserver?.disconnect();
     window.removeEventListener('resize', syncPrimarySectionHeightToContainer);
   });
 

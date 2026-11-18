@@ -1,0 +1,5 @@
+# API-08 command: pnpm exec tsc -p tsconfig.json --noEmit (src + tests), filtered to the new/changed test files
+# commit fe29990e84; date 2026-10-30T10:48:23Z
+
+FILTERED ERROR LINES ABOVE: none if blank
+(whole-project tsc errors in other files are not part of this check; the production typecheck is IMP-01)

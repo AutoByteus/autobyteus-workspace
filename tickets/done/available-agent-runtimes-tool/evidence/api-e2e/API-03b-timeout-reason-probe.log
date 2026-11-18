@@ -1,0 +1,9 @@
+# API-03b — timed-out step reported as "could not be read" (diagnosis probe, temporary, not committed)
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/tmp-api03-deadline-probe.e2e.test.ts --no-watch
+# Probe: 400 x createAntigravityAgentRuntimeStrategy().readUsageLimits(<fake agy whose /usage hangs>, cwd, {deadline: createReadDeadline(25..35 ms)})
+# Commit: 683b036be9 (source) + this round's fake CLI; macOS darwin 25.5, Node v22.23.1; 2026-10-25T07:37Z
+
+PROBE loop {"runs":400,"outcomes":{"Antigravity usage limits timed out":391,"Antigravity usage limits could not be read":9},"earlyIterations":[{"i":5,"deadlineMs":30,"wallMsLeftAfterReturn":1},{"i":10,"deadlineMs":35,"wallMsLeftAfterReturn":1},{"i":40,"deadlineMs":32,"wallMsLeftAfterReturn":1},{"i":82,"deadlineMs":30,"wallMsLeftAfterReturn":1},{"i":88,"deadlineMs":25,"wallMsLeftAfterReturn":1},{"i":112,"deadlineMs":27,"wallMsLeftAfterReturn":1},{"i":161,"deadlineMs":32,"wallMsLeftAfterReturn":1},{"i":168,"deadlineMs":28,"wallMsLeftAfterReturn":1},{"i":203,"deadlineMs":30,"wallMsLeftAfterReturn":1}]}
+
+# Timer probe (/tmp/clock-skew-probe.mjs, 30 x setTimeout(endsAt - Date.now())):
+{"runs":30,"timeLeftAbove0":0,"minMonoElapsedMinusTarget":0.09199999999998454,"rows":[]}

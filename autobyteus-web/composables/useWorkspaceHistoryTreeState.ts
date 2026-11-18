@@ -1,6 +1,9 @@
-import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
 import { computed, ref, unref, watch, type MaybeRef } from 'vue';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import type { SelectedAgentOrg } from '~/composables/useRunListDisclosure';
+import { isOrgMemberSelected, isOrgRunSelected, unfoldOrgRows } from '~/composables/runHistory/orgTreeSelection';
 import type {
   RunHistoryWorkspaceGroup,
   TeamRunHistoryDefinitionGroup,
@@ -42,7 +45,7 @@ interface SelectionStoreLike {
 export const useWorkspaceHistoryTreeState = (params: {
   runHistoryStore: RunHistoryTreeStoreLike;
   selectionStore: SelectionStoreLike;
-  selectedAgentOrg?: MaybeRef<Readonly<{ rootRunId: string; focusAddress: string | null; selection?: OrgWorkspaceSelection | null }> | null>;
+  selectedAgentOrg?: MaybeRef<SelectedAgentOrg | null>;
 }) => {
   const expandedWorkspaces = ref<Record<string, boolean>>({});
   const expandedAgents = ref<Record<string, boolean>>({});
@@ -69,13 +72,15 @@ export const useWorkspaceHistoryTreeState = (params: {
     const selectedAgentOrg = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
     if (selectedAgentOrg?.rootRunId) {
       const exact = selectedAgentOrg.selection;
-      const identity = exact?.kind === 'agent_execution' ? exact.agentRunId : exact?.teamRunId ?? '';
+      const identity = exact?.kind === 'agent_execution' ? exact.agentRunId : exact?.teamRunId ?? selectedAgentOrg.delegated?.rowKey ?? '';
       return `agent_org:${selectedAgentOrg.rootRunId}\u0000${selectedAgentOrg.focusAddress ?? ''}\u0000${identity}`;
     }
     const selectedType = params.selectionStore.selectedType;
     const selectedRunId = params.selectionStore.selectedRunId?.trim() || '';
     if (selectedType === 'team' && selectedRunId) {
-      return `team:${selectedRunId}`;
+      // A run the Team delegated, opened in it, is revealed as well (CR-461-108).
+      const delegated = useAgentTeamContextsStore().delegatedFocusOf(selectedRunId);
+      return delegated ? `team:${selectedRunId}\u0000${delegated.agentRunId}` : `team:${selectedRunId}`;
     }
     if (selectedType === 'agent' && selectedRunId) {
       return `agent:${selectedRunId}`;
@@ -168,13 +173,6 @@ export const useWorkspaceHistoryTreeState = (params: {
 
   const toggleWorkspace = (workspaceId: string): void => {
     setWorkspaceExpanded(workspaceId, !isWorkspaceExpanded(workspaceId));
-  };
-
-  const setWorkspaceExpandedByRootPath = (workspaceRootPath: string, expanded: boolean): void => {
-    const target = normalizeRootPath(workspaceRootPath);
-    const node = workspaceNodes.value.find((candidate) =>
-      normalizeRootPath(candidate.workspaceRootPath) === target);
-    if (node) setWorkspaceExpanded(node.stableKey, expanded);
   };
 
   const isAgentExpanded = (workspaceId: string, agentDefinitionId: string): boolean => {
@@ -316,12 +314,14 @@ export const useWorkspaceHistoryTreeState = (params: {
     return true;
   };
 
-  const revealTeamRunAncestry = (teamRunId: string): boolean => {
+  const revealTeamRunAncestry = (teamRunId: string, delegatedAgentRunId = ''): boolean => {
     const ancestry = params.runHistoryStore.getTeamNavigationAncestry(teamRunId);
     if (!ancestry) return false;
     setWorkspaceExpanded(ancestry.workspaceId, true);
     setTeamDefinitionExpanded(ancestry.workspaceId, ancestry.teamDefinitionGroupKey, true);
     setTeamExpanded(teamRunId, true);
+    // A run the Team delegated (CR-461-108): the team rows above it unfold; pending until the Team's tree shows it.
+    if (delegatedAgentRunId) return expandTeamMemberAncestors(ancestry.workspaceId, teamRunId, delegatedAgentRunId);
     // The focused member's delegated task-Team rows open too, however it was opened (REQ-003). Until its row
     // exists the reveal stays pending and re-applies on the next topology revision.
     const team = params.runHistoryStore.getTeamNodes().find((node) => node.teamRunId === teamRunId);
@@ -365,16 +365,10 @@ export const useWorkspaceHistoryTreeState = (params: {
       [agentOrgTaskTeamKey(rootRunId, teamRunId)]: !isAgentOrgTaskTeamExpanded(rootRunId, teamRunId),
     };
   };
-  const isAgentOrgRunSelected = (rootRunId: string): boolean => {
-    const selected = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
-    return selected?.rootRunId === rootRunId && !selected.selection;
-  };
-  const isAgentOrgMemberSelected = (rootRunId: string, address: string, agentRunId?: string): boolean => {
-    const selected = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
-    if (selected?.rootRunId !== rootRunId) return false;
-    if (agentRunId) return selected.selection?.kind === 'agent_execution' && selected.selection.agentRunId === agentRunId;
-    return selected.selection?.kind === 'configured_team' && selected.focusAddress === address;
-  };
+  const selectedOrg = (): SelectedAgentOrg | null => (params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null);
+  const isAgentOrgRunSelected = (rootRunId: string): boolean => isOrgRunSelected(selectedOrg(), rootRunId);
+  const isAgentOrgMemberSelected = (rootRunId: string, address: string, agentRunId?: string): boolean =>
+    isOrgMemberSelected(selectedOrg(), rootRunId, address, agentRunId);
   const revealAgentOrgRunAncestry = (rootRunId: string, focusAddress = ''): boolean => {
     const ancestry = params.runHistoryStore.getAgentOrgNavigationAncestry?.(rootRunId);
     if (!ancestry) return false;
@@ -390,6 +384,13 @@ export const useWorkspaceHistoryTreeState = (params: {
         ...expandedAgentOrgTeams.value,
         [agentOrgTeamKey(rootRunId, teamAddress)]: true,
       };
+    }
+    // A run the Org delegated, open in it (CR-461-108): the rows above its row unfold, and a Team row opened at its coordinator.
+    const selected = selectedOrg();
+    if (selected?.rootRunId === rootRunId && selected.delegated) {
+      unfoldOrgRows(rootRunId, selected.delegated.rowKey,
+        (address) => { expandedAgentOrgTeams.value = { ...expandedAgentOrgTeams.value, [agentOrgTeamKey(rootRunId, address)]: true }; },
+        (key) => { expandedAgentOrgTaskTeams.value = { ...expandedAgentOrgTaskTeams.value, [agentOrgTaskTeamKey(rootRunId, key)]: true }; });
     }
     return true;
   };
@@ -410,7 +411,8 @@ export const useWorkspaceHistoryTreeState = (params: {
       return revealAgentRunAncestry(id);
     }
     if (kind === 'team') {
-      return revealTeamRunAncestry(id);
+      const [teamRunId = '', delegatedAgentRunId = ''] = id.split('\u0000', 2);
+      return revealTeamRunAncestry(teamRunId, delegatedAgentRunId);
     }
     if (kind === 'agent_org') {
       const [rootRunId, focusAddress = ''] = id.split('\u0000', 2);
@@ -440,7 +442,8 @@ export const useWorkspaceHistoryTreeState = (params: {
     revealAppliedForObservedKey.value = true;
   };
 
-  const revealDependencySignature = computed(() => params.runHistoryStore.navigationTopologyRevision);
+  // The run trees too: a delegated row's reveal waits for its tree (CR-461-108).
+  const revealDependencySignature = computed(() => [params.runHistoryStore.navigationTopologyRevision, useRunTreeStore().trees]);
 
   watch(
     [selectedRevealKey, revealDependencySignature],
@@ -468,6 +471,15 @@ export const useWorkspaceHistoryTreeState = (params: {
     expandedTeamMembers.value = omitPrefix(expandedTeamMembers.value);
     expandedAgentOrgDefinitions.value = omitPrefix(expandedAgentOrgDefinitions.value);
   };
+  // A folder that leaves the list (removed in the chooser, or its last run archived: workspace-tree-vs-chooser DS-004)
+  // forgets its expansion, so it comes back collapsed.
+  watch(
+    () => workspaceNodes.value.map((node) => node.stableKey),
+    (keys, previousKeys) => {
+      const current = new Set(keys);
+      for (const key of previousKeys ?? []) if (!current.has(key)) pruneWorkspace(key);
+    },
+  );
 
   return {
     workspaceNodes,
@@ -476,7 +488,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     workspaceTeamHistoryGroups,
     isWorkspaceExpanded,
     setWorkspaceExpanded,
-    setWorkspaceExpandedByRootPath,
     toggleWorkspace,
     isAgentExpanded,
     setAgentExpanded,
@@ -502,6 +513,5 @@ export const useWorkspaceHistoryTreeState = (params: {
     isAgentOrgRunSelected,
     isAgentOrgMemberSelected,
     expandedWorkspaceIds,
-    pruneWorkspace,
   };
 };

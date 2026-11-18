@@ -1,5 +1,5 @@
 <template>
-  <!-- delegated-copy-task-locator: a Task worker's Task summary under its name. It is its own control:
+  <!-- delegated-copy-task-locator: a Task worker's Task (a Project Task's title, a Temp task's first line) under its name. It is its own control:
        click, Enter or Space shows the Task in Projects and never opens, selects or toggles the row. -->
   <button
     type="button"
@@ -19,11 +19,11 @@
 import { computed } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { TaskWorkerTask } from '~/types/project';
-import { taskSummaryLabel } from '~/utils/projects/taskSummary';
+import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
 
 const props = withDefaults(defineProps<{ task: TaskWorkerTask; selected?: boolean }>(), { selected: false });
 const emit = defineEmits<{ (e: 'locate'): void }>();
 const { t } = useLocalization();
-const label = computed(() => taskSummaryLabel(props.task.description));
+const label = computed(() => taskWorkerTaskLabel(props.task));
 const locateLabel = computed(() => t('workspace.history.copyTask.locate', { title: label.value }));
 </script>

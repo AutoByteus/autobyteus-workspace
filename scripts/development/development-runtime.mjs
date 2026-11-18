@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -20,6 +21,8 @@ export const developmentBackendPort = 8000;
 export const developmentFrontendPort = 3000;
 export const developmentBackendUrl = `http://${developmentHost}:${developmentBackendPort}`;
 export const developmentFrontendUrl = `http://${developmentHost}:${developmentFrontendPort}`;
+/** The frontend's origins, as a developer may open it; the backend accepts exactly these (autobyteus-416). */
+export const developmentFrontendOrigins = `${developmentFrontendUrl},http://localhost:${developmentFrontendPort}`;
 
 export const developmentTemplateKeys = Object.freeze([
   'APP_ENV',
@@ -33,18 +36,27 @@ export const launcherOwnedBackendKeys = Object.freeze([
   'AUTOBYTEUS_LOG_DIR',
   'AUTOBYTEUS_MEMORY_DIR',
   'AUTOBYTEUS_TEMP_WORKSPACE_DIR',
+  'AUTOBYTEUS_ALLOWED_ORIGINS',
 ]);
 
 const launcherOwnedBackendKeySet = new Set(launcherOwnedBackendKeys);
+/**
+ * The development frontend reaches its node only through the Vite proxy (nuxt.config.ts), which adds the node's
+ * launch owner credential (node access model NA-1, NA-5): the window's node is the frontend's own origin, and every
+ * WebSocket goes through it too. `BACKEND_NODE_BASE_URL` stays the proxy's target.
+ */
 const frontendBackendEnvironment = Object.freeze({
   BACKEND_NODE_BASE_URL: developmentBackendUrl,
-  BACKEND_AGENT_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/agent`,
-  BACKEND_TEAM_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/agent-team`,
-  BACKEND_GRAPHQL_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/graphql`,
-  BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/transcribe`,
-  BACKEND_TERMINAL_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/terminal`,
-  BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/file-explorer`,
+  AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL: developmentFrontendUrl,
+  BACKEND_AGENT_WS_ENDPOINT: `${developmentFrontendUrl.replace(/^http/, 'ws')}/ws/agent`,
+  BACKEND_TEAM_WS_ENDPOINT: `${developmentFrontendUrl.replace(/^http/, 'ws')}/ws/agent-team`,
+  BACKEND_GRAPHQL_WS_ENDPOINT: `${developmentFrontendUrl.replace(/^http/, 'ws')}/graphql`,
+  BACKEND_TERMINAL_WS_ENDPOINT: `${developmentFrontendUrl.replace(/^http/, 'ws')}/ws/terminal`,
+  BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${developmentFrontendUrl.replace(/^http/, 'ws')}/ws/file-explorer`,
 });
+
+/** The development node's launch owner credential: a new one for each `pnpm dev`, in the two child environments only. */
+const createDevelopmentOwnerCredential = () => `own_${randomBytes(32).toString('base64url')}`;
 
 const stableError = (code) => {
   const error = new Error(code);
@@ -245,11 +257,13 @@ const runtimeEnvironmentContent = (retainedLines, values) => {
     `AUTOBYTEUS_LOG_DIR=${values.logsDirectory}`,
     `AUTOBYTEUS_MEMORY_DIR=${values.memoryDirectory}`,
     `AUTOBYTEUS_TEMP_WORKSPACE_DIR=${values.tempWorkspaceDirectory}`,
+    `AUTOBYTEUS_ALLOWED_ORIGINS=${developmentFrontendOrigins}`,
   ];
   return `${[...retained, ...owned].join('\n')}\n`;
 };
 
 const buildChildEnvironment = (databaseUrl, dataRoot) => {
+  const ownerCredential = createDevelopmentOwnerCredential();
   const backendEnvironment = { ...process.env };
   for (const key of launcherOwnedBackendKeys) delete backendEnvironment[key];
   Object.assign(backendEnvironment, {
@@ -260,12 +274,17 @@ const buildChildEnvironment = (databaseUrl, dataRoot) => {
     AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
+    AUTOBYTEUS_ALLOWED_ORIGINS: developmentFrontendOrigins,
+    // The node takes it and removes it from its environment before anything else loads (NA-15).
+    AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL: ownerCredential,
   });
 
   const frontendEnvironment = {
     ...process.env,
     NODE_ENV: 'development',
     ...frontendBackendEnvironment,
+    // Read only by the Vite proxy's server-side configuration; never part of the client bundle.
+    AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL: ownerCredential,
   };
   return Object.freeze({ backendEnvironment, frontendEnvironment });
 };

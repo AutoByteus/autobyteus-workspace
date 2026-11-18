@@ -33,6 +33,7 @@ let registered: string[];
 let host: HostDefinitionServices | null = null;
 let feed: AgentPackageDefinitionFeed | null = null;
 let frames: Frame[];
+let definitionSignals: number;
 
 const AC_BOUND_MS = 5000;
 
@@ -68,15 +69,16 @@ const port: CollaboratorRootPort = {
   isApplicationBound: false,
   launchBase: () => ({ kind: "inherited", launch: {} as never }),
   ownDefinition: () => null,
-  inRunPlacementsByDefinition: () => new Map(),
+  inRunPlacementsByDefinition: async () => new Map(),
   collaborators: () => [],
-  addressesInUse: () => new Set(),
+  addressesInUse: async () => new Set(),
 };
 
 const services = () => host!;
 const policy = () => new CollaboratorCandidatePolicy(createCollaboratorDefinitionCatalog({
   agents: services().agentDefinitionService,
   teams: services().agentTeamDefinitionService,
+  visibility: { isHidden: () => false },
 }));
 /** What `list_available_agents` returns: the eligible names, agents and Teams. */
 const listAvailable = async () => (await policy().listEligible(port)).map((entry) => `${entry.kind}:${entry.name}`);
@@ -103,13 +105,16 @@ const bundleService = {
 
 const start = async (options: { createWatcher?: PackageFolderWatchFactory } = {}) => {
   host = createHostDefinitionServices({ appConfig: appConfig(), bundleService });
-  feed = await composeAgentPackageDefinitionFeed({ reloader: host.agentPackageDefinitions.reloader, createWatcher: options.createWatcher });
+  feed = await composeAgentPackageDefinitionFeed({
+    definitions: host,
+    createWatcher: options.createWatcher,
+  });
+  host.agentDefinitionChanges.subscribe(() => { definitionSignals += 1; });
   feed.hub.connect({ send: (data) => frames.push(JSON.parse(data) as Frame), close: () => undefined });
   await host.definitionAdmissionService.scan();
   await feed.watcher.whenReady();
-  // Directory watches on macOS start slightly after the watcher reports ready.
-  await sleep(300);
   frames.length = 0;
+  definitionSignals = 0;
 };
 
 beforeEach(async () => {
@@ -118,6 +123,7 @@ beforeEach(async () => {
   packageRoot = path.join(base, "autobyteus-agents");
   registered = [packageRoot];
   frames = [];
+  definitionSignals = 0;
   await fs.mkdir(path.join(dataDir, "agents"), { recursive: true });
   await fs.mkdir(path.join(packageRoot, "agents"), { recursive: true });
   await fs.mkdir(path.join(packageRoot, "agent-teams"), { recursive: true });
@@ -146,10 +152,26 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     expect(definitionFrames().some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_teams"))).toBe(true);
   });
 
+  it("autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change", async () => {
+    await start();
+    await write(path.join(packageRoot, "agents", "planner", "agent-config.json"),
+      JSON.stringify({ toolNames: ["send_message_to"], skillNames: [] }));
+    await waitFor(() => services().agentDefinitionService.getAgentDefinitionById("planner"),
+      (definition) => definition?.toolNames.includes("send_message_to") === true);
+    await waitFor(async () => definitionSignals, (count) => count > 0);
+
+    const before = definitionSignals;
+    await services().agentDefinitionService.updateAgentDefinition("planner", { toolNames: [] });
+    expect(definitionSignals).toBeGreaterThan(before);
+    expect((await services().agentDefinitionService.getAgentDefinitionById("planner"))?.toolNames).toEqual([]);
+  });
+
   it("AC-016: a lookup inside the settle window applies the detected change first", async () => {
     await start();
     await writeAgent(path.join(packageRoot, "agents", "fresh"), "Fresh");
-    await sleep(200); // detected (milliseconds) but well inside the 1 s settle window
+    // Past the watcher's 300 ms catch-up request (the OS may have dropped the write's own event) and still well
+    // inside the 1 s settle window, which the request restarts: the lookup itself must apply the change.
+    await sleep(600);
     expect(definitionFrames()).toEqual([]);
     expect(await listAvailable()).toContain("agent:Fresh");
     expect((await policy().requireAdmissible(port, { kind: "agent", definitionId: "fresh" })).definition.instructions).toBe("Fresh instructions\n");
@@ -268,7 +290,6 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     expect(feed!.watcher.getPackageFolderWatchStatus(second)).toEqual({ state: "WATCHING", message: null });
     expect(await listAvailable()).toContain("agent:Secret");
     await feed!.watcher.whenReady();
-    await sleep(300);
 
     await writeAgent(path.join(second, "agents", "another"), "Another");
     await waitFor(listAvailable, (names) => names.includes("agent:Another"));
@@ -307,7 +328,6 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     await waitFor(async () => feed!.watcher.getPackageFolderWatchStatus(packageRoot)?.state, (state) => state === "WATCHING");
     await waitFor(() => services().agentDefinitionService.getLoadIssue("planner"), (issue) => issue === null);
     await feed!.watcher.whenReady();
-    await sleep(300);
     await writeAgent(path.join(packageRoot, "agents", "planner"), "Planner", "Back again.");
     await waitFor(() => services().agentDefinitionService.getAgentDefinitionById("planner"), (definition) => definition?.instructions === "Back again.\n");
   });

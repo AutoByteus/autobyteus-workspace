@@ -1,0 +1,35 @@
+# IMP2-01 starter unit tests
+# Command: pnpm -C autobyteus-server-ts test:starter
+# Commit: 82e2e7f931 (code b1029fc1b0)
+# Environment: macOS arm64, v22.23.1, Python 3.9.6
+# Date: 2026-10-30T17:11Z
+
+ok 1 - boots the built-in package, serves its status to cli.mjs, and stops it on request
+ok 2 - the server exit ends the starter with the server exit code
+ok 3 - NEEDS_NEW_IMAGE: no server runs, the starter stays up and its status says which image is needed
+ok 4 - boot rolls back an interrupted trial, restores its data copy and records INTERRUPTED
+ok 5 - without a trial, boot deletes a partial data copy and marks a running update INTERRUPTED
+ok 6 - cli.mjs: an unknown command and an unreachable starter are errors with one JSON line
+ok 7 - the socket answers 400 INVALID_VERSION for a target that is not a release version
+ok 8 - a first boot runs the built-in package and records it as current
+ok 9 - an installed package newer than the built-in one keeps running (AC-006, older image)
+ok 10 - a newer image runs its built-in package instead of an older installed one (AC-006, newer image)
+ok 11 - an installed package that does not fit and an older built-in one give NEEDS_NEW_IMAGE (AC-006 alternate)
+ok 12 - a built-in version that already ran on a newer image cannot be run by an older image
+ok 13 - a missing installed package, or one holding another version, is not run
+ok 14 - rollBackTrial makes the version before the trial current again
+ok 15 - removeLeftovers removes downloads, partial unpacks and self-check folders only
+ok 16 - recognizes exactly the release grammar of release_versions.py
+ok 17 - orders versions by semver precedence, as release_versions.py does
+ok 18 - refuses to order a version it does not recognize
+ok 19 - starts the package with the C4 arguments, its folder as working directory and the starter socket
+ok 20 - reports the server exit with its code, and kills what it left in its process group
+ok 21 - a server that ignores SIGTERM is killed with its group after the stop limit
+ok 22 - a start waits for the server port to be free, then starts anyway after the limit
+ok 23 - exitCodeOf reports a signal as 128 + its number
+ok 24 - a running node reports its version, server and the relation of a target version
+ok 25 - a node that needs a new image has no server and carries the message
+ok 26 - update.json is read tolerantly and an interrupted update keeps its target
+# tests 26
+# pass 26
+# fail 0

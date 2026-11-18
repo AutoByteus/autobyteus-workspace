@@ -1,0 +1,14 @@
+# API-11 Code expiry: AC-013, REQ-015
+# surface: isolated desktop instance iso-49410-016d = packaged build of this worktree (pnpm --silent isolated-app start --build;
+#   renderer file://…/app.asar/dist/renderer/index.html)
+# commit: 27b24037dd (code 55fdae0a34); macOS arm64 with Wi-Fi and Tailscale (facts read-only); driven over the instance's CDP control port with
+#   playwright-core (/tmp/ospp-e2e/scripts/run.mjs + steps/*.mjs: DOM state by data-testid, the renderer's /rest/remote-access requests and answers);
+#   phone exchanges by POST <serverBaseUrl>/rest/remote-access/pairing-exchanges (phone-exchange.sh)
+# Docker Test Node window (the code lifecycle is the same component for every node)
+# date: 2026-11-07. Real computer name, addresses, tailnet name and network ID replaced by placeholders; pairing codes replaced by their length.
+
+10:44:09 "Show QR code" (Tailscale): line "Works anywhere through Tailscale" timer "Valid for 5:00"; payload expiresAt 09:49:08Z
+10:49:15 panel: "This code has expired", timer gone, New code shown, line "Works anywhere through Tailscale"
+phone exchange #1 after expiry: 400 {"code": "REMOTE_ACCESS_PAIRING_EXPIRED"}
+phone exchange #2: 400 {"code": "REMOTE_ACCESS_PAIRING_INVALID"}
+"New code": → DELETE …/pairing-sessions/pss_0915… 204; → POST …/pairing-sessions 201; timer "Valid for 5:00", expired note gone

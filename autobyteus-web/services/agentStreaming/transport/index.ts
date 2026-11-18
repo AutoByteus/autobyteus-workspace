@@ -3,5 +3,4 @@ export { ConnectionState } from './types';
 export type {
   IWebSocketClient,
   WebSocketClientEvents,
-  WebSocketClientOptions,
 } from './types';

@@ -1,0 +1,23 @@
+# P2-07 background-task-status-count.e2e.test.ts at 4c93deaa8f (code ce06c415cc), in-process studio server; node 22.23.1; macOS
+# BTS-01..03: env -i PATH HOME=<temp> TMPDIR RUN_BACKGROUND_TASK_STATUS_E2E=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<agy-failure-cli.mjs> AGY_FAKE_CASE=linked_skills BACKGROUND_TASK_STATUS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/background-task-status-count.e2e.test.ts --no-watch
+# BTS-04/05: env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_BACKGROUND_TASK_STATUS_E2E=1 RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 … -t 'BTS-0[45]'
+
+## run 1 (BTS-01/02 pass; BTS-03 failed: the CLI must be in the environment at start; test changed to take it from there)
+     ✓ BTS-01: native: the example sequence on the stream and the feed, a reconnect snapshot, a message delivered at once, counts 2, 1, 0  19259ms
+     ✓ BTS-02: a Team: each member's status carries its own count; the feed's Team run state carries the sum  10749ms
+     × BTS-03: Antigravity: an open daemon step reads idle 1, then idle 0 when it exits 1565ms
+     ↓ BTS-04 (live): Claude idle with a background Bash command reads idle 1, then 0
+     ↓ BTS-05 (live): Codex idle with a background terminal stays at count 0 (its view is a snapshot)
+## BTS-03
+ ✓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (5 tests | 4 skipped) 25787ms
+     ✓ BTS-03: Antigravity: an open daemon step reads idle 1, then idle 0 when it exits  12812ms
+## BTS-04/05 (live)
+ ✓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (5 tests | 3 skipped) 61546ms
+     ✓ BTS-04 (live): Claude idle with a background Bash command reads idle 1, then 0  32032ms
+     ✓ BTS-05 (live): Codex idle with a background terminal stays at count 0 (its view is a snapshot)  14125ms
+
+## Final file rerun (21:20): BTS-01/02 on the committed file after the P2-07a/presentation experiments were reverted; tsc on both new suites: no errors
+ ✓ tests/e2e/runtime/background-task-status-count.e2e.test.ts (5 tests | 3 skipped) 40744ms
+     ✓ BTS-01: native: the example sequence on the stream and the feed, a reconnect snapshot, a message delivered at once, counts 2, 1, 0  18774ms
+     ✓ BTS-02: a Team: each member's status carries its own count; the feed's Team run state carries the sum  11368ms
+      Tests  2 passed | 3 skipped (5)

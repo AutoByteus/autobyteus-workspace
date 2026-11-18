@@ -1,0 +1,7 @@
+# IMP-05 full web suite (AC-001..AC-003, AC-007, AC-009..AC-012)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run
+# commit: a3dbfcb495  env: macOS, Node v22.23.1  date: 2026-10-28T16:03Z
+
+ Test Files  668 passed (668)
+      Tests  4855 passed | 2 skipped (4857)
+   Duration  214.43s (transform 23.59s, setup 1408.63s, collect 135.48s, tests 69.89s, environment 126.77s, prepare 75.94s)

@@ -1,0 +1,6 @@
+{"t":3926,"event":"device","model":"sdk_gphone64_arm64","sdk":"35","webview":"124.0.6367.219"}
+{"t":6001,"event":"apk","versionName":"0.1.0"}
+{"t":21150,"event":"paired through the share intent"}
+Error: Timed out waiting for the saved node in the app
+    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:51:9)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:154:3

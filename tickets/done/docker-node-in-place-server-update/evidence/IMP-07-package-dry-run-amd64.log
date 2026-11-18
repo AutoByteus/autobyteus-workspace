@@ -1,0 +1,29 @@
+# IMP-07 CI package job dry run, linux/amd64 (AC-011, QR-001)
+# Steps: as IMP-06, with IMAGE=autobyteus-server-305-test:step1-amd64 PLATFORM=linux/amd64 and RUNNER_TEMP=/d/runner-amd64.
+#   Byte identity uses IMP-07-manifest-batched.sh (find -printf type/mode/path/link + sha256sum of every file, LC_ALL=C order),
+#   run inside the amd64 image (QEMU) on /opt/autobyteus/server-package and in node:22-bookworm on the unpacked archive.
+# Commit: 01c56f1b95. Environment: macOS arm64 host, Docker 29.0.1, amd64 under QEMU. Date: 2026-10-30
+
+## Step 2 output
+Wrote autobyteus-server-1.5.11-beta.5-linux-x64.json: autobyteus-server-1.5.11-beta.5-linux-x64.tar.gz, 282090794 bytes, sha256 f7bb2396a26202a02528258abf5ac0eafdd2702c5e3109d7afaca6468c99d771
+Signed /d/runner-amd64/server-package-assets/autobyteus-server-1.5.11-beta.5-linux-x64.json; the signature verifies with autobyteus-server-ts/docker/server-package-signing-key.pem
+
+## Assets
+3528 autobyteus-server-1.5.11-beta.5-linux-x64.json
+88 autobyteus-server-1.5.11-beta.5-linux-x64.json.sig
+282090794 autobyteus-server-1.5.11-beta.5-linux-x64.tar.gz
+
+## Byte identity
+manifest lines, image: 83897; archive: 83897
+BYTE-IDENTICAL: archive content == image /opt/autobyteus/server-package (files, links, modes)
+46d62d1b38e14317b6ddad88b3e3965b631009285d36ea4063612afddfe6306d  manifest2-image-amd64.txt
+46d62d1b38e14317b6ddad88b3e3965b631009285d36ea4063612afddfe6306d  manifest2-archive-amd64.txt
+
+## Signature and description
+signature verifies with the test public key: true
+description without archive equals the package server-package.json: true
+archive sha256 equals description: true
+archive: {"name":"autobyteus-server-1.5.11-beta.5-linux-x64.tar.gz","sha256":"f7bb2396a26202a02528258abf5ac0eafdd2702c5e3109d7afaca6468c99d771","size":282090794,"unpackedSize":829838049}
+description head: {"version":"1.5.11-beta.5","arch":"x64","nodeModuleVersion":"127","systemLevel":1,"dataMigrations":61}
+
+## QR-001: download per node = archive size 282090794 bytes = 0.28 GB (limit 0.35 GB)

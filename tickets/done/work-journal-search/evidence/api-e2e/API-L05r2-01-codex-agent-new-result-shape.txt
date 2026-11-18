@@ -1,0 +1,10 @@
+# API-L05 (round 2): AC-012 on the Codex entry form with the SR-006 result shape (matchedWords, wordsNotFound, no strength)
+# Desktop iso-55187-0f43; Project Task Manager with search_memory selected (17 tools); Codex App Server, GPT-6-Sol (medium); questions phrased "Please search your memory: …" (the user's direction); one chat per question from the UI; 2026-10-27 05:2x UTC; Meaning index still embedding (first build)
+# Full tool calls and results: private r2/API-L05r2-codex-runs-tool-calls.txt
+
+| Question | Run | Calls (search / read) | What the tool returned | Answer |
+| Absent codename "orchidtundra5520" | project_task_manager_78775398… | 1 search, 2 rg checks | wordsNotFound ['orchidtundra5520'], note "Not found in your memory: orchidtundra5520."; text matches "project" | "I couldn’t find orchidtundra5520 in my memory or in the Projects available on this node, so I don’t know where it is." — honest |
+| Q07 (Chinese, racing game) | project_task_manager_8ccadc07… | 1 / 1 | accepted run daily_assistant_6bf3d9… in the results; Chinese words listed as matchedWords (赛车, 游戏 …); no wordsNotFound field (empty fields are left out) | right run read at its lines; game path and how to open it, citing the delivery record — 2 steps |
+| Q01 (DDNS) | project_task_manager_00e57160… | 4 / 4 | 2nd search: codex_45ce… #1 with matchedWords ddns, updater, linux, computer, mini, home, public, ip, changes; 3rd search: wordsNotFound ['ddclient'], note "Not found in your memory: ddclient." | read the DDNS run's journal; answered that the updater ran on the Linux machine at home; said it could not verify the script path rather than guessing |
+
+No result anywhere carries a strength field; text matches carry their words; meaning matches carry none (e.g. "m:" entries in the private file).

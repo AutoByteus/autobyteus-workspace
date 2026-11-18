@@ -1,0 +1,53 @@
+# REL-05 rollout of v1.5.11-beta.10 (tag pushed 2026-11-01T09:45:48Z), watched together with a first-failure watcher; checked 2026-11-01T10:24:14Z
+41294518517 Server Docker Release: success (finished 2026-11-01T10:23:04Z)
+41294518512 iOS App Store Connect Release: success (finished 2026-11-01T09:59:49Z)
+41294518489 Android APK Release: success (finished 2026-11-01T09:51:45Z)
+41294518487 Desktop Release: success (finished 2026-11-01T10:10:01Z)
+## GitHub release
+prerelease=true draft=false assets=23
+autobyteus-server-1.5.11-beta.10-linux-arm64.json
+autobyteus-server-1.5.11-beta.10-linux-arm64.json.sig
+autobyteus-server-1.5.11-beta.10-linux-arm64.tar.gz
+autobyteus-server-1.5.11-beta.10-linux-x64.json
+autobyteus-server-1.5.11-beta.10-linux-x64.json.sig
+autobyteus-server-1.5.11-beta.10-linux-x64.tar.gz
+AutoByteus_personal_android-1.5.11-beta.10-release.apk
+AutoByteus_personal_android-1.5.11-beta.10-release.apk.sha256
+AutoByteus_personal_linux-arm64-1.5.11-beta.10.AppImage
+AutoByteus_personal_linux-x64-1.5.11-beta.10.AppImage
+AutoByteus_personal_macos-arm64-1.5.11-beta.10.dmg
+AutoByteus_personal_macos-arm64-1.5.11-beta.10.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.11-beta.10.zip
+AutoByteus_personal_macos-arm64-1.5.11-beta.10.zip.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.10.dmg
+AutoByteus_personal_macos-x64-1.5.11-beta.10.dmg.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.10.zip
+AutoByteus_personal_macos-x64-1.5.11-beta.10.zip.blockmap
+AutoByteus_personal_windows-1.5.11-beta.10.exe
+latest-linux-arm64.yml
+latest-linux.yml
+latest-mac.yml
+latest.yml
+GitHub Latest: v1.5.10
+## Docker Hub autobyteus/autobyteus-server
+1.5.11-beta.10 sha256:7f8bc579b282 2026-11-01T10:06:04.932982Z
+beta sha256:7f8bc579b282 2026-11-01T10:15:37.364086Z
+latest sha256:a1c22e2e4186 2026-10-29T05:47:24.472633Z
+## Release notes after the edit (RELEASE.md § Beta notes with a user action)
+## What you need to do
+
+- **The update to this version still stops busy agents.** Agents that are in the middle of a task when you install this update stop, as before: message them to continue. From your next update after this one, busy agents continue by themselves after the update restart.
+
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.9...v1.5.11-beta.10
+
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.9...v1.5.11-beta.10
+
+
+## Release notes after the second edit (2026-11-01T10:25:09Z): 337's GitHub user actions added (they sat under its notes' '## Changed', without the collected heading)
+## What you need to do
+
+- **The update to this version still stops busy agents.** Agents that are in the middle of a task when you install this update stop, as before: message them to continue. From your next update after this one, busy agents continue by themselves after the update restart.
+- **If you connected GitHub in an earlier beta:** GitHub is now set up on the new **Integrations** page, and the GitHub card in Settings → Server Settings → Basics is gone. Your token is kept: on the Integrations page, import `https://github.com/AutoByteus/autobyteus-integrations`, and its GitHub card shows as connected. Then give the `github-integration` skill to the agents that should use GitHub; the agent ticks from the old card no longer apply.
+
+**Full Changelog**: https://github.com/AutoByteus/autobyteus-workspace/compare/v1.5.11-beta.9...v1.5.11-beta.10
+

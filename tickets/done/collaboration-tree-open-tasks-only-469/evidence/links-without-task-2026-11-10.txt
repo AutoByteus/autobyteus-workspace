@@ -1,0 +1,20 @@
+   170  closed Tasks only
+    14  no Task record
+    11  open Task
+    11  open Task:   start started
+links with no Task record: top runs that hold them: 8 distribution: [7, 1, 1, 1, 1, 1, 1, 1]
+kind of top run, kind of run, started, days since the run's folder last changed, days since the top run's folder last changed
+   ('agent_org', 'agent run', '2026-08-18', 11, 5)
+   ('agent_team', 'agent run', '2026-08-26', 11, 4)
+   ('agent_org', 'team run', '2026-09-21', 11, 11)
+   ('agent_team', 'agent run', '2026-09-26', 11, 5)
+   ('agent_team', 'agent run', '2026-10-02', 10, 10)
+   ('agent_org', 'agent run', '2026-10-02', 11, 10)
+   ('agent_team', 'team run', '2026-10-03', 11, 5)
+   ('agent_team', 'team run', '2026-10-05', 11, 11)
+   ('agent_team', 'team run', '2026-10-05', 21, 10)
+   ('agent', 'team run', '2026-10-06', 11, 11)
+   ('agent_team', 'agent run', '2026-10-06', 11, 11)
+   ('agent_team', 'agent run', '2026-10-06', 11, 11)
+   ('agent_team', 'agent run', '2026-10-06', 11, 11)
+   ('agent', 'team run', '2026-10-13', 4, 4)

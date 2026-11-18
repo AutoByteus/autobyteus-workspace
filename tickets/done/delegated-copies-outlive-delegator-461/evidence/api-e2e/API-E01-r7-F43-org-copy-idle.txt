@@ -1,0 +1,29 @@
+# F-43 (lazy activation DTL-005, Org path: a delegated team with a member in error not shut down after the grace), r7-batchA.log and r7-batchB.log, merged state a529abcbdd
+## r7-batchA.clean.log
+ FAIL  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "org: Error: Timed out waiting for org: copy processes gone after the grace period
++     at Module.until (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9)
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:537:5)
++     at async Promise.allSettled (index 2)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:613:21
+## r7-batchB.clean.log
+ FAIL  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "org: Error: Timed out waiting for org: copy processes gone after the grace period
++     at Module.until (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9)
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:537:5)
++     at async Promise.allSettled (index 2)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:613:21

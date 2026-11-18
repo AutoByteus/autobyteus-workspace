@@ -1,0 +1,10 @@
+# REL-01 checks before tagging, on 2e8fd1a6cf (= origin/personal 746b2f5016 + the release request's docs commit), 2026-11-01T09:20:00Z
+Licensing is consistent.
+Repository artifact hygiene check passed.
+secret gate: scanning 94 commit(s) in v1.5.11-beta.9..HEAD
+secret gate: PASS (no secrets found)
+next-beta: 1.5.11-beta.10
+Done in 9.4s using pnpm v10.28.2
+install-exit=0
+
+prebuild-exit=0

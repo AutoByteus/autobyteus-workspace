@@ -1,0 +1,65 @@
+# API-02 fresh clone in the documented order (REQ-016 / AC-016)
+# clone of codex/test-and-tooling-hygiene-318 at 7c04283722 into /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318-clone.94OVpE6TRY/repo; 2026-11-01T13:25:41Z; macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+$ git log -1
+7c04283722a96d917d6b6f9c4f6b547e48da092f docs(tickets): autobyteus-318 package with implementation handoff, revision record and evidence
+$ pnpm install --frozen-lockfile
+
+real	0m8.519s
+user	0m4.613s
+sys	0m23.646s
+exit: 0
+$ ls node_modules/.pnpm/electron@*/node_modules/electron/dist (AC-005 precondition)
+ls: node_modules/.pnpm/electron@*/node_modules/electron/dist: No such file or directory
+$ grep @nuxtjs/apollo autobyteus-web/package.json pnpm-lock.yaml
+autobyteus-web/package.json:0
+pnpm-lock.yaml:0
+$ pnpm -C autobyteus-server-ts prebuild
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+exit: 0 (7s)
+$ pnpm -C autobyteus-server-ts build
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit: 0 (17s)
+$ pnpm -C autobyteus-server-ts test:integration:prepare
+Generated application root at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318-clone.94OVpE6TRY/repo/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+exit: 0 (23s)
+# load before gates: load averages: 24.38 38.17 31.86
+$ pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 30.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 19.2s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+exit: 0 (55s)
+$ pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.2s
+[typecheck] server tests (tsconfig.tests.json): 1200 errors, exit 2, 23.3s
+[typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)
+[typecheck] PASS
+exit: 0 (37s)
+$ pnpm -C autobyteus-web test:electron --run   (first run; no Electron dist/ before)
+Downloading Electron binary...
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+Downloading-line count: 1
+exit: 0 (7s)
+node_modules/.pnpm/electron@42.11.16/node_modules/electron/dist
+$ pnpm -C autobyteus-server-ts test:unit   (load 4.72 16.32 23.41)
+      Tests  7729 passed | 9 skipped (7738)
+ Test Files  912 passed | 5 skipped (917)
+exit: 0 (620s)
+$ pnpm -C autobyteus-server-ts test:integration   (load 6.05 7.77 14.64)
+      Tests  4 failed | 495 passed | 69 skipped (568)
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ Test Files  2 failed | 85 passed | 20 skipped (107)
+exit: 1 (216s)
+$ pnpm -C autobyteus-web test:nuxt --run   (load 5.82 6.93 12.75)
+      Tests  4966 passed | 2 skipped (4968)
+ Test Files  682 passed (682)
+exit: 0 (256s)

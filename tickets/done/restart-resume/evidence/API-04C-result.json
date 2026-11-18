@@ -1,0 +1,717 @@
+{
+  "case": "API-04C",
+  "mode": "queue-race",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T06:55:00.365Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-Ki9srf",
+  "tag": "RR285mvxh6fwt",
+  "steps": [
+    {
+      "at": "0.01",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "2.65",
+      "step": "server started",
+      "value": {
+        "label": "X",
+        "pid": 54871,
+        "port": 61813
+      }
+    },
+    {
+      "at": "3.81",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:61812",
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "9.95",
+      "step": "busy",
+      "value": {
+        "label": "slow-1",
+        "pid": 58832
+      }
+    },
+    {
+      "at": "10.00",
+      "step": "busy",
+      "value": {
+        "label": "slow-2",
+        "pid": 55575
+      }
+    },
+    {
+      "at": "10.04",
+      "step": "busy",
+      "value": {
+        "label": "slow-3",
+        "pid": 56956
+      }
+    },
+    {
+      "at": "10.09",
+      "step": "busy",
+      "value": {
+        "label": "slow-4",
+        "pid": 57289
+      }
+    },
+    {
+      "at": "10.13",
+      "step": "busy",
+      "value": {
+        "label": "slow-5",
+        "pid": 57439
+      }
+    },
+    {
+      "at": "10.18",
+      "step": "busy",
+      "value": {
+        "label": "slow-6",
+        "pid": 58319
+      }
+    },
+    {
+      "at": "10.23",
+      "step": "busy",
+      "value": {
+        "label": "slow-7",
+        "pid": 57113
+      }
+    },
+    {
+      "at": "10.28",
+      "step": "busy",
+      "value": {
+        "label": "slow-8",
+        "pid": 58216
+      }
+    },
+    {
+      "at": "10.33",
+      "step": "busy",
+      "value": {
+        "label": "slow-9",
+        "pid": 58664
+      }
+    },
+    {
+      "at": "23.70",
+      "step": "busy",
+      "value": {
+        "label": "slow-10",
+        "pid": 62086
+      }
+    },
+    {
+      "at": "23.74",
+      "step": "busy",
+      "value": {
+        "label": "slow-11",
+        "pid": 59846
+      }
+    },
+    {
+      "at": "23.79",
+      "step": "busy",
+      "value": {
+        "label": "slow-12",
+        "pid": 61141
+      }
+    },
+    {
+      "at": "23.83",
+      "step": "busy",
+      "value": {
+        "label": "t-message",
+        "pid": 55383
+      }
+    },
+    {
+      "at": "23.88",
+      "step": "busy",
+      "value": {
+        "label": "t-stop",
+        "pid": 55577
+      }
+    },
+    {
+      "at": "23.92",
+      "step": "busy",
+      "value": {
+        "label": "t-archive",
+        "pid": 56153
+      }
+    },
+    {
+      "at": "31.06",
+      "step": "server stopped",
+      "value": {
+        "label": "X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793516131403
+        },
+        "ms": 5616
+      }
+    },
+    {
+      "at": "31.06",
+      "step": "record",
+      "value": [
+        {
+          "place": "host",
+          "run": "c25dedf5f6"
+        },
+        {
+          "place": "host",
+          "run": "b427f336b7"
+        },
+        {
+          "place": "host",
+          "run": "6d811df0e7"
+        },
+        {
+          "place": "host",
+          "run": "c1d88d175d"
+        },
+        {
+          "place": "host",
+          "run": "58b7ce9fba"
+        },
+        {
+          "place": "host",
+          "run": "59bb8112d9"
+        },
+        {
+          "place": "host",
+          "run": "d158c33876"
+        },
+        {
+          "place": "host",
+          "run": "a68c6c3858"
+        },
+        {
+          "place": "host",
+          "run": "43190102f4"
+        },
+        {
+          "place": "host",
+          "run": "3452c9f1d9"
+        },
+        {
+          "place": "host",
+          "run": "0c4eca7aa1"
+        },
+        {
+          "place": "host",
+          "run": "bcb90a9ec9"
+        },
+        {
+          "place": "host",
+          "run": "f087d6efc3"
+        },
+        {
+          "place": "host",
+          "run": "2986707ed5"
+        },
+        {
+          "place": "host",
+          "run": "a8d944e223"
+        }
+      ]
+    },
+    {
+      "at": "31.06",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "32.89",
+      "step": "server started",
+      "value": {
+        "label": "X1",
+        "pid": 62457,
+        "port": 62187
+      }
+    },
+    {
+      "at": "43.78",
+      "step": "queue race",
+      "value": {
+        "acted": {
+          "stop": {
+            "success": false,
+            "message": "Agent run not found."
+          },
+          "stopMs": 20,
+          "archive": {
+            "success": true,
+            "message": "Run 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223' archived."
+          },
+          "archiveMs": 73,
+          "archiveDoneAtLogSec": "32.97",
+          "message": 205,
+          "messageAtLogSec": "33.10"
+        },
+        "lines": [
+          "[32.81] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7' of agent 'probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7'",
+          "[32.91] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7' of agent 'probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7'",
+          "[32.93] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6' of agent 'probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6'",
+          "[32.95] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d' of agent 'probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d'",
+          "[32.98] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba' of agent 'probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba'",
+          "[33.01] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9' of agent 'probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9'",
+          "[33.04] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876' of agent 'probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876'",
+          "[33.08] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858' of agent 'probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858'",
+          "[33.16] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4' of agent 'probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4'",
+          "[33.32] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9' of agent 'probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9'",
+          "[33.35] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1' of agent 'probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1'",
+          "[33.40] Restart resume resumed host run 'native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3' of agent 'native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3'",
+          "[33.40] Restart resume skipped host run 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223' of agent 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223': its root is archived",
+          "[33.62] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9' of agent 'probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9'",
+          "[33.66] Restart resume resumed host run 'native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5' of agent 'native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5'",
+          "[33.66] Restart resume after the update to 1.5.11-beta.9-rr285next: 14 resumed, 1 skipped, 0 failed"
+        ],
+        "after": {
+          "slow-1": {
+            "runId": "probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-2": {
+            "runId": "probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-3": {
+            "runId": "probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-4": {
+            "runId": "probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-5": {
+            "runId": "probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-6": {
+            "runId": "probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-7": {
+            "runId": "probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-8": {
+            "runId": "probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-9": {
+            "runId": "probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-10": {
+            "runId": "probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-11": {
+            "runId": "probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "slow-12": {
+            "runId": "probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9",
+            "notices": 1,
+            "userMessageAfterRestart": false
+          },
+          "t-message": {
+            "runId": "native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3",
+            "notices": 1,
+            "userMessageAfterRestart": true,
+            "conversationTail": [
+              "{\"kind\":\"tool_call\",\"invocationId\":\"call-t-message-1-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxh6fwt_t-message\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/r",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516125.951}",
+              "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"c4452f34-1997-4b3c-975a-078e2d8eff9a\",\"dedupeKey\":\"agent_run_input:c4452f34-1997-4b3c-975a-078e2d8eff9a\",\"content\":\"User message after the restart.\",\"media\":null,\"ts\":1793516133.772}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516133.828}",
+              "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T06:55:33.110Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793516133.903}"
+            ]
+          },
+          "t-stop": {
+            "runId": "native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5",
+            "notices": 1,
+            "userMessageAfterRestart": false,
+            "conversationTail": [
+              "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"6a5e11fe-8adf-433d-a9da-f3809d60baf0\",\"dedupeKey\":\"agent_run_input:6a5e11fe-8adf-433d-a9da-f3809d60baf0\",\"content\":\"TURN:t-stop run it\",\"media\":null,\"ts\":1793516107.815}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793516107.853}",
+              "{\"kind\":\"tool_call\",\"invocationId\":\"call-t-stop-2-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxh6fwt_t-stop\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-q",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516125.964}",
+              "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T06:55:33.110Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793516134.061}"
+            ]
+          },
+          "t-archive": {
+            "runId": "native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223",
+            "notices": 0,
+            "userMessageAfterRestart": false,
+            "conversationTail": [
+              "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"9cfdcf34-9653-415d-895d-dafd4844cbef\",\"dedupeKey\":\"agent_run_input:9cfdcf34-9653-415d-895d-dafd4844cbef\",\"content\":\"TURN:t-archive run it\",\"media\":null,\"ts\":1793516108.155}",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793516108.209}",
+              "{\"kind\":\"tool_call\",\"invocationId\":\"call-t-archive-3-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxh6fwt_t-archive\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/r",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516125.937}"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "at": "50.23",
+      "step": "server stopped",
+      "value": {
+        "label": "X1",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793516150544
+        },
+        "ms": 6394
+      }
+    }
+  ],
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9"
+        },
+        "agentRunId": "probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3"
+        },
+        "agentRunId": "native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5"
+        },
+        "agentRunId": "native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223"
+        },
+        "agentRunId": "native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:55:25.788Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "acted": {
+    "stop": {
+      "success": false,
+      "message": "Agent run not found."
+    },
+    "stopMs": 20,
+    "archive": {
+      "success": true,
+      "message": "Run 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223' archived."
+    },
+    "archiveMs": 73,
+    "archiveDoneAtLogSec": "32.97",
+    "message": 205,
+    "messageAtLogSec": "33.10"
+  },
+  "lines": [
+    "[32.81] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7' of agent 'probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7'",
+    "[32.91] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7' of agent 'probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7'",
+    "[32.93] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6' of agent 'probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6'",
+    "[32.95] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d' of agent 'probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d'",
+    "[32.98] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba' of agent 'probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba'",
+    "[33.01] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9' of agent 'probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9'",
+    "[33.04] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876' of agent 'probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876'",
+    "[33.08] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858' of agent 'probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858'",
+    "[33.16] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4' of agent 'probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4'",
+    "[33.32] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9' of agent 'probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9'",
+    "[33.35] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1' of agent 'probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1'",
+    "[33.40] Restart resume resumed host run 'native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3' of agent 'native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3'",
+    "[33.40] Restart resume skipped host run 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223' of agent 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223': its root is archived",
+    "[33.62] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9' of agent 'probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9'",
+    "[33.66] Restart resume resumed host run 'native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5' of agent 'native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5'",
+    "[33.66] Restart resume after the update to 1.5.11-beta.9-rr285next: 14 resumed, 1 skipped, 0 failed"
+  ],
+  "after": {
+    "slow-1": {
+      "runId": "probe_agent_rr285mvxh6fwt_6a435be66a794540abe525c25dedf5f6",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-2": {
+      "runId": "probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-3": {
+      "runId": "probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-4": {
+      "runId": "probe_agent_rr285mvxh6fwt_16b53074aa8446b79314afc1d88d175d",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-5": {
+      "runId": "probe_agent_rr285mvxh6fwt_cb10f3e026ec4eac8bc5fe58b7ce9fba",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-6": {
+      "runId": "probe_agent_rr285mvxh6fwt_30258be6744144c1b79e8759bb8112d9",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-7": {
+      "runId": "probe_agent_rr285mvxh6fwt_5a5c1cc6ff1749cc8bceefd158c33876",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-8": {
+      "runId": "probe_agent_rr285mvxh6fwt_3d29ca44fd014b5fae24c6a68c6c3858",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-9": {
+      "runId": "probe_agent_rr285mvxh6fwt_78af83d7315b461fb42cb143190102f4",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-10": {
+      "runId": "probe_agent_rr285mvxh6fwt_5e5c532ae4d94325be012a3452c9f1d9",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-11": {
+      "runId": "probe_agent_rr285mvxh6fwt_d84a3d7c59654ad4baa6240c4eca7aa1",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "slow-12": {
+      "runId": "probe_agent_rr285mvxh6fwt_c30254c782fc48be977d7fbcb90a9ec9",
+      "notices": 1,
+      "userMessageAfterRestart": false
+    },
+    "t-message": {
+      "runId": "native_agent_rr285mvxh6fwt_d2b233f560bb4be9b6e72df087d6efc3",
+      "notices": 1,
+      "userMessageAfterRestart": true,
+      "conversationTail": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-t-message-1-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxh6fwt_t-message\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/r",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516125.951}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"c4452f34-1997-4b3c-975a-078e2d8eff9a\",\"dedupeKey\":\"agent_run_input:c4452f34-1997-4b3c-975a-078e2d8eff9a\",\"content\":\"User message after the restart.\",\"media\":null,\"ts\":1793516133.772}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516133.828}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T06:55:33.110Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793516133.903}"
+      ]
+    },
+    "t-stop": {
+      "runId": "native_agent_rr285mvxh6fwt_44a366860b2a4cdb8b36d32986707ed5",
+      "notices": 1,
+      "userMessageAfterRestart": false,
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"6a5e11fe-8adf-433d-a9da-f3809d60baf0\",\"dedupeKey\":\"agent_run_input:6a5e11fe-8adf-433d-a9da-f3809d60baf0\",\"content\":\"TURN:t-stop run it\",\"media\":null,\"ts\":1793516107.815}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793516107.853}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-t-stop-2-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxh6fwt_t-stop\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-q",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516125.964}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T06:55:33.110Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793516134.061}"
+      ]
+    },
+    "t-archive": {
+      "runId": "native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223",
+      "notices": 0,
+      "userMessageAfterRestart": false,
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"9cfdcf34-9653-415d-895d-dafd4844cbef\",\"dedupeKey\":\"agent_run_input:9cfdcf34-9653-415d-895d-dafd4844cbef\",\"content\":\"TURN:t-archive run it\",\"media\":null,\"ts\":1793516108.155}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793516108.209}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-t-archive-3-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxh6fwt_t-archive\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/r",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793516125.937}"
+      ]
+    }
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "stampRestored": true,
+  "modelCalls": 9,
+  "scriptedNotices": [
+    {
+      "at": 1793516133902,
+      "head": "The application restarted at 2026-11-01T06:55:33.110Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793516134058,
+      "head": "The application restarted at 2026-11-01T06:55:33.110Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    }
+  ],
+  "rootRemoved": true
+}

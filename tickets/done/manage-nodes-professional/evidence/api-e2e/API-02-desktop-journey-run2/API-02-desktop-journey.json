@@ -1,0 +1,389 @@
+{
+  "startedAt": "2026-11-02T09:21:23.610Z",
+  "result": "Fail",
+  "appVersion": "1.5.11-beta.10",
+  "servers": {
+    "plain": {
+      "baseUrl": "http://127.0.0.1:59017",
+      "nodeId": "srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+      "starter": false
+    },
+    "upd": {
+      "baseUrl": "http://127.0.0.1:59018",
+      "nodeId": "srv_A797WQs1QS7rkrQiNMOgSFzBcra1rM-F",
+      "starter": true
+    },
+    "refuse": {
+      "baseUrl": "http://127.0.0.1:59019",
+      "nodeId": "srv_hvsMsaSb2-hUfBf2MgAQ9xsvDknR-UT2",
+      "starter": true
+    },
+    "fail": {
+      "baseUrl": "http://127.0.0.1:59020",
+      "nodeId": "srv_-Z5jwF8SLjhuLI2ZTH-OhDVJcblAX46Q",
+      "starter": true
+    },
+    "running": {
+      "baseUrl": "http://127.0.0.1:59021",
+      "nodeId": "srv_i51r3UhSFY15SDXo5eAUkYBtMjCA2bqK",
+      "starter": true
+    },
+    "blocked": {
+      "baseUrl": "http://127.0.0.1:59022",
+      "nodeId": "srv_-Sc89Zupq51blLKf5AGiSDwb3ybkMA0Q",
+      "starter": true
+    },
+    "newer": {
+      "baseUrl": "http://127.0.0.1:59023",
+      "nodeId": "srv_y21fZftP9JARiXWgJxvZ35QNHtX28Vnx",
+      "starter": true
+    },
+    "lost": {
+      "baseUrl": "http://127.0.0.1:59024",
+      "nodeId": "srv_ZMQ_lhpHaoCIdSdC63FTPeFpOGKobN78",
+      "starter": true
+    }
+  },
+  "starterLog": [
+    {
+      "at": "2026-11-02T09:21:55.939Z",
+      "node": "lost",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T09:21:59.941Z",
+      "node": "lost",
+      "step": "server stopped for good"
+    },
+    {
+      "at": "2026-11-02T09:22:00.032Z",
+      "node": "upd",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T09:22:00.032Z",
+      "node": "upd",
+      "step": "checking"
+    },
+    {
+      "at": "2026-11-02T09:22:05.033Z",
+      "node": "upd",
+      "step": "downloading"
+    },
+    {
+      "at": "2026-11-02T09:22:10.034Z",
+      "node": "upd",
+      "step": "preparing"
+    },
+    {
+      "at": "2026-11-02T09:22:15.034Z",
+      "node": "upd",
+      "step": "restarting (server stopped)"
+    },
+    {
+      "at": "2026-11-02T09:22:24.856Z",
+      "node": "upd",
+      "step": "restarted with the new version; succeeded"
+    },
+    {
+      "at": "2026-11-02T09:22:26.455Z",
+      "node": "refuse",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T09:22:26.806Z",
+      "node": "fail",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T09:22:32.808Z",
+      "node": "fail",
+      "step": "failed"
+    },
+    {
+      "node": "upd",
+      "requests": 16
+    },
+    {
+      "node": "refuse",
+      "requests": 8
+    },
+    {
+      "node": "fail",
+      "requests": 11
+    },
+    {
+      "node": "running",
+      "requests": 7
+    },
+    {
+      "node": "blocked",
+      "requests": 6
+    },
+    {
+      "node": "newer",
+      "requests": 6
+    },
+    {
+      "node": "lost",
+      "requests": 5
+    }
+  ],
+  "instance": {
+    "instanceId": "iso-59147-0691",
+    "pid": 64181,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:59148",
+    "graphqlUrl": "http://127.0.0.1:59148/graphql",
+    "controlEndpoint": "http://127.0.0.1:59147",
+    "controlPort": 59147,
+    "serverPort": 59148,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-Hg6oPh/instance",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-Hg6oPh/instance/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59147-0691.log"
+  },
+  "cases": {
+    "EL-01": {
+      "result": "Pass",
+      "ms": 10177,
+      "failedExpectations": [],
+      "rowsCount": 9,
+      "openXs": [
+        1319
+      ],
+      "removeXs": [
+        1355
+      ],
+      "switchXs": [
+        1250
+      ]
+    },
+    "EL-02": {
+      "result": "Pass",
+      "ms": 74,
+      "failedExpectations": [],
+      "cells": {
+        "plain": {
+          "cell": "Server version unknown",
+          "notice": null
+        },
+        "upd": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        },
+        "refuse": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        },
+        "fail": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        },
+        "running": {
+          "cell": "Server 1.5.10 Downloading 1.5.11-beta.10…",
+          "notice": null
+        },
+        "blocked": {
+          "cell": "Server 1.5.10",
+          "notice": "This node has no volume for server packages, so it cannot update in place."
+        },
+        "newer": {
+          "cell": "Server 1.6.0 Newer than this app. Update this app.",
+          "notice": null
+        },
+        "lost": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        }
+      },
+      "ghostLine": "Not reachable. Nothing answers at that address and port. Check again"
+    },
+    "EL-06a": {
+      "result": "Pass",
+      "ms": 4089,
+      "failedExpectations": [],
+      "restartingAfterMs": 4067
+    },
+    "EL-03": {
+      "result": "Pass",
+      "ms": 26431,
+      "failedExpectations": [],
+      "seen": [
+        "Server 1.5.10 Starting the update… | null",
+        "Server 1.5.10 Checking the update to 1.5.11-beta.10… | null",
+        "Server 1.5.10 Downloading 1.5.11-beta.10… | null",
+        "Server 1.5.10 Preparing 1.5.11-beta.10… | null",
+        "Restarting… | null",
+        "Server 1.5.11-beta.10 | Updated to 1.5.11-beta.10."
+      ],
+      "steps": [
+        "starting",
+        "checking",
+        "downloading",
+        "preparing",
+        "restarting",
+        "succeeded"
+      ],
+      "final": {
+        "cell": "Server 1.5.11-beta.10",
+        "notice": "Updated to 1.5.11-beta.10.",
+        "noticeClass": "flex flex-wrap items-start justify-between gap-x-3 gap-y-2 rounded-lg border px-3 py-2 text-sm border-emerald-200 bg-emerald-50 text-emerald-900"
+      }
+    },
+    "EL-04": {
+      "result": "Fail",
+      "ms": 342,
+      "failedExpectations": [
+        "copy command: {\"title\":\"autobyteus-docker upgrade --all --tag 1.5.11-beta.10\",\"after\":\"Copy command\"}"
+      ],
+      "before": {
+        "notice": "The update to 1.5.11-beta.10 did not happen. This node runs an image that is too old for this update. Upgrade the image first. Copy command",
+        "copyTitle": "autobyteus-docker upgrade --all --tag 1.5.11-beta.10",
+        "cls": "flex flex-wrap items-start justify-between gap-x-3 gap-y-2 rounded-lg border px-3 py-2 text-sm border-amber-200 bg-amber-50 text-amber-900"
+      },
+      "after": "Copy command"
+    },
+    "EL-05": {
+      "result": "Pass",
+      "ms": 6155,
+      "failedExpectations": [],
+      "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+      "notice": "The update to 1.5.11-beta.10 did not happen. The download of the server package was interrupted."
+    },
+    "EL-07": {
+      "result": "Pass",
+      "ms": 868,
+      "failedExpectations": [],
+      "windowWidth": 1100,
+      "cardWidth": 713,
+      "switchXs": [
+        910
+      ],
+      "removeXs": [
+        1015
+      ],
+      "plainRow": {
+        "name": {
+          "x": 394,
+          "y": 405,
+          "w": 65
+        },
+        "server": {
+          "x": 400,
+          "y": 455,
+          "w": 647
+        },
+        "offer": {
+          "x": 394,
+          "y": 489,
+          "w": 83
+        },
+        "capsule": {
+          "x": 910,
+          "y": 408,
+          "w": 44
+        }
+      }
+    },
+    "EL-08": {
+      "result": "Pass",
+      "ms": 7098,
+      "failedExpectations": [],
+      "en": {
+        "overflow": {
+          "scroll": 390,
+          "client": 390,
+          "clipped": []
+        },
+        "fix": {
+          "textBottom": 3509,
+          "buttonTop": 3517
+        }
+      },
+      "zh-CN": {
+        "overflow": {
+          "scroll": 390,
+          "client": 390,
+          "clipped": []
+        },
+        "fix": {
+          "textBottom": 3357,
+          "buttonTop": 3365
+        }
+      }
+    },
+    "EL-09": {
+      "result": "Pass",
+      "ms": 143,
+      "failedExpectations": [],
+      "capsules": 9,
+      "expandedBefore": "false",
+      "expandedAfter": "true",
+      "live": {
+        "cell": "polite",
+        "notices": 16
+      },
+      "order": [
+        "add-node-name",
+        "add-node-collaborate",
+        "add-node-submit",
+        "node-name-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+        "node-offer-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME-toggle",
+        "node-agents-switch-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+        "node-open-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+        "node-remove-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+        "node-change-address-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+        "node-refresh-srv_2X3ISFfVi-abgTsfFLGXUlEvxtHV6pME",
+        "node-name-srv_A797WQs1QS7rkrQiNMOgSFzBcra1rM-F",
+        "node-agents-switch-srv_A797WQs1QS7rkrQiNMOgSFzBcra1rM-F",
+        "node-open-srv_A797WQs1QS7rkrQiNMOgSFzBcra1rM-F",
+        "node-remove-srv_A797WQs1QS7rkrQiNMOgSFzBcra1rM-F",
+        "node-fix-srv_A797WQs1QS7rkrQiNMOgSFzBcra1rM-F",
+        "node-name-srv_hvsMsaSb2-hUfBf2MgAQ9xsvDknR-UT2",
+        "node-server-update-srv_hvsMsaSb2-hUfBf2MgAQ9xsvDknR-UT2",
+        "node-agents-switch-srv_hvsMsaSb2-hUfBf2MgAQ9xsvDknR-UT2"
+      ]
+    },
+    "EL-10": {
+      "result": "Pass",
+      "ms": 301,
+      "failedExpectations": [],
+      "windowsBefore": 1,
+      "windowsAfter": 2
+    },
+    "EL-06": {
+      "result": "Fail",
+      "error": "Error: Timed out waiting for lost not reachable\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:51:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:394:5\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:58:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:391:3",
+      "failedExpectations": []
+    }
+  },
+  "errors": [],
+  "cleanup": {
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-59147-0691",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-Hg6oPh/instance",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-59147-0691.log"
+      }
+    },
+    "rootRemoved": true,
+    "mineStillListed": []
+  },
+  "error": "Error: Timed out waiting for lost not reachable\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:51:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:394:5\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:58:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:391:3",
+  "finishedAt": "2026-11-02T09:28:07.195Z"
+}

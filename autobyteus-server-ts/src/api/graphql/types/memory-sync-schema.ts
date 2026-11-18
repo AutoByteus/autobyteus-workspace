@@ -27,7 +27,7 @@ export class MemorySyncSourceConfigGql {
   enabled!: boolean;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -63,7 +63,7 @@ export class MemoryHubCredentialSummaryGql {
   label?: string | null;
 
   @Field(() => String, { nullable: true })
-  boundSourceNodeId?: string | null;
+  boundMemorySyncSourceId?: string | null;
 
   @Field(() => String)
   createdAt!: string;
@@ -81,7 +81,7 @@ export class MemoryHubCredentialSummaryGql {
 @ObjectType()
 export class MemoryImportSummaryGql {
   @Field(() => String)
-  sourceNodeId!: string;
+  memorySyncSourceId!: string;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -115,6 +115,30 @@ export class MemoryImportSummaryGql {
 }
 
 @ObjectType()
+export class MemorySyncFileFailureGql {
+  @Field(() => String)
+  kind!: string;
+
+  @Field(() => String)
+  relativePath!: string;
+
+  @Field(() => Float)
+  size!: number;
+
+  @Field(() => String)
+  reason!: string;
+
+  @Field(() => Int)
+  attempts!: number;
+
+  @Field(() => String)
+  lastFailedAt!: string;
+
+  @Field(() => String)
+  nextAttemptAt!: string;
+}
+
+@ObjectType()
 export class MemorySyncSourceStateGql {
   @Field(() => String)
   jobState!: string;
@@ -127,6 +151,13 @@ export class MemorySyncSourceStateGql {
 
   @Field(() => Int)
   trackedFileCount!: number;
+
+  @Field(() => Int)
+  fileFailureCount!: number;
+
+  /** The 20 most recent file failures. */
+  @Field(() => [MemorySyncFileFailureGql])
+  fileFailures!: MemorySyncFileFailureGql[];
 }
 
 @ObjectType()
@@ -219,6 +250,9 @@ export class MemorySyncRunResultGql {
   deferredFiles!: number;
 
   @Field(() => Int)
+  failedFiles!: number;
+
+  @Field(() => Int)
   committedBatches!: number;
 
   @Field(() => Int)
@@ -234,7 +268,7 @@ export class MemoryHubConnectionTestResultGql {
   hubEnabled!: boolean;
 
   @Field(() => String)
-  sourceNodeId!: string;
+  memorySyncSourceId!: string;
 
   @Field(() => Boolean)
   authenticated!: boolean;
@@ -258,7 +292,7 @@ export class UpdateMemorySyncSourceConfigInput {
   enabled?: boolean | null;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -285,7 +319,7 @@ export class CreateMemoryHubCredentialInput {
   label?: string | null;
 
   @Field(() => String, { nullable: true })
-  boundSourceNodeId?: string | null;
+  boundMemorySyncSourceId?: string | null;
 }
 
 @InputType()
@@ -300,5 +334,5 @@ export class TestMemoryHubConnectionInput {
   token?: string | null;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 }

@@ -1,0 +1,14 @@
+# DR-002 delivery smoke on HEAD cea80ab972 (tree outside tickets/ = merge 3d209177ec; base origin/personal 8c31e530d6); Tue Oct 27 10:07:57 CET 2026
+# cmd: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory --no-watch
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 16645ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 579ms
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 280ms
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 127ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 126ms
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts (2 tests) 82ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (1 test) 90ms
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts (3 tests | 3 skipped)
+ Test Files  7 passed | 1 skipped (8)
+      Tests  20 passed | 3 skipped (23)
+   Duration  31.18s (transform 4.29s, setup 104ms, import 12.20s, tests 17.93s, environment 0ms)
+exit=0

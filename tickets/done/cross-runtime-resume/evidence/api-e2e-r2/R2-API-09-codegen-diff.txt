@@ -1,0 +1,3 @@
+# R2-API-09 codegen against the BUILT server of this worktree (dist at 25c1acb705), after the committed regeneration of round 1 (ba0f2104d6). command: BACKEND_GRAPHQL_BASE_URL=http://127.0.0.1:<port>/graphql NUXT_PUBLIC_GRAPHQL_BASE_URL= pnpm -C autobyteus-web codegen; date 2026-10-31T10:36:10Z
+# result: the diff to the committed file follows (empty below this line = none)
+

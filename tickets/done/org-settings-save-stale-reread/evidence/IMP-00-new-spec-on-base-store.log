@@ -1,0 +1,13 @@
+# IMP-00 new regression spec run against the BASE readRunConfig (fix stashed; spec from 29b51ebcef)
+# cmd: git stash push autobyteus-web/stores/agentOrgContextsStore.ts; NUXT_TEST=true pnpm -C autobyteus-web exec vitest run stores/__tests__/agentOrgRunConfigRead.spec.ts --run; git stash pop
+# base store: 1138e8fbef  env: macOS (darwin)  date: 2026-10-24 (output excerpt, test-result lines)
+# Purpose: show which cases discriminate the fix (fail on base) and which guard preserved behavior (pass on base).
+
+   × ... > reads again and resolves when the live Org stream republishes its view mid-read 12ms
+   × ... > reads again when a stopped Org view is replaced during metadata preparation, then applies the settings 1005ms
+   ✓ ... > refuses the read when the target changes mid-read (released) 2ms
+   ✓ ... > refuses the read when the target changes mid-read (binding) 1ms
+   ✓ ... > refuses the read when the target changes mid-read (operation) 1ms
+   × ... > refuses the read when the target changes mid-read (inspection) 5ms
+   × ... > gives up with the stale error after 3 reads when the view keeps being republished 2ms
+      Tests  4 failed | 3 passed (7)

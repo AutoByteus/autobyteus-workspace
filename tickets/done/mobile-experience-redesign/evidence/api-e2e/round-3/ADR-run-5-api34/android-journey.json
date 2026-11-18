@@ -1,0 +1,566 @@
+{
+  "startedAt": "2026-11-06T15:42:35.431Z",
+  "device": {
+    "model": "sdk_gphone64_arm64",
+    "sdk": "34",
+    "webview": "com.google.android.webview, 113.0.5672.136"
+  },
+  "cases": {
+    "ADR-01": {
+      "result": "Pass",
+      "rows": 15,
+      "firstRowsAfterPairMs": 649,
+      "layout": {
+        "width": 412,
+        "height": 842,
+        "dpr": 2.625,
+        "horizontalScroll": false,
+        "secure": false,
+        "randomUUID": "undefined"
+      }
+    },
+    "ADR-07": {
+      "result": "Pass",
+      "sdk": "34",
+      "closed": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 128,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 0,
+          "bottom": 0,
+          "visible": false
+        },
+        "webView": {
+          "top": 128,
+          "bottom": 2337
+        }
+      },
+      "open": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 128,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 1517,
+          "bottom": 2400,
+          "visible": true
+        },
+        "webView": {
+          "top": 128,
+          "bottom": 1517
+        }
+      },
+      "composer": {
+        "textareaBottom": 506.66668701171875,
+        "sendBottom": 505.5238037109375,
+        "innerHeight": 530,
+        "dpr": 2.625,
+        "safeBottom": null,
+        "focused": true,
+        "value": "typing with the keyboard"
+      },
+      "sendBottomPx": 1455,
+      "gapToKeyboard": 62,
+      "controlGapToKeyboard": 62,
+      "layout": {
+        "innerHeight": 530,
+        "visualViewport": {
+          "height": 530,
+          "offsetTop": 0
+        },
+        "scrollY": 0,
+        "conversationScrollTop": 0,
+        "screen": {
+          "tag": "SECTION",
+          "testid": "mobile-run-screen",
+          "cls": "fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900",
+          "top": 0,
+          "bottom": 530,
+          "h": 530,
+          "pb": "0px",
+          "mb": "0px"
+        },
+        "screenChildren": [
+          {
+            "tag": "HEADER",
+            "testid": null,
+            "cls": "relative flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-1 pr-1",
+            "top": 0,
+            "bottom": 56,
+            "h": 56,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": "mobile-run-conversation",
+            "cls": "flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 !ove",
+            "top": 56,
+            "bottom": 530,
+            "h": 474,
+            "pb": "16px",
+            "mb": "0px"
+          }
+        ],
+        "conversationChildren": [
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "relative h-full min-h-0 min-h-0 flex-1",
+            "top": 72,
+            "bottom": 381,
+            "h": 309,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "shrink-0",
+            "top": 393,
+            "bottom": 514,
+            "h": 121,
+            "pb": "0px",
+            "mb": "0px"
+          }
+        ],
+        "chain": [
+          {
+            "tag": "TEXTAREA",
+            "testid": null,
+            "cls": "composer-text relative w-full border-0 focus:ring-0 focus:outline-none resize-none bg-tran",
+            "top": 439,
+            "bottom": 507,
+            "h": 68,
+            "pb": "10px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "relative flex-grow",
+            "top": 439,
+            "bottom": 514,
+            "h": 75,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "flex flex-col bg-white",
+            "top": 439,
+            "bottom": 514,
+            "h": 75,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "border-t border-gray-100 rounded-b-xl",
+            "top": 438,
+            "bottom": 514,
+            "h": 76,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "rounded-xl border border-gray-200 bg-white shadow-sm focus-within:ring-2 focus-within:ring",
+            "top": 393,
+            "bottom": 514,
+            "h": 121,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "shrink-0",
+            "top": 393,
+            "bottom": 514,
+            "h": 121,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": "mobile-run-conversation",
+            "cls": "flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 !ove",
+            "top": 56,
+            "bottom": 530,
+            "h": 474,
+            "pb": "16px",
+            "mb": "0px"
+          },
+          {
+            "tag": "SECTION",
+            "testid": "mobile-run-screen",
+            "cls": "fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900",
+            "top": 0,
+            "bottom": 530,
+            "h": 530,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "MAIN",
+            "testid": "mobile-remote-access-shell",
+            "cls": "min-h-screen bg-white text-slate-900",
+            "top": 0,
+            "bottom": 530,
+            "h": 530,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "",
+            "top": 0,
+            "bottom": 530,
+            "h": 530,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "",
+            "top": 0,
+            "bottom": 530,
+            "h": 530,
+            "pb": "0px",
+            "mb": "0px"
+          }
+        ],
+        "keyboardInset": null,
+        "virtualKeyboard": null
+      },
+      "noDoublePadding": true,
+      "composerAboveKeyboard": true
+    },
+    "ADR-08": {
+      "result": "Pass",
+      "filesBars": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 128,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 1517,
+          "bottom": 2400,
+          "visible": true
+        },
+        "webView": {
+          "top": 128,
+          "bottom": 1517
+        }
+      },
+      "search": {
+        "top": 4,
+        "bottom": 44,
+        "innerHeight": 530,
+        "scrollY": 0,
+        "focused": true,
+        "value": "app"
+      },
+      "searchResult": {
+        "top": 48,
+        "bottom": 104
+      },
+      "filesBar": {
+        "top": 0,
+        "bottom": 48,
+        "innerHeight": 530,
+        "scrollY": 0,
+        "focused": false,
+        "value": null
+      },
+      "sheetBars": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 128,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 1517,
+          "bottom": 2400,
+          "visible": true
+        },
+        "webView": {
+          "top": 128,
+          "bottom": 1517
+        }
+      },
+      "pathInput": {
+        "top": 470,
+        "bottom": 518,
+        "innerHeight": 530,
+        "scrollY": 0,
+        "focused": true,
+        "value": "/tmp/c16"
+      },
+      "sheetHeader": {
+        "top": 274,
+        "bottom": 330
+      }
+    }
+  },
+  "network": [
+    {
+      "at": 1793979766429,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793979766442,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766443,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766444,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766451,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766461,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766480,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766493,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766495,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766496,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766514,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766527,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766527,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766528,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766536,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766569,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766569,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766569,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766605,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766605,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766605,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766637,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766637,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766637,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766672,
+      "op": "GetTeamRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766696,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766696,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766735,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766740,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979766740,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979781165,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793979781168,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979783867,
+      "op": "GetFolderChildren",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979783900,
+      "op": "GetFolderChildren",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979786793,
+      "op": "SearchFiles",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979792078,
+      "op": "SearchFiles",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979794149,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793979794149,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979795909,
+      "op": "GetRuntimeAvailabilityKinds",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979795917,
+      "op": "GetRuntimeAvailability",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979795917,
+      "op": "GetProviderModelCatalogSnapshots",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979796360,
+      "op": "GetRuntimeAvailability",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979796360,
+      "op": "GetRuntimeAvailability",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979796364,
+      "op": "GetRuntimeAvailability",
+      "window": "omitted"
+    },
+    {
+      "at": 1793979796364,
+      "op": "GetRuntimeAvailability",
+      "window": "omitted"
+    }
+  ],
+  "notes": [],
+  "finishedAt": "2026-11-06T15:43:24.914Z"
+}

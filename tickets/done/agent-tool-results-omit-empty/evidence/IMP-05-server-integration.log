@@ -1,0 +1,8 @@
+IMP-05 server integration suite
+Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+Commit: 17d631c704
+Environment: macOS arm64, node v22.23.1, pnpm
+Date: 2026-10-25
+---
+ Test Files  79 passed | 20 skipped (99)
+      Tests  428 passed | 69 skipped (497)

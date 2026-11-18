@@ -1,0 +1,137 @@
+{
+  "rtree1": {
+    "result": "Fail",
+    "cases": {
+      "RTP-01": "Pass",
+      "RTP-02": "Pass",
+      "RTP-03": "Pass",
+      "RTP-04": "Pass",
+      "RTP-05": "Pass",
+      "RTP-09": "Pass",
+      "RTP-06": "Pass",
+      "RTP-08": "Pass",
+      "RTP-07": "Pass"
+    },
+    "RTP-09": {
+      "result": "Pass",
+      "windowMs": 180002,
+      "observationsOpened": 0,
+      "observationsBeforeWindow": 6,
+      "statusChanges": 0,
+      "lastStatuses": {
+        "publisher_a021ee093bb44b4fb6b90b358ce08ae6": "idle",
+        "checker_15fc3d699060463f8861371504d1747c": "offline"
+      },
+      "connectionsByPath": []
+    },
+    "RTP-08": {
+      "result": "Pass",
+      "before": {
+        "publisher_67fd46be80924c188a0195a682edfa32": "offline"
+      },
+      "offlineAtEnd": true,
+      "liveAgain": true,
+      "changesAfterRetry": [
+        "initializing",
+        "running",
+        "idle"
+      ]
+    },
+    "proxyConnections": {
+      "total": 226,
+      "observations": 54
+    },
+    "browserErrors": [
+      "console: Failed to open team: Error: Team context 'remote_squad_4bfcd397545d4239bd0e07085d86f562' became mounted while it was loading.\n    at openTeamRun (http://127.0.0.1:64826/_nuxt/services/runOpen/teamRunOpenCoordinator.ts:35:11)\n    at async openTeamMemberRunFromHistory (http://127.0.0.1:64826/_nuxt/stores/runHistorySelectionActions.ts:39:12)\n    at async Proxy.openTeamMemberRun (http://127.0.0.1:64826/_nuxt/stores/runHistoryStore.ts:427:22)\n    at async openTeam (http://127.0.0.1:64826/_nuxt/composables/useWorkspaceHistorySelectionActions.ts:56:22)"
+    ]
+  },
+  "rtree2": {
+    "result": "Pass",
+    "cases": {
+      "RTP-01": "Pass",
+      "RTP-02": "Pass",
+      "RTP-03": "Pass",
+      "RTP-04": "Pass",
+      "RTP-05": "Pass",
+      "RTP-09": "Pass",
+      "RTP-06": "Pass",
+      "RTP-08": "Pass",
+      "RTP-07": "Pass"
+    },
+    "RTP-09": {
+      "result": "Pass",
+      "windowMs": 180002,
+      "observationsOpened": 0,
+      "observationsBeforeWindow": 6,
+      "statusChanges": 0,
+      "lastStatuses": {
+        "publisher_130f04111b8d4db4b7a0c15cc888ee6d": "idle",
+        "checker_917fa3058fa349fd8cd443abdb173b40": "offline"
+      },
+      "connectionsByPath": []
+    },
+    "RTP-08": {
+      "result": "Pass",
+      "before": {
+        "publisher_4958752cdaa54e3a8b9063fea6c1e1e9": "offline"
+      },
+      "offlineAtEnd": true,
+      "liveAgain": true,
+      "changesAfterRetry": [
+        "initializing",
+        "running",
+        "idle"
+      ]
+    },
+    "proxyConnections": {
+      "total": 208,
+      "observations": 47
+    },
+    "browserErrors": []
+  },
+  "mobile": {
+    "cases": {
+      "MSP-13": "Pass",
+      "MSP-21": "Pass",
+      "MSP-22": "Pass",
+      "MSP-25": "Pass",
+      "MSP-32": "Pass"
+    },
+    "MSP-25": null,
+    "MSP-32": null
+  },
+  "br": [
+    {
+      "BR-008": "Pass",
+      "BR-009": "Pass",
+      "BR-010": "Pass",
+      "BR-011": "Pass"
+    },
+    {
+      "BR-008": "Pass",
+      "BR-009": "Pass",
+      "BR-010": "Pass",
+      "BR-011": "Pass"
+    },
+    {
+      "BR-008": "Pass",
+      "BR-009": "Pass",
+      "BR-010": "Pass",
+      "BR-011": "Pass"
+    }
+  ],
+  "afs": [
+    {
+      "result": "Pass",
+      "settingsClosedBy": null
+    },
+    {
+      "result": "Pass",
+      "settingsClosedBy": null
+    },
+    {
+      "result": "Pass",
+      "settingsClosedBy": null
+    }
+  ]
+}

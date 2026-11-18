@@ -37,7 +37,7 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - `POST /rest/applications/:applicationId/backend/ensure-ready`
   - ensures storage + worker startup and returns the resulting engine status.
 - `POST /rest/applications/:applicationId/backend/reload`
-  - asks the application-availability owner to reload and re-enter one repaired application. During the `REENTERING` window, concurrent backend admission stays blocked with retryable availability detail; a successful reload returns the app to `ACTIVE` with the worker still stopped, and only a later `ensure-ready` boots a fresh worker.
+  - asks the application-availability owner to reload and re-enter one repaired application. During the `REENTERING` window, concurrent backend admission stays blocked with retryable availability detail; a successful reload returns the app to `ACTIVE` with the worker still stopped (a crashed worker is reset to `stopped`), and the next `ensure-ready`, application tool call or pending event boots a fresh worker (see [Application Orchestration](application_orchestration.md)).
 - `POST /rest/applications/:applicationId/backend/queries/:queryName`
 - `POST /rest/applications/:applicationId/backend/commands/:commandName`
 - `POST /rest/applications/:applicationId/backend/graphql`

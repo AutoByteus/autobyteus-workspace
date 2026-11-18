@@ -1,0 +1,5 @@
+Pair this phone again
+The node rejected the current mobile credential.&#10;&#10;Remove the node in this app, show a new QR code on your computer, and scan it again.
+RETRY
+EDIT
+BROWSER

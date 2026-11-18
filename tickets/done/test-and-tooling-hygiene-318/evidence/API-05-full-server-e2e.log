@@ -1,0 +1,11 @@
+# API-05 env -i PATH HOME=<resolved temp> TMPDIR pnpm test:e2e (fresh clone root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318-clone.94OVpE6TRY/repo, server built and integration-prepared in API-02), no RUN_* gates
+# commit 7c04283722, 2026-11-01T13:56:51Z; waited 270 s for load; load at start: { 24.52 67.74 54.66 }
+      Tests  480 passed | 545 skipped (1025)
+ Test Files  113 passed | 110 skipped (223)
+ ✓ tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts (5 tests) 163ms
+real	13m9.572s
+stdout | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts
+stdout | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts > native Gemini catalog pricing through the server cost path
+stdout | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts > native Gemini catalog pricing through the server cost path > 'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+exit: 0
+load at end: { 6.73 28.73 45.88 }

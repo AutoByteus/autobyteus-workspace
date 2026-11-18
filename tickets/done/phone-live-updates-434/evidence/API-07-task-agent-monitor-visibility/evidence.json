@@ -1,0 +1,150 @@
+{
+  "startedAt": "2026-11-08T09:51:38.453Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/autobyteus-web/tests/e2e/fixtures/task-agent-monitor-visibility.page.vue",
+  "scenarios": {
+    "API-E2E-TMV-001": {
+      "result": "Pass",
+      "description": "Mounted exact task selection hydrates retained conversation and Activity before focus commit",
+      "startedAt": "2026-11-08T09:51:51.779Z",
+      "details": {
+        "loadingState": {
+          "phase": "awaiting_connected_root",
+          "focusedAgentRunId": "task-monitor-teacher-run",
+          "focusedMemberAddress": "/Teacher",
+          "taskVisible": true,
+          "taskStatus": "idle",
+          "taskAuthoritative": false,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 0,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 0,
+          "teacherActivityCount": 0,
+          "taskAttempt": {
+            "state": "loading",
+            "detail": null
+          },
+          "teacherAttempt": null
+        },
+        "finalState": {
+          "phase": "awaiting_connected_root",
+          "focusedAgentRunId": "task-monitor-task-agent-run",
+          "focusedMemberAddress": "/Student",
+          "taskVisible": true,
+          "taskStatus": "idle",
+          "taskAuthoritative": true,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": null,
+          "teacherAttempt": null
+        },
+        "taskRequest": {
+          "operationName": "GetTeamMemberRunProjection",
+          "teamRunId": "task-monitor-root-run",
+          "agentRunId": "task-monitor-task-agent-run",
+          "requestedAt": "2026-11-08T09:51:51.810Z"
+        },
+        "taskAriaLabel": "Student, Started by Teacher, /Student"
+      }
+    },
+    "API-E2E-TMV-002": {
+      "result": "Pass",
+      "description": "Snapshot invalidation reconciles the focused delegated Agent; idle shutdown keeps it visible and offline",
+      "startedAt": "2026-11-08T09:51:52.400Z",
+      "details": {
+        "snapshotLoading": {
+          "phase": "ready",
+          "focusedAgentRunId": "task-monitor-task-agent-run",
+          "focusedMemberAddress": "/Student",
+          "taskVisible": true,
+          "taskStatus": "idle",
+          "taskAuthoritative": false,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": {
+            "state": "loading",
+            "detail": null
+          },
+          "teacherAttempt": null
+        },
+        "shutdownState": {
+          "phase": "ready",
+          "focusedAgentRunId": "task-monitor-task-agent-run",
+          "focusedMemberAddress": "/Student",
+          "taskVisible": true,
+          "taskStatus": "offline",
+          "taskAuthoritative": true,
+          "teacherAuthoritative": false,
+          "taskConversationCount": 2,
+          "teacherConversationCount": 0,
+          "taskActivityCount": 1,
+          "teacherActivityCount": 0,
+          "taskAttempt": null,
+          "teacherAttempt": null
+        },
+        "taskProjectionRequests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "task-monitor-root-run",
+            "agentRunId": "task-monitor-task-agent-run",
+            "requestedAt": "2026-11-08T09:51:51.810Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "task-monitor-root-run",
+            "agentRunId": "task-monitor-task-agent-run",
+            "requestedAt": "2026-11-08T09:51:52.406Z"
+          }
+        ]
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "task-monitor-root-run",
+      "agentRunId": "task-monitor-task-agent-run",
+      "requestedAt": "2026-11-08T09:51:51.810Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "task-monitor-root-run",
+      "agentRunId": "task-monitor-task-agent-run",
+      "requestedAt": "2026-11-08T09:51:52.406Z"
+    }
+  ],
+  "browserEvents": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 4509,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "port": 64617,
+  "baseUrl": "http://127.0.0.1:64617",
+  "result": "Pass",
+  "finishedAt": "2026-11-08T09:52:03.940Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-07-task-agent-monitor-visibility/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-07-task-agent-monitor-visibility/nuxt.log",
+    "taskScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-07-task-agent-monitor-visibility/task-selected.png",
+    "shutdownScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-07-task-agent-monitor-visibility/idle-shutdown-offline.png"
+  }
+}

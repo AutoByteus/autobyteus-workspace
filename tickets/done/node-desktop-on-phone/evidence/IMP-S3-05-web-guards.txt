@@ -1,0 +1,7 @@
+== guard:web-boundary
+[guard:web-boundary] Passed.
+== guard:localization-boundary
+[guard:localization-boundary] Passed.
+== audit:localization-literals
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-on-phone/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)

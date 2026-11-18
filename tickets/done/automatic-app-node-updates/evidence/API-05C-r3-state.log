@@ -1,0 +1,19 @@
+# API-05C-r3 after the refusal 2026-11-02T07:31:12Z
+{
+  "aria": "true",
+  "download": false,
+  "status": "error",
+  "availableVersion": "1.5.11-beta.11",
+  "automaticUpdate": true,
+  "currentVersion": "1.5.11-beta.10",
+  "message": "AutoByteus could not prepare this update for installing. It keeps running on this version.",
+  "errorOperation": "install",
+  "outcome": "AUTO_FAILED",
+  "outcomeReason": "The system updater could not prepare this update."
+}
+{
+  "entryText": "1 update",
+  "entryLabel": "1 update available: 1 software update",
+  "autoFailed": "Automatic update failed. Nothing was changed. | The system updater could not prepare this update. | It won’t be tried again automatically. You can still install it yourself.",
+  "centerText": "Notifications | Software update | Update automatically | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | New: | AutoByteus | 1.5.11-beta.10 | 1.5.11-beta.11 | · | 2 min. ago | Download | Automatic update failed. Nothing was changed. | The system updater could not prepare this update. | It won’t be tried again automatically. You can still install it yourself."
+}

@@ -6,6 +6,15 @@ Future / Phase Two. Split from Phase One Android/Phone Access pairing over trust
 
 Phase One focuses on pairing Android/phone clients with the intended AutoByteus node over a trusted private-network URL, preferring HTTPS and allowing acknowledged trusted private HTTP for LAN/tailnet use, while keeping desktop management access on the trusted private-network product model.
 
+**Done since autobyteus-437 (node access model slice 1, `autobyteus-server-ts/docs/design/node_access_model.md`):**
+every request to a node needs a credential; owner actions (settings, pairing, devices, node update, owner
+credentials, the MCP gateway token) refuse phone credentials; a phone credential opens only the phone WebSocket
+routes, so the terminal WebSocket refuses it (UC-P2-006, R-P2-AUTH-007); a revoked phone, or Phone Access turned off,
+is refused on every REST, GraphQL and WebSocket route and its open sockets close at once (UC-P2-008); the central
+authorization owner is the node access gate (R-P2-AUTH-001, for the client kind). What remains below is what a phone
+may do **inside** the endpoints it reaches (capabilities, files, `createWorkspace`, settings), token lifetime and
+rotation, and native secure storage: slice 2 (with autobyteus-436).
+
 Phase Two must harden what a mobile session can do **after** pairing. Runtime isolation can reduce blast radius, but it does not replace backend authorization, token/session safety, or credential custody.
 
 ## Phase Two Goal
@@ -29,10 +38,10 @@ A stolen mobile credential/session must not be enough to:
 Token/session hardening touches many surfaces:
 
 - `autobyteus-server-ts/src/remote-access/domain/models.ts`
-- `remote-access/services/remote-access-auth-service.ts`
+- `remote-access/services/phone-credential-verifier.ts`
 - `remote-access/services/paired-device-service.ts`
 - remote-access stores
-- `api/security/remote-access-route-policy.ts`
+- `api/security/node-route-permissions.ts` and `node-access-gate.ts`
 - GraphQL schema/resolver authorization
 - REST route authorization
 - WebSocket auth

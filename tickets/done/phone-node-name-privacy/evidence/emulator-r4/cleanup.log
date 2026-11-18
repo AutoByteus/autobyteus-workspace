@@ -1,0 +1,24 @@
+# round 4 cleanup 2026-11-08T10:52:29Z
+proxy stopped
+A stopped (listener on 47331: none; health 000)
+B stopped (listener on 47332: none; health 000)
+container pnnp433-node removed
+volume pnnp433-workspace removed
+volume pnnp433-data removed
+volume pnnp433-roothome removed
+volume pnnp433-chromium removed
+volume pnnp433-packages removed
+adb forwards removed
+Success
+OK: killing emulator, bye bye
+OK
+dns responder stopped
+AVD 'pnnp433_api35' deleted.
+clone, server package, node data removed
+listeners 47331-47333: 0
+udp 53: 0
+pnnp433 containers/volumes: 0/0
+autobyteus-server-2 Up 43 hours
+autobyteus-server-1 Up 43 hours
+autobyteus-server-0 Up 43 hours
+my emulator processes after exit: 0; emulator-5584 (another agent's) never addressed

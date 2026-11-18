@@ -88,7 +88,7 @@ model discovery. Secret values are never returned.
 The snapshot query initializes static SDK registries without network access and
 projects their current rows. It does not ensure or reload a dynamic source;
 cold discovered sources appear as `IDLE` with empty rows. Dynamic source status
-is capability-specific and exposes `modelKind`, `state`, model/success/failure
+is capability-specific and exposes `state`, model/success/failure
 counts, and a nullable safe message. Model rows remain owned by the SDK
 registries; `ModelCatalogService` maintains no duplicate aggregate row cache.
 
@@ -184,14 +184,46 @@ endpoint URL and does not perform alias, suffix, family, or fuzzy matching.
 `llmModelIdentifier` + `llmConfig` selections. It resolves the selected exact
 identifier through `ModelCatalogService` using the saved runtime and workspace.
 The extracted `model-config-schema-validation.ts` retains the schema algorithm:
-it normalizes either supported catalog schema representation and validates only
-submitted current-schema keys. It
-returns distinct model-unavailable, schema-unavailable, and field-validation
-results; it does not guess a replacement model, silently drop an unsupported
-key, or write a rendered default merely because the UI displayed it.
+it normalizes either supported catalog schema representation and validates the
+submitted keys the current schema declares. Top-level keys the schema does not
+declare are left out of the canonical config (`validation.selection`) instead of
+producing an error, and a model without a schema canonicalizes any config to
+`null`; when leaving keys out empties a config, the canonical config is `null`
+(a submitted `{}` stays `{}`). It returns distinct results for a model the
+runtime does not offer now (`model_unavailable`), a model list that could not be
+read (`model_list_unavailable`, with the runtime's own diagnostic where it has
+one), an unreadable schema (`schema_unavailable`), and field validation; it does
+not guess a replacement model or write a rendered default merely because the UI
+displayed it. `run-model-selection-refusal.ts` is the one owner of the refusal
+wording and outcomes (`MODEL_UNAVAILABLE`, `MODEL_LIST_UNAVAILABLE`,
+`SCHEMA_UNAVAILABLE`): every Save and launch refusal site takes its text from it. A
+refused Save names the model and scope, says nothing was saved, and says to refresh
+the model list and choose again; an unreadable list says so and suggests trying
+again. A launch-source fallback for an unreadable list keeps the stored reason
+`model_unavailable` and carries the distinction in its `detail`.
 
-Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI, and
-Grok Build requires fresh membership in that runtime/workspace **offered** catalog and
+Every caller of `validate`/`validateMany` stores or launches only the canonical
+selection it gets back, never its raw input: stopped-run saves (agent, team,
+AgentOrg), delegated-copy selections, the Model Router launch setting, AgentOrg
+launch (the execution tree is built from each placement's canonical config), and
+`LaunchUsabilityCheck` (a usable candidate or inherited launch carries the
+canonical selection). So no validated save, edit or launch carries a setting the
+selected model does not declare. Resuming a saved run does not go through this
+check; there `LLMFactory` cuts the stored config to the model's declared settings
+when the LLM is created (AutoByteus) and the Claude session reads only
+`reasoning_effort`. A new standalone agent or team run stores and launches only
+declared settings: `projectNewRunLlmConfig`
+(`src/llm-management/services/new-run-llm-config-projection.ts`), called by
+`AgentRunProvisioningService` and `TeamRunService.createTeamRun`, keeps for the
+AutoByteus agent runtime the keys the selected model's schema declares (via
+`LLMFactory.canonicalRunLlmConfig`) and for an external agent runtime the keys its
+backend reads (`CLAUDE_SESSION_SETTING_KEYS`, `CODEX_SESSION_SETTING_KEYS`,
+`ACP_SESSION_SETTING_KEYS`; Antigravity CLI reads none). It reads no runtime
+catalog, so a launch costs no model-list read. Undeclared keys are dropped silently
+and a config with nothing declared stores `null`.
+
+Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI,
+Grok Build and DeepSeek Harness requires fresh membership in that runtime/workspace **offered** catalog and
 target-schema validation, not a platform context-capacity comparison. AutoByteus replacement
 continues to require verified positive saved and target context capacities with
 target >= saved capacity; the focused native evidence resolver accepts only
@@ -199,7 +231,11 @@ live or static-definition provenance and a valid active context no greater than
 the evidenced maximum. Same-model settings bypass native capacity lookup but
 still require ordinary catalog/schema validation.
 
-`ModelCatalogService.runtimeModelSelectionCatalog` separates offered rows for
+`ModelCatalogService.runtimeModelSelectionCatalog` owns the rule that an external
+agent runtime always offers a model: an empty list is a failed read, so it throws
+`ModelListUnavailableError` (the available-agent-runtimes read, the GraphQL
+catalog and descriptor queries, and validation all see the failure instead of
+"no models"). It separates offered rows for
 new selections from `findExactCurrent(id)` over the same raw runtime snapshot.
 An unchanged saved ID, including a Claude `default` omitted from offered rows,
 must resolve exactly and pass its own schema; a changed ID must be in offered
@@ -216,21 +252,49 @@ a Save-time reset or silent new conversation.
 
 Standalone and Team updates share this boundary. Every intended Team patch
 validates against its own original saved selection before any tree write. Only
-normalized pairs reach persistence; runtime kind remains fixed. No legacy
+normalized selections reach persistence; another agent runtime is validated as a fresh selection of it (`selectionContextFor`), the
+same one against its original saved selection. No legacy
 settings-only command adapter is retained. Metadata feasibility alone is not
 proof of actual same-conversation inference for every provider/model/version.
 
 Runtime application remains bootstrap/session owned. AutoByteus receives the
-persisted config during LLM creation, Codex maps `reasoning_effort` and
-`service_tier` into thread configuration, and Claude maps supported
-`thinking_enabled` and `reasoning_effort` values into SDK `thinking` and
-`effort` query options while retaining the same Claude session UUID. Catalog
-capabilities expose Claude thinking and effort fields only when the installed
-SDK model descriptor supports them. Editing never hot-mutates an already-live
+persisted config during LLM creation (only the settings the model declares
+reach the provider), Codex maps `reasoning_effort` and
+`service_tier` into thread configuration, and Claude maps `reasoning_effort` into
+the SDK `effort` query option while retaining the same Claude session UUID. The
+Claude Agent SDK runtime sends no `thinking` option: the Claude CLI keeps
+thinking with `thinking: disabled` on every current model, so Off would have no
+effect. Its catalog schema offers effort only, at the levels the SDK reports for
+the model and with no default (an unchosen effort sends nothing and reads
+"Default"), only when the installed SDK model descriptor supports effort. Editing never hot-mutates an already-live
 backend; an eligible later restore consumes the saved model/settings pair in
 the same provider conversation. Save does not rewrite history or compacted
 state. Ordinary later compaction retains its runtime-owned algorithm, but model
 budgets and future timing can differ.
+
+### Refreshing The Offered Models
+
+The server reads each runtime's model list fresh on every catalog request, so a
+model a runtime starts offering while the app runs (a Claude Code update, a new
+Ollama or custom-endpoint model) is listed by the next read; nothing is cached
+for the app's lifetime on the server. The web client re-reads a runtime's list
+when a model picker opens and on the picker's **Refresh models** action (on the
+AutoByteus agent runtime this also re-discovers the discovered providers: Ollama,
+LM Studio and custom endpoints). The list already shown stays usable while the
+read runs and is kept when it fails (the picker shows the error with Retry).
+Built-in AutoByteus provider rows are curated catalog entries: a newly released
+provider model there arrives with an AutoByteus update. A saved run's model menus
+re-read that run's options (`runModelOptions` and the delegated-copy options) the
+same way. Every options answer (agent, Team scope, Org scope, delegated copy) carries
+`modelListReadable`: it is `false` only when the runtime's model list could not be read
+(`ModelListUnavailableError` or any catalog read error, classified once by
+`RunModelSelectionService` for validation and options alike). The answer then has no
+current model and no replacements, and `unavailableReason` holds the wording owner's
+text (`modelListUnreadableText`, with the runtime's own diagnostic where it has one).
+The flag is the only signal: `unavailableReason` is also set for a readable answer whose
+context capacity is unverified, so callers never infer readability from the text or
+from an empty list. The client keeps options it already shows when a re-read answers
+`false` for a scope.
 
 ### Claude Agent SDK Model Descriptions
 
@@ -281,6 +345,35 @@ raw SDK no longer reports a saved ID, the ID remains visible but no valid schema
 or successful Save is invented. Frontend display must not perform alias folding
 or rewrite the stored ID merely because it rendered a recommended sibling.
 
+Claude model discovery (`ClaudeSdkClient.listModels`) opens the CLI with an
+input stream that never yields a message (`withClaudeControlQuery`,
+`claude-sdk-control-query.ts`) and closes it after `supportedModels()`, so no
+user turn is sent and no tokens are spent. A string prompt would be sent as a
+user turn (the SDK drops `maxTurns: 0`).
+
+### Provider Usage
+
+`src/llm-management/provider-usage/` reads one AutoByteus provider's usage
+with its API key (from the server's secret resolver; never logged or returned)
+and no completion request, for the available-agent-runtimes read (see
+[Agent Runtimes](agent_runtimes.md#available-agent-runtimes)). One reader per
+provider, by provider ID (`provider-usage-readers.ts`):
+
+| Provider | Call | Result |
+| --- | --- | --- |
+| DeepSeek | `GET /user/balance` | balance; `is_available` false → blocked "no balance left" |
+| Kimi | `GET /v1/users/me/balance` (api.moonshot.ai) | `available_balance` (USD); ≤ 0 → blocked "no balance left" |
+| Anthropic | free `POST /v1/messages/count_tokens` on the provider's first model | 400 "credit balance" → blocked "credit balance too low" |
+| xAI (Grok) | `GET /v1/api-key` | key blocked / disabled / team blocked → blocked |
+| Others, custom providers | — | "not reported" |
+
+A reader returns its reading or throws: an unusable answer throws
+`ProviderUsageUnreadableError` with a short reason (`the API key was not
+accepted`, `unexpected answer (<status>)`, `no model to check with`); a time-out
+is the request's abort. The available-agent-runtimes service words it
+("<Provider> usage timed out" / "… could not be read: <reason>" / "… could not
+be read"); provider texts are not kept.
+
 ### Claude Agent SDK Authentication
 
 `CLAUDE_AGENT_SDK_AUTH_MODE` preserves the existing `auto|cli|api-key`
@@ -292,6 +385,45 @@ replaces `ANTHROPIC_API_KEY` in the otherwise unchanged launch environment.
 This is credential substitution at the existing use point, not child-process
 isolation; baseline tools, MCP/session behavior, and external Codex behavior
 remain unchanged.
+
+### Claude Agent SDK Prompt Cache Lifetime
+
+Claude Code keeps prompt caches for 5 minutes when it is billed through API
+credits or an API key, and for 1 hour on a Claude subscription. AutoByteus
+agents often wait longer than 5 minutes between turns (for teammates or the
+user), so each resume would write the whole context again. AutoByteus therefore
+asks Claude Code for the one-hour cache by default.
+
+- `client/claude-sdk-spawn-environment.ts` (`buildClaudeSdkSpawnEnvironment`)
+  composes the Claude Code child environment for every spawn (agent sessions,
+  and the model-listing and usage reads that send no message): first the
+  auth-mode policy above, then the one-hour cache default, in every auth mode,
+  then the two-hour shell time limits (`BASH_DEFAULT_TIMEOUT_MS` and
+  `BASH_MAX_TIMEOUT_MS` set to `7200000` when the server environment does not
+  define them; see [Agent Execution](./agent_execution.md#runtime-tool-lifecycle-normalization)).
+- The default is `ENABLE_PROMPT_CACHING_1H=1`, added only when the server
+  setting `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` is not `false` (absent means
+  on) and the server environment does not already define
+  `ENABLE_PROMPT_CACHING_1H`. The key, its values and the rule live in
+  `runtime-management/claude/claude-prompt-cache-setting.ts`.
+- Claude Code ranks this variable below every explicit user choice: a
+  `promptCacheTtl` or `subagentPromptCacheTtl` in the user's Claude Code
+  settings, `CLAUDE_CODE_PROMPT_CACHE_TTL`,
+  `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL` and `FORCE_PROMPT_CACHING_5M` all
+  win. AutoByteus never sets `CLAUDE_CODE_PROMPT_CACHE_TTL`, because that
+  variable would override the user's `promptCacheTtl` setting. See
+  [Claude Code prompt caching](https://code.claude.com/docs/en/prompt-caching).
+- On a subscription the agent conversation keeps Claude Code's own 1-hour
+  cache; only Claude Code's background requests (such as compaction and titles)
+  move from 5 minutes to 1 hour.
+- Cost trade-off on API billing: writing a 1-hour cache costs 2x the input
+  price instead of 1.25x; reading it costs the same. A conversation resumed
+  5-60 minutes later reads its cache instead of writing it again, which saves
+  money for agents that wait between turns.
+- The user switches it in Settings -> Server Settings -> Basics -> **Claude
+  runtime** -> **One-hour prompt cache** (`true`/`false`; other values are
+  rejected). A change applies to Claude agent sessions started afterwards,
+  without a restart. Older Claude Code versions ignore the variable.
 
 ## Built-In vs. Custom Providers
 

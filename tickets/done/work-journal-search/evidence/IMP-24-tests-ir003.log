@@ -1,0 +1,25 @@
+# IMP-24 tests at the end of IR-003 (rerun by impact: src/memory-search, src/embeddings/embedding-index.ts, src/agent-tools/memory, web memorySearchStore)
+# Commands: pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search tests/unit/embeddings tests/unit/agent-tools/memory tests/unit/api tests/unit/projects tests/agent-work-journal tests/unit/startup --no-watch; env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory --no-watch; pnpm -C autobyteus-server-ts typecheck; cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/memory pages/__tests__/memory.spec.ts stores/__tests__/memorySearchStore.spec.ts stores/__tests__/memoryJournalStore.spec.ts tests/stores; guards
+# Commit: 5617a04d02
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1; e2e in a clean environment
+# Date: 2026-10-26
+
+## server unit and in-process
+ Test Files  85 passed | 1 skipped (86)
+      Tests  649 passed | 2 skipped (651)
+
+## server e2e (tests/e2e/memory)
+ Test Files  7 passed | 1 skipped (8)
+      Tests  20 passed | 3 skipped (23)
+
+## typecheck
+exit 0
+
+## web memory specs
+ Test Files  17 passed (17)
+      Tests  121 passed (121)
+
+## web guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

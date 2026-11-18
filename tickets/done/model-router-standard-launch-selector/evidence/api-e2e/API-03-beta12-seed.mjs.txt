@@ -1,0 +1,33 @@
+// autobyteus-313 API-03 step 1: data written by the released v1.5.9-beta.12 (isolated instance): the router launch
+// (runtime + model, beta.12's two-argument mutation), Model Routing on, the router's run, one routed delegation.
+import { createRequire } from 'node:module';
+import { randomUUID } from 'node:crypto';
+const WebSocket = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/model-router-standard-launch-selector/autobyteus-server-ts/package.json')('ws');
+const [url, outFile, workspace] = process.argv.slice(2);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const gql = async (query, variables = {}) => { const r = await fetch(`${url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) }).then((x) => x.json()); if (r.errors) throw new Error(JSON.stringify(r.errors)); return r.data; };
+const out = {};
+out.setLaunch = (await gql('mutation{setModelRouterLaunch(runtimeKind:"claude_agent_sdk", llmModelIdentifier:"sonnet")}')).setModelRouterLaunch;
+out.enabled = (await gql('mutation{setModelRoutingEnabled(enabled:true)}')).setModelRoutingEnabled;
+out.routerRun = (await gql('mutation{openModelRouterAgent}')).openModelRouterAgent;
+const def = async (name, instructions, description) => (await gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name, role: 'assistant', description, instructions, toolNames: [] } })).createAgentDefinition.id;
+const writerName = 'Writer Bot B12';
+await def(writerName, 'Write what you are asked to write. Keep it to one line.', 'Writes documentation and release notes.');
+const delegatorDef = await def('Probe Delegator B12', 'You are a precise tool operator. Call only the tools the user names, exactly as asked, and keep every reply to one short sentence.', 'beta.12 seed delegator');
+const created = (await gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: delegatorDef, workspaceRootPath: workspace, llmModelIdentifier: 'haiku', llmConfig: null, autoExecuteTools: true, runtimeKind: 'claude_agent_sdk' } })).createAgentRun;
+if (!created.success) throw new Error(created.message);
+out.delegatorRun = created.runId;
+const socket = new WebSocket(`${url.replace('http', 'ws')}/ws/agent/${created.runId}`);
+const frames = []; socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+while (!frames.some((f) => f.type === 'CONNECTED')) await sleep(100);
+const id = randomUUID();
+socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: created.runId, content: `Call the delegate_task tool exactly once now with these exact JSON arguments: ${JSON.stringify({ recipient_address: '/writer_bot_b12', description: 'Write a one-line release note for build b12. Reply OK.' })}. It can take up to a minute; wait for its result. Do not call any other tool. Then reply with one short sentence quoting the launch_notes.`, message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [] } }));
+const t0 = Date.now();
+let done;
+while (Date.now() - t0 < 300000 && !(done = frames.find((f) => f.type === 'TOOL_EXECUTION_SUCCEEDED' && /delegate_task/.test(String(f.payload?.tool_name))))) await sleep(500);
+out.delegation = done ? JSON.stringify(done.payload.result).slice(0, 900) : 'no result';
+out.statusAfter = (await gql('{modelRoutingStatus}')).modelRoutingStatus;
+socket.close();
+await (await import('node:fs/promises')).writeFile(outFile, JSON.stringify(out, null, 2));
+console.log(JSON.stringify({ routerRun: out.routerRun, routed: /chosen by the Model Router/.test(out.delegation), status: out.statusAfter }));

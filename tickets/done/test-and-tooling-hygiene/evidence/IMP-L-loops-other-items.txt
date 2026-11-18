@@ -1,0 +1,8 @@
+IMP-L — other loops under load (autobyteus-253). 20 x 'yes' (2 x ncpu), macOS 10 cores, 2026-10-24, commit c04cd7d92e tree (these files unchanged since).
+/tmp/loop253-grok.out:RESULT grok pass=20 fail=0 of 20 (load=1, ncpu=10)
+/tmp/loop253-ext.out:RESULT ext pass=5 fail=0 of 5 (load=1, ncpu=10)
+/tmp/loop253-drain.out:RESULT drain pass=10 fail=0 of 10 (load=1, ncpu=10)
+grok: pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/grok/grok-build-capability.test.ts --no-watch (AC-010)
+ext: pnpm -C autobyteus-web exec vitest run -c electron/vitest.config.ts electron/extensions/__tests__/managedExtensionService.spec.ts (AC-011)
+drain: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/native-compaction-terminal-drain.test.ts --no-watch (AC-015; alongside the yes load)
+NotificationCenter (AC-006): pnpm -C autobyteus-web exec vitest run components/notifications/__tests__/NotificationCenter.spec.ts x20, no load, commit 9945e38647: pass=20/20 ('Tests  11 passed' each)

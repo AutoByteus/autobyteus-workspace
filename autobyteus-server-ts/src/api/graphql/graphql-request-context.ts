@@ -1,7 +1,11 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import type { ClientIdentity } from "../../node-access/domain/client-identity.js";
+import { getClientIdentity } from "../security/node-access-gate.js";
 
 export type GraphqlRequestContext = {
   readonly requestAbortSignal: AbortSignal;
+  /** The client the node access gate established for the request (every GraphQL request has one). */
+  readonly clientIdentity: ClientIdentity | null;
 };
 
 export const createGraphqlRequestContext = (
@@ -9,6 +13,7 @@ export const createGraphqlRequestContext = (
   reply: FastifyReply,
 ): GraphqlRequestContext => ({
   requestAbortSignal: createRequestAbortSignal(request, reply),
+  clientIdentity: getClientIdentity(request),
 });
 
 const createRequestAbortSignal = (request: FastifyRequest, reply: FastifyReply): AbortSignal => {
@@ -28,7 +33,9 @@ const createRequestAbortSignal = (request: FastifyRequest, reply: FastifyReply):
     cleanup();
   };
 
-  if (request.raw.aborted || request.raw.destroyed || reply.raw.destroyed) {
+  // An abort is the client going away: the request aborted, or the response closed before it finished. A request
+  // whose body was read (its stream ended and was destroyed by a body hook, autobyteus-437) is not an abort.
+  if (request.raw.aborted || reply.raw.destroyed) {
     abort();
     return abortController.signal;
   }

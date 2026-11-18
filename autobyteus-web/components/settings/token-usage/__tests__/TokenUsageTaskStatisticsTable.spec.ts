@@ -117,11 +117,7 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   rowKind: 'AGENT_RUN',
   runId: 'standalone-run-123456789',
   rootTeamRunId: null,
-  memberAgentRunId: null,
-  taskAgentRunId: null,
-  taskTeamRunId: null,
   taskId: null,
-  executionAddress: null,
   displayName: 'Standalone Agent',
   summary: 'prototype settings statistics UI',
   createdAt: '2041-07-01T10:30:00.000Z',
@@ -153,11 +149,7 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   rowKind: 'TEAM_RUN',
   runId: null,
   rootTeamRunId: 'team-run-987654321',
-  memberAgentRunId: null,
-  taskAgentRunId: null,
-  taskTeamRunId: null,
   taskId: null,
-  executionAddress: null,
   displayName: 'Software Engineering Team',
   summary: 'investigate token costs',
   createdAt: '2041-07-01T11:00:00.000Z',
@@ -168,14 +160,10 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   aggregate: buildAggregate(),
   children: [{
     rowId: 'team:team-run:member:solution_designer',
-    memberAgentRunId: 'member-run-123456789',
     rowKind: 'MEMBER_RUN',
     runId: 'member-run-123456789',
     rootTeamRunId: 'team-run-987654321',
-    taskAgentRunId: null,
-    taskTeamRunId: null,
     taskId: null,
-    executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'solution_designer' }] },
     displayName: 'solution_designer',
     summary: null,
     createdAt: '2041-07-01T11:01:00.000Z',
@@ -201,14 +189,10 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
     children: [],
   }, {
     rowId: 'team:team-run:member:implementation_engineer',
-    memberAgentRunId: 'member-run-223456789',
     rowKind: 'MEMBER_RUN',
     runId: 'member-run-223456789',
     rootTeamRunId: 'team-run-987654321',
-    taskAgentRunId: null,
-    taskTeamRunId: null,
     taskId: null,
-    executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'implementation_engineer' }] },
     displayName: 'implementation_engineer',
     summary: null,
     createdAt: '2041-07-01T11:02:00.000Z',
@@ -303,7 +287,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
 
     const firstDataCells = wrapper.findAll('tbody > tr')[0]!.findAll('td');
     expect(firstDataCells).toHaveLength(9);
-    expect(firstDataCells[1]!.text()).toContain('Mixed: Codex, Autobyteus');
+    expect(firstDataCells[1]!.text()).toContain('Mixed: Codex App Server, AutoByteus');
     const bodyButtons = wrapper.findAll('tbody button');
     expect(bodyButtons).toHaveLength(3);
     expect(bodyButtons.filter((button) => button.attributes('aria-label')?.includes('cost details'))).toHaveLength(2);
@@ -312,7 +296,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(topRows[0]).toContain('Software Engineering Team');
     expect(topRows[1]).toContain('Standalone Agent');
     expect(wrapper.text()).toContain('First usage observed');
-    expect(wrapper.text()).toContain('Mixed: Codex, Autobyteus');
+    expect(wrapper.text()).toContain('Mixed: Codex App Server, AutoByteus');
     expect(wrapper.text()).toContain('Mixed: gpt-shared, DeepSeek:deepseek-v4-flash');
     expect(wrapper.text()).toContain('cache hit 25.0%');
     expect(wrapper.text()).toContain('5 thinking included');

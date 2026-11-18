@@ -1,6 +1,7 @@
 export {
-  RootEventPublisher as TeamRunEventPublisher,
+  RunViewStream as TeamRunEventPublisher,
   type RootEventListener,
+  type RootLivePosition,
   type RootSnapshotConnection,
   type SequencedRootEvent,
-} from "../../agent-collaboration/execution/services/root-event-publisher.js";
+} from "../../agent-collaboration/delegation/run-view-stream.js";

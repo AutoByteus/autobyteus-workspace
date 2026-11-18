@@ -1,0 +1,423 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:39073) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T07:26:56.827Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Populating agent definition cache for the first time...
+[2026-10-05T07:26:57.281Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[2026-10-05T07:26:57.286Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+In-memory cache: Added new agent definition with ID bq-probe-1791185217318.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Agent Definition created successfully with ID: bq-probe-1791185217318
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9bUXU
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9bUXU.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Created and registered workspace ID: agent_ws_40af1b8f11754ab4d34db6b69860dcb50eeb5b35e31d39d078fa9b72972e18ba
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9bUXU
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9bUXU.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Reusing registered workspace ID: agent_ws_40af1b8f11754ab4d34db6b69860dcb50eeb5b35e31d39d078fa9b72972e18ba
+
+stderr | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[CodexAppServerClient] stderr: 2026-10-05T07:26:57.641443Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Published codex_app_server agent run 'bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712'.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Agent websocket attached for run bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712
+Created agent session a25a1c67-bcd0-4a88-a761-270209a073b0 for run bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712
+Agent WebSocket connected: session=a25a1c67-bcd0-4a88-a761-270209a073b0, run=bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +1.1s WS AGENT_STATUS {"status":"idle","recoverableBlock":null,"agent_id":"bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712"}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +2.7s WS AGENT_STATUS {"status":"initializing","recoverableBlock":null,"agent_id":"bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712"}
+[BQ-PROBE] +2.7s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"927b7af9-5196-4890-8a7a-6e4172b33683","revision":2,"entries":[{"sequence":1,"message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","turn_id":null,"state":"queued","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: sleep 300 ; then reply with the singl
+[BQ-PROBE] +2.7s WS-TOOL SYSTEM_INSTRUCTIONS_SUPPLIED {"trace_id":"rt_1791185217647_0f22535d-3119-4384-891a-f28ca79ea521","content":"## Agent Identity\n\n- Name: BQ Probe 1791185217318\n- Description: probe\n\n### Responsibilities and Boundaries\n\nFollow the user's instructions exactly.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowled
+[BQ-PROBE] +2.7s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"927b7af9-5196-4890-8a7a-6e4172b33683","revision":2,"entries":[{"sequence":1,"message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","turn_id":null,"state":"queued","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: sleep 300 ; then reply with the singl
+[BQ-PROBE] +2.7s WS AGENT_COMMAND_ACK {"command_type":"SEND_MESSAGE","run_id":"bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712","message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +2.7s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"927b7af9-5196-4890-8a7a-6e4172b33683","revision":3,"entries":[{"sequence":1,"message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","turn_id":"01a10af5-6fb7-7151-908b-64dc52277b7e","state":"forwarded","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: 
+[BQ-PROBE] +2.7s WS AGENT_STATUS {"status":"running","recoverableBlock":null,"agent_id":"bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712"}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:26:59.558 codex event turn/started {"threadId":"01a10af5-687d-7b80-972f-e7f19be2d67e","turn":{"id":"01a10af5-6fb7-7151-908b-64dc52277b7e","items":[],"itemsView":"notLoaded","status":"inProgress","error":null,"startedAt":1791185219,"completedAt":null,"dura
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +2.8s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"927b7af9-5196-4890-8a7a-6e4172b33683","revision":3,"entries":[{"sequence":1,"message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","turn_id":"01a10af5-6fb7-7151-908b-64dc52277b7e","state":"forwarded","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: 
+[BQ-PROBE] +2.8s WS TURN_STARTED {"turnId":"01a10af5-6fb7-7151-908b-64dc52277b7e","turn_id":"01a10af5-6fb7-7151-908b-64dc52277b7e"}
+[BQ-PROBE] +2.8s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"927b7af9-5196-4890-8a7a-6e4172b33683","revision":3,"entries":[{"sequence":1,"message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","turn_id":"01a10af5-6fb7-7151-908b-64dc52277b7e","state":"forwarded","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: 
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:26:59.886 codex event item/started {"item":{"type":"userMessage","id":"01a10af5-712c-7802-91eb-fe749300b9a2","clientId":null,"content":[{"type":"text","text":"Run this shell command in the foreground (not in the background) and wait for it to finish: slee
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:26:59.889 codex event item/completed {"item":{"type":"userMessage","id":"01a10af5-712c-7802-91eb-fe749300b9a2","clientId":null,"content":[{"type":"text","text":"Run this shell command in the foreground (not in the background) and wait for it to finish: slee
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:03.176 codex event item/started {"item":{"type":"commandExecution","id":"exec-c5ebd12a-3bfa-438b-ac15-f7d4bc3b81ef","pluginId":null,"scriptPath":null,"command":"/bin/bash -lc 'sleep 300'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +6.4s WS-TOOL SEGMENT_START {"id":"exec-c5ebd12a-3bfa-438b-ac15-f7d4bc3b81ef","turn_id":"01a10af5-6fb7-7151-908b-64dc52277b7e","segment_type":"run_bash","metadata":{"tool_name":"run_bash","command":"/bin/bash -lc 'sleep 300'"}}
+[BQ-PROBE] +6.4s WS-TOOL TOOL_EXECUTION_STARTED {"item":{"type":"commandExecution","id":"exec-c5ebd12a-3bfa-438b-ac15-f7d4bc3b81ef","pluginId":null,"scriptPath":null,"command":"/bin/bash -lc 'sleep 300'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9bUXU","processId":"32784","source":"unifiedExecStartup","status":"inProgress","commandActions":[{"type":"unknown","command":"sleep 300"}],"aggregatedOutput":null,"exitCode":null,"d
+[BQ-PROBE] +6.4s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"927b7af9-5196-4890-8a7a-6e4172b33683","revision":3,"entries":[{"sequence":1,"message_id":"e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","dedupe_key":"agent_run_input:e2e:e2e-4deb62a3-c310-42f3-8997-9b8533f3ca13","turn_id":"01a10af5-6fb7-7151-908b-64dc52277b7e","state":"forwarded","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: 
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +7.2s TREE busy (self pid 39073 pgid 39024) [
+ "40404/39073/pg39024 codex app-server",
+ "42303/39073/pg39024 ps -A -o pid=,ppid=,pgid=,command=",
+ "40636/40404/pg40636 /Applications/Codex.app/Contents/Resources/cua_node/bin/node /Applications/Codex.app/Contents/Resources/cua_no",
+ "40637/40404/pg40637 /Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl",
+ "41915/40404/pg41915 /Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+ "41916/40404/pg41916 sleep 300",
+ "40684/40636/pg40636 /Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+]
+[BQ-PROBE] +7.3s SLEEPS busy [{"pid":41916,"ppid":40404,"pgid":41916,"cmd":"sleep 300"}]
+[BQ-PROBE] +7.3s CLOSE start (fastify.close)
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 supervisor.closeInternal start
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 supervisor: org stopAll done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 supervisor: team stopAll done
+[BQ-DIAG] 07:27:04.139 standaloneRoots.stopAll: terminate root bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712
+[BQ-DIAG] 07:27:04.139 standaloneRoot.terminateOnce: closeAndDrain start
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 standaloneRoot.terminateOnce: closeAndDrain done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 standaloneRoot.terminateOnce: fence result {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 standaloneRoot.terminateOnce: drains done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 standaloneRoot.terminateOnce: finish {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 standaloneRoots.stopAll: root terminated bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712 {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 supervisor: standalone roots stopAll done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.139 agentRuns.stopAll: prepare bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712 codex_app_server
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.140 termination.prepare bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712 recoveryBlocked= false activeTurn= {"kind":"IDENTIFIED","turnId":"01a10af5-6fb7-7151-908b-64dc52277b7e"} quiescentNow= false
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:27:04.140 termination.prepare: drained; waitForQuiescence bq_probe_1791185217318_8791d4555a5e4e1dae5294995ed34712
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Closed agent session a25a1c67-bcd0-4a88-a761-270209a073b0
+Agent WebSocket disconnected: a25a1c67-bcd0-4a88-a761-270209a073b0
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +12.3s PORT during hanging close (+5s): port refused: ECONNREFUSED
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +67.3s CLOSE after 60s window: PENDING-60s 
+[BQ-PROBE] +67.5s TREE after-close-window (self pid 39073 pgid 39024) [
+ "40404/39073/pg39024 codex app-server",
+ "47914/39073/pg39024 ps -A -o pid=,ppid=,pgid=,command=",
+ "40636/40404/pg40636 /Applications/Codex.app/Contents/Resources/cua_node/bin/node /Applications/Codex.app/Contents/Resources/cua_no",
+ "40637/40404/pg40637 /Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl",
+ "41915/40404/pg41915 /Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+ "41916/40404/pg41916 sleep 300",
+ "40684/40636/pg40636 /Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+]
+[BQ-PROBE] +67.6s SLEEPS after-close-window [{"pid":41916,"ppid":40404,"pgid":41916,"cmd":"sleep 300"}]
+[BQ-PROBE] +67.6s killing leftover sleeps to see what unblocks [41916]
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:28:04.445 codex event item/completed {"item":{"type":"commandExecution","id":"exec-c5ebd12a-3bfa-438b-ac15-f7d4bc3b81ef","pluginId":null,"scriptPath":null,"command":"/bin/bash -lc 'sleep 300'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:28:24.009 codex event item/started {"item":{"type":"reasoning","id":"rs_0d91490603c8218d016ac35197eb0c87d29886eb33cdb91bd7","summary":[],"content":[]},"threadId":"01a10af5-687d-7b80-972f-e7f19be2d67e","turnId":"01a10af5-6fb7-7151-908b-64dc52277b7e","start
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:28:26.412 codex event item/completed {"item":{"type":"reasoning","id":"rs_0d91490603c8218d016ac35197eb0c87d29886eb33cdb91bd7","summary":["**Preparing the wait duration**"],"content":[]},"threadId":"01a10af5-687d-7b80-972f-e7f19be2d67e","turnId":"01a10af5-6f
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:28:29.516 codex event item/started {"item":{"type":"reasoning","id":"rs_0d91490603c8218d016ac3519d7b8c87d2a650b267b88478a7","summary":[],"content":[]},"threadId":"01a10af5-687d-7b80-972f-e7f19be2d67e","turnId":"01a10af5-6fb7-7151-908b-64dc52277b7e","start
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:28:32.986 codex event item/completed {"item":{"type":"reasoning","id":"rs_0d91490603c8218d016ac3519d7b8c87d2a650b267b88478a7","summary":["**Running the wait again**"],"content":[]},"threadId":"01a10af5-687d-7b80-972f-e7f19be2d67e","turnId":"01a10af5-6fb7-71
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:28:33.255 codex event item/started {"item":{"type":"commandExecution","id":"exec-b693be28-d587-4aea-97ab-985bfa838412","pluginId":null,"scriptPath":null,"command":"/bin/bash -lc 'sleep 300'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-PROBE] +127.6s CLOSE after killing sleep: STILL-PENDING-60s 60.0s after kill
+[BQ-PROBE] +127.8s TREE after-sleep-kill (self pid 39073 pgid 39024) [
+ "40404/39073/pg39024 codex app-server",
+ "51246/39073/pg39024 ps -A -o pid=,ppid=,pgid=,command=",
+ "40636/40404/pg40636 /Applications/Codex.app/Contents/Resources/cua_node/bin/node /Applications/Codex.app/Contents/Resources/cua_no",
+ "40637/40404/pg40637 /Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl",
+ "41915/40404/pg41915 /Users/normy/.codex/packages/standalone/releases/0.160.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+ "49921/40404/pg49921 sleep 300",
+ "40684/40636/pg40636 /Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+]
+[BQ-PROBE] +127.9s SLEEPS after-sleep-kill [{"pid":49921,"ppid":40404,"pgid":49921,"cmd":"sleep 300"}]
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+[BQ-DIAG] 07:29:04.747 codex event item/completed {"item":{"type":"commandExecution","id":"exec-b693be28-d587-4aea-97ab-985bfa838412","pluginId":null,"scriptPath":null,"command":"/bin/bash -lc 'sleep 300'","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-Y9
+
+ ❯ tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts (1 test | 1 failed) 127927ms
+     × codex_app_server shutdown 127926ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > codex_app_server shutdown
+Error: ENOTEMPTY: directory not empty, rmdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-1HEwir'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  09:26:49
+   Duration  135.28s (transform 4.94s, setup 15ms, import 6.88s, tests 127.93s, environment 0ms)
+

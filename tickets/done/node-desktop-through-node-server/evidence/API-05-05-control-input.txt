@@ -1,0 +1,21 @@
+# NOTE: first Control attempt. After the Control reconnect the canvas was re-laid out (CSS x1065 y112.5 446x250.875, scale 0.2323), so the CSS points computed for the old layout hit the node at x301 y1022 (the taskbar): the pointer did arrive (x:960 y:540 -> x:301 y:1022, active window changed), the keys went to the newly focused window, not the capture terminal. Retry with the new geometry: API-05-05b-control-input-retry.txt
+# Case: API-05 step 05 — Control by the tile's switch: pointer and keys reach the node
+# Steps: click [data-testid=node-desktop-mode] ("View only") in the node window; wait for 'Connected · Control'; CDP click CSS 1135,350 (inside the capture terminal), type 'abxcontrol42' + Enter, move CSS 810,242 (node ≈300,300); read node pointer and the capture file. noVNC's clipboard sync is off in this window (navigator.permissions.query answers 'denied' for clipboard-*; Electron's own answer was 'granted' for both) so the user's Mac clipboard is neither read nor written
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:52:53Z
+
+"{\"status\":\"Connected · Control\",\"mode\":\"Control\"}"
+click 1135 350
+typed "abxcontrol42\n"
+move 810 242
+after: x:301 y:1022 screen:0 window:4194307 typed-bytes=0 typed=[]
+desktop:   dimensions:    1920x1080 pixels (508x286 millimeters)
+node log stream lines so far:
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=9703 toViewer=102 fromViewer=58 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=9701 toViewer=165 fromViewer=196 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=10876 toViewer=102 fromViewer=58 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=10908 toViewer=201 fromViewer=208 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=10830 toViewer=102 fromViewer=58 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=10827 toViewer=201 fromViewer=208 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=25705 toViewer=2323248 fromViewer=2966 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=30683 toViewer=1320292 fromViewer=2166 reason=viewer-closed

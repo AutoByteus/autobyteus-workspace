@@ -1,0 +1,925 @@
+{
+  "startedAt": "2026-11-17T10:11:39.159Z",
+  "cases": {
+    "DCP-001": {
+      "title": "delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 34146,
+      "details": {
+        "runId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_8c3a_d045af04cd0b467c96366faa294d40dd\",\"task_id\":\"ad_hoc_task_fee3f801-a962-4f25-b2aa-8c6a459e8813\"}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_8c3a_d045af04cd0b467c96366faa294d40dd\",\"task_id\":\"ad_hoc_task_fee3f801-a962-4f25-b2aa-8c6a459e8813\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_8c3a_d045af04cd0b467c96366faa294d40dd",
+        "firstModels": [
+          "dlc-alt-model"
+        ],
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "afterRowClick": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "true",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "runningLocked": true,
+        "runningHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+        "stop": {
+          "operation": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "writer_8c3a_d045af04cd0b467c96366faa294d40dd"
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "agentRunId": "writer_8c3a_d045af04cd0b467c96366faa294d40dd"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "true",
+            "current": "true",
+            "expanded": null,
+            "url": "http://127.0.0.1:54371/chat?id=manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid",
+            "outlineWidth": "2px",
+            "label": "Stop writer 8c3a",
+            "title": "Stop writer 8c3a",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping writer 8c3a…",
+            "opacity": "0.6",
+            "cursor": "default",
+            "animation": "pulse",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "true",
+            "current": "true",
+            "expanded": null,
+            "url": "http://127.0.0.1:54371/chat?id=manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+          },
+          "response": {
+            "data": {
+              "terminateAgentRun": {
+                "__typename": "TerminateAgentRunResult",
+                "success": true,
+                "message": "Agent run terminated successfully."
+              }
+            }
+          },
+          "taskBefore": {
+            "taskId": "ad_hoc_task_fee3f801-a962-4f25-b2aa-8c6a459e8813",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_8c3a_d045af04cd0b467c96366faa294d40dd",
+              "teamRunId": null,
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_fee3f801-a962-4f25-b2aa-8c6a459e8813",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_8c3a_d045af04cd0b467c96366faa294d40dd",
+              "teamRunId": null,
+              "closed": false,
+              "status": "offline"
+            }
+          },
+          "input": {
+            "rootKind": "AGENT",
+            "rootRunId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be",
+            "agentRunId": "writer_8c3a_d045af04cd0b467c96366faa294d40dd"
+          },
+          "parentAfterCopyStop": {
+            "runId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be",
+            "isActive": true,
+            "terminatedAt": null
+          }
+        },
+        "rootStillRunning": "active",
+        "savedSummary": "Gemini testAntigravity CLI · Auto-approve",
+        "savedSource": "settings",
+        "stored": {
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "runtimeKind": "antigravity_cli"
+        },
+        "resumeCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_8c3a_d045af04cd0b467c96366faa294d40dd\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_8c3a_d045af04cd0b467c96366faa294d40dd\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nChoose a Project or Temp tasks\nTemp tasks\nSearch tasks\nRefresh\nOpen\n1\nDraft the notes.\nW8\nwriter 8c3a\nIdle\nDone\n0\n\nNo tasks",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "rootStop": {
+          "operation": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "agentRunId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": null,
+            "current": "true",
+            "expanded": null,
+            "url": "http://127.0.0.1:54371/chat?id=manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "none",
+            "outline": "auto",
+            "outlineWidth": "1px",
+            "label": "Terminate run",
+            "title": "Terminate run",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Terminate run",
+            "opacity": "0.5",
+            "cursor": "not-allowed",
+            "animation": "none",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "rowPending": {
+            "selected": null,
+            "current": "true",
+            "expanded": null,
+            "url": "http://127.0.0.1:54371/chat?id=manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+          },
+          "response": {
+            "data": {
+              "terminateAgentRun": {
+                "__typename": "TerminateAgentRunResult",
+                "success": true,
+                "message": "Agent run terminated successfully."
+              }
+            }
+          },
+          "historyBefore": {
+            "runId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be",
+            "isActive": true,
+            "terminatedAt": null
+          },
+          "historyAfter": {
+            "runId": "manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be",
+            "isActive": false,
+            "terminatedAt": "2026-11-17T10:13:05.037Z"
+          },
+          "urlAfter": "http://127.0.0.1:54371/chat?id=manager_0a18_023f77c0ec724ec7b95e2d91b4c3e9be"
+        }
+      }
+    },
+    "DCP-003": {
+      "title": "delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model",
+      "result": "Pass",
+      "ms": 37057,
+      "details": {
+        "orgRunId": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70",
+        "copyCall": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_8c3a_7876b2960920440d830c4cda9c421a87\",\"task_id\":\"ad_hoc_task_80efbe67-1d64-43f3-8c12-d7443cfcf8cf\"}\"}],\"structuredContent\":{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"writer_8c3a_7876b2960920440d830c4cda9c421a87\",\"task_id\":\"ad_hoc_task_80efbe67-1d64-43f3-8c12-d7443cfcf8cf\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "copyRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87",
+        "paint": {
+          "reference": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            }
+          },
+          "unselected": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "afterRowClick": {
+            "rest": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "hover": {
+              "color": "rgb(220, 38, 38)",
+              "background": "rgb(254, 242, 242)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            },
+            "leave": {
+              "color": "rgb(239, 68, 68)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "selectedState": "true",
+          "viewport": {
+            "width": 1512,
+            "height": 952
+          }
+        },
+        "settingsTaskBefore": {
+          "taskId": "ad_hoc_task_80efbe67-1d64-43f3-8c12-d7443cfcf8cf",
+          "status": "TODO",
+          "root": {
+            "ingressAgentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87",
+            "teamRunId": null,
+            "closed": false,
+            "status": "idle"
+          }
+        },
+        "settingsTaskAfter": {
+          "taskId": "ad_hoc_task_80efbe67-1d64-43f3-8c12-d7443cfcf8cf",
+          "status": "TODO",
+          "root": {
+            "ingressAgentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87",
+            "teamRunId": null,
+            "closed": false,
+            "status": "offline"
+          }
+        },
+        "savedSummary": "Gemini testAntigravity CLI · Auto-approve",
+        "resume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_8c3a_7876b2960920440d830c4cda9c421a87\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_8c3a_7876b2960920440d830c4cda9c421a87\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nChoose a Project or Temp tasks\nTemp tasks\nSearch tasks\nRefresh\nOpen\n2\nDraft the notes.\nW8\nwriter 8c3a\nIdle\nDraft the notes.\nW8\nwriter 8c3a\nIdle\nDone\n0\n\nNo tasks",
+        "resumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "stop": {
+          "operation": "TerminateAgentRun",
+          "variables": {
+            "agentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87"
+          },
+          "key": "Enter",
+          "requests": [
+            {
+              "agentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:54371/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-cdfe&orgRunId=hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70&mode=active&memberAddress=/manager"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(239, 68, 68, 0.4) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid",
+            "outlineWidth": "2px",
+            "label": "Stop writer 8c3a",
+            "title": "Stop writer 8c3a",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stopping writer 8c3a…",
+            "opacity": "0.6",
+            "cursor": "default",
+            "animation": "pulse",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0.15s",
+              "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0.15s",
+            "transitionProperty": "color, background-color, border-color, text-decoration-color, fill, stroke",
+            "hovered": true
+          },
+          "reducedMotion": "none",
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": null,
+            "url": "http://127.0.0.1:54371/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-cdfe&orgRunId=hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70&mode=active&memberAddress=/manager"
+          },
+          "response": {
+            "data": {
+              "terminateAgentRun": {
+                "__typename": "TerminateAgentRunResult",
+                "success": true,
+                "message": "Agent run terminated successfully."
+              }
+            }
+          },
+          "taskBefore": {
+            "taskId": "ad_hoc_task_80efbe67-1d64-43f3-8c12-d7443cfcf8cf",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87",
+              "teamRunId": null,
+              "closed": false,
+              "status": "idle"
+            }
+          },
+          "taskAfter": {
+            "taskId": "ad_hoc_task_80efbe67-1d64-43f3-8c12-d7443cfcf8cf",
+            "status": "TODO",
+            "root": {
+              "ingressAgentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87",
+              "teamRunId": null,
+              "closed": false,
+              "status": "offline"
+            }
+          },
+          "input": {
+            "rootKind": "AGENT_ORG",
+            "rootRunId": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70",
+            "agentRunId": "writer_8c3a_7876b2960920440d830c4cda9c421a87"
+          },
+          "parentAfterCopyStop": {
+            "root_run_id": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70",
+            "is_active": true
+          }
+        },
+        "sidebarResume": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_8c3a_7876b2960920440d830c4cda9c421a87\"}\"}],\"structuredContent\":{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"writer_8c3a_7876b2960920440d830c4cda9c421a87\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nChoose a Project or Temp tasks\nTemp tasks\nSearch tasks\nRefresh\nOpen\n2\nDraft the notes.\nW8\nwriter 8c3a\nIdle\nDraft the notes.\nW8\nwriter 8c3a\nIdle\nDone\n0\n\nNo tasks",
+        "sidebarResumedModels": [
+          "gemini-3.8-flash-low"
+        ],
+        "rootStop": {
+          "operation": "TerminateAgentOrgRun",
+          "variables": {
+            "agentOrgRunId": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70"
+          },
+          "key": "Space",
+          "requests": [
+            {
+              "agentOrgRunId": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70"
+            }
+          ],
+          "dialogs": [],
+          "rowBefore": {
+            "selected": "false",
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:54371/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-cdfe&orgRunId=hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70&mode=active&memberAddress=/manager"
+          },
+          "focus": {
+            "active": true,
+            "visible": true,
+            "ring": "none",
+            "outline": "auto",
+            "outlineWidth": "1px",
+            "label": "Stop Agent Org",
+            "title": "Stop Agent Org",
+            "type": "button"
+          },
+          "pending": {
+            "disabled": true,
+            "label": "Stop Agent Org",
+            "opacity": "0.5",
+            "cursor": "not-allowed",
+            "animation": "none",
+            "paint": {
+              "color": "rgb(153, 153, 153)",
+              "background": "rgba(0, 0, 0, 0)",
+              "transition": "0s",
+              "transitionProperty": "all"
+            }
+          },
+          "disabledHover": {
+            "color": "rgb(153, 153, 153)",
+            "background": "rgba(0, 0, 0, 0)",
+            "transition": "0s",
+            "transitionProperty": "all",
+            "hovered": true
+          },
+          "rowPending": {
+            "selected": "false",
+            "current": null,
+            "expanded": "true",
+            "url": "http://127.0.0.1:54371/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-cdfe&orgRunId=hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70&mode=active&memberAddress=/manager"
+          },
+          "response": {
+            "data": {
+              "terminateAgentOrgRun": {
+                "success": true,
+                "message": "Agent organization run terminated successfully.",
+                "agentOrgRunId": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70",
+                "__typename": "AgentOrgRunMutationResult"
+              }
+            }
+          },
+          "historyBefore": {
+            "root_run_id": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70",
+            "is_active": true
+          },
+          "historyAfter": {
+            "root_run_id": "hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70",
+            "is_active": false
+          },
+          "urlAfter": "http://127.0.0.1:54371/workspace?rootSubjectKind=agent_org&definitionId=hostorg-org-cdfe&orgRunId=hostorg_org_cdfe_2051c8baa034464aa41d768174b0fa70&mode=history&memberAddress=/manager"
+        }
+      }
+    },
+    "AFS-001": {
+      "title": "AC-001, AC-003, AC-005, D-IMP-1, D-IMP-3: a hub and its copies each show one card; a running copy is locked and stops alone; edits across focus name their agent; Save and Cancel; the next message uses the saved model and runtime",
+      "result": "Pass",
+      "ms": 74685,
+      "details": {
+        "names": {
+          "hub": "AFS Hub 4761",
+          "a": "AFS Alpha 4761",
+          "b": "AFS Beta 4761",
+          "other": "AFS Other 4761",
+          "pair": "AFS Pair 4761"
+        },
+        "otherRunId": "afs_other_4761_53ce04b1be5b486d98eaa6649dbb21bc",
+        "hubRunId": "afs_hub_4761_e89f3357d444430fb3d3e6d97448928e",
+        "a": "afs_alpha_4761_8d728c7e939c41caa52e454d5a60b6de",
+        "b": "afs_beta_4761_36e106a283ac4da89fba0aa3348b4813",
+        "pairCoordinator": "afs_lead_4761_5a8b8812238d42e0a4718fd2ed13a6cf",
+        "hubRunning": {
+          "open": true,
+          "name": "AFS Hub 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": false,
+          "rootCard": true,
+          "hint": true,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": true,
+          "saveText": null,
+          "state": "active"
+        },
+        "aRunning": {
+          "open": true,
+          "name": "afs alpha 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+          "copyStop": true,
+          "runStop": false,
+          "saveText": null,
+          "state": "active"
+        },
+        "bAfterAStop": {
+          "open": true,
+          "name": "afs beta 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+          "copyStop": true,
+          "runStop": false,
+          "saveText": null,
+          "state": "active"
+        },
+        "lead": {
+          "open": true,
+          "name": "lead",
+          "status": "active",
+          "group": "In afs pair 4761",
+          "switchLabel": "Team settings",
+          "switchPressed": "false",
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+          "copyStop": true,
+          "runStop": false,
+          "saveText": null,
+          "state": "active"
+        },
+        "leadGroup": {
+          "open": true,
+          "name": "afs pair 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": "Team settings",
+          "switchPressed": "true",
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 2,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+          "copyStop": true,
+          "runStop": false,
+          "saveText": null,
+          "state": "active"
+        },
+        "afterGroup": {
+          "open": true,
+          "name": "afs beta 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+          "copyStop": true,
+          "runStop": false,
+          "saveText": null,
+          "state": "active"
+        },
+        "stayedOpen": true,
+        "hubStopped": {
+          "open": true,
+          "name": "AFS Hub 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": false,
+          "rootCard": true,
+          "hint": true,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": true,
+          "saveText": null,
+          "state": "stopping"
+        },
+        "bAfterHubStop": {
+          "open": true,
+          "name": "afs beta 4761",
+          "status": "active",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": true,
+          "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.",
+          "copyStop": true,
+          "runStop": false,
+          "saveText": null,
+          "state": "stopped"
+        },
+        "aEdited": {
+          "open": true,
+          "name": "afs alpha 4761",
+          "status": "stopped",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelAlt test modelAntigravity CLI",
+          "modelLocked": false,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": false,
+          "saveText": "Unsaved changes: afs alpha 4761 · they apply when this run resumes",
+          "state": "stopped"
+        },
+        "bWhileAPending": {
+          "open": true,
+          "name": "afs beta 4761",
+          "status": "stopped",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": false,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": false,
+          "saveText": "Unsaved changes: afs alpha 4761 · they apply when this run resumes",
+          "state": "stopped"
+        },
+        "aBack": {
+          "open": true,
+          "name": "afs alpha 4761",
+          "status": "stopped",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelAlt test modelAntigravity CLI",
+          "modelLocked": false,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": false,
+          "saveText": "Unsaved changes: afs alpha 4761 · they apply when this run resumes",
+          "state": "stopped"
+        },
+        "aStored": "dlc-alt-model",
+        "bStored": "gemini-3.8-flash-low",
+        "aSaved": {
+          "open": true,
+          "name": "afs alpha 4761",
+          "status": "stopped",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelAlt test modelAntigravity CLI",
+          "modelLocked": false,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": false,
+          "saveText": "Saved. Changes apply when this run resumes.",
+          "state": "stopped"
+        },
+        "bCancelled": {
+          "open": true,
+          "name": "afs beta 4761",
+          "status": "stopped",
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": true,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": "ModelGemini testAntigravity CLI",
+          "modelLocked": false,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": false,
+          "saveText": null,
+          "state": "stopped"
+        },
+        "bRuntimeStored": {
+          "llmModelIdentifier": "grok-4.7",
+          "runtimeKind": "grok_build"
+        },
+        "otherRun": {
+          "open": false,
+          "name": null,
+          "status": null,
+          "group": null,
+          "switchLabel": null,
+          "switchPressed": null,
+          "card": false,
+          "rootCard": false,
+          "hint": false,
+          "list": 0,
+          "memberRows": 0,
+          "model": null,
+          "modelLocked": false,
+          "stopHint": null,
+          "copyStop": false,
+          "runStop": false,
+          "saveText": null,
+          "state": null
+        },
+        "aResumed": [
+          "dlc-alt-model"
+        ],
+        "bResumedAgyLaunches": []
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 25772
+    },
+    {
+      "label": "frontend",
+      "pid": 26463
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 26463,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 25772,
+      "stop": "SIGKILL"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-YeGUc0"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-YeGUc0",
+  "backendUrl": "http://127.0.0.1:54370",
+  "frontUrl": "http://127.0.0.1:54371",
+  "definitions": {
+    "ids": {
+      "manager": "manager-0a18",
+      "lead": "lead-49da",
+      "worker": "worker-403e",
+      "plain": "plain-c5dd",
+      "engineer": "engineer-85bd",
+      "reviewer": "reviewer-4daf",
+      "writer": "writer-8c3a",
+      "offline": "offline-527d",
+      "unoffered": "unoffered-2712",
+      "badsettings": "badsettings-cbfc",
+      "incomplete": "incomplete-7ca6",
+      "build": "build-team-2b25",
+      "pair": "pair-team-fc36",
+      "squad": "squad-team-5531",
+      "home": "home-team-f02d",
+      "launchOrg": "launchorg-org-fbec",
+      "hostOrg": "hostorg-org-cdfe"
+    },
+    "names": {
+      "manager": "Manager 0a18",
+      "lead": "Lead 49da",
+      "worker": "Worker 403e",
+      "plain": "Plain c5dd",
+      "engineer": "Engineer 85bd",
+      "reviewer": "Reviewer 4daf",
+      "writer": "Writer 8c3a",
+      "offline": "Offline 527d",
+      "unoffered": "Unoffered 2712",
+      "badsettings": "Badsettings cbfc",
+      "incomplete": "Incomplete 7ca6",
+      "build": "Build Team 2b25",
+      "pair": "Pair Team fc36",
+      "squad": "Squad Team 5531",
+      "home": "Home Team f02d",
+      "launchOrg": "LaunchOrg Org fbec",
+      "hostOrg": "HostOrg Org cdfe"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 3,
+    "fail": 0
+  },
+  "completedAt": "2026-11-17T10:15:14.484Z"
+}

@@ -1,7 +1,10 @@
 import { PROTOCOL_VERSION, type InitializeResponse } from "@agentclientprotocol/sdk";
 
 /** Product needs the shared ACP layer checks against an agent's standard capabilities. */
-export type AcpRequiredCapability = "loadSession" | "mcpHttp";
+export type AcpRequiredCapability = "restoreSession" | "mcpHttp";
+
+/** How an agent reopens an existing session: `session/load` (preferred) or `session/resume`. */
+export type AcpRestoreMethod = "load" | "resume";
 
 export class AcpMissingCapabilityError extends Error {
   constructor(readonly agentLabel: string, readonly missing: readonly string[]) {
@@ -18,6 +21,7 @@ export class AcpAgentCapabilities {
   private constructor(
     readonly protocolVersion: number,
     readonly loadSession: boolean,
+    readonly resumeSession: boolean,
     readonly imagePrompt: boolean,
     readonly mcpHttp: boolean,
     readonly authMethodIds: readonly string[],
@@ -29,6 +33,7 @@ export class AcpAgentCapabilities {
     return new AcpAgentCapabilities(
       result.protocolVersion,
       capabilities?.loadSession === true,
+      !!capabilities?.sessionCapabilities?.resume,
       capabilities?.promptCapabilities?.image === true,
       capabilities?.mcpCapabilities?.http === true,
       (result.authMethods ?? []).map((method) => method.id),
@@ -36,19 +41,25 @@ export class AcpAgentCapabilities {
     );
   }
 
-  /** What a run needs: `session/load` to restore, HTTP MCP when Agent Tools are exposed. */
+  /** What a run needs: a way to reopen its session to restore, HTTP MCP when Agent Tools are exposed. */
   static requiredFor(input: Readonly<{ restore: boolean; mcp: boolean }>): AcpRequiredCapability[] {
     return [
-      ...(input.restore ? ["loadSession" as const] : []),
+      ...(input.restore ? ["restoreSession" as const] : []),
       ...(input.mcp ? ["mcpHttp" as const] : []),
     ];
+  }
+
+  /** `session/load` when the agent offers it, else `session/resume`; `null` when it offers neither. */
+  restoreMethod(): AcpRestoreMethod | null {
+    if (this.loadSession) return "load";
+    return this.resumeSession ? "resume" : null;
   }
 
   missing(needs: readonly AcpRequiredCapability[]): string[] {
     const missing: string[] = [];
     if (this.protocolVersion !== PROTOCOL_VERSION) missing.push(`protocol version ${PROTOCOL_VERSION}`);
     for (const need of needs) {
-      if (need === "loadSession" && !this.loadSession) missing.push("session/load");
+      if (need === "restoreSession" && !this.restoreMethod()) missing.push("session/load or session/resume");
       if (need === "mcpHttp" && !this.mcpHttp) missing.push("HTTP MCP servers");
     }
     return missing;

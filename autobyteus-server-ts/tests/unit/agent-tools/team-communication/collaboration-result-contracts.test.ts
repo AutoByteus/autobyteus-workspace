@@ -28,7 +28,7 @@ const buildSession = () => ({
 }) as never;
 
 describe("collaboration public result contracts", () => {
-  it("requires exact existing-run identity for send success and null for rejection", () => {
+  it("requires exact existing-run identity for send success and no receiver identity for rejection", () => {
     expect(toSendMessageToResult({
       accepted: true,
       code: "DELIVERED",
@@ -49,7 +49,6 @@ describe("collaboration public result contracts", () => {
       accepted: false,
       code: "TARGET_NOT_FOUND",
       message: "Missing.",
-      target_agent_run_id: null,
     });
     expect(() => toSendMessageToResult({ accepted: true })).toThrow();
     expect(() => SendMessageToResultSchema.parse({
@@ -99,8 +98,8 @@ describe("collaboration public result contracts", () => {
     "advertises legal operation-owned output schemas for MCP %s",
     (protocolVersion) => {
       const adapters = [
-        ...new SendMessageToMcpAdapterProvider({} as never).getAdapters(),
-        ...new TaskDelegationToolsMcpAdapterProvider({} as never).getAdapters(),
+        ...new SendMessageToMcpAdapterProvider(() => ({} as never)).getAdapters(),
+        ...new TaskDelegationToolsMcpAdapterProvider(() => ({} as never)).getAdapters(),
       ].filter((adapter) =>
         adapter.definition.name === SEND_MESSAGE_TO_TOOL_NAME ||
         adapter.definition.name === DELEGATE_TASK_TOOL_NAME,
@@ -132,8 +131,14 @@ describe("collaboration public result contracts", () => {
         accepted: false,
         code: "TARGET_NOT_FOUND",
         message: "Missing.",
-        target_agent_run_id: null,
       })).toBe(true);
+      // A rejection never names a receiver (REQ-001: absent = none).
+      expect(ajv.validate(sendSchema, {
+        accepted: false,
+        code: "TARGET_NOT_FOUND",
+        message: "Missing.",
+        target_agent_run_id: null,
+      })).toBe(false);
       expect(ajv.validate(delegateSchema, {
         delegated: true, target_kind: "agent", target_agent_run_id: "fresh-task-ingress",
       })).toBe(true);
@@ -163,8 +168,8 @@ describe("collaboration public result contracts", () => {
 
   it("omits post-2025-03 output schemas for MCP 2025-03-26", () => {
     const adapters = [
-      ...new SendMessageToMcpAdapterProvider({} as never).getAdapters(),
-      ...new TaskDelegationToolsMcpAdapterProvider({} as never).getAdapters(),
+      ...new SendMessageToMcpAdapterProvider(() => ({} as never)).getAdapters(),
+      ...new TaskDelegationToolsMcpAdapterProvider(() => ({} as never)).getAdapters(),
     ].filter((adapter) =>
       adapter.definition.name === SEND_MESSAGE_TO_TOOL_NAME ||
       adapter.definition.name === DELEGATE_TASK_TOOL_NAME,

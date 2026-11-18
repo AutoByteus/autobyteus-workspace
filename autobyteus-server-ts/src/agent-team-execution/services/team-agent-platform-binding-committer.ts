@@ -1,7 +1,11 @@
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TeamAgentPlatformBindingError, createTeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
-import { adoptAgentPlatformBindingInTree, replaceAgentPlatformBindingWithoutConversationInTree } from "./team-run-execution-tree-mutator.js";
+import {
+  adoptAgentPlatformBindingInTree,
+  commitRuntimeSwitchInTree,
+  replaceAgentPlatformBindingWithoutConversationInTree,
+} from "./team-run-execution-tree-mutator.js";
 import type { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 
 /**
@@ -27,14 +31,13 @@ export class TeamAgentPlatformBindingCommitter {
         prepareAgainstCurrent: () => {
           this.options.assertAdmitting();
           const tree = this.options.getTree();
-          const binding = createTeamAgentPlatformBinding(
-            change.kind === "adopt_or_retain" ? change.binding : change.replacement.binding,
-          );
-          const mutation = change.kind === "adopt_or_retain"
-            ? adoptAgentPlatformBindingInTree({ tree, binding })
-            : { outcome: "adopted", tree: replaceAgentPlatformBindingWithoutConversationInTree({
-                tree, replacement: { ...change.replacement, binding },
-              }) };
+          const mutation = change.kind === "runtime_switch"
+            ? { outcome: "adopted" as const, tree: commitRuntimeSwitchInTree({ tree, commit: change }) }
+            : change.kind === "adopt_or_retain"
+              ? adoptAgentPlatformBindingInTree({ tree, binding: createTeamAgentPlatformBinding(change.binding) })
+              : { outcome: "adopted" as const, tree: replaceAgentPlatformBindingWithoutConversationInTree({
+                  tree, replacement: { ...change.replacement, binding: createTeamAgentPlatformBinding(change.replacement.binding) },
+                }) };
           return {
             nextTree: mutation.tree,
             requiresWrite: mutation.outcome === "adopted",

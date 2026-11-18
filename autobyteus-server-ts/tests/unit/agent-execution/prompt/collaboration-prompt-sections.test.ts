@@ -5,6 +5,7 @@ import {
   composeSharedCarpenterPrompt,
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { renderCollaborationSections } from "../../../../src/agent-execution/prompt/collaboration-prompt-sections.js";
+import { CODEX_LONG_RUNNING_COMMAND_SECTION } from "../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import {
   MemberCollaborationContext,
   MemberExecutionContext,
@@ -30,18 +31,21 @@ const context = (input: {
   address: string;
   teamInstruction?: string | null;
   handoffs?: boolean;
+  /** Default: an agent of an Org run. */
+  inOrganization?: boolean;
 }): MemberExecutionContext => {
   const identityRoot = root(input.rootKind);
   return new MemberExecutionContext({
     identity: createCollaborationMemberExecutionIdentity({ root: identityRoot, memberAddress: input.address, agentRunId: "member-run" }),
     teamScoped: input.role !== "standalone_agent",
     collaborationRole: input.role,
+    inOrganization: input.inOrganization ?? input.rootKind === "agent_org",
     authoredEnclosingScopeInstruction: input.teamInstruction ?? null,
     collaboration: new MemberCollaborationContext({
       outgoingHandoffs: input.handoffs ? [handoff] : [],
       deliverLogicalMessage: async () => ({ accepted: true }),
     }),
-    tasks: { root: identityRoot, delegateToNewCopy: async () => ({ delegated: false, message: "none" }), assignToExistingCopy: async () => ({ delegated: false, message: "none" }) },
+    tasks: { root: identityRoot, delegationSource: async () => ({ delegated: false, message: "none" }), ownedTaskOf: () => null },
   });
 };
 
@@ -58,13 +62,17 @@ const VIEWS: ReadonlyArray<readonly [string, Parameters<typeof context>[0]]> = [
   ["direct agent of an organization", { role: "org_agent", rootKind: "agent_org", address: "/project_task_manager", teamInstruction: "Org rules.", handoffs: true }],
 ];
 
+type PromptInput = Omit<Parameters<typeof composeSharedCarpenterPrompt>[0], "longRunningCommandSection">;
+const composeShared = (input: PromptInput) =>
+  composeSharedCarpenterPrompt({ ...input, longRunningCommandSection: CODEX_LONG_RUNNING_COMMAND_SECTION });
+
 describe.each([
-  ["shared (Codex, Claude, ACP, AGY)", composeSharedCarpenterPrompt],
-  ["native AutoByteus", (input: Parameters<typeof composeSharedCarpenterPrompt>[0]) =>
+  ["shared (Codex, Claude, ACP, AGY)", composeShared],
+  ["native AutoByteus", (input: PromptInput) =>
     composeNativeAutoByteusPrompt({ ...input, workspaceRootPath: "/tmp/workspace" })],
 ] as const)("collaboration prompt on the %s path", (_path, compose) => {
   it.each(VIEWS)("renders the approved text for a %s", (_label, input) => {
-    const prompt = compose({ agentDefinition: agent, memberExecutionContext: context(input) });
+    const prompt = compose({ agentDefinition: agent, memberExecutionContext: context(input), semanticMemoryPath: null });
     expect(prompt).toMatchSnapshot();
   });
 });
@@ -72,8 +80,17 @@ describe.each([
 describe("collaboration prompt properties", () => {
   const rendered = (input: Parameters<typeof context>[0]) => renderCollaborationSections(context(input));
 
+  it("autobyteus-461 SR-058: a member of a team run whose Task an org assigned reads the organization line, as a member of an organization's team does", () => {
+    const delegatedByOrg = rendered({ role: "team_member", rootKind: "agent_team", address: "/software_team/code_reviewer", handoffs: true, inOrganization: true });
+    const inOrg = rendered({ role: "team_member", rootKind: "agent_org", address: "/software_team/code_reviewer", handoffs: true });
+    expect(delegatedByOrg).toBe(inOrg);
+    expect(delegatedByOrg).toContain("You can also talk with the organization's other agents and agent teams at their addresses.");
+    expect(rendered({ role: "team_member", rootKind: "agent_team", address: "/software_team/code_reviewer", handoffs: true }))
+      .not.toContain("the organization's other agents");
+  });
+
   it.each(VIEWS)("never states the agent's own address, nor uses a word the agent should not read (%s)", (_label, input) => {
-    const prompt = composeSharedCarpenterPrompt({ agentDefinition: agent, memberExecutionContext: context(input) });
+    const prompt = composeShared({ semanticMemoryPath: null, agentDefinition: agent, memberExecutionContext: context(input) });
     expect(prompt).not.toContain(input.address);
     expect(prompt).not.toMatch(/\b(your address|Your Agent address)\b/i);
     expect(renderCollaborationSections(context(input))).not.toMatch(/(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/);
@@ -111,7 +128,7 @@ describe("collaboration prompt properties", () => {
   });
 
   it("keeps the authored Team Instruction whenever the agent has one, before the collaboration sections", () => {
-    const prompt = composeSharedCarpenterPrompt({ agentDefinition: agent, memberExecutionContext: context(VIEWS[4]![1]) });
+    const prompt = composeShared({ semanticMemoryPath: null, agentDefinition: agent, memberExecutionContext: context(VIEWS[4]![1]) });
     expect(prompt.indexOf("## Team Instruction")).toBeGreaterThan(prompt.indexOf("## Agent Identity"));
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## Working With Other Agents"));
   });

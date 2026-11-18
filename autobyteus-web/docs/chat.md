@@ -54,16 +54,45 @@ goes through `useRunStart`, and every start opens a fresh draft (see
 | --- | --- | --- | --- |
 | Chat nav, left-panel pencil | `newChat` | `startNewChat()` | Daily Assistant; last chat model (`autobyteus.chat.lastModel`) → Daily Assistant default launch config → the AutoByteus runtime's first model |
 | Workspace tree `+` | `newChatInWorkspace` | `startNewChat({ agentDefinitionId, workspaceRootPath })` | as above, in that workspace |
+| Projects tree `+` on a Project or one of its groups | `newChatInProject({ projectId, target? })` | `startDraftUnderProject` (`stores/chatDraftProjectChoice.ts`): New chat or `startForDefinition(target)`, then the [Project choice](#project-choice) | as the workspace `+` for that kind; the Project's folder |
 | Agent / Team **Run** (list, detail) | `runAgent`, `runTeam` | `startForDefinition(target)` | the definition's default launch config → last chat model → default runtime's first model; temp workspace; Auto-approve |
 | **+** on an Agent run view | `copyAgentFromConfig(config)` | `startForDefinition(target, { copied })` | the displayed agent's workspace, runtime, model, model config and approval |
 | **+** on a Team run | `copyTeamRun` | `startForDefinition(target, { copied })` | the run's root settings and member overrides; team defaults if the run cannot be read |
 | Heading switcher | `switchTarget` | `retarget(target)` (or a new draft from the Org page) | workspace, approval and model config carried; member overrides reset |
 | Draft row | `openChatDraft(id)` | `openDraft(id)` | the kept draft exactly as it was left |
 
+A carried start (the heading switcher, `+` on a run) carries no Project.
+
 Copied and carried settings stay as they are; their runtimes' availability and
 catalogs load before Send is offered. The Agent **+** copies the agent on screen:
 the view passes its displayed `AgentRunConfig`, so the run's own agent and a
 delegated child copy alike, with no lookup by run id.
+
+### Project choice
+
+A draft can start its run **under a Project** (see
+[Projects mode](./projects.md#projects-mode-in-the-left-panel)). The draft holds
+`projectChoice: { projectId, folderPicked }` (`stores/chatDraftProjectChoice.ts`;
+`chatDraftStore` only stores the field and calls it):
+
+- **The chip.** New chat's workspace control is one chip. When the node has at
+  least one Project its menu has the left panel's **Workspaces | Projects** tabs
+  and opens on the tab of what the chip shows. The Projects tab lists the
+  Projects (briefcase) and **No project**. Under a Project the chip shows the
+  briefcase and the Project's name, or "Project · folder" when the folder is not
+  the Project's own (aria "Project: …"); otherwise the folder icon and folder.
+  In the Workspaces tab, the Project's folder is marked **Project folder**.
+- **Folder rule.** Choosing a Project sets the folder to the Project's first
+  linked folder, else the temp workspace, unless the user already picked a folder
+  on this start (`chooseDraftFolder` sets `folderPicked`), which is kept.
+  **No project** makes it a plain start and keeps the folder. Nothing changes
+  while the first send is in flight.
+- **Launch.** `chatLaunchService` passes the draft's `projectId` with the start
+  (`prepareAgentRun` / `createAgentTeamRun`). The server records the start in the
+  Project's `project_runs.json`, refuses a deleted Project, and gives the run a
+  `## Project` section in its instructions. The run is listed under the Project
+  at once and under its folder in Workspaces. After the first send the run view
+  shows no Project chip; the choice is fixed once the run exists.
 
 ### Draft rows
 
@@ -150,8 +179,12 @@ server, which rejects run input with empty text.
   ("Delegate to an agent or team") and never changes the target.
   Candidates come from `utils/collaborators/draftMentionEligibility.ts`, which
   mirrors the server's `CollaboratorCandidatePolicy` for the would-be run:
-  shared, non-built-in Agents, then shared Agent Teams, never Orgs, minus only the
-  target's own definition (a Team target's shared members are offered). After
+  shared Agents (the Daily Assistant too; never the Model Router, which
+  `utils/collaborators/collaborationIneligibleAgentDefinitionIds.ts` keeps out as
+  the server's registry marks it `collaborationEligible: false`), then shared Agent
+  Teams, never Orgs, minus only the target's own definition (a Daily Assistant
+  draft does not offer the Daily Assistant; a Team target's shared members are
+  offered). After
   "@", the hint reads "to delegate to an agent or team." The first message keeps
   its mentions.
 - The workspace menu accepts an existing workspace or an absolute folder path
@@ -163,7 +196,15 @@ server, which rejects run input with empty text.
   another folder…" stays available. ArrowDown moves from the search box into the
   results, ArrowUp moves back, Enter picks the highlighted or first match (never
   during IME composition), and Escape closes without changing the selection. The
-  query resets each time the menu opens.
+  query resets each time the menu opens. It lists every registered folder, also
+  one the left panel does not list. Each user folder (not Temp workspace) has a
+  "Remove" button (28px, at the right of the row; on hover or focus from `md`,
+  always below it) that asks first ("Remove folder") and then unregisters the
+  folder (`removeWorkspace`, `useWorkspaceHistoryWorkspaceRemoval`): it leaves
+  every chooser and every view of the left panel; files, memories and run history
+  stay. The server refuses while a run is running there ("Stop active runs before
+  removing this workspace."). Removing the chosen folder moves the chip to Temp
+  workspace.
 
 ### Thinking menu
 
@@ -173,18 +214,25 @@ while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
 `hasThinkingSwitch`, `getThinkingDependentParamKeys`, `applyThinkingParamChoice`
 (menu choices) and `applyThinkingDependentEdit` (form edits).
 
-- **Schema with an on/off switch** (Claude `thinking_enabled`, DeepSeek-style
-  `thinking_type`): one "Thinking" list. It is `Off` followed by each effort
-  level (for example Off · Low · Medium · High · Xhigh · Max), or `Off · On` when
-  there is no effort list. Exactly one row is checked, and it matches what will
-  be sent. Picking a level turns thinking on at that level in one action.
-  Re-picking the stored level while Off also turns thinking on. Other dependent
-  settings (budget, display) appear below a divider, and changing one also turns
-  thinking on.
+- **Schema with an on/off switch** (Claude `thinking_enabled` — the AutoByteus
+  Claude rows Opus 5, Sonnet 5, Sonnet 5.5 and Haiku 5.5, which default to On — and
+  DeepSeek-style `thinking_type`): one
+  "Thinking" list. It is `Off` followed by each effort level (for example Off ·
+  Low · Medium · High · Xhigh · Max), or `Off · On` when there is no effort list.
+  Exactly one row is checked, and it matches what will be sent. Picking a level
+  turns thinking on at that level in one action; Off turns thinking off (the
+  AutoByteus runtime then sends the model's off shape and no effort). Re-picking the stored level while Off
+  also turns thinking on. Any other dependent settings appear below a divider,
+  and changing one also turns thinking on. Claude rows offer no thinking display
+  setting.
 - **Trigger.** It reads "Off" when thinking is off, the active level when the
   model has an effort setting, and "On" otherwise. The bulb is muted when off.
-- **Other schemas** (for example Codex `reasoning_effort` with no switch) keep
-  the per-parameter menu, and a pick changes only that parameter.
+- **Other schemas** (for example Codex `reasoning_effort` with no switch, the
+  effort-only Claude Opus 5.5, Fable 5 and Fable 5.1, whose thinking cannot be
+  switched off, or the Claude Agent SDK runtime, which offers effort only) keep the
+  per-parameter menu, and a pick changes only that parameter. An effort with no
+  schema default (the SDK runtime's) reads "Default" until a level is chosen and
+  writes nothing to the run's settings.
 
 ## Start Surfaces
 
@@ -270,6 +318,27 @@ runtimes are not re-checked on open.
 
 ### Model labels
 
+Model lists stay current without a restart. Opening a model picker re-reads that
+runtime's list in the background (`llmProviderConfig.refreshCatalog`): the list
+already shown stays usable, a new model appears when the read answers, and a failed
+read keeps the last list and shows an error with Retry. Every picker also has a
+**Refresh models** action (`ModelListRefreshControl`, shared by the chat model menu,
+the launch-config and application launch-profile selectors and the phone's model
+sheet; `refreshModelList` also re-discovers the AutoByteus runtime's discovered
+providers) and a busy state while it reads. Concurrent refreshes of one runtime share
+one server read, and every picker showing that runtime updates from the one store
+snapshot. A saved run's model menus re-read that run's options through
+`existingRunConfigStore.reloadModelOptions` and
+`delegatedLaunchDraftStore.reloadOptions`, provided to the menus by the editor
+(`useLockedModelOptionsRefresh`). Both read the server's options per scope and
+merge the answer row by row (`mergeReloadedOptions`): a readable row replaces its
+row; a row the server could not read (`modelListReadable: false`, mapped to an
+`unavailable` state with the server's message by `optionsStateOfAnswer`) never
+replaces options already shown and otherwise shows as `unavailable`; the reload
+then resolves `false`, so the menu shows "Couldn't refresh models" with Retry. The
+saved model is marked "No longer offered" only for a readable answer without it,
+never for an unreadable list.
+
 Chat names models the same way on every surface that uses the chat model menu (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:
 
 | Runtime | `label` | `secondary` |
@@ -316,9 +385,11 @@ explicit attachment owner, then the app routes to `/workspace` and finishes
 the sent draft. On failure the orphan team draft and selection are removed and
 the New chat and its row stay intact.
 
-`composables/chat/useChatRouteRunSync.ts` (used by `pages/chat.vue`) replaces
-`/chat?id=temp-*` with the permanent id whenever the displayed context is
-promoted, on every send path.
+`composables/useDraftRunPromotionRouteSync.ts` (used by `pages/chat.vue`)
+replaces `/chat?id=temp-*` with the permanent id whenever the displayed context
+is promoted, on every send path. The phone's route follows the same promotion
+through the same composable (`composables/mobile/useMobileRouteRunSync.ts`
+replaces its `row`).
 
 ## Run View (D-17)
 
@@ -341,9 +412,9 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
   a chip row (`SkillTagChips`) edits `requestedSkillNames`. Team and Org boxes
   receive no capability and are unchanged.
 - **⚙ run settings** (`RunConfigPanel` → `ExistingRunConfigEditor` →
-  `ExistingRunSettings`): runtime, workspace and approval are fixed; model,
+  `ExistingRunSettings`): workspace and approval are fixed; the agent runtime, model,
   thinking and other model settings are locked while the run is live and
-  editable when it is Offline; Save applies at the next resume. See
+  editable when it is Offline (a Team's or Org's own agent runtime stays fixed); Save applies at the next resume. See
   [Settings](./settings.md#existing-run-configuration).
   - A `temp-*` context (a New chat whose first send failed) has no saved
     settings: ⚙ is hidden. It keeps its error and the composer retry.
@@ -368,7 +439,8 @@ target mode.
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
   time the menu opens. Shared
-  Agents (no Daily Assistant or built-ins), then shared Agent Teams, including
+  Agents (the Daily Assistant too, except in its own run; never the Model
+  Router), then shared Agent Teams, including
   ones already in the run (configured members); only the run's own
   definition is left out, and Agent Orgs are never offered. In a standalone Agent
   run the options depend on the focused agent. The host's composer never offers
@@ -427,9 +499,9 @@ target mode.
   note still display the same. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
   delegation's Task DONE (or CANCELLED) with `update_task` (for example when the user
-  asks it to), live and after reopen. It returns (live, via
-  `task_executions_reopened`) when the agent sets that Task back to TODO or
-  IN_PROGRESS and then messages the copy's run ID, which reactivates it. Notes saved by earlier releases still
+  asks it to), live and after reopen. It returns (live, as the run tree's next
+  change) when the agent sets that Task back to TODO or IN_PROGRESS and then messages
+  the copy's run ID, which reactivates it. Notes saved by earlier releases still
   parse; `UserMessage` strips it and shows each `@Name` as an inline
   chip, and run summaries drop it (`utils/collaborators/collaboratorMentionText.ts`).
   **Only a send with mentions is held** (AR-007,
@@ -451,21 +523,20 @@ target mode.
   checked when it delegates, and the agent gets the reason.
 - **Delegated-run rows.** An agent reaches a listed catalog Agent or Team only with
   `delegate_task` (server: `list_available_agents`, see the server
-  `agent_communication.md`); `send_message_to` never creates a run. Every such copy is an
-  ordinary task row from the run's `taskExecutions` (Offline until its first message), whose
-  task DTO carries `source`, read by `services/collaborators/agentSourceSelectors.ts`. Runs that
-  earlier releases recorded as collaborators were converted at startup into the same kind of
-  row, so the web has no separate collaborator rows, `collaborator_added` event or collaborator
-  list. A new copy arrives as `task_execution_started` (Team: `TASK_EXECUTION_STARTED`), which
-  asks for a fresh view.
+  `agent_communication.md`); `send_message_to` never creates a run. Every such copy is a run
+  of its own, a row of the run's tree (Offline until its first message) with its launch and
+  origin as its run has them (the row's `launch`). Runs that earlier releases recorded as
+  collaborators were converted at startup into ordinary delegated runs, so the web has no
+  separate collaborator rows, `collaborator_added` event or collaborator list. A new copy arrives
+  as the tree's next change ([Run trees](./agent_execution_architecture.md#run-trees-autobyteus-461);
+  it replaced `task_execution_started` / `TASK_EXECUTION_STARTED`).
 - **Delegated-run Artifacts.**
-  - A delegated run's recorded Agent Artifacts load when that run is opened,
-    together with its projection, through the hub-scoped
-    `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`.
-    The rows themselves never fetch any run's artifacts.
-  - They are committed with its Activity and conversation in one step. This goes
-    through `services/agentCollaboration/agentRunCollaborationChildHydration.ts`
-    and the shared `services/runHydration/memberRunStateHydration.ts`.
+  - A delegated run's recorded Agent Artifacts load when that run is opened as its
+    own run, together with its projection, by its own subject (`getRunFileChanges`
+    for an agent run, `getTeamMemberFileChanges` for a delegated team's member; a
+    peer's run on its node). The rows themselves never fetch any run's artifacts.
+  - They are committed with its Activity and conversation in one step, as for any
+    run when it opens.
   - Newer live `FILE_CHANGE` rows are kept.
   - An artifact fetch failure fails that run's load, as a projection failure does.
     The failure is logged with the run's identity, and opening the run again
@@ -498,6 +569,25 @@ target mode.
   it) and attaches `/ws/agent-collaboration/:runId` only while the host runs or
   when the user sends to a child.
 
+## Attaching Files: Limits, Progress, Cancel
+
+The message composer (`ContextFilePathInputArea.vue`, on desktop and the phone) attaches files by the
+`+` button, drop or paste.
+
+- **Limits.** The node's audio/video limit (default 2 GB) and other-file limit (default 25 MB) are read at
+  each pick. A file over its limit is refused before any byte is sent. Limits are node settings
+  (see Server Settings: Context File Size Limits in [Settings](./settings.md)).
+- **Progress and cancel.** An uploading item shows `NN%` and a cancel control (accessible name
+  "Cancel upload of <name>"). Cancel stops the transfer, removes the item without an error message, and
+  the node removes the partial file. Send stays blocked while any upload runs.
+- **Messages.** Failures appear in the same place as before, one localized line per reason: too large
+  names the files and the limit (files over different limits get one line per limit), unsupported type,
+  interrupted connection, and a generic "couldn't attach" line. A failed removal names the file only. The
+  server's own error text is never shown (it goes to the console). Limits are formatted in the UI language
+  with base-1024 `MB`/`GB`.
+- **Large files and the agent.** The agent receives the absolute path to the full file in `Reference files:`.
+  The native runtime does not send a local media file larger than 25 MB inline to the model.
+
 ## Tests
 
 - `stores/__tests__/chatDraftStore.spec.ts`
@@ -512,7 +602,7 @@ target mode.
   server readback, start-surface tools and control geometry. It runs in an owned
   temp data root and needs Chrome, logged-in `claude` and `codex` CLIs and a
   prior `pnpm -C autobyteus-server-ts build`.
-- `composables/chat/__tests__/useChatRouteRunSync.spec.ts`
+- `composables/__tests__/useDraftRunPromotionRouteSync.spec.ts`
 - `components/chat/__tests__/ChatComposer.spec.ts`, `chatComposerMenus.spec.ts`
 - `components/chat/__tests__/ChatThinkingControl.spec.ts`, `chatThinkingMenu.spec.ts`,
   `ChatWorkspaceMenu.spec.ts`; `utils/__tests__/llmThinkingConfigAdapter.spec.ts`
@@ -522,7 +612,21 @@ target mode.
 - Browser probe: `pnpm test:e2e:chat-composer-menus-open-upward`
   (`tests/e2e/chat-composer-menus-open-upward-probe.mjs`). It needs Chrome, a
   logged-in `claude` CLI and a prior `pnpm -C autobyteus-server-ts build`.
-- `composables/chat/__tests__/useChatModelCatalog.spec.ts`
+- `composables/chat/__tests__/useChatModelCatalog.spec.ts`,
+  `useChatModelCatalog.refresh.spec.ts`; model-list refresh:
+  `components/common/__tests__/ModelListRefreshControl.spec.ts`,
+  `components/chat/__tests__/ChatModelMenu.refresh.spec.ts`,
+  `components/mobile/newRun/__tests__/MobileRuntimeModelRows.refresh.spec.ts`,
+  `composables/__tests__/useLockedModelOptionsRefresh.spec.ts`,
+  `services/runConfigEditing/__tests__/existingRunModelOptionsState.spec.ts`,
+  `stores/__tests__/existingRunModelOptionsActions.spec.ts`,
+  `stores/__tests__/delegatedLaunchDraftStore.spec.ts`
+- Browser probe: `node tests/e2e/model-list-journeys-probe.mjs --output-dir <fresh dir>`
+  (the Claude CLI changes while the app runs: new-run picker, a stopped Team
+  member's settings, the saved run's locked menu, discovered-provider refresh, a
+  failing CLI at refresh and at first open). `--cli scripted` (default) needs no
+  credentials; `--cli real` needs the test vault, two Claude Code versions and a
+  prior `pnpm -C autobyteus-server-ts build`.
 - `components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts`
 - `components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts`
 - `components/workspace/config/__tests__/RunConfigPanel.spec.ts`,

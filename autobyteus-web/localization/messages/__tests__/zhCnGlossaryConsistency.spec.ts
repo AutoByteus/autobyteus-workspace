@@ -5,6 +5,7 @@ import zhCnAgentsMessages from '../zh-CN/agents.generated';
 import zhCnApplicationsMessages from '../zh-CN/applications.generated';
 import zhCnChatMessages from '../zh-CN/chat';
 import zhCnMemoryMessages from '../zh-CN/memory.generated';
+import zhCnMemoryPageMessages from '../zh-CN/memory';
 import zhCnSettingsGeneratedMessages from '../zh-CN/settings.generated';
 import zhCnSettingsMessages from '../zh-CN/settings';
 import zhCnShellGeneratedMessages from '../zh-CN/shell.generated';
@@ -21,6 +22,7 @@ const scopedCatalogs = {
   agentTeams: zhCnAgentTeamsMessages,
   workspace: zhCnWorkspaceMessages,
   memory: zhCnMemoryMessages,
+  memoryPage: zhCnMemoryPageMessages,
   applications: zhCnApplicationsMessages,
   tools: zhCnToolsMessages,
   chat: zhCnChatMessages,
@@ -38,7 +40,7 @@ describe('zh-CN glossary consistency', () => {
     expect(zhCnAgentsMessages['agents.pages.agents.go_to_agents']).toBe('前往智能体');
     expect(zhCnAgentTeamsMessages['agentTeams.pages.agent_teams.go_to_agent_teams']).toBe('前往智能体团队');
     expect(zhCnWorkspaceMessages['workspace.components.workspace.common.WorkspaceHeaderActions.new_agent']).toBe('新建智能体');
-    expect(zhCnMemoryMessages['memory.components.memory.CollaborationMemoryDetail.search_runs']).toBe('搜索运行...');
+    expect(zhCnMemoryPageMessages['memory.components.memory.CollaborationMemoryDetail.search_runs']).toBe('按标题或运行 ID 筛选运行…');
     expect(zhCnMemoryMessages['memory.components.memory.MemoryHome.agent_orgs']).toBe('智能体组织');
     expect(zhCnApplicationsMessages['applications.components.applications.ApplicationLaunchConfigModal.default_model_for_all_agents']).toBe('默认模型（适用于所有智能体）');
     expect(zhCnToolsMessages['tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace']).toBe('没有可用的工作区。添加工作区以查看文件。');

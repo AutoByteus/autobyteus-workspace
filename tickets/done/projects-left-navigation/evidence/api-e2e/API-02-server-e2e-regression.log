@@ -1,0 +1,58 @@
+# API-02 gated server E2E regression: tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs
+# Command: env -i PATH HOME=<tmp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs --no-watch
+# Code: 467cff24c0 (HEAD e1d9a58a13/172068d4ed docs only) + API-01 test + harness extra-input change; Date: 2026-10-31T12:58Z start; macOS, Node v22.23.1
+
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 10712ms
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 1 failed | 2 skipped) 156516ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 29249ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1996ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 20573ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 24310ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 100179ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 216ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 10434ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 675ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 14624ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 35093ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 15578ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 15775ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 36325ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162539ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3439ms
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (10 tests) 9021ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 76951ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 11654ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 13208ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 10814ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 5089ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 5680ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 2436ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 2819ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 21143ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 4461ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3532ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 701ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 695ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2919ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 5056ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 9640ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 7723ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 2584ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 9391ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 2069ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 401ms
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:770:17
+ Test Files  1 failed | 38 passed (39)
+      Tests  1 failed | 179 passed | 4 skipped (184)
+
+## The one failure
+     × EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders 75016ms
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Error: assignment refused (offset 9): {"delegated":false,"message":"Task existing-copy-race-a3d4d1c7-18 was given to the task agent, but the message with its work was not delivered (The task agent exc_worker_d4e631_88a8d73006224040bd81ee28060ed232 could not continue with its conversation: AgentRun 'exc_worker_d4e631_88a8d73006224040bd81ee28060ed232' is fenced for root shutdown.). Message the task agent's run id exc_worker_d4e631_88a8d73006224040bd81ee28060ed232, or set Task existing-copy-race-a3d4d1c7-18 to CANCELLED, or delegate it to a new task agent."}
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:770:17
+    768|         } else {
+
+## Rerun of that test alone (same commit)
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 8 skipped) 116848ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  116427ms
+      Tests  1 passed | 8 skipped (9)

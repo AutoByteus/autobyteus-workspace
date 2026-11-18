@@ -21,7 +21,8 @@ const mockLlmProviderService = vi.hoisted(() => ({
   deleteCustomProvider: vi.fn(),
 }));
 
-vi.mock('../../../../../src/llm-management/services/model-catalog-service.js', () => ({
+vi.mock('../../../../../src/llm-management/services/model-catalog-service.js', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   getModelCatalogService: () => mockModelCatalogService,
 }));
 vi.mock('../../../../../src/llm-management/llm-providers/services/llm-provider-service.js', async (importOriginal) => ({
@@ -30,6 +31,8 @@ vi.mock('../../../../../src/llm-management/llm-providers/services/llm-provider-s
 }));
 
 import { LlmProviderResolver } from '../../../../../src/api/graphql/types/llm-provider.js';
+import { ModelListUnavailableError } from '../../../../../src/llm-management/services/model-catalog-service.js';
+import { RuntimeKind } from '../../../../../src/runtime-management/runtime-kind-enum.js';
 import {
   QwenConfigurationError,
   QWEN_CONFIGURATION_REPAIR_REQUIRED,
@@ -250,12 +253,18 @@ describe('LlmProviderResolver', () => {
     expect(mockModelCatalogService.runtimeModelSelectionCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk');
   });
 
+  it('fails the descriptor query when the runtime list could not be read, instead of answering "not offered" (model: null)', async () => {
+    mockModelCatalogService.runtimeModelSelectionCatalog.mockRejectedValue(new ModelListUnavailableError(RuntimeKind.CLAUDE_AGENT_SDK));
+    await expect(new LlmProviderResolver().runtimeCurrentModelDescriptors('claude_agent_sdk', ['opus']))
+      .rejects.toThrow('Claude Agent SDK returned no models.');
+  });
+
   it('delegates exact-provider ensure and reload mutations', async () => {
     const snapshot = {
       runtimeKind: 'autobyteus',
       ownerProvider: { ...provider('OLLAMA'), catalogMode: 'DISCOVERED' },
       sources: [{
-        modelKind: 'LLM', state: 'READY', modelCount: 0,
+        state: 'READY', modelCount: 0,
         successfulUnitCount: 1, failedUnitCount: 0, safeMessage: null,
       }],
       llmModels: [], audioModels: [], imageModels: [], videoModels: [],

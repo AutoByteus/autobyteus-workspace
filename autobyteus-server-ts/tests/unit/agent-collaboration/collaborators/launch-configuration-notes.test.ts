@@ -18,10 +18,10 @@ const identity = { addedAt: "2026-10-12T00:00:00.000Z", addedViaAgentRunId: "pm"
 describe("launch configuration notes (REQ-003, REQ-008)", () => {
   it("names the agent, the skipped configuration, the reason and what it runs on instead", () => {
     expect(launchNotesOf([{ name: "implementation_engineer", subject: "agent", launch: claude, source: { origin: "inherited", fallbacks: [codexMissing] } }]))
-      .toEqual(["implementation_engineer: its agent default codex_app_server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on claude_agent_sdk / opus (inherited from the run)."]);
+      .toEqual(["implementation_engineer: its agent default Codex App Server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on Claude Agent SDK / opus (inherited from the run)."]);
     expect(launchNotesOf([{ name: "Product Team", subject: "team", launch: claude, source: { origin: "inherited", fallbacks: [{
       layer: "team_default", runtimeKind: "codex_app_server", llmModelIdentifier: null, reason: "incomplete", detail: "It names no model.",
-    }] } }])).toEqual(["Product Team: its team default codex_app_server / (no model) could not be used (It names no model); its members without their own default run on claude_agent_sdk / opus (inherited from the run)."]);
+    }] } }])).toEqual(["Product Team: its team default Codex App Server / (no model) could not be used (It names no model); its members without their own default run on Claude Agent SDK / opus (inherited from the run)."]);
   });
 
   it("renders nothing when no configured layer was skipped", () => {
@@ -45,7 +45,7 @@ describe("launch configuration notes (REQ-003, REQ-008)", () => {
       ],
     };
     expect(entryPlanLaunchNotes(plan)).toEqual([
-      "implementation_engineer: its agent default grok_build / grok-4 could not be used (no grok); it runs on codex_app_server / sol-6.1 (its team default).",
+      "implementation_engineer: its agent default Grok Build / grok-4 could not be used (no grok); it runs on Codex App Server / sol-6.1 (its team default).",
     ]);
   });
 

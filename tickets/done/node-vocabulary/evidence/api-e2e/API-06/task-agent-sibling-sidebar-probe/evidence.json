@@ -1,0 +1,640 @@
+{
+  "startedAt": "2026-10-24T12:42:05.103Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue",
+  "scenarios": {
+    "SIBLING-001": {
+      "result": "Pass",
+      "description": "Initially visible siblings; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "startedAt": "2026-10-24T12:42:18.921Z",
+      "details": {
+        "initial": {
+          "mode": "live",
+          "focus": "sibling-reviewer",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": false,
+            "sibling-task-b": false,
+            "sibling-worker": false,
+            "sibling-nested-task": false
+          }
+        },
+        "layout": [
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Agent, Worker, level 1, idle, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker"
+          }
+        ],
+        "final": {
+          "mode": "live",
+          "focus": "sibling-worker",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": true,
+            "sibling-task-b": true,
+            "sibling-worker": true,
+            "sibling-nested-task": false
+          }
+        },
+        "requests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-task-a",
+            "requestedAt": "2026-10-24T12:42:19.038Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-task-b",
+            "requestedAt": "2026-10-24T12:42:19.849Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-task-b",
+            "requestedAt": "2026-10-24T12:42:20.481Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-worker",
+            "requestedAt": "2026-10-24T12:42:21.018Z"
+          }
+        ]
+      }
+    },
+    "SIBLING-002": {
+      "result": "Pass",
+      "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves siblings",
+      "startedAt": "2026-10-24T12:42:21.613Z",
+      "details": {
+        "final": {
+          "mode": "live",
+          "focus": "sibling-nested-task",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": true,
+            "sibling-task-b": true,
+            "sibling-worker": true,
+            "sibling-nested-task": true
+          }
+        }
+      }
+    },
+    "SIBLING-003": {
+      "result": "Pass",
+      "description": "Retained delegated execution reload uses exact conversation; no-delegation list unchanged",
+      "startedAt": "2026-10-24T12:42:22.636Z",
+      "details": {
+        "retained": {
+          "mode": "retained",
+          "focus": "sibling-task-b",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": false,
+            "sibling-task-b": true,
+            "sibling-worker": false,
+            "sibling-nested-task": false
+          }
+        },
+        "empty": {
+          "mode": "empty",
+          "focus": "sibling-worker",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            }
+          ],
+          "ancestors": [],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": false,
+            "sibling-task-b": false,
+            "sibling-worker": true,
+            "sibling-nested-task": false
+          }
+        }
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-a",
+      "requestedAt": "2026-10-24T12:42:19.038Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-b",
+      "requestedAt": "2026-10-24T12:42:19.849Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-b",
+      "requestedAt": "2026-10-24T12:42:20.481Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-worker",
+      "requestedAt": "2026-10-24T12:42:21.018Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-nested-task",
+      "requestedAt": "2026-10-24T12:42:21.980Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-a",
+      "requestedAt": "2026-10-24T12:42:23.463Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-b",
+      "requestedAt": "2026-10-24T12:42:24.905Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-worker",
+      "requestedAt": "2026-10-24T12:42:26.150Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to open team member run: Error: SIBLING_EXPECTED_PROJECTION_FAILURE\n    at selectTreeRunFromHistory (http://127.0.0.1:57540/_nuxt/stores/runHistorySelectionActions.ts:79:52)\n    at async Object.onSelectTeamMember (http://127.0.0.1:57540/_nuxt/composables/useWorkspaceHistorySelectionActions.ts:73:22)"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65534/rest/health net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65534/rest/health net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 44730,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run task Agent sibling sidebar browser probe",
+      "message": "Unexpected browser error",
+      "details": [
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        },
+        {
+          "type": "console:error",
+          "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+        },
+        {
+          "type": "console:error",
+          "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"
+        }
+      ],
+      "stack": "Error: Unexpected browser error\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/task-agent-sibling-sidebar-probe.mjs:71:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/task-agent-sibling-sidebar-probe.mjs:361:3"
+    }
+  ],
+  "port": 57540,
+  "baseUrl": "http://127.0.0.1:57540",
+  "browserVersion": "156.0.8078.47",
+  "failureDom": "Task Agent sibling history sidebar probe\nSibling Workspace\nTEAMS\nSibling Team\n(1)\nRequest sibling-worker\nnow\nW\nWorker\nnow\nR\nReviewer\nnow\nW\nWorker\nIdle\nYou\nRequest sibling-worker\nW\nWorker\n\nCONVERSATION_sibling-worker\n\nContext Files (0)\n(drag, paste, or upload)",
+  "result": "Fail",
+  "finishedAt": "2026-10-24T12:42:27.447Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/evidence/api-e2e/API-06/task-agent-sibling-sidebar-probe/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/evidence/api-e2e/API-06/task-agent-sibling-sidebar-probe/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/tickets/in-progress/node-vocabulary/evidence/api-e2e/API-06/task-agent-sibling-sidebar-probe"
+  }
+}

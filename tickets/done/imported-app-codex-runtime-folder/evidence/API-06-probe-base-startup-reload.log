@@ -1,0 +1,9 @@
+# TEMPORARY PROBE (not committed) on BASE sources: application-catalog-transition-service.ts and build-application-platform-runtime.ts from 1138e8fbef; Brief Studio loaded at startup (runtime folder prepared by startup), Codex signed in; then package reload and app-scoped repair. 2026-10-24T17:29:05Z
+[AB238-PROBE] startup view 200 {"applicationId":"<id>","slots":[{"slot":{"slotKey":"draftingTeam","name":"Drafting Team","description":"Team resource used when Brief Studio launches a new drafting run.","allowedExecutionResourceKinds":["AGENT_TEAM"],"allowedExecutionResourceSources":["bundle","shared"],"required":true,"supportedL
+[AB238-PROBE] reload errors null
+[AB238-PROBE] after package reload 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+[AB238-PROBE] repair 200 {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>' is currently reentering. Please retry after repair/reload completes.","updatedAt":"2026-10-24T17:29:18.844Z"}
+[AB238-PROBE] after repair 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+ ✓ tests/e2e/runtime/zz-probe-ab238-base-reload.e2e.test.ts (1 test) 2543ms
+     ✓ reload and repair  1292ms
+exit=0

@@ -1,0 +1,100 @@
+{
+  "startedAt": "2026-11-07T21:26:26.394Z",
+  "result": "Pass",
+  "publicName": "lvh.me",
+  "steps": {
+    "switchOn-alpha": {
+      "setRemoteCollaborationEnabled": {
+        "enabled": true
+      }
+    },
+    "switchOn-beta": {
+      "setRemoteCollaborationEnabled": {
+        "enabled": true
+      }
+    },
+    "P3": {
+      "add": {
+        "data": {
+          "addPeerNode": {
+            "nodeId": "srv_3ylipgEKhCyF7cPZozktHUir6wvtj7le",
+            "name": "beta-by-ip",
+            "baseUrl": "http://127.0.0.1:51678"
+          }
+        }
+      },
+      "remove": {
+        "data": {
+          "removePeerNode": true
+        }
+      },
+      "peersAfterRemove": {
+        "peerNodes": []
+      },
+      "result": "Pass"
+    },
+    "P1": {
+      "add": {
+        "data": null,
+        "errors": [
+          {
+            "message": "http://lvh.me:51678 is not an AutoByteus node.",
+            "locations": [
+              {
+                "line": 1,
+                "column": 32
+              }
+            ],
+            "path": [
+              "addPeerNode"
+            ],
+            "extensions": {
+              "code": "PEER_NOT_AUTOBYTEUS"
+            }
+          }
+        ]
+      },
+      "betaRefusalLines": [
+        "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /rest/remote-access/status host lvh.me (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)"
+      ],
+      "peersOnAlpha": {
+        "peerNodes": []
+      },
+      "result": "Pass"
+    },
+    "P2": {
+      "add": {
+        "data": {
+          "addPeerNode": {
+            "nodeId": "srv_3ylipgEKhCyF7cPZozktHUir6wvtj7le",
+            "name": "beta-by-public-name",
+            "baseUrl": "http://lvh.me:51678"
+          }
+        }
+      },
+      "peersOnAlpha": {
+        "peerNodes": [
+          {
+            "nodeId": "srv_3ylipgEKhCyF7cPZozktHUir6wvtj7le",
+            "name": "beta-by-public-name",
+            "baseUrl": "http://lvh.me:51678"
+          }
+        ]
+      },
+      "newBetaRefusalLines": [],
+      "result": "Pass"
+    }
+  },
+  "cleanup": {
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "dns": [
+    {
+      "address": "127.0.0.1",
+      "family": 4
+    }
+  ],
+  "finishedAt": "2026-11-07T21:26:33.442Z"
+}

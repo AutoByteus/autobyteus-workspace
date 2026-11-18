@@ -1,0 +1,38 @@
+# IMP-117 (IR-038): after the Org selection/reveal, the phone's view read before a tree row opens, and the peer send's ids (phone bundle rebuilt: exit 0)
+mobile build 0
+MSP done
+PMU done
+CHAIN-DONE
+
+## MSP (msp2)
+[mobile-shell] MSP-02 Fail: a member's task agent beside the member, as on the desktop (DEC-009)
+[mobile-shell] MSP-03 Fail: each kind opens its agent's conversation, a message from the phone reaches it, ← keeps the scroll and marks the row
+[mobile-shell] MSP-05 Fail: locator.click: Timeout 30000ms exceeded.
+[mobile-shell] MSP-06 Pass
+[mobile-shell] MSP-07 Fail: locator.getAttribute: Timeout 30000ms exceeded.
+[mobile-shell] MSP-33 Fail: Team member: the same subject and screen after "Opening…", never the list (AC-005-1/3/7)
+[mobile-shell] MSP-20 Fail: a third child appears within the push budget, with its view read again on each surface
+[mobile-shell] MSP-22 Fail: the agent run attempts with its catch-up read first (AC-004)
+[mobile-shell] MSP-24 Fail: one view re-read per close, none afterwards (QR-002)
+[mobile-shell] MSP-29 Fail: Timed out waiting for row agent:content_creator_de033a3fde4549f2831a08a9bb353cd8/agent:publisher_cdd2fd70fffb4cb6979e679874f6dbf5
+[mobile-shell] MSP-53 Pass
+[mobile-shell] MSP-46 Pass
+[mobile-shell] MSP-52 Pass
+
+## MSP-33 restore steps (after reload)
+agent Activity reached  ?row=agent:project_task_manager_4124502dbccb45caa8db45d402d95ddb&screen=activity
+Team Messages reached  ?row=team:delivery_team_5419e310dd304cb18d5120e2385ee3d9&screen=messages
+Team member NOT reached listShown ?row=team:delivery_team_5419e310dd304cb18d5120e2385ee3d9/team_member:delivery_team_5419e310dd304cb18d5120e2385ee3d9:release_notes_writer_74c6f372513649a49061f444c04cbe74&screen=run
+delegated task agent reached  ?row=agent:project_task_manager_4124502dbccb45caa8db45d402d95ddb/agent:release_notes_writer_cda9e597d9f0440ebac70d88c679229d&screen=run
+
+## MSP keys the probe builds vs the server's (SR-084): MSP-03/05/07 an Org's own member; MSP-29 a peer agent
+mobile-run-row-org:delivery_org_60a114bac51047679e3ba1e43e5c8715/agent:release_notes_writer_e78bd829685f4d898aad6f1fbcdac071
+Timed out waiting for row agent:content_creator_de033a3fde4549f2831a08a9bb353cd8/agent:publisher_cdd2fd70fffb4cb6979e679874f6dbf5
+server keys: org_agent:<orgRunId>:<agentRunId>, peer_agent:<agentRunId> (run-tree-view.ts runTreeRowKey)
+
+## PMU (pmu4)
+PMU-003 Pass 
+PMU-012 Pass 
+PMU-016 Pass 
+PMU-018 Pass 
+PMU-019 Fail Timed out: nested member selected

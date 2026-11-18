@@ -1,50 +1,10 @@
-import {
-  applyDelegatedLaunchSelectionsToTaskExecutions,
-  type DelegatedLaunchForest,
-  type DelegatedLaunchSelections,
-} from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
-import type {
-  TaskExecution,
-  TaskTeamExecution,
-  TeamRunExecutionTreeSnapshot,
-} from "../domain/team-run-execution-tree.js";
+import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
-import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
+import { commitRuntimeSwitchOnRecord } from "../../run-history/domain/runtime-selection-rule.js";
+import type { CollaborationAgentRuntimeSwitchCommit } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
-
-/**
- * Appends a new task execution as a link of the coordinating run's top level. Every new task agent is
- * hosted by the root TeamRun (the team adapter's `planActivation`: CM-1 refuses targets inside the
- * delegator's own Team), and task agents created by task-team members are linked by the coordinating
- * run (CM-7, U-5); a task Team never holds task executions.
- */
-export const addTaskExecutionToTree = (input: {
-  tree: TeamRunExecutionTreeSnapshot;
-  execution: TaskExecution;
-}): TeamRunExecutionTreeSnapshot => {
-  const rootTeam = input.tree.rootTeam;
-  if (rootTeam.taskExecutions.some((task) =>
-    "agentRunId" in task
-      ? "agentRunId" in input.execution && task.agentRunId === input.execution.agentRunId
-      : "teamRunId" in input.execution && task.teamRunId === input.execution.teamRunId)) {
-    throw new Error("Task execution is already present in the owner TeamRun.");
-  }
-  return validateTeamRunExecutionTreePayload({
-    ...input.tree,
-    rootTeam: { ...rootTeam, taskExecutions: [...rootTeam.taskExecutions, input.execution] },
-  }, rootTeam.teamRunId);
-};
-
-/** Records a remote run an agent of this Team delegated to (CM-10), once, at its delegation's commit. */
-export const addRemoteTaskExecutionToTree = (input: {
-  tree: TeamRunExecutionTreeSnapshot;
-  link: RemoteTaskExecution;
-}): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
-  ...input.tree,
-  rootTeam: { ...input.tree.rootTeam, remoteTaskExecutions: [...(input.tree.rootTeam.remoteTaskExecutions ?? []), input.link] },
-}, input.tree.rootTeam.teamRunId);
 
 type AgentExecutionNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 
@@ -88,18 +48,11 @@ export const adoptAgentPlatformBindingInTree = (input: {
     changed = true;
     return { ...agent, platformAgentRunId: input.binding.platformAgentRunId };
   };
-  const mapTask = (task: TaskExecution): TaskExecution =>
-    "agentRunId" in task ? mapAgent(task) : {
-      ...task,
-      members: task.members.map(mapAgent),
-      taskExecutions: task.taskExecutions.map(mapTask),
-    } as TaskTeamExecution;
   const next = {
     ...input.tree,
     rootTeam: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
-      taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
     },
   };
   if (matches !== 1) {
@@ -141,17 +94,11 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
     }
     return { ...agent, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   };
-  const mapTask = (task: TaskExecution): TaskExecution => "agentRunId" in task ? mapAgent(task) : {
-    ...task,
-    members: task.members.map(mapAgent),
-    taskExecutions: task.taskExecutions.map(mapTask),
-  } as TaskTeamExecution;
   const next = {
     ...input.tree,
     rootTeam: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
-      taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
     },
   };
   if (matches !== 1) {
@@ -163,19 +110,45 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
   return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
 };
 
-/** The tree's delegated copies, for the user model choice and Stop (DS-001, DS-002). */
-export const teamDelegatedLaunchForest = (tree: TeamRunExecutionTreeSnapshot): DelegatedLaunchForest => Object.freeze({
-  taskExecutionLists: taskExecutionListsOf({ taskExecutions: tree.rootTeam.taskExecutions }),
-});
-
-/** Records user model choices on the tree's copies; started values are untouched. */
-export const applyTeamDelegatedLaunchSelections = (
-  tree: TeamRunExecutionTreeSnapshot,
-  selections: DelegatedLaunchSelections,
-): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
-  ...tree,
-  rootTeam: {
-    ...tree.rootTeam,
-    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(tree.rootTeam.taskExecutions, selections),
-  },
-}, tree.rootTeam.teamRunId);
+/**
+ * autobyteus-348: the activation's commit of a switched member. The member is found among the team's members and changed by the shared record step; a missing or ambiguous member, or a stale switch ID, is a conflict.
+ */
+export const commitRuntimeSwitchInTree = (input: {
+  tree: TeamRunExecutionTreeSnapshot;
+  commit: CollaborationAgentRuntimeSwitchCommit;
+}): TeamRunExecutionTreeSnapshot => {
+  const { execution, switchId, platformAgentRunId } = input.commit;
+  if (execution.root.rootSubjectKind !== "agent_team" || execution.root.rootRunId !== input.tree.rootTeam.teamRunId) {
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+      "The runtime switch commit belongs to a different root TeamRun.",
+    );
+  }
+  let matches = 0;
+  const mapAgent = <T extends AgentExecutionNode & Readonly<{ pendingRuntimeSwitch?: PendingRuntimeSwitch }>>(agent: T): T => {
+    if (agent.address !== execution.memberAddress || agent.agentRunId !== execution.agentRunId) return agent;
+    matches += 1;
+    const result = commitRuntimeSwitchOnRecord(agent, switchId, platformAgentRunId);
+    if (result.kind === "conflict") {
+      throw new TeamAgentPlatformBindingError(
+        "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+        `The runtime switch commit does not match the persisted member (${result.reason}).`,
+      );
+    }
+    return result.record;
+  };
+  const next = {
+    ...input.tree,
+    rootTeam: {
+      ...input.tree.rootTeam,
+      members: input.tree.rootTeam.members.map(mapAgent),
+    },
+  };
+  if (matches !== 1) {
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+      "The runtime switch commit target was not found exactly once in the execution tree.",
+    );
+  }
+  return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
+};

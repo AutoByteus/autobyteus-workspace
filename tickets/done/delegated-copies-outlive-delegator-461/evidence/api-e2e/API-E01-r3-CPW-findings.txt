@@ -1,0 +1,60 @@
+# Case: API-E01 collaboration-prompt-wording (CPW), round 3 — findings F-11, F-12, F-13 (API-REV-003)
+# Commit: da80596b0a (merged state 8a47481617); in-process Studio server, real HTTP/WS/GraphQL/scoped MCP
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts … --no-watch --no-file-parallelism
+# Look for: F-11 rows 2-5 get the standalone agent's section and row 5 no instruction; row 8 (org) misses the organization line.
+#           F-12 B's header names A's address while B's send to that address is COLLABORATION_TARGET_NOT_FOUND.
+#           F-13 RUN_NOT_FOUND / TEAM_SEND_MESSAGE_REJECTED for a user message with @ to a child row (agent view: CPW-M2, CPW-M4; team view: CPW-M5).
+
+3318: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+3319:AssertionError: row 2 task agent of a standalone agent: collaboration part of the prompt: expected '## Working With Other Agents\n\nYou c…' to be '## Working With Other Agents\n\nYou a…' // Object.is equality
+3352: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+3353:AssertionError: row 3 task agent in a Team run: collaboration part of the prompt: expected '## Working With Other Agents\n\nYou c…' to be '## Working With Other Agents\n\nYou a…' // Object.is equality
+3386: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+3387:AssertionError: row 4 task agent in an Org run: collaboration part of the prompt: expected '## Working With Other Agents\n\nYou c…' to be '## Working With Other Agents\n\nYou a…' // Object.is equality
+3420: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+3421:AssertionError: row 5 task agent with handoff rules: the authored instruction: expected undefined to be truthy
+3440: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+3441:AssertionError: row 5 task agent with handoff rules: collaboration part of the prompt: expected '## Working With Other Agents\n\nYou c…' to be '## Working With Other Agents\n\nYou a…' // Object.is equality
+3478: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+3479:AssertionError: row 8 member of a task agent team in an organization: collaboration part of the prompt: expected '## Team Instruction\n\nTeam instructi…' to be '## Team Instruction\n\nTeam instructi…' // Object.is equality
+3509: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+3510:Error: The agent view rejected the message for cpw_manager_f3d213_f99888068c28464da2f85efca3a1ba26: {"root_subject_kind":"agent","root_run_id":"cpw_manager_f3d213_091026e5d5db4cb1a64ec8c75ce52c39","command_id":"3b7e0e63-6f30-4e8c-bada-4ce59de7f012","command_type":"SEND_MESSAGE","target_agent_run_id":"cpw_manager_f3d213_f99888068c28464da2f85efca3a1ba26","state":"rejected","code":"RUN_NOT_FOUND","message":"AgentRun 'cpw_manager_f3d213_f99888068c28464da2f85efca3a1ba26' is not in Agent root 'cpw_manager_f3d213_091026e5d5db4cb1a64ec8c75ce52c39'."}
+3523: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+3524:AssertionError: B sending to A's address read: {"accepted":false,"code":"COLLABORATION_TARGET_NOT_FOUND","message":"No agent or agent team you can talk with has the address /cpw_outsider_f3d213. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task."}: expected 'You have a new task from the agent wi…' to contain 'You have a new task from the agent wi…'
+3546: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+3547:Error: The agent view rejected the message for cpw_outsider_f3d213_c6bbb3e0271d48deb752ad155c7f0f46: {"root_subject_kind":"agent","root_run_id":"cpw_manager_f3d213_cac92fc283114d36b29445e84be4354f","command_id":"c1d16105-607b-455c-b17d-24b1b262091e","command_type":"SEND_MESSAGE","target_agent_run_id":"cpw_outsider_f3d213_c6bbb3e0271d48deb752ad155c7f0f46","state":"rejected","code":"RUN_NOT_FOUND","message":"AgentRun 'cpw_outsider_f3d213_c6bbb3e0271d48deb752ad155c7f0f46' is not in Agent root 'cpw_manager_f3d213_cac92fc283114d36b29445e84be4354f'."}
+3560: FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)
+3561:Error: The team view refused the message for cpw_outsider_f3d213_bdf33f2c22124eb28d18c56fb46ba8f8: {"code":"TEAM_SEND_MESSAGE_REJECTED","message":"AgentRun 'cpw_outsider_f3d213_bdf33f2c22124eb28d18c56fb46ba8f8' is not in root 'cpw_team_f3d213_b36a0a113c654fe2be760eebdb3d0b64'.","details":"RUN_NOT_FOUND","error_scope":null,"error_effect":null,"turn_id":null,"change_sequence":null,"agent_run_id":"cpw_outsider_f3d213_bdf33f2c22124eb28d18c56fb46ba8f8"}
+3575:AssertionError: team root: df_crew_5d6f07_f69b15562e81469892cb7571d2f40688 recorded: expected 'df_manager_5d6f07_39534746ad034e91a51…' to contain 'df_crew_5d6f07_f69b15562e81469892cb75…'
+3592:AssertionError: agent root: team records: expected 1 to be greater than or equal to 2
+3605:AssertionError: org root: team records: expected 1 to be greater than or equal to 2
+3618:AssertionError: expected [ { …(3) } ] to be undefined
+3651:AssertionError: {"error":{"code":"PROJECT_OPERATION_UNCONFIRMED","message":"Task change could not be confirmed. Check the saved Task before repeating."}}: expected true not to be true // Object.is equality
+3664:AssertionError: expected { …(6) } to deeply equal { …(5) }
+3694:AssertionError: {"error":{"code":"PROJECT_OPERATION_UNCONFIRMED","message":"Task change could not be confirmed. Check the saved Task before repeating."}}: expected true not to be true // Object.is equality
+
+(Log lines 3575 … 3694 are delegation-forest-restore and project-task-boundaries from the same run: stale suites still to rewrite, Next Round; not findings.)
+
+## Prompt differences (row 2 shown; rows 3, 4, 5 identical in the collaboration part; row 8 org line)
+- Expected
++ Received
+- You are a task agent: another agent delegated a task to you. The task message tells you how to reach that agent; when you finish, or need something you can't get yourself, tell it using `send_message_to`.
+-
+- You can also delegate tasks to other agents and agent teams.
++ You can delegate tasks to other agents and agent teams.
+- On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents or answer its question. Don't send acknowledgements, status chatter or promises to work.
++ On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements, status chatter or promises to work.
+- Expected
++ Received
+- - To talk with a teammate, use `send_message_to` with their address. You can also talk with the organization's other agents and agent teams at their addresses.
++ - To talk with a teammate, use `send_message_to` with their address.
++ You can delegate tasks to other agents and agent teams.
+- On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to report your result, to ask for input you need, or to follow up with one of your task agents o
++ On receiving a request, follow your own instructions and skills. Use `send_message_to` for a purpose: to follow up with a task agent, or to answer a question it asks you. Don't send acknowledgements
+-
+- ### Handoffs
+-
+- When you finish your work or get stuck, call `get_handoff_rules`. Select the single rule whose `when` condition most specifically matches your outcome, and message only its `recipient_address` with 
+- Expected

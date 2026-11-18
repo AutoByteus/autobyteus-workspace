@@ -1,0 +1,7 @@
+# Clean-clone run of codex/agent-settings-focused @ f1f2d137db (/tmp/ab366-clone); full log 870081 bytes, trimmed to summaries, skips and failures.
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ Test Files  87 passed | 20 skipped (107)
+      Tests  506 passed | 69 skipped (575)
+   Start at  10:53:30
+   Duration  226.90s (transform 8.98s, setup 1.13s, import 82.85s, tests 133.04s, environment 6ms)
+exit=0

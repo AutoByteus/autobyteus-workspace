@@ -13,9 +13,9 @@ const entries = async (dir: string): Promise<string[]> => {
 
 /**
  * Every Task's `agent_run_resources.json`, in both Task roots: `projects/<projectId>/tasks/<taskId>/`
- * and `ad-hoc-tasks/<taskId>/`. Enumeration (independent of whether the Project or Task metadata
- * still exists, so closed stays closed after Delete), strict reads, and per-file locked atomic
- * replacement with a synchronous commit observer.
+ * and `ad-hoc-tasks/<taskId>/`. Enumeration (independent of whether the Task metadata still exists),
+ * strict reads, per-file locked atomic replacement with a synchronous commit observer, and removal
+ * with its Task (contract T-3).
  */
 export class TaskExecutionResourceStore {
   constructor(readonly layout = new ProjectsLayout(), readonly adHocLayout = new AdHocTasksLayout()) {}
@@ -43,6 +43,9 @@ export class TaskExecutionResourceStore {
       if (taskId) await add({ projectId: null, taskId });
     }
     return found;
+  }
+  async remove(location: TaskLocation): Promise<void> {
+    await fs.unlink(this.filePath(location)).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; });
   }
   async exists(location: TaskLocation): Promise<boolean> {
     return fs.access(this.filePath(location)).then(() => true, () => false);

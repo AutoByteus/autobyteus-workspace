@@ -1,0 +1,28 @@
+# Test-only fake node for the autobyteus-433 SR-005 measurement: serves the real /mobile bundle.
+# Mode file applies to /mobile documents (not assets): ok | 502 | drop. "refused" = the process is stopped.
+import os, sys, mimetypes
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+PORT, MODE, ROOT = int(sys.argv[1]), sys.argv[2], sys.argv[3]
+class H(BaseHTTPRequestHandler):
+    def send(self, code, body, ctype):
+        self.send_response(code); self.send_header('Content-Type', ctype); self.send_header('Content-Length', str(len(body)))
+        (os.environ.get('ABX_NO_STORE') and self.send_header('Cache-Control', 'no-store')); self.end_headers(); self.wfile.write(body)
+    def do_GET(self):
+        path = self.path.split('?')[0]
+        if path.startswith('/rest/remote-access/status'):
+            return self.send(200, b'{"phoneAccessEnabled":true,"pairingAvailable":true}', 'application/json')
+        if path == '/mobile' or path.startswith('/mobile/'):
+            rel = path[len('/mobile'):].lstrip('/')
+            f = os.path.join(ROOT, rel) if rel else ''
+            if rel and os.path.isfile(f):
+                ctype = mimetypes.guess_type(f)[0] or 'application/octet-stream'
+                return self.send(200, open(f, 'rb').read(), ctype)
+            mode = open(MODE).read().strip()
+            if mode == 'drop': self.connection.close(); return
+            if mode == '502': return self.send(502, b'<html><body><h1>bad gateway</h1></body></html>', 'text/html')
+            return self.send(200, open(os.path.join(ROOT, 'index.html'), 'rb').read(), 'text/html')
+        self.send(404, b'{"detail":"not found"}', 'application/json')
+    def do_POST(self):
+        self.send(404, b'{"code":"REMOTE_ACCESS_PAIRING_INVALID"}', 'application/json')
+    def log_message(self, fmt, *a): sys.stderr.write((fmt % a) + '\n')
+ThreadingHTTPServer(('127.0.0.1', PORT), H).serve_forever()

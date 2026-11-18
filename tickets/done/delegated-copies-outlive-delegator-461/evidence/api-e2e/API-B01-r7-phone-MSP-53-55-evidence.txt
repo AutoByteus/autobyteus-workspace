@@ -1,0 +1,155 @@
+# Case: API-B01 phone, MSP-53 … MSP-55 (API-REV-007, round 7), merged state a529abcbdd; phone bundle built from it
+# Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/mobile-shell-probe.mjs --output-dir=<dir> --cases=MSP-53,MSP-54,MSP-55
+# Result: Pass. Look for: each case Pass; workerTopLevelRows [] before and after opening; rootActiveAfterChild false; rootStartedOnOwnMember true
+{
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-53": "Pass",
+   "MSP-54": "Pass",
+   "MSP-55": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "cases": {
+  "MSP-53": {
+   "result": "Pass",
+   "seconds": 27.2,
+   "root": {
+    "kind": "agent",
+    "rootId": "manager_agent_bc2c_03f3bc50a3034bfba8ad5e40ff6b28c1",
+    "worker": "worker_agent_bc2c_c1cbd62946054139b21a0309e2c80fa7"
+   },
+   "rootRowStatus": {
+    "listed while stopped": [
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ],
+    "after a child command": [
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ]
+   },
+   "workerTopLevelRows": [],
+   "markerInWorkerRun": true,
+   "rootActiveAfterChild": false,
+   "workerTopLevelRowsAfterOpen": [],
+   "rootStartedOnOwnMember": true
+  },
+  "MSP-54": {
+   "result": "Pass",
+   "seconds": 27.3,
+   "root": {
+    "kind": "team",
+    "rootId": "team_team_0e77_6a55060644284162bf81a9e5d3f61fa8",
+    "worker": "worker_team_0e77_3635c7c68c6d4d458270d7970f6bd6c4"
+   },
+   "rootRowStatus": {
+    "listed while stopped": [
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ],
+    "after a child command": [
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ]
+   },
+   "rootActiveAfterOpen": false,
+   "workerTopLevelRows": [],
+   "markerInWorkerRun": true,
+   "rootActiveAfterChild": false,
+   "workerTopLevelRowsAfterOpen": [],
+   "ownRows": [
+    {
+     "key": "mobile-run-row-team:team_team_0e77_6a55060644284162bf81a9e5d3f61fa8",
+     "name": "Team team 0e77"
+    },
+    {
+     "key": "mobile-run-row-team:team_team_0e77_6a55060644284162bf81a9e5d3f61fa8/agent:manager_team_0e77_30ddc886ca5e44bab46307b25cdff8ac",
+     "name": "manager"
+    },
+    {
+     "key": "mobile-run-row-team:team_team_0e77_6a55060644284162bf81a9e5d3f61fa8/agent:worker_team_0e77_3635c7c68c6d4d458270d7970f6bd6c4",
+     "name": "worker team 0e77"
+    }
+   ],
+   "rootStartedOnOwnMember": true
+  },
+  "MSP-55": {
+   "result": "Pass",
+   "seconds": 27.3,
+   "root": {
+    "kind": "org",
+    "rootId": "org_org_3fd1_bccded62ac5e4219a65525f73bbde1f2",
+    "worker": "worker_org_3fd1_71ec714344204739b532ede8e6c6f347"
+   },
+   "rootRowStatus": {
+    "listed while stopped": [
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ],
+    "after a child command": [
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ]
+   },
+   "rootActiveAfterOpen": false,
+   "workerTopLevelRows": [],
+   "markerInWorkerRun": true,
+   "rootActiveAfterChild": false,
+   "workerTopLevelRowsAfterOpen": [],
+   "ownRows": [
+    {
+     "key": "mobile-run-row-org:org_org_3fd1_bccded62ac5e4219a65525f73bbde1f2",
+     "name": "Org org 3fd1"
+    },
+    {
+     "key": "mobile-run-row-org:org_org_3fd1_bccded62ac5e4219a65525f73bbde1f2/agent:manager_org_3fd1_9a297e4ec4794cc1903fd4e6fc485257",
+     "name": "manager"
+    },
+    {
+     "key": "mobile-run-row-org:org_org_3fd1_bccded62ac5e4219a65525f73bbde1f2/task-agent:worker_org_3fd1_71ec714344204739b532ede8e6c6f347",
+     "name": "worker org 3fd1"
+    }
+   ],
+   "rootStartedOnOwnMember": true
+  }
+ },
+ "browserErrors": [],
+ "failedRequests": [],
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

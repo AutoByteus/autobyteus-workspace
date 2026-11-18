@@ -1,0 +1,31 @@
+IMP-24-review-probe-after — IR-003
+Command (worktree root): autobyteus-ts/node_modules/.bin/vitest run --config tickets/in-progress/backend-port-conflict-20261024/evidence/probe.config.mjs tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts
+Invocation: clean env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR"; pnpm through npm exec --yes --package=pnpm@10.28.2 --; direct tsc exceptions
+Commit: d0338db0b
+Environment: macOS arm64 Node26.12.0 pnpm10.28.2; no provider gate
+Finished: 2026-10-24T19:10:43.061471+00:00
+Log ANSI/trailing whitespace normalized; empty successful tsc means exit0.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor
+{"candidate":"CR-C01","outcome":{"outcome":"stopped"},"survivors":[],"retainedLeases":0}
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor
+{"candidate":"CR-C01","cleanup":{"outcomes":[]},"retainedLeases":0}
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-02 ordinary foreground-only commands release output captures with no background record
+{"candidate":"CR-C02","liveLeases":0,"backgroundRecords":0,"retainedCaptures":0,"retainedOutputBytes":0}
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-02 ordinary foreground-only commands release output captures with no background record
+{"candidate":"CR-C02","cleanup":{"outcomes":[]},"retainedLeases":0}
+
+ ✓ tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts (2 tests) 1538ms
+   ✓ CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor  878ms
+   ✓ CR-02 ordinary foreground-only commands release output captures with no background record  659ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  21:10:41
+   Duration  1.73s (transform 59ms, setup 0ms, import 76ms, tests 1.54s, environment 0ms)

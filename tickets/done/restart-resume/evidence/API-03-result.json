@@ -1,0 +1,531 @@
+{
+  "case": "API-03",
+  "mode": "scripted",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T06:42:04.845Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-scripted-gxo3GL",
+  "tag": "RR285mvxgptil",
+  "steps": [
+    {
+      "at": "0.01",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "3.87",
+      "step": "server started",
+      "value": {
+        "label": "p1-X",
+        "pid": 50677,
+        "port": 59475
+      }
+    },
+    {
+      "at": "3.89",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:59474",
+        "codex": null,
+        "claude": null
+      }
+    },
+    {
+      "at": "4.52",
+      "step": "busy",
+      "value": {
+        "label": "p1",
+        "pid": 50797
+      }
+    },
+    {
+      "at": "5.32",
+      "step": "server stopped",
+      "value": {
+        "label": "p1-X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515330094
+        },
+        "ms": 732
+      }
+    },
+    {
+      "at": "6.95",
+      "step": "server started",
+      "value": {
+        "label": "p1-X-again",
+        "pid": 51268,
+        "port": 59534
+      }
+    },
+    {
+      "at": "10.96",
+      "step": "P1 AC-004",
+      "value": {
+        "recordAfterQuit": {
+          "entries": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "native_agent_rr285mvxgptil_e5f8ab9e1d664a73ba2e9b530f1b3043"
+              },
+              "agentRunId": "native_agent_rr285mvxgptil_e5f8ab9e1d664a73ba2e9b530f1b3043",
+              "place": "host",
+              "status": "running",
+              "recordedAt": "2026-11-01T06:42:09.363Z",
+              "version": "1.5.11-beta.9"
+            }
+          ]
+        },
+        "recordAfterStart": null,
+        "lines": [
+          "[4.53] Recorded 1 busy run(s) for restart resume",
+          "[6.90] Restart resume: 1 recorded run(s) not resumed; the restart was not an update"
+        ],
+        "notices": 0
+      }
+    },
+    {
+      "at": "11.16",
+      "step": "server stopped",
+      "value": {
+        "label": "p1-X-again",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515335852
+        },
+        "ms": 49
+      }
+    },
+    {
+      "at": "11.16",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "12.99",
+      "step": "server started",
+      "value": {
+        "label": "p2-X",
+        "pid": 51650,
+        "port": 59566
+      }
+    },
+    {
+      "at": "13.00",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:59474",
+        "codex": null,
+        "claude": null
+      }
+    },
+    {
+      "at": "13.64",
+      "step": "busy",
+      "value": {
+        "label": "n1",
+        "pid": 51727
+      }
+    },
+    {
+      "at": "14.28",
+      "step": "busy",
+      "value": {
+        "label": "copyA",
+        "pid": 51830
+      }
+    },
+    {
+      "at": "14.62",
+      "step": "busy",
+      "value": {
+        "label": "copyB",
+        "pid": 51887
+      }
+    },
+    {
+      "at": "16.14",
+      "step": "copy task ids",
+      "value": [
+        "ad_hoc_task_2ef4c53a-1073-45bf-b983-401f57708215",
+        "ad_hoc_task_fb89e53a-e1a1-4244-8b9a-042b29a30fb5"
+      ]
+    },
+    {
+      "at": "21.53",
+      "step": "busy",
+      "value": {
+        "label": "host",
+        "pid": 52426
+      }
+    },
+    {
+      "at": "24.77",
+      "step": "server stopped",
+      "value": {
+        "label": "p2-X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515349433
+        },
+        "ms": 824
+      }
+    },
+    {
+      "at": "24.77",
+      "step": "P2 record after quit",
+      "value": {
+        "busy": {
+          "copyA": true,
+          "copyB": false,
+          "host": true,
+          "n1": true
+        },
+        "entries": [
+          {
+            "place": "host",
+            "version": "1.5.11-beta.9",
+            "run": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3"
+          },
+          {
+            "place": "host",
+            "version": "1.5.11-beta.9",
+            "run": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+          },
+          {
+            "place": "delegated",
+            "version": "1.5.11-beta.9",
+            "run": "native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd"
+          }
+        ]
+      }
+    },
+    {
+      "at": "24.78",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "27.00",
+      "step": "AR-005 early quit",
+      "value": {
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515351676
+        },
+        "quitSent": true,
+        "entries": 3,
+        "lines": []
+      }
+    },
+    {
+      "at": "29.44",
+      "step": "server started",
+      "value": {
+        "label": "p2-X1",
+        "pid": 52795,
+        "port": 59607
+      }
+    },
+    {
+      "at": "37.68",
+      "step": "P2 after X1 start",
+      "value": {
+        "record": {
+          "entries": [
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3"
+              },
+              "agentRunId": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3",
+              "place": "host",
+              "status": "running",
+              "recordedAt": "2026-11-01T06:42:28.610Z",
+              "version": "1.5.11-beta.9"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+              },
+              "agentRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149",
+              "place": "host",
+              "status": "running",
+              "recordedAt": "2026-11-01T06:42:28.610Z",
+              "version": "1.5.11-beta.9"
+            },
+            {
+              "root": {
+                "rootSubjectKind": "agent",
+                "rootRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+              },
+              "agentRunId": "native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd",
+              "place": "delegated",
+              "status": "running",
+              "recordedAt": "2026-11-01T06:42:28.610Z",
+              "version": "1.5.11-beta.9"
+            }
+          ]
+        },
+        "lines": [
+          "[29.37] Restart resume resumed delegated run 'native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd' of agent 'native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149'",
+          "[29.49] Restart resume resumed host run 'native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3' of agent 'native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3'",
+          "[29.54] Restart resume resumed host run 'native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149' of agent 'native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149'",
+          "[29.54] Restart resume after the update to 1.5.11-beta.9-rr285next: 3 resumed, 0 skipped, 0 failed"
+        ],
+        "recordAfterStart": null,
+        "n1": {
+          "notices": 1,
+          "listsDelegated": false
+        },
+        "host": {
+          "notices": 1,
+          "notice": "The application restarted at 2026-11-01T06:42:34.140Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: native_worker_rr285mvxgptil (native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd)."
+        },
+        "copies": [
+          {
+            "id": "native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd",
+            "notices": 0
+          }
+        ],
+        "idle": {
+          "notices": 0
+        },
+        "scriptedNoticesSeen": 3
+      }
+    },
+    {
+      "at": "37.88",
+      "step": "server stopped",
+      "value": {
+        "label": "p2-X1",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515362627
+        },
+        "ms": 103
+      }
+    },
+    {
+      "at": "37.88",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "39.70",
+      "step": "server started",
+      "value": {
+        "label": "p3-X1-corrupt",
+        "pid": 52935,
+        "port": 59628
+      }
+    },
+    {
+      "at": "42.71",
+      "step": "P3 corrupt record",
+      "value": {
+        "healthy": true,
+        "recordAfterStart": null,
+        "lines": [
+          "[39.70] Restart resume: the busy-run record was invalid and was removed: Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+        ]
+      }
+    },
+    {
+      "at": "42.91",
+      "step": "server stopped",
+      "value": {
+        "label": "p3-X1-corrupt",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515367602
+        },
+        "ms": 51
+      }
+    }
+  ],
+  "p1": {
+    "recordAfterQuit": {
+      "entries": [
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_agent_rr285mvxgptil_e5f8ab9e1d664a73ba2e9b530f1b3043"
+          },
+          "agentRunId": "native_agent_rr285mvxgptil_e5f8ab9e1d664a73ba2e9b530f1b3043",
+          "place": "host",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:09.363Z",
+          "version": "1.5.11-beta.9"
+        }
+      ]
+    },
+    "recordAfterStart": null,
+    "lines": [
+      "[4.53] Recorded 1 busy run(s) for restart resume",
+      "[6.90] Restart resume: 1 recorded run(s) not resumed; the restart was not an update"
+    ],
+    "notices": 0
+  },
+  "p2TaskIds": [
+    "ad_hoc_task_2ef4c53a-1073-45bf-b983-401f57708215",
+    "ad_hoc_task_fb89e53a-e1a1-4244-8b9a-042b29a30fb5"
+  ],
+  "p2BusyBeforeQuit": {
+    "copyA": true,
+    "copyB": false,
+    "host": true,
+    "n1": true
+  },
+  "p2EarlyQuit": {
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793515351676
+    },
+    "quitSent": true,
+    "recordStillThere": {
+      "entries": [
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3"
+          },
+          "agentRunId": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3",
+          "place": "host",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:28.610Z",
+          "version": "1.5.11-beta.9"
+        },
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+          },
+          "agentRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149",
+          "place": "host",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:28.610Z",
+          "version": "1.5.11-beta.9"
+        },
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+          },
+          "agentRunId": "native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd",
+          "place": "delegated",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:28.610Z",
+          "version": "1.5.11-beta.9"
+        }
+      ]
+    },
+    "lines": []
+  },
+  "p2": {
+    "record": {
+      "entries": [
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3"
+          },
+          "agentRunId": "native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3",
+          "place": "host",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:28.610Z",
+          "version": "1.5.11-beta.9"
+        },
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+          },
+          "agentRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149",
+          "place": "host",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:28.610Z",
+          "version": "1.5.11-beta.9"
+        },
+        {
+          "root": {
+            "rootSubjectKind": "agent",
+            "rootRunId": "native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"
+          },
+          "agentRunId": "native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd",
+          "place": "delegated",
+          "status": "running",
+          "recordedAt": "2026-11-01T06:42:28.610Z",
+          "version": "1.5.11-beta.9"
+        }
+      ]
+    },
+    "lines": [
+      "[29.37] Restart resume resumed delegated run 'native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd' of agent 'native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149'",
+      "[29.49] Restart resume resumed host run 'native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3' of agent 'native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3'",
+      "[29.54] Restart resume resumed host run 'native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149' of agent 'native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149'",
+      "[29.54] Restart resume after the update to 1.5.11-beta.9-rr285next: 3 resumed, 0 skipped, 0 failed"
+    ],
+    "recordAfterStart": null,
+    "n1": {
+      "notices": 1,
+      "listsDelegated": false
+    },
+    "host": {
+      "notices": 1,
+      "notice": "The application restarted at 2026-11-01T06:42:34.140Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: native_worker_rr285mvxgptil (native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd)."
+    },
+    "copies": [
+      {
+        "id": "native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd",
+        "notices": 0
+      }
+    ],
+    "idle": {
+      "notices": 0
+    },
+    "scriptedNoticesSeen": 3
+  },
+  "p3": {
+    "healthy": true,
+    "recordAfterStart": null,
+    "lines": [
+      "[39.70] Restart resume: the busy-run record was invalid and was removed: Expected property name or '}' in JSON at position 2 (line 1 column 3)"
+    ]
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "stampRestored": true,
+  "modelCalls": 17,
+  "scriptedNotices": [
+    {
+      "at": 1793515354256,
+      "head": "The application restarted at 2026-11-01T06:42:34.140Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793515354353,
+      "head": "The application restarted at 2026-11-01T06:42:34.140Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793515354405,
+      "head": "The application restarted at 2026-11-01T06:42:34.140Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them.\nThese runs you delegated were resumed too and are working: native_worker_rr285mvxgptil (native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd)."
+    }
+  ],
+  "rootRemoved": true
+}

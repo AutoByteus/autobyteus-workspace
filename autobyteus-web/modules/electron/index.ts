@@ -50,8 +50,10 @@ export default defineNuxtModule<ElectronOptions>({
     async 'vite:extendConfig'(viteInlineConfig) {
       logger.info('Extending Vite config')
       try {
-        viteInlineConfig.plugins ??= []
-        viteInlineConfig.plugins.push({
+        // Nuxt's Vite configs always carry their plugin list.
+        const plugins = viteInlineConfig.plugins
+        if (!plugins) throw new Error('The Nuxt Vite config has no plugin list')
+        plugins.push({
           name: 'get-vite-config',
           configResolved(config) {
             logger.debug('Vite config resolved:', {
@@ -65,7 +67,7 @@ export default defineNuxtModule<ElectronOptions>({
 
         if (options?.renderer) {
           logger.info('Configuring electron renderer')
-          viteInlineConfig.plugins.push((await import('vite-plugin-electron-renderer')).default(options.renderer))
+          plugins.push((await import('vite-plugin-electron-renderer')).default(options.renderer))
         }
       } catch (error) {
         logger.error('Error extending Vite config:', error)

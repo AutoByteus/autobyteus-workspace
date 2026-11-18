@@ -1,0 +1,15 @@
+# Evidence: IMP-11-guard-localization-boundary.log
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web) pnpm guard:localization-boundary
+# Commit: 35e5853a22 (Merge origin/personal (84ea944ac5) into codex/manage-nodes-professional (autobyt)
+# Working tree: 0 changed tracked/untracked paths under autobyteus-web, autobyteus-server-ts
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 10:41:04 CET
+# Run by: implementation_engineer (autobyteus-363)
+
+
+> autobyteus@1.5.11-beta.10 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+# Exit code: 0

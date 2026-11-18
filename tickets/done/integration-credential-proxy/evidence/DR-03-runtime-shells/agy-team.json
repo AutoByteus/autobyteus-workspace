@@ -1,0 +1,45 @@
+{
+  "runtime": "antigravity_cli (scripted CLI), team",
+  "lead": {
+    "result": {
+      "apiHttp": "200",
+      "gitStatus": 0,
+      "psStatus": 0,
+      "psEnvStatus": 0
+    },
+    "address": "http://127.0.0.1:63844/r/rp_<pass>/github/api",
+    "gitConfig": [
+      [
+        "url.http://127.0.0.1:63844/r/rp_<pass>/github/git/.insteadOf",
+        "https://github.com/"
+      ]
+    ],
+    "terminalPrompt": "0",
+    "issueNumber": 1,
+    "lsRemoteHead": true,
+    "tokenInShellOutputs": []
+  },
+  "helper": {
+    "result": {
+      "apiHttp": "skipped",
+      "gitStatus": -1,
+      "psStatus": 0,
+      "psEnvStatus": 0
+    },
+    "address": null,
+    "gitConfig": [],
+    "terminalPrompt": null,
+    "issueNumber": null,
+    "lsRemoteHead": false,
+    "tokenInShellOutputs": []
+  },
+  "afterStop": {
+    "status": 403,
+    "error": "RUN_PASS_INVALID"
+  },
+  "scan": {
+    "onWire": false,
+    "filesInDataDir": [],
+    "filesInCodexHome": "not scanned (not a temp CODEX_HOME)"
+  }
+}

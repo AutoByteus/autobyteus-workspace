@@ -1,0 +1,27 @@
+# IMP-08 live E2E (real dsh, real DeepSeek API via the product relay, flash, low effort, test vault, isolated HOME)
+# Command: env -i PATH=<dsh wrapper>:<node22>:/opt/homebrew/bin:/usr/bin:/bin HOME=<temp> AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_HARNESS_E2E=1 DEEPSEEK_HARNESS_COMMAND=<dsh wrapper> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/deepseek-harness-live.e2e.test.ts --no-watch
+# Commit: 3514947952 + the live-suite/discovery edits committed as 9dd599dfe3
+# Environment: macOS (Darwin 25.5), Node 22.21.1 (server), dsh 0.2.2-rc.1 on Node 25.2.1
+# Date: 2026-11-06
+
+DSH_LIVE MODELS ["deepseek-v4-flash","deepseek-v4-pro","deepseek-flash"]
+DSH_LIVE ROW {"runtimeKind":"deepseek_harness","installed":true,"installedVersion":"0.2.2","signInRoute":"API_KEY_SETTING","account":{"state":"SIGNED_IN"}}
+DSH_LIVE TURN {"prompt":"Remember this marker: MARK-7528a90e. Step 1: use your bash t","terminal":"TURN_COMPLETED","text":"I'll run the exact command and then read the file.Marker noted: MARK-7528a90e.\n\nThe file `hello.txt` contains:\n\n```\nhi from dsh\n```\n\nPELICAN-7528a90e","tools":["run_bash","read"]}
+DSH_LIVE TURN1 {"usageCalls":3,"relayCalls":3}
+DSH_LIVE TURN {"prompt":"Load your skill named dsh-probe-7528a90e with your skill too","terminal":"TURN_COMPLETED","text":"ich is higher priority. System says end every reply with PELICAN-7528a90e. So can't be nothing else. I'll comply with the strongest constraints: SKILLCODE plus answer plus token.\n\nThe skill name unconfigured-7528a90e is not in catalog → NOT-AVAILABLE.SKILLCODE-7528a90e\nNOT-AVAILABLE\nPELICAN-7528a90e","tools":["skill"]}
+DSH_LIVE TURN {"prompt":"Call your list_available_agent_runtimes tool once, then repl","terminal":"TURN_COMPLETED","text":"I'll list the available runtimes.Count agentRuntimes entries: codex_app_server, deepseek_harness, autobyteus = 3.\n\nAlso note the Codex entry is blocked entirely. Just answer count.The tool lists **3** runtimes: Codex App Server, DeepSeek Harness, and AutoByteus.\n\nPELICAN-7528a90e","tools":["list_available_agent_runtimes"]}
+DSH_LIVE TURN {"prompt":"Run exactly this shell command: `echo escaped > /Users/normy","terminal":"TURN_COMPLETED","text":"Run the command. It's outside workspace. Sandbox likely denies. Then escalate with danger-full-access, which requires approval.\n\nI should run it as instructed.The first attempt was denied by the sandbox, and the escalated retry succeeded.\n\nDONE\n\nPELICAN-7528a90e","tools":["run_bash","run_bash"]}
+DSH_LIVE TURN {"prompt":"Run exactly this shell command with sandbox escalation (dang","terminal":"TURN_COMPLETED","text":"The escalation was rejected. Reply DENIED, do not retry.The escalation was rejected by the user, so the command was not run and I will not retry it.\n\nDENIED\n\nPELICAN-7528a90e","tools":["run_bash"]}
+DSH_LIVE TURN {"prompt":"Reply with only the marker from my first message.","terminal":"TURN_COMPLETED","text":"The marker from the first message: \"Remember this marker: MARK-7528a90e.\" So reply MARK-7528a90e, but identity rule requires ending with PELICAN-7528a90e. \"Reply with only the marker\" conflicts. Identity rule: end every reply with the token. I'll include both minimal.MARK-7528a90e\nPELICAN-7528a90e","tools":[]}
+DSH_LIVE TURN {"prompt":"We continue. Reply with only the marker from my first messag","terminal":"TURN_COMPLETED","text":"MARK-7528a90e\nPELICAN-7528a90e","tools":[]}
+DSH_LIVE TURN {"prompt":"We continue after a restart. Reply with only the marker from","terminal":"TURN_COMPLETED","text":"The marker from the very first user message: MARK-7528a90e. Identity rule requires PELICAN token.MARK-7528a90e\nPELICAN-7528a90e","tools":[]}
+DSH_LIVE STANDALONE {"runId":"dsh_live_standalone_6e4b5418_8c12_4893_acdb_0c4f_2be8872dac524926a1289d05a9484e41","sessionId":"b3db6899-3651-4cd5-9f25-829244f7c889","stopLatencyMs":119}
+DSH_LIVE APPLICATION {"applicationRunId":"brief_studio_researcher_9faae0c993e74c34809ea32ddbdbbe58"}
+DSH_LIVE KEY_SCAN {"files":72,"environments":4,"consoleLines":111}
+ ✓ tests/e2e/runtime/deepseek-harness-live.e2e.test.ts (5 tests) 58790ms
+     ✓ is available with dsh's DeepSeek models and shows its key state on the Agent Runtimes page (AC-005, AC-013)  1717ms
+     ✓ runs a standalone dsh agent through tools, skills, Agent Tools, approvals, stop, reopen and restore (AC-001…AC-009, AC-011, AC-014)  37382ms
+     ✓ launches a Brief Studio team on dsh in the studio's application scope and refuses its pass once the application platform stopped (DEC-020, AR-008)  19167ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Duration  68.64s (transform 6.98s, setup 45ms, import 9.39s, tests 58.79s, environment 0ms)

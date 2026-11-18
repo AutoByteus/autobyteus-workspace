@@ -1,0 +1,230 @@
+# Case: API-B01 phone, MSP-50 … MSP-52 (API-REV-003, round 3)
+# Commit: da80596b0a (merged state 8a47481617); server dist built from it; phone bundle rebuilt from it (pnpm -C autobyteus-web build:mobile-web, 14:58)
+# Environment: ENV-3 macOS 26.5.2, Node v22.23.1, clean env, the probe's nodes alpha/beta/eta, production phone bundle at /mobile, headless Chrome 390x844 paired through Phone Access, scripted AGY CLI
+# Date: 2026-11-12
+# Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/mobile-shell-probe.mjs --output-dir=<dir> --cases=MSP-50,MSP-51,MSP-52
+# Result line: mobile-shell probe: Pass
+# Look for: each case "result": "Pass"; "rootRowStatus" all "offline"; "markerInWorkerRun": true; "rootActiveAfterChild": false; "rootStartedOnOwnMember": true; MSP-51/52 "ownRows" list the worker under the team/org (F-10 resolved)
+# Run 1 (same commit): MSP-50 Pass; MSP-51/52 reached and answered the worker, then the probe's own-member step failed (probe defect, fixed): /tmp/api461/r3-msp.log
+
+{
+  "startedAt": "2026-11-12T14:03:54.461Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 60237,
+      "nodeId": "srv_MtF9hEWDRWPucMJZC8_GpOR2pzJSjw0S",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 60238,
+      "nodeId": "srv_k_5dkX5OUuM9qpN6Jhp6H-3qZEShGEB2",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "eta": {
+      "port": 60529,
+      "nodeId": "srv_NVR1cB1be4OGCrgDj4iDs3V36Ks9dm7s",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_dbb26c844f8f49da870b240c04308d0e",
+    "writerRun": "release_notes_writer_355722fdbbdd4cf5bd9e8204f4242173",
+    "squadRun": "docs_review_team_ae8f82f9277e4675a4dade53d59a8a0d",
+    "reviewer": "release_notes_writer_4ed0eb52c56e44919dd24cd7ca8ab473",
+    "memberDelegated": null,
+    "remoteAgentRun": "publisher_9a80d05c74cd4b19b35a74ec96716ea2",
+    "remoteTeamRun": "studio_team_286a680a6fd7497094b085dc598eff80",
+    "plain": [
+      "fact_checker_c32e14236ced4db095ef6520372c0e2b",
+      "fact_checker_6dcf2f1273664779bf07d1d8d68a9b43",
+      "fact_checker_bae946de38a1448d863c3a2f65373f16"
+    ],
+    "org": "delivery_org_957f0ac86b914ed3be84012a28130b6d",
+    "orgPlanner": "release_notes_writer_bf645d1651ca4d238d16d522d49abd89",
+    "reviewOrg": "review_org_e8c32013b009469688d16f045a0835fe",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_afa05b35f7004df4930b2060a09853c6",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_a63477487ac54377b3e372c04b0ef3e3",
+    "deliveryLead": "fact_checker_3f200cfd970244329c73ea540a28b372",
+    "deliveryMate": "release_notes_writer_7927f1211aea49dfb2d912eab0cf69cb",
+    "leadDelegated": "changelog_helper_500d89a1596841a381c29d44a56118d9",
+    "approver": "approver_7f386f1e71e64a449117d00afcbf42d1",
+    "taskA": "launch-796227-1",
+    "taskB": "launch-796227-2"
+  },
+  "cases": {
+    "MSP-50": {
+      "result": "Pass",
+      "seconds": 27,
+      "root": {
+        "kind": "agent",
+        "rootId": "manager_agent_6e62_af4bc402b0d94af6a14df3e951a8f2d6",
+        "worker": "worker_agent_6e62_62dfc6c911104559afe23d478d44bd82"
+      },
+      "rootRowStatus": {
+        "listed while stopped": [
+          "offline",
+          "offline",
+          "offline",
+          "offline"
+        ],
+        "after a child command": [
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline"
+        ]
+      },
+      "markerInWorkerRun": true,
+      "rootActiveAfterChild": false,
+      "rootStartedOnOwnMember": true
+    },
+    "MSP-51": {
+      "result": "Pass",
+      "seconds": 27,
+      "root": {
+        "kind": "team",
+        "rootId": "team_team_1027_a8f65df99f014624952208aaad53e177",
+        "worker": "worker_team_1027_dc9e0ee49697476aaed001076c0c5159"
+      },
+      "rootRowStatus": {
+        "listed while stopped": [
+          "offline",
+          "offline",
+          "offline",
+          "offline"
+        ],
+        "after a child command": [
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline"
+        ]
+      },
+      "markerInWorkerRun": true,
+      "rootActiveAfterChild": false,
+      "ownRows": [
+        {
+          "key": "mobile-run-row-team:team_team_1027_a8f65df99f014624952208aaad53e177",
+          "name": "Team team 1027"
+        },
+        {
+          "key": "mobile-run-row-team:team_team_1027_a8f65df99f014624952208aaad53e177/agent:manager_team_1027_a575479b70ba402bb3d502a2c8eecb5b",
+          "name": "manager"
+        },
+        {
+          "key": "mobile-run-row-team:team_team_1027_a8f65df99f014624952208aaad53e177/agent:worker_team_1027_dc9e0ee49697476aaed001076c0c5159",
+          "name": "worker team 1027"
+        }
+      ],
+      "rootStartedOnOwnMember": true
+    },
+    "MSP-52": {
+      "result": "Pass",
+      "seconds": 27.1,
+      "root": {
+        "kind": "org",
+        "rootId": "org_org_c29d_52052414b2c34c798e15ebec55c98cc3",
+        "worker": "worker_org_c29d_5c0918ef0fc641a5b6e301e58add6df6"
+      },
+      "rootRowStatus": {
+        "listed while stopped": [
+          "offline",
+          "offline",
+          "offline",
+          "offline"
+        ],
+        "after a child command": [
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline",
+          "offline"
+        ]
+      },
+      "markerInWorkerRun": true,
+      "rootActiveAfterChild": false,
+      "ownRows": [
+        {
+          "key": "mobile-run-row-org:org_org_c29d_52052414b2c34c798e15ebec55c98cc3",
+          "name": "Org org c29d"
+        },
+        {
+          "key": "mobile-run-row-org:org_org_c29d_52052414b2c34c798e15ebec55c98cc3/agent:manager_org_c29d_f8690c3a1d194be996d767c1123dbca4",
+          "name": "manager"
+        },
+        {
+          "key": "mobile-run-row-org:org_org_c29d_52052414b2c34c798e15ebec55c98cc3/task-agent:worker_org_c29d_5c0918ef0fc641a5b6e301e58add6df6",
+          "name": "worker org c29d"
+        }
+      ],
+      "rootStartedOnOwnMember": true
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "stoppedDelegatorRoots": {
+    "agent": {
+      "rootId": "manager_agent_6e62_af4bc402b0d94af6a14df3e951a8f2d6",
+      "worker": "worker_agent_6e62_62dfc6c911104559afe23d478d44bd82"
+    },
+    "team": {
+      "rootId": "team_team_1027_a8f65df99f014624952208aaad53e177",
+      "worker": "worker_team_1027_dc9e0ee49697476aaed001076c0c5159"
+    },
+    "org": {
+      "rootId": "org_org_c29d_52052414b2c34c798e15ebec55c98cc3",
+      "worker": "worker_org_c29d_5c0918ef0fc641a5b6e301e58add6df6"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-50": "Pass",
+      "MSP-51": "Pass",
+      "MSP-52": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-12T14:06:58.806Z"
+}

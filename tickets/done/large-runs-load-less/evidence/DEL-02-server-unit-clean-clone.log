@@ -1,0 +1,33 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 1229012 bytes, trimmed to summaries, skips and failures.
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-VpjxZ0/.env
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting customPassword write-only and absent from ordinary reads
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+Failed reading run metadata for invalid-run: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Failed reading run metadata for mismatched-directory: Run metadata identity or required fields are invalid.
+Failed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+Bulk import complete. Imported: 2, Failed: 0, stored as secrets: 0, needing a secret: 0
+Bulk import complete. Imported: 1, Failed: 1, stored as secrets: 0, needing a secret: 0
+Failed to import configuration for server 'invalid-server-no-command': Failed to create config for server 'invalid-server-no-command' due to incompatible parameters for STDIO config: StdioMcpServerConfig 'invalid-server-no-command' 'command' must be a non-empty string.
+Bulk import complete. Imported: 0, Failed: 0, stored as secrets: 0, needing a secret: 0
+Bulk import complete. Imported: 1, Failed: 0, stored as secrets: 0, needing a secret: 0
+Failed to import configuration for server 'bad': Invalid 'transport_type' string 'websocket' for server 'bad'. Valid types are: stdio, streamable_http.
+Failed to import configuration for server 'empty': Config for server 'empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.
+Failed to import configuration for server 'both': Failed to create config for server 'both' due to incompatible parameters for STREAMABLE_HTTP config: Streamable HTTP MCP server 'both' sets both 'token' and an 'Authorization' header; use one of them.
+Failed to import configuration for server 'notObject': Configuration for server 'notObject' must be a dictionary.
+Bulk import complete. Imported: 1, Failed: 4, stored as secrets: 1, needing a secret: 0
+Bulk import complete. Imported: 3, Failed: 0, stored as secrets: 4, needing a secret: 0
+Bulk import complete. Imported: 2, Failed: 0, stored as secrets: 0, needing a secret: 2
+Failed to start file watcher: Error: watcher failed
+Failed to set up file explorer session: Error: send failed
+Failed to create terminal session s1 using backend FailingPtySession: posix_spawnp failed. node-pty diagnostics: platform=darwin arch=x64 helperPath=/tmp/spawn-helper helperExecutable=false
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-JHcMvJ/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Failed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+Failed during download process for https://mock.test.com/media/images/test.jpg: Error: HTTP 404 Not Found
+ Test Files  914 passed | 5 skipped (919)
+      Tests  7743 passed | 9 skipped (7752)
+   Start at  17:26:31
+   Duration  603.03s (transform 13.66s, setup 7.70s, import 234.33s, tests 287.21s, environment 555ms)
+exit=0

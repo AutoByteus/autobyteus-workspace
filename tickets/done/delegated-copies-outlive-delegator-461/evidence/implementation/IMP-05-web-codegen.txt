@@ -1,0 +1,12 @@
+# IMP-05
+# command: pnpm -C autobyteus-web codegen:local; git diff --stat autobyteus-web/generated/graphql.ts
+# commit: dbb688161e
+# environment: macOS (Darwin 25.5), Node 22, pnpm
+# date: 2026-11-11
+
+ autobyteus-web/generated/graphql.ts | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+-  hostRoot: TaskRootHost;
++  delegatingRun: TaskRootDelegatingRun;
+-  hostRoot {
++  delegatingRun {

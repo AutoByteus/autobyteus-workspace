@@ -14,7 +14,7 @@ import { useStartSurfaceTools } from '~/composables/layout/useStartSurfaceTools'
 import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
 import type { TaskWorkerTask } from '~/types/project'
 
-const task: TaskWorkerTask = { taskId: 't1', projectId: 'p1', description: 'Ship it', status: 'TODO' }
+const task: TaskWorkerTask = { taskId: 't1', projectId: 'p1', title: 'Ship it', description: 'Ship it', status: 'TODO' }
 const wrappers: ReturnType<typeof mount>[] = []
 const mountShell = (width: number, startSurface = false) => {
   const right = useRightPanel()

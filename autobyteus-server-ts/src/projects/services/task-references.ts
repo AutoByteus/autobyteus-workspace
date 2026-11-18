@@ -2,7 +2,7 @@ import type { ProjectTask } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
 import type { ProjectStore } from "../stores/project-store.js";
 
-type ReferencePersistence = Pick<ProjectStore, "findTask" | "findTaskByKey">;
+type ReferencePersistence = Pick<ProjectStore, "findTask" | "findTaskByKey" | "listTasks">;
 export type ProjectTaskMatch = Readonly<{ projectId: string; task: ProjectTask }>;
 
 const notExactlyOne = (reference: string, found: number): ProjectError => new ProjectError(found ? "TASK_ID_AMBIGUOUS" : "TASK_NOT_FOUND",
@@ -37,5 +37,13 @@ export class TaskReferences {
     const byKey = matches.length ? null : await this.store().findTaskByKey(reference.trim().toLowerCase());
     if (byKey) return byKey;
     throw notExactlyOne(reference, matches.length);
+  }
+
+  /** A Task of this Project by its long ID or its key (any letter case); unknown, or another Project's → TASK_NOT_FOUND. */
+  async inProject(projectId: string, reference: string): Promise<ProjectTask> {
+    const key = typeof reference === "string" ? reference.trim().toLowerCase() : "";
+    const task = key ? (await this.store().listTasks(projectId)).find((t) => t.taskId === reference || t.taskKey === key) : undefined;
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${reference}' was not found in this project.`);
+    return task;
   }
 }

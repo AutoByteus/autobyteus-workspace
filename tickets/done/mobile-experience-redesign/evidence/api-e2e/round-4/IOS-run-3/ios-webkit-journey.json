@@ -1,0 +1,53 @@
+{
+  "startedAt": "2026-11-06T16:12:35.728Z",
+  "engine": "WebKit 26.0 (Playwright), Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1",
+  "screens": {
+    "list": {
+      "horizontalScroll": false,
+      "text": " AutoByteus Desktop Connected FC Fact Checker Untitled task 2m PT Project Task Manager CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/rele"
+    },
+    "run": {
+      "horizontalScroll": false,
+      "text": " lead Idle · in Delivery Team You GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-5LCKpl/alpha/workspace/notes.md Pro"
+    },
+    "menu": {
+      "horizontalScroll": false,
+      "text": " lead Idle · in Delivery Team Artifacts Files Messages Activity You GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-5"
+    },
+    "files": {
+      "horizontalScroll": false,
+      "text": " Files workspace docs src notes.md README.md "
+    },
+    "file-open": {
+      "horizontalScroll": false,
+      "text": " Files workspace docs guide.md guide.md Guide GUIDE-TEXT-7731: how the launch goes. "
+    },
+    "messages": {
+      "horizontalScroll": false,
+      "text": " Messages To mate Nov 6 at 04:07 PM Read the guide first. Marker TEAM-NOTE. guide.md "
+    },
+    "new-run": {
+      "horizontalScroll": false,
+      "text": " New run Agent Fact Checker Folder workspace Runtime AutoByteus Model Choose Auto approve tools Choose a model before creating the run. Create run "
+    },
+    "connection-sheet": {
+      "horizontalScroll": false,
+      "text": " AutoByteus Desktop Connected Delivery Team GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-5LCKpl... now L lead M ma"
+    }
+  },
+  "errors": [
+    "console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Could not connect to the server.",
+    "console: Failed to load resource: Could not connect to the server."
+  ],
+  "result": "Pass",
+  "context": {
+    "secure": false,
+    "randomUUID": "undefined",
+    "dvh": true,
+    "safeArea": true
+  },
+  "messageShown": true,
+  "backTo": "run",
+  "unknownErrors": [],
+  "finishedAt": "2026-11-06T16:12:48.466Z"
+}

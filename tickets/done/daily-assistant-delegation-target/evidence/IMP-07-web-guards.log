@@ -1,0 +1,9 @@
+# IMP-07 web guards; cmd: pnpm -C autobyteus-web guard:web-boundary && guard:localization-boundary && audit:localization-literals; base 3a6330c3ad + implementation working tree; date: 2026-11-10T05:29:59Z
+[guard:web-boundary] Passed.
+guard:web-boundary exit=0
+[guard:localization-boundary] Passed.
+guard:localization-boundary exit=0
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-delegation-target/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+audit:localization-literals exit=0

@@ -1,0 +1,23 @@
+API-10 round 2: gated server E2E regression on fccf1227a6 (CR-001 dfbd2621bb, CR-002 52cbc28442, CR-003 56ceef568a) + round-2 test edit to project-task-titles-startup
+Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch (dist rebuilt for this commit); macOS arm64 node 22; 2026-10-25
+Summary: Test Files  4 failed | 143 passed | 50 skipped (197); Tests  5 failed | 640 passed | 260 skipped (905)
+
+ FAIL tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts :: in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse record | AssertionError: expected [ …(3) ] to deeply equal []
+ FAIL tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts :: Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop | AssertionError: expected [ …(2) ] to deeply equal []
+ FAIL tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts :: RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and  | AssertionError: expected { kind: 'UPDATE', …(6) } to be null
+ FAIL tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts :: E-002/E-004 Team member: images previewable during the turn and after the team run is terminated | AssertionError: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-multi-image-home-TGxi5v/.gemini/antigravity-cli/brain/af8d39b7-a0f7-4537-b8d4-1a98e2cb4bfc/image_1_1.pn
+ FAIL tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts :: SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the s | Error: [{"message":"GitHub repository not found or not public: https://github.com/apar-sun-e2e/skills. For private repositories, clone locally and import the local path.","location
+
+Classification: delegated-launch-config-defaults = FU-002, agy-native-image-multi-artifact-preview = FU-003, agy-skill-update-notice-roots = FU-004 (all fail identically on the base);
+agent-runtimes-running-agents RA-04 = FU-007 (suite-load race in the test; passes alone, see API-10b). No failure is caused by this ticket.
+
+  project-task-titles-startup.e2e.test.ts {'passed': 1}
+  get-project-task-worker-scope.e2e.test.ts {'passed': 6}
+  project-task-boundaries.e2e.test.ts {'passed': 18}
+  projects-startup-migration.e2e.test.ts {'passed': 6}
+      passed Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart
+      passed Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication
+      passed Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close
+      passed Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes i
+      passed Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras
+      passed Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras

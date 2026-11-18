@@ -1,0 +1,10 @@
+# IMP-08 related release workflow tests
+# Command: python3 -m unittest scripts/tests/test_release_channel_workflow_steps.py scripts/tests/test_desktop_release_beta.py scripts/tests/test_server_package_release.py scripts/tests/test_merge_latest_mac_metadata.py
+# Commit: df789a89a5
+# Env: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2, python 3.9.6, bash 3.2.57
+# Date: 2026-11-07T19:44:20Z
+
+----------------------------------------------------------------------
+Ran 43 tests in 20.989s
+
+OK

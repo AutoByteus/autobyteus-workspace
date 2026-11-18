@@ -1,13 +1,16 @@
 import type { ChildProcess } from 'child_process'
+import { randomBytes } from 'crypto'
 import axios from 'axios'
 import { EventEmitter } from 'events'
-import { setTimeout as sleep } from 'node:timers/promises'
+import { waitForBackendPort, assertBackendPortAvailable, isAddressInUse, PortConflictError } from './backendPortAvailability'
+import { inspectPortOwner } from './portOwnerInspector'
+import { stopManagedBackend, waitForChildExit, childExited, ShutdownIncompleteError } from './managedBackendStop'
+import { PROCESS_TREE_GRACE_MS, readProcessTable, selectServerTreeTargets, signalTargets, waitForTargetsGone, type KillTarget } from './serverProcessTree'
 import { logger as rootLogger } from '../logger'
 import {
   formatEmbeddedServerClientBaseUrl,
   formatEmbeddedServerClientWebSocketBaseUrl,
 } from '../../shared/embeddedServerClientEndpoint'
-import { assertEmbeddedServerListenerPortAvailable } from '../launch-profile/e2eLaunchPreflight'
 import { AppDataService } from './services/AppDataService'
 import { createServerProcessOutputForwarder } from './serverOutputLogging'
 import { parseEmbeddedServerPlatformFatal, platformFatalError } from './embeddedServerPlatformFatal'
@@ -16,6 +19,14 @@ import { buildServerProcessEnv } from './serverRuntimeEnv'
 import type { EmbeddedServerUrls } from '../../types/serverStatus'
 
 const logger = rootLogger.child('server.base-server-manager')
+
+/**
+ * The variable that hands the node this start's launch owner credential (node access model NA-5, NA-15). It is set
+ * only in the node process's spawn environment; the node removes it from its environment before any other code loads.
+ */
+export const LAUNCH_OWNER_CREDENTIAL_ENV = 'AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL'
+
+const createLaunchOwnerCredential = (): string => `own_${randomBytes(32).toString('base64url')}`
 const stdoutLogger = rootLogger.child('embedded-server.stdout')
 const stderrLogger = rootLogger.child('embedded-server.stderr')
 
@@ -36,10 +47,13 @@ export abstract class BaseServerManager extends EventEmitter {
   protected appDataDir: string = ''
   protected firstRun: boolean = false
   protected serverDir: string = ''
-  protected gracefulShutdownTimeoutMs: number = 5000  // 5 seconds for graceful shutdown
+  protected gracefulShutdownTimeoutMs: number = 20000
   protected appDataService: AppDataService
   protected runtimeEnvOverrides: Record<string, string> = {}
+  /** This start's launch owner credential: memory only, never stored or logged; a new one at every start. */
+  private launchOwnerCredential: string | null = null
   protected healthPollIntervalMs: number = 250
+  private stopPromise: Promise<void> | null = null
   private pendingStartup: { promise: Promise<void>; cancel: () => void } | null = null
   private startupGeneration: number = 0
   private settledStartupGeneration: number = 0
@@ -74,25 +88,14 @@ export abstract class BaseServerManager extends EventEmitter {
     timeoutMs: number = (process.platform === 'linux' ? 10000 : 5000),
     signal?: AbortSignal
   ): Promise<void> {
-    const startTime = Date.now();
-    while (Date.now() - startTime < timeoutMs) {
-      signal?.throwIfAborted()
-      const isFree = await assertEmbeddedServerListenerPortAvailable(this.serverPort)
-        .then(() => true, () => false)
-      signal?.throwIfAborted()
-      if (isFree) {
-        logger.info(`Port ${this.serverPort} is free.`);
-        return;
-      }
-      await sleep(100, undefined, { signal });
-    }
-    throw new Error(`Port ${this.serverPort} is still in use after ${timeoutMs}ms`);
+    await waitForBackendPort(this.serverPort, timeoutMs, signal)
   }
 
   /** Start once; all callers share the same pending startup, including preflight. */
   public startServer(): Promise<void> {
     if (this.pendingStartup) return this.pendingStartup.promise
     if (this.isRunning()) return Promise.resolve()
+    if (this.serverProcess && !childExited(this.serverProcess)) return Promise.reject(new ShutdownIncompleteError('Previous backend exit remains unconfirmed'))
 
     const generation = ++this.startupGeneration
     this.settledStartupGeneration = 0
@@ -183,66 +186,46 @@ export abstract class BaseServerManager extends EventEmitter {
    */
   public stopServer(): Promise<void> {
     this.cancelPendingStartup()
-    if (!this.serverProcess) {
-      logger.info('Server is not running');
-      return Promise.resolve();
+    if (this.stopPromise) return this.stopPromise
+    const proc = this.serverProcess
+    if (!proc) return Promise.resolve()
+    this.stopPromise = stopManagedBackend(proc, this.gracefulShutdownTimeoutMs,
+      () => this.requestGracefulStop(proc), () => this.forceStop(proc)).finally(() => {
+        if (childExited(proc) && this.serverProcess === proc) {
+          this.serverProcess = null; this.isServerRunning = false; this.ready = false; this.emit('stopped')
+        }
+        this.stopPromise = null
+      })
+    return this.stopPromise
+  }
+  /** The managed server process is confirmed gone: none was started, or it has an exit code or signal. */
+  public isServerProcessGone(): boolean {
+    return !this.serverProcess || childExited(this.serverProcess)
+  }
+  protected async requestGracefulStop(proc: ChildProcess): Promise<void> {
+    if (!childExited(proc)) proc.kill('SIGTERM')
+    await waitForChildExit(proc, this.gracefulShutdownTimeoutMs)
+  }
+  /**
+   * POSIX force step: stop the server's whole tree, not the server alone. Record its descendants
+   * first, SIGTERM them (runtime CLIs end their own tool commands on SIGTERM, not on SIGKILL or EOF),
+   * SIGKILL the server, then SIGKILL the recorded survivors after a short grace.
+   */
+  protected async forceStop(proc: ChildProcess): Promise<void> {
+    if (childExited(proc) || !proc.pid) return
+    const kill: KillTarget = (target, signal) => { process.kill(target, signal) }
+    let targets: number[] = []
+    try { targets = selectServerTreeTargets(await readProcessTable(), proc.pid) }
+    catch (error) { logger.warn(`Server process tree unreadable; force-stopping the server only: ${String(error)}`) }
+    if (targets.length) logger.warn(`Force-stopping the server and ${targets.length} recorded descendant target(s)`)
+    const logFailures = (errors: unknown[], signal: NodeJS.Signals) => {
+      for (const error of errors) logger.warn(`Server process-tree ${signal} failed: ${String(error)}`)
     }
-    
-    const proc = this.serverProcess;
-
-    return new Promise((resolve) => {
-      let forceKillTimeout: NodeJS.Timeout;
-      let stopped = false;
-      
-      const cleanup = () => {
-        if (stopped) return
-        stopped = true
-        clearTimeout(forceKillTimeout);
-        proc.removeListener('close', onClose)
-        if (this.serverProcess !== proc) return
-        this.isServerRunning = false;
-        this.ready = false;
-        this.serverProcess = null;
-        this.emit('stopped');
-      };
-      
-      // When process closes, cleanup and resolve
-      const onClose = () => {
-        logger.info('Server process closed');
-        cleanup();
-        resolve();
-      };
-      proc.once('close', onClose)
-
-      logger.info('Stopping server...');
-      
-      try {
-        // Step 1: Send SIGTERM for graceful shutdown
-        logger.info('Sending SIGTERM signal for graceful shutdown');
-        proc.kill('SIGTERM');
-        
-        // Step 2: Set timeout to escalate to SIGKILL if graceful fails
-        if (stopped) return
-        forceKillTimeout = setTimeout(() => {
-          if (this.serverProcess === proc) {
-            logger.warn(`Graceful shutdown timed out after ${this.gracefulShutdownTimeoutMs}ms, sending SIGKILL`);
-            try {
-              proc.kill('SIGKILL');
-            } catch (killError) {
-              logger.error('Error sending SIGKILL:', killError);
-              // Process is likely already gone, cleanup
-              cleanup();
-              resolve();
-            }
-          }
-        }, this.gracefulShutdownTimeoutMs);
-      } catch (error) {
-        logger.error('Error sending SIGTERM to server:', error);
-        // If kill fails, assume process is gone and cleanup state manually.
-        cleanup();
-        resolve();
-      }
-    });
+    logFailures(signalTargets(targets, 'SIGTERM', kill), 'SIGTERM')
+    if (!childExited(proc)) proc.kill('SIGKILL')
+    if (!targets.length) return
+    const survivors = await waitForTargetsGone(targets, PROCESS_TREE_GRACE_MS, kill)
+    logFailures(signalTargets(survivors, 'SIGKILL', kill), 'SIGKILL')
   }
 
   /**
@@ -302,7 +285,6 @@ export abstract class BaseServerManager extends EventEmitter {
       graphql: `${this.serverUrl}/graphql`,
       rest: `${this.serverUrl}/rest`,
       graphqlWs: `${this.serverWebSocketUrl}/graphql`,
-      transcription: `${this.serverWebSocketUrl}/ws/transcribe`,
       terminalWs: `${this.serverWebSocketUrl}/ws/terminal`,
       health: `${this.serverUrl}/rest/health`
     }
@@ -335,19 +317,30 @@ export abstract class BaseServerManager extends EventEmitter {
     return { ...this.runtimeEnvOverrides }
   }
 
+  /** The launch owner credential of the node process started last (null before the first start). */
+  public getLaunchOwnerCredential(): string | null {
+    return this.launchOwnerCredential
+  }
+
   /**
-   * Compose the server child environment under this launch's environment policy.
+   * Compose the server child environment under this launch's environment policy, with a fresh launch owner
+   * credential for this start (the spawn environment only; never Electron's own environment).
    */
   protected buildServerEnv(loginShellPath: string | null): NodeJS.ProcessEnv {
-    return buildServerProcessEnv({
-      policy: this.launchConfig.environmentPolicy,
-      callerEnv: process.env,
-      loginShellPath,
-      port: this.serverPort,
-      appDataDir: this.appDataDir,
-      publicServerUrl: this.serverUrl,
-      runtimeOverrides: this.getRuntimeEnvOverrides(),
-    })
+    this.launchOwnerCredential = createLaunchOwnerCredential()
+    this.emit('launch-credential-changed')
+    return {
+      ...buildServerProcessEnv({
+        policy: this.launchConfig.environmentPolicy,
+        callerEnv: process.env,
+        loginShellPath,
+        appDataDir: this.appDataDir,
+        publicServerUrl: this.serverUrl,
+        developmentRendererOrigin: this.launchConfig.developmentRendererOrigin,
+        runtimeOverrides: this.getRuntimeEnvOverrides(),
+      }),
+      [LAUNCH_OWNER_CREDENTIAL_ENV]: this.launchOwnerCredential,
+    }
   }
 
   /**
@@ -371,6 +364,7 @@ export abstract class BaseServerManager extends EventEmitter {
     if (!this.serverProcess) return
     const process = this.serverProcess
     const generation = this.startupGeneration
+    let httpStartupFailure: Error | undefined
     const capturePlatformFatal = (line: string): void => {
       if (
         generation !== this.startupGeneration
@@ -378,7 +372,11 @@ export abstract class BaseServerManager extends EventEmitter {
         || this.ready
       ) return
       const fatal = parseEmbeddedServerPlatformFatal(line)
-      if (fatal) this.settleStartupError(generation, platformFatalError(fatal))
+      if (fatal?.code === 'HTTP_SERVER_INITIALIZATION_FAILED') {
+        // Bind can race the preflight. Diagnose only after this captured child exits,
+        // otherwise its own partially initialized listener could look external.
+        httpStartupFailure = platformFatalError(fatal)
+      } else if (fatal) this.settleStartupError(generation, platformFatalError(fatal))
     }
     const stdoutForwarder = createServerProcessOutputForwarder(
       stdoutLogger,
@@ -407,9 +405,10 @@ export abstract class BaseServerManager extends EventEmitter {
       this.isServerRunning = false
       this.ready = false
       this.settleStartupError(generation, error)
+      if (!process.pid) this.serverProcess = null
     })
 
-    this.serverProcess.on('close', (code) => {
+    this.serverProcess.on('exit', (code) => {
       stdoutForwarder.flush()
       stderrForwarder.flush()
       logger.info(`Server process exited with code ${code}`)
@@ -418,16 +417,21 @@ export abstract class BaseServerManager extends EventEmitter {
       this.isServerRunning = false
       this.ready = false
       this.serverProcess = null
-      if (closedBeforeHealth) {
-        this.settleStartupError(
-          generation,
-          new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`)
-        )
+      if (closedBeforeHealth && !this.stopPromise) {
+        void this.diagnoseExitedStartup(generation, httpStartupFailure ?? new Error(`Server process exited before health was available (code ${code ?? 'unknown'})`))
       } else if (code !== 0 && code !== null) {
         this.emit('error', new Error(`Server process exited with code ${code}`))
       }
-      this.emit('stopped');
+      if (this.stopPromise || !closedBeforeHealth) this.emit('stopped');
     })
+  }
+
+  private async diagnoseExitedStartup(generation: number, error: Error): Promise<void> {
+    try { await assertBackendPortAvailable(this.serverPort) }
+    catch (bindError) {
+      if (isAddressInUse(bindError)) error = new PortConflictError(await inspectPortOwner(this.serverPort))
+    }
+    this.settleStartupError(generation, error)
   }
 
   private settleStartupError(generation: number, error: Error): void {

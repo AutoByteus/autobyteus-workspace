@@ -1,0 +1,112 @@
+// TEMPORARY PROBE (autobyteus-384 API-05). Not committed; a copy is kept in the ticket's evidence.
+// A native AutoByteus agent with list_projects (LM Studio, local) is asked which Project a folder belongs to.
+import "reflect-metadata";
+import fs from "node:fs/promises";
+import { readFileSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+import type { FastifyInstance } from "fastify";
+import WebSocket from "ws";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+
+const MODEL = process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || "qwen3.6-35b-a3b";
+const OUT = process.env.API05_OUT!;
+type Wire = { type: string; payload: Record<string, unknown> };
+type Raw = { trace_type: string; content?: string | null; tool_name?: string | null; tool_args?: unknown; tool_result?: unknown };
+
+const findRunDir = async (root: string, runId: string): Promise<string | null> => {
+  const entries = await fs.readdir(root, { withFileTypes: true }).catch(() => []);
+  if (path.basename(root) === runId && entries.some((e) => e.name === "raw_traces_active.jsonl")) return root;
+  for (const e of entries) if (e.isDirectory()) { const f = await findRunDir(path.join(root, e.name), runId); if (f) return f; }
+  return null;
+};
+
+describe("API-05 list_projects live (AutoByteus, LM Studio)", () => {
+  let dataDir = "", app: FastifyInstance | null = null, url: URL, socket: WebSocket | null = null;
+  const gql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
+    const r = await fetch(new URL("/graphql", url), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+    const body = await r.json() as { data?: T; errors?: unknown[] };
+    if (!r.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
+    return body.data;
+  };
+  beforeAll(async () => {
+    dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "api05-list-projects-"));
+    await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
+    process.env.LMSTUDIO_HOSTS = "http://127.0.0.1:1234";
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify; url = started.mainUrl;
+  }, 120_000);
+  afterAll(async () => {
+    if (socket?.readyState === WebSocket.OPEN) socket.close();
+    if (app) await app.close();
+    if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
+  }, 120_000);
+
+  it("the agent sees each Project's folders and names the Project a folder belongs to", async () => {
+    const work = path.join(dataDir, "work");
+    const shopWeb = path.join(work, "shop", "web"), shopApi = path.join(work, "shop", "api"), docs = path.join(work, "docs");
+    for (const dir of [shopWeb, shopApi, docs, path.join(shopWeb, "src", "cart")]) await fs.mkdir(dir, { recursive: true });
+    const create = async (input: Record<string, unknown>) => (await gql<{ createProject: { projectId: string } }>(
+      "mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: input })).createProject.projectId;
+    const shopId = await create({ name: "Shop", description: "Online shop", workspaces: [
+      { workspaceRootPath: shopWeb, description: "Storefront UI" }, { workspaceRootPath: shopApi }] });
+    const docsId = await create({ name: "Docs site", workspaces: [{ workspaceRootPath: docs }] });
+    const emptyId = await create({ name: "Billing", description: "Invoices" });
+
+    await gql("mutation($providerId: String!, $runtimeKind: String) { ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }",
+      { providerId: "LMSTUDIO", runtimeKind: "autobyteus" });
+    const models = (await gql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
+      "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }", { r: "autobyteus" }))
+      .providerModelCatalogSnapshots.flatMap((s) => s.llmModels.map((m) => m.modelIdentifier));
+    const model = models.find((id) => id.includes(MODEL));
+    expect(model, `models: ${models.join(", ")}`).toBeTruthy();
+
+    const definitionId = (await gql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `api05-${randomUUID()}`, role: "assistant", description: "list_projects live check",
+        instructions: "Answer the user's question using your tools. Keep replies short.", category: "runtime-e2e", toolNames: ["list_projects"] } })).createAgentDefinition.id;
+    const created = await gql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: definitionId, workspaceRootPath: work, llmModelIdentifier: model, llmConfig: null, autoExecuteTools: true, runtimeKind: "autobyteus" } });
+    expect(created.createAgentRun.success, created.createAgentRun.message).toBe(true);
+    const runId = created.createAgentRun.runId!;
+    const messages: Wire[] = [];
+    socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
+    socket.on("message", (raw: unknown) => {
+      try { const p = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+        if (typeof p.type === "string") messages.push({ type: p.type, payload: (p.payload ?? {}) as Record<string, unknown> }); } catch { /* ignore */ }
+    });
+    await new Promise<void>((resolve, reject) => { socket!.once("open", () => resolve()); socket!.once("error", reject); });
+    const question = `I want to start work in the folder ${path.join(shopWeb, "src", "cart")}. Which existing Project does this folder belong to? `
+      + "Use list_projects to check, then reply with only that Project's projectId, or NONE if no Project has it.";
+    sendE2eSendMessageCommand(socket, { agent_run_id: runId, content: question });
+    const deadline = Date.now() + 300_000;
+    while (Date.now() < deadline && !messages.some((m) => m.type === "TURN_COMPLETED" || m.type === "TURN_INTERRUPTED")) await new Promise((r) => setTimeout(r, 300));
+    const runDir = await findRunDir(path.join(dataDir, "memory"), runId);
+    expect(runDir, "run memory folder").toBeTruthy();
+    await new Promise((r) => setTimeout(r, 500));
+    const raw = readFileSync(path.join(runDir!, "raw_traces_active.jsonl"), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as Raw);
+    const calls = raw.filter((r) => r.trace_type === "tool_call").map((r) => ({ tool: r.tool_name, args: r.tool_args }));
+    const results = raw.filter((r) => r.trace_type === "tool_result").map((r) => ({ tool: r.tool_name, result: r.tool_result }));
+    const answer = [...raw].reverse().find((r) => r.trace_type === "assistant" && String(r.content ?? "").trim())?.content ?? "";
+    const errors = messages.filter((m) => m.type === "ERROR").map((m) => m.payload);
+    const report = { model, question, expected: { shopId, docsId, emptyId }, calls, results, answer, errors, turnEnded: messages.some((m) => m.type === "TURN_COMPLETED") };
+    await fs.writeFile(OUT, JSON.stringify(report, null, 2).split(dataDir).join("<data>"));
+    expect(errors).toEqual([]);
+    expect(calls.map((c) => c.tool)).toContain("list_projects");
+    const rawResult = results.find((r) => r.tool === "list_projects")!.result;
+    const listed = (typeof rawResult === "string" ? JSON.parse(rawResult) : rawResult) as { projects: unknown[] };
+    expect(listed.projects).toEqual([
+      { projectId: emptyId, name: "Billing", description: "Invoices" },
+      { projectId: docsId, name: "Docs site", workspaces: [{ workspaceRootPath: docs }] },
+      { projectId: shopId, name: "Shop", description: "Online shop", workspaces: [{ workspaceRootPath: shopWeb, description: "Storefront UI" }, { workspaceRootPath: shopApi }] },
+    ]);
+    expect(String(answer)).toContain(shopId);
+    expect(String(answer)).not.toContain(docsId);
+  }, 420_000);
+});

@@ -142,6 +142,15 @@ describe("File operations GraphQL e2e", () => {
 
     expect(readResult.fileContent).toBe(content);
 
+    const rewriteResult = await execGraphql<{ writeFileContent: string }>(writeMutation, {
+      workspaceId,
+      filePath,
+      content: "Rewritten",
+    });
+    expect(JSON.parse(rewriteResult.writeFileContent)).toEqual({
+      changes: [{ type: "modify", path: filePath }],
+    });
+
     const deleteMutation = `
       mutation DeleteFileOrFolder($workspaceId: String!, $path: String!) {
         deleteFileOrFolder(workspaceId: $workspaceId, path: $path)

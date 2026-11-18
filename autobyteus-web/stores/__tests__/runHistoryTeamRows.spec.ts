@@ -4,12 +4,11 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildTeamRowsFromContext } from '../runHistoryTeamRows';
 
 describe('runHistoryTeamRows current execution tree', () => {
-  it('projects only configured topology rows and excludes task executions at the same placement', () => {
+  it('projects the Team\'s configured topology rows', () => {
     const names = ['solution_designer', 'architecture_reviewer', 'implementation_engineer', 'code_reviewer'];
     const rootTeamRunId = 'software-team-run';
     const nodes = names.map((name, index) => testAgentNode(`/${name}`, {
@@ -27,15 +26,12 @@ describe('runHistoryTeamRows current execution tree', () => {
           status: AgentStatus.Running, workspaceRootPath: '/workspace',
         }),
       }],
-      delegations: [testDelegation({ delegatorAgentRunId: 'solution_designer-run', recipientAddress: '/implementation_engineer', target: { agentRunId: 'task-agent-run-1' } })],
     });
 
     const rows = buildTeamRowsFromContext(team, 'summary', '2026-06-02T00:00:00.000Z', () => '/workspace');
 
     expect(rows.map((row) => row.memberAddress)).toEqual(names.map((name) => `/${name}`));
     expect(rows.map((row) => row.displayName)).toEqual(names);
-    expect(rows.flatMap((row) => [row.agentRunId, ...row.children.map((child) => child.agentRunId)]))
-      .not.toContain('task-agent-run-1');
     expect(rows[0]?.currentStatus).toBe(AgentStatus.Running);
     expect(rows.slice(1).every((row) => row.currentStatus === AgentStatus.Offline)).toBe(true);
   });

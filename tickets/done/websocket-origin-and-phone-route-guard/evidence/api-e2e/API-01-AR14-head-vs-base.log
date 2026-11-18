@@ -1,0 +1,16 @@
+# API-01a — AR-14 alone on HEAD (88a93aaf26 src)
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts -t AR-14 --no-watch
+     × AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005) 22472ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for codex_app_server newer prerelease checked (last: undefined)
+     20|   throw new Error(`Timed out waiting for ${label}`);
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 skipped (14)
+
+# API-01b — AR-14 alone on the BASE server src (3bf9240d42), test file from HEAD; then src restored to HEAD
+     × AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005) 22446ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for codex_app_server newer prerelease checked (last: undefined)
+     20|   throw new Error(`Timed out waiting for ${label}`);
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 skipped (14)

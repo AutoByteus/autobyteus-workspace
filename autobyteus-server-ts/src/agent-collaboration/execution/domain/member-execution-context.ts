@@ -13,9 +13,9 @@ import {
   type CollaborationMemberExecutionIdentity,
 } from "./root-execution-identity.js";
 import {
-  requireMemberTaskCommandCapability,
-  type MemberTaskCommandCapability,
-} from "../task/member-task-command-capability.js";
+  requireMemberTaskCapability,
+  type MemberTaskCapability,
+} from "../task/member-task-capability.js";
 import type { AvailableCollaborator } from "../../collaborators/collaborator-candidate-policy.js";
 import type { MemberCollaborationRole } from "./member-instance-scope.js";
 
@@ -64,26 +64,34 @@ export class MemberExecutionContext {
   readonly teamScoped: boolean;
   /** What the agent is, which decides the collaboration prompt it reads (decided once by the scope owner). */
   readonly collaborationRole: MemberCollaborationRole;
+  /**
+   * Whether the agent can reach an organization's other agents and teams: an agent of an Org run, or of a run working
+   * on a Task an org assigned (its collaboration tree, SR-058, SR-060). A team member then reads the organization line.
+   */
+  readonly inOrganization: boolean;
   readonly authoredEnclosingScopeInstruction: string | null;
   readonly collaboration: MemberCollaborationContext;
-  readonly tasks: MemberTaskCommandCapability;
+  readonly tasks: MemberTaskCapability;
 
   constructor(input: {
     identity: CollaborationMemberExecutionIdentity;
     teamScoped: boolean;
     collaborationRole: MemberCollaborationRole;
+    inOrganization: boolean;
     authoredEnclosingScopeInstruction?: string | null;
     collaboration: MemberCollaborationContext;
-    tasks: MemberTaskCommandCapability;
+    tasks: MemberTaskCapability;
   }) {
     if (typeof input.teamScoped !== "boolean") throw new Error("teamScoped is required.");
     this.identity = cloneCollaborationMemberExecutionIdentity(input.identity);
     this.teamScoped = input.teamScoped;
     if (!COLLABORATION_ROLES.has(input.collaborationRole)) throw new Error("collaborationRole is required.");
     this.collaborationRole = input.collaborationRole;
+    if (typeof input.inOrganization !== "boolean") throw new Error("inOrganization is required.");
+    this.inOrganization = input.inOrganization;
     this.authoredEnclosingScopeInstruction = optional(input.authoredEnclosingScopeInstruction);
     this.collaboration = new MemberCollaborationContext(input.collaboration);
-    this.tasks = requireMemberTaskCommandCapability(input.tasks);
+    this.tasks = requireMemberTaskCapability(input.tasks);
     if (!sameRootExecutionIdentity(this.identity.root, this.tasks.root)) {
       throw new Error("Member identity and task commands must belong to the same root.");
     }

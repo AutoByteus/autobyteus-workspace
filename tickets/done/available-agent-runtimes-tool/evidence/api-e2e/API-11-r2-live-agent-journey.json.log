@@ -1,0 +1,90 @@
+# API-11 round 2 — AutoByteus agent (LM Studio qwen/qwen3.6-35b-a3b) calls the tool (script API-11-live-agent-journey.mjs.txt); model unloaded after
+# Node: built dist at source 7ece4e2069 (HEAD 5a87647318), own data root, 127.0.0.1:<free>, real HOME/USER/LOGNAME (codex-cli 0.164.0, Claude Code 2.1.310, agy 1.4.7, grok 1.0.70), read-only test vault; LM Studio on localhost:1234; macOS darwin 25.5; 2026-10-25
+
+{
+  "startedAt": "2026-10-25T09:27:09.324Z",
+  "worktreeHead": "5a87647318",
+  "steps": {
+    "startupMs": 1786,
+    "run": {
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+      "created": {
+        "success": true,
+        "message": "Agent run created successfully."
+      }
+    },
+    "runMs": 40889,
+    "projectionHasToolCall": true,
+    "toolActivityKeys": [
+      "kind",
+      "invocationId",
+      "toolName",
+      "type",
+      "status",
+      "contextText",
+      "arguments",
+      "logs",
+      "result",
+      "error",
+      "ts",
+      "detailLevel"
+    ],
+    "toolActivity": {
+      "kind": "tool",
+      "toolName": "list_available_agent_runtimes",
+      "status": "success",
+      "toolError": null,
+      "arguments": {}
+    },
+    "toolResult": {
+      "checkedAt": "2026-10-25T09:27:49.641Z",
+      "runtimes": [
+        "codex_app_server",
+        "claude_agent_sdk",
+        "antigravity_cli",
+        "grok_build",
+        "autobyteus"
+      ],
+      "providers": [
+        "Anthropic",
+        "DeepSeek",
+        "Gemini",
+        "GLM",
+        "Grok",
+        "Kimi",
+        "LM Studio",
+        "OpenAI"
+      ],
+      "sameShapeAsGraphql": true
+    },
+    "finalAssistantText": "[{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\\n\\n\",\"media\":null,\"ts\":1792920469.609},{\"kind\":\"tool_call\",\"invocationId\":\"659914630\",\"role\":null,\"content\":\"\",\"toolName\":\"list_available_agent_runtimes\",\"toolArgs\":{},\"toolResult\":\"{\\\"checkedAt\\\":\\\"2026-10-25T09:27:49.641Z\\\",\\\"agentRuntimes\\\":[{\\\"runtime\\\":\\\"codex_app_server\\\",\\\"name\\\":\\\"Codex\\\",\\\"limits\\\":[{\\\"name\\\":\\\"Weekly\\\",\\\"remainingPercent\\\":100,\\\"resetsAt\\\":\\\"2026-11-01T06:31:15.000Z\\\"}],\\\"models\\\":[{\\\"id\\\":\\\"gpt-6.1-sol\\\",\\\"name\\\":\\\"GPT-6.1-Sol (default reasoning: low)\\\"},{\\\"id\\\":\\\"gpt-6-astra\\\",\\\"name\\\":\\\"GPT-6-Astra (default reasoning: medium)\\\"},{\\\"id\\\":\\\"gpt-6-sol\\\",\\\"name\\\":\\\"GPT-6-Sol (default reasoning: medium)\\\"},{\\\"id\\\":\\\"gpt-6-luna\\\",\\\"name\\\":\\\"GPT-6-Luna (default reasoning: medium)\\\"},{\\\"id\\\":\\\"gpt-5.6-sol\\\",\\\"name\\\":\\\"GPT-5.6-Sol (default reasoning: low)\\\"},{\\\"id\\\":\\\"gpt-5.6-terra\\\",\\\"name\\\":\\\"GPT-5.6-Terra (default reasoning: medium)\\\"},{\\\"id\\\":\\\"gpt-5.6-luna\\\",\\\"name\\\":\\\"GPT-5.6-Luna (default reasoning: medium)\\\"}]},{\\\"runtime\\\":\\\"claude_agent_sdk\\\",\\\"name\\\":\\\"Claude\\\",\\\"limits\\\":[{\\\"name\\\":\\\"5-hour\\\",\\\"remainingPercent\\\":47,\\\"resetsAt\\\":\\\"2026-10-25T12:09:59.830Z\\\"},{\\\"name\\\":\\\"Weekly\\\",\\\"remainingPercent\\\":40,\\\"resetsAt\\\":\\\"2026-10-31T15:59:59.830Z\\\"},{\\\"name\\\":\\\"Weekly · Fable\\\",\\\"remainingPercent\\\":100,\\\"resetsAt\\\":\\\"2026-10-31T16:00:00.000Z\\\"}],\\\"models\\\":[{\\\"id\\\":\\\"opus\\\",\\\"name\\\":\\\"Opus 5.5\\\"},{\\\"id\\\":\\\"fable\\\",\\\"name\\\":\\\"Fable 5.1\\\"},{\\\"id\\\":\\\"sonnet\\\",\\\"name\\\":\\\"Sonnet 5.5\\\"},{\\\"id\\\":\\\"haiku\\\",",
+    "referenceRuntimes": [
+      "codex_app_server",
+      "claude_agent_sdk",
+      "antigravity_cli",
+      "grok_build",
+      "autobyteus"
+    ],
+    "frameTypes": [
+      "CONNECTED",
+      "AGENT_STATUS",
+      "AGENT_INPUT_STATE",
+      "AGENT_COMMAND_ACK",
+      "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "TURN_STARTED",
+      "SEGMENT_START",
+      "SEGMENT_CONTENT",
+      "SEGMENT_END",
+      "TOKEN_USAGE_UPDATED",
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_LOG",
+      "TOOL_EXECUTION_SUCCEEDED"
+    ]
+  },
+  "cleanup": {
+    "serverPid": 88310,
+    "serverExited": true,
+    "tempRoot": "removed"
+  },
+  "finishedAt": "2026-10-25T09:28:06.689Z"
+}

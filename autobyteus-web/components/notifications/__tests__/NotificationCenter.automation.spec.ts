@@ -123,7 +123,9 @@ describe('automatic updates in the Notification Center', () => {
     await nextTick()
     const dialog = $('[role="dialog"][aria-modal="true"]')!
     expect(dialog.textContent).toContain('Turn on automatic updates for agent packages?')
-    expect(dialog.textContent).toContain('Local changes and files you added in a package are replaced without asking and cannot be restored.')
+    // package-personal-settings REQ-007: what is kept, what is replaced, and the backup.
+    expect(dialog.textContent).toContain('Your personal tools, skills, avatars and runtime/model choices are kept.')
+    expect(dialog.textContent).toContain('Other local changes and files you added in a package are replaced without asking; the changed files are first copied to a backup.')
     expect(dialog.parentElement!.className).toContain('z-[100]')
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await nextTick()

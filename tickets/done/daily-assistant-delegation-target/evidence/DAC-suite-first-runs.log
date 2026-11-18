@@ -1,0 +1,24 @@
+# Case DAC-01 first runs (API/E2E round 1): DAC-04 assumption failures, see the execution report
+# Date: Tue Nov 10 06:41:30 CET 2026
+
+## run 1
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-01: the PM lists the Daily Assistant at /daily_assistant; the Model Router is never listed or delegable, internal agents hidden or shown 375ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-02: a saved Task to /daily_assistant starts a Daily Assistant copy in the Project's folder; it has send_message_to and reports back to the PM 560ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-03: a description-only delegation to /daily_assistant runs the copy in the delegating run's folder and it reports back 662ms
+ × tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-04: the PM run that holds a Daily Assistant copy gets no second one; a second saved Task goes to the existing copy by run id 359ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-05: a Daily Assistant run does not see or delegate to its own definition 393ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-06: `@` offers the Daily Assistant except in its own run, never the Model Router; an @Daily Assistant send is admitted 182ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: {"delegated":true,"target_kind":"agent","target_agent_run_id":"daily_assistant_674fe4fae1f948f4b36af14a5f69bd0a","isError":false}: expected true not to be true // Object.is equality
+      Tests  1 failed | 5 passed (6)
+
+## run 2
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-01: the PM lists the Daily Assistant at /daily_assistant; the Model Router is never listed or delegable, internal agents hidden or shown 375ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-02: a saved Task to /daily_assistant starts a Daily Assistant copy in the Project's folder; it has send_message_to and reports back to the PM 544ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-03: a description-only delegation to /daily_assistant runs the copy in the delegating run's folder and it reports back 614ms
+ × tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-04: a Team with a Daily Assistant member gets no second one; the PM gives its Daily Assistant copy a second Task by run id 420ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-05: a Daily Assistant run does not see or delegate to its own definition 387ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts > The Daily Assistant is an ordinary collaborator; the Model Router never is (real HTTP/WS/scoped MCP, scripted AGY) > DAC-06: `@` offers the Daily Assistant except in its own run, never the Model Router; an @Daily Assistant send is admitted 192ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected '\'/daily_assistant\' is not the addre…' to contain 'Daily Assistant is already in this ru…'
+      Tests  1 failed | 5 passed (6)

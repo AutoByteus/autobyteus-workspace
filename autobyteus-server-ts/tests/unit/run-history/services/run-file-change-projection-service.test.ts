@@ -149,21 +149,6 @@ describe("RunFileChangeProjectionService located collaboration members", () => {
     expect(projectionStore.readProjection).toHaveBeenCalledWith("/memory/agent_teams/team-1/worker-run");
   });
 
-  it("resolves a Team task agent's workspace-relative entry against its catalog launch workspace", async () => {
-    const withCopy = { ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [{
-      address: "/reviewer", agentRunId: "copy-run", platformAgentRunId: null, delegatorAgentRunId: "worker-run",
-      startedAt: "2026-08-15T00:00:00.000Z",
-      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/copy" } },
-    }] } };
-    const { service } = harness();
-    for (const isActive of [false, true]) {
-      await expect(service.resolveLocatedCollaborationMemberEntry(
-        teamMember({ agentRunId: "copy-run", configuredPlacement: null, tree: withCopy, isActive }),
-        "src/file.ts",
-      )).resolves.toMatchObject({ absolutePath: "/ws/copy/src/file.ts", isActiveRun: isActive });
-    }
-  });
-
   it("reads a historical mounted-Team Agent from its exact AgentOrg memory directory", async () => {
     const { service, projectionStore } = harness();
     await expect(service.resolveLocatedCollaborationMemberEntry(orgMember(), "src/file.ts")).resolves.toMatchObject({

@@ -1,0 +1,8 @@
+# API-06: env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts --no-watch
+# Commit: HEAD 2d59c0db2c (code cdba18ba35); macOS arm64; 2026-11-07. Excerpt: test result lines (ANSI stripped); full log: API-06-server-e2e-null-origin.full.log (ANSI stripped).
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (7 tests) 4098ms
+     ✓ accepts each allowed-origin class and refuses near misses (AC-002)  2850ms
+     ✓ accepts a phone credential on every phone WebSocket route (AC-005)  888ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Duration  15.93s (transform 7.86s, setup 50ms, import 10.78s, tests 4.10s, environment 0ms)

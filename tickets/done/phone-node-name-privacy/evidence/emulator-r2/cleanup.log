@@ -1,0 +1,16 @@
+# round 2 cleanup 2026-11-08T08:38:35Z
+proxy stopped
+A stopped (listener on 47331: none; health 000)
+B stopped (listener on 47332: none; health 000)
+adb forwards removed
+Success
+OK: killing emulator, bye bye
+OK
+dns responder stopped
+AVD 'pnnp433_api35' deleted.
+listeners 47331-47333: 0
+udp 53: 0
+my emulator processes: 3
+
+node data roots removed
+my emulator processes after exit: 0

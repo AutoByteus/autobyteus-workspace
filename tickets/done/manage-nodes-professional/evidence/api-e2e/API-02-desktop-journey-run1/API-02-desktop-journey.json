@@ -1,0 +1,108 @@
+{
+  "startedAt": "2026-11-02T09:20:24.677Z",
+  "result": "Fail",
+  "appVersion": "1.5.11-beta.10",
+  "servers": {
+    "plain": {
+      "baseUrl": "http://127.0.0.1:58809",
+      "starter": false
+    },
+    "upd": {
+      "baseUrl": "http://127.0.0.1:58810",
+      "starter": true
+    },
+    "refuse": {
+      "baseUrl": "http://127.0.0.1:58811",
+      "starter": true
+    },
+    "fail": {
+      "baseUrl": "http://127.0.0.1:58812",
+      "starter": true
+    },
+    "running": {
+      "baseUrl": "http://127.0.0.1:58813",
+      "starter": true
+    },
+    "blocked": {
+      "baseUrl": "http://127.0.0.1:58814",
+      "starter": true
+    },
+    "newer": {
+      "baseUrl": "http://127.0.0.1:58815",
+      "starter": true
+    },
+    "lost": {
+      "baseUrl": "http://127.0.0.1:58816",
+      "starter": true
+    }
+  },
+  "starterLog": [
+    {
+      "node": "upd",
+      "requests": 0
+    },
+    {
+      "node": "refuse",
+      "requests": 0
+    },
+    {
+      "node": "fail",
+      "requests": 0
+    },
+    {
+      "node": "running",
+      "requests": 0
+    },
+    {
+      "node": "blocked",
+      "requests": 0
+    },
+    {
+      "node": "newer",
+      "requests": 0
+    },
+    {
+      "node": "lost",
+      "requests": 0
+    }
+  ],
+  "instance": {
+    "instanceId": "iso-58933-81a6",
+    "pid": 59687,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:58934",
+    "graphqlUrl": "http://127.0.0.1:58934/graphql",
+    "controlEndpoint": "http://127.0.0.1:58933",
+    "controlPort": 58933,
+    "serverPort": 58934,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-1Xkg80/instance",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-1Xkg80/instance/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-58933-81a6.log"
+  },
+  "cases": {},
+  "errors": [],
+  "cleanup": {
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-58933-81a6",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-1Xkg80/instance",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-58933-81a6.log"
+      }
+    },
+    "rootRemoved": true,
+    "mineStillListed": []
+  },
+  "error": "Error: embedded: [{\"message\":\"Variable \\\"$i\\\" got invalid value { name: \\\"plain\\\", baseUrl: \\\"http://127.0.0.1:58809\\\" }; Field \\\"nodeId\\\" of required type \\\"String!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]}]\n    at Object.gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:64:34)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/API-02-desktop-journey.mjs:192:3",
+  "finishedAt": "2026-11-02T09:21:04.630Z"
+}

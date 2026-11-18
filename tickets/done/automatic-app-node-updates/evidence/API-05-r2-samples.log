@@ -1,0 +1,8 @@
+sample 2: branch=before downloaded=2026-11-02T05:23:46.801Z refused=2026-11-02T05:23:47.429Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-58309-a28f cp=58309
+sample 3: branch=before downloaded=2026-11-02T05:24:35.628Z refused=2026-11-02T05:24:36.191Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-58522-5bc9 cp=58522
+sample 4: branch=before downloaded=2026-11-02T05:25:24.327Z refused=2026-11-02T05:25:24.901Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-58627-1ece cp=58627
+sample 5: branch=before downloaded=2026-11-02T05:26:13.442Z refused=2026-11-02T05:26:13.902Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-58776-d992 cp=58776
+sample 6: branch=before downloaded=2026-11-02T05:27:00.345Z refused=2026-11-02T05:27:00.868Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-58923-6c75 cp=58923
+sample 7: branch=before downloaded=2026-11-02T05:27:49.011Z refused=2026-11-02T05:27:49.460Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-59067-b8e4 cp=59067
+sample 8: branch=before downloaded=2026-11-02T05:28:39.435Z refused=2026-11-02T05:28:40.994Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-59216-f5b9 cp=59216
+sample 9: branch=before downloaded=2026-11-02T05:29:31.282Z refused=2026-11-02T05:29:31.781Z serverExit=none recoveryLines=0 oldPidAlive=yes health=200 instance=iso-59321-50f7 cp=59321

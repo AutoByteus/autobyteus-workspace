@@ -3,23 +3,31 @@ import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskContextDrafts } from "../../../src/projects/services/project-task-context-drafts.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
-import { CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
+import { contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
+import { defaultContextFileSizeLimits, MiB } from "../../helpers/context-file-size-limits.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY } from "../../../src/config/context-file-size-limit-settings.js";
+const OTHER_FILE_LIMIT = 25 * MiB;
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "host-root" });
 const originalCopyFile = fs.copyFile.bind(fs);
 
 /** Agent-attached context files: node-local sources copied into a Project Task's saved context (no draft). */
 describe("Project Task local context files", () => {
-  let appData: string, sources: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
+  let appData: string, sources: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, drafts: ProjectTaskContextDrafts, projectId: string;
+  let releases: ReleaseTracker;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   const source = async (name: string, content: string | Buffer = `bytes of ${name}`) => {
     const file = path.join(sources, name);
@@ -31,10 +39,10 @@ describe("Project Task local context files", () => {
   const contextEntries = (taskId: string) => fs.readdir(layout.contextDir(projectId, taskId)).catch(() => [] as string[]);
   const taskDirs = () => fs.readdir(layout.tasksDir(projectId)).catch(() => [] as string[]);
   const uiTask = async (description = "UI task") => {
-    const draft = await tasks.beginContextDraft(projectId);
-    const upload = await tasks.uploadContextFile(projectId, draft.draftId,
-      { filename: "ui.txt", mimetype: "text/plain", file: Readable.from([Buffer.from("ui bytes")]) } as never);
-    return tasks.createTask({ projectId, description, contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
+    const draft = await drafts.beginContextDraft(projectId);
+    const upload = await drafts.uploadContextFile(projectId, draft.draftId,
+      { filename: "ui.txt", mimetype: "text/plain", file: Readable.from([Buffer.from("ui bytes")]) } as never, defaultContextFileSizeLimits);
+    return tasks.createTask({ projectId, title: description, description, contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
   };
 
   beforeEach(async () => {
@@ -43,17 +51,34 @@ describe("Project Task local context files", () => {
     layout = new ProjectsLayout(path.join(appData, "projects"));
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
-    tasks = new ProjectTaskService({ store, contextStore: context, requestRelease: release,
-      adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) });
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
+    tasks = new ProjectTaskService(withTaskRunResources({ store, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
+      adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) }));
     await tasks.load();
+    drafts = new ProjectTaskContextDrafts({ store, contextStore: context });
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
   });
   afterEach(async () => {
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     vi.restoreAllMocks();
     await fs.chmod(path.join(sources, "locked.txt"), 0o600).catch(() => undefined);
     await fs.rm(appData, { recursive: true, force: true });
+  });
+
+  it("applies the audio/video limit to a local video and the other-file limit to a document (AC-012)", async () => {
+    const video = path.join(sources, "clip.mp4"); await fs.mkdir(sources, { recursive: true });
+    await fs.writeFile(video, ""); await fs.truncate(video, 26 * MiB);
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Video", description: "Video", localContextFiles: [video] });
+    expect(view.contextFiles[0]).toMatchObject({ displayName: "clip.mp4", mimeType: "video/mp4", sizeBytes: 26 * MiB });
+    const pdf = path.join(sources, "big.pdf"); await fs.writeFile(pdf, ""); await fs.truncate(pdf, 26 * MiB);
+    await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "Pdf", description: "Pdf", localContextFiles: [pdf] }))
+      .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringMatching(/big\.pdf' is larger than the 25 MiB limit/) });
+    // The audio/video limit is a node setting read for each operation (here lowered to 10 MiB).
+    appConfigProvider.config.set(CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY, "10");
+    try {
+      await expect(tasks.updateTaskById({ taskId: view.taskId, localContextFiles: [video] }))
+        .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringMatching(/clip\.mp4' is larger than the 10 MiB limit/) });
+    } finally { appConfigProvider.config.set(CONTEXT_FILE_AUDIO_VIDEO_MAX_MB_SETTING_KEY, ""); }
   });
 
   it("maps a path to an app-accepted MIME type by extension only", () => {
@@ -70,7 +95,7 @@ describe("Project Task local context files", () => {
     const md = await source("notes.md", "# Notes");
     const linked = path.join(sources, "linked.txt");
     await fs.symlink(await source("target.txt", "via link"), linked);
-    const view = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Fix green status", localContextFiles: [png, md, linked] });
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Fix green status", description: "Fix green status", localContextFiles: [png, md, linked] });
     expect(view.status).toBe("TODO");
     expect(view.contextFiles.map(f => [f.displayName, f.mimeType, f.sizeBytes])).toEqual([
       ["shot1.png", "image/png", 7], ["notes.md", "text/markdown", 7], ["linked.txt", "text/plain", 8]]);
@@ -81,14 +106,14 @@ describe("Project Task local context files", () => {
     // Sources are only read; later changes or deletion do not affect the saved copies.
     expect(await fs.readFile(md, "utf8")).toBe("# Notes");
     await fs.writeFile(md, "changed later"); await fs.rm(sources, { recursive: true, force: true });
-    const reread = await tasks.readSavedContextFile(projectId, view.taskId, view.contextFiles[1]!.storedFilename);
+    const reread = await drafts.readSavedContextFile(projectId, view.taskId, view.contextFiles[1]!.storedFilename);
     expect(await fs.readFile(reread.filePath, "utf8")).toBe("# Notes");
     // A linked delegation hands the saved copies to the worker (AC-010).
     expect((await tasks.resolveAssignment(view.taskId)).referenceFiles).toEqual(view.contextFiles.map(f => f.localPath));
   });
 
   it("creates a Task with no files and no context directory for an empty list (AC-004 alternate)", async () => {
-    const view = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Text only", localContextFiles: [] });
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Text only", description: "Text only", localContextFiles: [] });
     expect(view.contextFiles).toEqual([]);
     expect(await contextEntries(view.taskId)).toEqual([]);
   });
@@ -105,9 +130,9 @@ describe("Project Task local context files", () => {
     const good = await source("notes.md");
     await fs.mkdir(path.join(sources, "folder.md"));
     await source("code.ts"); await source("README");
-    await fs.truncate(await source("huge.txt", ""), CONTEXT_FILE_MAX_BYTES + 1);
+    await fs.truncate(await source("huge.txt", ""), OTHER_FILE_LIMIT + 1);
     const badPath = bad(sources);
-    const error = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [good, badPath] }).catch(e => e);
+    const error = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, badPath] }).catch(e => e);
     expect(error).toMatchObject({ code, message: expect.stringContaining(`'${badPath}'`) });
     expect(await tasks.listTasks(projectId)).toEqual([]);
     expect(await taskDirs()).toEqual([]);
@@ -115,12 +140,12 @@ describe("Project Task local context files", () => {
 
   it("rejects a duplicate path within one call and an unreadable file (AC-005)", async () => {
     const good = await source("notes.md");
-    await expect(tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [good, good] }))
+    await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, good] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringContaining(good) });
     const locked = await source("locked.txt");
     await fs.chmod(locked, 0o000);
     if (process.getuid?.() !== 0) {
-      await expect(tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [good, locked] }))
+      await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, locked] }))
         .rejects.toMatchObject({ code: "TASK_CONTEXT_FILE_UNAVAILABLE", message: expect.stringContaining(locked) });
     }
     expect(await taskDirs()).toEqual([]);
@@ -132,7 +157,7 @@ describe("Project Task local context files", () => {
       if (String(from) === second) { await fs.writeFile(String(to), "partial"); throw Object.assign(new Error("EIO"), { code: "EIO" }); }
       return originalCopyFile(from, to, mode);
     });
-    const error = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [first, second] }).catch(e => e);
+    const error = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [first, second] }).catch(e => e);
     expect(error).toMatchObject({ code: "TASK_CONTEXT_FILE_UNAVAILABLE", message: `Context file '${second}' could not be copied.` });
     expect(await tasks.listTasks(projectId)).toEqual([]);
     const [taskDir] = await taskDirs();
@@ -146,11 +171,11 @@ describe("Project Task local context files", () => {
       await originalCopyFile(from, to, mode);
       await fs.appendFile(String(to), "line 2\n");
     });
-    const view = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Logs", localContextFiles: [log] });
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Logs", description: "Logs", localContextFiles: [log] });
     expect(view.contextFiles[0]).toMatchObject({ displayName: "server.log", sizeBytes: 14, localPath: expect.any(String) });
     vi.mocked(fs.copyFile).mockImplementation(async (from, to, mode) => {
       await originalCopyFile(from, to, mode);
-      await fs.truncate(String(to), CONTEXT_FILE_MAX_BYTES + 1);
+      await fs.truncate(String(to), OTHER_FILE_LIMIT + 1);
     });
     await expect(tasks.updateTaskById({ taskId: view.taskId, localContextFiles: [log] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringContaining(log) });
@@ -167,7 +192,10 @@ describe("Project Task local context files", () => {
     expect(after.contextFiles[0]).toEqual(before.contextFiles[0]);
     expect(after.contextFiles[1]).toMatchObject({ displayName: "shot2.png", mimeType: "image/png" });
     expect(after).toMatchObject({ description: before.description, status: "TODO" });
-    expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null, attachedContextFiles: [after.contextFiles[1]] });
+    expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, title: task.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null,
+      // AR-005: the attached files carry their saved local path, as list views do.
+      attachedContextFiles: [{ ...after.contextFiles[1], locator: expect.stringContaining(after.contextFiles[1].storedFilename), localPath: expect.stringContaining(after.contextFiles[1].storedFilename) }] });
+    expect(await fs.readFile(ack.attachedContextFiles![0]!.localPath!, "utf8")).toBe(await fs.readFile(shot, "utf8"));
     // Attaching the same source again creates another saved copy (no dedupe).
     const again = await tasks.updateTaskById({ taskId: task.taskId, localContextFiles: [shot] });
     expect(again.attachedContextFiles![0]!.storedFilename).not.toBe(after.contextFiles[1].storedFilename);
@@ -180,18 +208,18 @@ describe("Project Task local context files", () => {
     const notes = await source("notes.md");
     await tasks.updateTaskById({ taskId: task.taskId, description: "Revised", status: "IN_PROGRESS", localContextFiles: [notes] });
     expect(await taskJson(task.taskId)).toMatchObject({ description: "Revised", status: "IN_PROGRESS", contextFiles: [expect.anything(), expect.objectContaining({ displayName: "notes.md" })] });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
     const done = await tasks.updateTaskById({ taskId: task.taskId, status: "DONE", localContextFiles: [await source("result.txt")] });
     expect(done).toMatchObject({ status: "DONE", attachedContextFiles: [expect.objectContaining({ displayName: "result.txt" })] });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect((await taskJson(task.taskId)).contextFiles).toHaveLength(3);
     expect(tasks.isOpen({ agentRunId: "worker" })).toBe(false);
-    expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker" }]);
+    expect(release).toHaveBeenCalledWith({ agentRunId: "worker" });
   });
 
   it("changes nothing, including no DONE closure, when a patch names an invalid file (AC-005)", async () => {
     const task = await uiTask();
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
     const before = await taskJson(task.taskId), entries = await contextEntries(task.taskId);
     const missing = path.join(sources, "gone.png");
     await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Never", status: "DONE", localContextFiles: [await source("ok.md"), missing] }))
@@ -205,11 +233,11 @@ describe("Project Task local context files", () => {
   it("requires a change: an empty files list alone is TASK_PATCH_REQUIRED; a patch without files keeps the plain acknowledgement (AC-004, AC-009)", async () => {
     const task = await uiTask();
     await expect(tasks.updateTaskById({ taskId: task.taskId, localContextFiles: [] })).rejects.toMatchObject({ code: "TASK_PATCH_REQUIRED" });
-    await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Plain" })).resolves.toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
+    await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Plain" })).resolves.toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, title: task.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
   });
 
   it("rejects files on a Task with no Project before any write; its text/status patch still works (AC-007)", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot, execution: { agentRunId: "copy" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "delegator" }, execution: { agentRunId: "copy" },
       adHocTask: { description: "Ad-hoc", referenceFiles: [] } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE", localContextFiles: [await source("notes.md")] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: "Context files can be attached only to Project Tasks; this Task has no Project." });

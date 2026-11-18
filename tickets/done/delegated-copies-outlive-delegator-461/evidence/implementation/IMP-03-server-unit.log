@@ -1,0 +1,15 @@
+# IMP-03
+# command: cd autobyteus-server-ts && pnpm test:unit
+# commit: 3c95473e1c
+# environment: macOS (Darwin 25.5), Node 22, pnpm
+# date: 2026-11-11
+
+## excerpt (summary and failures)
+      Tests  3 failed | 7856 passed | 9 skipped (7868)
+ FAIL  tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+ FAIL  tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ Test Files  2 failed | 948 passed | 5 skipped (955)
+unit exit 1
+
+## follow-up on 2a5a15d27f: root-recovery-command.test.ts fixed (fake roots lacked localChildren): 'Tests  22 passed (22)' with the folder watcher test; agent-package-folder-watcher.test.ts fails a different case per run and passes on rerun (timing flake, module untouched)

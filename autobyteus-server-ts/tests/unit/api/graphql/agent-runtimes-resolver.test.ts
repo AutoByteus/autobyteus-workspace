@@ -18,6 +18,7 @@ const strategy = (runtimeKind: AgentRuntimeKind, version: string | null): AgentR
   readVersion: async () => version,
   readLatestVersion: async () => "2.0.0",
   readSignIn: async () => ({ state: "signedIn" }),
+  readUsageLimits: async () => ({ state: "not_reported" }),
   updateArgv: (executable) => [executable, "update"],
   ...(runtimeKind === RuntimeKind.CODEX_APP_SERVER ? { signInArgv: (executable: string) => [executable, "login"] } : {}),
 });
@@ -97,6 +98,6 @@ describe("composeAgentRuntimeStatus", () => {
       applicationActiveAgentRuns: { countByRuntimeKind },
     });
     const counts = Object.fromEntries(getAgentRuntimeStatusService().list().map((row) => [row.runtimeKind, row.runningAgentCount]));
-    expect(counts).toEqual({ codex_app_server: 1, claude_agent_sdk: 3, antigravity_cli: 0, grok_build: 0 });
+    expect(counts).toEqual({ codex_app_server: 1, claude_agent_sdk: 3, antigravity_cli: 0, grok_build: 0, deepseek_harness: 0 });
   });
 });

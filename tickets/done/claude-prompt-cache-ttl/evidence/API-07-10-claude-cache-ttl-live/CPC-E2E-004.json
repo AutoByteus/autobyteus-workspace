@@ -1,0 +1,25 @@
+{
+  "caseId": "CPC-E2E-004",
+  "at": "2026-10-22T19:05:45.557Z",
+  "model": "haiku",
+  "authMode": "cli",
+  "setting": "true",
+  "calls": [
+    {
+      "model": "claude-haiku-5-5",
+      "input": 2,
+      "cacheRead": 10832,
+      "cacheCreation": 7072,
+      "cacheCreation5m": 0,
+      "cacheCreation1h": 7072,
+      "output": 5
+    }
+  ],
+  "spawnedCli": [
+    {
+      "pid": 99337,
+      "executable": "/Users/normy/.local/bin/claude",
+      "oneHourVariable": "1"
+    }
+  ]
+}

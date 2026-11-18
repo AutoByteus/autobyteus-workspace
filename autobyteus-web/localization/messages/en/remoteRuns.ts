@@ -19,7 +19,6 @@ const remoteRunsMessages = {
   'remote.panel.artifacts': "The files this run wrote are on {{node}}. Open it in that node's window to see them.",
   'remote.panel.vnc': "The screen of this run is on {{node}}. Open it in that node's window to see it.",
   'remote.composer.placeholder': 'Message {{agent}} on {{node}}…',
-  'remote.filePath': "That file is on {{node}}: open the run in that node's window to see it.",
 } satisfies TranslationCatalog;
 
 export default remoteRunsMessages;

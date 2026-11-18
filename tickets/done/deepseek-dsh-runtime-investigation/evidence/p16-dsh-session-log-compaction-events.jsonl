@@ -1,0 +1,23 @@
+{"seq":4,"time":1793938295061,"type":"turn/start","turn":1}
+{"seq":13,"time":1793938297380,"type":"assistant/message","turn":1,"usage":{"inputTokens":2160,"outputTokens":215,"cacheReadTokens":4736,"cacheWriteTokens":0,"totalTokens":7111}}
+{"seq":15,"time":1793938297382,"type":"turn/end","turn":1}
+{"seq":17,"time":1793938297386,"type":"turn/start","turn":2}
+{"seq":21,"time":1793938298335,"type":"assistant/message","turn":2,"usage":{"inputTokens":1973,"outputTokens":5,"cacheReadTokens":7040,"cacheWriteTokens":0,"totalTokens":9018}}
+{"seq":23,"time":1793938298337,"type":"turn/end","turn":2}
+{"seq":25,"time":1793938298340,"type":"turn/start","turn":3}
+{"seq":27,"time":1793938298356,"type":"compaction/start","turn":3}
+{"seq":28,"time":1793938301431,"type":"compaction/summary","usage":{"inputTokens":453,"outputTokens":385,"cacheReadTokens":7040,"cacheWriteTokens":0,"totalTokens":7878}}
+{"seq":30,"time":1793938301432,"type":"compaction/end","turn":3}
+{"seq":31,"time":1793938301432,"type":"compaction/start","turn":3}
+{"seq":32,"time":1793938304456,"type":"compaction/summary","usage":{"inputTokens":959,"outputTokens":481,"cacheReadTokens":4736,"cacheWriteTokens":0,"totalTokens":6176}}
+{"seq":34,"time":1793938304457,"type":"compaction/end","turn":3}
+{"seq":39,"time":1793938305357,"type":"assistant/message","turn":3,"usage":{"inputTokens":4484,"outputTokens":5,"cacheReadTokens":4736,"cacheWriteTokens":0,"totalTokens":9225}}
+{"seq":41,"time":1793938305358,"type":"turn/end","turn":3}
+{"seq":43,"time":1793938305361,"type":"turn/start","turn":4}
+{"seq":45,"time":1793938305379,"type":"compaction/start","turn":4}
+{"seq":46,"time":1793938308835,"type":"compaction/summary","usage":{"inputTokens":547,"outputTokens":580,"cacheReadTokens":7040,"cacheWriteTokens":0,"totalTokens":8167}}
+{"seq":48,"time":1793938308836,"type":"compaction/end","turn":4}
+{"seq":49,"time":1793938308836,"type":"compaction/start","turn":4}
+{"seq":50,"time":1793938310935,"type":"compaction/end","turn":4,"error":"summary is not smaller than the shadowed content (519 estimated framed tokens >= 519)"}
+{"seq":54,"time":1793938312226,"type":"assistant/message","turn":4,"usage":{"inputTokens":2264,"outputTokens":78,"cacheReadTokens":5120,"cacheWriteTokens":0,"totalTokens":7462}}
+{"seq":56,"time":1793938312228,"type":"turn/end","turn":4}

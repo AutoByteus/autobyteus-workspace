@@ -14,14 +14,14 @@ import {
 } from "../agent-tool-mcp-adapter.js";
 import {
   SendMessageToResultSchema,
-  serializeSendMessageToResult,
   toSendMessageToResult,
 } from "../../../agent-communication/services/send-message-to-tool-result-contract.js";
 import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
 
 export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(
-    private readonly sendMessageDispatcher: SendMessageToDispatcher = getSendMessageToDispatcher(),
+    /** Read at use: the composition root creates the dispatcher after this provider (SR-047 step 8). */
+    private readonly sendMessageDispatcher: () => SendMessageToDispatcher = getSendMessageToDispatcher,
   ) {}
 
   getAdapters(): AgentToolMcpToolAdapter[] {
@@ -37,14 +37,14 @@ export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvi
         isAvailable: () => true,
         execute: async ({ session, rawArguments }) => {
           const result = toSendMessageToResult(
-            await this.sendMessageDispatcher.dispatch({
+            await this.sendMessageDispatcher().dispatch({
               toolName: SEND_MESSAGE_TO_TOOL_NAME,
               rawArguments,
               sender: session.sender,
             }),
           );
           return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(
-            serializeSendMessageToResult(result),
+            result,
             { isError: !result.accepted },
           ));
         },

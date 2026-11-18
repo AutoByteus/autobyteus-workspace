@@ -1,0 +1,41 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 1825005 bytes, trimmed to summaries, skips and failures.
+Failed to send message via activeContextStore: Error: Input was rejected
+Failed to send message via activeContextStore: Error: AgentOrg send target is not ready or is stale.
+Failed to send message via activeContextStore: Error: transport failed
+Failed to send message via activeContextStore: Error: AgentOrg stream closed before command acknowledgement.
+Failed to terminate run: Error: network unavailable
+Failed to send message via activeContextStore: Error: Cannot send: No active workspace target.
+Failed to send message via activeContextStore: Error: restore rejected
+Failed to send message via activeContextStore: Error: restore rejected again
+Failed to send message via activeContextStore: Error: socket unavailable
+Failed to start the Agent Org: Error: server said no
+Failed to fetch server settings: Error: backend readiness timed out
+[Vue warn]: Failed to resolve component: RouterLink
+Failed to send message via activeContextStore: Error: finalize rejected
+Failed to send message via activeContextStore: Error: Input rejected
+Error terminating run 'host-run': Error: Failed to terminate run 'host-run'.
+Failed to fetch file content Error: read refused
+  at <CollaboratorAddFailureNotice> 
+Error terminating run 'lead': Error: Failed to terminate run 'lead'.
+Failed to reload agent package definitions: Error: mutation transport failure
+Failed to reload agent package definitions: Error: mutation graphql failure
+Failed to reload agent definitions: Error: agent transport failure
+Failed to reload agent package definitions: Error: agent transport failure
+Failed to reload agent definitions: Error: agent graphql failure
+Failed to reload agent package definitions: Error: agent graphql failure
+Failed to reload agent package definitions: Error: team transport failure
+Failed to reload agent package definitions: Error: team graphql failure
+[useTerminalSession] Server error: Failed to create terminal session using backend IsolatedPtySession: posix_spawnp failed
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+[ApplicationIframeHost] bridge error applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned.
+Failed to fetch token usage statistics: Error: task query failed
+Failed to reload agent teams: Error: Member definitions unavailable
+Failed to resolve the New chat default model: TypeError: catalogs(...).modelConfigSchemaByIdentifier is not a function
+Failed to stop the run from its settings: Error: The run did not stop.
+Failed to stop the run from its settings: Error: offline
+stderr | components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts
+stdout | components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts
+stderr | services/collaborators/__tests__/collaboratorAddFailures.spec.ts
+stdout | services/collaborators/__tests__/collaboratorAddFailures.spec.ts
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error

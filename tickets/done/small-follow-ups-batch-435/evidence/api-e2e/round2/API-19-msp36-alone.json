@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-11-10T09:50:27.402Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 62211,
+      "nodeId": "srv__94kklOTX9Bq9USkSCjv6Akv8LN9Np6q",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 62210,
+      "nodeId": "srv_ovWAJlFyM_m_7RGU0Zvc97Z79uVZ9Rir",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_2259630f3b8f4d3ab359d084d42cb8af",
+    "writerRun": "release_notes_writer_e8dfa3988afc48cfa9e19426845e32d4",
+    "squadRun": "docs_review_team_f6eb62ea31b34437b1c3e178da840201",
+    "reviewer": "release_notes_writer_7e7068f8adde46d285d23be393af2ccc",
+    "memberDelegated": "fact_checker_10ba764dc52145e79fdcda3f7e0f74b1",
+    "remoteAgentRun": "publisher_0bec7179ad7847c5a0d7825327040d86",
+    "remoteTeamRun": "studio_team_52d203fd9cfc47e69c4c9422dd39d50f",
+    "plain": [
+      "fact_checker_f557cf14cd97431d90e44652d8526f02",
+      "fact_checker_e745afb8173946c780f904460ce6f3a1",
+      "fact_checker_b5d0f9d8dedc4c3f9bc7814c444a60ec"
+    ],
+    "org": "delivery_org_b08c149c707940f6ac4a267c1c1200a3",
+    "orgPlanner": "release_notes_writer_48383336a82343699eef8a3da4d2b754",
+    "reviewOrg": "review_org_ea12438becad428c8dceba2960eae58a",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_e8c4f812400b42b0873798b499845fc9",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_1b0f2f738b6e433290c102107e358c06",
+    "deliveryLead": "fact_checker_9986cfd0ba3741cca2f99bd904635bcd",
+    "deliveryMate": "release_notes_writer_071a43209fad4cf3b756baeeb27616c3",
+    "leadDelegated": "changelog_helper_6f05d575630a4bc4a9cecaac65dbc34c",
+    "approver": "approver_a8bf8cfb608e43b59ea3028e784ccccb",
+    "taskA": "launch-39a03b-1",
+    "taskB": "launch-39a03b-2"
+  },
+  "cases": {
+    "MSP-36": {
+      "result": "Pass",
+      "seconds": 5.1,
+      "standalone": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\\\"error\\\\\":{\\\\\"code\\\\\":\\\\\"COLLABORATION_SELF_TARGET_REJECTED\\\\\",\\\\\"message\\\\\":\\\\\"/project_task_manager is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.\\\\\"}}\"}],\"isError\":true}\",\"media\":null,\"ts\":1794304263.381}]",
+      "leadSelf": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\\\"error\\\\\":{\\\\\"code\\\\\":\\\\\"COLLABORATION_SELF_TARGET_REJECTED\\\\\",\\\\\"message\\\\\":\\\\\"/lead is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.\\\\\"}}\"}],\"isError\":true}\",\"media\":null,\"ts\":1794304266.112}]",
+      "teammate": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\\\"error\\\\\":{\\\\\"code\\\\\":\\\\\"COLLABORATION_SELF_TARGET_REJECTED\\\\\",\\\\\"message\\\\\":\\\\\"/mate is in your own team; you can't delegate to it. Talk with it using send_message_to.\\\\\"}}\"}],\"isError\":true}\",\"media\":null,\"ts\":1794304267.314}]",
+      "ptmNodes": {
+        "before": 20,
+        "after": 20
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-36": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-10T09:51:10.247Z"
+}

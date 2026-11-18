@@ -20,6 +20,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -80,7 +84,7 @@ const spawnLogged = (cmd, args, cwd, env, name) => {
 };
 const backendEnv = () => {
   const keys = { APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataRoot, 'db', 'development.db')}`,
-    AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
+    AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(stack.dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(stack.dataRoot, 'temp_workspace') };
   return keys;
 };
@@ -89,7 +93,7 @@ const startBackend = async (port) => {
   const env = { ...Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'LANG', 'SHELL'].filter(k => process.env[k]).map(k => [k, process.env[k]])), ...backendEnv(), HOME: stack.privateHome,
     ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', stack.dataRoot],
-    serverDir, env, `backend-${stack.backendStarts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.backendStarts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -108,7 +112,7 @@ const startStack = async () => {
   stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
     { ...Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'LANG', 'SHELL'].filter(k => process.env[k]).map(k => [k, process.env[k]])), NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1', BACKEND_NODE_BASE_URL: stack.backendUrl,
       BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
-      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
       BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
   await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240000);
   evidence.stack = { backendUrl: stack.backendUrl, frontendUrl: stack.frontendUrl, dataRoot: stack.dataRoot };
@@ -126,10 +130,24 @@ const inputFor = async (id) => {
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
   return (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: id, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
 };
-const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
+/**
+ * A run the host delegated to, read by its own identity (autobyteus-461 rule 2; the host-scoped member read is gone):
+ * an agent run by `getRunProjection`; a member of a delegated team through that team run, found in the host's view rows.
+ */
+const childProjection = async (host, _address, run) => {
+  const own = await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: run }).catch(() => null);
+  if (own?.getRunProjection) return own.getRunProjection.conversation;
+  const view = (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: host })).agentRunCollaboration;
+  const teams = [];
+  const visit = (tasks) => { for (const task of tasks ?? []) if (task.teamRunId) { teams.push(task); visit(task.taskExecutions); } };
+  visit(view?.execution_tree?.taskExecutions);
+  const team = teams.find((task) => task.members.some((member) => member.agentRunId === run));
+  if (!team) throw new Error(`No delegated run of '${host}' has the agent run '${run}'.`);
+  return (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}', { t: team.teamRunId, a: run })).getTeamMemberRunProjection.conversation;
+};
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
 const projection = async (id) => (await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id })).getRunProjection.conversation;
-const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId description status root {kind teamRunId ingressAgentRunId hostRoot{kind runId} start status closed}}}', { id })).projectTasks;
+const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId description status root {kind teamRunId ingressAgentRunId delegatingRun{kind runId} start status closed}}}', { id })).projectTasks;
 const terminate = async (id) => {
   const r = (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id })).terminateAgentRun;
   assert(r.success, r.message);
@@ -150,7 +168,8 @@ const seed = async () => {
   await fsp.mkdir(workspaceRoot, { recursive: true });
   await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: workspaceRoot } });
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: 'Collapse Regression Project' } })).createProject.projectId;
-  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId, description } })).createProjectTask.taskId;
+  // autobyteus-260: a Project Task has a title (here its description's first line).
+  const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId, title: description.split('\n')[0], description } })).createProjectTask.taskId;
   const host = async () => {
     const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: managerId, ...config() } })).createAgentRun;
     assert(r.success, r.message); return r.runId;
@@ -330,6 +349,7 @@ try {
   } else {
     browser = await chromium.launch({ headless: true, executablePath, args: process.getuid?.() === 0 ? ['--no-sandbox'] : [] }); ownedBrowser = true;
     context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US' }); page = await context.newPage();
+    await attachToBrowserContext(context);
     // Nuxt optimization warmup outside asserted cases. Never filter errors in asserted journeys.
     await page.goto(`${stack.frontendUrl}/workspace`, { timeout: 120000 }); await sleep(3500);
   }

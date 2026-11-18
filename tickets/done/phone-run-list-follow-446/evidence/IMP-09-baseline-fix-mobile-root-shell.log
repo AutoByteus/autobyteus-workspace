@@ -1,0 +1,13 @@
+# Check: IMP-09
+# Command: pnpm -C autobyteus-web test:nuxt --run pages/__tests__/mobile-root-shell.spec.ts
+# Commit: e8270ed84e (baseline fix)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+## Cause
+The spec expected the pairing screen to name the node by its address; autobyteus-433 (ba3ba5b23e, "show a node's name, never its address, on the phone") made it show the QR's serverName or "AutoByteus node". It fails on its own, every run; no file this ticket changes is on the pairing screen's path (MobilePairingBootstrap.vue -> nodeNameOrDefault(payload.serverName)). The cause was established by reading, not by a base run. Fixed in the spec only.
+
+## Rerun
+ ✓ pages/__tests__/mobile-root-shell.spec.ts (2 tests) 21ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

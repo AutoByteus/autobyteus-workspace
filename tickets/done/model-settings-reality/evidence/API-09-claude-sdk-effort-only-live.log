@@ -1,0 +1,11 @@
+# API-09 / API-10 — claude-agent-effort-only-live.e2e.test.ts: real Claude Agent SDK sessions on the real Claude CLI (PATH 2.1.322 and SDK-bundled 2.1.280), started through an argv-logging wrapper, on a built server, test vault
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=/tmp AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_CLAUDE_E2E=1 corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-effort-only-live.e2e.test.ts --no-watch   (cwd: worktree root)
+# Commit: 817bd9950 + new test file (committed with this evidence) · ENV-1 · 2026-11-10 · Cases API-09 (AC-005, AC-006), API-10 (AC-008, QR-003)
+[effort-only] path-claude 2.1.322 (Claude Code): createAgentRun took 99 ms
+[effort-only] sdk-bundled-claude 2.1.280 (Claude Code): createAgentRun took 50 ms
+ ✓ tests/e2e/runtime/claude-agent-effort-only-live.e2e.test.ts (2 tests) 32566ms
+     ✓ path-claude: stored effort is passed, stale thinking settings and an unchosen effort are not  15050ms
+     ✓ sdk-bundled-claude: stored effort is passed, stale thinking settings and an unchosen effort are not  17515ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  33.49s (transform 114ms, setup 114ms, import 143ms, tests 32.57s, environment 0ms)

@@ -1,0 +1,12 @@
+# API-07 journey log (UI over CDP on controlPort 60554, backend http://127.0.0.1:60555), 2026-10-24
+baseline: listApplications=[] applicationPackages=[]; <dataRoot>/server-data/applications absent
+UI: Settings -> Application Packages -> path /Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/applications/brief-studio/dist/importable-package -> Import Package (clicked 2026-10-24T18:06:37Z) -> 'Application package imported.' 'Local Path · Applications: 1'
+no restart; GraphQL listApplications: {"data":{"listApplications":[{"id":"<id>","localApplicationId":"brief-studio","packageId":"application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fimported-app-codex-runtime-folder%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package","name":"Brief Studio"}]}}
+runtime folder: drwxr-xr-x@ 4 normy  staff  128 Oct 24 20:10 <dataRoot>/server-data/applications/bundle-app__brief-studio__f317f1fc6f87b6faed4d6cdc7fc6cd3fc780346b33850b45ea8fd6af1a42271a/runtime
+launch settings GET /rest/applications/<id>/execution-resource-configurations -> HTTP 200; readiness {"status": "RUNNABLE", "issues": []}; slot teamScopes runtimeKind codex_app_server, model gpt-5.6-luna (see screenshot API-07-03)
+real codex ran at import: the throwaway CODEX_HOME gained models_cache.json, state_5.sqlite, logs_2.sqlite at 18:06Z (the import), written by the instance's codex
+UI: Server Settings -> Applications toggle (ENABLE_APPLICATIONS was false by default in a fresh data root) -> Enabled, live; Applications -> Brief Studio -> Open app -> Enter application -> backend status: state ready, ready true, lastFailure null
+UI (app iframe): Create brief 'AB238 imported app launch check' -> Generate draft (clicked 2026-10-24T18:10:04Z) -> first codex session after 2 s; researcher and writer sessions in cwd <dataRoot>/server-data/applications/<storageKey>/runtime, both task_complete by 18:10:39Z (API-07-codex-sessions-summary.txt)
+app result: brief status in_review, DRAFT OUTPUTS 2 (1 final): runtime/brief-studio/research.md and runtime/brief-studio/final-brief.md (screenshot API-07-05)
+terminate attempt (to limit inference) at 18:10:32Z: {"data":{"terminateAgentTeamRun":{"success":false,"message":"Agent team run not found."}}} -- the app-owned team run had already finished its turns
+server log: 1 error line, my own GraphQL validation error (listAgentTeamRunsWithMemory without its argument); no ENOENT, no quarantine

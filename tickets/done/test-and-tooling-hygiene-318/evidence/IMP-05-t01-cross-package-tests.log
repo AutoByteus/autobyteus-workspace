@@ -1,0 +1,70 @@
+# IMP-05 — T-01: the three cross-package tests type-check (errors before, none after) and pass
+# Command: node --max-old-space-size=4096 node_modules/vue-tsc/bin/vue-tsc.js -p tsconfig.cross-package-tests.json --noEmit --pretty false (before/after); env -i ... npx vitest run on the three test files
+# Commit: dd47f30810
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: cross-before lists the fixture's two TS2345 errors and the memberTeamContext TS2353; cross-after is empty (0 errors); "Tests  17 passed (17)"
+
+===== cross-before.log =====
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(37,55): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'readonly EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(41,50): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts(66,7): error TS2353: Object literal may only specify known properties, and 'memberTeamContext' does not exist in type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; workspaceId?: string | null | undefined; memoryDir?: string | null | undefined; llmConfig?: Record<string, unknown> | null | undefined; runtimeKind: RuntimeKind; memberExecutionContext?: MemberExecutionContext | ... 1 more ... | unde...'.
+
+===== cross-after.log =====
+
+
+===== t01-web.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+stderr | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/acceptedInputIdentity.spec.ts (12 tests) 9ms
+stdout | components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts (3 tests) 53ms
+(node:74103) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (2 tests) 58ms
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  10:18:34
+   Duration  10.18s (transform 5.97s, setup 16.24s, collect 6.14s, tests 120ms, environment 523ms, prepare 487ms)
+

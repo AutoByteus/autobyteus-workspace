@@ -1,0 +1,9 @@
+{"t":3905,"event":"device","model":"sdk_gphone64_arm64","sdk":"35","webview":"124.0.6367.219"}
+{"t":4339,"event":"apk","versionName":"0.1.0"}
+{"t":20017,"event":"paired, run list shown"}
+{"t":24250,"event":"marker sent","id":"EMU-T-1"}
+{"t":43696,"event":"marker sent","id":"EMU-T-2"}
+{"t":98696,"event":"marker sent","id":"EMU-T-3"}
+{"t":158697,"event":"marker sent","id":"EMU-T-4"}
+{"t":244092,"event":"marker sent","id":"EMU-T-5"}
+{"t":274788,"event":"cycle","label":"team","kind":"team","doze":false,"sameActivityAndTask":false,"activityBefore":"8d08d74 task 10","activityAfter":"6130684 task 10","backgroundMs":150010,"screenWakefulnessAfterSleep":"Asleep","markers":["EMU-T-2","EMU-T-3","EMU-T-4"],"producedAllWhileInBackground":true,"shownAfterForegroundMs":null,"nextMarker":{"id":"EMU-T-5","phoneMinusNodeMs":null},"liveBeforeBackgroundMs":-37,"streamConnectionsWhileInBackground":[],"streamConnectionsAfterForeground":[{"openedAt":199622,"closedAt":null,"webSocket":true,"path":"/ws/agent/emu_agent_9a645dd530d145da8ff841db896f9f20?access_token=…"},{"openedAt":199670,"closedAt":null,"webSocket":true,"path":"/ws/agent-team/emu_team_276238acfb5b4d34af88ed163b6b4e6b?access_token=…"}],"note":"shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"}

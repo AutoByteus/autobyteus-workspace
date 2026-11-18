@@ -1,0 +1,404 @@
+# API-07..API-10 live suite tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts (CPC-E2E-001..004)
+# cmd: env -i PATH HOME USER LOGNAME TMPDIR AUTOBYTEUS_TEST_VAULT=$HOME/.autobyteus-test/vault RUN_CLAUDE_PROMPT_CACHE_E2E=1 CLAUDE_PROMPT_CACHE_E2E_EVIDENCE_DIR=<this folder> ./node_modules/.bin/vitest run tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts --no-watch
+# cwd: autobyteus-server-ts; commit: 62bfd7ed51 + uncommitted new test file; claude: 2.1.308 (Claude Code); date: 2026-10-22T19:01:50Z
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:71390) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/.env
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39m[2026-10-22T19:02:00.909Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-prompt-cache-ttl/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-appdata-V3doi5/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_available_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)
+[22m[39mAgent Definition created successfully with ID: claude-cache-ttl-e2e-08b3c178
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mAdded new custom server setting: CLAUDE_AGENT_SDK_AUTH_MODE
+Server setting 'CLAUDE_AGENT_SDK_AUTH_MODE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-001-oWz0hi
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-001-oWz0hi.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mCreated and registered workspace ID: agent_ws_908ff9d4e3e691518d01cfe07224d46a6393c6677af0bd0eb8f9be6b13ac2553
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-001-oWz0hi
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-001-oWz0hi.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mReusing registered workspace ID: agent_ws_908ff9d4e3e691518d01cfe07224d46a6393c6677af0bd0eb8f9be6b13ac2553
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mAgent websocket attached for run claude_cache_ttl_e2e_08b3c178_ce56bb746e40400d9d6a7ad199055aea
+Created agent session 2f4afd26-eb13-448d-ace5-2ed51b1fc741 for run claude_cache_ttl_e2e_08b3c178_ce56bb746e40400d9d6a7ad199055aea
+Agent WebSocket connected: session=2f4afd26-eb13-448d-ace5-2ed51b1fc741, run=claude_cache_ttl_e2e_08b3c178_ce56bb746e40400d9d6a7ad199055aea
+
+(node:71390) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[22m[39mClosed agent session 2f4afd26-eb13-448d-ace5-2ed51b1fc741
+Agent WebSocket disconnected: 2f4afd26-eb13-448d-ace5-2ed51b1fc741
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mServer setting 'CLAUDE_AGENT_SDK_AUTH_MODE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mServer setting 'CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-002-tNs1j2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-002-tNs1j2.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mCreated and registered workspace ID: agent_ws_b413493d8ca52fff9988073ea9cb50e0e1335ee727570cbf48b1a22c9ae9e092
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-002-tNs1j2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-002-tNs1j2.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mReusing registered workspace ID: agent_ws_b413493d8ca52fff9988073ea9cb50e0e1335ee727570cbf48b1a22c9ae9e092
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mAgent websocket attached for run claude_cache_ttl_e2e_08b3c178_156845d803f742eeb677673ad2a64144
+Created agent session 2bfe1eb9-9add-4477-b8ef-f13e714df9da for run claude_cache_ttl_e2e_08b3c178_156845d803f742eeb677673ad2a64144
+Agent WebSocket connected: session=2bfe1eb9-9add-4477-b8ef-f13e714df9da, run=claude_cache_ttl_e2e_08b3c178_156845d803f742eeb677673ad2a64144
+
+(node:71390) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[22m[39mClosed agent session 2bfe1eb9-9add-4477-b8ef-f13e714df9da
+Agent WebSocket disconnected: 2bfe1eb9-9add-4477-b8ef-f13e714df9da
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mServer setting 'CLAUDE_AGENT_SDK_AUTH_MODE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mServer setting 'CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-003-ByjxOb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-003-ByjxOb.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mCreated and registered workspace ID: agent_ws_5578d2b75bbf57a00b5898010e27de7dd4edda67dda3db40edd29218dab6a530
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-003-ByjxOb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-003-ByjxOb.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mReusing registered workspace ID: agent_ws_5578d2b75bbf57a00b5898010e27de7dd4edda67dda3db40edd29218dab6a530
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mAgent websocket attached for run claude_cache_ttl_e2e_08b3c178_ba08533ad9074de4afed5db298f6467b
+Created agent session 0f2cb340-8b88-44fb-aa97-b9b9fd8bd893 for run claude_cache_ttl_e2e_08b3c178_ba08533ad9074de4afed5db298f6467b
+Agent WebSocket connected: session=0f2cb340-8b88-44fb-aa97-b9b9fd8bd893, run=claude_cache_ttl_e2e_08b3c178_ba08533ad9074de4afed5db298f6467b
+
+(node:71390) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[22m[39mClosed agent session 0f2cb340-8b88-44fb-aa97-b9b9fd8bd893
+Agent WebSocket disconnected: 0f2cb340-8b88-44fb-aa97-b9b9fd8bd893
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mServer setting 'CLAUDE_AGENT_SDK_AUTH_MODE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mServer setting 'CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE' updated
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-004-BYdNF2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-004-BYdNF2.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mCreated and registered workspace ID: agent_ws_9b1c9c7172f9870dd672053ba635e6d433423cb81e0ae6b193d1c080fb8cdba3
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-004-BYdNF2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-cache-ttl-cpc-004-BYdNF2.
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mReusing registered workspace ID: agent_ws_9b1c9c7172f9870dd672053ba635e6d433423cb81e0ae6b193d1c080fb8cdba3
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mAgent websocket attached for run claude_cache_ttl_e2e_08b3c178_06333038571e42a0b03b64716d61d6ff
+Created agent session 50735c0c-3424-4726-8cae-df3f72ed1e75 for run claude_cache_ttl_e2e_08b3c178_06333038571e42a0b03b64716d61d6ff
+Agent WebSocket connected: session=50735c0c-3424-4726-8cae-df3f72ed1e75, run=claude_cache_ttl_e2e_08b3c178_06333038571e42a0b03b64716d61d6ff
+
+(node:71390) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39m[claude cache ttl] CPC-E2E-004 {"model":"haiku","authMode":"cli","setting":"true","calls":[{"model":"claude-haiku-5-5","input":2,"cacheRead":10832,"cacheCreation":7070,"cacheCreation5m":0,"cacheCreation1h":7070,"output":5}],"spawnedCli":[{"pid":72774,"executable":"/Users/normy/.local/bin/claude","oneHourVariable":"1"}]}
+
+[90mstdout[2m | tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22m[2mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22m[2mCPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003)
+[22m[39mClosed agent session 50735c0c-3424-4726-8cae-df3f72ed1e75
+Agent WebSocket disconnected: 50735c0c-3424-4726-8cae-df3f72ed1e75
+
+ [31m❯[39m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 14939[2mms[22m[39m
+[31m     [31m×[31m CPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)[39m[33m 3335[2mms[22m[39m
+[31m     [31m×[31m CPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)[39m[33m 3008[2mms[22m[39m
+[31m     [31m×[31m CPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)[39m[33m 3280[2mms[22m[39m
+     [33m[2m✓[22m[39m CPC-E2E-004: subscription (cli mode), toggle on: the agent conversation writes 1h (AC-003) [33m 5005[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22mCPC-E2E-001: API billing, toggle never saved: both turns write 1h, and turn 2 reads turn 1 back after more than 5 minutes (AC-001)
+[31m[1mError[22m: idle: run failed: {"status":"error","recoverableBlock":null,"agent_id":"claude_cache_ttl_e2e_08b3c178_ce56bb746e40400d9d6a7ad199055aea"}[39m
+[36m [2m❯[22m waitFor tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m187:25[22m[39m
+    [90m185|[39m       [35mif[39m (found) [35mreturn[39m found[33m;[39m
+    [90m186|[39m       const failed = messages.slice(from).find((message) => message.ty…
+    [90m187|[39m       if (failed) throw new Error(`${label}: run failed: ${JSON.string…
+    [90m   |[39m                         [31m^[39m
+    [90m188|[39m       [35mawait[39m [34mwait[39m([34m250[39m)[33m;[39m
+    [90m189|[39m     }
+[90m [2m❯[22m turn tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m199:5[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m301:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22mCPC-E2E-002: API billing, toggle saved false without restart: the next run writes 5m (AC-006, billing control)
+[31m[1mError[22m: idle: run failed: {"status":"error","recoverableBlock":null,"agent_id":"claude_cache_ttl_e2e_08b3c178_156845d803f742eeb677673ad2a64144"}[39m
+[36m [2m❯[22m waitFor tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m187:25[22m[39m
+    [90m185|[39m       [35mif[39m (found) [35mreturn[39m found[33m;[39m
+    [90m186|[39m       const failed = messages.slice(from).find((message) => message.ty…
+    [90m187|[39m       if (failed) throw new Error(`${label}: run failed: ${JSON.string…
+    [90m   |[39m                         [31m^[39m
+    [90m188|[39m       [35mawait[39m [34mwait[39m([34m250[39m)[33m;[39m
+    [90m189|[39m     }
+[90m [2m❯[22m turn tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m199:5[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m328:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts[2m > [22mClaude runtime prompt cache lifetime (live, autobyteus-273)[2m > [22mCPC-E2E-003: API billing, toggle on, workspace promptCacheTtl 5m: the user's setting wins (AC-002)
+[31m[1mError[22m: idle: run failed: {"status":"error","recoverableBlock":null,"agent_id":"claude_cache_ttl_e2e_08b3c178_ba08533ad9074de4afed5db298f6467b"}[39m
+[36m [2m❯[22m waitFor tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m187:25[22m[39m
+    [90m185|[39m       [35mif[39m (found) [35mreturn[39m found[33m;[39m
+    [90m186|[39m       const failed = messages.slice(from).find((message) => message.ty…
+    [90m187|[39m       if (failed) throw new Error(`${label}: run failed: ${JSON.string…
+    [90m   |[39m                         [31m^[39m
+    [90m188|[39m       [35mawait[39m [34mwait[39m([34m250[39m)[33m;[39m
+    [90m189|[39m     }
+[90m [2m❯[22m turn tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m199:5[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts:[2m343:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 21:01:50
+[2m   Duration [22m 24.89s[2m (transform 6.83s, setup 38ms, import 9.37s, tests 14.94s, environment 0ms)[22m
+
+exit=1

@@ -34,11 +34,16 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Web unit and component tests | Nuxt components, stores, composables, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | Web guards | Web boundary and localization rules | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` |
+| Web typecheck | Nuxt app, Electron main, build scripts and the tests that import server code under their own configs; those tests compile the server's `src` and the server test fixtures they import, so a server change can fail this typecheck; production files must have no errors, test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-web typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared types it reads (`@autobyteus/application-sdk-contracts`) first, so it runs right after `pnpm install`. The desktop build runs it | `pnpm -C autobyteus-web typecheck` |
 | Workspace native-to-web integration | Native producer/FIFO and web hydration at a workspace-owned boundary (`test-support/`) | `pnpm test:native-input-history` |
 | Server unit / integration | Backend logic and in-process integration | `pnpm -C autobyteus-server-ts test:unit`; `test:integration:prepare` once, then `test:integration`; one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
-| Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
-| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`) | `pnpm test:e2e`, or one file with `vitest run` as above |
-| Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
+| Server typecheck | `src` and the test files (`tests/`, `../test-support/`) under the build type policy, so a test that calls a removed or renamed API fails it. Production files must have no errors; test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-server-ts typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared packages first | `pnpm -C autobyteus-server-ts typecheck` |
+| Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
+| Docker launcher (offline) | `scripts/public/docker/` bash/PowerShell launcher commands against a fake Docker, with a real `node` client against a real Unix socket where a case needs it; no daemon | `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` |
+| Server Docker Release workflow steps | The workflow's job graph and the `run:` blocks of its steps (publish metadata, disk guard, multi-arch index check, package extraction by digest, wait, upload, `Move beta tag`), run with bash against a fake `docker`, `gh` and `df`; no daemon, network or registry. Timing, native arm64 and the registry are proven only by the build-only run (RELEASE.md) | `python3 -m unittest scripts/tests/test_server_package_release.py scripts/tests/test_release_channel_workflow_steps.py scripts/tests/test_server_docker_cli_latest_defaults.py scripts/tests/test_docker_build_context_sources.py` |
+| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). A suite that needs a prepared build output names it when it is missing | `pnpm test:e2e`, or one file with `vitest run` as above |
+| Gated runtime suites | Real or scripted runtimes and providers (gates, usually `RUN_*`, in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
+| Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
 | Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` |
@@ -46,6 +51,20 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Packaged Electron harness | Packaged launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
 | Isolated desktop instance | The real desktop app of a worktree build, driven like a user | `pnpm --silent isolated-app start --build`; see [Isolated AutoByteus Instances](docs/isolated-app-instances.md) |
 | iOS wrapper (macOS + Xcode) | Release contract, core unit tests, simulator smoke | See [autobyteus-ios/README.md](autobyteus-ios/README.md) |
+
+Web specs that exercise HTML sanitisation (DOMPurify) declare `// @vitest-environment jsdom`: the
+default happy-dom lets DOMPurify skip nodes, so injected markup survives there although a real DOM
+removes it.
+
+A web spec of code that runs after a component's setup (an event handler, code after an `await` or a
+lazy `import()`) mounts the component with a real router and Pinia and does not double a composable
+that calls `inject` (`useRoute`, `useRouter`, `useMobileNavigation`, `useWorkspaceToolReveal`):
+`inject` works only during setup, and a double hides a call made too late. The production bundle
+drops Vue's `inject()` warning, so such a call fails there without a hint.
+
+Renderer behavior that the phone (`/mobile`) also offers is proven on the phone bundle too: a case in
+`pnpm -C autobyteus-web test:e2e:mobile-shell` that performs the user's action there. A desktop probe
+or a dev server does not run the phone's routing or its production build.
 
 ## Choosing the path
 
@@ -61,6 +80,11 @@ closes the remaining confidence gap.
 | A full real-product journey a user would perform | An isolated desktop instance of a worktree build |
 | Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
+| The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
+| The tools a run gets: the shared exposure rule (`autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts`), the native default tools, the automatic collaboration tools, or the tool units a host registers at start | The whole server unit suite, the whole `test:integration` and the whole server E2E suite (`pnpm test:e2e`), plus a search of the gated suites for exact tool lists (`toolInstances`, `enabledTools`, `tools/list`, `requestedToolNames`): tests in every layer assert a run's exact tool list, so the unit suite and a chosen set of integration files miss the rest. On the native runtime the tools a run *has* and the tools a provider request *carries* differ (tool search, GLOSSARY "Listed tool"): a request holds the base tools plus `search_tools` and `call_tool`, so a test that asserts a native request's `tools` asserts that set, and a test that needs another tool reaches it through search and `call_tool`. A test that asserts a run's exact tool list and is not about the platform-given tools spreads `PLATFORM_GIVEN_TOOL_NAMES` instead of naming them, and registers the tool units a server start registers |
+| A runtime's system prompt: the composer or a section in `autobyteus-server-ts/src/agent-execution/prompt/`, or the section a backend passes to it | The prompt unit tests (`tests/unit/agent-execution/prompt`, the backends' bootstrapper and factory tests), plus every test in any layer, gated suites included, that reads a run's composed prompt (search `promptOf`, `processedSystemPrompt`, `carpenterSystemPrompt`, `systemPrompt`, `baseInstructions`, `_meta.rules`, `match(/^## `, prompt snapshots). Run each file found, not only those that list headings: a test that checks how a prompt ends, or cuts the prompt at a heading, goes stale too, and reading it does not show that |
+
+**Both typechecks, whatever the change touches.** A change to TypeScript in any workspace package runs `pnpm -C autobyteus-web typecheck` and `pnpm -C autobyteus-server-ts typecheck`, not only the typecheck of the package it changed. Each reads beyond its own package: the web typecheck, which the desktop build runs, compiles the server's source and server test fixtures through its cross-package tests, and the server typecheck builds and reads `autobyteus-ts` and the shared packages. A server-only change that a web test calls passes the server typecheck and still stops every desktop build.
 
 These are separate evidence layers; none substitutes for another. A browser probe proves
 web-equivalent behavior, not the Electron shell. A scripted runtime proves the transport,
@@ -76,11 +100,13 @@ refresh) before running anything:
    (its own files or the code it exercises changed), with the reason. Add cases for new
    behavior. Find what a test exercises by reading what it drives. For server E2E,
    `vitest --changed` does not narrow anything, because every test starts the whole server.
+   Tests under `autobyteus-server-ts/tests/architecture/` read source text by path, so moving,
+   renaming or splitting a source file marks them **Rerun**, even when no behavior changed.
 4. Mark everything **Rerun** when a shared foundation changed: dependencies or the
    lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
    the test harness or fixtures, or build configuration. A large diff without such a
    change is not a reason to rerun everything: plan by what the cases exercise.
-5. After a merge or rebase, also rerun the typechecks and rebuild every built output the
+5. After a merge or rebase, also rerun both typechecks (web and server, as [Choosing the path](#choosing-the-path) says) and rebuild every built output the
    planned cases use (`dist/`, `electron-dist/`): they are cheap and catch a broken merge,
    and a build made before the merge is stale.
 6. Run only the cases marked Rerun or new, and record their new commit.
@@ -91,6 +117,45 @@ delivery, its delivery report).
 **One run per case per round.** When a case fails, find its cause (Rule 9) and rerun that
 test, not its whole suite. A second full run of a suite proves nothing the first did not.
 
+## Fresh-start build
+
+A release runner clones the commit, runs `pnpm install --frozen-lockfile` and then its build job
+(`.github/workflows/release-desktop.yml`, `release-server-docker.yml`); the Android job
+(`release-android.yml`) runs Gradle alone. A worktree build can pass only because an earlier setup
+step built a package's `dist/`, the Prisma client or generated types that the runner does not have,
+or because Gradle's cache already holds a dependency the runner must download.
+
+- **When.** Any path of `git diff --name-only <base>...HEAD` matches a build input:
+  - `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc`, `.gitmodules`, `package.json`, `*/package.json`;
+  - `**/tsconfig*.json`, `**/typecheck-baseline.json`, `scripts/**`, `*/scripts/**`;
+  - `autobyteus-web/nuxt.config.ts`, `autobyteus-web/build/**`, `autobyteus-web/electron/tsconfig*.json`,
+    `autobyteus-web/generated/**`, `autobyteus-server-ts/prisma/**`, `autobyteus-server-ts/docker/**`;
+  - the contract packages `autobyteus-*-contracts/**` (their tracked `src/` and `dist/`, which other
+    packages' builds and type checks import);
+  - `.github/workflows/**`;
+  - the Android build: `autobyteus-android/**/*.gradle.kts`, `autobyteus-android/gradle/**`,
+    `autobyteus-android/gradle.properties`, `autobyteus-android/gradlew`;
+  - and, whatever the path, a new import of another workspace package in any file the build
+    type-checks (the web build's `pnpm typecheck` reads the app, Electron main, build scripts and
+    the test files, so a test file can break the release build).
+- **How.** A fresh clone of the commit under test (`git clone --no-local <worktree> <new dir>`,
+  checkout the commit), `pnpm install --frozen-lockfile` alone, then the job's build command in
+  the job's order. For desktop on macOS ARM64: `cd autobyteus-web` and
+  `NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64`
+  (it runs the guards, `typecheck`, `prepare-server`, `generate:electron` and packaging; the runner
+  sets `GITHUB_REPOSITORY`, which the updater configuration reads, and a local clone's origin is a
+  path). Then the job's "Verify bundled Prisma" and "Verify packaged terminal runtime" steps, from
+  the clone's root. Signing, notarization and the other operating systems need the runner: record
+  them as not tested. For Android: in the clone, `cd autobyteus-android` and
+  `GRADLE_USER_HOME=<new empty folder> ./gradlew --no-daemon clean :app:assembleDebug` (the job's
+  unsigned command; the empty Gradle home makes Gradle download what the runner downloads). The
+  signed `:app:assembleRelease` needs the runner's keystore secrets: record it as not tested.
+- **A change to a build step or gate** also needs the build-only release run on the ticket
+  branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say. The desktop
+  build's run is `pnpm release:test`; a change to `.github/workflows/release-server-docker.yml` or
+  `autobyteus-server-ts/docker/**` needs the Server Docker Release's own build-only run
+  ([RELEASE.md](RELEASE.md#build-only-release-run)).
+
 ## Environments, credentials and data
 
 - **Install and build first.** `pnpm install`, then `pnpm -C autobyteus-server-ts prebuild`
@@ -98,11 +163,30 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   `autobyteus-server-ts/dist/app.js` need a current build of this worktree:
   `pnpm -C autobyteus-server-ts build`. Never use an installed app or an older build as
   proof of current source.
+- **Node version.** Run server and web suites on Node 22, the version the release workflows and
+  the server image use. A newer default Node (26) fails `tests/unit/memory-search` for a reason that
+  is not in the code (`node:sqlite` `RangeError: Value is too large to be represented as a
+  JavaScript number`) and gives other memory figures. The desktop app runs its server on
+  Electron's own Node (`ELECTRON_RUN_AS_NODE=1 <Electron binary> -p process.versions.node`; 24 for
+  Electron 42), so a memory, GC or timing measurement also runs on that version. Name the Node
+  version in the evidence.
+- **A local run does not prove a release build.** The packages are already built in your
+  worktree; a release runner starts from `pnpm install` alone. When a change touches a
+  build input, prove it as [Fresh-start build](#fresh-start-build) says.
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
 - **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a
   probe alongside another of them, in any worktree: they compete for CPU, and timing
   assertions then fail for reasons that are not in the code under test.
+- **File watching on a busy Mac.** Folder-watcher tests, and any test of a server that starts or
+  closes folder watchers, depend on macOS FSEvents. When `fseventsd` is busy (high CPU in `ps`),
+  watch events arrive seconds late or never, and closing a recursive `fs.watch` blocks Node's main
+  thread for seconds, so those tests time out for a reason outside the code. Before diagnosing such
+  a timeout, check `fseventsd` and measure: the time from writing a file in a watched temp folder to
+  its event, and how long `close()` of that watcher blocks. A built server's process shutdown no
+  longer pays that close: it ends the package and skill folder watchers and lets the exit release
+  their OS watches, so a slow built-server stop is not explained by this rule. An in-process server
+  that a test closes still closes them.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
@@ -128,19 +212,47 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   uses a signed-in CLI (`claude`, `codex`) also needs the real `HOME` and, on macOS,
   `USER` and `LOGNAME`; without them the CLI reports "Not logged in" and the run hangs
   until its step timeout.
+- **Node credentials.** Every request to a node needs a credential (node access model,
+  `autobyteus-server-ts/docs/design/node_access_model.md`). A test starts its node as the
+  desktop app does: with a launch owner credential (`AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL`) it
+  attaches to its own requests. Server test processes get one from
+  `tests/setup/test-launch-credential.ts`, which also installs the attachment
+  (`test-support/node-access/owner-credential-attachment.mjs`, test code only) before any test
+  code, so a `fetch` a test keeps is already the attached one. Each way of reaching a node has
+  its path (helpers in `autobyteus-server-ts/tests/e2e/helpers/` unless named):
+  - an in-process node: `startStudioE2eRuntimeServer`; a built one: `startBuiltTestServer`
+    (`test-support/live-e2e/`); both attach the credential. A suite that spawns `dist/app.js` or a fixture node itself adds
+    `builtServerLaunchEnvironment()` to the child's environment. A fixture child that also sends requests to its node
+    attaches the credential in its own process (`attachOwnerCredentialToLoopback`), reading it before it imports the
+    server composition, which consumes it;
+  - `fastify.inject` passes no attachment: give it `authorization: Bearer <ownerCredential>`
+    (the start helper returns it);
+  - the MCP gateway needs its own token, not the owner credential: `connectMcpGatewayClient`.
+
+  `tests/architecture/e2e-node-credential-paths.test.ts` fails a node composed with
+  `buildStudioServer` or a gateway client opened outside these helpers. Nodes are paired by
+  invite (`tests/e2e/helpers/pair-nodes.ts`). Never print or store a credential, gateway token,
+  setup code, invite or peer secret in evidence.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
-  real-provider proof.
+  real-provider proof. A skipped file never fails, so when a change alters what test clients
+  rely on (a message, its order or its timing), find every client by searching the test
+  folders, gated files included, and update them; a rule that can be read from the source
+  belongs in a unit check (for example `tests/unit/e2e-helpers/`).
 - **Real-provider credentials** come from the test vault: set `AUTOBYTEUS_TEST_VAULT` (see
   [Test vault](#test-vault)).
 - **Local model servers share limited compute.** LM Studio and Ollama run on this machine. Run at
   most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
-  small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
-  `LMSTUDIO_TARGET_TEXT_MODEL`). Unload any model your run loaded just-in-time when you finish.
+  small, fast model. Unload any model your run loaded just-in-time when you finish.
+- **Live Codex model.** Live Codex tests use `gpt-6.1-terra`, with reasoning effort `medium`
+  unless the test needs more (the cheapest current model; override a test's model variable only
+  when the test needs another).
 - **Runtimes without a model.** `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`
   (`ANTIGRAVITY_CLI_COMMAND=<absolute path>`, `RUN_AGY_FAILURE_E2E=1`) is a scripted AGY CLI:
-  a message containing `CALL_TOOL:{…}` makes that agent call the real tool. Use it to drive
-  real delegation, Tasks and streams without provider calls.
+  a message containing `CALL_TOOL:{…}` makes that agent call the real tool, and one containing
+  `REPLY_FILE:<absolute path>` makes it answer with that file's text as it is (for example raw
+  Markdown for a rendering case). Use it to drive real delegation, Tasks and streams without
+  provider calls.
 - **Test-only runtime CLI settings.** Never edit the user's CLI config (`~/.codex`,
   `~/.claude`, `~/.grok`). Give the test its own config instead:
   - **A throwaway home.** For example `CODEX_HOME=<temp>` containing a `config.toml` with
@@ -155,11 +267,9 @@ test, not its whole suite. A second full run of a suite proves nothing the first
     `HOME` gives a signed-out `agy`. For a signed-in one, copy only
     `antigravity-oauth-token` into the throwaway home; never symlink it or point at the
     user's real folder, because `agy` writes into that folder. Never print or commit it.
-    Known gap: `agy` 1.3.5 has no `antigravity-oauth-token` file, and a throwaway `HOME`
-    gives a signed-out `agy` (checked 2026-10-14). No isolated signed-in recipe is known for
-    that version yet. Until one is, live AGY suites run on the host login with the real
-    `HOME`; each run adds its own conversations to the user's `agy` history. Say so in your
-    report.
+    When the installed `agy` keeps no `antigravity-oauth-token` file, a throwaway `HOME` gives a
+    signed-out `agy`; live AGY suites then run on the host login with the real `HOME`, and each
+    run adds its own conversations to the user's `agy` history. Say so in your report.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process
@@ -171,12 +281,27 @@ test, not its whole suite. A second full run of a suite proves nothing the first
     `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`.
   - Claude: `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (in-process suites only), or a manual
     `/compact`.
+
+  Prove compaction with the deterministic layers: the core library and server unit tests
+  (including the shared live-compaction boundary tests, which make no provider calls) and
+  scripted runtimes with a lowered threshold. A live compaction run against a real model is not
+  required proof for a ticket and not a gate: it needs a real provider key or signed-in CLI and
+  enough input to reach the compaction threshold, and its outcome depends on the model, so a live
+  failure alone is not a defect. Run one only when the user asks for it. This applies to
+  compaction only: other real-provider runs with a small input keep the rule under Gates (run
+  them when the change needs real-provider proof).
 - **Docker server nodes.** Never test against the user's node containers or their volumes
   (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
-  bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
-  start signed out. To run this worktree's server in it, mount
-  `autobyteus-server-ts/dist` read-only over `/app/autobyteus-server-ts/dist`, after checking
-  that the image's `dist` differs only in the files you changed. If a signed-in CLI is needed,
+  bound to `127.0.0.1` on a free port and with fresh test-owned volumes, never the user's, so
+  its runtime CLIs start signed out. The image runs its server from its built-in server package
+  at `/opt/autobyteus/server-package`, which its starter runs while the node's
+  `<node>-server-packages` volume holds no newer package (fresh volumes never do). To run this
+  worktree's server in it, build this worktree's server package for the image's platform
+  (`docker buildx build -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=<new folder> .`)
+  and mount that folder read-only over `/opt/autobyteus/server-package`. A change only in
+  `dist` may instead mount `autobyteus-server-ts/dist` read-only over
+  `/opt/autobyteus/server-package/dist`, after checking that the image's `dist` differs only in
+  the files you changed. If a signed-in CLI is needed,
   stream only its credential file from a node container into the test container without
   writing it to the host, e.g. `docker exec <node> tar -C <dir> -cf - <file> | docker exec -i
   <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.
@@ -186,7 +311,11 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   test-made records with the released structure, covering each shape that exists, older
   ones included; the target is what the new build makes of it. Learn the structure by
   reading real user data (read-only) or what a released build wrote, and check that the
-  synthesized records have the same keys and shapes. Never copy real data into a test, and
+  synthesized records have the same keys and shapes. When the conversion carries a value the
+  released build combined from several fields (a saved edit of runtime, model and settings),
+  one record changes every one of those fields from the value it started with, so a field the
+  conversion drops shows as a difference; the runtime is read back where the user sees it (for
+  example the server's row data). Never copy real data into a test, and
   never run a migration, startup or conversion on real user data or a copy of it; use a
   test-owned data root, and never wake a converted run against real runtime sessions.
   Prove the conversion, that nothing is lost, and that a second start changes nothing.
@@ -208,6 +337,11 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   never pick it) and prints the setting to use. Configured keys are skipped; `--replace`
   replaces them. `pnpm test-vault status` shows the location and the configured and missing
   secret IDs (never values); `pnpm test-vault remove` deletes the vault files.
+- **Test-only secrets.** A live check may need a secret that is not a provider key. Its alias in
+  the source file maps to a test-only secret ID; the suite's header names it, and
+  [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md#test-vault) lists
+  them. Only `test-vault setup` accepts these aliases; `secrets:import` into an application vault
+  refuses them.
 - **Read-only, like a test database.** A server started with the variable reads the test vault
   instead of its own: `pnpm test:e2e:real` (its preflight prints `Vault: test vault …`), an
   isolated instance, a server you start yourself. Settings saves fail with
@@ -219,7 +353,8 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   resolver or setup code (Gemini still takes its mode explicitly).
 - **Live test runs opt in; deterministic runs ignore it.** `autobyteus-ts` Vitest live tests
   also need `RUN_LIVE_PROVIDER_TESTS=1` (without it the setup removes the variable). Server
-  live suites use their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
+  live suites use the gate their file header names (usually a `RUN_*` flag; some take
+  `<NAME>_LIVE_E2E=<runtime>`). `pnpm test:e2e`, server unit/integration and the default
   `pnpm -C autobyteus-ts test` keep their own vaults even with the variable exported.
 - **A missing key is never a pass.** It is reported as a skip with its reason
   (`missing capability <secret id> (test vault <dir>)`), as is a classified provider refusal;
@@ -228,10 +363,9 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   started from that shell (web probes, manual servers) would read the test vault too.
 
 ```bash
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run <live test file>
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_<GATE>=1 pnpm -C autobyteus-server-ts exec vitest run <gated e2e file> --no-watch
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
 ```
 
@@ -269,11 +403,39 @@ The runnable preflight, root-container and virtual-display recipes are in
 shared setup guidance separate from ticket-specific journeys. Temporary
 ticket-owned automation does not require a new global package command.
 
+## Android emulators
+
+The Android commands are in [autobyteus-android/README.md](autobyteus-android/README.md#build); the device checklist
+is in [docs/android_mobile_access.md](docs/android_mobile_access.md).
+
+- **Your own emulator.** Several agents run emulators on this machine. Create your own AVD from an installed image
+  (`avdmanager create avd`), give it its own `-port`, address only that serial (`adb -s emulator-<port>`,
+  `ANDROID_SERIAL` for Gradle's connected tests) and delete it when you are done. Never stop, wipe or reconfigure an
+  emulator you did not start.
+- **Headless.** Start it with `-no-window`. A windowed emulator in the background can be throttled by macOS until it
+  stops answering `adb shell`.
+- **No `uiautomator dump` in landscape.** A UiAutomation session freezes the current rotation: one dump while the
+  phone is in landscape sets the system's `user_rotation` to landscape, and the phone then stays there after the app
+  releases it. While the app is in landscape, read the window with `dumpsys` and the page through WebView DevTools.
+
 ## Browser probes
 
 - A probe owns its stack: free ports, a Nuxt dev server, fresh headless Chrome, and either
   fixture routes or a probe-owned backend and data root. It removes them on success or
   failure; check its cleanup receipt.
+- A probe-owned backend must be told the exact origin of the frontend the probe serves
+  (`AUTOBYTEUS_ALLOWED_ORIGINS=http://127.0.0.1:<frontend-port>`): a node refuses a page from
+  any other localhost port with `REMOTE_ACCESS_ORIGIN_REFUSED`. Choose the frontend port before
+  starting the node, and list every frontend on every node a multi-node probe starts. See
+  [Allowed Origins](autobyteus-server-ts/docs/features/remote_access.md#allowed-origins).
+- A probe-owned backend also needs a launch owner credential, and the page must send it: serve
+  the frontend through the Nuxt dev proxy with `AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL` (the
+  proxy adds it to every request it forwards) and `AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL`, as
+  `pnpm dev` does, or attach it in the probe's browser. The probe's own calls carry it too,
+  including the "other window" sockets a case opens from the probe process:
+  `autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs` gives the node environment
+  (`probeNodeEnvironment`), `ownerHeaders` for HTTP, `ownerSocketUrl` for WebSockets, and
+  `attachToBrowserContext` for a desktop window's context (never a phone's).
 - Probes fail on browser errors. A probe whose fixture page renders product components must
   supply every boundary those components reach (GraphQL operations, WebSockets). Shared
   fixture helpers live in `autobyteus-web/tests/e2e/fixtures/`.
@@ -319,6 +481,13 @@ ticket-owned automation does not require a new global package command.
 
    Never close a failure as "pre-existing" or "flaky" without its cause. A pass when
    rerun alone, under less load or on the base narrows the search; it is not the cause.
+
+10. **Test a runtime switch there and back.** A switch case goes A → B → A (and on to a fourth
+    hop where the design allows it), not one hop. What an era leaves behind (a project
+    folder, a session binding, a file the next start creates exclusively) shows only when a run
+    returns to a runtime it already used. Cover each member kind that has its own start path
+    (standalone run, Team member, Org member, delegated copy) with at least one return, and a
+    restart between the save and the message of the return.
 
 ## Evidence and cleanup
 

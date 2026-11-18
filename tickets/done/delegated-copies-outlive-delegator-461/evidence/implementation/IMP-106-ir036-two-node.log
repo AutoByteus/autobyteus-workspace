@@ -1,0 +1,38 @@
+IMP-106 — C35-03 / CR-461-099 / SR-090: /ws/peer-run on two real nodes (remote-delegation-two-server.e2e.test.ts, RC-46)
+Code: the tree committed as 6acf35eb4a, with RC-46 (test commit after it); server dist rebuilt from it (pnpm build); 2026-11-15
+Command (worktree root): env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 REMOTE_E2E_EVIDENCE_DIR=<this folder> ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch -t "RC-(01|03|46) "
+Environment: two built servers, each with its own temp data root, port and HOME; capturing proxies; the scripted AGY CLI; no provider, no user data. RC-03 pairs the nodes; RC-46 needs nothing else.
+Full receipt: IMP-106-ir036-two-node-receipt.json (cases.RC-46, cleanup); server logs alongside.
+
+## result
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (46 tests | 43 skipped) 43674ms
+     ✓ RC-03 AC-101/102/111, 245 AC-207, 437 NAS-19: switched on, the nodes pair with one invite and each pins the other's identity; bad URLs record nothing; the gateway admits in order; there is no
+     ✓ RC-46 461 G-D1 (SR-088, SR-089, CR-461-099) and SR-090: with the delegator stopped, a peer Agent and a peer Team's member open by their own identity on alpha's /ws/peer-run: the snapshot, liv
+ Test Files  1 passed (1)
+      Tests  3 passed | 43 skipped (46)
+
+## RC-46 receipt
+a1: "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+t1: "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+checker: "checker_f13083ded7b14f86bc102334733f06ae"
+agentLive: 1
+agentSnapshotAgain: 1
+interrupted: {"command_type": "INTERRUPT_GENERATION", "command_id": "27d02433-5e73-4e3f-aebf-b4a03825afc7", "target": {"target_kind": "standalone_run", "run_id": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"}, "state": "accepted"}
+agentTurnEnds: ["TURN_COMPLETED", "TURN_INTERRUPTED"]
+files: {"beta": [{"path": "gd1-image.png", "status": "available"}], "alpha": {"data": []}, "alphaContentStatus": 404}
+memberSnapshotsBefore: 1
+memberLive: 1
+memberSnapshotsAfter: 2
+memberSnapshotAgain: 1
+memberInterrupted: {"command_type": "INTERRUPT_GENERATION", "command_id": "bd089363-1cc2-48a9-91a9-a643d306298e", "target": {"target_kind": "standalone_run", "run_id": "checker_f13083ded7b14f86bc102334733f06ae"}, "state": "accepted"}
+retryWhileDown: {"state": {"kind": "agent", "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66", "answer": "unreachable", "node": "beta-node", "status": null}, "elapsedMs": 103}
+retryBack: {"state": {"kind": "agent", "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66", "answer": "ok", "node": null, "status": "offline"}, "elapsedMs": 102}
+cleanup: {"rootRemoved": true, "serversStopped": true, "leftoverAgy": [], "errors": []}
+
+## reading
+- agentLive 1 / agentSnapshotAgain 1: the peer Agent's answer (a REPLY_FILE text only its output carries) shows once live on /ws/peer-run, and once in a later snapshot.
+- memberSnapshotsBefore 1 -> memberSnapshotsAfter 2: the never-started member's first snapshot was its stored one; its lazy start (a new sequence, SR-089) took a new snapshot in-band; memberLive 1 / memberSnapshotAgain 1.
+- interrupted / memberInterrupted: INTERRUPT_GENERATION through /ws/peer-run, accepted; agentTurnEnds shows TURN_INTERRUPTED; both stopped running (by run ID).
+- files: the run's file is beta's (getRunFileChanges on beta lists gd1-image.png); alpha lists none and its content route answers 404.
+- retryWhileDown: RETRY_PEERS with beta stopped is answered with the run's state told again (unreachable, beta-node); retryBack: after beta restarts, answered ok.
+- The delegator stayed stopped throughout.

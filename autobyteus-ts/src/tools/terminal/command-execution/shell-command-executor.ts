@@ -1,197 +1,97 @@
-import { spawn } from 'node:child_process';
-import { TerminalResult, type BackgroundProcessInfo } from '../types.js';
-import { BackgroundProcessManager } from '../background-process-manager.js';
-import { NonInteractiveShellResolver } from './non-interactive-shell-resolver.js';
-import { ProcessGroupObserver } from './process-group-observer.js';
-import {
-  HOST_PROCESS_TARGET,
-  ShellProcessIdentityParser,
-  type ProcessExecutionTarget,
-  type ShellProcessIdentity
-} from './process-identity.js';
+import type { PassThrough } from 'node:stream';
+import type { NonInteractiveShellInvocation } from './non-interactive-shell-resolver.js';
+import type { NativeCommandProcessScope } from './native-command-process-scope.js';
+import type { AnchoredCommandHandle, CommandCompletion, ForegroundDone } from './anchored-command-launcher.js';
+import { COMMAND_END_MARKER_GRACE_MS, COMMAND_START_LIMIT_MS } from './command-deadline.js';
 
-export interface ShellCommandExecutorOptions {
-  timeoutSeconds?: number;
-  backgroundManager?: BackgroundProcessManager;
+export interface ShellCallOptions {
+  /** Limits the foreground part; a timeout stops the whole command group. Null: no limit (background form). */
+  timeoutSeconds: number | null;
   signal?: AbortSignal | null;
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+/** One shell call, up to its foreground end. */
+export interface ShellCall {
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+  timedOut: boolean;
+  /** The wrapper's foreground end; null when the call ended without it (unwrapped, `exec`, stopped, failed). */
+  foreground: ForegroundDone | null;
+  /** The launched command; null when it could not be launched. */
+  handle: AnchoredCommandHandle | null;
 }
 
-function asBuffer(data: Buffer | string): Buffer {
-  return Buffer.isBuffer(data) ? data : Buffer.from(data, 'utf8');
-}
+const ended = (stream: PassThrough): Promise<void> =>
+  stream.readableEnded ? Promise.resolve() : new Promise(resolve => stream.once('end', () => resolve()));
+const sleep = (ms: number) => new Promise<null>(resolve => setTimeout(() => resolve(null), ms));
 
+/**
+ * Runs one invocation through the host scope and returns when its foreground part ends: at the wrapper's call
+ * boundary (end marker and `FOREGROUND_DONE`, both streams read up to them), or at the shell's exit when the
+ * wrapper never reported it. Timeout and Stop apply to the foreground part only. After the boundary the handle
+ * belongs to the caller.
+ */
 export class ShellCommandExecutor {
-  constructor(
-    private readonly resolver: NonInteractiveShellResolver = new NonInteractiveShellResolver(),
-    private readonly observer: ProcessGroupObserver = new ProcessGroupObserver()
-  ) {}
-
-  async execute(command: string, cwd: string, options: ShellCommandExecutorOptions = {}): Promise<TerminalResult> {
-    const timeoutSeconds = options.timeoutSeconds ?? 30;
-    const timeoutMs = Math.max(1, timeoutSeconds) * 1000;
-    const invocation = this.resolver.resolve(command, cwd);
-    const child = spawn(invocation.executable, invocation.args, {
-      cwd: invocation.cwd,
-      env: invocation.env,
-      detached: true,
-      stdio: ['ignore', 'pipe', 'pipe']
-    });
-
-    const stdoutChunks: Buffer[] = [];
-    const stderrChunks: Buffer[] = [];
-    const backgroundOutputChunks: Buffer[] = [];
-    const identityParser = new ShellProcessIdentityParser(invocation.shellIdentityMarker);
-    let shellExited = false;
-    let timedOut = false;
-    let settled = false;
-
-    const onStdout = (data: Buffer | string) => {
-      const buffer = asBuffer(data);
-      backgroundOutputChunks.push(buffer);
-      if (!shellExited) {
-        stdoutChunks.push(buffer);
-      }
+  async execute(invocation: NonInteractiveShellInvocation, scope: NativeCommandProcessScope,
+    options: ShellCallOptions): Promise<ShellCall> {
+    const stdout: Buffer[] = [], stderr: Buffer[] = [];
+    const onOut = (bytes: Buffer) => stdout.push(bytes);
+    const onErr = (bytes: Buffer) => stderr.push(bytes);
+    let handle: AnchoredCommandHandle | undefined, timedOut = false, stoppedByCaller = false;
+    let foreground: ForegroundDone | null = null;
+    const interrupt = (reason: 'tool-timeout' | 'tool-abort') => {
+      if (foreground) return;
+      timedOut = true;
+      if (reason === 'tool-abort') stoppedByCaller = true;
+      if (handle) void scope.stop(handle, reason);
     };
-    const onStderr = (data: Buffer | string) => {
-      const filtered = identityParser.filter(data);
-      if (filtered.length === 0) {
-        return;
-      }
-
-      const buffer = Buffer.from(filtered, 'utf8');
-      backgroundOutputChunks.push(buffer);
-      if (!shellExited) {
-        stderrChunks.push(buffer);
-      }
-    };
-
-    child.stdout?.on('data', onStdout);
-    child.stderr?.on('data', onStderr);
-
-    return new Promise<TerminalResult>((resolve) => {
-      const stopActiveProcess = async (): Promise<void> => {
-        const shellIdentity = this.getShellIdentity(invocation.kind, invocation.processTarget, child.pid, identityParser.identity);
-        if (shellIdentity) {
-          const stopped = await this.observer.stopProcess(
-            shellIdentity.pid,
-            shellIdentity.processGroupId,
-            shellIdentity.target
-          );
-          if (stopped) {
-            return;
-          }
-        }
-
-        if (child.pid !== undefined) {
-          try {
-            child.kill('SIGTERM');
-          } catch {
-            // Best effort cancellation cleanup.
-          }
-        }
-      };
-
-      const abortHandler = () => {
-        timedOut = true;
-        void stopActiveProcess();
-      };
-
-      const finalize = async (exitCode: number | null, errorMessage?: string) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        shellExited = true;
-        clearTimeout(timer);
-        options.signal?.removeEventListener('abort', abortHandler);
-
-        const pendingStderr = identityParser.flush();
-        if (pendingStderr.length > 0) {
-          const buffer = Buffer.from(pendingStderr, 'utf8');
-          backgroundOutputChunks.push(buffer);
-          stderrChunks.push(buffer);
-        }
-
-        let backgroundProcesses: BackgroundProcessInfo[] = [];
-        const shellIdentity = this.getShellIdentity(invocation.kind, invocation.processTarget, child.pid, identityParser.identity);
-        if (!timedOut && options.backgroundManager && shellIdentity?.processGroupId) {
-          await sleep(75);
-          const survivors = await this.observer.findLiveProcessesInGroup(
-            shellIdentity.processGroupId,
-            [shellIdentity.pid],
-            shellIdentity.target
-          );
-          backgroundProcesses = options.backgroundManager.adoptObservedProcesses({
-            command,
-            effectiveCwd: cwd,
-            processGroupId: shellIdentity.processGroupId,
-            processTarget: shellIdentity.target,
-            processes: survivors,
-            stdout: child.stdout,
-            stderr: child.stderr,
-            initialOutput: Buffer.concat(backgroundOutputChunks)
-          });
-        }
-
-        child.stdout?.off('data', onStdout);
-        child.stderr?.off('data', onStderr);
-
-        const stderr = Buffer.concat(stderrChunks).toString('utf8') + (errorMessage ? `${errorMessage}\n` : '');
-        resolve(new TerminalResult(
-          Buffer.concat(stdoutChunks).toString('utf8'),
-          stderr,
-          exitCode,
-          timedOut,
-          cwd,
-          backgroundProcesses
-        ));
-      };
-
-      const timer = setTimeout(() => {
-        timedOut = true;
-        void stopActiveProcess();
-      }, timeoutMs);
-
-      child.once('exit', (code) => {
-        void finalize(code);
+    const abort = () => interrupt('tool-abort');
+    const timeoutMs = options.timeoutSeconds === null ? null : Math.max(1, options.timeoutSeconds) * 1000;
+    const timer = timeoutMs === null ? undefined : setTimeout(() => interrupt('tool-timeout'), timeoutMs);
+    options.signal?.addEventListener('abort', abort, { once: true });
+    // The start may take the start limit, or the call's own timeout when that is shorter.
+    const startLimitMs = Math.min(COMMAND_START_LIMIT_MS, timeoutMs ?? COMMAND_START_LIMIT_MS);
+    let completion: CommandCompletion | null = null;
+    try {
+      handle = await scope.start(invocation, Date.now() + startLimitMs, h => {
+        handle = h; h.stdout.on('data', onOut); h.stderr.on('data', onErr);
+        void h.foregroundDone.then(done => { foreground = done; });
+        if (options.signal?.aborted) abort();
       });
-
-      child.once('error', (error) => {
-        void finalize(null, error.message);
-      });
-
-      if (options.signal) {
-        if (options.signal.aborted) {
-          abortHandler();
-        } else {
-          options.signal.addEventListener('abort', abortHandler, { once: true });
-        }
+      const started = handle;
+      const boundary = Promise.all([started.foregroundDone, ended(started.stdout), ended(started.stderr)]).then(() => null);
+      const settled = await Promise.race([boundary, started.completion]);
+      if (settled && foreground) {
+        // The wrapper reported its end and exited at once: its stdout marker is still on its way.
+        await Promise.race([boundary, sleep(COMMAND_END_MARKER_GRACE_MS)]);
+      } else if (settled) {
+        completion = settled;
+        // The shell exited without the wrapper's boundary: read its output to the end, as before the wrapper.
+        // Its last bytes may still be in the pipes when the exit is reported; retirement may belong to the scope.
+        await Promise.all([sleep(25),
+          settled.kind === 'result' && !started.stopReason && scope.isOpen ? scope.retireCompleted(started) : null]);
       }
-    });
-  }
-
-  private getShellIdentity(
-    kind: string,
-    processTarget: ProcessExecutionTarget,
-    childPid: number | undefined,
-    parsedIdentity: ShellProcessIdentity | null
-  ): (ShellProcessIdentity & { target: ProcessExecutionTarget }) | null {
-    if (kind === 'windows-wsl') {
-      return parsedIdentity ? { ...parsedIdentity, target: processTarget } : null;
+    } catch (error) {
+      // Only the start throws; its own cleanup settled the handle as stopped, which hides why it did not start.
+      // A Stop during the start ends the call as that Stop; otherwise say how long the start was given and why it failed.
+      completion = stoppedByCaller ? { kind: 'interrupted', reason: 'tool-abort' } : { kind: 'failed', reason: 'launch-failure',
+        message: `Command did not start within ${startLimitMs / 1000} s: ${error instanceof Error ? error.message : String(error)}` };
+    } finally {
+      clearTimeout(timer); options.signal?.removeEventListener('abort', abort);
+      if (!foreground) handle?.flushOutput();
+      handle?.stdout.off('data', onOut); handle?.stderr.off('data', onErr);
     }
-
-    if (childPid === undefined) {
-      return null;
-    }
-
+    const done = foreground as ForegroundDone | null;
+    if (!done && completion && completion.kind !== 'result')
+      stderr.push(Buffer.from(`${completion.kind === 'failed' ? completion.message : completion.reason}\n`));
     return {
-      pid: childPid,
-      processGroupId: childPid,
-      target: HOST_PROCESS_TARGET
+      stdout: Buffer.concat(stdout).toString('utf8'),
+      stderr: Buffer.concat(stderr).toString('utf8'),
+      exitCode: done ? done.exitCode : completion?.kind === 'result' ? completion.code : null,
+      timedOut,
+      foreground: done,
+      handle: handle ?? null,
     };
   }
 }

@@ -1,0 +1,6 @@
+# IMP-20 server unit tests of the touched areas (validator, Org launch, launch usability, collaborators, team/standalone/remote roots, model routing)
+# command: corepack pnpm -C autobyteus-server-ts exec vitest run tests/unit/llm-management tests/unit/agent-collaboration tests/unit/agent-org-execution tests/unit/launch-preferences tests/unit/model-routing tests/unit/standalone-agent-run-root tests/unit/agent-team-execution tests/unit/remote-collaboration --no-watch
+# commit: 47f44c3df
+# env: Linux 6.12.54-linuxkit, node v22.23.3; date: 2026-10-29T22:15:00Z
+ Test Files  151 passed (151)
+      Tests  1210 passed (1210)

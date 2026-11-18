@@ -1,0 +1,10 @@
+content-desc: Back
+text: Switch node
+content-desc: Test Desktop, Online, current node
+text: Test Desktop
+text: Online
+content-desc: More for Test Desktop
+content-desc: Other ways to connect, collapsed
+text: Other ways to connect
+content-desc: Scan
+text: Scan

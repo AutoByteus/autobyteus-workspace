@@ -6,11 +6,10 @@ import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/
 import { createRootExecutionPhysicalScope, sameRootExecutionIdentity, type RootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamRun } from "../domain/team-run.js";
 import type { TeamRunAgentTeamNode, TeamRunApplicationBinding } from "../domain/team-run-config.js";
-import { TeamRunContext, type TeamRunKind } from "../domain/team-run-context.js";
+import { TeamRunContext } from "../domain/team-run-context.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import { FlatTeamRunBackend } from "../local/flat-team-run-backend.js";
 import { FlatTeamExecutionManager } from "../local/flat-team-execution-manager.js";
-import { TaskTeamExecutionFactory } from "../local/task-team-execution-factory.js";
 import { FlatAgentExecutionContext, FlatTeamExecutionContext, type ConfiguredMemberActivationMode } from "../local/flat-team-execution-context.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { FlatTeamExecutionCallbacks } from "./flat-team-execution-callbacks.js";
@@ -32,7 +31,6 @@ export class FlatTeamExecutionFactory {
 
   beginMaterialization(input: Readonly<{
     physicalScope: RootExecutionPhysicalScope;
-    teamKind: TeamRunKind;
     teamNode: TeamRunAgentTeamNode;
     handoffs: readonly CollaborationHandoff[];
     applicationBinding?: TeamRunApplicationBinding | null;
@@ -43,10 +41,8 @@ export class FlatTeamExecutionFactory {
     if (!sameRootExecutionIdentity(physicalScope.root, input.physicalScope.root)) {
       throw new Error("Flat Team physical scope root is invalid.");
     }
-    let subTeamFactory!: TaskTeamExecutionFactory;
-    const buildContext = (scope: RootExecutionPhysicalScope, teamKind: TeamRunKind, teamNode: TeamRunAgentTeamNode, mode: ConfiguredMemberActivationMode, handoffs: readonly CollaborationHandoff[], applicationBinding: TeamRunApplicationBinding | null) => new TeamRunContext({
+    const buildContext = (scope: RootExecutionPhysicalScope, teamNode: TeamRunAgentTeamNode, mode: ConfiguredMemberActivationMode, handoffs: readonly CollaborationHandoff[], applicationBinding: TeamRunApplicationBinding | null) => new TeamRunContext({
       physicalScope: scope,
-      teamKind,
       teamRunId: teamNode.teamRunId,
       teamBackendKind: TeamBackendKind.MIXED,
       teamNode,
@@ -63,25 +59,11 @@ export class FlatTeamExecutionFactory {
       }),
     });
     const createManager = (context: TeamRunContext<FlatTeamExecutionContext>, publishAgentEvent = input.callbacks.publishAgentEvent) => new FlatTeamExecutionManager(context, {
-      subTeamRunFactory: subTeamFactory,
       callbacks: { ...input.callbacks, publishAgentEvent },
       ...this.dependencies,
     });
-    subTeamFactory = new TaskTeamExecutionFactory({
-      buildContext: (child) => buildContext(
-        child.physicalScope,
-        "task",
-        child.teamNode,
-        child.configuredMemberActivationMode,
-        child.handoffs,
-        child.applicationBinding ?? null,
-      ),
-      publishAgentEvent: input.callbacks.publishAgentEvent,
-      createTeamManager: createManager,
-    });
     const context = buildContext(
       physicalScope,
-      input.teamKind,
       input.teamNode,
       input.activationMode,
       input.handoffs,

@@ -32,3 +32,8 @@ export * from './agent/tool-result-posting.js';
 export * from './agent/utils/index.js';
 export * from './utils/gemini-helper.js';
 export * from './utils/gemini-runtime.js';
+
+export { NativeCommandProcessScope, type NativeCommandCloseReport } from './tools/terminal/command-execution/native-command-process-scope.js';
+export { getBackgroundManager } from './tools/terminal/background-process-context.js';
+export type { BackgroundProcessManager, BackgroundTaskState } from './tools/terminal/background-process-manager.js';
+export type { BackgroundTaskStart, BackgroundTaskEnd, BackgroundTaskOutcome } from './tools/terminal/types.js';

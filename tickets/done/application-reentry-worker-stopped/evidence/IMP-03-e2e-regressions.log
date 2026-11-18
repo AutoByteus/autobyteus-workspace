@@ -1,0 +1,14 @@
+# IMP-03 existing e2e regressions (AC-007): 238 import->launch, running agents
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts ; tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch
+# commit: 6950a24e1b  env: macOS (darwin), Node v22.23.1  date: 2026-10-25T03:49Z
+
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2488ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1190ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  558ms
+      Tests  2 passed (2)
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8650ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  987ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1780ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2464ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2398ms
+      Tests  4 passed (4)

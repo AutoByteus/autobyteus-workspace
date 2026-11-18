@@ -1,8 +1,12 @@
+import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import type { EpisodicCatalog } from "../../agent-episodic-catalog/services/episodic-catalog.js";
+import { runDisplayNameOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
+import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunStatusProjectionService,
 } from "../../agent-execution/services/agent-run-status-projection-service.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   RunHistoryAgentGroup,
   RunHistoryIndexRow,
@@ -17,6 +21,11 @@ import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import {
   AgentRunHistoryCatalogService,
 } from "./agent-run-history-catalog-service.js";
+import { RunLastActivityReader } from "./run-last-activity-reader.js";
+import {
+  getInternalAgentVisibility,
+  type InternalAgentVisibility,
+} from "../../agent-definition/services/internal-agent-visibility.js";
 
 export interface DeleteStoredRunResult {
   success: boolean;
@@ -40,16 +49,36 @@ export class AgentRunHistoryService {
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly statusProjectionService: AgentRunStatusProjectionService;
+  private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
+  private readonly lastActivity: Pick<RunLastActivityReader, "forAgentRun">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
+  private readonly names: Pick<DelegationIndex, "currentTaskOf" | "agentsOf">;
+  private readonly episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
 
   constructor(
     memoryDir: string,
     dependencies: {
+      /** The relationships between runs, from the Task entries (SR-047), and a delegated run's name (SR-091). */
+      tree: Pick<DelegationIndex, "subtreeOf" | "currentTaskOf" | "agentsOf">;
+      /** Archive and delete wait for the runs it delegated to (REQ-007). */
+      workGuard: Pick<DelegatedWorkGuard, "guard">;
+      /** Told after a committed delete, so the run leaves the episodic catalogs. */
+      episodicCatalog: Pick<EpisodicCatalog, "runDeleted">;
       catalogService?: AgentRunHistoryCatalogService;
       metadataStore?: AgentRunMetadataStore;
       statusProjectionService?: AgentRunStatusProjectionService;
       agentRunManager?: AgentRunManager;
-    } = {},
+      /** The internal-agent rule; the process rule by default. */
+      visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
+      /** A run's last activity, its delegated copies included. */
+      lastActivity?: Pick<RunLastActivityReader, "forAgentRun">;
+    },
   ) {
+    this.workGuard = dependencies.workGuard;
+    this.episodicCatalog = dependencies.episodicCatalog;
+    this.names = dependencies.tree;
+    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: dependencies.tree });
+    this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
     this.catalogService =
       dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.agentRunManager = dependencies.agentRunManager ?? AgentRunManager.getInstance();
@@ -65,15 +94,19 @@ export class AgentRunHistoryService {
       });
   }
 
-  async listRunHistory(limitPerAgent = 6): Promise<RunHistoryWorkspaceGroup[]> {
-    const rows = await this.catalogService.listCatalogRows();
+  /**
+   * The run history the user browses; runs of internal agents are left out while they are hidden (autobyteus-308).
+   * `limitPerAgent` keeps the newest runs of each agent in each folder; `null` keeps every run (the Runs view).
+   */
+  async listRunHistory(limitPerAgent: number | null = 6, include: (row: RunHistoryIndexRow) => boolean = () => true): Promise<RunHistoryWorkspaceGroup[]> {
+    const [rows, hidden] = await Promise.all([this.catalogService.listCatalogRows(), this.visibility.hiddenDefinitionIds()]);
     const workspaceMap = new Map<string, Map<string, {
       agentDefinitionId: string;
       agentName: string;
       rows: RunHistoryIndexRow[];
     }>>();
     for (const row of rows) {
-      if (row.archivedAt) {
+      if (row.archivedAt || hidden.has(row.agentDefinitionId) || !include(row)) {
         continue;
       }
       const workspaceRootPath = canonicalizeWorkspaceRootPath(row.workspaceRootPath);
@@ -97,14 +130,13 @@ export class AgentRunHistoryService {
       });
     }
 
-    const limit = Math.max(limitPerAgent, 1);
+    const limit = limitPerAgent === null ? null : Math.max(limitPerAgent, 1);
     const workspaceGroups: RunHistoryWorkspaceGroup[] = [];
     for (const [workspaceRootPath, agentMap] of workspaceMap.entries()) {
       const agents: RunHistoryAgentGroup[] = [];
       for (const group of agentMap.values()) {
-        const limitedRows = group.rows
-          .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-          .slice(0, limit);
+        const newestFirst = group.rows.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+        const limitedRows = limit === null ? newestFirst : newestFirst.slice(0, limit);
         agents.push({
           agentDefinitionId: group.agentDefinitionId,
           agentName: group.agentName,
@@ -123,6 +155,38 @@ export class AgentRunHistoryService {
     return workspaceGroups;
   }
 
+  /**
+   * The runs one selection lists (a Project's runs), grouped by agent definition like a workspace's: archived and
+   * hidden-definition runs are left out; each group keeps its `limitPerAgent` newest runs, newest first.
+   */
+  async listAgentGroupsOf(
+    select: Readonly<{ includes(row: RunHistoryIndexRow): boolean }>,
+    limitPerAgent = 6,
+  ): Promise<RunHistoryAgentGroup[]> {
+    const [rows, hidden] = await Promise.all([this.catalogService.listCatalogRows(), this.visibility.hiddenDefinitionIds()]);
+    const groups = new Map<string, { agentDefinitionId: string; agentName: string; rows: RunHistoryIndexRow[] }>();
+    for (const row of rows) {
+      if (row.archivedAt || hidden.has(row.agentDefinitionId) || !select.includes(row)) continue;
+      const group = groups.get(row.agentDefinitionId)
+        ?? { agentDefinitionId: row.agentDefinitionId, agentName: row.agentName, rows: [] };
+      group.rows.push(row);
+      groups.set(row.agentDefinitionId, group);
+    }
+    const limit = Math.max(limitPerAgent, 1);
+    const agents: RunHistoryAgentGroup[] = [];
+    for (const group of groups.values()) {
+      const listed = group.rows
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+        .slice(0, limit);
+      agents.push({
+        agentDefinitionId: group.agentDefinitionId,
+        agentName: group.agentName,
+        runs: await Promise.all(listed.map((row) => this.toHistoryItem(row))),
+      });
+    }
+    return agents.sort((a, b) => a.agentName.localeCompare(b.agentName));
+  }
+
   private async toHistoryItem(row: RunHistoryIndexRow): Promise<RunHistoryItem> {
     const projection = await Promise.resolve(
       this.statusProjectionService.getCatalogListStatusProjection(row.runId),
@@ -130,12 +194,14 @@ export class AgentRunHistoryService {
     const terminatedInactive = Boolean(row.terminatedAt) && !projection.isActive;
     return {
       runId: row.runId,
+      displayName: await runDisplayNameOf(this.names, createAgentRootExecutionIdentity(row.runId)),
       summary: row.summary,
       status: terminatedInactive ? "offline" : projection.status,
       isActive: projection.isActive,
       shouldConnectStream: projection.shouldConnectStream,
       statusSource: terminatedInactive ? "TERMINATED_METADATA" : projection.statusSource,
       createdAt: row.createdAt,
+      lastActivityAt: await this.lastActivity.forAgentRun({ runId: row.runId, createdAt: row.createdAt, hasCollaboration: row.hasCollaboration === true }),
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
       hasCollaboration: row.hasCollaboration === true,
@@ -143,7 +209,7 @@ export class AgentRunHistoryService {
   }
 
   async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
-    return this.catalogService.archiveRun(runId);
+    return this.workGuard.guard({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived", () => this.catalogService.archiveRun(runId));
   }
 
   /**
@@ -182,17 +248,21 @@ export class AgentRunHistoryService {
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
-    return this.catalogService.deleteRun(runId);
+    const root = createAgentRootExecutionIdentity(runId.trim());
+    const result = await this.workGuard.guard(root, "deleted", () => this.catalogService.deleteRun(runId));
+    if (result.success) this.episodicCatalog.runDeleted(root);
+    return result;
   }
 }
 
-let cachedAgentRunHistoryService: AgentRunHistoryService | null = null;
-
+let processService: AgentRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessAgentRunHistoryService = (service: AgentRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
 export const getAgentRunHistoryService = (): AgentRunHistoryService => {
-  if (!cachedAgentRunHistoryService) {
-    cachedAgentRunHistoryService = new AgentRunHistoryService(
-      appConfigProvider.config.getMemoryDir(),
-    );
-  }
-  return cachedAgentRunHistoryService;
+  if (!processService) throw new Error("AgentRunHistoryService is created by the composition root.");
+  return processService;
 };

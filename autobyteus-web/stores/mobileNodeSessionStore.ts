@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { EMBEDDED_NODE_ID } from '~/types/node';
+import { EMBEDDED_ENTRY_ID } from '~/types/node';
 import type {
   MobileConnectionDiagnostic,
   MobileNodeSession,
@@ -12,13 +12,15 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 import { getBrowserServerBaseUrl } from '~/utils/browserServerConfig';
 import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
+import { fetchWithRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import { remoteAccessReadRefusal } from '~/utils/remoteAccess/remoteAccessReadRefusal';
 import {
   diagnosticForKind,
   diagnosticFromHttpStatus,
   diagnosticFromUnknownError,
 } from '~/utils/remoteAccess/mobileConnectionDiagnostics';
 
-const MOBILE_NODE_ID = 'mobile-paired-node';
+const MOBILE_ENTRY_ID = 'mobile-paired-node';
 
 const resolveSameOriginBaseUrl = (): string => {
   if (typeof window === 'undefined') {
@@ -63,6 +65,31 @@ const parseQrText = (value: string): RemoteAccessPairingPayload => {
   return parsed;
 };
 
+/** Why a pairing link made no session, in the words the pairing page shows. */
+export type MobilePairingFailure = 'expired' | 'used' | 'phone_access_off' | 'no_answer';
+/** What one phone check found: the node's API answered, it did not, or it refused because Phone Access is off. */
+export type MobileCheckOutcome = 'reachable' | 'unreachable' | 'phone_access_off';
+/** What the phone's credential check found: a check outcome, or a credential the node no longer accepts. */
+export type MobileCredentialCheck = MobileCheckOutcome | 'session_rejected';
+
+/** The smallest authorized read: a phone credential may run any HTTP GraphQL operation (about 100 bytes). */
+const CREDENTIAL_CHECK_QUERY = JSON.stringify({ query: 'query PhoneCredentialCheck { __typename }' });
+
+const pairingFailureFor = (status: number, code?: string): MobilePairingFailure => {
+  if (code === 'REMOTE_ACCESS_PAIRING_CONSUMED') return 'used';
+  if (code === 'PHONE_ACCESS_DISABLED') return 'phone_access_off';
+  return status >= 500 ? 'no_answer' : 'expired';
+};
+
+/** The pairing payload in a pairing link (or its `pairing` value), or `null` when the text is not one. */
+export const readPairingLink = (text: string): RemoteAccessPairingPayload | null => {
+  try {
+    return parseQrText(text);
+  } catch {
+    return null;
+  }
+};
+
 const readServerErrorCode = async (response: Response): Promise<string | undefined> => {
   try {
     const body = await response.json() as { code?: string; error?: string };
@@ -78,8 +105,10 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
   const isPairing = ref(false);
   const isCheckingStatus = ref(false);
   const lastDiagnostic = ref<MobileConnectionDiagnostic | null>(null);
-  const lastStatus = ref<RemoteAccessStatus | null>(null);
+  const lastPairingFailure = ref<MobilePairingFailure | null>(null);
   const authorizedApiReachable = ref(false);
+  /** The last phone check found Phone Access off on the node (the phone stays paired). */
+  const phoneAccessOff = ref(false);
 
   const activeCredential = computed(() => session.value?.credential ?? null);
   const isPaired = computed(() => Boolean(session.value));
@@ -88,7 +117,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
   function bindSession(nextSession: MobileNodeSession): void {
     session.value = nextSession;
     const nodeContext = useWindowNodeContextStore();
-    nodeContext.bindNodeContext(nextSession.nodeId || EMBEDDED_NODE_ID, nextSession.serverBaseUrl);
+    nodeContext.bindNodeContext(nextSession.entryId || EMBEDDED_ENTRY_ID, nextSession.serverBaseUrl);
   }
 
   function initializeFromStorage(): void {
@@ -111,16 +140,14 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
       if (!response.ok) {
         const code = await readServerErrorCode(response);
         lastDiagnostic.value = diagnosticFromHttpStatus(response.status, code);
-        lastStatus.value = null;
         authorizedApiReachable.value = false;
         return null;
       }
-      lastStatus.value = await response.json() as RemoteAccessStatus;
+      const status = await response.json() as RemoteAccessStatus;
       authorizedApiReachable.value = true;
-      return lastStatus.value;
+      return status;
     } catch (error) {
       lastDiagnostic.value = diagnosticFromUnknownError(error);
-      lastStatus.value = null;
       authorizedApiReachable.value = false;
       return null;
     } finally {
@@ -128,9 +155,11 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     }
   }
 
-  async function pairWithPayload(payload: RemoteAccessPairingPayload, deviceName = 'Phone'): Promise<MobileNodeSession> {
+  /** Exchanges the link's one-time code for this phone's credential, kept in this page's origin (DS-005). */
+  async function pairWithPayload(payload: RemoteAccessPairingPayload, deviceName: string): Promise<MobileNodeSession> {
     isPairing.value = true;
     lastDiagnostic.value = null;
+    lastPairingFailure.value = null;
     try {
       const normalizedBaseUrl = normalizeNodeBaseUrl(payload.serverBaseUrl);
       const response = await fetch(`${normalizedBaseUrl}/rest/remote-access/pairing-exchanges`, {
@@ -145,13 +174,14 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
       if (!response.ok) {
         const code = await readServerErrorCode(response);
         lastDiagnostic.value = diagnosticFromHttpStatus(response.status, code);
+        lastPairingFailure.value = pairingFailureFor(response.status, code);
         throw new Error(lastDiagnostic.value.message);
       }
       const result = await response.json() as PairingExchangeResponse;
       const nextSession: MobileNodeSession = {
-        version: 1,
-        nodeId: MOBILE_NODE_ID,
+        entryId: MOBILE_ENTRY_ID,
         serverBaseUrl: normalizeNodeBaseUrl(result.serverBaseUrl),
+        nodeName: payload.serverName?.trim() || undefined,
         credential: result.credential,
         device: result.device,
         pairedAt: new Date().toISOString(),
@@ -162,39 +192,47 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
       return nextSession;
     } catch (error) {
       lastDiagnostic.value ??= diagnosticFromUnknownError(error);
+      lastPairingFailure.value ??= 'no_answer';
       throw error;
     } finally {
       isPairing.value = false;
     }
   }
 
-  async function pairWithQrText(qrText: string, deviceName?: string): Promise<MobileNodeSession> {
+  async function pairWithQrText(qrText: string, deviceName: string): Promise<MobileNodeSession> {
     return pairWithPayload(parseQrText(qrText), deviceName);
   }
 
-  async function pairWithManualUrl(baseUrl: string, deviceName?: string): Promise<void> {
-    const status = await fetchStatus(baseUrl);
-    if (!status) {
-      throw new Error(lastDiagnostic.value?.message || 'Unable to reach server.');
-    }
-    if (!status.pairingAvailable) {
-      lastDiagnostic.value = diagnosticForKind(status.phoneAccessEnabled ? 'auth_required' : 'phone_access_disabled');
-      throw new Error(lastDiagnostic.value.message);
-    }
-    if (!deviceName) {
-      throw new Error('Manual URL reached the server. Paste or scan a pairing QR to finish pairing.');
+  /**
+   * The phone's credential check (open, Retry, Check; never the poll): one authorized read with this session's own
+   * credential, classified by its status and the node's refusal code only.
+   */
+  async function checkCredential(): Promise<MobileCredentialCheck> {
+    try {
+      const response = await fetchWithRemoteAccessCredential(`${normalizeNodeBaseUrl(serverBaseUrl.value)}/graphql`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: CREDENTIAL_CHECK_QUERY,
+      }, session.value?.credential ?? null);
+      if (response.ok) return 'reachable';
+      const code = (await readServerErrorCode(response)) ?? null;
+      return remoteAccessReadRefusal({ status: response.status, code }) ?? 'unreachable';
+    } catch {
+      return 'unreachable';
     }
   }
 
-  function recordAuthorizedApiReachability(reachable: boolean): void {
-    authorizedApiReachable.value = reachable;
+  /** One outcome per phone check sets both connection facts (a later check always replaces an earlier "off"). */
+  function recordCheckOutcome(outcome: MobileCheckOutcome): void {
+    phoneAccessOff.value = outcome === 'phone_access_off';
+    authorizedApiReachable.value = outcome === 'reachable';
   }
 
   function rejectLocalSessionForAuthFailure(): void {
     mobileCredentialStorage.clear();
     session.value = null;
-    lastStatus.value = null;
     authorizedApiReachable.value = false;
+    phoneAccessOff.value = false;
     lastDiagnostic.value = diagnosticForKind('auth_required');
   }
 
@@ -202,8 +240,8 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     mobileCredentialStorage.clear();
     session.value = null;
     lastDiagnostic.value = null;
-    lastStatus.value = null;
     authorizedApiReachable.value = false;
+    phoneAccessOff.value = false;
   }
 
   return {
@@ -212,17 +250,17 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     isPairing,
     isCheckingStatus,
     lastDiagnostic,
-    lastStatus,
+    lastPairingFailure,
     authorizedApiReachable,
+    phoneAccessOff,
     activeCredential,
     isPaired,
     serverBaseUrl,
     initializeFromStorage,
     fetchStatus,
-    pairWithPayload,
     pairWithQrText,
-    pairWithManualUrl,
-    recordAuthorizedApiReachability,
+    checkCredential,
+    recordCheckOutcome,
     rejectLocalSessionForAuthFailure,
     deleteLocalSession,
   };

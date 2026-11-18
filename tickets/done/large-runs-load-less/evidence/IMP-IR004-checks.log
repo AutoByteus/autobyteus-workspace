@@ -1,0 +1,53 @@
+# IMP-IR004: implementation-scoped checks for IR-004 (SR-004/SR-005; CR-002, AR-005).
+# Commits: server/contracts 935c5c9fa9, web da91ae689a (branch codex/large-runs-load-less). Date 2026-11-01. macOS, node v22.23.1.
+# Every suite ran under env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md), one heavy run at a time.
+# Look for: contracts '# pass 39' / '# pass 21'; server typecheck no errors; server unit '7670 passed'; server integration '480 passed' with only the 6 FU-001 base failures;
+#           web typecheck 'PASS'; web suite '4942 passed'; guards 'Passed'; targeted specs and mutation-check counts below.
+
+## IMP-14 contract packages (pnpm test in each; dist rebuilt with pnpm build)
+collaboration-stream-contracts: # pass 39  # fail 0
+team-stream-contracts:          # pass 21  # fail 0
+
+## IMP-15 server typecheck (tsc -p tsconfig.build.json --noEmit): exit 0, no errors
+
+## IMP-16 server test:unit (full)
+ Test Files  904 passed | 5 skipped (909)
+      Tests  7670 passed | 9 skipped (7679)
+exit=0
+
+## IMP-17 server test:integration (full)
+      Tests  6 failed | 480 passed | 69 skipped (555)
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > plans exact configured identities through real providers and normal cached Team service without activation
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service
+ Test Files  3 failed | 83 passed | 20 skipped (106)
+exit=1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+# The 6 failures are FU-001's, failing identically on base efd28d5c4a (see IMP-local-checks.log); 480 passed as in IR-001.
+
+## IMP-18 web typecheck (pnpm typecheck): production errors 0; test-file errors 297 = baseline; [typecheck] PASS
+
+## IMP-19 web Nuxt suite (NUXT_TEST=true vitest run, full)
+ Test Files  681 passed (681)
+      Tests  4942 passed | 2 skipped (4944)
+exit=0
+
+## IMP-20 web guards, each alone
+guard:web-boundary: [guard:web-boundary] Passed. (exit 0)
+guard:localization-boundary: [guard:localization-boundary] Passed. (exit 0)
+audit:localization-literals: [audit:localization-literals] Passed with zero unresolved findings. (exit 0)
+
+## IMP-21 targeted specs for SR-004/SR-005
+services/collaborationMessages/__tests__/collaborationParticipantMessages.spec.ts: 10 passed
+stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts (new; API-08 counts: selection 1, new child 0 more, with a message 1, new publisher reloads): 3 passed
+services/agentStreaming/__tests__/TeamStreamingService.spec.ts: 16 passed; services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts: 16 passed
+services/runHydration/__tests__/teamRunContextHydrationService.spec.ts + services/runOpen: 49 passed
+server tests/unit/agent-collaboration/root-event-publisher-live-sequence.test.ts (new) in the affected run: 190 files / 1453 passed
+
+## IMP-22 mutation checks (temporary edits, restored; the owner spec + the hub reloads spec, 13 tests)
+reloadRoot always reloads (consistent ignored):        5 failed | 8 passed
+advance() does nothing:                                2 failed | 11 passed
+live sequence ignored (any kept position counts):     2 failed | 11 passed

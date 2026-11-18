@@ -1,3 +1,5 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -79,12 +81,8 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       enterPersistenceFailStop: vi.fn(),
     });
     const enclosingDefinitionLookup = vi.fn(() => { throw new Error("Restore must not read fresh enclosing instructions"); });
-    const builder = new AgentOrgExecutionScopeBuilder({
+    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: {} as never,
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: vi.fn() },
-        taskTeams: { create: vi.fn() },
-      } as never,
       orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,
@@ -103,7 +101,9 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     expect(prepareNewAgentRun).not.toHaveBeenCalled();
     expect(write).not.toHaveBeenCalled();
     expect(run.getAgentStatusSnapshots()[0]!.details.status).toBe("offline");
-    const sending = run.executeAgentCommand(agentRunId, { kind: "post_message", message: new AgentInputUserMessage("Continue") });
+    // autobyteus-285: restart resume wakes a restored member with a first-input-only notice; the options reach its run.
+    const postOptions = { lifecycleObserver: vi.fn(), onlyAsFirstInput: true };
+    const sending = run.executeAgentCommand(agentRunId, { kind: "post_message", message: new AgentInputUserMessage("Continue"), postOptions });
     await vi.waitFor(() => expect(write).toHaveBeenCalledTimes(1));
 
     expect(prepareNewAgentRun).toHaveBeenCalledTimes(1);
@@ -113,6 +113,8 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
 
     releaseDurability();
     expect(await sending).toMatchObject({ accepted: true });
+    expect(agentRun.postUserMessage).toHaveBeenCalledOnce();
+    expect(agentRun.postUserMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "Continue" }), expect.objectContaining({ onlyAsFirstInput: true }));
     expect(enclosingDefinitionLookup).not.toHaveBeenCalled();
 
     expect(run.isActive()).toBe(true);

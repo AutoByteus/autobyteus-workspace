@@ -1,0 +1,90 @@
+# IMP-15 memory search gates with the weighted text strength (UD-019) and the off-topic questions (AC-007)
+# Command: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index --questions <private: 31 answerable + N01-N03 with accept []> --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private>
+# Commit: 8529960b80 (dist built at it, IMP-14); the index of IMP-06 reused (chunk_vocab created on open)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; isolated copy /tmp/wjs-copy/memory (3,680 runs, 1,084,815 chunks); host load averages 25-35
+# Date: 2026-10-26
+# Only IDs, counts and numbers are recorded; the questions stay private.
+
+## Gate report
+{
+ "questions": 31,
+ "gate1": {
+  "passed": 31,
+  "oneSearchTop10": 30,
+  "withinThreeSearches": 31
+ },
+ "gate2": {
+  "number1": 18,
+  "top3": 26,
+  "top3Share": 0.8387096774193549,
+  "mrr": 0.7288018433179723,
+  "p90Ms": 789,
+  "maxMs": 900
+ },
+ "meaningPointers": {
+  "total": 80,
+  "textChunk": 25,
+  "cardPart": 26,
+  "firstRequest": 29,
+  "emptySnippet": 0
+ },
+ "unmaskedSecrets": 0,
+ "offTopic": {
+  "questions": 3,
+  "passed": 1,
+  "failed": [
+   "N01",
+   "N03"
+  ]
+ }
+}
+
+Gates 1 and 2: unchanged from IMP-07 run 3 (strength does not rank). Latency p90 789 ms, max 900 ms under load 25-35; the vocabulary lookup itself takes 5-9 ms per search (measured with a local script on this index).
+
+## Off-topic result: Fail (N01, N03)
+Weighted shares of the off-topic questions' text matches (top 5) and their meaning strengths:
+{
+ "N01": {
+  "text": [
+   0.572,
+   0.572,
+   0.572,
+   0.572,
+   0.474
+  ],
+  "meaning": [
+   "meaning:fair"
+  ]
+ },
+ "N02": {
+  "text": [
+   0.31,
+   0.31,
+   0.176,
+   0.176,
+   0.176
+  ],
+  "meaning": [
+   "meaning:weak"
+  ]
+ },
+ "N03": {
+  "text": [
+   0.427,
+   0.294,
+   0.294,
+   0.292,
+   0.218
+  ],
+  "meaning": []
+ }
+}
+- N03 (Chinese): one text match at 0.43 (fair). Its overlapping two-character terms are all rare against a mostly English index (df 29-1,310 of 1,084,815 chunks), so common Chinese bigrams weigh like content words.
+- N01: text matches up to 0.57 (three of its four words occur together in runs that did related work; only the fourth word occurs in 1 chunk) and five meaning matches rated fair (`aboveFloor`). The meaning tier's rating is outside the text rule, so no text threshold makes N01 only-weak.
+
+## Threshold calibration (design: thresholds are calibrated with the R-016 evaluation); simulated from the measured shares, not applied
+- fair >= 0.33 (strong >= 2/3): only-weak note on off-topic ['N02'] of ['N01','N02','N03']; false only-weak note on answerable []
+- fair >= 0.50 (strong >= 2/3): only-weak note on off-topic ['N02', 'N03'] of ['N01','N02','N03']; false only-weak note on answerable ['Q12', 'Q29', 'Q31']
+- fair >= 0.60 (strong >= 2/3): only-weak note on off-topic ['N02', 'N03'] of ['N01','N02','N03']; false only-weak note on answerable ['Q06', 'Q12', 'Q29', 'Q31']
+
+Answerable questions' accepted-run text shares (for reference): {"Q01": 1, "Q02": 1, "Q03": 0.81, "Q04": 0.66, "Q05": 1, "Q06": 0.6, "Q07": 0.29, "Q08": 0.27, "Q09": 0.53, "Q10": 0.68, "Q11": 1, "Q12": 0.44, "Q13": 0, "Q14": 0.66, "Q15": 0.74, "Q16": 0.89, "Q17": 0.82, "Q18": 1, "Q19": 0.66, "Q20": 0.58, "Q21": 0.31, "Q22": 1, "Q23": 0.79, "Q24": 0.88, "Q25": 1, "Q26": 0.76, "Q27": 0.68, "Q28": 0.76, "Q29": 0.39, "Q31": 0.33, "Q32": 0.3}

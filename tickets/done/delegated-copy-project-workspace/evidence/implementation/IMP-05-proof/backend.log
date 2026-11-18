@@ -1,0 +1,495 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:50583
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:50583
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/db/development.db"
+
+SQLite database development.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:81320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-02T06:45:16.522Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793601917042,"pid":81320,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50609"}
+{"level":30,"time":1793601917068,"pid":81320,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50583"}
+[2026-11-02T06:45:17.069Z] [INFO] [server.runtime] Server listening on 127.0.0.1:50583
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: project-task-manager-b750
+Agent Definition created successfully with ID: package-writer-b750
+Agent Definition created successfully with ID: fact-checker-b750
+Agent Definition created successfully with ID: native-worker-b750
+Agent Team Definition created successfully with ID: scouting-team-b750
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder.
+Created and registered workspace ID: agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+Created terminal session e81e0c6e-3024-4b1b-925b-91c348f3ec65 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/home
+Terminal WebSocket connected: e81e0c6e-3024-4b1b-925b-91c348f3ec65
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/home
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder.
+Reusing registered workspace ID: agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+Closed PTY session e81e0c6e-3024-4b1b-925b-91c348f3ec65
+Terminal WebSocket disconnected: e81e0c6e-3024-4b1b-925b-91c348f3ec65
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder.
+Reusing registered workspace ID: agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+AGY compaction detection off for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 10d4695a-ce47-4a51-8e63-b86b1450ffda for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=10d4695a-ce47-4a51-8e63-b86b1450ffda, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first.
+Created and registered workspace ID: agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+AGY compaction detection off for run package_writer_b750_a9763d0d67ad4dad823ab6f393ccadc8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session 10d4695a-ce47-4a51-8e63-b86b1450ffda
+Agent WebSocket disconnected: 10d4695a-ce47-4a51-8e63-b86b1450ffda
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session a086b527-59cb-4dbc-b721-e476d3eb4049 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=a086b527-59cb-4dbc-b721-e476d3eb4049, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first.
+Reusing registered workspace ID: agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+AGY compaction detection off for run package_writer_b750_c393f792a71a4b5ba0ea8845fe032bf3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session a086b527-59cb-4dbc-b721-e476d3eb4049
+Agent WebSocket disconnected: a086b527-59cb-4dbc-b721-e476d3eb4049
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 00598715-77cb-475c-a812-9e8cc7031737 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=00598715-77cb-475c-a812-9e8cc7031737, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session 00598715-77cb-475c-a812-9e8cc7031737
+Agent WebSocket disconnected: 00598715-77cb-475c-a812-9e8cc7031737
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first.
+Reusing registered workspace ID: agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+AGY compaction detection off for run fact_checker_b750_d2a0609c24604b6a98b89c01ed9b1266: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 626b1931-e4e4-411c-b29d-ebb035efb126 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=626b1931-e4e4-411c-b29d-ebb035efb126, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder.
+Reusing registered workspace ID: agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+AGY compaction detection off for run fact_checker_b750_b1aa5fa3d6bf47f28dc0bec9124fce0e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session 626b1931-e4e4-411c-b29d-ebb035efb126
+Agent WebSocket disconnected: 626b1931-e4e4-411c-b29d-ebb035efb126
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session a736a129-0455-41a4-a529-47f244ea9eb6 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=a736a129-0455-41a4-a529-47f244ea9eb6, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder.
+Reusing registered workspace ID: agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+AGY compaction detection off for run fact_checker_b750_1858f7255100418d8a3eb088206d81f8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session a736a129-0455-41a4-a529-47f244ea9eb6
+Agent WebSocket disconnected: a736a129-0455-41a4-a529-47f244ea9eb6
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 21723bc3-71be-4d9d-b13d-bb47aed8658e for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=21723bc3-71be-4d9d-b13d-bb47aed8658e, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session 21723bc3-71be-4d9d-b13d-bb47aed8658e
+Agent WebSocket disconnected: 21723bc3-71be-4d9d-b13d-bb47aed8658e
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 244f43f6-98cd-4f92-a71d-c33430d19ad9 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=244f43f6-98cd-4f92-a71d-c33430d19ad9, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session 244f43f6-98cd-4f92-a71d-c33430d19ad9
+Agent WebSocket disconnected: 244f43f6-98cd-4f92-a71d-c33430d19ad9
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 46a69e6b-ec72-4b27-b6b4-32e4652a7efc for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=46a69e6b-ec72-4b27-b6b4-32e4652a7efc, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first.
+Reusing registered workspace ID: agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/media
+AgentRuntimeState initialized for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': LLM instance 'OpenAICompatibleEndpointLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' with config: 'Native Worker b750'.
+AgentWorker initialized for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'.
+Registered AgentContext for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Context registered.
+Agent facade initialized for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' created and stored successfully.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' requesting runtime to start.
+AgentRuntime for 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Starting worker.
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Starting...
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' asyncRun(): Starting.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Runtime init completed (event store initialized).
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Runtime init completed (status deriver initialized).
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Runtime init completed (AgentEventInbox initialized).
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' to become idle (timeout: 30s)...
+AgentEventStream (ID: 0ea9175e-af29-4da3-bda8-639727eba50b) initialized for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Subscribed to notifier.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Bootstrapper starting direct lifecycle execution.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Executing McpServerPrewarmingStep.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Executing SystemPromptProcessingStep.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': No configured skills. Skipping skill catalog.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Final processed system prompt configured and captured. Trace ID: rt_1793601936976_96768fd3-e27a-49f3-9129-4d1a7004920e. Final length: 4579.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' initialized successfully. Entering main event scheduler loop.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' has become idle.
+AgentEventStream (ID: 0ea9175e-af29-4da3-bda8-639727eba50b) for 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 8affe2bd-e329-4dad-b66d-75189ffb6562) initialized for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Subscribed to notifier.
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': UserInputContextBuildingProcessor completed. Final content length: 589
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed agent session 46a69e6b-ec72-4b27-b6b4-32e4652a7efc
+Agent WebSocket disconnected: 46a69e6b-ec72-4b27-b6b4-32e4652a7efc
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': UserInputContextBuildingProcessor completed. Final content length: 46
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 1f91b444-1df0-4434-b349-e2f5a84e62d2 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=1f91b444-1df0-4434-b349-e2f5a84e62d2, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created terminal session d7ac8bac-5def-4f70-9c46-22109f071ab3 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/home
+Terminal WebSocket connected: d7ac8bac-5def-4f70-9c46-22109f071ab3
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Closed PTY session d7ac8bac-5def-4f70-9c46-22109f071ab3
+Terminal WebSocket disconnected: d7ac8bac-5def-4f70-9c46-22109f071ab3
+Created WorkspaceFileExplorer for agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be (graphql-folder-children).
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7bbcda3e-38cb-422f-ab3d-275482c8bcd0 for workspace agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+Created file explorer session 7bbcda3e-38cb-422f-ab3d-275482c8bcd0 for workspace agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be. Active sessions: 1
+File explorer WebSocket connected: 7bbcda3e-38cb-422f-ab3d-275482c8bcd0 for workspace agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+File explorer websocket attached for workspace agent_ws_9c80a4bf62dfd733573741f247c489db6f85464eb90545a09d79bff0412fe0be
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/package_writer_b750_a9763d0d67ad4dad823ab6f393ccadc8/raw_traces_manifest.json
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/manager-folder
+FileExplorerSession closed: 7bbcda3e-38cb-422f-ab3d-275482c8bcd0
+Closed file explorer session 7bbcda3e-38cb-422f-ab3d-275482c8bcd0. Active sessions: 0
+File explorer WebSocket disconnected: 7bbcda3e-38cb-422f-ab3d-275482c8bcd0
+Created WorkspaceFileExplorer for agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075 (graphql-folder-children).
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 585a7336-10a2-4bdc-b219-849bd457970f for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+Created file explorer session 585a7336-10a2-4bdc-b219-849bd457970f for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075. Active sessions: 1
+File explorer WebSocket connected: 585a7336-10a2-4bdc-b219-849bd457970f for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+File explorer websocket attached for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+FileExplorerSession closed: 585a7336-10a2-4bdc-b219-849bd457970f
+Closed file explorer session 585a7336-10a2-4bdc-b219-849bd457970f. Active sessions: 0
+File explorer WebSocket disconnected: 585a7336-10a2-4bdc-b219-849bd457970f
+Created terminal session 0ba59bd2-aa97-4f2a-a79b-b9d275d2c338 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Terminal WebSocket connected: 0ba59bd2-aa97-4f2a-a79b-b9d275d2c338
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Closed agent session 1f91b444-1df0-4434-b349-e2f5a84e62d2
+Agent WebSocket disconnected: 1f91b444-1df0-4434-b349-e2f5a84e62d2
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-of-manager
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-of-manager.
+Created and registered workspace ID: agent_ws_0130b14602383d7502ba29ff88041f6fae33f6ea848427691d8b6d27437af028
+Closed PTY session 0ba59bd2-aa97-4f2a-a79b-b9d275d2c338
+Terminal WebSocket disconnected: 0ba59bd2-aa97-4f2a-a79b-b9d275d2c338
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-of-manager
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-of-manager.
+Reusing registered workspace ID: agent_ws_0130b14602383d7502ba29ff88041f6fae33f6ea848427691d8b6d27437af028
+AGY compaction detection off for run project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b
+Created agent session f98c1b5a-5023-44bd-a085-8381a229010d for run project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b
+Agent WebSocket connected: session=f98c1b5a-5023-44bd-a085-8381a229010d, run=project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first.
+Reusing registered workspace ID: agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+AGY compaction detection off for run package_writer_b750_64e7b0a0ba654b999c990355b95bb06d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Closed agent session f98c1b5a-5023-44bd-a085-8381a229010d
+Agent WebSocket disconnected: f98c1b5a-5023-44bd-a085-8381a229010d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_7d2530a056324497b008a772803b7bb8/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Created agent session 9ebe6047-05fa-4f8f-b55d-0cd6256fca46 for run project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Agent WebSocket connected: session=9ebe6047-05fa-4f8f-b55d-0cd6256fca46, run=project_task_manager_b750_7d2530a056324497b008a772803b7bb8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Created terminal session 8f6418fa-7736-4f71-b592-e04f39e65c2d using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/home
+Terminal WebSocket connected: 8f6418fa-7736-4f71-b592-e04f39e65c2d
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/home
+Agent websocket attached for run project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b
+Created agent session f5baa999-dc22-43b1-85c1-6f3a0a007cba for run project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b
+Agent WebSocket connected: session=f5baa999-dc22-43b1-85c1-6f3a0a007cba, run=project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/package_writer_b750_64e7b0a0ba654b999c990355b95bb06d/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/memory/agents/project_task_manager_b750_3c7eb008571848559949a1c6fac32a3b/raw_traces_manifest.json
+Closed PTY session 8f6418fa-7736-4f71-b592-e04f39e65c2d
+Terminal WebSocket disconnected: 8f6418fa-7736-4f71-b592-e04f39e65c2d
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first (file-explorer-websocket); active leases: 1
+FileExplorerSession created: fdb50528-61f3-427b-9b2a-20050346a4be for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+Created file explorer session fdb50528-61f3-427b-9b2a-20050346a4be for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075. Active sessions: 1
+File explorer WebSocket connected: fdb50528-61f3-427b-9b2a-20050346a4be for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+File explorer websocket attached for workspace agent_ws_bce0854146415b172a08fd4f25afb077a6910ded1a16a52c6b7c4478d5065075
+Closed agent session f5baa999-dc22-43b1-85c1-6f3a0a007cba
+Agent WebSocket disconnected: f5baa999-dc22-43b1-85c1-6f3a0a007cba
+Closed agent session 9ebe6047-05fa-4f8f-b55d-0cd6256fca46
+Agent WebSocket disconnected: 9ebe6047-05fa-4f8f-b55d-0cd6256fca46
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/new-copy-folder-majarc/project-first
+FileExplorerSession closed: fdb50528-61f3-427b-9b2a-20050346a4be
+Closed file explorer session fdb50528-61f3-427b-9b2a-20050346a4be. Active sessions: 0
+File explorer WebSocket disconnected: fdb50528-61f3-427b-9b2a-20050346a4be
+Removing agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'. Attempting graceful shutdown.
+Agent 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Stop requested.
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: f2db07a3-592b-4aed-82cf-e21aa2a6a741, AgentID: native_worker_b750_d9022c3e366f4a6ba68163543d665576) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' asyncRun() loop has finished.
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Running shutdown sequence on worker loop.
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Shutdown resource cleanup completed successfully.
+AgentWorker 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'native_worker_b750_d9022c3e366f4a6ba68163543d665576'.
+AgentRuntime for 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': Context unregistered.
+AgentRuntime for 'native_worker_b750_d9022c3e366f4a6ba68163543d665576' stop() method completed.
+AgentEventStream (ID: 8affe2bd-e329-4dad-b66d-75189ffb6562) for 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 8affe2bd-e329-4dad-b66d-75189ffb6562) for 'native_worker_b750_d9022c3e366f4a6ba68163543d665576': close() called. Unsubscribing all listeners and signaling.

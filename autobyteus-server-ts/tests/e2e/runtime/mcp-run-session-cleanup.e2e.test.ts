@@ -25,10 +25,10 @@ import { fileURLToPath } from "node:url";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { MCP_GATEWAY_EXECUTION_SCOPE_ID } from "../../../src/mcp-gateway/mcp-gateway-tool-executor.js";
+import { connectMcpGatewayClient } from "../helpers/mcp-gateway-client.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
@@ -142,7 +142,10 @@ suite("A run's MCP server processes end when the run ends (real server, Agent To
     app = started.fastify;
     url = started.mainUrl;
     const input = { serverId: "cleanup_stdio", transportType: "STDIO", enabled: true, toolNamePrefix: "cleanup_stdio",
-      stdioConfig: { command: process.execPath, args: [FIXTURE], env: { CLEANUP_ENV: ENV_VALUE, MCP_TEST_SERVER_PID_FILE: pidFile }, cwd: dataDir } };
+      stdioConfig: { command: process.execPath, args: [FIXTURE], env: [
+        { name: "CLEANUP_ENV", secret: false, value: ENV_VALUE },
+        { name: "MCP_TEST_SERVER_PID_FILE", secret: false, value: pidFile },
+      ], cwd: dataDir } };
     await gql("mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }", { input });
     const discovered = (await gql("mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message } }",
       { id: input.serverId })).discoverAndRegisterMcpServerTools;
@@ -198,8 +201,7 @@ suite("A run's MCP server processes end when the run ends (real server, Agent To
     expect(await b.turn(callTool(STDIO_TOOL, { name: "CLEANUP_ENV" }))).toContain(ENV_VALUE);
     expect(await readPid()).toBe(b.pid);
 
-    const client = new Client({ name: "mcp-cleanup-e2e-gateway-client", version: "1.0.0" });
-    await client.connect(new StreamableHTTPClientTransport(new URL("/mcp/gateway", url)));
+    const client = await connectMcpGatewayClient(url, "mcp-cleanup-e2e-gateway-client");
     try {
       const result = await client.callTool({ name: STDIO_TOOL, arguments: { name: "CLEANUP_ENV" } }) as { content: Array<{ text?: string }> };
       expect(JSON.stringify(result.content)).toContain(ENV_VALUE);

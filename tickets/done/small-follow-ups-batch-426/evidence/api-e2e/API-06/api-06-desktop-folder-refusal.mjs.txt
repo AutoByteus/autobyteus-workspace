@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+// API-06 (autobyteus-426, AC-008 desktop half): the desktop New chat with a typed folder, in a browser window (`nuxt dev`)
+// against a test-owned node built from the worktree. A missing folder and a file are refused at launch with their reason
+// (not "The selected workspace could not be opened."); nothing is registered; an existing folder launches.
+// Temporary probe: no existing desktop probe owns the New-chat launch with a model-free runtime.
+// Run: node api-06-desktop-folder-refusal.mjs <worktree> <output dir>
+import { spawn } from 'node:child_process'
+import { createWriteStream, mkdtempSync, realpathSync } from 'node:fs'
+import fs from 'node:fs/promises'
+import net from 'node:net'
+import os from 'node:os'
+import path from 'node:path'
+import { createRequire } from 'node:module'
+
+const [worktree, outDir] = process.argv.slice(2)
+const webDir = path.join(worktree, 'autobyteus-web')
+const serverDir = path.join(worktree, 'autobyteus-server-ts')
+const require = createRequire(path.join(webDir, 'package.json'))
+const { chromium } = require('playwright-core')
+await fs.mkdir(outDir, { recursive: true })
+const delay = ms => new Promise(r => setTimeout(r, ms))
+const freePort = () => new Promise((res, rej) => { const s = net.createServer(); s.once('error', rej); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => res(port)) }) })
+const waitFor = async (label, fn, timeout = 60000) => { const end = Date.now() + timeout; let last; while (Date.now() < end) { try { if (await fn()) return } catch (e) { last = e } await delay(300) } throw new Error(`timeout: ${label}${last ? `: ${last.message}` : ''}`) }
+const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'api06-426-')))
+const result = { startedAt: new Date().toISOString(), cases: {}, browserErrors: [], cleanup: {} }
+const children = []
+let browser
+try {
+  const backendPort = await freePort(); const frontPort = await freePort()
+  const backendUrl = `http://127.0.0.1:${backendPort}`; const frontUrl = `http://127.0.0.1:${frontPort}`
+  const dataDir = path.join(root, 'data'); const home = path.join(root, 'home')
+  await fs.mkdir(dataDir, { recursive: true }); await fs.mkdir(home, { recursive: true })
+  await fs.writeFile(path.join(dataDir, '.env'), `AUTOBYTEUS_SERVER_HOST=${backendUrl}\nAPP_ENV=test\nLOG_LEVEL=WARN\n`)
+  const backendLog = createWriteStream(path.join(outDir, 'server.log'))
+  const backend = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataDir], { cwd: serverDir,
+    env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', AUTOBYTEUS_SERVER_HOST: backendUrl,
+      ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' }, stdio: ['ignore', 'pipe', 'pipe'] })
+  backend.stdout.pipe(backendLog); backend.stderr.pipe(backendLog); children.push(backend)
+  await waitFor('backend', () => fetch(`${backendUrl}/rest/health`).then(r => r.ok).catch(() => false), 120000)
+  const gql = async (query, variables) => { const b = await (await fetch(`${backendUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json(); if (b.errors?.length) throw new Error(JSON.stringify(b.errors)); return b.data }
+  const registered = async () => (await gql('{workspaces{workspaceRootPath}}')).workspaces.map(w => w.workspaceRootPath)
+  const frontLog = createWriteStream(path.join(outDir, 'frontend.log'))
+  const frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontPort)], { cwd: webDir, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl } })
+  frontend.stdout.pipe(frontLog); frontend.stderr.pipe(frontLog); children.push(frontend)
+  await waitFor('frontend', () => fetch(frontUrl).then(r => r.ok).catch(() => false), 240000)
+  browser = await chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' })
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' })
+  await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'))
+  const page = await context.newPage()
+  page.on('pageerror', e => result.browserErrors.push(`pageerror: ${e.message}`.slice(0, 300)))
+  page.on('console', m => { if (m.type() === 'error') result.browserErrors.push(`console: ${m.text()}`.slice(0, 300)) })
+  const sel = t => `[data-test="${t}"]`
+  // A cold nuxt dev re-optimizes and reloads (TESTING § Browser probes): warm up.
+  await page.goto(`${frontUrl}/chat`, { waitUntil: 'networkidle', timeout: 240000 }).catch(() => undefined)
+  await delay(4000)
+  const newChat = async () => { await page.goto(`${frontUrl}/chat`, { waitUntil: 'domcontentloaded' }); await page.locator(sel('chat-new')).waitFor({ timeout: 120000 }); await delay(1500) }
+  const pickAgyModel = async () => {
+    await page.locator(sel('chat-model-trigger')).click()
+    const row = page.locator(sel('chat-runtime-antigravity_cli')); const list = page.locator(sel('chat-model-list-antigravity_cli'))
+    for (let i = 0; i < 6 && !(await list.isVisible().catch(() => false)); i += 1) { await row.hover().catch(() => {}); await delay(400); if (!(await list.isVisible().catch(() => false))) { await row.click().catch(() => {}); await delay(700) } }
+    const option = list.locator('button[role="menuitemradio"][data-test^="chat-model-option-"]').first()
+    await option.waitFor({ timeout: 120000 })
+    const rb = await row.boundingBox().catch(() => null); const lb = await list.boundingBox().catch(() => null)
+    if (rb && lb && lb.x > rb.x) await page.mouse.move(lb.x + 12, Math.min(Math.max(rb.y + rb.height / 2, lb.y + 6), lb.y + lb.height - 6), { steps: 5 })
+    const id = (await option.getAttribute('data-test')).replace('chat-model-option-', '')
+    await option.click()
+    return id
+  }
+  const openFolder = async folder => {
+    await page.locator(sel('chat-workspace-trigger')).click()
+    await page.locator(sel('chat-workspace-open-folder')).click()
+    const input = page.locator(`${sel('chat-workspace-folder-form')} input`)
+    await input.fill(folder); await input.press('Enter')
+    await delay(500)
+    return { formError: (await page.locator(sel('chat-workspace-path-error')).innerText().catch(() => '')).trim(), chip: (await page.locator(sel('chat-workspace-trigger')).innerText().catch(() => '')).trim() }
+  }
+  const send = async text => {
+    const box = page.locator(`${sel('chat-composer')} textarea`).first()
+    await box.click(); await box.fill(text)
+    await waitFor('send enabled', async () => !(await page.locator(sel('chat-primary-action')).first().isDisabled()), 20000)
+    await page.locator(sel('chat-primary-action')).first().click()
+  }
+  await newChat()
+  result.model = await pickAgyModel()
+  await page.keyboard.press('Escape').catch(() => {})
+  const before = await registered()
+  const extra = path.join(root, 'existing-folder-426'); await fs.mkdir(extra, { recursive: true })
+  for (const [id, typed, expected] of [['missing', '/definitely/not/a/folder-426', 'No folder at this path.'], ['file', '/etc/hosts', 'This path is a file, not a folder.']]) {
+    const folder = await openFolder(typed)
+    await send(`Hello from API-06 ${id}.`)
+    let body = ''
+    await waitFor(`the launch error for ${typed}`, async () => (body = await page.locator('body').innerText()).includes(expected), 20000).catch(() => undefined)
+    await page.screenshot({ path: path.join(outDir, `API-06-${id}.png`) })
+    result.cases[id] = { typed, expected, folder, shown: body.includes(expected), genericShown: body.includes('The selected workspace could not be opened.'), url: page.url().replace(frontUrl, '') }
+    await newChat(); await pickAgyModel(); await page.keyboard.press('Escape').catch(() => {})
+  }
+  result.cases.relative = { typed: 'relative/dir', ...(await openFolder('relative/dir')) }
+  await page.keyboard.press('Escape').catch(() => {})
+  result.registeredAdded = (await registered()).filter(p => !before.includes(p))
+  await newChat(); await pickAgyModel(); await page.keyboard.press('Escape').catch(() => {})
+  const folder = await openFolder(extra)
+  await send('Hello from API-06 existing.')
+  await waitFor('the run view', async () => new URL(page.url()).searchParams.get('id') !== null || (await page.locator('[data-testid="agent-workspace-surface"]').count()) > 0, 60000).catch(() => undefined)
+  await delay(3000)
+  await page.screenshot({ path: path.join(outDir, 'API-06-existing.png') })
+  result.cases.existing = { typed: extra.replace(root, '<root>'), folder: { ...folder, chip: folder.chip }, url: page.url().replace(frontUrl, ''), registered: (await registered()).includes(extra),
+    errorShown: /No folder at this path|This path is a file|could not be opened/.test(await page.locator('body').innerText()) }
+  const c = result.cases
+  result.result = c.missing.shown && !c.missing.genericShown && c.file.shown && !c.file.genericShown && result.registeredAdded.length === 0
+    && c.relative.formError !== '' && c.existing.registered && !c.existing.errorShown ? 'Pass' : 'Fail'
+} catch (error) {
+  result.result = 'Fail'; result.error = String(error?.stack ?? error)
+} finally {
+  if (browser) await browser.close().catch(() => {})
+  for (const child of children) { try { child.detached ? process.kill(-child.pid, 'SIGTERM') : child.kill('SIGTERM') } catch {} }
+  await delay(4000)
+  for (const child of children) { if (child.exitCode === null && child.signalCode === null) { try { child.detached ? process.kill(-child.pid, 'SIGKILL') : child.kill('SIGKILL') } catch {} } }
+  await fs.rm(root, { recursive: true, force: true }).catch(() => {})
+  result.cleanup = { rootRemoved: !(await fs.stat(root).then(() => true).catch(() => false)), childrenExited: children.map(c => c.exitCode !== null || c.signalCode !== null) }
+  result.finishedAt = new Date().toISOString()
+  await fs.writeFile(path.join(outDir, 'API-06-result.json'), `${JSON.stringify(result, null, 2)}\n`)
+  console.log(`API-06: ${result.result}${result.error ? `\n${result.error}` : ''}`)
+  process.exit(0)
+}

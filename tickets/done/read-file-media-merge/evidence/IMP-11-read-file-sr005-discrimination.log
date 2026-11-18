@@ -1,0 +1,46 @@
+# Check: IMP-11 read_file SR-005 changes (CR-001 message and order, CR-002 whole-file NUL scan, CR-003 article) against the previous read_file
+# Command: read-file.ts temporarily replaced by `git show HEAD:autobyteus-ts/src/tools/file/read-file.ts` (pre-SR-005, b262b5e7a0), then
+#   (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts && env -i … pnpm exec vitest run tests/integration/tools/file/read-file-binary.test.ts tests/integration/tools/file/read-file-media.test.ts); file restored
+# Commit: tests as committed in 815b6e175a
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-30 local
+# Result: 12 of the new or changed cases fail on the previous read_file (late-NUL PDF and file, 7 media line-range variants incl. 0/0, -1/-1, 1/999999, 5/2, 3 article cases); all pass on 815b6e175a (IMP-10 focused run: read-file-binary 9/9, read-file-media 25/25)
+
+     ✓ refuses report.pdf 11ms
+     × refuses long-report.pdf 19ms
+     ✓ refuses archive.zip 2ms
+     ✓ refuses blob.bin 4ms
+     ✓ refuses program 4ms
+     ✓ refuses a binary file whatever the line arguments 2ms
+     × refuses a file whose only NUL byte is its last byte, far past the first 8,000 bytes 3ms
+     ✓ reads UTF-8 text with non-ASCII characters exactly as before 2ms
+     ✓ reads an empty text file as an empty result, as before 2ms
+     ✓ returns photo.png as a context file of its kind, not as text 11ms
+     ✓ returns voice.wav as a context file of its kind, not as text 4ms
+     ✓ returns clip.mp4 as a context file of its kind, not as text 12ms
+     ✓ resolves a relative media path against an absolute base_dir 2ms
+     ✓ loads media when the model capability is unknown 2ms
+     ✓ ignores include_line_numbers for media 3ms
+     ✓ refuses photo.png when the model does not support its kind 4ms
+     ✓ refuses voice.wav when the model does not support its kind 1ms
+     ✓ refuses clip.mp4 when the model does not support its kind 2ms
+     ✓ refuses only the kind the model does not support 2ms
+     ✓ refuses an empty media file 1ms
+     × refuses line ranges on a media file, saying it was not loaded ({ start_line: 1 }) 6ms
+     × refuses line ranges on a media file, saying it was not loaded ({ end_line: 3 }) 4ms
+     × refuses line ranges on a media file, saying it was not loaded ({ start_line: 1, end_line: 2 }) 6ms
+     × refuses line ranges on a media file, saying it was not loaded ({ start_line: +0, end_line: +0 }) 9ms
+     × refuses line ranges on a media file, saying it was not loaded ({ start_line: -1, end_line: -1 }) 2ms
+     × refuses line ranges on a media file, saying it was not loaded ({ start_line: 1, end_line: 999999 }) 2ms
+     × refuses line ranges on a media file, saying it was not loaded ({ start_line: 5, end_line: 2 }) 3ms
+     × names photo.png in the line-range refusal with the right article 4ms
+     × names voice.wav in the line-range refusal with the right article 5ms
+     × names clip.mp4 in the line-range refusal with the right article 5ms
+     ✓ refuses a missing media file 2ms
+     ✓ refuses a directory named like a media file 4ms
+     ✓ refuses a relative media path without base_dir 5ms
+     ✓ refuses a media file under a denied path 5ms
+ Test Files  2 failed (2)
+      Tests  12 failed | 22 passed (34)
+   Start at  06:39:32
+   Duration  574ms (transform 412ms, setup 174ms, import 367ms, tests 159ms, environment 0ms)

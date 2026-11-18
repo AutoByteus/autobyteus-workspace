@@ -26,7 +26,7 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
   static CATEGORY = ToolCategory.AGENT_COMMUNICATION;
 
   private readonly sender: AgentRunMessageSenderContext | null;
-  private readonly dispatcher: SendMessageToDispatcher;
+  private readonly dispatcher: SendMessageToDispatcher | null;
 
   constructor(
     config?: ToolConfig,
@@ -37,7 +37,8 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
   ) {
     super(config);
     this.sender = options.sender ?? null;
-    this.dispatcher = options.dispatcher ?? getSendMessageToDispatcher();
+    // Read at use: the composition root creates the process dispatcher after tools can be listed (SR-047 step 8).
+    this.dispatcher = options.dispatcher ?? null;
   }
 
   static getName(): string {
@@ -63,7 +64,7 @@ export class AutoByteusSendMessageToTool extends BaseTool<unknown, Record<string
       ));
     }
 
-    const result = await this.dispatcher.dispatch({
+    const result = await (this.dispatcher ?? getSendMessageToDispatcher()).dispatch({
       toolName: SEND_MESSAGE_TO_TOOL_NAME,
       rawArguments: kwargs,
       sender: this.sender,

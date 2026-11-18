@@ -1,0 +1,21 @@
+# Case: API-07/API-08 cleanup
+# Command: autobyteus-docker.sh destroy --name abx402-api-node; docker volume rm abx402-api-node-{workspace,data,root-home,chromium-profile,server-packages}; receipts
+# Commit: 71dc90b1f1
+# Date: 2026-11-06T15:40:25Z
+
+[AutoByteus Docker] Removed managed container abx402-api-node for abx402-api-node. Named volumes and host workspaces were kept.
+[AutoByteus Docker] Removed launcher state for abx402-api-node.
+[AutoByteus Docker] Keeping image sha256:8bcf8eabfafef982577b327951cb34f655daad77e1f2513b5f07d49797649666; it is still used by a Docker container.
+exit=0
+abx402-api-node-workspace
+abx402-api-node-data
+abx402-api-node-root-home
+abx402-api-node-chromium-profile
+abx402-api-node-server-packages
+containers abx402*: []
+volumes abx402*: []
+state files: []
+user nodes:
+autobyteus-server-2	Up 3 days
+autobyteus-server-1	Up 3 days
+autobyteus-server-0	Up 3 days

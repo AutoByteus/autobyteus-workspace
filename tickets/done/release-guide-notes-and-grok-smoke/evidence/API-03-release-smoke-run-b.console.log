@@ -1,0 +1,31 @@
+# API-03 full release smoke run (b), GROK_E2E_MODEL=grok-4.7 (token-free)
+# Command: cd <worktree> && env -i PATH="$PATH" HOME=<temp HOME, claude and codex signed out> TMPDIR=<temp> GROK_BUILD_COMMAND=<worktree>/scripts/tests/fixtures/fake-grok-acp.mjs GROK_E2E_MODEL=grok-4.7 python3 scripts/release_smoke.py
+# Commit: 23d722096a; Date: 2026-11-01; Environment: macOS arm64, Python 3, Node v22, vitest 4.1.12; claude 2.1.316 (auth status in that env: "loggedIn": false), codex (login status: Not logged in), the fake Grok
+
+preflight: codex not available: ~/.codex/auth.json missing (codex not signed in)
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_agent_c7498c68_2440688090974aa4a421c899675f4b08:turn:38e4f4af-a25d-4fcd-89e1-bcb5
+claude      brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_agent_c7498c68_70386550b6b7491bad5a21d318367d79:turn:3203c606-cf9d-417d-b025-6b5f
+claude      different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_all_c7498c68_97ca1813baf54238a11e2d914ea774ab:turn:251dbc37-de28-4873-a401-ef4c17
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a19589-e11d-7de2-8b96-82c5c78fed27"}: expected [ Array(1) ] to deeply equal []
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a19589-e6fd-7fe2-9207-e3962aa158ef","change_sequence":13,"agent_run_id":"link_probe_agent_c7498c68_8b41d7bdb0544251b357eff964b824d6"}: expected [ Array(1
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a19589-ef22-7403-842a-4be08a829212"}: expected [ Array(1) ] to deeply equal []
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    23d722096a38f101d95f3ac2fbde96130ae62798
+models    {"claude": "haiku", "codex": "gpt-5.6-luna"}
+duration  live 26s, antigravity 24s, autobyteus 10s
+result    FAIL
+logs      /private/tmp/ab355-api/tmp-obCu/release-smoke-vzapci0z
+exit 1

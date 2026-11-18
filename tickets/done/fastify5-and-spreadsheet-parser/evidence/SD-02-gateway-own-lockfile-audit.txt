@@ -1,0 +1,19 @@
+# Gateway in a scratch copy with its own pnpm lockfile (pnpm install --lockfile-only --ignore-workspace), 2026-10-24
+
+## base manifest (fastify ^4.29.1, @fastify/cors ^9.0.1, baileys 6.7.21): {'info': 0, 'low': 1, 'moderate': 3, 'high': 6, 'critical': 1} (224 deps)
+low      fastify                  GHSA-mrq3-vjjr-p77c vers=['4.29.1'] patched=>=5.7.3 | Fastify Vulnerable to DoS via Unbounded Memory Allocation in sendWebStream
+high     fastify                  GHSA-jx2c-rxcm-jvmq vers=['4.29.1'] patched=>=5.7.2 | Fastify's Content-Type header tab character allows body validation bypass
+moderate fastify                  GHSA-444r-cwp2-x5xf vers=['4.29.1'] patched=>=5.8.3 | fastify: request.protocol and request.host Spoofable via X-Forwarded-Proto/Host 
+critical @whiskeysockets/baileys  GHSA-qvv5-jq5g-4cgg vers=['6.7.21'] patched=>=6.7.22 | Baileys has message upsert / hist sync spoofing and app state corruption when us
+high     find-my-way              GHSA-c96f-x56v-gq3h vers=['8.2.2'] patched=>=9.7.0 | find-my-way: DDoS with HTTP2
+moderate fastify                  GHSA-w2qp-rph6-63g4 vers=['4.29.1'] patched=>=5.12.1 | fastify vulnerable to schema validation bypass via root primitive coercion misma
+moderate fastify                  GHSA-4mh8-r7rc-xpvc vers=['4.29.1'] patched=>=5.12.5 | fastify vulnerable to Denial of Service via unhandled exception on HTTP/2 traile
+high     fastify                  GHSA-667r-xxjv-c9mm vers=['4.29.1'] patched=>=5.12.2 | fastify vulnerable to request body replacement via an async validation result co
+high     fastify                  GHSA-p68q-wchp-6fh7 vers=['4.29.1'] patched=>=5.12.2 | fastify vulnerable to authentication bypass via malformed URLs reaching encapsul
+high     fastify                  GHSA-hwr6-493r-vm6h vers=['4.29.1'] patched=>=5.12.2 | fastify vulnerable to request validation bypass via skipped boolean false schema
+high     fastify                  GHSA-9q9j-q6p8-xq58 vers=['4.29.1'] patched=>=5.12.2 | fastify vulnerable to header validation bypass via incomplete schema case normal
+
+## trial manifest (fastify ^5.12.7, @fastify/cors ^11.3.1, baileys 6.7.24): {'info': 0, 'low': 0, 'moderate': 0, 'high': 0, 'critical': 0} (221 deps)
+
+## trial: pnpm typecheck -> clean; pnpm test -> Test Files 86 passed (86), Tests 268 passed (268)
+## trial lockfile note: libsignal resolves to a codeload.github.com tarball (git dependency of baileys)

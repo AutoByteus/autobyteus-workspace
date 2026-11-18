@@ -1,0 +1,77 @@
+{
+ "url": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+ "browser": "156.0.8078.80",
+ "report": {
+  "label": "ws4",
+  "version": "WS-V4",
+  "checks": {
+   "origin": "null",
+   "location-protocol": "http:",
+   "inline-script": "ran",
+   "parent-document": "readable: Synthetic preview page ws4",
+   "top-document": "readable: Synthetic preview page ws4",
+   "parent-electronAPI": "undefined",
+   "parent-electronAPI-call": "no api: undefined",
+   "own-electronAPI": "undefined",
+   "localStorage": "blocked: SecurityError",
+   "sessionStorage": "blocked: SecurityError",
+   "indexedDB": "blocked: SecurityError",
+   "cookie": "blocked: SecurityError",
+   "parent-localStorage-phone-credential": "blocked: SecurityError",
+   "worker": "blocked: SecurityError",
+   "img-relative": "loaded 3x3",
+   "fetch-relative-json": "failed: TypeError",
+   "graphql-post-json": "failed: TypeError",
+   "graphql-post-simple": "sent (opaque response type=opaque)",
+   "graphql-get-img": "error (sent without Origin)",
+   "graphql-read-json": "failed: TypeError",
+   "ws-terminal-error": "error event",
+   "ws-terminal": "closed code=1006 before open",
+   "classic-script": "ran",
+   "other-site-script": "ran",
+   "module-script": "did-not-run",
+   "css": "rgb(255, 0, 0)",
+   "font-relative": "not loaded (WsFont:error)",
+   "done": "yes"
+  },
+  "done": true
+ },
+ "responses": [
+  {
+   "url": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+   "status": 200,
+   "csp": "sandbox allow-scripts",
+   "type": "text/html"
+  },
+  {
+   "url": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/style.css",
+   "status": 200,
+   "csp": "sandbox allow-scripts",
+   "type": "text/css"
+  },
+  {
+   "url": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/pixel.png",
+   "status": 200,
+   "csp": "sandbox allow-scripts",
+   "type": "image/png"
+  },
+  {
+   "url": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/classic.js",
+   "status": 200,
+   "csp": "sandbox allow-scripts",
+   "type": "text/javascript"
+  },
+  {
+   "url": "http://127.0.0.1:50211/cdn/lib.js",
+   "status": 200,
+   "csp": null,
+   "type": "text/javascript"
+  },
+  {
+   "url": "http://127.0.0.1:50113/graphql",
+   "status": 403,
+   "csp": null,
+   "type": null
+  }
+ ]
+}

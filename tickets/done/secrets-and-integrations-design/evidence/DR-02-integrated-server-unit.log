@@ -1,0 +1,10 @@
+# Case: DR-02 full server unit suite (summary)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 2c67d4b4c2 (codex/secrets-and-integrations-design merged with origin/personal 67994daba0; doc conflicts in GLOSSARY.md and docs/design-cases.md resolved keeping both sides)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; env -i PATH HOME=<temp> TMPDIR
+# Date: 2026-10-26 (delivery, integrated state)
+
+# Failed test files in the full log: 0
+ Test Files  840 passed | 4 skipped (844)
+      Tests  7023 passed | 7 skipped (7030)
+   Duration  683.77s (transform 18.94s, setup 11.18s, import 317.95s, tests 263.44s, environment 1.22s)

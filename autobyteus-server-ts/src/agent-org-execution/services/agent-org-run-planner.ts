@@ -43,15 +43,17 @@ export class AgentOrgRunPlanner {
     });
     return Object.freeze({ topology, launch });
   }
+  /**
+   * Builds the execution tree from a plan `resolveConfiguration` produced (resolved once; the caller may
+   * replace each placement's model selection with its validated, canonical one before building).
+   */
   async build(input: {
     definition: AgentOrgDefinition;
-    rootConfiguration: AgentLaunchConfiguration;
-    teamOverrides?: readonly PlacementLaunchOverride[] | null;
-    agentOverrides?: readonly PlacementLaunchOverride[] | null;
+    plan: ResolvedAgentOrgLaunchPlan;
     applicationBinding?: { applicationId: string; bindingId: string } | null;
     createdAt?: string;
   }): Promise<AgentOrgRunExecutionTreeFile> {
-    const { topology, launch } = await this.resolveConfiguration(input);
+    const { topology, launch } = input.plan;
     const members: ConfiguredExecutionNode[] = [];
     for (const member of topology.members) {
       const address = createAgentTeamAddress(member.absolutePath);
@@ -70,7 +72,7 @@ export class AgentOrgRunPlanner {
       members.push({ address, teamDefinitionId: member.teamDefinitionId, role: null, description: null,
         teamRunId: this.identities.allocateTeam(member.team.definition.name),
         coordinatorAddress: createAgentTeamAddress(member.team.coordinator.absolutePath),
-        defaultLaunchConfiguration: launch.teams.get(address)!, members: configuredAgents, taskExecutions: [] });
+        defaultLaunchConfiguration: launch.teams.get(address)!, members: configuredAgents });
     }
     return validateAgentOrgRunExecutionTreePayload({
       subjectKind: "agent_org", createdAt: input.createdAt ?? new Date().toISOString(), archivedAt: null,
@@ -78,7 +80,7 @@ export class AgentOrgRunPlanner {
       handoffs: new CollaborationHandoffCompiler().compileOrg(topology),
       rootOrg: { address: "/", orgDefinitionId: input.definition.id, orgDefinitionName: input.definition.name,
         orgRunId: this.identities.allocateOrg(input.definition.name), defaultLaunchConfiguration: launch.root,
-        members, taskExecutions: [] },
+        members },
     });
   }
   static defaultOrgIdentity(name: string): string { return orgRunId(name); }

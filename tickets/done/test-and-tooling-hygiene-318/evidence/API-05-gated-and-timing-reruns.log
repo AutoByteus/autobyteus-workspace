@@ -1,0 +1,71 @@
+# API-05 gated scripted e2e and timing reruns in the fresh clone (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318-clone.94OVpE6TRY/repo), one at a time, clean env (env -i PATH HOME=<resolved temp> TMPDIR=<fresh empty dir>/); script: /tmp/ab318s/gated.sh (copied as API-05-gated-and-timing-reruns.sh.txt)
+# commit 7c04283722, 2026-11-01T14:11:10Z, load at start { 4.39 23.42 42.51 }
+## T-46 RUN_CONTEXT_FILE_PROCESS_E2E=1 tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+T-46: exit 0 (26s) |  Tests 6 passed (6) | load 4.18 | left in TMPDIR: 1
+## T-28 RUN_AGY_FAILURE_E2E=1 tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts x2 (window evidence)
+T-28 run 1: exit 0 (171s) |  Tests 1 passed (1) | load 5.54 | left in TMPDIR: 1
+   window evidence: "quietShutdownMs": 60030 "shutdownAfterEndMs": 60152     "shutdownAfterEndMs": 60124     "quietShutdownMs": 60032 "shutdownAfterEndMs": 60138     "shutdownAfterEndMs": 60150     "quietShutdownMs": 60028 "shutdownAfterEndMs": 60135     "shutdownAfterEndMs": 60154     
+T-28 run 2: exit 0 (171s) |  Tests 1 passed (1) | load 5.74 | left in TMPDIR: 1
+   window evidence: "quietShutdownMs": 60030 "shutdownAfterEndMs": 60152     "shutdownAfterEndMs": 60133     "quietShutdownMs": 60042 "shutdownAfterEndMs": 60124     "shutdownAfterEndMs": 60134     "quietShutdownMs": 60030 "shutdownAfterEndMs": 60134     "shutdownAfterEndMs": 60153     
+## QR-001 (T-52) RUN_AGY_FAILURE_E2E=1 tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts x10
+QR-001 run 1: exit 0 (34s) |  Tests 6 passed | 1 skipped (7) | load 4.42 | left in TMPDIR: 1
+QR-001 run 2: exit 0 (33s) |  Tests 6 passed | 1 skipped (7) | load 3.81 | left in TMPDIR: 1
+QR-001 run 3: exit 0 (32s) |  Tests 6 passed | 1 skipped (7) | load 4.28 | left in TMPDIR: 1
+QR-001 run 4: exit 0 (32s) |  Tests 6 passed | 1 skipped (7) | load 6.13 | left in TMPDIR: 1
+QR-001 run 5: exit 0 (33s) |  Tests 6 passed | 1 skipped (7) | load 6.79 | left in TMPDIR: 1
+QR-001 run 6: exit 0 (32s) |  Tests 6 passed | 1 skipped (7) | load 4.93 | left in TMPDIR: 1
+QR-001 run 7: exit 0 (33s) |  Tests 6 passed | 1 skipped (7) | load 4.49 | left in TMPDIR: 1
+QR-001 run 8: exit 0 (32s) |  Tests 6 passed | 1 skipped (7) | load 4.00 | left in TMPDIR: 1
+QR-001 run 9: exit 0 (32s) |  Tests 6 passed | 1 skipped (7) | load 3.29 | left in TMPDIR: 1
+QR-001 run 10: exit 0 (33s) |  Tests 6 passed | 1 skipped (7) | load 3.35 | left in TMPDIR: 1
+## T-47 tests/unit/projects/project-task-index-status.test.ts -t 'one run per burst' x20
+T-47 run 1: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.25 | left in TMPDIR: 1
+T-47 run 2: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 3.23 | left in TMPDIR: 1
+T-47 run 3: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 3.29 | left in TMPDIR: 1
+T-47 run 4: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.10 | left in TMPDIR: 1
+T-47 run 5: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.10 | left in TMPDIR: 1
+T-47 run 6: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 3.25 | left in TMPDIR: 1
+T-47 run 7: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 3.07 | left in TMPDIR: 1
+T-47 run 8: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.06 | left in TMPDIR: 1
+T-47 run 9: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 2.90 | left in TMPDIR: 1
+T-47 run 10: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 2.90 | left in TMPDIR: 1
+T-47 run 11: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 2.99 | left in TMPDIR: 1
+T-47 run 12: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 2.99 | left in TMPDIR: 1
+T-47 run 13: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.71 | left in TMPDIR: 1
+T-47 run 14: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.50 | left in TMPDIR: 1
+T-47 run 15: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.70 | left in TMPDIR: 1
+T-47 run 16: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.64 | left in TMPDIR: 1
+T-47 run 17: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 3.43 | left in TMPDIR: 1
+T-47 run 18: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 3.87 | left in TMPDIR: 1
+T-47 run 19: exit 0 (5s) |  Tests 1 passed | 7 skipped (8) | load 4.12 | left in TMPDIR: 1
+T-47 run 20: exit 0 (4s) |  Tests 1 passed | 7 skipped (8) | load 4.11 | left in TMPDIR: 1
+## T-30, T-53 files
+T-30/T-53: exit 0 (5s) |  Tests 12 passed (12) | load 4.02 | left in TMPDIR: 1
+## T-27: each file alone with a fresh empty TMPDIR, then ls -A
+T-27 acp-agent-run-backend-factory.test.ts: exit 0 (4s) |  Tests 12 passed (12) | load 3.86 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 acp-tool-list-reopen.test.ts: exit 0 (4s) |  Tests 5 passed (5) | load 3.86 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 grok-build-compaction.test.ts: exit 0 (2s) |  Tests 11 passed (11) | load 3.79 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 grok-build-session-profile.test.ts: exit 0 (1s) |  Tests 5 passed (5) | load 3.79 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 workspace-skill-link-regression.test.ts: exit 0 (5s) |  Tests 15 passed (15) | load 3.57 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 prompt-builder.test.ts: exit 1 (1s) |  | load 3.76 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 acp-agent-capabilities.test.ts: exit 0 (2s) |  Tests 3 passed (3) | load 3.76 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 acp-client-connection.test.ts: exit 0 (2s) |  Tests 3 passed (3) | load 3.76 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 grok-build-capability.test.ts: exit 0 (5s) |  Tests 6 passed (6) | load 3.94 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 grok-build-launch-profile.test.ts: exit 0 (3s) |  Tests 4 passed (4) | load 3.79 | left in TMPDIR: 1
+   left: node-compile-cache
+T-27 grok-usage-limits-acp.test.ts: exit 0 (6s) |  Tests 2 passed (2) | load 3.64 | left in TMPDIR: 1
+   left: node-compile-cache
+# end 2026-11-01T14:25:05Z
+
+## correction: prompt-builder.test.ts belongs to autobyteus-ts (the server-path run above found no file and exited 1)
+T-27 autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts: exit 0 |  Tests 3 passed (3) | left in TMPDIR: node-compile-cache 
+## note: 'node-compile-cache' is created by pnpm itself, not by the tests: env -i PATH HOME TMPDIR=<empty> pnpm -v leaves it; node -e 1 leaves nothing

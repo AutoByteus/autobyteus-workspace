@@ -1,0 +1,27 @@
+# Diagnosis: DOMPurify 3.4.7 under the web suite's default happy-dom environment stops after the first removed node (temporary spec, deleted after the run)
+# Check: IMP-04
+# Command: pnpm -C autobyteus-web test:nuxt components/fileExplorer/viewers/__tests__/zzHappyDomPurify.spec.ts --run | sed 's/\x1b\[[0-9;]*m//g' | grep -E '^(ENV|IN |OUT)'; sed -i '' 's#^import { it }#// @vitest-environment jsdom\nimport { it }#' autobyteus-web/components/fileExplorer/viewers/__tests__/zzHappyDomPurify.spec.ts; echo '--- same input under jsdom ---'; pnpm -C autobyteus-web test:nuxt components/fileExplorer/viewers/__tests__/zzHappyDomPurify.spec.ts --run | sed 's/\x1b\[[0-9;]*m//g' | grep -E '^(ENV|IN |OUT)'
+# Commit: 195db3c42e
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:49:24Z
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/fileExplorer/viewers/__tests__/zzHappyDomPurify.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ENV Mozilla/5.0 (X11; Darwin arm64) AppleWebKit/537.36 (KHTML, like Gecko) HappyDOM/0.0.0
+IN  <table><tr><td data-t="s" id="sjs-A1"><a href="https://example.com/">site</a></td><td data-t="s" id="sjs-B1"><a href="javascript:window.__pwned=1">evil</a></td></tr></table>
+OUT <table><tr><td>site</td><td data-t="s" id="sjs-B1"><a href="javascript:window.__pwned=1">evil</a></td></tr></table>
+--- same input under jsdom ---
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/autobyteus-web/stores/serverStore.ts" is used
+ENV Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/25.0.1
+IN  <table><tr><td data-t="s" id="sjs-A1"><a href="https://example.com/">site</a></td><td data-t="s" id="sjs-B1"><a href="javascript:window.__pwned=1">evil</a></td></tr></table>
+OUT <table><tbody><tr><td>site</td><td>evil</td></tr></tbody></table>
+
+# exit code: 0

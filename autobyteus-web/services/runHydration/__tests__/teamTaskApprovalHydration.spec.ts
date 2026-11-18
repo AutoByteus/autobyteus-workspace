@@ -35,7 +35,9 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   io.ws = { state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(),
     on: vi.fn((name, fn) => callbacks.set(name, fn)), off: vi.fn() }
   const raw = buildTestTeamContext({ teamRunId: ROOT, coordinatorAddress: '/lead', focusedAgentRunId: 'lead',
-    rootChildren: [testAgentNode('/lead', { agentRunId: 'lead', autoExecuteTools: false }), testAgentNode('/worker', { agentRunId: 'worker', autoExecuteTools })] })
+    // A member of the Team: a run the Team delegated is reached through its own stream (autobyteus-461 rule 2).
+    rootChildren: [testAgentNode('/lead', { agentRunId: 'lead', autoExecuteTools: false }), testAgentNode('/worker', { agentRunId: 'worker', autoExecuteTools }),
+      testAgentNode('/task', { agentRunId: TASK, autoExecuteTools })] })
   useAgentTeamContextsStore().teams = new Map([[ROOT, raw]])
   const team = useAgentTeamContextsStore().getTeamContextById(ROOT)!
   useAgentSelectionStore().selectRun(ROOT, 'team')
@@ -43,15 +45,10 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   let sequence = 0
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
-  emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0,
-    closed_task_executions: [], execution_tree: team.view.getExecutionTree(), messages: [],
-    agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
-    agent_input_states: [], remote_task_executions: [] }) // recoverableBlock/agent_input_states are required since 6908ccff4
-  const worker = team.view.getExecutionTree().root_team.members.find((member) => member.address === '/worker')!
-  emit('TASK_EXECUTION_STARTED', { change_sequence: ++sequence, parent_team_run_id: ROOT,
-    // A copy of the configured worker records the worker's snapshot when it starts.
-    execution: { kind: 'task_agent', address: '/worker', agent_run_id: TASK, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-09-14T10:00:00Z',
-      source: { kind: 'agent', agent_definition_id: worker.agent_definition_id, launch_configuration: worker.launch_configuration, launch_source: { origin: 'configured', fallbacks: [] } } } })
+  emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, live_sequence_id: 'live-1', last_message_change_sequence: 0,
+    execution_tree: team.view.getExecutionTree(),
+    agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, background_tasks_running: 0, recoverableBlock: null })),
+    agent_input_states: [] }) // recoverableBlock/agent_input_states are required since 6908ccff4
   expect(stream.isReady).toBe(true)
   expect(team.view.getFocusedAgentRunId()).toBe('lead')
   const context = team.view.getAgentContext(subject)!
@@ -187,12 +184,12 @@ it('TASK-03: terminal event during the first fetch retries and cannot become pen
   expect(useAgentActivityStore().getToolActivities(TASK)[0]).toMatchObject({ status: 'success', result: 'submitted once' })
   expect(io.ws.send).not.toHaveBeenCalled()
 })
-it('TASK-04: superseded selection leaves the existing conversation and Activity untouched', async () => {
+it('TASK-04: a superseded selection keeps the focus and the pending approval', async () => {
   const test = harness(); test.approval()
-  const before = test.context.conversation
   io.query.mockImplementationOnce(async () => { useAgentSelectionStore().beginSelectionIntent(); return projection() })
   expect((await test.select()).disposition).toBe('superseded')
   expect(test.team.view.getFocusedAgentRunId()).toBe('lead')
-  expect(test.context.conversation).toBe(before)
+  // The member's own load may still commit its stored state (autobyteus-358: a member load is not tied to one
+  // selection); the live approval decision wins over the stored projection.
   expect(useAgentActivityStore().getToolActivities(TASK)[0]?.status).toBe('awaiting-approval')
 })

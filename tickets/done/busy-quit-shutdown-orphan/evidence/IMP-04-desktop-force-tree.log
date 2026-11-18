@@ -1,0 +1,21 @@
+# IMP-04
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run server/__tests__/ServerForceStopTree.spec.ts server/__tests__/serverProcessTree.spec.ts --reporter=verbose
+# Commit: bf2857ca29 (base origin/personal @ 1a4453e553)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-web/electron
+
+ ✓ server/__tests__/serverProcessTree.spec.ts > server process-tree selection (desktop copy) > records server-group descendants by pid and descendant-led groups by -pgid 1ms
+ ✓ server/__tests__/serverProcessTree.spec.ts > server process-tree selection (desktop copy) > never selects the server, Electron, its group, a sibling, or a foreign-led group 1ms
+ ✓ server/__tests__/serverProcessTree.spec.ts > server process-tree selection (desktop copy) > selects nothing when the server is not in the table 0ms
+ ✓ server/__tests__/serverProcessTree.spec.ts > server process-tree signalling (desktop copy) > skips ESRCH, keeps going past EPERM and returns the failures 1ms
+ ✓ server/__tests__/serverProcessTree.spec.ts > server process-tree signalling (desktop copy) > returns the targets still alive at the end of the window; only ESRCH proves absence 102ms
+ ✓ server/__tests__/ServerForceStopTree.spec.ts > force-stops a wedged server and its whole tree, leaving no process behind 1970ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  12:36:15
+   Duration  2.33s (transform 86ms, setup 0ms, collect 134ms, tests 2.08s, environment 0ms, prepare 120ms)
+

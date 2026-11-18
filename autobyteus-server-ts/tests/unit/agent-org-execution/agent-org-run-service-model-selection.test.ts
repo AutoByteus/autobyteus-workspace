@@ -1,3 +1,4 @@
+import { noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
@@ -33,7 +34,7 @@ const harness = (large = false) => {
   let identitySequence = 0;
   const allocate = vi.fn(async (id: string) => `run-${id}-${++identitySequence}`);
   const validator = new RunModelSelectionService(catalog as never, capacity);
-  const service = new AgentOrgRunService({
+  const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
     manager: { create },
     admission: { requireAvailable: async () => ({ definition }) },
     agentDefinitions: { getAgentDefinitionById: async (id: string) => ({ id }) },
@@ -105,7 +106,7 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     input.rootConfiguration.runtimeKind = "antigravity_cli";
     input.teamOverrides[0]!.configuration.llmModelIdentifier = "root-model";
     await expect(h.service.create(input)).rejects.toThrow(
-      "Invalid configuration for '/team': Antigravity model discovery timed out; check the CLI and retry.",
+      "Invalid configuration for '/team': The model list of Antigravity CLI could not be read: Antigravity model discovery timed out; check the CLI and retry. Try again.",
     );
     expect(h.create).not.toHaveBeenCalled();
   });
@@ -116,12 +117,12 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     const failed = harness();
     failed.catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error("secret /private/credential-path"));
     await expect(failed.service.create(input)).rejects.toThrow(
-      "Invalid configuration for '/': Antigravity model discovery failed; check authentication or network and retry.",
+      "Invalid configuration for '/': The model list of Antigravity CLI could not be read: Antigravity model discovery failed; check authentication or network and retry. Try again.",
     );
     const missing = harness();
     missing.catalog.runtimeModelSelectionCatalog.mockResolvedValue(view([]));
     await expect(missing.service.create(input)).rejects.toThrow(
-      "Invalid configuration for '/': The selected model is unavailable.",
+      "Invalid configuration for '/': 'root-model' is not offered by Antigravity CLI now. Refresh the model list and choose again.",
     );
   });
 
@@ -166,5 +167,27 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     expect(h.allocate).not.toHaveBeenCalled();
     expect(h.create).not.toHaveBeenCalled();
     expect(h.capacity.resolveMany).not.toHaveBeenCalled();
+  });
+
+  // claude-anthropic-effort-control AC-013: a launch configuration still holding a setting the models no longer
+  // declare launches, and the tree holds only each placement's validated (canonical) config.
+  it("builds the tree from canonical configs, leaving out settings the models do not declare, with inheritance unchanged", async () => {
+    const h = harness();
+    const input = command();
+    Object.assign(input.rootConfiguration, { llmConfig: { effort: "low", thinking_display: "omitted" } });
+    Object.assign(input.teamOverrides[0]!.configuration, { llmConfig: { effort: "high", thinking_display: "summarized" } });
+    Object.assign(input.agentOverrides[0]!.configuration, { llmConfig: { thinking_display: "omitted" } });
+    const run = await h.service.create(input);
+    const tree = run.getExecutionTreeSnapshot();
+    expect(tree.rootOrg.defaultLaunchConfiguration.llmConfig).toEqual({ effort: "low" });
+    expect(tree.rootOrg.members[0]).toMatchObject({ address: "/direct",
+      launchConfiguration: { llmModelIdentifier: "agent-model", llmConfig: null } });
+    // The Team's lead follows the Team's (canonical) launch, not the root's.
+    expect(tree.rootOrg.members[1]).toMatchObject({ address: "/team",
+      defaultLaunchConfiguration: { llmModelIdentifier: "team-model", llmConfig: { effort: "high" } },
+      members: [{ address: "/team/lead", launchConfiguration: { llmModelIdentifier: "team-model", llmConfig: { effort: "high" } } }],
+    });
+    expect(JSON.stringify(tree)).not.toContain("thinking_display");
+    expect(h.create).toHaveBeenCalledOnce();
   });
 });

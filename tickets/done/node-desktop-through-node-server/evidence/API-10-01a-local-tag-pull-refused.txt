@@ -1,0 +1,22 @@
+# NOTE: attempt 1. The launcher treats a failed 'docker pull' as fatal (exit=1), so a local-only tag cannot be used; attempt 2 serves the image from a test-owned local registry (API-10-01-launcher-node-from-s1-image.txt).
+# Case: API-10 step 01 — the S1 bash launcher creates a node from an S1 server image built from the fresh clone
+# Command: docker buildx build --builder desktop-linux --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo --load -t abx405-api/autobyteus-server:s1 . (in the fresh clone of 952bc1fcd0; log API-10-image-build.log); seed state (no ports, IMAGE_REF=abx405-api/autobyteus-server:s1); AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx405-api/l/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx405-api/l/shared autobyteus-docker.sh workspace apply --name abx405-launcher-node; inspect
+# Note: the image exists only locally, so the launcher's own 'docker pull' fails (pull access denied) and the launcher continues with the local image
+# Commit: 952bc1fcd0
+# Environment: macOS arm64, /bin/bash 3.2, Docker Desktop 29.0.1
+# Date: 2026-11-06T18:03:01Z
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx405-launcher-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image abx405-api/autobyteus-server:s1
+Error response from daemon: pull access denied for abx405-api/autobyteus-server, repository does not exist or may require 'docker login'
+exit=1
+
+
+error: no such object: abx405-launcher-node
+error: no such object: abx405-launcher-node
+container env AUTOBYTEUS_VNC*: []
+
+NODE_NAME=abx405-launcher-node
+CONTAINER_NAME=abx405-launcher-node
+IMAGE_REF=abx405-api/autobyteus-server:s1
+CREATED_AT=2026-11-06T00:00:00Z

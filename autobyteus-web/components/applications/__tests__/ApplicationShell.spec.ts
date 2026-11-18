@@ -248,8 +248,8 @@ describe('ApplicationShell', () => {
     expect(applicationStoreMock.fetchApplicationById).toHaveBeenCalledWith('bundle-app__pkg__brief-studio', true)
     expect(applicationHostStoreMock.clearLaunchState).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
     expect(applicationHostStoreMock.startLaunch).not.toHaveBeenCalled()
-    expect(wrapper.get('[data-testid="application-setup-phase"]').exists()).toBe(true)
-    expect(wrapper.get('[data-testid="application-pre-entry-gate"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-setup-phase"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-pre-entry-gate"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="launch-setup-panel"]').text()).toContain('bundle-app__pkg__brief-studio:page')
     expect(wrapper.text()).toContain('Business-first brief workflow')
     expect(wrapper.text()).toContain('Show technical details')
@@ -300,9 +300,9 @@ describe('ApplicationShell', () => {
 
     expect(applicationHostStoreMock.startLaunch).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
     expect(appLayoutStoreMock.setHostShellPresentation).toHaveBeenCalledWith('application_immersive')
-    expect(wrapper.get('[data-testid="application-immersive-phase"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-immersive-phase"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="launch-setup-panel"]').text()).toContain('bundle-app__pkg__brief-studio:panel')
-    expect(wrapper.get('[data-testid="application-immersive-loading-canvas"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-immersive-loading-canvas"]').exists()).toBe(true)
   })
 
   it('owns immersive launch failure before an iframe launch exists', async () => {
@@ -332,7 +332,7 @@ describe('ApplicationShell', () => {
     await wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')?.trigger('click')
     await flushPromises()
 
-    expect(wrapper.get('[data-testid="application-immersive-error-canvas"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-immersive-error-canvas"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Host launch failed')
     expect(wrapper.find('[data-testid="application-surface"]').exists()).toBe(false)
   })

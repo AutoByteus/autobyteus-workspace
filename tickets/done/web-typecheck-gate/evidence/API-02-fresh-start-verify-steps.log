@@ -1,0 +1,10 @@
+# API-02 release job's verify steps on the API-01 build | commit 25aa717ba | macOS arm64, Node 22.23.3 | 2026-11-15
+# cwd: /tmp/wtg-fresh/clone (clone root); commands copied from .github/workflows/release-desktop.yml "Verify bundled Prisma ARM64 engine target" and "Verify packaged terminal runtime ARM64"
+engines autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+schema-engine OK   (schema-engine-darwin-arm64 present)
+client autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+query engine OK    (libquery_engine-darwin-arm64.dylib.node present)
+verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/resources/server --platform darwin --arch arm64 -> exit 0
+verify-packaged-terminal-runtime.mjs --server-root <AutoByteus.app>/Contents/Resources/server --platform darwin --arch arm64 -> exit 0
+ELECTRON_RUN_AS_NODE=1 <AutoByteus.app>/Contents/MacOS/AutoByteus verify-packaged-terminal-runtime.mjs ... --spawn-probe -> "[terminal-runtime] ok: node-pty spawn probe", exit 0
+Not run: "Verify macOS signing policy" (needs the signed bundle), signing, notarization, Intel x64, Linux, Windows, Android: need the runner.

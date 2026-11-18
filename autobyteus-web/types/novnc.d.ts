@@ -1,19 +1,13 @@
 declare module '@novnc/novnc' {
-  interface RfbCredentials {
-    username?: string;
-    password?: string;
-    target?: string;
-  }
-
   interface RfbOptions {
-    credentials?: RfbCredentials;
     shared?: boolean;
     repeaterID?: string;
     wsProtocols?: string[];
   }
 
   export default class RFB extends EventTarget {
-    constructor(target: Element, url: string, options?: RfbOptions);
+    /** A WebSocket URL, or an already created WebSocket that noVNC uses as its channel. */
+    constructor(target: Element, urlOrChannel: string | WebSocket, options?: RfbOptions);
 
     viewOnly: boolean;
     clipViewport: boolean;
@@ -21,6 +15,9 @@ declare module '@novnc/novnc' {
     resizeSession: boolean;
 
     disconnect(): void;
-    sendCredentials(credentials: RfbCredentials): void;
+    /** Sends one key event; `down` omitted sends a press and a release. A no-op while `viewOnly`. */
+    sendKey(keysym: number, code: string | null, down?: boolean): void;
+    /** Puts text on the remote clipboard (no-op unless connected and not view-only). */
+    clipboardPasteFrom(text: string): void;
   }
 }

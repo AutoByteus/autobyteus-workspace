@@ -1,0 +1,176 @@
+{
+  "startedAt": "2026-11-06T06:23:02.530Z",
+  "cases": {
+    "RXM-001": {
+      "title": "AC-001/AC-002: a live run's delegated rows: collapse removes them from the first frame; expand shows each at its final place with no transform from the first frame",
+      "result": "Fail",
+      "ms": 15565,
+      "error": "12 row samples moved from elsewhere on screen",
+      "details": [
+        {
+          "frame": 0,
+          "index": 1,
+          "top": 533,
+          "transform": "none",
+          "final": 551
+        },
+        {
+          "frame": 0,
+          "index": 2,
+          "top": 563,
+          "transform": "none",
+          "final": 599
+        },
+        {
+          "frame": 0,
+          "index": 3,
+          "top": 593,
+          "transform": "none",
+          "final": 647
+        },
+        {
+          "frame": 1,
+          "index": 1,
+          "top": 533,
+          "transform": "matrix(1, 0, 0, 1, 0, -18)",
+          "final": 551
+        },
+        {
+          "frame": 1,
+          "index": 2,
+          "top": 563,
+          "transform": "matrix(1, 0, 0, 1, 0, -36)",
+          "final": 599
+        },
+        {
+          "frame": 1,
+          "index": 3,
+          "top": 593,
+          "transform": "matrix(1, 0, 0, 1, 0, -54)",
+          "final": 647
+        }
+      ]
+    },
+    "RXM-002": {
+      "title": "AC-003: while the run is expanded, the agent closes a Task (DONE): its row leaves with the designed fade, then the other rows are at rest",
+      "result": "Pass",
+      "ms": 1958,
+      "details": {
+        "called": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"task\":{\"projectId\":\"project_4f09cc5b-7d9e-468b-b557-c1b11a2a9a4e\",\"taskId\":\"rxm-project-mw4l9a5e-1\",\"title\":\"RXM Task 1\",\"status\":\"DONE\"}}\"}],\"structuredContent\":{",
+        "leavingFrameCount": 14,
+        "fadeOpacities": [
+          1,
+          1,
+          0.865723,
+          0.739195,
+          0.621882,
+          0.511457,
+          0.408926,
+          0.315373,
+          0.23047,
+          0.156314,
+          0.0934748,
+          0.0446709,
+          0.0120676,
+          4.25141e-10
+        ],
+        "leaveMs": 217
+      }
+    },
+    "RXM-003": {
+      "title": "AC-003/R-01: a stopped run reopened: stored rows show; fold, Runs → Workspaces → Runs, unfold: same rows, no read for the unfold; a delegated row is selected from the list",
+      "result": "Pass",
+      "ms": 9608,
+      "details": {
+        "storedRows": [
+          "home team 38a6RXM Task 2Temporary task team · home team 38a6 · /home_team_38a6",
+          "home team 38a6RXM Task 3Temporary task team · home team 38a6 · /home_team_38a6",
+          "home team 38a6RXM Task 4Temporary task team · home team 38a6 · /home_team_38a6"
+        ],
+        "readsOnOpen": 1,
+        "foldKeptAcrossSwitch": false,
+        "readsBeforeUnfold": 1,
+        "readsAfterUnfold": 1,
+        "rowsAfterUnfold": [
+          "home team 38a6RXM Task 2Temporary task team · home team 38a6 · /home_team_38a6",
+          "home team 38a6RXM Task 3Temporary task team · home team 38a6 · /home_team_38a6",
+          "home team 38a6RXM Task 4Temporary task team · home team 38a6 · /home_team_38a6"
+        ],
+        "selectedRow": "MmanagerTemporary task agent · manager · /home_team_38a6/manager"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 29739
+    },
+    {
+      "label": "frontend",
+      "pid": 29767
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 29767,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 29739,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XOmeAM"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-XOmeAM",
+  "backendUrl": "http://127.0.0.1:56288",
+  "frontUrl": "http://127.0.0.1:56289",
+  "definitions": {
+    "ids": {
+      "manager": "manager-ed67",
+      "lead": "lead-e082",
+      "worker": "worker-3882",
+      "plain": "plain-2353",
+      "engineer": "engineer-2cda",
+      "reviewer": "reviewer-604e",
+      "writer": "writer-8336",
+      "offline": "offline-2a9d",
+      "unoffered": "unoffered-1ed8",
+      "badsettings": "badsettings-9789",
+      "incomplete": "incomplete-40af",
+      "build": "build-team-1ce3",
+      "pair": "pair-team-2df5",
+      "squad": "squad-team-613b",
+      "home": "home-team-38a6",
+      "launchOrg": "launchorg-org-2d83",
+      "hostOrg": "hostorg-org-e3e4"
+    },
+    "names": {
+      "manager": "Manager ed67",
+      "lead": "Lead e082",
+      "worker": "Worker 3882",
+      "plain": "Plain 2353",
+      "engineer": "Engineer 2cda",
+      "reviewer": "Reviewer 604e",
+      "writer": "Writer 8336",
+      "offline": "Offline 2a9d",
+      "unoffered": "Unoffered 1ed8",
+      "badsettings": "Badsettings 9789",
+      "incomplete": "Incomplete 40af",
+      "build": "Build Team 1ce3",
+      "pair": "Pair Team 2df5",
+      "squad": "Squad Team 613b",
+      "home": "Home Team 38a6",
+      "launchOrg": "LaunchOrg Org 2d83",
+      "hostOrg": "HostOrg Org e3e4"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 1
+  },
+  "completedAt": "2026-11-06T06:24:03.887Z"
+}

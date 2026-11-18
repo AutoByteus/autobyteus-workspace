@@ -1,0 +1,70 @@
+# API-04 mutation checks of server-package-contents.test.ts on a COPY (/tmp/api-e2e-345-mut: rsync of autobyteus-server-ts without node_modules/dist; node_modules and the sibling test-support symlinked to the worktree); commit 92ff204d33; date 2026-11-01T06:45:24Z
+# command each time: env -i … ./node_modules/.bin/vitest run tests/architecture/server-package-contents.test.ts --no-watch (cwd = the copy)
+# (a first attempt had no test-support link: every case, control included, failed to load; discarded)
+
+== control (unmodified copy)
+ ✓ tests/architecture/server-package-contents.test.ts > lists exactly dist, prisma and application-packages 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > declares the Prisma CLI as a production dependency, once 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > has no file nothing refers to (canuse-ok.txt is gone) 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > packs the runtime content and nothing else 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > keeps every migration folder of prisma/ in the package 1ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+
+== M-A: remove "prisma" from the files list
+['dist', 'application-packages']
+ × tests/architecture/server-package-contents.test.ts > lists exactly dist, prisma and application-packages 4ms
+ ✓ tests/architecture/server-package-contents.test.ts > declares the Prisma CLI as a production dependency, once 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > has no file nothing refers to (canuse-ok.txt is gone) 0ms
+ × tests/architecture/server-package-contents.test.ts > packs the runtime content and nothing else 2ms
+ × tests/architecture/server-package-contents.test.ts > keeps every migration folder of prisma/ in the package 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ 'dist', 'application-packages' ] to deeply equal [ 'dist', 'prisma', …(1) ]
+AssertionError: expected [ 'LICENSE', 'README.md', …(2) ] to deeply equal ArrayContaining{…}
+AssertionError: 20260203074245_init: expected [ 'LICENSE', 'README.md', …(2) ] to include 'prisma/migrations/20260203074245_init…'
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+
+== M-B: move prisma to devDependencies
+ ✓ tests/architecture/server-package-contents.test.ts > lists exactly dist, prisma and application-packages 1ms
+ × tests/architecture/server-package-contents.test.ts > declares the Prisma CLI as a production dependency, once 2ms
+ ✓ tests/architecture/server-package-contents.test.ts > has no file nothing refers to (canuse-ok.txt is gone) 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > packs the runtime content and nothing else 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > keeps every migration folder of prisma/ in the package 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected undefined to be truthy
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+
+== M-C: add src to the files list
+['dist', 'prisma', 'application-packages', 'src']
+ × tests/architecture/server-package-contents.test.ts > lists exactly dist, prisma and application-packages 4ms
+ ✓ tests/architecture/server-package-contents.test.ts > declares the Prisma CLI as a production dependency, once 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > has no file nothing refers to (canuse-ok.txt is gone) 0ms
+ × tests/architecture/server-package-contents.test.ts > packs the runtime content and nothing else 7ms
+ ✓ tests/architecture/server-package-contents.test.ts > keeps every migration folder of prisma/ in the package 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ 'dist', 'prisma', …(2) ] to deeply equal [ 'dist', 'prisma', …(1) ]
+AssertionError: src/: expected [ …(1943) ] to deeply equal []
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+
+== M-D: bring canuse-ok.txt back
+ ✓ tests/architecture/server-package-contents.test.ts > lists exactly dist, prisma and application-packages 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > declares the Prisma CLI as a production dependency, once 0ms
+ × tests/architecture/server-package-contents.test.ts > has no file nothing refers to (canuse-ok.txt is gone) 3ms
+ ✓ tests/architecture/server-package-contents.test.ts > packs the runtime content and nothing else 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > keeps every migration folder of prisma/ in the package 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected true to be false // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+
+== control again (restored)
+ ✓ tests/architecture/server-package-contents.test.ts > lists exactly dist, prisma and application-packages 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > declares the Prisma CLI as a production dependency, once 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > has no file nothing refers to (canuse-ok.txt is gone) 0ms
+ ✓ tests/architecture/server-package-contents.test.ts > packs the runtime content and nothing else 1ms
+ ✓ tests/architecture/server-package-contents.test.ts > keeps every migration folder of prisma/ in the package 1ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

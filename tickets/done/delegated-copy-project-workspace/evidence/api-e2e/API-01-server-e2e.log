@@ -1,0 +1,15 @@
+# API-01: autobyteus-server-ts/tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (new; scripted AGY; DCF-08 on the built server)
+# Command: env -i PATH HOME=<tmp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs fixture> DELEGATED_COPY_FOLDER_E2E_EVIDENCE_DIR=<ev>/API-01 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts --no-watch
+# Code: 8959bc507a (HEAD e4d88b05ad, docs only); server prebuild+build from this tree before the run; macOS arm64, Node v22.23.1; Date: 2026-11-02T07:12:42Z
+# (run before the live cases moved to their own file; the scripted cases are unchanged since; the move was rerun inside API-03)
+
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (10 tests | 2 skipped) 13505ms
+     ✓ DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G  615ms
+     ✓ DCF-02: a Team copy's default and every member run in F  611ms
+     ✓ DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G  690ms
+     ✓ DCF-04: a Task of a Project with no link, and a description-only delegation, run in the top-level run's folder  704ms
+     ✓ DCF-05: with links F1 and F2 the copy runs in F1  302ms
+     ✓ DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured placement, run in F; their managers stay in G  1949ms
+     ✓ DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart both keep their folder and wake there  6771ms
+ Test Files  1 passed (1)
+      Tests  8 passed | 2 skipped (10)

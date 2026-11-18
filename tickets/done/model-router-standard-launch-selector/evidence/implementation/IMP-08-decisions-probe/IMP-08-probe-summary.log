@@ -1,0 +1,15 @@
+# IMP-08
+# Command: (autobyteus-web) node tests/e2e/model-routing-decisions-probe.mjs --output-dir=/tmp/autobyteus-313/probe-decisions-2
+# Commit: 1357063994
+# Environment: two disposable nodes on fresh data roots, scripted Antigravity CLI router, no network
+# Date: 2026-10-27T12:38:54Z
+# First run on f9c58612e5: MRD-02 failed only because Decisions now show the catalog label ("Retiring test model Antigravity") where the probe expected the ID; the probe was updated (1357063994) and rerun.
+
+Pass MRD-01 Setup: the router row and the status of an active router
+Pass MRD-02 Decisions: Task blocks, the Team row folds and opens to its agents with source and reason; the remote copy is not on this node; the filter
+Pass MRD-03 Overview: period, sources and task kinds of these records
+Pass MRD-04 The Manager run's Settings: the delegated rows show runtime, model, source and reason (local member and remote copy)
+Pass MRD-05 beta's window: its own Decisions list the copy alpha delegated, without "Open run"
+Pass MRD-08 New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1)
+Pass MRD-06 Simplified Chinese: Decisions and Overview are translated
+Pass MRD-07 No browser errors

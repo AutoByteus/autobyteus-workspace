@@ -18,10 +18,18 @@ const hostOf = (address: string | undefined): string => {
  */
 export const causeText = (t: Translate, cause: NodeProbeCause | undefined, host: string, fromNode?: string): string => {
   switch (cause) {
+    // autobyteus-426 REQ-020: the node at the address refuses the name it was addressed by (its Host gate), as the node
+    // or the desktop window read it (autobyteus-435 DEC-019).
+    case 'host_refused': return t(k('cause.hostRefused'), { host: hostName(host) })
     case 'refused': return t(k('cause.refused'))
     case 'timeout': return t(k('cause.timeout'))
     case 'not_found': return fromNode ? t(k('cause.dnsFrom'), { host: hostName(host), node: fromNode }) : t(k('cause.dns'), { host: hostName(host) })
     case 'not_autobyteus': return t(k('cause.notAutobyteus'))
+    case 'identity_pending': return t(k('cause.identityPending'))
+    // autobyteus-437 M-8b: the node refuses this network (it is not this computer, its Tailscale or an allowed network).
+    case 'network_refused': return t(k('cause.networkRefused'))
+    // autobyteus-435 REQ-003: something answers but refuses this page, which cannot read why (a browser window).
+    case 'window_refused': return t(k('cause.windowRefused'), { host: hostName(host) })
     default: return t(k('cause.unreachable'))
   }
 }
@@ -59,11 +67,16 @@ export const failureText = (
     }
     case 'PEER_IDENTITY_MISMATCH': return t(k('address.different'))
     case 'PEER_NOT_AUTOBYTEUS': return t(k('cause.notAutobyteus'))
+    case 'PEER_HOST_REFUSED': return t(k('cause.hostRefused'), { host: failure.host ?? hostName(hostOf(failure.address)) })
+    case 'NODE_IDENTITY_NOT_MIGRATED': return t(k('cause.identityPending'))
     case 'PEER_IS_THIS_NODE': return t(k('cause.thisNode'))
     case 'REMOTE_COLLABORATION_OFF': return t(k('line.offThere'), { name: node })
     case 'PEER_NOT_REGISTERED': return t(k('line.notRegisteredThere'), { name: node })
     case 'PEER_NAME_INVALID': return t(k('rename.errorName'))
     case 'PEER_URL_INVALID': return t(k('add.errorAddress'))
+    // autobyteus-437: pairing (an invite used or expired; the inviting node refused; a node paired already).
+    case 'PEER_INVITE_INVALID': return t(k('error.inviteInvalid'))
+    case 'PEER_ALREADY_REGISTERED': return t(k('error.alreadyPaired'), { node })
     case 'PEER_NAME_TAKEN': return t(k('error.nameTaken'), { node, name: context.name ?? '' })
     default: return t(k('error.other'), { node, message: failure.message })
   }

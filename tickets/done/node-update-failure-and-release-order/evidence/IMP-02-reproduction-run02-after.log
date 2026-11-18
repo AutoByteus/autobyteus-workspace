@@ -1,0 +1,16 @@
+# IMP-02 reproduction (RUN-02) after the fix
+# Command: pnpm -C autobyteus-web exec vitest run --config ./electron/vitest.config.ts electron/nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts -t RUN-02
+# Commit: df789a89a5
+# Env: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2, python 3.9.6, bash 3.2.57
+# Date: 2026-11-07T19:42:10Z
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/node-update-failure-and-release-order/autobyteus-web/electron
+
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts (32 tests | 31 skipped) 5ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 31 skipped (32)
+   Start at  20:42:10
+   Duration  344ms (transform 69ms, setup 0ms, collect 67ms, tests 5ms, environment 0ms, prepare 85ms)
+

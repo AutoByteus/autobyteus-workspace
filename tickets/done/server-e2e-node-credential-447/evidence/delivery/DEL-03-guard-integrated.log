@@ -1,0 +1,6 @@
+# DEL-03 guard over the integrated tests/e2e tree (AC-005; new base e2e files included); commit 5c29d6fca2; NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/architecture/e2e-node-credential-paths.test.ts --no-watch --reporter=verbose; exit=0
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > composes in-process nodes only through startStudioE2eRuntimeServer 74ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > opens the MCP gateway only through connectMcpGatewayClient 18ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a directly composed node, naming the file, the cause and the helper 1ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a gateway transport without the helper across lines, and leaves other MCP transports alone 0ms
+      Tests  4 passed (4)

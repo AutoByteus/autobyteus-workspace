@@ -1,0 +1,191 @@
+# Case: API-06 (a) — launcher test files with pwsh available
+# Command: docker run --rm --platform linux/arm64 -v <worktree>:/w:ro -v <pwsh 7.4.6 linux-arm64>:/opt/pwsh:ro mcr.microsoft.com/dotnet/runtime-deps:8.0 sh -c 'apt-get install python3 curl; ln -s /opt/pwsh/pwsh /usr/local/bin/pwsh; useradd tester; su tester -c "cd /w && python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace scripts.tests.test_public_docker_launcher_update scripts.tests.test_public_docker_launcher_stop -v"'
+# Commit: 952bc1fcd0 (source identical to ce13fa9727)
+# Environment: Debian 12 arm64 container (dotnet/runtime-deps:8.0), native PowerShell 7.4.6, Python 3.11, fake Docker from the test harness, own network namespace
+# Date: 2026-11-06T17:38:18Z
+
+Python 3.11.2
+PowerShell 7.4.6
+test_bash_curl_pipe_mode_resolves_modules_from_source_base (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_curl_pipe_mode_resolves_modules_from_source_base) ... ok
+test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_no_update_path_skips_profile_write) ... ok
+test_bash_install_path_profile_update_is_idempotent (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_path_profile_update_is_idempotent) ... ok
+test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance) ... ok
+test_bash_install_writes_entry_and_modules_for_installed_cli (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bash_install_writes_entry_and_modules_for_installed_cli) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_controlled_busy_preferred_port_uses_real_random_fallback) ... ok
+test_destroy_all_remains_explicit_and_volume_safe (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_destroy_all_remains_explicit_and_volume_safe) ... ok
+test_destroy_selector_preflight_happens_before_state_or_docker_setup (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_destroy_selector_preflight_happens_before_state_or_docker_setup) ... ok
+test_label_only_targeted_destroy_allows_one_exact_managed_candidate (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_label_only_targeted_destroy_allows_one_exact_managed_candidate) ... ok
+test_mutating_commands_do_not_default_to_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_mutating_commands_do_not_default_to_all_nodes) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_container_adds_bind_mounts_without_removing_named_volumes) ... ok
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_new_containers_prefer_sequential_friendly_ports) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_port_probe_double_delegates_python_and_rejects_probe_drift) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_matches_the_shared_workspace_cli_contract) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_parses_when_pwsh_is_available) ... ok
+test_preferred_port_collision_falls_back_for_that_service (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_preferred_port_collision_falls_back_for_that_service) ... ok
+test_profile_option_is_rejected_as_unknown (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_profile_option_is_rejected_as_unknown) ... ok
+test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_public_launcher_source_files_stay_within_reviewable_size_guard) ... ok
+test_read_only_discovery_commands_default_to_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_read_only_discovery_commands_default_to_all_nodes) ... ok
+test_read_only_discovery_commands_keep_explicit_single_node_output (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_read_only_discovery_commands_keep_explicit_single_node_output) ... ok
+test_read_only_discovery_commands_reject_all_with_name (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_read_only_discovery_commands_reject_all_with_name) ... ok
+test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot) ... ok
+test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement) ... ok
+test_targeted_destroy_refuses_malformed_and_mismatched_state (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_refuses_malformed_and_mismatched_state) ... ok
+test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions) ... ok
+test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces) ... ok
+test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails) ... ok
+test_upgrade_all_follows_the_beta_track_after_a_one_time_switch (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_follows_the_beta_track_after_a_one_time_switch) ... ok
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_preserves_each_node_saved_image_ref_by_default) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_image_retargets_all_nodes) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_all_with_explicit_tag_retargets_all_nodes) ... ok
+test_upgrade_recreates_a_v8_node_once_with_its_backend_port_and_volumes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_upgrade_recreates_a_v8_node_once_with_its_backend_port_and_volumes) ... ok
+test_urls_and_help_name_backend_and_graphql_only (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_urls_and_help_name_backend_and_graphql_only) ... ok
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping) ... ok
+test_a_failed_update_ends_with_its_code_and_a_non_zero_exit (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_a_failed_update_ends_with_its_code_and_a_non_zero_exit) ... FAIL
+test_an_image_without_a_starter_cannot_update_in_place (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_an_image_without_a_starter_cannot_update_in_place) ... ok
+test_status_says_not_available_without_a_starter_or_a_container (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_says_not_available_without_a_starter_or_a_container) ... ok
+test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) ... 
+  test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: 1.5.11') ... FAIL
+  test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: 1.5.11, updating to 1.5.12 (preparing)') ... FAIL
+  test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: 1.5.11, in-place update unavailable: Reinstall the launcher, then run: autobyteus-docker upgrade --all') ... FAIL
+  test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: no server runs: This node already ran 1.5.13; this image can run only 1.5.11.') ... FAIL
+test_update_all_updates_each_node_in_turn (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_all_updates_each_node_in_turn) ... ERROR
+test_update_follows_the_steps_to_the_result (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_follows_the_steps_to_the_result) ... ERROR
+test_update_refuses_options_that_do_not_apply (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_refuses_options_that_do_not_apply) ... ok
+test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) ... 
+  test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) (image_ref='autobyteus/autobyteus-server:latest') ... FAIL
+  test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) (image_ref='autobyteus/autobyteus-server:latest-zh') ... FAIL
+  test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) (image_ref='docker.io/autobyteus/autobyteus-server:beta') ... FAIL
+test_launcher_stop_explains_noop_without_changing_policy (scripts.tests.test_public_docker_launcher_stop.DockerLauncherStopTest.test_launcher_stop_explains_noop_without_changing_policy) ... ok
+
+======================================================================
+ERROR: test_update_all_updates_each_node_in_turn (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_all_updates_each_node_in_turn)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 130, in test_update_all_updates_each_node_in_turn
+    result = run_launcher(env, "update", "--all", "--version", "1.5.12")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 946, in run_launcher
+    return subprocess.run(
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/w/scripts/public/docker/autobyteus-docker.sh', 'update', '--all', '--version', '1.5.12']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_update_follows_the_steps_to_the_result (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_follows_the_steps_to_the_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 79, in test_update_follows_the_steps_to_the_result
+    result = run_launcher(env, "update", "--version", "1.5.12")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 946, in run_launcher
+    return subprocess.run(
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/w/scripts/public/docker/autobyteus-docker.sh', 'update', '--version', '1.5.12']' returned non-zero exit status 1.
+
+======================================================================
+FAIL: test_a_failed_update_ends_with_its_code_and_a_non_zero_exit (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_a_failed_update_ends_with_its_code_and_a_non_zero_exit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 98, in test_a_failed_update_ends_with_its_code_and_a_non_zero_exit
+    self.assertIn("autobyteus-server-0: failed (FAILED_AFTER_SWITCH): 1.5.12 did not come up; 1.5.11 runs again.", result.stdout)
+AssertionError: 'autobyteus-server-0: failed (FAILED_AFTER_SWITCH): 1.5.12 did not come up; 1.5.11 runs again.' not found in "[AutoByteus Docker] autobyteus-server-0: the node's starter did not answer. Images before the starter cannot update in place; run: autobyteus-docker upgrade --all\n"
+
+======================================================================
+FAIL: test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: 1.5.11')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 170, in test_status_shows_what_each_starter_runs
+    self.assertEqual(expected, output[output.index(next(l for l in output if l.startswith("autobyteus-server-0"))) + 1])
+AssertionError: '  server: 1.5.11' != '  server: not available (no starter answer; images [25 chars]one)'
+-   server: 1.5.11
++   server: not available (no starter answer; images before the starter have none)
+
+
+======================================================================
+FAIL: test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: 1.5.11, updating to 1.5.12 (preparing)')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 170, in test_status_shows_what_each_starter_runs
+    self.assertEqual(expected, output[output.index(next(l for l in output if l.startswith("autobyteus-server-0"))) + 1])
+AssertionError: '  server: 1.5.11, updating to 1.5.12 (preparing)' != '  server: not available (no starter answer; images [25 chars]one)'
+-   server: 1.5.11, updating to 1.5.12 (preparing)
++   server: not available (no starter answer; images before the starter have none)
+
+
+======================================================================
+FAIL: test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: 1.5.11, in-place update unavailable: Reinstall the launcher, then run: autobyteus-docker upgrade --all')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 170, in test_status_shows_what_each_starter_runs
+    self.assertEqual(expected, output[output.index(next(l for l in output if l.startswith("autobyteus-server-0"))) + 1])
+AssertionError: '  server: 1.5.11, in-place update unavailable: Rein[57 chars]-all' != '  server: not available (no starter answer; images [25 chars]one)'
+-   server: 1.5.11, in-place update unavailable: Reinstall the launcher, then run: autobyteus-docker upgrade --all
++   server: not available (no starter answer; images before the starter have none)
+
+
+======================================================================
+FAIL: test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) (expected='  server: no server runs: This node already ran 1.5.13; this image can run only 1.5.11.')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 170, in test_status_shows_what_each_starter_runs
+    self.assertEqual(expected, output[output.index(next(l for l in output if l.startswith("autobyteus-server-0"))) + 1])
+AssertionError: '  server: no server runs: This node already ran 1.5.1[30 chars].11.' != '  server: not available (no starter answer; images be[23 chars]one)'
+-   server: no server runs: This node already ran 1.5.13; this image can run only 1.5.11.
++   server: not available (no starter answer; images before the starter have none)
+
+
+======================================================================
+FAIL: test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) (image_ref='autobyteus/autobyteus-server:latest')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 120, in test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses
+    self.assertEqual([expected_call], self.calls(scenario))
+AssertionError: Lists differ: [['update', '--track', 'stable']] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+['update', '--track', 'stable']
+
+- [['update', '--track', 'stable']]
++ []
+
+======================================================================
+FAIL: test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) (image_ref='autobyteus/autobyteus-server:latest-zh')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 120, in test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses
+    self.assertEqual([expected_call], self.calls(scenario))
+AssertionError: Lists differ: [['update', '--track', 'stable']] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+['update', '--track', 'stable']
+
+- [['update', '--track', 'stable']]
++ []
+
+======================================================================
+FAIL: test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) (image_ref='docker.io/autobyteus/autobyteus-server:beta')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_update.py", line 120, in test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses
+    self.assertEqual([expected_call], self.calls(scenario))
+AssertionError: Lists differ: [['update', '--track', 'beta']] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+['update', '--track', 'beta']
+
+- [['update', '--track', 'beta']]
++ []
+
+----------------------------------------------------------------------
+Ran 46 tests in 9.390s
+
+FAILED (failures=8, errors=2)

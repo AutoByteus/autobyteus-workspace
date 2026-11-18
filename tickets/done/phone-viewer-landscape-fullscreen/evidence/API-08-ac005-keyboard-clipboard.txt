@@ -1,0 +1,74 @@
+# Case: API-08 — AC-005 (Keyboard and Clipboard from the Control full-screen strip) and CR-C-06 (Copy from the desktop after a copy made inside an app on the node), on the emulator
+# Command: probes/ac005.sh: the run with a message -> VNC Viewer -> Control -> full screen; strip Keyboard (touch into the page), adb input text + Enter into a capture terminal on the node; Back; strip Clipboard -> paste input -> Send; node: Chromium address bar Ctrl+L, type, Ctrl+A, Ctrl+C (xdotool) -> strip Clipboard -> the sheet's desktop text and Copy; then the same outside full screen
+# Commit: d76be54fb0; emulator-5554 autobyteus277_api35 (Gboard); node abx432-api-node
+# Date: 2026-11-08T08:08:39Z
+
+1 Control | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · Control\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"none\"}"
+2 Control full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+strip: "[\"Keyboard\",\"Clipboard\",\"Show controls\"]"
+## Keyboard
+keyboard: mInputShown=true, focus on the bridge input: "mobile-node-desktop-keyboard-input"
+3 keyboard open | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=true | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,151],\"canvas\":[323,0,269,151],\"picture\":\"none\"}"
+node typed file: 'abx432typed'
+4 Back closes the keyboard, full screen stays | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+## Clipboard: Send to desktop
+sheet: "{\"open\":true,\"remote\":null,\"empty\":\"Copy something on the desktop first.\",\"copyDisabled\":true,\"fullScreen\":true}"
+node clipboard after Send: ''
+5 after Send | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+## CR-C-06: Copy from the desktop after a copy inside an app (full screen)
+node: copied 'abx432-copied-in-chromium-full' in Chromium (window 6291460); node clipboard now: 'abx432-copied-in-chromium-full'
+sheet (full screen): "{\"open\":false,\"remote\":null,\"empty\":null,\"copyDisabled\":null,\"fullScreen\":true}"
+copy button after tap: {"result":{"type":"object","subtype":"null","value":null}}
+6 left full screen | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · Control\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"none\"}"
+## CR-C-06 outside full screen
+node: copied 'abx432-copied-in-chromium-portrait' in Chromium (window 6291460); node clipboard now: 'abx432-copied-in-chromium-portrait'
+sheet (portrait): "{\"open\":true,\"remote\":\"abx432-copied-in-chromium-portrait\",\"empty\":null,\"copyDisabled\":false,\"fullScreen\":false}"
+
+## reading of the run above: Keyboard passed (typed text on the node). 'node clipboard after Send: empty' and the full-screen 'sheet open: false' were harness faults: the in-page touch on the paste field did not focus it (the typed text went nowhere and Send stayed disabled), and the next strip touch closed the still-open sheet. Portrait CR-C-06 passed (remote text shown). Checked step by step below.
+## Send to desktop in portrait, step by step (real taps)
+focused paste field: yes; input value: "abx432-sent-from-phone"; Send -> node clipboard: 'abx432-sent-from-phone'; sheet closed (run in the console, see API-08 progress)
+
+## full-screen half (probes/ac005-full.sh)
+F1 Control full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+## Send to desktop in full screen
+sheet: "{\"open\":true,\"remote\":\"abx432-copied-in-chromium-portrait\",\"empty\":null,\"copyDisabled\":false,\"fullScreen\":true}"
+"mobile-node-desktop-clipboard-paste-input"
+input value: "abx432-sent-in-full-screen"; keyboard: mInputShown=true
+node clipboard after Send: 'abx432-sent-from-phone'; sheet open: true
+F2 after Send | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+## Copy from the desktop in full screen (CR-C-06)
+node: copied 'abx432-copied-in-chromium-full' inside Chromium (Ctrl+A, Ctrl+C); node clipboard: 'abx432-copied-in-chromium-full'
+sheet: "{\"open\":false,\"remote\":null,\"empty\":null,\"copyDisabled\":null,\"fullScreen\":true}"
+Copy button after a tap: '"(sheet closed)"'
+F3 still full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+
+## reading of the full-screen half above: the in-page touch on Send did not land while the keyboard was open, and the next strip touch closed the sheet (harness). Repeated with real adb taps at the element rects (the WebView covers the screen in landscape full screen; tapl.sh, no uiautomator):
+## R1 Send to desktop in full screen (real taps)
+tapped mobile-node-desktop-strip-clipboard at device 1155 37
+sheet: "{\"open\":true,\"remote\":\"abx432-copied-in-chromium-full\",\"copyDisabled\":false,\"sendDisabled\":true,\"fullScreen\":true}"
+tapped mobile-node-desktop-clipboard-paste-input at device 1201 532
+focused: "mobile-node-desktop-clipboard-paste-input"; keyboard: mInputShown=true
+input value: "abx432-sent-in-full-screen"
+tapped mobile-node-desktop-clipboard-send at device 1201 625
+node clipboard after Send: 'abx432-copied-in-chromium-full'; sheet: "{\"open\":true,\"remote\":\"abx432-copied-in-chromium-full\",\"copyDisabled\":false,\"sendDisabled\":false,\"fullScreen\":true}"
+R1 end | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+## R2 Copy from the desktop in full screen (CR-C-06), copy made inside Chromium on the node
+node clipboard: 'abx432-copied-in-chromium-full'
+tapped mobile-node-desktop-strip-clipboard at device 1155 37
+sheet: "{\"open\":false,\"remote\":null,\"copyDisabled\":null,\"sendDisabled\":null,\"fullScreen\":true}"
+not found or hidden: mobile-node-desktop-clipboard-copy-button
+Copy button after a tap: "(sheet closed)"
+R2 end | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+
+## reading of R1/R2: CR-C-06 passes in full screen — the sheet opened in R1 already showed the text copied inside Chromium in full screen ('remote':'abx432-copied-in-chromium-full'). Send did not fire because in landscape the keyboard covers the sheet's Send button (API-08-5-sheet-full-screen-typing.png: only the paste field shows above the keyboard); R2's strip tap then closed the open sheet. A user lowers the keyboard first:
+## R3 Send to desktop in full screen: type, lower the keyboard (Back), tap Send (real taps)
+tapped mobile-node-desktop-strip-clipboard at device 1155 37
+sheet: "{\"open\":true,\"remote\":\"abx432-copied-in-chromium-full\",\"sendDisabled\":true,\"fullScreen\":true}"
+tapped mobile-node-desktop-clipboard-paste-input at device 1201 532
+input value: "abx432-sent-in-full-screen"
+after Back: keyboard mInputShown=false; sheet: "{\"open\":true,\"remote\":\"abx432-copied-in-chromium-full\",\"sendDisabled\":false,\"fullScreen\":true}"
+tapped mobile-node-desktop-clipboard-send at device 1201 728
+node clipboard after Send: 'abx432-sent-in-full-screen'; sheet: "{\"open\":false,\"remote\":null,\"sendDisabled\":null,\"fullScreen\":true}"
+R3 end | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"none\"}"
+
+## not tapped on purpose: the sheet's Copy button writes the desktop text to the phone's clipboard, and this emulator shares its clipboard with the Mac (the user's); the desktop text shown and Copy enabled ('copyDisabled':false in R1; portrait sheet above) is the CR-C-06 evidence; the copy itself is covered by MobileNodeDesktop.spec.ts ('copies the desktop text on a tap').

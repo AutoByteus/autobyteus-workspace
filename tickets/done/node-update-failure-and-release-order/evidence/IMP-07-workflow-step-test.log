@@ -1,0 +1,22 @@
+# IMP-07 Desktop Release publish-order step test
+# Command: python3 -m unittest scripts/tests/test_desktop_release_server_package_wait.py -v
+# Commit: df789a89a5
+# Env: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2, python 3.9.6, bash 3.2.57
+# Date: 2026-11-07T19:44:10Z
+
+test_softprops_uploads_no_updater_file (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) ... ok
+test_the_updater_files_are_the_ones_the_job_validated (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) ... ok
+test_the_wait_and_the_updater_upload_are_the_last_steps_and_always_run (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) ... ok
+test_a_failed_asset_read_counts_as_missing_and_the_wait_goes_on (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_a_ref_without_server_packages_is_not_held (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_gives_up_after_60_minutes_naming_the_tag_and_every_missing_file (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_packages_already_on_the_release_pass_at_once (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_the_six_names_are_the_ones_nodes_fetch (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_the_upload_fails_when_an_updater_file_is_missing (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_uploads_the_four_updater_files_replacing_any_earlier_copy (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_waits_until_all_six_files_are_there (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 10.536s
+
+OK

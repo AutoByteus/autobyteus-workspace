@@ -1,0 +1,122 @@
+# API-04 live HTTP contract, base vs branch: node probes/api-04-live-http-probe.mjs <port> 192.168.2.158
+# Servers: node autobyteus-server-ts/dist/app.js --data-dir <test-owned> --host 0.0.0.0 --port <free>, env -i (PATH, temp HOME, TMPDIR); .env = APP_ENV=production + AUTOBYTEUS_SERVER_HOST (as docker/entrypoint.sh writes)
+# Base: /tmp/ab-api/base clone of ddd6fdcdf6 (fastify 4.29.1, mercurius 13.4.1). Branch: worktree 4dcdceea11 (code 25a45ee5d3; fastify 5.12.7, mercurius 16.12.1)
+# Clients: loopback = 127.0.0.1; lan = 192.168.2.158 (en0; non-loopback socket address and Host). macOS 26.5.2, node v22.23.1; date 2026-10-24T21:03:03Z
+# Case: API-04
+
+## BASE
+loopback | GET /rest/health | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=message,status
+loopback | GET /rest/remote-access/status | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=nodeId,pairingAvailable,phoneAccessEnabled,serverName
+loopback | POST /graphql | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /graphql?query=%7B__typename%7D | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /graphiql | status=200 | {"content-type":"text/html","vary":"Origin"} | text "<!DOCTYPE html>\n<html>\n<head>\n  <meta ch"… (>200 chars)
+loopback | GET /graphiql/main.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "/* global React:false ReactDOM:false Gra"… (>200 chars)
+loopback | GET /graphiql/config.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "window.GRAPHQL_ENDPOINT = '/graphql';\nwi"… (70 chars)
+loopback | OPTIONS /graphql origin=file:// | status=204 | {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"} | empty
+loopback | POST /graphql origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /rest/media/does-not-exist.png | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /no-such-route | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | POST /mcp/gateway | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=id,jsonrpc,result
+loopback | POST /mcp/gateway origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | json keys=id,jsonrpc,result
+loopback | POST /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+loopback | OPTIONS /mcp/gateway origin=http://127.0.0.1:3000 | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"} | empty
+loopback | OPTIONS /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+loopback | OPTIONS /mcp/gateway | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"} | empty
+loopback | GET /mcp/agent-tools/agtrun_not_on_main | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | WS /graphql graphql-transport-ws | timeout
+loopback | WS /ws/projects | first type=connected keys=type
+lan | GET /rest/health | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=message,status
+lan | GET /rest/remote-access/status | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=nodeId,pairingAvailable,phoneAccessEnabled,serverName
+lan | POST /graphql | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+lan | GET /graphql?query=%7B__typename%7D | status=404 | {"content-type":"application/json","vary":"Origin"} | {"error":"REMOTE_ACCESS_ROUTE_UNSUPPORTED","code":"REMOTE_ACCESS_ROUTE_UNSUPPORTED","message":"This route is not available to remote clients."}
+lan | GET /graphiql | status=200 | {"content-type":"text/html","vary":"Origin"} | text "<!DOCTYPE html>\n<html>\n<head>\n  <meta ch"… (>200 chars)
+lan | GET /graphiql/main.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "/* global React:false ReactDOM:false Gra"… (>200 chars)
+lan | GET /graphiql/config.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "window.GRAPHQL_ENDPOINT = '/graphql';\nwi"… (70 chars)
+lan | OPTIONS /graphql origin=file:// | status=204 | {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"} | empty
+lan | POST /graphql origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+lan | GET /rest/media/does-not-exist.png | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | GET /no-such-route | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | POST /mcp/gateway | status=401 | {"content-type":"application/json"} | json keys=error,message code=unauthorized
+lan | POST /mcp/gateway origin=http://127.0.0.1:3000 | status=401 | {"content-type":"application/json"} | json keys=error,message code=unauthorized
+lan | POST /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+lan | OPTIONS /mcp/gateway origin=http://127.0.0.1:3000 | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"} | empty
+lan | OPTIONS /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+lan | OPTIONS /mcp/gateway | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"} | empty
+lan | GET /mcp/agent-tools/agtrun_not_on_main | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | WS /graphql graphql-transport-ws | timeout
+lan | WS /ws/projects | first type=connected keys=type
+
+## BRANCH
+loopback | GET /rest/health | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=message,status
+loopback | GET /rest/remote-access/status | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=nodeId,pairingAvailable,phoneAccessEnabled,serverName
+loopback | POST /graphql | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /graphql?query=%7B__typename%7D | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /graphiql | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /graphiql/main.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /graphiql/config.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | OPTIONS /graphql origin=file:// | status=204 | {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"} | empty
+loopback | POST /graphql origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+loopback | GET /rest/media/does-not-exist.png | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | GET /no-such-route | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | POST /mcp/gateway | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=id,jsonrpc,result
+loopback | POST /mcp/gateway origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | json keys=id,jsonrpc,result
+loopback | POST /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+loopback | OPTIONS /mcp/gateway origin=http://127.0.0.1:3000 | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"} | empty
+loopback | OPTIONS /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+loopback | OPTIONS /mcp/gateway | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"} | empty
+loopback | GET /mcp/agent-tools/agtrun_not_on_main | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+loopback | WS /graphql graphql-transport-ws | protocol=graphql-transport-ws first=connection_ack
+loopback | WS /ws/projects | first type=connected keys=type
+lan | GET /rest/health | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=message,status
+lan | GET /rest/remote-access/status | status=200 | {"content-type":"application/json","vary":"Origin"} | json keys=nodeId,pairingAvailable,phoneAccessEnabled,serverName
+lan | POST /graphql | status=200 | {"content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+lan | GET /graphql?query=%7B__typename%7D | status=404 | {"content-type":"application/json","vary":"Origin"} | {"error":"REMOTE_ACCESS_ROUTE_UNSUPPORTED","code":"REMOTE_ACCESS_ROUTE_UNSUPPORTED","message":"This route is not available to remote clients."}
+lan | GET /graphiql | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | GET /graphiql/main.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | GET /graphiql/config.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | OPTIONS /graphql origin=file:// | status=204 | {"access-control-allow-headers":"content-type,authorization","access-control-allow-methods":"GET, POST, PUT, PATCH, DELETE, OPTIONS","access-control-allow-origin":"file://","vary":"Origin, Access-Control-Request-Headers"} | empty
+lan | POST /graphql origin=http://127.0.0.1:3000 | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","content-type":"application/json","vary":"Origin"} | {"data":{"__typename":"Query"}}
+lan | GET /rest/media/does-not-exist.png | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | GET /no-such-route | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | POST /mcp/gateway | status=401 | {"content-type":"application/json"} | json keys=error,message code=unauthorized
+lan | POST /mcp/gateway origin=http://127.0.0.1:3000 | status=401 | {"content-type":"application/json"} | json keys=error,message code=unauthorized
+lan | POST /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+lan | OPTIONS /mcp/gateway origin=http://127.0.0.1:3000 | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"} | empty
+lan | OPTIONS /mcp/gateway origin=https://evil.example | status=403 | {"content-type":"application/json"} | json keys=error,message code=forbidden
+lan | OPTIONS /mcp/gateway | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"} | empty
+lan | GET /mcp/agent-tools/agtrun_not_on_main | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+lan | WS /graphql graphql-transport-ws | protocol=graphql-transport-ws first=connection_ack
+lan | WS /ws/projects | first type=connected keys=type
+
+## diff base -> branch (the only differing lines)
+5,7c5,7
+< loopback | GET /graphiql | status=200 | {"content-type":"text/html","vary":"Origin"} | text "<!DOCTYPE html>\n<html>\n<head>\n  <meta ch"… (>200 chars)
+< loopback | GET /graphiql/main.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "/* global React:false ReactDOM:false Gra"… (>200 chars)
+< loopback | GET /graphiql/config.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "window.GRAPHQL_ENDPOINT = '/graphql';\nwi"… (70 chars)
+---
+> loopback | GET /graphiql | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+> loopback | GET /graphiql/main.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+> loopback | GET /graphiql/config.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+19c19
+< loopback | WS /graphql graphql-transport-ws | timeout
+---
+> loopback | WS /graphql graphql-transport-ws | protocol=graphql-transport-ws first=connection_ack
+25,27c25,27
+< lan | GET /graphiql | status=200 | {"content-type":"text/html","vary":"Origin"} | text "<!DOCTYPE html>\n<html>\n<head>\n  <meta ch"… (>200 chars)
+< lan | GET /graphiql/main.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "/* global React:false ReactDOM:false Gra"… (>200 chars)
+< lan | GET /graphiql/config.js | status=200 | {"content-type":"application/javascript","vary":"Origin"} | text "window.GRAPHQL_ENDPOINT = '/graphql';\nwi"… (70 chars)
+---
+> lan | GET /graphiql | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+> lan | GET /graphiql/main.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+> lan | GET /graphiql/config.js | status=404 | {"content-type":"application/json","vary":"Origin"} | json keys=error,message,statusCode code=Not Found
+39c39
+< lan | WS /graphql graphql-transport-ws | timeout
+---
+> lan | WS /graphql graphql-transport-ws | protocol=graphql-transport-ws first=connection_ack
+# diff exit: 1 (1 = differences listed above)
+
+## base: why the GraphQL WebSocket handshake times out (ws client, /tmp/ab-api/live/ws-diag.mjs; base server log excerpt)
++3ms upgrade 101 graphql-transport-ws / +3ms open protocol= graphql-transport-ws / +4ms close 1006 (same for graphql-ws)
+"message":"Cannot read properties of undefined (reading 'protocol')","stack":"TypeError: Cannot read properties of undefined (reading 'protocol')\n    at Object.<anonymous> (/private/tmp/ab-api/base/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/subscription.js:13:16)
+mercurius 13.4.1 lib/subscription.js L10-13: return async (connection, request) => { const { socket } = connection; if (socket.protocol === undefined ... -> @fastify/websocket 10 passes the socket itself, so connection.socket is undefined
+Product consumers of GraphQL subscriptions: none (no Subscription resolvers in autobyteus-server-ts/src; the web app streams over /ws/agent, /ws/agent-team, file-explorer and change-feed /ws/* routes)

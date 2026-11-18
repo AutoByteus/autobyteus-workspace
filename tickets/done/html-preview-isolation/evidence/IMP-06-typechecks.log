@@ -1,0 +1,19 @@
+# IMP-06 server and web typechecks
+# Command: pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web typecheck (run on the working tree committed unchanged as cdba18ba35)
+# Commit: cdba18ba35 (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+## server
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.9s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 27.0s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
+
+## web
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 39.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.3s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS

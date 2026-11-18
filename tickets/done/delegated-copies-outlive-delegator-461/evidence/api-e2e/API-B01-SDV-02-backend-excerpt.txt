@@ -1,0 +1,15 @@
+# Case: API-B01 SDV-02
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir> [--cases SDV-03]   (clean env as above; built server dist/app.js, Nuxt dev, headless Chrome 157)
+# Backend log lines of the Team case (run 3): the Manager's backend is created again right after the user's message aimed at the worker.
+
+1434: Agent team websocket attached for team run team_sdvteam_150c_4c694a36ef6346ebbfbe27e24c810a43
+1435: Agent Team WebSocket connected: session=bd700e9c-e8bf-45ce-9f68-f6febda609dd, run=team_sdvteam_150c_4c694a36ef6346ebbfbe27e24c810a43
+1439: AGY compaction detection off for run manager_sdvteam_150c_cbf73e2db2c14496a8dd62bc5056b5fa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+1447: AGY compaction detection off for run worker_sdvteam_150c_4bd32b6707b44f8cac58f32ca9051179: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+1457: Agent team websocket attached for team run team_sdvteam_150c_4c694a36ef6346ebbfbe27e24c810a43
+1458: Agent Team WebSocket connected: session=a19ef461-c9e8-4e66-867c-0d404071f5e4, run=team_sdvteam_150c_4c694a36ef6346ebbfbe27e24c810a43
+1461: {"level":30,"time":1794447998714,"pid":93009,"hostname":"MacBookPro","reqId":"req-li","err":{"type":"GraphQLError","message":"AgentRun 'worker_sdvteam_150c_4bd32b6707b44f8cac58f32ca9051179' was not found in root TeamRun 'team_sdvteam_150c_4c694a36ef6346ebbfbe27e24c810a43'.","stack":"CollaborationMemberNotFoundError: AgentRun 'worker_sdvteam_150c_4bd32b6707b44f8cac58f32ca9051179' was not found in r
+1466: AGY compaction detection off for run manager_sdvteam_150c_cbf73e2db2c14496a8dd62bc5056b5fa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.

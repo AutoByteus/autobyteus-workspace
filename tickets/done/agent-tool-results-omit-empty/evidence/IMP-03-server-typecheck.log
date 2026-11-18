@@ -1,0 +1,12 @@
+IMP-03 server typecheck
+Command: pnpm -C autobyteus-server-ts typecheck
+Commit: 17d631c704
+Environment: macOS arm64, node v22.23.1, pnpm
+Date: 2026-10-25
+---
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+EXIT 0

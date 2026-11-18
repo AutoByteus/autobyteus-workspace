@@ -2,29 +2,21 @@
 
 This guide covers the Android app shell that loads the existing AutoByteus `/mobile` web shell from a reachable node.
 
-For Android and travel use, pair the phone with the current AutoByteus node through a stable private HTTPS `/mobile` URL that the phone can reach. For home/local use, Phone Access can also create QR links for acknowledged trusted Local LAN/private HTTP URLs; Android keeps cleartext HTTP acknowledgement pending before loading those URLs. Normal Docker nodes and embedded desktop nodes both use the same Phone Access pairing model: trusted private-network desktop access plus separate paired-phone `mra_...` credentials for mobile clients. Broader backend mobile authorization/token hardening remains a future Phase Two item tracked in `docs/future-tickets/mobile-backend-authorization-hardening.md`.
+Connecting a phone is one step on each side: on the desktop, open the node's **Nodes -> Phone Setup** and press **Show QR code**; on the phone, open AutoByteus and tap **Scan**. The desktop works out and checks the address itself (Tailscale, your VPN, a company address, or the same Wi-Fi or LAN after a once-per-network "Allow phones on this network?"); the full desktop flow is in `autobyteus-web/docs/remote_access.md`, Connecting a phone. Normal Docker nodes and embedded desktop nodes both use the same Phone Access pairing model: trusted private-network desktop access plus separate paired-phone `mra_...` credentials for mobile clients. Broader backend mobile authorization/token hardening remains a future Phase Two item tracked in `docs/future-tickets/mobile-backend-authorization-hardening.md`.
 
 ## Ownership boundaries
 
-- **Android app:** setup, app-owned QR scanning and camera permission handling, saved node profile, WebView containment, diagnostics, build/package.
-- **Existing `/mobile` shell:** AutoByteus Home, Chat, Runs, Files, Activity, pairing bootstrap, and mobile session restore. Phase One removes the mobile Tools/Terminal/VNC page.
-- **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
+- **Android app:** the node list (scan-first start screen and **Switch node**), app-owned QR scanning and camera permission handling, the connect sequence and its plain-words reasons, saved node entries, the shell bridge to the open node's page, the VNC Viewer's desktop full screen (landscape, hidden system bars and the display cutout used while the page asks for it), saving the page's PDFs and images to the phone's Downloads (the viewer's **Download**), WebView containment, build/package.
+- **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity, and VNC Viewer on a node with a node desktop), New run for agent runs, the connection sheet, pairing bootstrap, and mobile session restore. There is no mobile Terminal or Tools page. The VNC Viewer streams the node desktop through the node's own server (see `autobyteus-web/docs/remote_access.md`, "Node desktop on the phone").
+- **Remote Access backend:** Phone Access status, owner routes, pairing sessions, pairing exchange, phone credentials, revocation (every request to a node needs a credential: `autobyteus-server-ts/docs/design/node_access_model.md`).
 - **Public Docker launcher:** normal Docker node creation, shared workspace bind mounts, named volumes, and mobile-web asset packaging through the published image path.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.
 
-The Android app intentionally does not include a native AutoByteus runtime, duplicate chat/run UI, direct run/chat API client, or native credential bridge.
+The Android app intentionally does not include a native AutoByteus runtime, duplicate chat/run UI, direct run/chat API client, or native credential bridge. The shell bridge carries no credential.
 
-## Stable travel URL
+## One address per pairing
 
-Use the same URL at pairing time that the Android phone will use while traveling. Recommended:
-
-```text
-https://<desktop-machine>.<tailnet>.ts.net/mobile
-```
-
-That is usually provided by Tailscale Serve HTTPS. New desktop-created Phone Access pairing QR codes also support acknowledged trusted Local LAN/private HTTP URLs, but Tailscale Serve HTTPS remains the recommended stable travel origin.
-
-Why this matters: the MVP credential remains in WebView-local `localStorage`, which is origin-scoped. Pairing with a LAN URL and later opening a different Tailscale origin can require re-pairing.
+The QR holds one address: the best checked address of the way the desktop's tab uses. The MVP credential stays in WebView-local `localStorage`, which is origin-scoped, so the saved node keeps that address. A phone paired on the home Wi-Fi does not move to the Tailscale address by itself; for a phone that travels, use the desktop's **Tailscale** tab (with Tailscale on the phone, that address works at home too).
 
 ## Normal Docker-node setup
 
@@ -34,40 +26,33 @@ Why this matters: the MVP credential remains in WebView-local `localStorage`, wh
    ```bash
    autobyteus-docker new-container
    ```
-3. Save the printed Backend URL. Add it as a remote node only over a trusted LAN, VPN, tailnet, or equivalent private-network path; do not expose the full backend directly to the public internet.
-4. In the desktop app, add the Docker Backend URL as a remote node in **Nodes -> Manage Nodes**, then click **Open** for that Docker node. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. Create or configure a phone-facing private-network URL that maps to the Docker node Backend URL. Prefer Tailscale Serve/private HTTPS ingress; acknowledged trusted private HTTP can be used on a LAN/tailnet you control.
-6. Paste that phone-facing `/mobile` URL in the Docker node window. AutoByteus verifies that this URL and the desktop management URL reach the same server instance before creating the QR. HTTP URLs require cleartext trusted-network acknowledgement before QR creation.
-7. Enable Phone Access and create the QR in the Docker node window. Android should pair to the Docker node and mobile-started work should run inside that node's container runtime.
+   The node is published on this computer and, when Tailscale runs here, on this computer's Tailscale address. For phones on your Wi-Fi, create it with `autobyteus-docker new-container --allow-local-network`. Do not expose the backend directly to the public internet.
+3. Save the printed Backend URL and setup code (`autobyteus-docker setup-code` prints a new one later).
+4. In the desktop app, add the Docker Backend URL as a remote node in **Nodes -> Manage Nodes**, enter the setup code to connect it, then click **Open** for that Docker node.
+5. In the Docker node window, open **Nodes -> Phone Setup** and press **Show QR code** on the selected tab. The addresses are this computer's addresses with the port the Docker node is published on, each checked to reach that Docker node; an address the node is not published on (the local network without `--allow-local-network`) is reported as not reachable from other devices.
+6. Scan the QR with AutoByteus Android. It pairs with the Docker node, lists it under its name from the Nodes page, and mobile-started work runs inside that node's container runtime.
 
-Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly or by treating Docker bridge/LAN addresses as loopback/local trust. The full backend is meant for trusted private networks, not direct public internet exposure.
+A company address set on the Docker deployment (`AUTOBYTEUS_SERVER_HOST`) is offered under **Company address**. Tailscale Serve and proxies that keep `Host` (or send `X-Forwarded-Host`) need nothing else; an ingress that rewrites `Host` without `X-Forwarded-Host` needs the phone URL's origin in the node setting `AUTOBYTEUS_ALLOWED_ORIGINS`, or the node refuses the phone's requests with `REMOTE_ACCESS_ORIGIN_REFUSED` (see `autobyteus-server-ts/docs/features/remote_access.md`, Allowed Origins). The node also checks the name a request is addressed to: the company address in `AUTOBYTEUS_SERVER_HOST` and the address each phone was paired with are accepted; any other public domain the node is reached by needs to be listed in `AUTOBYTEUS_ALLOWED_HOSTS`, or the node refuses it with `REMOTE_ACCESS_HOST_REFUSED` (Allowed Hosts in the same document).
+
+Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly. The backend is meant for private networks (Tailscale, an allowed local network), not direct public internet exposure.
 
 ### Credential boundaries
 
-- Desktop/Electron remote-node access follows the trusted private-network product model and does not require an extra setup secret in the default flow.
-- Paired Android/mobile clients receive separate `mra_...` mobile credentials from the pairing exchange.
-- Mobile credentials authorize protected mobile app calls only where the route class accepts mobile credentials; they do not authorize owner-management routes such as settings changes, pairing-session creation, device listing, or revocation.
+- The desktop app holds an owner credential for each node: its own node's comes with every start; a remote or Docker node's comes from a setup code read on that node's computer.
+- Paired Android/mobile clients receive separate `mra_...` phone credentials from the pairing exchange.
+- Phone credentials open the phone's routes only; they do not open owner actions such as settings changes, pairing-session creation, device listing, or revocation (403 `NODE_ROUTE_NOT_PERMITTED`).
+- A node accepts phones only from networks it admits: Tailscale, a local network the owner allowed, or a network listed in its `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` (a company VPN or proxy network); elsewhere it answers `NODE_NETWORK_REFUSED` and the phone says so.
 - Pairing payloads contain the one-time pairing code and server base URL; they must not contain desktop/owner authority.
 - Public server Docker images build and package the `/mobile` web shell into `autobyteus-server-ts/mobile-web`, so a fresh launcher-managed Docker container should serve `/mobile` without manual file copies.
 
 ## Embedded desktop-node setup
 
-The embedded desktop setup remains useful when the desktop node itself is the node your phone should use.
+Use this when the desktop's own node is the node your phone should use.
 
-1. Start the AutoByteus desktop/server node.
-2. Ensure the desktop is signed into Tailscale and reachable by the stable URL.
-3. Open **Nodes -> Phone Setup**.
-4. On macOS with Tailscale.app installed, use the app-direct Serve commands from the Phone Setup guide. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state:
-
-   ```bash
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
-   ```
-
-5. Recommended travel/stable setup: copy the HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell shape, for example `https://<desktop-machine>.<tailnet>.ts.net/mobile`. For home/local pairing, you may instead select or enter a trusted private LAN/tailnet HTTP URL such as `http://192.168.x.x:29695/mobile` or `http://100.x.y.z:29695/mobile`.
-6. Enable Phone Access.
-7. Paste the stable HTTPS Tailscale `/mobile` URL or choose a discovered trusted Local LAN/private HTTP candidate. AutoByteus stores the canonical server base without `/mobile` and derives REST/GraphQL/WebSocket URLs from that base. HTTP candidates require cleartext trusted-network acknowledgement before **Create QR code** is enabled.
-8. Create the QR/link.
+1. Start the AutoByteus desktop app.
+2. Open **Nodes -> Phone Setup**. With Tailscale on this computer, the **Tailscale** tab is ready and **Recommended**; without it, **Same Wi-Fi or LAN** asks "Allow phones on this network?" on its first press.
+3. Press **Show QR code** (**Turn on and show QR code** when Phone access is off).
+4. Optional: when Tailscale runs, **Advanced** in the Tailscale tab shows the one `tailscale serve --bg <port>` command that gives this node an `https://` name on your tailnet. AutoByteus shows it and does not run it; after running it, press **Check again**.
 
 ## Android setup
 
@@ -89,21 +74,40 @@ The embedded desktop setup remains useful when the desktop node itself is the no
    adb shell am start -n org.autobyteus.mobile/.MainActivity
    ```
 
-4. In the app, choose one of:
-   - tap **Scan QR** and scan the Phone Access QR with the bundled AutoByteus scanner;
-   - paste/share the Phone Access link;
-   - manually enter the stable `/mobile` URL.
+4. The first screen is scan-first: **Scan** is the main action, the saved nodes are listed with their reachability ("Checking…", "Online", "Not reachable"), and **Other ways to connect** holds **Type an address** and **Paste a link**. Connect by one of:
+   - tap **Scan** and scan the desktop's QR: the app checks the address answers and pairs, with no checkbox, name field or extra tap;
+   - paste a pairing link, or share one into the app from another app: it pairs at once, like a scan;
+   - **Type an address**: a plain `http://` address needs the sheet's tick ("This address has no extra protection. Fine at home or in your office; on public Wi-Fi, use Tailscale."), and the node's page then offers its own pairing.
 
-The Android app owns QR scanning. A separate ZXing-compatible scanner app is not required. If camera permission is denied or the scan is cancelled, the app returns to the connection screen with retry plus paste/manual-entry guidance.
+The Android app owns QR scanning (journeyapps `BarcodeView` in its own Scan screen). A separate ZXing-compatible scanner app is not required. If camera permission is denied the app says so and offers the paste route; closing the scanner returns to the node list. When the QR's address does not answer, the app shows "Can't reach <node>" with what to do ("Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale.") and **Open Tailscale**. A node is saved only when the page reports a successful pairing, under the name from the QR.
+
+In the VNC Viewer's full screen the page also lays out into the display cutout (API 28 and later; Android 15 does so for every window), so the picture uses the whole screen width; leaving full screen gives every screen its usual clearance of the bars, the cutout and the keyboard back. The first time an app hides the system bars, Android shows its own one-time full-screen hint: tap **Got it** before the viewer takes touches (the hint holds them until then; system behaviour).
+
+Several nodes live side by side. Inside a node's page, the node name opens the connection sheet; **Switch node** shows the app's node list with the current node marked, and a tap opens another node. A new node is added with the list's **Scan**.
+
+The phone shows a node by its name and its state, never by its address, so a screenshot names no computer, tailnet or URL (autobyteus-433). The page's header and connection sheet use the name the app shows on its first page, else the name the page saved when it paired, else "AutoByteus node"; the app shows "AutoByteus node" for a typed address that never paired, and the node takes the QR name when its page pairs. A typed address that cannot be used gets "Can't connect" without the typed text. When the open page fails to load, an opaque "Can't reach <node>" overlay ("Check that Tailscale or your Wi-Fi is on and the computer is awake.") hides the page and WebView's own error page, and stays until the node's page reports itself ready again over the shell bridge. Links that open outside the app say "Opening outside AutoByteus". The overlay's **Browser** action still opens the node in the phone's browser, which shows the address there. When the node answers the page with an error other than 401/403, the overlay names the node and what to try: "Can’t open <node>", "<node> answered, but its page didn’t open (error 502).", "Check that AutoByteus is running on the computer, then tap Retry." (autobyteus-435). **Retry** loads the node's page again; for a pairing link whose page has not reported "paired" (the node was down when the QR was scanned), it loads the pairing link again, so the one-time code is still used (`NodeConnectionFlow.retryUrlFor`); the link itself is never saved. The app and the node's `/mobile` page come from the same release: update both, because an updated app waits on "Connecting to …" for a node that still serves the older page.
+
+When Android ends the app's process in the background and the user returns, the app reopens the node and the `/mobile` URL that were open (`shell/OpenPageRestore.kt`, the activity's saved state). The page shows what that URL names: the URL names the open agent run or Team subject (`row`, autobyteus-435), so the same run's screen comes back (the VNC Viewer included, in full screen when it was), after "Opening…"; a run no longer listed gives the run list, and a node that cannot be read then gives the list with its connection state. A URL saved by an older page names no run and opens the list. A pairing link that started the app is not handled again on that return (it was handled when it arrived); a new share still wins. A node removed meanwhile, or a saved URL the navigation policy would not allow for that node, gives the ordinary start.
+
+The WebView's navigation policy (`web/TrustedNavigationPolicy.kt`) keeps the main frame on the open node's origin. A sandboxed in-page preview, such as an HTML artifact, loads as a `blob:` subframe of that origin; it gets no shell bridge. A main-frame `blob:`, a `blob:` of another origin, `file:` and `javascript:` are blocked, and another origin's page opens in the phone's browser.
+
+**Download** in the phone's file viewer saves the open PDF or image to the phone (autobyteus-472). The page reads the file with its own credential and hands the bytes to the app over the shell bridge (`saveFile`); the bridge carries no credential. The app saves only a PDF or an image under a plain file name whose extension matches its type (`web/DownloadsSaver.kt`). Android 10 and later write it straight into Downloads and say "Saved to Downloads: <name>"; Android 8–9 show the system's Save dialog first. This needs the app update: an older app ignores the message, so **Download** does nothing there. In a phone browser the page uses the browser's own download.
+
+A main-frame navigation to one of the node's own routes (`/rest/…`, `/graphql`) is answered `KeepPage` (autobyteus-450):
+- the WebView does not load it, and no screen appears;
+- such a load carries no key, so it could only fail, and its 401 would have shown "Pair this phone again" for a phone that is still paired;
+- loads of the phone page itself keep their error screens, and subframes keep their allowlist.
+
+This needs the app update. An older app with the new page is also safe, because the page itself no longer navigates to file URLs.
 
 ## Mobile run setup inside Android WebView
 
-Android loads the server-served `/mobile` shell for run setup; it does not implement agent/team setup natively. In **Start new**, mobile users can:
+Android loads the server-served `/mobile` shell for run setup; it does not implement run setup natively. In **New run** (the round **+** on the run list), mobile users start an agent run and can:
 
-- choose Agent or Team mode, a launch target, a workspace, and runtime/model settings;
-- enable **Auto approve tools** for that run when they intentionally want tool calls to execute without per-call approval; the switch is off by default and uses the same launch-config field as desktop;
+- choose the agent, a folder, and runtime/model settings;
+- enable **Auto approve tools** for that run when they intentionally want tool calls to execute without per-call approval; the switch starts from the agent's launch default and uses the same launch-config field as desktop;
 - select workspaces from the paired node's workspace store, including workspaces that are not tied to a live run;
-- load an unlisted workspace by entering an absolute **server-side** path on the paired AutoByteus node/container, not a path on the Android filesystem.
+- load an unlisted workspace by entering an absolute **server-side** path on the paired AutoByteus node/container, not a path on the Android filesystem. The path must be an existing folder there; otherwise the field shows why ("No folder at this path.", "This path is a file, not a folder.") and nothing is registered.
 
 When validating an Android-visible mobile-web change, refresh and verify the served `/mobile` bundle as described below. Installing a new APK alone cannot update this run setup UI.
 
@@ -112,9 +116,9 @@ When validating an Android-visible mobile-web change, refresh and verify the ser
 - connect Tailscale on Android;
 - ensure the desktop node is online, awake, and signed into the same tailnet;
 - ensure AutoByteus Android is not excluded by Tailscale split tunneling;
-- enable Phone Access on the desktop;
-- reset/re-pair if the credential was revoked or the origin changed;
-- prefer HTTPS Tailscale Serve for travel/stable origins; use cleartext HTTP only for an acknowledged trusted private LAN/tailnet.
+- turn Phone access on in the node's Phone Setup panel;
+- scan a new code if the credential was revoked, or the code expired or was already used;
+- for travel, pair through the desktop's **Tailscale** tab.
 
 ## API/E2E real-device validation procedure
 
@@ -125,8 +129,7 @@ API/E2E should run this against a physical Android phone when available.
 - USB-connected Android phone visible as `device` in `adb devices`.
 - Tailscale installed and signed in on the Android phone.
 - Desktop/server node signed into the same tailnet.
-- Phone Access enabled on the desktop/server node.
-- A stable URL such as `https://<desktop-machine>.<tailnet>.ts.net/mobile`, or an acknowledged trusted private HTTP URL when the validation target is explicitly a local LAN/tailnet path.
+- A desktop node whose Phone Setup panel shows a ready way (Tailscale for the travel path, Same Wi-Fi or LAN for the local path).
 
 For local development validation against a host-only mock or dev node, API/E2E may use an ADB bridge such as `adb reverse tcp:<phone-visible-port> tcp:<host-port>` so the physical phone can reach the host service. Record the reverse mapping and the device id/model/Android version in evidence, then run `adb reverse --remove-all` during cleanup. Do not rely on display size or density overrides for final UI evidence; if an override was used during setup, reset it before the passing run and record `adb shell wm size` / `adb shell wm density` after cleanup.
 
@@ -134,7 +137,7 @@ For local development validation against a host-only mock or dev node, API/E2E m
 
 Record the mode used in validation evidence:
 
-- **Development-node mode:** a repository development stack or already-running desktop/server node that serves `/mobile`, `/rest/remote-access/*`, GraphQL, and WebSocket endpoints through the stable URL. This is enough for iterative Android wrapper validation.
+- **Development-node mode:** a repository development stack or already-running desktop/server node that serves `/mobile`, `/rest/remote-access/*`, GraphQL, and WebSocket endpoints through the address in its QR. This is enough for iterative Android wrapper validation.
 - **Packaged-Electron mode:** a built Electron desktop app serving its packaged server/mobile assets. Run this when final release readiness claims packaged desktop + Android readiness or when a packaged artifact is available from delivery/CI.
 
 ### Minimum scenarios
@@ -162,11 +165,11 @@ Record the mode used in validation evidence:
      tickets/in-progress/<ticket-name>/e2e-evidence
    ```
 
-4. QR scan launch: tap **Scan QR**, grant camera permission when prompted, and confirm the bundled `org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity` scanner UI opens. The app must not depend on an external scanner package.
-5. Scanner recovery: cancel the scanner and confirm the app returns to the connection screen with the recoverable QR retry/paste/manual-entry guidance. When practical, also exercise Android camera-permission denial.
-6. First-run setup: scan the Phone Access QR, or enter/paste/share the stable Tailscale URL or pairing link, and verify the WebView opens `/mobile`.
-7. Pairing: complete the existing `/mobile?pairing=` flow and confirm Home/Chat is usable. If the QR/link uses trusted private HTTP, confirm Android leaves cleartext acknowledgement pending before the WebView loads the node.
-8. Mobile new-run setup: when the change touches run setup, open **Start new**, confirm **Auto approve tools** is visible and off by default for Agent and Team launch configs, toggle it intentionally, select an existing workspace, and exercise **Load workspace by server path** with a path on the paired node/container before creating the run.
+4. QR scan launch: tap **Scan**, grant camera permission when prompted, and confirm the app's own Scan screen opens with the camera. The app must not depend on an external scanner package.
+5. Scanner recovery: close the scanner and confirm the app returns to the node list. When practical, also exercise Android camera-permission denial.
+6. First-run setup: confirm the scan-first start screen, then scan the desktop's QR (or paste/share the pairing link).
+7. Pairing: confirm the scan reaches the run list with no checkbox, name field or extra tap, the node is listed under the name from the QR, and a run's conversation is usable. With two nodes paired, confirm **Switch node** from the connection sheet opens the other node.
+8. Mobile new-run setup: when the change touches run setup, open **New run** (the round **+**), confirm **Auto approve tools** is visible, toggle it intentionally, select an existing folder, and exercise **Open a folder by path** with a path on the paired node/container before creating the run.
 9. Attachment upload: open Chat, tap an attachment/file upload control, choose a small local file through the Android picker, and confirm the selected file appears in the existing mobile composer/upload path.
 10. Restore: force-stop and reopen:
 
@@ -178,7 +181,7 @@ Record the mode used in validation evidence:
    Confirm the saved node opens without another QR scan.
 
 11. Mobile Home/catalog freshness: confirm the saved-node relaunch renders Mobile Home/recent work and does not show `Error 500` or `Cannot read properties of undefined (reading 'localeCompare')`. If that error appears after a source fix, first suspect a stale desktop-served `/mobile` bundle.
-12. Travel/reachability simulation: for the recommended HTTPS path, keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network. For an explicit LAN HTTP validation, keep the phone on the trusted LAN/tailnet and record the cleartext acknowledgement evidence instead.
+12. Travel/reachability simulation: for the recommended HTTPS path, keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network. For a Same Wi-Fi or LAN validation, keep the phone on that network and record the way the QR used.
 13. Failure diagnostic: disconnect Tailscale or temporarily save an unreachable URL and confirm the native recovery copy appears instead of a raw WebView error page.
 14. Launcher icon safe-area check: when launcher resources change, inspect or preview the packaged adaptive icon foreground against common launcher masks. The AutoByteus logo should stay fully visible inside the adaptive safe zone; the current vector foreground is expected to use a centered `scaleX=0.66` / `scaleY=0.66` group around pivot `(54,54)` before packaging. Record the preview/device evidence used.
-15. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, stable URL shape or ADB reverse mapping, device id/model/Android version, post-cleanup display size/density when ADB display controls were touched, attachment-upload result, mobile run setup toggle/workspace-path-load evidence when applicable, backend/mobile status observations, and launcher icon preview/device evidence when icon resources changed.
+15. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, the way and address shape the QR used or ADB reverse mapping, device id/model/Android version, post-cleanup display size/density when ADB display controls were touched, attachment-upload result, mobile run setup toggle/workspace-path-load evidence when applicable, backend/mobile status observations, and launcher icon preview/device evidence when icon resources changed.

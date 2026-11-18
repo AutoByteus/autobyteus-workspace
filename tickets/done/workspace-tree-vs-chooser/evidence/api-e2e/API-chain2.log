@@ -1,0 +1,29 @@
+=== pln-r3 2026-11-05T21:28:57Z
+exit=0 pln-r3
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Pass. Evidence: /tmp/wtvc-385/pln-r3/evidence.json
+=== agent-org-task-team-disclosure-r2 2026-11-05T21:33:02Z
+exit=0 agent-org-task-team-disclosure
+Agent Org delegated Team disclosure browser probe passed. Evidence: /tmp/wtvc-385/fixture-agent-org-task-team-disclosure-r2/evidence.json
+=== background-agent-renderer-contention-r2 2026-11-05T21:33:24Z
+exit=0 background-agent-renderer-contention
+Background contention browser probe passed. Evidence: /tmp/wtvc-385/fixture-background-agent-renderer-contention-r2/evidence.json
+=== standalone-agent-error-stop-r2 2026-11-05T21:34:17Z
+exit=0 standalone-agent-error-stop
+Standalone Error Stop browser probe passed. Evidence: /tmp/wtvc-385/fixture-standalone-agent-error-stop-r2/evidence.json
+=== task-closure-tree 2026-11-05T21:34:28Z
+exit=0 task-closure-tree
+Task closure tree probe: Pass. Evidence: /tmp/wtvc-385/task-closure-tree/evidence.json
+=== team-status-live 2026-11-05T21:38:19Z
+exit=0 team-status-live
+Team status live probe: Pass. Evidence: /tmp/wtvc-385/team-status-live/evidence.json
+all-done

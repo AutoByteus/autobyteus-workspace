@@ -1,9 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RootCommunicationEngine } from "../../../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
-import type { RootCommunicationAdapter } from "../../../../../src/agent-collaboration/execution/communication/root-communication-adapter.js";
 import { TaskDelegationError } from "../../../../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import type { CollaborationMemberExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { communicationPortDouble } from "../../helpers/communication-port-double.js";
 
 const root = { rootSubjectKind: "agent_team", rootRunId: "team-1" } as never;
 const identity = (agentRunId: string, memberAddress: string): CollaborationMemberExecutionIdentity =>
@@ -12,20 +11,15 @@ const sender = identity("run-a", "/a");
 const receiver = identity("run-b", "/b");
 
 const engineWith = (assertDeliveryAllowed: () => void, isCurrentAgent = () => true) => {
-  const adapter: RootCommunicationAdapter = {
-    root,
-    initialMessages: [],
-    isOpen: () => true,
+  const adapter = communicationPortDouble(root, {
     assertDeliveryAllowed,
     isCurrentAgent,
-    buildRecipientInput: () => new AgentInputUserMessage("x"),
     reserveRecipientInput: vi.fn(async () => ({ reserved: false, code: "NOT_RESERVED", message: "stub" })) as never,
-    commitAppend: vi.fn() as never,
-  };
+  });
   return { engine: new RootCommunicationEngine(adapter), adapter };
 };
 const deliver = (engine: RootCommunicationEngine, to = receiver) => engine.deliver({
-  senderIdentity: sender, senderDisplayName: "a", receiverIdentity: to, receiverDisplayName: "b", content: "hello",
+  senderIdentity: sender, senderDisplayName: "a", senderAddress: null, receiverIdentity: to, receiverDisplayName: "b", content: "hello",
 });
 
 describe("RootCommunicationEngine refusals reach the agent as results (SR-003 T-4, REQ-008)", () => {

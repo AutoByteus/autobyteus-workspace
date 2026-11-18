@@ -4,54 +4,60 @@ Phone Access lets a phone browser, PWA, AutoByteus Android shell, or AutoByteus 
 
 ## What Phone Access Does
 
-- The desktop app exposes **Phone Setup** in the top-level **Nodes** screen for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
-- Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
-- New desktop-created pairing QR codes support Tailscale/private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs. Tailscale Serve HTTPS remains the recommended path, for example `https://desktop.tailnet-name.ts.net/mobile`.
-- For remote-node Phone Access, create the QR from the opened node window. Remote-node QR creation requires a manual phone-facing private-network URL (HTTPS or acknowledged trusted private HTTP) and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
-- The pairing QR opens `<selected-private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
-- After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
+- The desktop app exposes **Phone Setup** in the top-level **Nodes** screen for the node of the current window: the desktop's own node, a Docker node on this computer, or a node on another machine. Desktop/Electron access to a node uses the trusted private-network product model; paired phones use separate mobile credentials.
+- Phone Setup is one panel, **Phones** (`components/settings/phone/PhonesPanel.vue`, state in `stores/phoneAccessStore.ts`). The user never types or chooses an address: see [Connecting a phone](#connecting-a-phone).
+- The pairing QR opens `<address>/mobile?pairing=<payload>` on the phone. The payload (`version: 1`, unchanged) holds a five-minute single-use pairing code, one address the desktop checked to reach this node, and the node's name as the phone shows it (`serverName`).
+- After pairing, the phone stores a mobile node session locally (with the node's name, `nodeName`) and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
 
 
 ## Mobile Shell and Desktop Boundary
 
-Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Artifacts, and Activity views. Phase One removes the mobile Tools/Terminal/VNC page entirely. Normal desktop routes, including standard `/workspace` and browser desktop flows, continue to use the regular adaptive web/desktop shell and must not be rewritten to the mobile shell.
+Phone Access is additive to the existing desktop/web product. The phone shell is mounted under `/mobile`. Normal desktop routes, including standard `/workspace` and browser desktop flows, continue to use the regular adaptive web/desktop shell and must not be rewritten to the mobile shell.
 
-Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
+Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show the unsupported-feature notice above the run list. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
 
-The mobile shell can start new agent and team runs without falling back to hidden desktop defaults. The **Start new** surface uses the same launch configuration stores and runtime/model semantics as desktop: the user selects the run target, workspace, runtime/model, and launch options, then creates the run. It does not collect or send the first chat message. After creation, mobile opens the new run on Chat and the user sends from the normal composer.
+### Screens (autobyteus-277)
 
-Mobile **Start new** workspace selection is a launch-workspace flow, not the Recent-work/context switcher. It lists workspaces currently known to the workspace store, including workspaces that are not attached to a live run, and includes **Load workspace by server path** for unlisted workspaces. The path entered there is an absolute path on the paired AutoByteus node or container, not on the phone. Loading a path uses the existing workspace create/load boundary and selects the returned workspace for the active agent or team launch config.
+- **Run list** — the phone's only main screen. It lists the same runs as the desktop Runs view (`runListStore`): every non-archived top-level Agent, Team and Org run, newest first by last activity, the newest five then **Show older (N)**. Under each run is its delegated work as a tree: task agents and task teams under an Agent run, members under a Team or Org run, a member's own delegated work under it, and runs on other nodes with their node's chip (autobyteus-278). A run with delegated work and an Org run start unfolded; a team's members start folded. A task agent or task team row shows its current Task's summary, a run on another node its title, and every other row (members, an Org's task rows) its name only. A delegated row under a listed Agent run that is active and not open follows its child's current state on each poll, as on the desktop (see [Workspace layout](./workspace_layout.md), "Delegated row states"); a row on another node keeps its own state source. The top bar's node name opens the connection sheet; the **⋮** at its right end opens the menu of the phone's own preferences (`MobileOnThisPhoneMenu`; its accessible name is "On this phone", which is not shown; its first group is headed **Text size**, below); the round **+** opens New run. The phone reads the complete history and polls it every 5 s only while the list is on screen and the page is in front.
+- **Run screen** — a tap on a row's body opens that agent's conversation with the shared composer; a Team run opens its coordinator, and an Org run opens the first member of its configuration (a Team member opens its coordinator). One 56px bar: ←, the agent's name with its state and "in <parent>", and ⋮. While an open is pending the screen shows only "Opening…". A run on a node that does not answer shows the remote notice instead of the conversation.
+- **⋮ views** — Artifacts, Files, Messages (members of a Team or Org only), Activity, VNC Viewer (when the node has a desktop, below) and Settings, in this order with Settings always last (autobyteus-534), each its own screen for the open agent. Files is a read-only browser of the open agent's folder with one search over the workspace, no filters; an opened file is full screen with no Attach. Messages lists the member's messages with their file references; a reference opens full screen. A remote run's Artifacts and Files say the files are on that node. A file link in a conversation opens full screen on the Files screen (a history entry; Back closes it): inside the open agent's folder as a workspace file; anywhere else on the node's computer (a Docker node: inside its container) as a **node file**, read-only, by its absolute path (`screen=files&nodeFile=`, `useMobileNodeFile`, `GET /rest/node-files/content?path=`, autobyteus-436). A missing path says "This file was not found on the computer.", a folder "This path is a folder, not a file."; a link in a run on another node says "This file is on <node>, where this run runs." (autobyteus-471). A text file shows in full whatever its size (autobyteus-471).
+  - **Settings** (`MobileRunSettings`, autobyteus-458; for every run since autobyteus-522) is in the ⋮ menu of every run the phone opens, as its last entry (below VNC Viewer when that is shown; it followed Activity until autobyteus-534), whatever its kind: a standalone agent, a Team's member, an Org's agent or Org Team member, a task agent or a task team's member (under an agent, a Team or an Org), and a run on another node (`mobileRunSettingsScope`). It shows the run's status dot, name and "<status> · in <Team>", and the Runtime and Model rows of New run (the same names, lists and model settings, from the same stores) with **Save**, which change the opened agent's own runtime and model in the run that holds it: a task agent's own run, that member in its Team or task team, an Org agent in the Org run; a task agent under a Team member changes only that task agent. For a stopped run, choosing another runtime clears the model; Save is enabled only for a changed selection with a model, saves through the node's stopped-run update and returns to the conversation; the change applies at the next message. A refused Save shows the node's message in a red card and changes nothing. For a live run (idle or working) the rows and Save are disabled and the name row has the desktop's red stop icon ("Stop run"): one tap stops the run that holds the agent (the task agent's own run, the task team's run, the Org run or the Team run, never the run that delegated it) with no confirmation, then the rows open, and the phone stays on Settings (`useRunStopAction` with `shell: 'mobile'`; its default is the desktop). For a run on another node there are no rows and no Save: under the status line, "This run is on <node>. Its runtime and model can be changed only on that node." (the peer protocol has no such change).
+  - **Text size** (Standard 17 by default and the smallest, Large 19, Largest 21 px; autobyteus-506, moved to the run list and made phone-wide by autobyteus-525, the smaller Small step removed by autobyteus-534) is chosen under the **Text size** header of the run list's ⋮ menu and applies at once to every phone screen, the menu staying open so the change can be seen. It is kept on the phone (`autobyteus.phone.textSize`) and applies from the first screen after a restart. A value the phone does not know, such as the `small` that earlier builds could keep, reads as Standard: the page opens at Standard with Standard marked, and the stored value and every other stored setting are left as they are. The step's px is the conversation's text size; every other screen scales by step/17 through the root font size (16 px × step/17), so Standard is the sizes the phone had before the setting. The phone page takes its step as the source of the app font owner (`appFontSizeStore.initializePhoneTextSize`, chosen once by `plugins/06.appFontSize.client.ts`), which also sets the file viewer's Monaco size (14 px × step/17, rounded); the desktop's **Settings → Display → App font size** is the source everywhere else and never reads the phone step. Text the shared components set in fixed px follows through `assets/css/phone-text-size.css` (phone only). Run names and subtitles stay on one line and end with an ellipsis at Largest on a narrow phone; tap targets stay at least 44 px at every step. The three step buttons show their own letter in fixed px (16, 19, 22).
+  - **The conversation** has the phone's own layout (`assets/css/phone-conversation.css`, phone runtime only): 12 px margins, no avatar column, a 22 px avatar and name once per speaker turn, 17 px / 1.5 type at Standard (`1.0625rem`, so 17, 19 or 21 px at the three steps). Another agent's message shows as on the desktop, with its arrow and message-type line (the founder's decision, autobyteus-458 SR-004).
+  - **Activity** lists the open agent's background tasks above its tool calls, when it has any (`MobileBackgroundTasks`, autobyteus-473): each with its description (or command), Running / Completed / Failed / Stopped, one line on how it ended ("exit code 1", "Stopped: it reached its time limit — not a failure of the command", "Stopped: the computer was low on memory", "Stopped: the run ended"; with neither a reason nor an exit code, the runtime's summary; `utils/backgroundTaskEnd.ts`, autobyteus-483) and when it started; newest first; live. It is the desktop Background Tasks panel's data (`useBackgroundTaskPanelView`, `agentBackgroundTaskStore`), so tasks started before the phone opened the run are listed too. A runtime that does not report background tasks shows none. Read-only.
+  - **Attachments** in sent messages and in the composer's draft (autobyteus-450) work as on the desktop:
+    - An image shows as a thumbnail, loaded with the phone's key (`useAuthorizedObjectUrl`).
+    - A tap opens the phone's viewer and never sends the page to the node's file URL (`useMobileAttachmentOpening`):
+      - an uploaded file opens on the Files screen (`screen=files&contextFile=…&contextFileName=…`);
+      - a path attachment opens as a file link does;
+      - a path of a run on another node shows "This file is on <node>, where this run runs." and opens nothing.
+  - **The phone viewer** (`MobileFileViewer`) zooms PDFs and images by touch (autobyteus-472): a PDF pinches from page width (1×) to 3× around the pinch point and is drawn again at the new width, so its text stays sharp; one finger scrolls through its pages and pans; a double tap switches between 1× and 2× at the tapped point (`usePdfPinchZoom`). An image pinches from fit to 4×, pans, and a double tap switches between fit and fill (`usePictureZoom`, the VNC Viewer's zoom). The page around the viewer never zooms. While a file stays open, a reload of the same file keeps its zoom and position: a live refresh redraws it in place (autobyteus-452), and opening the same file again while it is shown keeps them too (`useViewerZoomMemory`; a PDF's place is put back only once every page is laid out again). Closing the viewer (Back) ends it: the file opened again later, or another file, starts at 1× and the top (autobyteus-472 SR-004). A loaded PDF or image has **Download** in the bar (`useMobileFileDownload`): in the Android app the file goes to the phone's Downloads through the shell bridge (`saveFile`, below); in a browser it is the browser's download.
+    - Back returns to the conversation.
+  - Each explicit open of a file reads it again, so it shows the file's current content. An open workspace file also refreshes by itself when it changes on disk, including images and PDFs and files in folders never expanded (autobyteus-452); see [File Explorer](./file_explorer.md). A node file opened by absolute path does not.
+- **New run** — an agent run only: Agent, Folder (with "Open a folder by path", an absolute path on the paired node; a path that is not an existing absolute folder there is refused with the reason under the field, such as "No folder at this path.", and nothing is registered), Runtime, Model and Auto approve tools, each choice a bottom sheet. Agent is preselected: the agent of the run opened before, else the Project Task Manager, else the first agent. **Create run** creates the run and opens its conversation for the first message.
+- **Connection sheet** — the paired node's name (no address, host or URL: autobyteus-433), its state with a refresh icon while it is reachable and **Retry** when it is not, **Switch node** in the Android app (it opens the app's node list; the shell bridge, below), and **Unpair from <node>**. The sheet lists no peer nodes; runs on other nodes keep their node chips in the run list.
 
-Mobile **Auto approve tools** is available when the selected agent or team has an active launch config. It writes the existing `autoExecuteTools` launch-config field; it must not create a mobile-only approval flag or change backend approval semantics. The ordinary new-launch default remains off for non-AGY runtimes. For `antigravity_cli` the option is shown on and locked with an explanation, because Antigravity always runs with auto-approve. For team launches, the global team setting is preserved in the team config and inherited by generated member configs unless an existing member override explicitly supersedes it.
+### Trusted private HTTP and Android 15
 
-For team runs, mobile exposes a **Message target** selector only on the work tabs where that focus affects the current run, such as Chat, Files, Artifacts, and Activity. The selector is intentionally hidden on the Runs tab and while **Start new** is open because team-message focus belongs to Chat, not run configuration. The current mobile client remembers the last valid focused member per team run for Recent-work reopen; that memory is client-local and is not a cross-device/backend persistence contract.
+- On the documented trusted private HTTP pairing the page is not a secure context, so `crypto.randomUUID` is missing. Message, command and client ids come from one helper, `utils/randomId.ts` (`createRandomId()`), which builds the same UUID from `crypto.getRandomValues` there.
+- Android 15 draws a targetSdk 35 app edge-to-edge. The Android shell pads its screens with the status bar, the navigation bar, a display cutout and the keyboard (`ui/SystemBarInsets.kt`), so the phone's bars, ⋮ and the composer stay visible and tappable and the composer stays above the keyboard. Inside that padded WebView the page's `env(safe-area-inset-*)` reads 0, so the phone's CSS adds no second padding; before Android 15 the window keeps the bars apart and nothing moves.
 
-Draft context files attached before mobile run creation remain available for the first Chat send. Agent-run draft files transfer into the new agent composer tray. Team-run draft files remain mobile-owned pending attachments keyed by the team run until the first Chat send, then flush to the currently selected focused leaf member.
+### Ownership
 
-The mobile **Files** view is a phone-first read-only workspace browser. It resolves the workspace from the current workspace, agent-run, or team-run context and must not fall back to an unrelated active or first workspace when a selected run's workspace root cannot be resolved. Folder taps lazy-load children through the existing workspace file-explorer store, full-workspace search uses the shared file search boundary, and file taps open a full-screen mobile viewer over the shared file viewer state. Supported mobile preview families include text/Markdown/code, image, audio, video, PDF, CSV, and Excel through the existing protected workspace content routes and authorized resource loaders. The mobile viewer keeps an **Attach** action for adding workspace paths to the current run chat context, pending team-run context, or next-run draft, but mobile file editing, rename, delete, move, create, and desktop context-menu operations remain out of scope.
+The phone keeps no model of its own. It reads the desktop's owners: `runListStore` and the shared disclosure (`useRunListDisclosure`), the collaboration, Team and Org row sources, the shared open actions in their `shell: 'mobile'` mode (they select or open and do no navigation), and `activeContextStore.activeWorkspaceTarget` for what is open. The screen state lives in `/mobile`'s route query, written only by `useMobileNavigation`, so the system Back key walks file/reference → view → run → list. The open Org's keys (`agentOrgRouteQuery`) are kept on the list entry too, so the list still marks it after ←; an open agent run or Team subject is named by its run list row (`row=<MobileRunTreeRow.key>`, a tap or **Create run**, autobyteus-435), carried by every later screen. A run created with **Create run** is a draft (`agent:temp-…`) until its first message; then `useMobileRouteRunSync` replaces the current entry's `row` with the node's run, and does the same for an entry pushed before the send when Back returns to it (the desktop chat's promotion rule, `useDraftRunPromotionRouteSync`). A reload before the first message shows the list. A page that starts on a screen whose `row` is not open (a reload, Android's restore after process death) reopens it (`useMobileSubjectRestore`): the screen says "Opening…" until the reads the row needs have settled (the first history read; a delegated row's host view), then the same open as a tap runs; a row not listed then gives the list, and a failed read gives the list with its connection state. The pending open is `mobileRunOpeningStore`.
 
-The mobile **Artifacts** view exposes run-scoped generated and touched files through the existing run artifact store and authorized artifact content viewer. It is separate from Files: Files browses a workspace, while Artifacts follows the selected agent run or focused team member run.
+Mobile **Auto approve tools** writes the existing `autoExecuteTools` launch-config field; it must not create a mobile-only approval flag or change backend approval semantics. For `antigravity_cli` the switch is on and locked, because Antigravity always runs with auto-approve.
 
-Mobile team-message reference files are separate from both Files and Artifacts. Team message cards render structured `referenceFiles` rows from Team Communication data; tapping a row opens a mobile full-screen wrapper around the message-owned reference viewer using `teamRunId`, `messageId`, and `referenceId`. Raw prose paths are not linkified. The viewer fetches `/rest/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content` with the paired mobile bearer credential, preserves the focused team-message context on close, and disables rich HTML preview in the mobile shell while keeping raw/Markdown and protected media/PDF/CSV/Excel previews available through authorized fetch/object URLs.
-
-Interactive Terminal and VNC are not mobile Phone Access surfaces in Phase One. Historical terminal-command tool output can still appear as read-only Activity content, but mobile users must not see a terminal tab, Tools tab, VNC panel, or command-entry path.
+The interactive Terminal is not a mobile Phone Access surface. Historical terminal-command tool output can still appear as read-only Activity content, but mobile users must not see a terminal tab, Tools tab, or command-entry path. The paired node's desktop is offered as the **VNC Viewer** view (see [Node desktop on the phone](#node-desktop-on-the-phone)).
 
 ## Mobile UX Contract
 
 This contract is limited to the `/mobile` phone shell. Compact-copy policy belongs in mobile presentation code and must not change desktop journeys, core stores, backend services, GraphQL/REST/WebSocket contracts, or runtime behavior. Shared monitor layout changes for the mobile shell must either be mobile-opt-in or behavior-neutral for existing desktop callers.
 
-The paired phone shell is intentionally compact. Mobile Home shows AutoByteus identity, node connection state, node address, current work, recent work rows, and switching/troubleshooting actions without repeating desktop-style section labels such as `Mobile Home`, `Current node`, `Current work context`, or a duplicate `Primary next action` card. Recent/current work cards are the resume/open affordance; the old one-off continue-latest action is not part of the mobile contract.
+The approved UI/UX specification of autobyteus-277 is normative for the phone's layout, copy and states. Only what its "What Is Not On The Phone" list puts on the phone appears; the rest is simply absent, with no explanatory text: no Home, no "Switch work" sheet, no tabs, no Workspaces or Projects views, no Team or Org start, no Stop/Archive/Delete on rows, no Files filters and no Attach on an opened file. Every screen is a full-viewport column (`100dvh`) that respects the safe areas; touch targets are at least 44×44 CSS px and nothing scrolls horizontally at 360 px.
 
-Mobile work headers show the selected work name plus compact status, path, or profile metadata. Default compact mobile metadata should not append visible `Agent run` or `Team run` type suffixes. Type semantics may remain available through structured context and accessible labels when needed.
-
-Mobile Chat owns a fixed viewport-height work frame. The transcript/feed is the scroll owner (`overscroll-contain`), while the composer and bottom tab navigation stay anchored inside the viewport. Work-screen wrappers must keep `min-h-0`, `overflow-hidden`, and safe-area-aware containment across each flex boundary so long conversations cannot create document/body scroll or blank space below the controls.
-
-For team runs, Chat/Files/Artifacts/Activity can expose a compact target picker with the focused member name and a symbolic chevron/dropdown affordance instead of a visible `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
-
-Mobile Activity exposes concrete category filters for Messages and Activity. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Do not add separate mobile-only issue filters such as Errors or Approvals; error and approval state should remain visible on the relevant tool/activity rows instead of through extra filter controls.
-
-Do not reintroduce mobile Tools/Terminal/VNC copy or controls in Phase One. Any future mobile tool surface must go through a separate security and UX design.
+Do not reintroduce mobile Tools/Terminal copy or controls. Any future mobile tool surface must go through a separate security and UX design (the VNC Viewer went through one: autobyteus-394/407).
 
 ## Browser/PWA App Shell Metadata
 
@@ -59,18 +65,22 @@ The `/mobile` route links lightweight browser install metadata through `mobile.w
 
 ## Network Model
 
-AutoByteus does not require or special-case a VPN vendor. Phone Access only requires that the phone can reach the desktop/server node URL selected during pairing.
+AutoByteus does not require or special-case a VPN vendor, and it never installs, runs or configures Tailscale or any other network software. Phone Access only requires that the phone can reach the address in the QR.
 
-Supported setup profiles include:
+The node reports the network facts of the computer it runs on (`GET /rest/remote-access/network`; the rules are in `autobyteus-server-ts/docs/features/remote_access.md`, Node Network And Ways To Connect). The desktop turns them into four **ways to connect**, in this order of preference:
 
-- **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it. Local LAN HTTP uses cleartext and requires an explicit trusted-private-network acknowledgement before QR creation.
-- **Tailscale:** use the desktop's full MagicDNS hostname/FQDN when possible.
-- **Tailscale Serve HTTPS:** recommended for Android, iOS, and travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`. IPv4 and IPv6 values shown in the Tailscale app are useful diagnostics, but the preferred HTTPS Serve URL uses the MagicDNS hostname that matches the certificate/Serve hostname path.
-- **Headscale:** use the same Tailscale-compatible client flow against a self-hosted control plane.
-- **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
-- **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
+| Way (`connectionWay`) | Address used | Trust decision |
+| --- | --- | --- |
+| Company address (`company_address`) | The node's configured address (`AUTOBYTEUS_SERVER_HOST`), or one the user types ("Enter the address your IT gave you") | None: typing it and pressing **Use this address** is the decision |
+| Tailscale (`tailscale`) | The node's Tailscale HTTPS name when it reaches this node, else its Tailscale address (`100.x`, confirmed by a `.ts.net` reverse name or a `tailscale*` interface) with the node's port | None: Tailscale encrypts device to device |
+| Your VPN (`vpn`) | A private address on a tunnel interface (WireGuard and similar, also Headscale, NetBird, Netmaker) with the node's port | None |
+| Same Wi-Fi or LAN (`local_network`) | The computer's local address with the node's port, default-route first | Asked once per local network: "Allow phones on this network?" |
 
-Public/routable HTTP URLs and phone-unreachable local-only hosts such as `localhost`, `127.*`, `0.0.0.0`, `::1`, and `host.docker.internal` are not valid phone-facing QR targets. Use HTTPS for public-looking hostnames.
+- Every address is checked before it goes into a QR: `GET <address>/rest/remote-access/status` must answer with the node's own `nodeId` within 2 s. A way is ready when one of its addresses passes.
+- Never offered: loopback, link-local (`fe80::`, `169.254.*`), container-internal and bridge addresses, IPv6 addresses, and public plain-HTTP addresses. An unconfirmed `100.64/10` address is treated as a local-network address.
+- The "Allow phones on this network?" answer is kept per local network, recognised by its network ID (`gw_<hash>` of the router's hardware address, or `this-computer` when it cannot be read), and shared by every node on this computer. On a new network the desktop asks again. **Wi-Fi/LAN allowed on this network** in the tab turns it off again.
+- Platform priority: macOS and Linux hosts are checked for Tailscale, VPN and network recognition. On Windows an unrecognised VPN is treated as a local network and asked, and the answer is kept per computer.
+- The node's URL policy still refuses public HTTP and phone-unreachable local-only hosts (`localhost`, `127.*`, `0.0.0.0`, `::1`, `host.docker.internal`), also for a typed company address.
 
 For phone/mobile clients, the app-level pairing credential is still required; a private network or VPN is not treated as sufficient mobile authorization by itself. Desktop/Electron remote-node access to the full backend is separate and follows the trusted private-network product model documented below.
 
@@ -81,7 +91,7 @@ Phone Access keeps two URL identities separate:
 - **Canonical `serverBaseUrl`:** the internal node API base used for REST, GraphQL, and WebSocket calls. It is the origin plus any deployment base path, without `/mobile`, `/rest`, `/graphql`, `/ws`, query, or hash.
 - **`mobileUrl`:** the user-facing phone shell URL derived by appending `/mobile` to the canonical server base.
 
-You may paste a mobile shell URL into the Phone Access field. AutoByteus normalizes it before creating the pairing payload:
+A typed company address may be a mobile shell URL. The node normalizes every address before creating the pairing payload:
 
 ```text
 Input:              https://desktop.tailnet.ts.net/mobile
@@ -98,22 +108,30 @@ Stored serverBase:  https://gateway.example.com/autobyteus
 QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 ```
 
-## Normal Docker Node Pairing Flow
+## Connecting a phone
 
-1. Install the Docker launcher from **Nodes -> Docker Guide**.
-2. Create a Docker node:
+The same steps work in every node's window: the desktop's own node, a Docker node, or a node on another machine.
 
-   ```bash
-   autobyteus-docker new-container
-   ```
+1. Open the node's window (for a Docker node or a node on another machine: add it in **Nodes -> Manage Nodes**, then click **Open**) and go to **Nodes -> Phone Setup**.
+2. The panel shows the four ways to connect as tabs (**Same Wi-Fi or LAN**, **Tailscale**, **Your VPN**, **Company address**). Each tab says whether it is ready on this computer, how it works, and When / Setup / Safety in plain words. The best ready way is selected and marked **Recommended**.
+3. Press the tab's **Show QR code**. When Phone access is off the button reads **Turn on and show QR code**; the press turns it on. On **Same Wi-Fi or LAN** the first press on a network is **Allow and show QR code**, the "Allow phones on this network?" decision.
+4. The QR appears with one line on how the phone will connect ("Works anywhere through Tailscale", "Works through your VPN", "Works on this network", "Works through the address set up for this node (…)"), its remaining time ("Valid for 5:00") and **Close**. The QR holds only that tab's best checked address.
+5. Scan it with the AutoByteus Android app: the phone connects with no other input. A phone without the app scans it with its camera: the browser opens the node's page, which pairs with one **Connect to <node>** tap and offers **Get the Android app**.
 
-3. Add the printed Backend URL as a remote node in **Nodes -> Manage Nodes**, then click **Open** on that Docker node.
-4. In the Docker node window, open **Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. Configure a phone-facing private-network URL that maps to the Docker node. Prefer Tailscale Serve or company-controlled HTTPS ingress; trusted private HTTP is available only with cleartext acknowledgement.
-6. Paste the phone-facing `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values before QR creation.
-7. Enable Phone Access, create the QR, and scan it with the Android/iOS native wrapper or open it in the mobile browser. The pairing exchange and paired-device records belong to the Docker node.
+The code's life on the desktop:
 
-The embedded host desktop node should not mint QR codes for a different remote node, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
+- **Close**, another tab, **New code**, leaving the panel or turning Phone access off discards the code on the node (`DELETE /rest/remote-access/pairing-sessions/:sessionId`); a phone using it is refused.
+- After five minutes the panel says "This code has expired" and offers **New code**. A used code is refused.
+
+The phone's name for the node comes from the QR: the desktop's own node is named after this computer (for example "MacBook Pro"); every other node keeps its name from the Nodes page.
+
+Per kind of node:
+
+- **The desktop's own node:** the addresses are this computer's. **Advanced** in the Tailscale tab shows, when Tailscale runs but its HTTPS name does not reach this node, the one command that gives the node an `https://` name on the tailnet (`tailscale serve --bg <port>`), with **Copy** and **Check again**. AutoByteus shows it and never runs it, and never offers `serve reset`, which would remove the user's other Serve mappings.
+- **A Docker node on this computer** (the node runs in a container and the desktop reaches it on loopback): the addresses are this computer's addresses with the port the node is published on, each checked to reach the Docker node. A node published only on `127.0.0.1` gets "<node> isn't reachable from other devices. Publish its port on this computer's network, then try again." Its Advanced command uses its own HTTPS port (`--https=8443…8542`, by the order the nodes were added), so it does not take the desktop's 443. The "Allow phones on this network?" answer is kept by the desktop's own node, for every node on this computer.
+- **A node on another machine:** the addresses are that node's own and the address the desktop reaches it at, each checked. When none can be checked, every tab is not ready and **Company address** offers "Enter the address your IT gave you"; a typed address that does not reach the node gets "This address doesn't reach <node>." and no code. That node keeps its own "Allow phones on this network?" answers.
+
+The pairing exchange and paired-device records belong to the node whose window made the code. Docker bridge and LAN addresses are never treated as loopback owner trust.
 
 ## Trusted Remote Node Access vs Phone Credentials
 
@@ -124,33 +142,11 @@ Remote node windows have two separate authority boundaries:
 
 Mobile credentials must not authorize owner-management routes such as settings changes, pairing-session creation, device listing, or revocation. Pairing payloads contain a short-lived one-time code and server base URL, not desktop owner authority. Credential-bearing URLs, pairing payloads, mobile credentials, and authorization headers must be redacted from logs and diagnostics.
 
-## Embedded Desktop Pairing Flow
+## Pairing codes
 
-Use this when the embedded desktop node itself is the node your phone should use. For a separate server Docker node, use the Docker flow above.
+Pairing codes are short-lived (five minutes) and single-use. The long-lived credential is returned only to the phone after the code exchange. The QR holds no long-lived secret.
 
-1. Start the desktop Electron app so the bundled server is running.
-2. Open **Nodes -> Phone Setup**.
-3. Install/sign in to Tailscale.app on the Mac and Tailscale on the phone.
-4. On macOS with **Tailscale.app** installed, sign in through the app UI and confirm the full MagicDNS hostname/FQDN there. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state. Use the bundled app executable directly for Serve:
-
-   ```bash
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset
-   ```
-
-5. Recommended travel/stable setup: copy the private HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell URL shape, for example `https://desktop.tailnet-name.ts.net/mobile`. The Tailscale Serve HTTPS QR target normally does **not** include `:29695`; that port belongs to local HTTP/interface reachability.
-6. Prefer the full MagicDNS hostname/FQDN shown by Tailscale when you need a stable HTTPS origin. For home/local pairing, you may instead select a discovered private LAN or tailnet IP HTTP candidate such as `http://192.168.x.x:29695` or `http://100.x.y.z:29695` and acknowledge cleartext trusted-network use.
-7. Enable **Phone Access**.
-8. Paste the HTTPS MagicDNS `/mobile` URL into the **Phone-facing private network URL** field, or choose a discovered trusted Local LAN/private HTTP candidate. HTTP candidates require the cleartext trusted-network acknowledgement before **Create QR code** is enabled.
-9. Click **Create QR code**.
-10. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android and iOS own their **Scan QR** flows with app-owned scanner/camera permission handling; they do not require a separately installed generic QR scanner app.
-11. The phone exchanges the code for a per-device credential and stores the paired session.
-
-Pairing codes are short-lived and single-use. The long-lived credential is returned only to the phone after the code exchange.
-
-Official Tailscale references for this setup:
+Official Tailscale references for the optional secure web address:
 
 - [Tailscale Serve](https://tailscale.com/docs/features/tailscale-serve)
 - [HTTPS certificates](https://tailscale.com/docs/how-to/set-up-https-certificates)
@@ -160,33 +156,92 @@ Official Tailscale references for this setup:
 
 A paired phone stores its session in browser/WebView `localStorage` under the mobile web origin. That is acceptable for the current Phone Access MVP but should be treated as less protected than native secure storage. The current native Android/iOS wrappers deliberately load the same `/mobile` shell and do not persist `mra_...` credentials natively; the iOS wrapper saves only node profile metadata. Any future native credential-storage hardening should be designed separately with backend authorization changes.
 
-Because this storage is origin-scoped, pair through the stable travel URL when possible. For example, pairing with `http://192.168.1.25:29695/mobile` and later opening `https://desktop.tailnet-name.ts.net/mobile` uses a different origin and may require re-pairing. The native Android/iOS wrappers save the clean stable `/mobile` URL profile, not the one-time `?pairing=` URL.
+Because this storage is origin-scoped, a phone paired through one way keeps that address: a phone paired on the home Wi-Fi does not switch to the Tailscale address on its own (one node at several addresses is follow-up work). For a phone that travels, use the **Tailscale** tab: with Tailscale on the phone, that address also works at home. The native Android/iOS wrappers save the clean `/mobile` URL profile, not the one-time `?pairing=` URL.
 
 After pairing, the mobile shell:
 
 - restores the paired node session on reload;
 - checks `/rest/remote-access/status` for reachability and Phone Access state;
-- holds the post-pair transition in a checking state until status and work catalogs refresh, so a stable Home screen is not shown with stale or unknown node status after successful pairing;
+- on opening, **Retry** and **Check**, checks its own credential with one request to the node (`mobileNodeSessionStore.checkCredential()`); the connection state comes from that answer only (see [Revocation and Disable Semantics](#revocation-and-disable-semantics) for what the phone shows). The 5 s run-list poll never sends it;
+- opens the agent package definitions feed only while paired, to the paired node with its credential; an unpaired phone page opens no feed socket (the desktop window keeps its feed);
+- holds the post-pair transition in a checking state until status and the run history refresh, so the run list is not shown with stale or unknown node status after successful pairing;
 - sends bearer credentials on protected REST/GraphQL requests;
 - appends the credential as an `access_token` query parameter for WebSocket connections;
 - uses authorized fetch helpers for media, file, artifact, team-reference, and application setup resources;
 - keeps server-owned agent/team/workspace routes reachable when those routes accept paired mobile credentials.
 
-The local **Unpair this phone** action deletes only the phone's local session and returns the UI to the pairing bootstrap without leaving Home or post-pair checking state active. It does not revoke the server-side device record; use the desktop Phone Access card to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
+The local **Unpair from <node>** action deletes only the phone's local session for that node and returns the UI to the pairing bootstrap without leaving the run list or post-pair checking state active. It does not revoke the server-side device record; use **Revoke** in the desktop's **Connected phones** list to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
+
+### Pairing page
+
+`MobilePairingBootstrap.vue` handles `/mobile?pairing=<payload>`:
+
+- **In the Android app** (the shell bridge answers): it pairs at once, with the phone's model name as the device name, then tells the app it paired. A failed exchange shows the reason with **Scan again** and back: "This code has expired. Make a new one on your computer." (expired, or closed or replaced on the desktop), "This code was already used. Make a new one on your computer.", Phone access off, or the node did not answer.
+- **In a browser:** the page shows the node's name, **Connect to <node>** (one tap pairs) and **Get the Android app**.
+
+### Android shell bridge
+
+The Android app gives the page one object, `window.AutoByteusShell` (`utils/remoteAccess/shellBridge.ts` on the page; `web/ShellBridge.kt` in the app, androidx.webkit web messages). Only the main frame of the open node's origin gets it; sandboxed frames and other origins do not. The page uses it to ask for the phone's model name, the number of saved nodes and the open node's name as the app shows it on its first page (`hello`; `nodeName`, `""` when the app has none), to report that it is mounted (`{ type: 'pageReady' }`, sent once per document by `MobileRemoteAccessShell`; only this shows the page in the app or closes the app's overlay over it, and WebView's error page cannot send it), to report a successful pairing with the node's name (the app saves the node only then), to ask the app to show its node list (**Switch node**) or its scanner (**Scan again**), and to turn the VNC Viewer's desktop full screen on or off (`{ type: 'desktopFullScreen', on }`, sent only by `composables/mobile/useDesktopFullScreenDisplay.ts`). It carries no credential: each node's credential stays in that node's page. A PDF or image open in the phone viewer can be handed to the app to save (`{ type: 'saveFile', fileName, mimeType, base64 }`, autobyteus-472): the app accepts only a PDF or an image under a plain file name whose extension matches the type (no folder, at most 200 characters), saves it to Downloads (Android 10 and newer directly, Android 8–9 through the system's Save dialog) and shows "Saved to Downloads: <name>" or "Couldn't save the file."; the page reads the bytes with its own request, so no URL or credential is in the message. An older app ignores the message.
+
+The phone names the open node, never its address (autobyteus-433; `utils/remoteAccess/nodeName.ts`). The header, its accessibility label, the offline banner, "Connected to …", the connection sheet and **Unpair from <node>** use, in order: the app's name for the node (from `hello`, in the Android app), the session's `nodeName` saved at pairing, else "AutoByteus node". The pairing page names a QR without a name "AutoByteus node". A session paired before names were kept therefore shows the app's name, not the host. In a browser there is no bridge and `pageReady` does nothing.
 
 ## Revocation and Disable Semantics
 
-- **Disable Phone Access:** paired-device records remain in server data, but non-loopback mobile credentials are rejected while disabled and new pairing sessions cannot be created.
+- **Disable Phone Access** (the **Phone access** switch in the panel header): paired-device records remain in server data, but non-loopback mobile credentials are rejected while disabled, new pairing sessions cannot be created, and every shown code is discarded. Paired phones work again when it is turned back on.
 - **Revoke one phone:** that device credential stops working for REST, GraphQL, WebSocket, and protected resource access.
 - **Revoke all phones:** every active paired credential is marked revoked and each phone must pair again.
-- **Active vs revoked lists:** `GET /remote-access/devices` returns active paired-device summaries only. Revoked records are retained and exposed to local desktop management through `GET /remote-access/devices/revoked`; they appear only in the non-actionable Revoked/History view.
+- **What the phone shows** after its credential check: a revoked or unknown credential removes the phone's stored session and shows the pairing screen. With Phone Access off the session is kept, the bar reads "Phone access off" and the list shows "<node> is reachable, but Phone access is off." with **Check**; once it is on again, **Check** loads the runs. A node that does not answer shows "Can't reach <node>." with **Check**, also right after a check that found Phone Access off. While Phone Access is off the connection sheet says "Not reachable".
+- **Active vs revoked lists:** `GET /remote-access/devices` returns active paired-device summaries only; the desktop's **Connected phones** list shows each with its name, how it connects and when it was last seen, and **Revoke**. **Revoke all** sits apart from the main action and asks first. Revoked records are retained and exposed to local desktop management through `GET /remote-access/devices/revoked`; they appear only behind the collapsed, non-actionable **History (n)**. Dates and times there follow the app's language.
 - Local desktop loopback access remains available for desktop management endpoints.
+
+## Node desktop on the phone
+
+A run's ⋮ menu offers **VNC Viewer** after Artifacts, Files, Messages and Activity, and before Settings, when the paired node has a node desktop (a Docker node: `GET /rest/node-desktop` answers `{ available: true }`) and the open run is on that node; it is hidden on a node without one (the desktop's embedded node) and for a run on another node. The view (`MobileNodeDesktop.vue`, route `?screen=desktop`) streams the node desktop through the node's own server (`/ws/node-desktop` with the phone's credential), as the desktop app's VNC Viewer does:
+
+- It opens **View only** and fitted to the screen, in portrait or landscape. In View only nothing reaches the desktop: pinch zooms (up to 4×), a drag pans, a double tap switches between **Fit** (the whole desktop) and **Fill** (the picture, undistorted, covers the screen; drag to see the cropped part), and **Fit** in the bar returns to fit; in a desktop browser a trackpad pinch (Ctrl+wheel) zooms. A zoomed picture is never panned past its own edge. The desktop's size never changes.
+- **Control** is a deliberate switch in the bar; the stream reconnects in Control with the picture fitted, and touches act on the desktop (tap = click, drag = drag, two-finger drag = scroll). **Keyboard** opens the phone's keyboard; typed text (including words a keyboard composes), Enter, Backspace and Tab reach the desktop. CJK input methods are not guaranteed. While connected in Control, Keyboard and Clipboard sit at the right end of the status row under the bar, after the status text, which shortens with an ellipsis; the bar keeps ←, the title, Fit, the Control / View only switch and full screen. They are there so the bar fits at every Text size on a 360 px phone (autobyteus-525, DEC-008).
+- **Clipboard** (in Control, while connected; next to Keyboard) opens a sheet. **Paste to the desktop**: text put in its box and **Send to desktop** lands on the desktop's clipboard, to paste there. **Copy from the desktop**: the text last copied on the desktop is shown selectable, and **Copy** puts it on the phone's clipboard (through `navigator.clipboard` when present, else a copy command, which works in the Android WebView on `http://`); if that fails the sheet says "Long-press the text to copy it." Nothing is read or written without a tap, and View only has no Clipboard.
+- **Full screen** hides the bars. In the Android app it also turns the phone to landscape (either side, by its sensor, even with auto-rotate off) and hides Android's status and navigation bars (a swipe from the edge shows them for a moment); leaving gives back the phone's own orientation and the bars. In a browser it uses the browser's full screen and asks for landscape where the browser allows it (Chrome on Android); a browser that refuses (for example after a reload, with no tap) keeps the in-page full screen, and Esc leaving the browser's full screen leaves the viewer's too. A small strip at the top edge has **Show controls**, which brings the bars back, in both modes; in Control it also has **Keyboard** and **Clipboard**, so typing and pasting work without leaving full screen. In View only one tap anywhere also brings the bars back (in Control a tap elsewhere is a desktop click). The system Back key leaves full screen first (`full=1` is its own history entry).
+- The stream ends when the app goes to the background or the page is hidden, and reconnects in View only, with a fresh access check, when it is visible again.
+- The node serves at most 4 desktop streams at once, and at most 2 per paired phone; another viewer sees "Too many viewers on this node right now" with Retry (close code 4429).
+- Revoking the phone, or turning Phone Access off, ends its open desktop stream at once: the node closes every open socket of that phone with 4403 and the refusal code (autobyteus-437, node access model NAS-37), and the viewer shows "not allowed".
+
+## Live run streams on the phone
+
+An open run on the phone (an agent run, a Team member or an Org member) keeps its live
+stream through lost connections and the app's background:
+
+- **The path to the node drops** (Wi-Fi to mobile data, a node restart): the phone keeps
+  trying, at most 30 s apart, and never gives up while the page is shown. When it is back,
+  it shows what it missed and then follows live.
+- **The app is in the background or the screen is off:** the phone makes no attempt while
+  the page is hidden. When the page is shown again, it reconnects at once and catches up.
+  After 30 s or more hidden, it re-synchronizes a stream that still looks open.
+- A message sent while the run is busy shows once, also on another phone or window that
+  opens the run during that turn.
+
+The same rules apply in the desktop window
+(`agent_execution_architecture.md`, Live Run Stream Reconnection).
+
+A stream the node closes because it refuses the credential (4401, or 4403 with
+`REMOTE_ACCESS_DEVICE_REVOKED`, `NODE_CREDENTIAL_REVOKED`, `NODE_CREDENTIAL_INVALID` or `PEER_UNPAIRED`;
+`services/liveStreamLifecycle/credentialRefusalClose.ts`) is not reconnected, in every stream owner (agent, Team,
+collaboration, Org, file explorer); closes for Phone Access off or a network refusal keep reconnecting, so the
+streams resume when it changes back. When the phone's session ends (a check finds the credential refused, or
+**Unpair**), `MobileRemoteAccessShell` closes every live stream the page holds (`closeAllLiveStreams`), so the page
+sends nothing more to the node (autobyteus-435).
 
 ## Mobile Capability Gating
 
 The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Run Artifacts are mobile-supported when their normal run context is available. Browser remains unsupported in the current mobile shell because the existing Browser surface is Electron-owned through preload IPC and native WebContentsView projection.
 
-Phase One explicitly removes mobile Terminal and VNC from supported mobile features. Backend operation-level hard denial and broader mobile authorization/token/session hardening are tracked for Phase Two; Docker-node pairing is not a substitute for that future work.
+The mobile Terminal is not a supported mobile feature; the node desktop is (above). Backend operation-level hard denial and broader mobile authorization/token/session hardening are tracked for Phase Two; Docker-node pairing is not a substitute for that future work.
+
+For WebSockets the backend now enforces the phone's surface: a phone credential opens only the phone WebSocket routes (agent, team, org and agent-collaboration run streams, projects, agent package definitions, file explorer, node desktop). It is refused on every other WebSocket route, such as the terminal, update notifications, application WebSockets and GraphQL subscriptions, with close code 4403 and reason `PHONE_ACCESS_ROUTE_REFUSED` (HTTP 403 for a GraphQL upgrade). This refusal does not unpair the phone. A new phone WebSocket surface must be added to the backend's phone route list (`autobyteus-server-ts/docs/features/remote_access.md`, Route Policy).
+
+The node accepts a request only when it is addressed to one of the node's names (DNS rebinding defence): IP addresses, `.local`, `.lan`, dotless and `*.ts.net` names, the host of `AUTOBYTEUS_SERVER_HOST`, and the address every paired phone and open pairing code uses pass with no setting, so phones need nothing. A desktop or peer node that reaches the node by any other public domain needs that name in the node setting `AUTOBYTEUS_ALLOWED_HOSTS`, or the node answers 403 `REMOTE_ACCESS_HOST_REFUSED` (see `autobyteus-server-ts/docs/features/remote_access.md`, Allowed Hosts).
+
+The node also accepts browser requests only from allowed origins: the phone shell is served by the node itself (same origin, also through Tailscale Serve or a Host-preserving proxy) and passes. A gateway that rewrites `Host` without `X-Forwarded-Host` needs its phone URL's origin in the node setting `AUTOBYTEUS_ALLOWED_ORIGINS`; otherwise the node answers 403 `REMOTE_ACCESS_ORIGIN_REFUSED` (see `autobyteus-server-ts/docs/features/remote_access.md`, Allowed Origins).
 
 Examples of mobile-unsupported surfaces include:
 
@@ -246,18 +301,20 @@ Installing a new native wrapper build does not update the desktop-served `/mobil
 
 ## Troubleshooting
 
-- **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
-- **Create QR is blocked for HTTP:** public HTTP and local-only hosts are rejected. For Local LAN/private HTTP, use a private IP/local hostname and acknowledge cleartext trusted-network use; otherwise use Tailscale Serve HTTPS.
+- **Phone cannot reach server** (the app says "Can't reach <node>"): the phone is not on the way the QR uses. Connect it to the same Wi-Fi or VPN as the computer, or turn on Tailscale on the phone, then scan again; also check OS firewall and private-network ACLs.
+- **No tab is ready:** the panel found no address that reaches this node. Connect the computer to a Wi-Fi, VPN or Tailscale and press **Check again**, or enter the node's address under **Company address**. A Docker node published only on `127.0.0.1` must be published on the computer's network.
+- **A typed company address is refused:** "This address doesn't reach <node>." means it answers with another node's ID or not at all; public HTTP and local-only hosts are refused by the node.
 - **Android/iOS over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
 - **Native Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK or iOS app, then verify the app has camera permission. Current AutoByteus native wrappers do not depend on an external QR scanner app.
-- **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
-- **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
-- **Mobile Files shows no files for a selected run/team run:** confirm the selected run's workspace root is registered on the paired node, then retry from Files. The mobile shell should show a workspace-unavailable state rather than silently browsing a different workspace.
+- **Pairing says disabled:** turn **Phone access** on in the node's Phone Setup panel (**Show QR code** does it).
+- **Pairing code invalid or expired:** press **New code** on the desktop. Codes are short-lived and single-use, and a code closed or replaced on the desktop is refused.
+- **Mobile Files shows no files for an open run:** confirm the run's workspace root is registered on the paired node, then retry from Files. The mobile shell should show a workspace-unavailable state rather than silently browsing a different workspace.
+- **A file link opens "could not be opened":** a node file must be an absolute path the node's user may read (no `..`); the node answers `NODE_FILE_PATH_INVALID`, `NODE_FILE_NOT_FOUND`, `NODE_FILE_IS_FOLDER` or `NODE_FILE_UNREADABLE` and never logs the path.
 - **Mobile reference file does not open:** confirm the paired credential is still valid and the node can serve the message-owned `/rest/team-runs/.../team-communication/.../references/.../content` route; reference files are not loaded through the Artifacts route.
-- **Mobile Home shows `Error 500` or `localeCompare` after a mobile-web fix:** verify the desktop/server node is serving the freshly rebuilt `/mobile` bundle, not an older packaged `mobile-web/` copy.
+- **The mobile run list shows `Error 500` or `localeCompare` after a mobile-web fix:** verify the desktop/server node is serving the freshly rebuilt `/mobile` bundle, not an older packaged `mobile-web/` copy.
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
 - **Docker node desktop window cannot reach backend:** confirm the Backend URL printed by `autobyteus-docker` is reachable from the desktop over a trusted LAN, VPN, tailnet, or equivalent private-network path. Do not expose the full backend directly to the public internet.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
-- **Remote-node QR creation says URL mismatch:** the phone-facing URL is not reaching the same node as the desktop management URL. Recheck the Tailscale Serve/private ingress/LAN mapping to the node Backend.
+- **The Tailscale HTTPS name is not used:** it answers with another node's ID (for example another AutoByteus on the same computer took the Serve mapping) or does not answer; the Tailscale address is used meanwhile. Run the Advanced command for this node and press **Check again**.
 - **Fresh Docker `/mobile` returns missing assets:** upgrade/recreate from a current server Docker image. Current public launcher, remote-server, and all-in-one image paths package `autobyteus-server-ts/mobile-web` during the image build.
 - **Desktop-only screen on phone:** use the mobile shell link or supported mobile route; unsupported desktop features should render an explanatory mobile notice rather than a desktop shell.

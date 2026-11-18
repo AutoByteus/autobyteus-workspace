@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => {
     recoverAfterListen: vi.fn(async () => undefined),
   };
   const app = {
+    addHook: vi.fn(),
     listen: vi.fn(async () => "http://127.0.0.1:43210"),
     close: vi.fn(async () => undefined),
     server: {
@@ -57,6 +58,7 @@ const mocks = vi.hoisted(() => {
     agentTeamDefinitionService: {},
     agentOrgDefinitionService: {},
     definitionAdmissionService: { scan: vi.fn(async () => []) },
+    agentDefinitionChanges: { subscribe: vi.fn(() => () => undefined) },
     close: vi.fn(),
   };
   const workspaceManager = {};
@@ -195,6 +197,16 @@ vi.mock("../../../src/services/published-artifacts/published-artifact-publicatio
 vi.mock("../../../src/agent-execution/runtime/general-process-run-supervisor.js", () => ({
   createGeneralProcessRunSupervisor: mocks.createGeneralProcessRunSupervisor,
 }));
+// Steps 1–2 run for real; steps 4–8 need the run services this test fakes (SR-047, SR-052: the same steps as the studio).
+const collaborationTasks = vi.hoisted(() => ({ taskTitleOf: vi.fn(async () => null) }));
+const composeCollaboration = vi.hoisted(() => vi.fn(async () => ({ release: vi.fn(), tasks: collaborationTasks })));
+// autobyteus-493: the episodic catalogs of the host's memory folder (faked: this test reads no memory folder).
+const episodicCatalog = vi.hoisted(() => ({ runDeleted: vi.fn(), start: vi.fn(), stop: vi.fn(async () => undefined) }));
+const createEpisodicCatalog = vi.hoisted(() => vi.fn(() => episodicCatalog));
+vi.mock("../../../src/agent-episodic-catalog/services/episodic-catalog.js", () => ({ createEpisodicCatalog }));
+vi.mock("../../../src/compositions/collaboration-composition.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("../../../src/compositions/collaboration-composition.js")>(), composeCollaboration,
+}));
 vi.mock("../../../src/workspaces/workspace-manager.js", () => ({
   getWorkspaceManager: () => mocks.workspaceManager,
 }));
@@ -256,7 +268,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.runPending.mockResolvedValue(successfulStatuses());
-    mocks.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true });
+    mocks.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 
   it("runs phases 5-10 in order before event-pipeline and application construction", async () => {
@@ -312,18 +324,38 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       workspaceManager: mocks.workspaceManager,
       agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
       agentToolMcpSessionAuthority: mocks.generalAuthority,
+      // A standalone application host has no credential proxy: no integration variables, no provider relays, no passes.
+      integrationRunAccess: null,
+      providerRelayAccess: null,
+      runPasses: null,
       modelSelectionValidator: expect.anything(),
-      taskExecutionResources: expect.objectContaining({ ownerOf: expect.any(Function), linkNewTaskExecution: expect.any(Function) }),
+      taskRecords: expect.objectContaining({ isOpen: expect.any(Function), statusChanged: expect.any(Function) }),
+      delegationIndex: expect.objectContaining({ openChildrenOf: expect.any(Function), parentOf: expect.any(Function) }),
+      // Each run's one view stream, from the composition root (SR-062).
+      viewStreams: expect.objectContaining({ streamOf: expect.any(Function) }),
+      episodicCatalog,
       platformInputNotices: expect.objectContaining({
         takePreface: expect.any(Function), runPublished: expect.any(Function), runReleased: expect.any(Function),
       }),
     });
+    // SR-052: the application host composes the same steps 4–8 with its run services; it has no peer nodes.
+    expect(composeCollaboration).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory",
+      runs: mocks.createGeneralProcessRunSupervisor.mock.results[0]!.value }));
+    expect((composeCollaboration.mock.calls[0] as unknown as [{ remoteChannel: () => unknown }])[0].remoteChannel()).toBeNull();
+    // autobyteus-493: created for the host's memory folder before step 3, given to steps 3–8, started after step 8.
+    expect(createEpisodicCatalog).toHaveBeenCalledWith(expect.objectContaining({ memoryDir: "/tmp/standalone-lifecycle/memory" }));
+    expect(createEpisodicCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.createGeneralProcessRunSupervisor.mock.invocationCallOrder[0]!);
+    expect(composeCollaboration).toHaveBeenCalledWith(expect.objectContaining({ episodicCatalog }));
+    expect(episodicCatalog.start).toHaveBeenCalledWith({ taskTitles: collaborationTasks });
+    expect(episodicCatalog.start.mock.invocationCallOrder[0]).toBeGreaterThan(composeCollaboration.mock.invocationCallOrder[0]!);
     expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,
       agentTeamDefinitionService: mocks.hostDefinitionServices.agentTeamDefinitionService,
       agentToolMcpSessionAuthorities: mocks.mcpHost.sessionAuthorities,
       agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
       workspaceManager: mocks.workspaceManager,
+      providerRelayAccess: null,
+      runPasses: null,
       runtimeAvailabilityService: mocks.runtimeAvailabilityService,
       modelCatalogService: mocks.modelCatalogService,
       modelAvailabilityService: mocks.modelAvailabilityService,
@@ -348,6 +380,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
 
     await handle.close();
     expect(mocks.generalProcessRunSupervisor.close).toHaveBeenCalledTimes(1);
+    expect(episodicCatalog.stop).toHaveBeenCalledTimes(1);
+    expect(episodicCatalog.stop.mock.invocationCallOrder[0]).toBeLessThan(mocks.generalProcessRunSupervisor.close.mock.invocationCallOrder[0]!);
     expect(mocks.mcpHost.close).toHaveBeenCalledTimes(1);
     expect(mocks.app.close.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.generalProcessRunSupervisor.close.mock.invocationCallOrder[0]!);
@@ -405,7 +439,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       status(TEAM_MIGRATION_ID, "FAILED", { logPath: "/tmp/team.log", errorMessage: "legacy package" }),
       status(READABLE_MIGRATION_ID, "SUCCEEDED"),
     ]);
-    mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: false, custom_llm_providers: true });
+    mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
 
     const handle = await startStandaloneApplicationHost(input);
 
@@ -427,7 +461,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     "starts with only custom providers held back while readable-provider identity is %s (AC-004)",
     async (_label, statuses) => {
       mocks.runPending.mockResolvedValueOnce([status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"), ...statuses]);
-      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false });
+      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false, node_identity: true, memory_sync: true });
 
       const handle = await startStandaloneApplicationHost(input);
 

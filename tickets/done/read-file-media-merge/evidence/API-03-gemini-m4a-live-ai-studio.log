@@ -1,0 +1,13 @@
+# API-03 env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1 AUTOBYTEUS_LIVE_STRICT=1 pnpm -C autobyteus-ts exec vitest run tests/integration/agent/gemini-read-file-m4a-live.test.ts
+# commit 3a336f7a4a, 2026-10-29T20:54:02Z, macOS arm64, node v22.23.1
+[live provider skip] provider refused Gemini: invalid_or_missing_credentials
+     × sends a read_file .m4a tool result continuation to direct Gemini 460ms
+Error: LIVE_PROVIDER_UNAVAILABLE: provider refused Gemini: invalid_or_missing_credentials
+     56|   console.warn(`[live provider skip] ${reason}`);
+     57|   if (strict) throw new Error(`LIVE_PROVIDER_UNAVAILABLE: ${reason}`, …
+      Tests  1 failed (1)
+ApiError: {"error":{"code":429,"message":"Quota exceeded for quota metric 'Generate Content API requests per minute' and limit 'GenerateContent request limit per minute for a region' of service 'generativelanguage.googleapis.com' for consumer 'project_number:303290304011'."
+"quota_limit_value":"0"
+"quota_location":"europe-west1"
+"reason":"RATE_LIMIT_EXCEEDED"
+exit: 1

@@ -1,0 +1,12 @@
+# Case: API-02 (control) — the new instrumented test against the manifest without android:configChanges
+# Command: git archive dd129696a4 autobyteus-android into a temp dir; delete the android:configChanges line from AndroidManifest.xml; copy MainActivityConfigurationChangeTest.kt; ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.autobyteus.mobile.MainActivityConfigurationChangeTest
+# Environment: emulator autobyteus277_api35 (as API-02)
+# Date: 2026-11-06T20:36:08Z
+
+org.autobyteus.mobile.MainActivityConfigurationChangeTest > rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput[autobyteus277_api35(AVD) - 15] [31mFAILED [0m
+	java.lang.AssertionError: the activity is not recreated expected same:<org.autobyteus.mobile.MainActivity@31ba7ac> was not:<org.autobyteus.mobile.MainActivity@ec01336>
+Tests on autobyteus277_api35(AVD) - 15 failed: There was 1 failure(s).
+Finished 1 tests on autobyteus277_api35(AVD) - 15
+> Task :app:connectedDebugAndroidTest FAILED
+> There were failing tests. See the report at: file:///private/tmp/abx415-api/control/autobyteus-android/app/build/reports/androidTests/connected/debug/index.html
+BUILD FAILED in 14s

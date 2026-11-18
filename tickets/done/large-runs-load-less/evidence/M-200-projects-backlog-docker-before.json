@@ -1,0 +1,1 @@
+{"projects":20,"tasksPerProject":1000,"taskTotal":20000,"seedMs":2428,"listProjectsMs":[1279,1373,1229,1315,1435],"listProjectsMedianMs":1315,"allTasksMs":[1467,1726,1348,1630,1484],"allTasksMedianMs":1484,"loadAverage":[2.05,1.09,0.83],"node":"v22.23.3","platform":"linux 6.12.54-linuxkit"}

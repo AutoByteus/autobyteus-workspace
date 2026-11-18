@@ -17,3 +17,6 @@ export const buildMemoryHubIngestionEndpoint = (advertisedHubBaseUrl: string): s
 
 export const buildMemoryHubHealthEndpoint = (advertisedHubBaseUrl: string): string =>
   `${normalizeMemoryHubBaseUrl(advertisedHubBaseUrl) ?? advertisedHubBaseUrl}${MEMORY_SYNC_HEALTH_PATH}`;
+
+export const buildMemoryHubStagedFileEndpoint = (hubBaseUrl: string, memorySyncSourceId: string, sha256: string): string =>
+  `${normalizeMemoryHubBaseUrl(hubBaseUrl) ?? hubBaseUrl}${MEMORY_SYNC_REST_PREFIX}/sources/${encodeURIComponent(memorySyncSourceId)}/staged-files/${sha256}`;

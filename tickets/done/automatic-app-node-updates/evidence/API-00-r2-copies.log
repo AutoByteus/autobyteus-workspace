@@ -1,0 +1,5 @@
+prepared <R>/copies/app/AutoByteus.app version=1.5.11-beta.10 id=com.autobyteus.app.an356 dr=identifier-com.autobyteus.app.an356 data=<R>/data-app port=47921 feed=http://127.0.0.1:47911 stamp={"version":"1.5.11-beta.10"}
+prepared <R>/copies/v2/AutoByteus.app version=1.5.11-beta.11 id=com.autobyteus.app.an356 dr=identifier-com.autobyteus.app.an356 data=<R>/data-app port=47921 feed=http://127.0.0.1:47911 stamp={"version":"1.5.11-beta.11"}
+total 984624
+-rw-r--r--@ 1 normy  staff  492197207 Nov  2 06:09 AutoByteus-1.5.11-beta.11-arm64-mac.zip
+V2 copy satisfies V1 copy's DR: identifier "com.autobyteus.app.an356"

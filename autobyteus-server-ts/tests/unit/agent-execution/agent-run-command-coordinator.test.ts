@@ -4,6 +4,7 @@ import type { AgentRunInputLifecycle, AgentRunInputLifecycleObserver } from "../
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
+import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 
 const createDeferred = <T>() => {
   let resolve!: (value: T) => void;
@@ -36,6 +37,7 @@ const buildCoordinator = (input: {
   restoredRun?: ReturnType<typeof createFakeRun>;
   restoreError?: Error;
   resolveCommandReadyAgentRun?: () => Promise<ReturnType<typeof createFakeRun>>;
+  standaloneRuns?: StandaloneRunCommandPort | null;
 } = {}) => {
   const registry = new AgentRunCommandRegistry();
   const overlayStore = new AgentRunCommandStatusOverlayStore();
@@ -57,6 +59,7 @@ const buildCoordinator = (input: {
   };
   const coordinator = new AgentRunCommandCoordinator({
     agentRunService: agentRunService as never,
+    ...(input.standaloneRuns !== undefined ? { standaloneRuns: input.standaloneRuns } : {}),
     registry,
     overlayStore,
     projectionService: projectionService as never,
@@ -201,5 +204,32 @@ describe("AgentRunCommandCoordinator", () => {
       message: "runtime busy",
     });
     expect(registry.getRecord("run-1", "msg-reject")?.state).toBe("REJECTED");
+  });
+
+  it("DS-15: a run whose Task is closed is refused with base's text before anything is resolved, restored or shown", async () => {
+    const refusal = { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED" as const, message: "Your Task is DONE or CANCELLED, so you can't start new work." };
+    const standaloneRuns = { inputRefusal: vi.fn(async () => refusal), postUserMessage: vi.fn(async () => null) };
+    const { coordinator, registry, published, agentRunService } = buildCoordinator({ standaloneRuns });
+    const result = await coordinator.postUserMessage(command("msg-closed"));
+    expect(result.ack).toMatchObject({ state: "rejected", accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: refusal.message });
+    expect(registry.getRecord("run-1", "msg-closed")?.state).toBe("REJECTED");
+    expect(standaloneRuns.inputRefusal).toHaveBeenCalledWith("run-1");
+    // Nothing resolved or restored, and no status published on the run's stream (the `initializing` overlay included).
+    expect(standaloneRuns.postUserMessage).not.toHaveBeenCalled();
+    expect(agentRunService.getAgentRun).not.toHaveBeenCalled();
+    expect(agentRunService.resolveCommandReadyAgentRun).not.toHaveBeenCalled();
+    expect(published).toEqual([]);
+  });
+
+  it("CR-461-070 (F-50): a delegated run that cannot be restored is refused with base's code and text in the ack, before anything is resolved", async () => {
+    const refusal = { accepted: false as const, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" as const,
+      message: "The delegated Agent at '/research' cannot be restored: its saved conversation cannot be read (line 2 is not JSON). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup." };
+    const standaloneRuns = { inputRefusal: vi.fn(async () => refusal), postUserMessage: vi.fn(async () => null) };
+    const { coordinator, published, agentRunService } = buildCoordinator({ standaloneRuns });
+    const result = await coordinator.postUserMessage(command("msg-unrestorable"));
+    expect(result.ack).toMatchObject({ state: "rejected", accepted: false, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE", message: refusal.message });
+    expect(standaloneRuns.postUserMessage).not.toHaveBeenCalled();
+    expect(agentRunService.resolveCommandReadyAgentRun).not.toHaveBeenCalled();
+    expect(published).toEqual([]);
   });
 });

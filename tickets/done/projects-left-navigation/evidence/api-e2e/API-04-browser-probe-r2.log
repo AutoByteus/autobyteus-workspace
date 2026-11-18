@@ -1,0 +1,15 @@
+# API-04 round 2: pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <evidence>/API-04-browser-probe-r2
+# Run as env -i PATH HOME TMPDIR USER LOGNAME. Code c9972a1581 (HEAD fce0d2dee6, docs only); web from source (Nuxt dev); server dist built from 467cff24c0 (server source unchanged since); probe with PLN-09 extended to Team Stop. Date: 2026-10-31T14:08:22.500Z
+# The first round-2 attempt failed on two probe defects, both fixed: the Team Stop locator (the button is a sibling of the row button) and a CORS-blocked fetch during the deliberate restart, now tolerated in PLN-08 only. Its Agent Stop result already read projectsStopButtonsAfter5s: 0.
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/api-e2e/API-04-browser-probe-r2/evidence.json

@@ -1,0 +1,23 @@
+n = 31 answerable questions (one search)
+
+method                    gate1 top10         95% CI   #1  top3    MRR
+text+cards                  30/31 ( 97%) [ 84– 99%]   20    27  0.780
+text+dialogue               30/31 ( 97%) [ 84– 99%]   20    26  0.768
+text                        27/31 ( 87%) [ 71– 95%]   20    25  0.731
+cards                       24/31 ( 77%) [ 60– 89%]   19    22  0.662
+dialogue                    25/31 ( 81%) [ 64– 91%]   18    23  0.675
+rg (distinct keywords)      16/31 ( 52%) [ 35– 68%]    4    11  0.263
+rg (hits)                    5/31 ( 16%) [  7– 33%]    0     2  0.063
+
+Paired comparisons, gate 1 (exact McNemar; b = only A passes, c = only B passes):
+  text+cards vs rg (distinct keywords): b=14, c=0, p=0.0001
+  text+cards vs rg (hits): b=25, c=0, p=0.0000
+  text+cards vs text: b=3, c=0, p=0.2500
+  text+cards vs cards: b=6, c=0, p=0.0312
+  text+cards vs text+dialogue: b=0, c=0, p=1.0000
+  text vs rg (distinct keywords): b=11, c=0, p=0.0010
+
+Paired comparisons, #1 (exact McNemar):
+  text+cards vs rg (distinct keywords): b=16, c=0, p=0.0000
+  text+cards vs text: b=0, c=0, p=1.0000
+  text+cards vs cards: b=7, c=6, p=1.0000

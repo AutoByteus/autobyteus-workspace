@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import {
   WorkspaceSkillMaterializer,
@@ -6,7 +8,7 @@ import {
 
 /** Grok discovers workspace skills under `.grok/skills`. */
 export const GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE: WorkspaceSkillMaterializationProfile = {
-  runtimeLabel: "Grok Build",
+  runtimeLabel: agentRuntimeName(RuntimeKind.GROK_BUILD),
   workspaceSkillsRootSegments: [".grok", "skills"],
 };
 

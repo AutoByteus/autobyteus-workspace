@@ -1,0 +1,300 @@
+# Check: IMP-04-runtime-delivery-and-release
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-integration-environment.test.ts tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-execution/backends/codex/codex-tool-list-reopen.test.ts tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/services/agent-run-activation-operation.test.ts tests/unit/agent-execution/agent-provider-factory-builder.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts
+# Commit: 32f14bfd4d (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:09:50Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts (12 tests) 497ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts (22 tests) 344ms
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:72368) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+Using temp workspace (ID: workspace-1) for agent.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+Tool 'run_bash' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+AgentRuntimeState initialized for agent_id 'run-allowed'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'run-allowed': No tools provided in config.
+Agent 'run-allowed': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'run-allowed'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'run-allowed' with config: 'Gitter'.
+AgentWorker initialized for agent_id 'run-allowed'.
+Registered AgentContext for agent_id 'run-allowed'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'run-allowed'. Context registered.
+Agent facade initialized for agent_id 'run-allowed'.
+Agent 'run-allowed' created and stored successfully.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+Removing agent 'run-allowed'. Attempting graceful shutdown.
+Agent 'run-allowed' requesting runtime to stop (timeout: 1s).
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives a run of an agent without access nothing
+Using temp workspace (ID: workspace-1) for agent.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives a run of an agent without access nothing
+Tool 'run_bash' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives a run of an agent without access nothing
+Agent with ID 'run-allowed' not found for removal.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts (2 tests) 247ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (20 tests) 40ms
+stdout | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:72774) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (19 tests) 72ms
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:72804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > keeps a new run private until synchronous candidate publication
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > tells the lifecycle observer about a run only once it is published, with its activation kind
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > claims the run id before the first backend await and rejects overlapping preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > allows retry only after candidate abort confirms inactivity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines an uncertain candidate cleanup and rejects same-process replacement
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores codex_app_server from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > strictly restores claude_agent_sdk from the exact provider identity
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > ends the credential-proxy pass a backend got during an activation that fails before attachment (AR-002)
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > ends an attached run's credential-proxy pass when the run is released
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > aborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rolls back already-attached run resources when a later attachment fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates exactly once when a post-activation backend identity mismatch fails before attachment
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines attachment rollback when exact-run session deactivation fails
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation create failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > deactivates pre-attachment sessions after a post-activation restore failure
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > quarantines with primary then deactivation cleanup evidence
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > rejects another candidate after publication without replacing the active run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager candidate lifecycle > detaches run resources and invokes exact-run MCP cleanup after accepted termination
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > allows only one non-waiting quiescence preparation attempt per exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > cancels through the exact run without releasing it and permits a fresh preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries only after a rejected finish and releases once after acceptance
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > coalesces one committed finish attempt and caches successful finalization
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retains accepted-but-active failure without removing the exact run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > retries exact retained component cleanup after physical release without stopping twice
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal not_found as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > treats exact-current removal identity_mismatch as terminal without resource cleanup
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > rejects a missing or different exact instance before lower-level preparation
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > releaseRetiredRun > does nothing for an unknown id or a live published run
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > releaseRetiredRun > exact-releases a run that went offline so its replacement can be claimed (AC-003)
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > releaseRetiredRun > keeps the release owed and retryable when the previous runtime's stop throws (AC-008)
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > releaseRetiredRun > keeps the release owed and retryable when the previous runtime's stop is not accepted (AC-008)
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > releaseRetiredRun > joins an in-flight release instead of stopping the previous runtime twice (AC-005)
+AgentRunManager initialized.
+
+stdout | tests/unit/agent-execution/agent-run-manager.test.ts > AgentRunManager published-run termination > routes stop-all active runs through the managed prepared boundary
+AgentRunManager initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (33 tests) 77ms
+stdout | tests/unit/agent-execution/agent-provider-factory-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:73119) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/agent-provider-factory-builder.test.ts (23 tests) 9ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:73122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (34 tests) 37ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-integration-environment.test.ts (2 tests) 5ms
+stdout | tests/unit/agent-execution/backends/codex/codex-tool-list-reopen.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/codex/codex-tool-list-reopen.test.ts (9 tests) 10ms
+ ✓ tests/unit/agent-execution/services/agent-run-activation-operation.test.ts (4 tests) 8ms
+
+ Test Files  11 passed (11)
+      Tests  180 passed (180)
+   Start at  09:09:51
+   Duration  16.51s (transform 4.42s, setup 189ms, import 13.33s, tests 1.35s, environment 1ms)
+
+
+# Exit code: 0

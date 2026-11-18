@@ -1,0 +1,65 @@
+[
+  {
+    "window": 560,
+    "cardWidth": 462,
+    "layout": "narrow (<38rem)",
+    "cellBox": {
+      "x": 95,
+      "y": 533,
+      "w": 420,
+      "h": 92
+    },
+    "toggleInCell": true,
+    "toggleBox": {
+      "x": 119,
+      "y": 564,
+      "w": 32,
+      "h": 18
+    },
+    "cellText": "Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11",
+    "notice": null,
+    "gridColumns": "336px 68px"
+  },
+  {
+    "window": 1300,
+    "cardWidth": 913,
+    "layout": "medium (>=38rem)",
+    "cellBox": {
+      "x": 376,
+      "y": 668,
+      "w": 871,
+      "h": 92
+    },
+    "toggleInCell": true,
+    "toggleBox": {
+      "x": 400,
+      "y": 699,
+      "w": 32,
+      "h": 18
+    },
+    "cellText": "Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11",
+    "notice": null,
+    "gridColumns": "675px 96px 68px"
+  },
+  {
+    "window": 1900,
+    "cardWidth": 1280,
+    "layout": "wide (>=64rem: 16rem server column)",
+    "cellBox": {
+      "x": 935,
+      "y": 617,
+      "w": 256,
+      "h": 92
+    },
+    "toggleInCell": true,
+    "toggleBox": {
+      "x": 935,
+      "y": 648,
+      "w": 32,
+      "h": 18
+    },
+    "cellText": "Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11",
+    "notice": null,
+    "gridColumns": "426.172px 256px 327.82px 96px 68.0078px"
+  }
+]

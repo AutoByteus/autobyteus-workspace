@@ -16,6 +16,12 @@ import {
   type AgentPackageDefinitions,
 } from "../../agent-package-definitions/services/agent-package-definitions.js";
 import type { DefinitionLoadIssue, DefinitionLoadIssueEntry } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
+import {
+  PersonalSettingsService,
+  type PersonalSettingsSourceClass,
+  type PersonalSettingsView,
+} from "../../personal-settings/services/personal-settings-service.js";
+import type { PersonalSetting } from "../../personal-settings/domain/personal-setting-record.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -25,8 +31,21 @@ const logger = {
 /** File writes, templates and application-package reads (agent package definitions are store reads). */
 export type AgentTeamDefinitionFileStore = Pick<
   FileAgentTeamDefinitionProvider,
-  "create" | "getById" | "getTemplates" | "update" | "delete" | "listApplicationOwnedTeams"
+  "create" | "getById" | "getTemplates" | "update" | "rendersDifferently" | "delete" | "listApplicationOwnedTeams"
 >;
+
+/** A stored Team with where it was read from (null for an application-owned Team). */
+/**
+ * The editor sends trimmed text, while the files may keep surrounding whitespace (e.g. a final
+ * newline in team.md). Text equal to the files' up to that whitespace is no edit: the files' text
+ * is kept, so a save that changes only personal settings writes no package file.
+ */
+const keptText = (update: AgentTeamDefinitionUpdate, files: AgentTeamDefinition): Partial<AgentTeamDefinitionUpdate> =>
+  Object.fromEntries((["name", "description", "instructions", "category"] as const)
+    .filter((field) => typeof update[field] === "string" && update[field]!.trim() === (files[field] ?? "").trim())
+    .map((field) => [field, files[field]]));
+
+type BaseRead = Readonly<{ definition: AgentTeamDefinition | null; sourceClass: PersonalSettingsSourceClass | null }>;
 
 /**
  * One Team admission entry from the agent package definitions: a shared Team or an org-owned Team.
@@ -45,6 +64,8 @@ type AgentTeamDefinitionServiceOptions = {
   fileStore?: AgentTeamDefinitionFileStore;
   packageDefinitions?: AgentPackageDefinitions;
   agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+  /** The node's personal settings (avatar and runtime/model), applied on every package read; the process instance by default. */
+  personalSettings?: PersonalSettingsService;
 };
 
 const normalizeOptionalString = (value: unknown): string | null => {
@@ -159,11 +180,25 @@ export class AgentTeamDefinitionService {
   private readonly fileStore: AgentTeamDefinitionFileStore;
   private readonly packageDefinitions: AgentPackageDefinitions;
   private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+  private readonly personalSettings: PersonalSettingsService;
 
   constructor(options: AgentTeamDefinitionServiceOptions = {}) {
     this.fileStore = options.fileStore ?? new FileAgentTeamDefinitionProvider();
     this.packageDefinitions = options.packageDefinitions ?? getProcessAgentPackageDefinitions();
     this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    this.personalSettings = options.personalSettings ?? PersonalSettingsService.getInstance();
+  }
+
+  /** The base value (no personal settings) and where it was read from; every write form starts from it. */
+  private async readBaseDefinition(definitionId: string): Promise<BaseRead> {
+    if (parseCanonicalApplicationOwnedTeamId(definitionId)) return { definition: await this.fileStore.getById(definitionId), sourceClass: null };
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    const entry = this.packageDefinitions.store.getEntry("agent_team", definitionId);
+    return { definition: entry?.definition ?? null, sourceClass: entry?.location.sourceClass ?? null };
+  }
+
+  private effective(definition: AgentTeamDefinition, sourceClass: PersonalSettingsSourceClass | null): AgentTeamDefinition {
+    return sourceClass ? this.personalSettings.apply("agent_team", definition, sourceClass) : definition;
   }
 
   async createDefinition(definition: AgentTeamDefinition): Promise<AgentTeamDefinition> {
@@ -193,9 +228,8 @@ export class AgentTeamDefinitionService {
 
   /** Shared and org-owned Team IDs are store reads (last good honored); application-package IDs read their package. */
   async getDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
-    if (parseCanonicalApplicationOwnedTeamId(definitionId)) return this.fileStore.getById(definitionId);
-    await this.packageDefinitions.reloader.applyPendingChanges();
-    return this.packageDefinitions.store.getDefinition("agent_team", definitionId);
+    const base = await this.readBaseDefinition(definitionId);
+    return base.definition ? this.effective(base.definition, base.sourceClass) : null;
   }
 
   /**
@@ -205,7 +239,7 @@ export class AgentTeamDefinitionService {
   async getAllDefinitions(): Promise<AgentTeamDefinition[]> {
     await this.packageDefinitions.reloader.applyPendingChanges();
     const definitions = this.packageDefinitions.store.listFolderRoots("agent_team")
-      .flatMap((entry) => entry.definition ? [entry.definition] : []);
+      .flatMap((entry) => entry.definition ? [this.effective(entry.definition, entry.location.sourceClass)] : []);
     const seenIds = new Set(definitions.map((definition) => definition.id));
     for (const definition of await this.fileStore.listApplicationOwnedTeams()) {
       if (seenIds.has(definition.id)) continue;
@@ -225,7 +259,7 @@ export class AgentTeamDefinitionService {
     ];
     return entries.map((entry) => Object.freeze({
       definitionId: entry.id,
-      definition: entry.definition,
+      definition: entry.definition ? this.effective(entry.definition, entry.location.sourceClass) : null,
       issue: entry.issue,
       definitionPath: entry.definition?.source?.definitionPath ?? entry.issue?.definitionPath ?? entry.location.folderDir,
       packageRoot: entry.location.packageRoot,
@@ -278,11 +312,17 @@ export class AgentTeamDefinitionService {
     return new DefinitionEndpointCatalog().projectTeam(topology);
   }
 
+  /**
+   * A save. For a package Team the avatar and runtime/model go to the personal settings file and
+   * the other fields to the Team's files, written only when their rendering changes; every other
+   * Team is written to its files as before. Returns the effective definition.
+   */
   async updateDefinition(
     definitionId: string,
     updateData: AgentTeamDefinitionUpdate,
   ): Promise<AgentTeamDefinition> {
-    const existing = await this.getDefinitionById(definitionId);
+    const base = await this.readBaseDefinition(definitionId);
+    const existing = base.definition;
     if (!existing) {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
@@ -293,21 +333,59 @@ export class AgentTeamDefinitionService {
       conflict.code = "DEFINITION_REVISION_CONFLICT";
       throw conflict;
     }
-    const candidate = buildDefinitionUpdateCandidate(existing, updateData);
+    const personal = base.sourceClass !== null && this.personalSettings.appliesTo("agent_team", definitionId, base.sourceClass);
+    const candidate = buildDefinitionUpdateCandidate(existing, personal
+      ? new AgentTeamDefinitionUpdate({ ...updateData, ...keptText(updateData, existing), avatarUrl: undefined, defaultLaunchConfig: undefined })
+      : updateData);
     candidate.revision = updateData.expectedRevision;
-    assertValidTeamMembers(candidate.nodes);
-    assertValidCoordinatorMember(candidate.coordinatorMemberName, candidate.nodes);
-    await assertValidFlatTeamDefinition({
-      rootDefinition: candidate,
-      lookup: {
-        getAgentById: async (id) => this.agentDefinitionService.getAgentDefinitionById(id),
-      },
+    if (!personal || this.fileStore.rendersDifferently(existing, candidate)) {
+      assertValidTeamMembers(candidate.nodes);
+      assertValidCoordinatorMember(candidate.coordinatorMemberName, candidate.nodes);
+      await assertValidFlatTeamDefinition({
+        rootDefinition: candidate,
+        lookup: {
+          getAgentById: async (id) => this.agentDefinitionService.getAgentDefinitionById(id),
+        },
+      });
+      const updated = await this.fileStore.update(candidate);
+      await this.reloadOwningFolder(definitionId);
+      if (!personal) {
+        logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
+        return updated;
+      }
+    }
+    this.personalSettings.setEdited("agent_team", definitionId, existing, {
+      // null means "not sent" (as for the files); "" clears the personal avatar, back to the base.
+      ...(updateData.avatarUrl !== undefined && updateData.avatarUrl !== null
+        ? { avatarUrl: normalizeOptionalString(updateData.avatarUrl) }
+        : {}),
+      ...(updateData.defaultLaunchConfig !== undefined
+        ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null }
+        : {}),
     });
-
-    const updated = await this.fileStore.update(candidate);
-    await this.reloadOwningFolder(definitionId);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
-    return updated;
+    return (await this.getDefinitionById(definitionId)) ?? this.effective(existing, base.sourceClass);
+  }
+
+  /** Removes one personal setting (avatar or runtime/model) of a package Team; returns the effective definition. */
+  async resetPersonalSetting(definitionId: string, setting: PersonalSetting): Promise<AgentTeamDefinition> {
+    const base = await this.readBaseDefinition(definitionId);
+    if (!base.definition) throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
+    if (!base.sourceClass || !this.personalSettings.appliesTo("agent_team", definitionId, base.sourceClass)) {
+      throw new Error(`Agent Team Definition ${definitionId} has no personal settings.`);
+    }
+    this.personalSettings.reset("agent_team", definitionId, setting);
+    return this.effective(base.definition, base.sourceClass);
+  }
+
+  /** Which settings of the Team are personal, and on which base (null: personal settings do not apply). */
+  async getPersonalSettingsView(definitionId: string): Promise<PersonalSettingsView> {
+    if (parseCanonicalApplicationOwnedTeamId(definitionId)) return { base: null, settings: [] };
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    const store = this.packageDefinitions.store;
+    const folder = store.folderOf("agent_team", definitionId);
+    const sourceClass = folder ? store.folderLocation(folder.kind, folder.folderId)?.sourceClass ?? null : null;
+    return sourceClass ? this.personalSettings.viewOf("agent_team", definitionId, sourceClass) : { base: null, settings: [] };
   }
 
   async deleteDefinition(definitionId: string): Promise<boolean> {

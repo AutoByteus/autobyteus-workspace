@@ -1,0 +1,6 @@
+(node:42489) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+WVC-003 Pass REQ-008/AC-009/AC-011, DS-002/DS-007: Runs → Workspaces → Runs with 9 runs of one agent: windows null/6/null; Show older (N) counts every run; the tree shows the newest 6; nothing missing after the round trip; the view survives a reload; Archive all older is all-or-nothing
+WVC-004 Pass DS-002/design Risks: the desktop Runs view reads with null while the paired phone reads with 5
+Summary: 2 Pass, 0 Fail
+exit=0

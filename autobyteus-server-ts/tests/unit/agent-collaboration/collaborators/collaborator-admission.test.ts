@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
-import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../src/built-in-agents/built-in-agent-registry.js";
+import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../../../src/built-in-agents/built-in-agent-registry.js";
 import { collaboratorSegmentForName } from "../../../../src/agent-collaboration/collaborators/catalog-address-map.js";
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
@@ -24,7 +24,7 @@ const team = (id: string, name: string, members: readonly [string, string][], co
 const definitions = {
   agents: [
     agent(DAILY_ASSISTANT_AGENT_DEFINITION_ID, "Daily Assistant"),
-    agent(MEMORY_COMPACTOR_AGENT_DEFINITION_ID, "Memory Compactor"),
+    agent(MODEL_ROUTER_AGENT_DEFINITION_ID, "Model Router"),
     agent("reviewer", "Code Reviewer"),
     agent("lead", "Lead"),
     agent("designer", "Designer"),
@@ -35,6 +35,7 @@ const definitions = {
 };
 const catalog: CollaboratorDefinitionCatalog = {
   listAgentDefinitions: async () => definitions.agents,
+  isAgentHidden: () => false,
   listTeamDefinitions: async () => definitions.teams,
   getAgentDefinition: async (id) => definitions.agents.find((item) => item.id === id) ?? null,
   getTeamDefinition: async (id) => definitions.teams.find((item) => item.id === id) ?? null,
@@ -48,14 +49,16 @@ const port = (input: {
   configuredAgents?: string[];
   addresses?: string[];
   applicationBound?: boolean;
+  ownAgent?: string;
 } = {}): CollaboratorRootPort => ({
   isApplicationBound: input.applicationBound ?? false,
   launchBase: () => ({ kind: "inherited", launch }),
-  ownDefinition: () => ({ kind: "agent_team", definitionId: "se-team" }),
-  inRunPlacementsByDefinition: () => buildInRunPlacements({
+  ownDefinition: () => input.ownAgent ? { kind: "agent", definitionId: input.ownAgent } : { kind: "agent_team", definitionId: "se-team" },
+  inRunPlacementsByDefinition: async () => buildInRunPlacements({
     configured: (input.configuredAgents ?? []).map((id) => ({ ref: { kind: "agent" as const, definitionId: id }, address: `/${id}` as never })),
+    configuredStep: 1, reached: [],
   }),
-  addressesInUse: () => new Set(input.addresses ?? ["/coordinator"]),
+  addressesInUse: async () => new Set(input.addresses ?? ["/coordinator"]),
 });
 
 /** Records every step so the order can be asserted. */
@@ -65,10 +68,12 @@ const harness = (options: { invalid?: boolean } = {}) => {
     validate: vi.fn(),
     validateMany: vi.fn(async (inputs) => {
       steps.push(`validate:${inputs.length}`);
-      return inputs.map(() => options.invalid ? { kind: "model_unavailable" as const } : { kind: "valid" as const, selection: { llmModelIdentifier: "gpt", llmConfig: null } });
+      // A valid check returns the canonical selection; these inputs declare every key, so it equals the input.
+      return inputs.map(({ selection }) => options.invalid ? { kind: "model_unavailable" as const }
+        : { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } });
     }),
   } as unknown as RunModelSelectionValidator;
-  return { steps, admission: createCollaboratorAdmission(catalog, validator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) }) };
+  return { steps, validator, admission: createCollaboratorAdmission(catalog, validator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) }) };
 };
 
 const other = { relation: () => "other" as const, ownTeam: null };
@@ -76,16 +81,19 @@ const other = { relation: () => "other" as const, ownTeam: null };
 describe("catalog policy and mention resolution", () => {
   const admission = harness().admission;
 
-  it("offers shared Agents then shared Teams, in the run or not, minus built-ins, non-shared and the run's own definition (REQ-001)", async () => {
+  it("offers shared Agents then shared Teams, in the run or not, minus the Model Router, non-shared and the run's own definition (REQ-001)", async () => {
     const list = await admission.policy.listCandidates(port({ configuredAgents: ["lead"] }));
     expect(list.availability).toBe("AVAILABLE");
-    // `lead` is a configured member: it is still offered (AC-002).
+    // `lead` is a configured member: it is still offered (AC-002). The Daily Assistant is offered like any shared
+    // Agent; the Model Router never is (autobyteus-455 AC-005).
     expect(list.candidates.map((candidate) => `${candidate.kind}:${candidate.definitionId}`))
-      .toEqual(["agent:reviewer", "agent:lead", "agent:designer", "agent_team:product"]);
-    expect(list.candidates[3]).toMatchObject({ memberCount: 2, coordinatorName: "lead" });
-    const ownReviewer = { ...port(), ownDefinition: () => ({ kind: "agent" as const, definitionId: "reviewer" }) };
-    expect((await admission.policy.listCandidates(ownReviewer)).candidates.map((candidate) => candidate.definitionId))
-      .toEqual(["lead", "designer", "product"]);
+      .toEqual([`agent:${DAILY_ASSISTANT_AGENT_DEFINITION_ID}`, "agent:reviewer", "agent:lead", "agent:designer", "agent_team:product"]);
+    expect(list.candidates[4]).toMatchObject({ memberCount: 2, coordinatorName: "lead" });
+    expect((await admission.policy.listCandidates(port({ ownAgent: "reviewer" }))).candidates.map((candidate) => candidate.definitionId))
+      .toEqual([DAILY_ASSISTANT_AGENT_DEFINITION_ID, "lead", "designer", "product"]);
+    // A Daily Assistant run never offers itself (autobyteus-455 AC-005).
+    expect((await admission.policy.listCandidates(port({ ownAgent: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))).candidates.map((candidate) => candidate.definitionId))
+      .toEqual(["reviewer", "lead", "designer", "product"]);
     expect(await admission.policy.listCandidates(port({ applicationBound: true })))
       .toEqual({ availability: "UNAVAILABLE_APPLICATION_ROOT", candidates: [] });
   });
@@ -165,7 +173,7 @@ describe("catalog policy and mention resolution", () => {
   it("`@` addresses an in-run configured member; delegation never admits a second instance of it (REQ-002, AC-006)", async () => {
     const inRun = port({ configuredAgents: ["reviewer", "lead"] });
     expect((await admission.policy.listCandidates(inRun)).candidates.map((candidate) => candidate.definitionId))
-      .toEqual(["reviewer", "lead", "designer", "product"]);
+      .toEqual([DAILY_ASSISTANT_AGENT_DEFINITION_ID, "reviewer", "lead", "designer", "product"]);
     await expect(admission.resolveMentions(inRun, [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent", definitionId: "lead" }], other))
       .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Code Reviewer", kind: "agent", address: "/reviewer", presence: "in_run" },
@@ -177,7 +185,51 @@ describe("catalog policy and mention resolution", () => {
     await expect(admission.policy.requireAdmissible(inRun, { kind: "agent_team", definitionId: "product" })).resolves.toMatchObject({ kind: "agent_team" });
     await expect(admission.policy.requireAdmissible(port({ applicationBound: true }), { kind: "agent", definitionId: "reviewer" })).rejects.toBeDefined();
     await expect(admission.policy.requireAdmissible(port(), { kind: "agent", definitionId: "local" })).rejects.toBeDefined();
-    await expect(admission.policy.requireAdmissible(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).rejects.toBeDefined();
+  });
+
+  it("the Daily Assistant is an ordinary collaborator; the Model Router never is (autobyteus-455 AC-001, AC-002, AC-005)", async () => {
+    await expect(admission.policy.requireAdmissible(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))
+      .resolves.toMatchObject({ kind: "agent", definition: { id: DAILY_ASSISTANT_AGENT_DEFINITION_ID } });
+    await expect(admission.catalogDefinitionAt(port(), "/daily_assistant")).resolves.toMatchObject({ kind: "agent" });
+    // Its inverse (SR-072 F-24): the address a definition has in the run's catalog; none in an application-bound run.
+    await expect(admission.catalogAddressOf(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).resolves.toBe("/daily_assistant");
+    await expect(admission.catalogAddressOf(port({ applicationBound: true }), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).resolves.toBeNull();
+    await expect(admission.resolveMentions(port(), [{ kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }], other))
+      .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
+        { name: "Daily Assistant", kind: "agent", address: "/daily_assistant", presence: "not_in_run" },
+      ] });
+    const source = await harness().admission.catalogTaskSource(port(), { address: "/daily_assistant", senderRunId: "pm",
+      work: { text: "Plan my day.", task: { taskId: null, taskKey: null, projectId: null, title: "Plan my day." } }, workspaceRootPath: null });
+    expect(source).toMatchObject({ name: "Daily Assistant", source: { kind: "agent" } });
+    // The Model Router: not mentionable, not admissible, no catalog address.
+    await expect(admission.policy.requireEligible(port(), { kind: "agent", definitionId: MODEL_ROUTER_AGENT_DEFINITION_ID }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_INVALID" });
+    await expect(admission.policy.requireAdmissible(port(), { kind: "agent", definitionId: MODEL_ROUTER_AGENT_DEFINITION_ID })).rejects.toBeDefined();
+    await expect(admission.catalogDefinitionAt(port(), "/model_router")).resolves.toBeNull();
+  });
+
+  it("a Daily Assistant run neither lists nor delegates to its own definition, and a run never gets a second Daily Assistant (autobyteus-455 AC-006)", async () => {
+    const ownRun = port({ ownAgent: DAILY_ASSISTANT_AGENT_DEFINITION_ID });
+    expect((await admission.policy.listEligible(ownRun)).map((entry) => entry.address))
+      .toEqual(["/code_reviewer", "/lead", "/designer", "/product_team"]);
+    await expect(admission.policy.requireAdmissible(ownRun, { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Daily Assistant is this run's own definition." });
+    await expect(admission.catalogDefinitionAt(ownRun, "/daily_assistant")).resolves.toBeNull();
+    // A run that already holds a Daily Assistant addresses that instance; a catalog copy is never made.
+    const withCopy = port({ configuredAgents: [DAILY_ASSISTANT_AGENT_DEFINITION_ID] });
+    await expect(admission.policy.requireAdmissible(withCopy, { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Daily Assistant is already in this run." });
+  });
+
+  it("autobyteus-461 SR-037 (DL-11, U7): a team run never delegates to its own definition, also a delegated team rooted at `/`", async () => {
+    const { admission } = harness();
+    const productTeamRun: CollaboratorRootPort = { ...port(), ownDefinition: () => ({ kind: "agent_team", definitionId: "product" }) };
+    // Its own definition has no catalog address in its run, so `delegate_task("/product_team")` is not found (today's text).
+    await expect(admission.catalogDefinitionAt(productTeamRun, "/product_team")).resolves.toBeNull();
+    await expect(admission.policy.requireAdmissible(productTeamRun, { kind: "agent_team", definitionId: "product" }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Product Team is this run's own definition." });
+    // Another run reaches it as a catalog address.
+    await expect(admission.catalogDefinitionAt(port(), "/product_team")).resolves.toEqual({ kind: "agent_team", definitionId: "product" });
   });
 
   it("derives address segments from names", () => {
@@ -189,6 +241,7 @@ describe("catalog policy and mention resolution", () => {
   it("lists every eligible definition once at its in-run or catalog address, with the `@` exclusions (Q-2, AR-002)", async () => {
     const listed = await admission.policy.listEligible(port({ configuredAgents: ["reviewer"] }));
     expect(listed).toEqual([
+      { name: "Daily Assistant", kind: "agent", address: "/daily_assistant", description: "Daily Assistant description" },
       { name: "Code Reviewer", kind: "agent", address: "/reviewer", description: "Code Reviewer description" },
       { name: "Lead", kind: "agent", address: "/lead", description: "Lead description" },
       { name: "Designer", kind: "agent", address: "/designer", description: "Designer description" },
@@ -198,9 +251,21 @@ describe("catalog policy and mention resolution", () => {
     expect(await admission.policy.listEligible(port({ applicationBound: true }))).toEqual([]);
   });
 
+  it("a catalog copy with its own folder resolves and checks its launches for that folder; the tool schema is untouched (autobyteus-97 AC-008)", async () => {
+    const run = harness();
+    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm", workspaceRootPath: "/projects/f" } as never);
+    const copy = source!.source as never as { defaultLaunchConfiguration: { workspaceRootPath: string }; members: Array<{ launchConfiguration: { workspaceRootPath: string } }> };
+    expect(copy.defaultLaunchConfiguration.workspaceRootPath).toBe("/projects/f");
+    expect(copy.members.map((member) => member.launchConfiguration.workspaceRootPath)).toEqual(["/projects/f", "/projects/f"]);
+    const checked = vi.mocked(run.validator.validateMany).mock.calls.flatMap(([inputs]) => inputs) as never as Array<Record<string, unknown>>;
+    expect(checked.length).toBeGreaterThan(0);
+    expect(checked.every((input) => (input.context as { workspaceRootPath: string }).workspaceRootPath === "/projects/f")).toBe(true);
+    expect(port().launchBase()).toMatchObject({ kind: "inherited", launch });
+  });
+
   it("a catalog task source snapshots the definition and root settings without identities (Q-1)", async () => {
     const run = harness();
-    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm" });
+    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm", workspaceRootPath: null });
     expect(source).toEqual({ name: "Product Team", launchNotes: [], source: {
       kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: "/product_team/lead",
       members: [
@@ -212,8 +277,8 @@ describe("catalog policy and mention resolution", () => {
       defaultLaunchSource: { origin: "inherited", fallbacks: [] },
     } });
     expect(run.steps).toEqual(["validate:1"]);
-    expect(await run.admission.catalogTaskSource(port(), { address: "/nobody", senderRunId: "pm" })).toBeNull();
-    await expect(harness({ invalid: true }).admission.catalogTaskSource(port(), { address: "/code_reviewer", senderRunId: "pm" }))
+    expect(await run.admission.catalogTaskSource(port(), { address: "/nobody", senderRunId: "pm", workspaceRootPath: null })).toBeNull();
+    await expect(harness({ invalid: true }).admission.catalogTaskSource(port(), { address: "/code_reviewer", senderRunId: "pm", workspaceRootPath: null }))
       .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer" });
   });
 });

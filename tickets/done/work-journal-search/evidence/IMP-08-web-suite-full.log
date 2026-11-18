@@ -1,0 +1,16 @@
+# IMP-08 web unit/component suite (full)
+# Command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run
+# Commit: working tree that became 44ac4d3344, before the fixes to tests/stores/memoryInspectorStore.test.ts and localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (rerun in IMP-09)
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1, pnpm
+# Date: 2026-10-26
+# Excerpt (full log: 42k lines, not committed): failing tests and the summary
+
+ FAIL  localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts > zh-CN glossary consistency > keeps shared agent and team terminology aligned with the approved glossary
+ FAIL  tests/stores/memoryInspectorStore.test.ts > memoryInspectorStore > inspect loads an agent run memory view without raw traces by default
+ FAIL  tests/stores/memoryInspectorStore.test.ts > memoryInspectorStore > keeps the loaded view when re-inspecting the same org member and resets it for another member
+ FAIL  tests/stores/memoryInspectorStore.test.ts > memoryInspectorStore > loads a team member memory view with compound identity
+ FAIL  tests/stores/memoryInspectorStore.test.ts > memoryInspectorStore > loads an org member memory view with the org view query and compound identity
+
+ Test Files  2 failed | 686 passed | 2 skipped (690)
+      Tests  5 failed | 4913 passed | 5 skipped (4923)
+   Duration  347.13s (transform 29.69s, setup 2359.19s, collect 171.63s, tests 95.21s, environment 232.70s, prepare 112.03s)

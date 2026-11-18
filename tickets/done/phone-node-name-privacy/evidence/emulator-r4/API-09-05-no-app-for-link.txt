@@ -1,0 +1,7 @@
+text: No app can open this link
+text: No app on this phone opens this kind of link.
+
+Tap Retry to go back to your runs.
+text: RETRY
+text: EDIT
+text: BROWSER

@@ -1,0 +1,21 @@
+# Evidence: IMP-12-web-unit-suite-excerpt.log (excerpt of IMP-12-web-unit-suite.log)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web) NUXT_TEST=true pnpm exec vitest run
+# Commit: 35e5853a22 (Merge origin/personal (84ea944ac5) into codex/manage-nodes-professional (autobyt)
+# Working tree: 0 changed tracked/untracked paths under autobyteus-web, autobyteus-server-ts
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 10:41:10 CET
+# Run by: implementation_engineer (autobyteus-363)
+
+
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (17 tests) 106ms
+ ✓ components/settings/nodes/__tests__/NodeServerUpdate.spec.ts (13 tests) 49ms
+ ✓ components/settings/nodes/__tests__/NodeChangeDialog.spec.ts (7 tests) 39ms
+ ✓ components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts (9 tests) 69ms
+ ✓ components/settings/nodes/__tests__/AddNodePanel.spec.ts (3 tests) 62ms
+ ✓ components/settings/__tests__/RemoteCollaborationOfferToggle.spec.ts (3 tests) 22ms
+ ✓ tests/integration/app-font-size-fixed-px-audit.integration.test.ts (2 tests) 10ms
+
+ Test Files  686 passed (686)
+      Tests  5020 passed (5020)
+   Duration  244.65s (transform 26.94s, setup 1614.63s, collect 160.25s, tests 75.10s, environment 141.73s, prepare 85.37s)
+# Exit code: 0

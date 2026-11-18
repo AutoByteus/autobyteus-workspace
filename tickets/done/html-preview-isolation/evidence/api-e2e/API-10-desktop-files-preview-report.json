@@ -1,0 +1,54 @@
+{
+ "caseId": "API-10",
+ "mode": "files",
+ "at": "2026-11-07T04:54:53.890Z",
+ "frameUrl": "http://127.0.0.1:50113/rest/workspaces/agent_ws_b9363bcf711d0f11a5739bb63b7fea7ad66f364f5119f36270d59a20d23353d2/static/hostile.html",
+ "iframes": [
+  {
+   "src": "http://127.0.0.1:50113/rest/workspaces/agent_ws_b9363bcf711d0f11a5739bb63b7fea7ad66f364f5119f36270d59a20d23353d2/static/hostile.html",
+   "sandbox": "allow-scripts",
+   "title": "HTML Preview"
+  }
+ ],
+ "appWindow": {
+  "origin": "file://",
+  "protocol": "file:",
+  "localStorageKeys": 2,
+  "electronAPI": "object"
+ },
+ "report": {
+  "label": "ws",
+  "version": "WS-V1",
+  "checks": {
+   "origin": "null",
+   "location-protocol": "http:",
+   "inline-script": "ran",
+   "parent-document": "blocked: SecurityError",
+   "top-document": "blocked: SecurityError",
+   "parent-electronAPI": "blocked: SecurityError",
+   "parent-electronAPI-call": "blocked: SecurityError",
+   "own-electronAPI": "undefined",
+   "localStorage": "blocked: SecurityError",
+   "sessionStorage": "blocked: SecurityError",
+   "indexedDB": "blocked: SecurityError",
+   "cookie": "blocked: SecurityError",
+   "parent-localStorage-phone-credential": "blocked: SecurityError",
+   "worker": "blocked: SecurityError",
+   "img-relative": "loaded 3x3",
+   "ws-terminal-error": "error event",
+   "ws-terminal": "closed code=1006 before open",
+   "fetch-relative-json": "failed: TypeError",
+   "graphql-post-json": "failed: TypeError",
+   "graphql-post-simple": "sent (opaque response type=opaque)",
+   "graphql-read-json": "failed: TypeError",
+   "graphql-get-img": "error (sent without Origin)",
+   "classic-script": "ran",
+   "other-site-script": "ran",
+   "module-script": "did-not-run",
+   "css": "rgb(255, 0, 0)",
+   "font-relative": "not loaded (WsFont:error)",
+   "done": "yes"
+  },
+  "done": true
+ }
+}

@@ -1,0 +1,10 @@
+import { chromium } from '/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-web/node_modules/playwright-core/index.mjs'
+const [port, file] = process.argv.slice(2)
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
+const page = browser.contexts().flatMap((c) => c.pages()).find((p) => p.url().includes('/renderer/'))
+await page.getByText('Docker Guide', { exact: true }).click()
+const item = page.getByText('autobyteus-docker update --all', { exact: true })
+await item.scrollIntoViewIfNeeded()
+await page.screenshot({ path: file })
+console.log(JSON.stringify({ visible: await item.isVisible(), title: await page.getByText('Update the server in all Docker nodes').isVisible() }))
+await browser.close()

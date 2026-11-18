@@ -1,0 +1,7 @@
+# IMP-07 web unit and component tests
+# Command: pnpm -C autobyteus-web test:nuxt
+# Code: commit 42652879b3 (web code unchanged since 832f0a4572)
+# Environment: macOS (darwin 25.5); 2026-11-10
+
+ Test Files  749 passed (749)
+      Tests  5660 passed | 2 skipped (5662)

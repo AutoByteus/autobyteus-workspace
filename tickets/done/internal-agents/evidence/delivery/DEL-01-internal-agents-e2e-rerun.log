@@ -1,0 +1,10 @@
+# DEL-01 — delivery smoke rerun of the internal-agents server E2E on the final ticket state
+# Command: env -i PATH="$PATH" HOME=<mktemp -d> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/internal-agents.e2e.test.ts --no-watch
+# Commit: 1352168e67 (code 813f7208d2) + delivery docs edits only; base origin/personal 651071758f (not advanced); macOS darwin 25.5; 2026-10-25T21:48Z
+
+SEND_MESSAGE command not accepted for agent run ia_scout_51e571_11810c60462440ff940786764af4de81: [COLLABORATOR_ADD_FAILED] 'e2e-internal-helper' is not a shared Agent that can be mentioned.
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2031ms
+     ✓ IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)  488ms
+     ✓ IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)  940ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

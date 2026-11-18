@@ -2,14 +2,14 @@ import type {
   MemorySyncBatch,
   MemorySyncBatchCommitResult,
   MemorySyncManifest,
-  SourceNodeMetadata,
+  MemorySyncSourceMetadata,
 } from "../shared/memory-sync-types.js";
 
 export interface MemoryImportStore {
   commitBatch(batch: MemorySyncBatch): Promise<MemorySyncBatchCommitResult>;
-  listSourceNodeIds(): Promise<string[]>;
-  readSourceMetadata(sourceNodeId: string): Promise<SourceNodeMetadata | null>;
-  readManifest(sourceNodeId: string): Promise<MemorySyncManifest>;
-  getImportRootDir(sourceNodeId: string): string;
-  sourceExists(sourceNodeId: string): Promise<boolean>;
+  listMemorySyncSourceIds(): Promise<string[]>;
+  readMemorySyncSourceMetadata(memorySyncSourceId: string): Promise<MemorySyncSourceMetadata | null>;
+  readManifest(memorySyncSourceId: string): Promise<MemorySyncManifest>;
+  getImportRootDir(memorySyncSourceId: string): string;
+  sourceExists(memorySyncSourceId: string): Promise<boolean>;
 }

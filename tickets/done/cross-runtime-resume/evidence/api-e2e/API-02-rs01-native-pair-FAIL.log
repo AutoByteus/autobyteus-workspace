@@ -1,0 +1,16 @@
+# API-02 RS-01 first full run. command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs RUNTIME_SWITCH_NATIVE_EVIDENCE_DIR=<evidence> pnpm exec vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts --no-watch
+# commit 60c3ac4ec8 (dist built from it); date 2026-10-31T08:24:32Z
+# Result: FAIL, see the AssertionError lines (soft assertions: all are listed)
+
+     × RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, the native candidate writes nothing before the marker 3425ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, th
+AssertionError: I-7: segment 2 = Antigravity records: expected [ …(6) ] to deeply equal [ …(5) ]
+ FAIL  tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, th
+AssertionError: I-7: the prepared native candidate wrote no record before the marker: expected [ { …(5) } ] to deeply equal []
+ FAIL  tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, th
+AssertionError: the native agent's own system instruction is recorded in its file: expected 0 to be greater than 0
+ FAIL  tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, th
+AssertionError: the native session binding is the new one: expected 'rs_native_114d10_b1f1e04b7b73454ca268…' not to be 'rs_native_114d10_b1f1e04b7b73454ca268…' // Object.is equality
+ Test Files  1 failed (1)
+      Tests  1 failed (1)

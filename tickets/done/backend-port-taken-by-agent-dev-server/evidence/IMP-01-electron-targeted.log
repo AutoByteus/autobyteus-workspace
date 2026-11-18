@@ -1,0 +1,17 @@
+IMP-01 — targeted Electron main-process tests for the changed behavior
+Command: pnpm -C autobyteus-web test:electron -- --run electron/server/__tests__/serverRuntimeEnv.spec.ts electron/server/__tests__/platformServerEnvironment.spec.ts electron/server/__tests__/ServerStatusManager.spec.ts electron/server/__tests__/BackendPortAvailability.spec.ts
+Commit: c8ec06b5132870931b6833990e20db07642ccf45
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, pnpm 10.28.2 (via npx), worktree backend-port-taken-by-agent-dev-server
+Date: 2026-11-06
+
+Output (excerpt):
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-taken-by-agent-dev-server/autobyteus-web/electron
+
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (15 tests) 4ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (5 tests) 3ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 7ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (4 tests) 186ms
+
+ Test Files  4 passed (4)
+      Tests  26 passed (26)

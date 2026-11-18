@@ -1,0 +1,1216 @@
+{
+  "startedAt": "2026-11-07T00:21:38.784Z",
+  "result": "Fail",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard",
+  "journeys": {
+    "chrome-lan": {
+      "name": "chrome-lan",
+      "origin": "http://192.168.77.10:53883",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "http://192.168.77.10:53883",
+          "secure": false
+        },
+        "runList": {
+          "result": "Pass",
+          "topLevel": 8,
+          "rows": 18
+        },
+        "agentRun": {
+          "result": "Pass",
+          "name": "Fact Checker",
+          "marker": "ABX403-chrome-lan-AGENT-822f07",
+          "storedOnAlpha": true
+        },
+        "teamRun": {
+          "result": "Pass",
+          "name": "lead"
+        },
+        "orgRun": {
+          "result": "Pass",
+          "name": "planner"
+        },
+        "delegatedTree": {
+          "result": "Pass",
+          "children": 6,
+          "opened": "release notes writer"
+        },
+        "remoteRun": {
+          "result": "Pass",
+          "chip": "beta-node",
+          "marker": "ABX403-chrome-lan-REMOTE-435fee",
+          "storedOnBeta": true
+        },
+        "files": {
+          "result": "Pass",
+          "top": [
+            "docs",
+            "src",
+            "notes.md",
+            "README.md"
+          ],
+          "fileText": "GUIDE-TEXT-7731"
+        },
+        "newRun": {
+          "result": "Pass",
+          "newRunId": "project_task_manager_38a237d294dd4ac4b292ccd17913e258",
+          "marker": "ABX403-chrome-lan-NEWRUN-7cf7a8",
+          "storedOnAlpha": true
+        }
+      },
+      "sockets": [
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-package-definitions?access_token=…",
+          "pattern": "/ws/agent-package-definitions",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/projects?access_token=…",
+          "pattern": "/ws/projects",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+          "pattern": "/ws/agent-team/:teamRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+          "pattern": "/ws/agent-org/:orgRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 22
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+          "pattern": "/ws/file-explorer/:workspaceId",
+          "closed": true,
+          "framesReceived": 1
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-collaboration/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        }
+      ],
+      "handshakes": [
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-package-definitions?access_token=…",
+          "pattern": "/ws/agent-package-definitions",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/projects?access_token=…",
+          "pattern": "/ws/projects",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+          "pattern": "/ws/agent-team/:teamRunId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+          "pattern": "/ws/agent-org/:orgRunId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+          "pattern": "/ws/file-explorer/:workspaceId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        },
+        {
+          "url": "ws://192.168.77.10:53883/ws/agent-collaboration/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "origin": "http://192.168.77.10:53883",
+          "host": "192.168.77.10:53883",
+          "status": 101
+        }
+      ],
+      "browserErrors": [
+        "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health"
+      ],
+      "blockedLocalhost8000": 2,
+      "startedAt": "2026-11-07T00:22:01.136Z",
+      "failedRequests": [
+        "GET http://localhost:8000/health net::ERR_CONNECTION_REFUSED"
+      ],
+      "finishedAt": "2026-11-07T00:22:47.592Z",
+      "unknownBrowserErrors": [
+        "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health"
+      ]
+    },
+    "chrome-tailscale": {
+      "name": "chrome-tailscale",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "https://alpha.tail-probe.ts.net:53985",
+          "secure": true
+        },
+        "runList": {
+          "result": "Pass",
+          "topLevel": 9,
+          "rows": 19
+        },
+        "agentRun": {
+          "result": "Pass",
+          "name": "Fact Checker",
+          "marker": "ABX403-chrome-tailscale-AGENT-132717",
+          "storedOnAlpha": true
+        },
+        "teamRun": {
+          "result": "Pass",
+          "name": "lead"
+        },
+        "orgRun": {
+          "result": "Pass",
+          "name": "planner"
+        },
+        "delegatedTree": {
+          "result": "Pass",
+          "children": 6,
+          "opened": "release notes writer"
+        },
+        "remoteRun": {
+          "result": "Pass",
+          "chip": "beta-node",
+          "marker": "ABX403-chrome-tailscale-REMOTE-ae8290",
+          "storedOnBeta": true
+        },
+        "files": {
+          "result": "Pass",
+          "top": [
+            "docs",
+            "src",
+            "notes.md",
+            "README.md"
+          ],
+          "fileText": "GUIDE-TEXT-7731"
+        },
+        "newRun": {
+          "result": "Pass",
+          "newRunId": "project_task_manager_bc9e8bc360f04785929420eac4d1776f",
+          "marker": "ABX403-chrome-tailscale-NEWRUN-8550a1",
+          "storedOnAlpha": true
+        }
+      },
+      "sockets": [
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-package-definitions?access_token=…",
+          "pattern": "/ws/agent-package-definitions",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/projects?access_token=…",
+          "pattern": "/ws/projects",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+          "pattern": "/ws/agent-team/:teamRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+          "pattern": "/ws/agent-org/:orgRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 22
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+          "pattern": "/ws/file-explorer/:workspaceId",
+          "closed": true,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        }
+      ],
+      "handshakes": [
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-package-definitions?access_token=…",
+          "pattern": "/ws/agent-package-definitions",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/projects?access_token=…",
+          "pattern": "/ws/projects",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+          "pattern": "/ws/agent-team/:teamRunId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+          "pattern": "/ws/agent-org/:orgRunId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+          "pattern": "/ws/file-explorer/:workspaceId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "origin": "https://alpha.tail-probe.ts.net:53985",
+          "host": "alpha.tail-probe.ts.net:53985",
+          "status": 101
+        }
+      ],
+      "browserErrors": [
+        "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health"
+      ],
+      "blockedLocalhost8000": 2,
+      "startedAt": "2026-11-07T00:22:47.593Z",
+      "failedRequests": [
+        "GET http://localhost:8000/health net::ERR_CONNECTION_REFUSED"
+      ],
+      "finishedAt": "2026-11-07T00:23:33.884Z",
+      "unknownBrowserErrors": [
+        "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health"
+      ]
+    },
+    "webkit-tailscale": {
+      "name": "webkit-tailscale",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "https://alpha.tail-probe.ts.net:53985",
+          "secure": true
+        },
+        "runList": {
+          "result": "Pass",
+          "topLevel": 10,
+          "rows": 20
+        },
+        "agentRun": {
+          "result": "Pass",
+          "name": "Fact Checker",
+          "marker": "ABX403-webkit-tailscale-AGENT-3cd665",
+          "storedOnAlpha": true
+        },
+        "teamRun": {
+          "result": "Pass",
+          "name": "lead"
+        },
+        "orgRun": {
+          "result": "Pass",
+          "name": "planner"
+        },
+        "delegatedTree": {
+          "result": "Pass",
+          "children": 6,
+          "opened": "release notes writer"
+        },
+        "remoteRun": {
+          "result": "Pass",
+          "chip": "beta-node",
+          "marker": "ABX403-webkit-tailscale-REMOTE-dfb070",
+          "storedOnBeta": true
+        },
+        "files": {
+          "result": "Pass",
+          "top": [
+            "docs",
+            "src",
+            "notes.md",
+            "README.md"
+          ],
+          "fileText": "GUIDE-TEXT-7731"
+        },
+        "newRun": {
+          "result": "Pass",
+          "newRunId": "project_task_manager_1139ec7dad784daba90e4c610f618055",
+          "marker": "ABX403-webkit-tailscale-NEWRUN-2de0b2",
+          "storedOnAlpha": true
+        }
+      },
+      "sockets": [
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-package-definitions?access_token=…",
+          "pattern": "/ws/agent-package-definitions",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/projects?access_token=…",
+          "pattern": "/ws/projects",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+          "pattern": "/ws/agent-team/:teamRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+          "pattern": "/ws/agent-org/:orgRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 22
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+          "pattern": "/ws/file-explorer/:workspaceId",
+          "closed": true,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent/project_task_manager_1139ec7dad784daba90e4c610f618055?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:53985/ws/agent-collaboration/project_task_manager_1139ec7dad784daba90e4c610f618055?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        }
+      ],
+      "handshakes": [],
+      "browserErrors": [
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:53985/mobile/_nuxt/D9X_g3rQ.js",
+        "pageerror: /localhost:8000/health due to access control checks.",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+      ],
+      "blockedLocalhost8000": 1,
+      "startedAt": "2026-11-07T00:23:33.884Z",
+      "failedRequests": [
+        "GET https://api.iconify.design/heroicons.json?icons=chevron-down-20-solid%2Ccomputer-desktop-20-solid%2Cplus-20-solid%2Cuser-group-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=chevron-down-20-solid%2Ccomputer-desktop-20-solid%2Cplus-20-solid%2Cuser-group-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=chevron-down-20-solid%2Ccomputer-desktop-20-solid%2Cplus-20-solid%2Cuser-group-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=building-office-2-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=building-office-2-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=building-office-2-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=arrow-left-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=arrow-left-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=arrow-left-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=paper-airplane-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=paper-airplane-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=paper-airplane-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=stop-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=stop-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=stop-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=check-circle-solid%2Cchevron-right The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=check-circle-solid%2Cchevron-right The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=check-circle-solid%2Cchevron-right The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=chevron-right-20-solid%2Cdocument-20-solid%2Cmagnifying-glass-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=chevron-right-20-solid%2Cdocument-20-solid%2Cmagnifying-glass-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=chevron-right-20-solid%2Cdocument-20-solid%2Cmagnifying-glass-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=x-mark-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=x-mark-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=x-mark-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=check-circle-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=check-circle-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=check-circle-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+      ],
+      "finishedAt": "2026-11-07T00:23:56.855Z",
+      "unknownBrowserErrors": [
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:53985/mobile/_nuxt/D9X_g3rQ.js",
+        "pageerror: /localhost:8000/health due to access control checks.",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+      ]
+    }
+  },
+  "proxyUpgrades": [
+    {
+      "at": "2026-11-07T00:22:48.344Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "pattern": "/ws/agent-package-definitions",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.412Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/projects?access_token=…",
+      "pattern": "/ws/projects",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.430Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.464Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.492Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.518Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.546Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.572Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:48.620Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+      "pattern": "/ws/agent-team/:teamRunId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:51.698Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:55.232Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+      "pattern": "/ws/agent-org/:orgRunId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:22:57.463Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:02.462Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+      "pattern": "/ws/file-explorer/:workspaceId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:04.772Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:04.827Z",
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-collaboration/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.317Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "pattern": "/ws/agent-package-definitions",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.399Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/projects?access_token=…",
+      "pattern": "/ws/projects",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.416Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/approver_4309b5af49a942e7a9f62e4c933947db?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.450Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/fact_checker_82f4d07a5d4a4ffab1510185f7e3b125?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.487Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.517Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.558Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/project_task_manager_bc9e8bc360f04785929420eac4d1776f?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.584Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/project_task_manager_38a237d294dd4ac4b292ccd17913e258?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.614Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:35.662Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-team/delivery_team_03013e296d1f4e6182dd411d03344563?access_token=…",
+      "pattern": "/ws/agent-team/:teamRunId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:38.621Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-collaboration/fact_checker_8db6b6978fd440caad60eb5488c5161d?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:42.126Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-org/delivery_org_a54e2c8f6f9e4d6681333221d12a3df4?access_token=…",
+      "pattern": "/ws/agent-org/:orgRunId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:44.301Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-collaboration/project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:49.049Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/file-explorer/agent_ws_a965b3bbfe04bb74e6ba94450db8f09fd8ab6f5790535c49df9fb0d36140f466?access_token=…",
+      "pattern": "/ws/file-explorer/:workspaceId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:51.372Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/project_task_manager_1139ec7dad784daba90e4c610f618055?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-07T00:23:51.427Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-collaboration/project_task_manager_1139ec7dad784daba90e4c610f618055?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:53985",
+      "host": "alpha.tail-probe.ts.net:53985",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    }
+  ],
+  "logCheck": {
+    "refusalLinesBefore": {
+      "alpha": 0,
+      "beta": 0
+    },
+    "refusalLinesDuringJourneys": {
+      "alpha": [],
+      "beta": []
+    }
+  },
+  "cleanup": {
+    "holdExited": true,
+    "holdCleanup": {
+      "frontendExited": true,
+      "serversLeft": 0,
+      "rootRemoved": true
+    },
+    "proxiesClosed": true
+  },
+  "error": null,
+  "hold": {
+    "alpha": "http://127.0.0.1:53883",
+    "beta": "http://127.0.0.1:53884",
+    "runs": {
+      "ptm": "project_task_manager_67e75d4e272e40ffa409e6ef7cb26f99",
+      "writerRun": "release_notes_writer_246a82df1d734fdfb089e27c97fae487",
+      "squadRun": "docs_review_team_e899dd94bd8b45ad8a59ccca52e3fc63",
+      "reviewer": "release_notes_writer_dd92a3d5411f484584474fc7ce51b531",
+      "memberDelegated": "fact_checker_d0a51ab7f3594a2394af5694a2332094",
+      "remoteAgentRun": "publisher_6cf7d7c05efa444cadc8345c18c7e0ad",
+      "remoteTeamRun": "studio_team_a62ed8d1330d411eab7dfb964f185463",
+      "plain": [
+        "fact_checker_8db6b6978fd440caad60eb5488c5161d",
+        "fact_checker_5e54cc77cdf34a3682ceb6f27c1bb182",
+        "fact_checker_82f4d07a5d4a4ffab1510185f7e3b125"
+      ],
+      "org": "delivery_org_a54e2c8f6f9e4d6681333221d12a3df4",
+      "orgPlanner": "release_notes_writer_ad92c691235747699d9adaa1e403f7a1",
+      "reviewOrg": "review_org_ffd56368ac8940f9972221dbde43ac88",
+      "reviewOrgCoordinator": {
+        "address": "/squad/reviewer",
+        "agentRunId": "release_notes_writer_f85c502d51d64ee193f9e234daed89bd",
+        "teamRunId": null
+      },
+      "delivery": "delivery_team_03013e296d1f4e6182dd411d03344563",
+      "deliveryLead": "fact_checker_4c2ab72dd27e47c096fa04ba8fc90ef2",
+      "deliveryMate": "release_notes_writer_f23380ca859f4da98e43d7b92cfe335c",
+      "leadDelegated": "changelog_helper_33872e2922bc49a2aac1116ab9e6e070",
+      "approver": "approver_4309b5af49a942e7a9f62e4c933947db",
+      "taskA": "launch-9a1412-1",
+      "taskB": "launch-9a1412-2"
+    }
+  },
+  "tsProxy": {
+    "origin": "https://alpha.tail-probe.ts.net:53985",
+    "upstream": "http://127.0.0.1:53883",
+    "certDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx403-ts-cert-hTkZb9"
+  },
+  "connectRefused": [
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443"
+  ],
+  "asm002": {
+    "routesUsed": [
+      "/ws/agent-collaboration/:runId",
+      "/ws/agent-org/:orgRunId",
+      "/ws/agent-package-definitions",
+      "/ws/agent-team/:teamRunId",
+      "/ws/agent/:runId",
+      "/ws/file-explorer/:workspaceId",
+      "/ws/projects"
+    ],
+    "outsidePhoneList": []
+  },
+  "summary": {
+    "failedSteps": [],
+    "unknownErrors": [
+      "chrome-lan: console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health",
+      "chrome-tailscale: console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:53985/mobile/_nuxt/D9X_g3rQ.js",
+      "webkit-tailscale: pageerror: /localhost:8000/health due to access control checks.",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+    ],
+    "badHandshakes": [],
+    "badProxyUpgrades": [],
+    "refusals": 0,
+    "outsidePhoneList": []
+  },
+  "finishedAt": "2026-11-07T00:23:59.908Z"
+}

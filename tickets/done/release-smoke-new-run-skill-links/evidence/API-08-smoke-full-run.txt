@@ -1,0 +1,83 @@
+# API-08-smoke-full-run
+# case: API-08 (AC-001, AC-002, AC-003, AC-006, AC-008; QR-001/002/003)
+# command: python3 scripts/release_smoke.py   (from the repository root, normal user shell; wrapped by a script that
+#          records git status --porcelain, SHA-256 of ~/.codex/config.toml, ~/.claude/settings.json, ~/.grok/config.toml
+#          and the listings of ~/.autobyteus and ~/.codex before and after)
+# commit: 917633e354e29eab547344054fa51ab76751a192 (code identical to 8f37ab5eb8; later commits are ticket documents only)
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.312, codex-cli 0.165.0, grok 1.0.70, all signed in
+# date: 2026-10-29T11:06:25Z .. 2026-10-29T11:08:41Z
+# shows: 10 of 13 PASS, including Grok's brand-new team member and different same-named skill (unproven since the
+#        baseline fix 8e65be9e6f until now). Codex's 3 cases FAIL only on the account's usage limit:
+#        "You've hit your usage limit ... try again at Nov 4th, 2026 8:11 AM" (host time zone CET, i.e. 07:11Z).
+#        Codex's run start itself worked: the run was created, the brand-new member's memory folder appeared after its
+#        first message, and the collision was refused with the beta.1 error; only the provider turn was refused.
+#        Exit 1 (fail-closed, correctly). Worktree status and user CLI configs unchanged.
+#        This run used 241,515 Grok tokens (4 turns, local session usage count).
+
+## runner output
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a18757-aba6-7042-b918-70ec527e8b03"} | {"
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a18757-baa1-7002-aa2f-29d4dc688914","chan
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a18757-c9bf-7722-a102-1b95d9158fbe"} | {"
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    917633e354e29eab547344054fa51ab76751a192
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 103s, antigravity 21s, autobyteus 9s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-oywcyhiw
+exit=1
+
+## live step log excerpt (SKILL_LINKS_LIVE_* lines, /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-oywcyhiw/live.log)
+SKILL_LINKS_LIVE_MODELS {"claude":"haiku","codex":"gpt-5.6-luna","grok":"grok-4.7"}
+SKILL_LINKS_LIVE_NEW_RUN claude {"runId":"link_probe_agent_c06f3012_eff0efe01f2846e8a1b40940a6b2e795","text":"LINKCODE-c06f3012","tools":["Skill"]}
+SKILL_LINKS_LIVE_RESTORED_RUN claude {"runId":"link_probe_agent_c06f3012_eff0efe01f2846e8a1b40940a6b2e795","text":"RESTORECODE-c06f3012","tools":["Read"]}
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE claude {"teamRunId":"link_probe_team_claude_c06f3012_0b49e718861a40b29897c1761d6d81d9","designerRunId":"link_probe_agent_c06f3012_bb43951bc2e84dbd8f6e6f769813036a","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER claude {"designerRunId":"link_probe_agent_c06f3012_bb43951bc2e84dbd8f6e6f769813036a","text":"LINKCODE-c06f3012","tools":["Skill"],"memberFoldersAfter":["link_probe_agent_c06f3012_bb43951bc2e84dbd8f6e6f769813036a","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_COLLISION claude {"success":false,"refusal":"Error: Workspace skill path collision for Claude skill 'link-probe-c06f3012': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-K1G7bR/claude-collision-ws-0pk9O3/.claude/skills/link-probe-c06f3012' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED claude {"text":"OWNCODE-c06f3012","tools":["Skill"]}
+SKILL_LINKS_LIVE_NEW_RUN codex {"runId":"link_probe_agent_c06f3012_a6cc0f601d564a2f807153c8e1178888","text":"","tools":[]}
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE codex {"teamRunId":"link_probe_team_codex_c06f3012_55695af24ef94ba1b30d1526a158822d","designerRunId":"link_probe_agent_c06f3012_f35ffe68e2364040abd2c87d10f0b19c","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_c06f3012_f35ffe68e2364040abd2c87d10f0b19c","text":"","tools":[],"memberFoldersAfter":["link_probe_agent_c06f3012_f35ffe68e2364040abd2c87d10f0b19c","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_COLLISION codex {"success":false,"refusal":"Error: Workspace skill path collision for Codex skill 'link-probe-c06f3012': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-K1G7bR/codex-collision-ws-JoOGPZ/.codex/skills/link-probe-c06f3012' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED codex {"text":"","tools":[]}
+SKILL_LINKS_LIVE_NEW_RUN grok {"runId":"link_probe_agent_c06f3012_12e21a18e5874006afec6a41adaaa4db","text":"The user wants me to use the link-probe-c06f3012 skill and reply with only the code. I need to find and read that skill.Let me search more broadly for the skill.Read the skill in the grok workspace.Th","tools":["grep","run
+SKILL_LINKS_LIVE_RESTORED_RUN grok {"runId":"link_probe_agent_c06f3012_12e21a18e5874006afec6a41adaaa4db","text":"The user wants the restore link probe code from the skill. I already know from the previous read that I need to read restore-code.md in the skill folder.Reply with only the code.RESTORECODE-c06f3012","tools":["read_fi
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE grok {"teamRunId":"link_probe_team_grok_c06f3012_f24ddf134e3f45658d7ee140d9804e11","designerRunId":"link_probe_agent_c06f3012_f5b5041e794147ffb1892f9ee59ae7d3","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_c06f3012_f5b5041e794147ffb1892f9ee59ae7d3","text":"The user wants me to use the link-probe-c06f3012 skill and reply with only the code. I need to find and read that skill.Let me search more broadly for the skill.The user asked me to use the link-probe","tools":
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-c06f3012': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-K1G7bR/grok-collision-ws-PTOzw7/.grok/skills/link-probe-c06f3012' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"The user wants me to use the link-probe skill and reply with only the code. I need to find and read the skill.Need to find the skill file. The agent identity says \"link-probe-all-c06f3012\" and \"follow","tools":["grep","run_bash","read_file"]}
+    238|       console.info(`SKILL_LINKS_LIVE_NEW_RUN ${name}`, JSON.stringify(…
+    296|       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.string…
+    331|       console.info(`SKILL_LINKS_LIVE_ALL_INSTALLED ${name}`, JSON.stri…
+
+## AC-008 before/after
+status before == after: yes
+cli-config before == after: yes
+autobyteus-root before == after: yes
+codex-home before == after: yes
+### git status --porcelain (before and after)
+ M tickets/in-progress/release-smoke-new-run-skill-links/api-e2e-test-progress.md
+ M tickets/in-progress/release-smoke-new-run-skill-links/design-spec.md
+ M tickets/in-progress/release-smoke-new-run-skill-links/requirements-doc.md
+ M tickets/in-progress/release-smoke-new-run-skill-links/solution-revision-record.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+### CLI config SHA-256 (before and after)
+417c6cd9374ca53b269a179e09420c69e77c56208de6ed2e202e166f607abed9  /Users/normy/.codex/config.toml
+7a310b392f5517317f84b7ffdd07847a3716cedeff4a5a6724a0495eab719a3a  /Users/normy/.claude/settings.json
+846b51a9187e78bc0f3819cc5447409203f0b3cff30d5281861aab9e13a01602  /Users/normy/.grok/config.toml

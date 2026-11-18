@@ -1,0 +1,40 @@
+# Check: IMP-02
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-memory/external-runtime-user-message-identity.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts tests/unit/agent-memory/external-runtime-memory-writer.test.ts --no-watch
+# Commit: feb69495a5
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists run-owned reasoning closure exactly once before the next tool 5ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rejects segment lifecycle without an exact turn instead of inventing a fallback turn 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists one trace for adjacent reasoning deltas and a new trace after a tool boundary 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > tolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion 2ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before a following tool call without duplicating later flushes 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before an inferred tool call from a terminal tool result 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across a matching result and flushes one trace at the next tool 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves post-card reasoning when authoritative call arguments arrive only at result 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps the first boundary for an unseen insufficient terminal when readiness arrives later 2ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_DENIED updates 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant text without requiring turn completion 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists open reasoning before assistant complete output 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records the sender of a forwarded agent-to-agent delivery on its user trace (RD-004) 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not substitute an active turn when forwarded input lacks its exact turn identity 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > records tool traces once from lifecycle events when matching tool segments are present 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > preserves assistant-tool-assistant raw trace order from distinct text segment ids 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > does not create a fallback turn for a segment without exact turn identity 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > ignores provider compaction/status payloads without local raw-trace pruning 1ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > persists optional provider compaction details only when the provider reports them 88ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > rotates once for an Antigravity checkpoint boundary and ignores the same boundary again 79ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > stores the RuntimeKind value in the manifest entry and records no boundary whose runtime is not a RuntimeKind (AC-001) 46ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > writes provider compaction markers and rotates settled active traces into segmented archives 42ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > dedupes replayed provider boundaries without dropping post-boundary active records 51ms
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > retries rotation from an existing provider boundary marker when no complete segment exists 48ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > keeps every trace appended after a zero-filled end left by an unclean shutdown (AC-004) 7ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > keeps every trace appended after a torn last record left by an unclean shutdown (AC-004) 3ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes exact normalized raw fields without creating a WorkingContext snapshot 4ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > continues sequence numbers from active and complete archived traces after recreation 50ms
+ ✓ tests/unit/agent-memory/external-runtime-memory-writer.test.ts > ExternalRuntimeMemoryWriter > writes strict call/result rows and hydrates archived calls with active null results 49ms
+ ✓ tests/unit/agent-memory/external-runtime-user-message-identity.test.ts > the identity of a stored external-runtime user message > stores message_id and dedupe_key from the forwarded message's metadata, and the projection returns them 6ms
+ ✓ tests/unit/agent-memory/external-runtime-user-message-identity.test.ts > the identity of a stored external-runtime user message > writes no identity keys for a message without identity, and an older record without them still loads 2ms
+ Test Files  3 passed (3)
+      Tests  32 passed (32)

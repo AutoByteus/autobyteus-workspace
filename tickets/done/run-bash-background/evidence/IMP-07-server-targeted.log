@@ -1,0 +1,5 @@
+# IMP-07 server suites around the change (backends incl. native background tasks, notices, compositions, standalone host, architecture, journal, memory, built-in agents, model routing)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution tests/integration/background-task-notices tests/integration/tool-list-updates tests/integration/skill-update-notices tests/unit/compositions tests/unit/standalone-application-host tests/architecture tests/agent-work-journal tests/unit/agent-memory tests/unit/built-in-agents tests/unit/model-routing --no-watch
+# Commit: e26460bf57 (autobyteus-ts dist rebuilt by IMP-05); macOS Darwin 25.5.0 arm64, node v22.23.1; 2026-11-10T10:41Z
+ Test Files  216 passed | 5 skipped (221)
+      Tests  2172 passed | 8 skipped (2180)

@@ -1,0 +1,37 @@
+# Case: API-03r2 (LV-01..03)
+# Command: cd autobyteus-server-ts && env -i ... RUN_RUNTIME_SWITCH_MEMBERS_E2E=1 RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 ... vitest run tests/e2e/runtime/runtime-switch-members-live.e2e.test.ts --no-watch
+# Commit: d7e63493e7 (+ uncommitted API/E2E test changes committed with this round)
+# Environment: macOS arm64, Node 22, Google Chrome 156 headless / owned temp roots; server rebuilt from this commit (pnpm build exit 0)
+# Date: 2026-11-02T07:38Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.29                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+ ✓ tests/e2e/runtime/runtime-switch-members-live.e2e.test.ts (3 tests) 108836ms
+     ✓ LV-01: a Team member, Claude -> Codex -> Claude  19698ms
+     ✓ LV-02: Org members, a direct Agent and an Agent of a mounted Team, Claude -> Codex -> Claude  38054ms
+     ✓ LV-03: a delegated copy (started by a scripted host), Claude -> Codex -> Claude  46197ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  08:28:59
+   Duration  109.46s (transform 56ms, setup 37ms, import 127ms, tests 108.84s, environment 0ms)
+
+exit 0

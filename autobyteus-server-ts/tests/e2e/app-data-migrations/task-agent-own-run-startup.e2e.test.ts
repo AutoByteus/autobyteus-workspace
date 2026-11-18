@@ -7,8 +7,11 @@ import { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
+import { DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
 import { DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
-import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeOpenTaskRecordsOfReleasedData, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // The startup migration `20261017_task_agent_own_run_v1` through the BUILT Studio server (`dist/app.js`) on a FAITHFUL
 // upgrade: the app-data folder of an install where every earlier released migration already completed and this one never
@@ -34,12 +37,23 @@ import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../..
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts --no-watch
 const ID = TASK_AGENT_OWN_RUN_V1_MIGRATION_ID;
 /** Registered after own-run: an install that never ran own-run never ran these either. */
-const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID];
+// The migrations registered after this one: they run again on the released data, as an upgrade runs them (autobyteus-461's,
+// registered last since CR-461-048, included).
+const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID,
+  // SR-078 c, SR-079: one follow-up per classified predecessor (nine), registered after 461's.
+  "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1",
+  "20261114_preserved_items_after_team_run_execution_tree_v1", "20261114_preserved_items_after_team_run_execution_tree_v2",
+  "20261114_preserved_items_after_org_flat_team_families_v1", "20261114_preserved_items_after_collaborators_to_delegated_runs_v1",
+  "20261114_preserved_items_after_team_run_history_index_v2", "20261114_preserved_items_after_remove_skill_improvement_data"];
 const AGY_CLI = path.resolve("tests/fixtures/agy-failure-cli.mjs");
+/** SR-078 c: the follow-ups of the predecessors TAU-2's blocked move leaves unfinished (20261017, and 20261019 that waits on it). */
+const WAITING_FOLLOW_UPS = ["20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1"];
 const MODEL = "gemini-3.8-flash-low";
 const ALT = "tau-alt-model";
 /** TAU-2 blocks a rename with POSIX mode bits; root ignores them and Windows has none (as project-task-boundaries.e2e). */
 const modeBitsBlock = process.platform !== "win32" && process.getuid?.() !== 0;
+/** C27-02: start durations (ms), recorded. */
+const startTimes: Record<string, number> = {};
 
 type Json = Record<string, any>;
 const children: ChildProcess[] = [];
@@ -72,7 +86,7 @@ const studio = async (root: string) => {
   const env: NodeJS.ProcessEnv = Object.fromEntries(["PATH", "USER", "LANG", "TMPDIR", "SHELL"].flatMap((key) => process.env[key] === undefined ? [] : [[key, process.env[key]]]));
   Object.assign(env, { HOME: path.join(root, "home"), DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
     ANTIGRAVITY_CLI_COMMAND: AGY_CLI, AGY_FAKE_CASE: "linked_skills", AGY_FAKE_EXTRA_MODELS: ALT });
-  const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
@@ -129,7 +143,9 @@ const faithfulRoot = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-own-run-e2e-")); roots.push(root);
   await fs.mkdir(path.join(root, "home")); await fs.mkdir(path.join(root, "workspace"));
   await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+  const freshStart = Date.now();
   const fresh = await studio(root);
+  startTimes.fresh = Date.now() - freshStart;
   const recorded = (await fresh.gql("{getAppDataMigrations{migrationId status}}")).getAppDataMigrations as Json[];
   await fresh.stop();
   const db = new DatabaseSync(path.join(root, "db", "production.db"));
@@ -140,6 +156,8 @@ const faithfulRoot = async () => {
   expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - 1 - LATER.length);
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);
+  // autobyteus-469: the installs this stands for keep a Task record per task agent; a top run's tree is built from them.
+  await writeOpenTaskRecordsOfReleasedData(root);
   for (const file of await jsonFiles(memory)) await fs.writeFile(file, `${JSON.stringify(toScriptedRuntime(JSON.parse(await fs.readFile(file, "utf8"))), null, 2)}\n`);
   return { root, memory, ledgerBefore: remaining };
 };
@@ -152,25 +170,31 @@ const MOVED = Object.entries(OLD_FOLDERS).flatMap(([id, old]) => old ? [[id, old
 const ownMemory = (files: Record<string, string>, old: string) => Object.fromEntries(Object.entries(taskAgentFiles(files, old))
   .filter(([file]) => !MOVED.some(([, other]) => other !== old && other.startsWith(`${old}/`) && `${old}/${file}`.startsWith(`${other}/`))));
 
-/** Every delegated copy's own file (agent `run_metadata.json` or team tree with a `taskAgent` section) under the memory root. */
+/** Every delegated run's own file (agent `run_metadata.json` or team tree) under the memory root: since autobyteus-461 it carries
+ *  `delegatedFrom` in place of the released `taskAgent` section (contract E6 / E6t). */
 const ownFiles = async (memory: string): Promise<Array<[string, Json]>> => {
   const out: Array<[string, Json]> = [];
   for (const file of await jsonFiles(memory)) {
     if (file.includes(`${path.sep}imports${path.sep}`)) continue;
     const value = JSON.parse(await fs.readFile(file, "utf8"));
-    if (value && typeof value === "object" && "taskAgent" in value) out.push([path.relative(memory, file), value]);
+    if (value && typeof value === "object" && ("delegatedFrom" in value || "taskAgent" in value)) out.push([path.relative(memory, file), value]);
   }
   return out;
 };
-/** Every own file is in the current shape: no released `origin`, and each records its own source (REQ-001, M4). */
+/** Every own file is an ordinary run file: `delegatedFrom`, no `taskAgent`, and its own launch (REQ-001, M4; 461 E6 / E6t). */
 const expectOwnFilesComplete = async (memory: string) => {
   const files = await ownFiles(memory);
   expect(files.length, "the released data has delegated copies").toBeGreaterThan(0);
   for (const [file, own] of files) {
-    expect(own.taskAgent, file).not.toHaveProperty("origin");
+    expect(own, file).not.toHaveProperty("taskAgent");
+    expect(own.delegatedFrom?.delegatingRun, `${file} names its delegating run`).toBeTruthy();
     if ("rootTeam" in own) {
       expect(own.rootTeam.defaultLaunchConfiguration, file).toBeTruthy();
-      for (const member of own.rootTeam.members) expect(member, `${file} ${member.address}`).toMatchObject({ launchConfiguration: expect.any(Object), followsTeam: expect.any(Boolean) });
+      expect(own.rootTeam.address, `${file} is rooted at / (E6t)`).toBe("/");
+      for (const member of own.rootTeam.members) {
+        expect(member, `${file} ${member.address}`).toMatchObject({ launchConfiguration: expect.any(Object) });
+        expect(member, `${file} ${member.address}: followsTeam applied, then removed (E6t)`).not.toHaveProperty("followsTeam");
+      }
     } else {
       expect(own, file).toMatchObject({ runtimeKind: expect.any(String), llmModelIdentifier: expect.any(String), autoExecuteTools: expect.any(Boolean) });
     }
@@ -180,15 +204,23 @@ const expectOwnFilesComplete = async (memory: string) => {
 
 const historyRunIds = async (gql: (q: string) => Promise<any>) => objectsIn(await gql("{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}"))
   .flatMap((record) => typeof record["runId"] === "string" ? [record["runId"] as string] : []);
-const hubTaskAgents = async (gql: (q: string, v?: Json) => Promise<any>) => objectsIn((await gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" }))
-  .agentRunCollaboration?.root_agent?.execution_tree).filter((r) => r["started_at"] ?? r["startedAt"]).map((r) => r["agent_run_id"] ?? r["agentRunId"] ?? r["team_run_id"] ?? r["teamRunId"]);
+// autobyteus-461 SR-084: the hub's delegated runs, from its tree (its view carries its own parts only).
+const hubTaskAgents = async (gql: (q: string, v?: Json) => Promise<any>) => objectsIn(await delegatedRunsTree(gql, "agent", "hub"))
+  .filter((r) => r["started_at"] ?? r["startedAt"]).map((r) => r["agent_run_id"] ?? r["agentRunId"] ?? r["team_run_id"] ?? r["teamRunId"]);
 
 describe("task agent own run: the built server upgrades a faithful released install at startup", () => {
   it("TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing", async () => {
     const { root, memory } = await faithfulRoot();
     const before = await snapshot(memory);
 
+    // C27-02 (recorded): the first start after the upgrade on this corpus runs 461's migration and its nine follow-ups.
+    const upgradeStart = Date.now();
     const first = await studio(root);
+    const upgradeMs = Date.now() - upgradeStart;
+    const scans = ((await first.gql("{getAppDataMigrations{migrationId status attempts summary}}")).getAppDataMigrations as Json[])
+      .filter((m) => m.migrationId === DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID || String(m.migrationId).startsWith("20261114_"));
+    console.log(`C27-02: first start after the upgrade ${upgradeMs} ms (a fresh install's start ${startTimes.fresh} ms); 461 and its follow-ups: ${JSON.stringify(scans)}`);
+    expect(scans.filter((m) => String(m.migrationId).startsWith("20261114_")), "nine follow-ups").toHaveLength(9);
     const migration = await first.migration();
     expect(migration, JSON.stringify(migration)).toMatchObject({ status: "SUCCEEDED" });
     const log = await fs.readFile(migration.logPath, "utf8");
@@ -212,25 +244,35 @@ describe("task agent own run: the built server upgrades a faithful released inst
     }
     // AC-006: the runs open with all their task agents; a task agent's conversation is read from its own folder.
     expect(await hubTaskAgents(first.gql)).toEqual(expect.arrayContaining(["c1-reviewer", "c2-team-a", "c2-team-b", "never-ran"]));
-    const teamView = JSON.stringify((await first.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: "team-r" })).getTeamRunResumeConfig.executionTree);
+    // autobyteus-461 SR-084: the team run's delegated runs are its tree's rows.
+    const teamView = JSON.stringify(await delegatedRunsTree(first.gql, "team", "team-r"));
     for (const id of ["c3-writer-copy", "nd-copy", "c4-qa"]) expect(teamView, `team run shows ${id}`).toContain(id);
     // (The org is read by run id: the hand-built data writes no history index rows.)
-    const orgView = JSON.stringify((await first.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: "org-o" })).getAgentOrgRunConfig.executionTree);
-    for (const id of ["c5-analyst", "c5-review", "ns-director-copy", "c6-helper"]) expect(orgView, `org shows ${id}`).toContain(id);
-    const c1 = (await first.gql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){agentRunId conversation}}`,
-      { h: "hub", a: "/code_reviewer", r: "c1-reviewer" })).agentRunCollaborationMemberProjection;
-    expect(c1.agentRunId).toBe("c1-reviewer");
+    // The org opens. Its stored tree no longer lists its delegated runs (461 E9: `taskExecutions` removed; the open view composes
+    // them from the Task side, SR-073); each is a run of its own whose own file names its delegating run (E6 / E6t).
+    const orgTree = (await first.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: "org-o" })).getAgentOrgRunConfig.executionTree;
+    expect(orgTree, "the org opens").toBeTruthy();
+    // The projection keeps base's shape (rule 1): its `taskExecutions` lists are empty; the delegated runs are not in it.
+    expect(objectsIn(orgTree).flatMap((record) => record["taskExecutions"] ?? []), "no delegated run in the stored tree").toEqual([]);
+    const own = await ownFiles(memory);
+    for (const id of ["c5-analyst", "c5-review", "ns-director-copy", "c6-helper"]) {
+      const file = own.find(([, value]) => value.runId === id || value.rootTeam?.teamRunId === id);
+      expect(file?.[1].delegatedFrom?.delegatingRun, `${id} is a run of its own with its delegating run`).toBeTruthy();
+    }
+    // autobyteus-461 rule 2: a delegated run is read by its own path (`getRunProjection`), from its own folder.
+    const c1 = (await first.gql(`query($id:String!){getRunProjection(runId:$id){runId conversation}}`, { id: "c1-reviewer" })).getRunProjection;
+    expect(c1.runId).toBe("c1-reviewer");
     expect(JSON.stringify(c1.conversation), "the conversation is read from the task agent's own folder").toContain("work of c1");
-    // The task agent's context-file link (by its hub and run id) serves the moved file's bytes (REQ-008); the standalone-run
-    // route does not, because a task agent is not a run the user started (G1).
-    const contextFile = await fetch(`${first.origin}/rest/agent-collaborations/hub/agent-runs/c1-reviewer/context-files/ctx_notes__notes.txt`);
-    expect(contextFile.status, "context file served through the hub").toBe(200);
+    // Its context file is served by its own run's route with the moved file's bytes (REQ-008; 461 rule 2: the path the web uses).
+    // The former hub link's answer is recorded only: the design names the web's path, not a refusal of the older route.
+    const contextFile = await fetch(`${first.origin}/rest/runs/c1-reviewer/context-files/ctx_notes__notes.txt`);
+    expect(contextFile.status, "context file served by the run's own route").toBe(200);
     expect(await contextFile.text()).toBe("context bytes");
-    expect((await fetch(`${first.origin}/rest/runs/c1-reviewer/context-files/ctx_notes__notes.txt`)).status, "not as a standalone run").toBe(404);
-    // G1 / G2 (AC-005): a migrated task agent (agent or team) is refused as a run the user started; it is not in the history.
-    expect(await first.restoreRefused("restoreAgentRun", "c1-reviewer"), "agent task agent restore refused").toBe(true);
-    expect(await first.restoreRefused("restoreAgentTeamRun", "c2-team-a"), "team task agent restore refused").toBe(true);
-    expect((await historyRunIds(first.gql)).filter((runId) => runId in NEW_FOLDERS), "no task agent in the history").toEqual([]);
+    console.log(`TAU-1 hub context-file route for a delegated run: ${(await fetch(`${first.origin}/rest/agent-collaborations/hub/agent-runs/c1-reviewer/context-files/ctx_notes__notes.txt`)).status}`);
+    // Base's G1 / G2 (a task agent refused as a run the user started) is removed by 461: a delegated run is an ordinary run
+    // (design "Removed": "a task agent is never a root candidate"); its restore is proven by the restore-by-message suites.
+    // DS-11: a run with an open Task entry whose delegating run is stored is not a top-level row (it is the hub's child row).
+    expect((await historyRunIds(first.gql)).filter((runId) => runId in NEW_FOLDERS), "no task agent as a top-level row (DS-11)").toEqual([]);
     // AC-013: the Memory page lists agent task agents under their agent definition, never unattributed. A group that
     // only task agents form (no history row names it) shows the definition's name, or its id when the definition is
     // missing (DEC-018). The hand-built data has no definitions: "Code Reviewer" is created as the user would; `helper` stays missing.
@@ -255,7 +297,7 @@ describe("task agent own run: the built server upgrades a faithful released inst
     await second.stop();
   }, 300_000);
 
-  it.skipIf(!modeBitsBlock)("TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)", async () => {
+  it.skipIf(!modeBitsBlock)("TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)", async () => {
     const { root, memory } = await faithfulRoot();
     const before = await snapshot(memory);
     // The hub's task agents cannot be renamed out of its folder on this start (a step that fails).
@@ -276,10 +318,21 @@ describe("task agent own run: the built server upgrades a faithful released inst
     expect(await fs.stat(path.join(memory, NEW_FOLDERS["c3-writer-copy"]!, "raw_traces_active.jsonl"))).toBeTruthy();
     expect(await fs.stat(path.join(memory, NEW_FOLDERS["c5-analyst"]!, "raw_traces_active.jsonl"))).toBeTruthy();
     expect((await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" })).agentRunCollaboration).toBeTruthy();
-    // The user keeps working: a stopped, migrated task agent's model is changed in the team run's Settings.
-    const changed = (await first.gql(`mutation($input:UpdateDelegatedLaunchSelectionsInput!){updateDelegatedLaunchSelections(input:$input){success outcome message fieldErrors{path message}}}`,
-      { input: { rootKind: "AGENT_TEAM", rootRunId: "team-r", changes: [{ agentRunId: "nd-copy", selection: { llmModelIdentifier: ALT, llmConfig: null } }] } })).updateDelegatedLaunchSelections;
+    // The user keeps working: a migrated task agent's model is changed through its own stopped-run save (rule 2, SR-064).
+    const ownSave = async (server: typeof first, agentRunId: string, model = ALT) => (await server.gql(`mutation($input:UpdateStoppedAgentRunSelectionInput!){updateStoppedAgentRunSelection(input:$input){success outcome message fieldErrors{path message}}}`,
+      { input: { agentRunId, runtimeKind: "antigravity_cli", llmModelIdentifier: model, llmConfig: null } })).updateStoppedAgentRunSelection;
+    const changed = await ownSave(first, "nd-copy");
     expect(changed, JSON.stringify(changed)).toMatchObject({ success: true });
+    // SR-077 (Q-1): the copy the failed step could not move is preserved, not a run of its own yet: NOT_FOUND until the retry.
+    // SR-078 a: the copy the failed step could not move is not a run of its own yet; its save answers base's INTERNAL_ERROR.
+    const preserved = await ownSave(first, "c1-reviewer");
+    expect(preserved, JSON.stringify(preserved)).toMatchObject({ success: false, outcome: "INTERNAL_ERROR",
+      message: "Run ownership could not be verified; saved settings were not changed." });
+    // SR-078 c (CR-461-068): the follow-ups of the unfinished predecessors wait: no completed record while 20261017 is FAILED.
+    for (const id of WAITING_FOLLOW_UPS) {
+      const waiting = await first.migration(id);
+      expect(waiting?.status ?? null, `${id} waits on the first start: ${JSON.stringify(waiting)}`).not.toMatch(/^SUCCEEDED/);
+    }
     await first.stop();
     await fs.chmod(blocked, 0o755);
 
@@ -287,6 +340,18 @@ describe("task agent own run: the built server upgrades a faithful released inst
     const second = await studio(root);
     const retried = await second.migration();
     expect(retried.status, `${JSON.stringify(retried)}\n${retried.logPath ? await fs.readFile(retried.logPath, "utf8") : ""}`).toMatch(/^SUCCEEDED/);
+    // SR-078 c: the predecessor's follow-up converted the preserved copy in this start; it is a run of its own: read by its own
+    // path, listed in its hub's tree (an open Task), and its own save works.
+    for (const id of WAITING_FOLLOW_UPS) expect((await second.migration(id))?.status, `${id} done after the retry`).toMatch(/^SUCCEEDED/);
+    const ownRead = (await second.gql(`query($id:String!){getRunProjection(runId:$id){runId}}`, { id: "c1-reviewer" })).getRunProjection;
+    expect(ownRead?.runId, "the converted copy is read by its own path").toBe("c1-reviewer");
+    // (Its released model maps to ALT here, so the edit chooses MODEL: a change, not UNCHANGED.)
+    const savedNow = await ownSave(second, "c1-reviewer", MODEL);
+    const ours461 = await second.migration(DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID);
+    expect(savedNow, `${JSON.stringify(savedNow)}; 461 migration: ${JSON.stringify(ours461)}`).toMatchObject({ success: true, outcome: "UPDATED" });
+    const c1Own = JSON.parse(await fs.readFile(path.join(memory, NEW_FOLDERS["c1-reviewer"]!, "run_metadata.json"), "utf8"));
+    expect(c1Own, "converted: an ordinary run file").not.toHaveProperty("taskAgent");
+    expect(c1Own.delegatedFrom?.delegatingRun, "converted: it names its delegating run").toBeTruthy();
     const after = await snapshot(memory);
     for (const [id, old, now] of MOVED) expect(taskAgentFiles(after, now), `${id} at ${now}`).toMatchObject(ownMemory(before, old));
     expect(await hubTaskAgents(second.gql)).toEqual(expect.arrayContaining(["c1-reviewer", "c2-team-a", "c2-team-b"]));
@@ -295,10 +360,18 @@ describe("task agent own run: the built server upgrades a faithful released inst
     // The own-file completion waited for the move on the first start and completes on this one.
     expect((await second.migration(DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID)).status).toMatch(/^SUCCEEDED/);
     await expectOwnFilesComplete(memory);
+    const settled = await snapshot(memory);
     await second.stop();
+
+    // A later start changes nothing: the files are byte-identical and every follow-up stays done.
+    const third = await studio(root);
+    for (const id of WAITING_FOLLOW_UPS) expect((await third.migration(id))?.status, `${id} stays done`).toMatch(/^SUCCEEDED/);
+    expect(await snapshot(memory), "a later start changes nothing").toEqual(settled);
+    expect((await ownSave(third, "c1-reviewer", MODEL)).success, "the save still works after another start").toBe(true);
+    await third.stop();
   }, 300_000);
 
-  it("TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed", async () => {
+  it("TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)", async () => {
     const { root, memory } = await faithfulRoot();
     const first = await studio(root);
     expect((await first.migration()).status).toBe("SUCCEEDED");
@@ -313,11 +386,14 @@ describe("task agent own run: the built server upgrades a faithful released inst
     for (const id of ["c1-reviewer", "c2-team-a", "c2-team-b", "c7-helper", "never-ran"]) {
       expect(taskAgentFiles(after, NEW_FOLDERS[id]!), `${id} kept with every file`).toEqual(taskAgentFiles(migrated, NEW_FOLDERS[id]!));
     }
-    expect((await historyRunIds(first.gql)).filter((runId) => runId === "hub" || runId in NEW_FOLDERS)).toEqual([]);
-    expect(await first.restoreRefused("restoreAgentRun", "c1-reviewer"), "a detached task agent is not restored").toBe(true);
+    // autobyteus-461 REQ-007 / AC-008 / TC-3 (replacing 469's "detached, not listed"): a delegated run whose delegating run was
+    // deleted is a run of its own: listed, and opened like any run. The hub itself is gone.
+    const listed = await historyRunIds(first.gql);
+    expect(listed, "the deleted hub is not listed").not.toContain("hub");
+    expect(listed, "the hub's task agent is listed as a run of its own").toContain("c1-reviewer");
     const reviewerRuns = (await first.gql(`query($s:AgentWithMemorySelectorInput!){listAgentRunsWithMemory(selector:$s,pageSize:100){entries{runId}}}`,
       { s: { attribution: reviewer["attribution"], agentDefinitionId: "code-reviewer" } })).listAgentRunsWithMemory.entries as Json[];
-    expect(reviewerRuns.map((entry) => entry["runId"]), "a detached task agent is not listed").not.toContain("c1-reviewer");
+    expect(reviewerRuns.map((entry) => entry["runId"]), "listed on the Memory page as a run of its own").toContain("c1-reviewer");
     await first.stop();
     // A later start keeps the detached folders and reports nothing about them.
     const second = await studio(root);

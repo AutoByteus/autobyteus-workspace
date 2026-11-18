@@ -1,0 +1,27 @@
+# API-06 — gated live suite autobyteus-claude-5-5-live.e2e.test.ts, cases C55-E2E-001..005 (real Anthropic API through the real studio server, test vault); C55-E2E-006 (a ~240K-token Token Meter call) not run: this change does not touch Token Meter pricing
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=/tmp AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_CLAUDE_5_5_E2E=1 CLAUDE_5_5_E2E_EVIDENCE_DIR=/tmp/api-e2e-msr/c55-evidence corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts -t 'C55-E2E-00[1-5]' --no-watch   (cwd: worktree root)
+# Commit: 817bd9950 + test changes · ENV-1 · 2026-11-10 · Case API-06 (real credits: ~20 short Sonnet 5.5 / Haiku 5.5 calls)
+# First attempt (before the harness credential fix): TypeError Cannot read properties of undefined (reading 'ensureProviderModelCatalog') — GraphQL 401, harness gql() sent no node credential.
+ ❯ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts (6 tests | 2 failed | 1 skipped) 44994ms
+     ✓ C55-E2E-001: the catalog lists each model once with 1M/1M/128K limits and its thinking schema defaults 5ms
+     × C55-E2E-002: claude-sonnet-5-5 thinking Off tool turn sends {"type":"between_tools"} and replays thinking unchanged 8539ms
+     ✓ C55-E2E-003: claude-sonnet-5-5 thinking On tool turn sends {"type":"adaptive"} and replays thinking unchanged  13936ms
+     × C55-E2E-004: claude-haiku-5-5 thinking Off tool turn sends {"type":"disabled"} and replays thinking unchanged 5782ms
+     ✓ C55-E2E-005: claude-haiku-5-5 thinking On tool turn sends {"type":"adaptive"} and replays thinking unchanged  12773ms
+     ↓ C55-E2E-006: Haiku 5.5 Token Meter prices each call at its prompt-size tier (≤100K and >100K gross input)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts > AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live) > C55-E2E-002: claude-sonnet-5-5 thinking Off tool turn sends {"type":"between_tools"} and replays thinking unchanged
+AssertionError: ERROR frame: {"code":"LLM_RESPONSE_REFUSED","message":"The model refused, or a content filter stopped, the response (provider reason: refusal). No tool was run.","provider_code":"LLM_RESPONSE_REFUSED","error_scope":"turn","error_effect":"diagnostic","turn_id":"turn_0001"}: expected { type: 'ERROR', payload: { …(6) } } to be null
+ ❯ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts:273:71
+ FAIL  tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts > AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live) > C55-E2E-004: claude-haiku-5-5 thinking Off tool turn sends {"type":"disabled"} and replays thinking unchanged
+AssertionError: tool_use → tool_result continuations: expected 3 to be greater than or equal to 4
+ ❯ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts:283:73
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed | 1 skipped (6)
+   Duration  78.47s (transform 18.76s, setup 159ms, import 30.45s, tests 44.99s, environment 0ms)
+# ---- Cause of the two first-attempt failures (Rule 9) and rerun ----
+# First attempt (case-results.json of that run): C55-E2E-002 thinkingSent {"type":"between_tools"} on all 3 calls (correct); call 2 answered 200 with stop_reason "refusal" and 0 output tokens -> ERROR frame LLM_RESPONSE_REFUSED (a provider-side refusal of a benign dependency-audit prompt).
+#   C55-E2E-004 thinkingSent {"type":"disabled"} on all 3 calls (correct); the model finished after 3 calls (end_turn) where the test requires >= FILE_COUNT+1 = 4 continuations.
+#   Both failures are model-behavior outcomes of a provider call whose request shape was exactly the designed one; neither assertion about the request failed.
+# Rerun of only those two cases (-t 'C55-E2E-00[24]', same commit): both pass (2 passed | 4 skipped). Their request bodies (API-06-claude-5-5-live-off-requests.txt) carry no output_config and no stored-config key.
+# Classification: provider/model nondeterminism in a live suite that asserts the number of model turns; not caused by this change (the Off shapes are unchanged, BEH-004).

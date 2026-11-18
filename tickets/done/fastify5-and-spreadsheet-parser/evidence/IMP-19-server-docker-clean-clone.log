@@ -1,0 +1,47 @@
+# IMP-19 server Docker image from the clean clone (commit 29aeb5d721): docker build --progress=plain -f autobyteus-server-ts/docker/Dockerfile.monorepo -t ab-server-imp:test . ; test-owned container on 127.0.0.1:54925->8000, no volumes; probes/instance-server-smoke.mjs; docker rm -f -v
+# Docker 29.0.1, macOS 26.5.2; date 2026-10-24T20:33:29Z
+
+## build (excerpt; full log not kept)
+#28 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#28 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#28 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#28 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#28 57.75 Done in 56s using pnpm v10.28.2
+#38 [builder 23/28] RUN pnpm -C autobyteus-agent-presentation-contracts build
+#39 [builder 24/28] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#40 [builder 25/28] RUN pnpm -C autobyteus-team-stream-contracts build
+#41 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#42 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#43 [builder 28/28] RUN pnpm -C autobyteus-web build:mobile-web
+#71 naming to docker.io/library/ab-server-imp:test done
+
+## run
+d7cb316b7367e8b311edb9e7309d5752adaecd602d1e259d0444f65c557df195
+## in-container versions
+v22.23.3
+fastify@5.12.7 mercurius@16.12.1 @fastify/cors@11.3.1 @fastify/multipart@10.1.6 @fastify/websocket@11.3.4
+web node_modules not in runtime image
+## smoke (host -> published loopback port)
+{
+ "health": {
+  "status": 200,
+  "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+ },
+ "graphqlPost": {
+  "status": 200,
+  "body": "{\"data\":{\"__typename\":\"Query\"}}"
+ },
+ "GET /graphiql": 404,
+ "GET /graphiql/main.js": 404,
+ "GET /graphiql/config.js": 404,
+ "graphqlWs": {
+  "protocol": "graphql-transport-ws",
+  "firstMessage": "connection_ack"
+ }
+}
+SMOKE PASS
+## smoke from inside the container (loopback client)
+graphiql 404
+{"data":{"__typename":"Query"}}
+## cleanup
+ab-server-imp-test

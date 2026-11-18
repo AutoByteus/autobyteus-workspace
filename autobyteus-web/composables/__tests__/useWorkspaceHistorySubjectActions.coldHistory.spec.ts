@@ -7,13 +7,16 @@ import { useWorkspaceHistorySubjectActions } from '../useWorkspaceHistorySubject
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
-import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+import { taskBearingTreeRows, taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+import { useRunTreeStore } from '~/stores/runTreeStore'
 import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries'
 import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), instances: [] as any[], ready: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: mocks.ready }) }))
+// A delegated row opens as its own run (autobyteus-461 rule 2): the fake owner records the opens.
+vi.mock('~/stores/delegatedRunsStore', async () => ({ useDelegatedRunsStore: (await import('~/test-support/delegatedRunsFake')).fakeDelegatedRunsStore }))
 vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({ AgentOrgStreamingService: class {
   connect = vi.fn(); disconnect = vi.fn(); isReady = () => true
   constructor(readonly options: any) { mocks.instances.push(this) }
@@ -22,24 +25,26 @@ vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({ AgentO
 const retainedView = (active: boolean) => {
   const view = taskBearingView()
   view.is_active = active
-  const first = view.execution_tree.rootOrg.taskExecutions[1]
-  if (!('teamRunId' in first)) throw new Error('Expected task Team fixture')
-  const second = structuredClone(first)
-  second.teamRunId = 'same-name-team-two'
-  second.members.forEach(member => { member.agentRunId += '-two' })
-  view.execution_tree.rootOrg.taskExecutions.push(second)
-  // Shut-down delegated executions are dormant: the active view reports them offline.
-  view.agent_statuses = active
-    ? view.agent_statuses.map(status => status.agent_run_id.startsWith('agent-task-') ? { ...status, status: 'offline' as const } : status)
-      .concat(second.members.map(member => ({ member_address: member.address, agent_run_id: (member as { agentRunId: string }).agentRunId,
-        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })))
-    : []
+  // The active view reports its own agents; the delegated runs' statuses are their own runs' (SR-083).
+  view.agent_statuses = active ? view.agent_statuses : []
   return view
+}
+/** The Org's tree (SR-084): its director delegated two copies of `/team`, the same name, each its own run. */
+const retainedTreeRows = () => {
+  const rows = taskBearingTreeRows()
+  const copy = rows.filter((row) => row.key === 'team:team-task' || row.parentKey === 'team:team-task').map((row) => {
+    const two = (id: string) => `${id}-two`
+    const target = row.openTarget && { ...row.openTarget, runId: 'same-name-team-two', agentRunId: two(row.openTarget.agentRunId) }
+    return row.key === 'team:team-task'
+      ? { ...row, key: 'team:same-name-team-two', openTarget: target, statusIds: ['same-name-team-two'] }
+      : { ...row, key: `team_member:same-name-team-two:${two(target!.agentRunId.replace(/-two$/, ''))}`, parentKey: 'team:same-name-team-two',
+        openTarget: target, statusIds: [target!.agentRunId] }
+  })
+  return [...rows, ...copy]
 }
 const historyResponse = (view: ReturnType<typeof retainedView>) => ({ data: { listCollaborationRootHistory: [{
   root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: view.is_active,
-  created_at: view.execution_tree.createdAt, archived_at: null, summary: 'Mixed Org', org: view.execution_tree, closed_task_executions: [],
-}] } })
+  created_at: view.execution_tree.createdAt, last_activity_at: view.execution_tree.createdAt, archived_at: null, summary: 'Mixed Org', org: view.execution_tree }] } })
 let wrapper: VueWrapper | undefined
 beforeEach(() => {
   setActivePinia(createPinia()); mocks.query.mockReset(); mocks.mutate.mockReset(); mocks.ready.mockResolvedValue(true)
@@ -60,6 +65,7 @@ const setup = async (active = true) => {
     if (query === GetAgentOrgMemberFileChanges) return { data: { getAgentOrgMemberFileChanges: [] } }
     throw new Error('Unexpected query')
   })
+  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, retainedTreeRows())
   // Model the already hydrated current route, without mounting the history drawer.
   const context = shallowReactive(await hydrateAgentOrgExecutionContext({ orgRunId: 'org-run', view,
   }))
@@ -107,24 +113,28 @@ describe('exact Org task inspection independent of history drawer initialization
     expect(history.agentOrgHistory).toHaveLength(1)
     expect(router.currentRoute.value.query).toMatchObject({ rootSubjectKind: 'agent_org', orgRunId: 'org-run',
       definitionId: 'org-definition', mode: 'active', agentRunId: 'agent-task-worker', memberAddress: '/team/worker' })
-    expect(context.selectedTarget()).toMatchObject({ context: { state: { runId: 'agent-task-worker' } } })
+    // The delegated member is its tree row, opened as its own run (rule 2).
+    const contexts = useAgentOrgContextsStore()
+    expect(contexts.selectedRowKey('org-run')).toBe('team_member:team-task:agent-task-worker')
     await execute(inspect('agent-task-worker-two'))
     await flushPromises()
     expect(router.currentRoute.value.query.agentRunId).toBe('agent-task-worker-two')
-    expect(context.selectedTarget()).toMatchObject({ context: { state: { runId: 'agent-task-worker-two' } } })
+    expect(contexts.selectedRowKey('org-run')).toBe('team_member:same-name-team-two:agent-task-worker-two')
     expect(historyQueries()).toHaveLength(1)
     expect(mocks.instances).toHaveLength(1)
     expect(mocks.mutate).not.toHaveBeenCalled()
   })
 
-  it('resolves inactive history through the same read owner and inspects without Restore, transport or activation', async () => {
+  it('resolves inactive history through the same read owner and inspects without Restore or activation; the open view gets its stream (SR-045)', async () => {
     const { execute, contexts, router } = await setup(false)
     await execute(inspect('agent-task-worker-two'))
     expect(router.currentRoute.value.query).toMatchObject({ mode: 'history', agentRunId: 'agent-task-worker-two' })
-    expect(contexts.contextFor('org-run')?.selectedTarget()).toMatchObject({ access: 'read_only', context: { state: { runId: 'agent-task-worker-two' } } })
+    expect(contexts.selectedRowKey('org-run')).toBe('team_member:same-name-team-two:agent-task-worker-two')
     expect(historyQueries()).toHaveLength(1)
     expect(mocks.query.mock.calls.some(([{ query }]) => query === GetAgentOrgRunInspection)).toBe(false) // coherent retained context is reusable
-    expect(mocks.instances).toHaveLength(0)
+    // The stopped Org's open view keeps a stream, whose stored-mode snapshot refreshes it (autobyteus-461 SR-045).
+    expect(mocks.instances).toHaveLength(1)
+    expect(contexts.contextFor('org-run')?.isActive).toBe(false)
     expect(mocks.mutate).not.toHaveBeenCalled()
   })
 
@@ -161,8 +171,9 @@ describe('exact Org task inspection independent of history drawer initialization
   })
 })
 
-async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source'>) {
-  const staged = await stageAgentOrgExecutionContext({ ...input, source: 'stream' })
+async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source' | 'focus'>) {
+  // The route selects '/director' after this context is published; nothing is staged (autobyteus-358).
+  const staged = await stageAgentOrgExecutionContext({ ...input, focus: null, source: 'stream' })
   staged.commit()
   return staged.context
 }

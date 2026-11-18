@@ -99,7 +99,8 @@ const toRawModelCapabilities = (rowValue: unknown): RawModelCapabilities | null 
 
 const collectRawModelCapabilities = async (): Promise<RawModelCapabilities[]> => {
   const clientManager = getCodexAppServerClientManager();
-  const client = await clientManager.acquireClient(process.cwd());
+  const lease = clientManager.beginAcquire(process.cwd());
+  const client = await lease.acquire();
   const results: RawModelCapabilities[] = [];
   try {
     let cursor: string | null = null;
@@ -121,7 +122,7 @@ const collectRawModelCapabilities = async (): Promise<RawModelCapabilities[]> =>
     } while (cursor);
     return results;
   } finally {
-    await clientManager.releaseClient(process.cwd());
+    await lease.release();
   }
 };
 

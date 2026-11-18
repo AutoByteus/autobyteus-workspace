@@ -140,6 +140,25 @@ describe("WorkspaceManager", () => {
     expect(await manager.getRegisteredWorkspaceRootPath(regularWorkspaceId)).toBe(regularRoot);
   });
 
+  it("autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works", async () => {
+    const regularRoot = createTempRoot();
+    const internalRoot = path.join(appDataDir, "internal-workspaces", "autobyteus-model-router");
+    fs.mkdirSync(internalRoot, { recursive: true });
+    const regular = await manager.ensureWorkspaceByRootPath(regularRoot);
+    const internal = await manager.ensureWorkspaceByRootPath(internalRoot);
+    vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "false");
+    try {
+      expect((await manager.listVisibleWorkspaces()).map((workspace) => workspace.workspaceId)).toEqual([regular.workspaceId]);
+      expect(await manager.getOrCreateWorkspace(internal.workspaceId)).toBe(internal);
+      vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "true");
+      expect((await manager.listVisibleWorkspaces()).map((workspace) => workspace.workspaceId).sort())
+        .toEqual([regular.workspaceId, internal.workspaceId].sort());
+    } finally {
+      vi.unstubAllEnvs();
+      fs.rmSync(regularRoot, { recursive: true, force: true });
+    }
+  });
+
   it("returns undefined for unknown workspace IDs", () => {
     expect(manager.getWorkspaceById("missing")).toBeUndefined();
   });
@@ -252,4 +271,43 @@ describe("WorkspaceManager", () => {
     expect(manager.getWorkspaceById("skill_ws_writer")).toBeUndefined();
   });
 
+  it("refuses a path that is not yet registered unless it is an existing absolute folder, and registers nothing", async () => {
+    const root = createTempRoot();
+    const filePath = path.join(root, "notes.txt");
+    fs.writeFileSync(filePath, "x");
+    const cases: Array<[string, string]> = [
+      ["relative/dir", "not_absolute"],
+      [path.join(root, "missing"), "missing"],
+      [path.join(filePath, "below-a-file"), "missing"],
+      [filePath, "not_a_folder"],
+    ];
+    for (const [rootPath, reason] of cases) {
+      await expect(manager.createWorkspace({ rootPath })).rejects.toMatchObject({
+        name: "WorkspacePathRefusedError",
+        reason,
+      });
+    }
+    expect(manager.getAllWorkspaces()).toEqual([]);
+    expect(await manager.listRegisteredWorkspaceRootPaths()).toEqual([]);
+  });
+
+  it("refuses an unregistered missing folder on the server-internal registration path too", async () => {
+    await expect(manager.ensureWorkspaceByRootPath(path.join(appDataDir, "gone"))).rejects.toMatchObject({
+      name: "WorkspacePathRefusedError",
+      reason: "missing",
+    });
+  });
+
+  it("accepts an already registered path whose folder no longer exists", async () => {
+    const missing = path.join(appDataDir, "deleted-folder");
+    fs.writeFileSync(
+      path.join(appDataDir, "workspaces.json"),
+      JSON.stringify({ [buildFilesystemWorkspaceId(missing)]: missing }),
+    );
+
+    const workspace = await manager.createWorkspace({ rootPath: missing });
+
+    expect(workspace.getBasePath()).toBe(missing);
+    expect(await manager.listRegisteredWorkspaceRootPaths()).toEqual([missing]);
+  });
 });

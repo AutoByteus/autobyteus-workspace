@@ -26,7 +26,7 @@ async function* fromEvents<T>(events: T[]): AsyncGenerator<T> {
 
 const collect = async (llm: BaseLLM): Promise<ChunkResponse[]> => {
   const chunks: ChunkResponse[] = [];
-  for await (const chunk of llm.streamMessages(messages, { logicalConversationId: 'c' })) chunks.push(chunk);
+  for await (const chunk of llm.streamMessages(messages, {})) chunks.push(chunk);
   return chunks;
 };
 

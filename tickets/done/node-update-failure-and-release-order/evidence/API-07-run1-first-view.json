@@ -1,0 +1,24 @@
+{
+ "startRoute": "#/chat",
+ "endRoute": "#/nodes",
+ "sameDocument": true,
+ "timeOrigin": "2026-11-07T20:17:40.726Z",
+ "changes": [
+  {
+   "ms": 1,
+   "at": "2026-11-07T20:17:41.134Z",
+   "version": null,
+   "failed": null,
+   "updated": null,
+   "notice": null
+  },
+  {
+   "ms": 102,
+   "at": "2026-11-07T20:17:41.235Z",
+   "version": "Server 1.5.12-beta.7",
+   "failed": null,
+   "updated": null,
+   "notice": null
+  }
+ ]
+}

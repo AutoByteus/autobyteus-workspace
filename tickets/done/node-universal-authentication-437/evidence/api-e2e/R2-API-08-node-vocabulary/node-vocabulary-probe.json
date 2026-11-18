@@ -1,0 +1,123 @@
+{
+  "startedAt": "2026-11-08T18:05:46.906Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 64385,
+      "nodeId": "srv_R3eIyWCUCjSPEV2aHjPpBdPEGglXuZjg"
+    },
+    "alpha": {
+      "port": 64384,
+      "nodeId": "srv_BmIlIhBuT7BmZ4N2D12xzmNtW6-cMguF"
+    }
+  },
+  "cases": {
+    "NVP-01": {
+      "result": "Pass",
+      "ms": 179,
+      "failedExpectations": [],
+      "stored": {
+        "version": 7,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:64384",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_BmIlIhBuT7BmZ4N2D12xzmNtW6-cMguF"
+          },
+          {
+            "id": "remote-beta-entry",
+            "name": "beta box",
+            "baseUrl": "http://127.0.0.1:64385",
+            "nodeType": "remote",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_R3eIyWCUCjSPEV2aHjPpBdPEGglXuZjg"
+          }
+        ]
+      },
+      "names": [
+        "beta"
+      ],
+      "backup": "{\"version\":7,\"nodes\":[{\"id\":\"embedded-local\",\"name\":\"Embedded Node\",\"baseUrl\":\"http://127.0.0.1:64384\",\"nodeType\":\"embedded\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":true,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_BmIlIhBuT7BmZ4N2D12xzmNtW6-cMguF\"},{\"id\":\"remote-beta-entry\",\"name\":\"beta box\",\"baseUrl\":\"http://127.0.0.1:64385\",\"nodeType\":\"remote\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":false,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_R3eIyWCUCjSPEV2aHjPpBdPEGglXuZjg\"}]}"
+    },
+    "NVP-02": {
+      "result": "Pass",
+      "ms": 53,
+      "failedExpectations": [],
+      "lines": [
+        "Not reachable. This node's identity is waiting for its data migration.\n\nCheck again"
+      ]
+    },
+    "NVP-03": {
+      "result": "Pass",
+      "ms": 3429,
+      "failedExpectations": [],
+      "en": "Memory Sync source ID",
+      "zh": "记忆同步源 ID",
+      "sources": [
+        "local",
+        "imported:nvp-beta-source"
+      ]
+    },
+    "NVP-04": {
+      "result": "Pass",
+      "ms": 1630,
+      "failedExpectations": [],
+      "shown": "runs",
+      "storedKeys": [
+        "entryId",
+        "serverBaseUrl",
+        "credential",
+        "device",
+        "pairedAt"
+      ],
+      "entryId": "mobile-paired-node"
+    },
+    "NVP-05": {
+      "result": "Pass",
+      "ms": 14472,
+      "failedExpectations": [],
+      "sources": [
+        "local"
+      ],
+      "cardHasReason": true
+    }
+  },
+  "browserErrors": [
+    {
+      "phase": "NVP-01..03",
+      "text": "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:64384/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:64384/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-11-08T18:06:44.746Z"
+}

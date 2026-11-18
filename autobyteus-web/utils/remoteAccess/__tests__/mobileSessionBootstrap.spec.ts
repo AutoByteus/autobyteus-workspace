@@ -25,8 +25,7 @@ const { runtimeConfigMock } = vi.hoisted(() => ({
 mockNuxtImport('useRuntimeConfig', () => () => runtimeConfigMock);
 
 const storedSession = (): MobileNodeSession => ({
-  version: 1,
-  nodeId: 'mobile-paired-node',
+  entryId: 'mobile-paired-node',
   serverBaseUrl: 'http://desktop-private.local:29695',
   credential: 'mra_secret',
   pairedAt: '2026-05-16T00:00:00.000Z',
@@ -34,6 +33,7 @@ const storedSession = (): MobileNodeSession => ({
     deviceId: 'device-1',
     displayName: 'Phone',
     clientFacingBaseUrl: 'http://desktop-private.local:29695',
+    connectionWay: null,
     createdAt: '2026-05-16T00:00:00.000Z',
     lastSeenAt: null,
     revokedAt: null,

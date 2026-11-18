@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  backgroundTaskEndReasonSchema,
   backgroundTaskKindSchema,
   backgroundTaskStatusSchema,
   agentPresentationMessageSchema,
 } from "@autobyteus/agent-presentation-contracts";
 import {
+  AGENT_BACKGROUND_TASK_END_REASONS,
   AGENT_BACKGROUND_TASK_KINDS,
   AGENT_BACKGROUND_TASK_STATUSES,
   buildBackgroundTaskUpdatedPayload,
@@ -19,6 +21,8 @@ const task: AgentBackgroundTask = {
   command: "sleep 20; echo done > marker",
   status: "completed",
   summary: "The command exited with code 0.",
+  endReason: null,
+  exitCode: 0,
   startedAt: "2026-09-29T16:48:20.000Z",
 };
 
@@ -26,6 +30,7 @@ describe("agent background task vocabulary", () => {
   it("keeps the server kinds and statuses identical to the shared contract enums", () => {
     expect([...AGENT_BACKGROUND_TASK_KINDS]).toEqual(backgroundTaskKindSchema.options);
     expect([...AGENT_BACKGROUND_TASK_STATUSES]).toEqual(backgroundTaskStatusSchema.options);
+    expect([...AGENT_BACKGROUND_TASK_END_REASONS]).toEqual(backgroundTaskEndReasonSchema.options);
   });
 
   it("builds the snake_case wire payload that the presentation contract accepts, and parses it back", () => {
@@ -38,6 +43,8 @@ describe("agent background task vocabulary", () => {
       command: task.command,
       status: "completed",
       summary: task.summary,
+      end_reason: null,
+      exit_code: 0,
       started_at: task.startedAt,
     });
     expect(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload }).type)
@@ -54,6 +61,16 @@ describe("agent background task vocabulary", () => {
     expect(parseBackgroundTaskUpdatedPayload(payload).command).toBeNull();
   });
 
+  it.each(AGENT_BACKGROUND_TASK_END_REASONS)("carries the end reason %s on the wire and parses it back (REQ-003)", (endReason) => {
+    const stopped: AgentBackgroundTask = { ...task, status: "stopped", endReason, exitCode: null };
+    const payload = buildBackgroundTaskUpdatedPayload(stopped);
+
+    expect(payload).toMatchObject({ end_reason: endReason, exit_code: null });
+    expect(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload }).type)
+      .toBe("BACKGROUND_TASK_UPDATED");
+    expect(parseBackgroundTaskUpdatedPayload(payload)).toEqual(stopped);
+  });
+
   it.each([
     [{ task_id: "" }, "task_id"],
     [{ kind: "local_bash" }, "kind"],
@@ -62,6 +79,11 @@ describe("agent background task vocabulary", () => {
     [{ command: undefined }, "command"],
     [{ status: "pending" }, "status"],
     [{ summary: 7 }, "summary"],
+    [{ end_reason: "timeout" }, "end_reason"],
+    [{ end_reason: undefined }, "end_reason"],
+    [{ exit_code: 1.5 }, "exit_code"],
+    [{ exit_code: "1" }, "exit_code"],
+    [{ exit_code: undefined }, "exit_code"],
     [{ started_at: undefined }, "started_at"],
   ])("rejects an invalid payload field %o", (override, field) => {
     expect(() => parseBackgroundTaskUpdatedPayload({ ...buildBackgroundTaskUpdatedPayload(task), ...override }))

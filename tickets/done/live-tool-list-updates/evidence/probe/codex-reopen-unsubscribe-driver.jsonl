@@ -1,0 +1,27 @@
+{"t":"2026-10-29T11:13:15.171Z","kind":"thread","threadId":"01a1875d-351a-7ae2-b325-375c597dfebc","variant":"unsubscribe"}
+{"t":"2026-10-29T11:13:15.173Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"probe\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.173Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"codex_apps\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.174Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"cua_repl\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.174Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"node_repl\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.175Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"probe\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.537Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"node_repl\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.799Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"codex_apps\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.954Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"cua_repl\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:15.955Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"probe\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:16.391Z","kind":"injected"}
+{"t":"2026-10-29T11:13:19.397Z","kind":"loaded","label":"after start","data":"{\"data\":[\"01a1875d-351a-7ae2-b325-375c597dfebc\"],\"nextCursor\":null}"}
+{"t":"2026-10-29T11:13:19.437Z","kind":"control","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T11:13:21.442Z","kind":"unsubscribe","status":"unsubscribed"}
+{"t":"2026-10-29T11:13:26.489Z","kind":"loaded","label":"after unsubscribe","data":"{\"data\":[\"01a1875d-351a-7ae2-b325-375c597dfebc\"],\"nextCursor\":null}"}
+{"t":"2026-10-29T11:13:26.492Z","kind":"resume_begin"}
+{"t":"2026-10-29T11:13:26.568Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"probe\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:26.568Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"cua_repl\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:26.568Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"codex_apps\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:26.568Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"node_repl\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:26.568Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"probe\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:26.577Z","kind":"resumed","threadId":"01a1875d-351a-7ae2-b325-375c597dfebc"}
+{"t":"2026-10-29T11:13:26.859Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"node_repl\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:27.219Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"cua_repl\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:27.254Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-351a-7ae2-b325-375c597dfebc\",\"name\":\"codex_apps\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:30.580Z","kind":"loaded","label":"after resume","data":"{\"data\":[\"01a1875d-351a-7ae2-b325-375c597dfebc\"],\"nextCursor\":null}"}
+{"t":"2026-10-29T11:13:30.581Z","kind":"end"}

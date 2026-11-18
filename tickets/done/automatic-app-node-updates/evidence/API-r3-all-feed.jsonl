@@ -1,0 +1,135 @@
+{"at":"2026-11-02T07:13:27.290Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T07:13:27Z"}
+{"at":"2026-11-02T07:13:27.724Z","method":"GET","url":"/latest-mac.yml","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T07:14:36.650Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhoaf6","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T07:14:42.716Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhogcp","status":200,"mode":"none","bytes":384}
+{"marker":"API-02B-r3 check 2026-11-02T07:14:45Z"}
+{"at":"2026-11-02T07:14:47.806Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dholbr","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:14:47.825Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"at":"2026-11-02T07:15:59.533Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhqrda","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:16:46.223Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhs90c","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:18:03.985Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhukud","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T07:18:10.015Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhuqqt","status":200,"mode":"none","bytes":384}
+{"marker":"API-03-r3 check 2026-11-02T07:18:17Z"}
+{"at":"2026-11-02T07:18:20.338Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dhv4th","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:18:20.352Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"at":"2026-11-02T07:19:37.208Z","method":"GET","url":"/latest-mac.yml?noCache=1k6di1fvj","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:22:17.802Z","method":"GET","url":"/latest-mac.yml?noCache=1k6di6cq6","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T07:22:24.331Z","method":"GET","url":"/latest-mac.yml?noCache=1k6di6j69","status":200,"mode":"none","bytes":384}
+{"marker":"API-02D-r3 check 2026-11-02T07:22:26Z"}
+{"at":"2026-11-02T07:22:29.602Z","method":"GET","url":"/latest-mac.yml?noCache=1k6di6oav","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:22:29.645Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"at":"2026-11-02T07:26:56.607Z","method":"GET","url":"/latest-mac.yml?noCache=1k6diet2r","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:29:03.715Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"othbyF2JER9CUoLi+xNaw0q1/DGVjD2h0BK4C3onAKUMAPIegMOTbrbY0vB1DnonEErSWbe3oB5OnsyzKgl/gQ=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-bad 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T07:29:04Z"}
+{"at":"2026-11-02T07:29:23.362Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dijccs","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T07:29:29.405Z","method":"GET","url":"/latest-mac.yml?noCache=1k6diji9s","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T07:29:34.530Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dijna0","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:29:34.543Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-05C-r3 restart 2026-11-02T07:31:31Z"}
+{"at":"2026-11-02T07:31:45.749Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dinneh","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:32:47.507Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T07:32:48Z"}
+{"at":"2026-11-02T07:34:24.242Z","method":"GET","url":"/latest-mac.yml?noCache=1k6disi7b","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:34:33.266Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"at":"2026-11-02T07:35:22.366Z","method":"GET","url":"/latest-mac.yml?noCache=1k6diuavr","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:35:31.379Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"at":"2026-11-02T07:36:21.672Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dj04t4","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:36:30.730Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"at":"2026-11-02T07:38:12.875Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T07:38:13Z"}
+{"at":"2026-11-02T07:38:31.595Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dj43p4","status":200,"mode":"none","bytes":384}
+{"marker":"API-11 download V2 by a click (switch off) 2026-11-02T07:38:35Z"}
+{"marker":"API-11 Squirrel copy done (Download completed in log); +5 s 2026-11-02T07:40:58Z"}
+{"marker":"API-11 check 2026-11-02T07:40:58Z"}
+{"at":"2026-11-02T07:41:00.222Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dj8ktq","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 switch on 2026-11-02T07:41:00Z"}
+{"at":"2026-11-02T07:41:02.314Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-11 old process alive: no 2026-11-02T07:41:50Z"}
+{"at":"2026-11-02T07:42:27.042Z","method":"GET","url":"/latest-mac.yml?noCache=1k6djb9mu","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T07:49:19.229Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T07:49:19Z"}
+{"at":"2026-11-02T07:49:37.208Z","method":"GET","url":"/latest-mac.yml?noCache=1k6djodpi","status":200,"mode":"none","bytes":384}
+{"marker":"API-11 check (finds V2, switch off) 2026-11-02T07:49:41Z"}
+{"at":"2026-11-02T07:49:43.423Z","method":"GET","url":"/latest-mac.yml?noCache=1k6djojrt","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 download V2 by a click (switch off) 2026-11-02T07:49:43Z"}
+{"at":"2026-11-02T07:49:45.495Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-11 Squirrel copy done (Download completed in log); +5 s 2026-11-02T07:49:57Z"}
+{"marker":"API-11 check 2026-11-02T07:49:57Z"}
+{"at":"2026-11-02T07:49:58.851Z","method":"GET","url":"/latest-mac.yml?noCache=1k6djp2tt","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 switch on 2026-11-02T07:49:59Z"}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T08:00:01Z"}
+{"at":"2026-11-02T08:00:01.650Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"at":"2026-11-02T08:00:25.041Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dkc6e6","status":200,"mode":"none","bytes":384}
+{"marker":"API-11 check (finds V2, switch off) 2026-11-02T08:00:29Z"}
+{"at":"2026-11-02T08:00:31.932Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dkcd5e","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 download V2 by a click (switch off) 2026-11-02T08:00:32Z"}
+{"at":"2026-11-02T08:00:34.536Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-11 Squirrel fetched ('Download completed') + 60 s for its verify (~36 s) 2026-11-02T08:01:39Z"}
+{"marker":"API-11 check 2026-11-02T08:01:39Z"}
+{"at":"2026-11-02T08:01:41.561Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dkeh5m","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 switch on 2026-11-02T08:01:41Z"}
+{"marker":"API-11 old process alive: yes 2026-11-02T08:07:44Z"}
+{"at":"2026-11-02T08:11:08.936Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T08:11:09Z"}
+{"at":"2026-11-02T08:11:28.232Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dl0e2m","status":200,"mode":"none","bytes":384}
+{"marker":"API-12a check (finds V2, switch off) 2026-11-02T08:11:32Z"}
+{"at":"2026-11-02T08:11:34.513Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dl0k7g","status":200,"mode":"good","bytes":384}
+{"marker":"API-12a download V2 by a click (switch off) 2026-11-02T08:11:34Z"}
+{"at":"2026-11-02T08:11:36.582Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-12a Squirrel fetched ('Download completed') + 60 s for its verify (~36 s) 2026-11-02T08:12:40Z"}
+{"marker":"API-12a check 2026-11-02T08:12:40Z"}
+{"at":"2026-11-02T08:12:42.856Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dl2mv5","status":200,"mode":"good","bytes":384}
+{"marker":"API-12a download V2 again by a click 2026-11-02T08:12:43Z"}
+{"marker":"API-12a switch on 2026-11-02T08:12:45Z"}
+{"marker":"API-12a old process alive: no 2026-11-02T08:13:29Z"}
+{"at":"2026-11-02T08:14:06.490Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dl58kl","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T08:22:16.130Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T08:22:16Z"}
+{"at":"2026-11-02T08:22:34.064Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dlkoaa","status":200,"mode":"none","bytes":384}
+{"marker":"API-12b check (finds V2, switch off) 2026-11-02T08:22:38Z"}
+{"at":"2026-11-02T08:22:40.231Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dlkub5","status":200,"mode":"good","bytes":384}
+{"marker":"API-12b download V2 by a click (switch off) 2026-11-02T08:22:40Z"}
+{"at":"2026-11-02T08:22:42.445Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-12b Squirrel fetched ('Download completed') + 60 s for its verify (~36 s) 2026-11-02T08:23:47Z"}
+{"at":"2026-11-02T08:23:48.782Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.12-arm64-mac.zip","size":492200735,"sha512":"HQTxfILFOQyHHEbSp51vEiFIIGi5DmigiyQQToSlELNC4r5MsM6FDSRPHccDM1NXw6DsqCbJ8cTAwfpKtPvKUw=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v3 1.5.11-beta.10 -> 1.5.11-beta.12 2026-11-02T08:23:49Z"}
+{"marker":"API-12b check (feed offers V3) 2026-11-02T08:23:49Z"}
+{"at":"2026-11-02T08:23:51.167Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dln3jq","status":200,"mode":"good","bytes":384}
+{"marker":"API-12b switch on 2026-11-02T08:23:51Z"}
+{"at":"2026-11-02T08:23:53.226Z","method":"GET","url":"/AutoByteus-1.5.11-beta.12-arm64-mac.zip.blockmap","status":404,"mode":"good"}
+{"at":"2026-11-02T08:23:53.228Z","method":"GET","url":"/AutoByteus-1.5.11-beta.12-arm64-mac.zip","status":200,"mode":"good","bytes":492200735}
+{"marker":"API-12b old process alive: no 2026-11-02T08:25:17Z"}
+{"at":"2026-11-02T08:27:55.746Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dluieq","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T08:33:11.163Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"othbyF2JER9CUoLi+xNaw0q1/DGVjD2h0BK4C3onAKUMAPIegMOTbrbY0vB1DnonEErSWbe3oB5OnsyzKgl/gQ=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-bad 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T08:33:11Z"}
+{"at":"2026-11-02T08:33:29.017Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dm8ntf","status":200,"mode":"none","bytes":384}
+{"marker":"API-12c switch on (V2 refused in the wait expected) 2026-11-02T08:33:33Z"}
+{"at":"2026-11-02T08:33:37.134Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dm8vrc","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T08:33:37.156Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-12c refused 2026-11-02T08:34:37Z"}
+{"at":"2026-11-02T08:34:39.284Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.12-arm64-mac.zip","size":492200735,"sha512":"HQTxfILFOQyHHEbSp51vEiFIIGi5DmigiyQQToSlELNC4r5MsM6FDSRPHccDM1NXw6DsqCbJ8cTAwfpKtPvKUw=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v3 1.5.11-beta.10 -> 1.5.11-beta.12 2026-11-02T08:34:39Z"}
+{"marker":"API-12c check (feed offers V3) 2026-11-02T08:34:39Z"}
+{"at":"2026-11-02T08:34:41.667Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dmaurr","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T08:34:41.692Z","method":"GET","url":"/AutoByteus-1.5.11-beta.12-arm64-mac.zip.blockmap","status":404,"mode":"good"}
+{"at":"2026-11-02T08:34:41.693Z","method":"GET","url":"/AutoByteus-1.5.11-beta.12-arm64-mac.zip","status":200,"mode":"good","bytes":492200735}
+{"marker":"API-12c old process alive: no 2026-11-02T08:35:24Z"}
+{"at":"2026-11-02T08:36:03.145Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dmdee5","status":200,"mode":"good","bytes":384}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T08:45:10Z"}
+{"at":"2026-11-02T08:45:11.003Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"at":"2026-11-02T08:45:33.255Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dmur60","status":200,"mode":"none","bytes":384}
+{"marker":"API-11 check (finds V2, switch off) 2026-11-02T08:45:37Z"}
+{"at":"2026-11-02T08:45:40.164Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dmv1tv","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 download V2 by a click (switch off) 2026-11-02T08:45:40Z"}
+{"at":"2026-11-02T08:45:42.631Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492200670}
+{"marker":"API-11 Squirrel fetched ('Download completed') + 150 s for its verify (~36 s) 2026-11-02T08:48:17Z"}
+{"marker":"API-11 check 2026-11-02T08:48:17Z"}
+{"at":"2026-11-02T08:48:20.085Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dn3u3h","status":200,"mode":"good","bytes":384}
+{"marker":"API-11 switch on 2026-11-02T08:48:20Z"}
+{"marker":"API-11 old process alive: no 2026-11-02T08:48:52Z"}
+{"at":"2026-11-02T08:52:41.299Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dnbt6d","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T08:56:25.003Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492200670,"sha512":"8DVrA/P/7dO92Wsj02gtMm3OwQDrmc0HaVonR7hZdwPpVSbJP026ECDIWxs5djZx4U12FISMBEIE1iWkKiS+vg=="}
+{"marker":"feed /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi/feed-v2 1.5.11-beta.10 -> 1.5.11-beta.11 2026-11-02T08:56:25Z"}
+{"marker":"API-13 start 2026-11-02T08:56:25Z"}
+{"at":"2026-11-02T08:56:43.237Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dnj9ev","status":200,"mode":"good","bytes":384}

@@ -1,0 +1,8 @@
+{
+  "createAgentDefinition": {
+    "id": "api-prisma-a73a37eb-fc6",
+    "name": "api-prisma-a73a37eb-fc6",
+    "description": "Retained-data proof; no model execution",
+    "instructions": "Do not run"
+  }
+}

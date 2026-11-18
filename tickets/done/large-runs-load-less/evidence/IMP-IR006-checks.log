@@ -1,0 +1,44 @@
+# IMP-IR006: implementation-scoped checks for IR-006 (SR-007/SR-008; CR-004, AR-006).
+# Commit 65a5b34c9b (branch codex/large-runs-load-less). Date 2026-11-01. macOS, node v22.23.1.
+# Every suite ran under env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md), one heavy run at a time.
+# Look for: contracts '# pass 39'/'# pass 21'; server tsc exit=0; unit '7674 passed'; integration '480 passed' with only FU-001's 6; web typecheck PASS; web '4944 passed'; guards exit 0; mutation '3 failed'.
+
+## IMP-31 contract packages (pnpm test; dist rebuilt): collaboration-stream-contracts # pass 39 # fail 0; team-stream-contracts # pass 21 # fail 0
+
+## IMP-32 server typecheck
+tsc exit=0
+
+## IMP-33 server test:unit (full)
+ Test Files  904 passed | 5 skipped (909)
+      Tests  7674 passed | 9 skipped (7683)
+exit=0
+
+## IMP-34 server test:integration (full)
+      Tests  6 failed | 480 passed | 69 skipped (555)
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > plans exact configured identities through real providers and normal cached Team service without activation
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service
+ Test Files  3 failed | 83 passed | 20 skipped (106)
+exit=1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+# The 6 failures are FU-001's (base efd28d5c4a); 480 passed as before.
+
+## IMP-35 web typecheck: production errors 0; test-file errors 297 = baseline; [typecheck] PASS
+
+## IMP-36 web Nuxt suite (full; rerun after the rebuildOfView refactor, the earlier run was stopped)
+ Test Files  681 passed (681)
+      Tests  4944 passed | 2 skipped (4946)
+exit=0
+
+## IMP-37 web guards, each alone: guard:web-boundary exit=0, guard:localization-boundary exit=0, audit:localization-literals exit=0
+
+## IMP-38 targeted
+server root-event-publisher-live-sequence.test.ts: per root kind a message advances M, a presentation does not (Agent root, Org, Team); position and snapshot connection carry M.
+web owner spec 11 passed; hub reloads spec 3 passed (new child whose copy output moved the base to 22, no message: 0 fetches; message at 25: 1 fetch, shown once); TeamStreamingService.spec 16 passed.
+
+## IMP-39 mutation check (temporary edit, restored): compare base instead of latest message -> 3 failed | 27 passed (owner L-002 case, hub L-002 case, Team keep case).
+
+## IMP-40 codegen: server built (exit 0), started on a temporary data folder at 127.0.0.1:18358, graphql-codegen, server stopped, folders removed. Diff: +lastMessageChangeSequence only.

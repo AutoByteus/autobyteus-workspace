@@ -1,0 +1,2 @@
+{"node":"v22.23.1","mode":"default","usedReply":"ok","closeMs":"still waiting at 5000 ms","onCloseRan":false}
+{"node":"v22.23.1","mode":"forceCloseConnections:true","usedReply":"ok","closeMs":0,"onCloseRan":true}

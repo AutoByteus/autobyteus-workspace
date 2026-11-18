@@ -1,0 +1,4 @@
+# Summary of the clean-clone run (/tmp/ab324-clone at 6fae6761d3); full log 119 bytes, trimmed to summaries, skips and failures.
+ ✓ tests/architecture/tracked-imports.test.ts (2 tests) 3222ms
+ Test Files  7 passed (7)
+      Tests  54 passed (54)

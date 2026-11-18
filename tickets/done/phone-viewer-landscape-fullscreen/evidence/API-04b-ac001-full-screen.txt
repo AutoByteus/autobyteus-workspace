@@ -1,0 +1,11 @@
+# Case: API-04 — AC-001 on the emulator: enter full screen with a real tap (auto-rotate off, gesture navigation)
+# Steps: draft run (no message) -> ⋮ -> VNC Viewer (View only, portrait); real tap (adb input tap via tapsel.sh) on the full screen button; read state.sh (display rotation, requested orientation, status/navigation bar visibility from dumpsys; page query, canvas rect, transform via DevTools) and a screenshot
+# Commit: d76be54fb0 (fresh-clone APK and server package); emulator-5554 autobyteus277_api35 (accelerometer_rotation=0, navigation_mode=2 gestural); node abx432-api-node
+# Date: 2026-11-08T07:53:31Z
+
+portrait | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+tapped mobile-node-desktop-full-screen at device 1008 124 (webview origin 0,63)
+full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+aspect: "{\"canvasCss\":[733,412],\"aspect\":\"1.778\",\"desktopAspect\":\"1.778\"}"
+accelerometer_rotation still: 0
+after Got it | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"

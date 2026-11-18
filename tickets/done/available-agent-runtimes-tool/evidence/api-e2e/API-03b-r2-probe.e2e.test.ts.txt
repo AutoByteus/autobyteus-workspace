@@ -1,0 +1,35 @@
+// TEMPORARY diagnosis probe for autobyteus-303 API-03b round 2 (not committed): a timed-out Antigravity limits step,
+// read through the real service with the real strategy and a hanging scripted `agy /usage`, 400 times with short caps.
+import fs from "node:fs";
+import path from "node:path";
+import { describe, it, vi } from "vitest";
+
+const fake = await vi.hoisted(async () => {
+  const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
+  return prepareFakeRuntimes({ label: "api03b-r2", grokInstalled: true });
+});
+
+describe("probe", () => {
+  it("measures", async () => {
+    fs.writeFileSync(path.join(fake.stateDir, "agy-usage"), "hang");
+    const { createAntigravityAgentRuntimeStrategy } = await import("../../../src/runtime-management/agent-runtimes/strategies/antigravity-agent-runtime-strategy.js");
+    const { AvailableAgentRuntimesService } = await import("../../../src/available-agent-runtimes/available-agent-runtimes-service.js");
+    const outcomes: Record<string, number> = {};
+    for (let i = 0; i < 400; i += 1) {
+      const limitsMs = 25 + (i % 11);
+      const service = new AvailableAgentRuntimesService({
+        strategies: [createAntigravityAgentRuntimeStrategy()],
+        signInReader: { read: async () => ({ state: "signedIn" }) } as never,
+        modelCatalog: { runtimeModelSelectionCatalog: async () => ({ offeredModels: [{ model_identifier: "m", display_name: "M" }] }), reloadProviderModelCatalog: async () => { throw new Error("unused"); } } as never,
+        providerCredentials: { listProviderCredentialSettings: async () => [] } as never,
+        providerUsageReaders: { readerFor: () => null },
+        stepCaps: { installMs: 4000, signInMs: 6000, modelsMs: 8000, limitsMs, providerListMs: 4000, providerModelsMs: 8000, providerUsageMs: 8000 },
+      });
+      const report = await service.read();
+      const limits = String((report.agentRuntimes.find((e: any) => e.runtime === "antigravity_cli") as any)?.limits);
+      outcomes[limits] = (outcomes[limits] ?? 0) + 1;
+    }
+    console.log("PROBE loop", JSON.stringify({ runs: 400, outcomes }));
+    fake.dispose();
+  }, 300_000);
+});

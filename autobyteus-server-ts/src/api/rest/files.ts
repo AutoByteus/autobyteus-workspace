@@ -3,6 +3,7 @@ import path from "node:path";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
 import { getMediaStorageService } from "../../services/media-storage-service.js";
+import { sendUserFile } from "./user-file-reply.js";
 
 export async function registerFileRoutes(app: FastifyInstance): Promise<void> {
   app.get<{
@@ -35,8 +36,9 @@ export async function registerFileRoutes(app: FastifyInstance): Promise<void> {
       return reply.code(404).send({ detail: "File not found." });
     }
 
-    const mimeType = lookupMime(resolvedPath) || "application/octet-stream";
-    reply.type(mimeType.toString());
-    return reply.send(fs.createReadStream(resolvedPath));
+    return sendUserFile(reply, {
+      mimeType: (lookupMime(resolvedPath) || "application/octet-stream").toString(),
+      body: fs.createReadStream(resolvedPath),
+    });
   });
 }

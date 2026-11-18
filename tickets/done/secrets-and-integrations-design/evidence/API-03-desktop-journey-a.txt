@@ -1,0 +1,347 @@
+# Case: API-03 desktop journey A (packaged worktree build, isolated instance iso-49772-c791, the app's own window over CDP)
+# Commands: CODEX_HOME=<L>/codex-home pnpm --silent isolated-app start --build; node journey-a.mjs <start.json> <out> stdio|stdio-edit|http <httpUrl>; pnpm --silent isolated-app restart iso-49772-c791; node journey-a.mjs … after-restart
+# Fixtures: the autobyteus-189 Node MCP test server (stdio; HTTP with --require-token test-dummy-http-token-B on 127.0.0.1); dummy values only
+# Commit: f3c52bd0f6 (code 4aa2543f9d; round-2 code 4505158d77, fc6032999e, 98eeac9f31)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; <L> = test-owned scratch $TMPDIR/s244-api (removed after the round)
+# Date: 2026-10-26
+
+== phase stdio ==
+{
+  "phase": "stdio",
+  "formRowsAfterApply": [
+    {
+      "name": "GITHUB_TOKEN",
+      "nameReadonly": false,
+      "value": "test-dummy-github-token-0001",
+      "type": "password",
+      "locked": "true",
+      "move": false,
+      "note": null
+    },
+    {
+      "name": "LOG_LEVEL",
+      "nameReadonly": false,
+      "value": "debug",
+      "type": "text",
+      "locked": "false",
+      "move": false,
+      "note": null
+    }
+  ],
+  "saveToasts": [
+    "Server 'github-like' saved successfully.",
+    "Successfully discovered and registered 5 tools.",
+    "Tools for github-like",
+    "gh_echo",
+    "Returns the given text.",
+    "gh_add"
+  ],
+  "view": {
+    "serverId": "github-like",
+    "transportType": "STDIO",
+    "enabled": true,
+    "toolNamePrefix": "gh",
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": [
+      {
+        "name": "GITHUB_TOKEN",
+        "value": null,
+        "state": "CONFIGURED"
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "debug",
+        "state": "PLAIN"
+      }
+    ]
+  },
+  "fileEntry": {
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": {
+      "GITHUB_TOKEN": {
+        "vaultSecretId": "mcp.0006ae57-358c-4f70-9b78-dfc8b397cc07"
+      },
+      "LOG_LEVEL": "debug"
+    },
+    "tool_name_prefix": "gh"
+  },
+  "fileHasToken": false,
+  "error": "Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-server-ts/node_modules/@modelcontextprotocol/sdk/dist/esm/client/index.js' imported from <L>/driver/lib.mjs",
+  "pageErrors": []
+}
+== phase stdio-edit ==
+{
+  "phase": "stdio-edit",
+  "view": {
+    "serverId": "github-like",
+    "transportType": "STDIO",
+    "enabled": true,
+    "toolNamePrefix": "gh",
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": [
+      {
+        "name": "GITHUB_TOKEN",
+        "value": null,
+        "state": "CONFIGURED"
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "debug",
+        "state": "PLAIN"
+      }
+    ]
+  },
+  "fileEntry": {
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": {
+      "GITHUB_TOKEN": {
+        "vaultSecretId": "mcp.0006ae57-358c-4f70-9b78-dfc8b397cc07"
+      },
+      "LOG_LEVEL": "debug"
+    },
+    "tool_name_prefix": "gh"
+  },
+  "fileHasToken": false,
+  "gateway": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"test-dummy-github-token-0001\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "gatewayDelivered": true,
+  "editRows": [
+    {
+      "name": "GITHUB_TOKEN",
+      "nameReadonly": true,
+      "value": "",
+      "type": "password",
+      "locked": "true",
+      "move": false,
+      "note": "Stored in the vault. Leave empty to keep it, or type a new value to replace it."
+    },
+    {
+      "name": "LOG_LEVEL",
+      "nameReadonly": false,
+      "value": "debug",
+      "type": "text",
+      "locked": null,
+      "move": true,
+      "note": null
+    }
+  ],
+  "jsonView": "{\n  \"mcpServers\": {\n    \"github-like\": {\n      \"transportType\": \"stdio\",\n      \"enabled\": true,\n      \"toolNamePrefix\": \"gh\",\n      \"command\": \"/Users/normy/.hermes/node/bin/node\",\n      \"args\": [\n        \"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs\"\n      ],\n      \"env\": {\n        \"GITHUB_TOKEN\": {\n          \"stored\": \"vault\"\n        },\n        \"LOG_LEVEL\": \"debug\"\n      }\n    }\n  }\n}",
+  "jsonViewHasToken": false,
+  "pageErrors": []
+}
+== phase http ==
+{
+  "phase": "http",
+  "add-with-wrong-token": {
+    "toasts": [
+      "Server 'remote-api' saved successfully.",
+      "Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized",
+      "Tools for remote-api",
+      "No tools registered for this server. Try syncing tools.",
+      "Server 'remote-api' saved successfully.",
+      "Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized"
+    ],
+    "view": {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    },
+    "fileToken": {
+      "vaultSecretId": "mcp.a66b4853-2fc8-4ec9-9103-47b004e5f8e3"
+    },
+    "gateway": {
+      "listed": false
+    }
+  },
+  "replace-token": {
+    "noteBefore": "Stored in the vault. Leave empty to keep it, or type a new token to replace it.",
+    "placeholder": "Leave empty to keep the stored token",
+    "toasts": [
+      "Server 'remote-api' saved successfully.",
+      "Successfully discovered and registered 5 tools.",
+      "Tools for remote-api",
+      "ra_echo",
+      "Returns the given text.",
+      "ra_add"
+    ],
+    "view": {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    },
+    "refChanged": true,
+    "gateway": {
+      "listed": true,
+      "isError": false,
+      "text": "hi"
+    }
+  },
+  "keep-token": {
+    "toasts": [
+      "Server 'remote-api' saved successfully.",
+      "Successfully discovered and registered 5 tools.",
+      "Tools for remote-api",
+      "ra_echo",
+      "Returns the given text.",
+      "ra_add"
+    ],
+    "view": {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    },
+    "refKept": true,
+    "gateway": {
+      "listed": true,
+      "isError": false,
+      "text": "kept"
+    }
+  },
+  "json-keep-marker": {
+    "jsonShowsMarker": true,
+    "jsonHasToken": false,
+    "toasts": [
+      "Server 'remote-api' saved successfully.",
+      "Successfully discovered and registered 5 tools.",
+      "Tools for remote-api",
+      "ra_echo",
+      "Returns the given text.",
+      "ra_add"
+    ],
+    "view": {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    },
+    "gateway": {
+      "listed": true,
+      "isError": false,
+      "text": "json-kept"
+    }
+  },
+  "invalid-keep-marker": {
+    "messages": [
+      "Error parsing JSON: 'token' must be a string or a keep marker.",
+      "Error parsing JSON: 'token' must be a string or a keep marker."
+    ],
+    "stillOnForm": true,
+    "refUnchanged": true,
+    "view": {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": "CONFIGURED",
+      "headers": []
+    }
+  },
+  "remove-token": {
+    "toasts": [
+      "Server 'remote-api' saved successfully.",
+      "Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized",
+      "Tools for remote-api",
+      "No tools registered for this server. Try syncing tools.",
+      "Server 'remote-api' saved successfully.",
+      "Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized"
+    ],
+    "view": {
+      "serverId": "remote-api",
+      "transportType": "STREAMABLE_HTTP",
+      "enabled": true,
+      "toolNamePrefix": "ra",
+      "url": "http://127.0.0.1:49606/mcp",
+      "tokenState": null,
+      "headers": []
+    },
+    "fileToken": null,
+    "gateway": {
+      "listed": false
+    }
+  },
+  "fileHasHttpToken": false,
+  "pageErrors": []
+}
+== phase after-restart ==
+{
+  "phase": "after-restart",
+  "gateway": {
+    "listed": true,
+    "isError": false,
+    "text": "{\"value\":\"test-dummy-github-token-0001\",\"cwd\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server\"}"
+  },
+  "gatewayDelivered": true,
+  "fileEntry": {
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": {
+      "GITHUB_TOKEN": {
+        "vaultSecretId": "mcp.0006ae57-358c-4f70-9b78-dfc8b397cc07"
+      },
+      "LOG_LEVEL": "debug"
+    },
+    "tool_name_prefix": "gh"
+  },
+  "fileHasToken": false,
+  "view": {
+    "serverId": "github-like",
+    "transportType": "STDIO",
+    "enabled": true,
+    "toolNamePrefix": "gh",
+    "command": "/Users/normy/.hermes/node/bin/node",
+    "args": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"
+    ],
+    "env": [
+      {
+        "name": "GITHUB_TOKEN",
+        "value": null,
+        "state": "CONFIGURED"
+      },
+      {
+        "name": "LOG_LEVEL",
+        "value": "debug",
+        "state": "PLAIN"
+      }
+    ]
+  },
+  "pageErrors": []
+}
+== HTTP test server: auth outcomes it saw (value-free) ==
+   4 auth=missing
+  38 auth=ok
+   1 auth=wrong
+(the stdio phase's first run stopped at the gateway probe with a wrong SDK path in the driver (the project is on MCP SDK v2); the save itself had completed; stdio-edit reran the verification)

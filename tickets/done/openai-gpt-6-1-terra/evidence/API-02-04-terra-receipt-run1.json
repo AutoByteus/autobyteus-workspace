@@ -1,0 +1,140 @@
+{
+  "startedAt": "2026-10-30T11:55:04.259Z",
+  "runs": {},
+  "catalog": {
+    "openaiModelOrder": [
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol",
+      "gpt-6.1-terra"
+    ],
+    "terra": {
+      "modelIdentifier": "gpt-6.1-terra",
+      "name": "gpt-6.1-terra",
+      "value": "gpt-6.1-terra",
+      "canonicalName": "gpt-6.1-terra",
+      "providerId": "OPENAI",
+      "providerName": "OpenAI",
+      "runtime": "api",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "reasoning_effort": {
+            "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+            "type": "string",
+            "default": "medium",
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high",
+              "xhigh",
+              "max"
+            ]
+          },
+          "reasoning_summary": {
+            "description": "Include a reasoning summary in the response when supported.",
+            "type": "string",
+            "default": "none",
+            "enum": [
+              "none",
+              "auto",
+              "concise",
+              "detailed"
+            ]
+          }
+        },
+        "required": []
+      },
+      "maxContextTokens": 1050000,
+      "activeContextTokens": null,
+      "maxInputTokens": 922000,
+      "maxOutputTokens": 128000,
+      "metadataProvenance": null,
+      "selectionPresentation": null
+    }
+  },
+  "native": {
+    "label": "native AutoByteus run on terra",
+    "model": "gpt-6.1-terra",
+    "runtimeKind": "autobyteus",
+    "runId": "api336_plain_1793361304508_9c3356392dc04619a818b22424357bc5",
+    "turns": [
+      {
+        "prompt": "Reply with exactly: terra-ok",
+        "outcome": "idle",
+        "calls": [],
+        "assistantTail": "terra-ok",
+        "errors": []
+      },
+      {
+        "prompt": "What is the main color of the image /tmp/ab336/fixtures/picture.png? Look at it with the read_file tool, then answer wit",
+        "outcome": "idle",
+        "calls": [
+          {
+            "tool": "read_file",
+            "args": {
+              "path": "/tmp/ab336/fixtures/picture.png"
+            },
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "error": null
+          }
+        ],
+        "assistantTail": "{\"path\":\"/tmp/ab336/fixtures/picture.png\"}Green",
+        "errors": []
+      },
+      {
+        "prompt": "Use the read_file tool on /tmp/ab336/fixtures/recording.m4a and tell me in one line whether you could hear it.",
+        "outcome": "idle",
+        "calls": [
+          {
+            "tool": "read_file",
+            "args": {
+              "path": "/tmp/ab336/fixtures/recording.m4a"
+            },
+            "type": "TOOL_EXECUTION_FAILED",
+            "error": "Error: The selected model does not support audio input. The audio file was not loaded. Continue without audio analysis and do not claim to have inspected it."
+          }
+        ],
+        "assistantTail": "{\"path\":\"/tmp/ab336/fixtures/recording.m4a\"}I couldn’t hear it; audio input isn’t supported.",
+        "errors": [
+          "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_vfKvkpVI91kvAW2DoRUgxMMf): Error: The selected model does not support audio input. The audio file was not loaded. Continue without audio analysis and do not claim to have inspected it.\",\"details\":\"Error"
+        ]
+      }
+    ],
+    "tokenUsageSummary": "Error: GraphQL: Cannot query field \"status\" on type \"TokenUsageRunSummaryGraphql\".; Cannot query field \"output\" on type \"TokenUsageRunSummaryGraphql\"."
+  },
+  "codexCatalog": [
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol",
+    "gpt-6.1-terra",
+    "gpt-6.1-sol"
+  ],
+  "codex": {
+    "label": "Codex run on terra",
+    "model": "gpt-6.1-terra",
+    "runtimeKind": "codex_app_server",
+    "runId": "api336_plain_1793361304508_1664fcb0341540fbaf0e0a00bce3b509",
+    "turns": [
+      {
+        "prompt": "Reply with exactly: codex-terra-ok",
+        "outcome": "idle",
+        "calls": [],
+        "assistantTail": "codex-terra-ok",
+        "errors": []
+      }
+    ],
+    "tokenUsageSummary": "Error: GraphQL: Cannot query field \"status\" on type \"TokenUsageRunSummaryGraphql\".; Cannot query field \"output\" on type \"TokenUsageRunSummaryGraphql\"."
+  },
+  "finishedAt": "2026-10-30T11:55:31.689Z"
+}

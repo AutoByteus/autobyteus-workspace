@@ -1,0 +1,8 @@
+# R2-API-11 command: env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_RUNTIME_SWITCH_E2E=1 RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 AGY_FAKE_CASE=auto_compaction ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs RUNTIME_SWITCH_E2E_EVIDENCE_DIR=<evidence>/R2-API-11-live pnpm exec vitest run tests/e2e/runtime/runtime-switch-live.e2e.test.ts --no-watch
+# commit 870b075fb4 (dist built from 25c1acb705); date 2026-10-31T10:35:20Z
+
+ ✓ tests/e2e/runtime/runtime-switch-live.e2e.test.ts (1 test) 22782ms
+     ✓ Claude Agent SDK, then Codex App Server, then a scripted Antigravity CLI: one run, one chat  22262ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  34.10s (transform 8.09s, setup 65ms, import 10.73s, tests 22.78s, environment 0ms)

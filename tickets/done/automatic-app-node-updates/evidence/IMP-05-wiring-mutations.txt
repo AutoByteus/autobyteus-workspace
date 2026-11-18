@@ -1,0 +1,25 @@
+# IMP-05 mutation proof (autobyteus-356): each mutation must turn at least one test red; a baseline run is green.
+# Commit: 63f5bb8bfc (code at that commit; mutated and restored)
+# Env: macOS 26.5.2, Node v22.23.1, vitest 3.2.7  Date: 2026-11-01
+# Command: vitest --config ./electron/vitest.config.ts run __tests__/nodeRegistryStore.spec.ts application, once per mutation of electronApplication.ts / nodeRegistryStore.ts
+
+== W1 relaunch without a confirmed server exit
+   × recoverAfterFailedInstall (SR-003 AR-001) > stays open, without relaunching, when the server exit is not confirmed (284) 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 23 passed (24)
+== W2 recovery not given to the updater
+   × recoverAfterFailedInstall (SR-003 AR-001) > is given to the packaged updater 6ms
+   × recoverAfterFailedInstall (SR-003 AR-001) > is given to the test feed updater 1ms
+   × recoverAfterFailedInstall (SR-003 AR-001) > relaunches this version when the server process is gone 0ms
+   × recoverAfterFailedInstall (SR-003 AR-001) > stays open, without relaunching, when the server exit is not confirmed (284) 0ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  4 failed | 20 passed (24)
+== W3 loader keeps autoUpdate on the embedded entry
+   × nodeRegistryStore > keeps autoUpdate: true on remote entries only; anything else reads as off (autobyteus-356) 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 23 passed (24)
+== W4 set-auto-update accepted for the embedded entry
+   × nodeRegistryStore > set-auto-update turns a remote entry on or off, is the same array when unchanged, and refuses the embedded entry 5ms
+   × the node switch registry change (set-auto-update) > is refused for the embedded entry and an unknown entry 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 22 passed (24)

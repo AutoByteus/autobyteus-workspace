@@ -1,0 +1,10 @@
+# API-12 analysis: python3 analyze.py (in this folder), 2026-11-08 12:37 CET
+== merged: MSP-05 Pass; MSP-90 races 2/25, failed opens 2; unknown browser lines 2 (all FU-004: True)
+   list shown ms median 381; Team tap ms median 591; background Team open start (GetTeamRunResumeConfig) ms median 536; tap minus background start median 33 (min -53, max 131); agent hydrations before it [5, 6]
+   race try 8: opened=False list=390 tap=539 bgStart=564 tap-bgStart=-25
+   race try 12: opened=False list=378 tap=529 bgStart=575 tap-bgStart=-46
+== base: MSP-05 Pass; MSP-90 races 3/25, failed opens 3; unknown browser lines 3 (all FU-004: True)
+   list shown ms median 384; Team tap ms median 632; background Team open start (GetTeamRunResumeConfig) ms median 533; tap minus background start median 88 (min -79, max 141); agent hydrations before it [4, 6]
+   race try 12: opened=False list=383 tap=530 bgStart=545 tap-bgStart=-15
+   race try 16: opened=False list=393 tap=544 bgStart=568 tap-bgStart=-24
+   race try 23: opened=False list=378 tap=521 bgStart=549 tap-bgStart=-28

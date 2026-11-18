@@ -1,0 +1,42 @@
+{
+  "scenario": "cold",
+  "sizeMiB": 4096,
+  "node": "v24.15.0",
+  "startedAt": "2026-11-15T13:52:34.958Z",
+  "runs": [
+    {
+      "label": "cold 4096 MiB",
+      "ms": 19925,
+      "run": {
+        "scannedFiles": 2,
+        "changedFiles": 2,
+        "committedBatches": 1,
+        "failedFiles": 0
+      },
+      "baseline": {
+        "source": 372.6,
+        "hub": 354.1
+      },
+      "peak": {
+        "source": 682.8,
+        "hub": 624.1
+      },
+      "growth": {
+        "source": 310.2,
+        "hub": 270
+      },
+      "settledAfter3s": {
+        "source": 682.8,
+        "hub": 624.1
+      },
+      "identical": true,
+      "samples": 397
+    }
+  ],
+  "cleanup": {
+    "removedRoot": true,
+    "serversStopped": true
+  },
+  "result": "Done",
+  "finishedAt": "2026-11-15T13:53:14.275Z"
+}

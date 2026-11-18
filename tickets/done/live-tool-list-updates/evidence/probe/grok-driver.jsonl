@@ -1,0 +1,25 @@
+{"t":"2026-10-29T09:15:59.861Z","kind":"session","sessionId":"01a186f1-db21-72a2-99fd-9cf6edfefd82"}
+{"t":"2026-10-29T09:16:03.865Z","kind":"turn","n":1}
+{"t":"2026-10-29T09:19:03.906Z","kind":"result","stopReason":"probe_timeout","text":""}
+{"t":"2026-10-29T09:19:03.948Z","kind":"control","action":"add-beta","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T09:19:06.949Z","kind":"turn","n":2}
+{"t":"2026-10-29T09:22:06.952Z","kind":"result","stopReason":"probe_timeout","text":""}
+{"t":"2026-10-29T09:22:06.959Z","kind":"control","action":"remove-alpha","state":{"tools":["probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T09:22:09.962Z","kind":"turn","n":3}
+{"t":"2026-10-29T09:23:15.363Z","kind":"tool_call","title":"search_tool","kind2":null,"rawInput":"{\"query\":\"probe_alpha\",\"limit\":5}"}
+{"t":"2026-10-29T09:23:15.386Z","kind":"tool_call_update","status":"completed","content":"[{\"type\":\"content\",\"content\":{\"type\":\"text\",\"text\":\"{\\n  \\\"results\\\": [\\n    {\\n      \\\"server\\\": \\\"probe\\\",\\n      \\\"tools\\\": [\\n        {\\n          \\\"tool_na"}
+{"t":"2026-10-29T09:23:18.255Z","kind":"tool_call","title":"use_tool","kind2":null,"rawInput":"{\"tool_name\":\"probe__probe_alpha\",\"tool_input\":{}}"}
+{"t":"2026-10-29T09:23:18.257Z","kind":"permission","tool":"probe__probe_alpha"}
+{"t":"2026-10-29T09:23:18.298Z","kind":"tool_call_update","status":"failed","content":"{\"type\":\"MCP\",\"tool_name\":\"probe_alpha\",\"server_name\":\"probe\",\"output\":{\"Error\":\"REFUSED: tool 'probe_alpha' is not available.\"},\"is_error\":true}"}
+{"t":"2026-10-29T09:23:51.920Z","kind":"tool_call","title":"search_tool","kind2":null,"rawInput":"{\"query\":\"probe_beta\",\"limit\":5}"}
+{"t":"2026-10-29T09:23:51.926Z","kind":"tool_call_update","status":"completed","content":"[{\"type\":\"content\",\"content\":{\"type\":\"text\",\"text\":\"{\\n  \\\"results\\\": [\\n    {\\n      \\\"server\\\": \\\"probe\\\",\\n      \\\"tools\\\": [\\n        {\\n          \\\"tool_na"}
+{"t":"2026-10-29T09:23:58.098Z","kind":"tool_call","title":"search_tool","kind2":null,"rawInput":"{\"query\":\"probe beta\",\"limit\":10}"}
+{"t":"2026-10-29T09:23:58.099Z","kind":"tool_call_update","status":"completed","content":"[{\"type\":\"content\",\"content\":{\"type\":\"text\",\"text\":\"{\\n  \\\"results\\\": [\\n    {\\n      \\\"server\\\": \\\"probe\\\",\\n      \\\"tools\\\": [\\n        {\\n          \\\"tool_na"}
+{"t":"2026-10-29T09:24:15.762Z","kind":"tool_call","title":"search_tool","kind2":null,"rawInput":"{\"query\":\"probe__\",\"limit\":20}"}
+{"t":"2026-10-29T09:24:15.763Z","kind":"tool_call_update","status":"completed","content":"[{\"type\":\"content\",\"content\":{\"type\":\"text\",\"text\":\"{\\n  \\\"results\\\": [\\n    {\\n      \\\"server\\\": \\\"probe\\\",\\n      \\\"tools\\\": [\\n        {\\n          \\\"tool_na"}
+{"t":"2026-10-29T09:24:24.670Z","kind":"tool_call","title":"search_tool","kind2":null,"rawInput":"{\"query\":\"probe_alpha\",\"limit\":5}"}
+{"t":"2026-10-29T09:24:24.671Z","kind":"tool_call_update","status":"completed","content":"[{\"type\":\"content\",\"content\":{\"type\":\"text\",\"text\":\"{\\n  \\\"results\\\": [\\n    {\\n      \\\"server\\\": \\\"probe\\\",\\n      \\\"tools\\\": [\\n        {\\n          \\\"tool_na"}
+{"t":"2026-10-29T09:24:26.936Z","kind":"tool_call","title":"use_tool","kind2":null,"rawInput":"{\"tool_name\":\"probe__probe_alpha\",\"tool_input\":{}}"}
+{"t":"2026-10-29T09:24:26.961Z","kind":"tool_call_update","status":"failed","content":"{\"type\":\"MCP\",\"tool_name\":\"probe_alpha\",\"server_name\":\"probe\",\"output\":{\"Error\":\"REFUSED: tool 'probe_alpha' is not available.\"},\"is_error\":true}"}
+{"t":"2026-10-29T09:24:29.712Z","kind":"result","stopReason":"end_turn","text":"I'll look up the `probe_alpha` tool schema, then call it with no arguments.Failed to call probe_alpha: REFUSED: tool 'probe_alpha' is not available.I'll check whether `probe_beta` is available.NO_BETA_TOOLI'll look up `probe_alpha` and call it with no arguments.Failed to call probe_alpha: REFUSED: t"}
+{"t":"2026-10-29T09:24:29.716Z","kind":"end"}

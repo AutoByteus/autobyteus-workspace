@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+const [listFile, label] = process.argv.slice(2);
+const files = fs.readFileSync(listFile, 'utf8').split('\n').filter(Boolean);
+const dec = new TextDecoder('utf-8', { fatal: true });
+const out = { label, files: files.length, withNul: 0, refusedProposed: 0, textProposed: 0, refusedWholeScan: 0, noNulInvalidUtf8: 0, examples: [] };
+for (const f of files) {
+  let buf; try { buf = fs.readFileSync(f); } catch { continue; }
+  const hasNul = buf.indexOf(0) !== -1;
+  let valid = true; try { dec.decode(buf); } catch { valid = false; }
+  if (hasNul) { out.withNul++; out.refusedWholeScan++; }
+  const refused = hasNul && !valid;
+  if (refused) out.refusedProposed++; else out.textProposed++;
+  if (!hasNul && !valid) out.noNulInvalidUtf8++;
+  if (out.examples.length < 8 && ((label === 'logs' && hasNul) || label !== 'logs')) out.examples.push({ f: f.split('/').slice(-2).join('/'), bytes: buf.length, hasNul, validUtf8: valid, refused });
+}
+console.log(JSON.stringify(out));

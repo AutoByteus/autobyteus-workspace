@@ -1,0 +1,50 @@
+# IMP-IR007: checks after merging origin/personal (92fffca77a) into the branch (DR-001 Local Fix).
+# Merge commit bd79cb1601 (branch codex/large-runs-load-less). Date 2026-11-01. macOS, node v22.23.1.
+# Every suite ran under env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md), one heavy run at a time. pnpm install --frozen-lockfile first.
+# Look for: server and web type gates PASS (server tests 1200 = baseline; web 99 = baseline); web 4993 passed; server unit 7743 passed; integration 500 passed, 0 failed; contracts 39/21; Electron 291; guards exit 0.
+
+## Conflicts (7), resolved keeping both sides
+MarkdownRenderer.vue: both imports (hasLongUnbrokenRun used at line 9, openExternalLink at lines 14 and 135).
+agent_websocket_streaming_protocol.md: Team snapshot fields without messages, with live_sequence_id and last_message_change_sequence; the base's CONNECTED / TEAM_RUN_LIFECYCLE / ERROR detail.
+TeamComposerPublication.spec.ts, CollaborationMessagesOrgRoot.integration.spec.ts, agentOrgContextHydration.spec.ts: the base's immutable/typed rework, with this ticket's fields and focus, without messages.
+task-agent-monitor-visibility.page.vue: without the removed messages field. typecheck-baseline.json: the base's cut (the fixture's entry removed).
+
+## Contract dist: rebuilt after the merge; no difference from the merged dist.
+
+## IMP-41 server type gate (pnpm typecheck)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.2s
+[typecheck] server tests (tsconfig.tests.json): 1200 errors, exit 2, 21.8s
+[typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)
+[typecheck] PASS
+# First run: 1 new test-file error in tests/unit/agent-org-execution/agent-org-reference-content-service.test.ts (its fake records owner typed as the full records snapshot); fixed by typing it with the service's port.
+
+## IMP-42 web type gate (pnpm typecheck)
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 30.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 18.8s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+
+## IMP-43 web Nuxt suite (full)
+ Test Files  685 passed (685)
+      Tests  4993 passed | 2 skipped (4995)
+exit=0
+
+## IMP-44 server test:unit (full)
+ Test Files  914 passed | 5 skipped (919)
+      Tests  7743 passed | 9 skipped (7752)
+exit=0
+
+## IMP-45 server test:integration (full)
+ Test Files  87 passed | 20 skipped (107)
+      Tests  500 passed | 69 skipped (569)
+exit=0
+# FU-001's six base failures pass now: autobyteus-318 repaired them.
+
+## IMP-46 contracts: collaboration-stream-contracts # pass 39 # fail 0; team-stream-contracts # pass 21 # fail 0
+## IMP-47 web Electron suite
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+## IMP-48 web guards: guard:web-boundary exit=0, guard:localization-boundary exit=0, audit:localization-literals exit=0
+## Probes: node --check passes for delegated-copies-large-hub-probe.mjs (the base removed only BACKEND_TRANSCRIPTION_WS_ENDPOINT), delegated-launch-defaults-probe.mjs, interrupt-result-presentation-probe.mjs.

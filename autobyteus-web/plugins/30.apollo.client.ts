@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, type NormalizedCacheObject } from '@apollo/client/core';
 import { onError } from '@apollo/client/link/error';
 import { useUiErrorStore } from '~/stores/uiErrorStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -7,18 +7,20 @@ import { resolveCurrentGraphqlHttpEndpoint } from '~/utils/remoteAccess/mobileSe
 
 export const BOUND_APOLLO_CLIENT_KEY = '__boundApolloClient';
 
-type NuxtAppLike = {
-  [BOUND_APOLLO_CLIENT_KEY]?: ApolloClient<unknown>;
-  _apolloClients?: Record<string, ApolloClient<unknown>>;
-  $apollo?: {
-    clients?: Record<string, ApolloClient<unknown>>;
-    defaultClient?: ApolloClient<unknown>;
-  };
+export type NuxtAppLike = {
+  [BOUND_APOLLO_CLIENT_KEY]?: ApolloClient<NormalizedCacheObject>;
 };
+
+// The binding registerBoundApolloClient writes, as the Nuxt app's own field (read by utils/apolloClient.ts).
+declare module '#app' {
+  interface NuxtApp {
+    [BOUND_APOLLO_CLIENT_KEY]?: NuxtAppLike[typeof BOUND_APOLLO_CLIENT_KEY];
+  }
+}
 
 export function buildBoundApolloClient(
   graphqlHttpEndpoint: string | (() => string),
-): ApolloClient<unknown> {
+): ApolloClient<NormalizedCacheObject> {
   const uiErrorStore = useUiErrorStore();
   const resolveGraphqlHttpEndpoint = typeof graphqlHttpEndpoint === 'function'
     ? graphqlHttpEndpoint
@@ -78,31 +80,9 @@ export function buildBoundApolloClient(
 
 export function registerBoundApolloClient(
   nuxtApp: NuxtAppLike,
-  client: ApolloClient<unknown>,
+  client: ApolloClient<NormalizedCacheObject>,
 ): void {
   nuxtApp[BOUND_APOLLO_CLIENT_KEY] = client;
-
-  nuxtApp._apolloClients = nuxtApp._apolloClients || {};
-  nuxtApp._apolloClients.default = client;
-
-  const apolloCompat = nuxtApp.$apollo;
-  if (apolloCompat) {
-    apolloCompat.clients = apolloCompat.clients || {};
-    apolloCompat.clients.default = client;
-    apolloCompat.defaultClient = client;
-    return;
-  }
-
-  // Fallback for contexts where `$apollo` is not present at all.
-  // Guarded to avoid writing into getter-only Nuxt app properties.
-  try {
-    ;(nuxtApp as { $apollo?: NuxtAppLike['$apollo'] }).$apollo = {
-      clients: { default: client },
-      defaultClient: client,
-    };
-  } catch {
-    // In getter-only contexts we already updated `_apolloClients`, which is enough for `getApolloClient`.
-  }
 }
 
 export default defineNuxtPlugin((nuxtApp) => {

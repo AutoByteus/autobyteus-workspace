@@ -339,6 +339,23 @@ export class FileAgentDefinitionProvider {
     return definitions;
   }
 
+  /**
+   * Whether the agent's files written from `left` would differ from those written from `right`:
+   * both are rendered with the serializers `update` writes with, and the strings are compared.
+   */
+  rendersDifferently(left: AgentDefinition, right: AgentDefinition): boolean {
+    const render = (definition: AgentDefinition): string => JSON.stringify([
+      serializeAgentMd({
+        name: definition.name,
+        description: definition.description,
+        category: definition.category,
+        role: definition.role,
+      }, definition.instructions),
+      buildAgentConfigRecord(definition),
+    ]);
+    return render(left) !== render(right);
+  }
+
   async update(domainObj: AgentDefinition): Promise<AgentDefinition> {
     if (!domainObj.id) {
       throw new Error("Agent definition id is required for update.");

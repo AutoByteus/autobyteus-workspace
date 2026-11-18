@@ -1,0 +1,27 @@
+{
+ "header": "Folder picker on merged head ebf20e056f (isolated app built from it); 2026-11-02.",
+ "result": "Pass",
+ "cases": {
+  "FP-P01": "Pass",
+  "FP-P02": "Pass",
+  "FP-P03": "Not Tested",
+  "FP-P04": "Pass",
+  "FP-P05": "Pass",
+  "FP-P06": "Pass",
+  "FP-P07": "Pass",
+  "FP-P08": "Pass"
+ },
+ "cleanup": {
+  "instance": {
+   "instanceId": "iso-60463-f62a",
+   "wasRunning": true,
+   "forced": true,
+   "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Gyj7dJ",
+   "dataRootRemoved": true,
+   "controlPortReleased": true,
+   "serverPortReleased": true,
+   "logPath": null
+  },
+  "fixtureRemoved": true
+ }
+}

@@ -1,0 +1,18 @@
+# API-L02 (round 2): the Memory page's results after SR-006 / UD-020 / UD-021, packaged desktop iso-55187-0f43 (build of 5b16e1fe4a = code 3204aa2455), data root /private/tmp/wjs-api2/root (clone of the memory copy), 2026-10-27 05:20 UTC, Text index complete, Meaning index embedding (1%)
+# Steps: probes/API-PROBE-memory-page.mjs over CDP 55187: Search tab, type the cue, Enter; DOM read of [data-test=memory-search-results], the note, the match rows; screenshots in the private folder (they show real journal text): r2/API-L02r2-01-some-not-found.png, -02-none-found.png, -03-opened-from-match.png
+
+## Cue "Do you remember the project codenamed pelicanmarigold9152? Where is it?"
+header: "Results for “…” | 10 runs · Pointers to check in the Work Journal, not facts"
+note: data-test "memory-search-some-not-found", class bg-white (gray), text "Not found in your memory: codenamed, pelicanmarigold9152."
+text matches: "Words: project" (each); meaning matches: no label
+page text: no "Strong", "Fair" or "Weak"; no "Mentioned" prefix; no "Open at lines" button
+coverage: "Still indexing: the Meaning index covers 1% of your journals, so more matches by meaning may appear." (genuine: first build embedding)
+
+## Cue "pelicanmarigold9152"
+note: data-test "memory-search-none-found", class amber-50, text "None of these words appear in your memory: pelicanmarigold9152."
+10 results, all meaning matches, none labelled; no strength words
+
+## Opening a match (the whole match is the control)
+Cue "set up a domain updater DDNS": the DDNS run codex_45ce… is result #3, its first match "Words: updater, ddns"; clicked the match row
+→ run detail tabs ['Work Journal', 'Raw Traces']; banner "From your search “set up a domain updater DDNS” · lines 87–129 · Words: updater, ddns"; "Match 1 · lines 87–129", "Match 2 · lines 132–183"; window "Lines 1–300 of 1.099"; 43 highlighted lines from 87
+Back to search results → same cue, 10 results

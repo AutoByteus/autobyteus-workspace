@@ -26,6 +26,7 @@ describe('dockerNodeLauncherCommands', () => {
       'windows-powershell-install',
       'direct-new-container',
       'direct-upgrade-all',
+      'direct-update-all',
       'direct-destroy-all',
       'direct-destroy-node',
       'direct-reset',
@@ -46,6 +47,7 @@ describe('dockerNodeLauncherCommands', () => {
     expect(commands.filter((command) => command.phase === 'direct').map((command) => command.command)).toEqual([
       'autobyteus-docker new-container',
       'autobyteus-docker upgrade --all',
+      'autobyteus-docker update --all',
       'autobyteus-docker destroy --all',
       'autobyteus-docker destroy --name <node-name>',
       'autobyteus-docker reset',

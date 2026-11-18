@@ -1,0 +1,140 @@
+{
+  "startedAt": "2026-11-17T22:25:00.678Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 59267,
+      "nodeId": "srv_E0gGAwoOYrDxsl23P0SAco_Q0hD5F7a5",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 59268,
+      "nodeId": "srv_brPno_C0hQxmdoStZ_8OaD2vUMmIksPD",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_d3d4fd5e44e54b7f92308fc62f3e51c7",
+    "writerRun": "release_notes_writer_a517afd55e394a1cbe479e3af2ae769b",
+    "squadRun": "docs_review_team_791691197816495d82101677235f921c",
+    "reviewer": "release_notes_writer_2fa9378759e94c008ad65f3c3221b9c5",
+    "memberDelegated": "fact_checker_73a0f5a0d2bd48b7bcbd33fcb1738ac2",
+    "remoteAgentRun": "publisher_2263945acf094d7ab1e48530d793c6a9",
+    "remoteTeamRun": "studio_team_d2be749dc1a9423a99275269f9bcdb49",
+    "plain": [
+      "fact_checker_a9d14dfff6ca4874aa394ab5364814a2",
+      "fact_checker_bd9b2960071d4d77a61a635c958add80",
+      "fact_checker_5c05667259b247428a532b7d40edcb1e"
+    ],
+    "org": "delivery_org_0ddfa21da2bf43f8ab62f861311e3a26",
+    "orgPlanner": "release_notes_writer_0e696088f83740d39c4206b713ffaafe",
+    "reviewOrg": "review_org_b8a5b7766305446cab6862730f8802d1",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_61ec7afa6dae4cbc9615713380bcf496",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_5b1b089276a9449dbe5d13468c1bb1ea",
+    "deliveryLead": "fact_checker_9149ee4899a74e92be9f102c7c7a35f8",
+    "deliveryMate": "release_notes_writer_4366c95756e54e3a8108351db8cba8ae",
+    "leadDelegated": "changelog_helper_d4ce5d039a1e4de1b23777251ab17bbc",
+    "approver": "approver_39f7f5c5dc1940109ae8f20f3d8962d9",
+    "taskA": "launch-007f8b-1",
+    "taskB": "launch-007f8b-2"
+  },
+  "cases": {
+    "MSP-67": {
+      "result": "Pass",
+      "seconds": 37.8,
+      "headerDot": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+      "stop": 0,
+      "send": 1,
+      "settings": {
+        "status": "Background task running",
+        "dotClass": "h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500",
+        "runtime": "Choose",
+        "runStop": true
+      },
+      "row": {
+        "status": "background",
+        "dotClass": "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 bg-blue-500 ring-blue-50",
+        "label": "Fact Checker, Plain run 2. Marker PLAIN-2., Background task running"
+      },
+      "after": "Idle"
+    },
+    "MSP-63": {
+      "result": "Pass",
+      "seconds": 4.2,
+      "runId": "fact_checker_2e65072d75914569ae2e3c11c76c971a",
+      "live": {
+        "open": true,
+        "subject": "Fact CheckerIdle",
+        "status": "Idle",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": true,
+        "saveDisabled": true,
+        "stop": {
+          "label": "Stop run",
+          "title": "Stop run",
+          "text": ""
+        },
+        "error": null
+      },
+      "stopped": {
+        "open": true,
+        "subject": "Fact CheckerStopped",
+        "status": "Stopped",
+        "runtime": "Antigravity CLI",
+        "model": "Gemini test",
+        "runtimeDisabled": false,
+        "saveDisabled": true,
+        "stop": null,
+        "error": null
+      },
+      "nodeAfterStop": false,
+      "saved": {
+        "left": true,
+        "runtimeKind": "grok_build"
+      },
+      "afterStop": [
+        "TerminateAgentRun sent+40 done+152 200",
+        "GetAgentRunResumeConfig sent+158 done+162 200",
+        "ListWorkspaceRunHistory sent+165 done+176 200",
+        "ListCollaborationRootHistory sent+167 done+184 200",
+        "AgentRunModelOptions sent+168 done+293 200",
+        "GetProviderModelCatalogSnapshots sent+448 done+691 200",
+        "RuntimeCurrentModelDescriptors sent+449 done+691 200",
+        "GetProviderModelCatalogSnapshots sent+735 done+929 200",
+        "UpdateStoppedAgentRunSelection sent+872 done+1137 200"
+      ],
+      "consoleLines": []
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-67": "Pass",
+      "MSP-63": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-17T22:27:45.850Z"
+}

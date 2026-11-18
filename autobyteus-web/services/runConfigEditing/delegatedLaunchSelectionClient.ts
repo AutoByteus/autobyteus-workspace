@@ -1,49 +1,51 @@
 import { getApolloClient } from '~/utils/apolloClient'
-import { StopDelegatedExecution, UpdateDelegatedLaunchSelections } from '~/graphql/mutations/delegatedLaunchMutations'
-import { DelegatedLaunchModelOptions } from '~/graphql/queries/runModelOptionsQueries'
+import { TerminateAgentRun } from '~/graphql/mutations/agentMutations'
+import { TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations'
+import { AgentRunModelOptions, TeamRunModelOptions } from '~/graphql/queries/runModelOptionsQueries'
+import { optionsStateOfAnswer } from './existingRunModelOptionsState'
+import { updateStoppedAgentSelection, updateStoppedTeamSelections } from './existingRunModelConfigMutationClient'
+import type { ExistingTeamModelConfigPatch } from './existingTeamModelConfigDraft'
+import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
+import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { DelegatedSaveTarget } from '~/utils/runSettings/delegatedLaunchRows'
 import type {
   ExistingRunModelConfigFieldError,
-  ExistingRunModelOptions,
+  ExistingRunModelOptionsAnswer,
   ExistingRunModelOptionsState,
-  ExistingRunModelSelection,
+  ExistingAgentRunSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
 
-/** The root a delegated copy belongs to, as the server names its kind. */
+/**
+ * A delegator's Settings on the runs it delegated to (autobyteus-461 rule 2, SR-064, SR-065, SR-066). Each delegated run
+ * is reached as itself: its model options by its own query, its change by its own stopped-run save, its Stop by its own
+ * terminate (a run on a peer node too: the server sends it to its node). Nothing goes through the delegator.
+ */
+
+/** The root a delegated run's row belongs to, as the server names its kind (the rows' grouping only). */
 export type DelegatedRootKind = 'AGENT' | 'AGENT_TEAM' | 'AGENT_ORG'
 export type DelegatedRoot = Readonly<{ rootKind: DelegatedRootKind; rootRunId: string }>
 
-/** One copy: an agent (`agentRunId`) or a Team (`teamRunId`). */
+/** One delegated run: an agent (`agentRunId`) or a Team (`teamRunId`). */
 export type DelegatedReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>
-/** Where a user model choice is recorded: an agent's own, or a Team's (its followers resolve to it). */
+/** A row's choice: an agent's own, or a Team's (its followers follow it). */
 export type DelegatedTargetKey = `agent:${string}` | `team:${string}`
 
 export const delegatedTargetKey = (reference: DelegatedReference): DelegatedTargetKey =>
   'agentRunId' in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`
-export const delegatedReferenceOf = (key: DelegatedTargetKey): DelegatedReference =>
-  key.startsWith('agent:') ? { agentRunId: key.slice('agent:'.length) } : { teamRunId: key.slice('team:'.length) }
-
-/** A stopped run's own setting saved in the same Save (AR-004); an Agent run's own model is scope '/'. */
-export type DelegatedConfiguredPatch = Readonly<{
-  scopeKind: string
-  scopeAddress: string
-  llmModelIdentifier: string
-  llmConfig: Record<string, unknown> | null
-}>
-
-export type DelegatedStopResult = Readonly<{
-  success: boolean
-  outcome: 'STOPPED' | 'ALREADY_STOPPED' | 'NOT_FOUND' | 'ROOT_NOT_ACTIVE' | 'INTERNAL_ERROR' | string
-  message: string
-  notStoppedUnattributed: number
-}>
 
 export type DelegatedSaveResult = Readonly<{
   success: boolean
-  outcome: string
   message: string
   fieldErrors: readonly ExistingRunModelConfigFieldError[]
+  /**
+   * What each saved row's run now has, from that run's own save answer (CR-461-077): its row shows it at once, as a
+   * read of the run would, while the row's record (the delegator's view) still holds the launch it was read with.
+   */
+  saved: Readonly<Record<DelegatedTargetKey, ExistingAgentRunSelection>>
 }>
 
+type MutationResult = Readonly<{ success: boolean; message: string }>
 const required = <T>(response: { data?: Record<string, T> | null; errors?: readonly { message: string }[] }, field: string): T => {
   if (response.errors?.length) throw new Error(response.errors.map((error) => error.message).join(', '))
   const result = response.data?.[field]
@@ -51,42 +53,137 @@ const required = <T>(response: { data?: Record<string, T> | null; errors?: reado
   return result
 }
 
-export const stopDelegatedExecution = async (root: DelegatedRoot, reference: DelegatedReference): Promise<DelegatedStopResult> => {
-  const response = await getApolloClient().mutate<Record<string, DelegatedStopResult>>({
-    mutation: StopDelegatedExecution,
-    variables: { input: { ...root, ...reference } },
-  })
-  return required(response, 'stopDelegatedExecution')
-}
+/** Stops a delegated run as itself (`terminateAgentRun` / `terminateAgentTeamRun`); the answer's message on a refusal. */
+export const terminateDelegatedRun = async (reference: DelegatedReference): Promise<MutationResult> => 'agentRunId' in reference
+  ? required(await getApolloClient().mutate<Record<string, MutationResult>>({ mutation: TerminateAgentRun, variables: { agentRunId: reference.agentRunId } }), 'terminateAgentRun')
+  : required(await getApolloClient().mutate<Record<string, MutationResult>>({ mutation: TerminateAgentTeamRun, variables: { teamRunId: reference.teamRunId } }), 'terminateAgentTeamRun')
 
-export const updateDelegatedLaunchSelections = async (input: DelegatedRoot & Readonly<{
-  changes: readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingRunModelSelection }>[]
-  configuredPatches?: readonly DelegatedConfiguredPatch[]
-}>): Promise<DelegatedSaveResult> => {
-  const response = await getApolloClient().mutate<Record<string, DelegatedSaveResult>>({
-    mutation: UpdateDelegatedLaunchSelections,
-    variables: { input: {
-      rootKind: input.rootKind,
-      rootRunId: input.rootRunId,
-      changes: input.changes.map(({ key, selection }) => ({ ...delegatedReferenceOf(key), selection })),
-      ...(input.configuredPatches?.length ? { configuredPatches: input.configuredPatches } : {}),
-    } },
-  })
-  return required(response, 'updateDelegatedLaunchSelections')
-}
+const isAnswer = (row: Partial<ExistingRunModelOptionsAnswer> | null | undefined): row is ExistingRunModelOptionsAnswer =>
+  Boolean(row && typeof row.currentModelIdentifier === 'string' && typeof row.modelListReadable === 'boolean' && Array.isArray(row.replacements))
 
-type OptionsRow = ExistingRunModelOptions & Readonly<{ scope: 'agent' | 'team'; agentRunId: string | null; teamRunId: string | null }>
-
-/** Options of every editable copy of the run, keyed by where its choice is recorded. */
-export const loadDelegatedLaunchModelOptions = async (root: DelegatedRoot): Promise<Record<DelegatedTargetKey, ExistingRunModelOptionsState>> => {
-  const { data, errors } = await getApolloClient().query<{ delegatedLaunchModelOptions?: OptionsRow[] }>({
-    query: DelegatedLaunchModelOptions, variables: root, fetchPolicy: 'network-only',
-  })
-  const rows: OptionsRow[] | undefined = data?.delegatedLaunchModelOptions
-  if (errors?.length || !rows || rows.some((row: OptionsRow) => typeof row.currentModelIdentifier !== 'string' || !Array.isArray(row.replacements))) {
-    throw new Error('Model options unavailable.')
+/**
+ * Each delegated row's model options, from its own run's query (SR-065): an agent's `AgentRunModelOptions`; a Team's and
+ * its members' one `TeamRunModelOptions` (at `/` and at each member's address). A run whose options cannot be read is
+ * left out, so the rows already shown keep theirs; `complete` is false then.
+ */
+export const loadDelegatedRunOptions = async (targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>):
+  Promise<Readonly<{ options: Record<DelegatedTargetKey, ExistingRunModelOptionsState>; complete: boolean }>> => {
+  const options: Record<DelegatedTargetKey, ExistingRunModelOptionsState> = {}
+  let complete = true
+  const teams = new Map<string, Array<[DelegatedTargetKey, string]>>()
+  const agents: Array<[DelegatedTargetKey, string]> = []
+  for (const [key, target] of targets) {
+    if (target.kind === 'agent') agents.push([key, target.agentRunId])
+    else teams.set(target.teamRunId, [...teams.get(target.teamRunId) ?? [], [key, target.kind === 'team' ? '/' : target.memberAddress]])
   }
-  return Object.fromEntries(rows.map(({ scope, agentRunId, teamRunId, ...options }: OptionsRow) => [
-    scope === 'agent' ? `agent:${agentRunId}` : `team:${teamRunId}`, { status: 'ready', options },
-  ])) as Record<DelegatedTargetKey, ExistingRunModelOptionsState>
+  await Promise.all([
+    ...agents.map(async ([key, agentRunId]) => {
+      try {
+        const { data, errors } = await getApolloClient().query<{ agentRunModelOptions?: ExistingRunModelOptionsAnswer }>({
+          query: AgentRunModelOptions, variables: { agentRunId }, fetchPolicy: 'network-only' })
+        if (errors?.length || !isAnswer(data?.agentRunModelOptions)) throw new Error('Model options unavailable.')
+        options[key] = optionsStateOfAnswer(data!.agentRunModelOptions!)
+      } catch { complete = false }
+    }),
+    ...[...teams].map(async ([teamRunId, scopes]) => {
+      try {
+        const { data, errors } = await getApolloClient().query<{ teamRunModelOptions?: (ExistingRunModelOptionsAnswer & { scopeAddress: string })[] }>({
+          query: TeamRunModelOptions, variables: { teamRunId }, fetchPolicy: 'network-only' })
+        const rows = data?.teamRunModelOptions
+        if (errors?.length || !rows || !rows.every(isAnswer)) throw new Error('Model options unavailable.')
+        for (const [key, address] of scopes) {
+          const row = rows.find((candidate) => candidate.scopeAddress === address)
+          if (row) { const { scopeAddress: _address, ...answer } = row; options[key] = optionsStateOfAnswer(answer) }
+        }
+      } catch { complete = false }
+    }),
+  ])
+  return { options, complete }
+}
+
+type Change = Readonly<{ key: DelegatedTargetKey; selection: ExistingAgentRunSelection }>
+/** One run's save: an agent run's selection, or a Team run's patches (its own at `/`, its members at their addresses). */
+type RunSave = Readonly<{ kind: 'agent'; agentRunId: string; selection: ExistingAgentRunSelection; keys: readonly DelegatedTargetKey[] }>
+  | Readonly<{ kind: 'team'; teamRunId: string; patches: ExistingTeamModelConfigPatch[]; keys: DelegatedTargetKey[] }>
+
+/** The changes as one save per run, in row order; a Team's choice is its default only (CR-461-089). */
+const savesOf = (changes: readonly Change[], targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): RunSave[] => {
+  const saves: RunSave[] = []
+  const teamSave = (teamRunId: string) => {
+    let save = saves.find((candidate): candidate is Extract<RunSave, { kind: 'team' }> => candidate.kind === 'team' && candidate.teamRunId === teamRunId)
+    if (!save) { save = { kind: 'team', teamRunId, patches: [], keys: [] }; saves.push(save) }
+    return save
+  }
+  for (const { key, selection } of changes) {
+    const target = targets.get(key)
+    if (!target) throw new Error('A changed row is no longer shown; refresh and try again.')
+    if (target.kind === 'agent') { saves.push({ kind: 'agent', agentRunId: target.agentRunId, selection, keys: [key] }); continue }
+    const save = teamSave(target.teamRunId)
+    save.keys.push(key)
+    const patch = (scopeKind: ExistingTeamModelConfigPatch['scopeKind'], scopeAddress: string) =>
+      save.patches.push({ scopeKind, scopeAddress, runtimeKind: selection.runtimeKind, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig })
+    if (target.kind === 'team_member') patch('CONFIGURED_AGENT', target.memberAddress)
+    else patch('CONFIGURED_TEAM', '/')
+  }
+  return saves
+}
+
+/**
+ * The delegated rows' changes, each saved by its own run's stopped-run save, in row order (SR-064). A run that refuses
+ * stops the Save there: the result names it, and the runs already saved (each keeps its save; its file is its truth).
+ */
+/** A launch in the team DTO's casing, as a selection. */
+const teamSelection = (launch: Readonly<{ runtime_kind: string; llm_model_identifier: string; llm_config?: Record<string, unknown> | null }> | null | undefined): ExistingAgentRunSelection | null =>
+  launch ? { runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: launch.llm_config ?? null } : null
+
+/**
+ * What a Team run's save answer says each of its rows now has: the Team row its default launch, each member row its
+ * member's own.
+ */
+const savedOfTeam = (teamRunId: string, answer: unknown, targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): Record<DelegatedTargetKey, ExistingAgentRunSelection> => {
+  const parsed = teamRunExecutionTreeDtoSchema.safeParse(answer)
+  if (!parsed.success) return {}
+  const saved: Record<DelegatedTargetKey, ExistingAgentRunSelection> = {}
+  for (const [key, target] of targets) {
+    if (target.kind === 'agent' || target.teamRunId !== teamRunId) continue
+    const selection = target.kind === 'team' ? teamSelection(parsed.data.root_team.default_launch_configuration)
+      : teamSelection(findConfiguredAgentByAddress(parsed.data, parseAgentTeamAddress(target.memberAddress))?.launch_configuration)
+    if (selection) saved[key] = selection
+  }
+  return saved
+}
+
+/**
+ * The delegated rows' changes, each saved by its own run's stopped-run save, in row order (SR-064). A run that refuses
+ * stops the Save there: the result names it, and the runs already saved (each keeps its save; its file is its truth).
+ * Each saved run's answer says what it now has (`saved`, CR-461-077).
+ */
+export const saveDelegatedRuns = async (input: Readonly<{
+  changes: readonly Change[]
+  targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>
+  nameOf(key: DelegatedTargetKey): string
+}>): Promise<DelegatedSaveResult> => {
+  const saved: string[] = []
+  const now: Record<DelegatedTargetKey, ExistingAgentRunSelection> = {}
+  const savedNote = () => saved.length ? ` Saved: ${saved.join(', ')}.` : ''
+  for (const save of savesOf(input.changes, input.targets)) {
+    const names = save.keys.map(input.nameOf).join(', ')
+    let result: Readonly<{ success: boolean; message: string; fieldErrors: readonly ExistingRunModelConfigFieldError[] }>
+    try {
+      if (save.kind === 'agent') {
+        const answer = await updateStoppedAgentSelection({ agentRunId: save.agentRunId, ...save.selection })
+        if (answer.success && answer.canonicalSelection) for (const key of save.keys) now[key] = answer.canonicalSelection
+        result = answer
+      } else {
+        const answer = await updateStoppedTeamSelections({ teamRunId: save.teamRunId, selectionPatches: save.patches })
+        if (answer.success) Object.assign(now, savedOfTeam(save.teamRunId, answer.canonicalExecutionTree, input.targets))
+        result = answer
+      }
+    } catch (error) {
+      return { success: false, message: `${names} was not saved: ${error instanceof Error ? error.message : String(error)}.${savedNote()}`, fieldErrors: [], saved: now }
+    }
+    if (!result.success) return { success: false, message: `${names} was not saved: ${result.message}${savedNote()}`, fieldErrors: [...result.fieldErrors], saved: now }
+    saved.push(names)
+  }
+  return { success: true, message: 'Saved. The new models are used when each run resumes.', fieldErrors: [], saved: now }
 }

@@ -1,0 +1,20 @@
+# ATTEMPT 1, INVALID (harness): the setup did not wait for the fresh node to list its local models, so New run never completed and no viewer opened; setup now waits; rerun as API-07-r2.txt
+# setup; 2026-11-10T09:33:27Z; emulator-5600 Android 15, WebView (com.google.android.webview, 124.0.6367.219); APK of b5da2d15a0 (worktree); cutout: DisplayCutout{insets=Rect(0, 136 - 0, 0)
+cutoutSpec={M 506
+installed
+app data cleared
+pairing link for http://10.0.2.2:56137 written (code not shown)
+shared the pairing link into the app
+S viewer open | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"
+# API-07; 2026-11-10T09:34:40Z; emulator-5600 abx435r2_api35 Android 15, 1080x2400 @420dpi (2.625), Pixel 7 punch-hole cutout; APK of b5da2d15a0 (worktree)
+device: immersive_mode_confirmations=confirmed accelerometer_rotation=0 user_rotation=0
+F0 viewer, portrait | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"
+F1 full screen (first direction) | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"
+window attrs: layoutInDisplayCutoutMode=always 
+  mAttrs={(0,0)(fillxfill) sim={adjust=pan} layoutInDisplayCutoutMode=always ty=BASE_APPLICATION wanim=0x1030309
+  mViewVisibility=0x0 mHaveFrame=true mObscured=false
+  Frames: parent=[0,0][1080,2400] display=[0,0][1080,2400] frame=[0,0][1080,2400] last=[0,0][1080,2400] insetsChanged=false
+F2 Fill (double tap), first direction | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"
+F3 accelerometer -9.81:0:0 | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"
+F3 accelerometer 9.81:0:0 | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"
+F4 Fill (double tap), this direction | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=4190 | page="{\"q\":\"\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":false,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":null,\"stage\":null,\"picture\":null}"

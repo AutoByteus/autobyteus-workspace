@@ -1,0 +1,12 @@
+# Check: IMP-01
+# Steps: Install the before APK, pair, force-stop, launch from the launcher intent (opens the saved node's /mobile), open Choose work, set window.__abx415Marker through WebView DevTools (cdp.mjs), adb emu rotate, read the page again
+# Build: 3bf9240d42 (unchanged base)
+# Environment: Emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, 136 px top cutout, Android 15 / API 35, google_apis arm64), started -no-window -wipe-data; debug APK built in this worktree; isolated test node abx415-rotation-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:62261:8000, fresh volumes, test data only) reached from the emulator at http://10.0.2.2:62261, paired through its own REST routes
+# Date: 2026-11-06
+
+## page before rotation (portrait)
+{"href":"http://10.0.2.2:62261/mobile/","marker":"before-rotation","navigationStart":1793996031134,"navigationType":"navigate","viewport":"412x839","heading":"AutoByteus"}
+## page after rotation (landscape)
+{"href":"http://10.0.2.2:62261/mobile/","marker":null,"navigationStart":1793996049168,"navigationType":"navigate","viewport":"863x360","heading":"AutoByteus"}
+
+Reading: marker null and a new navigationStart = the page was loaded again; the screenshot shows Home (the Choose work sheet is gone).

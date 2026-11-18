@@ -170,7 +170,7 @@ describe("SkillService catalog: one skill per name (D-19)", () => {
   });
 
   describe("import validation (REQ-023)", () => {
-    it("rejects adding a folder with a tiers 1–3 duplicate before persisting the setting", () => {
+    it("rejects adding a folder with a tiers 1–3 duplicate before persisting the setting", async () => {
       const packageRoot = path.join(base, "package");
       packageRoots = [packageRoot];
       const existing = bundled(packageRoot, "agent", "dup");
@@ -178,7 +178,7 @@ describe("SkillService catalog: one skill per name (D-19)", () => {
       const incoming = writeSkill(path.join(added, "dup"), "dup");
       const updateSetting = vi.spyOn(getServerSettingsService(), "updateSetting");
 
-      const error = (() => { try { new SkillSourceService({ config: service.config, catalog: service }).addSkillSource(added); } catch (caught) { return caught; } return null; })();
+      const error = await new SkillSourceService({ config: service.config, catalog: service }).addSkillSource(added).then(() => null, (caught: unknown) => caught);
 
       expect(error).toBeInstanceOf(SkillNameConflictError);
       expect((error as SkillNameConflictError).conflicts).toEqual([{ name: "dup", existingPath: existing, incomingPath: incoming }]);

@@ -1,0 +1,28 @@
+# IMP-33 server type gate, unit suite and integration suite (CR-461-017, CR-461-018, SR-055/056 server)
+# commands: node autobyteus-server-ts/scripts/typecheck.mjs; (autobyteus-server-ts) pnpm test:unit; pnpm test:integration
+# commit: a9f34ce3e6; macOS, Node v22.23.1; 2026-11-12T09:23Z
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.7s
+[typecheck] server tests (tsconfig.tests.json): 1014 errors, exit 2, 30.1s
+[typecheck] production errors: 0; test-file errors: 1014 in 318 files (baseline 1014 in 318 files)
+[typecheck] PASS
+
+## pnpm test:unit
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+     × exchanges a single-use code for a credential and rejects reuse 94ms
+     × a team run's members from its own file; a standalone run is its one agent; a missing run is null 36ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > exchanges a single-use code for a credential and rejects reuse
+ FAIL  tests/unit/run-history/store/run-own-agents-reader.test.ts > RunOwnAgentsReader > a team run's members from its own file; a standalone run is its one agent; a missing run is null
+ Test Files  2 failed | 957 passed | 5 skipped (964)
+      Tests  2 failed | 7898 passed | 9 skipped (7909)
+
+## pnpm test:integration
+ Test Files  86 passed | 20 skipped (106)
+      Tests  483 passed | 69 skipped (552)
+
+## Rerun of the two failed unit files, alone, on 40927e92ea (2026-11-12T09:50Z)
+# command: (autobyteus-server-ts) pnpm exec vitest run tests/unit/run-history/store/run-own-agents-reader.test.ts tests/unit/remote-access/pairing-auth-service.test.ts
+# run-own-agents-reader: restated in 40927e92ea (agents carry their definition IDs since f580a3153a). pairing-auth-service: not touched by this ticket; it failed only under the full suite load.
+ Test Files  2 passed (2)
+      Tests  16 passed (16)

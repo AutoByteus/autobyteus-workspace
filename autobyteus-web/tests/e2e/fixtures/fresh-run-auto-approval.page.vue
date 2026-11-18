@@ -4,7 +4,7 @@
     <button data-test="probe-team-chat" @click="newTeamChat">Team chat</button>
     <button data-test="probe-mobile" @click="mobile = true; chat = false">Mobile setup</button>
     <ChatNewSurface v-if="chat" />
-    <MobileRunSetup v-else-if="mobile" :context="null" />
+    <MobileRunSetup v-else-if="mobile" />
   </main>
 </template>
 <script setup lang="ts">
@@ -12,7 +12,7 @@
 // gone). The fixture opens New chat the way Run does, through the chat draft store.
 import { onMounted, ref } from 'vue'
 import ChatNewSurface from '~/components/chat/ChatNewSurface.vue'
-import MobileRunSetup from '~/components/mobile/MobileRunSetup.vue'
+import MobileRunSetup from '~/components/mobile/newRun/MobileRunSetup.vue'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'

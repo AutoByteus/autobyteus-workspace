@@ -24,7 +24,7 @@ class Socket {
   close() { this.readyState = 3; this.onclose?.() }
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
-const envelope = (active: boolean) => ({ root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...JSON.parse(JSON.stringify(taskBearingView()).replaceAll('codex_app_server', 'autobyteus')), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0 } : {}) } })
+const envelope = (active: boolean) => ({ root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...JSON.parse(JSON.stringify(taskBearingView()).replaceAll('codex_app_server', 'autobyteus')), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null } : {}) } })
 const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,
   conversation: [{ kind: 'message', role: 'assistant', content: 'Retained conversation', ts: 1 }],
   activities: [{ kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `System ${variables.agentRunId}`, ts: 1 },
@@ -61,9 +61,10 @@ const seedMembers = (store: ReturnType<typeof useAgentOrgContextsStore>) => {
   }
   return entries
 }
-it('Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption', async () => {
+it('Org success reconciles every own Agent and Team member before real empty-native projection commit/adoption', async () => {
   const {store,socket}=await open('/director');const entries=seedMembers(store);const activities=useAgentActivityStore()
-  expect(entries.length).toBe(7)
+  // The Org's own agents; a run it delegated is its own and its Stop is its own (autobyteus-461 rule 2).
+  expect(entries.length).toBe(4)
   const beforeStates=entries.map(e=>e.context.state)
   const query=io.query.getMockImplementation()!
   io.query.mockImplementation(async (request:any)=>{
@@ -78,7 +79,8 @@ it('Org success reconciles every configured/task Agent/Team member before real e
     const current=store.contextFor('org-run')!.getAgentContext(e.agentRunId)!
     expect(current).toBe(e.context);expect(current.state).not.toBe(beforeStates[i]);expect(current.state.currentStatus).toBe('offline')
     expect(activities.getCompactionActivities(e.agentRunId)).toEqual([expect.objectContaining({phase:'stopped',message:'Stopped',rawTraceCount:9,compactionModelIdentifier:'native-model'})])
-    expect(activities.getActivities(e.agentRunId)).toHaveLength(3)
+    // Only the shown member's stored activities are staged (autobyteus-358); the others load when opened.
+    expect(activities.getActivities(e.agentRunId)).toHaveLength(e.agentRunId === 'agent-director' ? 3 : 1)
   }
   expect(socket.sent).toHaveLength(0);expect(io.mutate).toHaveBeenCalledTimes(1)
   expect(store.contextFor('org-run')!.phase).toBe('historical')

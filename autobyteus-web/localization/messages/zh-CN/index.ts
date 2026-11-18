@@ -1,3 +1,4 @@
+import manualServerMessages from './server';
 import agentInputMessages from './agentInput.generated';
 import chatMessages from './chat';
 import agentOrgMessages from './agentOrgs';
@@ -11,9 +12,11 @@ import applicationMessages from './applications';
 import commonMessages from './common.generated';
 import generatedMemoryMessages from './memory.generated';
 import memoryMessages from './memory';
+import integrationsMessages from './integrations';
 import serverMessages from './server.generated';
 import generatedSettingsMessages from './settings.generated';
 import settingsMessages from './settings';
+import phoneSetupRemoteNodeMessages from './phoneSetupRemoteNode';
 import updateNotificationsMessages from './updateNotifications';
 import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
@@ -22,9 +25,14 @@ import memorySyncSettingsMessages from './memorySyncSettings';
 import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
 import nodesPageMessages from './nodesPage';
 import remoteRunsMessages from './remoteRuns';
+import mobileNodeDesktopMessages from './mobileNodeDesktop';
+import mobileSettingsMessages from './mobileSettings';
+import mobileOnThisPhoneMessages from './mobileOnThisPhone';
 import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
+import modelRoutingSettingsMessages from './modelRoutingSettings';
 import projectMessages from './projects';
+import voiceInputMessages from './voiceInput';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
 import generatedSkillsMessages from './skills.generated';
@@ -34,7 +42,9 @@ import toolsLocalMessages from './tools';
 import generatedWorkspaceMessages from './workspace.generated';
 import workspaceMessages from './workspace';
 import runSettingsMessages from './runSettings';
+import workspaceFolderMessages from './workspaceFolders';
 import agentPackageDefinitionsMessages from './agentPackageDefinitions';
+import personalSettingsMessages from './personalSettings';
 import type { TranslationCatalog } from '../../runtime/types';
 
 const zhCnMessages: TranslationCatalog = {
@@ -51,9 +61,12 @@ const zhCnMessages: TranslationCatalog = {
   ...commonMessages,
   ...generatedMemoryMessages,
   ...memoryMessages,
+  ...integrationsMessages,
   ...serverMessages,
+  ...manualServerMessages,
   ...generatedSettingsMessages,
   ...settingsMessages,
+  ...phoneSetupRemoteNodeMessages,
   ...updateNotificationsMessages,
   ...apiKeySettingsMessages,
   ...packageMigrationSettingsMessages,
@@ -62,9 +75,14 @@ const zhCnMessages: TranslationCatalog = {
   ...remoteCollaborationSettingsMessages,
   ...nodesPageMessages,
   ...remoteRunsMessages,
+  ...mobileNodeDesktopMessages,
+  ...mobileSettingsMessages,
+  ...mobileOnThisPhoneMessages,
   ...embeddingSettingsMessages,
   ...agentRuntimesSettingsMessages,
+  ...modelRoutingSettingsMessages,
   ...projectMessages,
+  ...voiceInputMessages,
   ...generatedShellMessages,
   ...shellMessages,
   ...generatedSkillsMessages,
@@ -74,7 +92,9 @@ const zhCnMessages: TranslationCatalog = {
   ...generatedWorkspaceMessages,
   ...workspaceMessages,
   ...runSettingsMessages,
+  ...workspaceFolderMessages,
   ...agentPackageDefinitionsMessages,
+  ...personalSettingsMessages,
 };
 
 export default zhCnMessages;

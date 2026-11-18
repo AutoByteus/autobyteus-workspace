@@ -1,0 +1,39 @@
+# IMP-13 (IR-004)
+# Command: (autobyteus-web) pnpm test:nuxt run; pnpm test:electron run
+# Commit: f48af0176a
+# Environment: macOS 26.5.2, node v22.23.1 (merged base origin/personal 50e93c2108)
+# Date: 2026-10-27T04:48:04Z
+
+== test:nuxt
+   × embedded listener preflight > uses wildcard-equivalent exclusive binding and rejects an occupied port 11ms
+   × definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache 31ms
+   × definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads 3ms
+   × definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache 4ms
+   × production Windows launcher attaches IPC to the captured child and stop waits for complete plus exit 8ms
+   × uses taskkill only after the graceful deadline and reports forced stop as incomplete 25ms
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+   × memory page > inspects an org member once from the org-inspector route and goes back to the org detail 208193ms
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ FAIL  electron/server/__tests__/BackendPortBindFaults.spec.ts [ electron/server/__tests__/BackendPortBindFaults.spec.ts ]
+ FAIL  pages/__tests__/memory.spec.ts > memory page > inspects an org member once from the org-inspector route and goes back to the org detail
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+ FAIL  electron/server/__tests__/WindowsServerManagerShutdown.spec.ts > production Windows launcher attaches IPC to the captured child and stop waits for complete plus exit
+ FAIL  electron/server/__tests__/WindowsServerManagerShutdown.spec.ts > uses taskkill only after the graceful deadline and reports forced stop as incomplete
+ FAIL  electron/launch-profile/__tests__/e2eLaunchPreflight.spec.ts > embedded listener preflight > uses wildcard-equivalent exclusive binding and rejects an occupied port
+ Test Files  5 failed | 702 passed | 2 skipped (710)
+      Tests  7 failed | 5044 passed | 3 skipped (5054)
+test:nuxt exit=1
+== test:electron
+   × embedded listener preflight > uses wildcard-equivalent exclusive binding and rejects an occupied port 12ms
+ FAIL  launch-profile/__tests__/e2eLaunchPreflight.spec.ts > embedded listener preflight > uses wildcard-equivalent exclusive binding and rejects an occupied port
+ Test Files  1 failed | 47 passed | 1 skipped (49)
+      Tests  1 failed | 278 passed | 1 skipped (280)
+test:electron exit=1
+
+# Triage (IR-004): every failure here is outside this branch.
+# - definitionMutationCache.spec.ts (3): FU-006, fails on the clean base (DEL-03).
+# - BackendPortBindFaults.spec.ts, WindowsServerManagerShutdown.spec.ts (2), e2eLaunchPreflight.spec.ts (nuxt and electron runs): fail on the clean base (DEL-03, port-recovery work).
+# - pages/__tests__/memory.spec.ts (1): load flake; passes alone on f48af0176a (17/17). `git diff 50e93c2108 f48af0176a -- autobyteus-web/pages autobyteus-web/electron` is empty.
+# - builtInAgentDefinitionIds.contract.spec.ts (DEL-F1) passes.

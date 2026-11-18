@@ -1,0 +1,9 @@
+check: IMP-09
+command: (cd autobyteus-web && node ./scripts/typecheck.mjs)  and the same on the unmodified base (git stash -u)
+commit: working tree of 62bda32c4
+environment: macOS Darwin 25.6, Node v26.12.0
+date: 2026-11-15
+----
+this branch: production errors: 0; test-file errors: 99 in 41 files (baseline 93 in 40 files) -> FAIL
+unmodified base in the same environment: production errors 0; also FAIL (the same three 'more errors than the baseline' files: layouts/__tests__/default-drawer.spec.ts, test-support/agentOrgApolloFixture.ts, test-support/currentTeamTestFixtures.ts, plus other test files)
+no file this change touches is in the error list

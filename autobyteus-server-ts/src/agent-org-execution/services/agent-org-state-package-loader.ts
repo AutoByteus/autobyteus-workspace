@@ -18,7 +18,7 @@ export class AgentOrgStatePackageLoader {
 
   async load(input: { orgMemoryDir: string; orgRunId: string }): Promise<AgentOrgStatePackageLoadResult> {
     const tree = await this.stores.executionTree.read(input.orgMemoryDir, input.orgRunId);
-    const messages = tree ? await this.stores.messages.read(input.orgMemoryDir, tree) : null;
+    const messages = tree ? await this.stores.messages.readLog(input.orgMemoryDir, input.orgRunId) : null;
     if (!tree || !messages) return {
       loaded: false,
       code: "AGENT_ORG_STATE_PACKAGE_INCOMPLETE",

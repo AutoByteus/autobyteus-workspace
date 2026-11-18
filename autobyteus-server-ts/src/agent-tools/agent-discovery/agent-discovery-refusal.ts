@@ -1,3 +1,4 @@
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import type { MemberCollaborationContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
@@ -35,5 +36,5 @@ export const requireDiscoveryContext = (collaboration: MemberCollaborationContex
 /** The native tools' text: the result as JSON, or the refusal raised as the tool's error. */
 export const agentDiscoveryToolText = (outcome: object): string => {
   if (isAgentDiscoveryRefusal(outcome)) throw new Error(outcome.message);
-  return JSON.stringify(outcome);
+  return toToolResultJson(outcome);
 };

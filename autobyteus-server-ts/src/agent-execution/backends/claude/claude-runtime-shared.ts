@@ -1,5 +1,4 @@
 export const CLAUDE_AGENT_SDK_MODULE_NAME = "@anthropic-ai/claude-agent-sdk";
-export const MODEL_DISCOVERY_PROBE_PROMPT = "Enumerate supported models only.";
 
 export const logger = {
   info: (...args: unknown[]) => console.info(...args),

@@ -1,0 +1,27 @@
+# API-02 pnpm -C autobyteus-server-ts typecheck
+# clean clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo, commit 54ed02d56d, 2026-10-27T19:56:49Z, macOS, node v22.23.1
+
+> autobyteus-server-ts@0.1.1 pretypecheck /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
+real	0m16.046s
+user	0m26.956s
+sys	0m2.156s
+exit: 0

@@ -18,12 +18,7 @@ describe("ClientFacingUrlResolver", () => {
     expect(resolver.resolveRestResourceUrl({
       context: {
         localFallbackBaseUrl: "http://127.0.0.1:29695",
-        authContext: {
-          mode: "mobile",
-          isAuthenticated: true,
-          deviceId: "device_1",
-          clientFacingBaseUrl: "http://100.64.1.2:29695",
-        },
+        pairedDeviceClientBaseUrl: "http://100.64.1.2:29695",
       },
       restPath: "/rest/files/images/a.png",
       prefer: "absolute",

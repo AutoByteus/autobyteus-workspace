@@ -3,14 +3,14 @@ export type MemoryExplorerSourceType = 'LOCAL' | 'IMPORTED';
 
 export interface MemoryExplorerSourceInput {
   type: MemoryExplorerSourceType;
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 }
 
 export interface MemoryExplorerSourceOption {
   key: string;
   type: MemoryExplorerSourceType;
   label: string;
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
   displayName?: string | null;
   readOnly: boolean;
   lastImportedAt?: string | null;
@@ -19,9 +19,7 @@ export interface MemoryExplorerSourceOption {
 
 export interface MemoryAvailabilitySummary {
   latestMemoryAt?: string | null;
-  hasWorkingContext: boolean;
-  hasEpisodic: boolean;
-  hasSemantic: boolean;
+  hasWorkJournal: boolean;
   hasRawTraces: boolean;
   hasRawArchive: boolean;
 }
@@ -61,7 +59,7 @@ export interface AgentTeamWithMemorySummary {
   memory: MemoryAvailabilitySummary;
 }
 
-export type CollaborationMemberExecutionKind = 'CONFIGURED' | 'TASK_AGENT' | 'TASK_TEAM_MEMBER';
+export type CollaborationMemberExecutionKind = 'CONFIGURED';
 
 /** A configured or task team on a member's path; `teamRunId` identifies it (a task team may share an address). */
 export interface CollaborationMemoryGroup {
@@ -137,14 +135,6 @@ export interface MemoryExplorerPage<T> {
   totalPages: number;
 }
 
-export interface MemoryMessage {
-  role: string;
-  content?: string | null;
-  reasoning?: string | null;
-  toolPayload?: Record<string, unknown> | null;
-  ts?: number | null;
-}
-
 export interface MemoryTraceEvent {
   scope: 'run' | 'turn';
   id?: string | null;
@@ -174,15 +164,12 @@ export interface RawTraceFileSummary {
 
 export interface RunMemoryView {
   runId: string;
-  workingContext?: MemoryMessage[] | null;
-  episodic?: Array<Record<string, unknown>> | null;
-  semantic?: Array<Record<string, unknown>> | null;
   rawTraces?: MemoryTraceEvent[] | null;
   rawTraceFiles?: RawTraceFileSummary[] | null;
   selectedRawTraceFileName?: string | null;
 }
 
-export type MemoryInspectorTab = 'working' | 'episodic' | 'semantic' | 'raw';
+export type MemoryInspectorTab = 'journal' | 'raw';
 
 export type MemoryInspectTarget =
   | {

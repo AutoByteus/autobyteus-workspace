@@ -12,7 +12,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 
-class WebShellScreen(private val context: Context) {
+/** [fullScreen]: the open page is in desktop full screen, so its root keeps only the keyboard's inset (autobyteus-435). */
+class WebShellScreen(private val context: Context, private val fullScreen: () -> Boolean) {
     data class Callbacks(
         val onEditNode: () -> Unit,
         val onRetry: () -> Unit,
@@ -28,16 +29,23 @@ class WebShellScreen(private val context: Context) {
         val root = FrameLayout(context).apply {
             setBackgroundColor(Color.rgb(248, 250, 252))
         }
+        // Under an overlay the page stays in the layout but is neither drawn nor in the accessibility tree: after a
+        // failed load it is WebView's own error page, which prints the node's URL (autobyteus-433 DS-004).
+        webView.visibility = if (diagnostic == null) View.VISIBLE else View.INVISIBLE
         root.addView(webView, FrameLayout.LayoutParams(match(), match()))
         if (diagnostic != null) {
             root.addView(overlay(diagnostic, callbacks), FrameLayout.LayoutParams(match(), match()))
         }
+        // Android 15 edge-to-edge: the page stays clear of the system bars, a cutout and the keyboard (in desktop full
+        // screen, of the keyboard only).
+        SystemBarInsets.pad(root, fullScreen)
         return root
     }
 
     private fun overlay(diagnostic: ConnectionDiagnostic, callbacks: Callbacks): View {
         val frame = FrameLayout(context).apply {
-            setBackgroundColor(Color.argb(235, 248, 250, 252))
+            // Opaque: nothing of the page shows through.
+            setBackgroundColor(Color.rgb(248, 250, 252))
         }
         val card = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL

@@ -1,0 +1,53 @@
+# IMP-18 gateway Docker image from the clean clone (commit 29aeb5d721): docker build -f autobyteus-message-gateway/docker/Dockerfile -t ab-gw-imp:test . ; run on 127.0.0.1:<free>, GET /health
+# Docker 29.0.1, macOS 26.5.2; date 2026-10-24T20:27:47Z
+
+## build
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:20-bookworm-slim
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/node:20-bookworm-slim
+#2 DONE 1.0s
+#4 [internal] load .dockerignore
+#4 DONE 0.0s
+#5 [ 1/10] FROM docker.io/library/node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
+#5 DONE 0.0s
+#6 [internal] load build context
+#6 DONE 0.1s
+#7 [ 2/10] WORKDIR /app
+#8 [ 4/10] RUN corepack enable
+#9 [ 3/10] COPY LICENSE LICENSING.md NOTICE /app/
+#10 [ 5/10] RUN apt-get update   && apt-get install -y --no-install-recommends python3 make g++   && rm -rf /var/lib/apt/lists/*
+#11 [ 6/10] WORKDIR /app/autobyteus-message-gateway
+#11 DONE 0.0s
+#12 [ 7/10] COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/pnpm-lock.yaml autobyteus-message-gateway/pnpm-workspace.yaml ./
+#12 DONE 0.0s
+#13 [ 8/10] RUN pnpm install --frozen-lockfile
+#13 1.700 Lockfile is up to date, resolution step is skipped
+#13 5.500 Done in 4s using pnpm v10.28.2
+#13 DONE 5.9s
+#14 [ 9/10] COPY autobyteus-message-gateway/ ./
+#14 DONE 0.1s
+#15 [10/10] RUN pnpm build
+#15 DONE 2.6s
+#16 naming to docker.io/library/ab-gw-imp:test done
+#16 DONE 5.8s
+build exit: 0
+
+## run (127.0.0.1:54635 -> 8010, GATEWAY_SERVER_BASE_URL=http://127.0.0.1:9, no secrets)
+564732a468b54e54b8079ccfa40af9cf42b4cb88b97ab927d011db69ada675ec
+{"service":"autobyteus-message-gateway","status":"ok","timestamp":"2026-10-24T20:28:14.304Z"}
+## health status code: 200
+## in-container
+/app/autobyteus-message-gateway
+v20.20.2
+10.28.2
+fastify@5.12.7 @fastify/cors@11.3.1 @whiskeysockets/baileys@6.7.24
+LICENSE
+LICENSING.md
+NOTICE
+autobyteus-message-gateway
+## logs (tail)
+## cleanup
+ab-gw-imp-test

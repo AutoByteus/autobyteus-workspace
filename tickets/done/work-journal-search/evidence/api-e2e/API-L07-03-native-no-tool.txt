@@ -1,0 +1,6 @@
+# API-L07 (native part): AC-013 on the AutoByteus runtime
+# Desktop iso-53567-504c; shipped Project Task Manager (16 tools, no search_memory); runtime AutoByteus, model qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234 (LM Studio provider saved with a placeholder key in the instance's own data root; models reloaded)
+# Run project_task_manager_5b3eb44706b54f88b5ba4b5b14e25267, started from the UI; 2026-10-26 17:37 UTC
+User: "Please call your search_memory tool with the query "domain updater DDNS". If you have no tool named search_memory, do not call any tool; just list the names of the tools you have that contain "memory" or "search"."
+Reply: "I don’t have a tool named “search_memory”. The tools I have that contain “memory” or “search” are: search_project_tasks - contains “search”. None of my tools contain the word “memory”."
+working_context_snapshot.json (the run's recorded reasoning) lists its available tools: "… list_projects - create_project - update_project - list_project_tasks - search_project_tasks - create_task - update_task - list_a…"; no tool call was made.

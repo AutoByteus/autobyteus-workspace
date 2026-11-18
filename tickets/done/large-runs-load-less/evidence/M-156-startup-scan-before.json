@@ -1,0 +1,1 @@
+{"before":{"admittedTeams":300,"diagnostics":0,"logMb":2.5,"scanMs":[160,139,137],"medianMs":139},"after":{"admittedTeams":300,"diagnostics":0,"logMb":100.4,"scanMs":[328,323,337],"medianMs":328},"loadAverage":[8.56,13.91,17.8],"node":"v22.23.1"}

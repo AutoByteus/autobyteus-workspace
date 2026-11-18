@@ -6,7 +6,7 @@
         <label for="search" class="sr-only">Search</label>
         <div class="relative">
           <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <span class="i-heroicons-magnifying-glass-20-solid text-gray-400 w-5 h-5" aria-hidden="true" />
+            <Icon icon="heroicons:magnifying-glass-20-solid" aria-hidden="true" class="text-gray-400 w-5 h-5" />
           </div>
           <input
             type="text"
@@ -37,6 +37,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 const searchQuery = defineModel('searchQuery', { type: String, default: '' });
 const selectedCategory = defineModel('selectedCategory', { type: String, default: 'all' });
 

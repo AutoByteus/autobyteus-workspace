@@ -79,7 +79,7 @@ suite("A Task can't be given to a run the user started (adoption withdrawn; real
     const projectId = (await h.graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
       { input: { name: `WDR ${Math.random().toString(16).slice(2, 8)}` } })).createProject.projectId as string;
     const taskId = (await h.graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-      { input: { projectId, description: "Write one line about it." } })).createProjectTask.taskId as string;
+      { input: { projectId, title: "Write one line about it.", description: "Write one line about it." } })).createProjectTask.taskId as string;
     const resources = path.join(h.dataDir, "projects", encodeURIComponent(projectId), "tasks", encodeURIComponent(taskId), "agent_run_resources.json");
     const entriesNaming = async (runId: string) => {
       const raw = await fsp.readFile(resources, "utf8").catch(() => "");

@@ -65,12 +65,16 @@ const expectedCollaboration = (row: Row): string => {
   if (row.orgLine) body = body.replace(TEAMMATE_BULLET, views.orgBullet.slice(views.orgBullet.indexOf(TEAMMATE_BULLET)).trim());
   return `${instruction}${body}`;
 };
-/** The collaboration part of a composed prompt: from the first collaboration heading to the working environment. */
+/**
+ * The collaboration part of a composed prompt: from the first collaboration heading to the next section that is not
+ * part of it, the working environment or the runtime's Long-Running Commands section (autobyteus-483), whichever comes
+ * first. On AGY the composed prompt ends with Long-Running Commands and the capsule's Working Environment follows it.
+ */
 const collaborationPart = (prompt: string): string => {
   const starts = ["## Team Instruction", "## AgentTeam Addressing", "## Working With Other Agents"].map((heading) => prompt.indexOf(heading)).filter((i) => i >= 0);
   const start = Math.min(...starts);
-  const end = prompt.indexOf("\n\n## Working Environment", start);
-  return (end < 0 ? prompt.slice(start) : prompt.slice(start, end)).trim();
+  const ends = ["\n\n## Working Environment", "\n\n## Long-Running Commands\n"].map((heading) => prompt.indexOf(heading, start)).filter((i) => i >= 0);
+  return (ends.length ? prompt.slice(start, Math.min(...ends)) : prompt.slice(start)).trim();
 };
 
 suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)", () => {
@@ -109,7 +113,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
 
   /** Team and organization members start when they first receive a message, as in real use; then their prompt exists. */
   const wake = async (root: RootDriver, agentRunId: string) => {
-    root.sendTo(agentRunId, "Reply OK.");
+    await root.sendTo(agentRunId, "Reply OK.");
     await until(async () => h.promptOf(agentRunId).then(() => true, () => false), `run ${agentRunId} started`, 60_000);
   };
 
@@ -117,8 +121,12 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
   const expectRow = async (label: string, agentRunId: string, address: string, row: Row) => {
     const prompt = await h.promptOf(agentRunId);
     const instruction = /## Team Instruction\n\n([^\n]+)/.exec(prompt)?.[1];
-    if (row.instruction === "*") row = { ...row, instruction };
-    expect(collaborationPart(prompt), `${label}: collaboration part of the prompt`).toBe(expectedCollaboration(row));
+    if (row.instruction === "*") {
+      expect.soft(instruction, `${label}: the authored instruction`).toBeTruthy();
+      row = { ...row, instruction };
+    }
+    // Soft: every row of a root is reported, not only the first that differs.
+    expect.soft(collaborationPart(prompt), `${label}: collaboration part of the prompt`).toBe(expectedCollaboration(row));
     expect(prompt, `${label}: no own address`).not.toContain(`\`${address}\``);
     expect(prompt, label).not.toMatch(/\b(your address|Your Agent address|Your address in this run)\b/i);
     expect(prompt, `${label}: no word the agent should not read`).not.toMatch(/\b(copy|copies|spawn|spawns|this run(?! id)|your run(?! id)|mounted|collaborator|brought in|nested|Task worker|root AgentTeam)\b/i);
@@ -186,12 +194,15 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
   /** Sends a message that mentions one definition and returns the `@` note the agent received with it. */
   const mentioning = async (root: RootDriver, agentRunId: string, address: string, definitionId: string) => {
     const marker = `Reply OK. Marker ${Math.random().toString(16).slice(2, 10)}`;
-    root.sendTo(agentRunId, marker, [{ kind: "agent", definition_id: definitionId }]);
+    await root.sendTo(agentRunId, marker, [{ kind: "agent", definition_id: definitionId }]);
     let received = "";
     await until(async () => {
       received = stringsOf(await root.conversationOf(agentRunId, address)).find((text) => text.includes(marker) && text.includes("[Mentioned agents]")) ?? "";
       return received !== "";
-    }, `${address} receives the message with its @ note`, 60_000);
+    }, `${address} receives the message with its @ note`, 60_000).catch(async (error) => {
+      const tail = stringsOf(await root.conversationOf(agentRunId, address)).slice(-4);
+      throw new Error(`${error}; the agent's conversation ends: ${JSON.stringify(tail).slice(0, 2000)}`);
+    });
     return received.slice(received.indexOf("[Mentioned agents]"));
   };
 
@@ -320,7 +331,7 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     // task-keys-and-dependencies (design SR-003 REC-005): the named Task is resolved before the copy checks, so the
     // wrong-run-ID refusals below need a real open Task; an unknown task_id would be refused first.
     const keyProject = (await h.graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`, { input: { name: `CPW keys ${Date.now()}` } })).createProject.projectId as string;
-    const openTask = (await h.graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskKey}}`, { input: { projectId: keyProject, description: "Reply OK." } })).createProjectTask.taskKey as string;
+    const openTask = (await h.graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskKey}}`, { input: { projectId: keyProject, title: "Reply OK.", description: "Reply OK." } })).createProjectTask.taskKey as string;
     await check("M-34", root.managerRunId, "delegate_task", { target_agent_run_id: "not_my_task_agent", task_id: openTask },
       ["not_my_task_agent is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."]);
     await check("M-35", root.managerRunId, "delegate_task", { target_agent_run_id: coordinatorId, task_id: openTask },
@@ -361,7 +372,11 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     const b = (await agentRoot.calls(a, `/${segment(names.outsider)}`, callTool("delegate_task", { recipient_address: `/${segment(names.stranger)}`, description: "Task marker H1-B." }))).target_agent_run_id as string;
     await agentRoot.waitForTaskAgent(b);
     const taskB = await receivedWith(agentRoot, b, `/${segment(names.stranger)}`, "H1-B");
-    expect(taskB).toContain(`You have a new task from ${runIdOnly(a)}.`);
+    // B works on sub-work of the host's Task; A is a run of the same Task, not a standing agent of the assigning run
+    // (contract §2.3 step 2, §5.4.3 E-4): A's address does not reach A from B, so B is given A's run ID only (§2.5).
+    const byAddress = await h.mcpCall(b, "send_message_to", { recipient_address: `/${segment(names.outsider)}`, content: "Reach marker H1-BA." });
+    expect(byAddress.text, "B cannot reach A by A's address").not.toMatch(/Delivered message to/);
+    expect(taskB, `B sending to A's address read: ${byAddress.text.slice(0, 500)}`).toContain(`You have a new task from ${runIdOnly(a)}.`);
     expect(taskB).toContain("target_agent_run_id set to that sender run id.");
     expect(taskB).not.toContain("sender address");
     const squad = await agentRoot.calls(host, "/", callTool("delegate_task", { recipient_address: `/${segment(names.team)}`, description: "Task marker H1-T." }));
@@ -427,5 +442,64 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     expect(note).toContain(`- ${names.sibling} (agent) at /sibling: talk with it using send_message_to, or delegate a task to it with delegate_task; that creates a new task agent and returns its run id to follow up with.`);
     root.close();
     await h.terminate("org", root.rootId);
+  }, 300_000);
+
+  it("CPW-M5 Team root: the user mentions a member of the team in a message to the team's task agent (a child row of the team's view)", async () => {
+    // autobyteus-461 AR-011: the team's view commands its one-hop child rows; the `@` note is decided for the child (wording §8),
+    // which reaches the members of the run that assigned its Task by address (contract §2.3 step 2).
+    const root = await h.startRoot("team", ids);
+    const delegated = await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }));
+    const taskAgent = delegated.target_agent_run_id as string;
+    await root.waitForTaskAgent(taskAgent);
+    const note = await mentioning(root, taskAgent, `/${segment(names.outsider)}`, ids.mate);
+    expect(note).toContain(`- ${names.mate} (agent) at /mate: talk with it using send_message_to`);
+    root.close();
+    await h.terminate("team", root.rootId);
+  }, 300_000);
+
+  it("CPW-M7 C17-02: a run two hops down delegates to an address only the top run's catalog offers, as base answered a copy hosted in the top run", async () => {
+    // Org root (top): the manager delegates the squad Team (one hop); the squad's lead delegates an outside agent (two hops).
+    // That agent delegates to `/sibling`, an address of the org's catalog that the squad's own catalog does not have. Base hosted
+    // every copy in the org root and answered from its catalog: a new task agent. SR-059: its Task's assigner is the org, so the
+    // org's standing agents are in its reach (step 2).
+    const text = (result: { text: string }) => result.text.replace(/\\+"/g, '"');
+    const orgRoot = await h.startRoot("org", ids);
+    await wake(orgRoot, orgRoot.managerRunId);
+    const squad = await orgRoot.calls(orgRoot.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/squad", description: "Reply OK." }));
+    expect(squad, JSON.stringify(squad)).toMatchObject({ delegated: true, target_kind: "team" });
+    const lead = squad.target_team_coordinator_agent_run_id as string;
+    await orgRoot.waitForTaskAgent(squad.target_team_run_id as string);
+    const twoHops = text(await h.mcpCall(lead, "delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }));
+    expect(twoHops, twoHops).toContain('"delegated":true');
+    const a = JSON.parse(twoHops).target_agent_run_id as string;
+    await orgRoot.waitForTaskAgent(a);
+    const fromTwoHops = text(await h.mcpCall(a, "delegate_task", { recipient_address: "/sibling", description: "Reply OK." }));
+    expect(fromTwoHops, `two hops down → the top run's catalog address: ${fromTwoHops}`).toContain('"delegated":true');
+    expect(fromTwoHops).toContain('"target_kind":"agent"');
+    orgRoot.close();
+    await h.terminate("org", orgRoot.rootId);
+  }, 300_000);
+
+  it("CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy", async () => {
+    // Base 827f1e68dc (IMP-43): the assigner's own agent is refused as a delegation target; an assigner's configured
+    // placement is delegated to (a new task agent). The list at those addresses: reachable-agents.test.ts.
+    const text = (result: { text: string }) => result.text.replace(/\\+"/g, '"');
+    const agentRoot = await h.startRoot("agent", ids);
+    const fromAgent = (await agentRoot.calls(agentRoot.managerRunId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }))).target_agent_run_id as string;
+    await agentRoot.waitForTaskAgent(fromAgent);
+    const managerAddress = `/${segment(names.manager)}`;
+    expect(text(await h.mcpCall(fromAgent, "delegate_task", { recipient_address: managerAddress, description: "Do it" })))
+      .toContain(`'${managerAddress}' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.`);
+    agentRoot.close();
+    await h.terminate("agent", agentRoot.rootId);
+
+    const teamRoot = await h.startRoot("team", ids);
+    const fromTeam = (await teamRoot.calls(teamRoot.managerRunId, "/manager", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }))).target_agent_run_id as string;
+    await teamRoot.waitForTaskAgent(fromTeam);
+    const delegated = text(await h.mcpCall(fromTeam, "delegate_task", { recipient_address: "/mate", description: "Reply OK." }));
+    expect(delegated).toContain('"delegated":true');
+    expect(delegated).toContain('"target_kind":"agent"');
+    teamRoot.close();
+    await h.terminate("team", teamRoot.rootId);
   }, 300_000);
 });

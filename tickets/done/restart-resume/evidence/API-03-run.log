@@ -1,0 +1,28 @@
+[+0.01s] stamp "1.5.11-beta.9"
+[+3.87s] server started {"label":"p1-X","pid":50677,"port":59475}
+[+3.89s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:59474","codex":null,"claude":null}
+[+4.52s] busy {"label":"p1","pid":50797}
+[+5.32s] server stopped {"label":"p1-X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515330094},"ms":732}
+[+6.95s] server started {"label":"p1-X-again","pid":51268,"port":59534}
+[+10.96s] P1 AC-004 {"recordAfterQuit":{"entries":[{"root":{"rootSubjectKind":"agent","rootRunId":"native_agent_rr285mvxgptil_e5f8ab9e1d664a73ba2e9b530f1b3043"},"agentRunId":"native_agent_rr285mvxgptil_e5f8ab9e1d664a73ba2e9b530f1b3043","place":"host","status":"running","recordedAt":"2026-11-01T06:42:09.363Z","version":"1.5.11-beta.9"}]},"recordAfterStart":null,"lines":["[4.53] Recorded 1 busy run(s) for restart resume","[6.90] Restart resume: 1 recorded run(s) not resumed; the restart was not an update"],"notices":0}
+[+11.16s] server stopped {"label":"p1-X-again","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515335852},"ms":49}
+[+11.16s] stamp "1.5.11-beta.9"
+[+12.99s] server started {"label":"p2-X","pid":51650,"port":59566}
+[+13.00s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:59474","codex":null,"claude":null}
+[+13.64s] busy {"label":"n1","pid":51727}
+[+14.28s] busy {"label":"copyA","pid":51830}
+[+14.62s] busy {"label":"copyB","pid":51887}
+[+16.14s] copy task ids ["ad_hoc_task_2ef4c53a-1073-45bf-b983-401f57708215","ad_hoc_task_fb89e53a-e1a1-4244-8b9a-042b29a30fb5"]
+[+21.53s] busy {"label":"host","pid":52426}
+[+24.77s] server stopped {"label":"p2-X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515349433},"ms":824}
+[+24.77s] P2 record after quit {"busy":{"copyA":true,"copyB":false,"host":true,"n1":true},"entries":[{"place":"host","version":"1.5.11-beta.9","run":"native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3"},{"place":"host","version":"1.5.11-beta.9","run":"native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"},{"place":"delegated","version":"1.5.11-beta.9","run":"native_worker_rr285mvxgptil_60fa34b266e3472ba996c420fe425cdd"}]}
+[+24.78s] stamp "1.5.11-beta.9-rr285next"
+[+27.00s] AR-005 early quit {"exit":{"code":0,"signal":null,"at":1793515351676},"quitSent":true,"entries":3,"lines":[]}
+[+29.44s] server started {"label":"p2-X1","pid":52795,"port":59607}
+[+37.68s] P2 after X1 start {"record":{"entries":[{"root":{"rootSubjectKind":"agent","rootRunId":"native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3"},"agentRunId":"native_agent_rr285mvxgptil_6503123ec93d42c49a503bb72efb99a3","place":"host","status":"running","recordedAt":"2026-11-01T06:42:28.610Z","version":"1.5.11-beta.9"},{"root":{"rootSubjectKind":"agent","rootRunId":"native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"},"agentRunId":"native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149","place":"host","status":"running","recordedAt":"2026-11-01T06:42:28.610Z","version":"1.5.11-beta.9"},{"root":{"rootSubjectKind":"agent","rootRunId":"native_host_rr285mvxgptil_026a425f1f2d4828a3c86d5e68f8e149"}
+[+37.88s] server stopped {"label":"p2-X1","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515362627},"ms":103}
+[+37.88s] stamp "1.5.11-beta.9-rr285next"
+[+39.70s] server started {"label":"p3-X1-corrupt","pid":52935,"port":59628}
+[+42.71s] P3 corrupt record {"healthy":true,"recordAfterStart":null,"lines":["[39.70] Restart resume: the busy-run record was invalid and was removed: Expected property name or '}' in JSON at position 2 (line 1 column 3)"]}
+[+42.91s] server stopped {"label":"p3-X1-corrupt","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515367602},"ms":51}
+{"result":"Completed","error":null}

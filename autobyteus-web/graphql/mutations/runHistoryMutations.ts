@@ -46,9 +46,9 @@ export const ArchiveStoredTeamRun = gql`
   }
 `;
 
-export const UpdateStoppedAgentRunModelConfig = gql`
-  mutation UpdateStoppedAgentRunModelConfig($input: UpdateStoppedAgentRunModelConfigInput!) {
-    updateStoppedAgentRunModelConfig(input: $input) {
+export const UpdateStoppedAgentRunSelection = gql`
+  mutation UpdateStoppedAgentRunSelection($input: UpdateStoppedAgentRunSelectionInput!) {
+    updateStoppedAgentRunSelection(input: $input) {
       success
       outcome
       message
@@ -57,7 +57,7 @@ export const UpdateStoppedAgentRunModelConfig = gql`
         editable
         reason
       }
-      canonicalSelection { llmModelIdentifier llmConfig }
+      canonicalSelection { runtimeKind llmModelIdentifier llmConfig }
       fieldErrors {
         path
         message

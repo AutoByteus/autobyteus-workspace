@@ -1,0 +1,190 @@
+# IMP-17 — T-37: output_throughput.method masked; snapshot updated (24 lines only), then passes without -u
+# Command: cd autobyteus-ts && env -i ... npx vitest run tests/integration/agent/agent-loop-event-sequence.test.ts -u; then the same without -u
+# Commit: a0c3c9e705
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "Snapshots  8 updated"; then "Tests  12 passed (12)"; git diff of the .snap: 24 lines "method": "end_to_end" -> "<method>" only
+
+===== t37-update.log =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > final text answer with reasoning
+Registered AgentContext for agent_id 'golden_tester_8262'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > final text answer with reasoning
+Unregistered AgentContext for agent_id 'golden_tester_8262'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > one tool cycle
+Registered AgentContext for agent_id 'golden_tester_2125'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > one tool cycle
+Unregistered AgentContext for agent_id 'golden_tester_2125'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: a cut tool call, then success
+Registered AgentContext for agent_id 'golden_tester_3042'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: a cut tool call, then success
+Unregistered AgentContext for agent_id 'golden_tester_3042'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: text cut, then resumed
+Registered AgentContext for agent_id 'golden_tester_2960'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: text cut, then resumed
+Unregistered AgentContext for agent_id 'golden_tester_2960'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit exhaustion after 3 recoveries
+Registered AgentContext for agent_id 'golden_tester_8842'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit exhaustion after 3 recoveries
+Unregistered AgentContext for agent_id 'golden_tester_8842'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt mid-stream
+Registered AgentContext for agent_id 'golden_tester_1642'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt mid-stream
+Unregistered AgentContext for agent_id 'golden_tester_1642'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt at post_llm_stream after reasoning was streamed (R-3)
+Registered AgentContext for agent_id 'golden_tester_2430'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt at post_llm_stream after reasoning was streamed (R-3)
+Unregistered AgentContext for agent_id 'golden_tester_2430'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > provider error mid-stream
+Registered AgentContext for agent_id 'golden_tester_9450'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > provider error mid-stream
+Unregistered AgentContext for agent_id 'golden_tester_9450'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > content_filter stop error
+Registered AgentContext for agent_id 'golden_tester_4064'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > content_filter stop error
+Unregistered AgentContext for agent_id 'golden_tester_4064'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > malformed tool call is rejected, then the turn continues
+Registered AgentContext for agent_id 'golden_tester_3268'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > malformed tool call is rejected, then the turn continues
+Unregistered AgentContext for agent_id 'golden_tester_3268'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > after-final compaction requested and executed
+Registered AgentContext for agent_id 'golden_tester_4937'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > after-final compaction requested and executed
+Unregistered AgentContext for agent_id 'golden_tester_4937'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > compaction_blocked, then the retry runs the held turn
+Registered AgentContext for agent_id 'golden_tester_8371'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > compaction_blocked, then the retry runs the held turn
+Unregistered AgentContext for agent_id 'golden_tester_8371'.
+
+ ✓ tests/integration/agent/agent-loop-event-sequence.test.ts (12 tests) 5077ms
+     ✓ after-final compaction requested and executed  302ms
+     ✓ compaction_blocked, then the retry runs the held turn  3307ms
+
+  Snapshots  8 updated 
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  11:24:23
+   Duration  7.29s (transform 1.61s, setup 80ms, import 1.98s, tests 5.08s, environment 0ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+===== t37-check.log =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > final text answer with reasoning
+Registered AgentContext for agent_id 'golden_tester_8820'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > final text answer with reasoning
+Unregistered AgentContext for agent_id 'golden_tester_8820'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > one tool cycle
+Registered AgentContext for agent_id 'golden_tester_5889'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > one tool cycle
+Unregistered AgentContext for agent_id 'golden_tester_5889'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: a cut tool call, then success
+Registered AgentContext for agent_id 'golden_tester_3138'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: a cut tool call, then success
+Unregistered AgentContext for agent_id 'golden_tester_3138'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: text cut, then resumed
+Registered AgentContext for agent_id 'golden_tester_6217'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit recovery: text cut, then resumed
+Unregistered AgentContext for agent_id 'golden_tester_6217'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit exhaustion after 3 recoveries
+Registered AgentContext for agent_id 'golden_tester_1865'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > output-limit exhaustion after 3 recoveries
+Unregistered AgentContext for agent_id 'golden_tester_1865'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt mid-stream
+Registered AgentContext for agent_id 'golden_tester_1963'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt mid-stream
+Unregistered AgentContext for agent_id 'golden_tester_1963'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt at post_llm_stream after reasoning was streamed (R-3)
+Registered AgentContext for agent_id 'golden_tester_5444'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > interrupt at post_llm_stream after reasoning was streamed (R-3)
+Unregistered AgentContext for agent_id 'golden_tester_5444'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > provider error mid-stream
+Registered AgentContext for agent_id 'golden_tester_2967'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > provider error mid-stream
+Unregistered AgentContext for agent_id 'golden_tester_2967'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > content_filter stop error
+Registered AgentContext for agent_id 'golden_tester_6666'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > content_filter stop error
+Unregistered AgentContext for agent_id 'golden_tester_6666'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > malformed tool call is rejected, then the turn continues
+Registered AgentContext for agent_id 'golden_tester_1772'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > malformed tool call is rejected, then the turn continues
+Unregistered AgentContext for agent_id 'golden_tester_1772'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > after-final compaction requested and executed
+Registered AgentContext for agent_id 'golden_tester_9504'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > after-final compaction requested and executed
+Unregistered AgentContext for agent_id 'golden_tester_9504'.
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > compaction_blocked, then the retry runs the held turn
+Registered AgentContext for agent_id 'golden_tester_9541'. Total registered contexts: 1
+
+stdout | tests/integration/agent/agent-loop-event-sequence.test.ts > agent loop golden event sequences > compaction_blocked, then the retry runs the held turn
+Unregistered AgentContext for agent_id 'golden_tester_9541'.
+
+ ✓ tests/integration/agent/agent-loop-event-sequence.test.ts (12 tests) 5045ms
+     ✓ after-final compaction requested and executed  315ms
+     ✓ compaction_blocked, then the retry runs the held turn  3323ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  11:30:31
+   Duration  5.90s (transform 565ms, setup 39ms, import 725ms, tests 5.05s, environment 0ms)
+

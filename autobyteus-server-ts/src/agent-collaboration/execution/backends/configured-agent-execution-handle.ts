@@ -1,9 +1,12 @@
+import { readRunProjectContext, type RunProjectRoot } from "../../../agent-execution/domain/run-project-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import type { ApplicationExecutionContext } from "../../../application-orchestration/domain/models.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { isAgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
+import { createUnsentInputFailureObserver } from "../../../agent-execution/input/unsent-input-failure-observer.js";
 import type {
   AgentRunInputOptions,
   AgentRunInputRejectionCode,
@@ -26,17 +29,17 @@ import {
 import type { MemberExecutionContext } from "../domain/member-execution-context.js";
 import type { RootAgentExecutionCallbacks } from "../domain/root-agent-execution-callbacks.js";
 import type {
-  AgentModelChoice,
   ConfiguredAgentActivationMode,
   ConfiguredAgentExecutionSpec,
+  ConfiguredAgentSelection,
   RetainedAgentExecutionControl,
 } from "../domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../domain/configured-agent-execution.js";
-import { AgentActivationFence, completedLocalTermination, describeActivationFailure } from "./configured-agent-execution-support.js";
-import type {
-  CollaborationAgentNoConversationBindingReplacement,
-  CollaborationAgentPlatformBinding,
-} from "../domain/collaboration-agent-platform-binding.js";
+import { AgentActivationFence, completedLocalTermination, describeActivationFailure, wrapPreparedLocalTermination } from "./configured-agent-execution-support.js";
+import { platformBindingChangeExecution, platformBindingChangeSessionId, type CollaborationAgentNoConversationBindingReplacement,
+  type CollaborationAgentPlatformBinding } from "../domain/collaboration-agent-platform-binding.js";
+import type { RuntimeSwitchMemory } from "../../../agent-execution/domain/runtime-switch-memory-port.js";
+import type { ConfiguredAgentSwitchAttempt } from "./configured-agent-switch-attempt.js";
 import type {
   CollaborationAgentStatusSnapshot,
 } from "../domain/collaboration-agent-execution-event.js";
@@ -61,6 +64,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
   private configurationPreparing = false;
   private agentRun: AgentRun | null = null;
   private readinessAttempt: Promise<AgentRun> | null = null;
+  /** A readiness attempt that failed and is kept (not retry-safe): settled, so no longer work in flight (CR-461-061). */
+  private settledReadiness: Promise<AgentRun> | null = null;
   private rootShutdownFenced = false;
   private unsubscribe: (() => void) | null = null;
   private platformAgentRunId: string | null;
@@ -68,8 +73,10 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
   private activationMode: ConfiguredAgentActivationMode;
   private readonly overlay: ConfiguredAgentStatusOverlay;
   private readonly planner: ConfiguredAgentActivationPlanner;
-  /** The spec the next activation uses; only its model choice changes, and only while stopped. */
+  /** The spec the next activation uses; it changes only while stopped (a restore refreshes it) and when a switch commits. */
   private execution: ConfiguredAgentExecutionSpec;
+  /** The in-flight attempt to make a pending switch real (its ticket was taken before the candidate prepared). */
+  private switchAttempt: ConfiguredAgentSwitchAttempt | null = null;
   private readonly activationFence = new AgentActivationFence();
 
   constructor(private readonly options: {
@@ -81,10 +88,13 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     activationMode: ConfiguredAgentActivationMode;
     memberExecutionContext: MemberExecutionContext;
     applicationExecutionContext?: ApplicationExecutionContext | null;
+    /** The root Team run whose Project its members are told (DS-005); absent for task agents and Org members. */
+    projectRunRoot?: RunProjectRoot | null;
     callbacks: RootAgentExecutionCallbacks;
     agentRunManager?: AgentRunManager;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
+    runtimeSwitchMemory?: RuntimeSwitchMemory;
     workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
     assertInputAllowed?: () => void;
   }) {
@@ -110,6 +120,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
       identity: this.identity,
       manager: options.agentRunManager,
       activityInspector: options.activityInspector,
+      runtimeSwitchMemory: options.runtimeSwitchMemory,
     });
   }
 
@@ -118,7 +129,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return ["initializing", "running", "error"].includes(this.getStatusSnapshot().details.status);
   }
   getStatusSnapshot(): CollaborationAgentStatusSnapshot {
-    return this.overlay.get(() => this.agentRun?.getStatusSnapshot() ?? { status: "offline" });
+    // A member without a run is offline: no background tasks running.
+    return this.overlay.get(() => this.agentRun?.getStatusSnapshot() ?? { status: "offline", background_tasks_running: 0 });
   }
   getInputStateSnapshots() {
     return this.agentRun?.isActive()
@@ -134,17 +146,22 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return start.run.reserveUserMessage(message, options);
   }
 
-  /** Direct input (delegated seed, user or application input). Starts the member on its first input; see `startForInput`. */
-  async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+  /** Direct input (delegated seed, user or application input); starts the member on its first input (`startForInput`). Options
+   * pass through (the caller's observer runs beside this one); a platform notice shows as a run notice, so no `member_input`. */
+  async postMessage(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentOperationResult> {
+    const platformNotice = readPlatformInputPreface(message.metadata) !== null;
     const start = await this.startForInput();
     if (!start.started) {
       return { accepted: false, code: start.code, message: start.message, agentRunId: this.identity.agentRunId, displayName: this.displayName };
     }
     const run = start.run;
     this.assertInputAllowed();
-    const result = await run.postUserMessage(message);
+    const unsent = createUnsentInputFailureObserver({ runId: run.runId,
+      publish: (event) => this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event }) });
+    const caller = options.lifecycleObserver;
+    const result = await run.postUserMessage(message, { ...options, lifecycleObserver: caller ? (fact) => { unsent(fact); caller(fact); } : unsent });
     if (result.accepted) {
-      this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
+      if (!platformNotice) this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
     } else this.publishCommandStatus("error", result.message ?? null);
     return { ...result, agentRunId: run.runId, displayName: this.displayName };
   }
@@ -204,11 +221,15 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return this.releaseRuntime(false);
   }
 
-  replaceModelChoice(choice: AgentModelChoice): void {
+  replaceSelection(selection: ConfiguredAgentSelection): void {
     if (!this.isStopped()) {
-      throw new Error(`AgentRun '${this.identity.agentRunId}' is running; its model can change only while it is stopped.`);
+      throw new Error(`AgentRun '${this.identity.agentRunId}' is running; its selection can change only while it is stopped.`);
     }
-    this.execution = Object.freeze({ ...this.execution, llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig });
+    const { pendingRuntimeSwitch: _pending, ...base } = this.execution;
+    const { runtimeKind, llmModelIdentifier, llmConfig, platformAgentRunId, pendingRuntimeSwitch } = selection;
+    this.execution = Object.freeze({ ...base, runtimeKind, llmModelIdentifier, llmConfig, platformAgentRunId,
+      ...(pendingRuntimeSwitch ? { pendingRuntimeSwitch } : {}) });
+    this.platformAgentRunId = platformAgentRunId?.trim() || null;
   }
 
   async fenceForRootShutdown(): Promise<AgentOperationResult> {
@@ -228,6 +249,9 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     if (this.agentRun || this.readinessAttempt) {
       throw new Error(`AgentRun '${this.identity.agentRunId}' already entered live readiness.`);
     }
+    if (this.execution.pendingRuntimeSwitch) {
+      throw new Error(`AgentRun '${this.identity.agentRunId}' has a pending agent runtime switch that a staged activation cannot make.`);
+    }
     const prepared = await this.prepareActivation();
     let state: "prepared" | "published" | "aborted" = "prepared";
     return Object.freeze({
@@ -241,10 +265,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
       ),
       commitAfterDurability: () => {
         if (state !== "prepared") throw new Error(`AgentRun '${prepared.candidate.runId}' is not publishable.`);
-        const binding = prepared.bindingChange?.kind === "replace_without_conversation"
-          ? prepared.bindingChange.replacement.binding
-          : prepared.bindingChange?.binding;
-        if (binding) this.platformAgentRunId = binding.platformAgentRunId;
+        if (prepared.bindingChange) this.platformAgentRunId = platformBindingChangeSessionId(prepared.bindingChange);
         const run = prepared.candidate.commitPublication();
         this.activationMode = "restore";
         this.agentRun = run;
@@ -289,18 +310,18 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
 
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
-    if (this.agentRun) return this.wrapPreparedTermination(await this.manager.prepareAgentRunTermination(this.agentRun));
+    if (this.agentRun) return this.wrapTermination(await this.manager.prepareAgentRunTermination(this.agentRun));
     // Private rejection still has retained authority; never mistake a missing published run for release.
     return Object.freeze({ cancel: () => undefined, commit: () => Object.freeze({ finish: () => this.releaseRuntime() }) });
   }
 
   async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
-    if (this.readinessAttempt) return null;
+    if (this.readinessAttempt && this.readinessAttempt !== this.settledReadiness) return null;
     const run = this.agentRun;
     if (!run) return this.activationOperation ? null : completedLocalTermination(() => this.dispose());
     const prepared = await this.manager.tryPrepareAgentRunTerminationIfQuiescent(run);
     if (!prepared) return null;
-    return this.wrapPreparedTermination(prepared);
+    return this.wrapTermination(prepared);
   }
 
   async terminate(): Promise<AgentOperationResult> {
@@ -329,7 +350,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     this.readinessAttempt = attempt;
     void attempt.then(
       () => { if (this.readinessAttempt === attempt) this.readinessAttempt = null; },
-      () => { if (retrySafe && this.readinessAttempt === attempt) this.readinessAttempt = null; },
+      () => { if (this.readinessAttempt === attempt) { if (retrySafe) this.readinessAttempt = null; else this.settledReadiness = attempt; } },
     );
     return attempt;
   }
@@ -352,16 +373,21 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     let durabilityCommitted = false;
     try {
       prepared = await this.prepareActivation();
-      const binding = prepared.bindingChange?.kind === "replace_without_conversation"
-        ? prepared.bindingChange.replacement.binding
-        : prepared.bindingChange?.binding;
-      if (binding && prepared.bindingChange) {
-        if (!sameCollaborationMemberExecutionIdentity(this.identity, binding.execution)) {
+      const change = prepared.bindingChange;
+      if (change) {
+        if (!sameCollaborationMemberExecutionIdentity(this.identity, platformBindingChangeExecution(change))) {
           throw new Error("Provider binding change does not match the configured Agent identity.");
         }
-        await this.options.callbacks.commitPlatformBindingChange(prepared.bindingChange);
+        // A switch: the previous agent's records are archived behind the marker before the durable commit.
+        this.switchAttempt?.record();
+        await this.options.callbacks.commitPlatformBindingChange(change);
         durabilityCommitted = true;
-        this.platformAgentRunId = binding.platformAgentRunId;
+        this.platformAgentRunId = platformBindingChangeSessionId(change);
+        if (change.kind === "runtime_switch") { // M-7: this handle takes the committed binding, so a later re-activation restores
+          const { pendingRuntimeSwitch: _pending, ...rest } = this.execution;
+          this.execution = Object.freeze({ ...rest, platformAgentRunId: this.platformAgentRunId });
+          this.switchAttempt = null;
+        }
       }
       const run = prepared.candidate.commitPublication();
       this.activationMode = "restore";
@@ -383,6 +409,9 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
         try { cleanupConfirmed = (await this.releaseRuntime(false)).accepted; }
         catch (error) { cleanupConfirmed = false; failure = this.cleanupError(this.identity.agentRunId, error instanceof Error ? error : new Error(String(error))); }
       }
+      // A failed switch attempt leaves nothing behind: what its candidate wrote after the watermark goes, once its release is confirmed.
+      if (cleanupConfirmed) this.switchAttempt?.discardUnlessRecorded();
+      this.switchAttempt = null;
       if (cleanupConfirmed && this.planner.isRetrySafe(failure) && !durabilityCommitted) markRetrySafe();
       // The member's conversation error card, once per failed start. Input closed for this member
       // (Task DONE, root shutdown) is not a failure: `startForInput` reports it as not accepting input.
@@ -403,8 +432,9 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     try {
       const config = await this.buildAgentRunConfig();
       this.assertInputAllowed();
-      const begun = this.planner.begin(config, this.platformAgentRunId, this.activationMode);
+      const begun = this.planner.begin(config, this.platformAgentRunId, this.activationMode, this.execution.pendingRuntimeSwitch);
       this.activationOperation = begun.operation;
+      this.switchAttempt = begun.switching;
       return await begun.prepare();
     } finally { this.configurationPreparing = false; }
   }
@@ -441,6 +471,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
       runtimeKind: execution.runtimeKind,
       memberExecutionContext: this.options.memberExecutionContext,
       applicationExecutionContext: this.options.applicationExecutionContext ?? null,
+      project: this.options.projectRunRoot ? await readRunProjectContext(this.options.projectRunRoot) : null,
     });
   }
 
@@ -478,30 +509,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     }
   }
 
-  private wrapPreparedTermination(
-    prepared: import("../../../agent-execution/domain/prepared-agent-run-termination.js").PreparedAgentRunTermination,
-  ): PreparedLocalExecutionTermination {
-    let state: "prepared" | "cancelled" | "committed" = "prepared";
-    let committed: ReturnType<PreparedLocalExecutionTermination["commit"]> | null = null;
-    return Object.freeze({
-      cancel: () => {
-        if (state !== "prepared") return;
-        state = "cancelled";
-        prepared.cancel();
-      },
-      commit: () => {
-        if (state === "cancelled") throw new Error(`AgentRun '${this.identity.agentRunId}' termination was cancelled.`);
-        if (committed) return committed;
-        state = "committed";
-        const local = prepared.commit();
-        committed = Object.freeze({ finish: async () => {
-          const result = await local.finish();
-          if (result.accepted) { this.agentRun = null; this.dispose(); }
-          return result;
-        } });
-        return committed;
-      },
-    });
+  private wrapTermination(prepared: Parameters<typeof wrapPreparedLocalTermination>[0]): PreparedLocalExecutionTermination {
+    return wrapPreparedLocalTermination(prepared, { agentRunId: this.identity.agentRunId, onFinished: () => { this.agentRun = null; this.dispose(); } });
   }
   private get displayName(): string { return this.identity.memberAddress.split("/").at(-1) ?? this.identity.agentRunId; }
   private cleanupError(runId: string, cause: Error): CollaborationAgentActivationError {

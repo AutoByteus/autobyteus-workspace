@@ -10,6 +10,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import WebSocket from "ws";
 import { afterEach, describe, expect, it } from "vitest";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // The retired built-in Project Task Manager through both actual built startup entrypoints (Studio
 // `dist/app.js`, standalone host `dist/index.js`): the registered STARTUP_ONLY migration
@@ -21,6 +22,10 @@ const MIGRATION_ID = "20261006_remove_built_in_project_task_manager";
 const RETIRED_ID = "autobyteus-project-task-manager";
 const REPOSITORY_ID = "project-task-manager";
 const BUILT_IN_IDS = ["autobyteus-daily-assistant"];
+// The internal Model Router: installed, hidden from the catalog and never an `@` candidate.
+const MODEL_ROUTER_ID = "autobyteus-model-router";
+// Every built-in the startup installs under agents/, including the internal Model Router.
+const INSTALLED_BUILT_IN_FOLDERS = ["autobyteus-daily-assistant", MODEL_ROUTER_ID];
 const FAILED_MESSAGE = "The retired built-in Project Task Manager folder could not be removed; the cleanup retries on the next start.";
 const installedCopyFixture = fileURLToPath(new URL("../../fixtures/app-data-migrations/retired-built-in-project-task-manager", import.meta.url));
 
@@ -122,7 +127,7 @@ const startProvider = async () => {
 const studio = async () => {
   await fs.access(path.resolve("dist/app.js"));
   const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { env: environment(), stdio: ["ignore", "pipe", "pipe"] });
+    { env: { ...environment(), ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
@@ -320,13 +325,14 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
     expect(continued.some(e => e.type === "ASSISTANT_COMPLETE")).toBe(true);
     expect(await conversationText(retried, otherRunId)).toContain("Write more field notes.");
 
-    // AC-009: the remaining built-ins stay excluded from `@`; the repository manager is an ordinary candidate.
+    // AC-009: the Model Router stays out of `@`; the Daily Assistant and the repository manager are ordinary
+    // candidates (autobyteus-455: the Daily Assistant collaborates like any agent).
     const candidates = (await retried.gql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent",rootRunId:$id,focusedAgentRunId:$id){availability candidates{kind definitionId}}}`, { id: otherRunId }))
       .collaboratorMentionCandidates;
     expect(candidates.availability).toBe("AVAILABLE");
     const candidateIds = candidates.candidates.map((c: { definitionId: string }) => c.definitionId);
-    expect(candidateIds).toContain(REPOSITORY_ID);
-    for (const excluded of [...BUILT_IN_IDS, RETIRED_ID]) expect(candidateIds).not.toContain(excluded);
+    expect(candidateIds).toEqual(expect.arrayContaining([REPOSITORY_ID, "autobyteus-daily-assistant"]));
+    for (const excluded of [MODEL_ROUTER_ID, RETIRED_ID]) expect(candidateIds).not.toContain(excluded);
   }, 240_000);
 
   it("E-003 Studio fresh install: creates no installed copy and records nothing to remove", async () => {
@@ -335,7 +341,7 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
     const first = await studio();
     expect(await first.migration()).toMatchObject({ status: "SUCCEEDED", attempts: 1, summary: "Scanned 1; migrated 0; skipped 1; failed 0." });
     expect(await fs.readFile((await first.migration()).logPath, "utf8")).toContain("Not present.");
-    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(BUILT_IN_IDS);
+    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(INSTALLED_BUILT_IN_FOLDERS);
     const catalog = await first.catalog();
     expect(catalog.some(d => d.id === RETIRED_ID)).toBe(false);
     expect(projectTaskManagers(catalog)).toEqual([REPOSITORY_ID]);
@@ -343,7 +349,7 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
 
     const second = await studio();
     expect(await second.migration()).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
-    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(BUILT_IN_IDS);
+    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(INSTALLED_BUILT_IN_FOLDERS);
   }, 180_000);
 
   it("E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record", async () => {

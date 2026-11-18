@@ -1,0 +1,40 @@
+[mobile-shell] MSP-01 …
+[mobile-shell] MSP-01 Pass
+[mobile-shell] MSP-15 …
+[mobile-shell] MSP-15 Pass
+[mobile-shell] MSP-02 …
+[mobile-shell] MSP-02 Pass
+[mobile-shell] MSP-03 …
+[mobile-shell] MSP-03 Pass
+[mobile-shell] MSP-04 …
+[mobile-shell] MSP-04 Pass
+[mobile-shell] MSP-05 …
+[mobile-shell] MSP-05 Pass
+[mobile-shell] MSP-90 …
+[mobile-shell] MSP-90 try 1: opened=true race=false list=384 tap=677
+[mobile-shell] MSP-90 try 2: opened=true race=false list=371 tap=537
+[mobile-shell] MSP-90 try 3: opened=true race=false list=375 tap=649
+[mobile-shell] MSP-90 try 4: opened=true race=false list=372 tap=637
+[mobile-shell] MSP-90 try 5: opened=true race=false list=366 tap=551
+[mobile-shell] MSP-90 try 6: opened=true race=false list=373 tap=652
+[mobile-shell] MSP-90 try 7: opened=true race=false list=379 tap=566
+[mobile-shell] MSP-90 try 8: opened=true race=false list=375 tap=566
+[mobile-shell] MSP-90 try 9: opened=false race=true list=390 tap=539
+[mobile-shell] MSP-90 try 10: opened=true race=false list=380 tap=651
+[mobile-shell] MSP-90 try 11: opened=true race=false list=382 tap=654
+[mobile-shell] MSP-90 try 12: opened=true race=false list=381 tap=651
+[mobile-shell] MSP-90 try 13: opened=false race=true list=378 tap=529
+[mobile-shell] MSP-90 try 14: opened=true race=false list=369 tap=549
+[mobile-shell] MSP-90 try 15: opened=true race=false list=386 tap=620
+[mobile-shell] MSP-90 try 16: opened=true race=false list=395 tap=635
+[mobile-shell] MSP-90 try 17: opened=true race=false list=388 tap=654
+[mobile-shell] MSP-90 try 18: opened=true race=false list=385 tap=619
+[mobile-shell] MSP-90 try 19: opened=true race=false list=391 tap=543
+[mobile-shell] MSP-90 try 20: opened=true race=false list=381 tap=563
+[mobile-shell] MSP-90 try 21: opened=true race=false list=394 tap=637
+[mobile-shell] MSP-90 try 22: opened=true race=false list=373 tap=561
+[mobile-shell] MSP-90 try 23: opened=true race=false list=392 tap=577
+[mobile-shell] MSP-90 try 24: opened=true race=false list=297 tap=436
+[mobile-shell] MSP-90 try 25: opened=true race=false list=383 tap=591
+[mobile-shell] MSP-90 Pass
+mobile-shell probe: Fail

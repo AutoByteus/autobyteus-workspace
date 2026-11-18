@@ -1,0 +1,17 @@
+# API-L07 (Codex part): AC-013, an agent whose definition does not select search_memory cannot call it
+# Desktop iso-53567-504c (build of 06fdc1306a); definition: the shipped Project Task Manager (autobyteus-agents/agents/project-task-manager, copied unchanged into the test package /private/tmp/wjs-api/agent-pkg; toolNames 16, no search_memory)
+# Runtime: Codex App Server, model GPT-6.1-Sol (default reasoning: low); CODEX_HOME = throwaway home with a link to the Codex login; run project_task_manager_1410f2fab8d84b47b5d6c2387f669092; started from the UI (Agents → Run → Chat); 2026-10-26 17:33–17:34 UTC
+
+## Turn 1 (17:33:36): "Please call your search_memory tool with the query "domain updater DDNS" … If you do not have a tool named search_memory, say exactly which tools you have whose name contains "memory" or "search" …"
+Reply: "I do not have a tool named search_memory, or any tools with “memory” in their name. Tools with “search” in their name are:
+mcp__autobyteus_agent_tools__search_project_tasks
+mcp__codex_apps__… (8 ChatGPT connector tools of the Codex login)
+I did not use shell commands or files."
+
+## Turn 2 (17:34:12): "… try once to call the tool mcp__autobyteus_agent_tools__search_memory with query "domain updater" and report exactly what happens …"
+Reply: "The single attempted call returned exactly:
+TypeError: tools.mcp__autobyteus_agent_tools__search_memory is not a function"
+
+## Server
+server.log: "Successfully registered tool definition: 'search_memory'" (the tool exists on the node); the AutoByteus MCP server this run received lists search_project_tasks but not search_memory.
+Screenshot: API-L07-01-codex-without-tool.png

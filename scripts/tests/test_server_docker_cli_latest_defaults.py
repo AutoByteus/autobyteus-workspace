@@ -85,7 +85,7 @@ class ServerDockerCliLatestDefaultsTest(unittest.TestCase):
         self.assertNotIn("|| true", layer)
 
     def test_no_runtime_installer_or_home_override_is_added(self) -> None:
-        for name in ("entrypoint.sh", "bootstrap.sh", "supervisor-autobyteus-server.conf"):
+        for name in ("entrypoint.sh", "supervisor-autobyteus-server.conf"):
             content = (DOCKERFILE.parent / name).read_text(encoding="utf-8")
             self.assertNotIn("@xai-official/grok", content)
             self.assertNotIn("antigravity.google/cli/install.sh", content)
@@ -99,9 +99,9 @@ class ServerDockerCliLatestDefaultsTest(unittest.TestCase):
 
         workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
         self.assertEqual(
-            2,
+            1,
             len(re.findall(r"CLI_INSTALL_CACHE_BUSTER=\$\{\{ github\.run_id \}\}", workflow)),
-            "Both default and zh release builds must bust the CLI install layer cache.",
+            "The one release build step (each architecture, each variant) must bust the CLI install layer cache.",
         )
 
 

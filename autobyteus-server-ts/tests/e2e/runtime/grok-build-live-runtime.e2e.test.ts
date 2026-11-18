@@ -12,6 +12,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 // Live Grok Build parity checks through the real Studio server and the host's own `grok` CLI
 // (paid inference on the user's Grok plan). Gated: RUN_GROK_E2E=1 and a working Grok command
@@ -81,12 +82,13 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type !== "string") return;
-        messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object"
-          && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore malformed diagnostic rows only. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     return { socket, messages };
   };
 
@@ -369,9 +371,7 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
     const stopped = await graphql<{ terminateAgentTeamRun: { success: boolean; message: string } }>(
       "mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success message } }", { teamRunId });
     expect(stopped.terminateAgentTeamRun.success, stopped.terminateAgentTeamRun.message).toBe(true);
-    const restored = await graphql<{ restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
-      "mutation($teamRunId: String!) { restoreAgentTeamRun(teamRunId: $teamRunId) { success message teamRunId } }", { teamRunId });
-    expect(restored.restoreAgentTeamRun, restored.restoreAgentTeamRun.message).toMatchObject({ success: true, teamRunId });
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     const after = flattenE2eConfiguredAgentExecutions((await graphql<{ getTeamRunResumeConfig: {
       executionTree: Record<string, unknown> } }>(resumeQuery, { teamRunId })).getTeamRunResumeConfig.executionTree);
     expect(after).toEqual(before);
@@ -461,10 +461,7 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
       "mutation($agentOrgRunId: String!) { terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message } }",
       { agentOrgRunId: orgRunId });
     expect(stopped.terminateAgentOrgRun.success, stopped.terminateAgentOrgRun.message).toBe(true);
-    const restored = await graphql<{ restoreAgentOrgRun: { success: boolean; message: string; agentOrgRunId: string | null } }>(
-      "mutation($agentOrgRunId: String!) { restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message agentOrgRunId } }",
-      { agentOrgRunId: orgRunId });
-    expect(restored.restoreAgentOrgRun, restored.restoreAgentOrgRun.message).toMatchObject({ success: true, agentOrgRunId: orgRunId });
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     const projection = await graphql<{ getAgentOrgMemberRunProjection: { conversation: unknown[] } }>(
       `query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
         getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) { conversation }

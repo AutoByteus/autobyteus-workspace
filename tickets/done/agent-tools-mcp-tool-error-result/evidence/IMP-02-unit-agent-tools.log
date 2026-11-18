@@ -1,0 +1,15 @@
+# IMP-02 Agent Tools unit tests incl. the new adapter test (AC-003, AC-004)
+# cmd: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools --no-watch (adapter file shown verbose first)
+# commit: 253854bf8d  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:44Z
+
+ ✓ tests/unit/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.test.ts > ConfiguredMcpRegistryToolAdapter.execute > returns the tool's failure as an isError result with its message instead of throwing 3ms
+ ✓ tests/unit/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.test.ts > ConfiguredMcpRegistryToolAdapter.execute > uses the thrown value's text when it is not an Error 1ms
+ ✓ tests/unit/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.test.ts > ConfiguredMcpRegistryToolAdapter.execute > returns an isError result when the tool is no longer available at call time (missing) 0ms
+ ✓ tests/unit/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.test.ts > ConfiguredMcpRegistryToolAdapter.execute > returns an isError result when the tool is no longer available at call time (no longer an MCP tool) 0ms
+ ✓ tests/unit/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.test.ts > ConfiguredMcpRegistryToolAdapter.execute > returns an isError result when the tool is no longer available at call time (of another server) 0ms
+ ✓ tests/unit/agent-tools/mcp/configured-mcp/configured-mcp-registry-tool-adapter.test.ts > ConfiguredMcpRegistryToolAdapter.execute > returns the tool's normal and isError results unchanged 1ms
+      Tests  6 passed (6)
+
+ Test Files  46 passed (46)
+      Tests  372 passed (372)
+   Duration  41.13s (transform 4.35s, setup 629ms, import 29.70s, tests 5.67s, environment 3ms)

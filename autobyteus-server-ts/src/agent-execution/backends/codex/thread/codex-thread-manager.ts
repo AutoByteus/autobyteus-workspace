@@ -9,14 +9,11 @@ import {
   getCodexClientThreadRouter,
   type CodexClientThreadRouter,
 } from "./codex-client-thread-router.js";
-import {
-  getCodexThreadCleanup,
-  type CodexThreadCleanup,
-} from "../backend/codex-thread-cleanup.js";
 import { resolveThreadId } from "./codex-thread-id-resolver.js";
 import { createCodexThreadStartupGate } from "./codex-thread-startup-gate.js";
 import { CodexThread } from "./codex-thread.js";
 import type { CodexThreadConfig } from "./codex-thread-config.js";
+import type { JsonObject } from "../codex-app-server-json.js";
 import {
   getSystemInstructionCaptureService,
   type SystemInstructionCaptureService,
@@ -29,18 +26,15 @@ export class CodexThreadManager {
   private readonly released = new WeakSet<CodexRunContext>();
   private readonly threads = new Map<string, CodexThread>();
   private readonly clientManager: CodexAppServerClientManager;
-  private readonly threadCleanup: CodexThreadCleanup;
   private readonly clientThreadRouter: CodexClientThreadRouter;
   private readonly systemInstructionCaptureService: SystemInstructionCaptureService;
 
   constructor(
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
-    threadCleanup: CodexThreadCleanup = getCodexThreadCleanup(),
     clientThreadRouter: CodexClientThreadRouter = getCodexClientThreadRouter(),
     systemInstructionCaptureService: SystemInstructionCaptureService = getSystemInstructionCaptureService(),
   ) {
     this.clientManager = clientManager;
-    this.threadCleanup = threadCleanup;
     this.clientThreadRouter = clientThreadRouter;
     this.systemInstructionCaptureService = systemInstructionCaptureService;
   }
@@ -63,6 +57,41 @@ export class CodexThreadManager {
 
   getRunContext(runId: string): CodexRunContext | null {
     return this.runContexts.get(runId) ?? null;
+  }
+
+  /**
+   * Reopens the run's thread with a new app-server config (its Agent Tools MCP server with a new
+   * tool list), on the run's existing preparation: the same client, lease, skills and thread
+   * object. Only with no active turn.
+   *
+   * - With a conversation: `thread/unsubscribe`, then `thread/resume` of the same thread ID; the
+   *   router binding and listeners are kept.
+   * - Without one (no rollout to resume): `thread/unsubscribe`, then `thread/start`; the run takes
+   *   the new thread ID, which the router reads from the run context.
+   */
+  async reopenThread(runContext: CodexRunContext, appServerConfig: JsonObject): Promise<void> {
+    const owner = this.preparations.get(runContext.runId);
+    const thread = owner?.thread;
+    if (!owner || owner.context !== runContext || !thread || owner.cancelled || owner.releaseAttempt) {
+      throw new Error("Codex thread is not open for this run.");
+    }
+    const runtimeContext = runContext.runtimeContext;
+    if (runtimeContext.activeTurnId) throw new Error("Codex thread cannot be reopened during a turn.");
+    const threadId = runtimeContext.threadId;
+    if (!threadId) throw new Error("Codex thread has no thread ID to reopen.");
+    const config = runtimeContext.codexThreadConfig;
+    config.appServerConfig = appServerConfig;
+    await thread.client.request<unknown>("thread/unsubscribe", { threadId });
+    if (runtimeContext.hasConversationHistory) {
+      const resumedThreadId = await this.resumeRemoteThread(thread.client, threadId, config);
+      if (resumedThreadId !== threadId) {
+        throw new Error(`Codex resumed thread '${String(resumedThreadId)}' instead of '${threadId}'.`);
+      }
+      return;
+    }
+    const startedThreadId = await this.startRemoteThread(thread.client, config);
+    if (!startedThreadId) throw new Error("Codex thread id was not returned by app server.");
+    runtimeContext.threadId = startedThreadId;
   }
 
   async terminateThread(runId: string, expectedThread: CodexThread): Promise<void> {
@@ -94,7 +123,7 @@ export class CodexThreadManager {
           thread.clearListeners(); thread.clearApprovalRecords(); thread.clearPendingMcpToolCalls(); thread.unbindAll();
         } catch (error) { errors.push(error); }
       }
-      try { await this.threadCleanup.cleanupPreparedWorkspaceSkills(context.runtimeContext.materializedConfiguredSkills); }
+      try { await context.runtimeContext.requireWorkspaceSkills().release(); }
       catch (error) { errors.push(error); }
       if (!errors.length) {
         try { await owner.lease.release(); } catch (error) { errors.push(error); }

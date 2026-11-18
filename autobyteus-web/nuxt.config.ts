@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import { defineNuxtConfig, type NuxtConfig } from 'nuxt/config'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { applyElectronConfig } from './nuxt.electron.config'
@@ -36,9 +36,26 @@ const backendNodeBaseUrlFromEnv =
   process.env.BACKEND_NODE_BASE_URL ||
   process.env.BACKEND_REST_BASE_URL?.replace(/\/rest\/?$/, '') ||
   defaultBackendNodeBaseUrl
-// For local and Docker development, the Vite proxy forwards API requests to the backend server.
+// For local and Docker development, the Nuxt dev server's proxy forwards API requests to the backend server.
 const backendProxyUrl = backendNodeBaseUrlFromEnv
 const backendWsBaseUrl = toWsBaseUrl(backendNodeBaseUrlFromEnv)
+/**
+ * Development (`pnpm dev`): the node needs a credential on every request (node access model NA-1). The development
+ * runtime gives this server process the node's launch owner credential; the dev server's proxy (Nitro `devProxy`,
+ * which Nuxt also hands WebSocket upgrades to; Vite's proxy never sees them) adds it to every request it forwards,
+ * HTTP and WebSocket, and the window uses the frontend's own origin as its node so every request goes through the
+ * proxy. The credential stays in this process: it is never in `runtimeConfig.public`.
+ */
+const developmentOwnerCredential = process.env.AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL?.trim() || null
+const developmentFrontendUrl = process.env.AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL?.trim() || null
+const developmentProxyHeaders = developmentOwnerCredential ? { authorization: `Bearer ${developmentOwnerCredential}` } : undefined
+/** A dev proxy rule for one backend route prefix; Nitro strips the prefix it matched, so the target keeps it. */
+const developmentProxyRule = (prefix: string, ws: boolean) => ({
+  target: `${backendProxyUrl.replace(/\/+$/, '')}${prefix}`,
+  changeOrigin: true,
+  ws,
+  headers: developmentProxyHeaders,
+})
 
 let serverUrls = {
   graphqlBaseUrl: '',
@@ -46,7 +63,6 @@ let serverUrls = {
   agentWsEndpoint: '',
   teamWsEndpoint: '',
   graphqlWsEndpoint: '',
-  transcriptionWsEndpoint: '',
   terminalWsEndpoint: '',
   fileExplorerWsEndpoint: ''
 };
@@ -61,19 +77,17 @@ if (isElectronBuild) {
     agentWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/agent`,
     teamWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/agent-team`,
     graphqlWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/graphql`,
-    transcriptionWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/transcribe`,
     terminalWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/terminal`,
     fileExplorerWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/file-explorer`
   };
 } else if (isDevelopment) {
-  defaultNodeBaseUrl = backendProxyUrl;
+  defaultNodeBaseUrl = developmentFrontendUrl ?? backendProxyUrl;
   serverUrls = {
     graphqlBaseUrl: '/graphql',
     restBaseUrl: '/rest',
     agentWsEndpoint: process.env.BACKEND_AGENT_WS_ENDPOINT || `${backendWsBaseUrl}/ws/agent`,
     teamWsEndpoint: process.env.BACKEND_TEAM_WS_ENDPOINT || `${backendWsBaseUrl}/ws/agent-team`,
     graphqlWsEndpoint: process.env.BACKEND_GRAPHQL_WS_ENDPOINT || `${backendWsBaseUrl}/graphql`,
-    transcriptionWsEndpoint: process.env.BACKEND_TRANSCRIPTION_WS_ENDPOINT || `${backendWsBaseUrl}/ws/transcribe`,
     terminalWsEndpoint: process.env.BACKEND_TERMINAL_WS_ENDPOINT || `${backendWsBaseUrl}/ws/terminal`,
     fileExplorerWsEndpoint: process.env.BACKEND_FILE_EXPLORER_WS_ENDPOINT || `${backendWsBaseUrl}/ws/file-explorer`
   };
@@ -86,13 +100,12 @@ if (isElectronBuild) {
     agentWsEndpoint: process.env.BACKEND_AGENT_WS_ENDPOINT || 'ws://localhost:8000/ws/agent',
     teamWsEndpoint: process.env.BACKEND_TEAM_WS_ENDPOINT || 'ws://localhost:8000/ws/agent-team',
     graphqlWsEndpoint: process.env.BACKEND_GRAPHQL_WS_ENDPOINT || 'ws://localhost:8000/graphql',
-    transcriptionWsEndpoint: process.env.BACKEND_TRANSCRIPTION_WS_ENDPOINT || 'ws://localhost:8000/ws/transcribe',
     terminalWsEndpoint: process.env.BACKEND_TERMINAL_WS_ENDPOINT || 'ws://localhost:8000/ws/terminal',
     fileExplorerWsEndpoint: process.env.BACKEND_FILE_EXPLORER_WS_ENDPOINT || 'ws://localhost:8000/ws/file-explorer'
   };
 }
 
-const baseConfig = {
+const baseConfig: NuxtConfig = {
   ssr: false,
 
   // Disable Nuxt DevTools floating icon
@@ -110,7 +123,6 @@ const baseConfig = {
   
   modules: [
     '@pinia/nuxt',
-    './modules/devhandler-compat',
     ...(isTest ? ['@nuxt/test-utils/module'] : [])
   ],
 
@@ -120,21 +132,17 @@ const baseConfig = {
     appManifest: !isTest
   },
 
-  routeRules: {
-    '/workspace/**': { middleware: ['workspace'] },
-    '/': { middleware: ['workspace'] }
-  },
-
-  // Prevent Nuxt dev watcher from traversing bundled server dependencies.
-  // These trees are large and can exhaust Linux inotify limits.
-  ignore: [
-    'resources/server/node_modules/**',
-    'electron-dist/**'
-  ],
-
-  // In development, HTTP requests are proxied via vite.server.proxy.
+  // In development, API requests and WebSocket upgrades are proxied by the Nuxt dev server (Nitro devProxy).
   // Static output is only needed for production/electron builds.
-  ...(isDevelopment ? {} : {
+  ...(isDevelopment ? {
+    nitro: {
+      devProxy: {
+        '/graphql': developmentProxyRule('/graphql', true),
+        '/rest': developmentProxyRule('/rest', false),
+        '/ws': developmentProxyRule('/ws', true),
+      },
+    },
+  } : {
     nitro: {
       preset: 'static',
       output: {
@@ -158,16 +166,6 @@ const baseConfig = {
           '**/node_modules/**'
         ]
       },
-      proxy: isDevelopment ? {
-        '/graphql': {
-          target: backendProxyUrl,
-          changeOrigin: true,
-        },
-        '/rest': {
-          target: backendProxyUrl,
-          changeOrigin: true,
-        }
-      } : undefined,
     },
     assetsInclude: ['**/*.jpeg', '**/*.jpg', '**/*.png', '**/*.svg'],
     worker: {
@@ -189,7 +187,7 @@ const baseConfig = {
   },
 
   runtimeConfig: {
-    // backendUrl is no longer needed as we use Vite's dev proxy
+    // backendUrl is no longer needed: development goes through the dev server's proxy
     public: {
       graphqlBaseUrl: serverUrls.graphqlBaseUrl,
       restBaseUrl: serverUrls.restBaseUrl,
@@ -201,19 +199,6 @@ const baseConfig = {
       fileExplorerWsEndpoint: serverUrls.fileExplorerWsEndpoint,
       mobileRemoteAccessBuild: isMobileWebBuild,
       showDebugErrorPanel: process.env.SHOW_DEBUG_ERROR_PANEL === 'true',
-
-      audio: {
-        targetSampleRate: 16000,
-        chunkDuration: 5,
-        overlapDuration: 0.2,
-        channels: 1,
-        transcriptionWsEndpoint: serverUrls.transcriptionWsEndpoint,
-        constraints: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        }
-      }
     }
   },
 
@@ -250,7 +235,32 @@ const baseConfig = {
     ],
   },
 
-  // Keep Nuxt's source scanning focused on app source folders.
+  // The app's type project (.nuxt/tsconfig.json, checked by `pnpm typecheck`). Electron main and the build
+  // scripts have their own projects. The four tests that import server code are checked in their own project,
+  // `tsconfig.cross-package-tests.json`, which uses the server build's options where the packages differ.
+  // Paths are relative to .nuxt/; Nuxt appends them to its generated excludes.
+  typescript: {
+    tsConfig: {
+      exclude: [
+        '../electron/**',
+        '../build/**',
+        '../components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts',
+        '../services/runHydration/__tests__/acceptedInputIdentity.spec.ts',
+        '../tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts',
+        '../tests/integration/novnc-node-desktop-filter-contract.integration.test.ts',
+        // Build outputs inside the package, not app source; they stay after a desktop or mobile build (and the release
+        // job reruns the chain), and would otherwise enter the project (allowJs): prepare-server's bundled server,
+        // electron-builder's packages, the mobile web build and `nuxt generate`'s output.
+        '../resources/**',
+        '../electron-dist/**',
+        '../dist-mobile/**',
+        '../.output/**',
+      ],
+    },
+  },
+
+  // Keep Nuxt's source scanning focused on app source folders, and the dev watcher out of the bundled server
+  // dependencies (large trees that can exhaust Linux inotify limits).
   ignore: [
     '**/electron-dist/**',
     '**/resources/**'

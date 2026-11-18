@@ -1,0 +1,18 @@
+# IMP-03 server unit suite
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 85d26ed1e8 work tree (before commits; source = 85d26ed1e8 minus the team-remote-delegation fixture fix)
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-07
+      Tests  11 failed | 8066 passed | 9 skipped (8086)
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > closes complete Agent manager and AgentRun construction to production roots
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted)
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > open child work skips the fire; a local Team run (no back-link) has no idle shutdown at all
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+ FAIL  tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing
+ Test Files  3 failed | 941 passed | 5 skipped (949)

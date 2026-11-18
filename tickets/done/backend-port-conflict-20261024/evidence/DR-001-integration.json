@@ -1,0 +1,29 @@
+{
+  "recorded_at": "2026-10-26T09:23:38.931218+00:00",
+  "candidate": "36589947576fd4cfadc83420694c718aebc6f590",
+  "bootstrap_base": "034bfe51ab697817773ff545d369e1cfc03a79c5",
+  "fetched_base": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "merge_head": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "commands": [
+    "git fetch origin personal",
+    "git merge --no-edit origin/personal"
+  ],
+  "result": "Blocked: merge conflicts; no integrated candidate created",
+  "unmerged_paths": [
+    "autobyteus-web/generated/graphql.ts",
+    "docs/design-cases.md"
+  ],
+  "remote_commits_not_in_candidate": "201",
+  "foundation_delta": [
+    "autobyteus-ts/src/tools/terminal/tools/get-background-processes.ts",
+    "autobyteus-ts/src/tools/terminal/tools/get-process-output.ts",
+    "autobyteus-ts/src/tools/terminal/tools/start-background-process.ts",
+    "autobyteus-ts/src/tools/terminal/tools/stop-background-process.ts",
+    "autobyteus-ts/src/tools/tool-result-json.ts",
+    "autobyteus-ts/tests/unit/tools/tool-result-json.test.ts",
+    "pnpm-lock.yaml"
+  ],
+  "conflict_diff_file": "DR-001-merge-conflicts.diff",
+  "planned_recovery": "Abort this delivery-owned incomplete merge, retain candidate and SDK build prerequisites; implementation resolves integration before reviewed validation and delivery resume.",
+  "recovery_result": "git merge --abort exited 0; HEAD restored to candidate; no unmerged paths; original two SDK dist directories preserved"
+}

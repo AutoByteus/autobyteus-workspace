@@ -1,0 +1,274 @@
+# API-07 packaged desktop app from a clean clone: AC-007 (run streams over WebSocket, GraphQL) and AC-014 (generated .xlsx/.xls open in the Files panel)
+# Build+start: cd /tmp/ab-api/clone (git clone --no-hardlinks of the worktree, checkout 4dcdceea11 = code 25a45ee5d3); pnpm install --frozen-lockfile; env -u AUTOBYTEUS_* -u LMSTUDIO_HOSTS AUTOBYTEUS_UPDATER_REPOSITORY=AutoByteus/autobyteus-workspace pnpm --silent isolated-app start --build
+# Driven with browser-automation (autobyteus-skills/browser-automation/scripts/browser) attach-only on the instance controlPort; run-script with __abDemo clicks/typing like a user
+# Fixtures: node probes/make-fixtures.cjs <xlsx 0.20.3 dir> /tmp/ab-api/ws-fixture (generated only: two sheets, a markup cell, an https: and a javascript: hyperlink) + README.txt
+# Model: LM Studio qwen/qwen3.6-35b-a3b on 127.0.0.1:1234 (local, no key). macOS 26.5.2; date 2026-10-24T21:23:15Z. Case: API-07
+
+## 1. isolated-app start result
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-57435-8370",
+    "pid": 58673,
+    "executablePath": "/private/tmp/ab-api/clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:57436",
+    "graphqlUrl": "http://127.0.0.1:57436/graphql",
+    "controlEndpoint": "http://127.0.0.1:57435",
+    "controlPort": 57435,
+    "serverPort": 57436,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-46yilN",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-46yilN/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-57435-8370.log"
+  }
+}
+
+## 2. server packages bundled in the app
+@fastify+cors@11.3.1 @fastify+multipart@10.1.6 @fastify+websocket@11.3.4 fastify@5.12.7 mercurius@16.12.1_graphql@16.12.0 
+
+## 3. workspace registered over GraphQL (createWorkspace, public API) — then chosen in the composer via 'Open another folder…' typed path /tmp/ab-api/ws-fixture
+{"data":{"createWorkspace":{"workspaceId":"agent_ws_03d9b906f6eeaea347403d2b979a32c3a2226b5404ab0a1ee1a070facf52ba93","name":"ws-fixture","absolutePath":"/tmp/ab-api/ws-fixture"}}}
+
+## 4. steps
+- Settings > API Keys > LM Studio (discovers 4 local models); Back; Chat composer: workspace ws-fixture, model 'qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234 | AutoByteus'
+- In-memory WebSocket recorder installed in the renderer before sending (temporary diagnostic: wraps window.WebSocket to count frames by type; no code change; gone when the instance stops)
+- Typed 'Reply with one short sentence that contains the words fastify five check.' and pressed Enter
+
+## 5. AC-007 result: renderer WebSocket frames by type and the rendered conversation
+{
+ "hash": "#/chat?id=daily_assistant_911d70d8337b450bb5c9d97703a3e54c",
+ "ws": [
+  {
+   "url": "ws://127.0.0.1:57436/ws/agent/daily_assistant_911d70d8337b450bb5c9d97703a3e54c",
+   "opened": true,
+   "msgs": 41,
+   "types": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 6,
+    "AGENT_INPUT_STATE": 5,
+    "AGENT_COMMAND_ACK": 1,
+    "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 2,
+    "SEGMENT_CONTENT": 19,
+    "SEGMENT_END": 2,
+    "TOKEN_USAGE_UPDATED": 1,
+    "ASSISTANT_COMPLETE": 1,
+    "TURN_COMPLETED": 1
+   },
+   "spanMs": 45765
+  },
+  {
+   "url": "ws://127.0.0.1:57436/ws/agent-collaboration/daily_assistant_911d70d8337b450bb5c9d97703a3e54c",
+   "opened": true,
+   "msgs": 3,
+   "types": {
+    "CONNECTED": 1,
+    "ROOT_EXECUTION_VIEW_SNAPSHOT": 1,
+    "ROOT_LIFECYCLE": 1
+   },
+   "spanMs": 2
+  }
+ ],
+ "main": "DA\nReply with one short sentence that contai\u2026\nIdle\nYou\nReply with one short sentence that contains the words fastify five check.\nDA\nDaily Assistant\nThinking\n\nThe fastify five check passed successfully.\n\nContext Files (0)\n(drag, paste, or upload)"
+}
+
+## 6. AC-007: renderer GraphQL requests to the embedded server (performance resource entries)
+{
+ "graphqlRequests": 169,
+ "byStatus": {
+  "200": 169
+ }
+}
+
+## 7. AC-014: Files panel > generated-sample.xlsx (DOM inside .sheet-table; then click the cell that was a javascript: link; then switch tab)
+{
+ "file": "generated-sample.xlsx",
+ "open": {
+  "ok": true,
+  "action": "click",
+  "target": {
+   "text": "generated-sample.xlsx",
+   "nth": 0
+  }
+ },
+ "sheet1": {
+  "tags": [
+   "table",
+   "tbody",
+   "td",
+   "tr"
+  ],
+  "attrs": [],
+  "anchors": 0,
+  "cells": [
+   "Name",
+   "Qty",
+   "Link",
+   "Apple",
+   "3",
+   "example site",
+   "<b>bold?</b>",
+   "7",
+   "evil"
+  ]
+ },
+ "tabs": [
+  {
+   "text": "Fruits",
+   "active": true
+  },
+  {
+   "text": "Notes",
+   "active": false
+  }
+ ],
+ "clickEvil": {
+  "ok": true,
+  "action": "click",
+  "target": {
+   "selector": "[data-ab-target=evil-cell]"
+  }
+ },
+ "pwned": null,
+ "hashUnchanged": true,
+ "tab2": {
+  "ok": true,
+  "action": "click",
+  "target": {
+   "selector": "[data-ab-target=tab2]"
+  }
+ },
+ "sheet2": {
+  "tags": [
+   "table",
+   "tbody",
+   "td",
+   "tr"
+  ],
+  "attrs": [],
+  "anchors": 0,
+  "cells": [
+   "Second sheet only"
+  ]
+ },
+ "tabsAfter": [
+  {
+   "text": "Fruits",
+   "active": false
+  },
+  {
+   "text": "Notes",
+   "active": true
+  }
+ ]
+}
+
+## 8. AC-014: Files panel > generated-sample.xls
+{
+ "file": "generated-sample.xls",
+ "open": {
+  "ok": true,
+  "action": "click",
+  "target": {
+   "text": "generated-sample.xls",
+   "nth": 0
+  }
+ },
+ "sheet1": {
+  "tags": [
+   "table",
+   "tbody",
+   "td",
+   "tr"
+  ],
+  "attrs": [],
+  "anchors": 0,
+  "cells": [
+   "Name",
+   "Qty",
+   "Link",
+   "Apple",
+   "3",
+   "example site",
+   "<b>bold?</b>",
+   "7",
+   "evil"
+  ]
+ },
+ "tabs": [
+  {
+   "text": "Fruits",
+   "active": true
+  },
+  {
+   "text": "Notes",
+   "active": false
+  }
+ ],
+ "clickEvil": {
+  "ok": true,
+  "action": "click",
+  "target": {
+   "selector": "[data-ab-target=evil-cell]"
+  }
+ },
+ "pwned": null,
+ "hashUnchanged": true,
+ "sheet2": {
+  "tags": [
+   "table",
+   "tbody",
+   "td",
+   "tr"
+  ],
+  "attrs": [],
+  "anchors": 0,
+  "cells": [
+   "Second sheet only"
+  ]
+ },
+ "tabsAfter": [
+  {
+   "text": "Fruits",
+   "active": false
+  },
+  {
+   "text": "Notes",
+   "active": true
+  }
+ ]
+}
+
+## 9. files fetched by the viewers from the embedded server
+{
+ "fetched": [
+  {
+   "url": "/rest/workspaces/agent_ws_03d9b906f6eeaea347403d2b979a32c3a2226b5404ab0a1ee1a070facf52ba93/content?path=generated-sample.xlsx",
+   "status": 200,
+   "bytes": 0
+  },
+  {
+   "url": "/rest/workspaces/agent_ws_03d9b906f6eeaea347403d2b979a32c3a2226b5404ab0a1ee1a070facf52ba93/content?path=generated-sample.xls",
+   "status": 200,
+   "bytes": 0
+  }
+ ],
+ "activeFileLabels": []
+}
+
+## 10. screenshots (supporting): API-07-packaged-app/API-07-xls-viewer.png (reply + .xls Notes tab), API-07-xls-fruits.png (.xls Fruits sheet). Earlier frames from this instance were stale (window not repainting while not frontmost); all assertions above are DOM/state reads
+
+## 11. instance log: error-level lines other than Codex config notices
+[ERROR] [electron.embedded-server.stderr] (node:59623) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level op
+[ERROR] [electron.embedded-server.stderr] (Use `AutoByteus --trace-warnings ...` to show where the warning was created)
+[ERROR] [electron.embedded-server.stderr] (node:59623) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level op
+
+## 12. cleanup
+pnpm --silent isolated-app stop iso-57435-8370 -> ok:true, wasRunning:true, dataRootRemoved:true, controlPortReleased:true, serverPortReleased:true
+pnpm --silent isolated-app list -> instances: []
+lms unload qwen/qwen3.6-35b-a3b -> Model "qwen/qwen3.6-35b-a3b" unloaded (it was loaded just-in-time by this run: TTL 58m / 1h; LM Studio log 23:20:32 request, 23:20:37 cache store lifetime=model_load)

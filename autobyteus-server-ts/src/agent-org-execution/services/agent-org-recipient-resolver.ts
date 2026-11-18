@@ -1,4 +1,5 @@
 import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { delegationTargetUnavailableMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
 import { resolveDelegationPlacement, sourcedPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
@@ -10,7 +11,7 @@ import {
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
-import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
+import type { DelegationPlacement as ResolvedAgentOrgRecipient } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 
 /** Resolves Org addresses by subject (DS-001, DS-002). Called inside the Org operation gate. */
 export class AgentOrgRecipientResolver {
@@ -20,9 +21,8 @@ export class AgentOrgRecipientResolver {
   }>) {}
 
   /**
-   * The one standing instance a message reaches: within the sender's own Team instance first (a
-   * copy of a mounted Team reaches its own members, REQ-007), then a configured Agent or mounted
-   * Team (its coordinator); anything else is not found (messaging never creates a run).
+   * The one standing instance a message reaches: within the sender's own mounted Team first, then a configured Agent
+   * or mounted Team (its coordinator); anything else is not found (messaging never creates a run).
    */
   resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): CollaborationMessagePlacement {
     return resolveMessageRecipient({
@@ -33,20 +33,21 @@ export class AgentOrgRecipientResolver {
   }
 
   /** CM-1 refusal first, then a configured placement outside the sender's own Team, then a catalog copy. */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<ResolvedAgentOrgRecipient> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<ResolvedAgentOrgRecipient> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
-      resolveInRun: () => this.resolveInRunDelegationPlacement(address),
-      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId }),
+      newCopyFolder,
+      resolveInRun: async () => this.resolveInRunDelegationPlacement(address),
+      catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });
   }
 
   /**
    * A configured placement of the Org (CM-1 has already refused the sender's own Team), with the snapshot
-   * its copy starts from: the placement as it is now, a Team's with its members' handoff rules in the Org.
+   * the delegated run starts from: the placement as it is now, a Team's with its members' handoff rules in the Org.
    */
   private resolveInRunDelegationPlacement(address: AgentTeamAddress): ResolvedAgentOrgRecipient {
     const index = this.options.getIndex();

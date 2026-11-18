@@ -1,3 +1,4 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type {
   ApplicationEffectiveLaunchConfiguration,
   ApplicationEffectiveLeafLaunchProfile,
@@ -6,6 +7,7 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import type { ModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
+import { modelListUnreadableText, modelNotOfferedText } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type {
   ApplicationProviderCredentialReadinessPort,
@@ -17,6 +19,7 @@ import { ApplicationModelAvailabilityError } from "./application-current-model-s
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { toAgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
 import { toGrokBuildDiagnostic } from "../../runtime-management/grok/grok-build-capability.js";
+import { toDeepSeekHarnessDiagnostic } from "../../runtime-management/deepseek-harness/deepseek-harness-capability.js";
 
 type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
@@ -80,7 +83,7 @@ export class ApplicationLaunchHostCapabilityValidator {
           leaf,
           "RUNTIME_UNAVAILABLE",
           availability.reason
-            ?? `Runtime '${leaf.runtimeKind}' is unavailable for '${this.describeLeaf(leaf)}'.`,
+            ?? `${agentRuntimeName(leaf.runtimeKind)} is unavailable for '${this.describeLeaf(leaf)}'.`,
         ));
         continue;
       }
@@ -117,9 +120,10 @@ export class ApplicationLaunchHostCapabilityValidator {
           configuration,
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
+          modelListUnreadableText(runtimeKind, runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
             ? toAgyDiscoveryDiagnostic(error).message
-            : runtimeKind === RuntimeKind.GROK_BUILD ? toGrokBuildDiagnostic(error).message : failure.message}`,
+            : runtimeKind === RuntimeKind.GROK_BUILD ? toGrokBuildDiagnostic(error).message
+              : runtimeKind === RuntimeKind.DEEPSEEK_HARNESS ? toDeepSeekHarnessDiagnostic(error).message : failure.message),
         ));
         continue;
       }
@@ -130,7 +134,7 @@ export class ApplicationLaunchHostCapabilityValidator {
           configuration,
           leaf,
           "MODEL_UNAVAILABLE",
-          `Model '${leaf.llmModelIdentifier}' is unavailable for runtime '${runtimeKind}' and '${this.describeLeaf(leaf)}'.`,
+          modelNotOfferedText({ llmModelIdentifier: leaf.llmModelIdentifier, runtimeKind, scopeAddress: this.describeLeaf(leaf) }),
         ));
         continue;
       }
@@ -165,7 +169,7 @@ export class ApplicationLaunchHostCapabilityValidator {
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
           credential.reason
-            ?? `Authentication is unavailable for runtime '${runtimeKind}'.`,
+            ?? `Authentication is unavailable for ${agentRuntimeName(runtimeKind)}.`,
         ));
       }
     }

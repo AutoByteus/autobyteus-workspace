@@ -1,0 +1,59 @@
+API/E2E round 20 (API-REV-020), on CRR-060: a confirming rerun. Code under test ac4a39498a (HEAD bf6fae4792: docs only since).
+Server dist/ and the phone bundle rebuilt at the start (17:51/17:52, exit 0); web from source; the desktop app built from this
+worktree. Clean env for every scripted run; never the user's app or ~/.autobyteus. Raw logs, recordings, screenshots:
+/tmp/api461/r20.
+
+1. Server (representative set, by agreement with the user: the round's three fixes reach the agent stream and the runtime switch,
+   and tool exposure and delegation; round 19 ran the full folder on 2b20fd0898)
+  21 suites (runtime switch ×4, OST, correlated status, AGY transport ×4, Claude websocket, mixed delegation, work-journal
+  vocabulary, collaboration contract stories, Task-agent several tasks, existing-copy assignment, project change feed,
+  model-routing delegation, two-server, Team contract; the own-run startup suite alone): 117 passed, 1 failed; own-run startup 3/3.
+    RS-01 (runtime-switch-native-built-server): asserted the numbered live SYSTEM_TASK_NOTIFICATION echo, which CR-461-116
+      removed by design (the stored marker is the notice's one source). Reworked to the design: the client is shown the marker
+      exactly once in the turn (shownText over the frames, the activation's snapshot included). Alone: 9/9.          Stale test
+  Typecheck: production 0, tests 1012 in 316 files (baseline): PASS.
+
+2. F-90 (CR-461-114), live (keys from the test vault; the CLI runtimes on the user's own logins, approved 2026-11-16)
+  DeepSeek 5/5 (LE-A1 … A3, T1, O1); Codex 5/5; Antigravity 5/5; Claude 5/6 (LE-F1: its stale model is back in the catalog, not
+  461). LE-T1 includes a copy's copy in a Team tree (a Team copy's lead delegates a catalog Agent copy): it calls
+  get_handoff_rules and gets no rules, on every runtime.                                                       Resolved
+  Grok not run (fails on base too, round 19).
+
+3. CR-461-115, the Org-tree header
+  DCR-001/002 Pass with the header asserted equal to the slot name (no run suffix), in a Team tree and an Org tree.
+  Desktop: the Org "Office" (hub, worker); its hub delegated /worker; the copy's row and header read "worker"; it answered
+  ORG-OK.                                                                                                      Resolved
+
+4. F-91 (CR-461-116), the runtime-change notice
+  RSW-01 (runtime-switch-probe, a stopped user-started run): 1 notice live, 1 after a reload; position "before the next
+    message" (after the previous reply) live and after the reload. The probe's stale hint check now also accepts the save bar
+    ("… they apply when this run resumes"); the hint element still exists, reworded ("… takes over when that agent next re…").
+  RSM (a Team member's switch): 7/7; 1 notice live.
+  Desktop J1 (a delegated copy switched Claude → AutoByteus DeepSeek): 1 notice, after the previous reply, before the user's
+    message; after a restart (J4) still 1.                                                                     Resolved
+  Base's live notice was at the reply turn (CRR-060 surface note: the stored marker's place, as a reload shows it).
+
+5. Web and phone
+  DLD 26/29 (SIR-001/002, DLP-006 not 461); phone 53/55 (MSP-50/51 not 461); RSM 7/7; remote-run-title: RRT-05 failed once in
+  the batch (the peer Team row showed its incoming task message for ~100 ms before its title), then 2/2 alone: the known timing
+  window (round 13 F-72), intermittent.
+
+6. Desktop: an isolated Electron instance of this worktree (iso-51859-6808), driven like a user. Agents created in the UI: Worker
+   (Claude Haiku 5.5), Hub (Codex GPT-5.6-Sol, with update_task), Team Pair (Worker coordinator + Daily Assistant, Antigravity
+   Gemini 3.8 Flash Low), Org Office (Hub, Worker).
+  J1: Hub → /worker: row and header "worker"; the copy did its task; Hub stopped: Hub gray, no Stop, the copy green with its own
+    Stop; the copy stopped, its Settings "worker", switched to AutoByteus deepseek-v4-flash, saved ("Saved. Changes apply when
+    this run resumes.", card deepseek-v4-flash); one message resumed it (RESUMED); 1 notice, after the previous reply.  Pass
+  J2: a new Hub run → /pair: row "pair" folded; a click expands it and shows its coordinator "worker"; a second click keeps it;
+    only the chevron folds; the coordinator answered PAIR-OK.                                               Pass
+  J3: the Hub (its update_task from the start) marked the Task DONE; the pair rows left after 5 s.          Pass
+  Org: the Office run's hub → /worker: the Org copy's header "worker" (no suffix); it answered ORG-OK.      Pass
+  J4: restart on the same data root: both Hub runs listed (gray), the copy "worker" listed; opened, its whole conversation (one
+    notice); a message resumed it (BACK; green) while its Hub stayed stopped.                               Pass
+  Cleanup: isolated-app stop: wasRunning, forced (the graceful stop timed out), data root removed; none of mine listed.
+  Recordings (outside the repo): /tmp/api461/r20/electron/rec/j1-agent.mp4, j2-j3-team-closure.mp4, j5-org.mp4, j4-restart.mp4.
+
+7. Probe changes this round: delegated-copy-own-file-cases (the header equals the slot name); runtime-switch-probe (one live
+   notice, its position, the save bar); runtime-switch-members-probe (the live notice count recorded);
+   runtime-switch-native-built-server RS-01 (the marker shown once).
+8. No new wording-only refusal difference (FU-030 unchanged).

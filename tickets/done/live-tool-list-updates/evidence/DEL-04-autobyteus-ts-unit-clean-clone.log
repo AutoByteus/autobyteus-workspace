@@ -1,0 +1,19 @@
+# Summary of the clean-clone run (/tmp/ab324-clone at 6fae6761d3); full log 146883 bytes, trimmed to summaries, skips and failures.
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > registers processor definitions
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > overwrites existing definitions
+stderr | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > overwrites existing definitions
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns processor instances when available
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns undefined when processor instantiation fails
+stderr | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns undefined when processor instantiation fails
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > lists processor names
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns ordered processor options
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns all definitions
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > clears definitions
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > supports contains and length helpers
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand returns TerminalResult
+     ✓ executeCommand returns TerminalResult  1019ms
+ Test Files  311 passed (311)
+      Tests  2082 passed (2082)
+   Start at  21:23:58
+   Duration  15.66s (transform 11.42s, setup 5.23s, import 45.63s, tests 43.86s, environment 27ms)
+exit=0

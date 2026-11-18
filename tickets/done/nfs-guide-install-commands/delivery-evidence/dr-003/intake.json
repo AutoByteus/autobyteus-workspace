@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-26T07:11:33.406724+00:00",
+  "input": "3d63afcec9574fa4d98e71b674de37f981a29040",
+  "validatedInput": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "source": "1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708",
+  "freshTarget": "d74f75a51ab7dc47d42a13f33e0f943c3a230ad7",
+  "integration": "git fetch origin personal; git merge --no-edit origin/personal \u2192 Already up to date",
+  "aheadBehind": [
+    5,
+    0
+  ],
+  "nonTicketDeltaSinceApi": [],
+  "impactPlan": {
+    "R01": "Still valid \u2014 exact exercised inputs unchanged, no new base/shared foundation integrated; no repeat run",
+    "R02": "Still valid \u2014 exact exercised inputs unchanged, no new base/shared foundation integrated; no repeat run",
+    "R03": "Still valid \u2014 exact exercised inputs unchanged, no new base/shared foundation integrated; no repeat run",
+    "C01": "Still valid \u2014 exact exercised inputs unchanged, no new base/shared foundation integrated; no repeat run"
+  },
+  "initialWorktree": "tracked/untracked clean",
+  "classification": "R3/SR005 Approved, SR006 Ready, Small/Low/Direct; reviews N/A",
+  "release": "NO RELEASE",
+  "previousDR002": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/tickets/done/nfs-guide-install-commands/delivery-evidence/dr-002/finalization.json",
+    "head": "9213d42bb296d0ec63a8885be331db381ef8cc8a",
+    "sha256": "6fcf6368d8cb1e6d2147e89e4873ec303df1b6c8044a756fabe71446a269b35a",
+    "result": "Delivery Completed",
+    "ticket": "702d07884d3708ec50c9f53449f318b229233f8e",
+    "merge": "c78ffb15a24a13c52e2ae37f9aa0775155a55b1b"
+  }
+}

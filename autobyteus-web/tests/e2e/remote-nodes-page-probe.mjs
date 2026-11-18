@@ -11,10 +11,12 @@
 //   writes, with `capabilities` and `capabilityProbeState`.
 // - gamma collaborates and is stopped. It also has a desktop entry ("gamma box") that was never reached.
 // - delta collaborates and has its switch off.
-// - epsilon is registered on alpha only.
+// - epsilon was paired, then removed this node on its side: alpha still lists it ("Pair again").
 // - zeta's address is taken over by another server.
 // - theta is black-holed: a TCP listener that never answers.
-// - lambda already knows another node as "Embedded Node".
+// - lambda already knows another node as "Embedded Node" (paired with the first zeta).
+// Nodes pair by invite (autobyteus-437); every node starts with the probe's launch owner credential and the browser
+// context carries it (fixtures/probe-node-access.mjs).
 // iota, kappa, lambda and mu are added through the page. The web app runs with `nuxt dev` against alpha (browser mode,
 // so there is no Open). The browser is Chrome through playwright-core.
 //
@@ -32,10 +34,13 @@
 //   by node ID and by address while that node is down. An unreachable node is added with its cause.
 // - NP-05 (AC-704): Turn on kappa from its row. Both sides are registered with pinned node IDs, kappa's switch is
 //   turned on, both directions show Working, and each server lists the other's Agents.
+// - NP-13 (autobyteus-426 AC-020): Change address of kappa to `http://lvh.me:<port>`, a name kappa's Host gate refuses:
+//   "The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use
+//   its IP address."; a plain HTTP server (answers, but no node) keeps "isn't an AutoByteus node"; kappa's address is unchanged.
 // - NP-06 (naming rule): lambda already has a node named "Embedded Node", so this node is registered there as
 //   "Embedded Node 2".
-// - NP-07 (naming race): mu gains a node named "Embedded Node" between the confirmation and Turn on. The step fails
-//   with "mu already has a node named Embedded Node.". The row keeps Try again, which plans again with a free name.
+// - NP-07 (naming race): mu gains a node named "Embedded Node" between the confirmation and Turn on. Pairing by invite
+//   (autobyteus-437) gives the new peer a free name on mu itself: mu calls this node "Embedded Node 2".
 // - NP-08 (AC-708): rename with an invalid name, then a taken one, then a saved one, on this node's peer and in the
 //   desktop list.
 // - NP-09 (AC-705): Turn off kappa: both registrations go and kappa's switch is untouched. Then turn off lambda while
@@ -56,6 +61,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -70,7 +76,9 @@ const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/remote-no
 const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
 const BOUND_MS = 20_000;
-const REGISTRY_KEY = 'autobyteus.node_registry.v1';
+// The window seeds the list as the released app stored it; autobyteus-290 SM-7 converts it to REGISTRY_KEY on load.
+const RELEASED_REGISTRY_KEY = 'autobyteus.node_registry.v1';
+const REGISTRY_KEY = 'autobyteus.node_registry';
 const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, browserExecutable: executablePath || 'playwright-default',
   servers: {}, cases: {}, requests: [], browserErrors: [], cleanup: {}, error: null };
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
@@ -111,6 +119,10 @@ const children = new Set();
 const blackHoles = [];
 
 /** One server process with its own data root and HOME. */
+// The probe's frontend origin, chosen before any node starts: every node accepts it (autobyteus-416).
+const frontendPort = await freePort();
+const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+
 const startServer = async (name, port) => {
   const dir = path.join(root, name);
   const dataDir = path.join(dir, 'data');
@@ -125,7 +137,7 @@ const startServer = async (name, port) => {
   const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
     cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
     env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-      HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl } });
+      HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ...probeNodeEnvironment() } });
   child.stdout.pipe(log); child.stderr.pipe(log);
   child.once('close', () => log.end());
   children.add(child);
@@ -133,9 +145,9 @@ const startServer = async (name, port) => {
     if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
     return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
   }, 120_000);
-  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   const gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' },
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }),
       body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
@@ -154,8 +166,9 @@ const stopServer = async server => {
   children.delete(child);
 };
 const setSwitch = (server, enabled) => server.gql('mutation($e:Boolean!){setRemoteCollaborationEnabled(enabled:$e){enabled}}', { e: enabled });
-const register = (on, peer, name) => on.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}',
-  { i: { nodeId: peer.nodeId, baseUrl: peer.baseUrl, name } });
+/** Pairs `on` with `peer` by invite (autobyteus-437 DS-004): `on` calls `peer` `name`, `peer` calls `on` `nameThere`. */
+const pair = (on, peer, name, nameThere) => pairNodes({ inviter: peer.gql, accepter: on.gql, inviterName: name, accepterName: nameThere });
+const forget = (on, peer) => on.gql('mutation($id:String!){removePeerNode(nodeId:$id)}', { id: peer.nodeId });
 const peersOf = async server => (await server.gql('{ peerNodes { nodeId name baseUrl } }')).peerNodes;
 const switchOf = async server => (await server.gql('{ remoteCollaborationCapability { enabled } }')).remoteCollaborationCapability.enabled;
 /** The peers file itself, as the server wrote it (null when it was never written). */
@@ -184,10 +197,12 @@ try {
   await shareAgent(alpha, 'Alpha Helper');
   await shareAgent(kappa, 'Kappa Helper');
   await setSwitch(alpha, true);
-  for (const peer of [beta, gamma, delta, epsilon, zeta, theta]) await register(alpha, peer, peer.name);
-  for (const peer of [beta, gamma, delta, zeta, theta]) await register(peer, alpha, 'Embedded Node');
-  // lambda already knows another node as "Embedded Node" (another desktop registered there first).
-  await register(lambda, iota, 'Embedded Node');
+  // Peers pair by invite, so both sides always hold each other (autobyteus-437); epsilon's owner removed this node there
+  // afterwards, which leaves epsilon registered on alpha only.
+  for (const peer of [beta, gamma, delta, epsilon, zeta, theta]) await pair(alpha, peer, peer.name, 'Embedded Node');
+  await forget(epsilon, alpha);
+  // lambda already knows another node as "Embedded Node" (another desktop paired it there first).
+  await pair(lambda, zeta, 'Embedded Node', 'lambda');
   await setSwitch(alpha, false);
   await stopServer(gamma);
   await setSwitch(delta, false);
@@ -212,8 +227,6 @@ try {
   ] };
 
   // The web app against alpha.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   const frontendLog = createWriteStream(path.join(outputDir, 'frontend.log'));
   frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], { cwd: webDir, detached: true,
     stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: alpha.baseUrl } });
@@ -225,16 +238,21 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The window reaches every node directly: the context carries the probe's credential, standing in for the desktop's
+  // main process, which attaches each node's (fixtures/probe-node-access.mjs).
+  await attachToBrowserContext(context);
   await context.addInitScript(({ key, registry }) => {
     localStorage.setItem('autobyteus.localization.preference-mode', 'en');
     // Only the first page load gets the release-shaped list; later loads keep what the page saved.
     if (!localStorage.getItem('probe-seeded')) { localStorage.setItem(key, JSON.stringify(registry)); localStorage.setItem('probe-seeded', '1'); }
-  }, { key: REGISTRY_KEY, registry: seededRegistry });
+  }, { key: RELEASED_REGISTRY_KEY, registry: seededRegistry });
   const page = await context.newPage();
   // Warm the dev server (first compile) on the page itself, then reload it fresh.
   await page.goto(`${frontendUrl}/nodes?nodeTab=memorySync`, { waitUntil: 'networkidle', timeout: 240_000 });
   await page.locator('[data-testid="node-manager-panel-memorySync"]').waitFor({ state: 'visible', timeout: 120_000 });
-  await page.evaluate(({ key, registry }) => localStorage.setItem(key, JSON.stringify(registry)), { key: REGISTRY_KEY, registry: seededRegistry });
+  await page.evaluate(({ released, current, registry }) => {
+    localStorage.removeItem(current); localStorage.removeItem(`${released}:backup`); localStorage.setItem(released, JSON.stringify(registry));
+  }, { released: RELEASED_REGISTRY_KEY, current: REGISTRY_KEY, registry: seededRegistry });
   page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));
   page.on('console', message => { if (message.type() === 'error') evidence.browserErrors.push(`console: ${message.text()}`); });
   // Every request the window sends to a node, named by its node; the dev server forwards /graphql and /rest to alpha.
@@ -255,21 +273,26 @@ try {
   const requestsSince = (since, filter = () => true) => evidence.requests.filter(entry => entry.at >= since && filter(entry));
   // A request that asks about a node: to another node, or to alpha about its peers (not the app's own health and
   // history checks, which run on every page).
-  const NODE_OPS = new Set(['GetPeerNodeOffer', 'GetPeerNodeAvailability', 'GetRemoteCollaborationSettings', 'GetRemoteCollaborationCapability',
-    'GetPeerAddressCandidates', 'ResolvePeerAddress']);
+  const NODE_OPS = new Set(['GetPeerNodeOffer', 'GetPeerNodeAvailability', 'GetRemoteCollaborationSettings', 'GetRemoteCollaborationCapability']);
   const asksAboutNodes = entry => (entry.to !== 'alpha' && !entry.to.startsWith('other:')) || NODE_OPS.has(entry.op) || entry.path === '/rest/remote-access/status';
   const offerAsks = (since, nodeId) => requestsSince(since, entry => entry.op === 'GetPeerNodeOffer' && (!nodeId || entry.nodeId === nodeId));
   const clean = value => value.trim().replace(/\s+/g, ' ');
   const text = async locator => (await locator.count()) ? clean(await locator.first().innerText()) : null;
   const row = key => page.locator(`[data-testid="node-row-${key}"]`);
-  /** A row's line without its button: "⚠ Remote collaboration is off on delta." */
+  /** A row's line without its button: "Remote collaboration is off on delta." (363: a tone icon, no text mark). */
   const line = async key => {
     const element = page.locator(`[data-testid="node-line-${key}"]`);
     if (!(await element.count())) return null;
     const paragraph = element.locator('p');
-    // The mark (ⓘ ⚠ ✗) is spaced by CSS, not by text: "ⓘ Not reachable. …".
-    const value = (await paragraph.count()) ? await text(paragraph) : await text(element);
-    return value?.replace(/^([ⓘ⚠✗])\s*/u, '$1 ') ?? null;
+    return (await paragraph.count()) ? await text(paragraph) : await text(element);
+  };
+  /** The tone of a row's notice, from its frame (363): warn amber, error red, info slate; null for the plain checking line. */
+  const tone = async key => {
+    const element = page.locator(`[data-testid="node-line-${key}"]`);
+    if (!(await element.count())) return null;
+    const classes = (await element.getAttribute('class')) ?? '';
+    return classes.includes('border-amber-200') ? 'warn' : classes.includes('border-red-200') ? 'error'
+      : classes.includes('border-slate-200') ? 'info' : classes.includes('border-emerald-200') ? 'ok' : null;
   };
   const fixButton = key => page.locator(`[data-testid="node-fix-${key}"]`);
   const rowKeys = async () => page.locator('[data-testid^="node-row-"]').evaluateAll(items => items.map(item => item.getAttribute('data-testid').slice('node-row-'.length)));
@@ -350,8 +373,10 @@ try {
       switch: await page.locator(`[data-testid="node-agents-switch-${beta.nodeId}"]`).getAttribute('aria-checked') };
     assert(keys.filter(key => key === beta.nodeId).length === 1 && !keys.includes('d:remote-beta-entry'), `beta once: ${keys}`);
     expect(betaRow.name === 'beta' && betaRow.url === `localhost:${beta.port}` && betaRow.switch === 'true', `beta's row: ${JSON.stringify(betaRow)}`);
-    expect(betaEntry?.serverInstanceId === beta.nodeId && betaEntry.name === `http://localhost:${beta.port}`, `beta's entry learned its node ID, name unchanged: ${JSON.stringify(betaEntry)}`);
-    expect(keys.includes(gammaEntryKey) && keys.includes(gamma.nodeId) && !gammaEntry?.serverInstanceId, `gamma's never-reached entry is its own row: ${keys}`);
+    expect(betaEntry?.nodeId === beta.nodeId && betaEntry.name === `http://localhost:${beta.port}`, `beta's entry learned its node ID, name unchanged: ${JSON.stringify(betaEntry)}`);
+    expect(keys.includes(gammaEntryKey) && keys.includes(gamma.nodeId) && !gammaEntry?.nodeId, `gamma's never-reached entry is its own row: ${keys}`);
+    const releasedLeft = await page.evaluate(key => localStorage.getItem(key), RELEASED_REGISTRY_KEY);
+    expect(releasedLeft === null && !stored.nodes.some(node => 'isSystem' in node), `autobyteus-290 SM-7 converted the released list: ${releasedLeft}`);
     expect(!keys.includes(alpha.nodeId) && !keys.includes('d:embedded-local'), `this node is not a row: ${keys}`);
     return { keys, names: await page.locator('[data-testid^="node-name-"]').allInnerTexts(), betaRow, betaEntry, gammaEntry };
   });
@@ -369,22 +394,25 @@ try {
     await shot('NP-03-theta-checking-others-settled');
     await waitFor('theta settled', async () => settledAt.theta, BOUND_MS + 15_000);
     const lines = Object.fromEntries(await Promise.all(Object.entries({ ...peerKeys, gammaEntry: gammaEntryKey }).map(async ([name, key]) => [name, { line: await line(key),
-      fix: await text(fixButton(key)), dot: await page.locator(`[data-testid="node-dot-${key}"]`).getAttribute('aria-label') }])));
+      tone: await tone(key), fix: await text(fixButton(key)), dot: await page.locator(`[data-testid="node-dot-${key}"]`).getAttribute('aria-label') }])));
     await openDetails(beta.nodeId);
     const betaDirections = await directions(beta.nodeId);
     await shot('NP-03-all-settled');
     const expected = {
-      beta: { line: null, fix: null },
-      gamma: { line: 'ⓘ Not reachable. Nothing answers at that address and port.', fix: 'Check again' },
-      gammaEntry: { line: 'ⓘ Not reachable. Nothing answers at that address and port.', fix: 'Check again' },
-      delta: { line: '⚠ Remote collaboration is off on delta.', fix: 'Turn on there' },
-      epsilon: { line: "⚠ epsilon doesn't know this node yet.", fix: 'Register this node there' },
-      zeta: { line: '✗ A different node answers at this address.', fix: 'Change address' },
-      theta: { line: 'ⓘ Not reachable. No answer within 20 seconds.', fix: 'Check again' },
+      beta: { line: null, tone: null, fix: null },
+      gamma: { line: 'Not reachable. Nothing answers at that address and port.', tone: 'info', fix: 'Check again' },
+      gammaEntry: { line: 'Not reachable. Nothing answers at that address and port.', tone: 'info', fix: 'Check again' },
+      delta: { line: 'Remote collaboration is off on delta.', tone: 'warn', fix: 'Turn on there' },
+      // epsilon removed this node, so it no longer holds the peer secret: signed requests fail there (NAS-23, M-9).
+      epsilon: { line: "epsilon and this node aren't paired yet. Pair them so their agents can work together.", tone: 'warn', fix: 'Pair again' },
+      zeta: { line: 'A different node answers at this address.', tone: 'error', fix: 'Change address' },
+      theta: { line: 'Not reachable. No answer within 20 seconds.', tone: 'info', fix: 'Check again' },
     };
-    for (const [name, want] of Object.entries(expected)) expect(lines[name].line === want.line && lines[name].fix === want.fix, `${name}: ${JSON.stringify(lines[name])}`);
+    for (const [name, want] of Object.entries(expected)) {
+      expect(lines[name].line === want.line && lines[name].tone === want.tone && lines[name].fix === want.fix, `${name}: ${JSON.stringify(lines[name])}`);
+    }
     expect(betaSummary?.startsWith('3 Agents') && betaEntries === 3, `beta's offer: ${betaSummary} ${betaEntries}`);
-    expect(betaDirections.out?.startsWith(`This node → beta ✓ Working via ${beta.baseUrl}`) && betaDirections.in?.startsWith(`beta → this node ✓ Working via ${alpha.baseUrl}`),
+    expect(betaDirections.out?.startsWith(`This node → beta Working via ${beta.baseUrl}`) && betaDirections.in?.startsWith(`beta → this node Working via ${alpha.baseUrl}`),
       `beta's directions: ${JSON.stringify(betaDirections)}`);
     expect(settledAt.theta.ms >= BOUND_MS - 1_000 && settledAt.theta.ms <= BOUND_MS + 8_000, `theta at the bound: ${settledAt.theta.ms}`);
     for (const name of fast) expect(settledAt[name].ms < 8_000, `${name} at its own pace: ${settledAt[name].ms}`);
@@ -419,7 +447,7 @@ try {
     await page.locator('[data-testid="this-node-switch"]').click();
     await waitFor('theta checked again', async () => (await line(thetaId)) === 'Checking theta… up to 20 seconds.', 10_000);
     await waitFor('the fast peers asked again', async () => (await switchOf(alpha)) && await settled(beta.nodeId) && await settled(delta.nodeId), 20_000);
-    await waitFor('theta settled again', async () => (await line(thetaId)) === 'ⓘ Not reachable. No answer within 20 seconds.', BOUND_MS + 15_000);
+    await waitFor('theta settled again', async () => (await line(thetaId)) === 'Not reachable. No answer within 20 seconds.', BOUND_MS + 15_000);
     await sleep(1_500);
     const onAsks = Object.fromEntries(Object.entries(peerKeys).map(([name, id]) => [name, offerAsks(onAt, id).length]));
     expect(Object.values(onAsks).every(count => count === 1), `switch on asks every peer once: ${JSON.stringify(onAsks)}`);
@@ -439,10 +467,10 @@ try {
     await waitFor('iota listed', async () => (await row(iota.nodeId).count()) === 1);
     await waitSettled(iota.nodeId);
     await sleep(1_000);
-    const iotaState = { dialog: await dialog().count(), duplicate: await page.locator('[data-testid="add-node-duplicate"]').count(), line: await line(iota.nodeId),
+    const iotaState = { dialog: await dialog().count(), duplicate: await page.locator('[data-testid="add-node-duplicate"]').count(), line: await line(iota.nodeId), tone: await tone(iota.nodeId),
       fix: await text(fixButton(iota.nodeId)), switch: await page.locator(`[data-testid="node-agents-switch-${iota.nodeId}"]`).getAttribute('aria-checked') };
     expect(iotaState.dialog === 0 && iotaState.duplicate === 0 && iotaState.switch === 'false', `iota only listed: ${JSON.stringify(iotaState)}`);
-    expect(iotaState.line === "ⓘ Agents here can't work with iota yet." && iotaState.fix === 'Turn on', `iota's line: ${JSON.stringify(iotaState)}`);
+    expect(iotaState.line === "Agents here can't work with iota yet." && iotaState.tone === 'info' && iotaState.fix === 'Turn on', `iota's line: ${JSON.stringify(iotaState)}`);
     // With it on (the default): the one confirmation; kappa's switch is off, so it says so. Cancel changes nothing.
     await addNode(kappa.baseUrl, 'kappa', true);
     await dialog().waitFor({ state: 'visible', timeout: 15_000 });
@@ -451,10 +479,10 @@ try {
     const steps = await dialogSteps();
     await shot('NP-04-add-kappa-confirmation');
     expect(confirmText.startsWith('Let agents work with kappa?'), `title: ${confirmText}`);
-    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['registerHere', 'turnOnThere', 'registerThere']), `steps: ${JSON.stringify(steps)}`);
-    expect(steps[0]?.text === 'Register kappa as “kappa”' && steps[1]?.text === 'Turn on remote collaboration (it is off)'
-      && steps[2]?.text === "Register this node as “Embedded Node” kappa finds this node's address once it is on.", `step texts: ${JSON.stringify(steps)}`);
-    expect(confirmText.includes('Trusted private network only: nodes are not authenticated.'), 'trusted note');
+    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['turnOnThere', 'pair']), `steps: ${JSON.stringify(steps)}`);
+    expect(steps[0]?.text === 'Turn on remote collaboration (it is off)'
+      && steps[1]?.text === 'Pair this node with kappa (here it is called “kappa”) kappa calls this node “Embedded Node”.', `step texts: ${JSON.stringify(steps)}`);
+    expect(confirmText.includes('Paired nodes share a secret, and each proves every request to the other with it.'), 'pairing note');
     await page.locator('[data-testid="node-change-cancel"]').click();
     await waitDialogGone();
     await waitSettled(kappa.nodeId);
@@ -469,22 +497,22 @@ try {
     await addNode(`localhost:${gamma.port}`, 'gamma again', true);
     await waitFor('duplicate by address', async () => (await text(page.locator('[data-testid="add-node-duplicate"]'))) !== byNodeId, 10_000).catch(() => undefined);
     const byAddress = await text(page.locator('[data-testid="add-node-duplicate"]'));
-    expect(byNodeId === 'ⓘ This is beta, already in your list.', `duplicate by node ID: ${byNodeId}`);
-    expect(byAddress === 'ⓘ This is gamma box, already in your list.', `duplicate by address: ${byAddress}`);
+    expect(byNodeId === 'This is beta, already in your list.', `duplicate by node ID: ${byNodeId}`);
+    expect(byAddress === 'This is gamma box, already in your list.', `duplicate by address: ${byAddress}`);
     // Not reachable: added with its cause, no confirmation.
     await addNode(`http://127.0.0.1:${deadPort}`, 'ghost', true);
     await waitFor('ghost listed', async () => (await registry()).nodes.some(node => node.name === 'ghost'), 10_000);
     const ghost = (await registry()).nodes.find(node => node.name === 'ghost');
     await waitSettled(`d:${ghost.id}`);
     await sleep(1_000);
-    const ghostState = { line: await line(`d:${ghost.id}`), fix: await text(fixButton(`d:${ghost.id}`)), dialog: await dialog().count(),
+    const ghostState = { line: await line(`d:${ghost.id}`), tone: await tone(`d:${ghost.id}`), fix: await text(fixButton(`d:${ghost.id}`)), dialog: await dialog().count(),
       switchDisabled: await page.locator(`[data-testid="node-agents-switch-d:${ghost.id}"]`).isDisabled() };
-    expect(ghostState.line === 'ⓘ Not reachable. Nothing answers at that address and port.' && ghostState.fix === 'Check again' && ghostState.dialog === 0 && ghostState.switchDisabled,
+    expect(ghostState.line === 'Not reachable. Nothing answers at that address and port.' && ghostState.tone === 'info' && ghostState.fix === 'Check again' && ghostState.dialog === 0 && ghostState.switchDisabled,
       `ghost: ${JSON.stringify(ghostState)}`);
     const stored = await registry();
-    const added = stored.nodes.filter(node => ['iota', 'kappa', 'ghost'].includes(node.name)).map(({ name, baseUrl, serverInstanceId }) => ({ name, baseUrl, serverInstanceId: serverInstanceId ?? null }));
-    expect(added.length === 3 && added.find(node => node.name === 'iota')?.serverInstanceId === iota.nodeId && added.find(node => node.name === 'kappa')?.serverInstanceId === kappa.nodeId
-      && added.find(node => node.name === 'ghost')?.serverInstanceId === null, `desktop list: ${JSON.stringify(added)}`);
+    const added = stored.nodes.filter(node => ['iota', 'kappa', 'ghost'].includes(node.name)).map(({ name, baseUrl, nodeId }) => ({ name, baseUrl, nodeId: nodeId ?? null }));
+    expect(added.length === 3 && added.find(node => node.name === 'iota')?.nodeId === iota.nodeId && added.find(node => node.name === 'kappa')?.nodeId === kappa.nodeId
+      && added.find(node => node.name === 'ghost')?.nodeId === null, `desktop list: ${JSON.stringify(added)}`);
     expect(!stored.nodes.some(node => ['beta again', 'gamma again'].includes(node.name)), 'duplicates not added');
     expect(JSON.stringify(await peersFile(alpha)) === JSON.stringify(before.alpha) && (await peersFile(iota)) === null, 'no peers.json changed by any add');
     await page.locator(`[data-testid="node-remove-d:${ghost.id}"]`).click();
@@ -510,15 +538,55 @@ try {
     const onAlpha = (await peersOf(alpha)).find(peer => peer.nodeId === kappa.nodeId);
     const onKappa = await peersOf(kappa);
     const offers = { alphaAsksKappa: await offerOf(alpha, kappa), kappaAsksAlpha: await offerOf(kappa, alpha) };
-    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['registerHere', 'turnOnThere', 'registerThere']), `steps: ${JSON.stringify(steps)}`);
+    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['turnOnThere', 'pair']), `steps: ${JSON.stringify(steps)}`);
     assert(onAlpha?.name === 'kappa' && onAlpha.baseUrl === kappa.baseUrl, `kappa on alpha: ${JSON.stringify(onAlpha)}`);
     assert(onKappa.length === 1 && onKappa[0].nodeId === alpha.nodeId && onKappa[0].name === 'Embedded Node' && onKappa[0].baseUrl === alpha.baseUrl, `alpha on kappa: ${JSON.stringify(onKappa)}`);
     assert(await switchOf(kappa) === true, "kappa's switch turned on");
-    expect(kappaDirections.out?.startsWith(`This node → kappa ✓ Working via ${kappa.baseUrl}`) && kappaDirections.in?.startsWith(`kappa → this node ✓ Working via ${alpha.baseUrl}`),
+    expect(kappaDirections.out?.startsWith(`This node → kappa Working via ${kappa.baseUrl}`) && kappaDirections.in?.startsWith(`kappa → this node Working via ${alpha.baseUrl}`),
       `directions: ${JSON.stringify(kappaDirections)}`);
     expect(offers.alphaAsksKappa.refusalCode === null && offers.alphaAsksKappa.entries.some(entry => entry.name === 'Kappa Helper')
       && offers.kappaAsksAlpha.refusalCode === null && offers.kappaAsksAlpha.entries.some(entry => entry.name === 'Alpha Helper'), `each lists the other's Agents: ${JSON.stringify(offers)}`);
     return { steps, onAlpha, onKappa, kappaFile: await peersFile(kappa), kappaDirections, offers };
+  });
+
+  await runCase('NP-13', async () => {
+    // autobyteus-426 REQ-020 / AC-020 (2): Change address to a name kappa's Host gate refuses (`lvh.me` resolves to this
+    // machine; kappa allows only its own names, AUTOBYTEUS_ALLOWED_HOSTS unset). The row says which name and what to do;
+    // nothing is saved. A control: an address that answers but is not a node keeps its own text.
+    const key = kappa.nodeId;
+    const refusedAddress = kappa.baseUrl.replace('127.0.0.1', 'lvh.me');
+    const before = (await peersOf(alpha)).find(peer => peer.nodeId === key)?.baseUrl ?? null;
+    await openDetails(key);
+    const tryAddress = async (address) => {
+      if (!(await page.locator(`[data-testid="node-address-editor-${key}"]`).count())) await page.locator(`[data-testid="node-change-address-${key}"]`).click();
+      await page.locator(`[data-testid="node-address-input-${key}"]`).fill(address);
+      await page.locator(`[data-testid="node-address-save-${key}"]`).click();
+      let shown = null;
+      await waitFor(`the answer for ${address}`, async () => {
+        const editor = page.locator(`[data-testid="node-address-editor-${key}"]`);
+        const error = page.locator(`[data-testid="node-address-error-${key}"]`);
+        shown = (await error.count()) ? clean(await error.innerText()) : (await editor.count()) ? clean(await editor.innerText()) : null;
+        return Boolean(shown && /accept the name|isn.t an AutoByteus node|can.t be found|refused|did not answer/i.test(shown));
+      }, 30_000).catch(() => undefined);
+      return shown;
+    };
+    const refused = await tryAddress(refusedAddress);
+    await shot('NP-13-change-address-host-refused');
+    // The control: a plain HTTP server on this machine that answers every request, but is no AutoByteus node.
+    const { createServer } = await import('node:http');
+    const plain = createServer((request, response) => { response.writeHead(200, { 'content-type': 'text/html' }); response.end('<html><body>not a node</body></html>'); });
+    const plainPort = await new Promise(resolve => plain.listen(0, '127.0.0.1', () => resolve(plain.address().port)));
+    const notNode = await tryAddress(`http://127.0.0.1:${plainPort}`);
+    await shot('NP-13-change-address-not-a-node');
+    await new Promise(resolve => plain.close(resolve));
+    const after = (await peersOf(alpha)).find(peer => peer.nodeId === key)?.baseUrl ?? null;
+    const expectedText = 'The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.';
+    expect(Boolean(refused?.includes(expectedText)), `the refused name's text: ${refused}`);
+    expect(Boolean(notNode?.includes("Something answers there, but it isn't an AutoByteus node.")), `a non-node answer keeps its text: ${notNode}`);
+    expect(before === kappa.baseUrl && after === kappa.baseUrl, `kappa's address unchanged on alpha: ${before} → ${after}`);
+    const cancel = page.locator(`[data-testid="node-address-editor-${key}"] button`).filter({ hasText: /Cancel/ });
+    if (await cancel.count()) await cancel.first().click();
+    return { refusedAddress, refused, notNode, before, after };
   });
 
   await runCase('NP-06', async () => {
@@ -526,17 +594,16 @@ try {
     await dialog().waitFor({ state: 'visible', timeout: 15_000 });
     await waitAddressesFound();
     const steps = await dialogSteps();
-    const nameTaken = await text(page.locator('[data-testid="node-change-name-taken-registerThere"]'));
-    const addressLine = await text(page.locator('[data-testid="node-change-address-registerThere"]'));
+    const nameThere = await text(page.locator('[data-testid="node-change-name-there-pair"]'));
     await shot('NP-06-lambda-name-collision');
-    expect(steps.find(entry => entry.id === 'registerThere')?.text.startsWith('Register this node as “Embedded Node 2”'), `steps: ${JSON.stringify(steps)}`);
-    expect(nameTaken === '“Embedded Node” is already used there, so it gets a number.', `name note: ${nameTaken}`);
-    expect(addressLine === `lambda reaches this node at ${alpha.baseUrl}.`, `address line: ${addressLine}`);
+    expect(steps.find(entry => entry.id === 'pair')?.text.startsWith('Pair this node with lambda (here it is called “lambda”)'), `steps: ${JSON.stringify(steps)}`);
+    expect(nameThere === 'lambda calls this node “Embedded Node 2”.', `name there: ${nameThere}`);
+    const addressLine = null; // the addresses are found by the nodes while pairing (M-9); the dialog shows none
     await page.locator('[data-testid="node-change-confirm"]').click();
     await waitDialogGone();
     const onLambda = (await peersOf(lambda)).find(peer => peer.nodeId === alpha.nodeId);
     assert(onLambda?.name === 'Embedded Node 2', `alpha on lambda: ${JSON.stringify(onLambda)}`);
-    return { steps, nameTaken, addressLine, onLambda, lambdaPeers: await peersOf(lambda) };
+    return { steps, nameThere, addressLine, onLambda, lambdaPeers: await peersOf(lambda) };
   });
 
   await runCase('NP-07', async () => {
@@ -544,33 +611,21 @@ try {
     await dialog().waitFor({ state: 'visible', timeout: 15_000 });
     await waitAddressesFound();
     const planned = await dialogSteps();
-    // mu's own owner registers another node as "Embedded Node" before Turn on is pressed here.
-    await register(mu, iota, 'Embedded Node');
-    await page.locator('[data-testid="node-change-confirm"]').click();
-    await page.locator('[data-testid="node-change-partial"]').waitFor({ state: 'visible', timeout: 25_000 });
-    const failed = { steps: await dialogSteps(), error: await text(page.locator('[data-testid="node-change-error-registerThere"]')), partial: await text(page.locator('[data-testid="node-change-partial"]')) };
-    await shot('NP-07-mu-name-race-dialog');
-    await page.locator('[data-testid="node-change-close"]').click();
-    await waitDialogGone();
-    await waitSettled(mu.nodeId, 25_000);
-    const rowLine = { line: await line(mu.nodeId), fix: await text(fixButton(mu.nodeId)) };
-    await openDetails(mu.nodeId);
-    const stepsDetail = await text(page.locator(`[data-testid="node-steps-${mu.nodeId}"]`));
-    await shot('NP-07-mu-row-try-again');
-    await fixButton(mu.nodeId).click();
-    await dialog().waitFor({ state: 'visible', timeout: 15_000 });
-    await waitAddressesFound();
-    const replanned = { title: (await dialogText()).split('?')[0], steps: await dialogSteps() };
+    // mu's own owner pairs another node as "Embedded Node" before Turn on is pressed here.
+    await setSwitch(iota, true);
+    await pair(mu, iota, 'Embedded Node', 'mu');
+    // Pairing by invite (autobyteus-437): mu's pairing exchange gives the new peer a free name itself (its naming rule:
+    // a taken name gets a number), so the race no longer fails and needs no Try again.
     await page.locator('[data-testid="node-change-confirm"]').click();
     await waitDialogGone();
     await waitFor('mu working', async () => await settled(mu.nodeId) && (await line(mu.nodeId)) === null, 25_000);
+    await shot('NP-07-mu-paired-after-race');
     const onMu = (await peersOf(mu)).find(peer => peer.nodeId === alpha.nodeId);
-    expect(planned.find(entry => entry.id === 'registerThere')?.text.startsWith('Register this node as “Embedded Node”'), `planned: ${JSON.stringify(planned)}`);
-    expect(failed.error === 'mu already has a node named Embedded Node.' && failed.partial === 'Not everything could be done. What was done stays done.', `failed: ${JSON.stringify(failed)}`);
-    expect(rowLine.line === '⚠ Turned on here, but not finished on mu. mu already has a node named Embedded Node.' && rowLine.fix === 'Try again', `row line: ${JSON.stringify(rowLine)}`);
-    expect(replanned.title === 'Finish connecting mu' && replanned.steps.length === 1 && replanned.steps[0].text.startsWith('Register this node as “Embedded Node 2”'), `replanned: ${JSON.stringify(replanned)}`);
+    const muNames = (await peersOf(mu)).map(peer => peer.name).sort();
+    expect(planned.find(entry => entry.id === 'pair')?.text.endsWith('mu calls this node “Embedded Node”.'), `planned: ${JSON.stringify(planned)}`);
     assert(onMu?.name === 'Embedded Node 2', `alpha on mu: ${JSON.stringify(onMu)}`);
-    return { planned, failed, rowLine, stepsDetail, replanned, onMu };
+    expect(JSON.stringify(muNames) === JSON.stringify(['Embedded Node', 'Embedded Node 2']), `mu's peers: ${JSON.stringify(muNames)}`);
+    return { planned, onMu, muNames };
   });
 
   await runCase('NP-08', async () => {
@@ -592,11 +647,11 @@ try {
     await rename(kappa.nodeId, 'kappa lab');
     await waitFor('renamed', async () => (await text(page.locator(`[data-testid="node-name-${kappa.nodeId}"]`))) === 'kappa lab');
     const onAlpha = (await peersOf(alpha)).find(peer => peer.nodeId === kappa.nodeId);
-    const entry = (await registry()).nodes.find(node => node.serverInstanceId === kappa.nodeId);
+    const entry = (await registry()).nodes.find(node => node.nodeId === kappa.nodeId);
     expect(invalid === 'Use 1–64 letters, digits, spaces, _ . or - (start with a letter or digit).', `invalid: ${invalid}`);
     expect(taken === 'Another node is already named Beta.', `taken: ${taken}`);
     assert(onAlpha?.name === 'kappa lab' && entry?.name === 'kappa lab', `one name: ${JSON.stringify({ onAlpha, entry })}`);
-    return { invalid, taken, onAlpha, entry: { name: entry.name, serverInstanceId: entry.serverInstanceId }, kappaKnowsAlphaAs: (await peersOf(kappa))[0]?.name };
+    return { invalid, taken, onAlpha, entry: { name: entry.name, nodeId: entry.nodeId }, kappaKnowsAlphaAs: (await peersOf(kappa))[0]?.name };
   });
 
   await runCase('NP-09', async () => {
@@ -640,7 +695,7 @@ try {
     await page.locator('[data-testid="node-change-confirm"]').click();
     await waitDialogGone();
     const muAfter = { alphaHasMu: (await peersOf(alpha)).some(peer => peer.nodeId === mu.nodeId), muHasAlpha: (await peersOf(mu)).some(peer => peer.nodeId === alpha.nodeId),
-      listed: await row(mu.nodeId).count(), entry: (await registry()).nodes.some(node => node.serverInstanceId === mu.nodeId) };
+      listed: await row(mu.nodeId).count(), entry: (await registry()).nodes.some(node => node.nodeId === mu.nodeId) };
     expect(muSteps.map(entry => entry.text).join(' | ') === 'Remove mu from this node | Remove this node from mu | Remove mu from your list', `mu steps: ${JSON.stringify(muSteps)}`);
     expect(muText.includes('The node and its data are not touched.'), muText);
     assert(!muAfter.alphaHasMu && !muAfter.muHasAlpha && muAfter.listed === 0 && !muAfter.entry, `mu gone: ${JSON.stringify(muAfter)}`);
@@ -668,8 +723,9 @@ try {
     const offerHosts = [...new Set(evidence.requests.filter(entry => entry.op === 'GetPeerNodeOffer').map(entry => entry.to))];
     const toOthers = evidence.requests.filter(entry => entry.to !== 'alpha' && !entry.to.startsWith('other:'));
     const opsToOthers = [...new Set(toOthers.map(entry => entry.op ?? entry.path))].sort();
-    const allowed = ['/rest/remote-access/status', 'AddPeerNode', 'GetPeerAddressCandidates', 'GetPeerNodeAvailability', 'GetRemoteCollaborationCapability',
-      'GetRemoteCollaborationSettings', 'RemovePeerNode', 'ResolvePeerAddress', 'SetRemoteCollaborationEnabled'];
+    // `/rest/node-update`: since autobyteus-305 the window asks each remote node it reaches for its server version.
+    const allowed = ['/rest/node-update', '/rest/remote-access/status', 'CreatePeerInvite', 'GetPeerNodeAvailability',
+      'GetRemoteCollaborationCapability', 'GetRemoteCollaborationSettings', 'RemovePeerNode', 'SetRemoteCollaborationEnabled'];
     expect(JSON.stringify(offerHosts) === JSON.stringify(['alpha']), `offers only from alpha: ${offerHosts}`);
     expect(opsToOthers.every(op => allowed.includes(op)), `the other nodes see only their settings API and identity page: ${opsToOthers}`);
     return { offerHosts, opsToOthers, requestsToOthers: toOthers.length, totalRequests: evidence.requests.length,
@@ -699,7 +755,7 @@ try {
   await fs.rm(root, { recursive: true, force: true }).catch(() => undefined);
   evidence.cleanup = { frontendExited: !frontend || exited(frontend), serversLeft: children.size, rootRemoved: !existsSync(root) };
   evidence.finishedAt = new Date().toISOString();
-  await fs.writeFile(path.join(outputDir, 'remote-nodes-page-probe.json'), `${JSON.stringify(evidence, null, 2)}\n`);
+  await fs.writeFile(path.join(outputDir, 'remote-nodes-page-probe.json'), `${redactCredentials(JSON.stringify(evidence, null, 2))}\n`);
   console.log(`remote-nodes-page probe: ${evidence.result}${evidence.error ? `\n${evidence.error}` : ''}`);
   process.exit(process.exitCode ?? 0);
 }

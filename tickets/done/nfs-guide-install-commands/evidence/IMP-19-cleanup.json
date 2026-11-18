@@ -1,0 +1,28 @@
+{
+  "id": "IMP-19",
+  "date": "2026-10-26",
+  "source": "1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708",
+  "result": "Complete",
+  "ownedScratch": "/Users/normy/nfs-guide-r3-imp-jvvxmt_r",
+  "scratchExists": false,
+  "processes": [
+    {
+      "pid": 53169,
+      "processExists": false,
+      "port": 52083,
+      "listening": false,
+      "browser": "closed",
+      "fixture": "removed"
+    },
+    {
+      "pid": 55827,
+      "processExists": false,
+      "port": 52205,
+      "listening": false,
+      "browser": "closed",
+      "fixture": "removed"
+    }
+  ],
+  "retained": "Current worktree node_modules and ignored Nuxt/Vite outputs for API reuse only; no installed app/backend/provider/live NFS state. Historical worktrees and PM data untouched.",
+  "productStatus": ""
+}

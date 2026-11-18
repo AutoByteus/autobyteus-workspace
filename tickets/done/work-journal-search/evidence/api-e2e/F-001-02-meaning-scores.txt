@@ -1,0 +1,142 @@
+# F-001 mechanism: meaning-tier scores (probes/API-PROBE-meaning-scores.mjs) on the instance's index, instance stopped; 2026-10-26 19:45 UTC
+# Command: node probes/API-PROBE-meaning-scores.mjs /private/tmp/wjs-api/root/server-data/memory /private/tmp/wjs-api/root/server-data granite-embedding-small-english-r2 <cues…>
+# top5 = best cosine scores among 7,4xx journal cards; relevant = cards inside selectRelevant (best ≥ clearMatchFloor 0.78 and within nearBestMargin 0.02 of the best) → shown Strong; aboveFloor → Fair; the rest → Weak
+{
+ "model": "granite-embedding-small-english-r2",
+ "calibration": {
+  "clearMatchFloor": 0.78,
+  "nearBestMargin": 0.02
+ },
+ "cues": [
+  {
+   "cue": "pelicanmarigold9152",
+   "top5": [
+    0.7826,
+    0.7765,
+    0.7751,
+    0.7749,
+    0.7745
+   ],
+   "relevant": 70,
+   "aboveFloor": 0,
+   "below": 230
+  },
+  {
+   "cue": "xylophonequartz7731",
+   "top5": [
+    0.7829,
+    0.7829,
+    0.7827,
+    0.7821,
+    0.7813
+   ],
+   "relevant": 84,
+   "aboveFloor": 0,
+   "below": 216
+  },
+  {
+   "cue": "falconsaffron3381",
+   "top5": [
+    0.7706,
+    0.7705,
+    0.7629,
+    0.7624,
+    0.7598
+   ],
+   "relevant": 0,
+   "aboveFloor": 0,
+   "below": 300
+  },
+  {
+   "cue": "Do you remember the project codenamed pelicanmarigold9152? Where is it?",
+   "top5": [
+    0.8036,
+    0.8017,
+    0.8002,
+    0.7975,
+    0.7972
+   ],
+   "relevant": 81,
+   "aboveFloor": 101,
+   "below": 118
+  },
+  {
+   "cue": "What did we decide about the sauerkraut supplier contract?",
+   "top5": [
+    0.7979,
+    0.7971,
+    0.7888,
+    0.787,
+    0.7843
+   ],
+   "relevant": 21,
+   "aboveFloor": 0,
+   "below": 279
+  },
+  {
+   "cue": "Where did we set up the tortellini fermentation dashboard for the bakery?",
+   "top5": [
+    0.7791,
+    0.7771,
+    0.775,
+    0.7736,
+    0.7732
+   ],
+   "relevant": 0,
+   "aboveFloor": 0,
+   "below": 300
+  },
+  {
+   "cue": "lasagna recipe for the family dinner",
+   "top5": [
+    0.7445,
+    0.7425,
+    0.7396,
+    0.7396,
+    0.7396
+   ],
+   "relevant": 0,
+   "aboveFloor": 0,
+   "below": 300
+  },
+  {
+   "cue": "the aquarium we set up for the fish tank",
+   "top5": [
+    0.7771,
+    0.7745,
+    0.7658,
+    0.7649,
+    0.7587
+   ],
+   "relevant": 0,
+   "aboveFloor": 0,
+   "below": 300
+  },
+  {
+   "cue": "Do you remember that earlier we set up a domain updater / DDNS? Where is it?",
+   "top5": [
+    0.9327,
+    0.9073,
+    0.8405,
+    0.8211,
+    0.8131
+   ],
+   "relevant": 1,
+   "aboveFloor": 39,
+   "below": 260
+  },
+  {
+   "cue": "the game with a bunny and a tortoise",
+   "top5": [
+    0.8899,
+    0.8459,
+    0.8103,
+    0.7899,
+    0.7896
+   ],
+   "relevant": 1,
+   "aboveFloor": 6,
+   "below": 293
+  }
+ ]
+}

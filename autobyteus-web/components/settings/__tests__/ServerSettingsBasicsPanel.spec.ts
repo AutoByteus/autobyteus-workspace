@@ -19,6 +19,7 @@ const mountComponent = () => mount(ServerSettingsBasicsPanel, {
       ApplicationsFeatureToggleCard: { template: '<div data-testid="applications-feature-toggle-card-stub">Applications</div>' },
       MediaDefaultModelsCard: { template: '<div data-testid="media-default-models-card-stub">Media Models</div>' },
       CodexFullAccessCard: { template: '<div data-testid="codex-full-access-card-stub">Codex Full Access</div>' },
+      ClaudeRuntimeCard: { template: '<div data-testid="claude-runtime-card-stub">Claude runtime</div>' },
       LiveResponseStreamingCard: { template: '<div data-testid="live-response-streaming-card-stub">Live response</div>' },
       FeaturedCatalogItemsCard: { template: '<div data-testid="featured-catalog-items-card-stub">Featured Catalog</div>' },
       WebSearchConfigurationCard: webSearchStub,
@@ -41,9 +42,13 @@ describe('ServerSettingsBasicsPanel', () => {
     expect(wrapper.text()).not.toMatch(/Projects/)
     expect(wrapper.find('[data-testid="media-default-models-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="codex-full-access-card-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="claude-runtime-card-stub"]').exists()).toBe(true)
+    expect(wrapper.html().indexOf('codex-full-access-card-stub')).toBeLessThan(wrapper.html().indexOf('claude-runtime-card-stub'))
     expect(wrapper.find('[data-testid="live-response-streaming-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="featured-catalog-items-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="web-search-configuration-card-stub"]').exists()).toBe(true)
+    // autobyteus-337 (REQ-007): GitHub is set up on the Integrations page, not in Basics.
+    expect(wrapper.text()).not.toContain('GitHub')
     expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="streaming-parser-card"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="streaming-parser-toggle"]').exists()).toBe(false)

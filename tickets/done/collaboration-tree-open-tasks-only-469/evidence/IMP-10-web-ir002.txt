@@ -1,0 +1,13 @@
+# IMP-10 web unit and component tests (IR-002)
+# Command: pnpm -C autobyteus-web test:nuxt; then the one failing spec rerun on commit fa48d74a3e
+# Environment: macOS (darwin 25.5); 2026-11-11
+
+full run (before the TeamStreamingService spec fix):
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 748 passed (749)
+      Tests  1 failed | 5661 passed | 2 skipped (5664)
+  failed then: services/agentStreaming/__tests__/TeamStreamingService.spec.ts (candidate view held fewer agents than the lists name; CR-002 refresh is correct; candidate view aligned)
+
+rerun on fa48d74a3e: vitest run TeamStreamingService.spec.ts collaborationMessages runHistoryTeamExecutionRowsClosure.spec.ts teamRunContextHydrationService.spec.ts
+ Test Files  4 passed (4)
+      Tests  55 passed (55)

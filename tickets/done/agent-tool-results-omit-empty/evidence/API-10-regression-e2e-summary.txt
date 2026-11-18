@@ -1,0 +1,47 @@
+API-10 regression: gated server E2E after this round's test updates (autobyteus-260)
+Command: env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch
+Commit: source 17d631c704 + this round's test edits (uncommitted at run time), dist built 08:05; macOS arm64 node 22; 2026-10-25
+Summary: Test Files  4 failed | 143 passed | 50 skipped (197); Tests  5 failed | 640 passed | 260 skipped (905)
+
+Failures:
+ FAIL tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts :: in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values | AssertionError: expected [ …(3) ] to deeply equal []
+ FAIL tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts :: Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore;  | AssertionError: expected [ …(2) ] to deeply equal []
+ FAIL tests/e2e/projects/projects-startup-migration.e2e.test.ts :: Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lock | AssertionError: expected [] to deeply equal [ …(2) ]
+ FAIL tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts :: E-002/E-004 Team member: images previewable during the turn and after the team run is terminated | AssertionError: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-multi-image-home-j9iK7K/.gemini/antigravity-cli/brain/97bde55d-9b00-4d8f-a15d-9639c7191d84/image_1_1.png: {"detail":"File c
+ FAIL tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts :: SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was u | Error: [{"message":"GitHub repository not found or not public: https://github.com/apar-sun-e2e/skills. For private repositories, clone locally and import the local path.","locations":[{"line":1,"colum
+
+Files this round added or updated, with every test result:
+  tests/e2e/app-data-migrations/project-task-titles-startup.e2e.test.ts: {'passed': 1}
+      passed TTL-E2E-001 Studio: every released shape is titled from its first line, nothing else changes, unconvertible files stay, a second start is a 
+  tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts: {'passed': 13}
+  tests/e2e/media/server-owned-media-tools.e2e.test.ts: {'passed': 7}
+  tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts: {'passed': 3}
+  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts: {'passed': 11}
+  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts: {'passed': 2, 'skipped': 1}
+  tests/e2e/projects/embedding-settings.e2e.test.ts: {'passed': 6}
+  tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts: {'passed': 6}
+      passed SCP-E2E-001 AC-015: each saved Task's first message names it and its Project (AGY agent, AGY Team, native agent); described work does not
+      passed SCP-E2E-002 AC-012, AC-013 MCP route: workers read only their own Task; the manager reads any; unknown and other-Project keys are not found
+      passed SCP-E2E-003 AC-012, AC-013 native route: the native task agent reads only its Task; the native mate on no Task reads any
+      passed SCP-E2E-004 AC-014: get_project_task is there only for agents whose definition lists it, on MCP and on the native request
+      passed SCP-E2E-005 AC-015, AR-006: a second saved Task to the existing copy names it and its Project; the copy then reads only that Task
+      passed SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope
+  tests/e2e/projects/hand-started-run-refusal.e2e.test.ts: {'passed': 1}
+  tests/e2e/projects/project-change-feed.e2e.test.ts: {'passed': 7}
+  tests/e2e/projects/project-mutation-node-locality.e2e.test.ts: {'passed': 1}
+  tests/e2e/projects/project-task-boundaries.e2e.test.ts: {'passed': 18}
+  tests/e2e/projects/project-task-comments-live.e2e.test.ts: {'passed': 4}
+  tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts: {'passed': 1}
+  tests/e2e/projects/project-task-parts-live.e2e.test.ts: {'passed': 3}
+  tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts: {'passed': 2}
+  tests/e2e/projects/project-task-search.e2e.test.ts: {'passed': 4}
+  tests/e2e/projects/projects-graphql.e2e.test.ts: {'passed': 13}
+  tests/e2e/projects/projects-startup-migration.e2e.test.ts: {'passed': 5, 'failed': 1}
+  tests/e2e/projects/task-agent-several-tasks.e2e.test.ts: {'passed': 4}
+  tests/e2e/projects/task-closure-root-visibility.e2e.test.ts: {'passed': 3}
+  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts: {'passed': 7, 'skipped': 2}
+  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts: {'passed': 6, 'skipped': 1}
+  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts: {'passed': 3}
+  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts: {'passed': 37}
+  tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts: {'skipped': 1}
+  tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts: {'passed': 1, 'skipped': 5}

@@ -1,0 +1,13 @@
+# IMP-01 fail-before (SERVER_CLOSE_OPTIONS = {}: Fastify defaults, as on base; tests from ddb03d0d0b)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/shutdown/server-close-options.test.ts --no-watch --reporter=verbose
+# Commit: ddb03d0d0b
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ × tests/unit/shutdown/server-close-options.test.ts > server close options > close and onClose do not wait on a silent or idle client connection; preClose still runs first 1101ms
+   → close still waiting on a client connection: expected null not to be null
+ × tests/unit/shutdown/server-close-options.test.ts > server close options > the credential proxy's local server closes without waiting on its clients 1067ms
+ × tests/unit/shutdown/server-close-options.test.ts > server close options > the Agent Tools MCP local server closes without waiting on its clients 1069ms
+AssertionError: close still waiting on a client connection: expected null not to be null
+     77|     expect(closeMs, "close still waiting on a client connection").not.…
+      Tests  3 failed (3)

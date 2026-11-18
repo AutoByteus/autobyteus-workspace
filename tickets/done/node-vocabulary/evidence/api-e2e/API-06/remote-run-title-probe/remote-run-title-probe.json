@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-10-24T12:44:33.691Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 57810,
+      "nodeId": "srv_RUrBxPzQcWOWP13VNfVwBlCSUm5z4Z-k"
+    },
+    "beta": {
+      "port": 57811,
+      "nodeId": "srv_xT81O9fr_MGi5qMhQn8weMyyBaq-mJ_P"
+    }
+  },
+  "runs": {},
+  "storedTitles": {},
+  "cases": {},
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: alpha: [{\"message\":\"Variable \\\"$i\\\" got invalid value { baseUrl: \\\"http://127.0.0.1:57811\\\", name: \\\"beta-node\\\" }; Field \\\"nodeId\\\" of required type \\\"String!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]}]\n    at Object.gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:87:36)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:111:3",
+  "finishedAt": "2026-10-24T12:44:36.537Z"
+}

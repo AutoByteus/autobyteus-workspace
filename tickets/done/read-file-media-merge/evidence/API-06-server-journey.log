@@ -1,0 +1,30 @@
+# API-06/API-07 temporary gated server E2E (deleted after the run): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_API06_JOURNEY=1 API06_FIXTURES=/tmp/ab328/fixtures API06_RECEIPT=<evidence>/API-06-server-journey-receipt.json pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts --no-watch --reporter=verbose
+# commit 3a336f7a4a, 2026-10-29T20:56:48Z, macOS arm64, node v22.23.1
+ × tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > R1 Gemini, a definition naming only read_media_file: media attached, documents 42391ms
+   → expected [ 'undefined', 'undefined', …(1) ] to deeply equal ArrayContaining{…}
+ × tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > R2 OpenAI (image only) as the built-in Daily Assistant: image attached, audio and video refused 8744ms
+   → expected undefined to be 'TOOL_EXECUTION_SUCCEEDED' // Object.is equality
+AssertionError: expected [ 'undefined', 'undefined', …(1) ] to deeply equal ArrayContaining{…}
+AssertionError: expected undefined to be 'TOOL_EXECUTION_SUCCEEDED' // Object.is equality
+      Tests  2 failed (2)
+exit: 1
+
+## run 2 (probe: arguments from TOOL_EXECUTION_STARTED, assertions on results; adds the API-08 matrix), 2026-10-29T20:59:22Z
+ ✓ tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > API-08 matrix: an image read on image-capable models, per agent; line arguments sent and outcome 1259823ms
+ ✓ tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > R1 Gemini, a definition naming only read_media_file: media attached, documents 23030ms
+ × tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > R2 OpenAI (image only) as the built-in Daily Assistant: image attached, audio and video refused 5880ms
+AssertionError: expected 'TOOL_EXECUTION_FAILED' to be 'TOOL_EXECUTION_SUCCEEDED' // Object.is equality
+      Tests  1 failed | 2 passed (3)
+exit: 1
+
+## run 3: API-09 cells only (R1, R2 skipped), 2026-10-29T21:22:10Z
+ ✓ tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > API-09: text read on gpt-5.4-mini; image read on other image-capable models 348077ms
+ ↓ tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > R1 Gemini, a definition naming only read_media_file: media attached, documents
+ ↓ tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > R2 OpenAI (image only) as the built-in Daily Assistant: image attached, audio and video refused
+      Tests  1 passed | 2 skipped (3)
+exit: 0
+
+## run 4: API-10 (Grok, audio and video on an image-only model), 2026-10-29T21:29:14Z
+ ✓ tests/e2e/runtime/zz-api06-read-file-media-journey.e2e.test.ts > API-06 read_file media journey on real providers > API-09: text read on gpt-5.4-mini; image read on other image-capable models 3350ms
+      Tests  1 passed | 2 skipped (3)
+exit: 0

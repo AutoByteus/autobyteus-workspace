@@ -1,0 +1,12 @@
+{
+ "runId": "an356_busy_an356r3_api_03_r3_1793603892_d2e389222ac14802945c7705043afbac",
+ "notices": 1,
+ "noticeText": "The application restarted at 2026-11-02T07:19:28.892Z after an update to 1.5.11-beta.11.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+ "isActive": true,
+ "error": null,
+ "last": [
+  "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01YaC2KSHv74F6Ff53zHCLo1\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" AN356r3_API-03-r3_1793603892\",\"timeout\":1000000},\"toolResult\":null,\"toolError\":\"The user doesn't want to proceed with this",
+  "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-02T07:19:28.892Z after an update to 1.5.11-beta.11.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of",
+  "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"I'm ready to assist. My previous command was interrupted. How would you like me to proceed?\",\"media\":null,\"ts\":1793603970.953}"
+ ]
+}

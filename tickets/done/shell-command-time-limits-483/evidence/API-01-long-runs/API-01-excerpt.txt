@@ -1,0 +1,77 @@
+# API-01 excerpt: long-command-time-limits-live.e2e.test.ts (-t LCL-LONG and -t LCL-ENV)
+# product commit c77d83ef27 (no product change since); suite as committed in 48d2a4da58 (the runs used the same cases before two
+# test-only edits: an earlier turn-end assertion and a Json type); macOS 26 arm64, Node 22.23.1; claude 2.1.325, codex 0.169.0,
+# grok 1.0.88, agy 1.5.10; run 2026-11-17 11:30-12:08Z (long), 12:10Z (env); LONG=2100 s, FG=660 s
+
+## LCL-LONG-AGY-BG: Pass  (2026-11-17T11:30:17.502Z → 2026-11-17T12:06:46.080Z)
+job pid alive past 30 min: True | samples (elapsed s, alive): [(2044, True), (2104, True), (2164, False), (2169, False)]
+job done file: agyb finished after 2103s | killed file: None
+final view: {"__typename": "AgentBackgroundTaskEventStream", "currentTasks": []}
+turnEnd: "TURN_COMPLETED"
+
+## LCL-LONG-AGY-DAEMON: Pass  (2026-11-17T11:30:17.502Z → 2026-11-17T12:05:53.106Z)
+job pid alive past 30 min: True | samples (elapsed s, alive): [(1991, True), (2051, True), (2111, False), (2116, False)]
+job done file: agyd finished after 2103s | killed file: None
+final view: {"__typename": "AgentBackgroundTaskEventStream", "currentTasks": []}
+ended: {"at": 2108367, "task_id": "0815b968-7180-4b18-8003-8f615a6309f6/task-2", "kind": "shell", "description": "bash long-job.sh 2100 agyd", "command": "bash long-job.sh 2100 agyd", "status": "completed", "summary": "Command exited with code 0.\n\nCommand output:\nagyd started\r\nagyd progress 30s\r\nagyd progress 60s\r\nagyd progress 90s\r\nagyd progress 120s\r\nagyd progress 150s\r\nagyd", "end_reason": null, "exit_code": 0, "started_at": "2026-11-17T11:30:47.242Z"}
+firstTurnEnd: "TURN_COMPLETED"
+
+## LCL-LONG-CLAUDE-BG: Pass  (2026-11-17T11:30:17.499Z → 2026-11-17T12:07:01.843Z)
+job pid alive past 30 min: True | samples (elapsed s, alive): [(2067, True), (2127, True), (2187, False), (2192, False)]
+job done file: bg finished after 2104s | killed file: None
+final view: {"__typename": "AgentBackgroundTaskEventStream", "currentTasks": [{"taskId": "bx1fra2r1", "kind": "shell", "description": "Start long job script in background", "command": "bash long-job.sh 2100 bg", "status": "completed", "summary": "Background command \"Start long job script in background\" completed (exit code 0)", "endReason": null, "exitCode": 0, "startedAt": "2026-11-17T11:30:54.663Z"}]}
+ended: {"at": 2129048, "task_id": "bx1fra2r1", "kind": "shell", "description": "Start long job script in background", "command": "bash long-job.sh 2100 bg", "status": "completed", "summary": "Background command \"Start long job script in background\" completed (exit code 0)", "end_reason": null, "exit_code": 0, "started_at": "2026-11-17T11:30:54.663Z"}
+
+## LCL-LONG-CLAUDE-FG: Pass  (2026-11-17T11:30:17.498Z → 2026-11-17T11:41:59.181Z)
+bashArgs: {"command": "bash long-job.sh 660 fg", "description": "Run long-job.sh with 660 and fg arguments in foreground"}
+toolResultType: "TOOL_EXECUTION_SUCCEEDED"
+toolResultMs: 669396
+done: "fg finished after 661s"
+turnEnd: "TURN_COMPLETED"
+
+## LCL-LONG-CLAUDE-HABIT: Pass  (2026-11-17T11:30:17.500Z → 2026-11-17T11:43:11.352Z)
+suiteStarts: 1
+sleepCalls: 0
+bash calls: [{"at": 16419, "args": {"command": "bash run-tests.sh", "description": "Run the project test suite via run-tests.sh", "run_in_background": true}}]
+reported:  suite is running in the background; it should take about 12 minutes. I'll report the result when it finishes.Yes, it passed. `bash run-tests.sh` exited with code 0 and reported "ALL 42 TESTS PASSED".
+
+## LCL-LONG-CLAUDE-TL: Pass  (2026-11-17T11:30:17.499Z → 2026-11-17T11:35:59.471Z)
+bashArgs: {"command": "bash long-job.sh 900 tl", "description": "Start long job script in background", "timeout": 300000, "run_in_background": true}
+last: {"at": 324075, "task_id": "bos7miil4", "kind": "shell", "description": "Start long job script in background", "command": "bash long-job.sh 900 tl", "status": "stopped", "summary": "Background command \"Start long job script in background\" was stopped after reaching its background time limit", "end_reason": "time_limit", "exit_code": null, "started_at": "2026-11-17T11:30:54.291Z"}
+
+## LCL-LONG-CODEX-BG: Pass  (2026-11-17T11:30:17.501Z → 2026-11-17T12:06:03.887Z)
+job pid alive past 30 min: True | samples (elapsed s, alive): [(1990, True), (2050, True), (2110, False), (2115, False)]
+job done file: codex finished after 2103s | killed file: None
+final view: {"__typename": "AgentBackgroundTaskSnapshot", "observedAt": "2026-11-17T12:06:03.886Z", "tasks": [{"taskId": "2ea4138b-0e9e-4f9a-bcdb-6bed27d7dc33", "kind": "shell", "description": "bash", "status": "completed", "exitCode": 0, "startedAt": "2026-11-17T11:30:54.530Z"}]}
+firstTurnEnd: "TURN_COMPLETED"
+
+## LCL-LONG-GROK-BG: Fail  (2026-11-17T11:30:17.501Z → 2026-11-17T11:30:29.564Z)
+error: Error: [{"message":"Grok CLI version or agent mode is unsupported; update to 1.0.41 or later and retry.","locations":[{"line":1,"column":31}],"path":["providerModelCatalogSnapshots"]}]
+
+## LCL-LONG-NATIVE-BG: Pass  (2026-11-17T11:30:17.503Z → 2026-11-17T12:06:41.177Z)
+job pid alive past 30 min: True | samples (elapsed s, alive): [(2046, True), (2106, True), (2166, False), (2171, False)]
+job done file: native finished after 2103s | killed file: None
+final view: {"__typename": "AgentBackgroundTaskEventStream", "currentTasks": [{"taskId": "66137", "kind": "shell", "description": "bash long-job.sh 2100 native", "command": "bash long-job.sh 2100 native", "status": "completed", "summary": null, "endReason": null, "exitCode": 0, "startedAt": "2026-11-17T11:30:33.407Z"}]}
+ended: {"at": 2106265, "task_id": "66137", "kind": "shell", "description": "bash long-job.sh 2100 native", "command": "bash long-job.sh 2100 native", "status": "completed", "summary": null, "end_reason": null, "exit_code": 0, "started_at": "2026-11-17T11:30:33.407Z"}
+firstTurnEnd: "TURN_COMPLETED"
+notice: [Platform notice — background tasks finished]
+
+- pid 66137 `bash long-job.sh 2100 native`: exit code 0 after 35m 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-task
+
+## LCL-ENV-DEFAULT: Pass  (2026-11-17T11:30:40.576Z → 2026-11-17T11:30:58.589Z)
+output: "MAX=7200000 DEFAULT=7200000"
+
+## LCL-ENV-SERVER: Pass  (2026-11-17T11:31:07.775Z → 2026-11-17T11:31:16.318Z)
+output: "MAX=900000 DEFAULT=7200000"
+serverEnv: {"BASH_MAX_TIMEOUT_MS": "900000"}
+
+## LCL-ENV-SETTINGS: Pass  (2026-11-17T11:30:58.592Z → 2026-11-17T11:31:07.772Z)
+output: "MAX=900000 DEFAULT=7200000"
+settings: "{\n  \"env\": {\n    \"BASH_MAX_TIMEOUT_MS\": \"900000\"\n  }\n}"
+
+## LCL-LONG-GROK-BG retry (evidence/API-01-grok):  Pass (2026-11-17T13:05:18.816Z → 2026-11-17T13:42:41.551Z)
+model: grok-4.7 | first turn: TURN_COMPLETED
+tool call: [{'command': 'bash long-job.sh 2100 grok'}] | result: ['Background task d7fbe8f8-ad21-4136-a88c-246cb5538310 started']
+job pid alive past 30 min: True | samples: [(2046, True), (2106, True), (2166, False), (2171, False)]
+job done file: grok finished after 2104s | killed file: None | view: {"__typename": "AgentBackgroundTaskUnsupported", "reason": "unsupported"}
+turns: ['TURN_STARTED', 'TURN_COMPLETED'] | notices: []

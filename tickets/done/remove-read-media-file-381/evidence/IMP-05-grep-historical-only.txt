@@ -1,0 +1,20 @@
+# IMP-05 — AC-005: git grep -i -n "read_media_file|readMediaFile" hits only historical records (DEC-003)
+# Command: git grep -i -n "read_media_file\|readMediaFile" (whole worktree), then grouped by top folder
+# Commit: 7cd914394d
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-04
+# Look for: hits only in .github/release-notes/release-notes.md (v1.5.11), test-results/…, tickets/… and <package>/tickets/…; "non-historical binary hits: 0"; no hit in any src/, tests/ or docs/
+
+===== ac005-summary.txt =====
+Hits grouped by location (full list: git grep -i -n "read_media_file\|readMediaFile" at 7cd914394d)
+   1 .github/release-notes/release-notes.md
+   1 autobyteus-server-ts/tickets/…
+   1 autobyteus-ts/tickets/…
+   6 autobyteus-web/tickets/…
+   9 test-results/…
+21868 tickets/…
+non-historical binary hits: 0
+
+Non-ticket, non-test-results hits:
+.github/release-notes/release-notes.md:33:- **`read_file` reads images, audio and video** for the model's next turn, and refuses binary files. `read_media_file` is gone; agents that listed it use `rea
+

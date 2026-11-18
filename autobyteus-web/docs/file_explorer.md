@@ -33,9 +33,9 @@ autobyteus-web/
 │       ├── ImageViewer.vue
 │       ├── MarkdownPreviewer.vue
 │       └── VideoPlayer.vue
-├── components/mobile/
-│   ├── MobileFiles.vue               # Phone-first workspace browser
-│   └── MobileFileViewer.vue          # Read-only mobile file viewer/attach sheet
+├── components/mobile/views/
+│   ├── MobileFiles.vue               # Phone Files screen: the open agent's folder, read only
+│   └── MobileFileViewer.vue          # Phone full-screen read-only file viewer (no Attach)
 ├── composables/mobile/
 │   └── useMobileWorkspaceFileExplorer.ts # Mobile workspace resolution, lazy load, search, and open state coordinator
 ├── composables/
@@ -138,7 +138,13 @@ success, the unchanged text after failure). The editor therefore keeps the later
 input, shows the correct unsaved state, and the next Save submits it. A failed Save
 keeps differing input visible and Save-able. With no Save pending, returning the
 editor to the current committed text makes it clean again. Explicit tab close retains its existing discard behavior;
-reopening a closed file fetches committed content. Drafts are not persisted across
+reopening a closed file fetches committed content.
+
+An explicit open of a file that is already open reads it again (autobyteus-450, `fileExplorerContentActions._openFileWithMode`). An explicit open is a file link, a message attachment or the Files tab. A first open is unchanged.
+- **Text:** the cached `content` is cleared and fetched again (`network-only`). An `editorDraft` stays, and the link's read-only preview shows the new committed text.
+- **Other types** (image, PDF, audio, video, spreadsheet): `contentRevision` is bumped, and the viewer fetches the file again.
+
+So each open shows the file's current content. A workspace file that is already open also refreshes by itself while the workspace's live stream is open ([Open Files Follow The Disk](#open-files-follow-the-disk)). Files opened by absolute path outside the workspace do not (autobyteus-452 FU-001). Drafts are not persisted across
 application/page restarts. This does not add remote notifications, automatic
 merge, competing-write arbitration, or an outage-isolation guarantee.
 
@@ -200,8 +206,8 @@ The runtime locator rules are deliberately different by environment:
 | Runtime | Locator / behavior |
 | --- | --- |
 | Embedded Electron | An embedded node binding **and** trusted local-file bridge permit an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
-| Browser / remote / missing local bridge | The path must be contained by the selected workspace root and converted to a workspace-relative locator before the existing authorized content route is used. A remote-node Electron window never falls back to client-local bytes. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
-| Phone-first `/mobile` | The path must map to the selected run/team/workspace context. A revisioned request carries context, workspace, relative path, read-only intent, and inline presentation; `MobileFiles` rejects stale or mismatched requests and consumes only the current one. |
+| Browser / remote / missing local bridge | A path inside the selected workspace root is converted to a workspace-relative locator and read through the existing authorized content route. Any other absolute path opens read-only in the Files panel as a **node file** from the run's node (autobyteus-471): the store fetches it once through the shared loader (`utils/fileExplorer/nodeFileContent.ts`, `GET /rest/node-files/content?path=` with the window's credential); text becomes content, other types an object URL revoked when the file is closed or reloaded. A missing path shows "This file was not found on the computer.", a folder "This path is a folder, not a file.", any other refusal "The file preview could not be opened.". Every node file opens read-only, whoever opens it (a link, an attachment): the store gives it a read-only access intent (`source: 'node-file'`) when the caller gave none. A remote-node Electron window never falls back to client-local bytes. A path of a run on another node, a file link or a path attachment of its messages, shows "This file is on <node>, where this run runs." on the run view's file status line without a content request (`remoteRunFileNode`, `composables/remoteRuns/remoteRunFile.ts`, the one decision for both). |
+| Phone-first `/mobile` | A path in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) opens as a workspace file, any other absolute path as a node file through the same loader (`useMobileNodeFile`, autobyteus-436). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only, whatever its size (autobyteus-471). A path of a run on another node shows "This file is on <node>, where this run runs.". |
 
 Path recognition is opt-in to the Event Monitor Markdown renderer and passive
 output is inert. Explicit pointer or keyboard activation is required. The
@@ -223,15 +229,35 @@ selection is explicit:
   and any HTML file without workspace context is rendered from the content
   already loaded into a managed Blob URL. The absolute host path is never
   interpolated into a workspace static URL or sent to the server.
-- Both paths use the existing sandboxed iframe. Blob URLs are revoked when
+- Both paths render in one iframe with `sandbox="allow-scripts"` and nothing
+  else. The Blob holds the loaded content only. Blob URLs are revoked when
   content/source changes and when the viewer is unmounted.
+
+Previews run isolated. A previewed page has an opaque origin (`null`), never
+the app window's or a node's origin, so it cannot read or script the app
+window, call the preload API, or read the app's storage (including the phone
+credential), and the node refuses its WebSocket and API requests
+(`Origin: null`). The workspace static route also sends
+`Content-Security-Policy: sandbox allow-scripts` on every file it serves, so a
+workspace page runs isolated wherever its URL is opened, not only inside the
+preview. Do not add `allow-same-origin` (or popups, forms, modals or top
+navigation) to the preview iframe.
+
+What previewed pages can do: render, run inline and classic scripts, load
+stylesheets and images, including relative ones next to a workspace file, and
+load scripts, styles and images from other sites (CDN libraries). What they
+cannot do: load relative `type="module"` scripts, `fetch`/XHR the workspace's
+files, load web fonts from the workspace, start Web Workers, or use browser
+storage (`localStorage`, `sessionStorage`, IndexedDB) or cookies. Run complex
+UIs that need these from a server in the in-app browser instead.
 
 The server remains authoritative for static-route containment. Absolute or
 traversal candidates sent to the static route are rejected and must not expose
 an outside HTML payload. Do not restore path-only or global-active-workspace
-inference to select a static URL. Relative assets in local HTML retain the
-existing Blob-base limitation; expanding that behavior requires an approved
-follow-up resource/security design.
+inference to select a static URL. Relative resources of a Blob preview (local
+files, artifacts, references) do not resolve: the Blob has no base URL.
+Expanding that behavior requires an approved follow-up resource/security
+design.
 
 Event Monitor raw Markdown `file:` destinations use the same scoped capability
 as absolute-path candidates. Only empty-authority absolute URIs with valid
@@ -241,8 +267,9 @@ remain literal and inert; they do not fall through to generic browser
 navigation. Raw URI provenance is transient and never enters DOM attributes,
 persisted File Explorer state, references/artifacts, workspace requests, or API
 payloads. A valid URI that cannot map in the active browser/remote workspace
-remains an action with the localized host-only/unavailable result before any
-Files/mobile/content access.
+remains an action: it opens as a node file, or, in a run on another node, shows
+"This file is on <node>, where this run runs." before any Files/mobile/content
+access.
 
 Incomplete placeholder components (`.`, `..`, `...`, and `…`) are rejected
 before a preview action is created, including on POSIX and Windows paths.
@@ -413,7 +440,7 @@ interface WorkspaceInfo {
 | --- | --- |
 | `createWorkspace()` | Creates/resolves metadata only. It does **not** acquire a file-explorer tree or start a persistent file watcher. |
 | `fetchAllWorkspaces()` | Loads visible workspace metadata from the backend workspace registry on startup or backend-context reset. It does **not** acquire file-explorer trees or start live streams. |
-| `removeWorkspace(workspaceId)` | Removes a registered filesystem workspace from the visible Workspaces registry after backend confirmation, then clears metadata, file-explorer tree/content/cache state, and live-session state for that workspace. It does not delete workspace files. |
+| `removeWorkspace(workspaceId)` | Unregisters a filesystem workspace after backend confirmation (the chat chooser's "Remove"; it leaves every chooser and every view of the left panel), then clears metadata, file-explorer tree/content/cache state, and live-session state for that workspace. It does not delete workspace files. |
 | `fetchFolderChildren()` | **[Lazy Load]** Fetches children for a folder when expanded or when a visible explorer refreshes open folders. |
 | `acquireFileExplorerLiveSession(workspaceId, consumerId)` | Registers one visible file explorer consumer. The first consumer opens one WebSocket/live watcher stream for the workspace and returns an idempotent release function. |
 | `releaseFileExplorerLiveSession(workspaceId, consumerId)` | Releases a visible consumer. The last release disconnects the WebSocket and lets the backend stop the watcher lease. |
@@ -516,31 +543,32 @@ target, dialogs, and close behavior centralized.
 
 ### Mobile Files and `useMobileWorkspaceFileExplorer`
 
-The `/mobile` Phone Access Files tab uses `MobileFiles.vue` and
+The `/mobile` Phone Access Files screen (⋮ → Files on the run screen) uses
+`components/mobile/views/MobileFiles.vue` and
 `useMobileWorkspaceFileExplorer.ts` instead of the desktop split-pane explorer
-layout. The mobile surface is read-only and delegates to the same authoritative
-workspace/file-explorer owners:
+layout. The mobile surface is read-only, has one bar (←, "Files", search) and
+no filters, and delegates to the same authoritative workspace/file-explorer
+owners:
 
-- workspace resolution comes from the current `MobileWorkContext`:
-  workspace contexts use their workspace id, and agent/team run contexts resolve
-  by workspace root path;
-- if a selected run/team-run workspace root cannot be resolved, mobile shows an
-  explicit unavailable/retry state instead of falling back to another active or
-  first workspace;
+- the folder is the open agent's: `activeWorkspaceTarget.workspaceRootPath`,
+  resolved to a registered workspace by its root path;
+- if that root cannot be resolved, mobile shows an explicit loading or
+  unavailable state instead of falling back to another active or first
+  workspace;
 - folder taps call `workspaceStore.fetchFolderChildren(workspaceId, path)` for
   unloaded folders before navigating;
 - full-workspace search calls `fileExplorerStore.searchFiles(query,
   workspaceId)`, so matches do not depend only on already-loaded tree nodes;
-- file taps call `fileExplorerStore.openFilePreview(path, workspaceId)` and
-  pass the resulting open-file state into `MobileFileViewer.vue`;
+- a file tap opens the file as a history entry (`useMobileNavigation`), so ← or
+  Back closes it first; the screen then calls
+  `fileExplorerStore.openFilePreview(path, workspaceId)` and passes the
+  resulting open-file state into `MobileFileViewer.vue`, full screen;
 - `MobileFileViewer.vue` reuses the shared `FileViewer` in read-only mode for
   supported text/Markdown/code, image, audio, video, PDF, CSV, and Excel
   previews through protected workspace content URLs and authorized resource
   loading;
-- the mobile **Attach** action is owned by
-  `useMobileFileContextCoordinator.ts` and adds workspace paths to the active
-  run, pending team-run, or next-run draft context without turning Files into an
-  editor.
+- an opened file has no **Attach** action; the phone does not add files to a
+  run's context.
 
 Mobile Files must not import desktop shell/split-pane owners such as
 `FileExplorerLayout`, `FileExplorerTabs`, `TeamCommunicationPanel`,
@@ -947,6 +975,19 @@ The backend WebSocket route resolves the workspace and asks its file explorer fo
 Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend parent process logically stops the watcher: subscribers and pending timers are closed, the current watcher generation is detached, and a stop command is sent to a child watcher runtime process.
 
 The child watcher runtime owns native chokidar start/close and sends raw events back to the parent over IPC with `{ watcherId, generation }` identity. Physical chokidar close can block or be force-killed without blocking unrelated backend routes such as Terminal. Stale child messages from a previous generation are ignored after close/restart.
+
+#### Open Files Follow The Disk
+
+An open workspace file refreshes when it changes on disk, in the desktop window and on the phone (autobyteus-452). This holds whether or not its folder was ever expanded, and for text, images and PDFs alike.
+
+- **The node:**
+  - On a file `change`, `watchdog-handler` sends `modify` with the file's workspace-relative `path` (POSIX separators), whether or not the path is in its tree.
+  - On a file `add`, and on a file move (the watcher pairs a temp file's unlink with the add at its final path), it sends the structural change as before, plus `modify` for the destination path. So an atomic rewrite (write elsewhere, then rename over the file) also refreshes.
+- **The window (`fileExplorerTreeActions`):** structural changes apply as before. For each `modify`:
+  - a path marked as the window's own save is unmarked and nothing else happens;
+  - a path that is open is reloaded through `_reloadOpenFile`: text keeps an `editorDraft`, and other types bump `contentRevision`;
+  - any other path is ignored, so files that are not open cause no reads.
+- **Batching:** a burst of changes arrives in the stream's usual batched frames. In testing, 200 changes came as one frame of about 10 KB and caused no reads.
 
 Event delivery intentionally stays simple. The backend keeps the existing lightweight batching and bounded queues for `FILE_SYSTEM_CHANGE`. If the runtime fails or an event queue overflows, the stream closes with an error; the frontend reconnect path refreshes a snapshot instead of attempting semantic event reconciliation.
 

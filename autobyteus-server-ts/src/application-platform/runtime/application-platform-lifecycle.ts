@@ -110,13 +110,13 @@ export class ApplicationPlatformLifecycle {
             ),
           },
         );
-        for (const [applicationId, diagnostics] of
-          this.dependencies.preparation.definitionRuntimeReadiness
-            .getDiagnosticsByApplicationId()) {
-          this.dependencies.availabilityService.quarantineApplication(
-            applicationId,
-            `Application setup is required: ${diagnostics.join("; ")}`,
-          );
+        for (const application of snapshot.applications) {
+          if (!this.isSelected(application.id)) continue;
+          const setupRequired = this.dependencies.preparation.definitionRuntimeReadiness
+            .getSetupRequiredDetail(application.id);
+          if (setupRequired) {
+            this.dependencies.availabilityService.quarantineApplication(application.id, setupRequired);
+          }
         }
         for (const applicationId of this.readyApplicationIds) {
           await this.dependencies.eventDispatchService

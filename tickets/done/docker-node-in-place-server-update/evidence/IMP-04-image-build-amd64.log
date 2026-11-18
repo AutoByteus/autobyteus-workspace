@@ -1,0 +1,15 @@
+# IMP-04 image build, linux/amd64
+# Command: docker buildx build --builder desktop-linux --load --platform linux/amd64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server-305-test:step1-amd64 .
+# Commit: 01c56f1b95 (build inputs: Dockerfile blob cb65611404, describe-server-package.mjs blob f4deabae2a, same as the commit)
+# Environment: macOS 26 arm64 host, Docker 29.0.1 (desktop-linux buildx); amd64 under QEMU
+# Date: 2026-10-30
+
+## Excerpt
+#44 40.77 Removed 127 MB of onnxruntime-web browser builds
+#44 42.51 Embedding runtime validation passed
+#44 43.86 Wrote server-package.json: 1.5.11-beta.5 linux-x64, Node modules 127, system level 1, 61 migrations
+#53 naming to docker.io/library/autobyteus-server-305-test:step1-amd64 done
+exit 0
+image id sha256:8588804dc9039d8741102c7773ac9a1b80df7bfffdfa0617bb7273ffe5836656 os/arch linux/amd64
+
+## Full log: IMP-04-image-build-amd64.full.log

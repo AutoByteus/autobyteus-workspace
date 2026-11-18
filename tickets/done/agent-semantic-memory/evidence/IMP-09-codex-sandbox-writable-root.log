@@ -1,0 +1,11 @@
+# IMP-09 Codex workspace-write sandbox: write outside the workspace without and with the semantic memory writable root (AF-01/AF-02 reproduction)
+# Commit: 785ff7c95 (builder: buildCodexSandboxWorkspaceWriteConfig emits sandbox_workspace_write.writable_roots=[<folder>])
+# Environment: Linux 6.12 container, codex-cli 0.167.0, probe folder $HOME/.sm-probe-impl (outside /tmp, AF-03), date 2026-11-10T11:08:31Z
+
+$ codex sandbox -c sandbox_mode="workspace-write" -- sh -c "echo inside > /root/.sm-probe-impl/ws/in.txt && echo b > /root/.sm-probe-impl/memory/semantic/computer-use-operator/out.txt"
+sh: 1: cannot create /root/.sm-probe-impl/memory/semantic/computer-use-operator/out.txt: Read-only file system
+files: ./ws/in.txt 
+
+$ codex sandbox -c sandbox_mode="workspace-write" -c 'sandbox_workspace_write.writable_roots=["/root/.sm-probe-impl/memory/semantic/computer-use-operator"]' -- sh -c "mkdir -p .../computer-use-operator/sites/linkedin && echo b > .../sites/linkedin/notes.md && echo c > /root/.sm-probe-impl/memory/semantic/other.txt"
+sh: 1: cannot create /root/.sm-probe-impl/memory/semantic/other.txt: Read-only file system
+files: ./memory/semantic/computer-use-operator/sites/linkedin/notes.md ./ws/in.txt 

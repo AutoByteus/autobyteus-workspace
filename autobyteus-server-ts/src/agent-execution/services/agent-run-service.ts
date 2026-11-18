@@ -1,3 +1,6 @@
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -5,6 +8,7 @@ import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
   type DelegatedFrom,
   type AgentRunMetadata,
+  type SystemRunOwner,
 } from "../../run-history/store/agent-run-metadata-types.js";
 import {
   AgentRunMetadataService,
@@ -15,7 +19,7 @@ import {
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
-import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
+import { AgentRunProvisioningService, type RemovedEmptyNeverStartedRun } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import {
   StandaloneAgentRunLifecycleService,
@@ -23,6 +27,7 @@ import {
 } from "./standalone-agent-run-lifecycle-service.js";
 import type { StandaloneRunLifecyclePort } from "./standalone-run-ports.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
+import type { StoppedRunSelectionInput } from "./standalone-stopped-run-selection-updater.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -37,8 +42,16 @@ export interface CreateAgentRunInput {
     bindingId: string;
     displayName: string | null;
   } | null;
-  /** A run a peer node delegated to this node: its back-link (DEC-112), written once at creation. */
+  /** A delegated run (local or peer-started): its origin, written once at creation (contract §2.2). */
   delegatedFrom?: DelegatedFrom;
+  /** The run's own address when it is fixed at creation (a delegated run: its delegation address, contract §2.3). */
+  address?: AgentTeamAddress;
+  /** How the run's launch was resolved (a delegated run's resolved launch, contract §2.2). */
+  launchSource?: LaunchConfigurationSource;
+  /** autobyteus-32: the server service that owns the run (never a collaboration member). */
+  systemRunOwner?: SystemRunOwner;
+  /** The Project the run is started under (REQ-004); refused with `PROJECT_NOT_FOUND` when it does not exist. */
+  projectId?: string | null;
 }
 
 export interface CreateAgentRunResult {
@@ -82,6 +95,7 @@ export class AgentRunService {
   private readonly provisioningService: AgentRunProvisioningService;
   private readonly lifecycleService: StandaloneAgentRunLifecycleService;
   private readonly standaloneRuns: StandaloneRunLifecyclePort | null;
+  private readonly peerRunOf: PeerRunOf | null;
 
   constructor(
     memoryDir: string,
@@ -98,6 +112,8 @@ export class AgentRunService {
        * process that hosts no eligible runs (application execution scopes run application-owned runs).
        */
       standaloneRuns?: StandaloneRunLifecyclePort;
+      /** A run on a peer node by its own ID (SR-066): its Stop goes to its node. */
+      peerRunOf?: PeerRunOf;
     },
   ) {
     if (!deps?.lifecycleService) {
@@ -118,9 +134,17 @@ export class AgentRunService {
     });
     this.lifecycleService = deps.lifecycleService;
     this.standaloneRuns = deps.standaloneRuns ?? null;
+    this.peerRunOf = deps.peerRunOf ?? null;
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
+    // A delegated run on a peer node is stopped as itself, by its node (SR-066, REQ-013).
+    const peer = this.peerRunOf?.(runId) ?? null;
+    if (peer?.kind === "agent" && peer.runId === runId) {
+      const result = await peer.terminate();
+      return result.accepted ? { success: true, message: "Stopped on its node.", route: "runtime", runtimeKind: null }
+        : { success: false, message: result.message ?? "The run on another node did not stop.", route: "not_found", runtimeKind: null };
+    }
     // An eligible run's root stops every child first, then its host, even when the host's own
     // runtime already died.
     const stopped = await this.standaloneRuns?.stopRoot(runId) ?? null;
@@ -239,8 +263,18 @@ export class AgentRunService {
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
     const prepared = await this.provisioningService.prepareAgentRun(input);
-    const activeRun = (await this.activate(prepared.runId)).run;
-    return { runId: activeRun.runId };
+    try {
+      const activeRun = (await this.activate(prepared.runId)).run;
+      return { runId: activeRun.runId };
+    } catch (error) {
+      // One call, all or nothing: a run whose activation failed is undone (a started run is refused and kept).
+      const cancelled = await this.provisioningService.cancelPreparedAgentRun(prepared.runId)
+        .catch((cancelError: unknown): CancelPreparedAgentRunResult => ({ success: false, message: String(cancelError) }));
+      if (!cancelled.success) {
+        logger.warn(`Run '${prepared.runId}' failed to activate and was kept: ${cancelled.message}`);
+      }
+      throw error;
+    }
   }
 
   async prepareAgentRun(
@@ -262,8 +296,8 @@ export class AgentRunService {
     return this.provisioningService.cancelPreparedAgentRun(runId);
   }
 
-  async cleanupStalePreparedRuns(now: Date = new Date()): Promise<number> {
-    return this.provisioningService.cleanupStalePreparedRuns(now);
+  removeEmptyNeverStartedRuns(): Promise<RemovedEmptyNeverStartedRun[]> {
+    return this.provisioningService.removeEmptyNeverStartedRuns();
   }
 
   async hasRunIdentity(runId: string): Promise<boolean> {
@@ -272,6 +306,30 @@ export class AgentRunService {
 
   async getRunMetadata(runId: string): Promise<AgentRunMetadata | null> {
     return this.provisioningService.getRunMetadata(runId);
+  }
+
+  /**
+   * DS-5 (contract T-1, `model.py` `stop`): a closed Task's run stops as for the user's Stop, and its row records the
+   * stop also when it was not running. `stillClosed` is asked where the run's gate closes (CR-461-001): a reopen or a new
+   * assignment committed while the stop waited keeps the run (`kept_open`), with nothing stopped or recorded.
+   */
+  async stopForTaskClosure(runId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
+    const stopped = await this.standaloneRuns?.stopRootForTaskClosure(runId, stillClosed) ?? null;
+    if (stopped === "kept_open") return "kept_open";
+    if (stopped?.host.outcome === "rejected") return "not_stopped";
+    if (!stopped) {
+      if (!stillClosed()) return "kept_open";
+      if (this.agentRunManager.getActiveRun(runId) && !(await this.agentRunManager.terminateAgentRun(runId))) return "not_stopped";
+    }
+    if (!(await this.historyCatalogService.getCatalogRow(runId))?.terminatedAt) await this.historyCatalogService.recordRunTerminated({ runId });
+    return "stopped";
+  }
+
+  /** The run collaborates (contract §3.3, §3.5): its own address is fixed, once, and its history row says so. */
+  async recordCollaborating(runId: string, address: AgentTeamAddress): Promise<void> {
+    const metadata = await this.metadataService.readMetadata(runId);
+    if (metadata && !metadata.address) await this.metadataService.writeMetadata(runId, { ...metadata, address });
+    await this.historyCatalogService.recordCollaborationPackageCreated({ runId });
   }
 
   async recordRunActivity(
@@ -306,12 +364,20 @@ export class AgentRunService {
     return owned ?? this.lifecycleService.activateHost(runId, { memberExecutionContext: null });
   }
 
-  updateStoppedModelConfig(input: {
-    agentRunId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
-  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
-    return this.lifecycleService.updateStoppedModelConfig(input);
+  /** Saves a stopped run's selection; a registered root of the run then follows it (FU-008), and a failed follow never fails the saved edit. */
+  /** The ordinary stopped-run Save checked without writing (SR-039: a delegator's Settings checks every run first). */
+  checkStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null> | null> {
+    return this.lifecycleService.checkStoppedSelection(input);
+  }
+
+  async updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    const result = await this.lifecycleService.updateStoppedSelection(input);
+    if (result.outcome === "UPDATED") {
+      await this.standaloneRuns?.refreshInheritedLaunch(normalizeRequiredRunId(input.agentRunId)).catch((error) => {
+        logger.warn(`Run '${input.agentRunId}' saved its selection but its root could not follow it: ${error instanceof Error ? error.message : String(error)}`);
+      });
+    }
+    return result;
   }
 
   private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {
@@ -324,6 +390,8 @@ export class AgentRunService {
   }
 
 }
+
+const logger = console;
 
 const normalizeRequiredRunId = (runId: string): string => {
   const normalized = runId.trim();

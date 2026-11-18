@@ -1,0 +1,13 @@
+# API-07 round 2 — node autobyteus-web/tests/e2e/model-routing-settings-probe.mjs --skip-server-build --output-dir=/tmp/mrp-r2b
+# Server dist built at source 7ece4e2069 (pnpm -C autobyteus-server-ts build, exit 0); Nuxt dev; headless Chrome; macOS darwin 25.5; 2026-10-25T09:23Z
+# Same result in the run before (/tmp/mrp-r2, without the MRP-02c screenshot): 7/7 Pass
+Pass MRP-01 Open from the Settings menu: every runtime row, limits and reset times, blocked models, the limits note, provider sub-rows; the same data as the node's answer; no polling (AC-010, REQ-009)
+Pass MRP-02 Check again: rows kept and the button busy while reading, then sign-in not checked, limits unknown, models unknown, a provider's limits unknown, and the checked announcement (AC-010, REQ-007 UI states)
+Pass MRP-03 Narrow window (420 px): limits above models, nothing overflows
+Pass MRP-04 zh-CN: section texts, limits, models and providers in Chinese
+Pass MRP-05 A remote node window shows that node: all CLIs signed out or missing and no key → AutoByteus without providers; rebinding back re-reads (AC-010 remote)
+Pass MRP-06 A node that can't be read: the load error with Check again
+Pass MRP-07 No key, e-mail or account value in the page, its GraphQL responses, the nodes' output, logs or data files; providers asked only at their usage endpoints (REQ-008)
+MRP-02-discovered {"gateway": {"provider": "Probe Gateway", "balance": null, "blocked": null, "limitsUnknown": null, "modelsUnknown": "Models unknown: Probe Gateway model list could not be read: CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE", "text": "Probe Gateway Limits not reported", "models": []}, "lmStudio": {"provider": "LM Studio", "balance": null, "blocked": null, "limitsUnknown": null, "modelsUnknown": null, "text": "LM Studio Limits not reported", "models": [{"id": "qwen/qwen3.6-35b-a3b:lmstudio@lmstudio.probe.test:1234", "blocked": null}]}}
+MRP-07 providerRequests ['REFUSED GET http://lmstudio.probe.test:1234/api/v1/models', 'POST https://api.anthropic.com/v1/messages/count_tokens', 'GET https://api.deepseek.com/user/balance', 'GET https://api.x.ai/v1/api-key', 'GET https://api.moonshot.ai/v1/users/me/balance', 'GET https://gateway.probe.test/v1/models', 'GET http://lmstudio.probe.test:1234/api/v1/models'] hits []
+Result: Pass browserErrors: [] cleanup: {'browser': 'closed', 'frontend': 'terminated:79480', 'backend': 'terminated:79416', 'remoteBackend': 'terminated:79454', 'tempRoot': 'removed'}

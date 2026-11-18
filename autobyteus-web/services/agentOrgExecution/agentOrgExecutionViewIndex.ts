@@ -1,63 +1,36 @@
-import { remoteTaskExecutionAgentsOf, type RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
-import {
-  collaborationTaskExecutionLists,
-  copyAgentSourceOf,
-  copyTeamSourceOf,
-  type CollaborationAgentSource,
-  type CollaborationTeamSource,
-} from '~/services/collaborators/agentSourceSelectors'
 
 type Root = AgentOrgExecutionViewDto['execution_tree']['rootOrg']
 export type OrgConfiguredMember = Root['members'][number]
 export type OrgConfiguredAgent = Extract<OrgConfiguredMember, { agentRunId: string }>
 export type OrgConfiguredTeam = Extract<OrgConfiguredMember, { teamRunId: string }>
-export type OrgTaskExecution = Root['taskExecutions'][number]
-type TaskTeam = Extract<OrgTaskExecution, { teamRunId: string }>
-type TaskMember = TaskTeam['members'][number]
-/** An Org's Team, configured or delegated; Teams are flat, so its members are Agents. */
-export type OrgTeamNode = OrgConfiguredTeam | TaskTeam
-export type OrgAgentNode = OrgConfiguredAgent | Extract<OrgTaskExecution, { agentRunId: string }> | TaskMember
+/** An Org's mounted Team; Teams are flat, so its members are Agents. */
+export type OrgTeamNode = OrgConfiguredTeam
+export type OrgAgentNode = OrgConfiguredAgent | OrgConfiguredTeam['members'][number]
 export type OrgWorkspaceSelection =
   | Readonly<{ kind: 'agent_execution'; agentRunId: string }>
   | Readonly<{ kind: 'configured_team'; teamRunId: string }>
 export type OrgExecutionHost = Readonly<{ kind: 'root' | 'team'; runId: string }>
-/** A configured member's own source, or a delegated copy's recorded source with its user choice applied. */
-export type OrgAgentSource = CollaborationAgentSource
-export type OrgTeamSource = CollaborationTeamSource
-/** Membership in a delegated child: its execution run ID and the AgentRun that started it. */
-/** `delegatorAgentRunId` is null for children recorded before the delegator was stored. */
-export type OrgDelegationBinding = Readonly<{ executionRunId: string; delegatorAgentRunId: string | null }>
 export type OrgAgentViewIdentity = Readonly<{
   agentRunId: string
   address: AgentTeamAddress
-  kind: 'configured' | 'task' | 'task_team_member'
-  source: OrgAgentSource
+  /** Its own configuration in the Org (its source). */
+  source: OrgAgentNode
   execution: OrgAgentNode
   host: OrgExecutionHost
-  delegation: OrgDelegationBinding | null
-  live: boolean
 }>
 export type OrgTeamViewIdentity = Readonly<{
   teamRunId: string
   address: AgentTeamAddress
-  source: OrgTeamSource
+  source: OrgConfiguredTeam
   execution: OrgTeamNode
-  delegation: OrgDelegationBinding | null
-  live: boolean
 }>
 
-/** autobyteus-278: an agent of a run this Org delegated to another node (its node keeps its source). */
-export type OrgRemoteAgent = Readonly<{
-  agentRunId: string
-  address: AgentTeamAddress
-  execution: RemoteTaskExecutionDto
-  /** The remote Team run of a member; null for a remote Agent. */
-  teamRunId: string | null
-}>
-
-/** One derived retained index per strict context candidate; addresses identify sources only. */
+/**
+ * One Org view's own parts (autobyteus-461 SR-084): its agents and its mounted teams with their members. The runs it
+ * delegated are its tree's rows (`runTreeStore`), never in its view. Addresses identify configured members only.
+ */
 export class AgentOrgExecutionViewIndex {
   private readonly agentsById = new Map<string, OrgAgentViewIdentity>()
   get agents(): ReadonlyMap<string, OrgAgentViewIdentity> { return this.agentsById }
@@ -66,14 +39,9 @@ export class AgentOrgExecutionViewIndex {
   private readonly configuredById = new Map<string, OrgConfiguredMember>()
   get configured(): ReadonlyMap<string, OrgConfiguredMember> { return this.configuredById }
   private readonly allRunIds = new Set<string>()
-  /** autobyteus-278: the agents of the runs this Org delegated to other nodes. */
-  readonly remoteAgents = new Map<string, OrgRemoteAgent>()
 
   constructor(readonly view: AgentOrgExecutionViewDto) {
     const root = view.execution_tree.rootOrg
-    if (root.orgRunId !== view.communication_messages.orgRunId) {
-      throw new Error('AgentOrg execution view root mismatch.')
-    }
     const configured = (member: OrgConfiguredMember) => {
       if (this.configured.has(member.address)) throw new Error(`Duplicate configured address '${member.address}'.`)
       this.configuredById.set(member.address, member)
@@ -84,28 +52,14 @@ export class AgentOrgExecutionViewIndex {
     }
     const rootHost: OrgExecutionHost = { kind: 'root', runId: root.orgRunId }
     for (const member of root.members) {
-      if ('agentRunId' in member) this.addAgent(member, rootHost, null, true, 'configured')
-      else this.addTeam(member, null, true)
-    }
-    root.taskExecutions.forEach((task) => this.addTask(task, rootHost, true))
-    for (const execution of view.remote_task_executions) {
-      for (const agent of remoteTaskExecutionAgentsOf(execution)) {
-        this.register(agent.agent_run_id)
-        this.remoteAgents.set(agent.agent_run_id, Object.freeze({ agentRunId: agent.agent_run_id, address: parseAgentTeamAddress(agent.address),
-          execution, teamRunId: execution.kind === 'agent_team' ? execution.team_run_id : null }))
-      }
-    }
-    for (const identity of [...this.agents.values(), ...this.teams.values()]) {
-      const delegator = identity.delegation?.delegatorAgentRunId
-      if (delegator && !this.agents.has(delegator)) {
-        throw new Error(`Delegated execution '${identity.delegation.executionRunId}' delegator is not in this AgentOrg.`)
-      }
+      if ('agentRunId' in member) this.addAgent(member, rootHost)
+      else this.addTeam(member)
     }
   }
 
-  /** The address of an agent of this Org, local or remote. */
+  /** The address of one of the Org's own agents. */
   addressOf(agentRunId: string): AgentTeamAddress | null {
-    return this.agents.get(agentRunId)?.address ?? this.remoteAgents.get(agentRunId)?.address ?? null
+    return this.agents.get(agentRunId)?.address ?? null
   }
   requireAgent(runId: string): OrgAgentViewIdentity {
     const agent = this.agents.get(runId)
@@ -126,8 +80,7 @@ export class AgentOrgExecutionViewIndex {
   selectedAgent(selection: OrgWorkspaceSelection | null): OrgAgentViewIdentity | null {
     if (!selection) return null
     if (selection.kind === 'agent_execution') return this.agents.get(selection.agentRunId) ?? null
-    const team = this.teams.get(selection.teamRunId)
-    return team && !team.delegation ? this.coordinator(team.teamRunId) : null
+    return this.teams.has(selection.teamRunId) ? this.coordinator(selection.teamRunId) : null
   }
   teamMembers(teamRunId: string): readonly OrgAgentViewIdentity[] {
     return this.requireTeam(teamRunId).execution.members.map((member) => this.requireAgent(member.agentRunId))
@@ -138,42 +91,21 @@ export class AgentOrgExecutionViewIndex {
     if (matches.length !== 1) throw new Error(`Team '${teamRunId}' has no unique exact coordinator.`)
     return matches[0]!
   }
-  /** Every copy carries its own source (REQ-001), wherever the root records it. */
-  private copyTasks() {
-    return collaborationTaskExecutionLists(this.view.execution_tree.rootOrg)
-  }
   private register(runId: string): void {
     if (this.allRunIds.has(runId)) throw new Error(`Duplicate Org execution '${runId}'.`)
     this.allRunIds.add(runId)
   }
-  private addAgent(execution: OrgAgentNode, host: OrgExecutionHost, delegation: OrgDelegationBinding | null,
-    live: boolean, kind: OrgAgentViewIdentity['kind']): void {
+  private addAgent(execution: OrgAgentNode, host: OrgExecutionHost): void {
     this.register(execution.agentRunId)
-    // By execution kind, never by address: a copy at a configured address runs with its own source (REQ-004).
-    const source = kind === 'configured'
-      ? ('agentDefinitionId' in execution ? execution : null)
-      : copyAgentSourceOf(this.copyTasks(), execution.agentRunId)
-    if (!source) throw new Error(`No captured Agent source at '${execution.address}'.`)
     this.agentsById.set(execution.agentRunId, Object.freeze({ agentRunId: execution.agentRunId,
-      address: parseAgentTeamAddress(execution.address), source, execution, host, delegation, kind, live }))
+      address: parseAgentTeamAddress(execution.address), source: execution, execution, host }))
   }
-  private addTeam(execution: OrgTeamNode, delegation: OrgDelegationBinding | null, live: boolean): void {
+  private addTeam(execution: OrgConfiguredTeam): void {
     this.register(execution.teamRunId)
-    const source = delegation
-      ? copyTeamSourceOf(this.copyTasks(), execution.teamRunId)
-      : ('coordinatorAddress' in execution ? execution : null)
-    if (!source) throw new Error(`No captured Team source at '${execution.address}'.`)
     this.teamsById.set(execution.teamRunId, Object.freeze({ teamRunId: execution.teamRunId,
-      address: parseAgentTeamAddress(execution.address), source, execution, delegation, live }))
+      address: parseAgentTeamAddress(execution.address), source: execution, execution }))
     const host: OrgExecutionHost = { kind: 'team', runId: execution.teamRunId }
-    execution.members.forEach((member) => this.addAgent(member, host, delegation, live, delegation ? 'task_team_member' : 'configured'))
+    execution.members.forEach((member) => this.addAgent(member, host))
     this.coordinator(execution.teamRunId)
-    execution.taskExecutions.forEach((child) => this.addTask(child, host, live))
-  }
-  private addTask(execution: OrgTaskExecution, host: OrgExecutionHost, live: boolean): void {
-    const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
-    const binding = Object.freeze({ executionRunId: runId, delegatorAgentRunId: execution.delegatorAgentRunId ?? null })
-    if ('agentRunId' in execution) this.addAgent(execution, host, binding, live, 'task')
-    else this.addTeam(execution, binding, live)
   }
 }

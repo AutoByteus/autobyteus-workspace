@@ -1,0 +1,29 @@
+# IMP-11
+# command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management tests/unit/llm-management tests/unit/agent-tools/agent-runtimes tests/unit/startup/agent-tool-loader.test.ts tests/unit/api/graphql --no-watch --reporter=verbose (SR-006 focused)
+# environment: macOS darwin 25.5, v22.23.1; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002) 1556ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > a step stopped by its own deadline is 'timed out' even when the wall clock still shows 1 ms left (CR-002) 201ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > discovered AutoByteus providers are asked afresh on every read (CR-003, AC-007) > lists a local server that answers with models now, with them, even when nothing loaded it before 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > discovered AutoByteus providers are asked afresh on every read (CR-003, AC-007) > leaves out a local server that does not answer, fails, offers no model or times out 152ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > discovered AutoByteus providers are asked afresh on every read (CR-003, AC-007) > lists a keyed custom endpoint that cannot be read now with models unknown and the reason (REQ-007) 152ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > discovered AutoByteus providers are asked afresh on every read (CR-003, AC-007) > keeps static keyed providers on the catalog, without a reload 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a step stopped by its own deadline is 'timed out' even with 1 ms still left on the wall clock (CR-002) 101ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > ClaudeSdkClient.listModels with a deadline (CR-002) > lets the deadline's time-out through, so the read says 'timed out'; without a deadline it gives [] as before 82ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-concurrency.test.ts > available agent runtimes: concurrent reads and the Codex client (CR-004, AC-013) > one read starts the home-folder app-server once and closes it once, after the answer 72ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-concurrency.test.ts > available agent runtimes: concurrent reads and the Codex client (CR-004, AC-013) > concurrent callers share one read: every caller gets Codex models and limits 19ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-concurrency.test.ts > available agent runtimes: concurrent reads and the Codex client (CR-004, AC-013) > back-to-back reads never meet the previous read's closing app-server 18ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-concurrency.test.ts > available agent runtimes: concurrent reads and the Codex client (CR-004, AC-013) > the answer arrives before a slow release finishes; a read during the release gets that answer 52ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-concurrency.test.ts > available agent runtimes: concurrent reads and the Codex client (CR-004, AC-013) > Codex holdClient is a lease without acquire; a closing generation gives no hold and the read goes on 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > never starts an update when the running-agent count cannot be read (CR-002) 0ms
+ ✓ tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > contains no xAI/Grok names, `_x.ai` handling or Grok imports 14ms
+ ✓ tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > is not imported by other runtimes 43ms
+ ✓ tests/unit/llm-management/llm-providers/llm-provider-service.test.ts > LlmProviderService > saves static and discovered provider credentials without model catalog work 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > rounds remaining percent down, never showing more than is left; exhaustion uses the raw value (O-1) 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts > ClaudeSdkStreamingSession > interrupts with cancelQueued through the single adapter and normalizes the response (RSK-006) 1ms
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > disables task subagents, workflows and ask_user_question per process without touching the base env (AC-013) 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts > deriveClaudeModelSelectionPresentation > keeps default as its own recommended option when no sibling shares its canonical ID 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts > claude-sdk-setting-sources > returns defensive copies so callers cannot mutate shared source policy 0ms
+ Test Files  37 passed (37)
+      Tests  305 passed (305)

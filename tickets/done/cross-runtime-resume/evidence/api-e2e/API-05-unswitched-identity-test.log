@@ -1,0 +1,11 @@
+# API-05 durable test (with the previous-release manifest case). command: env -i … pnpm exec vitest run tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts --no-watch --reporter=verbose
+# commit 60c3ac4ec8 + tests; date 2026-10-31T08:35:29Z
+
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > a journal manifest written by the previous release (one runtime for the run, none per fi
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > claude: archived segments and the open file render exactly as the run's one runtime rend
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > codex: archived segments and the open file render exactly as the run's one runtime rende
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > antigravity: archived segments and the open file render exactly as the run's one runtime
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > grok: archived segments and the open file render exactly as the run's one runtime render
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > autobyteus: archived segments and the open file render exactly as the run's one runtime 
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

@@ -1,0 +1,15 @@
+# Case: API-E02 §5.2, API-REV-006 round 6, code 958cb22462; model regenerated (49 states)
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch --reporter=verbose
+# Result: 12 of 12 steps match
+U0 ['RUN-2'] match
+U1 ['IN-1', 'IN-2'] match
+U2 ['IN-3'] match
+U3 ['DL-2'] match
+U4 ['B-3'] match
+U5 ['DL-6'] match
+U6 ['DL-11'] match
+U7 ['DL-11'] match
+U8 ['DL-8'] match
+U9 ['R-7'] match
+U10 ['R-12'] match
+U11 ['T-3', 'DL-7'] match

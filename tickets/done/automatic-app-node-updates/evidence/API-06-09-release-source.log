@@ -1,0 +1,9 @@
+2026-11-01T21:06:45.463Z GET /good/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.json
+2026-11-01T21:06:45.478Z GET /good/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.json.sig
+2026-11-01T21:06:45.482Z GET /good/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.tar.gz
+2026-11-01T21:06:46.252Z GET /fail/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.json
+2026-11-01T21:06:46.265Z GET /fail/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.json.sig
+2026-11-01T21:06:46.279Z GET /fail/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.tar.gz
+2026-11-01T21:11:33.162Z GET /good/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.json
+2026-11-01T21:11:33.175Z GET /good/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.json.sig
+2026-11-01T21:11:33.182Z GET /good/releases/download/v1.5.11-beta.10/autobyteus-server-1.5.11-beta.10-linux-arm64.tar.gz

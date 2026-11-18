@@ -27,7 +27,7 @@ runtime".
 | --- | --- | --- |
 | `runtime-management/acp/` | ACP (neutral) | `AcpAgentProcess` (child spawn, Node↔Web stream bridge, stderr drain, exit, stop), `AcpClientConnection` (one `@agentclientprotocol/sdk` `ClientSideConnection` per process, `initialize`, request timeouts, per-`sessionId` callback routing, buffering for sessions still being opened), `AcpAgentCapabilities` (standard `initialize` fields + `requiredFor({restore, mcp})`), launch-profile contract, initialize-only discovery handshake, `acp-error-message.ts` |
 | `agent-execution/backends/acp/` | ACP (neutral) | `AcpAgentRunBackendFactory` (create/restore sequencing, rollback, start-time error conversion), `AcpAgentRunBackend`, `AcpAgentSession` (session state machine), `AcpPermissionBridge`, `AcpSessionUpdateConverter`, `AcpPromptBuilder`, session-profile contract |
-| `runtime-management/grok/` | Grok profile | Launch profile (command, args, env, model normalization) and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
+| `runtime-management/grok/` | Grok profile | Launch profile (command; run and discovery launches with the args and env below; no provider relay), model normalization, and `GrokBuildCapability` (version/agent-mode probe, safe diagnostics) |
 | `agent-execution/backends/grok/` | Grok profile | Session profile (`_meta`, MCP entry, extension notifications), tool projection, per-call usage, MCP readiness, `.grok/skills` materializer, factory binding |
 | `llm-management/services/grok-build-model-catalog.ts` | Catalog | Handshake-based `ModelInfo[]` |
 
@@ -44,7 +44,8 @@ modules.
 - **Command.** The runtime runs `grok` by default. Set `GROK_BUILD_COMMAND`
   to use a different command.
 - **Availability probe.** The probe runs `--version`, which must report
-  **1.0.41** or later, then checks `agent --help` for the required
+  **1.0.41** or later by SemVer precedence (a prerelease such as
+  `1.0.41-rc.1` is below it), then checks `agent --help` for the required
   agent-mode flags. It is bounded to 3 s, is asynchronous, and opens no ACP
   session.
 - **Safe diagnostics.** Failures become classified diagnostics:
@@ -93,13 +94,13 @@ AutoByteus runs to Grok's shared leader process.
 **Create path.**
 
 1. The factory prepares the workspace, the composed Carpenter prompt,
-   configured skills, and, when tools are exposed, the run-scoped Agent Tools
-   MCP session.
+   configured skills, and the run-scoped Agent Tools MCP session (every run has
+   one, even with an empty tool list).
 2. It spawns the process and runs `initialize`. Client capabilities are
    `fs:false, terminal:false`.
-3. It checks the capabilities the product needs: `loadSession` for restore,
-   and HTTP MCP when tools are exposed. Anything missing is named in an
-   explicit error.
+3. It checks the capabilities the product needs: a way to restore
+   (`session/load`, preferred, or `session/resume`) and HTTP MCP. Anything
+   missing is named in an explicit error.
 4. It opens `session/new` with the workspace `cwd`, an HTTP `mcpServers`
    entry, and `_meta` containing exactly `rules` and `yoloMode`.
 5. It records the supplied system instructions. The Grok `sessionId`
@@ -112,13 +113,37 @@ AutoByteus runs to Grok's shared leader process.
 guidance stays intact. The system-instructions Activity records the exact
 string AutoByteus supplied.
 
-**MCP readiness gate.** When Agent Tools are exposed, the session waits up to
+Spawning, `initialize`, opening (`new`, or restore by the agent's restore
+method), the config-option selection (none for Grok: model and effort are
+launch arguments) and the MCP readiness gate live in `AcpSessionLauncher`
+(`backends/acp/session/acp-session-launcher.ts`), shared by creation, restore
+and the reopen below. Every launch gets the run's composed instructions; Grok's
+launch ignores them, because it keeps the rules it got at `session/new`. The
+run's `AcpPreparationOwner` is the single holder of its launch, process,
+connection and session: the launcher records each handle in it as soon as it
+exists, the backend reads them from it, and `AcpSessionLauncher.end` ends
+exactly what it holds then (session, then connection or process, then the
+launch), for the reopen and for the run's release alike.
+
+**Tool list changes.** Grok reads its tool list only when a session is opened.
+After a definition change the server enforces removal at once, and the next
+turn start reopens the session: the open process is ended first (its event and
+failure sinks detached, so the exit is not a run failure; the skills stay),
+then a new process loads the same `sessionId` with the current descriptor. If
+the reopen fails, the input is not sent: the message fails with "Couldn't give
+this run its new tools (<cause>). Send your message again to retry, or stop and
+resume the run.", and the run stays active and idle with no runtime session until
+the next turn start retries. See
+[Tool List Updates](./tool_list_updates.md).
+
+**MCP readiness gate.** The session waits up to
 15 s for `_x.ai/mcp/server_status{name:"autobyteus_agent_tools",
 status:"ready"}`. If the server is unavailable or the wait times out,
 activation fails with an error naming the server. Grok would otherwise
 continue silently without the team tools.
 
-**Restore.** Restore spawns a new process and requires `loadSession`. It
+**Restore.** Restore spawns a new process and requires a restore method; Grok
+offers `session/load`, which the shared layer prefers. It
 calls `session/load` with the stored `sessionId`, the same working
 directory, and a fresh MCP descriptor, then checks MCP readiness again. It
 does not inject the rules again, because they persist in the Grok session.
@@ -264,7 +289,7 @@ session, pairs a completion with the open start in order, and uses the start's
 event id as the operation id (`provider_event_id`) so live and history views
 show one activity. A completion without a start is a manual compaction.
 `buildGrokBuildCompactionStatusPayload` gives the `COMPACTION_STATUS` payloads
-their Grok identity (`runtime_kind GROK_BUILD`, provider `grok`):
+their Grok identity (`runtime_kind grok_build`, the `RuntimeKind` value, provider `grok`):
 
 | Phase | Source surface | Status | Rotation | Details |
 | --- | --- | --- | --- | --- |
@@ -288,7 +313,10 @@ recorded as one boundary, as Grok reports it.
 Configured skills are symlinked into `.grok/skills/<name>` in the run working
 directory. The shared workspace skill materializer applies the same
 collision, repair, and release rules as `.codex/skills` and `.claude/skills`.
-The symlinks are removed on terminate or failure.
+The symlinks are removed on terminate or failure. A skill added to the agent's
+definition while the run is going is linked there too, through the run's
+`RunWorkspaceSkills` (see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)),
+and released with the others.
 
 ## Persistence
 
@@ -320,10 +348,11 @@ migrated.
 - **Out of scope.** Grok leader mode, headless `grok -p`, `grok agent serve`,
   Grok sandbox/permission-rule settings, and CLI provisioning in Docker or
   Electron are outside this runtime.
-- **Adding another ACP agent.** A future ACP agent without `loadSession`, HTTP
-  MCP, or a system-prompt `_meta` slot gets an explicit missing-capability
-  error from the shared layer. Prompt delivery for such an agent would need
-  its own session-profile strategy.
+- **Adding another ACP agent.** An ACP agent without `session/load` or
+  `session/resume`, or without HTTP MCP, gets an explicit missing-capability
+  error from the shared layer. An agent without a system-prompt `_meta` slot
+  gets the instructions through its launch profile, as
+  [DeepSeek Harness](./deepseek_harness_runtime.md) does.
 
 ## Validation
 

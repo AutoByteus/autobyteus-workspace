@@ -1,0 +1,10 @@
+Check IMP-02: pnpm -C autobyteus-server-ts test:unit
+Commit: 32cb0034e4 (working tree clean except ticket docs)
+Environment: macOS (Darwin 25.5.0), Node via pnpm, worktree dependencies installed with pnpm install --frozen-lockfile
+Date: 2026-10-30
+---
+ Test Files  877 passed | 5 skipped (882)
+      Tests  7438 passed | 9 skipped (7447)
+   Start at  08:44:24
+   Duration  908.01s (transform 27.63s, setup 14.93s, import 467.85s, tests 307.05s, environment 1.03s)
+EXIT 0

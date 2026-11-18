@@ -27,8 +27,9 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-13", "send_message_to", "You can't send a message to yourself."],
   ["M-14", "send_message_to", "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given."],
   ["M-15", "send_message_to", "The agent '<run id>' is not running, so the message was not sent."],
-  ["M-16", "send_message_to", "The task agent '<run id>' has stopped, so the message was not sent."],
-  ["M-17", "send_message_to", "The user is stopping this task agent."],
+  // M-16 ("The task agent '<run id>' has stopped …") was withdrawn with hosting (autobyteus-461): a delegated run is its own
+  // run, and a message to it when stopped restores it.
+  // M-17 ("The user is stopping this task agent.") went with hosted copies (autobyteus-461): a delegated run stops as itself.
   ["M-18", "send_message_to (result)", "<run id> continues with its conversation."],
   ["M-19", "send_message_to (result)", "<run id> continues with its conversation (its Task is open again) but did not receive this message; send it again."],
   ["M-20", "both tools", "This work is stopping or has stopped, so the message or delegation was not sent."],
@@ -41,14 +42,12 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-27", "delegate_task", "Invalid delegate_task input: <what is wrong>."],
   ["M-28", "delegate_task", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task."],
   ["M-29", "delegate_task", "Your Task is DONE or CANCELLED, so you can't start new work."],
-  ["M-30", "delegate_task", "Tasks are not available here, so this delegation can't be recorded."],
   ["M-31", "delegate_task", "The Task is <status>; set it to TODO or IN_PROGRESS before you delegate it."],
   ["M-32", "delegate_task", "The Task was marked DONE or CANCELLED; its new work was not started."],
   ["M-33", "delegate_task", "Task <task_id> was given to the task agent, but the message with its work was not delivered (<reason>). Message the task agent's run id <run id>, or set Task <task_id> to CANCELLED, or delegate it to a new task agent."],
   ["M-34", "delegate_task", "<run id> is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address."],
   ["M-35", "delegate_task", "<run id> is the coordinator of task agent team <team run id>; use target_team_run_id \"<team run id>\"."],
   ["M-36", "delegate_task", "<run id> is a task agent team's run id; use target_team_run_id \"<run id>\"."],
-  ["M-37", "delegate_task", "<run id> is a member of task agent team <team run id>; to give that team a Task, use target_team_run_id \"<team run id>\"."],
   ["M-38", "delegate_task", "<run id> is a task agent's run id; use target_agent_run_id \"<run id>\"."],
   ["M-39", "delegate_task", "This task agent already works on this Task."],
   ["M-40", "delegate_task", "This task agent has no Task; delegate Task <task_id> with recipient_address instead."],
@@ -78,9 +77,12 @@ const ID_RULE = /(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/;
 const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! id)|your run(?! id)|the run(?! id)|in the run(?! id)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
 
 describe("result and refusal catalogue (wording §7.3, SR-014)", () => {
-  it("lists M-01 to M-45 once each, without the withdrawn M-43", () => {
+  // M-30 ("Tasks are not available here …") was withdrawn with the process binding (autobyteus-461 SR-047, SR-052): every host
+  // composes the Task side and its delegation, so no delegation finds none. M-37 (a team member's run ID) was withdrawn by
+  // SR-071: a member's run ID gets base's M-34.
+  it("lists M-01 to M-45 once each, without the withdrawn M-43, M-16, M-17, M-30 and M-37 (autobyteus-461)", () => {
     expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 45 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
-      .filter((id) => id !== "M-43"));
+      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17" && id !== "M-30" && id !== "M-37"));
   });
 
   const source = normalizedSource();

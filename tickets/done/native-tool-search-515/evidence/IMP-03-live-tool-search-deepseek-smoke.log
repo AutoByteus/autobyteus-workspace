@@ -1,0 +1,7 @@
+# IMP-03 gated live suite smoke: native tool search on DeepSeek V4 Flash
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 LIVE_TOOL_SEARCH_MODELS=deepseek-v4-flash LIVE_TOOL_SEARCH_RECORD=<file> pnpm -C autobyteus-ts exec vitest run tests/integration/agent/native-tool-search-live.test.ts
+# Commit: working tree equal to 8065d773e0 except the live test stub (Task status kept after update_task, made after this run)
+# Environment: macOS, Node v22.23.1, test vault (deepseek key)
+# Date: 2026-11-17
+# Result: 1 passed. Record line (one JSON object):
+{"model":"deepseek-v4-flash","outcome":"called_correctly","completed":true,"calls":["get_project_task","update_task","get_project_task","get_project_task","update_task","get_project_task","run_bash","list_project_tasks","update_task","get_project_task"],"requests":11,"identicalTools":true,"usages":[{"prompt":871,"cacheRead":128},{"prompt":1193,"cacheRead":896},{"prompt":1322,"cacheRead":1152},{"prompt":1584,"cacheRead":1408},{"prompt":1696,"cacheRead":1536},{"prompt":1961,"cacheRead":1792},{"prompt":2073,"cacheRead":1920},{"prompt":2368,"cacheRead":2176},{"prompt":2482,"cacheRead":2304},{"prompt":2765,"cacheRead":2560},{"prompt":2877,"cacheRead":2688}],"errors":[]}

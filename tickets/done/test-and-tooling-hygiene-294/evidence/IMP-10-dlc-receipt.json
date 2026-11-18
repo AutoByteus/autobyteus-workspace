@@ -1,0 +1,2585 @@
+{
+  "agent": {
+    "squadSource": {
+      "kind": "agent_team",
+      "teamDefinitionId": "dlc-squad-fcd764",
+      "coordinatorAddress": "/dlc_squad_fcd764/lead",
+      "members": [
+        {
+          "address": "/dlc_squad_fcd764/lead",
+          "agentDefinitionId": "dlc-worker-2234fc",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true
+        },
+        {
+          "address": "/dlc_squad_fcd764/engineer",
+          "agentDefinitionId": "dlc-engineer-15dd56",
+          "launchConfiguration": {
+            "runtimeKind": "grok_build",
+            "llmModelIdentifier": "grok-4.7",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": false,
+          "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/reviewer",
+          "agentDefinitionId": "dlc-reviewer-01154d",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": false,
+          "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/offline",
+          "agentDefinitionId": "dlc-offline-1d871a",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.5",
+                "reason": "runtime_unavailable",
+                "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/unoffered",
+          "agentDefinitionId": "dlc-unoffered-298d5e",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-no-such-model",
+                "reason": "model_unavailable",
+                "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/badsettings",
+          "agentDefinitionId": "dlc-badsettings-df5756",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "reason": "model_settings_invalid",
+                "detail": "Its model settings are invalid: This model has no adjustable settings."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/incomplete",
+          "agentDefinitionId": "dlc-incomplete-e8f686",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": null,
+                "reason": "incomplete",
+                "detail": "It names no model."
+              }
+            ]
+          }
+        }
+      ],
+      "handoffs": [],
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+      },
+      "defaultLaunchSource": {
+        "origin": "inherited",
+        "fallbacks": [
+          {
+            "layer": "team_default",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-no-such-team-model",
+            "reason": "model_unavailable",
+            "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+          }
+        ]
+      }
+    },
+    "squad": {
+      "result": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_squad_fcd764_e40f8dd02e8147d0892e7c67db1d49e7",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_546d0e39bae04941b9737666dbf54424",
+        "task_id": "ad_hoc_task_3ec367ca-f09c-4777-9ca5-27f3340d3248",
+        "launch_notes": [
+          "DLC squad fcd764: its team default antigravity_cli / dlc-no-such-team-model could not be used (The model 'dlc-no-such-team-model' is not available on antigravity_cli); its members without their own default run on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "offline: its agent default codex_app_server / gpt-5.5 could not be used (Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "badsettings: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "incomplete: its agent default antigravity_cli / (no model) could not be used (It names no model); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "source": {
+        "kind": "agent_team",
+        "teamDefinitionId": "dlc-squad-fcd764",
+        "coordinatorAddress": "/dlc_squad_fcd764/lead",
+        "members": [
+          {
+            "address": "/dlc_squad_fcd764/lead",
+            "agentDefinitionId": "dlc-worker-2234fc",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true
+          },
+          {
+            "address": "/dlc_squad_fcd764/engineer",
+            "agentDefinitionId": "dlc-engineer-15dd56",
+            "launchConfiguration": {
+              "runtimeKind": "grok_build",
+              "llmModelIdentifier": "grok-4.7",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/reviewer",
+            "agentDefinitionId": "dlc-reviewer-01154d",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/offline",
+            "agentDefinitionId": "dlc-offline-1d871a",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-5.5",
+                  "reason": "runtime_unavailable",
+                  "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/unoffered",
+            "agentDefinitionId": "dlc-unoffered-298d5e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/badsettings",
+            "agentDefinitionId": "dlc-badsettings-df5756",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "reason": "model_settings_invalid",
+                  "detail": "Its model settings are invalid: This model has no adjustable settings."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/incomplete",
+            "agentDefinitionId": "dlc-incomplete-e8f686",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": null,
+                  "reason": "incomplete",
+                  "detail": "It names no model."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "defaultLaunchSource": {
+          "origin": "inherited",
+          "fallbacks": [
+            {
+              "layer": "team_default",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-no-such-team-model",
+              "reason": "model_unavailable",
+              "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+            }
+          ]
+        }
+      }
+    },
+    "mixedRuntime": {
+      "grokSessions": [
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        }
+      ],
+      "agyLaunches": [
+        {
+          "runId": "dlc_reviewer_01154d_76d4a9a474a24e4b824fe3f320e0ed3f",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_57a3311754fb4769b17d3a351ef7066f",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_65f52768cc304c43bd28ffc929e01df0",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_5b7199fdbfab4f87a4629acfdb10ac4c",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_0c13b4998cd74fa7866a88392102eae5",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_9ce10f0bb2f3416fac064edaabd00329",
+          "model": "gemini-3.8-flash-low"
+        }
+      ]
+    },
+    "teammates": {
+      "helper": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_badsettings_df5756_163b610c779345ef93d2af139b450aad",
+        "launch_notes": [
+          "DLC badsettings df5756: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "helperAgain": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_badsettings_df5756_650034531cd84ad497875d86f66af7eb",
+        "launch_notes": [
+          "DLC badsettings df5756: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "helperMessage": {
+        "accepted": false,
+        "code": "COLLABORATION_TARGET_NOT_FOUND",
+        "message": "No agent or agent team you can talk with has the address /dlc_badsettings_df5756. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task."
+      }
+    },
+    "agents": {
+      "agentCopy": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_engineer_15dd56_c577dc678d384cbb8d2084db72b5a37f",
+        "task_id": "ad_hoc_task_0f444c17-7ae0-4b62-a7f7-2ee5bf58c6cb"
+      },
+      "plainCopy": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_plain_bc9d10_8b74cc120cdc451d861cefee36bfb786",
+        "task_id": "ad_hoc_task_1b59d6e2-cf6c-4fa2-9c74-b5766304bea0"
+      },
+      "usable": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_reviewer_01154d_8d35703a34f34fcd952b73053971ded0",
+        "task_id": "ad_hoc_task_5a5380ff-2704-4783-bd93-51b69995c0f5"
+      },
+      "unusable": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_unoffered_298d5e_de0420b0c71547218bb3d5cdc5b9f3be",
+        "task_id": "ad_hoc_task_71eb46be-f1ca-42b9-93f6-f514c31d9127",
+        "launch_notes": [
+          "DLC unoffered 298d5e: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      }
+    },
+    "pair": {
+      "pairIn": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_pair_697c0f_df7f5c201b72489d9d6828430d8b7c11",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_dba79d3deb4c4080b83f55b3a37ef9ee",
+        "task_id": "ad_hoc_task_7e6325c6-49de-473c-bf41-23a369ae472b",
+        "launch_notes": [
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / dlc-alt-model (its team default)."
+        ]
+      },
+      "pair": {
+        "address": "/dlc_pair_697c0f",
+        "teamRunId": "dlc_pair_697c0f_df7f5c201b72489d9d6828430d8b7c11",
+        "members": [
+          {
+            "address": "/dlc_pair_697c0f/lead",
+            "agentRunId": "dlc_worker_2234fc_dba79d3deb4c4080b83f55b3a37ef9ee",
+            "platformAgentRunId": "5488eaa1-2428-40e4-a9d5-81b413a3aede"
+          },
+          {
+            "address": "/dlc_pair_697c0f/engineer",
+            "agentRunId": "dlc_engineer_15dd56_91c233c38a4e454289f4e4f01436bffe",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agentRunId": "dlc_unoffered_298d5e_fa13a464c0114ac4aa02f847651ba17e",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "dlc_manager_5e689f_58f71c04507b40ba89702699a6a5efc3",
+        "startedAt": "2026-10-27T19:00:20.117Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "dlc-pair-697c0f",
+          "coordinatorAddress": "/dlc_pair_697c0f/lead",
+          "members": [
+            {
+              "address": "/dlc_pair_697c0f/lead",
+              "agentDefinitionId": "dlc-worker-2234fc",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true
+            },
+            {
+              "address": "/dlc_pair_697c0f/engineer",
+              "agentDefinitionId": "dlc-engineer-15dd56",
+              "launchConfiguration": {
+                "runtimeKind": "grok_build",
+                "llmModelIdentifier": "grok-4.7",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": false,
+              "launchSource": {
+                "origin": "agent_default",
+                "fallbacks": []
+              }
+            },
+            {
+              "address": "/dlc_pair_697c0f/unoffered",
+              "agentDefinitionId": "dlc-unoffered-298d5e",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true,
+              "launchSource": {
+                "origin": "team_default",
+                "fallbacks": [
+                  {
+                    "layer": "agent_default",
+                    "runtimeKind": "antigravity_cli",
+                    "llmModelIdentifier": "dlc-no-such-model",
+                    "reason": "model_unavailable",
+                    "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                  }
+                ]
+              }
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      },
+      "extra": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_pair_697c0f_65755b0b4e5649bdbfda9808b01423ea",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_b7e354e7d51344598ee6ff2f8d0bdb7d",
+        "task_id": "ad_hoc_task_3f29903c-1357-4bec-b794-5f68b2cc8520",
+        "launch_notes": [
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / dlc-alt-model (its team default)."
+        ]
+      },
+      "extraCopy": {
+        "address": "/dlc_pair_697c0f",
+        "teamRunId": "dlc_pair_697c0f_65755b0b4e5649bdbfda9808b01423ea",
+        "members": [
+          {
+            "address": "/dlc_pair_697c0f/lead",
+            "agentRunId": "dlc_worker_2234fc_b7e354e7d51344598ee6ff2f8d0bdb7d",
+            "platformAgentRunId": "42511ad1-6269-4cc0-be6e-6f54cefa5acb"
+          },
+          {
+            "address": "/dlc_pair_697c0f/engineer",
+            "agentRunId": "dlc_engineer_15dd56_7718c53cf8454cbfae7929db484ef4b0",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agentRunId": "dlc_unoffered_298d5e_99c62251074f438b9be85e21a87ff0f2",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "dlc_manager_5e689f_58f71c04507b40ba89702699a6a5efc3",
+        "startedAt": "2026-10-27T19:00:20.587Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "dlc-pair-697c0f",
+          "coordinatorAddress": "/dlc_pair_697c0f/lead",
+          "members": [
+            {
+              "address": "/dlc_pair_697c0f/lead",
+              "agentDefinitionId": "dlc-worker-2234fc",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true
+            },
+            {
+              "address": "/dlc_pair_697c0f/engineer",
+              "agentDefinitionId": "dlc-engineer-15dd56",
+              "launchConfiguration": {
+                "runtimeKind": "grok_build",
+                "llmModelIdentifier": "grok-4.7",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": false,
+              "launchSource": {
+                "origin": "agent_default",
+                "fallbacks": []
+              }
+            },
+            {
+              "address": "/dlc_pair_697c0f/unoffered",
+              "agentDefinitionId": "dlc-unoffered-298d5e",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true,
+              "launchSource": {
+                "origin": "team_default",
+                "fallbacks": [
+                  {
+                    "layer": "agent_default",
+                    "runtimeKind": "antigravity_cli",
+                    "llmModelIdentifier": "dlc-no-such-model",
+                    "reason": "model_unavailable",
+                    "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                  }
+                ]
+              }
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      }
+    }
+  },
+  "team": {
+    "squadSource": {
+      "kind": "agent_team",
+      "team_definition_id": "dlc-squad-fcd764",
+      "coordinator_address": "/dlc_squad_fcd764/lead",
+      "members": [
+        {
+          "address": "/dlc_squad_fcd764/lead",
+          "agent_definition_id": "dlc-worker-2234fc",
+          "launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "gemini-3.8-flash-low",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": true
+        },
+        {
+          "address": "/dlc_squad_fcd764/engineer",
+          "agent_definition_id": "dlc-engineer-15dd56",
+          "launch_configuration": {
+            "runtime_kind": "grok_build",
+            "llm_model_identifier": "grok-4.7",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": false,
+          "launch_source": {
+            "origin": "agent_default",
+            "fallbacks": []
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/reviewer",
+          "agent_definition_id": "dlc-reviewer-01154d",
+          "launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "dlc-alt-model",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": false,
+          "launch_source": {
+            "origin": "agent_default",
+            "fallbacks": []
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/offline",
+          "agent_definition_id": "dlc-offline-1d871a",
+          "launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "gemini-3.8-flash-low",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": true,
+          "launch_source": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtime_kind": "codex_app_server",
+                "llm_model_identifier": "gpt-5.5",
+                "reason": "runtime_unavailable",
+                "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/unoffered",
+          "agent_definition_id": "dlc-unoffered-298d5e",
+          "launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "gemini-3.8-flash-low",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": true,
+          "launch_source": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": "dlc-no-such-model",
+                "reason": "model_unavailable",
+                "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/badsettings",
+          "agent_definition_id": "dlc-badsettings-df5756",
+          "launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "gemini-3.8-flash-low",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": true,
+          "launch_source": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": "gemini-3.8-flash-low",
+                "reason": "model_settings_invalid",
+                "detail": "Its model settings are invalid: This model has no adjustable settings."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/incomplete",
+          "agent_definition_id": "dlc-incomplete-e8f686",
+          "launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "gemini-3.8-flash-low",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "follows_team": true,
+          "launch_source": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": null,
+                "reason": "incomplete",
+                "detail": "It names no model."
+              }
+            ]
+          }
+        }
+      ],
+      "handoffs": [],
+      "default_launch_configuration": {
+        "runtime_kind": "antigravity_cli",
+        "llm_model_identifier": "gemini-3.8-flash-low",
+        "llm_config": null,
+        "auto_execute_tools": true,
+        "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+      },
+      "default_launch_source": {
+        "origin": "inherited",
+        "fallbacks": [
+          {
+            "layer": "team_default",
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "dlc-no-such-team-model",
+            "reason": "model_unavailable",
+            "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+          }
+        ]
+      }
+    },
+    "squad": {
+      "result": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_squad_fcd764_b1c6c9d79fc1420a8b2e325c6beba71e",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_465faad2a8d0478cae9165a47e8b6697",
+        "task_id": "ad_hoc_task_7c6f633c-6bab-400e-80ca-d72ddd72ab01",
+        "launch_notes": [
+          "DLC squad fcd764: its team default antigravity_cli / dlc-no-such-team-model could not be used (The model 'dlc-no-such-team-model' is not available on antigravity_cli); its members without their own default run on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "offline: its agent default codex_app_server / gpt-5.5 could not be used (Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "badsettings: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "incomplete: its agent default antigravity_cli / (no model) could not be used (It names no model); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "source": {
+        "kind": "agent_team",
+        "team_definition_id": "dlc-squad-fcd764",
+        "coordinator_address": "/dlc_squad_fcd764/lead",
+        "members": [
+          {
+            "address": "/dlc_squad_fcd764/lead",
+            "agent_definition_id": "dlc-worker-2234fc",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true
+          },
+          {
+            "address": "/dlc_squad_fcd764/engineer",
+            "agent_definition_id": "dlc-engineer-15dd56",
+            "launch_configuration": {
+              "runtime_kind": "grok_build",
+              "llm_model_identifier": "grok-4.7",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": false,
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/reviewer",
+            "agent_definition_id": "dlc-reviewer-01154d",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-alt-model",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": false,
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/offline",
+            "agent_definition_id": "dlc-offline-1d871a",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.5",
+                  "reason": "runtime_unavailable",
+                  "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/unoffered",
+            "agent_definition_id": "dlc-unoffered-298d5e",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/badsettings",
+            "agent_definition_id": "dlc-badsettings-df5756",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": "gemini-3.8-flash-low",
+                  "reason": "model_settings_invalid",
+                  "detail": "Its model settings are invalid: This model has no adjustable settings."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/incomplete",
+            "agent_definition_id": "dlc-incomplete-e8f686",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": null,
+                  "reason": "incomplete",
+                  "detail": "It names no model."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "default_launch_configuration": {
+          "runtime_kind": "antigravity_cli",
+          "llm_model_identifier": "gemini-3.8-flash-low",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "default_launch_source": {
+          "origin": "inherited",
+          "fallbacks": [
+            {
+              "layer": "team_default",
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-no-such-team-model",
+              "reason": "model_unavailable",
+              "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+            }
+          ]
+        }
+      }
+    },
+    "mixedRuntime": {
+      "grokSessions": [
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        }
+      ],
+      "agyLaunches": [
+        {
+          "runId": "dlc_reviewer_01154d_76d4a9a474a24e4b824fe3f320e0ed3f",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_57a3311754fb4769b17d3a351ef7066f",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_65f52768cc304c43bd28ffc929e01df0",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_5b7199fdbfab4f87a4629acfdb10ac4c",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_0c13b4998cd74fa7866a88392102eae5",
+          "model": "gemini-3.8-flash-low"
+        }
+      ]
+    },
+    "teammates": {
+      "helper": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_badsettings_df5756_7c524d8225054b45a0fe19315887c86c",
+        "launch_notes": [
+          "DLC badsettings df5756: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "helperAgain": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_badsettings_df5756_52c8bc57c398421ca47c6de4cfeda02c",
+        "launch_notes": [
+          "DLC badsettings df5756: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "helperMessage": {
+        "accepted": false,
+        "code": "COLLABORATION_TARGET_NOT_FOUND",
+        "message": "No agent or agent team you can talk with has the address /dlc_badsettings_df5756. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task."
+      }
+    },
+    "agents": {
+      "agentCopy": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_engineer_15dd56_33dd107680544e868387b263d210c909",
+        "task_id": "ad_hoc_task_0aa2a3c1-1359-4f8a-a33c-3b386a965a8c"
+      },
+      "plainCopy": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_plain_bc9d10_b89e37c121c7415c9705a79e7adcff05",
+        "task_id": "ad_hoc_task_360fb9eb-1859-461e-8fd9-c7fce0d66589"
+      },
+      "usable": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_reviewer_01154d_7eba28f00c1d4fcb99308e26c87a22cb",
+        "task_id": "ad_hoc_task_582665e5-5dd4-4498-823a-44617fa074c5"
+      },
+      "unusable": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_unoffered_298d5e_703722369e084c7ead56b341fc136f53",
+        "task_id": "ad_hoc_task_5333380e-55e4-44d3-82ce-70fd08b3e619",
+        "launch_notes": [
+          "DLC unoffered 298d5e: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      }
+    },
+    "pair": {
+      "pairIn": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_pair_697c0f_f054b3c9b82c458fb933ad09d892e093",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_e6e52fd0c60048d6a813b58c4b5afa89",
+        "task_id": "ad_hoc_task_c27578f4-98ed-4588-a13a-9df751af3e36",
+        "launch_notes": [
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / dlc-alt-model (its team default)."
+        ]
+      },
+      "pair": {
+        "kind": "task_team",
+        "address": "/dlc_pair_697c0f",
+        "team_run_id": "dlc_pair_697c0f_f054b3c9b82c458fb933ad09d892e093",
+        "members": [
+          {
+            "kind": "task_team_agent",
+            "address": "/dlc_pair_697c0f/lead",
+            "agent_run_id": "dlc_worker_2234fc_e6e52fd0c60048d6a813b58c4b5afa89",
+            "platform_agent_run_id": "9d081207-d846-49db-a5fa-65d15f529a15"
+          },
+          {
+            "kind": "task_team_agent",
+            "address": "/dlc_pair_697c0f/engineer",
+            "agent_run_id": "dlc_engineer_15dd56_3735c0e06c304ef2b01d028b76e5ba2d",
+            "platform_agent_run_id": null
+          },
+          {
+            "kind": "task_team_agent",
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agent_run_id": "dlc_unoffered_298d5e_434b3f5b84284909919834260e19b2c6",
+            "platform_agent_run_id": null
+          }
+        ],
+        "task_executions": [],
+        "delegator_agent_run_id": "dlc_manager_5e689f_c8748af5fda44b339db165aa0c5232e3",
+        "started_at": "2026-10-27T19:00:19.864Z",
+        "source": {
+          "kind": "agent_team",
+          "team_definition_id": "dlc-pair-697c0f",
+          "coordinator_address": "/dlc_pair_697c0f/lead",
+          "members": [
+            {
+              "address": "/dlc_pair_697c0f/lead",
+              "agent_definition_id": "dlc-worker-2234fc",
+              "launch_configuration": {
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": "dlc-alt-model",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "follows_team": true
+            },
+            {
+              "address": "/dlc_pair_697c0f/engineer",
+              "agent_definition_id": "dlc-engineer-15dd56",
+              "launch_configuration": {
+                "runtime_kind": "grok_build",
+                "llm_model_identifier": "grok-4.7",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "follows_team": false,
+              "launch_source": {
+                "origin": "agent_default",
+                "fallbacks": []
+              }
+            },
+            {
+              "address": "/dlc_pair_697c0f/unoffered",
+              "agent_definition_id": "dlc-unoffered-298d5e",
+              "launch_configuration": {
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": "dlc-alt-model",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "follows_team": true,
+              "launch_source": {
+                "origin": "team_default",
+                "fallbacks": [
+                  {
+                    "layer": "agent_default",
+                    "runtime_kind": "antigravity_cli",
+                    "llm_model_identifier": "dlc-no-such-model",
+                    "reason": "model_unavailable",
+                    "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                  }
+                ]
+              }
+            }
+          ],
+          "handoffs": [],
+          "default_launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "dlc-alt-model",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "default_launch_source": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      },
+      "extra": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_pair_697c0f_5a471358ae484558a2f9853508362f48",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_31fb91650ae649bdaae106927b7f1a88",
+        "task_id": "ad_hoc_task_4a9814cc-0386-48fb-8245-24efa156d5ab",
+        "launch_notes": [
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / dlc-alt-model (its team default)."
+        ]
+      },
+      "extraCopy": {
+        "kind": "task_team",
+        "address": "/dlc_pair_697c0f",
+        "team_run_id": "dlc_pair_697c0f_5a471358ae484558a2f9853508362f48",
+        "members": [
+          {
+            "kind": "task_team_agent",
+            "address": "/dlc_pair_697c0f/lead",
+            "agent_run_id": "dlc_worker_2234fc_31fb91650ae649bdaae106927b7f1a88",
+            "platform_agent_run_id": "27d9a102-fd33-49b8-9422-33a7b2c78a34"
+          },
+          {
+            "kind": "task_team_agent",
+            "address": "/dlc_pair_697c0f/engineer",
+            "agent_run_id": "dlc_engineer_15dd56_41ed461b7bd54590b03d17b73a5493af",
+            "platform_agent_run_id": null
+          },
+          {
+            "kind": "task_team_agent",
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agent_run_id": "dlc_unoffered_298d5e_fdd7b25822cf4b32b8b2e5eb07d75837",
+            "platform_agent_run_id": null
+          }
+        ],
+        "task_executions": [],
+        "delegator_agent_run_id": "dlc_manager_5e689f_c8748af5fda44b339db165aa0c5232e3",
+        "started_at": "2026-10-27T19:00:20.375Z",
+        "source": {
+          "kind": "agent_team",
+          "team_definition_id": "dlc-pair-697c0f",
+          "coordinator_address": "/dlc_pair_697c0f/lead",
+          "members": [
+            {
+              "address": "/dlc_pair_697c0f/lead",
+              "agent_definition_id": "dlc-worker-2234fc",
+              "launch_configuration": {
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": "dlc-alt-model",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "follows_team": true
+            },
+            {
+              "address": "/dlc_pair_697c0f/engineer",
+              "agent_definition_id": "dlc-engineer-15dd56",
+              "launch_configuration": {
+                "runtime_kind": "grok_build",
+                "llm_model_identifier": "grok-4.7",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "follows_team": false,
+              "launch_source": {
+                "origin": "agent_default",
+                "fallbacks": []
+              }
+            },
+            {
+              "address": "/dlc_pair_697c0f/unoffered",
+              "agent_definition_id": "dlc-unoffered-298d5e",
+              "launch_configuration": {
+                "runtime_kind": "antigravity_cli",
+                "llm_model_identifier": "dlc-alt-model",
+                "llm_config": null,
+                "auto_execute_tools": true,
+                "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "follows_team": true,
+              "launch_source": {
+                "origin": "team_default",
+                "fallbacks": [
+                  {
+                    "layer": "agent_default",
+                    "runtime_kind": "antigravity_cli",
+                    "llm_model_identifier": "dlc-no-such-model",
+                    "reason": "model_unavailable",
+                    "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                  }
+                ]
+              }
+            }
+          ],
+          "handoffs": [],
+          "default_launch_configuration": {
+            "runtime_kind": "antigravity_cli",
+            "llm_model_identifier": "dlc-alt-model",
+            "llm_config": null,
+            "auto_execute_tools": true,
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "default_launch_source": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      }
+    }
+  },
+  "org": {
+    "squadSource": {
+      "kind": "agent_team",
+      "teamDefinitionId": "dlc-squad-fcd764",
+      "coordinatorAddress": "/dlc_squad_fcd764/lead",
+      "members": [
+        {
+          "address": "/dlc_squad_fcd764/lead",
+          "agentDefinitionId": "dlc-worker-2234fc",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true
+        },
+        {
+          "address": "/dlc_squad_fcd764/engineer",
+          "agentDefinitionId": "dlc-engineer-15dd56",
+          "launchConfiguration": {
+            "runtimeKind": "grok_build",
+            "llmModelIdentifier": "grok-4.7",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": false,
+          "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/reviewer",
+          "agentDefinitionId": "dlc-reviewer-01154d",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": false,
+          "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/offline",
+          "agentDefinitionId": "dlc-offline-1d871a",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-5.5",
+                "reason": "runtime_unavailable",
+                "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/unoffered",
+          "agentDefinitionId": "dlc-unoffered-298d5e",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-no-such-model",
+                "reason": "model_unavailable",
+                "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/badsettings",
+          "agentDefinitionId": "dlc-badsettings-df5756",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "reason": "model_settings_invalid",
+                "detail": "Its model settings are invalid: This model has no adjustable settings."
+              }
+            ]
+          }
+        },
+        {
+          "address": "/dlc_squad_fcd764/incomplete",
+          "agentDefinitionId": "dlc-incomplete-e8f686",
+          "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "followsTeam": true,
+          "launchSource": {
+            "origin": "inherited",
+            "fallbacks": [
+              {
+                "layer": "agent_default",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": null,
+                "reason": "incomplete",
+                "detail": "It names no model."
+              }
+            ]
+          }
+        }
+      ],
+      "handoffs": [],
+      "defaultLaunchConfiguration": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null,
+        "autoExecuteTools": true,
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+      },
+      "defaultLaunchSource": {
+        "origin": "inherited",
+        "fallbacks": [
+          {
+            "layer": "team_default",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-no-such-team-model",
+            "reason": "model_unavailable",
+            "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+          }
+        ]
+      }
+    },
+    "squad": {
+      "result": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_squad_fcd764_617c9ce02a064196bf356ce3f20f4e21",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_78cfb8f9cc6246118b45e34dcf651a70",
+        "task_id": "ad_hoc_task_5cf7f600-55e1-4d87-a5e5-b8d25f80cf67",
+        "launch_notes": [
+          "DLC squad fcd764: its team default antigravity_cli / dlc-no-such-team-model could not be used (The model 'dlc-no-such-team-model' is not available on antigravity_cli); its members without their own default run on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "offline: its agent default codex_app_server / gpt-5.5 could not be used (Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "badsettings: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run).",
+          "incomplete: its agent default antigravity_cli / (no model) could not be used (It names no model); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "source": {
+        "kind": "agent_team",
+        "teamDefinitionId": "dlc-squad-fcd764",
+        "coordinatorAddress": "/dlc_squad_fcd764/lead",
+        "members": [
+          {
+            "address": "/dlc_squad_fcd764/lead",
+            "agentDefinitionId": "dlc-worker-2234fc",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true
+          },
+          {
+            "address": "/dlc_squad_fcd764/engineer",
+            "agentDefinitionId": "dlc-engineer-15dd56",
+            "launchConfiguration": {
+              "runtimeKind": "grok_build",
+              "llmModelIdentifier": "grok-4.7",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/reviewer",
+            "agentDefinitionId": "dlc-reviewer-01154d",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/offline",
+            "agentDefinitionId": "dlc-offline-1d871a",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-5.5",
+                  "reason": "runtime_unavailable",
+                  "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/unoffered",
+            "agentDefinitionId": "dlc-unoffered-298d5e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/badsettings",
+            "agentDefinitionId": "dlc-badsettings-df5756",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "reason": "model_settings_invalid",
+                  "detail": "Its model settings are invalid: This model has no adjustable settings."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/incomplete",
+            "agentDefinitionId": "dlc-incomplete-e8f686",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": null,
+                  "reason": "incomplete",
+                  "detail": "It names no model."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "defaultLaunchSource": {
+          "origin": "inherited",
+          "fallbacks": [
+            {
+              "layer": "team_default",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-no-such-team-model",
+              "reason": "model_unavailable",
+              "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+            }
+          ]
+        }
+      }
+    },
+    "mixedRuntime": {
+      "grokSessions": [
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        }
+      ],
+      "agyLaunches": [
+        {
+          "runId": "dlc_reviewer_01154d_76d4a9a474a24e4b824fe3f320e0ed3f",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_57a3311754fb4769b17d3a351ef7066f",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_65f52768cc304c43bd28ffc929e01df0",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_5b7199fdbfab4f87a4629acfdb10ac4c",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_0c13b4998cd74fa7866a88392102eae5",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_unoffered_298d5e_9ce10f0bb2f3416fac064edaabd00329",
+          "model": "gemini-3.8-flash-low"
+        }
+      ]
+    },
+    "teammates": {
+      "helper": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_badsettings_df5756_b19f5746d43b46e7b59af0460d4fb098",
+        "launch_notes": [
+          "DLC badsettings df5756: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "helperAgain": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_badsettings_df5756_687448d2a6fc4b9f875b2b655c025a53",
+        "launch_notes": [
+          "DLC badsettings df5756: its agent default antigravity_cli / gemini-3.8-flash-low could not be used (Its model settings are invalid: This model has no adjustable settings); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      },
+      "helperMessage": {
+        "accepted": false,
+        "code": "COLLABORATION_TARGET_NOT_FOUND",
+        "message": "No agent or agent team you can talk with has the address /dlc_badsettings_df5756. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task."
+      }
+    },
+    "agents": {
+      "agentCopy": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_engineer_15dd56_63f21652ce804232b61f92e4c002b5f9",
+        "task_id": "ad_hoc_task_695fd001-376f-438a-a967-68f528dc70cd"
+      },
+      "plainCopy": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_plain_bc9d10_6817e1674fd349a89bbf5c500ba1d22a",
+        "task_id": "ad_hoc_task_8abf99b6-bc89-4960-80c6-cfdf557551c8"
+      },
+      "usable": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_reviewer_01154d_4dd18ecfa2804e328fb9022d62e4337d",
+        "task_id": "ad_hoc_task_56b6d4f6-258d-48b1-a329-79926ac78e5d"
+      },
+      "unusable": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "dlc_unoffered_298d5e_c495c9ae9f5a4fc7a4dcb261da2109a3",
+        "task_id": "ad_hoc_task_518dc441-e025-4878-8f70-f4010551a497",
+        "launch_notes": [
+          "DLC unoffered 298d5e: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / gemini-3.8-flash-low (inherited from the run)."
+        ]
+      }
+    },
+    "pair": {
+      "pairIn": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_pair_697c0f_b5b1c371186241168399635305e578e5",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_52d40138984d4b8b87553b6e608b8996",
+        "task_id": "ad_hoc_task_5010e563-0f15-4503-b9a5-3e99ebab0440",
+        "launch_notes": [
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / dlc-alt-model (its team default)."
+        ]
+      },
+      "pair": {
+        "address": "/dlc_pair_697c0f",
+        "startedAt": "2026-10-27T19:00:19.973Z",
+        "delegatorAgentRunId": "dlc_manager_5e689f_158e888541f244a1b77ff99679dcdb2c",
+        "teamRunId": "dlc_pair_697c0f_b5b1c371186241168399635305e578e5",
+        "members": [
+          {
+            "address": "/dlc_pair_697c0f/lead",
+            "agentRunId": "dlc_worker_2234fc_52d40138984d4b8b87553b6e608b8996",
+            "platformAgentRunId": "cb2a9b7f-43b9-49a8-9dfe-61ba0d397588"
+          },
+          {
+            "address": "/dlc_pair_697c0f/engineer",
+            "agentRunId": "dlc_engineer_15dd56_aa2b884b0f8b44c0b36218aad50071a8",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agentRunId": "dlc_unoffered_298d5e_4a792ac76ee449daa397482d76ce5288",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "dlc-pair-697c0f",
+          "coordinatorAddress": "/dlc_pair_697c0f/lead",
+          "members": [
+            {
+              "address": "/dlc_pair_697c0f/lead",
+              "agentDefinitionId": "dlc-worker-2234fc",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true
+            },
+            {
+              "address": "/dlc_pair_697c0f/engineer",
+              "agentDefinitionId": "dlc-engineer-15dd56",
+              "launchConfiguration": {
+                "runtimeKind": "grok_build",
+                "llmModelIdentifier": "grok-4.7",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": false,
+              "launchSource": {
+                "origin": "agent_default",
+                "fallbacks": []
+              }
+            },
+            {
+              "address": "/dlc_pair_697c0f/unoffered",
+              "agentDefinitionId": "dlc-unoffered-298d5e",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true,
+              "launchSource": {
+                "origin": "team_default",
+                "fallbacks": [
+                  {
+                    "layer": "agent_default",
+                    "runtimeKind": "antigravity_cli",
+                    "llmModelIdentifier": "dlc-no-such-model",
+                    "reason": "model_unavailable",
+                    "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                  }
+                ]
+              }
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      },
+      "extra": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "dlc_pair_697c0f_668c0aa8e50543b4898e4fbe59cc9dca",
+        "target_team_coordinator_agent_run_id": "dlc_worker_2234fc_5335828d47bd4e0185bdd77e28796ff9",
+        "task_id": "ad_hoc_task_2494495b-a5ed-4d9f-8cc7-7351ab7211df",
+        "launch_notes": [
+          "unoffered: its agent default antigravity_cli / dlc-no-such-model could not be used (The model 'dlc-no-such-model' is not available on antigravity_cli); it runs on antigravity_cli / dlc-alt-model (its team default)."
+        ]
+      },
+      "extraCopy": {
+        "address": "/dlc_pair_697c0f",
+        "startedAt": "2026-10-27T19:00:20.482Z",
+        "delegatorAgentRunId": "dlc_manager_5e689f_158e888541f244a1b77ff99679dcdb2c",
+        "teamRunId": "dlc_pair_697c0f_668c0aa8e50543b4898e4fbe59cc9dca",
+        "members": [
+          {
+            "address": "/dlc_pair_697c0f/lead",
+            "agentRunId": "dlc_worker_2234fc_5335828d47bd4e0185bdd77e28796ff9",
+            "platformAgentRunId": "d14b9215-f4c9-4139-be17-6f6e72737970"
+          },
+          {
+            "address": "/dlc_pair_697c0f/engineer",
+            "agentRunId": "dlc_engineer_15dd56_4db93cc1c09b48c190e0dffea3081d9f",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agentRunId": "dlc_unoffered_298d5e_67a26db7498c4f9592347be023d51103",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "dlc-pair-697c0f",
+          "coordinatorAddress": "/dlc_pair_697c0f/lead",
+          "members": [
+            {
+              "address": "/dlc_pair_697c0f/lead",
+              "agentDefinitionId": "dlc-worker-2234fc",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true
+            },
+            {
+              "address": "/dlc_pair_697c0f/engineer",
+              "agentDefinitionId": "dlc-engineer-15dd56",
+              "launchConfiguration": {
+                "runtimeKind": "grok_build",
+                "llmModelIdentifier": "grok-4.7",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": false,
+              "launchSource": {
+                "origin": "agent_default",
+                "fallbacks": []
+              }
+            },
+            {
+              "address": "/dlc_pair_697c0f/unoffered",
+              "agentDefinitionId": "dlc-unoffered-298d5e",
+              "launchConfiguration": {
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "dlc-alt-model",
+                "llmConfig": null,
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+              },
+              "followsTeam": true,
+              "launchSource": {
+                "origin": "team_default",
+                "fallbacks": [
+                  {
+                    "layer": "agent_default",
+                    "runtimeKind": "antigravity_cli",
+                    "llmModelIdentifier": "dlc-no-such-model",
+                    "reason": "model_unavailable",
+                    "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                  }
+                ]
+              }
+            }
+          ],
+          "handoffs": [],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+          },
+          "defaultLaunchSource": {
+            "origin": "team_default",
+            "fallbacks": []
+          }
+        }
+      }
+    }
+  },
+  "inheritedUnusable": {
+    "delegated": {
+      "delegated": false,
+      "message": "DLC worker 2234fc cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli."
+    },
+    "team": {
+      "delegated": false,
+      "message": "DLC squad fcd764 cannot be delegated to: The model 'dlc-retiring-model' is not available on antigravity_cli."
+    },
+    "brought": {
+      "accepted": false,
+      "code": "COLLABORATION_TARGET_NOT_FOUND",
+      "message": "No agent or agent team you can talk with has the address /dlc_unoffered_298d5e. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task."
+    },
+    "own": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "dlc_reviewer_01154d_bb88c1eb2e1f4d7e81011bd28142bd6c",
+      "task_id": "ad_hoc_task_79c2255c-62f9-44fb-99c7-4f7062a4b350"
+    }
+  },
+  "agentLifecycle": {
+    "copies": {
+      "first": "dlc_squad_fcd764_f0d64d6349744d9a9ff4537d1fb82e10",
+      "second": "dlc_squad_fcd764_160a6e17fded4520b1f3ce33d9da4c46"
+    },
+    "restore": {
+      "secondSource": {
+        "kind": "agent_team",
+        "teamDefinitionId": "dlc-squad-fcd764",
+        "coordinatorAddress": "/dlc_squad_fcd764/lead",
+        "members": [
+          {
+            "address": "/dlc_squad_fcd764/lead",
+            "agentDefinitionId": "dlc-worker-2234fc",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true
+          },
+          {
+            "address": "/dlc_squad_fcd764/engineer",
+            "agentDefinitionId": "dlc-engineer-15dd56",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/reviewer",
+            "agentDefinitionId": "dlc-reviewer-01154d",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/offline",
+            "agentDefinitionId": "dlc-offline-1d871a",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "codex_app_server",
+                  "llmModelIdentifier": "gpt-5.5",
+                  "reason": "runtime_unavailable",
+                  "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/unoffered",
+            "agentDefinitionId": "dlc-unoffered-298d5e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/badsettings",
+            "agentDefinitionId": "dlc-badsettings-df5756",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "reason": "model_settings_invalid",
+                  "detail": "Its model settings are invalid: This model has no adjustable settings."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/incomplete",
+            "agentDefinitionId": "dlc-incomplete-e8f686",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.8-flash-low",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": null,
+                  "reason": "incomplete",
+                  "detail": "It names no model."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "defaultLaunchSource": {
+          "origin": "inherited",
+          "fallbacks": [
+            {
+              "layer": "team_default",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-no-such-team-model",
+              "reason": "model_unavailable",
+              "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+            }
+          ]
+        }
+      },
+      "restoredPair": {
+        "kind": "agent_team",
+        "teamDefinitionId": "dlc-pair-697c0f",
+        "coordinatorAddress": "/dlc_pair_697c0f/lead",
+        "members": [
+          {
+            "address": "/dlc_pair_697c0f/lead",
+            "agentDefinitionId": "dlc-worker-2234fc",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true
+          },
+          {
+            "address": "/dlc_pair_697c0f/engineer",
+            "agentDefinitionId": "dlc-engineer-15dd56",
+            "launchConfiguration": {
+              "runtimeKind": "grok_build",
+              "llmModelIdentifier": "grok-4.7",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": false,
+            "launchSource": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agentDefinitionId": "dlc-unoffered-298d5e",
+            "launchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "dlc-alt-model",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "followsTeam": true,
+            "launchSource": {
+              "origin": "team_default",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "dlc-alt-model",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "defaultLaunchSource": {
+          "origin": "team_default",
+          "fallbacks": []
+        }
+      },
+      "agyLaunches": [
+        {
+          "runId": "dlc_worker_2234fc_edb409b664af459b856a326d55587d66",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_4fc156c75ce54dd59294ae9fe43327bd",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_f69880bb879c432bb27c3014027a7730",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_4b6a17592ea74becb7efa3d6683bdc8b",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_engineer_15dd56_cafd47e80f014da0a0a34bb332bd74f6",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_engineer_15dd56_ede119f883714f7a9acc988de329cd29",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_7540569753a24fe0893cb92d3ae3585e",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_2799321f76f64ae6947d351a0e38e740",
+          "model": "dlc-alt-model"
+        }
+      ],
+      "grokSessions": [
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        }
+      ]
+    }
+  },
+  "teamLifecycle": {
+    "copies": {
+      "first": "dlc_squad_fcd764_136f3b0fa99f415d8e298d5b6f5e9c04",
+      "second": "dlc_squad_fcd764_655f9e0caf0144c5aa4b216c9a22ed5c"
+    },
+    "restore": {
+      "secondSource": {
+        "kind": "agent_team",
+        "team_definition_id": "dlc-squad-fcd764",
+        "coordinator_address": "/dlc_squad_fcd764/lead",
+        "members": [
+          {
+            "address": "/dlc_squad_fcd764/lead",
+            "agent_definition_id": "dlc-worker-2234fc",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true
+          },
+          {
+            "address": "/dlc_squad_fcd764/engineer",
+            "agent_definition_id": "dlc-engineer-15dd56",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-alt-model",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": false,
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/reviewer",
+            "agent_definition_id": "dlc-reviewer-01154d",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-alt-model",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": false,
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/offline",
+            "agent_definition_id": "dlc-offline-1d871a",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.5",
+                  "reason": "runtime_unavailable",
+                  "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-pwUglc/missing/codex' is not available."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/unoffered",
+            "agent_definition_id": "dlc-unoffered-298d5e",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/badsettings",
+            "agent_definition_id": "dlc-badsettings-df5756",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": "gemini-3.8-flash-low",
+                  "reason": "model_settings_invalid",
+                  "detail": "Its model settings are invalid: This model has no adjustable settings."
+                }
+              ]
+            }
+          },
+          {
+            "address": "/dlc_squad_fcd764/incomplete",
+            "agent_definition_id": "dlc-incomplete-e8f686",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "gemini-3.8-flash-low",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "inherited",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": null,
+                  "reason": "incomplete",
+                  "detail": "It names no model."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "default_launch_configuration": {
+          "runtime_kind": "antigravity_cli",
+          "llm_model_identifier": "gemini-3.8-flash-low",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "default_launch_source": {
+          "origin": "inherited",
+          "fallbacks": [
+            {
+              "layer": "team_default",
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-no-such-team-model",
+              "reason": "model_unavailable",
+              "detail": "The model 'dlc-no-such-team-model' is not available on antigravity_cli."
+            }
+          ]
+        }
+      },
+      "restoredPair": {
+        "kind": "agent_team",
+        "team_definition_id": "dlc-pair-697c0f",
+        "coordinator_address": "/dlc_pair_697c0f/lead",
+        "members": [
+          {
+            "address": "/dlc_pair_697c0f/lead",
+            "agent_definition_id": "dlc-worker-2234fc",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-alt-model",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true
+          },
+          {
+            "address": "/dlc_pair_697c0f/engineer",
+            "agent_definition_id": "dlc-engineer-15dd56",
+            "launch_configuration": {
+              "runtime_kind": "grok_build",
+              "llm_model_identifier": "grok-4.7",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": false,
+            "launch_source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/dlc_pair_697c0f/unoffered",
+            "agent_definition_id": "dlc-unoffered-298d5e",
+            "launch_configuration": {
+              "runtime_kind": "antigravity_cli",
+              "llm_model_identifier": "dlc-alt-model",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+            },
+            "follows_team": true,
+            "launch_source": {
+              "origin": "team_default",
+              "fallbacks": [
+                {
+                  "layer": "agent_default",
+                  "runtime_kind": "antigravity_cli",
+                  "llm_model_identifier": "dlc-no-such-model",
+                  "reason": "model_unavailable",
+                  "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+                }
+              ]
+            }
+          }
+        ],
+        "handoffs": [],
+        "default_launch_configuration": {
+          "runtime_kind": "antigravity_cli",
+          "llm_model_identifier": "dlc-alt-model",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-IQKm6y/workspace"
+        },
+        "default_launch_source": {
+          "origin": "team_default",
+          "fallbacks": []
+        }
+      },
+      "agyLaunches": [
+        {
+          "runId": "dlc_manager_5e689f_df991bcce4d5419ba6218bae1dfc9d09",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_manager_5e689f_00efe03aef6248cdbd5a0a82b5046c17",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_edb409b664af459b856a326d55587d66",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_4fc156c75ce54dd59294ae9fe43327bd",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_f69880bb879c432bb27c3014027a7730",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_worker_2234fc_4b6a17592ea74becb7efa3d6683bdc8b",
+          "model": "gemini-3.8-flash-low"
+        },
+        {
+          "runId": "dlc_engineer_15dd56_cafd47e80f014da0a0a34bb332bd74f6",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_engineer_15dd56_ede119f883714f7a9acc988de329cd29",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_7540569753a24fe0893cb92d3ae3585e",
+          "model": "dlc-alt-model"
+        },
+        {
+          "runId": "dlc_reviewer_01154d_2799321f76f64ae6947d351a0e38e740",
+          "model": "dlc-alt-model"
+        }
+      ],
+      "grokSessions": [
+        {
+          "model": "grok-4.7"
+        },
+        {
+          "model": "grok-4.7"
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "grokRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "leftoverProcesses": "",
+    "errors": []
+  }
+}

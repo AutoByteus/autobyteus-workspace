@@ -1,0 +1,20 @@
+# IMP-07
+# Command: clean clone: pnpm -C autobyteus-server-ts test:unit; python3 -m unittest discover -s scripts/tests -p 'test_*.py'; pnpm -C autobyteus-web test:nuxt run; guards; node scripts/check-declared-imports.mjs autobyteus-server-ts autobyteus-web; pnpm -C autobyteus-server-ts test:starter
+# Commit: 4db26446cb
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+ Test Files  904 passed | 5 skipped (909)
+      Tests  7666 passed | 9 skipped (7675)
+UNIT_EXIT=0
+
+Ran 199 tests in 79.398s
+
+OK (skipped=2)
+PY_EXIT=0
+
+ Test Files  679 passed (679)
+      Tests  4927 passed | 2 skipped (4929)
+WEB_EXIT=0
+
+guard:web-boundary Passed; guard:localization-boundary Passed; Imports are declared: autobyteus-server-ts, autobyteus-web; starter tests 49/49

@@ -1,0 +1,8 @@
+# IMP-02 focused autobyteus-ts tests: new and changed tests
+# Command: env -u AUTOBYTEUS_TEST_VAULT npx vitest run <37 files: tests/unit/agent/tool-search, tests/unit/agent/streaming/handlers, tests/unit/memory/memory-manager-call-tool-records.test.ts, ..., tests/integration/agent/native-tool-search-flow.test.ts, ...> (in autobyteus-ts)
+# Commit: 49867e8dc4
+# Environment: macOS (darwin 25.5), Node v22.23.1; machine load average 85-116 from other processes during the full-suite runs
+# Date: 2026-11-17
+
+ Test Files  37 passed (37)
+      Tests  245 passed (245)

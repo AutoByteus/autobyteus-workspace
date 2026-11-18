@@ -1,5 +1,14 @@
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
-import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
+import type {
+  AgentRunBackend,
+  AgentRunSourceEventBatchListener,
+  AgentRunToolListApplyResult,
+} from "../../agent-run-backend.js";
+import type { AgentDefinition } from "../../../../agent-definition/domain/models.js";
+import {
+  isSameRuntimeAgentToolExposure,
+  resolveRuntimeAgentToolExposure,
+} from "../../../shared/runtime-agent-tool-exposure.js";
 import type { ClaudeSession } from "../session/claude-session.js";
 import { ClaudeSessionEventConverter } from "../events/claude-session-event-converter.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
@@ -14,6 +23,8 @@ const logger = {
 };
 
 export class ClaudeAgentRunBackend implements AgentRunBackend {
+  readonly backgroundTaskInspection = { kind: 'event-stream', current: () => this.session.listBackgroundTasks() } as const;
+  readonly backgroundTaskNotices = { kind: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly context: ClaudeRunContext;
@@ -67,9 +78,6 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     return this.session.sessionId ?? null;
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return this.session.hasRunningBackgroundTasks();
-  }
 
   getLifecycleSnapshot() {
     return projectClaudeAgentLifecycleSnapshot({
@@ -167,6 +175,30 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
         message: `Failed to terminate run for runtime 'claude_agent_sdk': ${String(error)}`,
       };
     }
+  }
+
+  /**
+   * Claude takes a new Agent Tools list from its next model call: the session is replaced and the
+   * CLI re-lists over its held GET stream; later process generations read the run context.
+   */
+  async applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult> {
+    const exposure = resolveRuntimeAgentToolExposure(definition, this.context.config.memberExecutionContext);
+    if (isSameRuntimeAgentToolExposure(this.context.runtimeContext.runtimeToolExposure, exposure)) {
+      return { kind: "unchanged", toolNames: this.getToolNames() };
+    }
+    return { kind: "applied", toolNames: [...this.session.applyToolExposure(exposure)] };
+  }
+
+  getToolNames(): readonly string[] {
+    return this.session.getAgentToolNames();
+  }
+
+  /**
+   * Links the definition's skills the run does not have yet into the workspace's `.claude/skills`; the Claude CLI
+   * lists a folder linked mid-session from its next turn.
+   */
+  applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    return this.context.runtimeContext.requireWorkspaceSkills().addFrom(definition);
   }
 
   private ensureSubscribed(): void {

@@ -1,0 +1,34 @@
+{
+  "runtime": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "toolNamesSelected": [
+    "hdr_auth_probe",
+    "tok_auth_probe"
+  ],
+  "toolEvents": [],
+  "remoteToolCalls": {
+    "hdr": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ],
+    "tok": [
+      {
+        "httpMethod": "POST",
+        "path": "/mcp",
+        "rpcMethod": "tools/call",
+        "toolName": "auth_probe",
+        "auth": "expected"
+      }
+    ]
+  },
+  "markersReceived": {
+    "hdr": true,
+    "tok": true
+  },
+  "dummyValueOnAgentWire": false
+}

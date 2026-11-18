@@ -1,0 +1,17 @@
+# DEL-05 browser probe (API-04 rerun), commit 0c8a6f4d22 (+ uncommitted docs only), server dist built at 15:2x local from this tree, 2026-10-31T14:43:06Z
+
+> autobyteus@1.5.11-beta.7 test:e2e:projects-left-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-web
+> node tests/e2e/projects-left-navigation-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/delivery/DEL-05-browser-probe
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/delivery/DEL-05-browser-probe/evidence.json
+exit=0

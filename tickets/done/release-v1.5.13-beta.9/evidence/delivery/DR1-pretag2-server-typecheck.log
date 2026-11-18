@@ -1,0 +1,3 @@
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+server typecheck exit 0

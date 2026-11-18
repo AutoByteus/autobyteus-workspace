@@ -1,0 +1,677 @@
+{
+  "round": "API-REV-003",
+  "date": "2026-10-26T10:27:58.689315+00:00",
+  "productionSource": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "reviewHead": "13d7f4293e10c4b0f39114169a2e77455a9ef40e",
+  "integratedBase": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+  "result": "Pass executable-validation stage",
+  "confidencePercent": 95.3,
+  "notTerminalDelivery": true,
+  "cases": {
+    "API-07": {
+      "result": "Pass",
+      "receipt": "API-07-result.json",
+      "commandKey": "C + API-07-packaged-ipc.mjs",
+      "proof": [
+        {
+          "mode": "startup-cancel",
+          "messages": [
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:ready",
+              "at": "2026-10-26T10:24:38.541Z",
+              "childExited": false
+            },
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:complete",
+              "at": "2026-10-26T10:24:38.838Z",
+              "childExited": false
+            }
+          ],
+          "start": "2026-10-26T10:24:37.637Z",
+          "pid": 8692,
+          "exit": 0,
+          "signal": null,
+          "elapsedMs": 305,
+          "data": "unchanged",
+          "result": "Pass"
+        },
+        {
+          "mode": "complete",
+          "messages": [
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:ready",
+              "at": "2026-10-26T10:24:39.735Z",
+              "childExited": false
+            },
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:complete",
+              "at": "2026-10-26T10:24:40.318Z",
+              "childExited": false
+            }
+          ],
+          "start": "2026-10-26T10:24:38.859Z",
+          "pid": 8699,
+          "url": "http://127.0.0.1:61326",
+          "exit": 0,
+          "signal": null,
+          "elapsedMs": 51,
+          "data": "unchanged",
+          "result": "Pass"
+        },
+        {
+          "mode": "cleanup-unconfirmed",
+          "messages": [
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:ready",
+              "at": "2026-10-26T10:24:41.349Z",
+              "childExited": false
+            },
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:failed",
+              "at": "2026-10-26T10:24:42.008Z",
+              "childExited": false
+            }
+          ],
+          "start": "2026-10-26T10:24:40.360Z",
+          "pid": 8707,
+          "url": "http://127.0.0.1:61331",
+          "exit": 1,
+          "signal": null,
+          "elapsedMs": 51,
+          "data": "unchanged",
+          "result": "Pass"
+        },
+        {
+          "mode": "transport-unconfirmed",
+          "messages": [
+            {
+              "message": "autobyteus.embedded-server.shutdown.v1:ready",
+              "at": "2026-10-26T10:24:43.037Z",
+              "childExited": false
+            }
+          ],
+          "start": "2026-10-26T10:24:42.049Z",
+          "pid": 8715,
+          "url": "http://127.0.0.1:61336",
+          "exit": 1,
+          "signal": null,
+          "elapsedMs": 51,
+          "data": "unchanged",
+          "result": "Pass"
+        }
+      ],
+      "cleanup": null
+    },
+    "API-06B": {
+      "result": "Pass",
+      "receipt": "API-06B-result.json",
+      "commandKey": "C + API-06B-desktop-native-current.mjs",
+      "proof": [
+        {
+          "step": "post-shutdown",
+          "value": {
+            "turn": 1,
+            "trigger": "restart-after-agent-ended",
+            "elapsedMs": 2675,
+            "observations": [
+              {
+                "pid": 8546,
+                "port": 61281,
+                "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG/workspace/listener-1-0.json",
+                "anchor": 8541,
+                "absent": true,
+                "anchorAbsent": true,
+                "listenerStatus": null,
+                "termObserved": true
+              },
+              {
+                "pid": 8558,
+                "port": 61286,
+                "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG/workspace/listener-1-1.json",
+                "anchor": 8547,
+                "absent": true,
+                "anchorAbsent": true,
+                "listenerStatus": null,
+                "termObserved": false
+              }
+            ],
+            "sentinelStatus": 200,
+            "data": "must survive shutdown"
+          },
+          "at": "2026-10-26T10:24:35.243Z"
+        },
+        {
+          "step": "post-shutdown",
+          "value": {
+            "turn": 2,
+            "trigger": "quit-active-run",
+            "elapsedMs": 1319,
+            "observations": [
+              {
+                "pid": 8625,
+                "port": 61317,
+                "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG/workspace/listener-2-0.json",
+                "anchor": 8620,
+                "absent": true,
+                "anchorAbsent": true,
+                "listenerStatus": null,
+                "termObserved": true
+              },
+              {
+                "pid": 8632,
+                "port": 61318,
+                "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG/workspace/listener-2-1.json",
+                "anchor": 8626,
+                "absent": true,
+                "anchorAbsent": true,
+                "listenerStatus": null,
+                "termObserved": false
+              }
+            ],
+            "sentinelStatus": 200,
+            "data": "must survive shutdown"
+          },
+          "at": "2026-10-26T10:24:37.434Z"
+        }
+      ],
+      "cleanup": {
+        "instanceId": "iso-61234-9910",
+        "wasRunning": false,
+        "forced": false,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG/data",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG/autobyteus-isolated-app/iso-61234-9910.log"
+      }
+    },
+    "API-03": {
+      "result": "Pass",
+      "receipt": "API-03-result.json",
+      "commandKey": "S: unchanged gated standalone E2E (full command in report)",
+      "proof": {
+        "elapsedMs": 838,
+        "observations": [
+          {
+            "pid": 8005,
+            "port": 61128,
+            "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-jufC9f/workspace/listener-1-0.json",
+            "anchor": 7987,
+            "absent": true,
+            "anchorAbsent": true,
+            "listenerStatus": null,
+            "termObserved": true
+          },
+          {
+            "pid": 8025,
+            "port": 61130,
+            "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-jufC9f/workspace/listener-1-1.json",
+            "anchor": 8006,
+            "absent": true,
+            "anchorAbsent": true,
+            "listenerStatus": null,
+            "termObserved": false
+          },
+          {
+            "pid": 8117,
+            "port": 61134,
+            "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-jufC9f/workspace/listener-2-0.json",
+            "anchor": 8099,
+            "absent": true,
+            "anchorAbsent": true,
+            "listenerStatus": null,
+            "termObserved": true
+          },
+          {
+            "pid": 8137,
+            "port": 61135,
+            "receipt": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-jufC9f/workspace/listener-2-1.json",
+            "anchor": 8118,
+            "absent": true,
+            "anchorAbsent": true,
+            "listenerStatus": null,
+            "termObserved": false
+          }
+        ],
+        "hostPid": 7979,
+        "rootRemoved": true
+      },
+      "cleanup": null
+    },
+    "API-09": {
+      "result": "Pass",
+      "receipt": "API-09-result.json",
+      "commandKey": "C + API-09-desktop-visibility.mjs",
+      "proof": [
+        {
+          "step": "running snapshot",
+          "value": {
+            "running": {
+              "__typename": "AgentBackgroundTaskSnapshot",
+              "agentRunId": "shutdown_api_fixture_e680b10d401d4b189790900675be376f",
+              "runInstanceId": "6391bde0-48a3-429d-9ab9-e86c7704c4d0",
+              "observedAt": "2026-10-26T10:24:48.235Z",
+              "tasks": [
+                {
+                  "taskId": "6637ed85-3552-41d1-a084-25bf46edb857",
+                  "kind": "shell",
+                  "description": "bash",
+                  "command": null,
+                  "status": "running",
+                  "exitCode": null,
+                  "startedAt": "2026-10-26T10:24:47.106Z"
+                }
+              ]
+            },
+            "child": {
+              "pid": 8858,
+              "port": 61395
+            },
+            "calls": 2
+          },
+          "at": "2026-10-26T10:24:48.236Z"
+        },
+        {
+          "step": "reopened and reloaded",
+          "value": {
+            "callsBeforeObservation": 2,
+            "calls": 2
+          },
+          "at": "2026-10-26T10:24:55.885Z"
+        },
+        {
+          "step": "natural completion",
+          "value": {
+            "completed": {
+              "__typename": "AgentBackgroundTaskSnapshot",
+              "agentRunId": "shutdown_api_fixture_e680b10d401d4b189790900675be376f",
+              "runInstanceId": "6391bde0-48a3-429d-9ab9-e86c7704c4d0",
+              "observedAt": "2026-10-26T10:24:55.991Z",
+              "tasks": [
+                {
+                  "taskId": "6637ed85-3552-41d1-a084-25bf46edb857",
+                  "kind": "shell",
+                  "description": "bash",
+                  "command": null,
+                  "status": "completed",
+                  "exitCode": 0,
+                  "startedAt": "2026-10-26T10:24:47.106Z"
+                }
+              ]
+            },
+            "calls": 2,
+            "callsBeforeObservation": 2
+          },
+          "at": "2026-10-26T10:24:58.305Z"
+        },
+        {
+          "step": "postquit",
+          "value": {
+            "elapsedMs": 707,
+            "desktopAbsent": true,
+            "childAbsent": true,
+            "listenerStatus": null,
+            "sentinelStatus": 200,
+            "data": "must survive shutdown"
+          },
+          "at": "2026-10-26T10:24:59.106Z"
+        }
+      ],
+      "cleanup": {
+        "instanceId": "iso-61341-7bbf",
+        "wasRunning": false,
+        "forced": false,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09-N38voR/data",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09-N38voR/autobyteus-isolated-app/iso-61341-7bbf.log"
+      }
+    },
+    "API-09B": {
+      "result": "Pass",
+      "receipt": "API-09B-result.json",
+      "commandKey": "C + API-09B-selection-lifecycle.mjs",
+      "proof": [
+        {
+          "step": "selected panel",
+          "value": {
+            "label": "A",
+            "runId": "visibility_a_25f35f5be19f42cca27a9c3695656f96",
+            "text": "bash\n\nRunning\nShell\n\u00b7\n0adb576b \u00b7 observed 26.10.2026, 11:25:03",
+            "calls": 2
+          },
+          "at": "2026-10-26T10:25:04.368Z"
+        },
+        {
+          "step": "selected panel",
+          "value": {
+            "label": "B",
+            "runId": "visibility_b_d1d241025686449db5c4e063d0787601",
+            "text": "bash\n\nRunning\nShell\n\u00b7\ne28cfbeb \u00b7 observed 26.10.2026, 11:25:04",
+            "calls": 4
+          },
+          "at": "2026-10-26T10:25:06.070Z"
+        },
+        {
+          "step": "selected panel",
+          "value": {
+            "label": "B",
+            "runId": "visibility_b_d1d241025686449db5c4e063d0787601",
+            "text": "bash\n\nRunning\nShell\n\u00b7\ne28cfbeb \u00b7 observed 26.10.2026, 11:25:04",
+            "calls": 4
+          },
+          "at": "2026-10-26T10:25:06.290Z"
+        },
+        {
+          "step": "selected panel",
+          "value": {
+            "label": "A",
+            "runId": "visibility_a_25f35f5be19f42cca27a9c3695656f96",
+            "text": "bash\n\nFailed\nShell\n\u00b7\n0adb576b \u00b7 observed 26.10.2026, 11:25:03\n\nExit code 7",
+            "calls": 4
+          },
+          "at": "2026-10-26T10:25:06.412Z"
+        },
+        {
+          "step": "inactive read",
+          "value": {
+            "inactive": {
+              "__typename": "AgentBackgroundTaskUnavailable",
+              "agentRunId": "visibility_a_25f35f5be19f42cca27a9c3695656f96",
+              "reason": "inactive"
+            },
+            "calls": 4
+          },
+          "at": "2026-10-26T10:25:06.525Z"
+        },
+        {
+          "step": "selected panel",
+          "value": {
+            "label": "B",
+            "runId": "visibility_b_d1d241025686449db5c4e063d0787601",
+            "text": "bash\n\nRunning\nShell\n\u00b7\ne28cfbeb \u00b7 observed 26.10.2026, 11:25:04",
+            "calls": 4
+          },
+          "at": "2026-10-26T10:25:06.563Z"
+        },
+        {
+          "step": "restart active Codex",
+          "value": {
+            "elapsedMs": 1591,
+            "owned": {
+              "receiptPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9/workspace/listener-B.json",
+              "finishPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9/workspace/finish-B.json",
+              "runId": "visibility_b_d1d241025686449db5c4e063d0787601",
+              "label": "B",
+              "pid": 9081,
+              "port": 61498,
+              "taskId": "e28cfbeb-8e93-4c8f-a9b5-b53759b7c487"
+            },
+            "pidAbsent": true,
+            "listenerStatus": null,
+            "sentinel": 200,
+            "calls": 4
+          },
+          "at": "2026-10-26T10:25:08.243Z"
+        },
+        {
+          "step": "selected panel",
+          "value": {
+            "label": "C",
+            "runId": "visibility_c_e801ea0d5f3c44c588c7eb0f09535a3b",
+            "text": "bash\n\nRunning\nShell\n\u00b7\n448368e1 \u00b7 observed 26.10.2026, 11:25:08",
+            "calls": 6
+          },
+          "at": "2026-10-26T10:25:09.921Z"
+        },
+        {
+          "step": "quit active Codex",
+          "value": {
+            "elapsedMs": 207,
+            "owned": {
+              "receiptPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9/workspace/listener-C.json",
+              "finishPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9/workspace/finish-C.json",
+              "runId": "visibility_c_e801ea0d5f3c44c588c7eb0f09535a3b",
+              "label": "C",
+              "pid": 9151,
+              "port": 61535,
+              "taskId": "448368e1-325f-4f07-a767-9ce5694e44b0"
+            },
+            "desktopAbsent": true,
+            "pidAbsent": true,
+            "listenerStatus": null,
+            "sentinel": 200,
+            "data": "must survive shutdown",
+            "calls": 6
+          },
+          "at": "2026-10-26T10:25:10.215Z"
+        }
+      ],
+      "cleanup": {
+        "instanceId": "iso-61426-802a",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9/data",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9/autobyteus-isolated-app/iso-61426-802a.log"
+      }
+    },
+    "API-05": {
+      "result": "Pass",
+      "receipt": "API-05-result.json",
+      "commandKey": "C + API-05-conflict-recovery.mjs",
+      "proof": [
+        {
+          "step": "conflict first",
+          "value": {
+            "first": {
+              "status": "error",
+              "baseUrl": "http://127.0.0.1:61154",
+              "urls": {
+                "graphql": "http://127.0.0.1:61154/graphql",
+                "rest": "http://127.0.0.1:61154/rest",
+                "graphqlWs": "ws://127.0.0.1:61154/graphql",
+                "transcription": "ws://127.0.0.1:61154/ws/transcribe",
+                "terminalWs": "ws://127.0.0.1:61154/ws/terminal",
+                "health": "http://127.0.0.1:61154/rest/health"
+              },
+              "healthCheckStatus": "Healthy",
+              "diagnostic": {
+                "kind": "port-conflict",
+                "port": 61154,
+                "owners": [
+                  {
+                    "pid": 8345,
+                    "executable": "node"
+                  }
+                ],
+                "inspection": "available",
+                "observedAt": "2026-10-26T10:24:21.432Z"
+              },
+              "message": "Backend port 61154 is in use"
+            },
+            "text": "\u274c\nApplication Error\n\nBackend port 61154 is already in use.\n\nnode (PID 8345)\n\nRestart Server controls only this app\u2019s managed backend. It cannot stop another application\u2019s listener. Verify which application owns this port, stop or reconfigure it, then retry. The identity shown is a current snapshot, not permission to stop an unfamiliar process.\n\nResetting server data will not free this port. Your data does not need to be reset.\n\nRestart Server\nCheck Server Health\nShow technical details",
+            "fixtureStatus": 426,
+            "runnerPid": 8345
+          },
+          "at": "2026-10-26T10:24:21.573Z"
+        },
+        {
+          "step": "retry preserves external owner",
+          "value": {
+            "second": {
+              "status": "error",
+              "baseUrl": "http://127.0.0.1:61154",
+              "urls": {
+                "graphql": "http://127.0.0.1:61154/graphql",
+                "rest": "http://127.0.0.1:61154/rest",
+                "graphqlWs": "ws://127.0.0.1:61154/graphql",
+                "transcription": "ws://127.0.0.1:61154/ws/transcribe",
+                "terminalWs": "ws://127.0.0.1:61154/ws/terminal",
+                "health": "http://127.0.0.1:61154/rest/health"
+              },
+              "healthCheckStatus": "Healthy",
+              "diagnostic": {
+                "kind": "port-conflict",
+                "port": 61154,
+                "owners": [
+                  {
+                    "pid": 8345,
+                    "executable": "node"
+                  }
+                ],
+                "inspection": "available",
+                "observedAt": "2026-10-26T10:24:26.655Z"
+              },
+              "message": "Backend port 61154 is in use"
+            },
+            "fixtureStatus": 426,
+            "sentinel": 200
+          },
+          "at": "2026-10-26T10:24:26.785Z"
+        },
+        {
+          "step": "recovered",
+          "value": {
+            "healthy": {
+              "status": "running",
+              "baseUrl": "http://127.0.0.1:61154",
+              "urls": {
+                "graphql": "http://127.0.0.1:61154/graphql",
+                "rest": "http://127.0.0.1:61154/rest",
+                "graphqlWs": "ws://127.0.0.1:61154/graphql",
+                "transcription": "ws://127.0.0.1:61154/ws/transcribe",
+                "terminalWs": "ws://127.0.0.1:61154/ws/terminal",
+                "health": "http://127.0.0.1:61154/rest/health"
+              },
+              "healthCheckStatus": "Healthy"
+            },
+            "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nChoose a model\nAutoByteus",
+            "sentinel": 200,
+            "data": "preserve owned data"
+          },
+          "at": "2026-10-26T10:24:28.345Z"
+        }
+      ],
+      "cleanup": {
+        "instanceId": "iso-61153-6175",
+        "wasRunning": false,
+        "forced": false,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-smsEjg/data",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-smsEjg/autobyteus-isolated-app/iso-61153-6175.log"
+      }
+    },
+    "API-10": {
+      "result": "Pass",
+      "receipt": "API-10-result.json",
+      "commandKey": "C + API-10-provider-unavailable.mjs",
+      "proof": [
+        {
+          "step": "running snapshot",
+          "value": {
+            "running": {
+              "__typename": "AgentBackgroundTaskSnapshot",
+              "agentRunId": "shutdown_api_fixture_8a562d721fd14f29969547a2beb9f444",
+              "runInstanceId": "11acc130-d9e0-478b-8e07-f5480b7c8190",
+              "observedAt": "2026-10-26T10:25:15.457Z",
+              "tasks": [
+                {
+                  "taskId": "49bfe6e0-26cd-44a8-8c75-98356a924a03",
+                  "kind": "shell",
+                  "description": "bash",
+                  "command": null,
+                  "status": "running",
+                  "exitCode": null,
+                  "startedAt": "2026-10-26T10:25:14.335Z"
+                }
+              ]
+            },
+            "child": {
+              "pid": 9296,
+              "port": 61602
+            },
+            "calls": 2
+          },
+          "at": "2026-10-26T10:25:15.458Z"
+        },
+        {
+          "step": "bounded unavailable",
+          "value": {
+            "unavailable": {
+              "__typename": "AgentBackgroundTaskUnavailable",
+              "agentRunId": "shutdown_api_fixture_8a562d721fd14f29969547a2beb9f444",
+              "reason": "incomplete"
+            },
+            "elapsedMs": 5008,
+            "calls": 2
+          },
+          "at": "2026-10-26T10:25:23.215Z"
+        },
+        {
+          "step": "last known panel",
+          "value": {
+            "text": "Current background-task inspection is unavailable. Recorded / last-known rows; running counts are unconfirmed.",
+            "counts": "1 last-known running \u00b7 1 recorded",
+            "row": "bash\n\nRunning\nShell\n\u00b7\n49bfe6e0 \u00b7 observed 26.10.2026, 11:25:14",
+            "calls": 2
+          },
+          "at": "2026-10-26T10:25:23.228Z"
+        },
+        {
+          "step": "recovered actual provider",
+          "value": {
+            "recovered": {
+              "__typename": "AgentBackgroundTaskSnapshot",
+              "agentRunId": "shutdown_api_fixture_8a562d721fd14f29969547a2beb9f444",
+              "runInstanceId": "11acc130-d9e0-478b-8e07-f5480b7c8190",
+              "observedAt": "2026-10-26T10:25:25.249Z",
+              "tasks": [
+                {
+                  "taskId": "49bfe6e0-26cd-44a8-8c75-98356a924a03",
+                  "kind": "shell",
+                  "description": "bash",
+                  "command": null,
+                  "status": "running",
+                  "exitCode": null,
+                  "startedAt": "2026-10-26T10:25:14.335Z"
+                }
+              ]
+            },
+            "calls": 2,
+            "listenerStatus": 426,
+            "panel": "bash\n\nRunning\nShell\n\u00b7\n49bfe6e0 \u00b7 observed 26.10.2026, 11:25:14"
+          },
+          "at": "2026-10-26T10:25:25.253Z"
+        },
+        {
+          "step": "postquit",
+          "value": {
+            "elapsedMs": 707,
+            "desktopAbsent": true,
+            "childAbsent": true,
+            "listenerStatus": null,
+            "sentinelStatus": 200,
+            "data": "must survive shutdown"
+          },
+          "at": "2026-10-26T10:25:26.073Z"
+        }
+      ],
+      "cleanup": {
+        "instanceId": "iso-61549-777b",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api10-6ewjLt/data",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api10-6ewjLt/autobyteus-isolated-app/iso-61549-777b.log"
+      }
+    }
+  }
+}

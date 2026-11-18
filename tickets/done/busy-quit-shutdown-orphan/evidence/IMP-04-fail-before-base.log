@@ -1,0 +1,18 @@
+# IMP-04 fail-before (baseServerManager.ts restored from base 1a4453e553, test from bf2857ca29)
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run server/__tests__/ServerForceStopTree.spec.ts
+# Commit: bf2857ca29 (base origin/personal @ 1a4453e553)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+   × force-stops a wedged server and its whole tree, leaving no process behind 3383ms
+     → expected { Object (server, cli, ...) } to deeply equal { server: false, cli: false, …(1) }
+AssertionError: expected { Object (server, cli, ...) } to deeply equal { server: false, cli: false, …(1) }
+-   "cli": false,
++   "cli": true,
+    "server": false,
+-   "tool": false,
++   "tool": true,
+     64|   await waitUntil(() => ![server.pid!, pids.cli, pids.tool].some(exist…
+     65|   expect({ server: exists(server.pid!), cli: exists(pids.cli), tool: e…
+     66|     .toEqual({ server: false, cli: false, tool: false })
+      Tests  1 failed (1)

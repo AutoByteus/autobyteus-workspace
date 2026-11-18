@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { createHash } from "node:crypto";
 import fsSync from "node:fs";
@@ -25,6 +26,7 @@ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -199,7 +201,7 @@ const archivePrefix = (runDir: string, prefix: string, activeRows: Record<string
       boundaryType: "provider_compaction_boundary",
       boundaryKey: `${prefix}:boundary`,
       boundaryTraceId: `${prefix}-boundary`,
-      runtimeKind: "AUTOBYTEUS",
+      runtimeKind: "autobyteus",
       sourceEvent: "api-e2e",
     });
     if (!segment) throw new Error("Expected an archived segment");
@@ -220,15 +222,25 @@ const normalizeReadPath = (input: unknown): string | null => {
 
 const trackRawTraceReads = () => {
   const paths: string[] = [];
+  // A file can be read by path or through a descriptor it was opened with (the chat's active-file snapshot does the latter,
+  // autobyteus-316): the descriptor is followed back to the path it was opened from.
+  const descriptors = new Map<number, string>();
+  const originalOpenSync = fsSync.openSync.bind(fsSync);
+  const openSpy = vi.spyOn(fsSync, "openSync").mockImplementation(((...args: Parameters<typeof fsSync.openSync>) => {
+    const fd = originalOpenSync(...args as [any, any]);
+    const openedPath = normalizeReadPath(args[0]);
+    if (openedPath) descriptors.set(fd, openedPath);
+    return fd;
+  }) as typeof fsSync.openSync);
   const originalReadFileSync = fsSync.readFileSync.bind(fsSync);
   const spy = vi.spyOn(fsSync, "readFileSync").mockImplementation(((...args: Parameters<typeof fsSync.readFileSync>) => {
-    const readPath = normalizeReadPath(args[0]);
+    const readPath = typeof args[0] === "number" ? descriptors.get(args[0]) ?? null : normalizeReadPath(args[0]);
     if (readPath && /raw_traces_(?:active|\d{6})\.jsonl$|raw_traces_(?:archive_)?manifest\.json$/.test(readPath)) {
       paths.push(readPath);
     }
     return originalReadFileSync(...args as [any, any]);
   }) as typeof fsSync.readFileSync);
-  return { paths, restore: () => spy.mockRestore() };
+  return { paths, restore: () => { spy.mockRestore(); openSpy.mockRestore(); } };
 };
 
 // History queries use production managers/registry; activating providers is outside
@@ -244,6 +256,7 @@ describe("recent run projection GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let releaseRunHistory: (() => void) | null = null;
   let ownedAgentRunManager: AgentRunManager | null = null;
   let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
@@ -257,6 +270,9 @@ describe("recent run projection GraphQL e2e", () => {
     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "recent-run-projection-workspace-"));
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     memoryDir = appConfigProvider.config.getMemoryDir();
+    // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
+    // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
+   
     // This file runs in its own Vitest worker. Never borrow or replace another
     // process instance: initialize explicitly and release only these instances.
     ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
@@ -265,22 +281,21 @@ describe("recent run projection GraphQL e2e", () => {
       claudeBackendFactory: unusedExecutionBoundary(),
       agyBackendFactory: unusedExecutionBoundary(),
       grokBackendFactory: unusedExecutionBoundary(),
+      deepSeekHarnessBackendFactory: unusedExecutionBoundary(),
       activationRegistry: new AgentRunActivationRegistry(unusedExecutionBoundary()),
       memoryRecorder: unusedExecutionBoundary(),
       providerInputNormalizer: { normalizeForProvider: unavailableExecution },
       agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
     });
-    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: unusedExecutionBoundary(),
       memberExecutionContextBuilder: unusedExecutionBoundary(),
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: unavailableExecution },
-        taskTeams: { create: unavailableExecution },
-      },
       modelSelectionValidator: { validate: unavailableExecution },
     });
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
+    // The history readers, as the composition root sets them (autobyteus-461 SR-047 step 8).
+    releaseRunHistory = setE2eRunHistoryServices({ memoryDir });
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -295,6 +310,7 @@ describe("recent run projection GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    releaseRunHistory?.();
     closeStudioServices?.();
     if (ownedAgentTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);
     if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
@@ -536,7 +552,7 @@ describe("recent run projection GraphQL e2e", () => {
       boundaryType: "provider_compaction_boundary",
       boundaryKey: "system-instruction:boundary",
       boundaryTraceId: "system-instruction-boundary",
-      runtimeKind: "AUTOBYTEUS",
+      runtimeKind: "autobyteus",
       sourceEvent: "api-e2e",
     });
     if (!segment) throw new Error("Expected the system-instruction prefix to rotate");
@@ -622,7 +638,10 @@ describe("recent run projection GraphQL e2e", () => {
     expect(elapsedMs).toBeLessThan(2_000);
     expect(reads.paths).toContain(path.resolve(files.activePath));
     expect(reads.paths).not.toContain(path.resolve(files.archivePath));
-    expect(reads.paths).not.toContain(path.resolve(files.manifestPath));
+    // The chat reader looks in the manifest for the run's `runtime_switch` segments (autobyteus-316, I-10): the manifest may be read,
+    // a compaction segment never, and nothing else.
+    expect(reads.paths.filter((readPath) => readPath !== path.resolve(files.activePath) && readPath !== path.resolve(files.manifestPath)),
+      "only the active file and the manifest are read").toEqual([]);
     expect(await Promise.all([
       sha256(files.activePath), sha256(files.archivePath), sha256(files.manifestPath),
     ])).toEqual(hashesBefore);
@@ -656,7 +675,10 @@ describe("recent run projection GraphQL e2e", () => {
     expect(JSON.stringify(projection)).not.toContain("ARCHIVE-ONLY-MARKER");
     expect(reads.paths).toContain(path.resolve(files.activePath));
     expect(reads.paths).not.toContain(path.resolve(files.archivePath));
-    expect(reads.paths).not.toContain(path.resolve(files.manifestPath));
+    // The chat reader looks in the manifest for the run's `runtime_switch` segments (autobyteus-316, I-10): the manifest may be read,
+    // a compaction segment never, and nothing else.
+    expect(reads.paths.filter((readPath) => readPath !== path.resolve(files.activePath) && readPath !== path.resolve(files.manifestPath)),
+      "only the active file and the manifest are read").toEqual([]);
     expect(await sha256(files.archivePath)).toBe(archiveHashBefore);
   });
 

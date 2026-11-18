@@ -1,0 +1,13 @@
+# R2 API-01 (round 2, partial rerun): packaged app of 32e9ad944c (API-00-electron-build-r2.log); isolated instance iso-61820-52ec
+# (control 61820, embedded node 127.0.0.1:61821); CDP attach-only; steps r1.js…r3.js (exact code; run via ../API-01-electron/steps/cdp-eval.mjs).
+# Files in the temp workspace: src/app-437.ts, docs/guide-437.md. macOS 26 arm64. Date 2026-11-08.
+
+r1.js — Files tab, search "app-437":
+  searchResponses: [{ "status": 200, "body": "{\"data\":{\"searchFiles\":[\"src/app-437.ts\"]}}" }]
+  visibleResults: 1   (R2-API-01-files-search.png)
+r2.js — Terminal: echo R2-TERM-$((40+2)); env | grep -c -E 'own_|AUTOBYTEUS_LAUNCH|OWNER_CREDENTIAL'
+  output: "R2-TERM-42\n0"   (R2-API-01-terminal.png)
+  resource URLs with access_token or own_: 0
+r3.js — credential-shaped strings (own_ + 30 chars) in DOM: 0; in localStorage/sessionStorage: 0
+  ("own_" occurs twice in the DOM: the grep pattern typed into the terminal above)
+Cleanup: isolated-app stop -> ok; data root removed; isolated-app list -> none.

@@ -26,7 +26,7 @@ vi.mock('~/composables/runSettings/useMentionCandidates', async () => {
 const mentionSource = { kind: 'draft', target: { kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' }, focusedName: 'Daily Assistant' }
 const skillOptions = [{ name: 'docx', description: 'Word documents' }]
 
-let wrapper: VueWrapper | null = null
+let wrapper: VueWrapper<InstanceType<typeof ChatMessageInput>> | null = null
 /** Mounted inside a positioned "composer card" 234px from the top, as on the New chat page. */
 const mountInput = () => {
   const card = document.createElement('div')

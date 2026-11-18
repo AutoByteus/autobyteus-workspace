@@ -1,0 +1,46 @@
+# E2E-02a — tab A worked on after the agent opened tab B; run view open, Browser panel collapsed (no tab shown)
+# Steps: worktree isolated instance iso-49942-c50c (build of baf0439559, code 927079c6cd, Electron 42.11.16, macOS arm64); same run as E2E-01, run view open in the window; message /tmp/ae507/msg-e02.txt sent 07:06:19.009Z
+# Date: 2026-11-17 (local time below)
+
+## Message
+Validation journey E2E-02. Steps:
+1. open_tab with url http://127.0.0.1:49198/p/e02-a
+2. open_tab with url http://127.0.0.1:49198/p/e02-b
+3. navigate_to with tab_id from step 1, url http://127.0.0.1:49198/p/e02-a-next
+4. set_device_emulation with tab_id from step 1, mode mobile, width 412, height 915, device_scale_factor 2
+5. screenshot with tab_id from step 1
+6. screenshot with tab_id from step 1, full_page true
+
+## Run trace tool calls/results
+08:06:20.882 seq=2 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e02-a"}
+08:06:21.103 seq=3 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "status": "opened", "url": "http://127.0.0.1:49198/p/e02-a", "title": "e02-a"} error=null
+08:06:22.614 seq=4 tool_call open_tab args={"url": "http://127.0.0.1:49198/p/e02-b"}
+08:06:22.731 seq=5 tool_result open_tab TOOL_EXECUTION_SUCCEEDED result={"tab_id": "0386db", "status": "opened", "url": "http://127.0.0.1:49198/p/e02-b", "title": "e02-b"} error=null
+08:06:24.269 seq=6 tool_call navigate_to args={"tab_id": "de9ec9", "url": "http://127.0.0.1:49198/p/e02-a-next"}
+08:06:24.296 seq=7 tool_result navigate_to TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "status": "navigated", "url": "http://127.0.0.1:49198/p/e02-a-next"} error=null
+08:06:25.964 seq=8 tool_call set_device_emulation args={"tab_id": "de9ec9", "mode": "mobile", "width": 412, "height": 915, "device_scale_factor": 2}
+08:06:25.991 seq=9 tool_result set_device_emulation TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "mode": "mobile", "profile": {"width": 412, "height": 915, "device_scale_factor": 2}} error=null
+08:06:27.442 seq=10 tool_call screenshot args={"tab_id": "de9ec9"}
+08:06:27.612 seq=11 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/de9ec9-1794899187604.png", "mime_type": "image/png"} error=null
+08:06:29.188 seq=12 tool_call screenshot args={"tab_id": "de9ec9", "full_page": true}
+08:06:29.341 seq=13 tool_result screenshot TOOL_EXECUTION_SUCCEEDED result={"tab_id": "de9ec9", "artifact_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-Suz2eM/browser-artifacts/de9ec9-1794899189335.png", "mime_type": "image/png"} error=null
+
+## Page event log
+{"page": "e02-a", "kind": "load", "w": 1280, "h": 900, "vis": "hidden", "t": 144, "server_time": "08:06:21.065"}
+{"page": "e02-b", "kind": "load", "w": 1280, "h": 900, "vis": "hidden", "t": 101, "server_time": "08:06:22.728"}
+{"page": "e02-a-next", "kind": "load", "w": 1280, "h": 900, "vis": "hidden", "t": 8, "server_time": "08:06:24.288"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 3174, "server_time": "08:06:27.452"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 3175, "server_time": "08:06:27.453"}
+{"page": "e02-a-next", "kind": "resize", "w": 412, "h": 915, "vis": "visible", "t": 3277, "server_time": "08:06:27.557"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 3277, "server_time": "08:06:27.557"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 3290, "server_time": "08:06:27.605"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 4983, "server_time": "08:06:29.260"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 4995, "server_time": "08:06:29.337"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "visible", "t": 256128, "server_time": "08:10:38.758"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "visible", "t": 254479, "server_time": "08:10:38.759"}
+{"page": "e02-b", "kind": "visibilitychange", "w": 1280, "h": 900, "vis": "hidden", "t": 256308, "server_time": "08:10:38.932"}
+{"page": "e02-a-next", "kind": "visibilitychange", "w": 412, "h": 915, "vis": "hidden", "t": 254657, "server_time": "08:10:38.932"}
+
+## Artifacts
+E2E-02a-artifact-de9ec9-fullpage.png:   pixelWidth: 824   pixelHeight: 6738  bytes 241614
+E2E-02a-artifact-de9ec9-viewport.png:   pixelWidth: 810   pixelHeight: 1800  bytes 216782

@@ -1,0 +1,14 @@
+# Check: IMP-01-access-cost-probe (prove-first: per-call definition read; shared and team-local resolution)
+# Command (autobyteus-server-ts, clean env): pnpm exec vitest run tests/integration/zz-access-cost-probe.test.ts (source kept at evidence/probe/access-cost-probe.test.ts; it was run from tests/integration and then moved out)
+# Commit: 0295553657 (branch codex/integrations-page, before any change)
+# Environment: macOS 26.5.2 arm64, node v22.23.1
+# Date: 2026-11-01T06:10:41Z
+
+PROBE shared skillNames=["probe-skill"] team-local id=team-local-agent:team-c6b01849-5555-4414-9653-7819498bc2ae:local-c6b01849-5555-4414-9653-7819498bc2ae skillNames=["probe-skill"] scope=CONFIGURED
+PROBE team-local bindings=["unresolved"]
+PROBE getAgentDefinitionById(shared): mean 0.006 ms over 500 calls
+PROBE getAgentDefinitionById(team-local): mean 0.009 ms over 500 calls
+PROBE SkillService.getDisabledSkills: mean 0.000 ms over 500 calls
+PROBE resolveConfiguredSkillBindingsForAgent (full check, whole catalog scan): mean 0.369 ms over 50 calls
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

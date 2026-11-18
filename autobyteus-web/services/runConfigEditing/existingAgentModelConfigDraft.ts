@@ -1,4 +1,4 @@
-import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
+import type { ExistingAgentRunSelection, ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 export const cloneExistingRunJsonValue = <T>(value: T): T => {
   if (Array.isArray(value)) return value.map(cloneExistingRunJsonValue) as T
   if (value && typeof value === 'object') {
@@ -32,8 +32,17 @@ export const cloneExistingRunSelection = (selection: ExistingRunModelSelection):
 })
 export const existingRunSelectionsEqual = (left: ExistingRunModelSelection, right: ExistingRunModelSelection): boolean =>
   left.llmModelIdentifier === right.llmModelIdentifier && existingRunModelConfigsEqual(left.llmConfig, right.llmConfig)
+/** Another agent runtime is a fresh selection of it (the server validates the pair on Save; the replacement list is the old runtime's). */
+export const runtimeChanged = (original: Partial<ExistingAgentRunSelection>, draft: Partial<ExistingAgentRunSelection>): boolean =>
+  original.runtimeKind !== undefined && draft.runtimeKind !== undefined && original.runtimeKind !== draft.runtimeKind
 export const selectionAllowed = (original: ExistingRunModelSelection, draft: ExistingRunModelSelection,
   state?: import('~/types/agent/ExistingRunModelConfigDraft').ExistingRunModelOptionsState): boolean =>
-  original.llmModelIdentifier === draft.llmModelIdentifier || Boolean(state?.status === 'ready' &&
+  runtimeChanged(original, draft) || original.llmModelIdentifier === draft.llmModelIdentifier || Boolean(state?.status === 'ready' &&
     state.options?.currentModelIdentifier === original.llmModelIdentifier &&
     state.options.replacements.some((option) => option.llmModelIdentifier === draft.llmModelIdentifier))
+
+export const cloneExistingAgentRunSelection = (selection: ExistingAgentRunSelection): ExistingAgentRunSelection => ({
+  runtimeKind: selection.runtimeKind, ...cloneExistingRunSelection(selection),
+})
+export const existingAgentRunSelectionsEqual = (left: ExistingAgentRunSelection, right: ExistingAgentRunSelection): boolean =>
+  left.runtimeKind === right.runtimeKind && existingRunSelectionsEqual(left, right)

@@ -1,0 +1,25 @@
+# API-04: a real native (autobyteus) agent turn on LM Studio through the Studio server (GraphQL + agent WebSocket): the agent loop's LLM request path changed by 54.1/54.2
+# Command: env -i PATH HOME=<tmp> TMPDIR RUN_RUNTIME_TOKEN_USAGE_E2E=1 LMSTUDIO_MODEL_ID=qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts -t lmstudio --no-watch
+# Code: 534ad1f55e + baseline fix 75f2fffe57; LM Studio local (qwen/qwen3.6-35b-a3b, loaded just-in-time by the run and unloaded afterwards with lms unload; nothing was loaded before); Date: 2026-11-01T07:29:06Z
+
+## Attempt A: tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts (RUN_LMSTUDIO_E2E=1)
+     × converts approval and tool lifecycle events through the backend event stream 8ms
+     × converts a denied approval into TOOL_DENIED and leaves the file absent 6ms
+     × auto-executes tools without approval and still emits converted execution events 6ms
+     × publishes an existing workspace file through the live AutoByteus publish_artifacts tool path 4ms
+      Tests  4 failed (4)
+  cause: LLMFactory no longer discovers LM Studio at start (16b5696716, Aug 23, in the base); with LMSTUDIO_MODEL_ID:
+      Tests  4 failed (4)
+TypeError: runManager.createAgentRun is not a function
+TypeError: this.skillService.hasEffectiveSkills is not a function
+  -> the suite's doubles are stale (hasEffectiveSkills since cf401a563b, Sep 30); not touched by this ticket; FU-004
+
+## Attempt B, first run: the real turn ran; failed on the stale allowed list:
+     × persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL 36484ms
+AssertionError: expected [ 'estimated', 'price_missing', …(1) ] to include 'local_no_api_bill'
+
+## Final (after baseline fix 75f2fffe57)
+ ✓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 3 skipped) 36110ms
+     ✓ persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL  35861ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)

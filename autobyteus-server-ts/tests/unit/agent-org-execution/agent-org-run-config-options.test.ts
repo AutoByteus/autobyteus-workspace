@@ -1,3 +1,4 @@
+import { noWorkGuard, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { describe, it, expect, vi } from 'vitest';
 import { AgentOrgRunService } from '../../../src/agent-org-execution/services/agent-org-run-service.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
@@ -9,7 +10,7 @@ describe('Org candidate workspace model options', () => {
     const before = structuredClone(tree);
     const listOptionsMany = vi.fn(async (contexts: any[]) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, replacements: [] })));
     const ensureWorkspaceByRootPath = vi.fn(), create = vi.fn(), restore = vi.fn(), updateStoppedRunConfig = vi.fn();
-    const service = new AgentOrgRunService({ manager: { getRunConfig: vi.fn().mockResolvedValue({ executionTree: tree }), create, restore, updateStoppedRunConfig },
+    const service = new AgentOrgRunService({ workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(), manager: { getRunConfig: vi.fn().mockResolvedValue({ executionTree: tree }), create, restore, updateStoppedRunConfig },
       workspaces: { ensureWorkspaceByRootPath }, modelSelectionOptions: { listOptionsMany } } as any);
     await service.runModelOptions('org', [{ teamAddress: '/team', workspaceRootPath: '/dest/../B/' }]);
     expect(listOptionsMany.mock.calls[0]![0].map(context => context.workspaceRootPath)).toEqual(['/workspace', '/workspace', '/B', '/B']);

@@ -1,0 +1,12 @@
+# IMP-06 server tests that run native commands (AC-006)
+# Command: pnpm -C autobyteus-server-ts prebuild; pnpm exec vitest run tests/unit/compositions/native-command-shutdown.test.ts tests/unit/agent-execution/backends/autobyteus tests/unit/agent-execution/agent-provider-factory-builder.test.ts --no-watch; pnpm test:integration:prepare; pnpm exec vitest run <background-task-notice-service, autobyteus-agent-run-backend-factory, agent-run-manager.memory-layout.real integration files> --no-watch
+# Commit: 80483cce9d
+# Environment: macOS (darwin 25.5), 10-core, Node v22.23.1; load ~100-200
+# Date: 2026-11-17
+
+## unit
+ Test Files  12 passed (12)
+      Tests  119 passed (119)
+## integration
+ Test Files  3 passed (3)
+      Tests  12 passed (12)

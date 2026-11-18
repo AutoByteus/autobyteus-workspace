@@ -1,0 +1,448 @@
+{
+  "case": "API-05",
+  "app": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T06:58:08.696Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-7rc6rf",
+  "tag": "RR285Dmvxhah88",
+  "steps": [
+    {
+      "at": "9.3",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--app",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app",
+          "--data-root",
+          "<own>/data-root"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "9.3",
+      "step": "instance started",
+      "value": {
+        "label": "X",
+        "instanceId": "iso-62924-dd0d",
+        "electronPid": 74185,
+        "serverPort": 62925
+      }
+    },
+    {
+      "at": "10.4",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "14.3",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "pid": 79698
+      }
+    },
+    {
+      "at": "14.7",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "pid": 79925
+      }
+    },
+    {
+      "at": "15.9",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "pid": 80074
+      }
+    },
+    {
+      "at": "18.0",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "pid": 80679
+      }
+    },
+    {
+      "at": "23.8",
+      "step": "busy",
+      "value": {
+        "label": "host",
+        "pid": 82906
+      }
+    },
+    {
+      "at": "23.8",
+      "step": "busy",
+      "value": {
+        "label": "copy",
+        "pid": 82415
+      }
+    },
+    {
+      "at": "31.0",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-62924-dd0d"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "31.0",
+      "step": "quit",
+      "value": {
+        "label": "quit X (busy)",
+        "electronGoneMs": 4696
+      }
+    },
+    {
+      "at": "31.0",
+      "step": "record after quit",
+      "value": {
+        "entries": [
+          {
+            "kind": "agent",
+            "place": "host",
+            "version": "1.5.11-beta.9",
+            "run": "ba82bb7484"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "version": "1.5.11-beta.9",
+            "run": "84cc00db69"
+          },
+          {
+            "kind": "agent_team",
+            "place": "member",
+            "version": "1.5.11-beta.9",
+            "run": "f099b4734b"
+          },
+          {
+            "kind": "agent_org",
+            "place": "member",
+            "version": "1.5.11-beta.9",
+            "run": "050510a668"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "version": "1.5.11-beta.9",
+            "run": "ccf42f0a5b"
+          },
+          {
+            "kind": "agent",
+            "place": "delegated",
+            "version": "1.5.11-beta.9",
+            "run": "cbf887322f"
+          }
+        ],
+        "lines": [
+          "[2026-11-01T06:58:35.077Z] [INFO] [electron.embedded-server.stdout] Recorded 6 busy run(s) for restart resume"
+        ]
+      }
+    },
+    {
+      "at": "31.0",
+      "step": "stamp in app copy",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "34.8",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--app",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app",
+          "--data-root",
+          "<own>/data-root"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "34.8",
+      "step": "instance started",
+      "value": {
+        "label": "X1",
+        "instanceId": "iso-63184-3eae",
+        "electronPid": 83338,
+        "serverPort": 63185
+      }
+    },
+    {
+      "at": "55.4",
+      "step": "after X1 start",
+      "value": {
+        "lines": [
+          "[2026-11-01T06:58:43.221Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69' of agent 'desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69'",
+          "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484' of agent 'desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484'",
+          "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f' of agent 'desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b'",
+          "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_org_manager_rr285dmvxhah88_88021c2dacc84131826416050510a668' of agent_org 'desk_org_rr285dmvxhah88_4ab451e4acda451e9acce2b9885c427c'",
+          "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b' of agent 'desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b'",
+          "[2026-11-01T06:58:43.562Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxhah88_d9feade9f52b407089064df099b4734b' of agent_team 'desk_team_rr285dmvxhah88_eabbca8c04744d93aeb398d7dc80524f'",
+          "[2026-11-01T06:58:43.562Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed"
+        ],
+        "after": {
+          "sa-codex": {
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T06:58:43.161Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "busyAgain": true,
+            "error": null
+          },
+          "sa-claude": {
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T06:58:43.161Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "busyAgain": false,
+            "error": null
+          },
+          "team-codex": {
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "busyAgain": false,
+            "error": "Error: [{\"message\":\"Run package 'agent:desk_team_coordinator_rr285dmvxhah88_d9feade9f52b407089064df099b4734b' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+          },
+          "org-claude": {
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "busyAgain": false,
+            "error": "Error: [{\"message\":\"Run package 'agent:desk_org_manager_rr285dmvxhah88_88021c2dacc84131826416050510a668' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+          },
+          "host": {
+            "notices": 1,
+            "listsDelegated": true,
+            "noticeText": "The application restarted at 2026-11-01T06:58:43.161Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: desk_worker_rr285dmvxhah88 (desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f).",
+            "busyAgain": false,
+            "error": null
+          },
+          "copy": {
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "busyAgain": false,
+            "error": "Error: [{\"message\":\"Run package 'agent:desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+          }
+        },
+        "recordAfterStart": null
+      }
+    },
+    {
+      "at": "75.4",
+      "step": "ui step failed",
+      "value": "TimeoutError: locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByText('Desk Team RR285Dmvxhah88').first() to be visible\n"
+    },
+    {
+      "at": "77.4",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-63184-3eae"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "77.4",
+      "step": "quit",
+      "value": {
+        "label": "quit X1",
+        "electronGoneMs": 1926
+      }
+    }
+  ],
+  "roots": [
+    {
+      "label": "sa-codex",
+      "kind": "agent",
+      "runId": "desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484",
+      "marker": "RR285Dmvxhah88_sa-codex"
+    },
+    {
+      "label": "sa-claude",
+      "kind": "agent",
+      "runId": "desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69",
+      "marker": "RR285Dmvxhah88_sa-claude"
+    },
+    {
+      "label": "team-codex",
+      "kind": "team",
+      "runId": "desk_team_coordinator_rr285dmvxhah88_d9feade9f52b407089064df099b4734b",
+      "rootId": "desk_team_rr285dmvxhah88_eabbca8c04744d93aeb398d7dc80524f",
+      "teamName": "Desk Team RR285Dmvxhah88",
+      "marker": "RR285Dmvxhah88_team-codex"
+    },
+    {
+      "label": "org-claude",
+      "kind": "org",
+      "runId": "desk_org_manager_rr285dmvxhah88_88021c2dacc84131826416050510a668",
+      "rootId": "desk_org_rr285dmvxhah88_4ab451e4acda451e9acce2b9885c427c",
+      "marker": "RR285Dmvxhah88_org-claude"
+    },
+    {
+      "label": "host",
+      "kind": "agent",
+      "runId": "desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b",
+      "marker": "RR285Dmvxhah88_host"
+    }
+  ],
+  "quitX": {
+    "label": "quit X (busy)",
+    "electronGoneMs": 4696
+  },
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484"
+        },
+        "agentRunId": "desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:58:35.052Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69"
+        },
+        "agentRunId": "desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:58:35.052Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "desk_team_rr285dmvxhah88_eabbca8c04744d93aeb398d7dc80524f"
+        },
+        "agentRunId": "desk_team_coordinator_rr285dmvxhah88_d9feade9f52b407089064df099b4734b",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:58:35.052Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "desk_org_rr285dmvxhah88_4ab451e4acda451e9acce2b9885c427c"
+        },
+        "agentRunId": "desk_org_manager_rr285dmvxhah88_88021c2dacc84131826416050510a668",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:58:35.052Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b"
+        },
+        "agentRunId": "desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:58:35.052Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b"
+        },
+        "agentRunId": "desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f",
+        "place": "delegated",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:58:35.052Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "quitXLines": [
+    "[2026-11-01T06:58:35.077Z] [INFO] [electron.embedded-server.stdout] Recorded 6 busy run(s) for restart resume"
+  ],
+  "startX1Lines": [
+    "[2026-11-01T06:58:43.221Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69' of agent 'desk_agent_rr285dmvxhah88_2e8bda4750d74c628dcaa884cc00db69'",
+    "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484' of agent 'desk_agent_rr285dmvxhah88_e9a7416078aa4518b97fd4ba82bb7484'",
+    "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f' of agent 'desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b'",
+    "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_org_manager_rr285dmvxhah88_88021c2dacc84131826416050510a668' of agent_org 'desk_org_rr285dmvxhah88_4ab451e4acda451e9acce2b9885c427c'",
+    "[2026-11-01T06:58:43.447Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b' of agent 'desk_host_rr285dmvxhah88_422e0d5e3b544494a99a15ccf42f0a5b'",
+    "[2026-11-01T06:58:43.562Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxhah88_d9feade9f52b407089064df099b4734b' of agent_team 'desk_team_rr285dmvxhah88_eabbca8c04744d93aeb398d7dc80524f'",
+    "[2026-11-01T06:58:43.562Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed"
+  ],
+  "recordAfterStart": null,
+  "after": {
+    "sa-codex": {
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T06:58:43.161Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "busyAgain": true,
+      "error": null
+    },
+    "sa-claude": {
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T06:58:43.161Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "busyAgain": false,
+      "error": null
+    },
+    "team-codex": {
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "busyAgain": false,
+      "error": "Error: [{\"message\":\"Run package 'agent:desk_team_coordinator_rr285dmvxhah88_d9feade9f52b407089064df099b4734b' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+    },
+    "org-claude": {
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "busyAgain": false,
+      "error": "Error: [{\"message\":\"Run package 'agent:desk_org_manager_rr285dmvxhah88_88021c2dacc84131826416050510a668' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+    },
+    "host": {
+      "notices": 1,
+      "listsDelegated": true,
+      "noticeText": "The application restarted at 2026-11-01T06:58:43.161Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: desk_worker_rr285dmvxhah88 (desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f).",
+      "busyAgain": false,
+      "error": null
+    },
+    "copy": {
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "busyAgain": false,
+      "error": "Error: [{\"message\":\"Run package 'agent:desk_worker_rr285dmvxhah88_76d32ed5b7aa487b896a3ecbf887322f' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+    }
+  },
+  "uiError": "TimeoutError: locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByText('Desk Team RR285Dmvxhah88').first() to be visible\n",
+  "quitX1": {
+    "label": "quit X1",
+    "electronGoneMs": 1926
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "rootRemoved": true
+}

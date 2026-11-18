@@ -1,0 +1,36 @@
+# DEL-04
+# Command: pnpm -C autobyteus-web test:electron browser/ shell/ --run
+# Commit: a53b93db9c (merge of origin/personal d8dbeaa9ba into the ticket branch)
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1
+# Date: 2026-11-17
+
+
+> autobyteus@1.5.13-beta.7 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web
+> vitest --config ./electron/vitest.config.ts browser/ shell/ --run
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+
+ ✓ browser/__tests__/register-browser-shell-ipc-handlers.spec.ts (2 tests) 5ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 52ms
+ ✓ browser/__tests__/browser-file-document-request.spec.ts (25 tests) 3ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 4ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (4 tests) 9ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 108ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (12 tests) 13ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (3 tests) 4ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 5ms
+ ✓ browser/__tests__/browser-tab-observers.spec.ts (1 test) 3ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (4 tests) 2ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 3ms
+RESULT {"electron":"42.11.16","cases":[{"id":"AC-002","ok":true,"ms":451,"size":{"width":2560,"height":1800},"tabId":"53d062"},{"id":"AC-001","ok":true,"ms":160,"size":{"width":2560,"height":1800},"tabId":"53d062"},{"id":"AC-005","ok":true,"ms":582,"size":{"width":2560,"height":8000},"tabId":"53d062","boundsBefore":{"x":0,"y":0,"width":1280,"height":900},"boundsAfter":{"x":0,"y":0,"width":1280,"height":900}},{"id":"AC-003","ok":true,"ms":151,"size":{"width":810,"height":1800},"tabId":"6d4dac","viewportBefore":[980,2176],"viewportAfter":[980,2176]},{"id":"AC-004","ok":true,"ms":226,"size":{"width":2560,"height":1800},"tabId":"143969","attachedWhileShown":true,"attachedWhileMinimized":false},{"id":"AC-004-restored","ok":true,"ms":61,"size":{"width":2560,"height":1800},"tabId":"143969","attachedAfterRestore":true}]}
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts (4 tests) 29358ms
+ ✓ browser/__tests__/browser-screenshot-capture.electron.spec.ts (7 tests) 29386ms
+
+ Test Files  14 passed (14)
+      Tests  85 passed (85)
+   Start at  09:00:01
+   Duration  31.50s (transform 1.68s, setup 0ms, collect 6.69s, tests 58.96s, environment 2ms, prepare 3.42s)
+
+
+DEL-04 exit 0

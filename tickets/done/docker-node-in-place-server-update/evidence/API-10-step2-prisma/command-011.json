@@ -1,0 +1,12 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "--format",
+    "{{json .Config.Labels}}",
+    "api-prisma-a73a37eb-fc6-native"
+  ],
+  "exit": 1,
+  "stdout": "\n",
+  "stderr": "error: no such object: api-prisma-a73a37eb-fc6-native\n"
+}

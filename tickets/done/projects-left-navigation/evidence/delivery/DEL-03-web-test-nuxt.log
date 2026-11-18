@@ -1,0 +1,6 @@
+# DEL-03 web unit/component suite, commit 0c8a6f4d22, 2026-10-31T14:26:20Z
+ Test Files  680 passed (680)
+      Tests  4927 passed (4927)
+   Duration  234.25s (transform 27.50s, setup 1542.74s, collect 152.23s, tests 78.81s, environment 135.69s, prepare 81.44s)
+exit=0
+# full log: DEL-03-web-test-nuxt.full.log.gz

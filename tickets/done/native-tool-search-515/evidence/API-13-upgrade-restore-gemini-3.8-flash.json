@@ -1,0 +1,227 @@
+{
+  "model": "gemini-3.8-flash",
+  "oldRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515-base",
+  "newRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/native-tool-search-515",
+  "write": {
+    "status": 0,
+    "stderrTail": [],
+    "summary": {
+      "toolSearchBuild": false,
+      "listedToolNames": null,
+      "success": true,
+      "calls": [
+        "update_task"
+      ],
+      "requests": 2,
+      "errors": 0
+    },
+    "turns": [
+      {
+        "text": "Close Task autobyteus-77 as DONE with the comment \"Delivered and verified\".",
+        "finished": true,
+        "requests": 2,
+        "calls": [
+          "update_task"
+        ]
+      }
+    ],
+    "requestToolNames": [
+      [
+        "list_projects",
+        "update_project",
+        "list_project_tasks",
+        "get_project_task",
+        "create_task",
+        "update_task",
+        "search_memory",
+        "read_file",
+        "write_file",
+        "edit_file",
+        "run_bash"
+      ],
+      [
+        "list_projects",
+        "update_project",
+        "list_project_tasks",
+        "get_project_task",
+        "create_task",
+        "update_task",
+        "search_memory",
+        "read_file",
+        "write_file",
+        "edit_file",
+        "run_bash"
+      ]
+    ],
+    "usages": [
+      {
+        "prompt": 4438,
+        "cacheRead": null
+      },
+      {
+        "prompt": 4602,
+        "cacheRead": null
+      }
+    ],
+    "errors": []
+  },
+  "restore": {
+    "status": 0,
+    "stderrTail": [],
+    "summary": {
+      "toolSearchBuild": true,
+      "success": {
+        "rename": true,
+        "start": true
+      },
+      "calls": [
+        "update_project",
+        "update_task"
+      ],
+      "requests": 5,
+      "identicalTools": true,
+      "firstRequestTools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      "errors": 0
+    },
+    "turns": [
+      {
+        "text": "Rename the Project project_a1 to \"AutoByteus Core\".",
+        "finished": true,
+        "requests": 3,
+        "calls": [
+          "update_project"
+        ]
+      },
+      {
+        "text": "Mark Task autobyteus-78 as IN_PROGRESS.",
+        "finished": true,
+        "requests": 2,
+        "calls": [
+          "update_task"
+        ]
+      }
+    ],
+    "requestToolNames": [
+      [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ],
+      [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "search_tools",
+        "call_tool"
+      ]
+    ],
+    "usages": [
+      {
+        "prompt": 2125,
+        "cacheRead": null
+      },
+      {
+        "prompt": 2718,
+        "cacheRead": null
+      },
+      {
+        "prompt": 2808,
+        "cacheRead": null
+      },
+      {
+        "prompt": 2841,
+        "cacheRead": null
+      },
+      {
+        "prompt": 2964,
+        "cacheRead": null
+      }
+    ],
+    "errors": []
+  },
+  "rawTraces": [
+    {
+      "type": "tool_call",
+      "tool": "update_task",
+      "called_through": null,
+      "turn": "turn_0001"
+    },
+    {
+      "type": "tool_result",
+      "tool": "update_task",
+      "called_through": null,
+      "turn": "turn_0001"
+    },
+    {
+      "type": "tool_call",
+      "tool": "search_tools",
+      "called_through": null,
+      "turn": "turn_0001"
+    },
+    {
+      "type": "tool_result",
+      "tool": "search_tools",
+      "called_through": null,
+      "turn": "turn_0001"
+    },
+    {
+      "type": "tool_call",
+      "tool": "update_project",
+      "called_through": "call_tool",
+      "turn": "turn_0001"
+    },
+    {
+      "type": "tool_result",
+      "tool": "update_project",
+      "called_through": null,
+      "turn": "turn_0001"
+    },
+    {
+      "type": "tool_call",
+      "tool": "update_task",
+      "called_through": "call_tool",
+      "turn": "turn_0002"
+    },
+    {
+      "type": "tool_result",
+      "tool": "update_task",
+      "called_through": null,
+      "turn": "turn_0002"
+    }
+  ]
+}

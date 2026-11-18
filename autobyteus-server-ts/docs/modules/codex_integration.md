@@ -237,7 +237,7 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
   task-Agent runs append the task AgentRun id within the same resolved physical
   Team scope. Callers use `AgentMemoryLocationService`; they do not derive a
   directory from the logical member address.
-- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
+- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures user input the `AgentRun` forwards (posted, or committed from a held teammate slot) plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` rows through the `autobyteus-ts` `RunMemoryFileStore` primitives and restores sequencing/tool lifecycle from active plus complete rotated traces. It never loads or persists a WorkingContext snapshot; Codex thread state owns continuation.
 
 New Codex tool traces use the shared split physical contract. A `tool_call`
@@ -296,7 +296,7 @@ management: AutoByteus does not retrieve these traces for Codex, inject them
 into Codex prompts, replace Codex session state, or run semantic compaction
 inside the Codex execution path.
 
-Codex provider/session compaction metadata is treated as provider-owned context management, not AutoByteus semantic compaction. Current Codex `contextCompaction` item lifecycle events normalize at the Codex converter boundary into `COMPACTION_STATUS` provider-boundary payloads: `item/started` emits non-rotating in-progress provenance, and `item/completed` emits a completed rotation-eligible boundary. Raw Responses `type = "context_compaction"`, older raw Responses `type = "compaction"`, and deprecated `thread/compacted` also normalize to completed provider-boundary payloads and dedupe with the item lifecycle boundary when they report the same compaction. `compaction_trigger` is not a completed boundary and must not write a marker or rotate raw traces. Codex sends no `item/completed` for a compaction whose turn ends first: an interrupted turn ends with `turn/completed` status `interrupted` and the started item simply stays open. `CodexProviderCompactionStatusProjector` therefore remembers each started `contextCompaction` item (by item id, with its turn and thread) until a completed boundary with the same id arrives. When the turn ends first (`turn/completed` of any status, or a terminal turn error), the runtime ends (terminal runtime error, including Codex app-server close), or the run is terminated (`CodexAgentRunBackend.terminateRun`, published before the thread is terminated and listeners detach), each still-open compaction is closed by one non-rotating `codex.context_compaction_abandoned` status with status `failed`, the same `provider_event_id` (item id), boundary key `codex:<thread>:<item>:failed` and an `error_message` naming the reason. The close is emitted before the turn or error event that caused it, so live and history views end the same compaction activity as failed. It never rotates raw traces. Normal `AgentRun` termination (UI Terminate and server shutdown) quiesces input and waits for the active turn before `CodexAgentRunBackend.terminateRun`, so a compaction running at Terminate ends with its turn, usually as completed. The `run_terminated` close is a defensive path for a backend terminated with a compaction still open. Historical open markers are not rewritten. The server recorder writes provider-boundary provenance and may rotate settled active raw traces before rotation-eligible markers into complete segmented archive entries. It must not create semantic/episodic memory, rewrite trace content, drop trace history, retrieve memory for Codex, or inject memory back into Codex.
+Codex provider/session compaction metadata is treated as provider-owned context management, not AutoByteus semantic compaction. Current Codex `contextCompaction` item lifecycle events normalize at the Codex converter boundary into `COMPACTION_STATUS` provider-boundary payloads: `item/started` emits non-rotating in-progress provenance, and `item/completed` emits a completed rotation-eligible boundary. Raw Responses `type = "context_compaction"`, older raw Responses `type = "compaction"`, and deprecated `thread/compacted` also normalize to completed provider-boundary payloads and dedupe with the item lifecycle boundary when they report the same compaction. `compaction_trigger` is not a completed boundary and must not write a marker or rotate raw traces. Codex sends no `item/completed` for a compaction whose turn ends first: an interrupted turn ends with `turn/completed` status `interrupted` and the started item simply stays open. `CodexProviderCompactionStatusProjector` therefore remembers each started `contextCompaction` item (by item id, with its turn and thread) until a completed boundary with the same id arrives. When the turn ends first (`turn/completed` of any status, or a terminal turn error), the runtime ends (terminal runtime error, including Codex app-server close), or the run is terminated (`CodexAgentRunBackend.terminateRun`, published before the thread is terminated and listeners detach), each still-open compaction is closed by one non-rotating `codex.context_compaction_abandoned` status with status `failed`, the same `provider_event_id` (item id), boundary key `codex:<thread>:<item>:failed` and an `error_message` naming the reason. The close is emitted before the turn or error event that caused it, so live and history views end the same compaction activity as failed. It never rotates raw traces. Normal `AgentRun` termination (UI Terminate, an application's terminate and server shutdown) first interrupts the active turn, then waits for it to end before `CodexAgentRunBackend.terminateRun` (see `agent_execution.md`, "Stop now"), so a compaction running at Terminate ends with its interrupted turn and is closed by the turn-end close above. The `run_terminated` close is a defensive path for a backend terminated with a compaction still open. Historical open markers are not rewritten. The server recorder writes provider-boundary provenance and may rotate settled active raw traces before rotation-eligible markers into complete segmented archive entries. It must not create semantic/episodic memory, rewrite trace content, drop trace history, retrieve memory for Codex, or inject memory back into Codex.
 
 ## Sandbox Mode Configuration
 
@@ -320,6 +320,14 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
   `delegate_task` to effective exposure, while team-owned handlers, current
   rosters, and recipient or target validation still constrain each call. Other
   tools remain configured and availability-gated.
+
+- The thread `config` key `sandbox_workspace_write` is built by one owner,
+  `buildCodexSandboxWorkspaceWriteConfig`
+  (`src/agent-execution/backends/codex/backend/codex-sandbox-workspace-write-config.ts`), for
+  `workspace-write` runs only: `network_access: true` for a run with integration variables
+  ([Credential Proxy](./credential_proxy.md)) and `writable_roots: [<folder>]` for an agent with semantic memory
+  ([Agent Memory](./agent_memory.md#semantic-memory)), so the agent can write its own folder outside the working
+  directory. Without either the key is left out. `read-only` stays read-only; `danger-full-access` needs nothing.
 
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings
@@ -389,6 +397,11 @@ reconciliation.
   `agents/<agent-id>/skills/<skill-name>` package skill root.
 - If the discovery probe fails, AutoByteus falls back to the runtime-owned
   workspace symlink path instead of blocking bootstrap.
+- The same planner (`codex-workspace-skill-request-planner.ts`) plans a skill
+  added to a running agent's definition, through the run's `RunWorkspaceSkills`
+  (see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)).
+  Whether a live thread lists the new folder is not proven; the skill notice gives
+  the agent its path.
 - A broken workspace symlink is rechecked and repaired link-only to the current
   resolved source. If the configured name is safe but no source now resolves,
   only the broken link is removed and the optional skill is warned about and

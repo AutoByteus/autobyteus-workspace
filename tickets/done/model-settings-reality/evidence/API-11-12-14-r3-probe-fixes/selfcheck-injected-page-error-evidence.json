@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-11-10T17:03:25.967Z",
+  "result": "Fail",
+  "steps": [],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 94942
+    },
+    {
+      "label": "frontend",
+      "pid": 95025
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 95025,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 94942,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/runtime-switch-members-probe-FIofci"
+    }
+  ],
+  "browserErrors": [
+    {
+      "case": "API-19",
+      "line": "probe self-check: injected page error",
+      "known": false
+    }
+  ],
+  "failures": [
+    {
+      "case": "API-19",
+      "error": "browser page error: probe self-check: injected page error"
+    }
+  ],
+  "ownedRoot": "/tmp/runtime-switch-members-probe-FIofci",
+  "backendUrl": "http://127.0.0.1:42165",
+  "frontUrl": "http://127.0.0.1:44655",
+  "definitions": {
+    "agent": {
+      "id": "switch-probe-agent",
+      "name": "Switch Probe Agent"
+    },
+    "host": {
+      "id": "switch-probe-host",
+      "name": "Switch Probe Host"
+    },
+    "writer": {
+      "id": "switch-probe-writer",
+      "name": "Switch Probe Writer"
+    },
+    "writerAgy": {
+      "id": "switch-probe-writer-agy",
+      "name": "Switch Probe Writer Agy"
+    },
+    "team": {
+      "id": "switch-probe-team",
+      "name": "Switch Probe Team"
+    },
+    "org": {
+      "id": "switch-probe-org",
+      "name": "Switch Probe Org"
+    }
+  },
+  "cli": {
+    "mode": "scripted",
+    "version": "2.1.200 (Claude Code)"
+  },
+  "API-19": {
+    "title": "AutoByteus runtime: a model a local server (LM Studio) starts offering while the app runs appears after \"Refresh models\", which re-discovers discovered providers (AC-011, REQ-011, REQ-014)",
+    "result": "Pass",
+    "details": {
+      "before": [
+        "rsw-native-b:lmstudio@127.0.0.1:43577",
+        "rsw-native:lmstudio@127.0.0.1:43577"
+      ],
+      "after": [
+        "rsw-native-b:lmstudio@127.0.0.1:43577",
+        "rsw-native-c:lmstudio@127.0.0.1:43577",
+        "rsw-native:lmstudio@127.0.0.1:43577"
+      ]
+    },
+    "ms": 4004
+  },
+  "completedAt": "2026-11-10T17:04:03.090Z"
+}

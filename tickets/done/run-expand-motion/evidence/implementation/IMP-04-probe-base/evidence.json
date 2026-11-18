@@ -1,0 +1,602 @@
+{
+  "startedAt": "2026-11-06T05:52:43.546Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "REM-01": {
+      "description": "Expanded at first: twelve delegated rows, at rest",
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "top": 244,
+            "transform": "none"
+          },
+          {
+            "top": 274,
+            "transform": "none"
+          },
+          {
+            "top": 304,
+            "transform": "none"
+          },
+          {
+            "top": 334,
+            "transform": "none"
+          },
+          {
+            "top": 364,
+            "transform": "none"
+          },
+          {
+            "top": 394,
+            "transform": "none"
+          },
+          {
+            "top": 424,
+            "transform": "none"
+          },
+          {
+            "top": 454,
+            "transform": "none"
+          },
+          {
+            "top": 484,
+            "transform": "none"
+          },
+          {
+            "top": 514,
+            "transform": "none"
+          },
+          {
+            "top": 544,
+            "transform": "none"
+          },
+          {
+            "top": 574,
+            "transform": "none"
+          }
+        ]
+      }
+    },
+    "REM-02": {
+      "description": "Collapse: the delegated rows are gone at once (AC-002)",
+      "result": "Fail",
+      "message": "Delegated rows are still in the DOM after collapse (hidden, not removed)",
+      "details": {
+        "perFrame": [
+          [
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            }
+          ],
+          [
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            }
+          ],
+          [
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            }
+          ],
+          [
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            },
+            {
+              "top": 0,
+              "transform": "none"
+            }
+          ]
+        ],
+        "settled": [
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          },
+          {
+            "top": 0,
+            "transform": "none"
+          }
+        ]
+      }
+    },
+    "REM-03": {
+      "description": "Expand: from the first frame, every row is at its final place with no transform (AC-001; 4 frames)",
+      "result": "Fail",
+      "message": "48 row samples moved from elsewhere on screen",
+      "details": {
+        "firstOffending": [
+          {
+            "frame": 0,
+            "index": 0,
+            "top": 0,
+            "transform": "matrix(1, 0, 0, 1, -28, -244)",
+            "final": 244
+          },
+          {
+            "frame": 0,
+            "index": 1,
+            "top": 0,
+            "transform": "matrix(1, 0, 0, 1, -28, -274)",
+            "final": 274
+          },
+          {
+            "frame": 0,
+            "index": 2,
+            "top": 0,
+            "transform": "matrix(1, 0, 0, 1, -28, -304)",
+            "final": 304
+          },
+          {
+            "frame": 0,
+            "index": 3,
+            "top": 0,
+            "transform": "matrix(1, 0, 0, 1, -28, -334)",
+            "final": 334
+          },
+          {
+            "frame": 0,
+            "index": 4,
+            "top": 0,
+            "transform": "matrix(1, 0, 0, 1, -28, -364)",
+            "final": 364
+          },
+          {
+            "frame": 0,
+            "index": 5,
+            "top": 0,
+            "transform": "matrix(1, 0, 0, 1, -28, -394)",
+            "final": 394
+          }
+        ],
+        "frames": [
+          [
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -244)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -274)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -304)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -334)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -364)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -394)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -424)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -454)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -484)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -514)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -544)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -574)"
+            }
+          ],
+          [
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -244)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -274)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -304)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -334)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -364)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -394)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -424)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -454)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -484)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -514)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -544)"
+            },
+            {
+              "top": 0,
+              "transform": "matrix(1, 0, 0, 1, -28, -574)"
+            }
+          ],
+          [
+            {
+              "top": 33,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -211.09)"
+            },
+            {
+              "top": 37,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -237.044)"
+            },
+            {
+              "top": 41,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -262.998)"
+            },
+            {
+              "top": 45,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -288.952)"
+            },
+            {
+              "top": 49,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -314.905)"
+            },
+            {
+              "top": 53,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -340.859)"
+            },
+            {
+              "top": 57,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -366.813)"
+            },
+            {
+              "top": 61,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -392.766)"
+            },
+            {
+              "top": 65,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -418.72)"
+            },
+            {
+              "top": 69,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -444.674)"
+            },
+            {
+              "top": 73,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -470.628)"
+            },
+            {
+              "top": 77,
+              "transform": "matrix(1, 0, 0, 1, -24.2235, -496.581)"
+            }
+          ],
+          [
+            {
+              "top": 64,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -180.405)"
+            },
+            {
+              "top": 71,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -202.585)"
+            },
+            {
+              "top": 79,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -224.766)"
+            },
+            {
+              "top": 87,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -246.947)"
+            },
+            {
+              "top": 95,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -269.128)"
+            },
+            {
+              "top": 103,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -291.309)"
+            },
+            {
+              "top": 111,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -313.49)"
+            },
+            {
+              "top": 118,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -335.671)"
+            },
+            {
+              "top": 126,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -357.852)"
+            },
+            {
+              "top": 134,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -380.033)"
+            },
+            {
+              "top": 142,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -402.213)"
+            },
+            {
+              "top": 150,
+              "transform": "matrix(1, 0, 0, 1, -20.7022, -424.394)"
+            }
+          ]
+        ]
+      }
+    },
+    "REM-04": {
+      "description": "No browser errors during the cases",
+      "result": "Pass",
+      "details": {
+        "events": 0
+      }
+    }
+  },
+  "browserEvents": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxt": "SIGTERM",
+    "installedPageRemoved": true
+  },
+  "failures": [
+    {
+      "id": "REM-02",
+      "message": "Delegated rows are still in the DOM after collapse (hidden, not removed)"
+    },
+    {
+      "id": "REM-03",
+      "message": "48 row samples moved from elsewhere on screen"
+    }
+  ],
+  "browserVersion": "156.0.8078.80",
+  "result": "Fail",
+  "finishedAt": "2026-11-06T05:53:06.566Z"
+}

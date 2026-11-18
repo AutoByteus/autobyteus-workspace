@@ -1,0 +1,24 @@
+# API-03 Android instrumented tests on the emulator
+# command: cd autobyteus-android && JAVA_HOME=/opt/homebrew/opt/openjdk@17 ANDROID_HOME=~/Library/Android/sdk ANDROID_SERIAL=emulator-5584 ./gradlew :app:connectedDebugAndroidTest
+# commit: f7bb05f5ec (code ba3ba5b23e)
+# env: emulator pnnp433_api35 (Android 15, sdk_gphone64_arm64, WebView 124.0.6367.219), headless, JDK 17
+# date: 2026-11-08T07:36:38Z
+
+Starting 11 tests on pnnp433_api35(AVD) - 15
+pnnp433_api35(AVD) - 15 Tests 10/11 completed. (0 skipped) (0 failed)
+Finished 11 tests on pnnp433_api35(AVD) - 15
+BUILD SUCCESSFUL in 37s
+
+# per test (JUnit XML):
+suite tests=11 failures=0 errors=0 skipped=0
+  pass AutoByteusMobileShellSmokeTest.appPackageIsInstallable 0.009s
+  pass AutoByteusMobileShellSmokeTest.cameraPermissionAndFileChooserRequestsHaveDistinctCodes 0.0s
+  pass AutoByteusMobileShellSmokeTest.qrCoordinatorOpensTheScannerOnlyWithTheCameraPermission 0.0s
+  pass AutoByteusMobileShellSmokeTest.healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar 1.585s
+  pass AutoByteusMobileShellSmokeTest.diagnosticWebShellKeepsRecoveryActionsInOverlay 0.355s
+  pass AutoByteusMobileShellSmokeTest.webViewSettingsPermitUserSelectedContentUrisButNotFilePaths 0.266s
+  pass MainActivityConfigurationChangeTest.rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput 5.704s
+  pass SystemBarInsetsTest.padsTheRootWithTheBarsAndTheCutout 0.032s
+  pass SystemBarInsetsTest.theKeyboardRaisesTheBottomAboveIt 0.035s
+  pass SystemBarInsetsTest.withoutInsetsNothingMoves 0.034s
+  pass WebShellWindowInsetsTest.thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero 8.083s

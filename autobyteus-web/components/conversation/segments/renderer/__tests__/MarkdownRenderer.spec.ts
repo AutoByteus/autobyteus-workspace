@@ -41,7 +41,7 @@ describe('MarkdownRenderer', () => {
       global: { plugins: [pinia] },
     });
 
-    expect(wrapper.html()).toContain('<h1>Hello World</h1>');
+    expect(wrapper.html()).toContain('<h1 id="user-content-hello-world">Hello World</h1>');
   });
 
   it('keeps the generic renderer inert and enables scoped file actions only when opted in', async () => {
@@ -431,8 +431,7 @@ describe('MarkdownRenderer', () => {
 
   it('binds a managed image only after authorized resolution completes', async () => {
     const session: MobileNodeSession = {
-      version: 1,
-      nodeId: 'mobile-paired-node',
+      entryId: 'mobile-paired-node',
       serverBaseUrl: 'http://node.example',
       credential: 'credential-a',
       pairedAt: '2026-07-12T00:00:00.000Z',
@@ -440,6 +439,7 @@ describe('MarkdownRenderer', () => {
         deviceId: 'device-1',
         displayName: 'Phone',
         clientFacingBaseUrl: 'http://node.example',
+        connectionWay: null,
         createdAt: '2026-07-12T00:00:00.000Z',
         lastSeenAt: null,
         revokedAt: null,
@@ -479,5 +479,12 @@ describe('MarkdownRenderer', () => {
 
     expect(image.attributes('src')).toBe('blob:managed-image#node-a');
     wrapper.unmount();
+  });
+
+  it('shapes an html segment with a very long unbroken run cheaply, and leaves prose as it is (autobyteus-358 DS-007)', () => {
+    const long = mount(MarkdownRenderer, { props: { content: `Result: ${'y'.repeat(1200)}` }, global: { plugins: [pinia] } });
+    const prose = mount(MarkdownRenderer, { props: { content: 'A long paragraph of words. '.repeat(400) }, global: { plugins: [pinia] } });
+    expect(long.get('.markdown-body').classes()).toContain('long-unbroken-text');
+    expect(prose.get('.markdown-body').classes()).not.toContain('long-unbroken-text');
   });
 });

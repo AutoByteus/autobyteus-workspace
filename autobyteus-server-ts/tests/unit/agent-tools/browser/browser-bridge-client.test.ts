@@ -163,4 +163,30 @@ describe("BrowserBridgeClient", () => {
       message: "Browser bridge authorization failed.",
     });
   });
+
+  it.each([
+    ["browser_tab_not_found", "Browser session 'pending' was not found."],
+    ["browser_tab_closed", "Browser session 'c0cde0' has already been closed."],
+    [
+      "browser_screenshot_failed",
+      "The tab did not draw a frame to capture within 2 s (UnknownVizError).",
+    ],
+  ] as const)(
+    "passes the desktop bridge's %s error through to the tool",
+    async (code, message) => {
+      const client = new BrowserBridgeClient({
+        baseUrl: "http://127.0.0.1:39001",
+        authToken: "browser-token",
+      });
+
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        status: 400,
+        json: async () => ({ ok: false, error: { code, message } }),
+      }) as typeof globalThis.fetch;
+
+      await expect(
+        client.takeScreenshot({ tab_id: "c0cde0" }),
+      ).rejects.toMatchObject({ name: "BrowserToolError", code, message });
+    },
+  );
 });

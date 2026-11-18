@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "http://localhost:3000/#/chat"
+  ],
+  "appShown": true,
+  "url": "http://localhost:3000/#/chat",
+  "own": {
+    "origin": "http://localhost:3000",
+    "graphqlStatus": 200,
+    "hasData": true,
+    "ws": "opened",
+    "electronApi": "undefined"
+  }
+}

@@ -11,9 +11,8 @@ describe('embedded listener preflight', () => {
     })
     const address = owner.address()
     const port = typeof address === 'object' && address ? address.port : 0
-    await expect(assertEmbeddedServerListenerPortAvailable(port)).rejects.toThrow(
-      `Embedded server listener port ${port} is unavailable`,
-    )
+    // The shared backend port check (f34ad8749f) rejects with the listener's own error.
+    await expect(assertEmbeddedServerListenerPortAvailable(port)).rejects.toMatchObject({ code: 'EADDRINUSE', port })
     await new Promise<void>((resolve) => owner.close(() => resolve()))
     await expect(assertEmbeddedServerListenerPortAvailable(port)).resolves.toBeUndefined()
   })

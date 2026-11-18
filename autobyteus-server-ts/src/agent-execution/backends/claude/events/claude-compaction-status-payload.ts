@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { asString } from "../claude-runtime-shared.js";
 
 export type ClaudeCompactionSourceSurface =
@@ -37,7 +38,7 @@ export const buildClaudeCompactionStatusPayload = (
   ].join(":");
   return {
     kind: "provider_compaction_boundary",
-    runtime_kind: "CLAUDE",
+    runtime_kind: RuntimeKind.CLAUDE_AGENT_SDK,
     provider: "claude",
     source_surface: sourceSurface,
     boundary_key: boundaryKey,

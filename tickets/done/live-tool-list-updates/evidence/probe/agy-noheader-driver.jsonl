@@ -1,0 +1,32 @@
+{"t":"2026-10-29T09:11:46.435Z","kind":"init","conversation":"d8141db7-c492-454e-ad7b-79347917115e"}
+{"t":"2026-10-29T09:11:46.436Z","kind":"turn","n":1}
+{"t":"2026-10-29T09:11:49.339Z","kind":"text","text":""}
+{"t":"2026-10-29T09:11:49.340Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T09:11:49.340Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"1 lines, 130 bytes\""}
+{"t":"2026-10-29T09:11:51.666Z","kind":"text","text":""}
+{"t":"2026-10-29T09:11:51.667Z","kind":"tool_step","state":"ACTIVE","tool":"call_mcp_tool","mcpTool":"probe_alpha","server":"probe","output":"null"}
+{"t":"2026-10-29T09:11:51.667Z","kind":"tool_step","state":"DONE","tool":"call_mcp_tool","mcpTool":"probe_alpha","server":"probe","output":"\"PROBE_ALPHA_OK_7319\""}
+{"t":"2026-10-29T09:11:53.562Z","kind":"text","text":"\n"}
+{"t":"2026-10-29T09:11:53.563Z","kind":"result","status":"SUCCESS","response":"PROBE_ALPHA_OK_7319\n","error":null}
+{"t":"2026-10-29T09:11:53.598Z","kind":"control","action":"add-beta","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T09:11:56.600Z","kind":"turn","n":2}
+{"t":"2026-10-29T09:11:58.667Z","kind":"text","text":""}
+{"t":"2026-10-29T09:11:58.668Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T09:11:58.668Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"1 lines, 158 bytes\""}
+{"t":"2026-10-29T09:12:00.907Z","kind":"text","text":""}
+{"t":"2026-10-29T09:12:00.908Z","kind":"tool_step","state":"ACTIVE","tool":"call_mcp_tool","mcpTool":"probe_beta","server":"probe","output":"null"}
+{"t":"2026-10-29T09:12:00.935Z","kind":"tool_step","state":"DONE","tool":"call_mcp_tool","mcpTool":"probe_beta","server":"probe","output":"\"PROBE_BETA_OK_7319\""}
+{"t":"2026-10-29T09:12:03.226Z","kind":"text","text":"\n"}
+{"t":"2026-10-29T09:12:03.227Z","kind":"result","status":"SUCCESS","response":"PROBE_BETA_OK_7319\n","error":null}
+{"t":"2026-10-29T09:12:03.230Z","kind":"control","action":"remove-alpha","state":{"tools":["probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T09:12:06.238Z","kind":"turn","n":3}
+{"t":"2026-10-29T09:12:10.993Z","kind":"text","text":""}
+{"t":"2026-10-29T09:12:10.993Z","kind":"tool_step","state":"ACTIVE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T09:12:11.018Z","kind":"tool_step","state":"DONE","tool":"list_dir","mcpTool":null,"server":null,"output":"\"probe_beta.json\""}
+{"t":"2026-10-29T09:12:13.673Z","kind":"text","text":"\n"}
+{"t":"2026-10-29T09:12:13.673Z","kind":"result","status":"SUCCESS","response":"NO_ALPHA_TOOL\n","error":null}
+{"t":"2026-10-29T09:12:13.673Z","kind":"end","stderrTail":""}
+{"t":"2026-10-29T09:12:13.675Z","kind":"result","status":"ERROR","response":"NO_ALPHA_TOOL\n","error":"stream input cancelled: context canceled"}
+{"t":"2026-10-29T09:14:46.439Z","kind":"turn_timeout","n":1}
+{"t":"2026-10-29T09:14:56.602Z","kind":"turn_timeout","n":2}
+{"t":"2026-10-29T09:15:06.242Z","kind":"turn_timeout","n":3}

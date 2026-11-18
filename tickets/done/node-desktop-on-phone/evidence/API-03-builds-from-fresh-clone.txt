@@ -1,0 +1,58 @@
+# Case: API-03 — test-environment builds from a fresh clone of 165de82af4 (not a required fresh-start: no build input changed)
+# Script: API-03-build.sh (git clone --no-local + checkout; docker buildx --target server-package; pnpm install --frozen-lockfile; pnpm build:electron:mac -- --arm64 personal, unsigned)
+# Date: 2026-11-06/07
+
+# builds; commit 165de82af4; 2026-11-06T22:51:18Z; macOS 26.5.2 arm64; node v22.23.1; pnpm 10.28.2; docker 29.0.1
+== HEAD: 165de82af468aeacdfb33151ba1ed07c6ae1ae13
+== step: buildx server-package
+#39 17.61 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+#39 17.61 
+#39 17.86 Removed 127 MB of onnxruntime-web browser builds
+#39 18.11 Embedding runtime validation passed
+#39 18.25 Wrote server-package.json: 1.5.12-beta.5 linux-arm64, Node modules 127, system level 1, 62 migrations
+#39 DONE 18.5s
+
+#40 [server-package 1/1] COPY --from=builder /out/server-package /
+#40 DONE 1.8s
+
+#41 exporting to client directory
+#41 copying files 28B
+#41 copying files 528.07MB 5.0s
+#41 copying files 687.12MB 7.6s done
+#41 DONE 7.8s
+exit=0
+node-desktop-availability.d.ts
+node-desktop-availability.d.ts.map
+node-desktop-availability.js
+node-desktop-stream.d.ts
+node-desktop-stream.d.ts.map
+node-desktop-stream.js
+node-desktop-viewers.d.ts
+node-desktop-viewers.d.ts.map
+node-desktop-viewers.js
+rfb-viewer-input-filter.d.ts
+rfb-viewer-input-filter.d.ts.map
+rfb-viewer-input-filter.js
+LICENSE
+README.md
+application-packages
+dist
+mobile-web
+node_modules
+package.json
+prisma
+server-package.json
+== step: pnpm install --frozen-lockfile
+exit=0
+== step: pnpm build:electron:mac -- --arm64
+exit=0
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 34.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 20.5s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.5.dmg
+== ALL DONE 2026-11-06T23:00:28Z

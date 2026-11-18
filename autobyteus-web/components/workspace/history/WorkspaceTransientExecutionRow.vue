@@ -10,6 +10,7 @@
     :data-team-run-id="row.teamRunId"
     :data-member-address="row.memberAddress"
     :data-agent-run-id="row.agentRunId ?? undefined"
+    :data-status="status"
     :data-tree-depth="row.depth"
     :title="identityLabel"
     :aria-label="accessibleLabel"
@@ -67,11 +68,13 @@
           class="mr-1.5"
           data-test="workspace-transient-status-dot"
           :status="row.currentStatus"
+          :background-tasks-running="backgroundTasksRunning"
         />
         <TeamAggregateStatusDot
           v-else
           class="mr-1.5"
           :status="teamStatus"
+          :background-tasks-running="backgroundTasksRunning"
         />
       </span>
       <!-- autobyteus-278: a run another node runs carries its node, left of its icon and name. -->
@@ -177,15 +180,16 @@ import WorkspaceHierarchyBranches from '~/components/workspace/history/Workspace
 import TaskWorkerTaskSummary from '~/components/workspace/history/TaskWorkerTaskSummary.vue';
 import DelegatedStopButton from '~/components/workspace/history/DelegatedStopButton.vue';
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient';
 import { useLocalization } from '~/composables/useLocalization';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
 import type { TaskWorkerTask } from '~/types/project';
-import { taskSummaryLabel } from '~/utils/projects/taskSummary';
+import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
+import { useRunStatusStore } from '~/stores/runStatusStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
+import { teamActivityOf, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
+import { agentActivityLabel } from '~/utils/agentActivityPresentation';
 
 const props = withDefaults(defineProps<{
   row: RunHistoryTransientExecutionRow;
@@ -196,7 +200,7 @@ const props = withDefaults(defineProps<{
   expanded?: boolean;
   continuingAncestorDepths?: number[];
   hasFollowingSibling?: boolean;
-  /** The Task worker's current Task: shown as a summary line under the name (delegated-copy-task-locator). */
+  /** The Task worker's current Task: shown as a one-line label under the name (delegated-copy-task-locator). */
   task?: TaskWorkerTask | null;
   /** The run this copy belongs to, when its rows offer the per-copy stop icon (SR-007). */
   stopRoot?: DelegatedRoot | null;
@@ -227,20 +231,32 @@ const roleLabel = computed(() => t(
 ));
 
 // autobyteus-278: the node that runs this copy; a member of a remote Team shows no chip of its own.
-const remoteRuns = useRemoteRunsStore();
+const runStatus = useRunStatusStore();
 const remote = computed(() => props.row.transientKind === 'task_team_child' ? null : props.row.remote ?? null);
-const remoteInfo = computed(() => remote.value ? remoteRuns.run(remote.value.runId) : null);
+// Its node's answer is its tree row's; a Retry waits for its node's answer (SR-090).
+const remoteInfo = computed(() => remote.value
+  ? { reachable: remote.value.reachable, title: remote.value.title, checking: runStatus.isChecking(remote.value.runId) }
+  : null);
 const stopError = ref(false);
 /** Retry asks the node again ("Checking {node}…"); focus stays on the row. */
 const retryRemote = (): void => {
   stopError.value = false;
-  if (remote.value) remoteRuns.retry(remote.value.runId);
+  if (remote.value) runStatus.retryPeers([remote.value.runId]);
 };
 
 const status = computed(() => props.row.memberKind === 'agent_team'
   ? props.teamStatus
   : props.row.currentStatus || AgentStatus.Offline);
-const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
+/** Its run's running background tasks (autobyteus-448): an agent's own, a team run's sum, as its node answers them. */
+const backgroundTasksRunning = computed(() => props.row.memberKind === 'agent_team'
+  ? (props.row.teamRunIdForNode ? runStatus.runStateOf({ kind: 'agent_team', runId: props.row.teamRunIdForNode })?.backgroundTasksRunning ?? 0 : 0)
+  : (props.row.agentRunId ? runStatus.backgroundTasksOf(props.row.agentRunId) : 0));
+const statusLabel = computed(() => agentActivityLabel(
+  props.row.memberKind === 'agent_team'
+    ? teamActivityOf(props.teamStatus, backgroundTasksRunning.value)
+    : { status: status.value, backgroundTasksRunning: backgroundTasksRunning.value },
+  t, () => t(`workspace.history.hierarchy.status.${status.value}`),
+));
 const startedByLabel = computed(() => props.row.delegatedBy
   ? t('workspace.members.started_by', { name: props.row.delegatedBy })
   : '');
@@ -269,7 +285,7 @@ const accessibleLabel = computed(() => {
   });
   const withNode = remote.value ? `${label}, ${t('remote.row.accessible', { node: remote.value.nodeName })}` : label;
   return props.task
-    ? `${withNode}, ${t('workspace.history.copyTask.accessible', { title: taskSummaryLabel(props.task.description) })}`
+    ? `${withNode}, ${t('workspace.history.copyTask.accessible', { title: taskWorkerTaskLabel(props.task) })}`
     : withNode;
 });
 
@@ -296,8 +312,12 @@ const stopReference = computed<DelegatedReference | null>(() => {
   return null;
 });
 
+/**
+ * A row opens its run and reveals what it opens (CR-461-108): a folded team row unfolds, its coordinator shown. Opening
+ * never folds a row (CR-461-104: an agent row's delegated rows stay); only its disclosure button folds it.
+ */
 const activateRow = (): void => {
-  if (props.hasChildren) emit('toggle', props.row);
+  if (props.hasChildren && props.row.memberKind === 'agent_team' && !props.expanded) emit('toggle', props.row);
   emit('select', props.row);
 };
 </script>

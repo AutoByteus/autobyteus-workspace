@@ -10,7 +10,7 @@
         </div>
         <div>
           <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultRuntime') }}</p>
-          <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind || $t('agents.components.agents.AgentDetail.notSet') }}</p>
+          <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind ? agentRuntimeName(agentDef.defaultLaunchConfig.runtimeKind) : $t('agents.components.agents.AgentDetail.notSet') }}</p>
         </div>
         <div>
           <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultModel') }}</p>
@@ -45,6 +45,15 @@
       <p v-else class="text-sm italic text-gray-500">{{ $t('agents.components.agents.AgentDetail.none_configured') }}</p>
     </div>
 
+    <div :class="cardClass" data-testid="agent-semantic-memory">
+      <h2 :class="headingClass">{{ $t('agents.components.agents.AgentDetail.semanticMemoryHeading') }}</h2>
+      <p v-if="agentDef.semanticMemoryEnabled && agentDef.semanticMemoryPath" class="text-sm text-gray-700">
+        {{ $t('agents.components.agents.AgentDetail.semanticMemoryOn') }}
+        <code class="mt-2 block select-all break-all rounded-md border border-gray-200 bg-gray-50 px-4 py-2 font-mono text-sm text-gray-800">{{ agentDef.semanticMemoryPath }}</code>
+      </p>
+      <p v-else class="text-sm text-gray-500">{{ $t('agents.components.agents.AgentDetail.semanticMemoryOff') }}</p>
+    </div>
+
     <details v-if="optionalProcessorLists.length" :class="cardClass">
       <summary :class="summaryClass">{{ $t('agents.components.agents.AgentDetail.optional_processors_advanced') }}</summary>
       <div class="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -63,6 +72,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import { useLocalization } from '~/composables/useLocalization';

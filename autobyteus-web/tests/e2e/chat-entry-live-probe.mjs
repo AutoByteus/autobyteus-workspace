@@ -25,6 +25,10 @@ import path from 'node:path'
 import process from 'node:process'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs'
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess()
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
@@ -109,8 +113,8 @@ const gql = async (query, variables = {}) => {
   return json.data
 }
 const startBackend = async (label) => {
-  const env = { ...baseEnv(), ...(ownedCodexHome ? { CODEX_HOME: ownedCodexHome } : {}), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' }
-  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, env)
+  const env = { ...baseEnv(), ...(ownedCodexHome ? { CODEX_HOME: ownedCodexHome } : {}), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' }
+  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(env))
   await waitFor(`${label} health`, async () => { assert(child.exitCode === null, `${label} exited`); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
   return child
 }
@@ -291,7 +295,8 @@ defineCase('C03', 'Menus: model search/runtime rows, thinking, / skills (bundled
   await input.type('@')
   await page.locator(sel('run-mention-menu')).waitFor()
   const targets = await page.locator('[data-test^="run-mention-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-mention-option-', '')))
-  assert(!targets.includes('autobyteus-daily-assistant') && targets.includes('probe-team') && !targets.includes('probe-org'), '@ list wrong', targets)
+  // The New chat target is the Daily Assistant: its own definition is never offered; the Model Router never is (autobyteus-455).
+  assert(!targets.includes('autobyteus-daily-assistant') && !targets.includes('autobyteus-model-router') && targets.includes('probe-team') && !targets.includes('probe-org'), '@ list wrong', targets)
   await page.keyboard.press('Escape'); await input.fill('')
   await page.locator(sel('chat-workspace-trigger')).click()
   await page.locator(sel('chat-workspace-open-folder')).click()
@@ -1312,6 +1317,7 @@ try {
   await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 180000, 1000)
   browser = await chromium.launch({ headless: true, executablePath: chrome, args: ['--no-sandbox'] })
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US' })
+  await attachToBrowserContext(context)
   const page = await context.newPage(); page.setDefaultTimeout(30000)
   const browserErrors = []; page.on('pageerror', (e) => browserErrors.push(e.message)); evidence.browserErrors = browserErrors
   for (const c of cases) {

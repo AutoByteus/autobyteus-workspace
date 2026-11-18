@@ -1,0 +1,11 @@
+# IMP-04-native-suite
+# command: (in autobyteus-server-ts) env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"  ./node_modules/.bin/vitest run tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts --no-watch --reporter=json
+# commit: 8f37ab5eb8bfaa835fc2ad178cdd91db21d38797
+# environment: macOS (Darwin 25.5.0), node v22.23.1, vitest 4.0.18, clean env with temp HOME
+# date: 2026-10-19T03:44Z
+# vitest exit code: 0
+
+passed | Configured skill on-demand loading active native runtime e2e | keeps ordinary native tools and configured skill reads explicit in the same active run
+passed | Configured skill on-demand loading active native runtime e2e | catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+passed | Configured skill on-demand loading active native runtime e2e | starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and g
+passed | Configured skill on-demand loading active native runtime e2e | starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill lin

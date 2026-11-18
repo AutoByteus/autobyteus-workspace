@@ -1,0 +1,17 @@
+# IMP-09c-brief-studio-suites.log the other two Brief Studio suites (H-23)
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" … vitest run tests/e2e/runtime/application-reload-repair.e2e.test.ts tests/e2e/runtime/application-import-codex-launch.e2e.test.ts
+# commit: same tree as IMP-09a
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 6385ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  1370ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  658ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  1217ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1081ms
+     ✓ RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)  1339ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2222ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1121ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  414ms
+ Test Files  2 passed (2)
+      Tests  7 passed (7)

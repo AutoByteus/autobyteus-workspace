@@ -14,10 +14,13 @@ describe('Background Tasks panel localization', () => {
     const zhCn = zhCnWorkspaceMessages as TranslationCatalog;
 
     expect(keysWith(zhCn, PREFIX)).toEqual(keysWith(en, PREFIX));
-    expect(keysWith(en, PREFIX)).toHaveLength(13);
+    expect(keysWith(en, PREFIX)).toHaveLength(28);
     expect(en[`${PREFIX}title`]).toBe('Background Tasks');
     expect(en[`${PREFIX}empty`]).toBe('No background tasks');
     expect(en[`${PREFIX}counts`]).toBe('{{running}} running · {{total}} total');
+    // autobyteus-483: the end lines and the no-run state.
+    expect(en[`${PREFIX}end.timeLimit`]).toBe('Stopped: it reached its time limit — not a failure of the command');
+    expect(en[`${PREFIX}noRun`]).toBe('Select an agent to see its background tasks.');
     expect(zhCn[`${PREFIX}title`]).toBe('后台任务');
     expect(zhCn[`${PREFIX}counts`]).toContain('{{running}}');
     expect(zhCn[`${PREFIX}counts`]).toContain('{{total}}');

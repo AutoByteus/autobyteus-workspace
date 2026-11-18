@@ -59,7 +59,7 @@ describeLive("Grok Build compaction (live E2E, temporary GROK_HOME)", () => {
   /** File listing (selected-file mode) or the complete raw-trace corpus, active plus archive segments. */
   const memoryView = async (mode: "files" | "corpus"): Promise<MemoryView> => (await graphql<{ getAgentRunMemoryView: MemoryView }>(
     `query($runId: String!, $files: Boolean!, $corpus: Boolean!) { getAgentRunMemoryView(runId: $runId,
-      includeWorkingContext: false, includeEpisodic: false, includeSemantic: false, includeRawTraces: true,
+      includeRawTraces: true,
       includeRawTraceFiles: $files, includeArchive: $corpus) { rawTraces { traceType toolResult } rawTraceFiles { kind } } }`,
     { runId, files: mode === "files", corpus: mode === "corpus" })).getAgentRunMemoryView;
 
@@ -150,7 +150,7 @@ describeLive("Grok Build compaction (live E2E, temporary GROK_HOME)", () => {
     from = messages.length;
     send(`Data dump B. Do not analyze. Reply with exactly: OK B\n${filler(350)}`);
     const started = await waitFor(from, compaction("compacting"), "automatic compaction start");
-    expect(started.payload).toMatchObject({ provider: "grok", runtime_kind: "GROK_BUILD", trigger: "auto", rotation_eligible: false });
+    expect(started.payload).toMatchObject({ provider: "grok", runtime_kind: "grok_build", trigger: "auto", rotation_eligible: false });
     await wait(3_000);
     socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: `interrupt-${randomUUID()}` } }));
     const failed = await waitFor(from, compaction("failed"), "failed close");

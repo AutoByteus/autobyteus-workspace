@@ -1,8 +1,4 @@
 import type { ClaudeSession } from "./claude-session.js";
-import {
-  getClaudeWorkspaceSkillMaterializer,
-} from "../claude-workspace-skill-materializer.js";
-import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
 
 export type ClaudeSessionCleanupTarget = {
   session: ClaudeSession;
@@ -12,9 +8,6 @@ export type ClaudeSessionCleanupTarget = {
 export class ClaudeSessionCleanup {
   private readonly released = new WeakSet<ClaudeSession>();
   private readonly proofs = new WeakMap<ClaudeSession, Set<string>>();
-  constructor(
-    private readonly workspaceSkillMaterializer: WorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
-  ) {}
 
   /** Independent exact releases; only listener detachment depends on canonical turn handoff. */
   async cleanupSessionResources(input: ClaudeSessionCleanupTarget): Promise<void> {
@@ -28,7 +21,8 @@ export class ClaudeSessionCleanup {
         await input.session.closeTurnForTermination(reason);
         input.session.clearRuntimeListeners();
       }],
-      ["skills", () => this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(input.session.runContext.runtimeContext.materializedConfiguredSkills)],
+      // The run's only release of its links: it closes them to mid-run adds first and waits for one in flight.
+      ["skills", () => input.session.runContext.runtimeContext.requireWorkspaceSkills().release()],
       ["mcp", () => input.session.releaseAgentToolsMcp()],
     ];
     const results = await Promise.allSettled(stages.map(async ([stage, release]) => {

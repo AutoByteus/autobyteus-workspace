@@ -1,0 +1,10 @@
+# API-11 gateway probe; commit b6a57ab154; 2026-11-08T17:06:08.604Z
+gateway http://127.0.0.1:56359/autobyteus/rest/health -> 200; http://127.0.0.1:56359/rest/health -> 404 (only /autobyteus is routed)
+B's invite address candidates: ["http://127.0.0.1:56359/autobyteus","http://host.docker.internal:56359","http://192.168.2.158:56359","http://100.127.30.107:56359","http://[fd7a:115c:a1e0::4336:1e6b]:56359","http://[2003:ca:5706:4854:85a:49dd:cf16:63]:56359","http://[2003:ca:5706:4854:549c:6af5:8b71:98c1]:56359"]
+A's peer row for B: {"nodeId":"srv_KUS1gW7QaM23gQJXOBkFoiHidBgl9uYr","name":"beta-node","baseUrl":"http://127.0.0.1:56359/autobyteus","paired":true}
+signed offer read A -> B through the gateway: {"refusalCode":null,"unreachableReason":null,"entries":[{"name":"Publisher","kind":"agent"}]}
+delegate_task through the gateway: {"content":[{"type":"text","text":"{\\"delegated\\":true,\\"target_kind\\":\\"agent\\",\\"target_agent_run_id\\":\\"publisher_5b65fb9fd5a041b4b58fc17d83143551\\",\\"node\\":\\"beta-node\\",\\"task_id\\":\\"ad_hoc_task_8c959e19-93bd-4094-bbb8-6ed018d4c63f\\"}"}],"structuredContent":{"delegated":true,
+the delegated run on B: {"runId":"publisher_5b65fb9fd5a041b4b58fc17d83143551","summary":"Gateway check. Marker GW-437."}
+nginx lines for /autobyteus/rest/remote*: 5; statuses 200,201
+B refusal lines: 0 
+result Pass; gateway container removed; data removed

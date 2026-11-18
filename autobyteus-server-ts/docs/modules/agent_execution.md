@@ -38,6 +38,12 @@ per-call approvals, turn-end classification, and per-call usage, see
 [Grok Build Runtime](./grok_build_runtime.md). It also joins the existing
 manager/factory boundary through `AcpAgentRunBackendFactory`.
 
+The `deepseek_harness` provider (DeepSeek Harness, `dsh`, over ACP stdio) runs
+on the same ACP layer with its own session profile; its model calls go through
+the credential proxy's provider relay, which also supplies its usage,
+compaction and liveness. See
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md).
+
 ## Execution Family Composition
 
 `AgentProviderFactoryBuilder` freezes process-wide provider primitives and
@@ -74,8 +80,13 @@ so every composition includes the exact selected Team instruction
 and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
-The shared semantic order is Agent Identity, optional Team Instruction, and
-optional Team Collaboration. Native AutoByteus appends Working Environment,
+The shared semantic order is Agent Identity, optional Team Instruction, the
+collaboration sections for the agent's role, the optional Project section and
+the optional Semantic Memory section (only for an agent with
+`semanticMemoryEnabled`; see [Agent Memory](./agent_memory.md#semantic-memory)).
+Codex also adds that folder to its `workspace-write` sandbox's
+`writable_roots`, and Claude gets it as an additional directory, so the run can
+write there. Native AutoByteus appends Working Environment,
 Bash Operating Practice, and File And Directory Practice, then the native core
 appends its one terminal Skills catalog. Native AutoByteus places the Carpenter
 text in `AgentConfig.systemPrompt`; Codex passes shared text as thread
@@ -131,7 +142,7 @@ their own bundle first.
 
 `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
 
-`AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.
+Both `AgentRun` input entry points (`postUserMessage(...)` and `reserveUserMessage(...)`) feed an internal command-observer seam. Observers are notified only when an admitted input is forwarded to the runtime, and observer failures are isolated from the input result.
 
 Current user context-file references are part of runtime input construction, not
 Team Communication metadata. For native AutoByteus turns, the shared
@@ -304,14 +315,68 @@ quiescent, or until `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS`
 is final; after a not-accepted or failed attempt, the next Stop opens a new
 attempt.
 
-**Known limit (server shutdown with a busy run).** Server shutdown
-(`closeProcessResources` → `stopAll`) does not interrupt an in-flight turn; it
-waits for the turn to finish. When the desktop app quits while an agent is
-mid-turn, Electron exits after about 30 s, but the embedded server, its runtime
-process (observed with the Codex app server) and the agent's commands keep
-running as orphans until the turn ends. That can be unbounded for a long or
-hung tool, and a relaunch can start a second server on the same data. This is
-the existing behavior, not a design guarantee.
+**Stop now: Terminate and server shutdown interrupt a busy turn.**
+`AgentRunManager.terminateAgentRun` (user Terminate, history delete/archive and
+an application's terminate) first runs the same fence
+(`fenceInputAndInterruptForRootShutdown`): it interrupts the active turn and
+cancels queued input that has not started, then prepares and finishes the
+termination as before. `stopAllAgentRuns` (server shutdown) fences every run
+at once, then finishes them one by one. A fence that is not accepted leaves the
+run root-fenced but active: Terminate reports the existing not-found/rejected
+result, a retry runs a new fence attempt, and shutdown reports that run as not
+stopped. Neither path writes run history; only the Terminate, delete and archive
+callers record `terminatedAt`, so runs stopped by a shutdown stay resumable.
+
+**Bounded server shutdown.** `ServerProcessShutdown` (`src/shutdown/`) gives the
+server's own cleanup (`app.close()`) at most 10 s
+(`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. That
+cleanup (`server-runtime.ts`) records the busy runs, then ends the package-folder
+and skill-folder watchers (`studioServer.stopFileWatchesForProcessExit()`), then
+calls `app.close()`. The watcher stop ends event handling without closing the OS
+watches: closing a recursive watch blocks the main thread for seconds while
+macOS's file-event service is busy, and the process exit that follows releases
+them. Every other close of these watchers (an in-process server closed by a
+test, the startup-failure path, a package folder removed while the server runs)
+still closes the OS watches. It then
+always runs one process-tree sweep (`server-process-tree-sweep.ts`): it records
+the server's descendants in its own process group and the groups led by a
+descendant, sends SIGTERM, waits up to 1.5 s, SIGKILLs the recorded
+survivors, and waits up to 0.5 s more for them to be gone (a killed direct
+child stays visible until the server reaps it). The server's own group and
+anything selected by port are never signalled. The exit code is 1, and the
+Windows IPC result `failed`, when the cleanup failed, the bound expired, or the
+sweep could not confirm that every target is gone (for example when `ps` cannot
+be read). On Windows the sweep is not applicable: there the exit code depends
+only on the cleanup and the bound, and nothing is swept after a clean exit. A
+busy shutdown normally exits in about a second once its turns are interrupted;
+the worst case is about 14.25 s (the 10 s bound, one `ps` read of up to 2 s,
+the 1.5 s grace, the 0.5 s kill confirmation and the IPC flush), inside the
+desktop's 20 s wait.
+
+**Closing never waits on a client beyond a short grace.** Fastify runs
+`onClose`, where the studio's run cleanup lives, only after the HTTP server has
+closed, and with default options a client connection that never sent a request
+held that close until the 10 s bound (autobyteus-339). Every Fastify server the
+node runs (the studio server, the standalone application server and the local
+Agent Tools MCP and credential proxy servers) therefore installs
+`installClientConnectionClose` (`src/shutdown/client-connection-close.ts`) as
+its last `preClose` hook, after the native command drain and the WebSocket
+plugin's client close. At close it destroys connections that never sent a
+request, and any connection that arrives from then on; lets requests already in
+progress finish within 2 s (`IN_FLIGHT_REQUEST_GRACE_MS`), so a `createAgentRun`
+in progress still completes and its client gets the run ID; and then closes
+every remaining connection, so the run cleanup starts at once. A new request on
+an open connection during the grace gets Fastify's 503. A request still running
+after the grace is cut; its handler may keep running beside the cleanup. A
+long-lived HTTP stream must be closed by its owner before the server closes (as
+`AgentToolsMcpHost` does), or it spends the whole grace.
+
+**Busy runs are recorded, and told after a restart.** While the node runs, the
+runs held by a collaboration root that are mid-turn or have a running background
+task are kept in a live record (checked every 2 s); the shutdown cleanup writes
+its final list before `app.close()` interrupts anything. After any restart each
+is told once by a restart reminder: woken with it after an update, otherwise with
+its next input. See [Restart Resume](./restart_resume.md).
 
 ## Stopped Model Configuration And Restore Serialization
 
@@ -365,8 +430,8 @@ active-turn behavior or maintain a second input queue. Terminal command records
 are retained in process for at least 15 minutes.
 
 For inactive historical runs and prepared-new identities, the coordinator
-publishes a command overlay `AGENT_STATUS { status: "initializing",
-can_interrupt: false }` before runtime restore/start work. During an
+publishes a command overlay `AGENT_STATUS { status: "initializing" }` before
+runtime restore/start work. During an
 inactive-start command, runtime readiness remains an internal fact until the
 accepted message has been handed to the runtime. The overlay is replaced only by
 command-correlated post-handoff lifecycle signals: command-start `AGENT_STATUS
@@ -392,21 +457,58 @@ durable run identity, V2 history catalog row, run metadata, and memory directory
 with `preparedAt`, `preparedExpiresAt`, `platformAgentRunId: null`, and no active
 runtime. The first accepted `SEND_MESSAGE` activates that prepared identity
 through `activatePreparedRun(...)` and records `startedAt` plus the platform run
-id when one exists. Prepared runs can be explicitly cancelled before activation,
-and stale prepared identities are eligible for TTL cleanup without affecting
-activated or historical runs. Standalone `activationState` is not persisted; the
-`prepareAgentRun` response may still return `activationState: "PREPARED"` as a
-launch API response field.
+id when one exists. Prepared runs can be explicitly cancelled before activation.
+Standalone `activationState` is not persisted; the `prepareAgentRun` response may
+still return `activationState: "PREPARED"` as a launch API response field.
 
-`AgentRun.postUserMessage(...)` is the sole runtime-level input-admission,
-status, and turn authority once an `AgentRun` exists. Its runtime events are the
-source that replaces command overlays and drives later `running`, `idle`,
-`offline`, and `error` projections.
+**One-call creation is all or nothing.** `createAgentRun(...)` (GraphQL, an
+application, Model Routing) prepares and then activates. When activation fails,
+it cancels the prepared run (`cancelPreparedAgentRun`) and rethrows the
+activation error. A run whose start was already recorded is refused by the
+cancel and kept; the refusal is logged with the run ID and reason. GraphQL
+`createAgentRun` is the supported one-call API for tests, scripts and
+integrations; the chat uses `prepareAgentRun` and its first message.
+
+**Empty never-started runs are removed at startup.** Before the server accepts
+requests (after `buildStudioServer`, before `prepareBeforeListen`), it removes
+each standalone run that was prepared, never started, and whose folder holds
+nothing but its record (`removeEmptyNeverStartedRuns`): only directories and the
+top-level `run_metadata.json`, walked without following symbolic links. Any other
+entry is content, and the run is kept: an older record without `startedAt` next
+to a conversation stays. An unreadable record, a folder without a standalone
+record, a folder that cannot be fully read, an active run, or a refused cancel
+also keeps the run; each removal and each kept run with an unreadable record or
+folder is logged. The removal never fails startup. There is no age-based removal:
+`preparedExpiresAt` is still written and returned but nothing enforces it.
+
+Once an `AgentRun` exists it is the runtime-level input-admission, status, and
+turn authority. Its runtime events are the source that replaces command overlays
+and drives later `running`, `idle`, `offline`, and `error` projections. Input
+enters through one of two entry points:
+
+- `postUserMessage(...)` admits and dispatches in one serialized step. It is
+  used for operator and application input, delegated-task seeds, Skill
+  Improvement and skill-update notices, and run-ID messages to a run in another
+  root. Only an immediately admitted `USER` input here may authorize a
+  failed-compaction retry.
+- `reserveUserMessage(...)` holds a FIFO slot that stays invisible and
+  undispatchable until the caller commits and releases it, or cancels it without
+  trace. Teammate delivery uses it (see
+  [Agent Communication](./agent_communication.md#teammate-delivery-path)): the
+  slot is committed only after the message is saved to the root's log. A held
+  slot never authorizes compaction recovery, and root shutdown drops held slots.
+
+Either entry point accepts the `onlyAsFirstInput` option: the input is admitted
+only as the run instance's first input, else refused with
+`AGENT_RUN_INPUT_NOT_FIRST`. Restart resume's notice uses it
+([Restart Resume](./restart_resume.md)).
 
 ## Active Input And Interrupt Command Results
 
 Each live `AgentRun` owns one non-persisted `AgentRunInputAdmissionState` behind
-`postUserMessage(...)`. It validates and admits a private FIFO entry, owns one
+both entry points. Its `reserve` step holds the only admission validation
+(accepting input, non-empty content); posting is reserve, commit and release in
+one step. It admits a private FIFO entry, owns one
 provider-dispatch claim at a time, and selects exactly one explicit
 `start_turn` or `append_to_active_turn` dispatch from canonical turn state plus
 the backend's declared `activeTurnAppend` capability. `accepted: true` means the
@@ -467,8 +569,12 @@ separate local transport failure, not a synthetic acknowledgement.
 ### Platform Input Preface And Run Lifecycle Observer
 
 `AgentRunManager` accepts two optional generic ports. Neither carries any
-feature knowledge; the only current implementation is
-[Skill Update Notices](./skill_update_notices.md).
+feature knowledge. The compositions pass one implementation of both,
+`AgentRunPlatformNotices` (`domain/agent-run-platform-notices.ts`), composed of
+the notice sources in order: [Tool List Updates](./tool_list_updates.md), then
+[Skill Update Notices](./skill_update_notices.md), then the
+[background task notices](#native-background-task-notices) (the studio host puts
+the agent runtime hand-over first).
 
 - **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
   - `runPublished(run, kind)` is reported from the single activation point,
@@ -477,8 +583,10 @@ feature knowledge; the only current implementation is
   - `runReleased(run)` is reported by `AgentRunResourceManager` after a
     successful release. Every removal path goes through it.
 - **`AgentRunInputPreface`** (`domain/agent-run-input-preface.ts`):
-  `takePreface(run)`, `prefaceDelivered(run, preface, turnId)` and
-  `prefaceReturned(run, preface)`.
+  `takePreface(run, { dispatchKind })`, `prefaceDelivered(run, preface, turnId)`
+  and `prefaceReturned(run, preface)`. `dispatchKind` is `start_turn` or
+  `append_to_active_turn`; a source whose notice belongs to a turn start (a
+  Codex or Grok run waiting for a reopen) returns nothing for an append.
   - In `executeInputDispatch`, after normalization, `AgentRun` asks the port
     for a pending preface. It does so only when the claimed message is an
     **external** input. Compaction-recovery dispatches
@@ -486,14 +594,85 @@ feature knowledge; the only current implementation is
     already are or carry a preface never take one.
   - The provider message becomes the preface text, a blank line, then the
     input unchanged (sender, context files, recording attachments, metadata),
-    tagged `platform_input_preface { content, sender_id, original_content }`.
+    tagged `platform_input_preface { content, sender_id, original_content, notice_id }`.
     It is one dispatch, so one turn.
+  - Every platform notice has one id (autobyteus-526): the preface's `id` here,
+    the in-flight id for a notice-only input (tool list, skill, background
+    task), the wake's `message_id` for the restart reminder, one per request for
+    the Model Router and one per Claude background notice. The same id is the
+    message's `notice_id`, the stored notice trace's `message_id`, the
+    projection entry's `messageId` and the published notice's `message_id` on
+    the agent, collaboration and team streams, so the web shows the notice once
+    (its live copy and a snapshot's stored copy). A notice without one carries
+    `message_id: null` (traces stored before, a native unsuppressed SYSTEM
+    input, a task input shown as a notice).
   - The preface is settled `delivered` only when the dispatch is forwarded. On
     delivery, `AgentRun` publishes `SYSTEM_TASK_NOTIFICATION` with the
-    preface's sender and the turn ID. Every other outcome (not forwarded,
+    preface's sender, its id as `message_id` and the turn ID. Every other outcome (not forwarded,
     failed, uncertain, `undeliveredRetryAsStart`) returns it.
   - A failing port never affects the input.
   - Admission state and the backend dispatch contract are unchanged.
+- **`AgentRunPlatformNotices`** asks its sources in order and hands over the
+  first notice, so one dispatch carries at most one notice; another source's
+  notice waits for the next input. It remembers which source handed which
+  notice and settles only that source, and it fans the lifecycle calls out to
+  every source, each guarded.
+
+### Tool List Changes On The Backend Contract
+
+`AgentRunBackend` (and `AgentRun`, as a thin boundary) has two operations for
+[Tool List Updates](./tool_list_updates.md):
+
+- `applyDefinitionTools(definition)` resolves the runtime's tools from the
+  definition and gives them to the runtime. It returns
+  `{ kind: "unchanged" | "applied" | "on_next_turn", toolNames }`, where
+  `toolNames` are the names the agent calls, now or at its next turn start.
+  `AgentRun` rejects it on a stopped run.
+- `getToolNames()` returns the names the runtime has now.
+
+AutoByteus (`Agent.replaceTools`), Claude and AGY apply at once (`applied`).
+Codex and Grok set `reopenPending` (`on_next_turn`) and reopen their runtime
+session inside the next `start_turn` dispatch; a failed reopen fails that
+dispatch with `RUNTIME_SESSION_REOPEN_FAILED` and a plain message (the input is
+not sent; no notice). An input that failed before it was sent is shown once as a
+run `ERROR`, on a single run's stream (`AgentRunCommandCoordinator`) or a Team
+member's Team stream, by the shared `createUnsentInputFailureObserver` (see
+[Tool List Updates](./tool_list_updates.md)).
+
+### Skills Added To A Running Agent's Definition
+
+`AgentRunBackend.applyDefinitionSkills(definition)` (with `AgentRun` as the thin
+boundary that rejects a stopped run) sets up the definition's skills that the run
+does not have yet, as its runtime does at activation, for
+[Skill Update Notices](./skill_update_notices.md). It never removes a skill, and a
+skill that cannot be set up is logged; the promise does not reject for it.
+
+- Claude, Codex, Grok and DeepSeek: `backends/shared/run-workspace-skills.ts`
+  (`RunWorkspaceSkills`) is the **single holder of a run's workspace skill links,
+  from preparation to release**. The factory creates it when preparation starts;
+  preparation acquires through it (`acquire`), a mid-run add goes through it
+  (`addFrom`: one name per acquisition, adds one after another, Codex asking its
+  `CodexWorkspaceSkillRequestPlanner` which copies it discovers itself), and every
+  release path calls its `release()`: Claude's cleanup `skills` stage, Codex's
+  `releasePreparation`, ACP's `releaseResources`, and each factory's failed
+  preparation. `release()` sets `closed` first, waits for the add in flight (which
+  stops at its next check; the materializer rolls that link back), then releases
+  every held link; a failed release can be retried. Its guard reads `closed`,
+  never the backend's `isActive()`, which stays true on Claude and Codex until
+  their cleanup has ended. Claude's `Skill` tool is allowed per CLI process
+  generation from `hasSkills()`.
+- Claude: every preparation (new and restore) makes sure
+  `<workspace>/.claude/skills` exists before the session starts, because the
+  Claude CLI watches that folder only when it exists as its process starts; a
+  run that started with no skills then still lists a skill linked mid-run. The
+  folder is never removed (the materializer leaves it too). A failure to create
+  it is logged (`CLAUDE_WORKSPACE_SKILLS_FOLDER_FAILED`) and never fails the run.
+- Antigravity: links into its own run capsule (`addAgyRunCapsuleSkills`), one
+  skill per linker call, and rewrites `manifest.json` atomically with the linked
+  names, so a resume keeps them. The capsule is the run's own and kept for resume,
+  so it needs no release ordering.
+- AutoByteus native: nothing (the notice gives the `SKILL.md` path; the system
+  prompt is not changed mid-run, FU-006).
 
 `GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
 the studio and standalone compositions.
@@ -688,8 +867,16 @@ through `allowedTools` according to the configured tool exposure. Claude Code
 tool names can change between Claude Code releases. The CLI that actually runs
 is resolved by `resolveClaudeCodeExecutablePath()`: an explicit
 `CLAUDE_CODE_EXECUTABLE_PATH` / `CLAUDE_CODE_PATH` / `CLAUDE_CLI_PATH` override
-first, then `claude` on `PATH`. It is therefore not necessarily the CLI bundled
-with the pinned SDK. Re-verify both lists against the CLI in use whenever the SDK
+first, then `claude` on `PATH`. It is therefore not necessarily the version the
+pinned SDK was built with, and the SDK's own platform binary is never used: every
+`query` passes this path (sessions, model catalog and usage), and the desktop
+builds and the Docker server package no longer ship the SDK's
+`@anthropic-ai/claude-agent-sdk-<platform>` packages (about 200 MB each; the SDK
+package itself stays, and the build fails when it is missing; see
+[Electron Packaging](../../../autobyteus-web/docs/electron_packaging.md)). A user
+without an installed Claude Code sees Claude as not available. A future SDK that
+looks up its binary even when a path is passed would fail with its own "Native CLI
+binary … not found" error. Re-verify both lists against the CLI in use whenever the SDK
 version changes and whenever the resolved Claude Code CLI is updated. Sessions
 created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
@@ -699,22 +886,42 @@ Claude Agent SDK `0.3.280` is used with the exact direct peer
 `@anthropic-ai/sdk@0.132.1` in SDK streaming input mode. Its
 `@modelcontextprotocol/sdk` peer (v1) is installed by the package manager and
 used for types only; AutoByteus does not depend on it directly. Each Claude AgentRun keeps one Claude CLI process for its
-whole life: `ClaudeSdkClient.openStreamingSession` opens one
+whole life: `ClaudeSdkClient.beginStreamingSession({ resolveOptions }).open()` opens one
 `query({ prompt: AsyncIterable, options })` lazily on the first input (new or
 restored run), and `ClaudeSessionProcess` owns that process, its single frame
 pump, and exit detection. There is no idle timer in the session itself. Run
 terminate/close (standalone or team) and server shutdown close the process,
 which stops its background tasks. A delegated copy is not idle-shut-down while
 `ClaudeBackgroundTaskRegistry` shows a running background task
-(`hasRunningBackgroundTasks()`), so the task can finish and the agent can report
-back; see [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle). An unexpected exit fails the active turn with a turn-terminal `ERROR`
+(its `backgroundTaskInspection` counts one, `runningBackgroundTaskCount`), so the task can finish and the agent can report
+back; see [Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle). An unexpected exit fails the active turn with a turn-terminal `ERROR`
 carrying stderr diagnostics, and the next input reopens the session with
-`resume`. Claude CLI defaults apply: AutoByteus sets no background-task or Bash
-timeout environment variables. An operator's own environment still passes through
-unchanged. If the server environment sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`,
-Claude agents cannot run background commands, and a warning is logged at each
-process open. Unset it (and any `BASH_*_TIMEOUT_MS` you did not intend) to get
-the CLI defaults. The intrinsic Agent Tools MCP descriptor alone
+`resume`. **Shell time limits.** AutoByteus gives every Claude Code child
+two-hour shell limits: `buildClaudeSdkSpawnEnvironment` sets
+`BASH_DEFAULT_TIMEOUT_MS` and `BASH_MAX_TIMEOUT_MS` to `7200000`
+(`runtime-management/claude/claude-shell-time-limit-setting.ts`). Claude Code
+(2.1.325) takes its foreground default and maximum from those two variables, its
+background default from the larger of 30 minutes and `BASH_DEFAULT_TIMEOUT_MS`,
+and its background maximum from the larger of 2 hours and `BASH_MAX_TIMEOUT_MS`,
+so all four limits are 2 hours. A value the server environment already defines,
+or the user's Claude Code settings `env` (which Claude Code applies over the
+process value), is kept: AutoByteus only fills in a missing variable, and has no
+setting of its own for it. Claude Code still stops a command at its limit and
+notifies the agent, and a call's own `timeout` still shortens that command's
+limit; the Background Tasks panel then reads "Stopped: it reached its time limit"
+(end reason, below). The other runtimes stop no long command on a clock, so
+AutoByteus changes none of their limits: Codex, Grok, Antigravity (daemon and
+non-daemon) and the native runtime each ran a 35-minute background command to
+completion in the live check
+(`tests/e2e/runtime/long-command-time-limits-live.e2e.test.ts`, gate
+`RUN_LONG_COMMAND_LIMITS_E2E`). Each runtime's system prompt teaches the long-job
+habit in its own tools' terms (see
+[Prompt Engineering](./prompt_engineering.md#long-running-commands-section)). An
+operator's other environment passes through unchanged. If the server environment
+sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`, Claude agents cannot run background
+commands, and a warning is logged at each process open. Unset it (and any
+`BASH_*_TIMEOUT_MS` you did not intend) to get AutoByteus' defaults. The
+intrinsic Agent Tools MCP descriptor alone
 is marked `alwaysLoad: true` so required Team tools are ready on the first
 turn. Tool exposure, the MCP descriptor, system-prompt capture, and the
 selected-model binding are resolved once per process open.
@@ -734,9 +941,10 @@ the model has not seen. A turn the CLI starts itself is preceded by a
 `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
 example `Background task completed: <description> (<status>)`. For external
 runtimes, agent memory records system notices from an allow-list of senders as
-`system_task_notification` traces: these Claude background-task notices and
-skill update notices (`system.skill_update_notifier`, see
-[Skill Update Notices](./skill_update_notices.md)). Run-history replay shows
+`system_task_notification` traces: these Claude background-task notices, skill
+update notices (`system.skill_update_notifier`, see
+[Skill Update Notices](./skill_update_notices.md)) and tool list notices
+(`system.tool_list_update_notifier`, see [Tool List Updates](./tool_list_updates.md)). Run-history replay shows
 them in the conversation.
 
 The registry also owns the live Background Tasks view. A task enters it when the
@@ -746,8 +954,15 @@ CLI lists it in `background_tasks_changed`, reports `task_started` with
 `task_updated` (`completed`, `failed`, `killed` → `stopped`) or
 `task_notification` (`completed`, `failed`, `stopped`, with `summary`) finishes
 it; `task_progress` is ignored. When the process closes or exits, running tasks
-become `stopped`. A turn-level Stop leaves them running, because the CLI keeps
-them alive. Raw `task_type` maps to the shared kind: `local_bash` → `shell`,
+become `stopped` with end reason `run_ended`. A turn-level Stop leaves them
+running, because the CLI keeps them alive. The end reason and exit code of an
+ended task come only from the notification (`claude-background-task-end.ts`, the
+one place that knows the CLI's wording, as of 2.1.325): `completed (exit code N)`
+and `failed with exit code N` give the exit code; `stopped after reaching its
+background time limit` gives `time_limit`; `stopped because the system is running
+low on memory` gives `low_memory`; the SDK's `reason: worker_restart` gives
+`run_ended`. Any other wording (a `TaskStop`, a later CLI version) gives neither,
+and the panel shows the CLI's summary. Raw `task_type` maps to the shared kind: `local_bash` → `shell`,
 `local_agent` → `subagent`, `local_workflow` → `workflow`, `monitor_*` →
 `monitor`, anything else → `other`. Every change is emitted as one
 `BACKGROUND_TASK_UPDATED` snapshot.
@@ -778,11 +993,162 @@ AutoByteus does not enable `Monitor` for Claude sessions.
 
 `BACKGROUND_TASK_UPDATED` (`agent-execution/domain/agent-background-task.ts`)
 is the runtime-neutral background-task event: `{task_id, kind, description,
-command, status, summary, started_at}`, a full snapshot of one task applied as an upsert
-by `task_id`. `command` is always present: the exact shell command the task
-runs, or `null` when the runtime does not know one. Claude and Antigravity produce it. It usually arrives between
+command, status, summary, end_reason, exit_code, started_at}`, a full snapshot of
+one task applied as an upsert by `task_id`. `command` is always present: the exact
+shell command the task runs, or `null` when the runtime does not know one.
+`end_reason` and `exit_code` (autobyteus-483) are always present too, `null` while
+the task runs and when the runtime reports no cause or no exit code (a clean cut:
+no optional reading). `end_reason` is `time_limit` (the runtime's time limit
+stopped it; not a failure of the command), `low_memory` (the runtime stopped it
+because the computer was low on memory) or `run_ended` (the run or its runtime
+process ended); a stop the runtime gives no cause for, such as the agent's own
+`kill <pid>` or Claude's `TaskStop`, has none and keeps its `summary`. The
+desktop panel and the phone's Activity show one line from them (see
+[Agent Execution Architecture](../../../autobyteus-web/docs/agent_execution_architecture.md)).
+Claude, Antigravity and the native AutoByteus runtime produce it. It usually arrives between
 turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
 never changes run status), and it is not persisted in memory or run history.
+
+### Native background task notices
+
+A native run's background tasks are the commands its agent started with
+`run_bash(run_in_background: true)` and the `&` jobs of a foreground `run_bash`
+call still running when the call's foreground part ended (see
+[Terminal Tools](../../../autobyteus-ts/docs/terminal_tools.md#run_bash)). The
+agent's `BackgroundProcessManager` (autobyteus-ts) is their one owner: start,
+end (exit code, signal, or an unknown end) and whether the end was reported.
+
+- **Publication.** `AutoByteusAgentRunBackend` subscribes to its manager
+  (`autobyteus-background-task-reporter.ts`) and publishes every start and end
+  as `BACKGROUND_TASK_UPDATED` (`taskId` = the pid, `kind: shell`, status
+  `running`, then `completed` for exit code 0, `failed` for another exit code or
+  an unknown end, `stopped` for a signal). An exit code is the `exitCode` field,
+  not summary text (`summary` stays `null`); a signal or an error end has
+  `summary` `signal X` / the error. Once the backend begins to end the run
+  (`markRunEnding()`, before it stops the run's commands), every end without an
+  exit code is the run's end: `stopped` with `end_reason: run_ended`; the agent's
+  own `kill <pid>` has no reason. Its `backgroundTaskInspection` is
+  `event-stream`, so the Background Tasks panel
+  shows the rows, and `runningBackgroundTaskCount` counts it while it runs, so a
+  delegated copy is not idle-shut-down meanwhile (see
+  [Agent Team Execution](./agent_team_execution.md)).
+- **Capability.** `AgentRunBackend.backgroundTaskNotices` is `platform` for the
+  native backend (`takeUnreportedEnds()`, `listRunning()`, both answered by the
+  manager) and `unsupported` for every other runtime. `AgentRun` exposes it as
+  `backgroundTaskNoticesSupported`, `takeUnreportedBackgroundTaskEnds()` and
+  `listRunningBackgroundTasks()`; the notice service depends on `AgentRun`
+  only.
+- **Delivery** (`background-task-notices/`, `BackgroundTaskNoticeService`). An
+  end schedules a flush. A busy run waits for its turn to end; an idle run
+  waits a 2 s settle period so near-simultaneous ends arrive together; the
+  flush takes every unreported end and posts one SYSTEM notice
+  (`system.background_task_notifier`, `[Platform notice — background tasks
+  finished]`: per task its pid, command, how it ended, duration, output file
+  and last lines, then the tasks still running). Posted to an idle native run
+  it starts a turn. If an external input arrives first, the notice rides on it
+  as its preface. Once forwarded, the run's `SYSTEM_TASK_NOTIFICATION` is
+  published and memory records it; the journal shows `Notice:`.
+- **Each end is reported once.** An end that happened while the agent's own
+  `run_bash` call ran is reported in that call's result
+  (`backgroundTasksEnded`) and is never in a notice. A notice that is not
+  delivered (failed, not accepted, preface returned) keeps its ends for the
+  next one; a cancelled one or a released run drops them. Ends of commands the
+  platform stopped (run end, app quit) are never reported.
+- **Run end.** Terminate, delete, Task DONE/CANCELLED release, root stop and
+  idle shutdown end the native agent; its `BackgroundProcessCleanupStep` stops
+  the run's commands through the host scope and removes their output files.
+  Stop (interrupt) leaves background tasks running; their notices still
+  arrive. An update or restart stops the commands at the app's graceful stop.
+  After an unexpected stop (crash, forced quit, power loss) they may keep
+  running, no longer tracked: nothing stops them at the next start. Either
+  way the restart reminder tells the run ([Restart Resume](restart_resume.md)).
+
+### A run's status carries its running background tasks
+
+autobyteus-448 part 2 (REQ-006, DEC-004). `runningBackgroundTaskCount(inspection)`
+(`agent-execution/domain/agent-background-task-count.ts`) is the one derivation of
+how many background tasks a run has running: an `event-stream` view (AutoByteus,
+Claude, Antigravity) counts its `current()` tasks that are `running`; a `snapshot`
+view (Codex) and an `unsupported` one (ACP) count 0. The backend has no other
+answer to it (`AgentRunBackend.hasRunningBackgroundTasks()` is gone): the idle
+quiet check and `AgentRun.hasRunningBackgroundTasks()` (the restart recorder) use it.
+
+`AgentRun` sets `AgentTurnLifecycleState.backgroundTasksRunning` from it at the
+start of each source batch (inside the dispatch queue, so the count is read when the
+batch runs) and before each `getStatusSnapshot()`. `buildAgentStatusPayload` requires
+the count, so every `AGENT_STATUS` carries `background_tasks_running` (a positive
+safe integer, else 0). A `BACKGROUND_TASK_UPDATED` already gets a status event
+before it, so a task's start or end republishes the status with the new count; no
+separate republish exists. An offline run, a command overlay (`initializing`,
+`error`) and a stored run's status carry 0.
+
+The count travels on every status route: the agent stream's `AGENT_STATUS`; the
+collaboration presentation `AGENT_STATUS` and the Org view's `agent_statuses`
+(`background_tasks_running`); the Team stream's `AGENT_STATUS` and
+`TeamAgentStatusDto`; a paired agent's status frame and the peer summary statuses
+(`backgroundTasksRunning`); and `/ws/run-status`, whose agent entries carry their own
+count and whose run state carries the sum over the run's own agents
+(`RunStatusService`, never a client). The web shows an idle agent with a count above
+0 as "Background task running" / "N background tasks running" with the active dot;
+the Stop button and the input read the status word only, so messages are delivered
+at once (AC-006).
+
+### Read-only Codex background-task inspection
+
+`agentBackgroundTaskView(agentRunId)` inspects an already published, active run.
+The resolver uses map-only `peekPublishedRun`, then checks the exact same run
+instance and activity again after the read. It does not use lifecycle-pruning
+getters, restore/start a run, send input, or trigger cleanup. Inactive or replaced
+runs return unavailable. This lookup matters for local Agent, Team and Org
+members: use the concrete selected `agentRunId`, not a guessed root identity.
+
+Codex reads its provider-tracked shell work that continues beyond a turn;
+foreground command Activity is not a background inventory. Turn completion
+alone is not command completion. Rows carry opaque task identity, a safe shell
+label, time, and confirmed running/completed/failed/stopped state where known.
+A lost command without terminal evidence is unknown. Raw arguments,
+environment, output and logs are excluded; `command` is null. Retained terminal
+observations are bounded to 100 per live thread; live/unknown rows are not
+removed to satisfy that terminal-history bound. This is runtime observation,
+not persistent history or an OS-wide process list.
+
+The selected expanded Background Tasks panel performs a network-only read on
+entry/re-entry and refreshes snapshot views two seconds after a read completes.
+Selection/node-binding generation checks and cancellation reject stale responses.
+Reload re-reads the live runtime without another model turn. Unsupported,
+inactive, failed or incomplete inspection is distinct from an empty successful
+snapshot. The panel retains last-known rows only for the same selection and
+labels their running count unconfirmed until recovery. No process stop button,
+new kill authority, idle timer change or change to the running background task
+count is introduced (a `snapshot` view counts 0, see below). Claude/Antigravity continue through their existing event-stream
+view and `BACKGROUND_TASK_UPDATED` behavior.
+
+An event-stream run answers the view with its current tasks (autobyteus-473):
+the `event-stream` inspection's `current()` lists the tasks its runtime knows
+now, and `AgentBackgroundTaskEventStream.tasks` carries them
+(`AgentBackgroundTask`: `taskId`, `kind`, `description`, `command`, `status`,
+`summary`, `endReason`, `exitCode`, `startedAt`). A viewer that opens the run, or reloads, after a task
+started therefore sees it at once; later changes still arrive as
+`BACKGROUND_TASK_UPDATED`. Claude lists its registry's view (running and ended
+tasks until the process ends), AutoByteus its `BackgroundProcessManager.list()`
+(none while the run has no manager), Antigravity the tasks running now (its
+monitor keeps no ended ones). The web client seeds its store from the answer:
+an unknown task is added, a running one takes an end the answer shows, and an
+ended one is never replaced, so an older answer cannot undo a newer event.
+
+### Native command scope at application shutdown
+
+Studio and standalone hosts own `NativeCommandShutdown`, passing its scope into
+native execution independently of individual agent lifetimes. The early close
+hook drains tracked native work; final close collects unconfirmed outcomes and
+still attempts the remaining host cleanup. Processes a run's commands detached
+from tracking (while still in their command's process group) and any work whose
+run-end stop was not confirmed therefore remain covered at backend
+restart/application quit. A native run's own commands are stopped earlier, at its run end (see
+[Native background task notices](#native-background-task-notices)). See
+[Terminal Tools](../../../autobyteus-ts/docs/terminal_tools.md#owned-command-lifetime-and-host-shutdown)
+for retained anchors, bounded collective drain and ownership checks. Existing
+provider shutdown owners remain authoritative for non-native runtimes.
 
 Image context files are sent inline as image content blocks. The Codex and
 Claude paths share `agent-execution/shared/context-image-source.ts`. Local

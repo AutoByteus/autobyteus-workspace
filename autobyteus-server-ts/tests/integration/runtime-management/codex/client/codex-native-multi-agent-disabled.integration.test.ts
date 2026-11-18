@@ -15,7 +15,7 @@ import { parseArgs } from "../../../../../src/runtime-management/codex/client/co
 // A gated missing binary fails; an ungated skip is never suppression evidence.
 const enabled = process.env.RUN_CODEX_NATIVE_SURFACE_TESTS === "1";
 const binary = process.env.CODEX_NATIVE_SURFACE_BINARY?.trim() || "codex";
-const model = process.env.CODEX_NATIVE_SURFACE_MODEL?.trim() || "gpt-6.1-sol";
+const model = process.env.CODEX_NATIVE_SURFACE_MODEL?.trim() || "gpt-6.1-terra";
 const evidenceDir = process.env.CODEX_NATIVE_SURFACE_EVIDENCE_DIR;
 const cases = [
   ["A02", "positive-control", "control"],

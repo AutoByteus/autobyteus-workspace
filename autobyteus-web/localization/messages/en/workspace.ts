@@ -1,11 +1,14 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.tools.BrowserPanel.back": "Back",
+  "workspace.components.workspace.tools.BrowserPanel.forward": "Forward",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged": "Agent runtime changed",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated": "Tools updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
-  "workspace.runModelConfig.modelRequired": "Select a model before launch.",
   "workspace.runModelConfig.orgOwnershipUnavailable": "This Org run is application-owned. Its model settings cannot be edited here.",
   "workspace.agentOrg.inspectionUnavailable": "Saved Agent Org data is unavailable. No run was started.",
   "workspace.runModelConfig.loading": "Loading run configuration…",
@@ -14,15 +17,10 @@ const messages = {
   "workspace.runModelConfig.selectedModelUnavailable": "The selected model is unavailable for the current runtime.",
   "workspace.runModelConfig.retry": "Retry",
   "workspace.runModelConfig.noAdjustableSettings": "This model has no adjustable settings.",
-  "workspace.runModelConfig.schemaUnavailable": "Saved model settings cannot be represented by the current schema.",
   "workspace.runModelConfig.nativeModelHelp": "Choose a verified model with at least the saved model’s context capacity.",
   "workspace.runModelConfig.externalModelHelp": "Choose any model offered by this runtime. The runtime handles context limits when the run resumes.",
   "workspace.runModelConfig.unknownModelHelp": "Replacement models for this runtime are unavailable.",
-  "workspace.runModelConfig.loadingOptions": "Loading replacement models…",
   "workspace.runModelConfig.optionsUnavailable": "Runtime model options are unavailable. Refresh this run to retry; its saved model identity remains visible.",
-  "workspace.runModelConfig.replacementInvalid": "This replacement is no longer offered or eligible. Refresh options before saving.",
-  "workspace.runModelConfig.noNativeReplacements": "No verified equal-or-larger replacement models are available.",
-  "workspace.runModelConfig.noCatalogReplacements": "No other models are currently offered by this runtime.",
   "workspace.runModelConfig.validation.required": "A value is required.",
   "workspace.runModelConfig.validation.type": "Enter a value of type {expected}.",
   "workspace.runModelConfig.validation.enum": "Choose one of the supported options.",
@@ -33,9 +31,9 @@ const messages = {
   "workspace.runModelConfig.thinkingAdvancedOnly": "Use the model settings below to control thinking.",
   "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
     "Live Team updates are out of sync. Wait for the Team to finish its current work, then select this Team member again to reload the complete conversation.",
-  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
+  "workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait":
     "This Team is still working. Wait for it to finish, then select this Team member again.",
-  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry":
+  "workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry":
     "Team activity changed while the conversation was being reloaded. Select this Team member again to retry.",
   "workspace.agentOrg.recovery.exhausted":
     "Live updates could not recover automatically. Select this Agent Org again to reload a verified complete conversation.",
@@ -82,7 +80,6 @@ const messages = {
   "workspace.agentOrg.history.collapseRun": "Collapse {{name}} descendants",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} execution hierarchy",
   "workspace.agentOrg.history.empty": "No Agent Org run history yet.",
-  "workspace.agentOrg.history.noWorkspace": "No workspace",
   "workspace.agentOrg.history.relativeNow": "now",
   "workspace.agentOrg.history.relativeMinutes": "{{count}}m",
   "workspace.agentOrg.history.relativeHours": "{{count}}h",
@@ -102,10 +99,14 @@ const messages = {
     "Close diagram viewer",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
     "Open {{file}} in Files",
-  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
-    "This file is available only on the host workspace.",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node":
+    "This file is on {{node}}, where this run runs.",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "The file preview could not be opened.",
+  "workspace.components.mobile.views.MobileFiles.node_file_not_found":
+    "This file was not found on the computer.",
+  "workspace.components.mobile.views.MobileFiles.node_file_is_folder":
+    "This path is a folder, not a file.",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "Agent Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":
@@ -118,6 +119,21 @@ const messages = {
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "Inherited",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
+  "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "Tracked commands continuing beyond their turn. Recent runtime observations, not all system processes.",
+  "workspace.components.progress.BackgroundTaskPanel.lastKnown": "Recorded / last-known rows; running counts are unconfirmed.",
+  "workspace.components.progress.BackgroundTaskPanel.loading": "Checking this agent’s background tasks…",
+  "workspace.components.progress.BackgroundTaskPanel.unavailable": "Current background-task inspection is unavailable.",
+  "workspace.components.progress.BackgroundTaskPanel.recordedCounts": "{{running}} last-known running · {{total}} recorded",
+  "workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts": "Current count unavailable",
+  "workspace.components.progress.BackgroundTaskPanel.trackedEmpty": "No tracked background commands",
+  "workspace.components.progress.BackgroundTaskPanel.shellCommand": "Shell command",
+  "workspace.components.progress.BackgroundTaskPanel.status.unknown": "Unknown",
+  "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · observed {{time}}",
+  "workspace.components.progress.BackgroundTaskPanel.exitCode": "Exit code {{code}}",
+  "workspace.components.progress.BackgroundTaskPanel.end.timeLimit": "Stopped: it reached its time limit — not a failure of the command",
+  "workspace.components.progress.BackgroundTaskPanel.end.lowMemory": "Stopped: the computer was low on memory",
+  "workspace.components.progress.BackgroundTaskPanel.end.runEnded": "Stopped: the run ended",
+  "workspace.components.progress.BackgroundTaskPanel.noRun": "Select an agent to see its background tasks.",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "Background Tasks",
   "workspace.components.progress.BackgroundTaskPanel.counts":
@@ -155,13 +171,15 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}. {{source}}. {{availability}}. Captured {{time}}. {{count}} characters.",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "AutoByteus-supplied · Native configured system prompt",
+    "AutoByteus-supplied · AutoByteus configured system prompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "AutoByteus-supplied · Claude SDK systemPrompt",
+    "AutoByteus-supplied · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "AutoByteus-supplied · Codex baseInstructions",
+    "AutoByteus-supplied · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "AutoByteus-supplied · Grok Build rules",
+  "workspace.components.progress.SystemInstructionActivityItem.source.deepseekHarness":
+    "AutoByteus-supplied · DeepSeek Harness instructions plugin",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "AutoByteus-supplied system instructions",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "Messages",
@@ -179,6 +197,10 @@ const messages = {
     "Unknown teammate",
   "workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member":
     "Select a team member to view communication.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_messages":
+    "Loading messages…",
+  "workspace.components.workspace.team.TeamCommunicationPanel.messages_unavailable":
+    "These messages can't be shown",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_title":
     "No team messages yet",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":
@@ -241,6 +263,13 @@ const messages = {
   "workspace.history.hierarchy.status.error": "error",
   "workspace.history.hierarchy.status.idle": "idle",
   "workspace.history.hierarchy.status.offline": "offline",
+  "workspace.agentActivity.initializing": "Initializing",
+  "workspace.agentActivity.running": "Running",
+  "workspace.agentActivity.backgroundOne": "Background task running",
+  "workspace.agentActivity.backgroundOther": "{{count}} background tasks running",
+  "workspace.agentActivity.idle": "Idle",
+  "workspace.agentActivity.error": "Error",
+  "workspace.agentActivity.offline": "Offline",
   "workspace.members.started_by": "Started by {{name}}",
   "workspace.task_monitor.loading": "Loading activity…",
   "workspace.task_monitor.load_error": "Couldn't load activity.",
@@ -282,6 +311,36 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
+  "workspace.components.workspace.tools.NodeDesktopTile.title": "Node desktop",
+  "workspace.components.workspace.tools.NodeDesktopTile.connecting": "Connecting…",
+  "workspace.components.workspace.tools.NodeDesktopTile.connected_view_only": "Connected · View only",
+  "workspace.components.workspace.tools.NodeDesktopTile.connected_control": "Connected · Control",
+  "workspace.components.workspace.tools.NodeDesktopTile.disconnected": "Disconnected",
+  "workspace.components.workspace.tools.NodeDesktopTile.desktop_disconnected": "The node's desktop disconnected",
+  "workspace.components.workspace.tools.NodeDesktopTile.connection_refused": "The connection was refused",
+  "workspace.components.workspace.tools.NodeDesktopTile.cannot_reach_node": "Cannot reach the node",
+  "workspace.components.workspace.tools.NodeDesktopTile.not_allowed": "This viewer is not allowed on this node",
+  "workspace.components.workspace.tools.NodeDesktopTile.needs_connecting": "This desktop is not connected to this node. Connect it on the Nodes page.",
+  "workspace.components.workspace.tools.NodeDesktopTile.no_shared_desktop": "This node has no shared desktop",
+  "workspace.components.workspace.tools.NodeDesktopTile.connect": "Connect",
+  "workspace.components.workspace.tools.NodeDesktopTile.reconnect": "Reconnect",
+  "workspace.components.workspace.tools.NodeDesktopTile.disconnect": "Disconnect",
+  "workspace.components.workspace.tools.NodeDesktopTile.view_only": "View only",
+  "workspace.components.workspace.tools.NodeDesktopTile.control": "Control",
+  "workspace.components.workspace.tools.NodeDesktopTile.switch_to_control": "Switch to Control: your keyboard and mouse reach the agent's desktop",
+  "workspace.components.workspace.tools.NodeDesktopTile.switch_to_view_only": "Switch to View only",
+  "workspace.components.workspace.tools.NodeDesktopTile.maximize_view": "Maximize view",
+  "workspace.components.workspace.tools.NodeDesktopTile.restore_view": "Restore view (Esc)",
+  "workspace.components.workspace.tools.VncViewer.checking_node_desktop": "Checking this node's desktop…",
+  "workspace.components.workspace.tools.VncViewer.no_shared_desktop": "This node has no shared desktop.",
+  "workspace.components.workspace.tools.VncViewer.cannot_reach_node": "Cannot reach the node.",
+  "workspace.components.workspace.tools.VncViewer.retry": "Retry",
+  "workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers": "Too many viewers on this node right now",
+  "workspace.components.workspace.tools.NodeDesktopTile.retry": "Retry",
+  "workspace.pathRefusal.notAbsolute": "Enter a full path, starting with /.",
+  "workspace.pathRefusal.notAbsoluteWindows": "Enter a full path, starting with a drive like C:\\.",
+  "workspace.pathRefusal.missing": "No folder at this path.",
+  "workspace.pathRefusal.notAFolder": "This path is a file, not a folder.",
 } satisfies TranslationCatalog;
 
 export default messages;

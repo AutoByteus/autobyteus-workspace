@@ -1,0 +1,50 @@
+# DEL-01 — post-integration reruns on the merged branch (357936966c = codex/delegated-runtime-model-routing + origin/personal 50e93c2108), 2026-10-27
+# All commands with env -i PATH HOME=<mktemp -d> TMPDIR (+ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<agy-failure-cli.mjs> for E2E)
+
+## pnpm install --frozen-lockfile: exit 0; pnpm -C autobyteus-server-ts typecheck: exit 0; pnpm -C autobyteus-server-ts build: exit 0
+
+## Server E2E: model-routing-delegation.e2e.test.ts + internal-agents.e2e.test.ts (run alongside the full unit suite)
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 395309ms
+     ✓ MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)  879ms
+     ✓ MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009,
+     ✓ MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)  80687ms
+     ✓ MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)  84406ms
+     ✓ MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)  17458ms
+     ✓ MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)  41455ms
+     ✓ MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again  148896ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2279ms
+     ✓ IA-03 a recorded run of the internal agent: absent from run history and the Memory page while hidden, open by run ID, present once shown (AC-002, REQ-008)  605ms
+     ✓ IA-04 while hidden an agent cannot find, mention or delegate to it; once shown (no restart) it can (AC-003, AC-005)  1023ms
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+
+## Server E2E: remote-delegation-two-server.e2e.test.ts
+     ✓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason  1931ms
+     ✓ RC-40 autobyteus-32 AC-005/REQ-009/REQ-012: with Model Routing on, beta's Model Router chooses for the agent and the Team member no default covers; the launches come back to alpha (result notes, the link); beta 
+     ✓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within the 50 s start b
+ Test Files  1 passed (1)
+      Tests  41 passed (41)
+
+## Server unit (pnpm -C autobyteus-server-ts test:unit): see DEL-02 for the 3 failures (same on base)
+ Test Files  2 failed | 851 passed | 4 skipped (857)
+      Tests  3 failed | 7125 passed | 7 skipped (7135)
+
+## Web: the ticket's 5 spec files
+ Test Files  5 passed (5)
+      Tests  25 passed (25)
+guard:web-boundary=0 guard:localization-boundary=0 audit:localization-literals=0
+
+## Web: full suite (pnpm -C autobyteus-web exec vitest run)
+ Test Files  7 failed | 702 passed | 1 skipped (710)
+      Tests  9 failed | 5046 passed | 1 skipped (5056)
+ FAIL  electron/launch-profile/__tests__/e2eLaunchPreflight.spec.ts > embedded listener preflight > uses wildcard-equivalent exclusive binding and rejects an occupied port
+ FAIL  electron/server/__tests__/BackendPortBindFaults.spec.ts [ electron/server/__tests__/BackendPortBindFaults.spec.ts ]
+ FAIL  electron/server/__tests__/WindowsServerManagerShutdown.spec.ts > production Windows launcher attaches IPC to the captured child and stop waits for complete plus exit
+ FAIL  electron/server/__tests__/WindowsServerManagerShutdown.spec.ts > uses taskkill only after the graceful deadline and reports forced stop as incomplete
+ FAIL  electron/server/__tests__/platformServerEnvironment.spec.ts > platform server environment handoff > inherit-caller (production) preserves the caller environment before manager overrides
+ FAIL  electron/server/__tests__/platformServerEnvironment.spec.ts > platform server environment handoff > isolated-baseline (e2e) passes only baseline caller values plus Electron-owned values
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalo
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+ FAIL  tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts [ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts ]
+ FAIL  utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts > built-in agent ids mirror the server registry (DI-002) > every server `*_AGENT_DEFINITION_ID` built-in is in the web mirror, 

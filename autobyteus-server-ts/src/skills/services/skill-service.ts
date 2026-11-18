@@ -146,6 +146,20 @@ export class SkillService {
     }
   }
 
+  /**
+   * The catalog's source roots (resolved) in precedence order, the order `loadCatalog` keeps one copy per name by.
+   * Whoever else picks one entry among sources (the integration catalog, DEC-017) follows the same order.
+   */
+  listCatalogSourcePaths(): string[] {
+    return listSkillCatalogSources(this.config, this.isRuntimeDefaultSkillFolder, this.sourceStore.listActiveSources())
+      .map((source) => path.resolve(source.path));
+  }
+
+  /** Whether a skill name is disabled (a cheap read of the disabled list, no catalog scan). */
+  isSkillDisabled(name: string): boolean {
+    return this.disabledStore.isDisabled(name);
+  }
+
   /** The installed skill catalog: exactly one record (the used copy) per name, sorted by name. */
   listInstalledSkillRecords(): InstalledSkillRecord[] {
     return [...this.loadCatalog().records].sort((a, b) => a.skill.name.localeCompare(b.skill.name));

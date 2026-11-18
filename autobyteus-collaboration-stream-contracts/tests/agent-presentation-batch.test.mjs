@@ -9,7 +9,7 @@ const item = (agentRunId, delta) => ({
 const envelope = (rootKind, extra) => ({ root_subject_kind: rootKind, root_run_id: "root-run-1", change_sequence: 21, ...extra });
 const batchEvent = { kind: "agent_presentation_batch", items: [item("agent-a", "xy"), item("agent-b", "12")] };
 
-for (const rootKind of ["agent_org", "agent"]) {
+for (const rootKind of ["agent_org"]) {
   test(`a ${rootKind} batch envelope covers a contiguous range`, () => {
     const parsed = CollaborationStreamServerMessageSchema.parse({
       type: "ROOT_EXECUTION_EVENT", payload: envelope(rootKind, { change_sequence_through: 26, event: batchEvent }),
@@ -33,3 +33,8 @@ for (const rootKind of ["agent_org", "agent"]) {
     assert.throws(() => RootExecutionEventDtoSchema.parse(envelope(rootKind, { change_sequence_through: 21, event: single })));
   });
 }
+
+test("an Agent root view carries no presentation frames: its host and each run it delegated present on their own streams (SR-086 G-D1)", () => {
+  assert.throws(() => RootExecutionEventDtoSchema.parse(envelope("agent", { change_sequence_through: 21, event: batchEvent })));
+  assert.throws(() => RootExecutionEventDtoSchema.parse(envelope("agent", { event: { kind: "agent_presentation", ...item("agent-a", "x") } })));
+});

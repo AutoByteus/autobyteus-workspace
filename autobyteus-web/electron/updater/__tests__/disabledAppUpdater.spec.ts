@@ -9,6 +9,7 @@ import {
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_SET_AUTO_CHECK,
   APP_UPDATE_IPC_SET_CHANNEL,
+  APP_UPDATE_IPC_SET_AUTOMATIC,
 } from '../appUpdateController'
 
 const { ipcHandlers, ipcMainMock, appMock } = vi.hoisted(() => {
@@ -67,6 +68,7 @@ describe('DisabledAppUpdater', () => {
     new DisabledAppUpdater().initialize()
 
     expect(await invoke(APP_UPDATE_IPC_INSTALL)).toEqual({ accepted: false })
+    expect(await invoke(APP_UPDATE_IPC_SET_AUTOMATIC, true)).toMatchObject({ accepted: false, persisted: false, state: { automaticUpdate: false } })
     const result = await invoke(APP_UPDATE_IPC_SET_CHANNEL, 'beta')
     expect(result.accepted).toBe(false)
     expect(result.persisted).toBe(false)

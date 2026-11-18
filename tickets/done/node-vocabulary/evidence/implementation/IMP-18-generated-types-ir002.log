@@ -1,0 +1,9 @@
+# IMP-18 generated GraphQL types vs a fresh codegen (Memory Sync lines)
+# command: print the server schema (tsx, temporary data dir /tmp/n290-schema/data); graphql-codegen against it; diff the lines naming memorySyncSourceId / MemorySyncSourceMetadata; check no Memory line keeps sourceId
+# commit: 127fc4806e (run on its working tree just before the commit)
+# environment: macOS Darwin 25.5 (arm64), Node 22.23.1, pnpm; worktree /Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary
+# date: 2026-10-24
+
+IDENTICAL_MEMORY_SYNC_LINES
+NO_MEMORY_LINE_WITH_SOURCEID
+schema: 7 lines name memorySyncSourceId

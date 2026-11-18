@@ -19,8 +19,10 @@ import {
 import { registerTaskDelegationTools } from "../../../agent-tools/task-delegation/register-task-delegation-tools.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../../agent-tools/agent-discovery/list-available-agents-contract.js";
 import { createBoundListAvailableAgentsTool } from "../../../agent-tools/agent-discovery/list-available-agents-tool.js";
-import { LIST_AVAILABLE_NODES_TOOL_NAME } from "../../../agent-tools/agent-discovery/list-available-nodes-contract.js";
-import { createBoundListAvailableNodesTool } from "../../../agent-tools/agent-discovery/list-available-nodes-tool.js";
+import { LIST_PEER_NODES_TOOL_NAME } from "../../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
+import { createBoundListPeerNodesTool } from "../../../agent-tools/agent-discovery/list-peer-nodes-tool.js";
+import { GET_PROJECT_TASK_TOOL_NAME } from "../../../agent-tools/project-tasks/project-task-tool-contract.js";
+import { createBoundGetProjectTaskTool } from "../../../agent-tools/project-tasks/project-task-native-tools.js";
 
 type ToolResolutionLogger = {
   warn: (...args: unknown[]) => void;
@@ -80,8 +82,8 @@ export const resolveAutoByteusAgentTools = (input: {
       continue;
     }
 
-    // The discovery tools (autobyteus-261: also list_available_nodes) need a run that can delegate.
-    if (name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME || name.trim() === LIST_AVAILABLE_NODES_TOOL_NAME) {
+    // The discovery tools (autobyteus-261: also list_peer_nodes) need a run that can delegate.
+    if (name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME || name.trim() === LIST_PEER_NODES_TOOL_NAME) {
       if (!memberExecutionContext?.collaboration.listAvailableAgents) {
         logger.warn(
           `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can delegate to available agents. Skipping.`,
@@ -90,7 +92,7 @@ export const resolveAutoByteusAgentTools = (input: {
       }
       tools.push(name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME
         ? createBoundListAvailableAgentsTool(memberExecutionContext)
-        : createBoundListAvailableNodesTool(memberExecutionContext));
+        : createBoundListPeerNodesTool(memberExecutionContext));
       actualToolNames.push(name);
       continue;
     }
@@ -118,6 +120,13 @@ export const resolveAutoByteusAgentTools = (input: {
           `Failed to create tool instance for '${name}' from agent definition '${agentDefinition.name}': ${String(error)}`,
         );
       }
+      continue;
+    }
+
+    // `get_project_task` reads with its caller's Task scope, so it is always created bound, never by the generic registry path (AR-008).
+    if (name.trim() === GET_PROJECT_TASK_TOOL_NAME) {
+      tools.push(createBoundGetProjectTaskTool(memberExecutionContext));
+      actualToolNames.push(name);
       continue;
     }
 

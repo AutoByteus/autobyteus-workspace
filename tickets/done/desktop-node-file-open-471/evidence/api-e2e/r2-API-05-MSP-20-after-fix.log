@@ -1,0 +1,9 @@
+# API-05 round 2: MSP-20 after the baseline fix 23524436af; 2026-11-11T16:08:44Z; env -i … test:e2e:mobile-shell --cases=MSP-20
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/r2-API-05-MSP-20-after-fix --cases=MSP-20
+
+[mobile-shell] MSP-20 …
+[mobile-shell] MSP-20 Pass
+mobile-shell probe: Pass

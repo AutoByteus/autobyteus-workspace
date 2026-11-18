@@ -1,0 +1,23 @@
+# IMP-03 server unit suite (full) and reruns
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 524220d02b (full run); reruns at ecbf5a57bd
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1; test-environment isolation of tests/setup; host load averages 14-40 (shared machine)
+# Date: 2026-10-26
+# Excerpt (full log not committed)
+
+## Full run at 524220d02b
+ FAIL  tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts > RemoveExternalRuntimeWorkingContextSnapshotsMigration > reports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+ FAIL  tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts > REQ-007/009/013 exact Codex input outcome before Task-owned release > retains timed-out async delivery proof and retries the same backend after provider release
+ FAIL  tests/unit/update-notifications/update-check-request-budget.test.ts > automatic checks' GitHub request budget (AC-003, QR-001) > makes no REST request and at most one request per source per interval
+ Test Files  3 failed | 818 passed | 4 skipped (825)
+      Tests  3 failed | 6793 passed | 7 skipped (6803)
+   Duration  3557.84s (transform 18.66s, setup 10.58s, import 312.04s, tests 2216.76s, environment 1.19s)
+
+Causes:
+- remove-external-runtime-working-context-snapshots-migration.test.ts: read the removed memory-view workingContext field. Fixed in ecbf5a57bd (checks the stale snapshot file on disk; the view keeps the raw-trace check).
+- update-check-request-budget.test.ts and codex-input-terminal-release.test.ts: timed out (16-17 min each) under host load; neither code path is touched by this change (git diff ddd6fdcdf6 -- src/update-notifications src/agent-execution/backends/codex is empty).
+
+## Reruns at ecbf5a57bd
+- pnpm exec vitest run tests/unit/api/graphql/types/memory-explorer-types.test.ts tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts tests/app-data-migrations/remove-external-runtime-working-context-snapshots -> Test Files 3 passed (3); Tests 11 passed (11)
+- pnpm exec vitest run tests/unit/update-notifications/update-check-request-budget.test.ts tests/unit/agent-execution/backends/codex/codex-input-terminal-release.test.ts (load 10) -> Test Files 2 passed (2); Tests 9 passed (9)
+- after pnpm -C autobyteus-server-ts test:integration:prepare: pnpm exec vitest run tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts tests/integration/skill-update-notices/native-skill-notice-history.integration.test.ts tests/integration/agent-memory/user-attachment-history.integration.test.ts -> Test Files 3 passed (3); Tests 18 passed (18)

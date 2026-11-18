@@ -1,0 +1,17 @@
+# Check: IMP-03
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run (full web suite)
+# Commit: base 931a1feeb6 + working tree = 45e456b8b0
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12
+
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (20 tests) 133ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts (4 tests) 652ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts (13 tests) 680ms
+   ✓ MarkdownRenderer heading links > renders design-principles.md so every Contents entry has exactly one heading  325ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts (12 tests) 52ms
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 19ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts (14 tests) 14ms
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts (2 tests) 11ms
+ Test Files  759 passed (759)
+      Tests  5736 passed | 2 skipped (5738)
+exit 0

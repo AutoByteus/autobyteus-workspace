@@ -1,0 +1,12 @@
+# IMP-11-sun-e2e.log SUN E2E gated (H-10, AC-012); receipt IMP-11-sun-receipt.json (githubRequests)
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs SKILL_NOTICE_ROOTS_E2E_EVIDENCE_DIR=<dir> … vitest run tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts
+# commit: bba6f08252 tree
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 77231ms
+     ✓ SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none  4706ms
+     ✓ SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice  65101ms
+     ✓ SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched  6491ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

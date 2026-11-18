@@ -1,0 +1,24 @@
+{
+  "case": "C01",
+  "date": "2026-10-26T06:42:52.496672+00:00",
+  "command": "Verify recorded owned groups absent then remove only attempt1 owned leftover temp root",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.23.1",
+    "base": "http://127.0.0.1:53568",
+    "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-dXCuZe",
+    "serverPid": 85625,
+    "chrome": "156.0.8078.47",
+    "browserPid": 86675,
+    "browserPgid": 86675,
+    "chromiumSandbox": true
+  },
+  "cause": "fs.rm ENOTEMPTY on owned Node compile cache during shutdown; driver finally aborted before saving cleanup",
+  "processGroupsAbsent": true,
+  "rootExistedBeforeAssistance": true,
+  "rootAbsent": true,
+  "result": "Pass",
+  "noOtherResourceTouched": true
+}

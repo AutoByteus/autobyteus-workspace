@@ -1,0 +1,38 @@
+{
+ "lineEvents": [
+  {
+   "kind": "added",
+   "ms": 156,
+   "at": "2026-11-07T20:19:55.680Z",
+   "text": "Automatic update failed. Nothing was changed.\nNo server package was published for 1.5.12-beta.7 (linux-arm64)."
+  },
+  {
+   "kind": "removed",
+   "ms": 179,
+   "at": "2026-11-07T20:19:55.703Z",
+   "text": "Automatic update failed. Nothing was changed. No server package was published for 1.5.12-beta.7 (linux-arm64)."
+  }
+ ],
+ "startRoute": "#/chat",
+ "endRoute": "#/nodes",
+ "sameDocument": true,
+ "timeOrigin": "2026-11-07T20:19:54.995Z",
+ "changes": [
+  {
+   "ms": 1,
+   "at": "2026-11-07T20:19:55.525Z",
+   "version": null,
+   "failed": null,
+   "updated": null,
+   "notice": null
+  },
+  {
+   "ms": 204,
+   "at": "2026-11-07T20:19:55.728Z",
+   "version": "Server 1.5.12-beta.7",
+   "failed": null,
+   "updated": null,
+   "notice": null
+  }
+ ]
+}

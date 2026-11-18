@@ -1,0 +1,6 @@
+
+> autobyteus@1.5.13-beta.1 test:e2e:chat-composer-polish /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-web
+> node tests/e2e/chat-composer-polish-probe.mjs --cases T09 --output-dir /tmp/api-e2e-msr/T09-out --browser-executable /usr/bin/chromium
+
+T09 Pass Every AutoByteus-runtime Claude row on the real catalog: switch rows (Opus 5, Sonnet 5, Sonnet 5.5, Haiku 5.5) default to On with an Off choice; always-on rows (Fable 5, Fable 5.1, Opus 5.5) offer effort only (autobyteus-9 AC-002, AC-003)
+EXIT=0

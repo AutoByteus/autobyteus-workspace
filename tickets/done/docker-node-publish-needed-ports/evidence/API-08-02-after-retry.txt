@@ -1,0 +1,20 @@
+# Case: API-08 step 02
+# Command: after: docker ps; PortBindings; state; data-volume marker
+# Setup: test node abx402-api-node from API-07 (saved BACKEND_PORT=58395, NOVNC_PORT=58396); its container removed with docker rm -f (state kept), as after a Docker reset; a Python listener owned by this run holds 127.0.0.1:58396; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx402-api/bash/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx402-api/bash/shared; v8 bash launcher (worktree)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, Docker Desktop 29.0.1
+# Date: 2026-11-06T15:40:16Z
+
+abx402-api-node	Up Less than a second	127.0.0.1:58924->6080/tcp, 0.0.0.0:58923->8000/tcp, [::]:58923->8000/tcp
+{"6080/tcp":[{"HostIp":"127.0.0.1","HostPort":"58924"}],"8000/tcp":[{"HostIp":"","HostPort":"58923"}]}
+
+NODE_NAME=abx402-api-node
+CONTAINER_NAME=abx402-api-node
+BACKEND_PORT=58923
+NOVNC_PORT=58924
+IMAGE_REF=autobyteus/autobyteus-server:1.5.11-beta.7
+CREATED_AT=2026-11-06T00:00:00Z
+CONFIG_HASH=87ad632e55ad4ad2fc8a33b46644b2cd795bd0107a4cbb86ad1795db136b15c8
+UPDATED_AT=2026-11-06T15:40:16Z
+
+marker: abx402-api-volume-marker

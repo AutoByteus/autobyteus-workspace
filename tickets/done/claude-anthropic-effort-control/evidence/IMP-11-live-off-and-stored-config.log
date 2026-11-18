@@ -1,0 +1,24 @@
+# IMP-11 live: thinking off with stored max on every switch row; stored thinking_display on Opus 5.5 and Sonnet 5.5 (AC-004, AC-009, AC-011)
+# command: env -i PATH HOME=<temp> AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_LIVE_STRICT=1 corepack pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/anthropic-llm.test.ts -t 'thinking off|stored config.*claude-(opus-5-5|sonnet-5-5)$'
+# commit: 4db2efa01 + SR-002 working tree (IR-001 implementation; committed afterwards, see implementation-handoff.md)
+# env: Linux 6.12.54-linuxkit, node v22.23.3
+# date: 2026-10-29T19:17:20Z
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-ts
+
+(node:61417) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts (24 tests | 17 skipped) 10145ms
+     ✓ thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-fable-5  2518ms
+     ✓ thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-opus-5  1624ms
+     ✓ stored config: accepts {"reasoning_effort":"high","thinking_display":"summarized"} on claude-opus-5-5  1016ms
+     ✓ thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-sonnet-5-5  2165ms
+     ✓ stored config: accepts {"thinking_enabled":true,"reasoning_effort":"high","thinking_display":"summarized"} on claude-sonnet-5-5  1272ms
+     ✓ thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-sonnet-5  700ms
+     ✓ thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-haiku-5-5  846ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed | 17 skipped (24)
+   Start at  19:17:22
+   Duration  10.85s (transform 302ms, setup 66ms, import 474ms, tests 10.14s, environment 0ms)
+

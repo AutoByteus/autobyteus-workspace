@@ -1,0 +1,20 @@
+# DEL-04 — merged desktop build (pnpm isolated-app start --build, electron-dist 1.5.9-beta.10 of 357936966c), smoke with API-15's scripts
+# start: ok true, iso-52922-56aa; stop: see below
+
+{
+  "on": {
+    "switch": "true",
+    "runtimeOptions": [
+      "Choose a runtime",
+      "Codex",
+      "Claude",
+      "Antigravity",
+      "Grok",
+      "AutoByteus"
+    ],
+    "runtimeDisabled": false,
+    "status": "choose a runtime and model for the router."
+  },
+  "offAgain": "false",
+  "browserErrors": []
+}

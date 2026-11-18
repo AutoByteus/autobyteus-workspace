@@ -180,4 +180,15 @@ describe('UserMessage', () => {
     expect(wrapper.find('[data-test="skill-request-chips"]').exists()).toBe(false);
     expect(wrapper.text()).toContain('Just text');
   });
+
+  it('shapes a message with a very long unbroken run cheaply, and leaves prose as it is (autobyteus-358 DS-007)', () => {
+    const token = 'QmFzZTY0'.repeat(200);
+    const long = mount(UserMessage, { props: { message: { type: 'user', text: `Decode ${token}`, timestamp: new Date() } as any },
+      global: { mocks: { $t: (key: string) => key } } });
+    const prose = mount(UserMessage, { props: { message: { type: 'user', text: 'Please review the plan. '.repeat(300), timestamp: new Date() } as any },
+      global: { mocks: { $t: (key: string) => key } } });
+    expect(long.find('.whitespace-pre-wrap').classes()).toContain('long-unbroken-text');
+    expect(long.text()).toContain(token); // the text itself is unchanged
+    expect(prose.find('.whitespace-pre-wrap').classes()).not.toContain('long-unbroken-text');
+  });
 });

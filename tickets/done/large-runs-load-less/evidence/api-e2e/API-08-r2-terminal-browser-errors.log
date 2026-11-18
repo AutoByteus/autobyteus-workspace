@@ -1,0 +1,5 @@
+# FU-006: hub probe run a (same command as API-07-08-r2-hub-probe-live.json), head feb69a02a3, 2026-11-01: every case Pass, the probe failed on browser errors; runs b, c, d had none.
+[
+  "Cannot read properties of undefined (reading 'dimensions')",
+  "[useTerminalSession] WebSocket error: Event"
+]

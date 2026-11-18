@@ -1,0 +1,61 @@
+import fs from "node:fs/promises";
+import { afterEach, describe, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
+import { HOST, buildManager, cleanupDirectories } from "../standalone-agent-run-root/helpers/standalone-root-harness.js";
+import { harness as teamHarness, cleanupDirectories as cleanupTeam } from "../agent-team-execution/helpers/team-root-collaborator-harness.js";
+
+// autobyteus-461 SR-070 (DS-15, G-4): base 827f1e68dc characterization. The user's message to a delegated copy whose
+// Task is closed: what the view's command gets back (the root's `executeAgentCommand`, as the stream handler calls it),
+// and whether the copy was started for it. In an agent run's root and in a Team root.
+afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); await cleanupTeam(); });
+
+const userMessage = () => AgentInputUserMessage.fromDict({ content: "Are you there?", context_files: null,
+  metadata: { input_origin: "user_message", message_id: "m-1", dedupe_key: "d-1" } });
+
+describe("base 827f1e68dc: the user's message to a delegated copy whose Task is closed", () => {
+  it("records the answer", async () => {
+    const out: Record<string, unknown> = {};
+    {
+      const resources = new InMemoryTaskExecutionResources();
+      resources.addTask("A");
+      const f = await buildManager(resources);
+      const root = (await f.manager.resolveRoot(HOST))!;
+      const delegated = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" } as never) as { copy: { agentRunId: string } };
+      await flushMicrotasks();
+      await root.releaseTaskExecutions(resources.close("A"));
+      await flushMicrotasks();
+      const copy = delegated.copy.agentRunId;
+      const live = (id: string) => (root as unknown as { rootAgents?: { isTaskLive?(id: string): boolean } }).rootAgents?.isTaskLive?.(id) ?? null;
+      const before = live(copy);
+      const result = await root.executeAgentCommand(copy, { kind: "post_message", message: userMessage() });
+      out.agentRunView = { result, liveBefore: before, liveAfter: live(copy) };
+    }
+    {
+      const f = await teamHarness();
+      const resources = f.dependencies.taskExecutionResources as InMemoryTaskExecutionResources;
+      resources.addTask("B");
+      const coordinator = f.identity("/coordinator", "run-coordinator");
+      const delegated = await f.root.delegateToNewCopy({ identity: coordinator }, { recipient_address: "/code_reviewer", task_id: "B" } as never) as { copy: { agentRunId: string } };
+      await flushMicrotasks();
+      await f.root.releaseTaskExecutions(resources.close("B"));
+      await flushMicrotasks();
+      const result = await f.root.executeAgentCommand(delegated.copy.agentRunId, { kind: "post_message", message: userMessage() });
+      out.teamView = { result };
+    }
+    {
+      // The window after the Task side closed the Task and before the root released the copy.
+      const resources = new InMemoryTaskExecutionResources();
+      resources.addTask("C");
+      const f = await buildManager(resources);
+      const root = (await f.manager.resolveRoot(HOST))!;
+      const delegated = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "C" } as never) as { copy: { agentRunId: string } };
+      await flushMicrotasks();
+      resources.close("C");
+      const result = await root.executeAgentCommand(delegated.copy.agentRunId, { kind: "post_message", message: userMessage() }).catch((error: unknown) => ({ thrown: String(error), code: (error as { code?: string }).code }));
+      out.agentRunViewClosedNotReleased = { result };
+    }
+    await fs.writeFile(process.env.CHAR_OUT ?? "/tmp/char-461-closed-copy.json", JSON.stringify(out, null, 2));
+  });
+});

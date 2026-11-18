@@ -1,0 +1,22 @@
+IMP-95 — CR-461-088 / CR-461-089 / CR-461-086 in the real app: SSR-002 and AFS-002 (delegated-launch-defaults-probe, browser mode)
+Each run owns its server data root, ports, nuxt dev and Chrome; scripted AGY CLI and the recorded Grok ACP replay; no keys.
+
+## SSR-002 (a delegator stopped from Settings while two Team copies work; then a Team copy's member and team-level saves)
+Run 1 at 97974a91e2 (CR-461-087 and before):  SSR-002 Fail AC-002/004/005/006 stopped parent Team followers, own member choice/default and neighboring instance — a team-level Save changed a member's own launch (F-39)
+  The delegator's Stop from Settings with working copies ended stopped (no 'Couldn't terminate').
+  Stored launches (the runs' own files): lead dlc-alt-model before and after the team-level Save (CR-461-089 holds),
+  but the lead's row lost its origin text: it had no source of its own and showed its Team's, now 'settings'.
+  Fixed in 6a30ddf41e (a member without its own source keeps the Team's earlier one when the default changes).
+Run 2 at 6a30ddf41e (server rebuilt):  SSR-002 Pass AC-002/004/005/006 stopped parent Team followers, own member choice/default and neighboring instance
+  The delegator's Stop from Settings again ended stopped.
+
+## AFS-002 (an Org's agents, a placed Team member and a copy; the Org stopped; a fresh page)
+At 6a30ddf41e: fails at the held step: in the fresh page the stopped Org's direct agent's Settings did not open.
+  The fresh page showed 'Org configuration changed topology, identity, or locked fields. Refresh'. A temporary
+  diagnostic printed the first difference: .rootOrg.taskExecutions.0: {the copy's row} -> undefined (the Org's
+  configuration read carries no delegated runs under rule 2; the contexts store checked the raw read).
+At f15ed58643 (withViewRows in the store's check too): the Settings open; the next step expected the stopped Org's copy
+  editable while it still ran (REQ-001: it outlives the Org's Stop; recorded status 'active', locked, its own stop icon).
+At 0feffb0a06 (the case stops the copy first, as AFS-001 does): every step passes up to the end-of-case D-IMP-1 record:
+  settingsClosedBy = ['Org copy']: focusing the running Org's copy row closed Settings once (reopened, its card showed
+  correctly). Not fixed this round: see the handoff's open items.

@@ -1,0 +1,10 @@
+# API-05 focused unit folders and server typecheck with API-02's new cases; commit 3da0b47f31 + the API-02 test edit (committed after this run); macOS, Node v22.23.1; 2026-11-10T13:32:55Z
+# Commands: NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration tests/unit/remote-collaboration tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/standalone-agent-run-root --no-watch; pnpm -C autobyteus-server-ts typecheck
+ Test Files  143 passed (143)
+      Tests  1237 passed (1237)
+   Duration  91.40s (transform 5.30s, setup 3.16s, import 53.99s, tests 21.29s, environment 7ms)
+## typecheck
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 26.0s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS
+exit=0

@@ -1,3 +1,5 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import 'reflect-metadata';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -153,7 +155,10 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const f = await fixture(), before = await treeHash(f.root);
     let sequence = 0;
     const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) }, { allocateAgent: async () => `agent-${++sequence}`, allocateTeam: () => 'team-run', allocateOrg: () => 'org-run' });
-    const tree = await planner.build({ definition: (await f.orgs.getById('alpha'))!, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
+    // As AgentOrgRunService does: resolve the launch plan, then build the tree from it.
+    const definition = (await f.orgs.getById('alpha'))!;
+    const plan = await planner.resolveConfiguration({ definition, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
+    const tree = await planner.build({ definition, plan });
     expect(tree.rootOrg.members).toMatchObject([{ address: '/guide', agentDefinitionId: f.ids('alpha').direct, platformAgentRunId: null }, { address: '/group', teamDefinitionId: f.ids('alpha').team, members: [{ address: '/group/lead', agentDefinitionId: f.ids('alpha').agent, platformAgentRunId: null }] }]);
     expect(tree.handoffs).toHaveLength(2);
     expect(await treeHash(f.root)).toEqual(before);
@@ -162,10 +167,9 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const f = await fixture();
     let sequence = 0;
     const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) }, { allocateAgent: async () => `agent-${++sequence}`, allocateTeam: () => 'team-run', allocateOrg: () => 'org-run' });
-    const tree = await planner.build({
-      definition: (await f.orgs.getById('alpha'))!,
-      rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null },
-    });
+    const definition = (await f.orgs.getById('alpha'))!;
+    const plan = await planner.resolveConfiguration({ definition, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
+    const tree = await planner.build({ definition, plan });
     const state = validateAgentOrgStatePackage({
       executionTree: tree,
       taskRecords: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', records: [] },
@@ -182,9 +186,8 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     });
     const prepareNewAgentRun = vi.fn();
     const read = vi.spyOn(f.service, 'getDefinitionById');
-    const builder = new AgentOrgExecutionScopeBuilder({
+    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: { beginMaterialization } as never,
-      taskExecutionIdentity: {} as never,
       agentRunManager: { prepareNewAgentRun } as never,
       orgDefinitions: { getDefinitionById: id => f.orgs.getById(id) },
       teamDefinitions: f.service,

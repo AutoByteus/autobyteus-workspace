@@ -1,7 +1,6 @@
 import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { WorkJournalFileState } from "../domain/work-journal-models.js";
-import { genericToolLine } from "./generic-tool-line.js";
 import { nonToolRecordLine } from "./non-tool-record-lines.js";
 import {
   DEFAULT_WORK_JOURNAL_LIMITS,
@@ -15,10 +14,10 @@ import {
   getRuntimeTranslation,
   type BodyPart,
   type BuiltInLine,
-  type RecordedCall,
   type RecordedResult,
   type RuntimeTranslation,
 } from "./runtimes/runtime-translation.js";
+import { toolCallLine } from "./tool-call-line.js";
 import { formatOutcome } from "./tool-outcome.js";
 
 export type WorkJournalRenderInput = Readonly<{
@@ -135,15 +134,10 @@ export class WorkJournalFileRenderer {
     translation: RuntimeTranslation,
     marker: (recordId: string | null) => RawRecordLink,
   ): Entry {
-    const recorded: RecordedCall = { name: callRecord.toolName ?? "", args: callRecord.toolArgs ?? {} };
-    const call = translation.unwrapCall ? translation.unwrapCall(recorded) : recorded;
     const result: RecordedResult | null = resultRecord
       ? { value: resultRecord.toolResult ?? null, error: resultRecord.toolError ?? null }
       : null;
-    const converter = translation.builtInTools.get(call.name);
-    const line = converter
-      ? converter(call, result)
-      : genericToolLine(call, result ? translation.normalizeResult(result) : null);
+    const line = toolCallLine(translation, { name: callRecord.toolName ?? "", args: callRecord.toolArgs ?? {} }, result);
     return this.lineEntry(callRecord.ts, line, callRecord.id ?? null, marker(callRecord.id ?? null),
       marker(resultRecord?.id ?? null));
   }
@@ -194,6 +188,8 @@ export class WorkJournalFileRenderer {
         return shortenHead(part.lines, limits.diffLines, limits, callMarker, "diff lines");
       case "content":
         return shortenHead(splitLines(part.text), limits.writeContentLines, limits, callMarker, "lines");
+      case "message":
+        return shortenHead(splitLines(part.text), limits.argumentLines, limits, callMarker, "lines");
       case "argument":
         return this.labeled(part.key, shortenHead(splitLines(part.text), limits.argumentLines, limits, callMarker, "lines"));
       case "labeled_result":

@@ -11,7 +11,9 @@ import type { AgentOrgRunService } from "../../agent-org-execution/services/agen
 import type { StudioRunModelConfigService } from "../../run-history/services/studio-run-model-config-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
-import type { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
+import type { RunTreeView } from "../../agent-collaboration/delegation/run-tree-view.js";
+import type { DelegatedRunAgentsReader } from "../../run-history/services/delegated-run-agents-reader.js";
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -23,7 +25,12 @@ type StudioApplicationApiServices = Readonly<{
   definitionAdmissionService: DefinitionAdmissionService;
   collaborationRootHistoryService: CollaborationRootHistoryService;
   runModelConfigService: StudioRunModelConfigService;
-  delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
+  /** Each run's tree (SR-084), for `runTree(run)`. */
+  runTree: RunTreeView;
+  /** The agents of the runs a run delegated to, open or closed (token totals, the Team tab's past participants). */
+  delegatedRunAgents: DelegatedRunAgentsReader;
+  /** Each run's one view stream (SR-062): a checkpoint answers its sequence, a stopped run's too. */
+  runViewStreams: Pick<RunViewStreams, "streamOf">;
   bundleService: ApplicationBundleService;
   capabilityService: ApplicationCapabilityService;
   packageQueries: ApplicationPackageRegistryService;
@@ -45,7 +52,9 @@ export const configureStudioApplicationApiServices = (
     || !services.definitionAdmissionService
     || !services.collaborationRootHistoryService
     || !services.runModelConfigService
-    || !services.delegatedLaunchSelectionService
+    || !services.runTree
+    || !services.delegatedRunAgents
+    || !services.runViewStreams
     || !services.bundleService
     || !services.capabilityService
     || !services.packageQueries
@@ -110,11 +119,19 @@ export const getStudioCollaborationRootHistoryService = (): CollaborationRootHis
 export const getStudioRunModelConfigService = (): StudioRunModelConfigService =>
   requireConfiguredServices().runModelConfigService;
 
-export const getStudioDelegatedLaunchSelectionService = (): DelegatedLaunchSelectionService =>
-  requireConfiguredServices().delegatedLaunchSelectionService;
+
 
 export const getStudioApplicationPackageQueries =
   (): ApplicationPackageRegistryService => requireConfiguredServices().packageQueries;
 
 export const getStudioApplicationPackageCommands =
   (): ApplicationPackageCommandService => requireConfiguredServices().packageCommands;
+
+export const getStudioRunTreeView = (): RunTreeView =>
+  requireConfiguredServices().runTree;
+
+export const getStudioRunViewStreams = (): Pick<RunViewStreams, "streamOf"> =>
+  requireConfiguredServices().runViewStreams;
+
+export const getStudioDelegatedRunAgents = (): DelegatedRunAgentsReader =>
+  requireConfiguredServices().delegatedRunAgents;

@@ -1,0 +1,33 @@
+# Gateway as its own workspace: frozen install, typecheck, tests, audit; root workspace unaffected
+# Check: IMP-10
+# Command: cd autobyteus-message-gateway && echo '## pnpm install --frozen-lockfile (gateway folder)' && pnpm install --frozen-lockfile 2>&1 | tail -6 && echo '## installed versions' && node -p "['fastify','@fastify/cors','@whiskeysockets/baileys'].map(p=>p+'@'+require('./node_modules/'+p+'/package.json').version).join(' ')" && echo '## pnpm typecheck' && pnpm typecheck 2>&1 | tail -1; echo "typecheck exit: ${PIPESTATUS[0]}"; echo '## pnpm test' && pnpm test 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E 'Test Files|Tests |FAIL'; echo '## pnpm audit' && pnpm audit 2>&1 | tail -3; echo '## pnpm audit --audit-level high (exit code)'; pnpm audit --audit-level high >/dev/null 2>&1; echo "audit exit: $?"; cd .. && echo '## root: pnpm install --frozen-lockfile' && pnpm install --frozen-lockfile 2>&1 | grep -E 'Scope|Done|ERR' ; echo '## root lockfile changed by the gateway commit?' && git diff --stat bbd88fd3ea 5c7ab7426c -- pnpm-lock.yaml pnpm-workspace.yaml package.json && echo 'git diff --stat bbd88fd3ea..5c7ab7426c -- pnpm-lock.yaml pnpm-workspace.yaml package.json: (empty = unchanged)' && git diff --stat bbd88fd3ea 5c7ab7426c | tail -1
+# Commit: 5c7ab7426c
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T20:06:53Z
+
+## pnpm install --frozen-lockfile (gateway folder)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Done in 285ms using pnpm v10.28.2
+## installed versions
+fastify@5.12.7 @fastify/cors@11.3.1 @whiskeysockets/baileys@6.7.24
+## pnpm typecheck
+
+typecheck exit: 0
+## pnpm test
+ Test Files  86 passed (86)
+      Tests  268 passed (268)
+## pnpm audit
+No known vulnerabilities found
+## pnpm audit --audit-level high (exit code)
+audit exit: 0
+## root: pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+autobyteus-ts postinstall: Done
+Done in 1.2s using pnpm v10.28.2
+## root lockfile changed by the gateway commit?
+git diff --stat bbd88fd3ea..5c7ab7426c -- pnpm-lock.yaml pnpm-workspace.yaml package.json: (empty = unchanged)
+ 5 files changed, 2057 insertions(+), 19 deletions(-)
+
+# exit code: 0

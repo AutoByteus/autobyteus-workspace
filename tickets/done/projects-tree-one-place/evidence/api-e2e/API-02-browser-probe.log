@@ -1,0 +1,14 @@
+# API-02: browser probe (updated for 353): pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <ev>/API-02-browser-probe
+# Run as env -i PATH HOME TMPDIR USER LOGNAME; code 60fc6161d2 (HEAD 5c9ed8d4cf, docs only) + the probe update; server dist rebuilt from this tree before the run; Chrome headless 156.0.8078.74; Date: 2026-10-31T21:26:40.690Z
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/tickets/in-progress/projects-tree-one-place/evidence/api-e2e/API-02-browser-probe/evidence.json

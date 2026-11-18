@@ -1,0 +1,14 @@
+# IMP-10 final full phone probe on the implementation commit
+# Commands: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web;
+#   pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/sfb435-final-probe
+# Commit: e5ca0e1da7 (the later commit 6ca743fee0 only adds a comment to generated/graphql.ts); macOS darwin 25.5.0,
+#   Node v22.23.1, headless Chrome; 2026-11-10. Full evidence JSON: IMP-10-final-mobile-shell-probe.json
+
+result: Pass
+unknownBrowserErrors: 0
+cases: {'MSP-01': 'Pass', 'MSP-15': 'Pass', 'MSP-02': 'Pass', 'MSP-03': 'Pass', 'MSP-04': 'Pass', 'MSP-05': 'Pass', 'MSP-06': 'Pass', 'MSP-07': 'Pass', 'MSP-08': 'Pass', 'MSP-16': 'Pass', 'MSP-14': 'Pass', 'MSP-10': 'Pass', 'MSP-11': 'Pass', 'MSP-12': 'Pass', 'MSP-20': 'Pass', 'MSP-09': 'Pass', 'MSP-19': 'Pass', 'MSP-17': 'Pass', 'MSP-18': 'Pass', 'MSP-13': 'Pass', 'MSP-21': 'Pass', 'MSP-22': 'Pass', 'MSP-23': 'Pass', 'MSP-24': 'Pass', 'MSP-25': 'Pass', 'MSP-26': 'Pass', 'MSP-27': 'Pass', 'MSP-28': 'Pass', 'MSP-29': 'Pass', 'MSP-30': 'Pass', 'MSP-31': 'Pass', 'MSP-32': 'Pass'}
+MSP-32: Pass refused: [] refusedSockets: [] socketsOpened: 0 since 2026-11-10T06:53:35.049Z until 2026-11-10T06:59:57.131Z
+cleanup: {'frontendExited': True, 'serversLeft': 0, 'rootRemoved': True}
+failed requests to http://localhost:8000/health (the start-up request, REQ-001): 0
+the phone's own /rest/health reachability checks to its paired node that failed while a case stopped the node or closed the page (expected, by case): {('MSP-10', 'net::ERR_ABORTED'): 1, ('MSP-09', 'net::ERR_CONNECTION_REFUSED'): 7, ('MSP-18', 'net::ERR_CONNECTION_REFUSED'): 307}
+base run (IMP-01) had the same kind in the same cases: MSP-18 318, MSP-09 9 (not introduced by this change).

@@ -1,0 +1,26 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:remote-nodes-page /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/remote-nodes-page-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-09-remote-nodes-page
+
+[probe] NP-01 started
+[probe] NP-01 Pass
+[probe] NP-02 started
+[probe] NP-02 Pass
+[probe] NP-03 started
+[probe] NP-03 Fail: epsilon: {"line":"epsilon and this node aren't paired yet. Pair them so their agents can work together.","tone":"warn","fix":"Pair again","dot":"Reachable now"}
+[probe] NP-11 started
+[probe] NP-11 Pass
+[probe] NP-04 started
+[probe] NP-04 Pass
+[probe] NP-05 started
+[probe] NP-05 Pass
+[probe] NP-13 started
+[probe] NP-13 Pass
+[probe] NP-06 started
+remote-nodes-page probe: Fail
+ReferenceError: nameTaken is not defined
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:603:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:110:19)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:589:3
+ ELIFECYCLE  Command failed with exit code 1.

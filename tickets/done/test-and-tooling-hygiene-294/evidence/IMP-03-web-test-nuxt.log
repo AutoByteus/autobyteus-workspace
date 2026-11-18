@@ -1,0 +1,9 @@
+# IMP-03-web-test-nuxt.log web unit and component suite
+# command: pnpm -C autobyteus-web test:nuxt --run
+# commit: 3a87152631 (later web commits: e1d5ded2e9 size/import style — components/settings + components/applications rerun 64 files 362 passed; probes are not in this suite)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ Test Files  666 passed (666)
+      Tests  4836 passed | 2 skipped (4838)
+exit 0

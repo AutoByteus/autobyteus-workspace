@@ -17,20 +17,48 @@ beforeEach(async () => {
 afterEach(() => { wrappers.splice(0).forEach(w => w.unmount()); vi.useRealTimers(); vi.restoreAllMocks(); });
 
 describe('NFS guide', () => {
-  it.each(['en', 'zh-CN'] as const)('retains only the advanced README link across descriptor states in %s', async locale => {
+  it.each(['en', 'zh-CN'] as const)('renders no guide anchors across descriptor states in %s', async locale => {
     await localizationRuntime.setPreference(locale);
     const notice = locale === 'en' ? 'Published installer: v0.1.0' : '已发布安装器：v0.1.0';
     for (const release of [nfsPublishedRelease, { ...nfsPublishedRelease, availableComputers: ['macos'] as const }, null, { ...nfsPublishedRelease, downloadUrl: 'http://unsafe' }]) {
       const w = render(release);
-      expect(w.findAll('a').map(a => a.attributes('href'))).toEqual(['https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md']);
-      expect(w.get('a').attributes('target')).toBe('_blank');
-      expect(w.get('a').attributes('rel')).toBe('noopener noreferrer');
-      for (const label of ['View release downloads', 'Review the pinned installer script', '查看版本下载', '查看固定版本的安装脚本']) {
+      expect(w.findAll('a')).toHaveLength(0);
+      for (const label of ['View release downloads', 'Review the pinned installer script', '查看版本下载', '查看固定版本的安装脚本', 'Public CLI documentation and advanced flags', '公开命令行文档和高级参数']) {
         expect(w.text()).not.toContain(label);
       }
       expect(w.text().includes(notice)).toBe(release !== null && release.downloadUrl.startsWith('https:'));
       expect(w.text()).toContain(locale === 'en' ? 'URL shown in the command' : '命令中网址对应的安装脚本');
     }
+  });
+  it.each(['en', 'zh-CN'] as const)('renders a concise unboxed tip and essential safety note in %s', async locale => {
+    await localizationRuntime.setPreference(locale);
+    const w = render();
+    const tip = w.get('[data-testid="nfs-folder-tip"]');
+    const note = w.get('[data-testid="nfs-safety-note"]');
+    const expected = locale === 'en' ? [
+      'Use the printed mount path as a normal folder.',
+      'Use only on a trusted private network',
+      'NFS is unencrypted—do not expose it to the internet.',
+      'If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying.',
+    ] : [
+      '将输出的挂载路径用作普通文件夹。',
+      '仅用于受信任的私有网络',
+      'NFS 流量不加密，请勿将服务暴露到公共互联网。',
+      '存储或网络离线时，文件操作及其他工作可能停滞。请恢复连接后重试。',
+    ];
+    const footer = [tip.text(), ...note.findAll('p').map(p => p.text())];
+    expect(footer).toEqual(expected);
+    if (locale === 'en') expect(footer.join(' ').split(/\s+/).length).toBeLessThanOrEqual(60);
+    expect(tip.classes().some(c => /^(bg-|border|rounded)/.test(c))).toBe(false);
+    expect(tip.element.nextElementSibling).toBe(note.element);
+    expect(note.element.nextElementSibling).toBeNull();
+    expect(w.findAll('code')).toHaveLength(9);
+    expect(w.text()).not.toContain('settings.components');
+    for (const removed of ['physical-host', 'testing remains deferred', 'Checksums do not replace', '独立客户端', '仍待进行']) {
+      expect(w.text()).not.toContain(removed);
+    }
+    expect(w.text()).toContain(locale === 'en' ? 'macOS 26+ with APFS' : 'macOS 26+');
+    expect(w.text()).toContain('Ubuntu 24.04');
   });
   it.each([null, { ...nfsPublishedRelease, installerSha256: '' }, { ...nfsPublishedRelease, downloadUrl: 'http://unsafe' }])(
     'disables invalid/unavailable installers and version notice but keeps prerequisite installed reference', async release => {
@@ -41,7 +69,7 @@ describe('NFS guide', () => {
         await w.get(`[data-testid="copy-nfs-${id}"]`).trigger('click');
       }
       expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
-      expect(w.findAll('a').map(a => a.attributes('href'))).toEqual(['https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md']);
+      expect(w.findAll('a')).toHaveLength(0);
       expect(w.text()).toContain('Run these only after installing');
       expect(w.findAll('code')).toHaveLength(7);
     },
@@ -50,10 +78,10 @@ describe('NFS guide', () => {
     const w = render({ ...nfsPublishedRelease, availableComputers: ['macos'] });
     expect(w.get('[data-testid="copy-nfs-macos"]').attributes('disabled')).toBeUndefined();
     expect(w.get('[data-testid="copy-nfs-linux"]').attributes('disabled')).toBeDefined();
-    expect(w.findAll('a').map(a => a.attributes('href'))).toEqual(['https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md']);
+    expect(w.findAll('a')).toHaveLength(0);
     expect(w.text()).toContain('Published installer: v0.1.0');
   });
-  it('copies exactly each displayed command with one success lifecycle and safe links', async () => {
+  it('copies exactly each displayed command with one success lifecycle', async () => {
     const w = render();
     expect(w.findAll('code')).toHaveLength(9);
     const labels = w.findAll('button').map(b => b.attributes('aria-label'));
@@ -66,9 +94,6 @@ describe('NFS guide', () => {
       expect(button.text()).toBe('Copied');
       expect(w.get('[role="status"]').text()).toContain('Command copied');
       await vi.advanceTimersByTimeAsync(2000); expect(w.get('[role="status"]').text()).toBe('');
-    }
-    for (const a of w.findAll('a')) {
-      expect(a.attributes('target')).toBe('_blank'); expect(a.attributes('rel')).toBe('noopener noreferrer');
     }
   });
   it('does not start a second clipboard request while one is pending', async () => {
@@ -112,7 +137,7 @@ describe('NFS guide', () => {
   it('renders actual Chinese messages and still copies exact command bytes', async () => {
     await localizationRuntime.setPreference('zh-CN');
     const w = render();
-    expect(w.text()).toContain('1. 安装命令行工具'); expect(w.text()).toContain('仍待进行');
+    expect(w.text()).toContain('1. 安装命令行工具'); expect(w.text()).toContain('NFS 流量不加密');
     expect(w.text()).not.toContain('settings.components');
     await w.get('[data-testid="copy-nfs-status"]').trigger('click'); await flushPromises();
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('~/.local/bin/autobyteus-nfs status');

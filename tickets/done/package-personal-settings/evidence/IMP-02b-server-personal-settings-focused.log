@@ -1,0 +1,101 @@
+# IMP-02b-server-personal-settings-focused
+# command: (cd autobyteus-server-ts) pnpm exec vitest run tests/unit/personal-settings tests/unit/agent-packages tests/integration/agent-team-definition/registered-package-team-update-graphql.integration.test.ts --no-watch --reporter=verbose
+# commit: 2c4ba2c51e
+# environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# date: 2026-11-09T08:25:47Z
+
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > captures edits of the four settings and backs up exactly the changed files (AC-002) 43ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > an unchanged package writes nothing: no record, no backup (contract V-C) 21ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > merges into an existing record; the personal avatar wins; a second capture changes nothing (idempotent) 54ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > keeps the latest 5 backups of a package 95ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > two backups in the same second do not overwrite each other 45ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > a malformed agent-config.json on disk: not captured, a warning names the file, the file is backed up; the rest is captured (MP-003) 30ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > download failure: the error is thrown and nothing is written (AC-004) 13ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > an unknown installed revision stops before any download, with the remedy (REQ-006) 13ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > backup failure: the error is thrown, no partial backup, no record 23ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > PackageEditCapture.captureAndBackUp > personal settings write failure: the error is thrown; the backup stays 21ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > GitHubAgentPackageUpdates with capture > download failure stops the update before staging; the package is marked failed 26ms
+ ✓ tests/unit/agent-packages/package-edit-capture.test.ts > GitHubAgentPackageUpdates with capture > a staging failure after capture keeps the record and backup; effective values are unchanged; the next update succeeds 59ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > agents (shared, team-local, Org-owned; built-in; the user's own) > a personal-only save writes no package file; the effective definition has the personal tool (AC-001) 33ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > agents (shared, team-local, Org-owned; built-in; the user's own) > a description change with a personal tool writes the description; the file keeps the base tools 51ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > agents (shared, team-local, Org-owned; built-in; the user's own) > reset removes the field; the effective value is the base again (AC-005) 30ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > agents (shared, team-local, Org-owned; built-in; the user's own) > team-local and Org-owned agents use personal settings; an Org-owned personal-only save now succeeds (R-7) 31ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > agents (shared, team-local, Org-owned; built-in; the user's own) > a built-in agent keeps its tools personally; the user's own agent is written to its files as before 39ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > Teams > an avatar-only save writes no file; the avatar is personal 23ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > Teams > a personal avatar with a description change: team-config.json keeps the base avatar (MP-001) 32ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > Teams > admission (the GraphQL lists and run starts) reads the effective Team 14ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > Orgs > an avatar-only save from the editor payload writes no file; the avatar is personal (MP-002) 59ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > Orgs > a personal avatar with a member change: org-config.json keeps the base avatar 57ms
+ ✓ tests/unit/personal-settings/personal-settings-write-forms.test.ts > Orgs > reset of the avatar returns to the package's 25ms
+ ✓ tests/unit/agent-packages/agent-package-github-update-state.test.ts > AgentPackageService GitHub update state > a check started before an update never overwrites the update's installed revision (AF-05, AR-003) 105ms
+ ✓ tests/unit/agent-packages/agent-package-github-update-state.test.ts > AgentPackageService GitHub update state > a check queued behind an update reads the record the update wrote 43ms
+ ✓ tests/unit/agent-packages/agent-package-github-update-state.test.ts > AgentPackageService GitHub update state > keeps a known update available after a failed later check (REQ-006) 16ms
+ ✓ tests/unit/agent-packages/agent-package-github-update-state.test.ts > AgentPackageService GitHub update state > an up-to-date package cannot be updated 10ms
+ ✓ tests/unit/agent-packages/agent-package-github-update-state.test.ts > AgentPackageService GitHub update state > projects the update facts of GitHub packages only 10ms
+ ✓ tests/unit/agent-packages/agent-package-github-update-state.test.ts > AgentPackageService GitHub update state > tells the listener after a check, a failed update and a removal; a throwing listener never fails the action 32ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > lists the built-in package and linked local packages with package ids 16ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > rejects duplicate GitHub imports before reinstalling 11ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > rolls back a managed GitHub import when cache refresh fails after side effects begin 16ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > restores a managed GitHub package when removal refresh fails 23ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > reloads a local package by validating the root and refreshing caches 11ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > marks managed GitHub packages with available updates after a metadata check 24ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > updates a managed GitHub package and records the installed revision 18ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > rolls back a managed GitHub update when cache refresh fails 32ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > marks update failed when GitHub revision metadata fetch fails 18ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > marks update failed when package replacement staging fails before returning 18ms
+ ✓ tests/unit/agent-packages/agent-package-service.test.ts > AgentPackageService > rejects update attempts for local packages 11ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > scope (contract §8) > applies to registered packages and to the built-in agents, not to the user's own definitions 2ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > apply (contract §5) > returns the base value unchanged when there is no record (V-D) 1ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > apply (contract §5) > removes, then appends added names; replaces avatar and runtime/model as one unit 8ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > apply (contract §5) > never applies to a definition outside the scope, even with a record under its key 6ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > apply (contract §5) > applies avatar and runtime/model to Teams 7ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > edits and resets (contract §6) > stores differences from the base only, and writes nothing for a save equal to the base 7ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > edits and resets (contract §6) > removes a field when the value returns to the base, and the record when it becomes empty 17ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > edits and resets (contract §6) > leaves an absent field as it is, and drops a runtime/model that does not name both 19ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > edits and resets (contract §6) > resets one setting; refuses tools on a Team 14ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > edits and resets (contract §6) > announces only the lists of the changed kinds 6ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > capture of package-file edits (contract §7.2, V-C) > turns the user's edits on the installed revision into a record, applied on top of the new revision 8ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > capture of package-file edits (contract §7.2, V-C) > yields nothing for an unchanged file and keeps an existing record (safe at every update) 7ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > capture of package-file edits (contract §7.2, V-C) > merges lists into the record and never overwrites an existing personal avatar or runtime/model 13ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > capture of package-file edits (contract §7.2, V-C) > is idempotent: disk [a, c], installed [a, b] → +c −b, the same again on the next update 7ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > the file (contract §2, §4) > is 2-space JSON with a trailing newline 8ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > the file (contract §2, §4) > an unreadable file means no personal settings, a warning, and a copy kept before the first rewrite (AC-007) 12ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > the file (contract §2, §4) > keeps entries it skips when it writes another record 8ms
+ ✓ tests/unit/personal-settings/personal-settings-service.test.ts > the file (contract §2, §4) > without a publisher, changes are written and not announced 6ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > rejects a local import whose skill name exists in tiers 1–3, with nothing changed 9ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > rejects a local import whose only duplicate is an Agent Org skill (SR-018), with nothing changed 7ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > rejects two copies of one name inside the incoming package 7ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > accepts a package whose only duplicate is in a runtime default folder; the package copy wins 16ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > deletes a rejected GitHub download and records nothing 6ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > rolls back a GitHub update whose new revision adds a duplicate; record and status are unchanged 14ms
+ ✓ tests/unit/agent-packages/agent-package-skill-name-validation.test.ts > AgentPackageService skill-name validation (REQ-023) > R-3: a rejected reload keeps the registration; the catalog and banner show the on-disk duplicate 14ms
+ ✓ tests/integration/agent-team-definition/registered-package-team-update-graphql.integration.test.ts > registered package Team save through GraphQL > saves the default runtime/model as a personal setting and serves it afterwards; a stale revision conflicts 54ms
+ ✓ tests/unit/agent-packages/agent-package-registry-store.test.ts > AgentPackageRegistryStore > persists linked local and managed GitHub package records 25ms
+ ✓ tests/unit/agent-packages/agent-package-registry-store.test.ts > AgentPackageRegistryStore > normalizes existing GitHub records without revision metadata into unknown state 1ms
+ ✓ tests/unit/agent-packages/agent-package-root-settings-store.test.ts > AgentPackageRootSettingsStore > filters the built-in applications root out of configured additional roots 4ms
+ ✓ tests/unit/agent-packages/agent-package-root-settings-store.test.ts > AgentPackageRootSettingsStore > keeps a registered root listed while its folder is missing, so Settings can report it 2ms
+ ✓ tests/unit/agent-packages/agent-package-root-settings-store.test.ts > AgentPackageRootSettingsStore > rejects registering the built-in applications root as an additional package root 3ms
+ ✓ tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > validates package roots and counts shared agents, team-local agents, and teams 5ms
+ ✓ tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > rejects directories that do not contain package content 1ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > personal setting keys (contract §3.1, V-A) > builds and splits keys at the first ':' (IDs may contain ':') 1ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > personal setting keys (contract §3.1, V-A) > refuses an unknown kind, an empty ID and a key without a separator 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > keeps the valid records of the contract's sample 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only a field not allowed on its kind 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only an empty list 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only a duplicated list 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only the same name added and removed 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only an incomplete launch config 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only a launch config with an extra key 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only a non-object record 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips a record with only an empty avatar 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > tolerant record reader (contract §4, V-B) > skips only the invalid fields and both lists of an overlapping kind 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > record shape > orders fields as the file does and drops empty lists 0ms
+ ✓ tests/unit/personal-settings/personal-setting-record.test.ts > record shape > allows tools and skills on agents only 0ms
+ ✓ tests/unit/agent-packages/github-repository-source.test.ts > normalizeGitHubRepositorySource > normalizes a repository homepage URL 1ms
+ ✓ tests/unit/agent-packages/github-repository-source.test.ts > normalizeGitHubRepositorySource > accepts github.com input without a scheme and strips .git plus extra path segments 0ms
+ ✓ tests/unit/agent-packages/github-repository-source.test.ts > normalizeGitHubRepositorySource > rejects unsupported hosts 0ms
+ ✓ tests/unit/agent-packages/github-agent-package-installer.test.ts > GitHubAgentPackageInstaller archive extraction > uses tar.exe first on Windows and falls back to plain tar when the first command is unavailable 1ms
+ ✓ tests/unit/agent-packages/github-agent-package-installer.test.ts > GitHubAgentPackageInstaller archive extraction > builds a single tar command on non-Windows platforms 0ms
+ Test Files  13 passed (13)
+      Tests  92 passed (92)
+# exit: 0

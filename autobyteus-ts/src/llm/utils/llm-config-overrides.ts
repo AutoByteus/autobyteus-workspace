@@ -130,6 +130,37 @@ function readUnknownTopLevelExtras(rawConfig: RawLlmConfigOverrides): Record<str
   );
 }
 
+/**
+ * Cuts a raw stored run config to what a model declares. Standard and reserved keys keep today's
+ * handling (they are typed config, not provider settings). A settings key survives only when
+ * `declaredSettingKeys` names it, whether stored at the top level or inside the `extra_params` /
+ * `extraParams` container, and is written as a top-level key: the result has no container. A
+ * top-level value wins over a container value, as `applyRawLlmConfigOverrides` resolves them.
+ * Returns `null` when nothing remains.
+ */
+export function projectRawLlmConfig(
+  rawConfig: RawLlmConfigOverrides | null | undefined,
+  declaredSettingKeys: ReadonlySet<string>,
+): RawLlmConfigOverrides | null {
+  if (!rawConfig) {
+    return null;
+  }
+
+  const projected: RawLlmConfigOverrides = {};
+  for (const [key, value] of Object.entries(rawConfig)) {
+    if (EXTRA_PARAM_CONTAINER_KEYS.has(key)) continue;
+    if (CONSUMED_RAW_KEYS.has(key) || declaredSettingKeys.has(key)) {
+      projected[key] = value;
+    }
+  }
+  for (const [key, value] of Object.entries(readExtraParamsContainer(rawConfig))) {
+    if (declaredSettingKeys.has(key) && !hasOwn(projected, key)) {
+      projected[key] = value;
+    }
+  }
+  return Object.keys(projected).length > 0 ? projected : null;
+}
+
 export function applyRawLlmConfigOverrides(
   baseConfig: LLMConfig,
   rawConfig: RawLlmConfigOverrides | null | undefined,

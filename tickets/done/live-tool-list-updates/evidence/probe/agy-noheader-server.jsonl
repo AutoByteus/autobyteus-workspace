@@ -1,0 +1,24 @@
+{"t":"2026-10-29T09:11:42.904Z","kind":"listening","port":39936}
+{"t":"2026-10-29T09:11:46.454Z","kind":"rpc","methods":["server/discover"],"names":[null],"accept":"application/json, text/event-stream","session":null,"ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:46.456Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"application/json, text/event-stream","session":null,"ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:46.457Z","kind":"http","http":"GET","accept":"text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:46.458Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:46.458Z","kind":"http","http":"GET","accept":"","session":null,"ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:46.458Z","kind":"http","http":"GET","accept":"","session":null,"ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:46.459Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:51.657Z","kind":"rpc","methods":["tools/call"],"names":["probe_alpha"],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:53.593Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T09:11:53.594Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:53.594Z","kind":"notify-on-post"}
+{"t":"2026-10-29T09:11:53.596Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:56.620Z","kind":"rpc","methods":["notifications/roots/list_changed"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:11:56.622Z","kind":"rpc","methods":["notifications/roots/list_changed"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:12:00.906Z","kind":"rpc","methods":["tools/call"],"names":["probe_beta"],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:12:03.229Z","kind":"notify","reason":"remove-alpha","getStreams":1,"tools":["probe_beta"]}
+{"t":"2026-10-29T09:12:03.229Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:12:03.229Z","kind":"notify-on-post"}
+{"t":"2026-10-29T09:12:03.231Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:12:06.253Z","kind":"rpc","methods":["notifications/roots/list_changed"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:12:06.254Z","kind":"rpc","methods":["notifications/roots/list_changed"],"names":[null],"accept":"application/json, text/event-stream","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f","ua":"Go-http-client/1.1"}
+{"t":"2026-10-29T09:12:13.683Z","kind":"http","http":"DELETE","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f"}
+{"t":"2026-10-29T09:12:13.684Z","kind":"http","http":"GET-closed","session":"5e6d40ce-ed7c-4783-9a06-83f00ee9da8f"}

@@ -30,9 +30,9 @@ live.describe('LlmStreamingResponseHandler (Claude live)', () => {
     const toolsSchema = [formatter.provide(toolDef!)];
 
     const llm = new AnthropicLLM(new LLMModel({
-      name: 'claude-sonnet-4.6',
-      value: 'claude-sonnet-4-6',
-      canonicalName: 'claude-sonnet-4.6',
+      name: 'claude-haiku-5-5',
+      value: 'claude-haiku-5-5',
+      canonicalName: 'claude-haiku-5-5',
       provider: LLMProvider.ANTHROPIC
     }), new LLMConfig());
 

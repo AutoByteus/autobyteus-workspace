@@ -40,8 +40,8 @@
           v-model="query"
           type="text"
           class="w-full border-0 bg-transparent p-0 text-[0.8125rem] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0"
-          :placeholder="$t('chat.switch.search')"
-          :aria-label="$t('chat.switch.search')"
+          :placeholder="noOrgs ? $t('projectsTree.targetSearch') : $t('chat.switch.search')"
+          :aria-label="noOrgs ? $t('projectsTree.targetSearch') : $t('chat.switch.search')"
           role="combobox"
           aria-autocomplete="list"
           :aria-expanded="open ? 'true' : 'false'"
@@ -113,7 +113,9 @@ const props = withDefaults(defineProps<{
   currentKey: string
   /** While a run is starting. */
   disabled?: boolean
-}>(), { avatarUrl: null, disabled: false })
+  /** projects-left-navigation (DEC-006): a run under a Project is an Agent or an Agent Team; Orgs start on their own page. */
+  noOrgs?: boolean
+}>(), { avatarUrl: null, disabled: false, noOrgs: false })
 const emit = defineEmits<{ (event: 'choose', choice: RunTargetChoice): void }>()
 
 const { t } = useLocalization()
@@ -148,7 +150,7 @@ const options = computed<RunTargetOption[]>(() => {
       key: `team:${team.id}`, kind: 'team' as const, id: team.id, name: team.name, initials: initialsFor(team.name),
       description: t('chat.targets.teamDescription', { count: team.nodes.length, coordinator: team.coordinatorMemberName }),
     })),
-    ...orgStore.definitions.map((org) => ({
+    ...(props.noOrgs ? [] : orgStore.definitions).map((org) => ({
       key: `org:${org.id}`, kind: 'org' as const, id: org.id, name: org.name, initials: initialsFor(org.name),
       description: org.description ?? '',
     })),

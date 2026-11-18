@@ -1,0 +1,22 @@
+# Hyperlink cells (AR-001), generated fixture only: probes/sheetjs-hyperlink.cjs, 2026-10-24
+# xlsx 0.20.3 from https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz, downloaded into an isolated dir; computed integrity:
+sha512-oLDq3jw7AcLqKWH2AhCpVTZl8mf6X2YReP+Neh0SJUzV/BdZYjth94tG5toiMB1PPrYtxOCfaoUCkvtuH+3AJA==  (= the trial lockfile entry in SD-05)
+
+0.20.3 xlsx RAW: <table><tr><td data-t="s" data-v="site" id="sjs-A1"><a href="https://example.com/a?b=1&amp;c=2">site</a></td><td data-t="s" data-v="evil" id="sjs-B1"><a href="javascript:alert(1)">evil</a></td><td data-t="s" data-v="mail" id="sjs-C1"><a href="mailto:x@example.com">mail</a></td></tr></table>
+  tables-only : <table><tbody><tr><td data-t="s" data-v="site">site</td><td data-t="s" data-v="evil">evil</td><td data-t="s" data-v="mail">mail</td></tr></tbody></table>
+  design (no data-*): <table><tbody><tr><td>site</td><td>evil</td><td>mail</td></tr></tbody></table>
+  with a[href]: <table><tbody><tr><td data-t="s" data-v="site"><a href="https://example.com/a?b=1&amp;c=2">site</a></td><td data-t="s" data-v="evil"><a>evil</a></td><td data-t="s" data-v="mail"><a href="mailto:x@example.com">mail</a></td></tr></tbody></table>
+0.20.3 biff8 RAW: <table><tr><td data-t="s" data-v="site" id="sjs-A1"><a href="https://example.com/a?b=1&amp;c=2">site</a></td><td data-t="s" data-v="evil" id="sjs-B1"><a href="javascript:alert(1)">evil</a></td><td data-t="s" data-v="mail" id="sjs-C1"><a href="mailto:x@example.com">mail</a></td></tr></table>
+  tables-only : <table><tbody><tr><td data-t="s" data-v="site">site</td><td data-t="s" data-v="evil">evil</td><td data-t="s" data-v="mail">mail</td></tr></tbody></table>
+  design (no data-*): <table><tbody><tr><td>site</td><td>evil</td><td>mail</td></tr></tbody></table>
+  with a[href]: <table><tbody><tr><td data-t="s" data-v="site"><a href="https://example.com/a?b=1&amp;c=2">site</a></td><td data-t="s" data-v="evil"><a>evil</a></td><td data-t="s" data-v="mail"><a href="mailto:x@example.com">mail</a></td></tr></tbody></table>
+0.18.5 xlsx RAW: <table><tr><td data-t="s" data-v="site" id="sjs-A1"><a href="https://example.com/a?b=1&amp;c=2">site</a></td><td data-t="s" data-v="evil" id="sjs-B1"><a href="javascript:alert(1)">evil</a></td><td data-t="s" data-v="mail" id="sjs-C1"><a href="mailto:x@example.com">mail</a></td></tr></table>
+0.18.5 biff8 RAW: <table><tr><td data-t="s" data-v="site" id="sjs-A1"><a href="https://example.com/a?b=1&c=2">site</a></td><td data-t="s" data-v="evil" id="sjs-B1"><a href="javascript:alert(1)">evil</a></td><td data-t="s" data-v="mail" id="sjs-C1"><a href="mailto:x@example.com">mail</a></td></tr></table>
+
+=> Both versions wrap hyperlinked cells in <a href=Target>, including javascript: targets (base: clicking runs script; no CSP).
+=> DOMPurify with a[href] would keep https/mailto and strip javascript:; the table-only allowlist keeps only the text; ALLOW_DATA_ATTR:false also drops data-t/data-v.
+
+# Where a click goes on base (Read)
+- Desktop: autobyteus-web/electron/shell/workspace-shell-window.ts L52-59 prevents every will-navigate and denies window.open -> an http(s)/mailto spreadsheet link does nothing; a javascript: href runs in the page (not a navigation).
+- Mobile web (phone browser): a plain <a href> navigates the app's tab away to the target.
+- Styling: Tailwind 3 preflight (nuxt.config.ts L240, no preflight override in tailwind.config.js) sets a { color: inherit; text-decoration: inherit } -> links already look like the cell text; only the pointer cursor differs.

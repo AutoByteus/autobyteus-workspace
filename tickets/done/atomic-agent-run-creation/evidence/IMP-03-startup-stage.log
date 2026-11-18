@@ -1,0 +1,12 @@
+# IMP-03
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/server-runtime-app-data-migration-gate.test.ts tests/architecture/application-framework-boundaries.test.ts --no-watch --reporter=verbose
+# Commit: 93fa105819
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ ✓ tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority 740ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED 49ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > builds and listens only after readable identity status SUCCEEDED_WITH_WARNINGS 2ms
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio app-data migration startup > cancels during removeEmpty without concurrent cleanup or subsequent startup stages 52ms
+ Test Files  2 passed (2)
+      Tests  41 passed (41)

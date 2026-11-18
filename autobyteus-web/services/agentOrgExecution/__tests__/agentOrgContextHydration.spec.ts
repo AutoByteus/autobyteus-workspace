@@ -1,14 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type {
-  AgentOrgExecutionEventDto,
-  AgentOrgExecutionViewDto,
-} from '@autobyteus/collaboration-stream-contracts'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore'
-import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
-import { AgentStatus } from '~/types/agent/AgentStatus'
-import { projectAgentOrgHistoryRows } from '~/utils/agentOrgHistoryRows'
 
 const mocks = vi.hoisted(() => ({
   query: vi.fn(),
@@ -31,25 +24,6 @@ import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 import { taskBearingView } from './taskBearingOrgFixture'
 import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 
-const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem => ({
-  stableKey: 'agent_org:org-run',
-  rootSubjectKind: 'agent_org',
-  rootRunId: 'org-run',
-  createdAt: view.execution_tree.createdAt,
-  archivedAt: null,
-  isActive: true,
-  summary: 'Restored Org',
-  executionTree: view.execution_tree,
-  closedTaskExecutions: view.closed_task_executions,
-})
-
-const offlineEvent = (memberAddress: string, agentRunId: string): AgentOrgExecutionEventDto => ({
-  kind: 'agent_presentation', member_address: memberAddress, agent_run_id: agentRunId,
-  message: { type: 'AGENT_STATUS', payload: {
-    status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-  } },
-} as AgentOrgExecutionEventDto)
-
 describe('staged AgentOrg context hydration and publication', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -59,20 +33,24 @@ describe('staged AgentOrg context hydration and publication', () => {
     } } }))
   })
 
-  it('hydrates configured and fresh task runs with shared placement addresses and exact run identities', async () => {
+  it('a focused delegated row stages nothing through the Org: it is read as its own run (autobyteus-461 rule 2; SDV-03)', async () => {
+    await hydrateAgentOrgExecutionContext({ orgRunId: 'org-run', view: taskBearingView(), focus: { kind: 'agent_execution', agentRunId: 'agent-worker-task' } })
+    const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
+    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(0)
+    expect(queried(GetAgentOrgMemberFileChanges)).toHaveLength(0)
+  })
+
+  it('builds the Org\'s own agents, each at its address, and stages only the focused one (autobyteus-358; autobyteus-461 rule 2)', async () => {
     const context = await hydrateAgentOrgExecutionContext({
       orgRunId: 'org-run',
       view: taskBearingView(),
+      focus: { kind: 'agent_execution', agentRunId: 'agent-worker-configured' },
     })
 
     const entries = context.listAgentContextEntries()
-    expect(entries).toHaveLength(7)
-    expect(entries.filter((entry) => entry.memberAddress === '/worker').map((entry) => entry.agentRunId))
-      .toEqual(['agent-worker-configured', 'agent-worker-task'])
-    expect(entries.filter((entry) => entry.memberAddress === '/team/lead').map((entry) => entry.agentRunId))
-      .toEqual(['agent-lead-configured', 'agent-task-lead'])
-    expect(context.executionTree.rootOrg.taskExecutions.map((task) => task.delegatorAgentRunId))
-      .toEqual(['agent-director', 'agent-director'])
+    // A run the Org delegated is its own run: the Org's view holds none of its agents.
+    expect(entries.map((entry) => entry.agentRunId))
+      .toEqual(['agent-director', 'agent-worker-configured', 'agent-lead-configured', 'agent-team-worker-configured'])
     expect(context.changeSequence).toBe(8)
 
     context.select('/team')
@@ -82,15 +60,14 @@ describe('staged AgentOrg context hydration and publication', () => {
       context: { state: { runId: 'agent-lead-configured' } },
     })
     const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
-    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(7)
-    expect(queried(GetAgentOrgMemberFileChanges)).toHaveLength(7)
-    expect(queried(GetAgentOrgMemberFileChanges).map(([options]) => options.variables)).toContainEqual({
-      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
-    })
+    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(1)
+    expect(queried(GetAgentOrgMemberFileChanges).map(([options]) => options.variables)).toEqual([{
+      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-configured',
+    }])
     expect(queried(GetRunFileChanges)).toHaveLength(0)
     expect(mocks.query).toHaveBeenCalledWith(expect.objectContaining({
       variables: {
-        orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+        orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-configured',
       },
     }))
   })
@@ -110,10 +87,10 @@ describe('staged AgentOrg context hydration and publication', () => {
     }))
 
     const staged = await stageAgentOrgExecutionContext({
-      source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
+      source: 'inspection', orgRunId: 'org-run', view: taskBearingView(), focus: '/director',
     })
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
-    staged.commit()
+    expect(staged.commit()).toBe('agent-director')
 
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([
       expect.objectContaining({ kind: 'tool', invocationId: 'tool-1', status: 'success' }),
@@ -140,38 +117,39 @@ describe('staged AgentOrg context hydration and publication', () => {
     })
     const paths = (runId: string) => useRunFileChangesStore().getArtifactsForRun(runId).map((entry) => entry.path)
 
-    it.each([true, false])('commits every member artifact list on publication, including nested Team members (active=%s; AC-003, AC-004)', async (active) => {
+    it.each([true, false])('commits the focused member artifact list on publication, a mounted Team member included; no other (active=%s; AC-003)', async (active) => {
       serve()
-      const view = structuredClone(taskBearingView())
-      view.is_active = active
-      if (!active) view.agent_statuses = []
-      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view })
-      expect(paths('agent-director')).toEqual([])
+      const base = structuredClone(taskBearingView())
+      const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
+      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view,
+        focus: { kind: 'agent_execution', agentRunId: 'agent-lead-configured' } })
+      expect(paths('agent-lead-configured')).toEqual([])
 
-      staged.commit()
+      expect(staged.commit()).toBe('agent-lead-configured')
 
+      expect(paths('agent-lead-configured')).toEqual(['/outputs/1.png', '/outputs/2.png'])
       for (const { agentRunId } of staged.context.listAgentContextEntries()) {
-        expect(paths(agentRunId)).toEqual(['/outputs/1.png', '/outputs/2.png'])
+        if (agentRunId !== 'agent-lead-configured') expect(paths(agentRunId)).toEqual([])
       }
-      expect(paths('agent-task-lead')).toEqual(['/outputs/1.png', '/outputs/2.png'])
     })
 
     it('writes no artifacts when member activity changed before publication', async () => {
       serve()
-      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView() })
+      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView(), focus: '/director' })
       useAgentActivityStore().upsertSystemInstructionActivity('agent-director', {
         kind: 'system_instruction', activityId: 'live', content: 'live', timestamp: new Date(),
       })
 
       expect(() => staged.commit()).toThrow("AgentOrg activity changed before 'org-run' hydration could commit.")
       expect(paths('agent-director')).toEqual([])
-      expect(paths('agent-task-lead')).toEqual([])
+      expect(paths('agent-lead-configured')).toEqual([])
     })
 
-    it('fails staging when one member artifacts fail, as for its projection (AC-007)', async () => {
-      serve('agent-task-lead')
-      await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView() }))
-        .rejects.toThrow('artifacts unavailable for agent-task-lead')
+    it('fails staging when the focused member artifacts fail, as for its projection (AC-007)', async () => {
+      serve('agent-lead-configured')
+      await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
+        focus: { kind: 'agent_execution', agentRunId: 'agent-lead-configured' } }))
+        .rejects.toThrow('artifacts unavailable for agent-lead-configured')
       expect(paths('agent-director')).toEqual([])
     })
   })
@@ -183,7 +161,7 @@ describe('staged AgentOrg context hydration and publication', () => {
     director.launchConfiguration.workspaceRootPath = '/existing/workspace'
     mocks.resolveWorkspaceMetadataByRootPath.mockResolvedValue(null)
 
-    const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view })
+    const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view, focus: null })
 
     expect(staged.context.isActive).toBe(true)
     expect(mocks.resolveWorkspaceMetadataByRootPath).toHaveBeenCalledWith('/existing/workspace')
@@ -191,91 +169,26 @@ describe('staged AgentOrg context hydration and publication', () => {
     expect(staged.context.getAgentContext('agent-director')!.config.workspaceId).toBeNull()
   })
 
-  it('rejects one unavailable exact projection without publishing any staged activities', async () => {
+  it('rejects an unavailable focused projection without publishing any staged activities', async () => {
     mocks.query.mockImplementation(async ({ variables }) => ({ data: { getAgentOrgMemberRunProjection:
-      variables.agentRunId === 'agent-task-worker' ? null : {
+      variables.agentRunId === 'agent-worker-configured' ? null : {
         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
         conversation: [], hasEarlierActiveTraceEvents: false,
         activities: [{ kind: 'tool', invocationId: 'staged-tool', toolName: 'read_file', status: 'success', result: 'done', ts: 1 }],
       },
     } }))
-    await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView() }))
-      .rejects.toThrow("Projection unavailable for 'agent-task-worker'")
+    await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
+      focus: { kind: 'agent_execution', agentRunId: 'agent-worker-configured' } }))
+      .rejects.toThrow("Projection unavailable for 'agent-worker-configured'")
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
-    expect(useAgentActivityStore().getActivities('agent-task-lead')).toEqual([])
-  })
-
-  it('projects an idle-shutdown task Agent as offline while its hierarchy row stays visible', async () => {
-    const view = taskBearingView()
-    const context = await hydrateAgentOrgExecutionContext({
-      orgRunId: 'org-run',
-      view,
-    })
-    context.getAgentContext('agent-worker-task')!.state.currentStatus = AgentStatus.Idle
-    const run = liveHistoryRun(view)
-    const taskRowStatus = () => {
-      const row = projectAgentOrgHistoryRows({
-        run,
-        context,
-        isTeamExpanded: () => true,
-      }).map((item) => item.row)
-        .find((candidate) => candidate.kind === 'task_agent'
-          && candidate.agentRunId === 'agent-worker-task')
-      return row?.kind === 'task_agent' ? row.status : undefined
-    }
-
-    expect(taskRowStatus()).toBe(AgentStatus.Idle)
-    expect(context.applyEvent(9, offlineEvent('/worker', 'agent-worker-task'))).toBe('applied')
-
-    expect(context.executionTree.rootOrg.taskExecutions[0]).toMatchObject({
-      agentRunId: 'agent-worker-task',
-      delegatorAgentRunId: 'agent-director',
-    })
-    expect(context.executionTree.rootOrg.taskExecutions[0]).not.toHaveProperty('settledAt')
-    expect(context.getAgentContext('agent-worker-task')!.state.currentStatus).toBe(AgentStatus.Offline)
-    expect(taskRowStatus()).toBe(AgentStatus.Offline)
-    expect(context.changeSequence).toBe(9)
-    expect(context.phase).toBe('live')
-    expect(context.error).toBeNull()
-  })
-
-  it('projects every Agent in an idle-shutdown task Team to offline without removing the execution', async () => {
-    const view = taskBearingView()
-    const context = await hydrateAgentOrgExecutionContext({
-      orgRunId: 'org-run',
-      view,
-    })
-
-    expect(context.applyEvent(9, offlineEvent('/team/lead', 'agent-task-lead'))).toBe('applied')
-    expect(context.applyEvent(10, offlineEvent('/team/worker', 'agent-task-worker'))).toBe('applied')
-
-    expect(context.executionTree.rootOrg.taskExecutions[1]).toMatchObject({ teamRunId: 'team-task' })
-    expect(context.getAgentContext('agent-task-lead')!.state.currentStatus).toBe(AgentStatus.Offline)
-    expect(context.getAgentContext('agent-task-worker')!.state.currentStatus).toBe(AgentStatus.Offline)
-    expect(context.phase).toBe('live')
-    expect(context.error).toBeNull()
+    expect(useAgentActivityStore().getActivities('agent-lead-configured')).toEqual([])
   })
 })
 
-async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source'>) {
-  const staged = await stageAgentOrgExecutionContext({ ...input, source: 'stream' })
+async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source' | 'focus'>
+  & { focus?: Parameters<typeof stageAgentOrgExecutionContext>[0]['focus'] }) {
+  const staged = await stageAgentOrgExecutionContext({ focus: null, ...input, source: 'stream' })
   staged.commit()
   return staged.context
 }
 
-
-it('exposes the exact selected Org task source root even with no metadata projection', async () => {
-  const view = JSON.parse(JSON.stringify(taskBearingView()));
-  view.is_active = false;
-  view.execution_tree.rootOrg.members[0].launchConfiguration.workspaceRootPath = '/parent';
-  // The copy runs from its own recorded source, not from what its configured placement says now (REQ-001).
-  view.execution_tree.rootOrg.members[1].launchConfiguration.workspaceRootPath = '/placement-now';
-  view.execution_tree.rootOrg.taskExecutions[0].source.launchConfiguration.workspaceRootPath = '/child';
-  mocks.resolveWorkspaceMetadataByRootPath.mockResolvedValue(null);
-  mocks.query.mockImplementation(async ({ variables }: any) => ({ data: { getAgentOrgMemberRunProjection: {
-    ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-  } } }));
-  const { context } = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view });
-  context.select({ kind: 'agent_execution', agentRunId: 'agent-worker-task' });
-  expect(context.selectedTarget()).toMatchObject({ workspaceRootPath: '/child', context: { config: { workspaceMetadata: null, workspaceId: null } } });
-});

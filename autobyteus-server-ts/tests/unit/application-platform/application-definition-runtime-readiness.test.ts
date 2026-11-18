@@ -39,6 +39,11 @@ describe("ApplicationDefinitionRuntimeReadiness static adapter ownership", () =>
       ],
     });
     expect(readiness.isApplicationReady("app-a")).toBe(false);
+    // autobyteus-296 (AC-006): one owner for the setup text; the quarantine detail is the startup error's message.
+    expect(readiness.getSetupRequiredDetail("app-a")).toBe(
+      "Application setup is required: app-a: application tool 'open_tab' collides with a platform/static Agent Tools MCP adapter",
+    );
+    expect(readiness.getSetupRequiredDetail("other-app")).toBeNull();
     // SR-009: application-package definitions are read on demand, so readiness does not reload the agent packages.
     expect(reloadAgents).not.toHaveBeenCalled();
     expect(reloadTeams).not.toHaveBeenCalled();

@@ -1,0 +1,4 @@
+shown, after load: ok
+minimized, navigate #0: first=UnknownVizError afterNudge=HANG>3s
+minimized, navigate #1: first=UnknownVizError afterNudge=UnknownVizError
+minimized, navigate #2: first=UnknownVizError afterNudge=HANG>3s

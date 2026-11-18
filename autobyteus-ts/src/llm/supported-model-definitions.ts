@@ -53,8 +53,14 @@ const openaiAstraReasoningSchema = createOpenAIReasoningSchema(['low', 'medium',
 
 const roundCatalogPrice = (value: number): number => Number(value.toFixed(10));
 
-const createOpenAILongContextPricing = (input: number, output: number, pricingEffectiveDate: string): TokenPricingConfig => {
-  const cacheRead = roundCatalogPrice(input * 0.1);
+/** Cache read defaults to 10% of input; a model with another published cache-read price passes it explicitly. */
+const createOpenAILongContextPricing = (
+  input: number,
+  output: number,
+  pricingEffectiveDate: string,
+  options: { cachedInputReadTokenPricing?: number } = {},
+): TokenPricingConfig => {
+  const cacheRead = roundCatalogPrice(options.cachedInputReadTokenPricing ?? input * 0.1);
   const cacheWrite = roundCatalogPrice(input * 1.25);
   return pricing(input, output, {
     pricingEffectiveDate,
@@ -150,6 +156,14 @@ const grokReasoningSchema = new ParameterSchema([
 
 
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
+  {
+    name: 'gpt-6.1-terra', value: 'gpt-6.1-terra', provider: LLMProvider.OPENAI, llmClass: OpenAILLM,
+    canonicalName: 'gpt-6.1-terra', staticMetadata: createStaticModelMetadata(1_050_000, 922_000, 128_000, 'https://developers.openai.com/api/docs/models/gpt-6.1-terra', '2026-10-30'),
+    defaultConfig: new LLMConfig({
+      pricingConfig: createOpenAILongContextPricing(1, 5, '2026-10-30', { cachedInputReadTokenPricing: 0.05 }),
+    }),
+    configSchema: openaiGpt56ReasoningSchema,
+  },
   {
     name: 'gpt-6-astra', value: 'gpt-6-astra', provider: LLMProvider.OPENAI, llmClass: OpenAILLM,
     canonicalName: 'gpt-6-astra', staticMetadata: createStaticModelMetadata(1_050_000, null, 128_000, 'https://developers.openai.com/api/docs/models/gpt-6-astra', '2026-09-22'),

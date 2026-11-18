@@ -1,0 +1,17 @@
+# Case: API-E01 rerun: teammate-delivery-task-closure-race
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  3 passed (3)'
+
+## race-run2.log
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 33134ms
+     ✓ agent root: Task closure during and before a teammate message save; the root keeps working and restores its history  11313ms
+     ✓ team root: Task closure during and before a teammate message save; the root keeps working and restores its history  10752ms
+     ✓ org root: Task closure during and before a teammate message save; the root keeps working and restores its history  10554ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:06:04
+   Duration  41.75s (transform 6.03s, setup 49ms, import 8.18s, tests 33.13s, environment 0ms)
+

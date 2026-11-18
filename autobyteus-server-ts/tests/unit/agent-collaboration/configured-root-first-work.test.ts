@@ -51,8 +51,8 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.root.getCommunicationSnapshot().messages[0]).toMatchObject({
       senderAgentRunId: f.ids[1], receiverAgentRunId: f.ids[0], referenceFiles, content: "Review this note",
     });
-    const tree = f.root.getExecutionTreeSnapshot() as { rootTeam?: { taskExecutions: unknown[] }; rootOrg?: { taskExecutions: unknown[] } };
-    expect((tree.rootTeam ?? tree.rootOrg)!.taskExecutions).toEqual([]);
+    // A run holds its own parts only (autobyteus-461): first work adds nothing to its tree.
+    expect(JSON.stringify(f.root.getExecutionTreeSnapshot())).not.toContain("taskExecutions");
   });
 
   it("preserves fresh zero-work laziness and targeted first input", async () => {
@@ -95,7 +95,7 @@ for (const placement of placements) describe(`${placement} configured first work
 
   it("aborts a definite failed write and safely retries the unchanged binding", async () => {
     const f = await build(placement);
-    f.control.failure = { outcome: "not_renamed", file: "tree", stage: "write", cause: new Error("write refused") } as never;
+    f.control.failure = { outcome: "not_committed", file: "tree", stage: "write", cause: new Error("write refused") } as never;
     expect(await f.send()).toMatchObject({ accepted: false });
     expect(f.abort).toHaveBeenCalledTimes(1); expect(f.publish).not.toHaveBeenCalled();
     expect(f.members()[1]!.platformAgentRunId).toBe("old-thread");
@@ -107,7 +107,7 @@ for (const placement of placements) describe(`${placement} configured first work
 
   it("does not retry or publish after indeterminate rename", async () => {
     const f = await build(placement);
-    f.control.failure = { outcome: "renamed_finalization_indeterminate", file: "tree", stage: "directory_sync", cause: new Error("uncertain") } as never;
+    f.control.failure = { outcome: "finalization_indeterminate", file: "tree", stage: "directory_sync", cause: new Error("uncertain") } as never;
     expect(await f.send()).toMatchObject({ accepted: false });
     await f.send().catch(() => null);
     expect(f.manager.newPreparation).toHaveBeenCalledTimes(1);

@@ -1,9 +1,12 @@
 import type { AgentToolMcpCatalog } from "./agent-tool-mcp-catalog.js";
 import type { AgentToolMcpSessionRegistry } from "./agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "./agent-tool-mcp-session-service.js";
+import type { AgentToolsMcpSessionStreams } from "./agent-tools-mcp-session-streams.js";
+import { deriveAgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
 import type {
   AgentToolMcpRunSessionActivationInput,
   AgentToolMcpRunSessionAuthority,
+  AgentToolMcpRunSessionReplaceInput,
   AgentToolMcpRunSessionDeactivator,
   AgentToolMcpSessionAuthorityFactory,
   ScopedAgentToolMcpSessionAuthority,
@@ -36,7 +39,17 @@ class ScopedSessionLedger {
   constructor(
     private readonly scopeIdentity: string,
     private readonly registry: AgentToolMcpSessionRegistry,
+    private readonly streams: AgentToolsMcpSessionStreams,
   ) {}
+
+  assertOwnsRun(runId: string): void {
+    const sessionId = deriveAgentToolMcpRunSessionId(runId);
+    if (!this.ownedSessions.has(sessionId)) {
+      throw new Error(
+        `Scoped Agent Tools MCP session authority '${this.scopeIdentity}' has no session for run '${runId}'.`,
+      );
+    }
+  }
 
   record(sessionId: string, owner: AgentToolMcpSessionOwnerIdentity): void {
     if (this.activationBlocked || this.closeComplete) {
@@ -51,6 +64,7 @@ class ScopedSessionLedger {
   compensateUnrecordedSession(sessionId: string): void {
     this.ownedSessions.delete(sessionId);
     this.registry.deactivateSession(sessionId);
+    this.streams.closeSession(sessionId);
   }
 
   blockNewSessions(): void {
@@ -110,6 +124,7 @@ class ScopedSessionLedger {
     if (!this.ownedSessions.has(sessionId)) return false;
     const deactivated = this.registry.deactivateSession(sessionId);
     this.ownedSessions.delete(sessionId);
+    this.streams.closeSession(sessionId);
     return deactivated;
   }
 }
@@ -131,7 +146,6 @@ implements ScopedAgentToolMcpSessionAuthority {
       activateForRun: (input: AgentToolMcpRunSessionActivationInput) => {
         this.assertReady();
         const result = this.sessionService.activateForRun(input);
-        if (result.kind === "not_exposed") return result;
         try {
           this.ledger.record(result.sessionId, result.owner);
         } catch (error) {
@@ -139,6 +153,16 @@ implements ScopedAgentToolMcpSessionAuthority {
           throw error;
         }
         return result;
+      },
+      replaceForRun: (input: AgentToolMcpRunSessionReplaceInput) => {
+        this.assertOpenForExistingSessions();
+        this.ledger.assertOwnsRun(input.runId);
+        return this.sessionService.replaceForRun(input);
+      },
+      describeForRun: (runId: string) => {
+        this.assertOpenForExistingSessions();
+        this.ledger.assertOwnsRun(runId);
+        return this.sessionService.describeForRun(runId);
       },
       deactivateForRun: (runId: string) =>
         this.ledger.runSessions.deactivateForRun(runId),
@@ -156,6 +180,15 @@ implements ScopedAgentToolMcpSessionAuthority {
   blockNewSessions(): void {
     this.activationBlocked = true;
     this.ledger.blockNewSessions();
+  }
+
+  // Blocking new sessions still lets existing runs read and change theirs;
+  // only a closed authority or host refuses.
+  private assertOpenForExistingSessions(): void {
+    if (this.closeComplete) {
+      throw new Error("Scoped Agent Tools MCP session authority is closed.");
+    }
+    this.assertHostOpen();
   }
 
   close(): void {
@@ -176,10 +209,11 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
     readonly scopeIdentity: string,
     private readonly registry: AgentToolMcpSessionRegistry,
     private readonly catalog: AgentToolMcpCatalog,
+    private readonly streams: AgentToolsMcpSessionStreams,
     private readonly getLocalBaseUrl: () => string,
     private readonly assertHostOpen: () => void,
   ) {
-    this.ledger = new ScopedSessionLedger(scopeIdentity, registry);
+    this.ledger = new ScopedSessionLedger(scopeIdentity, registry, streams);
     this.runSessions = this.ledger.runSessions;
   }
 
@@ -207,6 +241,7 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
       new AgentToolMcpSessionService({
         registry: this.registry,
         catalog: this.catalog,
+        streams: this.streams,
         getLocalBaseUrl: this.getLocalBaseUrl,
         executionCapabilities: input.executionCapabilities,
       }),
@@ -228,6 +263,7 @@ implements ScopedAgentToolMcpSessionAuthorityAssembly {
 export const createAgentToolMcpSessionAuthorityFactory = (input: Readonly<{
   registry: AgentToolMcpSessionRegistry;
   catalog: AgentToolMcpCatalog;
+  streams: AgentToolsMcpSessionStreams;
   getLocalBaseUrl: () => string;
   assertHostOpen: () => void;
 }>): AgentToolMcpSessionAuthorityFactory => {
@@ -241,6 +277,7 @@ export const createAgentToolMcpSessionAuthorityFactory = (input: Readonly<{
         requireScopeIdentity(scopeIdentity),
         input.registry,
         input.catalog,
+        input.streams,
         input.getLocalBaseUrl,
         input.assertHostOpen,
       );

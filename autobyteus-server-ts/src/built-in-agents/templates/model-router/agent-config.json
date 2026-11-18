@@ -1,0 +1,21 @@
+{
+  "internal": true,
+  "toolNames": [
+    "list_available_agent_runtimes",
+    "submit_launch_choices",
+    "search_web",
+    "read_url",
+    "read_file",
+    "write_file",
+    "edit_file"
+  ],
+  "skillNames": [],
+  "skillScope": "ALL_INSTALLED",
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

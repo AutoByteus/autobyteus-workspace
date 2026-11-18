@@ -1,0 +1,36 @@
+# F-39 (DCM team-level choice), r6-batchB.log; EX-03 r6-batchC.log, code 958cb22462
+ FAIL  tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save
+AssertionError: F-39: expected [ 'gemini-3.8-flash-low' ] to deeply equal [ 'dcm-alt-model' ]
+
+- Expected
++ Received
+
+  [
+-   "dcm-alt-model",
++   "gemini-3.8-flash-low",
+  ]
+
+ ❯ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts:428:55
+    426|     await until(async () => (await launchesOf(lead, from)).length > 0,…
+    427|     // F-39 (Unclear): a team-level choice on a delegated team reachin…
+    428|     expect.soft(await launchesOf(lead, from), "F-39").toEqual([ALT]);
+       |                                                       ^
+    429|
+    430|     // DCM-003 (SR-064): the stopped run's Settings Save is composed b…
+
+
+ FAIL  tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > agent runtime switch of Org members and delegated copies: failed starts, restarts, Grok and native targets > EX-03: Team copies with a Team-level choice of another runtime, woken in different orders: each member switches at its own first input with its own segment and marker; a member that never ran starts plainly
+Error: Timed out: lead one switched
+ ❯ until tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:66:9
+     64|   const deadline = Date.now() + ms;
+     65|   while (Date.now() < deadline) { if (await check()) return; await wai…
+     66|   throw new Error(`Timed out: ${label}`);
+       |         ^
+     67| };
+     68| const findDir = (base: string, name: string, depth = 0): string | null…
+ ❯ switched tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:435:7
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:445:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯

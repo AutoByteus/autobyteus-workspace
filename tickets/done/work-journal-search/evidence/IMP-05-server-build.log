@@ -1,0 +1,11 @@
+# IMP-05 server build (dist used by the browser probe IMP-12)
+# Command: pnpm -C autobyteus-server-ts build
+# Commit: ecbf5a57bd
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1
+# Date: 2026-10-26
+
+(node:56104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

@@ -1,0 +1,17 @@
+# Case: API-E01 rerun: task-closure-root-visibility (AC-001 per root kind)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-closure-root-visibility.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  3 passed (3)'
+
+## closure-run2.log
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 9296ms
+     ✓ standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete  3134ms
+     ✓ Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete  2992ms
+     ✓ Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete  2768ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:03:12
+   Duration  18.14s (transform 6.06s, setup 58ms, import 8.31s, tests 9.30s, environment 0ms)
+

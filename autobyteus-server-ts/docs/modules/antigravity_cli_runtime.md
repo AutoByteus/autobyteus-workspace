@@ -72,12 +72,26 @@ the composed Agent/Team/Org identity before the first real user input. It does
 not write generated configuration into the selected workspace or global AGY
 configuration.
 
+A new start always begins on an empty capsule: `createAgyRunCapsule` first removes the
+run's `agy-project` folder (a skill link inside it is removed without following it, so the
+skill folder and the workspace are untouched). This is what lets a run **return** to Antigravity
+after another agent runtime (an agent runtime switch, A → B → A) or retry a start that failed
+after its capsule was made. A restore never creates a capsule; it reads the capsule of its
+own era (`restoreAgyRunCapsule`).
+
 The AGY process uses the capsule as its primary project and receives the real
 selected workspace as an added directory. The generated agent identifies that
 real path as the task workspace. This is model-directed task targeting, **not**
 a filesystem sandbox or proof that every relative provider action will land
 there. User/provider-owned workspace skills and MCP configurations may still
 be visible alongside the AutoByteus-configured skills of the agent definition.
+
+The run-scoped MCP configuration is always written, even when the agent selects
+no Agent Tools tools, and carries only `disabled: false` and the run's
+`serverUrl` (no transport header: AGY 1.4.10 holds the server's GET stream and
+re-lists its tools when the server sends `notifications/tools/list_changed`, so
+a definition change applies from AGY's next model call; see
+[Tool List Updates](./tool_list_updates.md)).
 
 Before writing the run-scoped MCP configuration, activation reads (never
 modifies) the selected workspace's `.agents/mcp_config.json` and the global
@@ -100,7 +114,11 @@ Team-local skill (for example the Solution Designer's links into its Team
 `shared/` directory) resolve through the capsule link. Links live only inside
 the run's private capsule, never in the selected workspace. Deleting run memory
 removes the link, not the skill. Like Codex and Claude runs, a running or
-resumed AGY run sees the skill folder's current content.
+resumed AGY run sees the skill folder's current content. A skill added to the
+agent's definition while the run is going is linked into the capsule and added
+to `manifest.json` (rewritten atomically), so a resume keeps it
+(`addAgyRunCapsuleSkills`); a run interrupted mid-turn reports inactive and gets
+no link until it is started again (the skill notice still gives the path).
 
 The run's request strength comes from the definition's skill scope
 (`workspaceCollisionPolicyForScope`). A skill that cannot be exposed (unsafe or
@@ -294,17 +312,22 @@ exits, with `sourceMetadata.tool.stepIndex` and `The command exited with code N`
 in `content`. While any task runs, the monitor polls `messages/*.json` every 2 s
 (reads go through `agy-brain-file.ts`: 64 KiB bound, no symlinks, confined to
 the conversation) and marks the task `completed` (exit code 0) or `failed`
-(other codes) with the reported result text as summary. Files it cannot parse
+(other codes) with the reported result text as summary and the code as the
+task's `exit_code`. Files it cannot parse
 yet are retried; files of any other shape are remembered and ignored. When the
 backend stops AGY (Stop, Terminate, process close, listener failure) every task
-still running becomes `stopped`, and those snapshots are delivered before the
-stop resolves. An unreadable or changed message format therefore leaves a task
-running until AGY stops and never produces a false completion. Non-daemon
+still running becomes `stopped` with `end_reason: run_ended` (the panel reads
+"Stopped: the run ended", also after a user Stop of one turn, because every
+`stopAll()` caller stops the AGY process), and those snapshots are delivered
+before the stop resolves. An unreadable or changed message format therefore leaves a task
+running until AGY stops and never produces a false completion. AGY runs no clock
+on a long command: a 35-minute background command, daemon or not, ran to
+completion (`long-command-time-limits-live.e2e.test.ts`). Non-daemon
 background commands keep their turn open and never become background tasks.
-While the monitor holds a running task (`hasRunningTasks()`), a delegated AGY
+While the monitor holds a running task (its view counts one, `runningBackgroundTaskCount`), a delegated AGY
 copy is not idle-shut-down; its terminal snapshot re-arms the copy's grace
 period, because a daemon's exit starts no turn (see
-[Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle)).
+[Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle)).
 
 Stopping AGY also stops its background commands. AGY (observed with 1.2.12)
 starts each background command in its own session/process group, shared by the
@@ -314,7 +337,8 @@ following. This covers user Stop, run/Team/Org Terminate, app/server shutdown,
 and a stream/protocol failure while AGY is still running.
 
 1. It lists the process table once (`ps -A -o pid=,ppid=,pgid=`, 2 s timeout)
-   through the private `agy-background-process-groups` helper.
+   through the shared `src/utils/process-tree.ts` helper (also used by the
+   server's shutdown sweep).
 2. It selects the process groups led by a live descendant of AGY. AGY's own
    group, the server's group and pgid ≤ 1 are excluded, so nothing outside the
    run's background groups is signalled.
@@ -384,7 +408,7 @@ It sends no started phase, summary, or token figures in the stream.
 `AgyStreamEventConverter` maps a `checkpoint` step with state `DONE` to one
 `COMPACTION_STATUS` event (`buildAgyCompactionStatusPayload`): a
 rotation-eligible `provider_compaction_boundary` with runtime kind
-`ANTIGRAVITY`, provider `antigravity`, source surface `antigravity.checkpoint`,
+`antigravity_cli` (the `RuntimeKind` value), provider `antigravity`, source surface `antigravity.checkpoint`,
 boundary key `agy:<conversation_id>:checkpoint:<step_index>`,
 `provider_event_id` `checkpoint:<step_index>`, status `compacted`, trigger
 `auto`, and `duration_ms` from `duration_seconds`. The shared memory recorder
@@ -394,7 +418,7 @@ also deduplicates by boundary key. Other checkpoint states are ignored.
 
 Detection is on only when the run's CLI version is at least
 `AGY_COMPACTION_DETECTION_MIN_VERSION` (1.2.16), the version on which the
-signal was proven. `AgyAgentRunBackendFactory` decides this per created or
+signal was proven, compared by SemVer precedence (`1.2.16-rc.1` is below it). `AgyAgentRunBackendFactory` decides this per created or
 restored backend and logs one info line when it is off. Older AGY versions
 wrote early non-compaction checkpoint steps (`{{ CHECKPOINT 0 }}` truncation
 notices) to their transcripts and may also stream them, so on an older or

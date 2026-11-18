@@ -1,0 +1,165 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.27                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:27288) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > does not create platform or journal state while inspecting absent recovery state 5ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > leaves an existing database without journal state byte-for-byte unchanged 7ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > reads an appended pending record through a new read-only store without changing SQLite bytes 119ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > projects old binding and producer supersets, then dispatches and acknowledges them 61ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event 60ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation 61ms
+(node:27290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > awaits named readiness and recovers only the selected canonical application 4ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > materializes a fresh selected application runtime cwd before definition/provider readiness 3ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > keeps full lifecycle cleanup available when runtime directory preparation fails 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > stops all owned boundaries in order, remains idempotent, and reports cleanup failures after continuing 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > drains a real admitted application-tool call before stopping workers during shutdown 52ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > drains only old target-package participants before mutation and commits paired target slices before recovery 3ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > serializes concurrent package transitions while ordinary work remains outside its mutex 52ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > restores and re-stages actual source state before rethrowing the original transition failure 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > quarantines affected participants and releases the mutex when rollback restoration also fails 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > prepares each current application's runtime folder after the commits and before readiness on import 0ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > prepares the reloaded application's runtime folder before readiness 0ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > uses the same staged owner for exact-application repair and can recover a previously inactive participant 1ms
+(node:27293) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stderr | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Built-in agent 'autobyteus-daily-assistant' was synced but did not resolve as a normal agent definition.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stderr | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Built-in agent 'autobyteus-daily-assistant' was synced but did not resolve as a normal agent definition.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run 23ms
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners 2ms
+
+ Test Files  4 passed (4)
+      Tests  20 passed (20)
+   Start at  20:13:46
+   Duration  6.74s (transform 3.23s, setup 65ms, import 5.58s, tests 462ms, environment 0ms)
+

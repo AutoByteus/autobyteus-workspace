@@ -1,0 +1,165 @@
+# F-001 reproduction: off-topic cues through the page's search on the running desktop node (complete index, meaning 7429/7429), 2026-10-26 18:55 UTC
+# Command: node probes/API-PROBE-offtopic.mjs http://127.0.0.1:53568/graphql
+# Every key word verified by count to occur in no local journal (grep -ril over agents/, agent_teams/, agent_orgs/ *.md: pelicanmarigold 0, xylophonequartz 0, orchidtundra 0, falconsaffron 0, tortellini 0, bagpipe 0, sauerkraut 0)
+# Pass = the only-weak note and every match weak (AC-007 / R-009). T2 has text words that occur ('tuned', 'practice', 'reminders'): under SR-004b it is 'partial', not gated.
+# Same probe at partial meaning coverage (17:5x): 2/11 passed, same failures (private /tmp file, not kept)
+{
+ "url": "http://127.0.0.1:53568/graphql",
+ "at": "2026-10-26T18:56:08.888Z",
+ "passed": 2,
+ "of": 11,
+ "failed": [
+  "C1",
+  "C2",
+  "C3",
+  "S1",
+  "S2",
+  "S3",
+  "S4",
+  "T2",
+  "T3"
+ ],
+ "rows": [
+  {
+   "id": "C1",
+   "q": "pelicanmarigold9152",
+   "ms": 66,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/STRONG": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "C2",
+   "q": "xylophonequartz7731",
+   "ms": 48,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/STRONG": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "C3",
+   "q": "orchidtundra5520",
+   "ms": 46,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/STRONG": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "C4",
+   "q": "falconsaffron3381",
+   "ms": 38,
+   "onlyWeakNote": true,
+   "pass": true,
+   "results": 10,
+   "counts": {
+    "MEANING/WEAK": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "S1",
+   "q": "Do you remember the project codenamed pelicanmarigold9152? Where is it?",
+   "ms": 152,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/WEAK": 11,
+    "MEANING/STRONG": 5
+   },
+   "coverage": null
+  },
+  {
+   "id": "S2",
+   "q": "Do you remember the project codenamed xylophonequartz7731? Where is it?",
+   "ms": 252,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/WEAK": 11,
+    "MEANING/STRONG": 5
+   },
+   "coverage": null
+  },
+  {
+   "id": "S3",
+   "q": "Do you remember the project codenamed orchidtundra5520? Where is it?",
+   "ms": 225,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/WEAK": 10,
+    "MEANING/STRONG": 5
+   },
+   "coverage": null
+  },
+  {
+   "id": "S4",
+   "q": "Do you remember the project codenamed falconsaffron3381? Where is it?",
+   "ms": 247,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/WEAK": 14,
+    "MEANING/STRONG": 4
+   },
+   "coverage": null
+  },
+  {
+   "id": "T1",
+   "q": "Where did we set up the tortellini fermentation dashboard for the bakery?",
+   "ms": 88,
+   "onlyWeakNote": true,
+   "pass": true,
+   "results": 10,
+   "counts": {
+    "TEXT/WEAK": 13,
+    "MEANING/WEAK": 4
+   },
+   "coverage": null
+  },
+  {
+   "id": "T2",
+   "q": "Which run tuned the bagpipe practice reminders?",
+   "ms": 652,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/FAIR": 5,
+    "MEANING/WEAK": 6,
+    "TEXT/WEAK": 4
+   },
+   "coverage": null
+  },
+  {
+   "id": "T3",
+   "q": "What did we decide about the sauerkraut supplier contract?",
+   "ms": 167,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/FAIR": 1,
+    "TEXT/WEAK": 9,
+    "MEANING/STRONG": 4
+   },
+   "coverage": null
+  }
+ ]
+}

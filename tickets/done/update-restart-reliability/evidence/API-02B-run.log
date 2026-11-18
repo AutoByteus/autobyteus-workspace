@@ -1,0 +1,19 @@
+[+3.4s] server started {"label":"first","pid":88686,"port":64002}
+[+4.6s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+5.2s] standalone sent {"label":"sa-codex","runtime":"codex","runId":"probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8"}
+[+5.5s] standalone sent {"label":"sa-claude","runtime":"claude","runId":"probe_agent_bq284lmvw6d89v_39c0e24c914642e28bb0e926a2ea2bd2"}
+[+6.6s] team sent {"label":"team-codex","runtime":"codex","teamRunId":"probe_team_bq284lmvw6d89v_team_codex_20021b9b93874caa87b803cb4cf084d1","memberRunId":"probe_team_coordinator_team_codex_bq284lmvw6d89v_f407847238794b55b3770fad69b7a94e"}
+[+8.4s] org sent {"label":"org-claude","runtime":"claude","orgRunId":"probe_org_bq284lmvw6d89v_org_claude_de16b4d4575040188997d9ac96608564","memberRunId":"probe_org_manager_org_claude_bq284lmvw6d89v_0d00d46722944657a2afde70a85c7f96"}
+[+8.6s] createAgentRun latency (ms) [78,54,60]
+[+9.4s] client connections held {"keepAliveLocalPort":64109,"silentLocalPort":64110}
+[+9.5s] busy {"label":"sa-codex","marker":"BQ284Lmvw6d89v_sa-codex","pid":91004,"ppid":88756,"pgid":91004,"afterMs":71}
+[+9.6s] busy {"label":"sa-claude","marker":"BQ284Lmvw6d89v_sa-claude","pid":93580,"ppid":89303,"pgid":93580,"afterMs":67}
+[+11.2s] busy {"label":"team-codex","marker":"BQ284Lmvw6d89v_team-codex","pid":94388,"ppid":88756,"pgid":94388,"afterMs":1621}
+[+11.9s] busy {"label":"org-claude","marker":"BQ284Lmvw6d89v_org-claude","pid":94846,"ppid":91007,"pgid":94846,"afterMs":669}
+[+16.3s] shutdown {"case":"API-02B","serverPid":88686,"exit":{"code":0,"signal":null,"at":1793437490204},"elapsedMs":1610,"runs":[{"label":"sa-codex","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8","toolCommand":{"pid":91004,"ppid":88756,"pgid":91004,"aliveAfter":false}},{"label":"sa-claude","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvw6d89v_
+[+16.5s] in-flight requests [{"k":0,"sentAt":1793437488565,"error":"ECONNRESET","endedAt":1793437488599,"sentRelSigtermMs":-29,"endedRelSigtermMs":5},{"k":1,"sentAt":1793437488576,"error":"ECONNRESET","endedAt":1793437488599,"sentRelSigtermMs":-18,"endedRelSigtermMs":5},{"k":2,"sentAt":1793437488588,"error":"ECONNRESET","endedAt":1793437488599,"sentRelSigtermMs":-6,"endedRelSigtermMs":5},{"k":3,"sentAt":1793437488600,"error"
+[+16.5s] held connections {"silentClosedRelSigtermMs":6,"silentError":null,"keepAliveClosedRelSigtermMs":6}
+[+19.6s] server started {"label":"second","pid":95271,"port":64150}
+[+19.8s] restore of prepared-only runs [{"runId":"probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465","restore":{"success":true,"message":"Agent run restored successfully.","runId":"probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465"}},{"runId":"probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977","restore":{"success":true,"message":"Agent run restored successfully.","runId":"probe_agent_bq284lmvw6d89v_6a18f29
+[+19.8s] after relaunch {"listed":8,"onDisk":8,"unknown":3,"preparedOnly":3,"inspected":[{"runId":"probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465","listed":{"runId":"probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465","status":"offline","isActive":false,"terminatedAt":null,"summary":"","agentName":"Probe Agent BQ284Lmvw6d89v"},"resumeConfig":{"isActive":false}},{"runId":"probe_agent_bq284lmvw6d89v_6
+{"result":"Completed","error":null,"fallbackCleanup":0}

@@ -1,3 +1,4 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
@@ -66,19 +67,27 @@ type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceTy
   fileAttachments?: readonly ContextFileReference[];
   /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
   senderId?: string | null;
+  /** The accepted input's identity, so a loaded conversation matches the live input state (autobyteus-434). */
+  messageId?: string;
+  dedupeKey?: string;
 };
 
-/** A system notice shown in the conversation (recorded only for Claude background-task notices). */
+/**
+ * A system notice shown in the conversation (recorded for Claude background-task notices, the skill and tool-list
+ * notices, and the agent runtime switch marker). The marker carries its switch key as `correlationId`, so a retry finds it.
+ */
 export type RuntimeMemorySystemTaskNotificationTraceInput = RuntimeMemoryTraceInputBase & {
   traceType: "system_task_notification";
   senderId: string;
+  /** The notice's one id (autobyteus-526), the same as on its published notice; absent when it has none. */
+  messageId?: string;
   media?: never;
   toolName?: never;
   toolCallId?: never;
   toolArgs?: never;
   toolResult?: never;
   toolError?: never;
-  correlationId?: never;
+  correlationId?: string;
 };
 
 export type RuntimeMemoryTraceInput =
@@ -91,7 +100,7 @@ export type RuntimeMemoryTraceInput =
 
 export type ProviderCompactionBoundaryPayload = {
   kind: "provider_compaction_boundary";
-  runtime_kind: "CODEX" | "CLAUDE" | string;
+  runtime_kind: RuntimeKind;
   provider: "codex" | "claude" | string;
   source_surface:
     | "codex.thread_compacted"

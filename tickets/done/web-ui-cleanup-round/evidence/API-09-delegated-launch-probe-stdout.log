@@ -1,0 +1,8 @@
+# API-09 2026-10-28T16:23:27Z commit b34c2a36ea; cmd (cwd autobyteus-web): node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /tmp/ab320e2e/API-09/out --ledger-file /tmp/ab320e2e/API-09/ledger.md --cases DLP-003,DLP-004,DLP-005
+(node:43061) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+DLP-003 Fail AC-001/003/004/005/010: Manager chat from the UI; copies and a second Pair copy from its composer; teammate refusal, helper copy and Grok engineer from the copy lead's conversation; Settings rows — delegation result in the conversation lacks a note
+DLP-004 Fail AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and the Pair from the composer: Settings lists the rows — org root: Squad notes not shown
+DLP-005 Fail AC-006/REQ-004: the root model is retired mid-run; delegation that needs the inherited layer fails in the conversation with today's text and adds nothing, an outside message is not found; an own usable default still works — delegation failure text
+Summary: 0 Pass, 3 Fail
+exit=1

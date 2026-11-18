@@ -1,0 +1,105 @@
+# API-04 every RUN_AGY_FAILURE_E2E gated suite (60 files: grep -rlE RUN_AGY_FAILURE_E2E tests/e2e | sort), scripted AGY CLI, no provider; commit e5d5a7aac5 (source c29edfb1f7; dist from IMP-04); macOS, Node v22.23.1; 2026-11-10T13:35:22Z; load at start 6.80 9.83 19.38
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch <60 files>
+# Excerpt of API-04-scripted-agy-gated-set.full.log (7.6 MB, kept in the worktree, not committed). 'already active or reserved' lines: 0; NODE_CREDENTIAL_REQUIRED|MCP_GATEWAY_TOKEN_REQUIRED: 0; secrets own_/mcpg_: 0.
+
+## Summary
+ Test Files  1 failed | 57 passed | 2 skipped (60)
+      Tests  1 failed | 292 passed | 31 skipped (324)
+   Duration  2067.21s (transform 10.17s, setup 1.46s, import 124.84s, tests 1934.56s, environment 3ms)
+exit=1
+# load at end 6.59 8.68 10.77
+
+## The race file (EXC-E2E-004) and the delegation suites
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3693ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 24206ms
+ ↓ tests/e2e/projects/delegated-copy-project-folder-live.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 12181ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162252ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 189886ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25095ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 33539ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  23182ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  22716ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  22576ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  113996ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1333ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1031ms
+
+## Every file line
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 13965ms
+ ✓ tests/e2e/agent-definitions/internal-agents.e2e.test.ts (5 tests) 2254ms
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test) 2774ms
+ ✓ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests) 4686ms
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts (13 tests | 13 skipped)
+ ✓ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts (7 tests) 5389ms
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 395245ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 11526ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2374ms
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests | 1 failed) 3775ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 13266ms
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 3581ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3693ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 24206ms
+ ↓ tests/e2e/projects/delegated-copy-project-folder-live.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 12181ms
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 16297ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 95651ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7939ms
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 15181ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1465ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 3967ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 9687ms
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 7608ms
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 2805ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 1976ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4288ms
+ ✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts (4 tests) 75711ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 10526ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162252ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 189886ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25095ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts (3 tests) 33539ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 12162ms
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (42 tests) 437764ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 4655ms
+ ✓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests) 1494ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 1183ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 734ms
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 2144ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 9551ms
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 8948ms
+ ✓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (10 tests) 8207ms
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 934ms
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 1591ms
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 2524ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 5710ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 76608ms
+ ✓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests) 24450ms
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 18059ms
+ ✓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test) 1404ms
+ ✓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (8 tests | 6 skipped) 1352ms
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests) 65166ms
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts (6 tests | 5 skipped) 1239ms
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (5 tests) 12526ms
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests) 33351ms
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (9 tests) 32972ms
+ ✓ tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts (1 test) 5458ms
+ ✓ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test) 586ms
+ ✓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 1002ms
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts:278:5
+
+## Failure
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/collaboration-model-contract.e2e.test.ts > Collaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+AssertionError: expected '{"error":{"code":"COLLABORATION_SELF_…' to contain 'send_message_to'
+Expected: "send_message_to"
+Received: "{"error":{"code":"COLLABORATION_SELF_TARGET_REJECTED","message":"/manager is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team."},"isError":true}"
+ ❯ expectRefused tests/e2e/projects/collaboration-model-contract.e2e.test.ts:199:36
+    197|     expect(JSON.stringify(result), JSON.stringify(result)).toContain("…
+    198|     expect(JSON.stringify(result)).toContain(address);
+    199|     expect(JSON.stringify(result)).toContain("send_message_to");
+       |                                    ^
+    200|     expect(result).not.toHaveProperty("target_agent_run_id");
+    201|   };
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts:278:5
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯

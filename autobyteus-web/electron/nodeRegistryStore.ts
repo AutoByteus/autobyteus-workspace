@@ -2,13 +2,14 @@ import * as fsSync from 'fs'
 import * as path from 'path'
 import type {
   IdentifyNodeRegistryChange,
-  NodeProfile,
+  NodeEntry,
   NodeRegistrySnapshot,
+  SetAutoUpdateNodeRegistryChange,
 } from './nodeRegistryTypes'
-import { EMBEDDED_NODE_ID, isServerInstanceId } from './nodeRegistryTypes'
+import { EMBEDDED_ENTRY_ID, isNodeId } from './nodeRegistryTypes'
 import { logger } from './logger'
 
-const NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json'
+const NODE_REGISTRY_FILE_NAME = 'node-registry.json'
 
 function getRegistryFilePath(userDataPath: string): string {
   return path.join(userDataPath, NODE_REGISTRY_FILE_NAME)
@@ -22,14 +23,13 @@ export function sanitizeBaseUrl(baseUrl: string): string {
   return baseUrl.trim().replace(/\/+$/, '')
 }
 
-function getEmbeddedNodeProfile(activeEmbeddedBaseUrl: string): NodeProfile {
+function getEmbeddedNodeEntry(activeEmbeddedBaseUrl: string): NodeEntry {
   const now = nowIsoString()
   return {
-    id: EMBEDDED_NODE_ID,
+    id: EMBEDDED_ENTRY_ID,
     name: 'Embedded Node',
     baseUrl: sanitizeBaseUrl(activeEmbeddedBaseUrl),
     nodeType: 'embedded',
-    isSystem: true,
     createdAt: now,
     updatedAt: now,
   }
@@ -43,11 +43,11 @@ export function ensureEmbeddedNode(
   if (!normalizedActiveBaseUrl) {
     throw new Error('Active embedded client base URL is required')
   }
-  const existingIndex = snapshot.nodes.findIndex((node) => node.id === EMBEDDED_NODE_ID)
+  const existingIndex = snapshot.nodes.findIndex((node) => node.id === EMBEDDED_ENTRY_ID)
   if (existingIndex === -1) {
     return {
       version: snapshot.version + 1,
-      nodes: [getEmbeddedNodeProfile(normalizedActiveBaseUrl), ...snapshot.nodes],
+      nodes: [getEmbeddedNodeEntry(normalizedActiveBaseUrl), ...snapshot.nodes],
     }
   }
 
@@ -70,7 +70,7 @@ export function ensureEmbeddedNode(
   }
 }
 
-function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
+function normalizeLoadedNode(rawNode: unknown): NodeEntry | null {
   if (!rawNode || typeof rawNode !== 'object') {
     return null
   }
@@ -106,8 +106,9 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
     baseUrl: sanitizeBaseUrl(baseUrlRaw),
     nodeType,
     // Absent or not a valid ID: not learned yet (one-nodes-tab, design § Persisted Data).
-    ...(isServerInstanceId(node.serverInstanceId) ? { serverInstanceId: node.serverInstanceId } : {}),
-    isSystem: nodeType === 'embedded',
+    ...(isNodeId(node.nodeId) ? { nodeId: node.nodeId } : {}),
+    // "Update automatically" (autobyteus-356): only `true` on a remote entry; anything else reads as off.
+    ...(nodeType === 'remote' && node.autoUpdate === true ? { autoUpdate: true as const } : {}),
     createdAt,
     updatedAt,
   }
@@ -138,7 +139,7 @@ export function loadNodeRegistrySnapshot(
 
     const normalizedNodes = parsed.nodes
       .map((node) => normalizeLoadedNode(node))
-      .filter((node): node is NodeProfile => node !== null)
+      .filter((node): node is NodeEntry => node !== null)
 
     if (normalizedNodes.length !== parsed.nodes.length) {
       logger.info(
@@ -167,25 +168,46 @@ export function saveNodeRegistrySnapshot(userDataPath: string, snapshot: NodeReg
   }
 }
 
-export function getNodeProfileById(
+export function getEntryById(
   snapshot: NodeRegistrySnapshot,
-  nodeId: string,
-): NodeProfile | undefined {
-  return snapshot.nodes.find((node) => node.id === nodeId)
+  entryId: string,
+): NodeEntry | undefined {
+  return snapshot.nodes.find((node) => node.id === entryId)
 }
 
 /**
- * The `identify` change (one-nodes-tab AR-003): the entry's `serverInstanceId` set to, or replaced by, the ID its own
+ * The `identify` change (one-nodes-tab AR-003): the entry's `nodeId` set to, or replaced by, the node ID its own
  * address answered; the same array when it is already that ID. Never merges entries or changes a name or address.
  */
 export function identifyNodeEntry(
-  nodes: NodeProfile[],
+  nodes: NodeEntry[],
   change: IdentifyNodeRegistryChange,
   now: string,
-): NodeProfile[] {
-  const index = nodes.findIndex((node) => node.id === change.nodeId)
-  if (index === -1) throw new Error(`Node does not exist: ${change.nodeId}`)
-  if (!isServerInstanceId(change.serverInstanceId)) throw new Error(`Invalid server instance ID: ${change.serverInstanceId}`)
-  if (nodes[index]!.serverInstanceId === change.serverInstanceId) return nodes
-  return nodes.map((node, at) => at === index ? { ...node, serverInstanceId: change.serverInstanceId, updatedAt: now } : node)
+): NodeEntry[] {
+  const index = nodes.findIndex((node) => node.id === change.entryId)
+  if (index === -1) throw new Error(`Node does not exist: ${change.entryId}`)
+  if (!isNodeId(change.nodeId)) throw new Error(`Invalid node ID: ${change.nodeId}`)
+  if (nodes[index]!.nodeId === change.nodeId) return nodes
+  return nodes.map((node, at) => at === index ? { ...node, nodeId: change.nodeId, updatedAt: now } : node)
+}
+
+/**
+ * The `set-auto-update` change (autobyteus-356): a remote entry's "Update automatically" on (`autoUpdate: true`) or
+ * off (the field removed); the same array when it is already so. Refused for the embedded entry.
+ */
+export function setNodeAutoUpdate(
+  nodes: NodeEntry[],
+  change: SetAutoUpdateNodeRegistryChange,
+  now: string,
+): NodeEntry[] {
+  const index = nodes.findIndex((node) => node.id === change.entryId)
+  if (index === -1) throw new Error(`Node does not exist: ${change.entryId}`)
+  if (nodes[index]!.nodeType !== 'remote') throw new Error('Only remote nodes can update automatically')
+  if (typeof change.enabled !== 'boolean') throw new Error('enabled must be a boolean')
+  if ((nodes[index]!.autoUpdate === true) === change.enabled) return nodes
+  return nodes.map((node, at) => {
+    if (at !== index) return node
+    const { autoUpdate: _previous, ...rest } = node
+    return change.enabled ? { ...rest, autoUpdate: true as const, updatedAt: now } : { ...rest, updatedAt: now }
+  })
 }

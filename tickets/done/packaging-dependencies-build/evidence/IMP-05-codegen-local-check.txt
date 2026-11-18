@@ -1,0 +1,16 @@
+# IMP-05
+# Command: pnpm -C autobyteus-web codegen:local (builds the server, prints the schema in-process, regenerates); codegen:check; codegen:check after appending '// stale' to generated/graphql.ts; vitest run tests/architecture/web-generated-graphql-current.test.ts
+# Commit: 6777be781f
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+codegen:local: generated/graphql.ts +102 lines (git diff --stat), the drift of M-7 (file committed with this change)
+autobyteus-web/generated/graphql.ts is current.
+codegen:check exit 0
+--- mutated file
+autobyteus-web/generated/graphql.ts is out of date with the server schema. Run: pnpm -C autobyteus-web codegen:local
+ ELIFECYCLE  Command failed with exit code 1.
+codegen:check exit 1 (stale file)
+--- server architecture test (schema from source, in-process; also fails on a schema with one more type)
+tests/architecture/web-generated-graphql-current.test.ts: Tests 1 passed (1)
+included in the clean-clone server unit run (IMP-07)

@@ -3,7 +3,12 @@ import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
-import type { AcpAgentLaunchProfile, AcpLaunchSelection } from "../acp/acp-agent-launch-profile.js";
+import {
+  releaseNothing,
+  type AcpAgentLaunchProfile,
+  type AcpLaunch,
+  type AcpRunLaunchRequest,
+} from "../acp/acp-agent-launch-profile.js";
 
 export const GROK_BUILD_AGENT_LABEL = "Grok Build";
 export const GROK_BUILD_PROVIDER_NAME = "Grok Build";
@@ -74,16 +79,24 @@ export const normalizeGrokBuildModels = (initialize: InitializeResponse): ModelI
   return models;
 };
 
-export const grokBuildLaunchProfile: AcpAgentLaunchProfile = Object.freeze({
-  agentLabel: GROK_BUILD_AGENT_LABEL,
-  command: grokBuildCommand,
+/** One Grok process: model and effort as arguments (both absent for discovery), the server environment plus the switches. */
+const grokLaunch = (model: string | null, reasoningEffort: string | null): AcpLaunch => Object.freeze({
   // One process per run: `--no-leader` overrides a user config that enables the shared leader.
-  args: (selection: AcpLaunchSelection): string[] => [
+  args: [
     "agent", "--no-leader",
-    ...(selection.model ? ["--model", selection.model] : []),
-    ...(selection.reasoningEffort ? ["--reasoning-effort", selection.reasoningEffort] : []),
+    ...(model ? ["--model", model] : []),
+    ...(reasoningEffort ? ["--reasoning-effort", reasoningEffort] : []),
     "stdio",
   ],
-  env: (base: NodeJS.ProcessEnv): NodeJS.ProcessEnv => ({ ...base, ...GROK_BUILD_DISABLED_TOOL_ENV }),
-  normalizeModels: normalizeGrokBuildModels,
+  env: { ...process.env, ...GROK_BUILD_DISABLED_TOOL_ENV },
+  release: releaseNothing,
+});
+
+/** Grok keeps the instructions it got at `session/new` (`_meta.rules`) and calls its provider itself. */
+export const grokBuildLaunchProfile: AcpAgentLaunchProfile = Object.freeze({
+  agentLabel: GROK_BUILD_AGENT_LABEL,
+  providerRelayId: null,
+  command: grokBuildCommand,
+  runLaunch: async (request: AcpRunLaunchRequest) => grokLaunch(request.model, request.reasoningEffort),
+  discoveryLaunch: async () => grokLaunch(null, null),
 });

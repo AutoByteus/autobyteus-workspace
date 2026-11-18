@@ -1,0 +1,320 @@
+{
+  "mode": "measure",
+  "label": "current",
+  "startedAt": "2026-11-05T21:03:30.878Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser",
+  "stackHead": "c764619bd2",
+  "probeHead": "c764619bd2",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    71.6,
+    88.7,
+    109.3
+  ],
+  "budgetMs": 250,
+  "checks": {
+    "RB-C1": {
+      "result": "Pass",
+      "description": "window null returns every seeded run (Agent, Team, Org)",
+      "details": {
+        "agentItems": 40,
+        "teamItems": 200,
+        "orgItems": 10
+      }
+    },
+    "RB-C2": {
+      "result": "Pass",
+      "description": "window 6 returns the newest 6 runs per agent and folder, and every Team and Org run",
+      "details": [
+        {
+          "folder": "agents-main",
+          "agent": "budget-main-agent",
+          "listed": 6,
+          "stored": 10
+        },
+        {
+          "folder": "agents-side",
+          "agent": "budget-main-agent",
+          "listed": 6,
+          "stored": 10
+        },
+        {
+          "folder": "agents-side",
+          "agent": "budget-side-agent",
+          "listed": 6,
+          "stored": 12
+        },
+        {
+          "folder": "agents-third",
+          "agent": "budget-third-agent",
+          "listed": 6,
+          "stored": 8
+        }
+      ]
+    },
+    "RB-C3": {
+      "result": "Pass",
+      "description": "per-folder workspaceRunHistory with null is complete",
+      "details": {
+        "folder": "agents-side",
+        "listed": 22,
+        "stored": 22
+      }
+    },
+    "RB-C4": {
+      "result": "Pass",
+      "description": "every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn",
+      "details": {
+        "items": 250,
+        "byKind": {
+          "agent": 40,
+          "team": 200,
+          "org": 10
+        }
+      }
+    },
+    "RB-B1": {
+      "result": "Pass",
+      "description": "uncapped poll read (Runs view) p95 within 250 ms",
+      "details": {
+        "n": 40,
+        "p50": 143.1,
+        "p95": 151.2,
+        "max": 160.1,
+        "mean": 144.5
+      }
+    },
+    "RB-B2": {
+      "result": "Pass",
+      "description": "capped poll read (Workspaces view) p95 within 250 ms",
+      "details": {
+        "n": 40,
+        "p50": 140.9,
+        "p95": 148.9,
+        "max": 157.6,
+        "mean": 142.1
+      }
+    },
+    "RB-B3": {
+      "result": "Pass",
+      "description": "capped poll read not slower than base (3ef5e33eec) by more than 250 ms",
+      "details": {
+        "p50": 90.2,
+        "p95": 91.3,
+        "mine": {
+          "n": 40,
+          "p50": 140.9,
+          "p95": 148.9,
+          "max": 157.6,
+          "mean": 142.1
+        },
+        "theirs": {
+          "n": 40,
+          "p50": 50.7,
+          "p95": 57.6,
+          "max": 60.8,
+          "mean": 50
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "backend": {
+      "pid": 67928,
+      "status": "terminated",
+      "exit": 0
+    },
+    "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-home-lElt4O",
+    "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-xgRoby removed"
+  },
+  "failures": [],
+  "seedShape": {
+    "agentRuns": 40,
+    "teamRuns": 200,
+    "orgRuns": 10,
+    "teamMembers": 5,
+    "perAgent": {
+      "main": 20,
+      "side": 12,
+      "third": 8
+    }
+  },
+  "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-xgRoby",
+  "queryHasLastActivity": true,
+  "windows": {
+    "uncapped": {
+      "limitPerAgent": null,
+      "coldMs": 157,
+      "counts": {
+        "agentRuns": 40,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 892522,
+      "loadBefore": [
+        69,
+        87.9,
+        108.9
+      ],
+      "loadAfter": [
+        67,
+        86.8,
+        108.2
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 143.1,
+        "p95": 151.2,
+        "max": 160.1,
+        "mean": 144.5
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 138.6,
+        "p95": 146.1,
+        "max": 155.3,
+        "mean": 139.8
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 142.5,
+        "p95": 150.6,
+        "max": 159.7,
+        "mean": 144
+      },
+      "samplesMs": [
+        149.7,
+        148.8,
+        150.7,
+        148.5,
+        146.6,
+        144.5,
+        146,
+        140,
+        142.2,
+        144.8,
+        139.4,
+        139.1,
+        151.2,
+        139.3,
+        141.9,
+        138.5,
+        143.1,
+        142.5,
+        139.2,
+        135.9,
+        139.3,
+        139.4,
+        141,
+        144.5,
+        142.2,
+        145.8,
+        144.7,
+        146.7,
+        160.1,
+        150.6,
+        150,
+        149.4,
+        142.2,
+        154.3,
+        143.2,
+        142,
+        142.8,
+        146.6,
+        142.5,
+        140.9
+      ]
+    },
+    "capped": {
+      "limitPerAgent": 6,
+      "coldMs": 144.7,
+      "counts": {
+        "agentRuns": 24,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 886688,
+      "loadBefore": [
+        67,
+        86.8,
+        108.2
+      ],
+      "loadAfter": [
+        65.9,
+        85.7,
+        107.4
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 140.9,
+        "p95": 148.9,
+        "max": 157.6,
+        "mean": 142.1
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 136.4,
+        "p95": 142.9,
+        "max": 153.3,
+        "mean": 137.1
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 140.3,
+        "p95": 148.2,
+        "max": 157.3,
+        "mean": 141.7
+      },
+      "samplesMs": [
+        134.7,
+        139.6,
+        139.2,
+        141.1,
+        143.8,
+        135,
+        138.3,
+        144.4,
+        146.2,
+        143.9,
+        142.9,
+        150.8,
+        147.5,
+        142.9,
+        144.5,
+        143.2,
+        139.8,
+        147.9,
+        148.9,
+        139.8,
+        139.7,
+        140.2,
+        136.6,
+        138.8,
+        143.5,
+        157.6,
+        140.7,
+        139.3,
+        140.3,
+        139.7,
+        140.5,
+        139.5,
+        140.2,
+        143.4,
+        143.7,
+        140.9,
+        140.1,
+        141.8,
+        142,
+        142.6
+      ]
+    }
+  },
+  "completedAt": "2026-11-05T21:03:59.458Z",
+  "loadAtEnd": [
+    65.9,
+    85.7,
+    107.4
+  ]
+}

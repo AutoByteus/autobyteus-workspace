@@ -35,6 +35,8 @@ export type AgentRunBackendInputDispatchResult = Readonly<{
 export type AgentRunInputRejectionCode =
   | "AGENT_RUN_INPUT_INVALID"
   | "AGENT_RUN_NOT_ACCEPTING_INPUT"
+  /** `onlyAsFirstInput` input on a run instance that already reserved or admitted input. */
+  | "AGENT_RUN_INPUT_NOT_FIRST"
   /**
    * A not-yet-started configured Agent could not start for this input. Used for both the rejected
    * reservation and the not-accepted `postMessage` result; the message names the underlying cause.
@@ -67,6 +69,12 @@ export type AgentRunInputLifecycleObserver = (fact: AgentRunInputLifecycle) => v
 
 export type AgentRunInputOptions = Readonly<{
   lifecycleObserver?: AgentRunInputLifecycleObserver;
+  /**
+   * Admit this input only as the first input of this run instance (autobyteus-285 restart resume): refused with
+   * `AGENT_RUN_INPUT_NOT_FIRST` when the instance has already reserved or admitted any input. Decided in the run's
+   * dispatch queue, so another input either comes first (and this one is refused) or is queued after it.
+   */
+  onlyAsFirstInput?: boolean;
 }>;
 
 export type CommittedAgentRunInput = Readonly<{

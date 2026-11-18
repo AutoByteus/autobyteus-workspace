@@ -1,5 +1,6 @@
 import type { BaseMcpConfig } from "autobyteus-ts/tools/mcp/types.js";
 import { McpServerPersistenceProvider } from "./persistence-provider.js";
+import type { McpReferenceChange, McpReferenceReplacement } from "./file-provider.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -70,6 +71,16 @@ export class CachedMcpServerConfigProvider {
       logger.info(`In-memory cache: Updated MCP config ${updated.server_id}.`);
     }
     return updated;
+  }
+
+  /** The move to the vault; the cache takes the changed servers once the file write has committed. */
+  async replaceWithReferences(changes: readonly McpReferenceChange[]): Promise<McpReferenceReplacement> {
+    const replacement = await this.persistenceProvider.replaceWithReferences(changes);
+    if (this.cachePopulated) {
+      for (const config of replacement.configs) this.cache.set(config.server_id, config);
+      logger.info(`In-memory cache: Replaced plain values with secret references for ${replacement.configs.length} MCP config(s).`);
+    }
+    return replacement;
   }
 
   async deleteByServerId(serverId: string): Promise<boolean> {

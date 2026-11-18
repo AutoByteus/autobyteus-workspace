@@ -1,0 +1,1 @@
+.markdown-renderer-segments .markdown-body :not(pre) > code { overflow-wrap: anywhere; }

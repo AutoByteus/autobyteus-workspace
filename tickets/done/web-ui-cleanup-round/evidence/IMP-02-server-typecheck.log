@@ -1,0 +1,7 @@
+# IMP-02 server typecheck
+# cmd: pnpm -C autobyteus-server-ts typecheck
+# commit: a3dbfcb495  env: macOS, Node v22.23.1  date: 2026-10-28T16:03Z
+
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

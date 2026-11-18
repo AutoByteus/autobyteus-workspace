@@ -1,0 +1,35 @@
+{"t":5418,"event":"device","model":"sdk_gphone64_arm64","sdk":"35","webview":"124.0.6367.219"}
+{"t":6558,"event":"apk","versionName":"0.1.0"}
+{"t":28267,"event":"paired, run list shown"}
+{"t":32550,"event":"marker sent","id":"EMU-T-1"}
+{"t":52045,"event":"marker sent","id":"EMU-T-2"}
+{"t":107044,"event":"marker sent","id":"EMU-T-3"}
+{"t":167045,"event":"marker sent","id":"EMU-T-4"}
+args: [-p, org.autobyteus.mobile, -c, android.intent.category.LAUNCHER, 1]
+ arg: "-p"
+ arg: "org.autobyteus.mobile"
+ arg: "-c"
+ arg: "android.intent.category.LAUNCHER"
+ arg: "1"
+data="org.autobyteus.mobile"
+data="android.intent.category.LAUNCHER"
+** SYS_KEYS has no physical keys but with factor 2.0%.
+Error: Command failed: /Users/normy/Library/Android/sdk/platform-tools/adb -s emulator-5584 shell monkey -p org.autobyteus.mobile -c android.intent.category.LAUNCHER 1
+args: [-p, org.autobyteus.mobile, -c, android.intent.category.LAUNCHER, 1]
+ arg: "-p"
+ arg: "org.autobyteus.mobile"
+ arg: "-c"
+ arg: "android.intent.category.LAUNCHER"
+ arg: "1"
+data="org.autobyteus.mobile"
+data="android.intent.category.LAUNCHER"
+** SYS_KEYS has no physical keys but with factor 2.0%.
+
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at adb (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:46:26)
+    at shell (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:47:28)
+    at cycle (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:173:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:191:3

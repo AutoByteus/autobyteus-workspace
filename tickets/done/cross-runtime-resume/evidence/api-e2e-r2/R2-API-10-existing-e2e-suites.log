@@ -1,0 +1,47 @@
+# R2-API-10 command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/run-history tests/e2e/memory tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts tests/e2e/projects/delegated-copy-model-change.e2e.test.ts tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts --no-watch
+# commit 870b075fb4; date 2026-10-31T10:30:46Z
+
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 25777ms
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 20371ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 7641ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 8279ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 6955ms
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts (1 test) 6785ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 3296ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 2108ms
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests | 5 failed) 1243ms
+     × omits a rotated system instruction from active hydration without reading its archive 106ms
+     × projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 186ms
+     × projects a team member from active traces only and preserves its archive bytes 109ms
+     × traverses exactly 275 standalone active events in fixed pages without opening archives 108ms
+     × traverses exactly 275 team-member active events and rejects its cursor for another subject 169ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 941ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts (5 tests) 1643ms
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 1329ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 376ms
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 229ms
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 241ms
+ ✓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 1388ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 1205ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (1 test) 201ms
+ ✓ tests/e2e/memory/memory-search-graphql.e2e.test.ts (2 tests) 141ms
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts (3 tests | 3 skipped)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive
+AssertionError: expected [ …(2) ] to include '/var/folders/7w/9r4_s1_s42z3f7c136bpj…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:567:25
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+AssertionError: expected [ …(2) ] to include '/var/folders/7w/9r4_s1_s42z3f7c136bpj…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:623:25
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+AssertionError: expected [ …(2) ] to include '/var/folders/7w/9r4_s1_s42z3f7c136bpj…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:657:25
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives
+AssertionError: expected [ …(10) ] to include '/var/folders/7w/9r4_s1_s42z3f7c136bpj…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:711:25
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+AssertionError: expected [ …(10) ] to include '/var/folders/7w/9r4_s1_s42z3f7c136bpj…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:776:25
+ Test Files  1 failed | 18 passed | 1 skipped (20)
+      Tests  5 failed | 56 passed | 3 skipped (64)
+   Duration  152.84s (transform 9.83s, setup 395ms, import 59.54s, tests 90.15s, environment 1ms)

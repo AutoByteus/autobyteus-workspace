@@ -199,9 +199,14 @@ export class ApplicationEngineController {
     );
   }
 
-  async stopAttachedEngine(applicationId: string): Promise<void> {
+  /**
+   * Stops the application's worker and leaves it `stopped`, whatever state it was in: a crashed (`failed`, detached)
+   * worker is reset too, so the next ensure-ready or tool call starts it on demand.
+   */
+  async stopEngine(applicationId: string): Promise<void> {
     const handle = this.state.getAttachedHandle(applicationId);
     if (!handle) {
+      this.updateStatus(applicationId, createApplicationEngineBaseStatus(applicationId));
       return;
     }
     this.updateStatus(applicationId, {

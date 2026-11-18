@@ -1,81 +1,67 @@
-import { createHash } from "node:crypto";
-import fs from "node:fs/promises";
+import { hashStableFile } from "../shared/memory-sync-file-hash.js";
 import { toMemorySyncFileKey } from "../shared/memory-sync-path-policy.js";
 import type {
-  MemoryFileDescriptor,
-  MemoryFileOperation,
-  MemorySyncSourceFileState,
+  ChangedMemoryFile,
+  MemoryFileEntry,
+  MemorySyncSourceState,
 } from "../shared/memory-sync-types.js";
-
-const sha256Buffer = (buffer: Buffer): string => createHash("sha256").update(buffer).digest("hex");
+import { isFileFailureDue, MemoryFileReadError, type MemorySyncRunTrigger } from "./memory-sync-file-failure-policy.js";
 
 export type MemoryFileChangePlan = {
-  operations: MemoryFileOperation[];
+  changed: ChangedMemoryFile[];
   unchangedCount: number;
+  /** Failing files whose retry is not due yet. */
+  waitingCount: number;
+  /** Files left for a later run because they changed or vanished while being read. */
   deferred: Array<{ key: string; reason: string }>;
+  /** Files that could not be read on this node. */
+  failed: Array<{ entry: MemoryFileEntry; reason: string }>;
 };
 
-const hasSameFingerprint = (
-  descriptor: MemoryFileDescriptor,
-  state: MemorySyncSourceFileState | undefined,
-): boolean => Boolean(state)
-  && state?.size === descriptor.size
-  && state?.sha256 === descriptor.sha256
-  && Math.trunc(state?.mtimeMs ?? -1) === Math.trunc(descriptor.mtimeMs ?? -2);
+/** A file whose size and modification time equal its last synced record is unchanged and is not read. */
+const matchesSyncedRecord = (
+  entry: MemoryFileEntry,
+  record: MemorySyncSourceState["files"][string] | undefined,
+): boolean => Boolean(record)
+  && record?.size === entry.size
+  && Math.trunc(record?.mtimeMs ?? -1) === Math.trunc(entry.mtimeMs);
 
 export class MemoryFileChangePlanner {
+  /** Decides which listed files are changed and due, and hashes each of them by streaming. */
   async planChangedFiles(
-    files: MemoryFileDescriptor[],
-    priorState: Record<string, MemorySyncSourceFileState>,
-    options: { maxOperations?: number } = {},
+    entries: MemoryFileEntry[],
+    state: Pick<MemorySyncSourceState, "files" | "fileFailures">,
+    trigger: MemorySyncRunTrigger,
+    now: Date,
   ): Promise<MemoryFileChangePlan> {
-    const maxOperations = options.maxOperations ?? files.length;
-    const operations: MemoryFileOperation[] = [];
-    const deferred: MemoryFileChangePlan["deferred"] = [];
-    let unchangedCount = 0;
+    const plan: MemoryFileChangePlan = { changed: [], unchangedCount: 0, waitingCount: 0, deferred: [], failed: [] };
 
-    for (const descriptor of files) {
-      const key = toMemorySyncFileKey(descriptor.kind, descriptor.relativePath);
-      if (hasSameFingerprint(descriptor, priorState[key])) {
-        unchangedCount += 1;
+    for (const entry of entries) {
+      const key = toMemorySyncFileKey(entry.kind, entry.relativePath);
+      if (matchesSyncedRecord(entry, state.files[key])) {
+        plan.unchangedCount += 1;
         continue;
       }
-      if (operations.length >= maxOperations) {
-        deferred.push({ key, reason: "batch limit reached" });
+      const failure = state.fileFailures[key];
+      if (failure && !isFileFailureDue(failure, entry, trigger, now)) {
+        plan.waitingCount += 1;
         continue;
       }
-      const operation = await this.buildReplaceOperation(descriptor);
-      if (!operation) {
-        deferred.push({ key, reason: "file changed while preparing upload" });
-        continue;
+      try {
+        const sha256 = await hashStableFile(entry.absolutePath, entry);
+        if (sha256) {
+          plan.changed.push({ ...entry, sha256 });
+        } else {
+          plan.deferred.push({ key, reason: "file changed while being read" });
+        }
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+          plan.deferred.push({ key, reason: "file disappeared while being read" });
+        } else {
+          plan.failed.push({ entry, reason: new MemoryFileReadError(entry.absolutePath, error).message });
+        }
       }
-      operations.push(operation);
     }
-
-    return { operations, unchangedCount, deferred };
-  }
-
-  private async buildReplaceOperation(descriptor: MemoryFileDescriptor): Promise<MemoryFileOperation | null> {
-    const before = await fs.stat(descriptor.absolutePath);
-    const content = await fs.readFile(descriptor.absolutePath);
-    const after = await fs.stat(descriptor.absolutePath);
-    if (before.size !== after.size || before.mtimeMs !== after.mtimeMs) {
-      return null;
-    }
-    const sha256 = sha256Buffer(content);
-    if (sha256 !== descriptor.sha256 || content.byteLength !== descriptor.size) {
-      return null;
-    }
-    return {
-      opId: `${descriptor.kind}:${descriptor.relativePath}`,
-      operation: "replace",
-      kind: descriptor.kind,
-      relativePath: descriptor.relativePath,
-      size: descriptor.size,
-      sha256: descriptor.sha256,
-      mtimeMs: descriptor.mtimeMs,
-      contentEncoding: "base64",
-      contentBase64: content.toString("base64"),
-    };
+    return plan;
   }
 }

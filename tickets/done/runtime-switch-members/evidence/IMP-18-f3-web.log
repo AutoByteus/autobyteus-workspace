@@ -1,0 +1,11 @@
+Check: IMP-18
+Command: pnpm -C autobyteus-web typecheck; test:nuxt --run (worktree)
+Commit: 4c7a70698d
+Date: 2026-11-02
+
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+ Test Files  686 passed (686)
+      Tests  5016 passed | 2 skipped (5018)
+exit 0
+New tests fail against the previous guard (3 failed | 11 passed) and pass with the fix.

@@ -25,7 +25,7 @@ const DRAFT_ID = /^[a-f0-9-]{36}$/;
 /**
  * The single path owner for `<appData>/projects/`:
  * `<projectId>/project.json`, `<projectId>/drafts/<draftId>/`,
- * `<projectId>/tasks/<taskId>/{task.json, context/, agent_run_resources.json}`.
+ * `<projectId>/tasks/<taskId>/{task.json, context/, agent_run_resources.json}`, `<projectId>/project_runs.json`.
  */
 export class ProjectsLayout {
   constructor(readonly root = path.join(appConfigProvider.config.getAppDataDir(), "projects")) {}
@@ -50,6 +50,8 @@ export class ProjectsLayout {
   taskExecutionResourcesFile(projectId: string, taskId: string): string {
     return path.join(this.taskDir(projectId, taskId), "agent_run_resources.json");
   }
+  /** The runs started under the Project (`project_runs.json`), beside its Task folders; older builds never read it. */
+  projectRunsFile(projectId: string): string { return path.join(this.projectDir(projectId), "project_runs.json"); }
   /** The id a folder name stands for, when it is a valid encoded segment. */
   idOfFolder(name: string): string | null { return idOfSegmentFolder(name); }
 

@@ -15,6 +15,7 @@ import { AgentSessionManager } from "../../../src/services/agent-streaming/agent
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+import { lazyAgentStreamSequences } from "../../helpers/agent-stream-sequence-fixture.js";
 
 class FakeRuntimeRun {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
@@ -25,6 +26,7 @@ class FakeRuntimeRun {
   private readonly listeners = new Set<(event: AgentRunEvent) => void>();
   private snapshot: {
     status: "offline" | "initializing" | "idle" | "running" | "error";
+    background_tasks_running: number;
     agent_id: string;
     recoverableBlock: null;
   };
@@ -38,6 +40,7 @@ class FakeRuntimeRun {
   ) {
     this.snapshot = {
       status: options.initialStatus ?? "running",
+      background_tasks_running: 0,
       agent_id: runId,
       recoverableBlock: null,
     };
@@ -64,6 +67,7 @@ class FakeRuntimeRun {
   setStatus(status: "offline" | "initializing" | "idle" | "running" | "error"): void {
     this.snapshot = {
       status,
+      background_tasks_running: 0,
       agent_id: this.runId,
       recoverableBlock: null,
     };
@@ -281,13 +285,17 @@ const startAgentWsHarness = async (options: {
     projectionService,
     broadcaster,
   });
+  // Each run's own stream sequence (SR-087), attached to the run the service returns.
+  const stream = lazyAgentStreamSequences((runId) => agentRunService.getAgentRun(runId));
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as any,
-    undefined,
     broadcaster,
     commandCoordinator,
     projectionService,
+    null,
+    stream.sequences,
+    stream.readStored,
   );
   const app = fastify();
   await app.register(websocket);
@@ -335,7 +343,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       });
       expect(await waitForBufferedMessage(messages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", agent_id: runId, recoverableBlock: null },
+        payload: { status: "offline", background_tasks_running: 0, agent_id: runId, recoverableBlock: null },
       });
       expect(restoreAgentRun).not.toHaveBeenCalled();
 
@@ -347,7 +355,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       );
       expect(initializing).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
+        payload: { status: "initializing", background_tasks_running: 0, agent_id: runId, recoverableBlock: null },
       });
       expect(restoreAgentRun).toHaveBeenCalledWith(runId);
       expect(restoredRun.messages).toHaveLength(0);
@@ -410,7 +418,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       await waitForBufferedMessage(messages, 0); // CONNECTED
       expect(await waitForBufferedMessage(messages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "running", agent_id: runId, recoverableBlock: null },
+        payload: { status: "running", background_tasks_running: 0, agent_id: runId, recoverableBlock: null },
       });
 
       socket.send(JSON.stringify(createSendCommand("hello while running", "msg-running-1")));
@@ -426,7 +434,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       });
       expect(messages.slice(2)).not.toContainEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
+        payload: { status: "initializing", background_tasks_running: 0, agent_id: runId, recoverableBlock: null },
       });
       expect(activeRun.messages).toHaveLength(1);
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
@@ -459,7 +467,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       await waitForBufferedMessage(messages, 0); // CONNECTED
       expect(await waitForBufferedMessage(messages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", agent_id: runId, recoverableBlock: null },
+        payload: { status: "offline", background_tasks_running: 0, agent_id: runId, recoverableBlock: null },
       });
       expect(activatePreparedRun).not.toHaveBeenCalled();
 
@@ -660,7 +668,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       });
       expect(activeRun.interrupt).toHaveBeenCalledTimes(2);
       expect(messages.slice(2).some((message) => message.type === "AGENT_STATUS")).toBe(false);
-      expect(activeRun.getStatusSnapshot()).toEqual({ status: "running", agent_id: runId, recoverableBlock: null });
+      expect(activeRun.getStatusSnapshot()).toEqual({ status: "running", background_tasks_running: 0, agent_id: runId, recoverableBlock: null });
     } finally {
       socket.close();
       await harness.app.close();
@@ -699,7 +707,9 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         message: `Agent run '${runId}' is not active.`,
         target: { target_kind: "standalone_run", run_id: runId },
       });
-      expect(messages).toHaveLength(3);
+      // CONNECTED, the status, the stopped run's stored snapshot (SR-087) and the ACK.
+      expect(messages.map((message) => message.type).sort()).toEqual(
+        ["AGENT_COMMAND_ACK", "AGENT_STATUS", "AGENT_STREAM_SNAPSHOT", "CONNECTED"]);
     } finally {
       socket.close();
       await harness.app.close();

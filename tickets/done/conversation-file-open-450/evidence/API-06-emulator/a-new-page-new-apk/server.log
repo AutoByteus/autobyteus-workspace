@@ -1,0 +1,147 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:62866
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:62866
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+AgentRunManager initialized.
+AgentRunManager initialized.
+{"level":40,"time":1794224671732,"pid":18404,"hostname":"MacBookPro","reqId":"req-1k","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.7331250000006548,"msg":"http request completed"}
+{"level":40,"time":1794224671968,"pid":18404,"hostname":"MacBookPro","reqId":"req-1s","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.4137080000000424,"msg":"http request completed"}
+{"level":40,"time":1794224672064,"pid":18404,"hostname":"MacBookPro","reqId":"req-29","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.429707999999664,"msg":"http request completed"}
+{"level":40,"time":1794224697495,"pid":18404,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6032080000004498,"msg":"http request completed"}
+{"level":40,"time":1794224701621,"pid":18404,"hostname":"MacBookPro","reqId":"req-3t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.9461250000022119,"msg":"http request completed"}
+{"level":40,"time":1794224701634,"pid":18404,"hostname":"MacBookPro","reqId":"req-3v","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":6.484749999995984,"msg":"http request completed"}
+{"level":40,"time":1794224701688,"pid":18404,"hostname":"MacBookPro","reqId":"req-40","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3175840000039898,"msg":"http request completed"}
+{"level":40,"time":1794224701738,"pid":18404,"hostname":"MacBookPro","reqId":"req-45","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.31570900000224356,"msg":"http request completed"}
+{"level":40,"time":1794224713317,"pid":18404,"hostname":"MacBookPro","reqId":"req-5l","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.5814170000012382,"msg":"http request completed"}
+{"level":40,"time":1794224716291,"pid":18404,"hostname":"MacBookPro","reqId":"req-5o","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.18512500000360887,"msg":"http request completed"}
+{"level":40,"time":1794224716323,"pid":18404,"hostname":"MacBookPro","reqId":"req-5s","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.4051659999968251,"msg":"http request completed"}
+{"level":40,"time":1794224716331,"pid":18404,"hostname":"MacBookPro","reqId":"req-5t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.55899999999383,"msg":"http request completed"}
+{"level":40,"time":1794224723339,"pid":18404,"hostname":"MacBookPro","reqId":"req-6d","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.295750000004773,"msg":"http request completed"}
+{"level":40,"time":1794224723347,"pid":18404,"hostname":"MacBookPro","reqId":"req-6e","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2767500000045402,"msg":"http request completed"}
+{"level":40,"time":1794224728798,"pid":18404,"hostname":"MacBookPro","reqId":"req-6k","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.293416000000434,"msg":"http request completed"}
+{"level":40,"time":1794224728802,"pid":18404,"hostname":"MacBookPro","reqId":"req-6l","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30895800000143936,"msg":"http request completed"}
+{"level":40,"time":1794224741043,"pid":18404,"hostname":"MacBookPro","reqId":"req-6o","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.35758399999758694,"msg":"http request completed"}
+{"level":40,"time":1794224741059,"pid":18404,"hostname":"MacBookPro","reqId":"req-6t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2157909999950789,"msg":"http request completed"}
+{"level":40,"time":1794224741061,"pid":18404,"hostname":"MacBookPro","reqId":"req-6u","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.18491599999833852,"msg":"http request completed"}
+{"level":40,"time":1794224751275,"pid":18404,"hostname":"MacBookPro","reqId":"req-6v","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30775000000721775,"msg":"http request completed"}
+{"level":40,"time":1794224758642,"pid":18404,"hostname":"MacBookPro","reqId":"req-81","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.33683400000154506,"msg":"http request completed"}
+{"level":40,"time":1794224761663,"pid":18404,"hostname":"MacBookPro","reqId":"req-83","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.4835000000020955,"msg":"http request completed"}
+{"level":40,"time":1794224761663,"pid":18404,"hostname":"MacBookPro","reqId":"req-85","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.17295799999556039,"msg":"http request completed"}
+{"level":40,"time":1794224761677,"pid":18404,"hostname":"MacBookPro","reqId":"req-87","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3462080000026617,"msg":"http request completed"}
+{"level":40,"time":1794224761682,"pid":18404,"hostname":"MacBookPro","reqId":"req-88","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.24474999999802094,"msg":"http request completed"}
+{"level":40,"time":1794224762005,"pid":18404,"hostname":"MacBookPro","reqId":"req-8d","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.3592920000082813,"msg":"http request completed"}
+{"level":40,"time":1794224762006,"pid":18404,"hostname":"MacBookPro","reqId":"req-8e","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.16641700000036508,"msg":"http request completed"}
+{"level":40,"time":1794224762007,"pid":18404,"hostname":"MacBookPro","reqId":"req-8f","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.1773749999993015,"msg":"http request completed"}
+{"level":40,"time":1794224762040,"pid":18404,"hostname":"MacBookPro","reqId":"req-8h","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.3685000000114087,"msg":"http request completed"}
+{"level":40,"time":1794224762040,"pid":18404,"hostname":"MacBookPro","reqId":"req-8i","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.18362500000512227,"msg":"http request completed"}
+{"level":40,"time":1794224762042,"pid":18404,"hostname":"MacBookPro","reqId":"req-8j","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.2752500000060536,"msg":"http request completed"}

@@ -7,7 +7,18 @@ import { GetTaskWorkerTasks } from '~/graphql/queries/projectTaskQueries'
 import type { ProjectChangeMessage, ProjectTaskStatus, TaskWorkerRef, TaskWorkerTask } from '~/types/project'
 import { throwProjectGraphqlErrors } from '~/utils/projects/projectRequestError'
 
-type TaskWorkerTaskAnswer = { workerKind: 'agent' | 'team'; workerRunId: string; task: TaskWorkerTask | null }
+/** The `taskWorkerTasks` answer as the server sends it: `projectId` null and no title for a Temp task. */
+type TaskWorkerTaskAnswer = { workerKind: 'agent' | 'team'; workerRunId: string
+  task: { taskId: string; projectId?: string | null; title?: string | null; description: string; status: string } | null }
+
+/** The stored Task of a worker, by its kind: a Project Task with its title, or a Temp task (no Project, no title). */
+const workerTaskOf = ({ taskId, projectId, title, description, status }: NonNullable<TaskWorkerTaskAnswer['task']>): TaskWorkerTask => {
+  const base = { taskId, description, status: status as ProjectTaskStatus }
+  if (!projectId) return { ...base, projectId: null, title: null }
+  // The server always gives a Project Task its title; an answer without one is refused, never shown with a guessed label.
+  if (!title) throw new Error(`Task ${taskId} of a Task worker came without its title.`)
+  return { ...base, projectId, title }
+}
 
 export const taskWorkerKey = (worker: TaskWorkerRef): string => worker.kind === 'agent' ? `agent:${worker.agentRunId}` : `team:${worker.teamRunId}`
 
@@ -60,8 +71,7 @@ export const useTaskWorkerTaskStore = defineStore('taskWorkerTasks', () => {
       for (const answer of (data?.taskWorkerTasks ?? []) as TaskWorkerTaskAnswer[]) {
         const key = `${answer.workerKind}:${answer.workerRunId}`
         if (!interest.has(key) || !stamps.has(key) || epochs.get(key) !== stamps.get(key)) continue
-        next[key] = answer.task && { taskId: answer.task.taskId, projectId: answer.task.projectId ?? null,
-          description: answer.task.description, status: answer.task.status as ProjectTaskStatus }
+        next[key] = answer.task && workerTaskOf(answer.task)
       }
       answers.value = next
     } catch (error) {

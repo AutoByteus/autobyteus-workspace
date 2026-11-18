@@ -3,7 +3,6 @@ import * as fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { runBash } from '../../../../src/tools/terminal/tools/run-bash.js';
-import { startBackgroundProcess } from '../../../../src/tools/terminal/tools/start-background-process.js';
 import { BackgroundProcessManager } from '../../../../src/tools/terminal/background-process-manager.js';
 import { ShellCommandExecutor } from '../../../../src/tools/terminal/command-execution/shell-command-executor.js';
 import { TerminalResult } from '../../../../src/tools/terminal/types.js';
@@ -43,7 +42,7 @@ describe('runBash', () => {
     expect(result.exitCode).toBe(0);
     expect(result.timedOut).toBe(false);
     expect(result.effectiveCwd).toBe(fs.realpathSync(cwd));
-    expect(result.backgroundProcesses).toEqual([]);
+    expect(result.toJSON()).not.toHaveProperty('backgroundTasksStarted');
   });
 
   it('writes large heredoc content without PTY corruption', async () => {
@@ -156,23 +155,23 @@ describe('runBash', () => {
 
   it('rejects a provided relative cwd before background spawning starts', async () => {
     const workspaceRoot = createTempWorkspace();
-    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'run');
     const context: any = { workspaceRootPath: workspaceRoot };
 
-    await expect(startBackgroundProcess(context, 'echo should-not-start', 'packages/api'))
+    await expect(runBash(context, 'echo should-not-start', 'packages/api', 30, true))
       .rejects.toThrow('Working directory must be an absolute path.');
     expect(startSpy).not.toHaveBeenCalled();
-    expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
+    expect((context._backgroundProcessManager as BackgroundProcessManager | undefined)?.list() ?? []).toEqual([]);
   });
 
   it('rejects a provided relative cwd without a workspace before background spawning starts', async () => {
-    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'run');
     const context: any = { workspaceRootPath: null };
 
-    await expect(startBackgroundProcess(context, 'echo should-not-start', 'relative/path'))
+    await expect(runBash(context, 'echo should-not-start', 'relative/path', 30, true))
       .rejects.toThrow('Working directory must be an absolute path.');
     expect(startSpy).not.toHaveBeenCalled();
-    expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
+    expect((context._backgroundProcessManager as BackgroundProcessManager | undefined)?.list() ?? []).toEqual([]);
   });
 
   it('rejects an existing inaccessible absolute cwd before foreground execution starts', async () => {
@@ -194,14 +193,14 @@ describe('runBash', () => {
     if (process.platform === 'win32') return;
     const workspaceRoot = createTempWorkspace();
     const inaccessibleRoot = createTempWorkspace();
-    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'startCommand');
+    const startSpy = vi.spyOn(BackgroundProcessManager.prototype, 'run');
     const context: any = { workspaceRootPath: workspaceRoot };
     fs.chmodSync(inaccessibleRoot, 0o600);
     try {
-      await expect(startBackgroundProcess(context, 'echo should-not-start', inaccessibleRoot))
+      await expect(runBash(context, 'echo should-not-start', inaccessibleRoot, 30, true))
         .rejects.toThrow(`Working directory '${fs.realpathSync(inaccessibleRoot)}' is not accessible.`);
       expect(startSpy).not.toHaveBeenCalled();
-      expect((context._backgroundProcessManager as BackgroundProcessManager).processCount).toBe(0);
+      expect((context._backgroundProcessManager as BackgroundProcessManager | undefined)?.list() ?? []).toEqual([]);
     } finally {
       fs.chmodSync(inaccessibleRoot, 0o700);
     }

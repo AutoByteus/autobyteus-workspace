@@ -1,0 +1,16 @@
+# IMP-02 full autobyteus-ts suite (clean env)
+# command: env -i PATH HOME=<temp> TMPDIR corepack pnpm -C autobyteus-ts test
+# commit: 574aa0bd7
+# env: Linux 6.12.54-linuxkit, node v22.23.3
+# date: 2026-10-29 (run before this excerpt was written; full log too large to commit)
+ FAIL  tests/integration/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession integration > repairs non-executable node-pty spawn-helper before starting the bridge
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects an existing inaccessible absolute cwd before foreground execution starts
+ FAIL  tests/unit/tools/terminal/run-bash.test.ts > runBash > rejects an existing inaccessible absolute cwd before background spawning starts
+ Test Files  2 failed | 389 passed | 26 skipped (417)
+      Tests  3 failed | 2323 passed | 104 skipped (2430)
+
+## The 3 failures are outside this change and environmental:
+files changed by this ticket under tools/: 0 lines of diffstat (none)
+uid: 0  -> run-bash 'inaccessible cwd' tests expect EACCES, which root never gets
+node-pty spawn-helper: ls: cannot access 'node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper': No such file or directory
+Same 3 failures occurred in the SR-001 round full run (same environment).

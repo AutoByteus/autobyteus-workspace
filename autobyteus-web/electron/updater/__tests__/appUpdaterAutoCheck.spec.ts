@@ -19,7 +19,7 @@ const { appMock, handlers, send, updater, online } = vi.hoisted(() => {
     reset: () => listeners.clear(),
   };
   return {
-    appMock: { isPackaged: true, getVersion: vi.fn(() => '1.1.9'), getPath: vi.fn(() => '') },
+    appMock: { isPackaged: true, getVersion: vi.fn(() => '1.1.9'), getPath: vi.fn(() => ''), on: vi.fn() },
     handlers: handlerMap,
     send: vi.fn(),
     updater: autoUpdater,
@@ -29,6 +29,7 @@ const { appMock, handlers, send, updater, online } = vi.hoisted(() => {
 
 vi.mock('electron', () => ({
   app: appMock,
+  autoUpdater: { on: vi.fn() },
   ipcMain: {
     removeHandler: (channel: string) => handlers.delete(channel),
     handle: (channel: string, handler: (...args: any[]) => any) => handlers.set(channel, handler),

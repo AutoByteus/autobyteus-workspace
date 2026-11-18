@@ -33,33 +33,62 @@ describe('RunModelSelectionService', () => {
     await expect(service.validate({ context: savedDefault, selection: { llmModelIdentifier: 'default', llmConfig: null } }))
       .resolves.toEqual({ kind: 'model_unavailable' });
   });
-  it('retains only a safe AGY discovery diagnostic, distinct from a missing slug', async () => {
+  it('reports an unreadable list as model_list_unavailable, with only a safe AGY discovery diagnostic, distinct from a missing slug', async () => {
     const { service, catalog } = harness();
     const agy = { ...context, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI };
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
-    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_TIMEOUT', message: 'Antigravity model discovery timed out; check the CLI and retry.' } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_SIGN_IN_REQUIRED'));
-    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_SIGN_IN_REQUIRED',
         message: "Not signed in on this node. Run `agy` to sign in." } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
-    await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
+    await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });
-    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
-    expect((await service.listOptions(context)).unavailableReason).toContain('catalog is unavailable');
+    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_list_unavailable' });
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable' });
   });
 
-  it('retains only a safe Grok Build discovery diagnostic', async () => {
+  it('answers modelListReadable=false with the wording owner\'s text (and the runtime diagnostic) when the list cannot be read, with the same classification as validation', async () => {
+    const { service, catalog } = harness();
+    const agy = { ...context, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI };
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
+    await expect(service.listOptions(agy)).resolves.toEqual({ currentModelIdentifier: 'current', modelListReadable: false, currentModel: null,
+      replacements: [], unavailableReason: 'The model list of Antigravity CLI could not be read: Antigravity model discovery timed out; check the CLI and retry. Try again.' });
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
+    const generic = await service.listOptions(context);
+    expect(generic).toMatchObject({ modelListReadable: false, currentModel: null, replacements: [],
+      unavailableReason: 'The model list of Codex App Server could not be read. Try again.' });
+    expect(generic.unavailableReason).not.toContain('secret');
+    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_list_unavailable' });
+    const [first, second] = await service.listOptionsMany([context, agy]);
+    expect([first.modelListReadable, second.modelListReadable]).toEqual([false, false]);
+  });
+
+  it('answers modelListReadable=true for a list that was read, including a model the list does not offer and an unverified capacity', async () => {
+    const { service, catalog, nativeCapacity } = harness();
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
+    await expect(service.listOptions(context)).resolves.toEqual({ currentModelIdentifier: 'current', modelListReadable: true, currentModel: null,
+      replacements: [], unavailableReason: null });
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current', config_schema: null }]));
+    nativeCapacity.resolveMany.mockReturnValue({});
+    const unverified = await service.listOptions(native);
+    expect(unverified).toMatchObject({ modelListReadable: true, replacements: [] });
+    expect(unverified.currentModel?.llmModelIdentifier).toBe('current');
+    expect(unverified.unavailableReason).toContain('context capacity could not be verified');
+  });
+
+  it('reports an unreadable Grok Build list with only a safe discovery diagnostic', async () => {
     const { service, catalog } = harness();
     const grok = { ...context, runtimeKind: RuntimeKind.GROK_BUILD };
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new GrokBuildDiscoveryError('GROK_MODEL_DISCOVERY_TIMEOUT'));
-    await expect(service.validate({ context: grok, selection })).resolves.toEqual({ kind: 'model_unavailable',
+    await expect(service.validate({ context: grok, selection })).resolves.toEqual({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'GROK_MODEL_DISCOVERY_TIMEOUT', message: 'Grok Build model discovery timed out; check the CLI and retry.' } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
-    await expect(service.validate({ context: grok, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
+    await expect(service.validate({ context: grok, selection })).resolves.toMatchObject({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'GROK_MODEL_DISCOVERY_FAILED' } });
   });
 
@@ -101,14 +130,42 @@ describe('RunModelSelectionService', () => {
     await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
     expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(4);
   });
-  it('validates target schema for external models', async () => {
+  it('validates target schema for external models; undeclared top-level keys are left out, not reported', async () => {
     const { service, catalog } = harness();
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
       properties: { effort: { type: 'string', enum: ['low','high'] } }, required: ['effort'] } }]));
     await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'ultra', old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
       { path: 'llmConfig.effort', message: 'Value is not one of the supported options.' },
-      { path: 'llmConfig.old', message: 'Setting is not supported by the selected runtime and model.' },
     ] });
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'high', old: true } } })).resolves.toEqual({ kind: 'valid',
+      selection: { llmModelIdentifier: 'target', llmConfig: { effort: 'high' } } });
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
+      { path: 'llmConfig.effort', message: 'Required value is missing.' },
+    ] });
+  });
+
+  // claude-anthropic-effort-control SR-005 examples table: a saved Opus 5.5 config still holding the removed display setting.
+  it.each([
+    [{ reasoning_effort: 'high', thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: { reasoning_effort: 'high' } } }],
+    [{ reasoning_effort: 'ultra', thinking_display: 'omitted' }, { kind: 'invalid', errors: [
+      { path: 'llmConfig.reasoning_effort', message: 'Value is not one of the supported options.' }] }],
+    [{ thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null } }],
+    [{}, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: {} } }],
+    [null, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null } }],
+  ] as const)('canonicalizes %j against an effort-only schema', async (llmConfig, expected) => {
+    const { service, catalog } = harness();
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
+      properties: { reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'] } } } }]));
+    await expect(service.validate({ context, selection: { ...selection, llmConfig } })).resolves.toEqual(expected);
+  });
+
+  it('canonicalizes any config of a model without settings to null', async () => {
+    const { service, catalog } = harness();
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: null }]));
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { old: true } } })).resolves.toEqual({ kind: 'valid',
+      selection: { llmModelIdentifier: 'target', llmConfig: null } });
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: 'not an object' } })).resolves.toEqual({ kind: 'invalid', errors: [
+      { path: 'llmConfig', message: 'Model configuration must be null or an object.' }] });
   });
   it('validates mixed-runtime scopes independently against fresh catalog evidence', async () => {
     const { service, catalog, nativeCapacity } = harness(128000, 64000);

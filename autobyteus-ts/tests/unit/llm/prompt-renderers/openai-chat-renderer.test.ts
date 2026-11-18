@@ -88,7 +88,7 @@ describe('OpenAIChatRenderer', () => {
     const renderer = new OpenAIChatRenderer();
     const rendered = await renderer.render([
       new Message(MessageRole.USER, {
-        content: 'The read_media_file tool call completed successfully.',
+        content: 'The read_file tool call completed successfully.',
         image_urls: ['data:image/png;base64,aW1hZ2U=']
       })
     ]) as any[];
@@ -96,7 +96,7 @@ describe('OpenAIChatRenderer', () => {
     expect(rendered[0]).toMatchObject({ role: 'user' });
     expect(rendered[0].content[0]).toEqual({
       type: 'text',
-      text: 'The read_media_file tool call completed successfully.'
+      text: 'The read_file tool call completed successfully.'
     });
     expect(rendered[0].content[1]).toMatchObject({
       type: 'image_url',

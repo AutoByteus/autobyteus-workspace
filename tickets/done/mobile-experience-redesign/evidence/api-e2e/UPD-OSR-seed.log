@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.12-beta.1 test:e2e:owner-scoped-file-reads /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/autobyteus-web
+> node tests/e2e/owner-scoped-file-reads-probe.mjs --seed-to /tmp/autobyteus277-osr-seed --unrelated 30
+
+[2026-11-06T11:00:53.714Z] SEED start: Seed hub, Team and Org runs with member files, plus 30 unrelated saved team runs, through public APIs
+[2026-11-06T11:00:59.663Z] SEED Pass
+{"result":"Pass","cases":{"SEED":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":33417,"status":"terminated","exit":0}},"evidencePath":"/tmp/autobyteus277-osr-seed-seed-evidence/evidence.json"}
+exit 0

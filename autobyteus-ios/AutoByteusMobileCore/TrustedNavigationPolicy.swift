@@ -17,7 +17,7 @@ public struct NavigationDecision: Codable, Equatable {
 }
 
 public enum TrustedNavigationPolicy {
-    public static func classify(targetURL: String, profile: SavedNodeProfile) -> NavigationDecision {
+    public static func classify(targetURL: String, entry: SavedNodeEntry) -> NavigationDecision {
         guard let components = URLComponents(string: targetURL) else {
             return NavigationDecision(type: .block, reason: "URL could not be parsed")
         }
@@ -35,9 +35,9 @@ public enum TrustedNavigationPolicy {
             return NavigationDecision(type: .block, reason: "URL has no host")
         }
 
-        let sameOrigin = scheme == profile.scheme.lowercased()
-            && host == profile.host.lowercased()
-            && normalizedPort(scheme: scheme, port: components.port) == normalizedPort(scheme: profile.scheme, port: profile.port)
+        let sameOrigin = scheme == entry.scheme.lowercased()
+            && host == entry.host.lowercased()
+            && normalizedPort(scheme: scheme, port: components.port) == normalizedPort(scheme: entry.scheme, port: entry.port)
         guard sameOrigin else {
             return NavigationDecision(type: .openExternal, reason: "Different origin opens outside the WebView")
         }

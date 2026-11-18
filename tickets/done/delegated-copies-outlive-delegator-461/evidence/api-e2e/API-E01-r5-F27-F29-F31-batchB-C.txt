@@ -1,0 +1,130 @@
+# F-29 worker scope SCP-E2E-006 (r5-batchB.log 5775-5800)
+ FAIL  tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts > get_project_task worker scope through real roots and runtimes (built server, scripted AGY, emulated LM Studio) > SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope
+AssertionError: expected [ { …(4) }, { …(4) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "lastRole": "user",
++     "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_44ee6489-c89c-498e-9840-8c85094fe414\",\"task_id\":\"scope-board-267460-1\"}}",
++     "system": "## Agent Identity
++
++ - Name: Scope Native Helper 267460
++ - Description: Native Helper (get_project_task scope E2E)
++
++ ### Responsibilities and Boundaries
++
++ You are Scope Native Helper 267460. Follow the request.
++
++ ## Working With Other Agents
++
++ You are a task agent: another agent delegated a task to you. The task message tells you how to reach that agent; when you finish, or need something you can't get yourself, tell it using `send_message_to`.
++
++ You can also delegate tasks to other agents and agent teams.
++
++ - To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's first message, together with your run id so it can reply; don't send it again with `send_message_to`.
++ - Every delegation to an address creates a new task agent or task agent team, so you can delegate several tasks at the same time.
++ - To talk with a task agent, use `send_message_to` with its run id. It talks back to you the same way. For a task agent team you get two run ids: talk with the team through its coordinator's run id (`target_team_coordinator_agent_run_id`).
++ - Every message you receive, including a new task, gives its sender run id, and its sender address when that address reaches the sender. When you reply to it or report your task result, use `send_message_to` with `target_agent_run_id` set to the sender run id, or `recipient_address` set to the sender address (one of them, not both). Reply only when the message asks you something or you need something from the sender; a result or an answer needs no reply.
++ - `list_available_agents`, if you have it, shows the agents and agent teams you can work with, with their addresses.
++ - If the user mentions agents or agent teams, they are listed at the end of the user's message; follow that note.
+
+# F-27 runtime-switch-native RS-03 and members-extended (r5-batchB.log 5990-6053)
+ FAIL  tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > agent runtime switch of Org members and delegated copies: failed starts, restarts, Grok and native targets > EX-03: Team copies with a Team-level choice of another runtime, woken in different orders: each member switches at its own first input with its own segment and marker; a member that never ran starts plainly
+Error: Timed out: lead one switched
+ ❯ until tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:66:9
+     64|   const deadline = Date.now() + ms;
+     65|   while (Date.now() < deadline) { if (await check()) return; await wai…
+     66|   throw new Error(`Timed out: ${label}`);
+       |         ^
+     67| };
+     68| const findDir = (base: string, name: string, depth = 0): string | null…
+ ❯ switched tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:435:7
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:445:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/20]⎯
+
+ FAIL  tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > agent runtime switch of Org members and delegated copies: failed starts, restarts, Grok and native targets > EX-04: a configured Team's default runtime edit with its linked members, in one save: every member switches at its own first input, activated lead-first in one Team and worker-first in another
+AssertionError: worker native first turn: errors: expected [ { code: 'SESSION_NOT_READY', …(4) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "code": "SESSION_NOT_READY",
++     "error_effect": null,
++     "error_scope": null,
++     "message": "Session is not ready yet. Retry after CONNECTED message.",
++     "turn_id": null,
++   },
++ ]
+
+ ❯ talk tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:184:86
+    182|     stream.send(socket, agentRunId, content);
+    183|     await until(() => messages.some((m) => stream.turnEnded(m, agentRu…
+    184|     expect(messages.filter(stream.failed).map((m) => m.payload), `${la…
+       |                                                                                      ^
+    185|     await wait(300);
+    186|     socket.close();
+ ❯ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts:502:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/20]⎯
+
+ FAIL  tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and cannot switch
+AssertionError: {"success":true,"outcome":"UPDATED","message":"Agent runtime and model saved. The agent runtime changes when you send your next message.","fieldErrors":[],"canonicalSelection":{"runtimeKind":"autobyteus","llmModelIdentifier":"rs-native-a:lmstudio@127.0.0.1:52495"}}: expected { success: true, …(4) } to match object { success: false }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "success": false,
++   "success": true,
+  }
+
+ ❯ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts:490:46
+    488|     const copyFile = await fs.readFile(path.join(runDir(copyId), "run_…
+    489|     const refused = await save(copyId, NATIVE, nativeModel);
+    490|     expect(refused, JSON.stringify(refused)).toMatchObject({ success: …
+       |                                              ^
+    491|     expect(await fs.readFile(path.join(runDir(copyId), "run_metadata.j…
+    492|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/20]⎯
+
+
+# F-31 stopped-run-edit-root (r5-batchC.log 4486-4520)
+ FAIL  tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts > a registered Agent root follows the saved edit of its stopped host > SRE-01..03: copies delegated from the registered root after a saved edit of the crashed host carry the saved launch; a runtime change is pending on the host and inherited; a live host refuses the edit
+AssertionError: copy two carries the SAVED model: expected { Object (runtimeKind, llmModelIdentifier, ...) } to match object { Object (runtimeKind, llmModelIdentifier) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "llmModelIdentifier": "sre-alt-model",
++   "llmModelIdentifier": "gemini-3.8-flash-low",
+    "runtimeKind": "antigravity_cli",
+  }
+
+ ❯ tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts:298:68
+    296|     const copyTwo = second.target_agent_run_id as string;
+    297|     const afterEdit = await copyLaunches();
+    298|     expect(afterEdit[copyTwo], "copy two carries the SAVED model").toM…
+       |                                                                    ^
+    299|     expect(afterEdit[copyOne], "copy one keeps its started launch").to…
+    300|     // the copy's report wakes the host again through the root (no man…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  11 failed | 16 passed (27)
+   Start at  11:52:24
+   Duration  223.46s (transform 26.98s, setup 375ms, import 45.42s, tests 176.00s, environment 0ms)
+

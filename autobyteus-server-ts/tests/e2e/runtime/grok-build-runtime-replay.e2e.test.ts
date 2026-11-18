@@ -15,6 +15,7 @@ import {
   overrideEnv,
   type FakeGrokCommand,
 } from "../helpers/grok-fake-cli.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // Zero-cost Grok Build coverage through the real Studio server (GraphQL, agent WebSocket,
 // AgentRunManager, ACP backend, token-usage ledger): `GROK_BUILD_COMMAND` points at the
@@ -124,9 +125,8 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type !== "string") return;
-        messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object"
-          && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* Ignore malformed diagnostic rows only. */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });

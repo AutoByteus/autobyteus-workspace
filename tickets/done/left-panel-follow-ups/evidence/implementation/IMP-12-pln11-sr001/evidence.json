@@ -1,0 +1,99 @@
+{
+  "startedAt": "2026-11-06T09:22:58.102Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PLN-11": {
+      "result": "Fail",
+      "description": "388 AC-003: runs started and archived elsewhere list and unlist their Project within one poll, view kept open (incl. a run older than its folder's 6 newest); hidden, no Project read",
+      "startedAt": "2026-11-06T09:23:20.310Z",
+      "finishedAt": "2026-11-06T09:24:04.809Z",
+      "message": "a Project whose run is older than its folder's 6 newest stays listed after another client archives that run",
+      "details": {
+        "nRun": "project_task_manager_8739_7c4bd8944aba4d93b04aa2e262d986a5",
+        "nListedMs": 3767,
+        "nUnlistedMs": 5012,
+        "hiddenRun": "project_task_manager_8739_b40deb7ae98f4015b7947b87edea2740",
+        "readsWhileHidden": 0,
+        "mRun": "project_task_manager_8739_6badb24fd3fc4dd1b84676ac4835a2cd",
+        "mNewer": [
+          "project_task_manager_8739_162e678baed6417eae2d175b00579d3c",
+          "project_task_manager_8739_5ebbcd9389804fd883413cbe8b9c87d5",
+          "project_task_manager_8739_660690ecab7e47378f4f83248af2994a",
+          "project_task_manager_8739_7e365bc98ad34db183b2b89f4da5591e",
+          "project_task_manager_8739_58223faa7f134928b931886006af4178",
+          "project_task_manager_8739_de521ad3461048dc8f8a12a7b1f4713a"
+        ],
+        "mListedMs": 1,
+        "mUnlistedMs": false,
+        "readsAfterOlderArchive": 0
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 33328,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 31331,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PLN-11",
+      "message": "a Project whose run is older than its folder's 6 newest stays listed after another client archives that run"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:51906",
+    "frontendUrl": "http://127.0.0.1:51907",
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-WRYeBH"
+  },
+  "seed": {
+    "ids": {
+      "manager": "project-task-manager-8739",
+      "writer": "release-notes-writer-8739",
+      "checker": "fact-checker-8739",
+      "squad": "docs-review-team-8739"
+    },
+    "names": {
+      "manager": "Project Task Manager 8739",
+      "writer": "Release Notes Writer 8739",
+      "checker": "Fact Checker 8739",
+      "squad": "Docs Review Team 8739"
+    },
+    "projects": {
+      "P": {
+        "projectId": "project_cfac6e77-7cda-43a9-a757-97018704c00c",
+        "name": "Prototype Launch 8739"
+      },
+      "Q": {
+        "projectId": "project_56f27af0-b2c8-47e5-b513-34b7841d2bb1",
+        "name": "Docs Site 8739"
+      },
+      "R": {
+        "projectId": "project_592ecb04-b96e-4a83-affa-3e69d900c55a",
+        "name": "Website 8739"
+      }
+    },
+    "tasks": {
+      "P1": "project_task_42221ce2-5bfd-4c17-8b90-0e8028c1a802",
+      "P2": "project_task_5f086ddf-83b1-4027-b1a0-d94086d7c4de",
+      "P3": "project_task_9ab20842-ccaf-4865-8f91-9596bef2eea9",
+      "P4": "project_task_6f1a3b77-025a-47b9-b106-bb23be77c4e4",
+      "P5": "project_task_297a9a0f-d9bf-421e-b79d-a22d086b51a0",
+      "Q1": "project_task_019fd78b-6fa0-494f-b61c-35dbd6ad4474",
+      "Q2": "project_task_77a3b313-f895-4189-a998-43dee2a1d3a2",
+      "Q3": "project_task_387e6b11-5808-41d8-816b-2d11a6b9fce9",
+      "R1": "project_task_e6a54851-6a14-4e65-9668-1fb56bf70bd1"
+    }
+  },
+  "browserVersion": "156.0.8078.80",
+  "result": "Fail",
+  "finishedAt": "2026-11-06T09:24:06.090Z"
+}

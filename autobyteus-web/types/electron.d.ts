@@ -1,9 +1,12 @@
 import type {
   AppUpdateAutoCheck,
+  AppUpdateAutomaticChangeResult,
   AppUpdateChannel,
   AppUpdateChannelChangeResult,
   AppUpdateState,
 } from '../shared/appUpdateTypes';
+import type { NodeAutoUpdateEntries } from '../shared/nodeAutoUpdateTypes';
+import type { NodeAccessActionResult, NodeAccessStates } from '../shared/nodeAccessTypes';
 import type { ServerHealthResult, ServerStatusSnapshot } from './serverStatus';
 import type {
   NodeRegistryChange,
@@ -12,6 +15,7 @@ import type {
 } from './node';
 import type {
   BrowserHostBounds,
+  BrowserShellHistoryNavigationRequest,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
@@ -41,9 +45,9 @@ declare global {
       onServerStatus: (callback: (status: ServerStatusSnapshot) => void) => Cleanup;
       checkServerHealth: () => Promise<ServerHealthResult>;
 
-      openNodeWindow: (nodeId: string) => Promise<{ windowId: number; created: boolean }>;
-      focusNodeWindow: (nodeId: string) => Promise<{ focused: boolean; reason?: string }>;
-      listNodeWindows: () => Promise<Array<{ windowId: number; nodeId: string }>>;
+      openNodeWindow: (entryId: string) => Promise<{ windowId: number; created: boolean }>;
+      focusNodeWindow: (entryId: string) => Promise<{ focused: boolean; reason?: string }>;
+      listNodeWindows: () => Promise<Array<{ windowId: number; entryId: string }>>;
       getWindowContext: () => Promise<WindowNodeContext>;
       upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
       getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
@@ -51,6 +55,7 @@ declare global {
       getBrowserShellSnapshot: () => Promise<BrowserShellSnapshot>;
       openBrowserTab: (request: BrowserShellOpenTabRequest) => Promise<BrowserShellSnapshot>;
       navigateBrowserTab: (request: BrowserShellNavigateTabRequest) => Promise<BrowserShellSnapshot>;
+      navigateBrowserHistory: (request: BrowserShellHistoryNavigationRequest) => Promise<BrowserShellSnapshot>;
       reloadBrowserTab: (request: BrowserShellReloadTabRequest) => Promise<BrowserShellSnapshot>;
       focusBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
       setActiveBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
@@ -65,17 +70,26 @@ declare global {
       downloadAppUpdate: () => Promise<AppUpdateState>;
       installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>;
       setAppUpdateChannel: (channel: AppUpdateChannel) => Promise<AppUpdateChannelChangeResult>;
+      setAppUpdateAutomatic: (enabled: boolean) => Promise<AppUpdateAutomaticChangeResult>;
       markAppUpdateNotificationRead: () => Promise<AppUpdateState>;
       clearAppUpdateNotification: () => Promise<AppUpdateState>;
       setAppUpdateAutoCheck: (settings: AppUpdateAutoCheck) => Promise<AppUpdateState>;
       onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
+      getNodeAutoUpdateState: () => Promise<NodeAutoUpdateEntries>;
+      markNodeAutoUpdateRead: (entryId: string) => Promise<NodeAutoUpdateEntries>;
+      recheckNodeAutoUpdate: (entryId: string) => Promise<void>;
+      onNodeAutoUpdateChanged: (callback: (entries: NodeAutoUpdateEntries) => void) => Cleanup;
+      getNodeAccessStates: () => Promise<NodeAccessStates>;
+      connectNode: (entryId: string, setupCode: string) => Promise<NodeAccessActionResult>;
+      disconnectNode: (entryId: string) => Promise<NodeAccessActionResult>;
+      onNodeAccessChanged: (callback: (states: NodeAccessStates) => void) => Cleanup;
 
       getLogFilePath: () => Promise<string>;
       openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;
       openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
       readLogFile: (
         filePath: string,
-      ) => Promise<{ success: boolean; content?: string; filePath?: string; error?: string }>;
+      ) => Promise<{ success: true; content: string; filePath: string } | { success: false; error: string }>;
       readLocalTextFile: (
         filePath: string,
       ) => Promise<{

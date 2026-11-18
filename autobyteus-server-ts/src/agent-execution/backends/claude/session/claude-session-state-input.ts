@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
@@ -12,6 +13,8 @@ export type ClaudeSessionDependencies = {
   sdkClient: ClaudeSdkClient;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
   agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
+  /** The run's integration variables for the CLI's shell (`null`: none on this host). */
+  integrationRunAccess?: IntegrationRunAccess | null;
   systemInstructionCaptureService?: SystemInstructionCaptureService;
   isRunSessionActive: () => boolean;
   terminateRunSession: () => Promise<void>;

@@ -1,0 +1,112 @@
+{
+  "case": "API-03 (AC-005): data written by the released v1.5.9-beta.12, then this branch's server on it",
+  "commit": "e9c25f3801",
+  "why_beta12": "the installed app is v1.5.9-beta.12; `git diff v1.5.9-beta.11 v1.5.9-beta.12 -- autobyteus-server-ts/src/model-routing` is empty (the settings-service change is an unrelated memory-search setting), so the router data has the beta.11 shape",
+  "steps": [
+    "pnpm --silent isolated-app start --app /Applications/AutoByteus.app --data-root /tmp/r313/beta12-root (owned, kept)",
+    "node API-03-beta12-seed.mjs.txt <backendUrl> \u2026 (beta.12 GraphQL: setModelRouterLaunch(runtime, model), setModelRoutingEnabled, openModelRouterAgent, one routed delegation from a live Claude haiku delegator)",
+    "pnpm --silent isolated-app stop",
+    "node API-03-upgrade.mjs.txt <worktree> /tmp/r313/beta12-root/server-data \u2026 (this branch's dist/app.js on the same data dir; status; openModelRouterAgent; one more routed delegation from beta.12's own delegator run)",
+    "migration records compared before/after (node:sqlite, read-only)"
+  ],
+  "what_to_look_for": "beta12.routerState has no llmConfig; upgrade.statusOnStart.routerLaunch.llmConfig null and active true; openedRouterRun = beta12 routerRun = statusAfterRouting.agentRunId; routerRunsInMemory one run; migrationRecordsIdentical true; prismaDiffSinceBeta12 none",
+  "beta12": {
+    "seed": {
+      "setLaunch": {
+        "enabled": false,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet"
+        },
+        "active": false,
+        "reasonCode": "OFF",
+        "reasonParams": {},
+        "reasonText": "Model Routing is off",
+        "agentRunId": null
+      },
+      "enabled": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": null
+      },
+      "routerRun": "model_router_d44eeb4db1ff484b9cfa432141e150bd",
+      "delegatorRun": "probe_delegator_b12_ae695c3a6e924dd6b6b5bf40b5a384da",
+      "delegation": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_b12_94303316f19c46f2b8e7470d0901c000\\\",\\\"task_id\\\":\\\"ad_hoc_task_bb8e352a-806b-45a8-8ea8-a7718eafe322\\\",\\\"launch_notes\\\":[\\\"Writer Bot B12: runs on claude_agent_sdk / haiku, chosen by the Model Router (release notes): A trivial one-line writing task suits the fast, cheap Haiku 5.5 on the same runtime as the delegator.\\\"]}\"",
+      "statusAfter": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_d44eeb4db1ff484b9cfa432141e150bd"
+      }
+    },
+    "routerState": {
+      "runId": "model_router_d44eeb4db1ff484b9cfa432141e150bd",
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet"
+    },
+    "envSettings": [
+      "APP_ENV=production",
+      "DB_TYPE=sqlite",
+      "AUTOBYTEUS_MODEL_ROUTER_RUNTIME=claude_agent_sdk",
+      "AUTOBYTEUS_MODEL_ROUTER_MODEL=sonnet",
+      "AUTOBYTEUS_MODEL_ROUTING_ENABLED=true"
+    ]
+  },
+  "upgrade": {
+    "statusOnStart": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet",
+        "llmConfig": null
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_d44eeb4db1ff484b9cfa432141e150bd"
+    },
+    "openedRouterRun": "model_router_d44eeb4db1ff484b9cfa432141e150bd",
+    "delegation": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_b12_16d22f1fd9fb4fc497a35700a202c545\\\",\\\"task_id\\\":\\\"ad_hoc_task_df8e044c-8d71-4efe-aff7-135d8483f933\\\",\\\"launch_notes\\\":[\\\"Writer Bot B12: runs on claude_agent_sdk / haiku, chosen by the Model Router (release notes): A trivial one-line release note suits the fast, cheap Haiku 5.5, which is available now.\\\"]}\"",
+    "statusAfterRouting": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet",
+        "llmConfig": null
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_d44eeb4db1ff484b9cfa432141e150bd"
+    },
+    "routerStateAfter": {
+      "runId": "model_router_d44eeb4db1ff484b9cfa432141e150bd",
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet"
+    },
+    "routerRunsInMemory": [
+      "model_router_d44eeb4db1ff484b9cfa432141e150bd"
+    ]
+  },
+  "migrationRecordsIdentical": true,
+  "migrationRecordCounts": {
+    "_prisma_migrations": 27,
+    "app_data_migration_records": 34
+  },
+  "prismaDiffSinceBeta12": "none (`git diff --stat v1.5.9-beta.12 HEAD -- autobyteus-server-ts/prisma` empty)"
+}

@@ -1,0 +1,15 @@
+{
+ "at": "2026-11-07T04:58:12.172Z",
+ "ws": "opened",
+ "markerCreated": true,
+ "graphqlStatus": 200,
+ "graphqlBody": "{\"data\":{\"createAgentDefinition\":{\"id\":\"control-api12\"}}}",
+ "definitions": [
+  "Daily Assistant",
+  "Preview Writer",
+  "CONTROL-api12"
+ ],
+ "markers": [
+  "control-api12.marker"
+ ]
+}

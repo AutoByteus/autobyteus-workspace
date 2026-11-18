@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { DocumentNode } from 'graphql'
 import {
   CREATE_CUSTOM_PROVIDER,
   DELETE_CUSTOM_PROVIDER,
@@ -23,8 +24,11 @@ import { getApolloClient } from '~/utils/apolloClient'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import {
   captureRuntimeProviderRequestTokens,
+  failedCatalogRead,
   indexProviderCatalogSnapshots,
+  loadedCatalogSnapshot,
   mergeWholeCatalogProviders,
+  startedCatalogRead,
 } from './llmProviderCatalogPublication'
 import {
   defaultGeminiSetup,
@@ -39,7 +43,6 @@ import {
   type GeminiOptionSaveInput,
   type GeminiSetupConfigState,
   type ModelGroupKind,
-  type ModelKind,
   type ProviderCredentialSetting,
   type ProviderModelCatalogSnapshot,
   type ProviderWithModels,
@@ -53,8 +56,6 @@ export * from './llmProviderConfigSupport'
 export const PROVIDER_SETTINGS_RUNTIME_KIND = 'autobyteus'
 const inFlightCatalogReads = new Map<string, Promise<RuntimeCatalogSnapshot>>()
 const requestKey = (runtime: string, providerId: string): string => `${runtime}:${providerId}`
-/** Discovery settings (Ollama and LM Studio hosts) own only an LLM model source. */
-const DISCOVERY_SETTING_MODEL_KINDS: ReadonlySet<ModelKind> = new Set<ModelKind>(['LLM'])
 const throwGraphqlErrors = (errors: readonly { message: string }[] | null | undefined): void => {
   if (errors?.length) throw new Error(errors.map(error => error.message).join(', '))
 }
@@ -193,15 +194,39 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
       const current = this.catalogSnapshot(runtime)
       if (current.state === 'ready') return current
+      return this.readRuntimeCatalog(runtime, false)
+    },
+    /**
+     * Re-reads a runtime's list in the background (a picker opened). A list that already loaded stays usable
+     * while it reads (`refreshing`) and is kept when the read fails (`refreshError`); concurrent calls share one
+     * read. Never rejects: the outcome is the snapshot.
+     */
+    async refreshCatalog(runtimeKind: string): Promise<RuntimeCatalogSnapshot> {
+      const runtime = normalizeCatalogRuntimeKind(runtimeKind)
+      const refresh = this.catalogSnapshot(runtime).hasSuccessfulPayload
+      try { return await (refresh ? this.readRuntimeCatalog(runtime, true) : this.fetchProvidersWithModels(runtime)) }
+      catch { return this.catalogSnapshot(runtime) }
+    },
+    /** "Refresh models": the background re-read, and on the AutoByteus runtime a re-discovery of its discovered providers (Ollama, LM Studio, custom endpoints). */
+    async refreshModelList(runtimeKind: string): Promise<RuntimeCatalogSnapshot> {
+      const runtime = normalizeCatalogRuntimeKind(runtimeKind)
+      if (runtime === PROVIDER_SETTINGS_RUNTIME_KIND) {
+        const discovered = this.providerSnapshots(runtime).filter(snapshot => snapshot.ownerProvider.catalogMode === 'DISCOVERED')
+        await Promise.allSettled(discovered.map(snapshot => this.reloadProvider(runtime, snapshot.ownerProvider.id)))
+      }
+      return this.refreshCatalog(runtime)
+    },
+    async readRuntimeCatalog(runtime: string, refresh: boolean): Promise<RuntimeCatalogSnapshot> {
       const inFlight = inFlightCatalogReads.get(runtime)
       if (inFlight) return inFlight
+      const current = this.catalogSnapshot(runtime)
       const epoch = this.catalogEpoch
       const requestId = ++this.nextCatalogRequestId
       const providerTokensAtReadStart = captureRuntimeProviderRequestTokens(
         runtime,
         this.providerRequestIdByKey,
       )
-      this.catalogByRuntimeKind[runtime] = { ...current, currentRequestId: requestId, state: 'loading', errorMessage: null }
+      this.catalogByRuntimeKind[runtime] = startedCatalogRead(current, requestId, refresh)
       const request = (async () => {
         try {
           const { data, errors } = await getApolloClient().query({
@@ -214,24 +239,17 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
           const incomingProviders = indexProviderCatalogSnapshots(
             (data?.providerModelCatalogSnapshots ?? []) as ProviderModelCatalogSnapshot[],
           )
-          this.catalogByRuntimeKind[runtime] = {
-            runtimeKind: runtime,
-            currentRequestId: requestId,
-            state: 'ready',
-            hasSuccessfulPayload: true,
-            providersById: mergeWholeCatalogProviders(
-              runtime,
-              incomingProviders,
-              this.catalogSnapshot(runtime).providersById,
-              providerTokensAtReadStart,
-              this.providerRequestIdByKey,
-            ),
-            errorMessage: null,
-          }
+          this.catalogByRuntimeKind[runtime] = loadedCatalogSnapshot(runtime, requestId, mergeWholeCatalogProviders(
+            runtime,
+            incomingProviders,
+            this.catalogSnapshot(runtime).providersById,
+            providerTokensAtReadStart,
+            this.providerRequestIdByKey,
+          ))
           return this.catalogByRuntimeKind[runtime]
         } catch (error) {
           if (this.isCurrentCatalogRequest(runtime, epoch, requestId)) {
-            this.catalogByRuntimeKind[runtime] = { ...this.catalogSnapshot(runtime), state: 'error', errorMessage: errorMessage(error) }
+            this.catalogByRuntimeKind[runtime] = failedCatalogRead(this.catalogSnapshot(runtime), refresh, errorMessage(error))
           }
           throw error
         }
@@ -241,11 +259,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         if (inFlightCatalogReads.get(runtime) === request) inFlightCatalogReads.delete(runtime)
       }).catch(() => undefined)
       return request
-    },
-    async refreshLocalCatalog(runtimeKind: string): Promise<RuntimeCatalogSnapshot> {
-      const runtime = normalizeCatalogRuntimeKind(runtimeKind)
-      this.catalogByRuntimeKind[runtime] = { ...this.catalogSnapshot(runtime), state: 'idle' }
-      return this.fetchProvidersWithModels(runtime)
     },
     ensureProviderModelCatalog(runtimeKind: string, providerId: string): Promise<ProviderModelCatalogSnapshot> {
       return this.runProviderCatalogMutation(runtimeKind, providerId, false)
@@ -260,7 +273,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
       const providerId = target.ownerProviderId.trim()
       if (!providerId) throw new Error('Provider is required')
-      const affectedKinds = DISCOVERY_SETTING_MODEL_KINDS
       const epoch = this.catalogEpoch
       const requestId = ++this.nextCatalogRequestId
       const key = requestKey(runtime, providerId)
@@ -270,26 +282,18 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       if (previous) {
         this.applyProviderSnapshotLocal(runtime, {
           ...previous,
-          sources: previous.sources.map(source => affectedKinds.has(source.modelKind)
-            ? {
-                ...source,
-                state: 'IDLE',
-                modelCount: 0,
-                successfulUnitCount: 0,
-                failedUnitCount: 0,
-                safeMessage: null,
-              }
-            : source),
+          sources: previous.sources.map(source => ({
+            ...source,
+            state: 'IDLE',
+            modelCount: 0,
+            successfulUnitCount: 0,
+            failedUnitCount: 0,
+            safeMessage: null,
+          })),
           llmModels: [],
         })
       }
-      return this.runProviderCatalogMutation(
-        runtime,
-        providerId,
-        false,
-        affectedKinds,
-        { epoch, requestId },
-      )
+      return this.runProviderCatalogMutation(runtime, providerId, false, { epoch, requestId })
     },
     async ensureMissingDynamicProviders(runtimeKind: string): Promise<void> {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
@@ -304,7 +308,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       runtimeKind: string,
       providerId: string,
       force: boolean,
-      affectedKinds?: ReadonlySet<ModelKind>,
       preparedRequest?: PreparedProviderCatalogRequest,
     ): Promise<ProviderModelCatalogSnapshot> {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
@@ -319,13 +322,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         const hasRows = previous.llmModels.length + previous.audioModels.length + previous.imageModels.length > 0
         this.applyProviderSnapshotLocal(runtime, {
           ...previous,
-          sources: previous.sources.map(source => !affectedKinds || affectedKinds.has(source.modelKind)
-            ? {
-                ...source,
-                state: hasRows ? 'REFRESHING' : 'LOADING',
-                safeMessage: null,
-              }
-            : source),
+          sources: previous.sources.map(source => ({
+            ...source,
+            state: hasRows ? 'REFRESHING' : 'LOADING',
+            safeMessage: null,
+          })),
         })
       }
       try {
@@ -350,13 +351,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
             + previous.videoModels.length > 0
           this.applyProviderSnapshotLocal(runtime, {
             ...previous,
-            sources: previous.sources.map(source => !affectedKinds || affectedKinds.has(source.modelKind)
-              ? {
-                  ...source,
-                  state: hasRows ? 'STALE_ERROR' : 'ERROR',
-                  safeMessage: 'MODEL_CATALOG_REQUEST_FAILED',
-                }
-              : source),
+            sources: previous.sources.map(source => ({
+              ...source,
+              state: hasRows ? 'STALE_ERROR' : 'ERROR',
+              safeMessage: 'MODEL_CATALOG_REQUEST_FAILED',
+            })),
           })
         }
         throw error
@@ -427,7 +426,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const setting = data?.createCustomProvider as ProviderCredentialSetting | undefined
       if (!setting) throw new Error('Failed to create custom provider')
       this.applyCredentialSetting(setting)
-      await this.refreshLocalCatalog(PROVIDER_SETTINGS_RUNTIME_KIND)
+      await this.refreshCatalog(PROVIDER_SETTINGS_RUNTIME_KIND)
       return setting
     },
     async deleteCustomProvider(providerId: string): Promise<boolean> {
@@ -479,7 +478,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     async activateGeminiConfigurationOption(option: GeminiConfigurationOption): Promise<GeminiSetupConfigState> {
       return this.runGeminiMutation(USE_GEMINI_MODE, 'useGeminiMode', { mode: option })
     },
-    async runGeminiMutation(mutation: unknown, key: string, variables: Record<string, unknown>): Promise<GeminiSetupConfigState> {
+    async runGeminiMutation(mutation: DocumentNode, key: string, variables: Record<string, unknown>): Promise<GeminiSetupConfigState> {
       const { data, errors } = await getApolloClient().mutate({ mutation, variables })
       throwGraphqlErrors(errors)
       const result = data?.[key] as GeminiConfigurationCommandResult | undefined

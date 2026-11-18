@@ -1,0 +1,10 @@
+# API-05 rerun (round 2) — availability, agent-runtimes, Anthropic stored-config resume + edit/launch e2e at dfa0faa76 (edit/launch saves go through the changed validation service)
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts --no-watch   (cwd: worktree root)
+# Commit: dfa0faa76 · ENV-1 · 2026-11-10
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 20654ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 19367ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 6700ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 1016ms
+ Test Files  4 passed (4)
+      Tests  29 passed (29)
+   Duration  74.81s (transform 10.62s, setup 190ms, import 25.39s, tests 47.74s, environment 0ms)

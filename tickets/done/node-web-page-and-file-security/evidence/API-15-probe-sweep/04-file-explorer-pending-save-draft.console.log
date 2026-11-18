@@ -1,0 +1,27 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:file-explorer-pending-save-draft /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/file-explorer-pending-save-draft-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/file-explorer-pending-save-draft
+
+PSD-001: Started
+PSD-001: Pass
+PSD-002: Started
+PSD-002: Pass
+PSD-003: Started
+PSD-003: Pass
+PSD-004: Started
+PSD-004: Pass
+PSD-005: Started
+PSD-005: Pass
+PSD-006: Started
+PSD-006: Pass
+PSD-007: Started
+PSD-007: Pass
+PSD-008: Started
+PSD-008: Pass
+PSD-009: Started
+PSD-009: Pass
+PSD-010: Started
+PSD-010: Pass
+PSD-011: Started
+PSD-011: Pass
+{"cases":{"PSD-001":"Pass","PSD-002":"Pass","PSD-003":"Pass","PSD-004":"Pass","PSD-005":"Pass","PSD-006":"Pass","PSD-007":"Pass","PSD-008":"Pass","PSD-009":"Pass","PSD-010":"Pass","PSD-011":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":92300,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":92212,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

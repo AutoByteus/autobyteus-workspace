@@ -1,0 +1,9 @@
+Check: IMP-13
+Command: pnpm -C autobyteus-web test:e2e:existing-run-model-config --output-dir <tmp> (headless Chrome, fixture page)
+Commit: working tree after d3463e0a7e plus the probe input fixes (committed next)
+Environment: macOS arm64, Node 22, Google Chrome
+Date: 2026-11-02
+
+Base commit 6672bed39f (clean clone): failed 4 checks: API-E2E-004-A, API-E2E-004-D, API-E2E-004-E, BROWSER-PAGE-ERRORS
+This branch: failed the same 4 checks (A, D, E: waiting for [data-test="chat-model-locked-runtime"]; BROWSER-PAGE-ERRORS: WebSocket ws://127.0.0.1:9/ws/update-notifications ERR_UNSAFE_PORT)
+B (Team save sends one narrow configured-Agent patch with its own runtimeKind) and F (directly edited member keeps its pair) pass.

@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-05 --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/DEL-02-merged-base-2-MSP-05-run-1
+
+[mobile-shell] MSP-05 …
+[mobile-shell] MSP-05 Pass
+mobile-shell probe: Pass

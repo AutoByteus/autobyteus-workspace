@@ -1,0 +1,28 @@
+# Summary of the clean-clone run (/tmp/ab324-clone at 6fae6761d3); full log 847828 bytes, trimmed to summaries, skips and failures.
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts (11 tests | 11 skipped)
+ ✓ tests/integration/agent-execution/claude-session-manager.integration.test.ts (9 tests | 8 skipped) 258ms
+ ↓ tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts (8 tests | 8 skipped)
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ ↓ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts (5 tests | 5 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-raw-vs-backend-cadence.probe.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts (5 tests | 5 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-long-turn-cadence.probe.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts (3 tests | 3 skipped)
+ ↓ tests/integration/embeddings/embedding-model-quality.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/services/claude-model-catalog.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/services/codex-model-catalog.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/projects/project-task-index-status-load.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/terminal/terminal-websocket-wsl.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/mcp-server-management/mcp-config-service.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/agent-definition/github-agent-package-import.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts (2 tests | 2 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-app-server-client.integration.test.ts (2 tests | 2 skipped)
+ ↓ tests/integration/utils/download-utils.integration.test.ts (1 test | 1 skipped)
+ Test Files  83 passed | 20 skipped (103)
+      Tests  461 passed | 69 skipped (530)
+   Start at  21:18:44
+   Duration  311.89s (transform 18.20s, setup 1.93s, import 148.29s, tests 146.25s, environment 10ms)
+exit=0

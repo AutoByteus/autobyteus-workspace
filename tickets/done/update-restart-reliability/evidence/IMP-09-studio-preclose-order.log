@@ -1,0 +1,9 @@
+# IMP-09
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/compositions/studio-preclose-order.test.ts --no-watch --reporter=verbose
+# Commit: 591bf52551
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ ✓ tests/unit/compositions/studio-preclose-order.test.ts > studio server preClose order > runs the client-connection close last, after the native drain and the WebSocket plugin 303ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

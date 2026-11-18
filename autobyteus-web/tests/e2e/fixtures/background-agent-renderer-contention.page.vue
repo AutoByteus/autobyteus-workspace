@@ -155,7 +155,6 @@ selectionStore.selectRunWithoutShellNavigation(composerContext.state.runId, 'age
 
 const richWorkerContext = contextFor('rich-worker-run', 0, AgentStatus.Idle);
 const richTaskContext = contextFor('rich-task-agent-run', 0, AgentStatus.Running);
-const richTaskTeamChildContext = contextFor('rich-task-team-child-run', 0, AgentStatus.Running);
 const richWorkerNode = testAgentNode('/worker', {
   agentRunId: richWorkerContext.state.runId,
   displayName: 'Worker',
@@ -171,35 +170,11 @@ const richTeam = buildTestTeamContext({
     workspaceId: 'workspace-0',
     workspaceMetadata: workspaceMetadata(0),
   },
-  rootChildren: [richWorkerNode],
-  taskExecutions: [
-    {
-      kind: 'task_agent', address: '/worker', agent_run_id: richTaskContext.state.runId,
-      platform_agent_run_id: null, delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
-      source: { kind: 'agent', agent_definition_id: 'worker-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } },
-    },
-    {
-      // A catalog Review Team copy (Teams are flat).
-      kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
-      source: {
-        kind: 'agent_team', team_definition_id: 'review-team', coordinator_address: '/ReviewTeam/reviewer',
-        members: [{ address: '/ReviewTeam/reviewer', agent_definition_id: 'reviewer-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null }, follows_team: true }], handoffs: [],
-        default_launch_configuration: {
-          runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
-          auto_execute_tools: true, workspace_root_path: null,
-        },
-      },
-      members: [{
-        kind: 'task_team_agent', address: '/ReviewTeam/reviewer',
-        agent_run_id: richTaskTeamChildContext.state.runId, platform_agent_run_id: null,
-      }],
-      task_executions: [], delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
-    },
-  ],
+  // A second own member that runs (a run a member delegated is its own run, outside the Team: autobyteus-461 rule 2).
+  rootChildren: [richWorkerNode, testAgentNode('/reviewer', { agentRunId: richTaskContext.state.runId, displayName: 'Reviewer' })],
   contexts: [
     { agentRunId: richWorkerContext.state.runId, context: richWorkerContext },
     { agentRunId: richTaskContext.state.runId, context: richTaskContext },
-    { agentRunId: richTaskTeamChildContext.state.runId, context: richTaskTeamChildContext },
   ],
 });
 const seededTeams = [richTeam];
@@ -281,7 +256,7 @@ const switchSurface = async (surface: 'files' | 'teams') => {
 };
 const dispatchWindow = (target: AgentStreamProjectionTarget, index: number) => {
   const runId = target.context.state.runId;
-  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', agent_id: runId } } as ServerMessage, target);
+  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', background_tasks_running: 0, agent_id: runId } } as ServerMessage, target);
   dispatchAgentStreamMessage({
     type: 'SEGMENT_CONTENT',
     payload: {
@@ -357,7 +332,7 @@ const runNoEffectCheck = () => {
   const target = loadTargets[0]!;
   const before = loadSnapshot();
   dispatchAgentStreamMessage({ type: 'CONNECTED', payload: { agent_id: target.context.state.runId, session_id: 'probe' } } as ServerMessage, target);
-  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', agent_id: target.context.state.runId } } as ServerMessage, target);
+  dispatchAgentStreamMessage({ type: 'AGENT_STATUS', payload: { status: 'running', background_tasks_running: 0, agent_id: target.context.state.runId } } as ServerMessage, target);
   const after = loadSnapshot();
   return {
     topologyDelta: after.topologyRevision - before.topologyRevision,
@@ -462,7 +437,7 @@ const historyState: WorkspaceHistorySectionState = {
   isRunTerminating: () => false, isTeamTerminating: () => false,
   isRunDeleting: () => false, isTeamDeleting: () => false,
   isRunArchiving: () => false, isTeamArchiving: () => false,
-  isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false,
+  isWorkspaceHistoryLoading: () => false,
   workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
   isWorkspaceExpanded: () => true, toggleWorkspace: () => {},
   isAgentExpanded: () => false, toggleAgent: () => {},
@@ -482,7 +457,7 @@ const avatars: WorkspaceHistoryAvatarBindings = {
   getTeamMemberDisplayName: (member) => member.displayName || member.memberName, getTeamMemberInitials: () => 'M',
 };
 const actions: WorkspaceHistorySectionActions = {
-  onRemoveWorkspace: () => {}, onCreateRun: () => {}, onSelectRun: () => {},
+  onCreateRun: () => {}, onSelectRun: () => {}, onOpenAgentRun: () => {},
   onTerminateRun: () => {}, onArchiveRun: () => {}, onDeleteRun: () => {},
   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },

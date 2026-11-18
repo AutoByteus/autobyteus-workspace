@@ -1,0 +1,9 @@
+# API-L11 (round 3): restart of the merged desktop app (Electron shell and embedded server changed by the merge)
+# pnpm --silent isolated-app restart iso-63150-d45d → ok, new app pid 23251, same ports and data root; 2026-10-27 08:53 UTC; embedded server process 24200 (listener of 63151); threads by ps -M, memory by footprint -p
+08:53:24 threads 28 Footprint 257 MB · 08:53:32 threads 27 Footprint 258 MB (no model at start)
+memoryIndexStatus: READY, FIND_RUNS 3688/3688, JOURNALS 3688/3688, TEXT_INDEX 7434/7434, MEANING_INDEX 7434/7434 (store reused)
+08:53:41–46 threads 27 Footprint 211–212 MB (still none)
+First searches, memorySearch "pelicanmarigold9152" limit 2 every ~2.5 s:
+08:53:56 threads 27 Footprint 211 MB → {"ms":402,"coverage":"The meaning index is loading: these results are by words only.","note":"No matches; try other words.","wordsNotFound":["pelicanmarigold9152"]}
+08:53:59 threads 31 Footprint 491 MB → {"ms":99,"coverage":null,"note":"None of these words appear in your memory: pelicanmarigold9152.","wordsNotFound":["pelicanmarigold9152"]}
+08:54:01–04 threads 31 → same note, 62–65 ms

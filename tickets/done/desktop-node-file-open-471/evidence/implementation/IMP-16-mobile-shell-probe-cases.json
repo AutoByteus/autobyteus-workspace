@@ -1,0 +1,140 @@
+{
+ "header": {
+  "id": "IMP-16",
+  "command": "pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<tmp> --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37",
+  "commit": "b0f3d1c42b",
+  "env": "clean env (env -i, temp HOME), macOS 26.5.2, node v22.23.1",
+  "date": "2026-11-11T15:14:51.609Z",
+  "source": "excerpt of mobile-shell-probe.json"
+ },
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-16": "Pass",
+   "MSP-28": "Pass",
+   "MSP-29": "Pass",
+   "MSP-30": "Pass",
+   "MSP-31": "Pass",
+   "MSP-37": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "MSP-37": {
+  "result": "Pass",
+  "seconds": 193.9,
+  "markdown": {
+   "text": "notes-471.md NOTES-471 NODE-FILE-ON-DESKTOP-471 opened from outside the run folder.",
+   "alert": "",
+   "image": 0,
+   "editControls": 0,
+   "status": "",
+   "typedChanges": false
+  },
+  "image": {
+   "text": "notes-471.md chart-471.png 100% Scroll to zoom \u2022 Drag to pan \u2022 Double-click to reset",
+   "alert": "",
+   "image": 1,
+   "editControls": 0,
+   "status": "",
+   "typedChanges": false
+  },
+  "missing": {
+   "text": "notes-471.md chart-471.png gone-471.md Error!This file was not found on the computer.",
+   "alert": "Error!This file was not found on the computer.",
+   "image": 0,
+   "editControls": 0,
+   "status": "",
+   "typedChanges": false
+  },
+  "folder": {
+   "text": "notes-471.md chart-471.png gone-471.md reports-471.md Error!This path is a folder, not a file.",
+   "alert": "Error!This path is a folder, not a file.",
+   "image": 0,
+   "editControls": 0,
+   "status": "",
+   "typedChanges": false
+  },
+  "nodeFileRequests": [
+   {
+    "file": "notes-471.md",
+    "status": 200
+   },
+   {
+    "file": "chart-471.png",
+    "status": 200
+   },
+   {
+    "file": "gone-471.md",
+    "status": 404
+   },
+   {
+    "file": "reports-471.md",
+    "status": 400
+   }
+  ],
+  "hostWorkspaceText": false,
+  "unchanged": true
+ },
+ "MSP-16": {
+  "result": "Pass",
+  "bigChars": 130061,
+  "big": {
+   "viewer": 1,
+   "query": {
+    "row": "team:delivery_team_2529efa3ad644908838332abd7b521f2",
+    "screen": "files",
+    "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-mLQoAs/alpha/outside-427/big-471.md"
+   },
+   "text": "big-471.md\nBIG-471\n\nParagraph 1 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 2 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 3 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 4 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 5 of the big file, written to pass the old 120,000-cha",
+   "error": "",
+   "image": 0,
+   "editControls": 0,
+   "status": 0,
+   "lastLineVisible": true,
+   "tooLarge": false,
+   "shownChars": 130069,
+   "typedChanges": false,
+   "backToConversation": true
+  },
+  "missing": {
+   "viewer": 1,
+   "query": {
+    "row": "team:delivery_team_2529efa3ad644908838332abd7b521f2",
+    "screen": "files",
+    "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-mLQoAs/alpha/outside-427/gone-436.md"
+   },
+   "text": "gone-436.md\n\nThis file was not found on the computer.",
+   "error": "This file was not found on the computer.",
+   "image": 0,
+   "editControls": 0,
+   "status": 0,
+   "typedChanges": false,
+   "backToConversation": true
+  },
+  "folder": {
+   "viewer": 1,
+   "query": {
+    "row": "team:delivery_team_2529efa3ad644908838332abd7b521f2",
+    "screen": "files",
+    "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-mLQoAs/alpha/outside-427/reports-436.md"
+   },
+   "text": "reports-436.md\n\nThis path is a folder, not a file.",
+   "error": "This path is a folder, not a file.",
+   "image": 0,
+   "editControls": 0,
+   "status": 0,
+   "typedChanges": false,
+   "backToConversation": true
+  }
+ },
+ "MSP-29": {
+  "result": "Pass",
+  "seconds": 0.8,
+  "notice": true,
+  "toast": "This file is on zeta-node, where this run runs.",
+  "viewerOpened": false,
+  "stillOnConversation": true,
+  "mainFrameNodeNavigations": [],
+  "refused": []
+ }
+}

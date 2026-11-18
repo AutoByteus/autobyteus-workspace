@@ -15,6 +15,9 @@ MCP configuration; see [Antigravity CLI Runtime](./antigravity_cli_runtime.md).
 Grok Build runs receive it as an HTTP `mcpServers` entry on ACP
 `session/new`/`session/load`, gated on Grok reporting the server ready; see
 [Grok Build Runtime](./grok_build_runtime.md).
+DeepSeek Harness runs receive the same entry on `session/new`/`session/resume`;
+dsh connects it while opening the session, so there is no readiness wait; see
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md).
 
 This module is distinct from both [MCP Server Management](./mcp_server_management.md)
 and the [General MCP Gateway](./mcp_gateway.md): MCP Server Management consumes
@@ -64,13 +67,18 @@ external `/mcp/gateway` route.
 The endpoint handles the MCP Streamable HTTP methods:
 
 - `POST` for JSON-RPC requests, notifications, and client responses.
-- `GET` for SSE compatibility with Streamable HTTP clients.
+- `GET` for the session's held server-to-client SSE stream (see
+  [Live Tool List](#live-tool-list)). It requires `Accept: text/event-stream`
+  (`406` otherwise), opens with an `: open` comment, sends a `: keepalive`
+  comment every 15 seconds, and is ended when the run-session is deactivated or
+  the host closes. Every client gets the same held stream; there is no
+  per-client transport header.
 - `OPTIONS` for local preflight handling.
 - `DELETE` currently returns `405 Method Not Allowed`; AutoByteus published-run
   lifecycle remains the owner of run-session deactivation.
 
 Every request is admitted before method handling or session lookup. Admission
-requires the raw TCP peer address to be loopback, the `Host` header to be
+requires the raw TCP client address to be loopback, the `Host` header to be
 `localhost` or a loopback address, and any supplied `Origin` to be HTTP(S) on a
 current loopback host. A failed local-admission check returns `403`; an admitted
 request for an inactive run-session ID returns the redacted `404
@@ -105,7 +113,11 @@ source snapshots, execution context/capabilities, creation time, and optional
 execution observer. Those live values are activation-only and are never
 persisted.
 
-Activation fails rather than replacing a current entry. Authoritative
+Every external run gets an active session, even when its agent selects no
+Agent Tools tools: an empty `enabledTools` list is a valid record, so a tool
+added to the definition later is reachable without a restart. Activation fails
+rather than replacing a current entry; the run's exposure is changed only
+through `replaceForRun` (below). Authoritative
 published-run termination deactivates the exact run-session as part of
 `AgentRunResourceManager.release`; scope close is the fallback that removes any
 remaining owned sessions, and host close clears the process registry. Within a
@@ -115,6 +127,28 @@ address stays stable. A process restart creates a new listener address and an
 empty registry, so restored or newly started runtimes materialize the current
 descriptor during provider bootstrap/session setup. No Agent Tools session,
 token, listener address, or descriptor is persisted.
+
+## Live Tool List
+
+The run-session authority (and its scoped form, for the sessions it owns) also
+offers:
+
+- `replaceForRun({ runId, runtimeExposure })`: the session service re-resolves
+  the exposure through the catalog as activation does, the registry replaces the
+  session record as one new frozen object (a request reads the old exposure or
+  the new one, never a mix), and `AgentToolsMcpSessionStreams` sends
+  `notifications/tools/list_changed` on the session's open GET streams. It
+  returns the current descriptor.
+- `describeForRun(runId)`: the current descriptor; it throws for a run without
+  a session.
+
+Removal is enforced at once on every runtime: from the next request on,
+`tools/list` no longer lists a removed tool and `tools/call` refuses it with
+"Tool is not enabled for this session". `initialize` advertises
+`tools.listChanged: true`. Only `AgentToolsMcpSessionStreams` writes to the held
+streams; the dispatcher does not. Which runtime re-lists on the notification and
+which needs its session reopened is described in
+[Tool List Updates](./tool_list_updates.md).
 
 ## Published-Run Finalization
 
@@ -140,10 +174,11 @@ reported as successful Team stop.
 ## Runtime Materialization
 
 Claude Agent SDK materialization is programmatic and provider-session scoped.
-When the current Claude run has at least one configured, available Agent Tools
-MCP tool, the Claude session lazily activates the run-session on first tooling
-setup, caches that activation for the lifetime of the `ClaudeSession`, and
-passes the materialized SDK config under the reserved server name:
+The Claude session activates the run-session once (on first tooling setup, or
+when the run's tools are first read) and then reads the current descriptor with
+`describeForRun` on every use, because the descriptor can change during the
+run. Every process generation passes the materialized SDK config under the
+reserved server name, even with an empty tool list:
 
 ```ts
 {
@@ -155,19 +190,20 @@ passes the materialized SDK config under the reserved server name:
 }
 ```
 
-Claude allowed-tool entries are generated from the descriptor's `enabledTools`.
-For each enabled canonical tool name, Claude pre-approves both the canonical
-name and the provider wire name such as
-`mcp__autobyteus_agent_tools__generate_image`. If no supported tool is enabled,
-the session does not create an Agent Tools MCP descriptor. Restored or newly
+Agent Tools are not listed in Claude's `allowedTools` (only `Skill` is), because
+the list can change during the run. Instead the tool-use coordinator allows,
+without asking, a tool that is in the run's **current** descriptor's
+`enabledTools`, matched by its canonical name or its provider wire name such as
+`mcp__autobyteus_agent_tools__generate_image` (reason `agent_tools_enabled`).
+Any other tool goes through the existing approval path. Restored or newly
 created Claude sessions reactivate current context instead of persisting or
 refreshing descriptor credentials.
 
 Codex App Server materialization occurs during run bootstrap and uses the app
-server thread protocol. When a Codex standalone or team-member run has at least
-one configured, available Agent Tools MCP tool, `CodexThreadBootstrapper`
-activates the run-session and passes only a thread-scoped config object into
-`thread/start` and `thread/resume`:
+server thread protocol. For every Codex standalone or team-member run,
+`CodexThreadBootstrapper` activates the run-session and passes only a
+thread-scoped config object into `thread/start` and `thread/resume` (and the
+reopen of [Tool List Updates](./tool_list_updates.md)):
 
 ```ts
 {
@@ -183,9 +219,10 @@ activates the run-session and passes only a thread-scoped config object into
 
 Codex must not materialize this descriptor through shared process-wide launch
 flags, `CODEX_APP_SERVER_ARGS*`, trusted
-`.codex/config.toml`, or any other durable project file. If no supported tool is
-enabled, Codex does not create the descriptor or pass the MCP server config for
-this surface.
+`.codex/config.toml`, or any other durable project file. With no supported tool
+enabled the config is still passed, with `enabled_tools: []`; Codex 0.165.0
+accepts it and reports the server ready (gated e2e
+`tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts`).
 
 ## Configured Tool Boundary
 
@@ -244,21 +281,27 @@ exact same object.
 `AgentToolMcpCatalog` is adapter-backed for server-owned tool families and
 registry-backed for configured MCP-origin tools. Each server-owned adapter
 supplies the MCP tool definition, availability gate, and execution delegate for
-one canonical AutoByteus tool name. The default adapter set currently covers:
+one canonical AutoByteus tool name. The default adapter set
+(`buildDefaultAgentToolMcpAdapterProviders` in
+`src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts`) covers:
 
-- `send_message_to`
-- `get_handoff_rules`
+- `send_message_to` and `get_handoff_rules` from `src/agent-tools/agent-communication`
 - browser tools from `src/agent-tools/browser`
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
-- `publish_artifacts`
-- `list_projects`, `list_project_tasks`, `search_project_tasks`, `create_project`, `update_project`,
+- `publish_artifacts` from `src/agent-tools/published-artifacts`
+- `list_available_agents` and `list_peer_nodes` from `src/agent-tools/agent-discovery`
+- `list_available_agent_runtimes` from `src/agent-tools/agent-runtimes`
+- `submit_launch_choices` (the Model Router's decision tool) from `src/agent-tools/model-routing`
+- `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`,
   `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
+- `search_memory` from `src/agent-tools/memory` (see [memory_search.md](./memory_search.md))
 
 The catalog filters by the session's resolved effective tool names. That set is
-the configured Agent tool set plus the automatic Team collaboration trio when a
-valid `MemberTeamContext` exists. A supported tool outside that effective set is
+the configured Agent tool set, plus the automatic Team collaboration trio when a
+valid `MemberTeamContext` exists, plus the platform-given `search_memory`, which
+every session has (`PLATFORM_GIVEN_TOOL_NAMES` in the shared exposure rule). A supported tool outside that effective set is
 absent from `tools/list` and rejected by `tools/call`.
 
 Configured MCP-origin tools are resolved from the shared `defaultToolRegistry`
@@ -267,7 +310,15 @@ provider-facing tool name is the registered AutoByteus tool name, including any
 configured `toolNamePrefix` such as `db_query`. Execution creates the registry
 tool and delegates through the existing `GenericMcpTool` / MCP proxy path, so
 remote tool-name mapping, transport ownership, connection reuse, and cleanup
-remain with MCP Server Management and `autobyteus-ts`.
+remain with MCP Server Management and `autobyteus-ts`. A configured tool call
+that fails, because the tool throws (for example `HTTP 401 Unauthorized: Error
+POSTing to endpoint: …` after a revoked token) or because the tool is no longer
+available for the session at call time, is answered with a tool result:
+`isError: true` and one text item with the failure message, the same text the
+native runtime shows. It is not a JSON-RPC `Internal error`
+(`ConfiguredMcpRegistryToolAdapter`). The message carries no token or header
+value. Text that a remote server puts in its own response body is passed on as
+it is.
 
 Family-specific behavior remains owned by the existing family services and
 manifests:
@@ -313,16 +364,26 @@ local admission are still required. One selected name cannot expose the rest.
 All of them use protect_static_adapter collision policy; retired task tools and
 category-wide native task exposure are not restored.
 
-- `list_projects({})` → `{projects: [{projectId, name, description}]}` for all
-  current-node Projects, sorted by name/ID. It does not bind/select a Project.
+- `list_projects({})` → `{projects: [{projectId, name, description, workspaces: [{workspaceRootPath, description}]}]}`
+  for all current-node Projects, sorted by name/ID: `workspaces` are the folders the Project is linked to, with
+  each link's description. Empty fields are left out. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
-  A Task with comments also has `comments`: their texts, oldest first.
-- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, summary, match, commentCount?}],
-  meaningSearch: {state, note?}}`: the Project's best-matching Tasks first, by exact text and by meaning (at most
-  `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's key or `null`, `parts` the
-  parts' keys in key number order; `commentCount` only when the Task has comments (a comment's exact words also
-  find it). See [Project Task Search](./projects.md#project-task-search).
+  Each Task is a short entry `{taskId, title, status, dependsOn, partOf, parts, commentCount,
+  assignments | assignmentsUnavailable}`.
+- `get_project_task({project_id, task_id})` → one Project Task in full: `{projectId, taskId, title, status,
+  description, dependsOn, partOf, parts, comments, contextFiles: [{name, path}], assignments, closedAssignments}`.
+  `task_id` is a key (any letter case) or long ID of that Project; another Project's or an unknown Task fails with
+  `TASK_NOT_FOUND`. A caller that works on a Task (a task agent, a task team's members, the agents a worker delegated
+  to; its copy's current Task) reads only that Task: another fails with `TASK_READ_OUT_OF_SCOPE` and no data; when
+  that can't be told (damaged run data) the call fails with `TASK_AGENT_RESOURCES_UNAVAILABLE`. A caller on no Task
+  reads any. The provider asks the scope from `session.sender.memberExecutionContext`; the AutoByteus runtime gets
+  the tool only as an instance bound to its member. Exposed only when the agent definition lists it.
+- `search_project_tasks({project_id, query, limit?})` → `{projectId, tasks: [{taskId, status, partOf, parts, title, match, commentCount}],
+  meaningSearch?: {state, note}}`: the Project's best-matching Tasks first, by exact text (title, description or a
+  comment) and by meaning (at most `limit`, 1–30, default 10). `taskId` is the Task's key; `partOf` is the parent's
+  key, `parts` the parts' keys in key number order; `meaningSearch` is present only when meaning search was not
+  (fully) used. See [Project Task Search](./projects.md#project-task-search).
 - `create_project({name, description?, workspaces?})` → `{project}`: creates with a
   required nonblank name; `project_id` is rejected as an unsupported argument.
 - `update_project({project_id, name?, description?, workspaces?})` → `{project}`:
@@ -333,14 +394,15 @@ category-wide native task exposure are not restored.
   entire change. Registration/existence are not required; Save never registers or
   creates folders. Old workspace_id rows are rejected, not translated.
   Result is saved projectId/name/description and workspaceRootPath/description only.
-- `create_task` → `{task}`. `{project_id, description, context_files?, depends_on?, part_of?}`:
-  required nonempty description, **omit status** and `task_id` (new TODO with
+- `create_task` → `{task}`. `{project_id, title, description, context_files?, depends_on?, part_of?}`:
+  required nonblank title (no length limit) and description, **omit status** and `task_id` (new TODO with
   the Project's next key).
-- `update_task` → `{task}`. `{task_id, description?, status?,
+- `update_task` → `{task}`. `{task_id, title?, description?, status?,
   context_files?, depends_on?, part_of?, add_comment?}` with **no project_id**: the Task ID (a Project
   Task's key in any letter case or its long ID, or a Task with no Project's ID)
-  patches text, status, dependencies and/or parent of a Project Task, or text
-  and status of a Task with no Project (`projectId: null` in the result).
+  patches title, text, status, dependencies and/or parent of a Project Task, or text
+  and status of a Task with no Project (no `projectId` or `title` in the result; a
+  `title` for it fails with `TASK_TITLE_INVALID`).
   Unknown IDs fail, never upsert.
   `depends_on` lists same-Project Task references (`[]` clears, omitted keeps);
   an invalid list fails with `TASK_DEPENDENCY_INVALID` and writes nothing.
@@ -361,16 +423,19 @@ category-wide native task exposure are not restored.
   automatically: an agent has them only when its definition selects them.
   `context_files` (array of absolute node-local file paths, Project Tasks only)
   copies each file into the Task's saved context. A patch appends and never
-  removes. The app's file types and 25 MiB limit apply, and any invalid entry
+  removes. The app's file types and size limits apply (audio and video up to the audio/video limit, other files
+  up to the other-file limit; both are node settings), and any invalid entry
   fails the whole call with no change. When files were attached, the result's
-  `task` also lists them as `attachedContextFiles: [{storedFilename,
-  displayName}]`. See [Projects](projects.md#project-and-task-agent-tools).
+  `task` also lists them as `attachedContextFiles: [{name, path}]`. See
+  [Projects](projects.md#project-and-task-agent-tools).
 
-Task projections include projectId/taskId (a Project Task's key, see
-[Task keys](projects.md#task-keys-depends-on-and-part-of)), description/status,
-`dependsOn` keys, `partOf` (the parent's key or `null`) and, in lists, `parts` keys
-for Project Tasks, and saved contextFiles (metadata/HTTP locator plus validated server-local localPath when
-bytes are available), not timestamps. Missing bytes do not fabricate paths.
+Task projections include taskId (a Project Task's key, see
+[Task keys](projects.md#task-keys-depends-on-and-part-of)), title/status,
+`dependsOn` keys, `partOf` (the parent's key) and, in lists, `parts` keys
+for Project Tasks; full list entries add the description and saved context files as
+`{name, path}` (`path` only when the bytes are available; missing bytes do not fabricate paths),
+not timestamps. Every result follows the [Tool Result Rule](agent_tools.md#tool-result-rule): a field with
+no value is absent.
 No workspace discovery/registration, Task attachment removal, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.
 DONE and CANCELLED are business metadata, not proof of accepted work or execution cleanup.
@@ -383,10 +448,11 @@ with the existing host/session boundary. See [Projects](projects.md#project-and-
 for exact masks/errors, persisted continuity and context-byte ownership.
 
 Server-owned structured-JSON adapters validate their operation result first,
-serialize it once, parse that serialization into object `structuredContent`, and
-return the same JSON in MCP text. `send_message_to` exposes
+then `toAgentToolsMcpStructuredJsonResult(value)` applies the
+[Tool Result Rule](agent_tools.md#tool-result-rule) once, returns that compact JSON in MCP
+text and its parse as object `structuredContent`. `send_message_to` exposes
 `{accepted,code,message,target_agent_run_id}`: success contains the exact
-existing AgentRun receiver, while rejection uses `target_agent_run_id:null` and
+existing AgentRun receiver, while rejection has no `target_agent_run_id` and
 sets `isError:true`. `delegate_task` exposes a strict `anyOf` union:
 `{delegated:true,target_kind:"agent",target_agent_run_id,task_id?}`,
 `{delegated:true,target_kind:"team",target_team_run_id,target_team_coordinator_agent_run_id,task_id?}`,
@@ -428,7 +494,8 @@ gates explicitly, and add durable route/session/executor coverage.
   Antigravity CLI;
 - persisted Agent Tools run sessions or descriptors across restored runs;
 - remote/non-loopback Agent Tools MCP clients;
-- complex long-lived or resumable SSE server push;
+- resumable SSE streams (event IDs, `Last-Event-ID` replay) or server push other
+  than `notifications/tools/list_changed`;
 - exposing every local registry tool through Agent Tools MCP;
 - using Agent Tools MCP as the general external `/mcp/gateway`;
 - direct provider-native external MCP config materialization for configured MCP

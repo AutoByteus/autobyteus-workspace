@@ -1,0 +1,5 @@
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":99834,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":99523,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

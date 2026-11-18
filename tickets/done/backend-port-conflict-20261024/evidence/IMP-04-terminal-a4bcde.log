@@ -1,0 +1,88 @@
+IMP-04-terminal-a4bcde
+Command (root, clean env): pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal tests/unit/agent/context/agent-config.test.ts
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: a4bcde070
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:41:47.977355+00:00
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts
+
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts (4 tests) 13ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted creates session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copies host native scope by identity outside structured custom data
+AgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copy creates a new config with cloned lists and data
+AgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > carries configured skills and no run-level skill switch
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults memory compaction to disabled
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copies enabled memory compaction with a fresh policy
+AgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+ ✓ tests/unit/agent/context/agent-config.test.ts (5 tests) 5ms
+ ✓ tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts (5 tests) 7ms
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts (3 tests) 206ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts (4 tests) 6ms
+ ✓ tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts (5 tests) 5ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts (11 tests) 3ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts (7 tests) 3ms
+ ✓ tests/unit/tools/terminal/types.test.ts (6 tests) 3ms
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts (2 tests) 3ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted is idempotent
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts (10 tests) 3ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts (7 tests) 3ms
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts (4 tests) 2ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand returns TerminalResult
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (7 tests) 1260ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1667ms
+     ✓ starting twice throws  699ms
+     ✓ close is idempotent  303ms
+     ✓ returns queued data on read  304ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts (15 tests) 1970ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > close cleans up session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts (3 tests) 2263ms
+     ✓ startCommand returns PID metadata and captures output  1415ms
+     ✓ stopProcess removes a managed process  845ms
+stdout | tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > forces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT
+{"check":"owned-survivor","pid":71702,"port":51251,"cleanup":{"outcomes":[{"outcome":"stopped"}]},"listenerReleased":true}
+
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > falls back to provided session factory when primary startup fails
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts (7 tests) 3564ms
+     ✓ ensureStarted creates session  511ms
+     ✓ ensureStarted is idempotent  508ms
+     ✓ executeCommand returns TerminalResult  1017ms
+     ✓ close cleans up session  509ms
+     ✓ falls back to provided session factory when primary startup fails  1017ms
+ ✓ tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts (9 tests) 8381ms
+     ✓ retains fast shell survivors and drains them after the command/agent context ends  1115ms
+     ✓ forces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT  1193ms
+     ✓ fails closed on observation denial, then retains the lease for a verified later close  824ms
+     ✓ returns fast/empty/nonzero commands and retires empty anchors  693ms
+     ✓ settles forced timeout without RESULT and keeps partial output  1805ms
+     ✓ host stop is not a tool timeout and duplicate close shares the promise  937ms
+     ✓ drains multiple groups collectively while an unrelated scope survives  1741ms
+
+ Test Files  20 passed (20)
+      Tests  127 passed (127)
+   Start at  20:41:39
+   Duration  8.72s (transform 919ms, setup 493ms, import 870ms, tests 19.37s, environment 1ms)

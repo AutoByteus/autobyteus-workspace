@@ -1,0 +1,7 @@
+# IMP-15 (IR-002) privacy check on the IMP-14 clone
+# command: python3 -I tickets/in-progress/per-agent-episodic-catalog/probes/imp08-summary-privacy-check.py <clone>/memory
+# commit: 159286c1c1
+# date: 2026-11-17T19:13:38Z
+summaries checked (>= 25 chars, first 80 chars each): 641
+episodic text bytes: 2041071
+summaries found in episodic files: 0

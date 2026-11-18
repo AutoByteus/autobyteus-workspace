@@ -1,0 +1,160 @@
+# Implementation Revision Record — work-journal-search (`autobyteus-185`)
+
+The current code and `implementation-handoff.md` are authoritative. This record holds the initial baseline and, later, one entry per implementation round.
+
+## Revision Index
+
+| Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
+| --- | --- | --- | --- | --- | --- |
+| IR-001 | Architecture Reviewer, `design-review-report.md` ARCH-REV-002 Pass (round 2) | N/A | `Initial Baseline` | SR-001, SR-003, ARCH-REV-002 | Stage 1 (server) and Stage 2 (web) implemented; handed to code review |
+| IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004, SR-004b | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; a `Design Impact` on AC-007 was raised and resolved by SR-004b | SR-004, SR-004b, CRR-001 | Done: all checks pass (IMP-13 … IMP-17); handed to the targeted code review |
+| IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11; SR-005b | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised twice (R-9): first OT-T3 (resolved by SR-005b), then LEAF-IR verification | SR-005, SR-005b, ARCH-REV-003, CRR-003 | Implemented (`0f3c2a2d87`); the default model meets all three constraints (IMP-20). LEAF-IR fails constraint 2 for any values because of how a match found by both tiers is merged (IMP-21); returned to the Solution Designer |
+| IR-004 | Architecture Reviewer ARCH-REV-004 Pass (SR-006, UD-020; Product revision UD-021) and the Solution Designer's R-12 … R-15 resolutions and UD-022 | UD-020, UD-021, UD-022, R-12, R-13, R-14, R-15 | `Requirement/design change implemented` (strength removed; match facts) | SR-006, ARCH-REV-004 | Done (`e7a15930c3`, `606d13b937`): gates unchanged, 0 `wordsNotFound` mismatches (IMP-27), tests and probe pass (IMP-25, IMP-28); handed to the targeted code review |
+| IR-005 | Code Reviewer CRR-004 (`code-review-report.md`, round 4, Fail: Local Fix) | CR-004, CR-005 | `Local Fix` | SR-006, CRR-004 | Done (`3204aa2455`): text matches without words 0 (IMP-31); punctuation-only words are no terms; checks pass (IMP-29 … IMP-31); returned for the targeted delta review |
+| IR-006 | Delivery Engineer DR-001 (`release-deployment-report.md`: latest-base integration blocked, Local Fix) | DR-001 | `Local Fix` (merge) | SR-006, CRR-005 | Done (`72874aac91`, `92c25580db`): conflicts resolved, types regenerated, `search_memory` on the base's tool result rule; checks pass apart from 5 failures that pre-exist on the base (IMP-32; FU-010, FU-011); returned for source review |
+
+## Revision Entries
+
+### IR-001 — Memory search over Work Journals: server, `search_memory`, Memory page
+
+- Triggering role, report path, and round: Architecture Reviewer, `tickets/in-progress/work-journal-search/design-review-report.md`, ARCH-REV-002 (Pass), with the Solution Designer's clarifications of R-5, R-6 and R-7.
+- Triggering finding IDs: N/A
+- Classification: `Initial Baseline`
+- Prior authoritative result: N/A
+- Current authoritative result: branch `codex/work-journal-search` from `ddd6fdcdf6`; commits `02ea886678` … `c66708b44b` (source) plus the ticket-folder commit named in the handoff.
+- Related solution revision IDs: SR-001 (requirements), SR-003 (design)
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: N/A
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this baseline is recorded: first implementation of the approved package.
+- Approved behavior or requirement IDs affected: R-001 to R-016; AC-001 to AC-013; DS-001 to DS-006; VIS-001 to VIS-024.
+- Implementation delta (Change Sequence steps 1–9, Staged Plan Stages 1–2):
+  - journal service reads, change notification, nullable runtime, entry reader; `EmbeddingIndex.nearest`;
+  - `src/memory-search/` (pipeline, discovery, text and meaning index, search, facade, setting, evaluation);
+  - `search_memory` (native and MCP), the `memory` tool unit, the default-limit setting;
+  - GraphQL search, status, actions and Work Journal reads; `TaskTeamRootMemorySource`; removal of the per-run episodic/semantic/working-context server path and availability flags;
+  - module docs and the `GLOSSARY.md` Memory section; the evaluation command;
+  - the Memory page per the approved UI/UX spec, the Work Journal run detail, and the removal of the old tabs and strings.
+- Changed files or areas: see `implementation-handoff.md` § Key Files Or Areas.
+- Local validation and result: see `implementation-handoff.md` § Checks Run (IMP-01 … IMP-12).
+- Next recipient or routing: Code Reviewer (Large, High risk).
+- Remaining limitations or risks: see `implementation-handoff.md` § Known Risks (the question file's authoring run; word-share strength on off-topic cues; latency measured under load).
+
+### IR-002 — Rework after CRR-001 (SR-004); Design Impact on the off-topic gate
+
+- Triggering role, report path, and round: Solution Designer (SR-004) after code review CRR-001 (`code-review-report.md`), round 1.
+- Triggering finding IDs: CR-001, CR-002, CR-003 (resolved as UD-018), UD-019, C-06.
+- Classification: `Local Fix` for CR-001, CR-002 and C-06; UD-019 implemented as decided; `Design Impact` raised on AC-007 (extended by UD-019).
+- Prior authoritative result: IR-001 (`02ea886678` … `c66708b44b`).
+- Current authoritative result: IR-001 plus `0ca22eaa1c` (CR-001, CR-002), `8529960b80` (UD-019, C-06, the evaluation's off-topic check) and `41501c5a41` (evaluation question kinds, SR-004b).
+- Related solution revision IDs: SR-004, SR-004b
+- Related code-review revision IDs: CRR-001
+- Implementation delta:
+  - **CR-001:** only the Journals step's own `ensureCurrent` notifications are dropped (`ownJournalCalls`, held while that call is in flight); every other journal change is queued, also during a pass or the first build. A queued change waits for the running pass; with no build and none running, nothing is indexed.
+  - **CR-002:** only `full`, `rebuild` and `catchUp` show as `building` with their own steps. `runs` and `meaningSync` work on their own step records, so the status reports the settled index. A failure in them changes nothing reported. `meaningSync` is requested only when the Meaning step would embed (`canSyncMeaning`), and it no longer moves `updatedAt`. Only the build's own meaning embedding counts as meaning progress, not a live update's few cards; the facade's coverage note says the same.
+  - **UD-018:** the copy was already as built; the handoff's "awaits confirmation" notes were removed.
+  - **UD-019:**
+    - `chunk_vocab` (`fts5vocab` over `chunk_text`) and `MemorySearchStore.tokenChunkCounts`;
+    - `termTokens` in the normalizer;
+    - `MemorySearchService.termWeights` (BM25 IDF, floor 1e-6; a multi-token term counts as its rarest token) and the weighted `textStrength`;
+    - the evaluation takes off-topic questions (`accept: []`) and reports `offTopic {questions, passed, failed}`.
+  - **C-06:** each snippet line is masked, then cut to 200 characters.
+  - **Docs:** `memory_search.md` (pass kinds and status, live changes during a pass, strength, snippet); `scripts/evaluate-memory-search.md`.
+- Local validation and result:
+  - IMP-13: focused server tests 215 passed; typecheck 0. Six new tests; the CR-001, CR-002, UD-019 and C-06 ones fail on the previous code.
+  - IMP-14: build passes.
+  - IMP-15: gates 1 and 2 unchanged. Off-topic 1 of 3 (N01, N03 failed), so a Design Impact went to the Solution Designer. SR-004b decided option (a): keep UD-019 and correct the off-topic set; N01 and N03 become `partial`, and N04 and N05 are added.
+  - `41501c5a41`: the evaluation reads question kinds and reports `falseOnlyWeak` and `partial`.
+  - IMP-16: impacted server tests, memory e2e and typecheck pass.
+  - IMP-17: gate 1 31/31; top 3 26/31; off-topic 3/3 (N02, N04, N05); `falseOnlyWeak` []; 0 unmasked.
+  - The optional CJK weighting was not added: N05 already passes.
+- Next recipient or routing: Code Reviewer (targeted review of IR-002; Large/High).
+- Remaining limitations or risks: see `implementation-handoff.md` § Known Risks.
+
+### IR-003 — SR-005 meaning strength: calibration stopped by R-9 (Design Impact)
+
+- Triggering role, report path, and round: Architecture Reviewer ARCH-REV-003 (Pass) for SR-005; Solution Designer clarification R-8…R-11.
+- Classification: `Design Impact` (R-9 trigger), raised before any source change.
+- Evidence: `evidence/IMP-18-meaning-strength-calibration.log`.
+  - The new off-topic cues' key words are absent in the isolated copy.
+  - The lift rule is feasible for the meaning tier at k ≥ 100 (Lf windows with margins ±0.005).
+  - OT-T3 has a fair text match (UD-019 rule; "supplier" is rare but present), so constraint 1 fails for any k, Ls, Lf.
+- Next recipient or routing: Solution Designer; implementation continues after the decision.
+- **After SR-005b (option (a): OT-T3 partial; k 200, Lf 0.0477, Ls in the upper range):**
+  - Implemented in `0f3c2a2d87`:
+    - `nearest` returns `{id, score}` only; the relevance field and its computation are removed.
+    - `rateMeaningCandidates` takes the baseline over all candidates, then leaves out unknown and asking runs (R-11); with fewer candidates than *k*, the last one (R-10).
+    - Named constants: `MEANING_BASELINE_RANK` 200, `MEANING_FAIR_LIFT` 0.0477, `MEANING_STRONG_LIFT` 0.0567 (the answerable best lifts' 75th percentile).
+    - R-10: the only-weak note is held back while coverage is incomplete; the page takes only-weak from the server's note.
+    - O-1: the tool description says when to use it.
+    - Tests: R-11 and R-10 discriminate (a mutation run confirmed R-10); embedding test updated; docs updated.
+  - IMP-20 (default model): off-topic 12/12; falseOnlyWeak []; gates unchanged (31/31, top 3 26/31). Margins: Lf +0.0057 (N04) / +0.0058 (Q08); Ls +0.0147 over the largest off-topic lift. Partial-coverage simulation: 50% embedded clean; at 25% and 10%, one off-topic cue rates Fair (R-10 holds the note back).
+  - IMP-21 (LEAF-IR): with the same values, off-topic 0/12 and Q08 a false note. Per-model values can't fix Q08: its best meaning card belongs to a run with weak text matches, and `toResult` drops a meaning pointer that duplicates a text pointer (a merge the design does not define). With a merge where a match found by both tiers carries the stronger strength (rule B), both models are feasible: Granite k 200 Lf ≈ 0.0689 ±0.0078, and LEAF-IR only at k 20 (±0.0022) or k 50 (±0.0011). R-9: returned to the Solution Designer.
+- **After SR-005c (rule B for every model, per-model rows):** implemented in `5617a04d02`.
+  - `MEANING_CALIBRATION`: Granite R2 k 200, Fair 0.0689, Strong 0.0999; LEAF-IR k 20, Fair 0.0429, Strong 0.159; other models use the default row, reported unverified.
+  - A match found by both tiers is shown once, with the stronger strength and its tier's label.
+  - IMP-23: both models meet constraints 1 and 2 (off-topic 12/12, no false note). The default model's gates are unchanged. LEAF-IR is 30/31 (its Q14 miss) with a ±0.0022 margin, and shows off-topic Fair labels when partly embedded.
+  - IMP-24: 649 server tests, 20 memory e2e, typecheck, 121 web memory tests and the guards pass.
+  - **Paused (2026-10-27) at the Solution Designer's request:** the user was reconsidering whether strength labels should exist at all. The user then removed them (UD-020); IR-004 supersedes this round's strength work. The handoff covers IR-003 in its IR-004 update.
+
+### IR-004 — SR-006: match facts instead of strength labels
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md` ARCH-REV-004 (Pass); the Solution Designer's resolutions of R-12 … R-15 and UD-022 (tool wording).
+- Triggering finding IDs: UD-020 (the user removes Strong / Fair / Weak), UD-021 (the Product revision of the page), UD-022, R-12 … R-15.
+- Classification: requirement/design change implemented as designed; no new Design Impact.
+- Prior authoritative result: IR-003 (`0f3c2a2d87`, `5617a04d02`), paused at `9fa2e072ba`.
+- Current authoritative result: `e7a15930c3` (code, docs), `606d13b937` (probe step, evaluation doc), plus the ticket-folder commit named in the handoff.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-004
+- Implementation delta: see `implementation-handoff.md` § Current Implementation Summary (IR-004).
+  - Server: `matchedWords`, `wordsNotFound` (`hasChunk` per term, whole index), the ordered note, the Text-step rule, `bestCardPerRun`; all strength machinery removed.
+  - Tool and GraphQL: R-12 and UD-022 wording; `matchedWords` and `wordsNotFound` fields.
+  - Evaluation: the tokenizer-aware census (R-14).
+  - Web: the Product revision (words label, gray and amber notes, card cleanup, banner, strings).
+- Local validation and result:
+  - IMP-25: 648 server tests, 20 memory e2e, typecheck, 121 web memory tests and 3 guards pass. The R-13, R-15 and Text-step tests each fail under a targeted mutation.
+  - IMP-26: build passes.
+  - IMP-27: gates identical to IMP-23 (31/31, 30 in one search, #1 18, top 3 26, MRR 0.7288); `wordsNotFound` mismatches [] over 47 questions; N02 names no word, a question-set matter (its rare word is only in the asking run's journal, R-15).
+  - IMP-28: probe Pass, 23 checks, with the VIS-006, 007, 017, 022, 024 and 025 states.
+- Next recipient or routing: Code Reviewer (targeted review of IR-003 and IR-004; Large/High), then API/E2E re-runs AC-001, AC-002 and AC-007.
+- Remaining limitations or risks: see `implementation-handoff.md` § Known Risks (N02; the R-13 live window; the "No matches" wording).
+
+### IR-005 — CRR-004 Local Fix: found words by the index's rule; no punctuation-only terms
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-004 (round 4, Fail: Local Fix).
+- Triggering finding IDs: CR-004 (a text match could carry no `matchedWords`: a literal substring against the index's token match), CR-005 (`...` and `--` were terms named as not found).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-004 (`e7a15930c3`, `606d13b937`, `716563012f`).
+- Current authoritative result: `3204aa2455` plus the ticket-folder commit named in the handoff.
+- Implementation delta:
+  - `containsTerm` matches a term as its `unicode61` tokens in a row (one owner, the normalizer).
+  - `matchedWords` reads the lines as indexed.
+  - `queryTerms` requires a letter or digit.
+  - The evaluation's `textMatches` counter.
+  - Unit tests for the rule, the facade (separator variants, punctuation) and the counter.
+- Local validation and result:
+  - IMP-29: server tests, memory e2e and typecheck pass; M4 and M5 are each caught.
+  - IMP-30: build passes.
+  - IMP-31: gates unchanged; text matches without words 0 of 698 and 0 of 35; mismatches [].
+- Next recipient or routing: Code Reviewer (targeted delta review of CR-004 and CR-005), then API/E2E (AC-001, AC-002, AC-007).
+- Remaining limitations or risks:
+  - C-12 (link markup indexed; pre-existing) is noted in Known Risks.
+  - Design wording alignment for the Solution Designer (§ Match Facts items 1 and 4).
+
+### IR-006 — Delivery DR-001: latest base merged
+
+- Triggering role, report path, and round: Delivery Engineer, `release-deployment-report.md` DR-001 (latest-base integration blocked: Local Fix).
+- Classification: `Local Fix` (merge and merge-caused fixes).
+- Prior authoritative result: IR-005 (`3204aa2455`), CRR-005 Pass.
+- Current authoritative result: merges `72874aac91` (`origin/personal` `f56365c809`) and `92c25580db` (`8c31e530d6`), plus the ticket-folder commit named in the handoff.
+- Implementation delta:
+  - `generated/graphql.ts` regenerated;
+  - the README rows merged;
+  - `search_memory` native and MCP results on the base's `toToolResultJson` rule, with `present` removed;
+  - the loader test counts follow the spec list;
+  - the architecture test lists the `memory` unit.
+- Local validation and result: IMP-32.
+  - Build, typecheck, focused server tests, memory e2e, web memory specs and guards pass.
+  - 5 failures pre-exist on `origin/personal` alone: FU-010 (architecture lists) and FU-011 (live compaction tests).
+- Next recipient or routing: Code Reviewer (the merge touches the tool adapters); then API/E2E on the merged state if the reviewer selects it; then delivery.

@@ -3,6 +3,11 @@ import path from "node:path";
 import { RuntimeKind } from "./runtime-kind-enum.js";
 import { listAntigravityModels, toAgyDiscoveryDiagnostic } from "./antigravity-cli-capability.js";
 import { probeGrokBuildCli } from "./grok/grok-build-capability.js";
+import {
+  DEEPSEEK_HARNESS_RELAY_UNAVAILABLE_MESSAGE,
+  probeDeepSeekHarnessCli,
+} from "./deepseek-harness/deepseek-harness-capability.js";
+import { getProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
 import { resolveClaudeCodeExecutablePath } from "./claude/client/claude-sdk-executable-path.js";
 import { resolveLaunchCommand } from "./codex/client/codex-app-server-launch-config.js";
 
@@ -114,6 +119,21 @@ const createGrokBuildAvailabilityProvider = (): RuntimeAvailabilityProvider => (
   },
 });
 
+/**
+ * dsh runs only where this process runs the credential proxy (DEC-020): unavailable with that reason without the
+ * process's provider relays; otherwise its `--version` probe (no session, no inference).
+ */
+const createDeepSeekHarnessAvailabilityProvider = (): RuntimeAvailabilityProvider => ({
+  runtimeKind: RuntimeKind.DEEPSEEK_HARNESS,
+  getRuntimeAvailability: async () => {
+    if (!getProcessProviderRelayAccess()) {
+      return createCapability(RuntimeKind.DEEPSEEK_HARNESS, false, DEEPSEEK_HARNESS_RELAY_UNAVAILABLE_MESSAGE);
+    }
+    const probe = await probeDeepSeekHarnessCli();
+    return createCapability(RuntimeKind.DEEPSEEK_HARNESS, probe.available, probe.diagnostic?.message ?? null);
+  },
+});
+
 export class RuntimeAvailabilityService {
   private readonly providers = new Map<RuntimeKind, RuntimeAvailabilityProvider>();
 
@@ -152,6 +172,7 @@ export const getRuntimeAvailabilityService = (): RuntimeAvailabilityService => {
       createClaudeAvailabilityProvider(),
       createAntigravityAvailabilityProvider(),
       createGrokBuildAvailabilityProvider(),
+      createDeepSeekHarnessAvailabilityProvider(),
     ]);
   }
   return cachedRuntimeAvailabilityService;

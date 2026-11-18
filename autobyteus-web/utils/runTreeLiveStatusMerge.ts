@@ -34,7 +34,8 @@ const toRunStatusOverlay = (
   return { currentStatus: status, isActive: true, lastKnownStatus: 'ACTIVE' };
 };
 
-const mergeHistoryRowWithContext = (
+/** A stored run row with its live context's status, last activity and (when it has no title yet) first message. */
+export const mergeHistoryRowWithContext = (
   row: RunTreeRow,
   context: LiveRunContext,
 ): RunTreeRow => {

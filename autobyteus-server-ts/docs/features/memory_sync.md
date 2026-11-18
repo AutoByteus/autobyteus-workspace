@@ -27,7 +27,7 @@ For a hub:
 For a source:
 
 1. Open the source node in its own node-bound window.
-2. Set a stable `sourceNodeId` such as `docker-node-1`, `finance-prod`, or
+2. Set a stable `memorySyncSourceId` such as `docker-node-1`, `finance-prod`, or
    `cluster-a__finance__autobyteus-server`.
 3. Paste the hub base URL and hub token, then save source settings.
 4. Click **Test connection** from that source node. A blank token field tests the
@@ -35,8 +35,8 @@ For a source:
    together.
 5. Run **Sync now** or enable background sync.
 
-Frontend node names and `NodeProfile.id` values are navigation metadata only.
-They are not the durable import identity. `sourceNodeId` is the stable folder and
+Frontend node names and the desktop's entry IDs are navigation metadata only.
+They are not the durable import identity. `memorySyncSourceId` is the stable folder and
 catalog identity used by the hub.
 
 ## Storage Layout
@@ -54,11 +54,14 @@ Imported memory is stored separately under the hub's memory root:
 ```text
 memory/
   imports/
-    <sourceNodeId>/
-      source-node.json
+    <memorySyncSourceId>/
+      memory-sync-source.json
       sync-manifest.json
       agents/
       agent_teams/
+  memory-sync-staging/    # large files being uploaded; never part of imports/
+    <memorySyncSourceId>/
+      <sha256>.partial
 ```
 
 Imported memory is a read-only corpus. It is not local runnable state and is not
@@ -72,12 +75,24 @@ memory-sync/
   memory-sync-config.json          # hub/source enablement and source token config
   hub-credentials.json             # hub token hashes and credential metadata
   source-state/
-    <hubHash>--<sourceNodeId>.json # source-side changed-file state per hub/source
+    <hubHash>--<memorySyncSourceId>.json # source-side synced-file records and file failures per hub/source
 ```
 
 The source-side hub token is stored in node-local config so background sync can
 continue after restart. Public GraphQL responses and the frontend only expose a
 configured/redacted token state.
+
+Data released before autobyteus-290 used the names `sourceNodeId`,
+`boundSourceNodeId` and `source-node.json`. The sealed startup migration
+`memory-sync-source-id-names` renames them once to `memorySyncSourceId`, `boundMemorySyncSourceId`
+and `memory-sync-source.json`, keeping a `<file>.backup-<timestamp>` copy of each file it
+rewrites; the Memory Sync source ID values, and the folder and file names made from them,
+do not change. Until that migration has succeeded (capability `memory_sync`),
+nothing reads or writes Memory Sync files: the settings card shows "Memory Sync
+is waiting for its data migration.", the background loop and Sync now do not
+run, hub ingestion answers its sources HTTP 503
+`{error: "MEMORY_SYNC_NOT_MIGRATED", message}`, and the Memory page lists only
+this node's own memory.
 
 ## URL Model And Test Connection
 
@@ -102,17 +117,27 @@ a container or pod.
 
 The Memory Hub REST endpoints are:
 
-- `GET /rest/memory-sync/v1/health?sourceNodeId=<sourceNodeId>`
-- `POST /rest/memory-sync/v1/batches`
+- `GET /rest/memory-sync/v1/health?memorySyncSourceId=<memorySyncSourceId>`
+- `POST /rest/memory-sync/v1/batches` (JSON, at most 50 MiB)
+- `GET /rest/memory-sync/v1/sources/<memorySyncSourceId>/staged-files/<sha256>`
+  answers `{ receivedBytes }`, the bytes of that file the hub already holds (0 when none)
+- `PUT /rest/memory-sync/v1/sources/<memorySyncSourceId>/staged-files/<sha256>?offset=<n>`
+  (`application/octet-stream`, at most 8 MiB) appends one piece at `offset` and answers
+  `{ receivedBytes }`; an offset other than the hub's current length answers 409
+  `{ error: "MemorySyncStagedFileOffsetMismatch", receivedBytes }`
+
+All of them admit only memory sync source credentials (node access model NA-7). A reverse proxy
+in front of a hub must accept request bodies of at least 50 MiB (FU-002 in
+`tickets/done/memory-sync-large-files/follow-ups.md` tracks documenting proxy settings).
 
 Sources authenticate with an `Authorization: Bearer <mhub_...>` token. GraphQL
 connection testing is explicit about which configuration is being tested:
 
-- `mode: SAVED` loads the persisted source `hubBaseUrl`, `sourceNodeId`, and
+- `mode: SAVED` loads the persisted source `hubBaseUrl`, `memorySyncSourceId`, and
   saved hub token from node-local config. This is the mode used by the UI when
   the token field is blank after source settings were saved and the token is
   only visible as a redacted placeholder.
-- `mode: DRAFT` uses the request's draft `hubBaseUrl`, `sourceNodeId`, and
+- `mode: DRAFT` uses the request's draft `hubBaseUrl`, `memorySyncSourceId`, and
   plaintext token together. This is the mode used by the UI when the operator
   pastes a draft token before saving it.
 
@@ -129,12 +154,12 @@ stores only a SHA-256 hash plus credential metadata:
 
 - credential id;
 - optional label;
-- optional or first-use `boundSourceNodeId`;
+- optional or first-use `boundMemorySyncSourceId`;
 - created/last-used/revoked timestamps.
 
 Plaintext token values are returned only on creation or regeneration. If the
 operator loses the token, regenerate it and update the source node. Revoked
-tokens are rejected. A token that is bound to one `sourceNodeId` cannot be reused
+tokens are rejected. A token that is bound to one `memorySyncSourceId` cannot be reused
 by another source id.
 
 Use Memory Sync only across trusted private networks, VPNs, tailnets, or HTTPS
@@ -149,29 +174,82 @@ A source scans its local memory roots:
 - `memory/agents/`
 - `memory/agent_teams/`
 
-The scanner skips symlinks and temporary leaves such as `.tmp`, `.partial`,
-`.lock`, `.swp`, `.swx`, and `.DS_Store`. It reads files only when size and
-mtime are stable across the read; files that change during scanning are deferred
-to a later sync.
+The scanner lists regular files with their size and modification time; it reads no content. It skips
+symlinks and temporary leaves such as `.tmp`, `.partial`, `.lock`, `.swp`, `.swx`, and `.DS_Store`.
 
-Memory Sync v1 sends changed files as full-file `replace` operations in JSON
-batches with base64 content. The hub verifies source id, token, relative paths,
-file size, and SHA-256 hash before writing. Batch ids are idempotent: retrying
-the same committed batch succeeds as a duplicate, while reusing a batch id with
-different content is rejected.
+**Change detection.** A file whose size and modification time equal its last synced record is
+unchanged and is not read. A changed file is hashed (SHA-256) by streaming, so memory use does not
+depend on its size, and only when its size and modification time are stable across the read; a file
+that changes while being read is deferred to the next run.
 
-Manual sync and background sync use the same source run gate, so overlapping
-runs coalesce. Background sync is off by default and uses the configured interval
-when enabled. Source sync failures are recorded in source state and do not stop
-local agent runtime execution.
+**One run sends every changed file.** Changed files are cut, in key order, into batches of at most
+`batchSize` files, at most 24 MiB of inline content and at most 4 GiB of staged content (a larger
+file goes alone). A source records each batch's outcomes right after sending it.
 
-Source status records the current/last job state, `lastSuccessfulSyncAt`, and
-`lastError`. The frontend renders this as `Current job: idle` or
-`Current job: syncing…`, followed by `Last sync: success · <timestamp>` or the
-latest sync error. If a sync fails after an earlier success, the latest error is
-shown before the older success timestamp. Manual and background runs share this
-same generic status surface; the primary UI does not require operators to
-distinguish the trigger type.
+**Two ways a file reaches the hub, one commit.**
+
+- *Inline file* (up to 8 MiB): its content travels base64-encoded inside the batch operation
+  (`contentEncoding: "base64"`).
+- *Staged file* (larger): the source first uploads its raw bytes in pieces of at most 8 MiB to the hub's
+  staging area `memory/memory-sync-staging/<memorySyncSourceId>/<sha256>.partial` (name = SHA-256 of
+  the content), then the batch carries an operation with `contentEncoding: "staged"` and no content.
+  An interrupted upload resumes on the next run from the bytes the hub already holds: the source hashes
+  the part the hub has locally without sending it, and reads exactly the planned size. A file that
+  changed while being uploaded is deferred, never committed. Memory use on both nodes does not grow with
+  the file size.
+
+The hub commits a batch under the source's manifest lock in this order: duplicate `batchId` check; verify
+every operation (inline: decode, size, SHA-256; staged: each distinct content once, size and streaming
+SHA-256); refuse the whole batch, naming the file, before writing anything if one operation cannot be
+written; write (inline: temp file and rename; staged: the staged file is renamed into place, and the
+same content under several paths, such as one video attached to two runs, is copied to a temporary
+sibling of each extra path and renamed, so no reader ever sees a partly written file); record the
+manifest. A file is visible under `imports/` only after its full size and SHA-256 are verified, and
+nothing partial is ever there. Batch ids are idempotent: retrying the same committed batch succeeds
+as a duplicate, while reusing a batch id with different content is rejected.
+
+**Staging cleanup.** A staged file is removed when a commit takes it or when it fails verification. A
+partial untouched for 24 h is removed by a background sweep that the hub starts at server start and
+at most once an hour when any source calls it; the sweep never runs on a request path (no request
+waits for it) and takes each source's manifest lock one source at a time.
+
+**File failures.** A problem of one file (the hub refuses it or its content, it cannot be read, an
+upload that cannot continue) does not stop the other files. When a batch of several files is
+refused, the source sends each file alone to find the one the hub refuses. The file gets a *file
+failure* record in the source state (`fileFailures`: reason, attempts, last and next attempt) and is
+retried when its delay has passed (1 minute, doubling per failure up to 1 hour), at once when its size
+or modification time changed, and at once on **Sync now**. A warning line is logged once per new
+failure or changed reason:
+`Memory Sync could not sync <kind>/<relativePath> (<bytes> bytes): <reason>. Next attempt at <ISO time>.`
+Problems that affect every file stay run errors with the messages they always had: an invalid or revoked
+token, a disabled hub, Memory Sync held back, an unreachable hub, any network error or lost
+connection. The run stops, batches already recorded stay recorded, and the next run resumes an
+interrupted upload.
+
+**Run gate and trigger.** The background loop and Sync now share one run gate. A background start while
+a run is in progress joins it. **Sync now** while a background run is in progress waits for it and then
+starts one manual run (further clicks join that run), so Sync now always ends with every failing file
+retried.
+
+Background sync is off by default and uses the configured interval when enabled. Source sync failures
+are recorded in source state and do not stop local agent runtime execution.
+
+Source status records the current/last job state, `lastSuccessfulSyncAt`, `lastError`, and the files
+that could not be synced (`fileFailureCount`, and the 20 most recent `fileFailures`). The frontend
+renders this as `Current job: idle` or `Current job: syncing…`, followed by `Last sync: success ·
+<timestamp>` or the latest sync error. If a sync fails after an earlier success, the latest error is
+shown before the older success timestamp. A run with file failures is `success`; the card then shows a
+warning block "N files could not be synced" listing path, size, reason and next attempt of each file
+(at most 20, then "and N more"). The run result adds `failedFiles`.
+
+### Update every node together, and release order
+
+A source and a hub must run the same release and be updated together (`DESIGN.md` rule 9): an older
+hub does not know the staged-file routes or the `staged` operation, and nothing detects or works around
+that. Within this repository, **the change that introduced staged files (ticket
+`memory-sync-large-files`, Project Task `autobyteus-workspace-7`) must be released before or with
+`autobyteus-workspace-6`** (2 GiB context-file uploads); without it, one large attachment would stop all
+Memory Sync.
 
 ### Nested Team Memory Layout Upgrades
 
@@ -183,7 +261,7 @@ current runtime/history schema. The migrations and Memory Sync
 remain separate owners: the migration does not filter the scanner, emit a
 delete, gate sync, or clean a hub import.
 
-Because Memory Sync v1 sends replacements but no deletes, two bounded physical
+Because Memory Sync sends replacements but no deletes, two bounded physical
 retention cases are possible:
 
 - a source-plus-valid-canonical conflict may export files from both paths; and
@@ -223,12 +301,12 @@ queries accept `MemoryExplorerSourceInput`:
 
 ```graphql
 { type: LOCAL }
-{ type: IMPORTED, sourceNodeId: "docker-node-1" }
+{ type: IMPORTED, memorySyncSourceId: "docker-node-1" }
 ```
 
 The backend resolves imported sources under
-`memory/imports/<sourceNodeId>/agents` and
-`memory/imports/<sourceNodeId>/agent_teams`. Unknown imported source ids return
+`memory/imports/<memorySyncSourceId>/agents` and
+`memory/imports/<memorySyncSourceId>/agent_teams`. Unknown imported source ids return
 an error instead of silently falling back to local memory.
 
 Imported lists and details are labeled read-only/imported in the UI. Runtime
@@ -240,7 +318,10 @@ imported-memory surface.
 Current v1 limits are intentional:
 
 - no `memory/local/` migration and no runtime memory-provider rewrite;
-- no append, range, or delta sync protocol;
+- no append, range, or delta sync protocol (a changed file is sent whole; only an interrupted upload
+  of the same content resumes);
+- no per-source exclusion of files by size or type (FU-001 in
+  `tickets/done/memory-sync-large-files/follow-ups.md`);
 - no delete propagation from source to hub;
 - no analytics index, dataset curation, or model training pipeline;
 - no automated guarantee that Docker, Kubernetes, LAN, VPN, or tailnet routing is
@@ -264,10 +345,19 @@ Durable coverage includes both API-boundary and process-boundary checks:
   covers both-path replacement eligibility plus no-delete retention, and proves
   the imported semantic member still resolves only through the canonical V2
   target.
+- `tests/e2e/memory-sync/memory-sync-large-files.e2e.test.ts` starts a hub and a source as real
+  processes with a counting proxy between them: a 40 MiB attachment, two 20 MiB files and small files
+  sync in one run with every request within the limits; the same attachment under two runs is
+  uploaded once and imported twice; a connection cut mid-upload resumes from the hub's bytes and
+  nothing partial is imported; a piece corrupted in transit fails only its file, which is listed
+  with its reason and retried by Sync now.
+- Unit tests under `tests/unit/memory-sync/` cover the batch planner, failure policy, change planner,
+  stager, batch transfer, run outcomes and run gate, staged-file store, staged commit, and the
+  sweep cadence.
 - Frontend focused tests cover Memory Explorer source selection/store variables,
   the Nodes page Memory Sync tab entry, form-preserving source status refresh,
   saved-vs-draft test dispatch, inline connection feedback, `Current job` /
-  `Last sync` precedence, and sync button loading state.
+  `Last sync` precedence, sync button loading state, and the "files could not be synced" block.
 
 The multi-process test intentionally does not require browser, Electron, Docker,
 or Kubernetes. Docker/Kubernetes network reachability remains an operational
@@ -278,10 +368,10 @@ Connection.
 
 - GraphQL Memory Sync API: `src/api/graphql/types/memory-sync.ts`
 - REST hub ingestion API: `src/api/rest/memory-sync.ts`
-- Hub services: `src/memory-sync/hub/`
-- Source services, saved/draft connection-test policy, and worker:
-  `src/memory-sync/source/`
-- Shared sync DTOs/path/source-id policy: `src/memory-sync/shared/`
+- Hub services (ingestion, import store, staged-file store): `src/memory-sync/hub/`
+- Source services (run owner, change planner, batch planner, batch transfer, stager, failure policy),
+  saved/draft connection-test policy, and worker: `src/memory-sync/source/`
+- Shared sync DTOs/path/source-id policy, transfer limits and streaming hash: `src/memory-sync/shared/`
 - URL candidates: `src/server-addressing/`
 - Imported/local Memory Explorer source resolution:
   `src/agent-memory/services/memory-explorer-source-service.ts`

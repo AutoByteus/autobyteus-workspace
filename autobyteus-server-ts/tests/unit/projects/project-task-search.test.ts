@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getProjectService, resetProjectServiceForTests, ProjectService } from "../../../src/projects/services/project-service.js";
-import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskService, getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
@@ -12,14 +12,15 @@ import {
   releaseProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
-const reset = () => { resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const ids = (result: { matches: Array<{ task: { description: string }; match: string }> }) =>
   result.matches.map(({ task, match }) => `${match}:${task.description}`);
 
 describe("ProjectTaskSearchService", () => {
   let root: string, projectId: string, tasks: ProjectTaskService, fake: Awaited<ReturnType<typeof createFakeEmbeddingIndex>>, search: ProjectTaskSearchService;
-  const create = (description: string) => tasks.createTask({ projectId, description });
+  const create = (description: string) => tasks.createTask({ projectId, title: description, description });
   const ready = async () => {
     for (let i = 0; i < 200; i++) {
       if ((await search.search(projectId, "docker")).meaningSearch.state === "ready") return;
@@ -34,9 +35,9 @@ describe("ProjectTaskSearchService", () => {
     projectId = (await getProjectService().createProject({ name: "Search fixture" })).projectId;
     fake = await createFakeEmbeddingIndex();
     // As composed in production: search follows the Task service's post-commit marks (index-after-write kept out of the way here).
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+    tasks = new ProjectTaskService(withTaskRunResources({ searchCleanup: processProjectTaskSearchCleanup, changes: {
       ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
-    } });
+    } }));
     search = initializeProjectTaskSearchService({
       listProjects: () => getProjectService().listProjectSummaries(), listTasks: (id) => tasks.listTasks(id), index: () => fake.index, indexAfterWriteMs: 60_000,
     });
@@ -158,7 +159,7 @@ describe("ProjectTaskSearchService", () => {
 
   it("indexes every Project that is not indexed or needs an update, and rebuilds one Project from scratch", async () => {
     const second = (await getProjectService().createProject({ name: "Alpha" })).projectId;
-    await tasks.createTask({ projectId: second, description: "Price of the cloud plan" });
+    await tasks.createTask({ projectId: second, title: "Price of the cloud plan", description: "Price of the cloud plan" });
     await create("Docker image fails on ARM servers");
     await search.indexProject(projectId);
     await ready();

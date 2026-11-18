@@ -1,0 +1,10 @@
+   103    Task rule: (a) one Task
+  1437    Task rule: (b) the assigner's run
+     3    allowed today only, by month: 2026-08
+     1    allowed today only, by month: 2026-09
+    60    allowed today only, by month: 2026-10
+    64    allowed today only: one side is a delegated run with no Task record (legacy)
+  1604  messages between two runs
+     0  runs with more than one open Task now
+  1540  today allowed / Task rule allowed
+    64  today allowed / Task rule not allowed

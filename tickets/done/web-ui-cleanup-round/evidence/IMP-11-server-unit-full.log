@@ -1,0 +1,9 @@
+# IMP-11 server typecheck + full server unit suite (IR-002)
+# cmd: pnpm -C autobyteus-server-ts typecheck ; env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/unit tests/agent-work-journal tests/integration/skill-update-notices --no-watch
+# commit: 1a4bfd2ae9  env: macOS, Node v22.23.1  date: 2026-10-28T17:27Z
+
+
+typecheck exit=0
+ Test Files  797 passed | 5 skipped (802)
+      Tests  6721 passed | 9 skipped (6730)
+   Duration  584.11s (transform 14.94s, setup 8.68s, import 258.52s, tests 241.11s, environment 497ms)

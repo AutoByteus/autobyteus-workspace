@@ -3,8 +3,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { buildChatThinkingMenu } from '~/components/chat/chatThinkingMenu'
 import { buildModelOptions, type ModelOptionLabels } from '~/utils/runSettings/modelOptions'
-import { runtimeShortLabel } from '~/utils/chat/chatDefaults'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
 import type { RunSettingsValues } from '~/types/runSettings/RunSettings'
@@ -62,7 +61,6 @@ export function useRunSettingsPresentation() {
     modelOptionLabels,
     modelOptions,
     approvalLabel,
-    runtimeLabel: (runtimeKind: string) => runtimeKindToLabel(runtimeKind),
-    runtimeShortLabel: (runtimeKind: string) => runtimeShortLabel(runtimeKind),
+    runtimeLabel: (runtimeKind: string) => agentRuntimeName(runtimeKind),
   }
 }

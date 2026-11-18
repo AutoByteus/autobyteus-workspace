@@ -19,7 +19,6 @@ export { ToolSchemaProvider } from './usage/providers/tool-schema-provider.js';
 export { Search, type SearchExecutor } from './search-tool.js';
 export { SearchClientFactory, type SearchClientCreationInput } from './search/factory.js';
 export { SearchProvider } from './search/providers.js';
-export { ReadMediaFile } from './multimedia/media-reader-tool.js';
 export { DownloadMediaTool } from './multimedia/download-media-tool.js';
 export { ReadUrl } from './web/read-url-tool.js';
 

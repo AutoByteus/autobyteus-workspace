@@ -1,0 +1,74 @@
+# Case: API-E01 (round 2 full run) (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1/ENV-3 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e --no-watch
+# Full log: /tmp/api461/r2-E01-run1.log (not committed, 9 MB). Includes the stale files not yet rewritten (Next Round).
+
+ Test Files  47 failed | 138 passed | 71 skipped (256)
+      Tests  135 failed | 712 passed | 341 skipped (1188)
+   Duration  5330.36s (transform 21.10s, setup 5.90s, import 374.38s, tests 4925.20s, environment 13ms)
+
+Failing files:
+agent-org-runs/controlled-org-publication-http.e2e.test.ts
+agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts
+agent-team-runs/team-run-config-graphql.e2e.test.ts
+agent/standalone-error-termination-lifecycle.e2e.test.ts
+app-data-migrations/append-only-message-logs-startup.e2e.test.ts
+app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts
+app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts
+app-data-migrations/task-agent-own-run-startup.e2e.test.ts
+app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+memory/memory-collaboration-graphql.e2e.test.ts
+model-routing/model-routing-delegation.e2e.test.ts
+personal-settings/personal-tools-in-runs.e2e.test.ts
+projects/ad-hoc-task-delegation.e2e.test.ts
+projects/agent-run-collaboration-member-file-changes.e2e.test.ts
+projects/closed-run-attachments.e2e.test.ts
+projects/collaboration-contract-stories.e2e.test.ts
+projects/collaboration-model-contract.e2e.test.ts
+projects/collaboration-prompt-wording.e2e.test.ts
+projects/delegated-copy-member-contact-host.e2e.test.ts
+projects/delegated-copy-model-change.e2e.test.ts
+projects/delegated-copy-project-folder.e2e.test.ts
+projects/delegated-launch-config-defaults.e2e.test.ts
+projects/delegated-team-lazy-member-activation.e2e.test.ts
+projects/delegation-forest-restore.e2e.test.ts
+projects/get-project-task-worker-scope.e2e.test.ts
+projects/owner-scoped-member-file-changes.e2e.test.ts
+projects/project-change-feed.e2e.test.ts
+projects/project-task-boundaries.e2e.test.ts
+projects/project-task-context-files-delegation.e2e.test.ts
+projects/project-task-parts-live.e2e.test.ts
+projects/task-agent-several-tasks.e2e.test.ts
+projects/task-closure-root-visibility.e2e.test.ts
+projects/task-copy-idle-lifetime.e2e.test.ts
+projects/task-existing-copy-assignment.e2e.test.ts
+projects/task-reactivation-root-visibility.e2e.test.ts
+projects/teammate-delivery-task-closure-race.e2e.test.ts
+projects/unclean-shutdown-delegated-team-restore.e2e.test.ts
+remote-collaboration/remote-delegation-two-server.e2e.test.ts
+run-history/open-task-tree-upgrade-startup.e2e.test.ts
+run-history/standalone-unreadable-tree-containment.e2e.test.ts
+run-history/stopped-run-model-config-graphql.e2e.test.ts
+runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts
+runtime/runtime-switch-members-extended-built-server.e2e.test.ts
+runtime/runtime-switch-native-built-server.e2e.test.ts
+runtime/stopped-run-edit-root-built-server.e2e.test.ts
+runtime/team-task-event-current-contract.e2e.test.ts
+
+Fixed since the round-1 baseline:
+agent-org-runs/scoped-org-history-graphql.e2e.test.ts
+projects/projects-graphql.e2e.test.ts
+run-history/recent-run-projection-graphql.e2e.test.ts
+run-history/run-projection-toolcalls-graphql.e2e.test.ts
+runtime/agy-switch-back-built-server.e2e.test.ts
+runtime/runtime-switch-members-built-server.e2e.test.ts
+token-usage/token-usage-ledger-graphql.e2e.test.ts
+token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+workspaces/archive-run-history-graphql.e2e.test.ts
+
+Newly failing:
+file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+projects/collaboration-contract-stories.e2e.test.ts

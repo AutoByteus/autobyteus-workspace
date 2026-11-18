@@ -12,6 +12,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MONOREPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 DOCKERFILE_PATH="${SCRIPT_DIR}/Dockerfile.monorepo"
 
+# The base image digest of a variant, from system-level.json (the one record of the pinned bases).
+# shellcheck disable=SC2016 # the node program, not the shell, expands its template
+base_image_digest() {
+  node -e 'const d = require(process.argv[1]).baseImages[process.argv[2]]; if (!d) { console.error(`No base image for the variant ${process.argv[2]} in ${process.argv[1]}`); process.exit(1) } console.log(d)' \
+    "${SCRIPT_DIR}/system-level.json" "$1"
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --tag) TAG="$2"; shift 2 ;;
@@ -23,7 +30,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -n "${VARIANT}" && "${VARIANT}" != "latest" ]]; then
-  BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG=${VARIANT}")
+  BUILD_ARGS+=("--build-arg" "BASE_IMAGE_DIGEST=$(base_image_digest "${VARIANT}")")
   if [[ "${TAG}" == "latest" ]]; then
     TAG="latest-${VARIANT}"
   fi

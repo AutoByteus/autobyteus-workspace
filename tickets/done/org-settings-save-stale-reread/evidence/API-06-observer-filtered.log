@@ -1,0 +1,325 @@
+# API-06 temporary observer log, FILTERED to: AgentOrgRunConfig / UpdateDelegatedLaunchSelections / StopDelegatedExecution GraphQL, Org WebSocket open/close/CONNECTED/SNAPSHOT, Save bar text changes
+# Full log: /tmp/ab265e2e/API-06/out/observer.log (    9244 lines, not committed). Observer patch: API-05-06-observer.diff. commit a4e1a89993, ENV-1, 2026-10-24
+2026-10-24T16:44:14.597Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:14.598Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:14.600Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:20.430Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:20.436Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:20.437Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:20.440Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:27.252Z gql-req AgentOrgRunConfig
+2026-10-24T16:44:27.269Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:44:29.315Z gql-req StopDelegatedExecution
+2026-10-24T16:44:29.383Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:44:29.763Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:44:30.066Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:44:30.159Z gql-req AgentOrgRunConfig
+2026-10-24T16:44:30.160Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:30.160Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:44:30.161Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:30.161Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:44:30.161Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:30.165Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:30.173Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:44:30.261Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:44:32.360Z [OBS] savebar null
+2026-10-24T16:44:35.661Z gql-req StopDelegatedExecution
+2026-10-24T16:44:36.696Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:44:38.492Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_b7b9c2f90be7449da03efb6b12e5467e
+2026-10-24T16:44:49.763Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:49.763Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:49.766Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:54.861Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:54.861Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:54.861Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:54.869Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:55.807Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:55.807Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:55.809Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:55.816Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:56.782Z gql-req AgentOrgRunConfig
+2026-10-24T16:44:56.799Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:44:58.831Z gql-req StopDelegatedExecution
+2026-10-24T16:44:58.893Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:44:59.265Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:44:59.655Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:44:59.664Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:44:59.827Z gql-req AgentOrgRunConfig
+2026-10-24T16:44:59.830Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:59.830Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:44:59.831Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:59.832Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:59.839Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:44:59.858Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:44:59.866Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:45:01.877Z [OBS] savebar null
+2026-10-24T16:45:05.133Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_87cf_0069a8765abe4e8da443b447db9d7e7d
+2026-10-24T16:45:11.786Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:11.787Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:11.788Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:17.544Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:17.546Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:17.546Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:17.548Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:24.448Z gql-req AgentOrgRunConfig
+2026-10-24T16:45:24.463Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:45:26.495Z gql-req StopDelegatedExecution
+2026-10-24T16:45:26.565Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:45:26.936Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:45:27.299Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:45:27.335Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:45:27.432Z gql-req AgentOrgRunConfig
+2026-10-24T16:45:27.433Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:27.433Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:27.437Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:45:27.438Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:45:27.438Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:45:27.438Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:27.438Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:29.535Z [OBS] savebar null
+2026-10-24T16:45:32.833Z gql-req StopDelegatedExecution
+2026-10-24T16:45:33.882Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:45:35.676Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_6d8b82210b044a0dbfc1d897c37a0855
+2026-10-24T16:45:47.592Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:47.594Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:47.598Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:52.728Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:52.728Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:52.729Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:52.737Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:53.649Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:53.650Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:53.651Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:53.660Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:54.613Z gql-req AgentOrgRunConfig
+2026-10-24T16:45:54.629Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:45:56.661Z gql-req StopDelegatedExecution
+2026-10-24T16:45:56.727Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:45:57.111Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:45:57.523Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:45:57.618Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:45:58.014Z gql-req AgentOrgRunConfig
+2026-10-24T16:45:58.014Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:58.017Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:58.018Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:58.020Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:45:58.042Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:45:58.130Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:45:58.132Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:45:59.811Z [OBS] savebar null
+2026-10-24T16:46:03.020Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_375d_dba10862a1c44a6c8169cab885c8fce0
+2026-10-24T16:46:09.763Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:09.764Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:09.766Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:15.528Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:15.530Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:15.530Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:15.532Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:22.445Z gql-req AgentOrgRunConfig
+2026-10-24T16:46:22.462Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:46:24.493Z gql-req StopDelegatedExecution
+2026-10-24T16:46:24.558Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:46:24.919Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:46:25.270Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:46:25.319Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:46:25.432Z gql-req AgentOrgRunConfig
+2026-10-24T16:46:25.433Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:25.434Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:25.434Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:46:25.436Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:25.437Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:25.455Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:46:25.519Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:46:27.519Z [OBS] savebar null
+2026-10-24T16:46:30.814Z gql-req StopDelegatedExecution
+2026-10-24T16:46:31.873Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:46:33.671Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_62df6d26ef0940458ddbc8294cd8f80a
+2026-10-24T16:46:44.994Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:44.994Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:44.996Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:50.093Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:50.094Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:50.096Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:50.106Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:51.055Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:51.056Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:51.056Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:51.062Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:52.028Z gql-req AgentOrgRunConfig
+2026-10-24T16:46:52.046Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:46:54.076Z gql-req StopDelegatedExecution
+2026-10-24T16:46:54.142Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:46:54.553Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:46:54.928Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:46:54.954Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:46:55.077Z gql-req AgentOrgRunConfig
+2026-10-24T16:46:55.077Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:46:55.078Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:55.078Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:55.079Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:55.086Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:46:55.099Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:46:55.153Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:46:57.154Z [OBS] savebar null
+2026-10-24T16:47:00.421Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_9e07_43d4cbee8b89444daaef29741fe9d22a
+2026-10-24T16:47:06.936Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:06.943Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:06.944Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:12.695Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:12.695Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:12.696Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:12.697Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:19.659Z gql-req AgentOrgRunConfig
+2026-10-24T16:47:19.677Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:47:21.706Z gql-req StopDelegatedExecution
+2026-10-24T16:47:21.767Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:47:22.219Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:47:22.543Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:47:22.619Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:47:22.664Z gql-req AgentOrgRunConfig
+2026-10-24T16:47:22.665Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:47:22.667Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:22.668Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:22.671Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:47:22.671Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:22.672Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:22.719Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:47:24.818Z [OBS] savebar null
+2026-10-24T16:47:28.076Z gql-req StopDelegatedExecution
+2026-10-24T16:47:29.136Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:47:30.953Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_19f6ed6d56fd49978525c3a89693e9b6
+2026-10-24T16:47:42.253Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:42.253Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:42.259Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:47.372Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:47.373Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:47.373Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:47.379Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:48.344Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:48.345Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:48.345Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:48.351Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:49.325Z gql-req AgentOrgRunConfig
+2026-10-24T16:47:49.346Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:47:51.389Z gql-req StopDelegatedExecution
+2026-10-24T16:47:51.456Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:47:51.835Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:47:52.229Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:47:52.236Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:47:52.377Z gql-req AgentOrgRunConfig
+2026-10-24T16:47:52.378Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:47:52.378Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:52.379Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:52.379Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:52.386Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:47:52.403Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:47:52.435Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:47:54.534Z [OBS] savebar null
+2026-10-24T16:47:57.709Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_074b_6602c4decde94f11b5a40fe97050812a
+2026-10-24T16:48:04.190Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:04.193Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:04.193Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:10.018Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:10.020Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:10.021Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:10.023Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:16.873Z gql-req AgentOrgRunConfig
+2026-10-24T16:48:16.891Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:48:18.921Z gql-req StopDelegatedExecution
+2026-10-24T16:48:18.985Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:48:19.410Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:48:19.655Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:48:19.709Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:48:19.737Z gql-req AgentOrgRunConfig
+2026-10-24T16:48:19.737Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:48:19.738Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:19.738Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:19.743Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:48:19.743Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:19.744Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:19.810Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:48:21.910Z [OBS] savebar null
+2026-10-24T16:48:25.191Z gql-req StopDelegatedExecution
+2026-10-24T16:48:26.236Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:48:28.050Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_30e3c279aa4545478f3d36acbdef49e0
+2026-10-24T16:48:39.385Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:39.385Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:39.388Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:44.543Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:44.544Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:44.544Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:44.552Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:45.459Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:45.459Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:45.460Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:45.469Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:46.459Z gql-req AgentOrgRunConfig
+2026-10-24T16:48:46.472Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:48:48.503Z gql-req StopDelegatedExecution
+2026-10-24T16:48:48.568Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:48:48.900Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:48:49.322Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:48:49.392Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:48:49.500Z gql-req AgentOrgRunConfig
+2026-10-24T16:48:49.503Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:49.503Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:49.504Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:48:49.504Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:49.509Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:48:49.537Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:48:49.593Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:48:51.690Z [OBS] savebar null
+2026-10-24T16:48:54.868Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_c79e_335c914b5f964a499688846d77c7467e
+2026-10-24T16:49:01.358Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:01.359Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:01.360Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:07.146Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:07.147Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:07.148Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:07.151Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:14.172Z gql-req AgentOrgRunConfig
+2026-10-24T16:49:14.188Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:49:16.218Z gql-req StopDelegatedExecution
+2026-10-24T16:49:16.286Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:49:16.669Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:49:16.962Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:49:16.968Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:49:17.085Z gql-req AgentOrgRunConfig
+2026-10-24T16:49:17.086Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:49:17.086Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:17.086Z ws-open ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:17.087Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:17.089Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:17.096Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:49:17.168Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:49:19.269Z [OBS] savebar null
+2026-10-24T16:49:22.530Z gql-req StopDelegatedExecution
+2026-10-24T16:49:24.088Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:49:25.898Z ws-close ws://127.0.0.1:53111/ws/agent-org/hostorg_org_5710_08d7eec1b70447bb9e2232bd21446b82
+2026-10-24T16:49:37.168Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:37.168Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:37.171Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:42.227Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:42.228Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:42.228Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:42.234Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:43.224Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:43.224Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:43.225Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:43.231Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:44.185Z gql-req AgentOrgRunConfig
+2026-10-24T16:49:44.203Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:49:46.234Z gql-req StopDelegatedExecution
+2026-10-24T16:49:46.300Z gql-res StopDelegatedExecution status=200 errors=null
+2026-10-24T16:49:46.683Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Save"
+2026-10-24T16:49:47.087Z gql-req UpdateDelegatedLaunchSelections
+2026-10-24T16:49:47.184Z [OBS] savebar "Unsaved changes · they apply when this run resumes Cancel Saving…"
+2026-10-24T16:49:47.198Z gql-req AgentOrgRunConfig
+2026-10-24T16:49:47.198Z gql-res UpdateDelegatedLaunchSelections status=200 errors=null
+2026-10-24T16:49:47.199Z ws-close ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:47.200Z ws-open ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:47.201Z ws CONNECTED kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:47.206Z ws ROOT_EXECUTION_VIEW_SNAPSHOT kind=agent_org ws://127.0.0.1:53111/ws/agent-org/slot_org3_3512_03d681eb6ad74281ab827810ed4618d7
+2026-10-24T16:49:47.221Z gql-res AgentOrgRunConfig status=200 errors=null
+2026-10-24T16:49:47.285Z [OBS] savebar "Saved. Changes apply when this run resumes."
+2026-10-24T16:49:49.383Z [OBS] savebar null

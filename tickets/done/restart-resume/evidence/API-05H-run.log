@@ -1,0 +1,16 @@
+[+3.2s] isolated-app {"args":["start","--app","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app","--data-root","<own>/data-root"],"exit":0,"ok":true}
+[+3.3s] instance started {"label":"X","instanceId":"iso-64950-45fc","electronPid":31961,"serverPort":64951}
+[+4.6s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+8.1s] busy {"label":"sa-codex","pid":34541}
+[+13.4s] isolated-app {"args":["stop","iso-64950-45fc"],"exit":0,"ok":true}
+[+13.4s] quit {"label":"quit X (busy)","electronGoneMs":3237}
+[+13.4s] record after quit {"entries":[{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"dd2430f7a3"}],"lines":["[2026-11-01T07:04:06.343Z] [INFO] [electron.embedded-server.stdout] Recorded 1 busy run(s) for restart resume"]}
+[+13.4s] stamp in app copy "1.5.11-beta.9-rr285next"
+[+16.4s] isolated-app {"args":["start","--app","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app","--data-root","<own>/data-root"],"exit":0,"ok":true}
+[+16.5s] instance started {"label":"X1","instanceId":"iso-65106-afad","electronPid":34756,"serverPort":65107}
+[+36.5s] after X1 start {"lines":["[2026-11-01T07:04:12.437Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhhx99_d999b6104246495a97d257dd2430f7a3' of agent 'desk_agent_rr285dmvxhhx99_d999b6104246495a97d257dd2430f7a3'","[2026-11-01T07:04:12.437Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 1 resumed, 0 skipped, 0 failed"],"after":{"sa-codex":{"notices":1,"listsDelegated":false,"noticeText":"The application restarted at 2026-11-01T07:04:12.282Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was in
+[+45.7s] member notice in window (live) {"segments":1,"hits":[{"inSystemSegment":true,"text":"The application restarted at 2026-11-01T07:04:12.282Z after an update to 1.5.11-beta.9-rr285next."}],"url":"file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_agent_rr285dmvxhhx99_d999b6104246495a97d257dd2430f7a3"}
+[+61.0s] member notice in window (after reload) {"segments":1,"hits":[{"inSystemSegment":true,"text":"The application restarted at 2026-11-01T07:04:12.282Z after an update to 1.5.11-beta.9-rr285next."}],"url":"file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_agent_rr285dmvxhhx99_d999b6104246495a97d257dd2430f7a3"}
+[+61.3s] isolated-app {"args":["stop","iso-65106-afad"],"exit":0,"ok":true}
+[+61.3s] quit {"label":"quit X1","electronGoneMs":306}
+{"result":"Completed","error":null,"fallbackCleanup":0}

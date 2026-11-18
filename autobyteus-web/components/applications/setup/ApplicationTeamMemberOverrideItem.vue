@@ -54,7 +54,12 @@
           :disabled="disabled || !allowModelOverride"
           :placeholder="modelPlaceholder"
           search-placeholder="Search models..."
+          refreshable
+          :refreshing="modelListRefreshing"
+          :refresh-failed="modelListRefreshFailed"
           @update:model-value="updateModel"
+          @open="refreshModelsOnOpen"
+          @refresh="refreshModels"
         />
       </div>
     </div>
@@ -97,6 +102,10 @@ const {
   effectiveRuntimeKind,
   groupedModelOptions,
   hasModelIdentifier,
+  modelListRefreshFailed,
+  modelListRefreshing,
+  refreshModels,
+  refreshModelsOnOpen,
   runtimeOptions,
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({

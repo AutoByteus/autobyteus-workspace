@@ -1,0 +1,29 @@
+# API-04/05 builds; commit d37397b40dccd5da6b6a0be4b5d56ad7cbd4782c; 2026-11-10T08:04:54Z; macOS 26.5.2 arm64; docker 29.0.1
+== API-04: buildx server-package (linux/arm64)
+
+#41 exporting to client directory
+#41 copying files 28B
+#41 copying files 429.64MB 5.1s
+#41 copying files 687.50MB 8.5s done
+#41 DONE 8.7s
+API-04 exit=0
+LICENSE
+README.md
+application-packages
+dist
+mobile-web
+node_modules
+package.json
+prisma
+server-package.json
+taskExecutionReferenceKey in the package's contracts: /private/tmp/abx435-api/server-package/node_modules/@autobyteus/collaboration-stream-contracts/dist/root-execution-view-dtos.js /private/tmp/abx435-api/server-package/node_modules/@autobyteus/collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts 
+phone bundle with the row restore: /private/tmp/abx435-api/server-package/mobile-web/_nuxt/CFHpaMn1.js
+== API-05: Android :app:assembleDebug :app:assembleDebugAndroidTest
+> Task :app:assembleDebugAndroidTest
+
+BUILD SUCCESSFUL in 6s
+64 actionable tasks: 64 executed
+API-05 exit=0
+app/build/outputs/apk/debug/app-debug.apk sha256 6ad1aad86d910141
+app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk sha256 8aea6bdac28ae5a1
+== ALL DONE 2026-11-10T08:07:56Z

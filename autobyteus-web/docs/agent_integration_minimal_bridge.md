@@ -67,7 +67,9 @@ These handlers update the agent context and mark messages complete. In the curre
 - `TURN_COMPLETED` / `TURN_INTERRUPTED` settle only their matching `turn_id`;
   a delayed terminal event for an older turn cannot close a newer turn.
 - `AGENT_STATUS` is run-level state with payload
-  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error", background_tasks_running: number, agent_id?, agent_name? }`.
+  `background_tasks_running` is the run's running background task count; an `idle` run with a count above 0 is
+  shown as "Background task running".
   It does not contain legacy transition-field names.
 - `ERROR` preserves the safe original source/code/message/details fields and may add
   `{ error_scope: "turn", error_effect: "diagnostic" | "terminal", turn_id: string }`
@@ -99,16 +101,17 @@ These handlers update the agent context and mark messages complete. In the curre
 - Startup tokens such as `bootstrapping`, `starting`, `startup`,
   `initializing`, and active `uninitialized` should be treated as
   non-interruptible `initializing`, not as `running` or `offline`.
-- The interrupt/stop affordance should use backend-owned `can_interrupt`. `isSending`
-  is only local submit-flight state and must not grant interrupt authority by itself.
-- Refresh/reopen/recovery should preserve a selected live
-  `initializing/canInterrupt=false` or `running/canInterrupt=true` single run
-  or focused team member while that stream remains authoritative, but terminal
-  `offline` or `error` projections must always clear stale `canInterrupt`, and
-  a later live `idle/can_interrupt=false` status should return the composer to
+- The interrupt/stop affordance follows the status word: Stop only for `running`
+  (`resolveAgentPrimaryAction`). `isSending` is only local submit-flight state and
+  must not grant interrupt authority by itself; a running background task does not
+  either.
+- Refresh/reopen/recovery should preserve a selected live `initializing` or
+  `running` single run or focused team member while that stream remains
+  authoritative, but terminal `offline` or `error` projections must always replace
+  a stale `running`, and a later live `idle` status should return the composer to
   the send affordance.
 - A successful terminate/stop flow should surface a terminal
-  `{ status: "offline", can_interrupt: false }` `AGENT_STATUS` before stream
+  `{ status: "offline" }` `AGENT_STATUS` before stream
   teardown. Treat `offline` as the inactive non-error terminal state for live
   and first-load history views.
 - `AGENT_STATUS` remains useful as run-level state, but `TURN_COMPLETED` is the
@@ -120,7 +123,7 @@ These handlers update the agent context and mark messages complete. In the curre
 You need small types for:
 - Agent context + run state
 - Conversation + message segments
-- Agent status enum (`offline` / `initializing` / `idle` / `running` / `error`) plus `canInterrupt`
+- Agent status enum (`offline` / `initializing` / `idle` / `running` / `error`) plus the running background task count
 
 ## Minimal file checklist (frontend)
 
@@ -181,13 +184,13 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
   mutate transcript content, retry automatically, or fabricate a server
   acknowledgement.
 - Treats member `AGENT_STATUS` as the source for each member's status and
-  `canInterrupt`; root `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` updates
+  background task count; root `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` updates
   only team liveness, while connection/subscription state remains separate.
 - Expects targeted/offline member sends to surface member-scoped
   `AGENT_STATUS initializing` before backend startup/send waits. True
   team containers do not synthesize a root five-state status.
-- Preserves a focused member's live `initializing/canInterrupt=false` startup
-  state or `running/canInterrupt=true` interrupt affordance across
+- Preserves a focused member's live `initializing` startup state or `running`
+  interrupt affordance across
   refresh/reconcile until that member receives a terminal projection or a later
   live non-interruptible status.
 - Does not fan out root team activity to every member during first load,
@@ -279,9 +282,9 @@ export const useMyFeatureStore = defineStore('myFeature', {
 ## Troubleshooting
 
 - Stuck in loading state
-  - Ensure the streaming service sets `isSending = false` only after backend lifecycle/status/error handling indicates the active turn has settled. Use `TURN_COMPLETED` for exact turn completion; a terminal `AGENT_STATUS` payload such as `{ status: "idle", can_interrupt: false }`, `ASSISTANT_COMPLETE`, or `ERROR` can also settle run-level UI state as appropriate.
+  - Ensure the streaming service sets `isSending = false` only after backend lifecycle/status/error handling indicates the active turn has settled. Use `TURN_COMPLETED` for exact turn completion; a terminal `AGENT_STATUS` payload such as `{ status: "idle" }`, `ASSISTANT_COMPLETE`, or `ERROR` can also settle run-level UI state as appropriate.
   - Do not clear `isSending` merely because a stop/interrupt command was sent; wait for the backend lifecycle/status/error stream event so provider runtimes can finish cancellation cleanup first.
-  - If the red stop/interrupt button appears incorrectly, verify the UI is reading `can_interrupt` / `canInterrupt` from the selected run or team member rather than deriving it from `isSending`.
+  - If the red stop/interrupt button appears incorrectly, verify the UI reads the selected run's or team member's status (`running`) rather than deriving it from `isSending`.
 - "agentDefinitionId and llmModelIdentifier are required"
   - Both must be provided for a new agent run.
 - No stream output

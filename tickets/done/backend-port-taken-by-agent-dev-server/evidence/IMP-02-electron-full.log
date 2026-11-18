@@ -1,0 +1,14 @@
+IMP-02 — full Electron main-process suite (regression check for the changed files' owners)
+Command: pnpm -C autobyteus-web test:electron
+Commit: c8ec06b5132870931b6833990e20db07642ccf45
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, pnpm 10.28.2 (via npx)
+Date: 2026-11-06
+
+Output (excerpt, final summary):
+
+ Test Files  60 passed | 1 skipped (61)
+      Tests  411 passed | 1 skipped (412)
+   Duration  5.45s
+
+The 1 skipped file is extensions/__tests__/managedExtensionService.realRelease.spec.ts,
+a gated live-release check unrelated to this change (pre-existing skip).

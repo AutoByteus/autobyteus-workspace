@@ -1,0 +1,5 @@
+# IMP-02 focused unit suites with D1-D3 (after updating two timing assertions to the queued release, RSK-001): agent-collaboration, remote-collaboration, agent-team-execution, agent-org-execution, standalone-agent-run-root; working tree (fix uncommitted); macOS, Node v22.23.1; 2026-11-10T12:31:03Z
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration tests/unit/remote-collaboration tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/standalone-agent-run-root --no-watch
+ Test Files  143 passed (143)
+      Tests  1234 passed (1234)
+   Duration  108.87s (transform 6.74s, setup 3.94s, import 67.24s, tests 22.94s, environment 8ms)

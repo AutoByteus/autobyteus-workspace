@@ -1,32 +1,55 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useWorkspaceHistorySubjectActions } from '../useWorkspaceHistorySubjectActions'
+import { createPinia, setActivePinia } from 'pinia'
+import { agentOrgRouteQuery, useWorkspaceHistorySubjectActions } from '../useWorkspaceHistorySubjectActions'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { agentRow } from '~/test-support/runTreeFixtures'
 
 const mocks = vi.hoisted(() => ({
   route: { query: {} as Record<string, string> }, push: vi.fn(), replace: vi.fn(),
   active: false, phase: 'historical',
   history: { agentOrgHistory: [] as any[] },
-  contexts: { select: vi.fn(), openForInspection: vi.fn(), stopAndInspect: vi.fn(), contextFor: vi.fn() },
-  clear: vi.fn(),
+  contexts: { select: vi.fn(), selectTreeRow: vi.fn(() => true), openForInspection: vi.fn(), stopAndInspect: vi.fn(), contextFor: vi.fn() },
+  clear: vi.fn(), clearKeepingView: vi.fn(),
 }))
 vi.mock('vue-router', () => ({ useRoute: () => mocks.route, useRouter: () => ({ push: mocks.push, replace: mocks.replace }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => mocks.history }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => mocks.contexts }))
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({
-    beginSelectionIntent: () => ({ isCurrent: () => true }), clearSelection: mocks.clear }) }))
+    beginSelectionIntent: () => ({ isCurrent: () => true }), clearSelection: mocks.clear, clearSelectionWithoutShellNavigation: mocks.clearKeepingView }) }))
 
 beforeEach(() => {
+  setActivePinia(createPinia())
   vi.clearAllMocks()
+  // The Org's tree (SR-084): the run its member delegated, under it; inspecting it opens its row.
+  useRunTreeStore().streamSnapshot({ kind: 'agent_org', runId: 'org-run' }, [
+    { ...agentRow('task-exact', 'org_agent:org-run:director', 1), address: '/team/coordinator' }])
   mocks.route.query = {}
   mocks.active = false; mocks.phase = 'historical'
   mocks.contexts.openForInspection.mockResolvedValue(undefined)
   mocks.contexts.stopAndInspect.mockResolvedValue(undefined)
   mocks.contexts.contextFor.mockImplementation(() => ({ isActive: mocks.active, phase: mocks.phase,
-    index: { agents: new Map([['task-exact', { agentRunId: 'task-exact', address: '/team/coordinator' }]]),
-      addressOf: (agentRunId: string) => agentRunId === 'task-exact' ? '/team/coordinator' : null,
-      configured: new Map([['/team', {}], ['/team/coordinator', {}]]) },
+    index: { configured: new Map([['/team', {}], ['/team/coordinator', {}]]) },
   }))
   mocks.history.agentOrgHistory = [{ rootRunId: 'org-run', isActive: true,
-    closedTaskExecutions: [], executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } }]
+    executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } }]
+})
+
+describe('Settings across a focus change in an Org (autobyteus-366, AC-005)', () => {
+  it.each(['select', 'inspect'] as const)('%s of another agent of the Org already shown keeps the view (Settings and their edits stay)', async (action) => {
+    mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'history', memberAddress: '/team' }
+    await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action,
+      memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
+    expect(mocks.clearKeepingView).toHaveBeenCalledOnce()
+    expect(mocks.clear).not.toHaveBeenCalled()
+  })
+
+  it.each([[{}], [{ rootSubjectKind: 'agent_org', orgRunId: 'other-org', mode: 'history' }]] as const)(
+    'opening the Org from elsewhere (%j) opens it at its chat', async (query) => {
+      mocks.route.query = { ...query }
+      await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team' })
+      expect(mocks.clear).toHaveBeenCalledOnce()
+      expect(mocks.clearKeepingView).not.toHaveBeenCalled()
+    })
 })
 
 describe('Org browse is inspection and Stop retains the same exact route', () => {
@@ -52,7 +75,8 @@ describe('Org browse is inspection and Stop retains the same exact route', () =>
     const actions = useWorkspaceHistorySubjectActions()
     await expect(actions.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team' })).rejects.toThrow('unavailable')
     await expect(actions.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'inspect', agentRunId: 'task-exact', memberAddress: '/wrong' })).rejects.toThrow('unavailable')
-    expect(mocks.clear).not.toHaveBeenCalled(); expect(mocks.contexts.select).not.toHaveBeenCalled(); expect(mocks.push).not.toHaveBeenCalled()
+    expect(mocks.clear).not.toHaveBeenCalled(); expect(mocks.contexts.select).not.toHaveBeenCalled(); expect(mocks.contexts.selectTreeRow).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
   })
   it.each([false, true])('keeps latest exact selection/history mode after confirmed Stop, even if final read fails=%s', async (fails) => {
     mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'active', memberAddress: '/team/coordinator', agentRunId: 'task-exact' }
@@ -67,5 +91,52 @@ describe('Org browse is inspection and Stop retains the same exact route', () =>
     mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'other', mode: 'active' }
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'stop' })
     expect(mocks.replace).not.toHaveBeenCalled(); expect(mocks.clear).not.toHaveBeenCalled()
+  })
+})
+
+// autobyteus-277 AR-002: the phone's shell opens and selects the Org and reports the outcome; its route is its own.
+describe('the phone shell', () => {
+  it.each(['open', 'select', 'inspect'] as const)('%s opens the Org with no navigation and commits', async (action) => {
+    mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'history' }
+    const outcome = await useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action,
+      memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
+    expect(outcome).toEqual({ disposition: 'committed' })
+    expect(mocks.contexts.openForInspection).toHaveBeenCalledOnce()
+    expect(mocks.clearKeepingView).toHaveBeenCalledOnce()
+    expect(mocks.clear).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
+    expect(mocks.replace).not.toHaveBeenCalled()
+  })
+
+  // autobyteus-458 CR-001: the phone's Settings stops a live Org member's Org; the phone stays where it is.
+  it.each([false, true])('stop stops the Org shown on the phone and writes no route (final read fails=%s)', async (fails) => {
+    mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'active', memberAddress: '/team/coordinator', screen: 'settings' }
+    mocks.contexts.stopAndInspect.mockImplementation(async () => { if (fails) throw new Error('final read unavailable') })
+    const pending = useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'stop' })
+    if (fails) await expect(pending).rejects.toThrow('final read unavailable'); else expect(await pending).toEqual({ disposition: 'committed' })
+    expect(mocks.contexts.stopAndInspect).toHaveBeenCalledWith('org-run')
+    expect(mocks.replace).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
+  })
+
+  it('a failed open throws before any selection change, as on the desktop', async () => {
+    mocks.contexts.openForInspection.mockRejectedValueOnce(new Error('unavailable'))
+    await expect(useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'open' }))
+      .rejects.toThrow('unavailable')
+    expect(mocks.clearKeepingView).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
+  })
+})
+
+describe('agentOrgRouteQuery, the one builder of the Org route keys', () => {
+  const run = { rootRunId: 'org-run', executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } } as never
+  it.each([
+    [{ action: 'open', memberAddress: '/team' }, true, { mode: 'active' }],
+    [{ action: 'select', memberAddress: '/team' }, false, { mode: 'history', memberAddress: '/team' }],
+    [{ action: 'inspect', memberAddress: '/team/coordinator', agentRunId: 'task-exact' }, false,
+      { mode: 'history', memberAddress: '/team/coordinator', agentRunId: 'task-exact' }],
+  ] as const)('%j (active=%s)', (command, isActive, expected) => {
+    expect(agentOrgRouteQuery(run, { rootSubjectKind: 'agent_org', rootRunId: 'org-run', ...command }, isActive))
+      .toEqual({ rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-run', ...expected })
   })
 })

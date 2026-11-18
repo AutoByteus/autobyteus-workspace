@@ -1,0 +1,18 @@
+# Server production build (tsc build + assets) on Fastify 5
+# Check: IMP-15
+# Command: pnpm -C autobyteus-server-ts build 2>&1 | tail -6; echo "build exit: ${PIPESTATUS[0]}"; ls -la autobyteus-server-ts/dist/app.js autobyteus-server-ts/dist/index.js
+# Commit: 29aeb5d721
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T20:14:10Z
+
+
+AgentFactory (Singleton) initialized.
+(node:71762) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit: 0
+-rw-r--r--@ 1 normy  staff  2461 Oct 24 22:14 autobyteus-server-ts/dist/app.js
+-rw-r--r--@ 1 normy  staff   440 Oct 24 22:14 autobyteus-server-ts/dist/index.js
+
+# exit code: 0

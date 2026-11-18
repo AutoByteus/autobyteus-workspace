@@ -1,27 +1,33 @@
-export const EMBEDDED_NODE_ID = 'embedded-local';
-export const NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry.v1';
+/** The entry ID of the desktop's embedded local node. */
+export const EMBEDDED_ENTRY_ID = 'embedded-local';
+/** The window's node list in browser mode (no Electron API). */
+export const NODE_REGISTRY_STORAGE_KEY = 'autobyteus.node_registry';
 
 export type NodeType = 'embedded' | 'remote';
 
-/** A node's server instance ID (`srv_…`), as `/rest/remote-access/status` answers it. */
-export const SERVER_INSTANCE_ID_PATTERN = /^srv_[A-Za-z0-9_-]{32,}$/;
+/** A node's ID (`srv_…`), as `/rest/remote-access/status` answers it. */
+export const NODE_ID_PATTERN = /^srv_[A-Za-z0-9_-]{32,}$/;
 
-export function isServerInstanceId(value: unknown): value is string {
-  return typeof value === 'string' && SERVER_INSTANCE_ID_PATTERN.test(value);
+export function isNodeId(value: unknown): value is string {
+  return typeof value === 'string' && NODE_ID_PATTERN.test(value);
 }
 
 /**
- * A node this desktop can open. `id` is the desktop's own ID for the entry; `serverInstanceId` is the node's ID
- * (`srv_…`), learned when this desktop reaches the node at `baseUrl` (absent: not learned yet). The Nodes page joins
- * the desktop entries with this node's peers by it (one-nodes-tab DEC-701).
+ * An entry: this desktop's record of a node it can open. `id` is the entry's own ID (other records refer to it as
+ * `entryId`); `nodeId` is the node's ID (`srv_…`), learned when this desktop reaches the node at `baseUrl` (absent:
+ * not learned yet). The Nodes page joins the entries with this node's peers by it (one-nodes-tab DEC-701).
  */
-export interface NodeProfile {
+export interface NodeEntry {
   id: string;
   name: string;
   baseUrl: string;
   nodeType: NodeType;
-  serverInstanceId?: string;
-  isSystem: boolean;
+  nodeId?: string;
+  /**
+   * "Update automatically" for a remote node (autobyteus-356): the desktop updates it to the desktop's version. Absent
+   * means off; never set on the embedded entry.
+   */
+  autoUpdate?: true;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,56 +43,70 @@ export interface NodeEndpoints {
   agentCollaborationWs: string;
   /** The node's Project and Task change feed. */
   projectsWs: string;
+  /** autobyteus-461 SR-083: each run's statuses by run ID, and its rows' change notice. */
+  runStatusWs: string;
+  /** autobyteus-461 G-D1: a peer's run, opened by its own identity, in the agent stream's protocol. */
+  peerRunWs: string;
   /** The node's agent, team, org and package catalog change feed. */
   agentPackageDefinitionsWs: string;
   updateNotificationsWs: string;
   terminalWs: string;
+  /** One viewer stream of the node desktop (the agent's virtual desktop of a Docker node). */
+  nodeDesktopWs: string;
   fileExplorerWs: string;
   health: string;
 }
 
 export interface WindowNodeContext {
   windowId: number;
-  nodeId: string;
+  /** The entry this window is bound to. */
+  entryId: string;
 }
 
 export interface NodeRegistrySnapshot {
   version: number;
-  nodes: NodeProfile[];
+  nodes: NodeEntry[];
 }
 
 export interface AddNodeRegistryChange {
   type: 'add';
-  node: NodeProfile;
+  node: NodeEntry;
 }
 
 export interface RemoveNodeRegistryChange {
   type: 'remove';
-  nodeId: string;
+  entryId: string;
 }
 
 export interface RenameNodeRegistryChange {
   type: 'rename';
-  nodeId: string;
+  entryId: string;
   name: string;
 }
 
 /**
- * Sets or replaces an entry's `serverInstanceId` with the ID its own address answered (one-nodes-tab AR-003); a no-op
- * when it is equal. `nodeId` is the desktop entry's ID.
+ * Sets or replaces an entry's `nodeId` with the node ID its own address answered (one-nodes-tab AR-003); a no-op
+ * when it is equal.
  */
 export interface IdentifyNodeRegistryChange {
   type: 'identify';
+  entryId: string;
   nodeId: string;
-  serverInstanceId: string;
+}
+
+/**
+ * Turns a remote entry's "Update automatically" on or off (autobyteus-356); `false` removes the field. Refused for the
+ * embedded entry.
+ */
+export interface SetAutoUpdateNodeRegistryChange {
+  type: 'set-auto-update';
+  entryId: string;
+  enabled: boolean;
 }
 
 export type NodeRegistryChange =
   | AddNodeRegistryChange
   | RemoveNodeRegistryChange
   | RenameNodeRegistryChange
-  | IdentifyNodeRegistryChange;
-
-export function isEmbeddedNode(nodeId: string): boolean {
-  return nodeId === EMBEDDED_NODE_ID;
-}
+  | IdentifyNodeRegistryChange
+  | SetAutoUpdateNodeRegistryChange;

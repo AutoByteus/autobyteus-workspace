@@ -1,0 +1,69 @@
+# API-B03 round 10: web probes updated to 461 (rule 2: own reads, own Stop, member-message restore, delegatingRun), batch 1 on 15c41ad242
+# Command: cd autobyteus-web && env -i PATH HOME=<resolved temp> TMPDIR USER node tests/e2e/<probe>-probe.mjs --output-dir <dir> [--cases …]
+
+## task-closure-tree: Fail
+BR-001 Fail ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-YVvS9G/memory/agents/manager_bragent_067e_9ca887795a8b417f87764089ab798762/collaboration/collaboration_tree.json
+BR-002 Pass 
+BR-003 Pass 
+BR-004 Pass 
+BR-005 Fail BR-005 needs BR-001..BR-003 in the same run
+BR-006 Pass 
+BR-007 Pass 
+BR-008 Pass 
+BR-009 Pass 
+BR-010 Pass 
+BR-011 Fail Timed out: team: Task A DONE again
+BR-012 Fail Timed out: continued coordinator conversation
+BR-013 Fail Timed out: continued coordinator conversation
+BR-014 Fail Timed out: continued coordinator conversation
+BR-015 Fail BR-015 needs BR-012..BR-014 in the same run
+BR-016 Fail BR-016 needs BR-012 in the same run
+
+## projects-left-navigation: Fail
+PLN-01 Pass 
+PLN-02 Pass 
+PLN-03 Pass 
+PLN-04 Fail locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-list-antigravity_cli"]').locator('[data-test="chat-model-option-gemini-3.8-flash-low"]')
+
+PLN-05 Fail Timed out: member conversation open
+PLN-06 Fail PLN-06 needs PLN-05
+PLN-07 Fail PLN-07 needs PLN-02 and PLN-05
+PLN-08 Fail locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('section:has(> [data-test="project-row"][data-project-id="project_2a33c071-a058-4212-9c1a-acd0a9d9111d"])').locator('[data-test="workspace-team
+PLN-09 Fail PLN-09 needs PLN-07
+PLN-10 Pass 
+PLN-11 Pass 
+
+## project-manager-ux: Fail
+PMU-001 Pass 
+PMU-002 Pass 
+PMU-003 Fail Timed out: coordinator conversation opened
+PMU-004 Fail Timed out: terminated host still listed: openable, Offline
+PMU-005 Pass 
+PMU-006 Pass 
+PMU-007 Fail needs PMU-003 (team-hosted root)
+PMU-008 Pass 
+PMU-009 Fail Timed out: both Temp tasks left the board live
+PMU-010 Pass 
+PMU-011 Pass 
+PMU-012 Pass 
+PMU-013 Pass 
+PMU-014 Pass 
+PMU-015 Pass 
+PMU-016 Pass 
+PMU-017 Pass 
+PMU-018 Fail Timed out: team: worker conversation in the center
+PMU-019 Fail Timed out: nested task Team member row
+PMU-020 Pass 
+PMU-021 Fail Timed out: Temp task: card ad_hoc_task_3499c545-6919-4f9d-93fb-6c6bd443c8b0 located and focused
+PMU-022 Pass 
+PMU-023 Fail Timed out: Agents page 1440: card ad_hoc_task_3499c545-6919-4f9d-93fb-6c6bd443c8b0 located and focused
+PMU-024 Fail the copy row stays, one line
+PMU-025 Pass 
+
+## sdv05d: Fail
+SDV-05 Fail the closed run's line on its Task's card is not openable: the web offers no way to message it
+

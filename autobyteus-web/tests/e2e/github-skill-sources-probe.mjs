@@ -12,6 +12,10 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from 'playwright-core';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const root = path.dirname(web), server = path.join(root, 'autobyteus-server-ts');
 const { create: tar } = createRequire(path.join(server, 'package.json'))('tar');
@@ -66,7 +70,7 @@ try {
   const database = pathToFileURL(path.join(data, 'db', 'test.db')).href;
   const providerRecord = path.join(owned, 'provider.jsonl');
   await fs.mkdir(path.join(owned, 'home'));
-  const backendEnv = { HOME: path.join(owned, 'home'), CODEX_APP_SERVER_COMMAND: process.execPath, CODEX_APP_SERVER_ARGS_JSON: JSON.stringify([path.join(web, 'tests/e2e/fixtures/skill-codex-app-server.mjs')]), SKILL_SOURCE_PROVIDER_RECORD: providerRecord, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: database, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_MEMORY_DIR: path.join(data, 'memory'), AUTOBYTEUS_LOG_DIR: path.join(data, 'logs'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(data, 'workspaces'), CODEX_HOME: path.join(owned, 'codex') };
+  const backendEnv = { HOME: path.join(owned, 'home'), CODEX_APP_SERVER_COMMAND: process.execPath, CODEX_APP_SERVER_ARGS_JSON: JSON.stringify([path.join(web, 'tests/e2e/fixtures/skill-codex-app-server.mjs')]), SKILL_SOURCE_PROVIDER_RECORD: providerRecord, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: database, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: `http://127.0.0.1:${webPort}`, AUTOBYTEUS_MEMORY_DIR: path.join(data, 'memory'), AUTOBYTEUS_LOG_DIR: path.join(data, 'logs'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(data, 'workspaces'), CODEX_HOME: path.join(owned, 'codex') };
   await fs.writeFile(path.join(data, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${database}\nAUTOBYTEUS_SERVER_HOST=${backendUrl}\n`);
   const migrate = start('pnpm', ['exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], server, backendEnv, 'migrate');
   await new Promise((resolve, reject) => { migrate.once('error', reject); migrate.once('close', code => code === 0 ? resolve() : reject(new Error('migration failed'))); });
@@ -82,7 +86,7 @@ try {
   const upstream = async (version, fail = false) => fs.writeFile(stateFile, JSON.stringify({ revision: (version === 1 ? 'a' : 'b').repeat(40), archive: archives[version], fail }));
   await upstream(1);
   const startBackend = async () => {
-    backend = start(process.execPath, ['--import', path.join(web, 'tests/e2e/fixtures/github-skill-upstream.mjs'), path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', data], server, { ...backendEnv, SKILL_SOURCE_PROBE_CONTROL: stateFile }, 'backend');
+    backend = start(process.execPath, ['--import', path.join(web, 'tests/e2e/fixtures/github-skill-upstream.mjs'), path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', data], server, withNodeCredential({ ...backendEnv, SKILL_SOURCE_PROBE_CONTROL: stateFile }), 'backend');
     await wait('backend health', async () => { assert.equal(backend.exitCode, null); return fetch(backendUrl + '/rest/health').then(r => r.ok).catch(() => false); }, 120000);
   };
   await startBackend();
@@ -93,6 +97,7 @@ try {
   const executablePath = process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(existsSync);
   browser = await chromium.launch({ executablePath, headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' });
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   page = await context.newPage(); page.setDefaultTimeout(30000);
   page.on('pageerror', e => evidence.pageErrors.push(e.message));

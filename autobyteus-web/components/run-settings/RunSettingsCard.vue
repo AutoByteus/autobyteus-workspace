@@ -39,7 +39,7 @@
               data-test="run-setting-locked"
             >
               <span class="truncate font-medium text-gray-700">{{ modelText }}</span>
-              <span class="truncate whitespace-nowrap text-gray-400">{{ presentation.runtimeShortLabel(values.runtimeKind) }}</span>
+              <span class="truncate whitespace-nowrap text-gray-400">{{ presentation.runtimeLabel(values.runtimeKind) }}</span>
               <Icon icon="heroicons:lock-closed" class="h-3 w-3 flex-shrink-0 text-gray-300" aria-hidden="true" />
             </span>
             <ChatModelMenu

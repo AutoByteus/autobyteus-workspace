@@ -1,0 +1,173 @@
+{
+  "startedAt": "2026-11-11T16:08:46.174Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 57097,
+      "nodeId": "srv_kB7EX1f-C4VvcB90qBOgaaZQ8qIPPBlL",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 57098,
+      "nodeId": "srv_q6FUYqFQCjS-u9_E6sinSptPp7ZPbgPd",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_3d40ae784fc742309524144962deab05",
+    "writerRun": "release_notes_writer_145c113785b048d8a3a42c7fc17153f0",
+    "squadRun": "docs_review_team_4ef9eb2c22374c909e16fb76157e04dc",
+    "reviewer": "release_notes_writer_31eb3a98e36c44fb837909f305dcf143",
+    "memberDelegated": "fact_checker_aca3d623e2184582a7d41a19f66db015",
+    "remoteAgentRun": "publisher_c4ab569193a943db9d2fac0e5468d340",
+    "remoteTeamRun": "studio_team_beb90910372241a6bc0eb66cdc80d572",
+    "plain": [
+      "fact_checker_a65b15e083db4afea5360f69e5343180",
+      "fact_checker_4c7780cd798e419a88f33629bb86bfc0",
+      "fact_checker_8c7e3074f3894be2afa1254b5481d554"
+    ],
+    "org": "delivery_org_ddf07cdb7a3146dbbadf8c39fdd9d0d3",
+    "orgPlanner": "release_notes_writer_13ed5c5d81c549adacdb17f6f180d245",
+    "reviewOrg": "review_org_84c32d53f7914a5790439aae9e4722e3",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_e086e2a0b4584ca4939459eec2911c44",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_f2e6d17cfeb5434e94ee62ed978476f9",
+    "deliveryLead": "fact_checker_cae3bf6bc4d84cfe89ba4358f705ae3b",
+    "deliveryMate": "release_notes_writer_5439aeed94e54851a489a1505e7d04ae",
+    "leadDelegated": "changelog_helper_0ec8be67d73241bfb1c6e9f39680e100",
+    "approver": "approver_aadb364eb6fc4a96b46456bdd9a1d10b",
+    "taskA": "launch-0ce4d1-1",
+    "taskB": "launch-0ce4d1-2"
+  },
+  "cases": {
+    "MSP-20": {
+      "result": "Pass",
+      "seconds": 99.3,
+      "hub": "status_hub_169cf9069c1047048b9c0b7223244291",
+      "childA": "changelog_helper_ac5d6c40e4d149f59e4ab46ccd88b097",
+      "childB": "release_notes_writer_c82dcfebf1c74b6684562356e20be0a4",
+      "childC": "changelog_helper_45de1cb59764483eadf9527cb6bbc4c8",
+      "quiet": {
+        "desktopStatusReads": 3,
+        "desktopViewReads": 0,
+        "phoneStatusReads": 3,
+        "phoneViewReads": 0,
+        "desktopStatusBytes": [
+          {
+            "bytes": 1725,
+            "statuses": 7,
+            "hubBytes": 553,
+            "hubStatuses": 2,
+            "runIds": 2
+          },
+          {
+            "bytes": 1725,
+            "statuses": 7,
+            "hubBytes": 553,
+            "hubStatuses": 2,
+            "runIds": 2
+          },
+          {
+            "bytes": 1725,
+            "statuses": 7,
+            "hubBytes": 553,
+            "hubStatuses": 2,
+            "runIds": 2
+          }
+        ],
+        "phoneStatusBytes": [
+          1725,
+          1725,
+          1725
+        ],
+        "hubInDesktopRead": true,
+        "hubInPhoneRead": true
+      },
+      "phoneHidden": {
+        "otherKey": "agent:project_task_manager_3d40ae784fc742309524144962deab05",
+        "onRunScreen": 0,
+        "inBackground": 0,
+        "firstReadAfterShownMs": 22
+      },
+      "running": {
+        "label": "child A running",
+        "want": "running",
+        "nodeMs": 12,
+        "desktopAfterNodeMs": 4568,
+        "phoneAfterNodeMs": 4977,
+        "desktopViewReads": 0,
+        "phoneViewReads": 0,
+        "desktopStatusReads": 1,
+        "phoneStatusReads": 1
+      },
+      "idleAgain": {
+        "label": "child A idle again",
+        "want": "idle",
+        "nodeMs": 8927,
+        "desktopAfterNodeMs": 407,
+        "phoneAfterNodeMs": 817,
+        "desktopViewReads": 0,
+        "phoneViewReads": 0,
+        "desktopStatusReads": 2,
+        "phoneStatusReads": 2
+      },
+      "openRun": {
+        "url": "/chat?id=status_hub_169cf9069c1047048b9c0b7223244291",
+        "statusReads": 2,
+        "hubInRead": 0
+      },
+      "third": {
+        "childC": "changelog_helper_45de1cb59764483eadf9527cb6bbc4c8",
+        "desktopAfterNodeMs": 3442,
+        "phoneAfterNodeMs": 3445,
+        "desktopViewReads": 1,
+        "phoneViewReads": 1
+      },
+      "stop": {
+        "success": true,
+        "desktopOfflineMs": 2908,
+        "phoneOfflineMs": 3326,
+        "desktopViewReads": 1,
+        "phoneViewReads": 1,
+        "finalDesktop": [
+          "offline",
+          "offline",
+          "offline"
+        ],
+        "finalPhone": [
+          "offline",
+          "offline",
+          "offline"
+        ]
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-20": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-11T16:11:14.325Z"
+}

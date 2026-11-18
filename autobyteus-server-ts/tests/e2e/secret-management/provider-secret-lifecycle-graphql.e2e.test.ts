@@ -26,7 +26,7 @@ type ProviderCredentialSetting = {
 
 type ProviderCatalogSnapshot = {
   ownerProvider: { id: string; name: string };
-  sources: Array<{ modelKind: string; state: string; modelCount: number }>;
+  sources: Array<{ state: string; modelCount: number }>;
   llmModels: Array<{ modelIdentifier: string }>;
   audioModels: Array<{ modelIdentifier: string }>;
   imageModels: Array<{ modelIdentifier: string }>;
@@ -80,7 +80,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     query ProviderModelCatalogSnapshots {
       providerModelCatalogSnapshots(runtimeKind: "autobyteus") {
         ownerProvider { id name }
-        sources { modelKind state modelCount }
+        sources { state modelCount }
         llmModels { modelIdentifier }
         audioModels { modelIdentifier }
         imageModels { modelIdentifier }
@@ -473,7 +473,6 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       });
       const customCatalog = await providerCatalog(providerId);
       expect(customCatalog?.sources).toContainEqual(expect.objectContaining({
-        modelKind: 'LLM',
         state: 'READY',
         modelCount: 2,
       }));

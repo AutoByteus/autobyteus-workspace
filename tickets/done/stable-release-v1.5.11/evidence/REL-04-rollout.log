@@ -1,0 +1,36 @@
+# REL-04 rollout of stable v1.5.11 (tag on caa7fb9a4e, pushed 16:24:02Z)
+Desktop Release run 41481089081: success (attempt 4)
+Android APK Release run 41481089121: success (attempt 1)
+Server Docker Release run 41481088511: success (attempt 1)
+iOS App Store Connect Release run 41481089068: success (attempt 2)
+
+Desktop: attempt 1 failed stapling the notarization ticket on a network drop (NSURLErrorDomain -1005 'The network connection was lost.' at api.apple-cloudkit.com; 'The staple and validate action failed! Error 68') after the build and signing succeeded; attempts 2 and 3: macOS ARM64 'not acquired by Runner of type hosted even after multiple attempts' (no steps ran); attempt 4: success incl. Publish GitHub Release. Each rerun: gh run rerun 41481089081 --failed (RELEASE.md Recovery, transient).
+iOS: attempt 1 Build And Test success; Archive And Upload not acquired by a hosted runner; attempt 2 (rerun --failed): success incl. Archive And Upload To App Store Connect.
+Partial window: from about 16:40Z to 17:53Z the release was GitHub Latest with the Android files only (later also the server packages).
+
+gh release view v1.5.11: isPrerelease=false, isDraft=false, assets=23; releases/latest = v1.5.11; body = curated notes (6 sections)
+  AutoByteus_personal_android-1.5.11-release.apk
+  AutoByteus_personal_android-1.5.11-release.apk.sha256
+  AutoByteus_personal_linux-arm64-1.5.11.AppImage
+  AutoByteus_personal_linux-x64-1.5.11.AppImage
+  AutoByteus_personal_macos-arm64-1.5.11.dmg
+  AutoByteus_personal_macos-arm64-1.5.11.dmg.blockmap
+  AutoByteus_personal_macos-arm64-1.5.11.zip
+  AutoByteus_personal_macos-arm64-1.5.11.zip.blockmap
+  AutoByteus_personal_macos-x64-1.5.11.dmg
+  AutoByteus_personal_macos-x64-1.5.11.dmg.blockmap
+  AutoByteus_personal_macos-x64-1.5.11.zip
+  AutoByteus_personal_macos-x64-1.5.11.zip.blockmap
+  AutoByteus_personal_windows-1.5.11.exe
+  autobyteus-server-1.5.11-linux-arm64.json
+  autobyteus-server-1.5.11-linux-arm64.json.sig
+  autobyteus-server-1.5.11-linux-arm64.tar.gz
+  autobyteus-server-1.5.11-linux-x64.json
+  autobyteus-server-1.5.11-linux-x64.json.sig
+  autobyteus-server-1.5.11-linux-x64.tar.gz
+  latest-linux-arm64.yml
+  latest-linux.yml
+  latest-mac.yml
+  latest.yml
+
+Docker Hub: 1.5.11, latest and beta = sha256:28042aca8bc7 (amd64, arm64); 1.5.10 unchanged (sha256:a1c22e2e4186)

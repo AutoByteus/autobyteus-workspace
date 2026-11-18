@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "step": "api09-top-level-html",
+  "at": "2026-11-07T21:55:47.364Z",
+  "result": {
+    "headers": {
+      "html": {
+        "status": 200,
+        "contentType": "text/html",
+        "csp": "sandbox allow-scripts",
+        "nosniff": "nosniff"
+      },
+      "svg": {
+        "status": 200,
+        "contentType": "image/svg+xml",
+        "csp": "sandbox allow-scripts",
+        "nosniff": "nosniff"
+      }
+    },
+    "html": {
+      "state": "API09 SCRIPT RAN",
+      "selfOrigin": "null",
+      "storage": "blocked: SecurityError",
+      "cookie": "blocked: SecurityError",
+      "fetch": "error TypeError",
+      "ws": "closed 1006",
+      "href": "http://127.0.0.1:57277/rest/workspaces/agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346/content?path=page.html"
+    },
+    "svg": "API09 SVG SCRIPT RAN null",
+    "refusalLines": [
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api09-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api09-session?f=api09-ws origin null"
+    ]
+  }
+}

@@ -10,6 +10,7 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSession } from "../../../../../../src/agent-execution/backends/claude/session/claude-session.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { ClaudeProviderSessionLifecycle } from "../../../../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
@@ -54,6 +55,7 @@ import { createTokenUsageUpdatedPayload } from "../../../../../../src/agent-exec
 import { foldTokenUsageObservation } from "../../../../../../src/token-usage/projections/token-usage-run-fold.js";
 import type { TokenUsageRunRecord } from "../../../../../../src/token-usage/domain/token-usage-run-record.js";
 import { emptyTrustedDimensions, type ResolvedTokenPricingPolicy } from "../../../../../../src/token-usage/pricing/token-pricing-policy.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const CLAUDE_TEST_PRICE: ResolvedTokenPricingPolicy = {
   pricing_policy_key: null, price_config_id: null, model_provider: null, model_identifier: null, model_value: null,
@@ -118,7 +120,7 @@ const createSession = (input: {
       memoryDir: input.memoryDir ?? null,
       llmConfig: input.llmConfig ?? null,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
         workingDirectory: "/tmp",
@@ -141,11 +143,7 @@ const createSession = (input: {
       sessionMessageCache,
       sdkClient: sdkClient as never,
       toolingCoordinator,
-      agentToolMcpRunSessions: {
-        activateForRun: vi.fn(() => {
-          throw new Error("Non-MCP ClaudeSession coverage must not issue Agent Tools.");
-        }),
-      } as never,
+      agentToolMcpRunSessions: createAgentToolMcpRunSessionsStub() as never,
       systemInstructionCaptureService: input.systemInstructionCaptureService,
       isRunSessionActive: () => true,
       terminateRunSession,
@@ -198,7 +196,7 @@ afterEach(() => {
 describe("ClaudeSession streaming lifecycle", () => {
   it("opens one streaming process lazily with the reserved create binding and reuses it for later turns", async () => {
     const { session, sdkClient, start, events } = createSession({
-      llmConfig: { thinking_enabled: true, reasoning_effort: "high" },
+      llmConfig: { thinking_enabled: false, reasoning_effort: "high" },
     });
     expect(sdkClient.acquireStreamingSession).not.toHaveBeenCalled();
     expect(session.sessionId).toBe(RESERVED_SESSION_ID);
@@ -215,11 +213,11 @@ describe("ClaudeSession streaming lifecycle", () => {
       systemPrompt: "## Agent Identity\n\n- Name: Test agent",
       model: "haiku",
       permissionMode: "default",
-      thinking: { type: "adaptive" },
       effort: "high",
       canUseTool: expect.any(Function),
     }));
     expect(sdkClient.acquireStreamingSession.mock.calls[0]?.[0]).not.toHaveProperty("prompt");
+    expect(sdkClient.acquireStreamingSession.mock.calls[0]?.[0]).not.toHaveProperty("thinking");
     expect(sdkClient.current.sent.map((message) => message.message.content)).toEqual([
       [{ type: "text", text: "one" }],
       [{ type: "text", text: "two" }],
@@ -768,6 +766,8 @@ describe("ClaudeSession background tasks and provider-initiated turns", () => {
     ]);
     const notice = events.find((event) => event.method === ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION);
     expect(notice?.params?.sender_id).toBe(CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID);
+    // autobyteus-526: each notice has its one id; the published notice and its recorded trace share it.
+    expect(notice?.params?.message_id).toEqual(expect.any(String));
     expect(events.filter((event) => event.method === ClaudeSessionEventName.TOKEN_USAGE_UPDATED)).toHaveLength(2);
   });
 

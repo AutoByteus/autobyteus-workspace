@@ -1,0 +1,1150 @@
+{
+ "origin": "http://10.0.2.2:<node port>",
+ "layouts": [
+  {
+   "width": 360,
+   "step": "small",
+   "view": {
+    "width": 360,
+    "root": "14.1176px",
+    "step": "small",
+    "mode": "view",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 45.9,
+     "right": 236.1,
+     "w": 190.2,
+     "top": 10.1,
+     "text": "VNC Viewer",
+     "sw": 190,
+     "cw": 190
+    },
+    "modeButton": {
+     "left": 236.1,
+     "right": 314.1,
+     "w": 78.1,
+     "top": 4.8,
+     "text": "View only",
+     "sw": 78,
+     "cw": 78
+    },
+    "fullScreen": {
+     "left": 314.1,
+     "right": 356.5,
+     "w": 42.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 42,
+     "cw": 42
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 30,
+     "right": 345.9,
+     "w": 315.9,
+     "top": 50.7,
+     "text": "Connected · View only",
+     "sw": 316,
+     "cw": 316
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 360,
+    "root": "14.1176px",
+    "step": "small",
+    "mode": "control",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 45.9,
+     "right": 249.3,
+     "w": 203.4,
+     "top": 10.1,
+     "text": "VNC Viewer",
+     "sw": 203,
+     "cw": 203
+    },
+    "modeButton": {
+     "left": 249.3,
+     "right": 314.1,
+     "w": 64.9,
+     "top": 4.8,
+     "text": "Control",
+     "sw": 65,
+     "cw": 65
+    },
+    "fullScreen": {
+     "left": 314.1,
+     "right": 356.5,
+     "w": 42.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 42,
+     "cw": 42
+    },
+    "keyboard": {
+     "left": 182.8,
+     "right": 260.1,
+     "w": 77.4,
+     "top": 45.9,
+     "text": "Keyboard",
+     "sw": 77,
+     "cw": 77
+    },
+    "clipboard": {
+     "left": 267.2,
+     "right": 345.9,
+     "w": 78.7,
+     "top": 45.9,
+     "text": "Clipboard",
+     "sw": 79,
+     "cw": 79
+    },
+    "status": {
+     "left": 30,
+     "right": 175.7,
+     "w": 145.7,
+     "top": 52.9,
+     "text": "Connected · Control",
+     "sw": 146,
+     "cw": 146
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 360,
+   "step": "standard",
+   "view": {
+    "width": 360,
+    "root": "16px",
+    "step": "standard",
+    "mode": "view",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 52,
+     "right": 220.6,
+     "w": 168.6,
+     "top": 11.5,
+     "text": "VNC Viewer",
+     "sw": 169,
+     "cw": 169
+    },
+    "modeButton": {
+     "left": 220.6,
+     "right": 308,
+     "w": 87.4,
+     "top": 5.5,
+     "text": "View only",
+     "sw": 87,
+     "cw": 87
+    },
+    "fullScreen": {
+     "left": 308,
+     "right": 356,
+     "w": 48,
+     "top": -0.5,
+     "text": "",
+     "sw": 48,
+     "cw": 48
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 34,
+     "right": 344,
+     "w": 310,
+     "top": 57.5,
+     "text": "Connected · View only",
+     "sw": 310,
+     "cw": 310
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 360,
+    "root": "16px",
+    "step": "standard",
+    "mode": "control",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 52,
+     "right": 235.3,
+     "w": 183.3,
+     "top": 11.5,
+     "text": "VNC Viewer",
+     "sw": 183,
+     "cw": 183
+    },
+    "modeButton": {
+     "left": 235.3,
+     "right": 308,
+     "w": 72.7,
+     "top": 5.5,
+     "text": "Control",
+     "sw": 73,
+     "cw": 73
+    },
+    "fullScreen": {
+     "left": 308,
+     "right": 356,
+     "w": 48,
+     "top": -0.5,
+     "text": "",
+     "sw": 48,
+     "cw": 48
+    },
+    "keyboard": {
+     "left": 161.1,
+     "right": 247.9,
+     "w": 86.8,
+     "top": 52,
+     "text": "Keyboard",
+     "sw": 87,
+     "cw": 87
+    },
+    "clipboard": {
+     "left": 255.9,
+     "right": 344,
+     "w": 88.1,
+     "top": 52,
+     "text": "Clipboard",
+     "sw": 88,
+     "cw": 88
+    },
+    "status": {
+     "left": 34,
+     "right": 153.1,
+     "w": 119.1,
+     "top": 60,
+     "text": "Connected · Control",
+     "sw": 130,
+     "cw": 119
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 360,
+   "step": "large",
+   "view": {
+    "width": 360,
+    "root": "17.8824px",
+    "step": "large",
+    "mode": "view",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 58.1,
+     "right": 205.3,
+     "w": 147.2,
+     "top": 12.9,
+     "text": "VNC Viewer",
+     "sw": 147,
+     "cw": 147
+    },
+    "modeButton": {
+     "left": 205.3,
+     "right": 301.9,
+     "w": 96.6,
+     "top": 6.2,
+     "text": "View only",
+     "sw": 97,
+     "cw": 97
+    },
+    "fullScreen": {
+     "left": 301.9,
+     "right": 355.5,
+     "w": 53.6,
+     "top": -0.5,
+     "text": "",
+     "sw": 54,
+     "cw": 54
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 38,
+     "right": 342.1,
+     "w": 304.1,
+     "top": 64.3,
+     "text": "Connected · View only",
+     "sw": 304,
+     "cw": 304
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 360,
+    "root": "17.8824px",
+    "step": "large",
+    "mode": "control",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 58.1,
+     "right": 221.5,
+     "w": 163.3,
+     "top": 12.9,
+     "text": "VNC Viewer",
+     "sw": 163,
+     "cw": 163
+    },
+    "modeButton": {
+     "left": 221.5,
+     "right": 301.9,
+     "w": 80.4,
+     "top": 6.2,
+     "text": "Control",
+     "sw": 80,
+     "cw": 80
+    },
+    "fullScreen": {
+     "left": 301.9,
+     "right": 355.5,
+     "w": 53.6,
+     "top": -0.5,
+     "text": "",
+     "sw": 54,
+     "cw": 54
+    },
+    "keyboard": {
+     "left": 139.8,
+     "right": 235.8,
+     "w": 96,
+     "top": 58.1,
+     "text": "Keyboard",
+     "sw": 96,
+     "cw": 96
+    },
+    "clipboard": {
+     "left": 244.7,
+     "right": 342.1,
+     "w": 97.4,
+     "top": 58.1,
+     "text": "Clipboard",
+     "sw": 97,
+     "cw": 97
+    },
+    "status": {
+     "left": 38,
+     "right": 130.8,
+     "w": 92.8,
+     "top": 67,
+     "text": "Connected · Control",
+     "sw": 143,
+     "cw": 93
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 360,
+   "step": "largest",
+   "view": {
+    "width": 360,
+    "root": "19.7647px",
+    "step": "largest",
+    "mode": "view",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 64.2,
+     "right": 190.2,
+     "w": 126,
+     "top": 14.3,
+     "text": "VNC Viewer",
+     "sw": 129,
+     "cw": 126
+    },
+    "modeButton": {
+     "left": 190.2,
+     "right": 295.8,
+     "w": 105.6,
+     "top": 6.9,
+     "text": "View only",
+     "sw": 106,
+     "cw": 106
+    },
+    "fullScreen": {
+     "left": 295.8,
+     "right": 355.1,
+     "w": 59.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 59,
+     "cw": 59
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 42,
+     "right": 340.3,
+     "w": 298.3,
+     "top": 71.1,
+     "text": "Connected · View only",
+     "sw": 298,
+     "cw": 298
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 360,
+    "root": "19.7647px",
+    "step": "largest",
+    "mode": "control",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 64.2,
+     "right": 207.8,
+     "w": 143.6,
+     "top": 14.3,
+     "text": "VNC Viewer",
+     "sw": 144,
+     "cw": 144
+    },
+    "modeButton": {
+     "left": 207.8,
+     "right": 295.8,
+     "w": 88,
+     "top": 6.9,
+     "text": "Control",
+     "sw": 88,
+     "cw": 88
+    },
+    "fullScreen": {
+     "left": 295.8,
+     "right": 355.1,
+     "w": 59.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 59,
+     "cw": 59
+    },
+    "keyboard": {
+     "left": 118.8,
+     "right": 223.9,
+     "w": 105.1,
+     "top": 64.2,
+     "text": "Keyboard",
+     "sw": 105,
+     "cw": 105
+    },
+    "clipboard": {
+     "left": 233.8,
+     "right": 340.3,
+     "w": 106.5,
+     "top": 64.2,
+     "text": "Clipboard",
+     "sw": 106,
+     "cw": 106
+    },
+    "status": {
+     "left": 42,
+     "right": 109,
+     "w": 67,
+     "top": 74.1,
+     "text": "Connected · Control",
+     "sw": 155,
+     "cw": 67
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 412,
+   "step": "small",
+   "view": {
+    "width": 412,
+    "root": "14.1176px",
+    "step": "small",
+    "mode": "view",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 45.9,
+     "right": 288.1,
+     "w": 242.2,
+     "top": 10.1,
+     "text": "VNC Viewer",
+     "sw": 242,
+     "cw": 242
+    },
+    "modeButton": {
+     "left": 288.1,
+     "right": 366.1,
+     "w": 78.1,
+     "top": 4.8,
+     "text": "View only",
+     "sw": 78,
+     "cw": 78
+    },
+    "fullScreen": {
+     "left": 366.1,
+     "right": 408.5,
+     "w": 42.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 42,
+     "cw": 42
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 30,
+     "right": 397.9,
+     "w": 367.9,
+     "top": 50.7,
+     "text": "Connected · View only",
+     "sw": 368,
+     "cw": 368
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 412,
+    "root": "14.1176px",
+    "step": "small",
+    "mode": "control",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 45.9,
+     "right": 301.3,
+     "w": 255.4,
+     "top": 10.1,
+     "text": "VNC Viewer",
+     "sw": 255,
+     "cw": 255
+    },
+    "modeButton": {
+     "left": 301.3,
+     "right": 366.1,
+     "w": 64.9,
+     "top": 4.8,
+     "text": "Control",
+     "sw": 65,
+     "cw": 65
+    },
+    "fullScreen": {
+     "left": 366.1,
+     "right": 408.5,
+     "w": 42.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 42,
+     "cw": 42
+    },
+    "keyboard": {
+     "left": 234.8,
+     "right": 312.1,
+     "w": 77.4,
+     "top": 45.9,
+     "text": "Keyboard",
+     "sw": 77,
+     "cw": 77
+    },
+    "clipboard": {
+     "left": 319.2,
+     "right": 397.9,
+     "w": 78.7,
+     "top": 45.9,
+     "text": "Clipboard",
+     "sw": 79,
+     "cw": 79
+    },
+    "status": {
+     "left": 30,
+     "right": 227.7,
+     "w": 197.7,
+     "top": 52.9,
+     "text": "Connected · Control",
+     "sw": 198,
+     "cw": 198
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 412,
+   "step": "standard",
+   "view": {
+    "width": 412,
+    "root": "16px",
+    "step": "standard",
+    "mode": "view",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 52,
+     "right": 272.6,
+     "w": 220.6,
+     "top": 11.5,
+     "text": "VNC Viewer",
+     "sw": 221,
+     "cw": 221
+    },
+    "modeButton": {
+     "left": 272.6,
+     "right": 360,
+     "w": 87.4,
+     "top": 5.5,
+     "text": "View only",
+     "sw": 87,
+     "cw": 87
+    },
+    "fullScreen": {
+     "left": 360,
+     "right": 408,
+     "w": 48,
+     "top": -0.5,
+     "text": "",
+     "sw": 48,
+     "cw": 48
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 34,
+     "right": 396,
+     "w": 362,
+     "top": 57.5,
+     "text": "Connected · View only",
+     "sw": 362,
+     "cw": 362
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 412,
+    "root": "16px",
+    "step": "standard",
+    "mode": "control",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 52,
+     "right": 287.3,
+     "w": 235.3,
+     "top": 11.5,
+     "text": "VNC Viewer",
+     "sw": 235,
+     "cw": 235
+    },
+    "modeButton": {
+     "left": 287.3,
+     "right": 360,
+     "w": 72.7,
+     "top": 5.5,
+     "text": "Control",
+     "sw": 73,
+     "cw": 73
+    },
+    "fullScreen": {
+     "left": 360,
+     "right": 408,
+     "w": 48,
+     "top": -0.5,
+     "text": "",
+     "sw": 48,
+     "cw": 48
+    },
+    "keyboard": {
+     "left": 213.1,
+     "right": 299.9,
+     "w": 86.8,
+     "top": 52,
+     "text": "Keyboard",
+     "sw": 87,
+     "cw": 87
+    },
+    "clipboard": {
+     "left": 307.9,
+     "right": 396,
+     "w": 88.1,
+     "top": 52,
+     "text": "Clipboard",
+     "sw": 88,
+     "cw": 88
+    },
+    "status": {
+     "left": 34,
+     "right": 205.1,
+     "w": 171.1,
+     "top": 60,
+     "text": "Connected · Control",
+     "sw": 171,
+     "cw": 171
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 412,
+   "step": "large",
+   "view": {
+    "width": 412,
+    "root": "17.8824px",
+    "step": "large",
+    "mode": "view",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 58.1,
+     "right": 257.3,
+     "w": 199.2,
+     "top": 12.9,
+     "text": "VNC Viewer",
+     "sw": 199,
+     "cw": 199
+    },
+    "modeButton": {
+     "left": 257.3,
+     "right": 353.9,
+     "w": 96.6,
+     "top": 6.2,
+     "text": "View only",
+     "sw": 97,
+     "cw": 97
+    },
+    "fullScreen": {
+     "left": 353.9,
+     "right": 407.5,
+     "w": 53.6,
+     "top": -0.5,
+     "text": "",
+     "sw": 54,
+     "cw": 54
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 38,
+     "right": 394.1,
+     "w": 356.1,
+     "top": 64.3,
+     "text": "Connected · View only",
+     "sw": 356,
+     "cw": 356
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 412,
+    "root": "17.8824px",
+    "step": "large",
+    "mode": "control",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 58.1,
+     "right": 273.5,
+     "w": 215.3,
+     "top": 12.9,
+     "text": "VNC Viewer",
+     "sw": 215,
+     "cw": 215
+    },
+    "modeButton": {
+     "left": 273.5,
+     "right": 353.9,
+     "w": 80.4,
+     "top": 6.2,
+     "text": "Control",
+     "sw": 80,
+     "cw": 80
+    },
+    "fullScreen": {
+     "left": 353.9,
+     "right": 407.5,
+     "w": 53.6,
+     "top": -0.5,
+     "text": "",
+     "sw": 54,
+     "cw": 54
+    },
+    "keyboard": {
+     "left": 191.8,
+     "right": 287.8,
+     "w": 96,
+     "top": 58.1,
+     "text": "Keyboard",
+     "sw": 96,
+     "cw": 96
+    },
+    "clipboard": {
+     "left": 296.7,
+     "right": 394.1,
+     "w": 97.4,
+     "top": 58.1,
+     "text": "Clipboard",
+     "sw": 97,
+     "cw": 97
+    },
+    "status": {
+     "left": 38,
+     "right": 182.8,
+     "w": 144.8,
+     "top": 67,
+     "text": "Connected · Control",
+     "sw": 145,
+     "cw": 145
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  },
+  {
+   "width": 412,
+   "step": "largest",
+   "view": {
+    "width": 412,
+    "root": "19.7647px",
+    "step": "largest",
+    "mode": "view",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 64.2,
+     "right": 242.2,
+     "w": 178,
+     "top": 14.3,
+     "text": "VNC Viewer",
+     "sw": 178,
+     "cw": 178
+    },
+    "modeButton": {
+     "left": 242.2,
+     "right": 347.8,
+     "w": 105.6,
+     "top": 6.9,
+     "text": "View only",
+     "sw": 106,
+     "cw": 106
+    },
+    "fullScreen": {
+     "left": 347.8,
+     "right": 407.1,
+     "w": 59.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 59,
+     "cw": 59
+    },
+    "keyboard": null,
+    "clipboard": null,
+    "status": {
+     "left": 42,
+     "right": 392.3,
+     "w": 350.3,
+     "top": 71.1,
+     "text": "Connected · View only",
+     "sw": 350,
+     "cw": 350
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": false,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "control": {
+    "width": 412,
+    "root": "19.7647px",
+    "step": "largest",
+    "mode": "control",
+    "barScrollWidth": 412,
+    "rowScrollWidth": 412,
+    "title": {
+     "left": 64.2,
+     "right": 259.8,
+     "w": 195.6,
+     "top": 14.3,
+     "text": "VNC Viewer",
+     "sw": 196,
+     "cw": 196
+    },
+    "modeButton": {
+     "left": 259.8,
+     "right": 347.8,
+     "w": 88,
+     "top": 6.9,
+     "text": "Control",
+     "sw": 88,
+     "cw": 88
+    },
+    "fullScreen": {
+     "left": 347.8,
+     "right": 407.1,
+     "w": 59.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 59,
+     "cw": 59
+    },
+    "keyboard": {
+     "left": 170.8,
+     "right": 275.9,
+     "w": 105.1,
+     "top": 64.2,
+     "text": "Keyboard",
+     "sw": 105,
+     "cw": 105
+    },
+    "clipboard": {
+     "left": 285.8,
+     "right": 392.3,
+     "w": 106.5,
+     "top": 64.2,
+     "text": "Clipboard",
+     "sw": 106,
+     "cw": 106
+    },
+    "status": {
+     "left": 42,
+     "right": 161,
+     "w": 119,
+     "top": 74.1,
+     "text": "Connected · Control",
+     "sw": 155,
+     "cw": 119
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "viewFits": true,
+   "controlFits": true
+  }
+ ],
+ "journeys": {
+  "keyboardClipboard": {
+   "keyboardFocus": "mobile-node-desktop-keyboard-input",
+   "sheet": {
+    "testid": "mobile-node-desktop-clipboard",
+    "left": 0,
+    "right": 360,
+    "w": 360,
+    "sideways": false
+   }
+  },
+  "zhLargest360": {
+   "control": {
+    "width": 360,
+    "root": "19.7647px",
+    "step": "largest",
+    "mode": "control",
+    "barScrollWidth": 360,
+    "rowScrollWidth": 360,
+    "title": {
+     "left": 64.2,
+     "right": 231.9,
+     "w": 167.7,
+     "top": 14.3,
+     "text": "VNC 查看器",
+     "sw": 168,
+     "cw": 168
+    },
+    "modeButton": {
+     "left": 231.9,
+     "right": 295.8,
+     "w": 63.9,
+     "top": 6.9,
+     "text": "控制",
+     "sw": 64,
+     "cw": 64
+    },
+    "fullScreen": {
+     "left": 295.8,
+     "right": 355.1,
+     "w": 59.3,
+     "top": -0.5,
+     "text": "",
+     "sw": 59,
+     "cw": 59
+    },
+    "keyboard": {
+     "left": 185.4,
+     "right": 249.3,
+     "w": 63.9,
+     "top": 64.2,
+     "text": "键盘",
+     "sw": 64,
+     "cw": 64
+    },
+    "clipboard": {
+     "left": 259.2,
+     "right": 340.3,
+     "w": 81,
+     "top": 64.2,
+     "text": "剪贴板",
+     "sw": 81,
+     "cw": 81
+    },
+    "status": {
+     "left": 42,
+     "right": 175.5,
+     "w": 133.6,
+     "top": 74.1,
+     "text": "已连接 · 控制",
+     "sw": 134,
+     "cw": 134
+    },
+    "statusEllipsis": "ellipsis",
+    "keyboardInBar": false,
+    "keyboardInRow": true,
+    "sideways": false,
+    "canvas": {
+     "w": 1920,
+     "h": 1080
+    }
+   },
+   "fits": true
+  }
+ },
+ "errors": [
+  "360/small: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/small: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/standard: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/standard: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/large: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/large: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/largest: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/largest: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/small: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/small: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/standard: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/standard: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/large: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/large: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/largest: console noVNC requires a secure context (TLS). Expect crashes!",
+  "412/largest: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/largest: console noVNC requires a secure context (TLS). Expect crashes!",
+  "360/largest: console noVNC requires a secure context (TLS). Expect crashes!"
+ ]
+}

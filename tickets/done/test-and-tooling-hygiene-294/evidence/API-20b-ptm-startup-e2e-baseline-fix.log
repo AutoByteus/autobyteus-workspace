@@ -1,0 +1,16 @@
+# API-20b remove-built-in-project-task-manager-startup.e2e.test.ts: before (per-file run 2 at a001e645c7) and after the baseline fix
+## before (from /tmp/ab294-e2e-logs)
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-001 Studio upgrade: removes the installed copy onc
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-002 Studio: a failed removal never blocks work and
+ × tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-003 Studio fresh install: creates no installed copy
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-004 standalone host first: a failed removal never 
+AssertionError: expected [ 'autobyteus-daily-assistant', …(1) ] to deeply equal [ 'autobyteus-daily-assistant' ]
++   "autobyteus-model-router",
+      Tests  1 failed | 3 passed (4)
+## after: caffeinate -i env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run <file> --no-watch --reporter=verbose, 2026-10-28T04:34:05Z
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-001 Studio upgrade: removes the installed copy onc
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-002 Studio: a failed removal never blocks work and
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-003 Studio fresh install: creates no installed cop
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-004 standalone host first: a failed removal never 
+      Tests  4 passed (4)
+   Duration  24.23s (transform 137ms, setup 107ms, import 137ms, tests 23.38s, environment 0ms)

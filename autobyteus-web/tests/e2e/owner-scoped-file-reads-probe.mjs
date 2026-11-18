@@ -16,7 +16,7 @@
 //      - B-00n (AC-001..AC-006, REQ-007): desktop Artifacts tab journeys: open the run or member in the Workspaces
 //        sidebar, open the Artifacts tab, click the file; assert the content request goes to the owner route, answers
 //        200 and the viewer shows that file's text; a deleted copy file shows "File not found" (server: "not available",
-//        AC-001 alternate); B-006/B-007 (AC-012): the mobile Artifacts view (Phone Access, 390x844) of an agent run and of
+//        AC-001 alternate); B-006/B-007 (AC-012): the mobile Artifacts view (Phone Access, 390x844; run list → row → ⋮ → Artifacts) of an agent run and of
 //        a Team member. The phone pairs with a private-network URL (the server refuses loopback pairing URLs); the
 //        probe's browser routes that host, HTTP and WebSocket, to the probe backend. Each opened file records how many
 //        content requests the tab opening made (it selects the newest file) and how many the click made (a click on the
@@ -35,6 +35,11 @@ import { randomUUID } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { readRunTree, delegatedNodes } from './fixtures/run-tree.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -119,25 +124,24 @@ const spawnLogged = (cmd, args, cwd, env, name) => {
 };
 const baseEnv = () => Object.fromEntries(['PATH', 'TMPDIR', 'LANG', 'SHELL'].filter((k) => process.env[k]).map((k) => [k, process.env[k]]));
 const serverEnv = () => ({ APP_ENV: 'production', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataDir, 'db', 'production.db')}`,
-  AUTOBYTEUS_SERVER_HOST: stack.backendUrl });
+  AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl });
 const startBackend = async () => {
   stack.starts += 1;
   await fsp.writeFile(path.join(stack.dataDir, '.env'), `${Object.entries(serverEnv()).map(([k, v]) => `${k}=${v}`).join('\n')}\n`, { mode: 0o600 });
   const env = { ...baseEnv(), ...serverEnv(), HOME: stack.privateHome, ANTIGRAVITY_CLI_COMMAND: fixtureCli, AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(stack.backendPort), '--data-dir', stack.dataDir],
-    serverDir, env, `backend-${stack.starts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.starts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 300000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
 };
 const startFrontend = async () => {
-  const frontendPort = await freePort();
-  stack.frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  const { frontendPort } = stack;
   const ws = stack.backendUrl.replace(/^http/, 'ws');
   stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
     { ...baseEnv(), HOME: process.env.HOME, NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1', BACKEND_NODE_BASE_URL: stack.backendUrl,
       BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
-      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
       BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
   await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 300000);
 };
@@ -147,6 +151,8 @@ const prepareStack = async (root) => {
   await fsp.mkdir(stack.dataDir, { recursive: true });
   stack.privateHome = await fsp.mkdtemp(path.join(os.tmpdir(), 'owner-scoped-reads-home-'));
   stack.backendPort = await freePort(); stack.backendUrl = `http://127.0.0.1:${stack.backendPort}`;
+  // Chosen before the backend starts: the node accepts its frontend's origin (autobyteus-416).
+  stack.frontendPort = await freePort(); stack.frontendUrl = `http://127.0.0.1:${stack.frontendPort}`;
 };
 const gqlRaw = async (query, variables = {}) => {
   const started = performance.now();
@@ -179,7 +185,8 @@ const config = (workspaceRootPath) => ({ workspaceRootPath, llmModelIdentifier: 
 /** The files a run or member wrote, through its owner's list (asserts the expected count). */
 const filesOf = {
   run: (runId) => gql('query($r:String!){getRunFileChanges(runId:$r){path}}', { r: runId }).then((d) => d.getRunFileChanges),
-  standaloneMember: (s) => gql('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){path}}', { h: s.hostRunId, a: s.memberAddress, r: s.agentRunId }).then((d) => d.agentRunCollaborationMemberFileChanges),
+  // autobyteus-461 rule 2: a delegated agent's files are read by its own run.
+  standaloneMember: (s) => gql('query($r:String!){getRunFileChanges(runId:$r){path}}', { r: s.agentRunId }).then((d) => d.getRunFileChanges),
   teamMember: (s) => gql('query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){path}}', { t: s.teamRunId, a: s.agentRunId }).then((d) => d.getTeamMemberFileChanges),
   agentOrgMember: (s) => gql('query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){path}}', { o: s.orgRunId, m: s.memberAddress, a: s.agentRunId }).then((d) => d.getAgentOrgMemberFileChanges),
 };
@@ -215,7 +222,9 @@ const seed = async () => {
     await until(`${label} file ${name} listed live`, async () => (await listOf(subject)).some((e) => e.path === name), 90000);
     files.push({ label, subject, path: name, absolutePath: fileIn(name), text: `Owner-scoped file of ${label} (${name}) ${randomUUID().slice(0, 8)}` });
   };
+  // autobyteus-461 SR-084: a run's delegated runs are its tree's rows (`runTree`).
   const taskAgentsIn = (tree) => {
+    if (tree?.rows) return delegatedNodes(tree).filter((n) => n.agentRunId).map((n) => ({ agentRunId: n.agentRunId, address: n.address }));
     const out = []; const walk = (v) => { if (Array.isArray(v)) return v.forEach(walk); if (!v || typeof v !== 'object') return;
       const startedAt = v.startedAt ?? v.started_at, agentRunId = v.agentRunId ?? v.agent_run_id;
       if (typeof startedAt === 'string' && agentRunId && !(v.teamRunId ?? v.team_run_id)) out.push({ agentRunId, address: v.address });
@@ -234,7 +243,7 @@ const seed = async () => {
   const toHub = (content) => hubInput.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: hub.runId, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
   toHub(writeImage('hub-notes.md'));
   await recorded('standalone run', { kind: 'run', runId: hub.runId }, 'hub-notes.md');
-  const hubTree = async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: hub.runId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
+  const hubTree = () => readRunTree(gql, 'agent', hub.runId);
   toHub(delegateWriter('copy-notes.md'));
   const copy = await newTaskAgent('copy', hubTree, []);
   await recorded('delegated copy', { kind: 'standaloneMember', hostRunId: hub.runId, memberAddress: copy.address, agentRunId: copy.agentRunId }, 'copy-notes.md');
@@ -255,8 +264,9 @@ const seed = async () => {
   toTeamMember(teamManager.agentRunId, writeImage('team-manager-notes.md'));
   await recorded('team configured member', teamManager, 'team-manager-notes.md');
   toTeamMember(teamManager.agentRunId, delegateWriter('team-task-agent-notes.md'));
-  const teamTask = await newTaskAgent('team task agent', teamTreeOf, []);
-  await recorded('team task agent', { kind: 'teamMember', teamRunId: teamRun.teamRunId, memberAddress: teamTask.address, agentRunId: teamTask.agentRunId }, 'team-task-agent-notes.md');
+  const teamTask = await newTaskAgent('team task agent', () => readRunTree(gql, 'agent_team', teamRun.teamRunId), []);
+  // autobyteus-461 rule 2: a delegated agent run's files are read by its own run (it is not a member of its delegator).
+  await recorded('team task agent', { kind: 'run', runId: teamTask.agentRunId }, 'team-task-agent-notes.md');
 
   // Org run: direct agent and member-team lead files; an org-root and a member-team task agent file.
   const orgRun = (await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: { agentOrgDefinitionId: ids.org,
@@ -268,7 +278,7 @@ const seed = async () => {
     if (member.agentRunId) orgMembers[member.address] = member.agentRunId;
     for (const inner of member.members ?? []) if (inner.agentRunId) orgMembers[inner.address] = inner.agentRunId;
   }
-  const orgTreeOf = async () => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: orgRun.agentOrgRunId })).getAgentOrgRootHistory.org;
+  const orgTreeOf = () => readRunTree(gql, 'agent_org', orgRun.agentOrgRunId);
   const orgView = await openSocket('agent-org', orgRun.agentOrgRunId, (f) => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT');
   const toOrgMember = (agentRunId, content) => orgView.socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: {
     root_subject_kind: 'agent_org', root_run_id: orgRun.agentOrgRunId, target_agent_run_id: agentRunId,
@@ -282,10 +292,10 @@ const seed = async () => {
   await recorded('org member-team member', orgLead, 'org-squad-lead-notes.md');
   toOrgMember(orgManager.agentRunId, delegateWriter('org-task-agent-notes.md'));
   const orgTask = await newTaskAgent('org-root task agent', orgTreeOf, []);
-  await recorded('org-root task agent', { kind: 'agentOrgMember', orgRunId: orgRun.agentOrgRunId, memberAddress: orgTask.address, agentRunId: orgTask.agentRunId }, 'org-task-agent-notes.md');
+  await recorded('org-root task agent', { kind: 'run', runId: orgTask.agentRunId }, 'org-task-agent-notes.md');
   toOrgMember(orgLead.agentRunId, delegateWriter('org-squad-task-agent-notes.md'));
   const squadTask = await newTaskAgent('member-team task agent', orgTreeOf, [orgTask]);
-  await recorded('org member-team task agent', { kind: 'agentOrgMember', orgRunId: orgRun.agentOrgRunId, memberAddress: squadTask.address, agentRunId: squadTask.agentRunId }, 'org-squad-task-agent-notes.md');
+  await recorded('org member-team task agent', { kind: 'run', runId: squadTask.agentRunId }, 'org-squad-task-agent-notes.md');
 
   // Stop every root (the journeys open saved runs).
   const stopped = async (mutation, id) => { const r = Object.values(await gql(mutation, { id }))[0]; assert(r.success, r.message); };
@@ -326,7 +336,8 @@ const contentRoute = (subject, filePath) => {
     case 'run': return `/runs/${e(subject.runId)}/file-change-content?${p}`;
     case 'teamMember': return `/team-runs/${e(subject.teamRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?${p}`;
     case 'agentOrgMember': return `/agent-org-runs/${e(subject.orgRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?memberAddress=${e(subject.memberAddress)}&${p}`;
-    case 'standaloneMember': return `/agent-collaborations/${e(subject.hostRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?memberAddress=${e(subject.memberAddress)}&${p}`;
+    // autobyteus-461 rule 2: a delegated copy's file content is served by its own run's route.
+    case 'standaloneMember': return `/runs/${e(subject.agentRunId)}/file-change-content?${p}`;
   }
   throw new Error(subject.kind);
 };
@@ -335,7 +346,7 @@ const listQuery = (subject) => {
     case 'run': return ['query($r:String!){getRunFileChanges(runId:$r){id path status}}', { r: subject.runId }];
     case 'teamMember': return ['query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){id path status}}', { t: subject.teamRunId, a: subject.agentRunId }];
     case 'agentOrgMember': return ['query($o:String!,$m:String!,$a:String!){getAgentOrgMemberFileChanges(orgRunId:$o,memberAddress:$m,agentRunId:$a){id path status}}', { o: subject.orgRunId, m: subject.memberAddress, a: subject.agentRunId }];
-    case 'standaloneMember': return ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id path status}}', { h: subject.hostRunId, a: subject.memberAddress, r: subject.agentRunId }];
+    case 'standaloneMember': return ['query($r:String!){getRunFileChanges(runId:$r){id path status}}', { r: subject.agentRunId }];
   }
   throw new Error(subject.kind);
 };
@@ -353,10 +364,13 @@ const apiTimings = async () => {
     result[`${file.label} content`] = await timed(() => restRaw(contentRoute(file.subject, file.path)), (r) => assert(r.status === 200 && r.text === file.text, `${file.label} content`, { status: r.status, text: r.text.slice(0, 200) }));
   }
   const copy = setup.files.find((f) => f.subject.kind === 'standaloneMember');
-  result['run-id list of a member (QR-002)'] = await timed(() => gqlRaw('query($r:String!){getRunFileChanges(runId:$r){id}}', { r: copy.subject.agentRunId }),
-    (r) => assert(r.ok && r.body.data.getRunFileChanges.length === 0, 'run-id list of a member is empty', r.body));
-  result['run-id content of a member (QR-002)'] = await timed(() => restRaw(contentRoute({ kind: 'run', runId: copy.subject.agentRunId }, copy.path)),
-    (r) => assert(r.status === 404, 'run-id content of a member is 404', r));
+  // autobyteus-461 rule 2: a delegated copy is its own run, so its run-id list holds its own files (base: a hub member's
+  // run-id list was empty, its files were the hub's).
+  result['run-id list of a delegated run (rule 2)'] = await timed(() => gqlRaw('query($r:String!){getRunFileChanges(runId:$r){id}}', { r: copy.subject.agentRunId }),
+    (r) => assert(r.ok && r.body.data.getRunFileChanges.some((e) => e.id.endsWith(`:${copy.path}`)), 'run-id list of a delegated run has its own file', r.body));
+  // autobyteus-461 rule 2: the copy's content is read by its own run route (base: 404, the hub owned it).
+  result['run-id content of a delegated run (rule 2)'] = await timed(() => restRaw(contentRoute({ kind: 'run', runId: copy.subject.agentRunId }, copy.path)),
+    (r) => assert(r.status === 200 && r.text === copy.text, 'run-id content of a delegated run is its own file', { status: r.status, text: r.text.slice(0, 200) }));
   // Control: a read that still scans every saved team, org and hub tree (team-member context-file owner lookup, FU-A).
   result['control: scanning context-file read (FU-A)'] = await timed(() => restRaw(`/team-runs/${encodeURIComponent(setup.hubRunId)}/agent-runs/unknown_agent_run/context-files/missing.txt`),
     (r) => assert(r.status === 404, 'scanning control answers 404', r));
@@ -444,7 +458,9 @@ const withBrowserErrorCheck = (id, fn, { allowContent404 = false } = {}) => asyn
 const contentResponses = [];
 const freshPage = async () => {
   if (page) await page.close().catch(() => {});
-  page = await (await browser.newContext({ viewport: { width: 1600, height: 1000 } })).newPage();
+  const desktopContext = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
+  await attachToBrowserContext(desktopContext);
+  page = await desktopContext.newPage();
   watchBrowserErrors(page);
   page.on('response', (r) => { if (r.url().includes('/file-change-content')) contentResponses.push({ at: Date.now(), url: r.url(), status: r.status() }); });
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'domcontentloaded', timeout: 180000 });
@@ -506,7 +522,7 @@ const freshMobilePage = async () => {
   const settings = await fetch(`${stack.backendUrl}/rest/remote-access/settings`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phoneAccessEnabled: true }) });
   assert(settings.ok, 'Phone Access enabled', await settings.text());
   const session = await (await fetch(`${stack.backendUrl}/rest/remote-access/pairing-sessions`, { method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ serverBaseUrl: mobileRemote(), trustedPrivateHttpAcknowledged: true }) })).json();
+    body: JSON.stringify({ connectionWay: 'local_network', serverBaseUrl: mobileRemote(), trustedPrivateHttpAcknowledged: true }) })).json();
   assert(session.mobileUrl, 'pairing session', session);
   const pairing = new URL(session.mobileUrl).searchParams.get('pairing');
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
@@ -530,22 +546,26 @@ const freshMobilePage = async () => {
   page.on('response', (r) => { if (r.url().includes('/file-change-content')) contentResponses.push({ at: Date.now(), url: r.url().replace(mobileRemote(), stack.backendUrl), status: r.status() }); });
   await page.goto(`${stack.frontendUrl}/mobile?pairing=${encodeURIComponent(pairing)}`, { waitUntil: 'domcontentloaded', timeout: 180000 });
   await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 120000 });
-  await page.locator('[data-testid="mobile-home"]').waitFor({ timeout: 120000 }).catch(async (e) => { throw Object.assign(new Error(`mobile home: ${e.message}`), { details: await dumpTestIds() }); });
+  await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 120000 }).catch(async (e) => { throw Object.assign(new Error(`mobile run list: ${e.message}`), { details: await dumpTestIds() }); });
 };
-/** Mobile: choose the run in the work picker (search its summary, the first message, which names the file), open Artifacts, open the file. */
-const mobileOpenArtifact = async (segment, runId, file) => {
-  await page.getByText('Choose work', { exact: true }).click();
-  await page.locator(`[data-testid="mobile-context-segment-${segment}"]`).click();
-  await page.locator('[data-testid="mobile-context-search"]').fill(file.path);
-  const row = page.locator('[data-testid="mobile-context-list"] [data-testid="mobile-readable-work-row"]', { hasText: file.path }).first();
-  await row.waitFor({ timeout: 60000 }).catch(async (e) => { throw Object.assign(new Error(`work row: ${e.message}`), { details: await dumpTestIds() }); });
-  await row.click();
-  await page.locator('[data-testid="mobile-work-shell"]').waitFor({ timeout: 60000 });
+/**
+ * Mobile (autobyteus-277): the run's row in the run list opens its agent (a Team run opens its coordinator); ⋮ → Artifacts.
+ * One artifact shows directly; several are rows, and the file's row opens it.
+ */
+const mobileOpenArtifact = async (rowKey, file) => {
+  const row = page.locator(`[data-testid="mobile-run-row-${rowKey}"]`);
+  const older = page.locator('[data-testid="mobile-run-list-show-older"]');
+  if (!(await row.count()) && (await older.count()) && (await older.innerText()).startsWith('Show older')) await older.click();
+  await row.locator('[data-testid="mobile-run-open"]').click({ timeout: 60000 }).catch(async (e) => { throw Object.assign(new Error(`run row: ${e.message}`), { details: await dumpTestIds() }); });
+  await page.locator('[data-testid="mobile-run-screen"][data-state="open"]').waitFor({ timeout: 60000 });
   const mark = Date.now();
-  await page.locator('[data-testid="mobile-tab-artifacts"]').click();
-  const artifactRow = page.locator('[data-testid="mobile-artifact-row"]', { hasText: file.path }).first();
-  await artifactRow.waitFor({ timeout: 60000 }).catch(async (e) => { throw Object.assign(new Error(`artifact row: ${e.message}`), { details: await dumpTestIds() }); });
-  await artifactRow.click();
+  await page.locator('[data-testid="mobile-run-menu-button"]').click();
+  await page.locator('[data-testid="mobile-run-menu-artifacts"]').click();
+  await page.locator('[data-testid="mobile-artifacts-viewer"], [data-testid="mobile-artifacts-list"]').first().waitFor({ timeout: 60000 })
+    .catch(async (e) => { throw Object.assign(new Error(`artifacts: ${e.message}`), { details: await dumpTestIds() }); });
+  if (await page.locator('[data-testid="mobile-artifacts-list"]').count()) {
+    await page.locator('[data-testid="mobile-artifact-row"]', { hasText: file.path }).first().click();
+  }
   const viewerText = () => page.locator('[data-testid="mobile-artifacts-viewer"]').innerText();
   await until(`${file.label}: mobile viewer shows the file`, async () => (await viewerText()).includes(file.text), 60000)
     .catch(async (e) => { throw Object.assign(e, { details: { shown: await viewerText().catch(() => null), requests: contentResponses.filter((r) => r.at >= mark) } }); });
@@ -600,7 +620,7 @@ const journeys = [
     opened.push(await openArtifact(leadFile));
     for (const label of ['org-root task agent', 'org member-team task agent']) {
       const file = fileOf(label);
-      await page.locator(`[data-test="agent-org-task-agent-row-${file.subject.agentRunId}"]`).click();
+      await page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${file.subject.runId ?? file.subject.agentRunId}"]`).click();
       opened.push(await openArtifact(file));
     }
     await shot('B-003-org-task-agent-file');
@@ -631,13 +651,13 @@ const journeys = [
   }, { allowContent404: true }],
   ['B-006', 'Mobile (Phone Access): an agent run\'s file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)', async () => {
     await freshMobilePage();
-    const opened = await mobileOpenArtifact('recent', setup.hubRunId, fileOf('standalone run'));
+    const opened = await mobileOpenArtifact(`agent:${setup.hubRunId}`, fileOf('standalone run'));
     await shot('B-006-mobile-agent-run-file');
     return { opened, requests: expectOnlyOwnerRequests(opened.mark, [fileOf('standalone run')]) };
   }],
   ['B-007', 'Mobile (Phone Access): a Team run member\'s file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)', async () => {
     await freshMobilePage();
-    const opened = await mobileOpenArtifact('recent', setup.teamRunId, fileOf('team configured member'));
+    const opened = await mobileOpenArtifact(`team:${setup.teamRunId}`, fileOf('team configured member'));
     await shot('B-007-mobile-team-member-file');
     return { opened, requests: expectOnlyOwnerRequests(opened.mark, [fileOf('team configured member')]) };
   }],

@@ -1,0 +1,26 @@
+# IMP-16 clean clone: git clone --branch codex/fastify5-and-spreadsheet-parser <worktree> /tmp/ab-clean/repo; pnpm install --frozen-lockfile --store-dir /tmp/ab-clean/store (fresh, empty store)
+# Commit: 29aeb5d721; macOS 26.5.2, node v22.23.1, pnpm 10.28.2; date 2026-10-24T20:15:57Z
+
+## install
+ WARN  Failed to create bin at /private/tmp/ab-clean/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab-clean/repo/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/tmp/ab-clean/repo/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/tmp/ab-clean/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab-clean/repo/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ab-clean/repo/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab-clean/repo/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 39.4s using pnpm v10.28.2
+install exit: 0
+## xlsx resolved in the clean clone
+0.20.3
+  xlsx@https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz:
+    resolution: {integrity: sha512-oLDq3jw7AcLqKWH2AhCpVTZl8mf6X2YReP+Neh0SJUzV/BdZYjth94tG5toiMB1PPrYtxOCfaoUCkvtuH+3AJA==, tarball: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz}
+## store index entry for the tarball exists (fetched cold, integrity verified by pnpm)
+store v10 present

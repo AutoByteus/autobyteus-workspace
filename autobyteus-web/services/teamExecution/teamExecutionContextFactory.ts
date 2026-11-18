@@ -16,10 +16,8 @@ import type {
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { teamAgentSourceOf, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
-import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
-import { readsAsDisplayName } from './teamExecutionTreeSelectors'
+import { teamMemberName } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
-import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 
 const runtimeKind = (value: AgentLaunchConfigurationDto['runtime_kind']): AgentRuntimeKind => value as AgentRuntimeKind
 const deepFreeze = <T>(value: T): T => {
@@ -65,9 +63,7 @@ export const createTeamAgentContext = (input: {
   const source = teamAgentSourceOf(input.tree, input.agentRunId)
   if (!source) return null
   // F-03 / CR-002: a catalog copy (and its members) reads as a spaced name, as in its row.
-  const name = readsAsDisplayName(input.tree, source.address)
-    ? memberDisplayName(source.address)
-    : memberAddressBasename(source.address)
+  const name = teamMemberName(input.tree, source.address)
   const conversation = {
     id: input.agentRunId, messages: [], createdAt: input.tree.created_at, updatedAt: input.tree.created_at,
     agentDefinitionId: source.agent_definition_id,
@@ -77,25 +73,6 @@ export const createTeamAgentContext = (input: {
   const state = new AgentRunState(input.agentRunId, conversation)
   initializeRuntimeStatusState(state, AgentStatus.Offline)
   return new AgentContext(agentConfig({ source, name, workspaceMetadata: input.workspaceMetadata }), state)
-}
-
-/**
- * After a live Save (DS-001): each agent context takes the model its agent now runs with (its own
- * choice, else its Team's when it follows). Contexts whose model is unchanged are left as they are.
- */
-export const refreshTeamAgentLaunches = (
-  tree: TeamRunExecutionTreeDto,
-  locations: ReadonlyMap<string, Readonly<{ memberAddress: AgentTeamAddress }>>,
-  contexts: ReadonlyMap<string, AgentContext>,
-): void => {
-  for (const [agentRunId, context] of contexts) {
-    const location = locations.get(agentRunId)
-    const launch = location ? teamAgentSourceOf(tree, agentRunId)?.launch_configuration : null
-    if (!launch || (context.config.llmModelIdentifier === launch.llm_model_identifier
-      && modelConfigsEqual(context.config.llmConfig, launch.llm_config))) continue
-    context.config = { ...context.config, llmModelIdentifier: launch.llm_model_identifier, llmConfig: immutableLlmConfig(launch.llm_config) }
-    context.state.conversation.llmModelIdentifier = launch.llm_model_identifier
-  }
 }
 
 export const createTeamConfigurationView = (input: {

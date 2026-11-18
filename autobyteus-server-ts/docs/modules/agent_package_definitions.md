@@ -121,12 +121,36 @@ Skills, docs, scripts, `.git`, `node_modules`, other files and `_`-prefixed
 names are not watched. A skill edit is therefore never announced on this feed;
 runtime bootstrap reads skills from disk anyway (see [Skills](./skills.md)).
 Active runs that use a changed skill are told separately, by
-[Skill Update Notices](./skill_update_notices.md).
+[Skill Update Notices](./skill_update_notices.md). That subsystem also listens
+to the definition change signal: a skill added to or removed from a definition
+reaches the running agents of it (as a notice, and for an added skill its
+runtime sets the skill up).
 
 Each event path is mapped to one definition folder `(kind, folderId)`.
 `AgentPackageDefinitionReloader` keeps the pending changed folders and applies
 them after **1000 ms of quiet, capped at 3000 ms** from the first pending
 change. Both constants are injectable for tests.
+
+**Catch-up for dropped events.** The OS can drop directory events right after a
+watch arms (on macOS the watch goes live up to about 60 ms after chokidar's
+`ready`) and while chokidar adds a watch for a new folder, so a definition
+folder written in that moment may never be reported. The watcher therefore
+asks the reloader to re-read the whole package once it has been quiet for
+**300 ms** after the watch armed and after the last folder was added or
+removed (`reconcilePackageFolder`; one timer per package, constant
+`PACKAGE_CATCH_UP_DELAY_MS`). The reloader treats it like a package change
+except that it announces only the definitions that really changed: an
+unchanged package sends no `agent_packages` frame. Before asking, the catch-up
+checks the watch itself: the package folder is still the same folder (the
+presence check, for a rename whose event was lost), and every allow-listed
+definition folder on disk is held by the watch (chokidar's `getWatched()`).
+A lost `addDir` leaves a new folder unwatched, so its later edits would never
+be reported; the watcher then re-arms its watch quietly (no `agent_packages`
+frame), once per set of unwatched folders, and logs
+`AGENT_PACKAGE_FOLDER_UNWATCHED` if they stay unwatched. It lists directory
+names only and never reads definition files. A write that coincides with
+watch churn caused by another component, with no definition event of its own,
+is still not caught; the Reload action covers it.
 
 **Read-your-writes.** Every service read first calls `applyPendingChanges()`,
 which applies pending changes before answering. A definition written by an
@@ -230,7 +254,13 @@ The frame names lists only; clients re-read through GraphQL.
   exposes `agentPackageDefinitions` (`{ store, reloader }`).
 - The studio server adds the hub and the watcher
   (`compositions/agent-package-definition-feed-composition.ts`). Shutdown closes
-  the watcher, then the hub, then the definition services.
+  the watcher, then the hub, then the definition services. At process shutdown the
+  server's cleanup first calls the watcher's `stopForProcessExit()`: it ends event
+  handling (catch-up timers, entries, late callbacks) without closing the OS
+  watches, whose close can block the main thread for seconds on a busy Mac; the
+  process exit releases them, and `close()` after it does nothing more. Every
+  other close (an in-process server in a test, a failed startup, a package
+  folder removed while running) closes the OS watches.
 
 ## Ownership Rules
 

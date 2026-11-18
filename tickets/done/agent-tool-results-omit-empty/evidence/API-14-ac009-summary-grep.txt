@@ -1,0 +1,33 @@
+API-14 AC-009 vocabulary grep (Task one-liner never named 'summary'); commit 17d631c704; 2026-10-25
+Command: git grep -n -i summary -- <Task model, tools, GraphQL type, web Task utils/components/store/types, i18n, docs, GLOSSARY> | grep -v -i 'listProjectSummaries|ProjectSummary|TaskWorkerTaskSummary'
+
+GLOSSARY.md:53:  title or summary.
+GLOSSARY.md:54:- **Summary:** a reduced view of something, for example
+autobyteus-web/components/projects/TaskPartsSection.vue:9:        <p v-if="!parent && parts.length" class="min-w-0 truncate text-xs" data-testid="task-parts-summary">
+autobyteus-web/components/projects/__tests__/ProjectTaskRow.spec.ts:15:describe('ProjectTaskRow card text (task-card-compact-summary)', () => {
+autobyteus-web/components/projects/__tests__/ProjectTaskRow.spec.ts:18:  it.each([['Project board', projectTask], ['Temp tasks', tempTask]] as const)('%s: a ~10,000-word paragraph renders a bounded summary, no preview, and a short accessible name', (_board, make) => {
+autobyteus-web/components/projects/__tests__/ProjectTaskRow.spec.ts:29:  it('a long multi-line description renders a bounded summary and a bounded preview', () => {
+autobyteus-web/components/projects/__tests__/ProjectTaskRow.spec.ts:38:    const wrapper = mountRow(projectTask('Summary\nPreview'))
+autobyteus-web/components/projects/__tests__/ProjectTaskRow.spec.ts:46:  it('short descriptions render as before: full summary, preview and accessible name (AC-006)', () => {
+autobyteus-web/components/projects/__tests__/TaskKeysAndDependencies.spec.ts:17:const task = (n: number, status: ProjectTaskStatus = 'TODO', dependsOnTaskIds: string[] = [], description = `Task ${n} summary`): ProjectTask => ({
+autobyteus-web/components/projects/__tests__/TaskKeysAndDependencies.spec.ts:63:  it('a Project Task card starts with its summary, shows no key of its own, and keeps its badge from the Project list', () => {
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:18:  taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, title: `Task ${n} summary`, description: `Task ${n} summary\nmore`, status, dependsOnTaskIds: [], partOfTaskId,
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:43:    expect(wrapper.get('[data-testid="task-parts-summary"]').text().replace(/\s+/g, ' ')).toBe('2 of 4 done · 1 cancelled')
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:52:    expect(wrapper.text()).toContain('Task 19 summary')
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:61:    expect(done.get('[data-testid="task-parts-summary"]').text()).toBe('3 of 3 done')
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:66:    expect(cancelled.get('[data-testid="task-parts-summary"]').text()).toBe('1 cancelled')
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:69:    expect(none.find('[data-testid="task-parts-summary"]').exists()).toBe(false)
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:82:  it('a part shows "Part of" with its parent\'s row (key · status · summary) opening it, no New part (AC-010, VIS-007a–c)', () => {
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:92:      expect(wrapper.find('[data-testid="task-parts-summary"]').exists()).toBe(false)
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:125:  it('the part line: "↳ Part of <key>" with the parent\'s summary and status on hover; nothing for a dangling parent', () => {
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:130:    expect(line.attributes('title')).toBe('Part of autobyteus-25: Task 25 summary (To Do)')
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:252:    expect(wrapper.get('[data-testid="task-parts-summary"]').text().replace(/\s+/g, ' ')).toBe('4 个中已完成 2 个 · 1 个已取消')
+autobyteus-web/components/projects/__tests__/TaskParts.spec.ts:256:      .toBe('所属任务 autobyteus-25：Task 25 summary（进行中）')
+autobyteus-web/components/projects/panel/__tests__/ProjectsPanelTaskLocate.spec.ts:52:/** The summary click with the shell present: the shell's reveal step is the store call it makes. */
+autobyteus-web/components/projects/panel/__tests__/ProjectsPanelTaskLocate.spec.ts:83:    server = { p1: [projectTask('a1', 'p1', 'Other work')], p2: [projectTask('b1', 'p2', 'Ship the summary line')] }
+autobyteus-web/docs/projects.md:126:Cards stay compact however long the description is (task-card-compact-summary).
+autobyteus-web/docs/projects.md:694:- each summary and preview renders within 2 lines, and the card height is bounded;
+autobyteus-web/docs/projects.md:696:  summary;
+autobyteus-web/docs/projects.md:706:- a short summary appears in full in the delete confirmation.
+
+Reading: product code, wire, i18n and the server docs are clean (task-parts-summary = the parts' counts, a reduced view). Residual wording that names a Task's one-line card label 'summary': autobyteus-web/docs/projects.md lines 694, 696 and 706 (the PMU-013/PMU-014 coverage bullets), and web spec test titles in components/projects/__tests__/ProjectTaskRow.spec.ts (lines 18, 29, 46), TaskKeysAndDependencies.spec.ts:63 and TaskParts.spec.ts:82/125. No runtime, wire or UI text is affected.

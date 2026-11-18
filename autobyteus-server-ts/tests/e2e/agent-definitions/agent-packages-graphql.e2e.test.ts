@@ -1026,7 +1026,9 @@ describe("Agent packages GraphQL e2e", () => {
     expect(refreshedReads.teams.some((entry) => entry.id === newTeamId)).toBe(true);
   });
 
-  it("allows legacy managed GitHub records with unknown revision to update to latest through GraphQL", async () => {
+  // package-personal-settings (REQ-006, design "Capture Failure Rules" row 1): an update first downloads the installed
+  // revision to keep the user's edits; with no recorded revision it cannot, so the update stops and nothing changes.
+  it("stops the update of a legacy managed GitHub record with unknown revision and leaves the package unchanged", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const defaultRoot = appConfigProvider.config.getAppDataDir();
     const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), `agent-packages-registry-${unique}-`));
@@ -1134,50 +1136,41 @@ describe("Agent packages GraphQL e2e", () => {
     });
     expect(legacyPackage?.updateInfo.message).toContain("Update to latest");
 
-    const updateResult = await execGraphql<{
-      updateAgentPackage: Array<{
-        packageId: string;
-        sharedAgentCount: number;
-        updateInfo: {
-          status: string;
-          canUpdate: boolean;
-          installedRevision: string | null;
-          latestRevision: string | null;
-        };
-      }>;
-    }>(
+    const updateFailure = await runGraphql(
       `
         mutation UpdateLegacyPackage($packageId: String!) {
           updateAgentPackage(packageId: $packageId) {
             packageId
-            sharedAgentCount
-            updateInfo {
-              status
-              canUpdate
-              installedRevision
-              latestRevision
-            }
           }
         }
       `,
       { packageId: legacyPackage?.packageId },
     );
+    expect(updateFailure.errors?.[0]?.message).toContain("The installed revision of this package is unknown");
+    expect(updateFailure.errors?.[0]?.message).toContain("Remove the package and import it again.");
 
-    const updatedPackage = updateResult.updateAgentPackage.find(
-      (entry) => entry.packageId === legacyPackage?.packageId,
-    );
-    expect(updatedPackage?.sharedAgentCount).toBe(1);
-    expect(updatedPackage?.updateInfo).toMatchObject({
-      status: "UP_TO_DATE",
-      canUpdate: false,
-      installedRevision: latestRevision,
-      latestRevision,
-    });
-    await expect(
-      fs.access(path.join(legacyInstallDir, "agents", latestAgentId, "agent.md")),
-    ).resolves.toBeUndefined();
+    const afterList = await execGraphql<{
+      agentPackages: Array<{ packageId: string; updateInfo: { status: string; installedRevision: string | null; lastError: string | null } }>;
+    }>(`
+      query LegacyPackagesAfterUpdate {
+        agentPackages {
+          packageId
+          updateInfo {
+            status
+            installedRevision
+            lastError
+          }
+        }
+      }
+    `);
+    const afterUpdate = afterList.agentPackages.find((entry) => entry.packageId === legacyPackage?.packageId);
+    expect(afterUpdate?.updateInfo).toMatchObject({ status: "UPDATE_FAILED", installedRevision: null });
+    expect(afterUpdate?.updateInfo.lastError).toContain("The installed revision of this package is unknown");
     await expect(
       fs.access(path.join(legacyInstallDir, "agents", legacyAgentId, "agent.md")),
+    ).resolves.toBeUndefined();
+    await expect(
+      fs.access(path.join(legacyInstallDir, "agents", latestAgentId, "agent.md")),
     ).rejects.toBeDefined();
   });
 

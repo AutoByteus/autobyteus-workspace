@@ -1,0 +1,9 @@
+# IMP-17 new server e2e AC-012 (a)/(b), AC-013 (a)/(b) (synthetic vault, stubbed Anthropic, no credits)
+# command: env -i PATH HOME=<temp> TMPDIR corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts --no-watch
+# commit: 47f44c3df (run on the identical working tree before the commit)
+# env: Linux 6.12.54-linuxkit, node v22.23.3, uid 0
+# date: 2026-10-29
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 1340ms
+     ✓ AC-013 (b): a delegated catalog Agent whose default launch config holds the stale key runs on that default, without the key  552ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

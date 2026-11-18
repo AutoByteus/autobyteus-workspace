@@ -303,7 +303,7 @@ describe("CodexThreadEventConverter through CodexThread", () => {
       eventType: AgentRunEventType.COMPACTION_STATUS,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CODEX",
+        runtime_kind: "codex_app_server",
         provider: "codex",
         source_surface: "codex.thread_compacted",
         boundary_key: "codex:thread-1:compaction-1",
@@ -336,7 +336,7 @@ describe("CodexThreadEventConverter through CodexThread", () => {
       eventType: AgentRunEventType.COMPACTION_STATUS,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CODEX",
+        runtime_kind: "codex_app_server",
         provider: "codex",
         source_surface: "codex.context_compaction_started",
         boundary_key: "codex:thread-1:compaction-item-1:compacting",
@@ -370,7 +370,7 @@ describe("CodexThreadEventConverter through CodexThread", () => {
       eventType: AgentRunEventType.COMPACTION_STATUS,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CODEX",
+        runtime_kind: "codex_app_server",
         provider: "codex",
         source_surface: "codex.context_compaction_completed",
         boundary_key: "codex:thread-1:compaction-item-1",

@@ -8,10 +8,7 @@ import {
   type WebSocketConnection,
 } from "../../services/terminal-streaming/index.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
-import {
-  authorizeRemoteAccessWebSocket,
-  closeSocketForRemoteAccessRejection,
-} from "./remote-access-websocket-auth.js";
+import { registerGatedWebSocketRoute } from "./gated-websocket-route.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -34,14 +31,6 @@ type SocketLike = {
   close: (code?: number, reason?: string) => void;
 };
 
-const isRemoteAccessWebSocketRejection = (error: unknown): boolean => {
-  if (!error || typeof error !== "object") return false;
-  const candidate = error as { code?: unknown; reason?: unknown };
-  return (
-    typeof candidate.code === "number" && typeof candidate.reason === "string"
-  );
-};
-
 const resolveTerminalCwd = async (query: TerminalQuery): Promise<string> => {
   const hasExplicitCwd =
     query.cwd !== undefined || query.rootPath !== undefined;
@@ -60,23 +49,11 @@ export async function registerTerminalWebsocket(
   app: FastifyInstance,
   handler: TerminalHandler = getTerminalHandler(),
 ): Promise<void> {
-  app.get(
+  registerGatedWebSocketRoute(
+    app,
     "/ws/terminal/:sessionId",
-    { websocket: true },
-    (connection: unknown, req) => {
-      const rawSocket =
-        (connection as { socket?: unknown }).socket ?? connection;
-      if (
-        !rawSocket ||
-        typeof (rawSocket as { on?: unknown }).on !== "function"
-      ) {
-        logger.error(
-          "Terminal websocket missing underlying socket; check fastify websocket plugin setup.",
-        );
-        return;
-      }
-
-      const socket = rawSocket as SocketLike;
+    (webSocket, req) => {
+      const socket = webSocket as unknown as SocketLike;
       let closed = false;
       let cleanupStarted = false;
       let connectedSessionId: string | null = null;
@@ -151,9 +128,6 @@ export async function registerTerminalWebsocket(
 
       void (async () => {
         try {
-          await authorizeRemoteAccessWebSocket(req);
-          if (closed) return;
-
           const { sessionId } = req.params as TerminalParams;
           pendingSessionId = sessionId;
           const query = (req.query ?? {}) as TerminalQuery;
@@ -187,9 +161,7 @@ export async function registerTerminalWebsocket(
           logger.info(`Terminal websocket attached for cwd ${cwd}`);
         } catch (error) {
           if (closed) return;
-          if (isRemoteAccessWebSocketRejection(error)) {
-            closeSocketForRemoteAccessRejection(socket, error, req);
-          } else if (connectPromise) {
+          if (connectPromise) {
             logger.warn(`Terminal connection failed during startup: ${String(error)}`);
           } else {
             logger.warn(`Terminal connection rejected: ${String(error)}`);

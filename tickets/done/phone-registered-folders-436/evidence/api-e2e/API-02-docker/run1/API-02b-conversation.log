@@ -1,0 +1,18 @@
+# API-02b; image abtest436/autobyteus-server:test (this branch's server package, commit ea51d4fddd); 2026-11-09T05:06:09.391Z
+container abtest436-scripted published: 100.127.30.107:54591 127.0.0.1:54591
+owner GraphQL with the launch credential: Query
+agent run reporter_ed4e3d4b6b6949fd94926b7bf41e7882 in /home/autobyteus/workspace
+PASS the agent's own message names the files (scripted AGY in the container)
+phone paired at http://100.127.30.107:54591; the run is listed
+PASS tap /home/autobyteus/shared/ac005-notes.md: opens read-only ("ac005-notes.md\nAC-005 shared note\n\nSHARED-MARKER-436: this file lives in the node’s shared folder."), nodeFile=/home/autobyteus/shared/ac005-notes.md, 278 ms, Back → conversation true, viewer buttons [""]
+PASS tap /home/autobyteus/shared/ac005-picture.png: image naturalWidth [120], 113 ms
+PASS tap /home/autobyteus/shared/ac005-large.pdf (18 MB): {"canvases":1,"drawn":true,"error":null}, 731 ms
+PASS tap /tmp/abtest436/sample/ac005-notes.md (on the host, not mounted into the container): "This file was not found on the computer."
+ERROR locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="mobile-run-conversation"]').locator('[data-event-monitor-file-action-control="true"][title="/home/autobyteus/shared/a-folder"]').last()
+
+    at tap (/private/tmp/abtest436/api02b-conversation.mjs:51:22)
+    at /private/tmp/abtest436/api02b-conversation.mjs:70:20
+container abtest436-scripted removed
+result Fail

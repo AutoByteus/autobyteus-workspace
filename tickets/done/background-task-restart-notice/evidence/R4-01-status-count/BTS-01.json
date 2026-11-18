@@ -1,0 +1,172 @@
+{
+  "runId": "bts_175bdc68_0e4d6b4ae05644f2902db04508e62b7d",
+  "firstTurn": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "idle:1",
+    "initializing:1",
+    "idle:1"
+  ],
+  "statusBeforeTask": {
+    "status": "running",
+    "count": 1,
+    "at": 1794955318370
+  },
+  "snapshot": {
+    "type": "RUN_STATUS_SNAPSHOT",
+    "payload": {
+      "runs": [
+        {
+          "kind": "agent",
+          "runId": "bts_175bdc68_0e4d6b4ae05644f2902db04508e62b7d",
+          "answer": "ok",
+          "node": null,
+          "status": "idle",
+          "backgroundTasksRunning": 1,
+          "agents": [
+            {
+              "agentRunId": "bts_175bdc68_0e4d6b4ae05644f2902db04508e62b7d",
+              "status": "idle",
+              "backgroundTasksRunning": 1
+            }
+          ]
+        }
+      ]
+    },
+    "at": 1794955318440
+  },
+  "reconnectFirst": {
+    "status": "idle",
+    "count": 1,
+    "at": 1794955318538
+  },
+  "deliveredAfterMs": 24,
+  "all": [
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "running:1",
+    "idle:1",
+    "initializing:1",
+    "idle:1",
+    "initializing:1",
+    "running:1",
+    "running:2",
+    "idle:2",
+    "initializing:2",
+    "idle:2",
+    "idle:1",
+    "initializing:1",
+    "running:1",
+    "idle:1",
+    "initializing:1",
+    "idle:1",
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "idle:0",
+    "initializing:0",
+    "idle:0"
+  ],
+  "fed": [
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "initializing",
+      "count": 1
+    },
+    {
+      "status": "running",
+      "count": 1
+    },
+    {
+      "status": "running",
+      "count": 2
+    },
+    {
+      "status": "idle",
+      "count": 2
+    },
+    {
+      "status": "initializing",
+      "count": 2
+    },
+    {
+      "status": "idle",
+      "count": 2
+    },
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "initializing",
+      "count": 1
+    },
+    {
+      "status": "running",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "initializing",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 1
+    },
+    {
+      "status": "idle",
+      "count": 0
+    },
+    {
+      "status": "initializing",
+      "count": 0
+    },
+    {
+      "status": "running",
+      "count": 0
+    },
+    {
+      "status": "idle",
+      "count": 0
+    },
+    {
+      "status": "initializing",
+      "count": 0
+    },
+    {
+      "status": "idle",
+      "count": 0
+    }
+  ],
+  "runStates": [
+    "idle:1",
+    "initializing:1",
+    "running:1",
+    "running:2",
+    "idle:2",
+    "initializing:2",
+    "idle:2",
+    "idle:1",
+    "initializing:1",
+    "running:1",
+    "idle:1",
+    "initializing:1",
+    "idle:1",
+    "idle:0",
+    "initializing:0",
+    "running:0",
+    "idle:0",
+    "initializing:0",
+    "idle:0"
+  ]
+}

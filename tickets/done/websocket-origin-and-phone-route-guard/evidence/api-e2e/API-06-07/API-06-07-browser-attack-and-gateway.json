@@ -1,0 +1,266 @@
+{
+  "startedAt": "2026-11-06T22:56:22.271Z",
+  "result": "Pass",
+  "api06": {
+    "foreign": {
+      "pageOrigin": "http://evil.example:56853",
+      "results": {
+        "terminal": {
+          "url": "ws://127.0.0.1:56841/ws/terminal/abx403-evil-term",
+          "opened": false,
+          "frames": 0,
+          "firstFrame": null,
+          "closeCode": 1006,
+          "error": true
+        },
+        "projects": {
+          "url": "ws://127.0.0.1:56841/ws/projects",
+          "opened": false,
+          "frames": 0,
+          "firstFrame": null,
+          "closeCode": 1006,
+          "error": true
+        },
+        "graphqlWs": {
+          "url": "ws://127.0.0.1:56841/graphql",
+          "opened": false,
+          "frames": 0,
+          "firstFrame": null,
+          "closeCode": 1006,
+          "error": true
+        },
+        "peerObservation": {
+          "url": "ws://127.0.0.1:56841/rest/remote/run-observations",
+          "opened": false,
+          "frames": 0,
+          "firstFrame": null,
+          "closeCode": 1006,
+          "error": true
+        },
+        "preflightedPost": {
+          "error": "TypeError: Failed to fetch"
+        },
+        "simplePost": {
+          "status": 0,
+          "type": "opaque",
+          "body": null
+        },
+        "nullOriginIframe": {
+          "opened": false,
+          "closeCode": 1006,
+          "error": true,
+          "iframeOrigin": "null (sandboxed)"
+        }
+      },
+      "requestOrigins": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:56841/graphql",
+          "origin": null
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:56841/graphql",
+          "origin": null
+        }
+      ]
+    },
+    "control": {
+      "pageOrigin": "http://127.0.0.1:56854",
+      "results": {
+        "terminal": {
+          "url": "ws://127.0.0.1:56841/ws/terminal/abx403-loop-term",
+          "opened": true,
+          "frames": 5,
+          "firstFrame": "{\"type\":\"output\",\"data\":\"ZWNobyBBQlg0MDNfVEVSTUlOQUxfJCgoNDArMykpDQo=\"}",
+          "closeCode": 1005,
+          "error": false
+        },
+        "projects": {
+          "url": "ws://127.0.0.1:56841/ws/projects",
+          "opened": true,
+          "frames": 1,
+          "firstFrame": "{\"type\":\"connected\"}",
+          "closeCode": 1005,
+          "error": false
+        },
+        "graphqlWs": {
+          "url": "ws://127.0.0.1:56841/graphql",
+          "opened": true,
+          "frames": 0,
+          "firstFrame": null,
+          "closeCode": 1005,
+          "error": false
+        },
+        "peerObservation": {
+          "url": "ws://127.0.0.1:56841/rest/remote/run-observations",
+          "opened": true,
+          "frames": 0,
+          "firstFrame": null,
+          "closeCode": 1005,
+          "error": false
+        },
+        "preflightedPost": {
+          "status": 200,
+          "type": "cors",
+          "body": "{\"data\":{\"createAgentDefinition\":{\"id\":\"abx403-loopback-preflight\"}}}"
+        },
+        "simplePost": {
+          "status": 0,
+          "type": "opaque",
+          "body": null
+        }
+      },
+      "requestOrigins": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:56841/graphql",
+          "origin": null
+        },
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:56841/graphql",
+          "origin": null
+        }
+      ]
+    },
+    "handshakes": [
+      {
+        "page": "foreign",
+        "url": "ws://127.0.0.1:56841/ws/terminal/abx403-evil-term",
+        "origin": "http://evil.example:56853",
+        "frameError": "Error during WebSocket handshake: Unexpected response code: 403"
+      },
+      {
+        "page": "foreign",
+        "url": "ws://127.0.0.1:56841/ws/projects",
+        "origin": "http://evil.example:56853",
+        "frameError": "Error during WebSocket handshake: Unexpected response code: 403"
+      },
+      {
+        "page": "foreign",
+        "url": "ws://127.0.0.1:56841/graphql",
+        "origin": "http://evil.example:56853",
+        "frameError": "Error during WebSocket handshake: Unexpected response code: 403"
+      },
+      {
+        "page": "foreign",
+        "url": "ws://127.0.0.1:56841/rest/remote/run-observations",
+        "origin": "http://evil.example:56853",
+        "frameError": "Error during WebSocket handshake: Unexpected response code: 403"
+      },
+      {
+        "page": "loopback-control",
+        "url": "ws://127.0.0.1:56841/ws/terminal/abx403-loop-term",
+        "origin": "http://127.0.0.1:56854",
+        "status": 101
+      },
+      {
+        "page": "loopback-control",
+        "url": "ws://127.0.0.1:56841/ws/projects",
+        "origin": "http://127.0.0.1:56854",
+        "status": 101
+      },
+      {
+        "page": "loopback-control",
+        "url": "ws://127.0.0.1:56841/graphql",
+        "origin": "http://127.0.0.1:56854",
+        "status": 101
+      },
+      {
+        "page": "loopback-control",
+        "url": "ws://127.0.0.1:56841/rest/remote/run-observations",
+        "origin": "http://127.0.0.1:56854",
+        "status": 101
+      }
+    ],
+    "logLinesForeign": [
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/abx403-evil-term origin http://evil.example:56853",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/projects origin http://evil.example:56853",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://evil.example:56853",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/remote/run-observations origin http://evil.example:56853",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://evil.example:56853",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://evil.example:56853",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/projects origin null"
+    ],
+    "definitionsAfter": [
+      "ABX403-LOOPBACK-PREFLIGHT"
+    ],
+    "checks": {
+      "foreignWsAllRefused": true,
+      "foreignNullIframeRefused": true,
+      "foreignPreflightBlocked": true,
+      "foreignDefinitionsNotCreated": true,
+      "foreignHandshakesHadForeignOrigin": true,
+      "foreignHandshake403": true,
+      "foreignLogLines": 7,
+      "noCredentialInLogs": true,
+      "controlTerminalAnswered": true,
+      "controlProjectsOpened": true,
+      "controlPreflightCreated": true
+    }
+  },
+  "api07": {
+    "withoutSetting": {
+      "label": "without AUTOBYTEUS_ALLOWED_ORIGINS",
+      "healthPageStatus": 200,
+      "post": {
+        "status": 403,
+        "body": "{\"error\":\"REMOTE_ACCESS_ORIGIN_REFUSED\",\"code\":\"REMOTE_ACCESS_ORIGIN_REFUSED\",\"message\":\"Requests from this origin are n"
+      },
+      "ws": {
+        "opened": false,
+        "frames": 0,
+        "closeCode": 1006
+      },
+      "pageOrigin": "https://gw.example.test:56937"
+    },
+    "withSetting": {
+      "label": "with AUTOBYTEUS_ALLOWED_ORIGINS",
+      "healthPageStatus": 200,
+      "post": {
+        "status": 200,
+        "body": "{\"data\":{\"agentDefinitions\":[{\"name\":\"ABX403-LOOPBACK-PREFLIGHT\"},{\"name\":\"Daily Assistant\"}]}}"
+      },
+      "ws": {
+        "opened": true,
+        "frames": 1,
+        "closeCode": 1005
+      },
+      "pageOrigin": "https://gw.example.test:56937"
+    },
+    "gatewayUpgrades": [
+      {
+        "path": "/ws/projects",
+        "origin": "https://gw.example.test:56937",
+        "hostSent": "127.0.0.1:56841",
+        "status": "HTTP/1.1 403 Forbidden"
+      },
+      {
+        "path": "/ws/projects",
+        "origin": "https://gw.example.test:56937",
+        "hostSent": "127.0.0.1:56841",
+        "status": "HTTP/1.1 101 Switching Protocols"
+      }
+    ],
+    "logLines": [
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin https://gw.example.test:56937",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/projects origin https://gw.example.test:56937",
+      "===== node start: API-07 with setting 2026-11-06T22:56:45.310Z env={\"AUTOBYTEUS_ALLOWED_ORIGINS\":\"https://gw.example.test:56937,ftp://not-an-origin\"} =====",
+      "AUTOBYTEUS_ALLOWED_ORIGINS: ignoring entries that are not http(s) origins: ftp://not-an-origin"
+    ],
+    "checks": {
+      "withoutRefusedPost": true,
+      "withoutRefusedWs": true,
+      "withAllowedPost": true,
+      "withAllowedWs": true,
+      "invalidEntryWarned": true
+    }
+  },
+  "cleanup": {
+    "nodeStopped": true,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-06T22:56:51.977Z"
+}

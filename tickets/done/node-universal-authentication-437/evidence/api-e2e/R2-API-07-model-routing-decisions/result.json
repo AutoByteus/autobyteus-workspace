@@ -1,0 +1,199 @@
+{
+  "startedAt": "2026-11-08T18:09:46.043Z",
+  "result": "Pass",
+  "cases": {
+    "MRD-01": {
+      "title": "Setup: the router row and the status of an active router",
+      "result": "Pass",
+      "ms": 32203
+    },
+    "MRD-02": {
+      "title": "Decisions: Task blocks, the Team row folds and opens to its agents with source and reason; the remote copy is not on this node; the filter",
+      "result": "Pass",
+      "ms": 3865
+    },
+    "MRD-03": {
+      "title": "Overview: period, sources and task kinds of these records",
+      "result": "Pass",
+      "ms": 2171
+    },
+    "MRD-04": {
+      "title": "The Manager run's copies, each in its own Settings: runtime, model, source and reason (local member and remote copy; autobyteus-366)",
+      "result": "Pass",
+      "ms": 13737
+    },
+    "MRD-05": {
+      "title": "beta's window: its own Decisions list the copy alpha delegated, without \"Open run\"",
+      "result": "Pass",
+      "ms": 10751
+    },
+    "MRD-08": {
+      "title": "New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1)",
+      "result": "Pass",
+      "ms": 3661
+    },
+    "MRD-06": {
+      "title": "Simplified Chinese: Decisions and Overview are translated",
+      "result": "Pass",
+      "ms": 4216
+    },
+    "MRD-07": {
+      "title": "No browser errors",
+      "result": "Pass",
+      "ms": 0
+    }
+  },
+  "observations": {
+    "alphaStatus": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": null
+    },
+    "betaStatus": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": null
+    },
+    "localDelegation": "{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"delegated\\\\\\\":true,\\\\\\\"target_kind\\\\\\\":\\\\\\\"team\\\\\\\",\\\\\\\"target_team_run_id\\\\\\\":\\\\\\\"studio_d2829d2931634eca93ada6644e46d789\\\\\\\",\\\\\\\"target_team_coordinator_agent_run_id\\\\\\\":\\\\\\\"lead_2e03c8395d7e446eac45b771d1018184\\\\\\\",\\\\\\\"task_id\\\\\\\":\\\\\\\"ad_hoc_task_8f9eabcb-735d-43ad-ad91-61af8005ccc9\\\\\\\",\\\\\\\"launch_notes\\\\\\\":[\\\\\\\"writer: runs on Antigravity CLI / alt-model, chosen by the Model Router (writing): Writing goes to the alternate model.\\\\\\\"]}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"team\\\",\\\"target_team_run_id\\\":\\\"studio_d2829d2931634eca93ada6644e46d789\\\",\\\"target_team_coordinator_agent_run_id\\\":\\\"lead_2e03c8395d7e446eac45b771d1018184\\\",\\\"task_id\\\":\\\"ad_hoc_task_8f9eabcb-735d-43ad-ad91-61af8005ccc9\\\",\\\"launch_notes\\\":[\\\"writer: runs on Antigravity CLI / alt-model, chosen by the Model Router (writing): Writing goes to the alternate model.\\\"]}}\",\"media\":null,\"ts\":1794161391.819}]",
+    "remoteDelegation": "{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"delegated\\\\\\\":true,\\\\\\\"target_kind\\\\\\\":\\\\\\\"agent\\\\\\\",\\\\\\\"target_agent_run_id\\\\\\\":\\\\\\\"blank_slate_a9b307b573864a82adb1747342cff335\\\\\\\",\\\\\\\"node\\\\\\\":\\\\\\\"beta-node\\\\\\\",\\\\\\\"task_id\\\\\\\":\\\\\\\"ad_hoc_task_423f0b67-a5ea-483a-bf57-2abfcb25302b\\\\\\\",\\\\\\\"launch_notes\\\\\\\":[\\\\\\\"blank_slate: runs on Antigravity CLI / alt-model, chosen by the Model Router (writing): Beta keeps writing on the alternate model.\\\\\\\"]}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"blank_slate_a9b307b573864a82adb1747342cff335\\\",\\\"node\\\":\\\"beta-node\\\",\\\"task_id\\\":\\\"ad_hoc_task_423f0b67-a5ea-483a-bf57-2abfcb25302b\\\",\\\"launch_notes\\\":[\\\"blank_slate: runs on Antigravity CLI / alt-model, chosen by the Model Router (writing): Beta keeps writing on the alternate model.\\\"]}}\",\"media\":null,\"ts\":1794161393.393}]",
+    "setup": {
+      "launch": "Gemini test Antigravity CLI",
+      "nativeSelects": 0,
+      "status": "",
+      "switchChecked": "true"
+    },
+    "decisions": {
+      "tasks": 1,
+      "folded": "studio 2 agents",
+      "rows": [
+        "lead Gemini test Antigravity CLI Agent default",
+        "writer Retiring test model Antigravity CLI Writing goes to the alternate model."
+      ],
+      "page": "No Project Task Draft the launch announcement. Reply OK. Today, 07:09 PM Open run studio lead Gemini test Antigravity CLI Agent default writer Retiring test model Antigravity CLI Writing goes to the alternate model. Showing 1 of 1 Tasks"
+    },
+    "filterOptions": [
+      "model-routing-filter-all=All",
+      "model-routing-filter-router=Model Router",
+      "model-routing-filter-not_router=Not routed"
+    ],
+    "filteredRouter": {
+      "folded": "studio",
+      "rows": [
+        "writer Retiring test model Antigravity CLI Writing goes to the alternate model."
+      ],
+      "page": "No Project Task Draft the launch announcement. Reply OK. Today, 07:09 PM Open run studio writer Retiring test model Antigravity CLI Writing goes to the alternate model. Showing 1 of 1 Tasks"
+    },
+    "overview": {
+      "sources": "2 delegated agents in this period Model Router 1 50% Agent default 1 50%",
+      "kinds": "By task kind Antigravity CLI Writing 1 agent Not routed Defaults and inherited launches 1 agent",
+      "page": "2 delegated agents in this period Model Router 1 50% Agent default 1 50% By task kind Antigravity CLI Writing 1 agent Not routed Defaults and inherited launches 1 agent"
+    },
+    "settingsCards": {
+      "hub": {
+        "list": 0,
+        "hint": 1
+      },
+      "agents": [
+        {
+          "id": "lead_2e03c8395d7e446eac45b771d1018184",
+          "address": "/studio/lead"
+        },
+        {
+          "id": "writer_f460409d856a4c1b999254ca07ab940d",
+          "address": "/studio/writer"
+        },
+        {
+          "id": "blank_slate_a9b307b573864a82adb1747342cff335",
+          "address": "/blank_slate"
+        }
+      ],
+      "writer": {
+        "address": "/studio/writer",
+        "source": "model_router",
+        "summary": "Model Router · writing",
+        "reason": "Writing goes to the alternate model. View decision",
+        "viewDecision": true,
+        "header": "W writer Running In studio",
+        "controls": 0,
+        "text": "Writing goes to the alternate model. View decision Model Retiring test model Antigravity CLI Thinking Not available for this model Tool approval Auto-approve Model Router · writing Stop this copy to change its model; its next message resumes it on the new model."
+      },
+      "lead": {
+        "address": "/studio/lead",
+        "source": "agent_default",
+        "summary": "Agent default",
+        "reason": null,
+        "viewDecision": false,
+        "header": "L lead Running In studio Coordinator",
+        "controls": 0,
+        "text": "Model Gemini test Antigravity CLI Thinking Not available for this model Tool approval Auto-approve Agent default Stop this copy to change its model; its next message resumes it on the new model."
+      },
+      "remote": {
+        "address": "/blank_slate",
+        "source": "model_router",
+        "summary": "Model Router · writing",
+        "reason": "Beta keeps writing on the alternate model.",
+        "viewDecision": false,
+        "header": "BS blank slate Running Delegated copy beta-node",
+        "controls": 0,
+        "text": "Beta keeps writing on the alternate model. Model Retiring test model Antigravity CLI Thinking Not available for this model Tool approval Auto-approve Model Router · writing"
+      }
+    },
+    "betaDecisions": {
+      "page": "No Project Task Write the release note. Reply OK. Today, 07:09 PM blank slate Retiring test model Antigravity CLI Beta keeps writing on the alternate model. Showing 1 of 1 Tasks",
+      "node": "Unknown Node"
+    },
+    "newChatMentions": {
+      "options": [
+        "lead",
+        "writer",
+        "studio"
+      ],
+      "filteredModel": [],
+      "menu": "Delegate to an agent or team @Model · ↑↓ to move, Enter to choose No agents or teams match Agent Orgs can’t be mentioned. Manager gets your message and delegates the work"
+    },
+    "zh": {
+      "decisions": "无项目任务 Draft the launch announcement. Reply OK. 今天 19:09 打开运行 studio 2 个智能体 显示 1 / 1 个任务",
+      "overview": "2 个委派智能体（此时间范围） 模型路由器 1 50% 智能体默认 1 50% 按任务类型 Antigravity CLI Writing 1 个智能体 未经路由 默认设置与沿用的启动 1 个智能体"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:53074",
+    "alpha": "terminated:50221",
+    "beta": "terminated:50222",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "ids": {
+    "manager": "manager",
+    "lead": "lead",
+    "writer": "writer",
+    "team": "studio",
+    "blank": "blank-slate",
+    "managerRun": "manager_691a14f2a6c346caadc33d26b93557c7"
+  },
+  "isolation": {
+    "tempRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-decisions-probe-2oNn38",
+    "alpha": "http://127.0.0.1:65411",
+    "beta": "http://127.0.0.1:65412",
+    "frontend": "http://127.0.0.1:65410"
+  },
+  "finishedAt": "2026-11-08T18:11:21.520Z"
+}

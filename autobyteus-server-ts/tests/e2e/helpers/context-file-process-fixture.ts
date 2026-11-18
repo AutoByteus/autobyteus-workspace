@@ -10,6 +10,7 @@ import { randomUUID } from "node:crypto";
 import WebSocket from "ws";
 import { expect } from "vitest";
 import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "./built-server-launch-credential.js";
 
 export type Attachment = { storedFilename: string; displayName: string; locator: string; phase: string };
 export type Event = { type: string; payload: Record<string, any> };
@@ -104,7 +105,9 @@ export class ContextFileProcessFixture {
     let entry = "dist/app.js";
     if (options.interruptAfterTraceCommit) {
       entry = path.join(this.root, "interrupt-after-rename.mjs");
-      await fs.writeFile(entry, `import {AtomicRunPackageFileCommitWriter as Writer} from ${JSON.stringify(pathToFileURL(path.resolve("dist/run-history/store/atomic-run-package-file-commit-writer.js")).href)};
+      // App-data migrations write through their own frozen copy of the writer (autobyteus-280), so patch that one.
+      const migrationWriter = "dist/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+      await fs.writeFile(entry, `import {AtomicRunPackageFileCommitWriter as Writer} from ${JSON.stringify(pathToFileURL(path.resolve(migrationWriter)).href)};
         import {startServer} from ${JSON.stringify(pathToFileURL(path.resolve("dist/app.js")).href)};
         const write = Writer.prototype.writeSerializedText;
         Writer.prototype.writeSerializedText = async function(input) {
@@ -115,7 +118,7 @@ export class ContextFileProcessFixture {
         await startServer();`);
     }
     this.child = spawn(process.execPath, [entry, "--data-dir", this.root, "--host", "127.0.0.1", "--port", "0"],
-      { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"] });
+      { cwd: process.cwd(), env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     const capture = (data: Buffer) => { this.logs += data.toString(); };
     this.child.stdout!.on("data", capture); this.child.stderr!.on("data", capture);
     await until(() => {

@@ -1,0 +1,64 @@
+{
+  "startedAt": "2026-11-10T11:06:56.993Z",
+  "result": "Pass",
+  "cases": {
+    "UI-01": {
+      "saved": {
+        "id": "probe-learner",
+        "semanticMemoryEnabled": true,
+        "semanticMemoryPath": "/tmp/autobyteus-semantic-memory-ui-hxQUs5/node/memory/semantic/probe-learner",
+        "personalSettings": [],
+        "personalSettingsBase": null
+      },
+      "config": {
+        "toolNames": [],
+        "skillNames": [],
+        "skillScope": "CONFIGURED",
+        "inputProcessorNames": [],
+        "llmResponseProcessorNames": [],
+        "toolExecutionResultProcessorNames": [],
+        "toolInvocationPreprocessorNames": [],
+        "lifecycleProcessorNames": [],
+        "avatarUrl": null,
+        "defaultLaunchConfig": null,
+        "semanticMemoryEnabled": true
+      },
+      "title": "The user's own agent: switch off → on, saved in agent-config.json; detail shows On and the folder",
+      "result": "Pass",
+      "ms": 10838
+    },
+    "UI-02": {
+      "saved": {
+        "id": "probe-operator",
+        "semanticMemoryEnabled": true,
+        "semanticMemoryPath": "/tmp/autobyteus-semantic-memory-ui-hxQUs5/node/memory/semantic/probe-operator",
+        "personalSettings": [
+          "SEMANTIC_MEMORY"
+        ],
+        "personalSettingsBase": "PACKAGE"
+      },
+      "title": "A package agent: personal switch, package files unchanged, reset to the package's setting",
+      "result": "Pass",
+      "ms": 7518
+    },
+    "UI-03": {
+      "title": "zh-CN labels for the switch and the detail",
+      "result": "Pass",
+      "ms": 5048
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontend": "terminated:70254",
+    "backend": "terminated:70164",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/tmp/autobyteus-semantic-memory-ui-hxQUs5",
+    "backend": "http://127.0.0.1:42295",
+    "frontend": "http://127.0.0.1:43095",
+    "ownId": "probe-learner"
+  },
+  "finishedAt": "2026-11-10T11:08:00.682Z"
+}

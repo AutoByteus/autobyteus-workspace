@@ -1,0 +1,844 @@
+# IMP-13 server-level resume of saved runs whose stored llmConfig holds thinking_display, against the real Anthropic API (AC-011)
+# command: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault RUN_ANTHROPIC_STORED_CONFIG_LIVE=1 AUTOBYTEUS_LIVE_STRICT=1 corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts --no-watch
+# commit: 574aa0bd7 + test-vault live mode of this test file (committed with the handoff, see implementation-handoff.md)
+# env: Linux 6.12.54-linuxkit, node v22.23.3
+# date: 2026-10-29T20:06:21Z
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.28                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:93677) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts
+Custom app data directory set to: /tmp/anthropic-stored-config-e2e-appdata-M38AbI
+Updated config file path to /tmp/anthropic-stored-config-e2e-appdata-M38AbI/.env
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+[2026-10-29T20:06:47.382Z] [INFO] [secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Loading environment from: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/.env
+◇ injected env (2) from ../../../../../../../tmp/anthropic-stored-config-e2e-appdata-M38AbI/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/anthropic-stored-config-e2e-appdata-M38AbI
+DB DIRECTORY: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/db
+LOGS DIRECTORY: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/logs
+DOWNLOAD DIRECTORY: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/download
+MEMORY DIRECTORY: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Creating temp workspace at: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-appdata-M38AbI/temp_workspace.
+Initialized TempWorkspace at /tmp/anthropic-stored-config-e2e-appdata-M38AbI/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Agent Definition created successfully with ID: anthropic-stored-config-e2e-7c4a02e7
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Creating new workspace for rootPath: /tmp/anthropic-stored-config-e2e-ws-U3Oyf4
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-ws-U3Oyf4.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Created and registered workspace ID: agent_ws_85438a2c853835a589032036a879ade13f15c11aadfe995843669c207eb22c3f
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Creating new workspace for rootPath: /tmp/anthropic-stored-config-e2e-ws-U3Oyf4
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-ws-U3Oyf4.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Reusing registered workspace ID: agent_ws_85438a2c853835a589032036a879ade13f15c11aadfe995843669c207eb22c3f
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+MediaStorageService initialized. Media root: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/media
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntimeState initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': LLM instance 'AnthropicLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' with config: 'anthropic-stored-config-e2e-7c4a02e7'.
+AgentWorker initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'.
+Registered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Context registered.
+Agent facade initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' created and stored successfully.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' requesting runtime to start.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Starting worker.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Starting...
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' asyncRun(): Starting.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (event store initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (status deriver initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (AgentEventInbox initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' to become idle (timeout: 30s)...
+AgentEventStream (ID: 2637955c-116e-4cf1-9631-961e9b95554f) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Subscribed to notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Bootstrapper starting direct lifecycle execution.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Executing SystemPromptProcessingStep.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': No configured skills. Skipping skill catalog.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Final processed system prompt configured and captured. Trace ID: rt_1793304407784_7c1d0781-41c8-43b5-847f-284460235c16. Final length: 4289.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' has become idle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 2637955c-116e-4cf1-9631-961e9b95554f) for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 5c643c28-0867-4d32-b444-25d9f232de4e) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent websocket attached for run anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060
+Created agent session b0d8cb79-38f4-46f2-b93c-b3d0ca3a7f27 for run anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060
+Agent WebSocket connected: session=b0d8cb79-38f4-46f2-b93c-b3d0ca3a7f27, run=anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': UserInputContextBuildingProcessor completed. Final content length: 22
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Removing agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Attempting graceful shutdown.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Stop requested.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: a5f3faea-a4fd-4b52-aa8f-2ce2aa3bea0e, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' asyncRun() loop has finished.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Shutdown resource cleanup completed successfully.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Unregistered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' stop() method completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 5c643c28-0867-4d32-b444-25d9f232de4e) for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 5c643c28-0867-4d32-b444-25d9f232de4e) for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Closed agent session b0d8cb79-38f4-46f2-b93c-b3d0ca3a7f27
+Agent WebSocket disconnected: b0d8cb79-38f4-46f2-b93c-b3d0ca3a7f27
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Creating new workspace for rootPath: /tmp/anthropic-stored-config-e2e-ws-U3Oyf4
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-ws-U3Oyf4.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Reusing registered workspace ID: agent_ws_85438a2c853835a589032036a879ade13f15c11aadfe995843669c207eb22c3f
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+MediaStorageService initialized. Media root: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/media
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntimeState initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': LLM instance 'AnthropicLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' with config: 'anthropic-stored-config-e2e-7c4a02e7'.
+AgentWorker initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'.
+Registered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Context registered.
+Agent facade initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' restored and stored successfully.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' requesting runtime to start.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Starting worker.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Starting...
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' asyncRun(): Starting.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (event store initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (status deriver initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (AgentEventInbox initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' to become idle (timeout: 30s)...
+AgentEventStream (ID: 9d249b9c-dd7a-4185-b42b-fa02ae7b33fe) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Subscribed to notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Bootstrapper starting direct lifecycle execution.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Executing SystemPromptProcessingStep.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': No configured skills. Skipping skill catalog.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Final processed system prompt configured and captured. Trace ID: rt_1793304407784_7c1d0781-41c8-43b5-847f-284460235c16. Final length: 4289.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' has become idle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 9d249b9c-dd7a-4185-b42b-fa02ae7b33fe) for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 72bdd111-2aa0-429d-9fc7-81148f070907) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent websocket attached for run anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060
+Created agent session 88b69a49-386e-4221-b456-05f7b360ae30 for run anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060
+Agent WebSocket connected: session=88b69a49-386e-4221-b456-05f7b360ae30, run=anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': UserInputContextBuildingProcessor completed. Final content length: 22
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Closed agent session 88b69a49-386e-4221-b456-05f7b360ae30
+Agent WebSocket disconnected: 88b69a49-386e-4221-b456-05f7b360ae30
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Removing agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'. Attempting graceful shutdown.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Stop requested.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 3c30960c-88de-4e98-8774-56f26e38f359, AgentID: anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' asyncRun() loop has finished.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Shutdown resource cleanup completed successfully.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+Unregistered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060'.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060' stop() method completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 72bdd111-2aa0-429d-9fc7-81148f070907) for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 72bdd111-2aa0-429d-9fc7-81148f070907) for 'anthropic_stored_config_e2e_7c4a02e7_4cce80d611f14f01a19941652160f060': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Creating new workspace for rootPath: /tmp/anthropic-stored-config-e2e-ws-U3Oyf4
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-ws-U3Oyf4.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Reusing registered workspace ID: agent_ws_85438a2c853835a589032036a879ade13f15c11aadfe995843669c207eb22c3f
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Creating new workspace for rootPath: /tmp/anthropic-stored-config-e2e-ws-U3Oyf4
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-ws-U3Oyf4.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Reusing registered workspace ID: agent_ws_85438a2c853835a589032036a879ade13f15c11aadfe995843669c207eb22c3f
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+MediaStorageService initialized. Media root: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/media
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntimeState initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': LLM instance 'AnthropicLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' with config: 'anthropic-stored-config-e2e-7c4a02e7'.
+AgentWorker initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'.
+Registered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Context registered.
+Agent facade initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' created and stored successfully.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' requesting runtime to start.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Starting worker.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Starting...
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' asyncRun(): Starting.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (event store initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (status deriver initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (AgentEventInbox initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' to become idle (timeout: 30s)...
+AgentEventStream (ID: cf38d70c-0179-4de6-a16a-bc1c3b99e0f1) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Subscribed to notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Bootstrapper starting direct lifecycle execution.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Executing SystemPromptProcessingStep.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': No configured skills. Skipping skill catalog.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Final processed system prompt configured and captured. Trace ID: rt_1793304410595_025cff98-4e5e-4964-bf19-2f17ec512498. Final length: 4289.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' has become idle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: cf38d70c-0179-4de6-a16a-bc1c3b99e0f1) for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: e3e30dea-1b0d-4747-98e4-4b81637cd290) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent websocket attached for run anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375
+Created agent session 33ee2d1a-15a1-4705-b128-795577b82c39 for run anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375
+Agent WebSocket connected: session=33ee2d1a-15a1-4705-b128-795577b82c39, run=anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': UserInputContextBuildingProcessor completed. Final content length: 22
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Removing agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Attempting graceful shutdown.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Stop requested.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 52f7e9f6-1a0b-4a38-aacc-71676006bc1b, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' asyncRun() loop has finished.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Shutdown resource cleanup completed successfully.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Unregistered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' stop() method completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: e3e30dea-1b0d-4747-98e4-4b81637cd290) for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: e3e30dea-1b0d-4747-98e4-4b81637cd290) for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Closed agent session 33ee2d1a-15a1-4705-b128-795577b82c39
+Agent WebSocket disconnected: 33ee2d1a-15a1-4705-b128-795577b82c39
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Creating new workspace for rootPath: /tmp/anthropic-stored-config-e2e-ws-U3Oyf4
+Created metadata-only FileSystemWorkspace at /tmp/anthropic-stored-config-e2e-ws-U3Oyf4.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Reusing registered workspace ID: agent_ws_85438a2c853835a589032036a879ade13f15c11aadfe995843669c207eb22c3f
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+MediaStorageService initialized. Media root: /tmp/anthropic-stored-config-e2e-appdata-M38AbI/media
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntimeState initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': LLM instance 'AnthropicLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' with config: 'anthropic-stored-config-e2e-7c4a02e7'.
+AgentWorker initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'.
+Registered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Context registered.
+Agent facade initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' restored and stored successfully.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' requesting runtime to start.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Starting worker.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Starting...
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' asyncRun(): Starting.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (event store initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (status deriver initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (AgentEventInbox initialized).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' to become idle (timeout: 30s)...
+AgentEventStream (ID: 6d7fced6-d252-4925-9940-4bb59272a6c3) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Subscribed to notifier.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Bootstrapper starting direct lifecycle execution.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Executing SystemPromptProcessingStep.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': No configured skills. Skipping skill catalog.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Final processed system prompt configured and captured. Trace ID: rt_1793304410595_025cff98-4e5e-4964-bf19-2f17ec512498. Final length: 4289.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' has become idle.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: 6d7fced6-d252-4925-9940-4bb59272a6c3) for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: c0209d49-b856-4be4-9242-e0b4f93fa89d) initialized for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent websocket attached for run anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375
+Created agent session 0a2b6d49-1e67-4aba-a9db-bb519de43146 for run anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375
+Agent WebSocket connected: session=0a2b6d49-1e67-4aba-a9db-bb519de43146, run=anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': UserInputContextBuildingProcessor completed. Final content length: 22
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Agent run 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Closed agent session 0a2b6d49-1e67-4aba-a9db-bb519de43146
+Agent WebSocket disconnected: 0a2b6d49-1e67-4aba-a9db-bb519de43146
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Removing agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'. Attempting graceful shutdown.
+Agent 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Stop requested.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentExternalEventNotifier (NotifierID: 6f79f6cd-2257-4f08-a964-a3617d7e2411, AgentID: anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' asyncRun() loop has finished.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Shutdown resource cleanup completed successfully.
+AgentWorker 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+Unregistered AgentContext for agent_id 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375'.
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentRuntime for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375' stop() method completed.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: c0209d49-b856-4be4-9242-e0b4f93fa89d) for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011) > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key
+AgentEventStream (ID: c0209d49-b856-4be4-9242-e0b4f93fa89d) for 'anthropic_stored_config_e2e_7c4a02e7_c936cefaa2224210b0118a222d9c8375': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)
+Agent Definition with ID anthropic-stored-config-e2e-7c4a02e7 deleted successfully.
+
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (2 tests) 6376ms
+     ✓ claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key  2804ms
+     ✓ claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key  3121ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  20:06:22
+   Duration  30.86s (transform 15.49s, setup 85ms, import 23.61s, tests 6.38s, environment 0ms)
+

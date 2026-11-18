@@ -8,10 +8,7 @@ import {
   type ApplicationAgentCommunicationNetworkSocket,
 } from "../../application-agent-communication/domain/application-agent-communication-models.js";
 import type { ApplicationAgentCommunicationContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
-import {
-  authorizeRemoteAccessWebSocket,
-  closeSocketForRemoteAccessRejection,
-} from "./remote-access-websocket-auth.js";
+import { registerGatedWebSocketRoute } from "./gated-websocket-route.js";
 import { observePendingWebSocketState } from "./pending-websocket-state.js";
 
 type Params = { applicationId: string; "*": string };
@@ -30,14 +27,13 @@ export async function registerApplicationAgentCommunicationWebsocket(
     lifecycle: ApplicationPlatformLifecycleReadiness;
   },
 ): Promise<void> {
-  (app as any).get(
+  registerGatedWebSocketRoute<FastifyRequest<{ Params: Params }>>(
+    app,
     "/ws/applications/:applicationId/agent-communication/*",
-    { websocket: true },
-    (connection: unknown, req: FastifyRequest<{ Params: Params }>) => {
-      const socket = ((connection as { socket?: unknown }).socket ?? connection) as ApplicationAgentCommunicationNetworkSocket;
-      if (!socket || typeof socket.on !== "function" || typeof socket.send !== "function") return;
+    (webSocket, req) => {
+      const socket = webSocket as unknown as ApplicationAgentCommunicationNetworkSocket;
       const pendingSocket = observePendingWebSocketState(socket);
-      void authorizeRemoteAccessWebSocket(req).then(() => dependencies.lifecycle.awaitReady()).then(() => {
+      void dependencies.lifecycle.awaitReady().then(() => {
         if (pendingSocket.isClosed()) return;
         // Fastify decodes wildcard parameters, including the encoded leading slash
         // in a rooted member address. Decode from the raw URL so the shared codec
@@ -62,8 +58,8 @@ export async function registerApplicationAgentCommunicationWebsocket(
           address,
           socket,
         });
-      }).catch((error) => {
-        if (!pendingSocket.isClosed()) closeSocketForRemoteAccessRejection(socket, error, req);
+      }).catch(() => {
+        if (!pendingSocket.isClosed()) socket.close(1011);
       });
     },
   );

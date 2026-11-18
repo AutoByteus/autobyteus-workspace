@@ -1,0 +1,22 @@
+# Check: IMP-07
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: 108fcd0587 (working tree identical to the commit)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08
+
+## Summary and failures (fixed in 9e0a09dc81, see IMP-08)
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 719 passed (722)
+      Tests  11 failed | 5401 passed | 2 skipped (5414)
+   Duration  438.88s (transform 42.36s, setup 2983.32s, collect 283.71s, tests 109.70s, environment 239.86s, prepare 146.46s)
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-01/05: inactive publication rejects readiness and released service cannot resurrect
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-02: active observation still needs both checkpoint barriers and a new snapshot
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-02: active-to-inactive checkpoint rejection retries via new inspection, not error classification
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-04: history restarts an exhausted bounded cycle, coalesces requests and ignores unretained/omitted roots
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-04: successful focused loader recovers an exhausted retained service through inspection
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-04: successful full loader recovers an exhausted retained service through inspection
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > RET-05: pending attachment submission remains excluded through historical cleanup and settles once
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /director without refocus or input
+ FAIL  stores/__tests__/agentOrgRetainedRecovery.spec.ts > retained Org disconnected recovery through real service/store/hydration > RET-01: reconciles /team/worker without refocus or input
+ FAIL  stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts > A running hub fetches its Team-tab list again only when a message could have been missed > a reconnect to another publisher (a stop and resume, or a restart) fetches the list although its base is below the old one
+ FAIL  tests/integration/workspace-history-draft-send.integration.test.ts > tree-plus New chat + first send integration > starts a preset New chat from the tree + and launches it through the first-send path

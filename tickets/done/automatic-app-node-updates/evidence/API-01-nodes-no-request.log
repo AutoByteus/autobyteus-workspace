@@ -1,0 +1,16 @@
+# API-01 (AC-001, node part) 2026-11-01T21:06:27Z: fresh desktop (V1 build 1.5.11-beta.10, data root <R>/data-nodes) launched 2026-11-01T21:03:47Z; 5 nodes added through the Nodes page, switches off; window waited past the pass at launch + 2 min
+## proxy n-old: requests by user agent and method
+{"window(Mozilla) GET /rest/node-update 200":2,"window(Mozilla) GET /rest/remote-access/status 200":2,"window(Mozilla) POST /graphql 200":5}
+## proxy n-fail: requests by user agent and method
+{"window(Mozilla) GET /rest/node-update 200":2,"window(Mozilla) GET /rest/remote-access/status 200":2,"window(Mozilla) POST /graphql 200":5}
+## proxy n-stop: requests by user agent and method
+{"window(Mozilla) GET /rest/node-update 200":2,"window(Mozilla) GET /rest/remote-access/status 200":2,"window(Mozilla) POST /graphql 200":5}
+## proxy n-same: requests by user agent and method
+{"window(Mozilla) GET /rest/node-update 200":2,"window(Mozilla) GET /rest/remote-access/status 200":2,"window(Mozilla) POST /graphql 200":5}
+## proxy n-new: requests by user agent and method
+{"window(Mozilla) GET /rest/node-update 200":2,"window(Mozilla) GET /rest/remote-access/status 200":2,"window(Mozilla) POST /graphql 200":5}
+## node-auto-updates.json
+cat: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api.0zPjtT/data-nodes/electron/user-data/node-auto-updates.json: No such file or directory
+
+## registry entries (autoUpdate absent)
+[{"id":"embedded-local","name":"Embedded Node","baseUrl":"http://127.0.0.1:47931"},{"id":"remote-67cc676c-a3dd-44c0-b96d-3a9c1fac5785","name":"n-old","baseUrl":"http://127.0.0.1:47961"},{"id":"remote-f4ce3ecf-a4d6-4c80-bb3a-a1c5643e77fb","name":"n-fail","baseUrl":"http://127.0.0.1:47962"},{"id":"remote-613c35ce-4aed-4225-b2e1-31fd4e8fcd71","name":"n-stop","baseUrl":"http://127.0.0.1:47963"},{"id":"remote-7e086ab3-f563-4224-88e9-d026c7b10ead","name":"n-same","baseUrl":"http://127.0.0.1:47964"},{"id":"remote-a81a18e6-d862-4ee8-a345-aa8827ce36c6","name":"n-new","baseUrl":"http://127.0.0.1:47965"}]

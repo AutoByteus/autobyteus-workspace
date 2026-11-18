@@ -59,7 +59,8 @@ const defaultPackages = [
   },
 ]
 
-const mountComponent = async (packages = defaultPackages) => {
+type PackageFixture = (typeof defaultPackages)[number] & { autoRefresh?: { state: string; message: string | null } | null }
+const mountComponent = async (packages: PackageFixture[] = defaultPackages) => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: true,
@@ -148,7 +149,7 @@ describe('AgentPackagesManager', () => {
     const { wrapper } = await mountComponent([
       { ...defaultPackages[0], autoRefresh: { state: 'WATCHING', message: null } },
       { ...defaultPackages[1], autoRefresh: { state: 'FOLDER_MISSING', message: 'Its definitions keep their last loaded version until the folder returns.' } },
-    ] as typeof defaultPackages)
+    ])
 
     const watching = wrapper.get('[data-testid="agent-package-auto-refresh-built-in_3Adefault"]')
     expect(watching.classes()).toContain('text-gray-500')

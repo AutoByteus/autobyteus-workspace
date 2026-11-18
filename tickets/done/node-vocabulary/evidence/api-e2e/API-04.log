@@ -1,0 +1,29 @@
+PASS the released build wrote server-instance.json {serverInstanceId, createdAt}
+PASS the released config has source.sourceNodeId
+PASS the released state has sourceNodeId
+PASS the released credentials have boundSourceNodeId
+PASS the released import has source-node.json {sourceNodeId}
+PASS the released manifest has sourceNodeId
+PASS alpha keeps its node ID
+PASS beta keeps its node ID
+PASS alpha → beta: the peer is recognized
+PASS beta → alpha: the peer is recognized
+PASS Memory Sync: the hub knows the same source
+PASS Memory Sync continues: only the new file is sent
+PASS one import folder, the same one
+PASS backups: identity ×2, config, state, credentials, import source, manifest
+PASS a third start changes no stored file
+PASS alpha identity: converted keys equal the current writer's
+PASS alpha config: converted keys equal the current writer's
+PASS alpha state: converted keys equal the current writer's
+PASS alpha peers: converted keys equal the current writer's
+PASS alpha: no released file left
+PASS beta identity: converted keys equal the current writer's
+PASS beta config: converted keys equal the current writer's
+PASS beta credentials: converted keys equal the current writer's
+PASS beta import source: converted keys equal the current writer's
+PASS beta manifest: converted keys equal the current writer's
+PASS beta peers: converted keys equal the current writer's
+PASS beta: no released file left
+result Pass
+EXIT=0

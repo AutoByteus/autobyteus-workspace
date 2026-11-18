@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.13-beta.1 test:e2e:chat-composer-polish /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-web
+> node tests/e2e/chat-composer-polish-probe.mjs --cases T01,T03 --output-dir /tmp/api-e2e-msr2/T03-out --browser-executable /usr/bin/chromium
+
+T01 Pass AutoByteus-runtime Claude row with a thinking switch: merged menu at desktop width; untouched = On at the default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)
+T03 Pass Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)
+EXIT=0

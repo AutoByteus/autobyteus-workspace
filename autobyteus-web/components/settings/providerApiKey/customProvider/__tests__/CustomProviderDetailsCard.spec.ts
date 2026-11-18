@@ -15,19 +15,19 @@ const provider: ProviderSummary = {
   catalogMode: 'DISCOVERED',
 }
 
+const translate = (key: string, params?: Record<string, unknown>) => key.endsWith('.models_count')
+  ? `${params?.count} models`
+  : key.endsWith('.model_count_loading')
+    ? 'Model count loading'
+    : key.endsWith('.remove_custom_provider')
+      ? 'Remove'
+      : key
+
 describe('CustomProviderDetailsCard', () => {
   it('renders only current custom-provider identity and model-count fields', async () => {
     const wrapper = mount(CustomProviderDetailsCard, {
       props: { provider, deleting: false },
-      global: {
-        mocks: {
-          $t: (key: string, params?: Record<string, unknown>) => key.endsWith('.models_count')
-            ? `${params?.count} models`
-            : key.endsWith('.remove_custom_provider')
-              ? 'Remove'
-              : key,
-        },
-      },
+      global: { mocks: { $t: translate } },
     })
 
     expect(wrapper.text()).toContain('Internal Gateway')
@@ -39,5 +39,30 @@ describe('CustomProviderDetailsCard', () => {
 
     await wrapper.get('[data-testid="delete-custom-provider-button"]').trigger('click')
     expect(wrapper.emitted('delete')).toEqual([[]])
+  })
+
+  // BEH-032 (d) of autobyteus-294: while the models load (or after the load failed) the count is unknown; the card
+  // shows "—" with the loading label, as the provider list does, never "null models".
+  it('shows an unknown model count as "—" with the loading label', () => {
+    const wrapper = mount(CustomProviderDetailsCard, {
+      props: { provider: { ...provider, totalModels: null }, deleting: false },
+      global: { mocks: { $t: translate } },
+    })
+
+    const count = wrapper.get('[data-testid="custom-provider-model-count"]')
+    expect(count.text()).toBe('—')
+    expect(count.attributes('aria-label')).toBe('Model count loading')
+    expect(wrapper.text()).not.toContain('null')
+  })
+
+  it('labels a known model count without the loading label', () => {
+    const wrapper = mount(CustomProviderDetailsCard, {
+      props: { provider, deleting: false },
+      global: { mocks: { $t: translate } },
+    })
+
+    const count = wrapper.get('[data-testid="custom-provider-model-count"]')
+    expect(count.text()).toBe('2 models')
+    expect(count.attributes('aria-label')).toBeUndefined()
   })
 })

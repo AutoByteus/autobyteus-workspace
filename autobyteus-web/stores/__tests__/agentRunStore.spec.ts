@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentContextsStore } from '../agentContextsStore';
-import { AgentStreamingService } from '~/services/agentStreaming';
+import { AgentStreamingService } from '~/services/agentStreaming/AgentStreamingService';
 import { PrepareAgentRun } from '~/graphql/mutations/agentMutations';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
@@ -52,7 +52,7 @@ const {
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
   mockAttachContext: vi.fn(),
-  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
+  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' },
   contextFileUploadStoreMock: {
     finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
   },
@@ -67,13 +67,8 @@ vi.mock('~/utils/apolloClient', () => ({
   })),
 }));
 
-vi.mock('~/services/agentStreaming', () => ({
-  ConnectionState: {
-    DISCONNECTED: 'disconnected',
-    CONNECTING: 'connecting',
-    CONNECTED: 'connected',
-    RECONNECTING: 'reconnecting',
-  },
+// The store builds each run's stream through `createAgentRunStream`, which constructs the service from its own module.
+vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
   AgentStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
     mockServiceOptions.value = options;
     return {
@@ -87,6 +82,8 @@ vi.mock('~/services/agentStreaming', () => ({
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     interruptGeneration: mockInterruptGeneration,
+    onConnectionChange: vi.fn(() => () => undefined),
+    dropConnection: vi.fn(),
     };
   }),
 }));
@@ -463,6 +460,25 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
+    it('disconnectAllAgentStreams closes every agent stream the page holds (autobyteus-435 REQ-010 (b))', () => {
+        const store = useAgentRunStore();
+        store.disconnectAllAgentStreams();
+        mockDisconnect.mockClear();
+        vi.mocked(AgentStreamingService).mockClear();
+        for (const runId of ['agent-a', 'agent-b']) {
+            mockAgentContext.state.runId = runId;
+            store.connectToAgentStream(runId);
+        }
+
+        store.disconnectAllAgentStreams();
+
+        expect(mockDisconnect).toHaveBeenCalledTimes(2);
+        expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
+        store.connectToAgentStream('agent-b');
+        expect(AgentStreamingService).toHaveBeenCalledTimes(3);
+        store.disconnectAllAgentStreams();
+    });
+
     it('terminateRun should not teardown local runtime when persisted termination fails', async () => {
         const store = useAgentRunStore();
         mockAgentContext.isSubscribed = true;
@@ -508,6 +524,44 @@ describe('agentRunStore', () => {
         expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
         expect(runHistoryStoreMock.refreshAgentResumeConfig).not.toHaveBeenCalled();
         expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalled();
+    });
+
+    // autobyteus-458 REQ-011: an input instance unknown when the stop began is not another run.
+    it('terminateRun: a stop that starts with no input instance and learns one before the node answers stops the run', async () => {
+        const store = useAgentRunStore();
+        mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'run-1';
+        mockAgentContext.state.inputProjection = null;
+        store.connectToAgentStream('run-1');
+        mutateMock.mockImplementationOnce(async () => {
+            // The interrupt's input-state reaches the run before the node's answer.
+            mockAgentContext.state.inputProjection = { runInstanceId: 'instance-1', revision: 1 };
+            return { data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] };
+        });
+
+        const result = await store.terminateRun('run-1');
+
+        expect(result).toBe(true);
+        expect(mockDisconnect).toHaveBeenCalled();
+        expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
+    });
+
+    it('terminateRun: a known input instance that changed during the stop is another run: no local teardown', async () => {
+        const store = useAgentRunStore();
+        mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'run-1';
+        mockAgentContext.state.inputProjection = { runInstanceId: 'instance-1', revision: 1 };
+        store.connectToAgentStream('run-1');
+        mutateMock.mockImplementationOnce(async () => {
+            mockAgentContext.state.inputProjection = { runInstanceId: 'instance-2', revision: 1 };
+            return { data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] };
+        });
+
+        const result = await store.terminateRun('run-1');
+
+        expect(result).toBe(false);
+        expect(mockDisconnect).not.toHaveBeenCalled();
+        expect(runHistoryStoreMock.markRunAsInactive).not.toHaveBeenCalled();
     });
 
     it('terminateRun should teardown local runtime and skip backend for temp runs', async () => {

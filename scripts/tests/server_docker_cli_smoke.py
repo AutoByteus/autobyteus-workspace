@@ -21,7 +21,7 @@ set -eu
 test "$(id -u)" = 0
 test "$HOME" = /root
 test -z "${GROK_HOME+x}"
-test -f /app/autobyteus-server-ts/dist/app.js
+test -f /opt/autobyteus/server-package/dist/app.js
 test "$(command -v agy)" = /usr/local/bin/agy
 test "$(readlink -f "$(command -v grok)")" = "$(npm root -g)/@xai-official/grok/bin/grok-native"
 for cli in agy grok; do

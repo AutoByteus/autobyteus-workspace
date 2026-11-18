@@ -2,19 +2,20 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import type { ProjectChangeMessage } from "../../../src/projects/changes/project-change-messages.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -22,12 +23,13 @@ const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRun
 describe("Project Task comments (services)", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, publisher: ProjectChangePublisher;
   let projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[], projectId: string;
+  let releases: ReleaseTracker;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tick = 0;
   const now = () => new Date(Date.UTC(2026, 9, 22, 8, 0, tick++));
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   const taskFile = (taskId: string) => layout.taskFile(projectId, taskId);
-  const create = (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
+  const create = (description: string, partOfTaskId?: string) => tasks.createTask({ projectId, title: description, description, ...(partOfTaskId ? { partOfTaskId } : {}) });
   const stored = async (taskId: string) => (await store.readTask(projectId, taskId))!;
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
 
@@ -38,10 +40,10 @@ describe("Project Task comments (services)", () => {
     store = new ProjectStore(layout);
     publisher = new ProjectChangePublisher();
     emitted = [];
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
-      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),
@@ -50,14 +52,14 @@ describe("Project Task comments (services)", () => {
     await tasks.load();
     projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
   });
-  afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await publisher.idle(); await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   describe("adding comments", () => {
     it("update_task's addComment appends with the next number and the server time, by key (any case) or long ID; the description and ack are unchanged (AC-001)", async () => {
       const task = await create("Cross-node collaboration");
       expect(await readJson(taskFile(task.taskId))).toMatchObject({ comments: [] });
       const ack = await tasks.updateTaskById({ taskId: "AutoByteus-1", addComment: "  Decision: use X  " });
-      expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: "autobyteus-1", status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
+      expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: "autobyteus-1", title: task.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
       await tasks.updateTaskById({ taskId: task.taskId, addComment: "Second thought" });
       const saved = await stored(task.taskId);
       expect(saved.comments).toEqual([
@@ -81,7 +83,7 @@ describe("Project Task comments (services)", () => {
 
     it("status and a comment in one call are one write; a blank comment, a Temp task or an unknown Task writes nothing, not even the status (AC-001)", async () => {
       const task = await create("A");
-      await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+      await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
       const writes = vi.spyOn(store, "updateTask");
       const bytes = await fs.readFile(taskFile(task.taskId), "utf8");
       await expect(tasks.updateTaskById({ taskId: task.taskId, status: "DONE", addComment: " \n " })).rejects.toMatchObject({ code: "TASK_COMMENT_INVALID" });
@@ -89,7 +91,7 @@ describe("Project Task comments (services)", () => {
       expect(writes).not.toHaveBeenCalled();
       expect(await fs.readFile(taskFile(task.taskId), "utf8")).toBe(bytes);
       expect(tasks.isOpen({ agentRunId: "worker" })).toBe(true);
-      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot,
+      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" },
         execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
       await expect(tasks.updateTaskById({ taskId: temp, status: "DONE", addComment: "x" })).rejects.toMatchObject({ code: "TASK_COMMENT_INVALID" });
       expect(tasks.isOpen({ agentRunId: "temp-worker" })).toBe(true);
@@ -118,7 +120,7 @@ describe("Project Task comments (services)", () => {
       await tasks.addComment({ projectId, taskId: task.taskId, text: "second" });
       await publisher.idle();
       expect(upserts().filter((t) => t.taskId === task.taskId).at(-1)!.comments.map((c) => [c.id, c.text])).toEqual([[1, "first"], [2, "second"]]);
-      expect(await tasks.resolveAssignment("autobyteus-1")).toEqual({ taskId: task.taskId, taskReference: "autobyteus-1", description: "A",
+      expect(await tasks.resolveAssignment("autobyteus-1")).toEqual({ taskId: task.taskId, taskReference: "autobyteus-1", projectId, title: task.title, description: "A",
         comments: ["first", "second"], referenceFiles: [] });
     });
   });

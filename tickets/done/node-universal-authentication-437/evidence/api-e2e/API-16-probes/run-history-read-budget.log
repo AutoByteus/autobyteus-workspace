@@ -1,0 +1,11 @@
+# API-16 run-history-read-budget: node tests/e2e/run-history-read-budget-probe.mjs --from-seed /tmp/abtest437r2/seeds/run-history --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/run-history-read-budget
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:36:29Z
+current window null: poll p50 177 ms, p95 301.6 ms, max 375.7 ms (cold 184.5 ms); {"agentRuns":40,"teamRuns":200,"orgRuns":10}; 931786 bytes; load 92.4/91.9/71.1 → 85.6/90.4/70.9
+current window 6: poll p50 208.6 ms, p95 324.7 ms, max 481.6 ms (cold 196.2 ms); {"agentRuns":24,"teamRuns":200,"orgRuns":10}; 925952 bytes; load 85.6/90.4/70.9 → 80.3/89/70.7
+RB-C1 Pass window null returns every seeded run (Agent, Team, Org)
+RB-C2 Pass window 6 returns the newest 6 runs per agent and folder, and every Team and Org run
+RB-C3 Pass per-folder workspaceRunHistory with null is complete
+RB-C4 Pass every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn
+RB-B1 Fail uncapped poll read (Runs view) p95 within 250 ms — p95 301.6 ms over 250 ms
+RB-B2 Fail capped poll read (Workspaces view) p95 within 250 ms — p95 324.7 ms over 250 ms
+FAIL /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/run-history-read-budget/evidence.json

@@ -1,0 +1,15 @@
+# IMP-04 server e2e rerun on HEAD: model-routing-delegation (AC-004; scripted AGY gate)
+# cmd: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/model-routing/model-routing-delegation.e2e.test.ts --no-watch
+# commit: a3dbfcb495  env: macOS, Node v22.23.1  date: 2026-10-28T16:03Z
+
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 395724ms
+     ✓ MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)  842ms
+     ✓ MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)  18217ms
+     ✓ MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)  80528ms
+     ✓ MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)  84139ms
+     ✓ MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)  17233ms
+     ✓ MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)  41858ms
+     ✓ MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again  149640ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Duration  404.69s (transform 6.37s, setup 37ms, import 8.53s, tests 395.72s, environment 0ms)

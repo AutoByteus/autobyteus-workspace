@@ -1,0 +1,15 @@
+[+3.5s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-sigterm-W8RdG0/data-root"],"exit":0,"ok":true,"error":null}
+[+3.8s] instance started {"label":"first","instanceId":"iso-64665-549b","electronPid":66284,"serverPid":67203,"serverPort":64666,"servers":1}
+[+5.3s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+5.7s] standalone sent {"label":"sa-codex","runtime":"codex","kind":"agent","runId":"desk_agent_bq284dmvw7wxxd_f1cf5de016ea4c538d788514e3c4dca3","rootId":"desk_agent_bq284dmvw7wxxd_f1cf5de016ea4c538d788514e3c4dca3"}
+[+5.9s] standalone sent {"label":"sa-claude","runtime":"claude","kind":"agent","runId":"desk_agent_bq284dmvw7wxxd_d0e42d262bbc4d96851b9435f15fb547","rootId":"desk_agent_bq284dmvw7wxxd_d0e42d262bbc4d96851b9435f15fb547"}
+[+8.8s] busy {"label":"sa-codex","pid":69027,"ppid":67539,"pgid":69027}
+[+10.2s] busy {"label":"sa-claude","pid":69543,"ppid":67843,"pgid":69543}
+[+13.8s] busy SIGTERM to Electron main observed {"label":"busy SIGTERM to Electron main","electronPid":66284,"serverPid":67203,"serverGoneMs":872,"electronGoneMs":872,"before":12,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[{"label":"sa-codex","kind":"agent","runtime":"codex","pid":69027,"ppid":67539,"pgid":69027,"aliveAfter":false},{"label":"sa-claude","kind":"agent","runtime":"claude","pid":69543,"ppid":67843,"pgid":69543,"aliveAfter":false}]}
+[+13.9s] isolated-app {"args":["stop","iso-64665-549b"],"exit":0,"ok":true,"error":null}
+[+18.7s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-sigterm-W8RdG0/data-root"],"exit":0,"ok":true,"error":null}
+[+18.8s] instance started {"label":"second","instanceId":"iso-64791-7282","electronPid":69697,"serverPid":70622,"serverPort":64792,"servers":1}
+[+19.0s] relaunch check {"label":"second","serversForData":[{"pid":70622,"ppid":69697,"pgid":69697,"command":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-sigterm-W8RdG0/data-root/server-data"}],"exactlyOne":true,"previousSessionLeft":[]}
+[+20.7s] final quit observed {"label":"final quit","electronPid":69697,"serverPid":70622,"serverGoneMs":305,"electronGoneMs":356,"before":4,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+20.7s] isolated-app {"args":["stop","iso-64791-7282"],"exit":0,"ok":true,"error":null}
+{"result":"Completed","error":null,"fallbackCleanup":0}

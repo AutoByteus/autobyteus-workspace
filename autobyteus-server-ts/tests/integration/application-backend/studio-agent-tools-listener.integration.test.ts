@@ -15,12 +15,13 @@ afterEach(async () => {
   );
 });
 
-const mcpRequest = async (url: string, method: string, id: string) =>
+const mcpRequest = async (url: string, method: string, id: string, gatewayToken?: string) =>
   fetch(url, {
     method: "POST",
     headers: {
       accept: "application/json",
       "content-type": "application/json",
+      ...(gatewayToken ? { authorization: `Bearer ${gatewayToken}` } : {}),
     },
     body: JSON.stringify({ jsonrpc: "2.0", id, method, params: {} }),
   });
@@ -58,8 +59,11 @@ describe("Studio main and Agent Tools listener integration", () => {
       );
       expect(absentMainRoute.status).toBe(404);
 
+      // Address the wildcard host itself so the Host header is not loopback:
+      // Fastify 5's listen() resolves a wildcard bind to a 127.0.0.1 URL.
+      const wildcardMainUrl = new URL(`http://${mainAddress.address}:${mainAddress.port}`);
       const wildcardGateway = await mcpRequest(
-        new URL("/mcp/gateway", started.mainUrl).toString(),
+        new URL("/mcp/gateway", wildcardMainUrl).toString(),
         "ping",
         "gateway-wildcard-ping",
       );
@@ -67,10 +71,13 @@ describe("Studio main and Agent Tools listener integration", () => {
 
       const loopbackMainUrl = new URL(started.mainUrl);
       loopbackMainUrl.hostname = "127.0.0.1";
+      // autobyteus-437: every gateway client needs the token, on this computer too (the owner reads it).
+      const gatewayToken = ((await (await fetch(new URL("/rest/mcp-gateway/token", loopbackMainUrl))).json()) as { token: string }).token;
       const gatewayBeforeAnyRun = await mcpRequest(
         new URL("/mcp/gateway", loopbackMainUrl).toString(),
         "ping",
         "gateway-ping",
+        gatewayToken,
       );
       expect(gatewayBeforeAnyRun.status).toBe(200);
       expect(await gatewayBeforeAnyRun.json()).toMatchObject({

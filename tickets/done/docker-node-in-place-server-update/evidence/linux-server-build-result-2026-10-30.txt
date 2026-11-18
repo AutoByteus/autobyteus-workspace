@@ -1,0 +1,25 @@
+node: v22.23.4 abi 127 arch arm64
+885M	/out/server
+224 MB /out/server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk-linux-arm64@0.3.280
+147 MB /out/server/node_modules/.pnpm/onnxruntime-web@1.30.0
+71 MB /out/server/node_modules/.pnpm/node-pty@1.1.0
+32 MB /out/server/node_modules/.pnpm/@prisma+engines@5.22.0
+25 MB /out/server/node_modules/.pnpm/happy-dom@15.11.7
+24 MB /out/server/node_modules/.pnpm/typescript@5.9.3
+20 MB /out/server/node_modules/.pnpm/@anthropic-ai+sdk@0.132.1_zod@4.3.6
+13 MB /out/server/node_modules/.pnpm/@google+genai@2.24.0_@modelcontextprotocol+sdk@1.32.1_zod@4.3.6_
+13 MB /out/server/node_modules/.pnpm/openai@6.22.0_ws@8.22.0_zod@4.3.6
+13 MB /out/server/node_modules/.pnpm/prisma@5.22.0
+10 MB /out/server/node_modules/.pnpm/@mistralai+mistralai@1.14.0
+10 MB /out/server/node_modules/.pnpm/esbuild@0.27.3
+10 MB /out/server/node_modules/.pnpm/@esbuild+linux-arm64@0.27.3
+9 MB /out/server/node_modules/.pnpm/web-streams-polyfill@3.3.3
+8 MB /out/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0
+server.tar.gz 235.2 MB
+exit 0
+
+# after prisma generate in the deployed folder (as prepare-server.mjs does):
+1.1G /out/server; server.tar.gz 313.2 MB
+
+# start test: deployed folder mounted read-only into autobyteus/autobyteus-server:beta (image id 6d52877c3685), node dist/app.js --port 8123 --data-dir /tmp/d
+healthy after 7s: {"status":"ok","message":"Server is running"}

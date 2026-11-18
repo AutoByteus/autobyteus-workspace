@@ -28,8 +28,21 @@ export const validateTaskReferenceFiles = async (values: readonly string[]): Pro
   return Object.freeze(result);
 };
 
-/** The task itself: its description, a saved Task's comments (texts, oldest first; no block when none) and any reference files. */
-const taskBodyLines = (description: string, comments: readonly string[], referenceFiles: readonly string[]): string[] => [
+/** A saved Project Task's identity in the worker's first message (REQ-017): the Task key and its Project. */
+export type DelegatedProjectTask = Readonly<{ taskKey: string; projectId: string }>;
+
+/** The one Task line both first messages of a saved Task carry (new copy and existing copy). */
+const taskIdentityLines = (task: DelegatedProjectTask): string[] => [
+  `Task: ${task.taskKey} in Project ${task.projectId}`,
+  "If you have get_project_task, it reads this Task again, including comments added later.",
+];
+
+/**
+ * The task itself: a saved Task's identity line, its description, a saved Task's comments (texts, oldest first; no
+ * block when none) and any reference files.
+ */
+const taskBodyLines = (task: DelegatedProjectTask | undefined, description: string, comments: readonly string[], referenceFiles: readonly string[]): string[] => [
+  ...(task ? taskIdentityLines(task) : []),
   "Description:", description,
   ...(comments.length ? ["", "Comments:", ...comments.map((comment) => `- ${comment}`)] : []),
   ...(referenceFiles.length ? ["", "Reference files:", ...referenceFiles.map((file) => `- ${file}`)] : []),
@@ -49,6 +62,8 @@ export const buildTaskWorkText = (input: {
   description: string;
   /** A saved Task's comment texts, oldest first; none for described work. */
   comments?: readonly string[];
+  /** A saved Project Task's key and Project; none for described work. */
+  task?: DelegatedProjectTask;
   referenceFiles: readonly string[];
 }): string => {
   const runId = input.delegator.agentRunId;
@@ -60,7 +75,7 @@ export const buildTaskWorkText = (input: {
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both)."]
     : [`You have a new task from the agent with sender run id "${runId}".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id."];
-  return [from, reply, "", ...taskBodyLines(input.description, input.comments ?? [], input.referenceFiles)].join("\n");
+  return [from, reply, "", ...taskBodyLines(input.task, input.description, input.comments ?? [], input.referenceFiles)].join("\n");
 };
 
 /** The child's first message: the delegated work as a system Task notification. */
@@ -80,6 +95,8 @@ const otherOpenTasksSentence = (others: readonly string[]): string => others.len
 export const buildExistingCopyTaskMessage = (input: {
   /** The Task's agent-facing ID (a Project Task's key). */
   taskReference: string;
+  /** The Task's Project (with the key, the Task line). */
+  projectId: string;
   description: string;
   /** The Task's comment texts, oldest first. */
   comments: readonly string[];
@@ -88,7 +105,7 @@ export const buildExistingCopyTaskMessage = (input: {
 }): string => [
   `New Task assigned to you: ${input.taskReference}. ${otherOpenTasksSentence(input.otherOpenTaskReferences)}`,
   "",
-  ...taskBodyLines(input.description, input.comments, []),
+  ...taskBodyLines({ taskKey: input.taskReference, projectId: input.projectId }, input.description, input.comments, []),
 ].join("\n");
 
 export const TASK_ASSIGNMENT_MESSAGE_TYPE = "task_assignment";

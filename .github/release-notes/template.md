@@ -1,3 +1,7 @@
+## What you need to do
+<!-- Only when users must act (for example: reinstall the Docker launcher, then run `autobyteus-docker upgrade --all`); otherwise remove it. -->
+- ...
+
 ## What's New
 - Added ...
 

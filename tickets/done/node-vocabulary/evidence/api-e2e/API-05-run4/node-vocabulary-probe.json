@@ -1,0 +1,259 @@
+{
+  "startedAt": "2026-10-24T12:38:14.223Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 56111,
+      "nodeId": "srv_4mN--RunRuCLICV9UzpU-dWFvoRRpKGn"
+    },
+    "beta": {
+      "port": 56112,
+      "nodeId": "srv_rtDx_NsCxdO3TSMuYK1WrZTdgxbctunD"
+    }
+  },
+  "cases": {
+    "NVP-01": {
+      "result": "Pass",
+      "ms": 183,
+      "failedExpectations": [],
+      "stored": {
+        "version": 7,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:56111",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_4mN--RunRuCLICV9UzpU-dWFvoRRpKGn"
+          },
+          {
+            "id": "remote-beta-entry",
+            "name": "beta box",
+            "baseUrl": "http://127.0.0.1:56112",
+            "nodeType": "remote",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_rtDx_NsCxdO3TSMuYK1WrZTdgxbctunD"
+          }
+        ]
+      },
+      "names": [
+        "beta"
+      ],
+      "backup": "{\"version\":7,\"nodes\":[{\"id\":\"embedded-local\",\"name\":\"Embedded Node\",\"baseUrl\":\"http://127.0.0.1:56111\",\"nodeType\":\"embedded\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":true,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_4mN--RunRuCLICV9UzpU-dWFvoRRpKGn\"},{\"id\":\"remote-beta-entry\",\"name\":\"beta box\",\"baseUrl\":\"http://127.0.0.1:56112\",\"nodeType\":\"remote\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":false,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_rtDx_NsCxdO3TSMuYK1WrZTdgxbctunD\"}]}"
+    },
+    "NVP-02": {
+      "result": "Pass",
+      "ms": 58,
+      "failedExpectations": [],
+      "lines": [
+        "ⓘNot reachable. This node's identity is waiting for its data migration.\n\nCheck again"
+      ]
+    },
+    "NVP-03": {
+      "result": "Pass",
+      "ms": 2523,
+      "failedExpectations": [],
+      "en": "Memory Sync source ID",
+      "zh": "记忆同步源 ID",
+      "sources": [
+        "local",
+        "imported:nvp-beta-source"
+      ]
+    },
+    "NVP-04": {
+      "result": "Pass",
+      "ms": 1746,
+      "failedExpectations": [],
+      "shown": "home",
+      "storedKeys": [
+        "entryId",
+        "serverBaseUrl",
+        "credential",
+        "device",
+        "pairedAt"
+      ],
+      "entryId": "mobile-paired-node"
+    },
+    "NVP-05": {
+      "result": "Pass",
+      "ms": 10808,
+      "failedExpectations": [],
+      "sources": [
+        "local"
+      ],
+      "cardHasReason": true
+    }
+  },
+  "browserErrors": [
+    {
+      "phase": "NVP-01..03",
+      "text": "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/remote-access/status net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/autobyteus-icon.svg net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: WebSocket connection to 'ws://192.168.2.158:56192/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: Unexpected response code: 200"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:56192/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: WebSocket connection to 'ws://192.168.2.158:56192/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:56111/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:56111/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:56111/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:56111/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-10-24T12:39:25.000Z"
+}

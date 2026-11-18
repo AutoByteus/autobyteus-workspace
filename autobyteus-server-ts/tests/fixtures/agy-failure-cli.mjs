@@ -13,6 +13,11 @@ if (arg === "--version") {
     : process.env.AGY_FAKE_CASE === "auto_compaction" ? "1.2.16\n" : "agy version 1.2.11\n");
 } else if (arg === "--help") {
   process.stdout.write("--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\n");
+} else if (process.argv.includes("-p") && process.argv.includes("/usage")) {
+  // `agy -p /usage --output-format json`: AGY_FAKE_USAGE_FILE (read on every call) holds the answer, so a test can
+  // script a used-up limit group (autobyteus-32 U4b); without it the command fails, as an unreadable usage does.
+  if (process.env.AGY_FAKE_USAGE_FILE && existsSync(process.env.AGY_FAKE_USAGE_FILE)) process.stdout.write(readFileSync(process.env.AGY_FAKE_USAGE_FILE, "utf8"));
+  else { process.stderr.write("Error: usage unavailable\n"); process.exitCode = 1; }
 } else if (arg === "models") {
   // AGY_FAKE_EXTRA_MODELS (comma-separated ids) lists more models while it is set, so a test can retire a model
   // after a run was configured with it (as a provider retiring a model does).
@@ -37,21 +42,39 @@ if (arg === "--version") {
     || usageReport
     ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
-  const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
+  // AGY_FAKE_PROCESS_LOG: this process's lifecycle on its own clock, one JSON line per event in time order:
+  // `launch` (with the cwd, which names the run), `turn_end` (logged before the turn's final `result` line is
+  // written), `background_exit` (logged before a background step's exit message is written), `sigterm` and `exit`.
+  // A test can then prove that a replacement started only after the previous process exited, or measure a window
+  // that no server observation can shorten (the idle-shutdown grace starts only after the logged turn end).
+  const processLogFile = process.env.AGY_FAKE_PROCESS_LOG;
+  const processLog = (event, details = {}) => processLogFile && appendFileSync(processLogFile,
+    JSON.stringify({ event, pid: process.pid, conversation_id, at: Date.now(), ...details }) + "\n");
+  if (processLogFile) {
+    processLog("launch", { cwd: process.cwd() });
+    process.on("exit", () => processLog("exit"));
+  }
   if (interruptResend) {
-    // Records each AGY process's launch, SIGTERM and exit (one JSON line each, in time order) so a test can
-    // prove a replacement started only after the interrupted process exited. On SIGTERM the process keeps
-    // running for AGY_FAKE_SIGTERM_EXIT_DELAY_MS (below the server's SIGKILL escalation), as a real AGY
-    // finishing its shutdown does, which makes the "previous runtime still stopping" window deterministic.
-    const log = (event) => process.env.AGY_FAKE_PROCESS_LOG && appendFileSync(process.env.AGY_FAKE_PROCESS_LOG,
-      JSON.stringify({ event, pid: process.pid, conversation_id, at: Date.now() }) + "\n");
-    log("launch");
-    process.on("exit", () => log("exit"));
+    // On SIGTERM the process keeps running for AGY_FAKE_SIGTERM_EXIT_DELAY_MS (below the server's SIGKILL
+    // escalation), as a real AGY finishing its shutdown does, which makes the "previous runtime still stopping"
+    // window deterministic.
     process.on("SIGTERM", () => {
-      log("sigterm");
+      processLog("sigterm");
       setTimeout(() => process.exit(0), Number(process.env.AGY_FAKE_SIGTERM_EXIT_DELAY_MS ?? 0));
     });
+  } else if (processLogFile) {
+    // Logs the SIGTERM, then ends by the signal at once, as Node's default does without a handler.
+    const onSigterm = () => {
+      processLog("sigterm");
+      process.off("SIGTERM", onSigterm);
+      process.kill(process.pid, "SIGTERM");
+    };
+    process.on("SIGTERM", onSigterm);
   }
+  const emit = (value) => {
+    if (value.event === "result") processLog("turn_end", { status: value.result?.status ?? null });
+    process.stdout.write(JSON.stringify(value) + "\n");
+  };
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
   const permission_mode = process.argv.includes("--dangerously-skip-permissions") ? "always-proceed" : "request-review";
   emit({ event: "init", conversation_id, init: { agent: argValue("--agent"),
@@ -61,8 +84,12 @@ if (arg === "--version") {
   const daemonStep = (step_index) => emit({ event: "step_update", step_update: { conversation_id, step_index,
     step_type: "tool", state: "ACTIVE", tool_name: "run_command",
     tool_info: { parameters: { CommandLine: "python3 -m http.server 5199", IsDaemon: true } } } });
+  // AGY_FAKE_REPLY_USAGE (a JSON AGY `usage` object, e.g. {"input_tokens":100,"output_tokens":7,"thinking_tokens":0,
+  // "cache_read_tokens":0,"total_tokens":107}) puts that usage on every reply step, so each turn records token usage
+  // as a real AGY model call does (autobyteus-469 AC-006: a run's token total over its delegated runs).
+  const replyUsage = process.env.AGY_FAKE_REPLY_USAGE ? { usage: JSON.parse(process.env.AGY_FAKE_REPLY_USAGE) } : {};
   const reply = (step_index, text_delta) => emit({ event: "step_update", step_update: { conversation_id, step_index,
-    step_type: "agent_response", state: "DONE", text_delta } });
+    step_type: "agent_response", state: "DONE", text_delta, ...replyUsage } });
   // linked_skills: reads the capsule's skills from this process's cwd (as AGY does) or calls the
   // AutoByteus agent-tools MCP server named in the capsule's mcp_config.json (as an AGY agent does).
   const readCapsuleSkills = () => {
@@ -102,7 +129,19 @@ if (arg === "--version") {
     const client = new Client({ name: "agy-fake-cli", version: "1.0.0" });
     await client.connect(new StreamableHTTPClientTransport(new URL(server.serverUrl),
       { requestInit: { headers: server.headers ?? {} } }));
-    try { return await client.callTool({ name, arguments: args }); } finally { await client.close(); }
+    // AGY_FAKE_TOOL_TIMEOUT_MS raises the MCP client's 60 s request timeout for tests that hold a tool call open on purpose.
+    const timeout = Number(process.env.AGY_FAKE_TOOL_TIMEOUT_MS) || undefined;
+    // AGY_FAKE_TOOL_LOG: one JSON line per tool call with its result or the error the MCP client raised, so a test can
+    // read the exact outcome the agent saw (a protocol error ends the scripted turn with no `CALLED:` reply).
+    const log = (entry) => { if (process.env.AGY_FAKE_TOOL_LOG) appendFileSync(process.env.AGY_FAKE_TOOL_LOG, JSON.stringify({ name, arguments: args, ...entry }) + "\n"); };
+    try {
+      const result = await client.callTool({ name, arguments: args }, undefined, timeout ? { timeout } : undefined);
+      log({ result });
+      return result;
+    } catch (error) {
+      log({ error: { message: String(error?.message ?? error), code: error?.code ?? null } });
+      throw error;
+    } finally { await client.close(); }
   };
   // linked_skills: `LIST_TOOLS` replies `TOOLS:[{name, description, inputSchema}, …]`, the agent tools this run's
   // Agent Tools MCP session exposes, so a test can prove which tools (and which texts) an agent actually has.
@@ -127,6 +166,7 @@ if (arg === "--version") {
     emit({ event: "step_update", step_update: { conversation_id, step_index, step_type: "tool", state: "ACTIVE",
       tool_name: "run_command", tool_info: { parameters: { CommandLine, IsDaemon: true } } } });
     setTimeout(() => {
+      processLog("background_exit", { step_index });
       const dir = path.join(process.env.HOME ?? "", ".gemini", "antigravity-cli", "brain", conversation_id, ".system_generated", "messages");
       mkdirSync(dir, { recursive: true });
       writeFileSync(path.join(dir, `${randomUUID()}.json`), JSON.stringify({ sourceMetadata: { tool: { stepIndex: step_index } },
@@ -135,11 +175,61 @@ if (arg === "--version") {
     reply(turns * 10 + 2, "STARTED");
     emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "STARTED" } });
   };
+  // linked_skills + AGY_FAKE_ROUTER_PLAN (autobyteus-32): this run acts as the node's Model Router agent. A message with
+  // "Routing request <id>." is answered by the plan file (read per request):
+  //   { "mode": "valid" | "invalid_then_valid" | "silent", "delayMs": n, "runtime": "...", "model": "...",
+  //     "invalidModel": "...", "taskKind": "...", "reason": "...", "readRuntimes": true }
+  // "silent" ends the turn without answering. Each request is logged to AGY_FAKE_ROUTER_LOG
+  // (`{requestId, addresses, receivedAt, answeredAt, results}`) so a test can see the order and timing of requests.
+  const routerTurn = async (requestId, content) => {
+    const plan = JSON.parse(readFileSync(process.env.AGY_FAKE_ROUTER_PLAN, "utf8"));
+    const addresses = [...content.matchAll(/^- (\/\S+) — /gm)].map(([, address]) => address);
+    const receivedAt = Date.now();
+    // `crash`: the router's CLI process dies mid-turn (C-05), after logging that it got the request.
+    if (plan.mode === "crash") {
+      if (process.env.AGY_FAKE_ROUTER_LOG) appendFileSync(process.env.AGY_FAKE_ROUTER_LOG, JSON.stringify({ requestId, addresses, receivedAt, crashed: true }) + "\n");
+      process.exit(7);
+    }
+    // `throw`: the turn fails with an error the CLI reports (an uncaught error, as a missing module would be).
+    if (plan.mode === "throw") {
+      if (process.env.AGY_FAKE_ROUTER_LOG) appendFileSync(process.env.AGY_FAKE_ROUTER_LOG, JSON.stringify({ requestId, addresses, receivedAt, threw: true }) + "\n");
+      throw new Error("Scripted router failure: Cannot find package 'scripted-missing-module'");
+    }
+    const results = [];
+    if (plan.readRuntimes) results.push({ tool: "list_available_agent_runtimes", ok: !(await callAgentTool("list_available_agent_runtimes", {})).isError });
+    if (plan.delayMs) await new Promise((resolve) => setTimeout(resolve, plan.delayMs));
+    const choices = (model) => addresses.map((address) => ({ address, runtime: plan.runtime, model,
+      taskKind: plan.taskKind ?? "implementation", reason: plan.reason ?? "Scripted router choice." }));
+    if (plan.mode === "invalid_then_valid") {
+      const invalid = await callAgentTool("submit_launch_choices", { requestId, choices: choices(plan.invalidModel ?? "no-such-model") });
+      results.push({ tool: "submit_launch_choices", isError: invalid.isError === true, text: invalid.content?.[0]?.text ?? null });
+    }
+    if (plan.mode !== "silent") {
+      const valid = await callAgentTool("submit_launch_choices", { requestId, choices: choices(plan.model) });
+      results.push({ tool: "submit_launch_choices", isError: valid.isError === true, text: valid.content?.[0]?.text ?? null });
+    }
+    if (process.env.AGY_FAKE_ROUTER_LOG) appendFileSync(process.env.AGY_FAKE_ROUTER_LOG,
+      JSON.stringify({ requestId, addresses, receivedAt, answeredAt: Date.now(), results }) + "\n");
+    const text = plan.mode === "silent" ? "NOT_ANSWERED" : "ROUTED";
+    reply(turns * 10, text);
+    emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: text } });
+  };
   const linkedSkillsTurn = async (line) => {
     let content = "";
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
+    const routingRequest = process.env.AGY_FAKE_ROUTER_PLAN ? /Routing request (\S+?)\./.exec(content) : null;
+    if (routingRequest && !content.includes("CALL_TOOL:")) { await routerTurn(routingRequest[1], content); return; }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // `REPLY_FILE:<absolute path>` answers with that file's text as it is (every other reply here is quoted), so a test
+    // gets an agent answer in real Markdown: fenced code, tables, math, as a model writes it (autobyteus-23).
+    const replyFile = /REPLY_FILE:(\/\S+)/.exec(content);
+    if (replyFile && !content.includes("CALL_TOOL:")) {
+      const text = readFileSync(replyFile[1], "utf8");
+      reply(turns * 10, text);
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: text } });
+      return;
+    }
     // `GENERATE_IMAGE:<absolute path>` writes that file and streams the own-MCP generate_image call as AGY 1.2.14 does
     // (same step shape as case mcp_calls), so any run, a delegated copy included, gets a real generated-output artifact.
     const generateImage = /GENERATE_IMAGE:(\/\S+)/.exec(content);

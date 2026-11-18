@@ -1,11 +1,12 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { expect, it } from "vitest";
+import { expect, it, onTestFinished } from "vitest";
 import { createAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { AgyStreamProcess } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
+import { activateAgentToolsMcpTestRun, startAgentToolsMcpTestHost } from "../../../../helpers/agent-tools-mcp-test-host.js";
 
 const evidenceDir = path.resolve(process.env["AGY_LIVE_EVIDENCE_DIR"] ?? path.join(os.tmpdir(), "agy-production-live-evidence"));
 
@@ -13,11 +14,13 @@ const readIfExists = async (file: string) => fs.readFile(file, "utf8").catch(() 
 
 it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent and targets selected workspace for generic file and shell tasks", async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-product-live-"));
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
   const workspacePath = path.join(base, "real-workspace");
   await fs.mkdir(workspacePath);
   const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "live-run", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are the AutoByteus test main agent. Your identity code is AGY-ID-8614. Answer accurately when asked for this code.",
-    configuredSkillBindings: [], mcpDescriptor: null });
+    configuredSkillBindings: [], mcpDescriptor: activateAgentToolsMcpTestRun(agentTools.runSessions, "live-run") });
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
@@ -54,6 +57,8 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent a
 
 it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured skill linked into the production capsule", async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-skill-live-"));
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
   const workspacePath = path.join(base, "workspace");
   const source = path.join(base, "configured-source");
   await fs.mkdir(workspacePath); await fs.mkdir(source);
@@ -62,7 +67,8 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured skill li
   const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }) };
   const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "skill-live", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are an AutoByteus agent. Consult the codebook skill when asked about its marker.",
-    configuredSkillBindings: [binding], workspaceCollisionPolicy: "fail", mcpDescriptor: null });
+    configuredSkillBindings: [binding], workspaceCollisionPolicy: "fail",
+    mcpDescriptor: activateAgentToolsMcpTestRun(agentTools.runSessions, "skill-live") });
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const closeErrors: string[] = [];

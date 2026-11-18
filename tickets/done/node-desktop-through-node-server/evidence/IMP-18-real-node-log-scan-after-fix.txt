@@ -1,0 +1,23 @@
+# Check: IMP-18
+# Command: server.log of the test node after IMP-15..IMP-19: [node-desktop] lines (durationMs masked), and counts of access_token/mra_ and of the probes' clipboard texts in container log + server.log
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:57817:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter, Xvnc :99. Removed with its volumes afterwards.
+# Commit: ce13fa9727
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+   1 [node-desktop] stream ended mode=control viewer=trusted_network durationMs=N toViewer=102 fromViewer=42 reason=viewer-closed
+   1 [node-desktop] stream ended mode=control viewer=trusted_network durationMs=N toViewer=1710347 fromViewer=1478 reason=viewer-closed
+   1 [node-desktop] stream ended mode=control viewer=trusted_network durationMs=N toViewer=1723479 fromViewer=1575 reason=viewer-closed
+   1 [node-desktop] stream ended mode=control viewer=trusted_network durationMs=N toViewer=1725718 fromViewer=1478 reason=viewer-closed
+   1 [node-desktop] stream ended mode=control viewer=trusted_network durationMs=N toViewer=62 fromViewer=20 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=1053549 fromViewer=696 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=12 fromViewer=0 reason=desktop-closed
+   2 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=12 fromViewer=0 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=1726357 fromViewer=1566 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=368562 fromViewer=206 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=368597 fromViewer=206 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=62 fromViewer=14 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=90 fromViewer=42 reason=viewer-closed
+
+credential hits: 0
+clipboard text hits: 0

@@ -1,0 +1,18 @@
+content-desc: Back
+text: Switch node
+content-desc: Test Docker Node, Online, current node
+text: Test Docker Node
+text: Online
+content-desc: More for Test Docker Node
+content-desc: Test Node, Online
+text: Test Node
+text: Online
+content-desc: More for Test Node
+content-desc: Test Desktop, Online
+text: Test Desktop
+text: Online
+content-desc: More for Test Desktop
+content-desc: Other ways to connect, collapsed
+text: Other ways to connect
+content-desc: Scan
+text: Scan

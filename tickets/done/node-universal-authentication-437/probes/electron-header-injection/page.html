@@ -1,0 +1,7 @@
+<!doctype html><html><body><script>
+const node = new URLSearchParams(location.search).get("node");
+fetch(node + "/fetch").catch(() => {});
+try { new WebSocket(node.replace("http", "ws") + "/ws"); } catch {}
+const img = document.createElement("img"); img.src = node + "/img.png"; document.body.appendChild(img);
+const f = document.createElement("iframe"); f.src = node + "/frame"; document.body.appendChild(f);
+</script></body></html>

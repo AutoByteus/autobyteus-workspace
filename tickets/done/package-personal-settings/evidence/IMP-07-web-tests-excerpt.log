@@ -1,0 +1,22 @@
+# IMP-07-web-tests
+# command: (cd autobyteus-web) pnpm test:nuxt
+# commit: 2c4ba2c51e
+# environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# date: 2026-11-09T08:19:32Z
+
+# excerpt: the full log (2.4 MB of per-test output) was not committed; it is /tmp/pps-checks/IMP-07-web-tests.log on the implementation machine
+
+ ✓ components/notifications/__tests__/NotificationCenter.automation.spec.ts (11 tests) 199ms
+ ✓ components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts (6 tests) 112ms
+ ✓ components/agents/__tests__/AgentDefinitionForm.personalSettings.spec.ts (6 tests) 82ms
+ ✓ stores/__tests__/agentOrgDefinitionCache.spec.ts (11 tests) 87ms
+ ✓ stores/__tests__/definitionMutationCache.spec.ts (10 tests) 128ms
+ ✓ components/agentOrgs/__tests__/AgentOrgPersonalSettings.spec.ts (3 tests) 23ms
+ ✓ pages/__tests__/mobile-root-shell.spec.ts (2 tests) 20ms
+ ✓ stores/__tests__/agentDefinitionStore.spec.ts (6 tests) 9ms
+ ✓ stores/__tests__/agentOrgDefinitionStore.spec.ts (2 tests) 5ms
+
+ Test Files  729 passed (729)
+      Tests  5475 passed (5475)
+   Duration  304.62s (transform 31.79s, setup 2015.48s, collect 215.84s, tests 97.08s, environment 162.13s, prepare 100.81s)
+# exit: 0

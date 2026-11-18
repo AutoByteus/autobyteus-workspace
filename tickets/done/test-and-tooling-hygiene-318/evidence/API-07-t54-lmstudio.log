@@ -1,0 +1,22 @@
+# API-07 env -i PATH HOME=<resolved temp> TMPDIR RUN_LMSTUDIO_E2E=1 pnpm exec vitest run <file> --no-watch (fresh clone), one at a time; LM Studio at localhost:1234; before: No models are currently loaded.
+# commit 7c04283722, 2026-11-01T14:36:35Z
+tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts: exit 0 (132s) |  Tests 5 passed (5)
+tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts: exit 0 (9s) |  Tests 4 skipped (4)
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts: exit 0 (42s) |  Tests 4 passed (4)
+loaded after the runs: qwen/qwen3.6-35b-a3b
+Model Not Found
+
+Cannot find a model with the identifier "IDENTIFIER".
+
+To see a list of loaded models, run:
+
+    lms ps
+Model "qwen/qwen3.6-35b-a3b" unloaded.
+after unload: No models are currently loaded.
+
+## token-usage-runtime-graphql: its own gate RUN_RUNTIME_TOKEN_USAGE_E2E=1 (the run above lacked it), only the LM Studio case: -t 'autobyteus-lmstudio-qwen35' (the Codex/Claude cases would be paid); LM Studio before: No models are currently loaded.
+tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts: exit 0 (30s) |  Tests 1 passed | 3 skipped (4)
+ ✓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 3 skipped) 21622ms
+     ✓ persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL  21409ms
+Model "qwen/qwen3.6-35b-a3b" unloaded.
+after unload: No models are currently loaded.

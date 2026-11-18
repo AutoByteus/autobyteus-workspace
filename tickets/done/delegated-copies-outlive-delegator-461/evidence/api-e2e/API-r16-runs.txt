@@ -1,0 +1,58 @@
+API/E2E round 16 (API-REV-016), on CRR-052: the full rerun after SR-084 … SR-090. Code under test 53f0ae2d4e (HEAD dfc0da08d8:
+docs only since). Server dist/ and the phone bundle rebuilt at the start (15:58, exit 0); web from source. Clean env for every run
+(env -i PATH HOME=<resolved temp> TMPDIR USER); never the user's app or ~/.autobyteus. Raw logs: /tmp/api461/r16.
+
+Server E2E, full folder (RUN_AGY_FAILURE_E2E=1, scripted AGY), run e02 (the first run, e01, was stopped after 22 min: views carry
+their own parts only (stage A), so every suite that read delegated runs from a view or a resume config timed out on the same read;
+those reads were moved to `runTree` first):
+  264 files: 168 passed, 22 failed, 74 skipped (live gates); 825 tests passed, 40 failed.
+  Rerun alone after the test-side fixes (this round's rework):
+    remote-collaboration (two real nodes)          47/47 Pass (RC-31 … 37, 43, 45 reworked to the tree, /ws/peer-run and
+                                                     RETRY_PEERS; RC-35 also refuses the agent-stream snapshot and observation
+                                                     routes; RC-46 Pass)
+    own-stream-turns-read-once (new: OST-1 … 3)    2/2 Pass
+    project-change-feed 7/7, open-task-tree-upgrade 3/3, unclean-shutdown-delegated-team 8/8, get-project-task-worker-scope 6/6,
+    task-agent-own-run-startup 3/3, delegated-copy-model-change 11/11, stopped-run-edit-root 1/1                         Pass
+    registered-package-definition-edit             7/8: RPE-001 hits vitest's default 5 s test timeout alone (twice; passed in
+                                                     the full run)                                                 Unclassified
+  Base 827f1e68dc comparison (each suite alone):
+    F-76 (new): agy-context-files E2E-CF-005, agy-interrupt-resend, autobyteus-anthropic-stored-config (team), agy-linked-skills
+      E04/E10 fail on the branch with SESSION_NOT_READY after CONNECTED on the Team socket; base passes them (3/3, 4/4, 10/10)
+    Stale clients of the agent stream's wire change (IR-035 known risk: content leaves as SEGMENT_CONTENT_BATCH, a stopped run's
+      session gets its stored snapshot, a run needs its AgentStreamSequence): agy-mcp-tool-call, agy-background-task,
+      agy-skill-update-notice ×2, agy-compaction rotation/gate-off, grok-build-runtime-replay ×2, agy-linked-skills E07 (reads the
+      snapshot's earlier SKILLS report), claude-agent-websocket ×8 and agent-command-correlated-status (hand-built handler, no
+      sequence: AGENT_STREAM_UNAVAILABLE); base passes those it reaches (claude 8/8, acs 1/1, background 2/2, notice 2/2, grok 5/6)
+    team-task-event-current-contract: parses the removed TASK_EXECUTION_STARTED (removed with its contract by design)
+    Environmental on both trees: agy-context-files CF-001/004, compaction ×2 and mcp on base (AGY model discovery timeout)
+  Typecheck: production 0, tests 1012 in 316 files (baseline). HEAD alone fails the gate (remote-delegation-two-server 4 vs
+    baseline 3: RC-46's untyped `file` parameter); typed this round.
+
+Web probes (/tmp/api461/r16, then g-* with the probes' command channels waiting for the session):
+  remote-run-title 1/1 Pass; runtime-switch-members RSM 7/7 Pass
+  remote-runs-in-tree ×2: RTP-01 … 03 Pass; both stop at RTP-04 opening the peer Org row (REMOTE-ORG view never shows)   F-77
+  stopped-delegator-views 3/7: SDV-03 (Org worker conversation), SDV-06 (Team delegator's worker), SDV-07 (Org: the delegated
+    Team row selected, the center stays "Choose an Agent or Team")                                                         F-77
+    SDV-01 (the stopped root reads running in the run list)                                                                F-78
+  project-manager-ux 17/25: PMU-016/018 (a Team root's Task card worker line: "Failed to open the Task root: AgentRun '…' is not
+    retained in the mounted Team" at openWorkspaceExecutionLink; the row shows "Couldn't load activity"), PMU-012 (Org)    F-77
+    PMU-003/007/019/021/024                                                                                       Unclassified
+  team-status-live 1/7: TS-004, TS-007 (a Team dot idle while its member rows read offline)                                F-78
+    TS-001/003/005/006                                                                                            Unclassified
+  task-closure-tree 5/16; BR runs ×3: BR-008/009 Pass, BR-010 Fail ×3 (coordinator Idle, unused member Offline)            F-78
+    BR-001/002 (leaving rows not aria-hidden + inert at once)                                                              F-79
+    BR-003/004/006/014 timeouts, dependents BR-005/007/011/015                                                    Unclassified
+  owner-scoped-file-reads (seeded) 7/8: B-003 (the Org task agent's file)                                                  F-77
+  projects-left-navigation 10/14 cases recorded: PLN-04 (model menu; not 461 since round 11)
+  delegated-launch-defaults 11/29 (DLP-003/004/006/007, DCP-002/003/005, DCR-001…003, SIR-001/002, LRL-001/003/004/005,
+    AFS-001/002)                                                                                                  Unclassified
+  mobile-shell 20 Pass, 7 Fail (MSP-02/03/05/06/07/20/33), then stopped at the live-reconnect warm-up              Unclassified
+  Mocked probes (other tickets): agent-org-task-team-disclosure and team-group-icon wait for the removed agent-org-task-*
+    rows; existing-run-model-config and interrupt-result-presentation mocks carried the removed task_executions keys
+    (removed this round; not rerun); composer-context-file-removal times out at "Agent copy delegated"            Stale (461)
+C35-04 activation timing (new gated test, 3 samples each, medians; branch then base with the same file):
+  large run (branch 89.6 MB, base 74.3 MB in its memory folder): restore 381 vs 269 ms; own stream opens with its snapshot
+  343 ms (base: CONNECTED only, 2 ms; its conversation read by getRunProjection 397 ms, branch 377 ms); first turn 64 vs 66 ms;
+  small run: restore 149 vs 160 ms. Evidence: /tmp/api461/r16/activation-branch.json, activation-base.json.
+API-F01: Pass (fresh clone at HEAD, frozen install, build:electron:mac --arm64, Prisma and packaged terminal checks).
+Live: LE-O1 and LE-A1 … LE-T1 not run (the vault's DeepSeek account; 402 in round 14).

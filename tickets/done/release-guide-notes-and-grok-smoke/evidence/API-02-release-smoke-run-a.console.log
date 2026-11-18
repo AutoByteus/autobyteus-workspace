@@ -1,0 +1,31 @@
+# API-02 full release smoke run (a), no Grok override (token-free)
+# Command: cd <worktree> && env -i PATH="$PATH" HOME=<temp HOME, claude and codex signed out> TMPDIR=<temp> GROK_BUILD_COMMAND=<worktree>/scripts/tests/fixtures/fake-grok-acp.mjs python3 scripts/release_smoke.py
+# Commit: 23d722096a; Date: 2026-11-01; Environment: macOS arm64, Python 3, Node v22, vitest 4.1.12; claude 2.1.316 (auth status in that env: "loggedIn": false), codex (login status: Not logged in), the fake Grok
+
+preflight: codex not available: ~/.codex/auth.json missing (codex not signed in)
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_agent_440c0661_81d6e667b56143f8984025a5ea3bad5b:turn:3f10e6dc-e997-4c25-bba1-37ec
+claude      brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_agent_440c0661_e50ad31efeaa4df2b503546eb9bb77fc:turn:1e6ef4e3-5b6f-45ce-9fda-119e
+claude      different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_all_440c0661_a2b3df8135ac4e818072f5e106f67656:turn:5d7cbf3a-cedc-40a4-a92d-0be966
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a19588-8b71-7110-947e-1e77e40971a3"} | {"code":"RUNTIME_ERROR","message":"Reconnecting... 3/5","error_scope":"turn","error_effect":"diagnostic","turn_id"
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a19588-943e-7113-b55e-d79a376bb9a6","change_sequence":13,"agent_run_id":"link_probe_agent_440c0661_1425ee306c664ee29c6c9ae771f6672a"} | {"code":"RUNTIME_
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a19588-9f4a-7f70-806a-27fd7c08ee76"} | {"code":"RUNTIME_ERROR","message":"Reconnecting... 3/5","error_scope":"turn","error_effect":"diagnostic","turn_id"
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"03e2199d-6c08-4ef3-a3b3-54cab935bbab"}: expected [ Array(1) ] to deeply equal []
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"56de8305-31e3-49b3-9c53-da708af5220b","change_sequence":13,"agent_run_id":"link_probe_agent_440c0661_9dc2ce77448a4d
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"6e6faf99-2300-4aa2-85a0-4b1ebf212d0f"}: expected [ Array(1) ] to deeply equal []
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    23d722096a38f101d95f3ac2fbde96130ae62798
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  live 30s, antigravity 19s, autobyteus 9s
+result    FAIL
+logs      /private/tmp/ab355-api/tmp-obCu/release-smoke-3pe_zfs4
+exit 1

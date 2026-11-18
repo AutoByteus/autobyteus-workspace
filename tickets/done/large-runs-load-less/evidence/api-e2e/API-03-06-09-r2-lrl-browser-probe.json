@@ -1,0 +1,210 @@
+{
+  "header": "Round 2: API-03..API-06 rechecked and API-09 (LRL-005): pnpm -C autobyteus-web test:e2e:large-runs-load-less --output-dir <fresh>; head feb69a02a3 (code 99cd853f79, server dist rebuilt) + LRL-005; ENV-1; 2026-11-01.",
+  "cases": {
+    "LRL-001": {
+      "title": "AC-003, QR-005 (Team): opening a stopped six-member Team run loads only the focused member; another member loads when opened; the Team tab asks once for the focused participant",
+      "result": "Pass",
+      "ms": 41168,
+      "details": {
+        "names": {
+          "team": "LRL Team 4a11"
+        },
+        "teamDefinitionId": "lrl-team-4a11",
+        "teamRunId": "lrl_team_4a11_96a032cfe7294a1c91b72b095092b7b6",
+        "members": {
+          "lead": "lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad",
+          "designer": "lrl_designer_4a11_1996efb962d549279c9db716bcdf7a1e",
+          "builder": "lrl_builder_4a11_89bb5bdb84b945a3ba44fdc6a01fd9ec",
+          "reviewer": "lrl_reviewer_4a11_8d77390239554186b88be144e816e2fc",
+          "tester": "lrl_tester_4a11_5eec261ac0074716ac58ebdda8b59b9c",
+          "writer": "lrl_writer_4a11_d1041ba697974db7a5deff42c06f950b"
+        },
+        "openMs": 9772,
+        "openOps": {
+          "GetTeamMemberRunProjection:lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad": 1,
+          "GetTeamMemberFileChanges:lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad": 1,
+          "CollaborationParticipantMessages:lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad": 1
+        },
+        "loadedAtOpen": [
+          "lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad"
+        ],
+        "focused": "lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad",
+        "memberRowsShown": 6,
+        "opened": "lrl_designer_4a11_1996efb962d549279c9db716bcdf7a1e",
+        "otherOps": {
+          "GetTeamMemberRunProjection:lrl_designer_4a11_1996efb962d549279c9db716bcdf7a1e": 1,
+          "GetTeamMemberFileChanges:lrl_designer_4a11_1996efb962d549279c9db716bcdf7a1e": 1
+        },
+        "backOps": {},
+        "tabOps": {},
+        "participantRequestsTotal": {
+          "CollaborationParticipantMessages:lrl_lead_4a11_1ac42b6c41d14234af6a932c0eddedad": 1,
+          "CollaborationParticipantMessages:lrl_designer_4a11_1996efb962d549279c9db716bcdf7a1e": 1
+        },
+        "storedForFocused": 5
+      }
+    },
+    "LRL-002": {
+      "title": "AC-003, QR-005 (Org): opening a stopped Org run loads only the focused member; another member loads when opened",
+      "result": "Pass",
+      "ms": 34632,
+      "details": {
+        "names": {
+          "org": "LRL Org f9c1"
+        },
+        "orgDefinitionId": "lrl-org-f9c1",
+        "orgRunId": "lrl_org_f9c1_56a29437b6f5453eb3d45f252904a374",
+        "orgAgents": [
+          {
+            "address": "/manager",
+            "agentRunId": "lrlo_manager_f9c1_f8e4791bffd9413eb644a8e08e2f2c2c"
+          },
+          {
+            "address": "/writer",
+            "agentRunId": "lrlo_writer_f9c1_0932812283d1428d9f61512deb398b8b"
+          },
+          {
+            "address": "/analyst",
+            "agentRunId": "lrlo_analyst_f9c1_06b9d0fd469040808c5d49a3353429dd"
+          },
+          {
+            "address": "/pair/lead",
+            "agentRunId": "lrlo_lead_f9c1_08bd1f2020724713b0b3d8968f305600"
+          },
+          {
+            "address": "/pair/engineer",
+            "agentRunId": "lrlo_engineer_f9c1_43cc95e5f0214997a2b9aa3f922a550a"
+          }
+        ],
+        "openMs": 3291,
+        "openOps": {},
+        "loadedAtOpen": [],
+        "centerAtOpen": "Stopped Agent Org Select a member from the historical run in the sidebar to continue from its saved state.",
+        "writerOps": {
+          "GetAgentOrgMemberRunProjection:lrlo_writer_f9c1_0932812283d1428d9f61512deb398b8b": 1,
+          "GetAgentOrgMemberFileChanges:lrlo_writer_f9c1_0932812283d1428d9f61512deb398b8b": 1
+        },
+        "memberRowsShown": 3,
+        "allOrgMemberLoads": {
+          "GetAgentOrgMemberRunProjection:lrlo_writer_f9c1_0932812283d1428d9f61512deb398b8b": 1,
+          "GetAgentOrgMemberFileChanges:lrlo_writer_f9c1_0932812283d1428d9f61512deb398b8b": 1
+        }
+      }
+    },
+    "LRL-003": {
+      "title": "AC-002 live: a message sent while the Team tab loads, and while the stream is down, appears once; the list equals the stored log",
+      "result": "Pass",
+      "ms": 25421,
+      "details": {
+        "names": {
+          "team": "LRL Live 4ef1"
+        },
+        "teamDefinitionId": "lrl-live-4ef1",
+        "teamRunId": "lrl_live_4ef1_ad1629f489ef4741b147766e34385720",
+        "members": {
+          "lead": "lrll_lead_4ef1_ca477039957e441abb7070a0d3dcbf7b",
+          "worker": "lrll_worker_4ef1_3213322f6a9a4b30a8df61ce415dd9ac"
+        },
+        "heldResponseHasM2": false,
+        "loadingShownWhileHeld": true,
+        "afterLoad": [
+          "Message Nov 1, 03:27 PM from lead During 4ef1 M2",
+          "Message Nov 1, 03:27 PM from lead Before 4ef1 M1"
+        ],
+        "shownWhileDown": false,
+        "afterReconnect": [
+          "Message Nov 1, 03:27 PM from lead Offline 4ef1 M3",
+          "Message Nov 1, 03:27 PM from lead During 4ef1 M2",
+          "Message Nov 1, 03:27 PM from lead Before 4ef1 M1"
+        ]
+      }
+    },
+    "LRL-004": {
+      "title": "AC-006: a Team run with a damaged stored message log opens; its Team tab and the phone show the messages as unavailable with the reason; a message to it is refused with the reason",
+      "result": "Pass",
+      "ms": 42362,
+      "details": {
+        "names": {
+          "team": "LRL Damaged f7f9"
+        },
+        "teamDefinitionId": "lrl-damaged-f7f9",
+        "teamRunId": "lrl_damaged_f7f9_e19242fc71e7446b926315867f80094f",
+        "members": {
+          "lead": "lrld_lead_f7f9_15e0387026174dc7a0183394b3aca7ee",
+          "worker": "lrld_worker_f7f9_c26b9447430349d588296f098e544ee5"
+        },
+        "logFiles": [
+          "team_communication_messages_active.jsonl"
+        ],
+        "damaged": {
+          "file": "team_communication_messages_active.jsonl",
+          "line": 2,
+          "nonEmptyLines": 3
+        },
+        "memberRowsShown": 2,
+        "teamTabText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+        "serverReason": "GraphQL: [{\"message\":\"team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"locations\":[{\"line\":1,\"column\":41}],\"path\":[\"collaborationParticipantMessages\"]}]",
+        "reasonShown": true,
+        "restoreResponses": [
+          "{\"data\":{\"restoreAgentTeamRun\":{\"__typename\":\"RestoreAgentTeamRunResult\",\"success\":false,\"message\":\"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"teamRunId\":null}}}"
+        ],
+        "resumeConsoleErrors": [
+          "Failed to send message via activeContextStore: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:59707/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:59707/_nuxt/stores/acti",
+          "Error sending requirement: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:59707/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:59707/_nuxt/stores/activeContextStore.ts:11"
+        ],
+        "activeAfterResume": false,
+        "composerStillHolds": true,
+        "reasonVisibleAfterResume": 1,
+        "phoneText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+        "phoneRows": 0
+      }
+    },
+    "LRL-005": {
+      "title": "Reload rule (SR-004\u2026SR-006): a running Team opens with one participant request; a live message adds none; a stop and resume reloads the list",
+      "result": "Pass",
+      "ms": 30597,
+      "details": {
+        "names": {
+          "team": "LRL Running 847b"
+        },
+        "teamDefinitionId": "lrl-running-847b",
+        "teamRunId": "lrl_running_847b_cb34c8762ec1431688ec9269e496e7bd",
+        "members": {
+          "lead": "lrlr_lead_847b_6b0ecca9ad034906881b1eb981f8d3db",
+          "worker": "lrlr_worker_847b_5343f0275f60488f8dcadbc13171d7af"
+        },
+        "openParticipantOps": {
+          "CollaborationParticipantMessages:lrlr_lead_847b_6b0ecca9ad034906881b1eb981f8d3db": 1
+        },
+        "focused": "lrlr_lead_847b_6b0ecca9ad034906881b1eb981f8d3db",
+        "liveParticipantOps": {},
+        "resumeParticipantOps": {
+          "CollaborationParticipantMessages:lrlr_lead_847b_6b0ecca9ad034906881b1eb981f8d3db": 1
+        },
+        "afterResume": [
+          "Message Nov 1, 03:29 PM to worker Resumed 847b M3",
+          "Message Nov 1, 03:28 PM to worker Running 847b M2",
+          "Message Nov 1, 03:28 PM to worker Running 847b M1"
+        ]
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": [
+    {
+      "pid": 12577,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 10483,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 10144,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-IrrNeb"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "round": "API-REV-004",
+  "date": "2026-10-26T10:42:53.762002+00:00",
+  "classification": "API-owned AC002 evidence repair; no production defect",
+  "productionSource": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "integrationHead": "53423ca028831a943c8d30a31287fec73234527c",
+  "deliveryCheckpoint": "52a3434f5",
+  "cwd": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024",
+  "environment": "macOS arm64 Node26.12.0; private PATH subprocess fixtures and source-only Electron Vitest",
+  "testSha256": {
+    "autobyteus-web/electron/server/__tests__/PortOwnerInspectorFaults.spec.ts": "800e4f284f10dc52e60dc2a7c7fb3ad842efe538e7a3768c4c0b92ee93d42a9f",
+    "autobyteus-web/electron/server/__tests__/BackendPortBindFaults.spec.ts": "cbddcee8b35519be84d1ac03080127ec155cd2c3783cec845f329874cf5de0bc"
+  },
+  "cases": [
+    {
+      "id": "API11",
+      "file": "autobyteus-web/electron/server/__tests__/PortOwnerInspectorFaults.spec.ts",
+      "log": "API-11-inspector.log",
+      "passed": 11,
+      "exit": 0,
+      "actualDeadlineMs": 1010,
+      "ownedDeadlinePid": 23664,
+      "ownedDeadlinePidAbsent": true
+    },
+    {
+      "id": "API12",
+      "file": "autobyteus-web/electron/server/__tests__/BackendPortBindFaults.spec.ts",
+      "log": "API-12-bind.log",
+      "passed": 5,
+      "exit": 0
+    }
+  ],
+  "commandTemplate": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:electron --run server/__tests__/<file basename> --reporter=verbose",
+  "retainedEvidence": "../API-REV-003 at exact source9b10; no new platform/provider/build claim",
+  "cleanup": "API11 shared afterEach verifies data unchanged/live sentinel before close/root absent; actual deadline child ESRCH. API12 only deterministic boundary mocks, no OS resource setup.",
+  "result": "Pass",
+  "confidencePercent": 95.3,
+  "broaderProductRerun": "Not Required",
+  "reviewRequired": true
+}

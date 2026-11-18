@@ -52,7 +52,7 @@ export const useMediaLibraryStore = defineStore('mediaLibrary', {
           params.append('category', this.selectedCategory);
         }
 
-        const response = await apiService.get(`/media?${params.toString()}`);
+        const response = await apiService.get<{ files: MediaFile[]; pagination: PaginationState }>(`/media?${params.toString()}`);
         
         this.files = response.data.files;
         this.pagination = response.data.pagination;

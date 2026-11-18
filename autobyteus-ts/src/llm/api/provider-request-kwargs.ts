@@ -1,6 +1,4 @@
 export const INTERNAL_PROVIDER_REQUEST_KWARG_KEYS = new Set([
-  'logicalConversationId',
-  'logical_conversation_id',
   'conversationId',
   'agentId',
   'turnId',

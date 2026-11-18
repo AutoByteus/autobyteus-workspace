@@ -23,6 +23,8 @@ package folder's auto-refresh state.
 - `src/agent-packages/stores/agent-package-root-settings-store.ts`
 - `src/agent-packages/stores/agent-package-registry-store.ts`
 - `src/agent-packages/installers/github-agent-package-installer.ts`
+- `src/agent-packages/services/package-edit-capture.ts` (backup and capture of
+  the user's edits before a GitHub update replaces the folder)
 
 ## Source Ownership Model
 
@@ -30,7 +32,7 @@ package folder's auto-refresh state.
 | --- | --- | --- |
 | `BUILT_IN` | Platform-owned default package root. | Listed for inventory only; not removable, reloadable, checkable, or user-updatable. |
 | `LOCAL_PATH` | User-owned local folder linked into AutoByteus. | Import, remove, and explicit reload/rescan. Definition edits in the folder are also picked up automatically while the root is watched. AutoByteus validates and reads the folder but does not pull Git or mutate the source folder. |
-| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is downloaded or replaced without the user's Update, unless the user turned on automatic updates for agent packages (off by default; local changes are then replaced without asking). |
+| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is downloaded or replaced without the user's Update, unless the user turned on automatic updates for agent packages (off by default; personal settings are kept, other local changes are replaced without asking, after a backup). |
 
 ## GitHub Update State
 
@@ -47,8 +49,11 @@ The update status values are:
 
 - `NOT_CHECKED`: metadata exists but no update check has been run yet.
 - `UNKNOWN`: an installed revision is missing, usually for a legacy managed
-  GitHub record created before revision metadata was persisted. The package can
-  be updated to latest to normalize the record.
+  GitHub record created before revision metadata was persisted. Such a package
+  cannot be updated: an update first downloads the installed revision to keep
+  the user's edits (see "Keeping The User's Edits At An Update"), so it stops
+  with `UPDATE_FAILED`. Remove the package and import it again; personal
+  settings survive that, because definition IDs come from folder names.
 - `UP_TO_DATE`: installed revision matches the latest known default-branch
   revision.
 - `UPDATE_AVAILABLE`: latest known default-branch revision differs from the
@@ -122,6 +127,42 @@ Outside package actions, changes to definition files in any registered package
 folder are detected and applied automatically. Reload remains the manual
 fallback for package folders that are not being watched. See
 [Agent Package Definitions](./agent_package_definitions.md).
+
+## Keeping The User's Edits At An Update
+
+Tools, skills, avatar and default runtime/model of a package definition are
+[personal settings](./personal_settings.md): they live outside the package
+folder, so an update never touches them. Edits made inside the package files
+(by hand, or by an older version of the app) are kept too: before a GitHub
+update replaces the folder, `GitHubAgentPackageUpdates.updatePackage` calls
+`PackageEditCapture.captureAndBackUp`, by click and by the automatic pass alike.
+
+1. Download the installed revision (`installer.downloadRevision`, from
+   codeload by commit, outside the API quota) into a temporary folder under
+   `<app-data>/agent-packages/.staging`.
+2. Read both trees with the agent package folder readers (the same IDs as the
+   app) and compare the four settings of every definition readable on both
+   sides.
+3. Copy every file on disk that differs from the installed revision (or that
+   the revision does not have) to
+   `<app-data>/agent-packages/backups/<install key>/<UTC time>/<path in package>`;
+   the latest 5 backups per package are kept.
+4. Turn the differences into personal settings (`captureFromPackageEdits`): list
+   differences are merged into the record; an avatar or runtime/model becomes
+   personal unless the record already has one. One write, one announcement.
+5. Remove the temporary folder, then stage and commit the update as before.
+
+| Failure | Result |
+| --- | --- |
+| The installed revision cannot be downloaded, or is unknown | The update stops (`UPDATE_FAILED`); nothing is written |
+| A definition cannot be read on either side (e.g. a JSON typo) | Not captured; warning `PACKAGE_EDIT_NOT_CAPTURED`; its changed files are backed up; the update goes on |
+| The backup cannot be written | The update stops; the partial backup is removed |
+| The personal settings file cannot be written | The update stops; the backup stays (counted in the 5) |
+| Removing the temporary folder | Logged only |
+| Staging, the skill-name check or the commit fail afterwards | As before; the captured settings and the backup stay. Effective values do not change (the edits are still in the files), and the next update captures the same result again |
+
+Local folder packages are never updated by AutoByteus, so nothing is captured
+for them: a file edit there is the package's own value.
 
 ## Package-Contained Configured Skills
 
@@ -204,7 +245,8 @@ preserving the owning agent/team context for package-contained skills.
 - A check refused or answered by GitHub's rate limit fails like any other check
   (`GitHub rate limit reached; try again after HH:MM.`); see
   [update notifications](./update_notifications.md#github-rate-limits).
-- GitHub updates stage the new archive materialization, validate package shape,
+- GitHub updates first back up and capture the user's edits (see above), then
+  stage the new archive materialization, validate package shape,
   update registry metadata, reload the agent package definitions, and then commit
   the replacement. If metadata fetch, staging, validation, registry write,
   reload, or replacement commit fails, the previous package

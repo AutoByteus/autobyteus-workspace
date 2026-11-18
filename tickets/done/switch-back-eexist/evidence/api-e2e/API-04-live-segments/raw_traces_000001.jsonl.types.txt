@@ -1,0 +1,4 @@
+user  Use your shell tool to run the command `ls`, then reply with exactly: 
+tool_call  
+tool_result  
+assistant  DONE

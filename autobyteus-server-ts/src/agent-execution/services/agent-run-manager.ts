@@ -1,3 +1,4 @@
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
 import type {
@@ -43,10 +44,13 @@ export type AgentRunManagerOptions = Readonly<{
   claudeBackendFactory: AgentRunBackendFactory;
   agyBackendFactory: AgentRunBackendFactory;
   grokBackendFactory: AgentRunBackendFactory;
+  deepSeekHarnessBackendFactory: AgentRunBackendFactory;
   activationRegistry: AgentRunActivationRegistry;
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
+  /** Ends a run's credential-proxy pass when its activation fails before it is attached (`null`: this host issues none). */
+  runPasses: RunPassRevocation | null;
   /** Supplies platform notices that ride along with each run's next external input (none by default). */
   inputPreface?: AgentRunInputPreface | null;
   /** Told when a run is published (the matching release is reported by the resource manager). */
@@ -60,10 +64,12 @@ export class AgentRunManager {
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly agyBackendFactory: AgentRunBackendFactory;
   private readonly grokBackendFactory: AgentRunBackendFactory;
+  private readonly deepSeekHarnessBackendFactory: AgentRunBackendFactory;
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
+  private readonly runPasses: RunPassRevocation | null;
   private readonly inputPreface: AgentRunInputPreface | null;
   private readonly lifecycleObserver: Pick<AgentRunLifecycleObserver, "runPublished"> | null;
   private readonly activations = new Set<AgentRunActivationOperation>();
@@ -103,6 +109,7 @@ export class AgentRunManager {
       options?.claudeBackendFactory,
       options?.agyBackendFactory,
       options?.grokBackendFactory,
+      options?.deepSeekHarnessBackendFactory,
       options?.activationRegistry,
       options?.memoryRecorder,
       options?.providerInputNormalizer,
@@ -119,10 +126,12 @@ export class AgentRunManager {
     this.claudeBackendFactory = options.claudeBackendFactory;
     this.agyBackendFactory = options.agyBackendFactory;
     this.grokBackendFactory = options.grokBackendFactory;
+    this.deepSeekHarnessBackendFactory = options.deepSeekHarnessBackendFactory;
     this.memoryRecorder = options.memoryRecorder;
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.agentToolMcpRunSessionDeactivator =
       options.agentToolMcpRunSessionDeactivator;
+    this.runPasses = options.runPasses ?? null;
     this.activationRegistry = options.activationRegistry;
     this.inputPreface = options.inputPreface ?? null;
     this.lifecycleObserver = options.lifecycleObserver ?? null;
@@ -161,7 +170,11 @@ export class AgentRunManager {
         onPublished: run => this.notifyPublished(run, request.kind),
         validateRun: run => { if (expectedPlatformId && run.getPlatformAgentRunId() !== expectedPlatformId) throw new PlatformAgentRunRestoreError(); },
         onTerminal: () => { this.activations.delete(operation); },
-        deactivateMcp: () => { this.agentToolMcpRunSessionDeactivator.deactivateForRun(runId); },
+        // The run's local sessions: its Agent Tools MCP session and its credential-proxy pass (AR-002).
+        releaseLocalSessions: () => {
+          this.agentToolMcpRunSessionDeactivator.deactivateForRun(runId);
+          this.runPasses?.revokeForRun(runId);
+        },
       });
       this.activations.add(operation);
       return operation;
@@ -181,6 +194,8 @@ export class AgentRunManager {
   private assertActivationAdmissionOpen(): void { if (!this.activationAdmissionOpen) throw new AgentCreationError("AgentRun activation admission is closed for process shutdown."); }
 
   hasActiveRun(runId: string): boolean { return this.getActiveRun(runId) !== null; }
+
+  peekPublishedRun(runId: string): AgentRun | null { return this.activationRegistry.peekPublishedRun(runId.trim()); }
 
   getActiveRun(runId: string): AgentRun | null {
     return this.activationRegistry.getActiveRun(runId.trim());
@@ -274,6 +289,8 @@ export class AgentRunManager {
     try {
       const activeRun = this.getActiveRun(normalizedRunId);
       if (!activeRun) return false;
+      // Stop now: interrupt the active turn and cancel unstarted queued input before preparing.
+      if (!(await activeRun.fenceInputAndInterruptForRootShutdown()).accepted) return false;
       const prepared = await this.prepareAgentRunTermination(activeRun);
       return (await prepared.commit().finish()).accepted;
     } catch (error) {
@@ -298,7 +315,15 @@ export class AgentRunManager {
     const snapshot = this.activationRegistry.snapshotForStop();
     errors.push(...snapshot.pruningErrors);
 
-    for (const run of snapshot.activeRuns) {
+    // Fence every run at once so busy turns are interrupted together; then finish them in order.
+    const fences = await Promise.allSettled(snapshot.activeRuns.map((run) => run.fenceInputAndInterruptForRootShutdown()));
+    for (const [index, run] of snapshot.activeRuns.entries()) {
+      const fence = fences[index]!;
+      if (fence.status === "rejected") { errors.push(fence.reason); continue; }
+      if (!fence.value.accepted) {
+        errors.push(new Error(`Agent run '${run.runId}' did not accept the stop fence: ${fence.value.message ?? "no reason"}`));
+        continue;
+      }
       try {
         const prepared = await this.prepareAgentRunTermination(run);
         const termination = await prepared.commit().finish();
@@ -381,6 +406,7 @@ export class AgentRunManager {
     if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeBackendFactory;
     if (runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return this.agyBackendFactory;
     if (runtimeKind === RuntimeKind.GROK_BUILD) return this.grokBackendFactory;
+    if (runtimeKind === RuntimeKind.DEEPSEEK_HARNESS) return this.deepSeekHarnessBackendFactory;
     return null;
   }
 

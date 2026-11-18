@@ -12,6 +12,8 @@ export interface Skill {
   isDisabled: boolean
   createdAt?: string
   updatedAt?: string
+  /** The imported integration whose folder holds this skill (the Skills page's "Integration" label), else null. */
+  integrationId?: string | null
 }
 
 export interface CreateSkillInput {

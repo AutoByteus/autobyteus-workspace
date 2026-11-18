@@ -1,0 +1,14 @@
+# Check: IMP-02
+# Steps: Same steps on the after APK; rotate to landscape, then back to portrait
+# Build: worktree with the manifest change (committed as the implementation commit)
+# Environment: Emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, 136 px top cutout, Android 15 / API 35, google_apis arm64), started -no-window -wipe-data; debug APK built in this worktree; isolated test node abx415-rotation-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:62261:8000, fresh volumes, test data only) reached from the emulator at http://10.0.2.2:62261, paired through its own REST routes
+# Date: 2026-11-06
+
+## before rotation
+{"href":"http://10.0.2.2:62261/mobile/","marker":"before-rotation","navigationStart":1793996264747,"navigationType":"navigate","viewport":"412x839","heading":"AutoByteus"}
+## after rotation to landscape
+{"href":"http://10.0.2.2:62261/mobile/","marker":"before-rotation","navigationStart":1793996264747,"navigationType":"navigate","viewport":"863x360","heading":"AutoByteus"}
+## after rotation back to portrait
+{"href":"http://10.0.2.2:62261/mobile/","marker":"before-rotation","navigationStart":1793996264747,"navigationType":"navigate","viewport":"412x839","heading":"AutoByteus"}
+
+Reading: same marker and navigationStart throughout; only the viewport changes; the Choose work sheet stays open (screenshots).

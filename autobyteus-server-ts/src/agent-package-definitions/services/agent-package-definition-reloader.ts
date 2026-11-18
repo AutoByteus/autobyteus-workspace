@@ -87,6 +87,8 @@ export class AgentPackageDefinitionReloader {
   private loadPromise: Promise<void> | null = null;
   private readonly pendingFolders = new Map<string, PendingFolder>();
   private readonly pendingPackageFolders = new Set<string>();
+  /** Packages the watcher asked to re-read quietly: expanded like a package change, announced only if something changed. */
+  private readonly pendingReconcile = new Set<string>();
   private timer: NodeJS.Timeout | null = null;
   private firstPendingAt: number | null = null;
   /** Folders a read applied early; re-read once after the quiet window (see `applyPendingChanges`). */
@@ -132,6 +134,17 @@ export class AgentPackageDefinitionReloader {
   }
 
   /**
+   * The watcher's catch-up: the OS may have dropped events of this package folder, so re-read all of its definition
+   * folders once the burst has settled. Unlike `markPackageFolderChanged`, nothing is announced unless a definition
+   * really changed.
+   */
+  reconcilePackageFolder(rootPath: string): void {
+    if (this.closed) return;
+    this.pendingReconcile.add(rootPath);
+    this.armTimer();
+  }
+
+  /**
    * Applies every pending change (and the first load) before a read answers. A read can apply a
    * change while its file is still being written, and the watcher may report that write only
    * once (it drops a second change event for the same file within a few milliseconds), so
@@ -139,7 +152,7 @@ export class AgentPackageDefinitionReloader {
    */
   async applyPendingChanges(): Promise<void> {
     await this.ensureLoaded();
-    if (this.pendingFolders.size > 0 || this.pendingPackageFolders.size > 0) {
+    if (this.hasPending()) {
       for (const [key, folder] of this.pendingFolders) this.trailingFolders.set(key, folder);
       this.flushPending();
       this.armTrailingTimer();
@@ -167,7 +180,7 @@ export class AgentPackageDefinitionReloader {
       this.pendingFolders.delete(key);
       folders.set(key, Object.freeze({ kind, folderId }));
     }
-    await this.enqueue(() => this.reloadBatch(folders, new Set()));
+    await this.enqueue(() => this.reloadBatch(folders, new Set(), new Set()));
   }
 
   close(): void {
@@ -211,7 +224,7 @@ export class AgentPackageDefinitionReloader {
       if (this.closed) return;
       // The quiet window has passed: apply the burst without a trailing re-check.
       this.ensureLoaded()
-        .then(() => { if (this.pendingFolders.size > 0 || this.pendingPackageFolders.size > 0) this.flushPending(); })
+        .then(() => { if (this.hasPending()) this.flushPending(); })
         .catch((error) => this.logger.warn("AGENT_PACKAGE_DEFINITIONS_SETTLE_FAILED", error));
     }, delay);
     this.timer.unref?.();
@@ -223,9 +236,13 @@ export class AgentPackageDefinitionReloader {
       this.trailingTimer = null;
       const folders = new Map(this.trailingFolders);
       this.trailingFolders.clear();
-      void this.enqueue(() => this.reloadBatch(folders, new Set()));
+      void this.enqueue(() => this.reloadBatch(folders, new Set(), new Set()));
     }, this.quietMs);
     this.trailingTimer.unref?.();
+  }
+
+  private hasPending(): boolean {
+    return this.pendingFolders.size > 0 || this.pendingPackageFolders.size > 0 || this.pendingReconcile.size > 0;
   }
 
   private clearTimer(): void {
@@ -237,10 +254,12 @@ export class AgentPackageDefinitionReloader {
   private flushPending(): void {
     const folders = new Map(this.pendingFolders);
     const packageFolders = new Set(this.pendingPackageFolders);
+    const reconcile = new Set(this.pendingReconcile);
     this.pendingFolders.clear();
     this.pendingPackageFolders.clear();
+    this.pendingReconcile.clear();
     this.clearTimer();
-    void this.enqueue(() => this.reloadBatch(folders, packageFolders));
+    void this.enqueue(() => this.reloadBatch(folders, packageFolders, reconcile));
   }
 
   private async rootContext(): Promise<RootContext> {
@@ -282,30 +301,38 @@ export class AgentPackageDefinitionReloader {
     return ids;
   }
 
-  private async reloadBatch(folders: ReadonlyMap<string, PendingFolder>, packageFolders: ReadonlySet<string>): Promise<void> {
+  /** Adds every definition folder the store knows of, or the package lists now, for one package folder. */
+  private async addPackageTargets(rootPath: string, targets: Map<string, PendingFolder>, context: RootContext): Promise<void> {
     const store = this.options.store;
+    for (const kind of AGENT_PACKAGE_DEFINITION_KINDS) {
+      for (const folderId of store.folderIds(kind)) {
+        if (store.folderLocation(kind, folderId)?.packageRoot === rootPath) {
+          targets.set(folderKey(kind, folderId), { kind, folderId });
+        }
+      }
+      const root = context.readable.find((candidate) => candidate.rootPath === rootPath);
+      if (!root) continue;
+      for (const folderId of await this.listFolderIds(kind, [root], context)) {
+        targets.set(folderKey(kind, folderId), { kind, folderId });
+      }
+    }
+  }
+
+  private async reloadBatch(
+    folders: ReadonlyMap<string, PendingFolder>,
+    packageFolders: ReadonlySet<string>,
+    reconcile: ReadonlySet<string>,
+  ): Promise<void> {
     let context: RootContext;
     const targets = new Map(folders);
     try {
       context = await this.rootContext();
-      for (const rootPath of packageFolders) {
-        for (const kind of AGENT_PACKAGE_DEFINITION_KINDS) {
-          for (const folderId of store.folderIds(kind)) {
-            if (store.folderLocation(kind, folderId)?.packageRoot === rootPath) {
-              targets.set(folderKey(kind, folderId), { kind, folderId });
-            }
-          }
-          const root = context.readable.find((candidate) => candidate.rootPath === rootPath);
-          if (!root) continue;
-          for (const folderId of await this.listFolderIds(kind, [root], context)) {
-            targets.set(folderKey(kind, folderId), { kind, folderId });
-          }
-        }
-      }
+      for (const rootPath of new Set([...packageFolders, ...reconcile])) await this.addPackageTargets(rootPath, targets, context);
     } catch (error) {
       // Infrastructure failure: keep the work pending for the next read; reads keep the current store.
       for (const [key, folder] of folders) this.pendingFolders.set(key, folder);
       for (const rootPath of packageFolders) this.pendingPackageFolders.add(rootPath);
+      for (const rootPath of reconcile) this.pendingReconcile.add(rootPath);
       this.logger.warn("AGENT_PACKAGE_DEFINITIONS_RELOAD_FAILED", error);
       return;
     }
@@ -321,6 +348,7 @@ export class AgentPackageDefinitionReloader {
     const context = await this.rootContext();
     this.pendingFolders.clear();
     this.pendingPackageFolders.clear();
+    this.pendingReconcile.clear();
     this.clearTimer();
     const idsByKind = new Map<AgentPackageDefinitionKind, Set<string>>();
     for (const kind of AGENT_PACKAGE_DEFINITION_KINDS) {

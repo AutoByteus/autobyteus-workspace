@@ -1,0 +1,30 @@
+# IMP-10 mutation checks: the new tests fail on the shapes they guard against
+# Commit: df789a89a5 (each file is restored with git checkout afterwards)
+# Env: macOS 26.5.2 arm64, node v22.23.1
+# Date: 2026-11-07T19:49:35Z
+
+## A. Card watch on the answer alone (the AR-001 shape)
+# sed: drop |${autoEntry.value?.version}|${autoEntry.value?.outcome} from the watch key
+103:watch(() => `${status.value?.version}|${status.value?.update?.state}`, () => {
+   × NodeAutoUpdate > 412 (d): a failure for a version the node has reached > AR-001 first view, switch off: the entries load after the first answer → exactly one recheck; the broadcast removes the line (AC-003) 14ms
+   × NodeAutoUpdate > 412 (d): a failure for a version the node has reached > a failure the main process keeps (node still older) is rechecked once more when the answer changes later 4ms
+   ✓ NodeAutoUpdate > 412 (d): a failure for a version the node has reached > no recheck for an automatic success 3ms
+   ✓ NodeAutoUpdate > 412 (d): a failure for a version the node has reached > no recheck for a pending attempt 2ms
+   ✓ NodeAutoUpdate > 412 (d): a failure for a version the node has reached > no recheck for no entry 2ms
+   ✓ NodeAutoUpdate > 412 (d): a failure for a version the node has reached > AC-003: right after the card's own update succeeds, the failure goes and the card's "Updated to <version>." shows 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 4 passed | 12 skipped (18)
+
+## B. Step test against the workflow before this change (6225a734a3)
+FAIL: test_softprops_uploads_no_updater_file (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) (step='Publish release assets with curated notes')
+FAIL: test_softprops_uploads_no_updater_file (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) (step='Publish release assets with generated notes fallback')
+FAIL: test_the_wait_and_the_updater_upload_are_the_last_steps_and_always_run (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest)
+FAIL: test_a_failed_asset_read_counts_as_missing_and_the_wait_goes_on (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+FAIL: test_a_ref_without_server_packages_is_not_held (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+FAIL: test_gives_up_after_60_minutes_naming_the_tag_and_every_missing_file (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+FAIL: test_packages_already_on_the_release_pass_at_once (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+FAIL: test_the_upload_fails_when_an_updater_file_is_missing (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+FAIL: test_uploads_the_four_updater_files_replacing_any_earlier_copy (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+FAIL: test_waits_until_all_six_files_are_there (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest)
+Ran 11 tests in 0.650s
+FAILED (failures=10)

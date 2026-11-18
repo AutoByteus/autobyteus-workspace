@@ -14,6 +14,8 @@
 // Cases: TS-001 delegated Team under an Agent run; TS-002 TEAMS run and group rows across three runs;
 // TS-003 a Team delegated by a Team run's member; TS-004 delegated and Org-internal Teams under an Org run;
 // TS-005/006/007 a task Team delegated by a task Team member under an Agent, Team and Org run (each dot = its shown agents).
+// TS-008 (autobyteus-448 DEC-004) an Agent run and a Team run idle with a background task (`BACKGROUND_STEP`): the active,
+// not pulsing dot and "Background task running" in the row, the Team row and the header; no Stop; Idle once it exits.
 // TS-001/003/004 also check the delegated Team row's layout: dot → people-group icon → name, the dot centered on the
 // name line, no overlap with the Task summary line or the per-copy Stop icon, and Stop shown only while the copy is live.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
@@ -27,6 +29,12 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+import { waitRunSocketReady } from './fixtures/run-socket-ready.mjs';
+import { delegatedNodes, readRunTree } from './fixtures/run-tree.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -44,7 +52,7 @@ const ledger = getArg('ledger-file', getArg('ledger'));
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007'];
+const ALL_CASES = ['TS-001', 'TS-002', 'TS-003', 'TS-004', 'TS-005', 'TS-006', 'TS-007', 'TS-008'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -89,7 +97,7 @@ const spawnLogged = (cmd, args, cwd, env, name) => {
   return child;
 };
 const backendEnv = () => ({ APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataRoot, 'db', 'development.db')}`,
-  AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
+  AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl, AUTOBYTEUS_LOG_DIR: path.join(stack.dataRoot, 'logs'),
   AUTOBYTEUS_MEMORY_DIR: path.join(stack.dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(stack.dataRoot, 'temp_workspace') });
 const startStack = async () => {
   assert(fs.existsSync(path.join(serverDir, 'dist/app.js')), 'Build the server first: pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build');
@@ -101,7 +109,7 @@ const startStack = async () => {
   const env = { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('AUTOBYTEUS_'))), ...backendEnv(),
     ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', stack.dataRoot],
-    serverDir, env, 'backend');
+    serverDir, withNodeCredential(env), 'backend');
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -109,7 +117,7 @@ const startStack = async () => {
   stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
     { ...process.env, NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1', BACKEND_NODE_BASE_URL: stack.backendUrl,
       BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
-      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
       BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
   await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240000);
   evidence.stack = { backendUrl: stack.backendUrl, frontendUrl: stack.frontendUrl, dataRoot: stack.dataRoot };
@@ -157,7 +165,7 @@ const createTask = async (label, description) => {
   const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}',
     { input: { name: `Docs Launch ${label} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
   const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
-    { input: { projectId, description } })).createProjectTask.taskId;
+    { input: { projectId, title: description.split('\n')[0], description } })).createProjectTask.taskId; // autobyteus-260: Tasks have a title
   return { projectId, taskId };
 };
 const createRoot = async (kind, ids) => {
@@ -179,11 +187,8 @@ const createRoot = async (kind, ids) => {
   const tree = (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: r.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
   return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m) => m.address === '/manager').agentRunId };
 };
-const storedTree = async (root) => {
-  if (root.kind === 'agent') return (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
-  if (root.kind === 'team') return (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree;
-  return (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory.org;
-};
+/** The root's delegated runs, from its tree (autobyteus-461 SR-084: its view carries its own parts only); each marked listed. */
+const storedTree = async (root) => ({ taskExecutions: delegatedNodes(await readRunTree(gql, root.kind, root.rootId)).map((node) => ({ ...node, startedAt: 'listed' })) });
 const terminateViaApi = async (root) => Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}'
   : root.kind === 'team' ? 'mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}'
     : 'mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
@@ -206,7 +211,10 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  await waitRunSocketReady(frames, route);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
@@ -234,6 +242,7 @@ const setupDelegatedTeam = async (kind, label) => {
 let browser;
 const newPage = async () => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US' });
+  await attachToBrowserContext(context);
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
@@ -244,7 +253,8 @@ const newPage = async () => {
 const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
 const openWorkspace = async (page) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
-  await until('workspace rows', async () => (await page.locator('[data-test="workspace-row"]').count()) >= 2, 60000);
+  // A folder is listed only while it has a run (workspace-tree-vs-chooser REQ-009), so Temp may be absent: wait for the folder used here.
+  await until('workspace row', async () => (await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).count()) >= 1, 60000);
   await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
 };
 const openRoot = async (page, root, names) => {
@@ -272,8 +282,8 @@ const openRoot = async (page, root, names) => {
 };
 const TEAM_DOT = '[data-test="team-aggregate-status-dot"]';
 const TASK_TEAM_ROW = '[data-test="workspace-team-transient-execution-row"][data-transient-kind="task_team"]';
-const taskTeamRow = (page, kind, teamRunId) => page.locator(kind === 'org' ? `[data-test="agent-org-task-team-row-${teamRunId}"]` : TASK_TEAM_ROW).first();
-const agentRow = (page, kind, agentRunId) => page.locator(kind === 'org' ? `[data-test="agent-org-task-agent-row-${agentRunId}"], [data-test="agent-org-agent-row-${agentRunId}"]`
+const taskTeamRow = (page, kind, teamRunId) => page.locator(TASK_TEAM_ROW).first();
+const agentRow = (page, kind, agentRunId) => page.locator(kind === 'org' ? `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"], [data-test="agent-org-agent-row-${agentRunId}"]`
   : `[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agentRunId}"]`).first();
 const COLOURS = [['gray', 'offline'], ['green', 'idle'], ['blue', 'running'], ['amber', 'initializing'], ['red', 'error']];
 const statusFromClass = (cls) => COLOURS.find(([c]) => new RegExp(`(?:bg|text)-${c}-`).test(cls ?? ''))?.[1] ?? `unknown(${cls})`;
@@ -316,11 +326,11 @@ const assertTeamDot = (dot, status, where, { icon = true } = {}) => {
 const waitTeamStatus = (label, row, status, ms = 30000) => until(label, async () => ((await teamDotOf(row)).status === status ? true : null), ms);
 const expandTaskTeam = async (page, kind, teamRunId) => {
   const row = taskTeamRow(page, kind, teamRunId);
-  if ((await row.getAttribute('aria-expanded')) === 'false') await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
+  if ((await row.getAttribute('aria-expanded')) === 'false') await row.locator('[data-test="workspace-team-transient-disclosure"]').click();
 };
 const collapseTaskTeam = async (page, kind, teamRunId) => {
   const row = taskTeamRow(page, kind, teamRunId);
-  if ((await row.getAttribute('aria-expanded')) === 'true') await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
+  if ((await row.getAttribute('aria-expanded')) === 'true') await row.locator('[data-test="workspace-team-transient-disclosure"]').click();
 };
 /** Counts the app's HTTP requests while a status change arrives (REQ-008: no new request or polling is needed). */
 const countRequests = (page) => { const seen = []; const on = (r) => { if (/\/graphql|\/rest\//.test(r.url())) {
@@ -342,17 +352,18 @@ const consistency = async (page, kind, s, alive, where) => {
  * The geometry of a delegated Team row next to the per-copy Stop icon and (Agent/Team roots) the Task summary line:
  * dot, people-group icon, name, summary and Stop as rendered boxes. The Org row's Stop sits beside its row button.
  */
+// autobyteus-461 FU-031: an Org's delegated rows are the shared transient row, laid out as in the other trees.
 const rowLayoutOf = async (page, kind, teamRunId) => taskTeamRow(page, kind, teamRunId).evaluate((row, isOrg) => {
   const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height }; };
-  const scope = isOrg ? row.parentElement : row;
+  const scope = row;
   const dot = row.querySelector('[data-test="team-aggregate-status-dot"]');
   return { dot: box(dot), icon: box(row.querySelector('[data-team-icon]')),
-    name: box(isOrg ? row.querySelector(':scope > span.truncate') : row.querySelector('.min-w-0.flex-1 > span.block.truncate')),
+    name: box(row.querySelector('.min-w-0.flex-1 > span.block.truncate')),
     summary: box(row.querySelector('[data-test="workspace-task-worker-task-summary"]')),
     stop: box(scope.querySelector('[data-test="workspace-delegated-stop"]')),
     stopLabel: scope.querySelector('[data-test="workspace-delegated-stop"]')?.getAttribute('aria-label') ?? null,
     row: box(row), dotStatus: dot?.getAttribute('data-status') ?? null };
-}, kind === 'org');
+}, false);
 const overlaps = (a, b) => !!a && !!b && a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
 /** Merged-row regression: the dot stays first, aligned with the name line, and overlaps neither the summary line nor Stop. */
 const assertRowLayout = (layout, where, { stop, summary }) => {
@@ -423,13 +434,21 @@ const agentRootJourney = async () => {
     out.errorAfterStop = await consistency(page, 'agent', s, true, 'error after Stop generation');
     assertTeamDot(out.errorAfterStop.dot, 'error', 'error Team');
     await shot(page, 'ts001-agent-error');
-    // AC-007: the user terminates the Agent run → the Team is gray, whatever its members last reported.
+    // autobyteus-461 REQ-001: the user terminates the Agent run; its delegated Team outlives it, keeping its own status and
+    // its own Stop (base stopped it with the run, AC-007's gray).
     await runRow.hover();
     await page.locator('[data-test="terminate-agent-run"]').first().click();
-    await waitTeamStatus('stopped run → gray', row, 'offline', 60000);
+    await until('the Agent run stopped', async () => !(await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}', { id: s.root.rootId })).getAgentRunResumeConfig?.isActive, 30000);
+    await sleep(3000);
+    out.afterRunStop = await teamDotOf(row);
+    assert(out.afterRunStop.status !== 'offline', 'the delegated Team went gray with its delegator (REQ-001: it outlives the Stop)', out.afterRunStop);
+    assert((await rowLayoutOf(page, 'agent', s.team.teamRunId)).stop, 'the delegated Team lost its own Stop with its delegator');
+    // Its own Stop: then it is gray.
+    assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.team.teamRunId })).terminateAgentTeamRun.success, 'Stop of the delegated Team');
+    await waitTeamStatus('the delegated Team stopped → gray', row, 'offline', 60000);
     out.stopped = await teamDotOf(row);
     assertTeamDot(out.stopped, 'offline', 'stopped Team');
-    await until('per-copy Stop gone after the host stops', async () => !(await rowLayoutOf(page, 'agent', s.team.teamRunId)).stop, 30000);
+    await until('per-copy Stop gone once the copy stopped', async () => !(await rowLayoutOf(page, 'agent', s.team.teamRunId)).stop, 30000);
     out.layoutStopped = await rowLayoutOf(page, 'agent', s.team.teamRunId);
     assertRowLayout(out.layoutStopped, 'TS-001 stopped row', { stop: false, summary: true });
     await shot(page, 'ts001-agent-stopped');
@@ -518,26 +537,34 @@ const teamRootJourney = async () => {
     out.layoutIdle = await rowLayoutOf(page, 'team', s.team.teamRunId);
     assertRowLayout(out.layoutIdle, 'TS-003 idle row', { stop: true, summary: true });
     await shot(page, 'ts003-team-root-idle');
-    // The Manager stays idle; only the delegated coordinator works → the delegated Team row AND the run row read busy.
+    // The Manager stays idle; only the delegated coordinator works → the delegated Team row reads busy. The run row and its
+    // group keep their own status (autobyteus-461 SR-082, user-approved: each run's status is its own; base counted the
+    // delegated agents in it).
     await collapseTaskTeam(page, 'team', s.team.teamRunId);
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.coordinator.agentRunId, content: 'Second pass. HOLD_TURN' }));
     await waitTeamStatus('delegated Team busy', row, 'running', 60000);
-    await waitTeamStatus('run row busy through delegated agents', runRow, 'running', 60000);
+    await sleep(2000);
     const group = page.locator(`[data-test="workspace-team-definition-row-${slug(s.names.team)}"]`);
     out.busy = { team: await teamDotOf(row), run: await teamDotOf(runRow), group: await teamDotOf(group) };
     assertTeamDot(out.busy.team, 'running', 'delegated Team busy (collapsed)');
-    assertTeamDot(out.busy.run, 'running', 'run row', { icon: false });
-    assertTeamDot(out.busy.group, 'running', 'group row', { icon: false });
+    assertTeamDot(out.busy.run, 'idle', 'run row: its own status, not its delegated agents\'', { icon: false });
+    assertTeamDot(out.busy.group, 'idle', 'group row: its runs\' own status', { icon: false });
     out.layoutBusy = await rowLayoutOf(page, 'team', s.team.teamRunId);
     assertRowLayout(out.layoutBusy, 'TS-003 busy collapsed row', { stop: true, summary: true });
     await shot(page, 'ts003-team-root-busy');
-    // AC-007: the user stops the Team run → every Team row of it gray.
+    // The user stops the Team run: its row is gray; its delegated Team outlives it (autobyteus-461 REQ-001), keeping its own
+    // status and its own Stop, and is gray once stopped by its own Stop (base stopped it with the run, AC-007).
     await runRow.locator('xpath=..').locator('button[aria-label="Terminate team"]').click();
-    await waitTeamStatus('delegated Team gray', row, 'offline', 60000);
     await waitTeamStatus('run row gray', runRow, 'offline', 60000);
+    await sleep(3000);
+    out.afterRunStop = await teamDotOf(row);
+    assert(out.afterRunStop.status !== 'offline', 'the delegated Team went gray with its delegator (REQ-001: it outlives the Stop)', out.afterRunStop);
+    assert((await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 'the delegated Team lost its own Stop with its delegator');
+    assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.team.teamRunId })).terminateAgentTeamRun.success, 'Stop of the delegated Team');
+    await waitTeamStatus('delegated Team gray', row, 'offline', 60000);
     out.stopped = { team: await teamDotOf(row), run: await teamDotOf(runRow) };
     assertTeamDot(out.stopped.team, 'offline', 'stopped delegated Team');
-    await until('per-copy Stop gone after the Team run stops', async () => !(await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 30000);
+    await until('per-copy Stop gone once the copy stopped', async () => !(await rowLayoutOf(page, 'team', s.team.teamRunId)).stop, 30000);
     out.layoutStopped = await rowLayoutOf(page, 'team', s.team.teamRunId);
     assertRowLayout(out.layoutStopped, 'TS-003 stopped row', { stop: false, summary: true });
     await shot(page, 'ts003-team-root-stopped');
@@ -558,7 +585,8 @@ const orgRootJourney = async () => {
     await waitTeamStatus('Org task Team idle', row, 'idle');
     out.idle = await consistency(page, 'org', s, true, 'org idle');
     assertTeamDot(out.idle.dot, 'idle', 'delegated Team under an Org run');
-    assert(/Team status: Idle/.test(out.idle.dot.rowLabel ?? ''), 'Org task Team accessible label lacks the status', out.idle.dot);
+    // autobyteus-461 FU-031: an Org's delegated Team row is the shared transient row; its label names the status as the Agent tree's does.
+    assert(/, idle, /.test(out.idle.dot.rowLabel ?? ''), 'Org task Team accessible label lacks the status word', out.idle.dot);
     assert(await runRow.locator(TEAM_DOT).count() === 0, 'the Org root row shows a Team dot (BEH-006)');
     // Org-internal (configured) Team rows: exactly one dot each, consistent with their member rows.
     const configured = page.locator('[data-test^="agent-org-team-row-"]');
@@ -580,14 +608,19 @@ const orgRootJourney = async () => {
     out.busy = await consistency(page, 'org', s, true, 'org busy');
     assertTeamDot(out.busy.dot, 'running', 'Org task Team busy');
     await shot(page, 'ts004-org-busy');
-    // AC-007: the Org run stops → its Team rows gray.
+    // The Org run stops: its own (Org-internal) Teams are gray; its delegated Team outlives it (autobyteus-461 REQ-001),
+    // keeping its own status and Stop, and is gray once stopped by its own Stop (base stopped it with the Org, AC-007).
     const t = await terminateViaApi(s.root);
     assert(t.success, `Org terminate failed: ${t.message}`);
+    for (let i = 0; i < await configured.count(); i += 1) await waitTeamStatus('Org-internal Team gray after the Org stops', configured.nth(i), 'offline', 60000);
+    await sleep(3000);
+    out.afterOrgStop = await teamDotOf(row);
+    assert(out.afterOrgStop.status !== 'offline', 'the delegated Team went gray with its Org (REQ-001: it outlives the Stop)', out.afterOrgStop);
+    assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.team.teamRunId })).terminateAgentTeamRun.success, 'Stop of the delegated Team');
     await waitTeamStatus('Org task Team gray', row, 'offline', 60000);
     out.stopped = await teamDotOf(row);
     assertTeamDot(out.stopped, 'offline', 'stopped Org task Team');
-    for (let i = 0; i < await configured.count(); i += 1) assert((await teamDotOf(configured.nth(i))).status === 'offline', 'Org-internal Team not gray after stop');
-    await until('per-copy Stop gone after the Org stops', async () => !(await rowLayoutOf(page, 'org', s.team.teamRunId)).stop, 30000);
+    await until('per-copy Stop gone once the copy stopped', async () => !(await rowLayoutOf(page, 'org', s.team.teamRunId)).stop, 30000);
     out.layoutStopped = await rowLayoutOf(page, 'org', s.team.teamRunId);
     assertRowLayout(out.layoutStopped, 'TS-004 stopped row', { stop: false, summary: false });
     await shot(page, 'ts004-org-stopped');
@@ -625,12 +658,12 @@ const nestedTaskTeamJourney = (kind) => async () => {
   const byRole = (team, role) => team.members.find((m) => new RegExp(`/${role}$`).test(m.address));
   const agents = { reviewer: byRole(outer, 'reviewer'), editor: byRole(outer, 'editor'), builder: byRole(inner, 'builder'), checker: byRole(inner, 'checker') };
   assert(Object.values(agents).every(Boolean), 'task Team members not found', { outer, inner });
-  const rowSelector = (team) => (kind === 'org' ? `[data-test="agent-org-task-team-row-${team.teamRunId}"]` : `${TASK_TEAM_ROW}[data-member-address="${team.address}"]`);
+  const rowSelector = (team) => `${TASK_TEAM_ROW}[data-member-address="${team.address}"]`;
   const teamRow = (page, team) => page.locator(rowSelector(team)).first();
   const setExpanded = async (page, team, expanded) => {
     const row = teamRow(page, team);
     if ((await row.getAttribute('aria-expanded')) !== String(expanded)) {
-      await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
+      await row.locator('[data-test="workspace-team-transient-disclosure"]').click();
       await until(`${team.address} ${expanded ? 'expanded' : 'collapsed'}`, async () => (await row.getAttribute('aria-expanded')) === String(expanded), 10000);
     }
     await sleep(800); // let the tree-row transition settle before measuring
@@ -650,7 +683,7 @@ const nestedTaskTeamJourney = (kind) => async () => {
   }, kind === 'org');
   /** The agent run ids shown under a Team row: the rows after it, deeper than it, until the next row at its depth or above. */
   const shownUnder = (rows, team) => {
-    const index = rows.findIndex((r) => (kind === 'org' ? r.test === `agent-org-task-team-row-${team.teamRunId}` : r.address === team.address && r.agentRunId === null));
+    const index = rows.findIndex((r) => (r.address === team.address && r.agentRunId === null));
     assert(index >= 0, `${team.address} row not found among the tree rows`, rows);
     const out = [];
     for (let i = index + 1; i < rows.length && rows[i].depth > rows[index].depth; i += 1) if (rows[i].agentRunId) out.push(rows[i].agentRunId);
@@ -668,10 +701,13 @@ const nestedTaskTeamJourney = (kind) => async () => {
     for (const [role, a] of Object.entries(agents)) result.statuses[role] = await statusOf(a.agentRunId);
     for (const [name, team] of Object.entries({ outer, inner })) {
       result.shown[name] = shownUnder(rows, team);
-      const statuses = []; for (const id of result.shown[name]) statuses.push(await statusOf(id));
+      // autobyteus-461 SR-082 (user-approved): a Team's status is its own members'; a Team its member delegated (shown under
+      // it, SR-084) is a run of its own and does not count.
+      const own = result.shown[name].filter((id) => team.members.some((member) => member.agentRunId === id));
+      const statuses = []; for (const id of own) statuses.push(await statusOf(id));
       result.expected[name] = expectedTeamStatus(statuses, true);
       result.dots[name] = await teamDotOf(teamRow(page, team));
-      assertTeamDot(result.dots[name], result.expected[name], `${where}: ${name} Team against the agent rows shown under it`);
+      assertTeamDot(result.dots[name], result.expected[name], `${where}: ${name} Team against its own member rows`);
     }
     for (const a of Object.values(agents)) assert(await agentRow(page, kind, a.agentRunId).locator(TEAM_DOT).count() === 0, `${where}: an agent row shows a Team dot`);
     const innerIds = [agents.builder.agentRunId, agents.checker.agentRunId];
@@ -689,25 +725,38 @@ const nestedTaskTeamJourney = (kind) => async () => {
     if (kind !== 'team') assert(await runRow.locator(TEAM_DOT).count() === 0, 'the root row shows a Team dot (BEH-006)');
     if (kind === 'team') assert(await page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`).locator(TEAM_DOT).count() === 0, 'a configured Agent row shows a Team dot');
     await shot(page, `ts-nested-${kind}-idle-expanded`);
-    // Only the inner Team's coordinator works, both Teams collapsed: the inner Team turns busy live, with no new request.
-    await setExpanded(page, inner, false); await setExpanded(page, outer, false);
+    // Only the inner Team's coordinator works, the inner Team collapsed under its expanded outer Team (autobyteus-461 SR-084: a
+    // nested delegated Team sits under the member that delegated it, so it is shown while its outer Team is expanded): the
+    // inner Team turns busy live, with no new request.
+    await setExpanded(page, outer, true); await setExpanded(page, inner, false);
     const stopCounting = countRequests(page);
     input.send(callTool('send_message_to', { target_agent_run_id: agents.builder.agentRunId, content: 'Check it again. HOLD_TURN' }));
     await waitTeamStatus('collapsed inner Team busy', teamRow(page, inner), 'running', 60000);
     await sleep(1000);
     out.requestsDuringChange = stopCounting();
-    out.busyCollapsed = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
+    const innerCollapsed = await teamDotOf(teamRow(page, inner));
+    // The outer Team's own dot, read with it collapsed too (it hides its nested Team then).
+    await setExpanded(page, outer, false);
+    out.busyCollapsed = { outer: await teamDotOf(teamRow(page, outer)), inner: innerCollapsed };
+    await setExpanded(page, outer, true);
     assertTeamDot(out.busyCollapsed.inner, 'running', 'collapsed inner Team');
-    if (kind === 'team') { await waitTeamStatus('run row busy', runRow, 'running', 60000); assertTeamDot(await teamDotOf(runRow), 'running', 'Team run row counts all its agents', { icon: false }); }
+    // SR-082 (user-approved): the Team run's own row keeps its own status; its delegated agents do not make it busy.
+    if (kind === 'team') { await sleep(1000); assertTeamDot(await teamDotOf(runRow), 'idle', 'Team run row: its own status, not its delegated agents\'', { icon: false }); }
     await shot(page, `ts-nested-${kind}-busy-collapsed`);
     // Expanded: each dot against the rows shown under it, and the collapsed dots were the same.
     out.busyExpanded = await check(page, 'busy, expanded');
     assert(out.busyExpanded.statuses.builder === 'running' && out.busyExpanded.statuses.reviewer !== 'running', 'only the inner coordinator should be working', out.busyExpanded);
     for (const name of ['outer', 'inner']) assert(out.busyCollapsed[name].status === out.busyExpanded.dots[name].status, `${name} Team dot differs collapsed vs expanded`, out);
     await shot(page, `ts-nested-${kind}-busy-expanded`);
-    // AC-007: the run stops → both Teams gray.
+    // The run stops: its delegated Teams outlive it (autobyteus-461 REQ-001), keeping their own status; each is gray once
+    // stopped by its own Stop (base stopped them with the run, AC-007).
     const t = await terminateViaApi(root);
     assert(t.success, `terminate failed: ${t.message}`);
+    await sleep(3000);
+    await setExpanded(page, outer, true);
+    out.afterRunStop = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
+    for (const name of ['outer', 'inner']) assert(out.afterRunStop[name].status !== 'offline', `the ${name} delegated Team went gray with its delegator (REQ-001)`, out.afterRunStop);
+    for (const team of [inner, outer]) assert((await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: team.teamRunId })).terminateAgentTeamRun.success, `Stop of ${team.address}`);
     await waitTeamStatus('outer Team gray', teamRow(page, outer), 'offline', 60000);
     await waitTeamStatus('inner Team gray', teamRow(page, inner), 'offline', 60000);
     out.stopped = { outer: await teamDotOf(teamRow(page, outer)), inner: await teamDotOf(teamRow(page, inner)) };
@@ -718,14 +767,64 @@ const nestedTaskTeamJourney = (kind) => async () => {
   } finally { input.close(); await context.close(); }
 };
 
+/** TS-008 (autobyteus-448 REQ-006, AC-005, DEC-004): runs idle with a background task show it; a Team shows its member's. */
+const backgroundTaskJourney = async () => {
+  const { ids, names } = await createDefinitions('TsBackground');
+  const agentRoot = await createRoot('agent', ids);
+  const teamRoot = await createRoot('team', ids);
+  const tree = (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRoot.rootId })).getTeamRunResumeConfig.executionTree;
+  const workerRunId = tree.root_team.members.find((m) => m.address === '/worker').agent_run_id;
+  const agentInput = await managerInput(agentRoot);
+  const teamInput = await managerInput(teamRoot);
+  const workerInput = await managerInput({ ...teamRoot, managerRunId: workerRunId });
+  const STEP = 'Start the docs server. BACKGROUND_STEP:{"seconds":45,"exitCode":0}';
+  workerInput.send('Hello, what is planned today?'); // answered at once: idle, no background task
+  agentInput.send(STEP); teamInput.send(STEP); // each turn ends with the daemon step open
+  const { page, errors, context } = await newPage();
+  const out = { runs: { agent: agentRoot.rootId, team: teamRoot.rootId, worker: workerRunId } };
+  const BG = { dot: ['bg-blue-500'], label: 'Background task running' };
+  try {
+    await openWorkspace(page);
+    // The Team run row: one member idle with a background task, another idle → the Team shows the background task.
+    await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).click();
+    const teamRow = page.locator(`[data-test="workspace-team-row-${teamRoot.rootId}"]`);
+    await waitTeamStatus('team row background', teamRow, 'background', 60000);
+    out.teamRow = await teamDotOf(teamRow);
+    assert(out.teamRow.ariaLabel === BG.label && out.teamRow.title === BG.label, 'Team row label', out.teamRow);
+    assert(BG.dot.every((c) => (out.teamRow.dotClass ?? '').split(/\s+/).includes(c)) && !(out.teamRow.dotClass ?? '').includes('animate-pulse'), 'Team row dot: active blue, not pulsing', out.teamRow);
+    await shot(page, 'ts008-team-row-background');
+    // The Agent run: its row dot, the header and the composer.
+    await page.locator('[data-test="workspace-agent-row"]', { hasText: names.manager }).click();
+    const runRow = page.locator('[data-test="workspace-agent-run-row"]').first();
+    await runRow.click();
+    const header = page.locator('[title^="Agent Status:"]').first();
+    await until('header Background task running', async () => ((await header.innerText().catch(() => '')).trim() === BG.label ? true : null), 60000);
+    out.agentRowDot = await runRow.locator('span.rounded-full').first().getAttribute('class');
+    out.header = (await header.innerText()).trim();
+    out.stop = await page.locator('button[title="Stop generation"]').count();
+    out.send = await page.locator('button[title="Send message"]').count();
+    assert((out.agentRowDot ?? '').split(/\s+/).includes('bg-blue-500') && !(out.agentRowDot ?? '').includes('animate-pulse'), 'agent row dot: active blue, not pulsing', out);
+    assert(out.stop === 0 && out.send >= 1, 'no Stop for "Background task running"; Send is offered', out);
+    await shot(page, 'ts008-agent-background');
+    // The daemons exit (45 s after they started): Idle in the header and the Team row.
+    await until('header Idle', async () => ((await header.innerText().catch(() => '')).trim() === 'Idle' ? true : null), 90000);
+    await waitTeamStatus('team row idle', teamRow, 'idle', 30000);
+    out.after = { header: (await header.innerText()).trim(), team: await teamDotOf(teamRow) };
+    await shot(page, 'ts008-idle-again');
+    assert(errors.length === 0, 'browser errors', errors);
+    return out;
+  } finally { agentInput.close(); teamInput.close(); workerInput.close(); await context.close(); }
+};
+
 const CASES = {
   'TS-001': ['Agent run: delegated Team idle → busy while collapsed → busy+error → error after Stop generation → gray when the run stops', agentRootJourney],
   'TS-002': ['TEAMS rows: idle run green, alive unstarted gray with Stop, group = highest run, Stop button → gray, all stopped → gray', teamsSectionJourney],
-  'TS-003': ['Team run: member-delegated Team row and the run row count the delegated agents; Stop → gray', teamRootJourney],
+  'TS-003': ['Team run: member-delegated Team row busy, the run row keeps its own status (SR-082); the delegated Team outlives the Stop (REQ-001), gray on its own Stop', teamRootJourney],
   'TS-004': ['Org run: delegated and Org-internal Team rows, Org root row unchanged; stop → gray', orgRootJourney],
   'TS-005': ['Agent run: a task Team delegated by a task Team member; each Team dot = its shown agents, collapsed or expanded; stop → gray', nestedTaskTeamJourney('agent')],
-  'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; run row counts all; stop → gray', nestedTaskTeamJourney('team')],
+  'TS-006': ['Team run: a task Team delegated by a task Team member; each Team dot = its shown agents; the run row keeps its own status (SR-082); stop → gray', nestedTaskTeamJourney('team')],
   'TS-007': ['Org run: a task Team delegated by a member of a delegated Org Team copy; each Team dot = its shown agents; stop → gray', nestedTaskTeamJourney('org')],
+  'TS-008': ['Background tasks: an Agent run and a Team run idle with a background task show "Background task running" with the active dot and no Stop; Idle once it exits', backgroundTaskJourney],
 };
 
 let result = 'Pass';

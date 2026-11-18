@@ -18,6 +18,7 @@ import {
 } from "./application-package-registry-entry-utils.js";
 import type { ApplicationCatalogTransitionService } from "../../application-orchestration/services/application-catalog-transition-service.js";
 import type { ApplicationPackageRegistryService } from "./application-package-registry-service.js";
+import type { AgentDefinitionChangeSignal } from "../../agent-definition/services/agent-definition-change-signal.js";
 
 export class ApplicationPackageCommandService {
   constructor(private readonly dependencies: {
@@ -25,6 +26,8 @@ export class ApplicationPackageCommandService {
     provider: Pick<FileApplicationBundleProvider, "validatePackageRoot">;
     catalogTransition: Pick<ApplicationCatalogTransitionService, "runPackageTransition">;
     installer?: GitHubApplicationPackageInstaller;
+    /** Told after a committed import, reload or removal: the package's agents may have changed. */
+    definitionChanges?: Pick<AgentDefinitionChangeSignal, "notifyChanged"> | null;
   }) {}
 
   private get installer(): GitHubApplicationPackageInstaller {
@@ -66,6 +69,7 @@ export class ApplicationPackageCommandService {
         );
       },
     });
+    this.announceDefinitionChanges();
     return this.dependencies.registry.listApplicationPackages();
   }
 
@@ -100,7 +104,13 @@ export class ApplicationPackageCommandService {
         if (existingRecord) await this.dependencies.registry.restorePackageRecord(existingRecord);
       },
     });
+    this.announceDefinitionChanges();
     return this.dependencies.registry.listApplicationPackages();
+  }
+
+  /** After a committed package change: its agents may have new tools. Never fails the command. */
+  private announceDefinitionChanges(): void {
+    this.dependencies.definitionChanges?.notifyChanged();
   }
 
   private async importLocalPathPackage(
@@ -128,6 +138,7 @@ export class ApplicationPackageCommandService {
         await this.dependencies.registry.removePackageRecord(packageId).catch(() => undefined);
       },
     });
+    this.announceDefinitionChanges();
     return this.dependencies.registry.listApplicationPackages();
   }
 
@@ -174,6 +185,7 @@ export class ApplicationPackageCommandService {
           }).catch(() => undefined);
         },
       });
+      this.announceDefinitionChanges();
       return this.dependencies.registry.listApplicationPackages();
     } catch (error) {
       await fsPromises.rm(installed.managedInstallPath, {

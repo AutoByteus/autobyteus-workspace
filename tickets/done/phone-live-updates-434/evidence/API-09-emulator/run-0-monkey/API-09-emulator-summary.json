@@ -1,0 +1,116 @@
+{
+  "startedAt": "2026-11-08T09:59:01.031Z",
+  "serial": "emulator-5584",
+  "cycles": [],
+  "connections": [
+    {
+      "openedAt": 10403,
+      "closedAt": 42851,
+      "webSocket": false,
+      "path": "/rest/remote-access/status"
+    },
+    {
+      "openedAt": 12728,
+      "closedAt": 42849,
+      "webSocket": false,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjUyMjc3IiwicGFpcmluZ0NvZGUiOiJCaGZ3TFI2eHpKNVQ1TzVnTnIzVzBuOHQiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA4VDEwOjA0OjA2LjI0OVoiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0"
+    },
+    {
+      "openedAt": 12904,
+      "closedAt": 32549,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/6gKLa7nn.js"
+    },
+    {
+      "openedAt": 12928,
+      "closedAt": 42850,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css"
+    },
+    {
+      "openedAt": 12942,
+      "closedAt": 42850,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/C0peU2YB.js"
+    },
+    {
+      "openedAt": 12949,
+      "closedAt": 32549,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DxfFyxED.js"
+    },
+    {
+      "openedAt": 12964,
+      "closedAt": 34613,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/J1bxg2UA.js"
+    },
+    {
+      "openedAt": 17432,
+      "closedAt": 42849,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 17699,
+      "closedAt": 42850,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_cbc6685f27244914b15e5096946ba315?access_token=…"
+    },
+    {
+      "openedAt": 17766,
+      "closedAt": 42850,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_302e6663143d463dbdd29436e0135dcd?access_token=…"
+    }
+  ],
+  "timeline": [
+    {
+      "t": 5418,
+      "event": "device",
+      "model": "sdk_gphone64_arm64",
+      "sdk": "35",
+      "webview": "124.0.6367.219"
+    },
+    {
+      "t": 6558,
+      "event": "apk",
+      "versionName": "0.1.0"
+    },
+    {
+      "t": 28267,
+      "event": "paired, run list shown"
+    },
+    {
+      "t": 32550,
+      "event": "marker sent",
+      "id": "EMU-T-1"
+    },
+    {
+      "t": 52045,
+      "event": "marker sent",
+      "id": "EMU-T-2"
+    },
+    {
+      "t": 107044,
+      "event": "marker sent",
+      "id": "EMU-T-3"
+    },
+    {
+      "t": 167045,
+      "event": "marker sent",
+      "id": "EMU-T-4"
+    }
+  ],
+  "error": "Error: Command failed: /Users/normy/Library/Android/sdk/platform-tools/adb -s emulator-5584 shell monkey -p org.autobyteus.mobile -c android.intent.category.LAUNCHER 1\nargs: [-p, org.autobyteus.mobile, -c, android.intent.category.LAUNCHER, 1]\n arg: \"-p\"\n arg: \"org.autobyteus.mobile\"\n arg: \"-c\"\n arg: \"android.intent.category.LAUNCHER\"\n arg: \"1\"\ndata=\"org.autobyteus.mobile\"\ndata=\"android.intent.category.LAUNCHER\"\n** SYS_KEYS has no physical keys but with factor 2.0%.\n\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:916:11)\n    at execFileSync (node:child_process:952:15)\n    at adb (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:46:26)\n    at shell (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:47:28)\n    at cycle (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:173:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:191:3",
+  "runs": {
+    "teamRun": "emu_team_302e6663143d463dbdd29436e0135dcd",
+    "leadRun": "emu_lead_f48e9b875c854a85b4663e821b686922",
+    "agentRun": "emu_agent_cbc6685f27244914b15e5096946ba315"
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T10:02:12.965Z"
+}

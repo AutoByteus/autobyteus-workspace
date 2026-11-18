@@ -1,7 +1,6 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import type { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../src/skills/services/skill-service.js";
@@ -15,13 +14,18 @@ import type { AcpAgentLaunchProfile } from "../../../../../src/runtime-managemen
 import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js";
 import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
+import { AcpAgentProcess } from "../../../../../src/runtime-management/acp/acp-agent-process.js";
+import type { IntegrationRunAccess } from "../../../../../src/credential-proxy/integration-run-access.js";
+import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { getGrokWorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/grok/grok-workspace-skill-materializer.js";
 import {
-  FAKE_ACP_AGENT,
+  fakeAcpLaunchProfile,
   fixturePath,
   fixtureSessionId,
+  makeTestTempDir,
   readFixture,
+  removeTestTempDirs,
   waitFor,
   writeCustomFixture,
   type FixtureRow,
@@ -32,36 +36,44 @@ const DESCRIPTOR = {
   serverUrl: "http://127.0.0.1:9/mcp/run-1", enabledTools: ["send_message_to"],
 };
 
+const AGENT_TOOLS_MCP_SERVER = { type: "http", name: "autobyteus_agent_tools", url: DESCRIPTOR.serverUrl, headers: [] };
+
 const backends: AcpAgentRunBackend[] = [];
 afterEach(async () => { for (const backend of backends.splice(0)) await backend.terminate(); });
 
-const tempDir = (prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+const tempDir = makeTestTempDir;
+afterAll(removeTestTempDirs);
 
-const launchProfileFor = (fixture: string, recordFile: string): AcpAgentLaunchProfile => ({
-  agentLabel: "Fake Agent",
-  command: () => process.execPath,
-  args: () => [FAKE_ACP_AGENT],
-  env: (base) => ({ ...base, FAKE_ACP_FIXTURE: fixture, FAKE_ACP_RECORD: recordFile }),
-  normalizeModels: () => [],
-});
+const launchProfileFor = (fixture: string, recordFile: string, reportMcpReady: boolean): AcpAgentLaunchProfile =>
+  fakeAcpLaunchProfile("Fake Agent", () => ({
+    FAKE_ACP_FIXTURE: fixture, FAKE_ACP_RECORD: recordFile,
+    ...(reportMcpReady ? { FAKE_ACP_REPORT_MCP_READY: "1" } : {}),
+  }));
 
 const createFactory = (fixture: string, options: {
-  mcpActive?: boolean; skillScope?: "CONFIGURED" | "ALL_INSTALLED"; skillMaterializer?: unknown;
+  /** The fixture carries its own MCP server status rows; otherwise the fake agent reports ready. */
+  fixtureReportsMcp?: boolean; skillScope?: "CONFIGURED" | "ALL_INSTALLED"; skillMaterializer?: unknown;
+  integrationRunAccess?: IntegrationRunAccess;
+  semanticMemory?: { memoryDir: string; enabled: boolean };
 } = {}) => {
   const recordFile = path.join(tempDir("acp-record-"), "client.jsonl");
   const workingDirectory = tempDir("acp-ws-");
-  const mcpSessions = { activateForRun: vi.fn(() => options.mcpActive
-    ? { kind: "active", descriptor: DESCRIPTOR } : { kind: "inactive" }) };
+  // Every run has an Agent Tools MCP session, so every session configures the server.
+  const mcpSessions = { activateForRun: vi.fn(() => ({ kind: "active", descriptor: DESCRIPTOR })) };
   const factory = new AcpAgentRunBackendFactory({
-    launchProfile: launchProfileFor(fixture, recordFile),
+    launchProfile: launchProfileFor(fixture, recordFile, !options.fixtureReportsMcp),
     sessionProfile: grokBuildSessionProfile,
     definitions: { getAgentDefinitionById: async () => new AgentDefinition({
       id: "def-1", name: "Reviewer", role: "Code reviewer", description: "Reviews code", toolNames: [],
+      semanticMemoryEnabled: options.semanticMemory?.enabled === true,
     }) } as unknown as AgentDefinitionService,
     skills: { resolveSkillScope: () => options.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as unknown as SkillService,
     workspaces: { resolveWorkingDirectory: async () => workingDirectory },
     mcpSessions: mcpSessions as unknown as AgentToolMcpRunSessionActivator,
     skillMaterializer: (options.skillMaterializer ?? getGrokWorkspaceSkillMaterializer()) as ReturnType<typeof getGrokWorkspaceSkillMaterializer>,
+    integrationRunAccess: options.integrationRunAccess ?? null,
+    providerRelayAccess: null,
+    semanticMemory: new AgentSemanticMemory({ memoryDir: options.semanticMemory?.memoryDir ?? tempDir("acp-semantic-unused-") }),
   });
   const recorded = () => fs.existsSync(recordFile)
     ? fs.readFileSync(recordFile, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];
@@ -87,15 +99,17 @@ const mcpStatus = (status: string): FixtureRow => ({ dir: "in", msg: { jsonrpc: 
 describe("AcpAgentRunBackendFactory", () => {
   it("creates a run bound to the agent session id with the composed prompt in the session rules (DS-001)", async () => {
     const { factory, recorded, workingDirectory } = createFactory(fixturePath("prompt"));
-    const runConfig = config();
+    const runConfig = config({ project: { projectId: "project_a1", name: "AutoByteus" } });
     const backend = await factory.beginPreparation({ kind: "new", config: runConfig, runId: "run-1" }).prepare();
     backends.push(backend);
     expect(backend.getPlatformAgentRunId()).toBe(fixtureSessionId("prompt"));
     expect(backend.getContext().runtimeContext).toEqual(new AcpAgentRunContext(fixtureSessionId("prompt"), workingDirectory));
 
     const newSession = recorded().find((message) => message.method === "session/new");
-    expect(newSession.params).toMatchObject({ cwd: workingDirectory, mcpServers: [], _meta: { yoloMode: false } });
+    expect(newSession.params).toMatchObject({ cwd: workingDirectory, mcpServers: [AGENT_TOOLS_MCP_SERVER], _meta: { yoloMode: false } });
     expect(newSession.params._meta.rules).toContain("Reviewer");
+    // REQ-006: grok_build (ACP) gets the Project section of the shared composition.
+    expect(newSession.params._meta.rules).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
     expect(Object.keys(newSession.params._meta).sort()).toEqual(["rules", "yoloMode"]);
 
     const batches: AgentRunEvent[][] = [];
@@ -110,6 +124,43 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(backend.getLifecycleSnapshot()).toMatchObject({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
   });
 
+  it("tells an agent with semantic memory its folder in the session rules and creates it; others get neither (REQ-005, REQ-008)", async () => {
+    const memoryDir = tempDir("acp-semantic-memory-");
+    const folder = path.join(memoryDir, "semantic", "def-1");
+    const enabled = createFactory(fixturePath("prompt"), { semanticMemory: { memoryDir, enabled: true } });
+    backends.push(await enabled.factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare() as AcpAgentRunBackend);
+    const rules = enabled.recorded().find((message) => message.method === "session/new").params._meta.rules as string;
+    // The section follows every shared section; only the agent's Long-Running Commands section comes after it (autobyteus-483).
+    expect(rules.endsWith(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n${grokBuildSessionProfile.longRunningCommandSection}`)).toBe(true);
+    expect(fs.statSync(folder).isDirectory()).toBe(true);
+
+    const otherMemoryDir = tempDir("acp-semantic-memory-off-");
+    const disabled = createFactory(fixturePath("prompt"), { semanticMemory: { memoryDir: otherMemoryDir, enabled: false } });
+    backends.push(await disabled.factory.beginPreparation({ kind: "new", config: config(), runId: "run-2" }).prepare() as AcpAgentRunBackend);
+    expect(disabled.recorded().find((message) => message.method === "session/new").params._meta.rules).not.toContain("Semantic Memory");
+    expect(fs.readdirSync(otherMemoryDir)).toEqual([]);
+  });
+
+  it("starts an allowed run's agent process with the launch profile's environment plus its integration variables (DS-002)", async () => {
+    const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
+    const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "def-1" ? variables : {}));
+    const spawn = vi.spyOn(AcpAgentProcess, "spawn");
+    try {
+      const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, integrationsStartingOnRestart: async () => [] } });
+      backends.push(await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare());
+      expect(environmentForRun).toHaveBeenCalledWith({ runId: "run-1", agentDefinitionId: "def-1" }, process.env);
+      const env = spawn.mock.calls[0]![0].env as Record<string, string>;
+      expect(env).toMatchObject({ ...variables, FAKE_ACP_FIXTURE: fixturePath("prompt"), PATH: process.env.PATH });
+      expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
+
+      const { factory: other } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, integrationsStartingOnRestart: async () => [] } });
+      backends.push(await other.beginPreparation({ kind: "new", config: config({ agentDefinitionId: "def-2" }), runId: "run-2" }).prepare());
+      expect(spawn.mock.calls[1]![0].env).not.toHaveProperty("AUTOBYTEUS_GITHUB_API_URL");
+    } finally {
+      spawn.mockRestore();
+    }
+  });
+
   it.each([["CONFIGURED", "fail"], ["ALL_INSTALLED", "prefer_workspace"]] as const)(
     "materializes .grok/skills with the collision policy of the %s scope (D-15 Rule 1)", async (skillScope, workspaceCollisionPolicy) => {
       const materialize = vi.fn(async () => { throw new Error("stop after materialization"); });
@@ -121,7 +172,7 @@ describe("AcpAgentRunBackendFactory", () => {
     });
 
   it("attaches Agent Tools MCP over HTTP and waits until the agent reports it ready", async () => {
-    const { factory, recorded } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("ready")]), { mcpActive: true });
+    const { factory, recorded } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("ready")]), { fixtureReportsMcp: true });
     const backend = await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare();
     backends.push(backend);
     expect(recorded().find((message) => message.method === "session/new").params.mcpServers)
@@ -129,7 +180,7 @@ describe("AcpAgentRunBackendFactory", () => {
   });
 
   it("fails activation with an error naming the MCP server when it is unavailable (REQ-007)", async () => {
-    const { factory } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("unavailable")]), { mcpActive: true });
+    const { factory } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("unavailable")]), { fixtureReportsMcp: true });
     const error = await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare().catch((caught: unknown) => caught);
     expect(error).toBeInstanceOf(AgentCreationError);
     expect((error as Error).message).toContain("MCP server 'autobyteus_agent_tools' unavailable");
@@ -148,7 +199,7 @@ describe("AcpAgentRunBackendFactory", () => {
 
   it("reports a missing HTTP MCP capability explicitly instead of failing obscurely (AC-016)", async () => {
     const rows = withInitialize(readFixture("handshake"), (result) => { result.agentCapabilities.mcpCapabilities = {}; });
-    const { factory, recorded } = createFactory(writeCustomFixture(rows), { mcpActive: true });
+    const { factory, recorded } = createFactory(writeCustomFixture(rows), { fixtureReportsMcp: true });
     await expect(factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare()).rejects.toThrow(new AgentCreationError(
       "ACP_AGENT_CAPABILITY_MISSING: Fake Agent does not support HTTP MCP servers."));
     expect(recorded().some((message) => message.method === "session/new")).toBe(false);
@@ -163,7 +214,7 @@ describe("AcpAgentRunBackendFactory", () => {
     backends.push(backend);
     expect(backend.getPlatformAgentRunId()).toBe(sessionId);
     const load = recorded().find((message) => message.method === "session/load");
-    expect(load.params).toMatchObject({ sessionId, mcpServers: [] });
+    expect(load.params).toMatchObject({ sessionId, mcpServers: [AGENT_TOOLS_MCP_SERVER] });
     expect(load.params._meta).toBeUndefined();
     const batches: AgentRunEvent[][] = [];
     backend.subscribeToSourceEventBatches((events) => { batches.push([...events]); });
@@ -172,17 +223,20 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(batches.flat().some((event) => event.eventType === AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED)).toBe(false);
   });
 
-  it("rejects restore without an exact session binding or without session/load support", async () => {
+  it("rejects restore without an exact session binding or without session/load or session/resume support", async () => {
     const { factory } = createFactory(fixturePath("load"));
     await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: null }) }).prepare())
       .rejects.toBeInstanceOf(AgentCreationError);
     await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext("run-1") }) }).prepare())
       .rejects.toThrow("PLATFORM_AGENT_RUN_BINDING_INVALID");
-    const noLoad = withInitialize(readFixture("load"), (result) => { result.agentCapabilities.loadSession = false; });
-    const { factory: dshLike } = createFactory(writeCustomFixture(noLoad));
-    await expect(dshLike.beginPreparation({ kind: "restore", context: new AgentRunContext({
+    const noRestore = withInitialize(readFixture("load"), (result) => {
+      result.agentCapabilities.loadSession = false;
+      delete result.agentCapabilities.sessionCapabilities.resume;
+    });
+    const { factory: automationOnly } = createFactory(writeCustomFixture(noRestore));
+    await expect(automationOnly.beginPreparation({ kind: "restore", context: new AgentRunContext({
       runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(fixtureSessionId("load")),
-    }) }).prepare()).rejects.toThrow("Fake Agent does not support session/load");
+    }) }).prepare()).rejects.toThrow("Fake Agent does not support session/load or session/resume");
   });
 
   it("surfaces a load failure as an AgentCreationError carrying the agent text (restore wraps it as cause, AR-006)", async () => {

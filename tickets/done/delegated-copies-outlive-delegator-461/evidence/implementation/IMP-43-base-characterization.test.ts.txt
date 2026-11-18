@@ -1,0 +1,54 @@
+import fs from "node:fs/promises";
+import { afterEach, describe, it, vi } from "vitest";
+import { toDelegateTaskResult, toTaskDelegationToolErrorPayload } from "../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
+import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { HOST, buildManager, cleanupDirectories as cleanupStandalone } from "../standalone-agent-run-root/helpers/standalone-root-harness.js";
+import { cleanupDirectories as cleanupTeam, harness as teamHarness } from "../agent-team-execution/helpers/team-root-collaborator-harness.js";
+
+// autobyteus-461 SR-059: base 827f1e68dc characterization. A copy hosted in its delegator's root reads, for the
+// assigner's own agent (the agent the user started) and for an assigner's configured placement: what `delegate_task`
+// answers, what `list_available_agents` lists, and what the `@` note says.
+afterEach(async () => {
+  vi.restoreAllMocks();
+  await cleanupStandalone();
+  await cleanupTeam();
+});
+
+const answer = async (call: () => Promise<Parameters<typeof toDelegateTaskResult>[0]>) => {
+  try { return toDelegateTaskResult(await call()); } catch (error) { return toTaskDelegationToolErrorPayload(error); }
+};
+const listed = (entries: readonly unknown[]) => JSON.parse(JSON.stringify(entries));
+
+describe("base 827f1e68dc: a hosted copy and its assigner's agents", () => {
+  it("records the exact answers", async () => {
+    // Agent root: the host (the agent the user started) delegates to a catalog agent; the copy reads the host.
+    const resources = new InMemoryTaskExecutionResources();
+    resources.addTask("task-1");
+    const f = await buildManager(resources);
+    const agentRoot = (await f.manager.resolveRoot(HOST))!;
+    const delegated = toDelegateTaskResult(await agentRoot.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review" } as never));
+    const copyRunId = (delegated as { target_agent_run_id: string }).target_agent_run_id;
+    const copy = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(HOST), memberAddress: "/code_reviewer", agentRunId: copyRunId });
+    const agentRootAnswers = {
+      delegateToAssignersOwnAgent: await answer(() => agentRoot.delegateToNewCopy({ identity: copy }, { recipient_address: "/research_assistant", description: "Do it" } as never)),
+      listAvailableAgents: listed(await agentRoot.listAvailableAgents(copy)),
+      mentionAssignersOwnAgent: await agentRoot.resolveCollaboratorMentions({ focusedAgentRunId: copyRunId, mentions: [{ kind: "agent", definitionId: "research-assistant" }] }),
+    };
+
+    // Team root: the coordinator delegates to a catalog agent; the copy reads the team's configured /worker (definition `lead`).
+    const t = await teamHarness({ withTeammate: true, teammateDefinitionId: "lead" });
+    (t.dependencies.taskExecutionResources as unknown as { addTask(id: string): void }).addTask("T1");
+    const teamDelegated = toDelegateTaskResult(await t.root.delegateToNewCopy({ identity: t.identity("/coordinator", "run-coordinator") }, { recipient_address: "/code_reviewer", description: "Review" } as never));
+    const teamCopyRunId = (teamDelegated as { target_agent_run_id: string }).target_agent_run_id;
+    const teamCopy = t.identity("/code_reviewer", teamCopyRunId);
+    const teamRootAnswers = {
+      delegateToAssignersConfiguredPlacement: await answer(() => t.root.delegateToNewCopy({ identity: teamCopy }, { recipient_address: "/worker", description: "Do it" } as never)),
+      delegateToAssignersCoordinator: await answer(() => t.root.delegateToNewCopy({ identity: teamCopy }, { recipient_address: "/coordinator", description: "Do it" } as never)),
+      listAvailableAgents: listed(await t.root.listAvailableAgents(teamCopy)),
+      mentionAssignersConfiguredPlacement: await t.root.resolveCollaboratorMentions({ focusedAgentRunId: teamCopyRunId, mentions: [{ kind: "agent", definitionId: "lead" }] }),
+    };
+    await fs.writeFile(new URL("./hosted-copy-in-run-set.base-answers.json", import.meta.url),
+      `${JSON.stringify({ delegated, teamDelegated, agentRoot: agentRootAnswers, teamRoot: teamRootAnswers }, null, 2)}\n`);
+  });
+});

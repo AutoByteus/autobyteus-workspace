@@ -1,0 +1,32 @@
+# API-07b — autobyteus-web/tests/e2e/agent-runtimes-settings-probe.mjs --skip-server-build, this branch vs base
+# This branch: worktree available-agent-runtimes-tool, server dist from 683b036be9 + this round's fake CLI (output /tmp/arp-run1)
+# Base: temporary worktree /tmp/aar-base-a2faf424d6 at origin/personal a2faf424d6 (pnpm install --offline, prebuild, nuxt prepare, server build), output /tmp/arp-base
+# macOS darwin 25.5, headless Chrome; 2026-10-25
+
+## THIS BRANCH: Result Fail, browserErrors [], cleanup {'browser': 'closed', 'frontend': 'terminated:47008', 'backend': 'terminated:46618', 'desktopBackend': 'terminated:46980', 'tempRoot': 'removed'}
+Fail            ARP-01  Antigravity while its source is slow: up_to_date
+Pass            ARP-02  
+Pass            ARP-03  
+Fail            ARP-04  Timed out waiting for up to date after re-check
+Pass            ARP-05  
+Pass            ARP-06  
+Pass            ARP-07  
+Not applicable  ARP-08  a darwin node always has a desktop browser
+Fail            ARP-09  error copy
+Fail            ARP-11  status shown, update not offered
+Pass            ARP-12  
+Pass            ARP-10  
+
+## BASE a2faf424d6: Result Fail, browserErrors [], cleanup {'browser': 'closed', 'frontend': 'terminated:66118', 'backend': 'terminated:65753', 'desktopBackend': 'terminated:66096', 'tempRoot': 'removed'}
+Fail            ARP-01  Antigravity while its source is slow: up_to_date
+Pass            ARP-02  
+Pass            ARP-03  
+Fail            ARP-04  Timed out waiting for up to date after re-check
+Pass            ARP-05  
+Pass            ARP-06  
+Pass            ARP-07  
+Not applicable  ARP-08  a darwin node always has a desktop browser
+Fail            ARP-09  error copy
+Fail            ARP-11  status shown, update not offered
+Pass            ARP-12  
+Pass            ARP-10  

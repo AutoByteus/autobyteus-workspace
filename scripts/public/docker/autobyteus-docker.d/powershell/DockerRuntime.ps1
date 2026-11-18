@@ -118,8 +118,8 @@ function Get-UsedPorts {
     Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
       try {
         $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-        foreach ($port in @($state.backendPort, $state.vncPort, $state.noVncPort, $state.debugPort)) {
-          if ($port) { [void]$ports.Add([int]$port) }
+        foreach ($property in $state.PSObject.Properties) {
+          if ($property.Name -like '*Port' -and $property.Value) { [void]$ports.Add([int]$property.Value) }
         }
       } catch { }
     }
@@ -146,16 +146,10 @@ function Select-Ports([bool]$PreferDefaults) {
   if ($PreferDefaults) {
     return [ordered]@{
       backend = Pick-Port $used 8001
-      vnc = Pick-Port $used 5908
-      noVnc = Pick-Port $used 6080
-      debug = Pick-Port $used 9228
     }
   }
   [ordered]@{
     backend = Pick-Port $used $null
-    vnc = Pick-Port $used $null
-    noVnc = Pick-Port $used $null
-    debug = Pick-Port $used $null
   }
 }
 
@@ -183,13 +177,10 @@ Container: $($State.containerName)
 Image: $($State.imageRef)
 Backend: http://localhost:$($State.backendPort)
 GraphQL: http://localhost:$($State.backendPort)/graphql
-noVNC: http://localhost:$($State.noVncPort)
-VNC: localhost:$($State.vncPort)
-Chrome debug: localhost:$($State.debugPort)
 Workspace: $Script:WorkspaceContainerPath -> $(Get-NodeWorkspaceHostPath $nodeName)
 Shared folder: $Script:SharedContainerPath -> $(Get-SharedWorkspaceHostPath)
 Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
 "@ | Write-Host
 }
 
@@ -205,61 +196,15 @@ Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceE
 "@ | Write-Host
 }
 
-function Write-StorageForNode([string]$NodeName) {
-  $volumePrefix = Normalize-NodeName $NodeName
-@"
-AutoByteus Docker storage: $NodeName
-Private Docker named volumes (kept during recreate/destroy/reset):
-  $volumePrefix-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
-  $volumePrefix-root-home -> /root (Codex/Claude auth and root home settings)
-  $volumePrefix-chromium-profile -> $Script:ChromiumProfileContainerPath (private Chromium browser profile state: cookies, local storage, preferences)
-  $volumePrefix-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
-Host bind mounts (host-visible user files):
-  $(Get-NodeWorkspaceHostPath $NodeName) -> $Script:WorkspaceContainerPath (this node's user workspace and default temp workspace)
-  $(Get-SharedWorkspaceHostPath) -> $Script:SharedContainerPath (shared across launcher-managed Docker nodes)
-Launcher state directory: $(Get-StateRoot)
-Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
-Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes $Script:WorkspaceContainerPath after apply.
-"@ | Write-Host
-}
-
 function Set-StateProperty($State, [string]$Name, $Value) {
   if ($State.PSObject.Properties[$Name]) { $State.$Name = $Value; return }
   $State | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
 }
 
-function Get-StateConfigHash($State) {
-  $nodeName = [string]$State.nodeName
-  $volumePrefix = Normalize-NodeName $nodeName
-  $text = @(
-    "version=$Script:ConfigHashVersion",
-    "node=$nodeName",
-    "image=$($State.imageRef)",
-    "backend=$($State.backendPort)",
-    "vnc=$($State.vncPort)",
-    "novnc=$($State.noVncPort)",
-    "debug=$($State.debugPort)",
-    "workspace_volume=$volumePrefix-workspace",
-    "data_volume=$volumePrefix-data",
-    "root_volume=$volumePrefix-root-home",
-    "chromium_profile_volume=$volumePrefix-chromium-profile",
-    "chromium_profile_target=$Script:ChromiumProfileContainerPath",
-    "shared_workspace_root=$(Get-SharedWorkspaceRoot)",
-    "node_workspace_host=$(Get-NodeWorkspaceHostPath $nodeName)",
-    "node_workspace_target=$Script:WorkspaceContainerPath",
-    "shared_workspace_host=$(Get-SharedWorkspaceHostPath)",
-    "shared_workspace_target=$Script:SharedContainerPath",
-    "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-    "server_host=http://localhost:$($State.backendPort)",
-    "vnc_hosts=localhost:$($State.noVncPort)"
-  ) -join "`n"
-  Get-StringSha256 $text
-}
-
-function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.vncPort -and $State.noVncPort -and $State.debugPort }
+function Test-StateHasPorts($State) { $State -and $State.backendPort }
 
 function New-NodeState([string]$NodeName, [string]$ContainerName, [string]$ImageRef, $Ports, [string]$CreatedAt) {
-  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; vncPort = [int]$Ports.vnc; noVncPort = [int]$Ports.noVnc; debugPort = [int]$Ports.debug; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
+  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
   $state
 }
 
@@ -299,17 +244,19 @@ function Get-ContainerStartFailure([string]$ContainerName) {
   "container $ContainerName did not reach running state (status=$($state.Status) running=$($state.Running) exitCode=$($state.ExitCode) error=$($state.Error))"
 }
 
-function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults) {
+function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults, [switch]$NoUrls) {
   $existingState = Read-NodeState $NodeName
   $containerName = if ($existingState) { $existingState.containerName } else { $NodeName }
   $createdAt = if ($existingState) { $existingState.createdAt } else { Get-NowUtc }
+  # new-container --allow-local-network: kept in the node's state for every later recreate.
+  $allowLocalNetwork = ($existingState -and [bool]$existingState.allowLocalNetwork) -or [bool]$Script:RequestedAllowLocalNetwork
 
   if ((Test-ContainerExists $containerName) -and -not (Test-ManagedContainer $containerName)) {
     Fail-Launcher "Container $containerName already exists and is not managed by this launcher. Use --name with another friendly name."
   }
 
   Write-LauncherInfo "Checking image $ImageRef"
-  & docker pull $ImageRef
+  & docker pull $ImageRef | Out-Host
   if ($LASTEXITCODE -ne 0) { Fail-Launcher "docker pull failed for $ImageRef" }
   $desiredImageId = Get-ImageId $ImageRef
   if (-not $desiredImageId) { Fail-Launcher "Could not inspect image $ImageRef after pull." }
@@ -317,6 +264,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
   $state = $existingState
   if ($state) {
     $state.imageRef = $ImageRef
+    Set-StateProperty $state 'allowLocalNetwork' $allowLocalNetwork
     Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
   }
 
@@ -328,7 +276,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
       if (Test-ContainerRunning $containerName) {
         Save-NodeState $state
         Write-LauncherInfo "$NodeName is already running with the current image and launcher config."
-        Print-Urls $state
+        if (-not $NoUrls) { Print-Urls $state }
         return
       }
 
@@ -338,7 +286,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
         if (-not $startFailure) {
           Save-NodeState $state
           Write-LauncherInfo "Started $NodeName."
-          Print-Urls $state
+          if (-not $NoUrls) { Print-Urls $state }
           return
         }
         $startOutput = "$startOutput`n$startFailure"
@@ -352,11 +300,11 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
         Fail-Launcher "docker start failed: $startOutput"
       }
     } elseif ($currentImageId -ne $desiredImageId) {
-      Write-LauncherInfo "Image changed for $NodeName; recreating the managed container while keeping named volumes."
+      Write-LauncherInfo "Recreating the container of ${NodeName}: a newer image was downloaded. Its named volumes are kept."
     } elseif (-not $currentConfigHash) {
-      Write-LauncherInfo "Refreshing $NodeName; existing container predates launcher config tracking."
+      Write-LauncherInfo "Recreating the container of ${NodeName}: the container predates launcher configuration tracking. Its named volumes are kept."
     } else {
-      Write-LauncherInfo "Launcher config changed for $NodeName; recreating the managed container while keeping named volumes."
+      Write-LauncherInfo "Recreating the container of ${NodeName}: the launcher configuration changed. Its named volumes are kept."
     }
   }
 
@@ -365,6 +313,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
       $ports = Select-Ports $PreferDefaults
       $PreferDefaults = $false
       $state = New-NodeState $NodeName $containerName $ImageRef $ports $createdAt
+      Set-StateProperty $state 'allowLocalNetwork' $allowLocalNetwork
     } else {
       $state.imageRef = $ImageRef
     }
@@ -377,37 +326,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
     $sharedWorkspaceHost = Get-SharedWorkspaceHostPath
     $outputFile = [System.IO.Path]::GetTempFileName()
     try {
-      $runArgs = @(
-        'run', '-d',
-        '--name', $state.containerName,
-        '--restart', 'unless-stopped',
-        '--label', "$Script:LauncherLabelKey=$Script:LauncherLabelValue",
-        '--label', "$Script:NodeLabelKey=$($state.nodeName)",
-        '--label', "$Script:ConfigLabelKey=$($state.configHash)",
-        '-e', 'AUTOBYTEUS_WORKSPACE_ROOT=/app',
-        '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data',
-        '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0',
-        '-e', 'AUTOBYTEUS_SERVER_PORT=8000',
-        '-e', "AUTOBYTEUS_SERVER_HOST=http://localhost:$($state.backendPort)",
-        '-e', "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:$($state.noVncPort)",
-        '-e', 'APP_ENV=production',
-        '-e', 'DB_TYPE=sqlite',
-        '-e', 'LOG_LEVEL=INFO',
-        '-e', 'AUTOBYTEUS_SKIP_SYNC=1',
-        '-e', "AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-        '-v', "$(Normalize-NodeName $stateNodeName)-workspace:/app/autobyteus-server-ts/workspace",
-        '-v', "$(Normalize-NodeName $stateNodeName)-data:/home/autobyteus/data",
-        '-v', "$(Normalize-NodeName $stateNodeName)-root-home:/root",
-        '-v', "$(Normalize-NodeName $stateNodeName)-chromium-profile:$Script:ChromiumProfileContainerPath",
-        '--cap-add', 'SYS_ADMIN',
-        '--security-opt', 'seccomp=unconfined',
-        '-p', "$($state.backendPort):8000",
-        '-p', "$($state.vncPort):5900",
-        '-p', "$($state.noVncPort):6080",
-        '-p', "$($state.debugPort):9223",
-        '--mount', "type=bind,source=$nodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
-        '--mount', "type=bind,source=$sharedWorkspaceHost,target=$Script:SharedContainerPath"
-      )
+      $runArgs = Get-ContainerRunArgs $state $nodeWorkspaceHost $sharedWorkspaceHost
       $runArgs += $state.imageRef
       & docker @runArgs *> $outputFile
       $exitCode = $LASTEXITCODE
@@ -421,7 +340,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
       if (-not $startFailure) {
         Save-NodeState $state
         Write-LauncherInfo "Started $NodeName."
-        Print-Urls $state
+        if (-not $NoUrls) { Print-Urls $state }
         return
       }
       $output = "$output`n$startFailure"
@@ -550,6 +469,7 @@ function New-Container([string]$ImageRef) {
   $nodeName = Get-NextNodeName
   $preferDefaults = $nodeName -eq $Script:DefaultNodeName
   Start-Node $nodeName $ImageRef $preferDefaults
+  Show-SetupCodeOfRunningNode $nodeName
 }
 
 function Reset-Nodes([string]$ImageRef) {

@@ -1,0 +1,19 @@
+# IMP-06 web unit specs for the change: the mirror, its contract pin, and every spec that imports draft eligibility's callers (useMentionCandidates, chatDraftStore)
+# cmd: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run ./composables/runSettings/__tests__/useRunStart.spec.ts ./stores/__tests__/chatDraftStore.spec.ts ./stores/__tests__/chatDraftProjectChoice.spec.ts ./utils/collaborators/__tests__/draftMentionEligibility.spec.ts ./components/chat/__tests__/ChatDraftRows.spec.ts ./components/chat/__tests__/ChatMessageInput.spec.ts ./components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts ./components/workspace/history/__tests__/RunSectionPanel.spec.ts ./components/__tests__/AppLeftPanel.navigation.spec.ts ./pages/__tests__/chat.spec.ts ./services/chat/__tests__/chatCopiedStartReadiness.spec.ts ./services/chat/__tests__/chatLaunchService.spec.ts  utils/collaborators
+# base 3a6330c3ad + implementation working tree; macOS; date: 2026-11-10T05:29:43Z
+ ✓ components/chat/__tests__/ChatMessageInput.spec.ts (4 tests) 59ms
+ ✓ composables/runSettings/__tests__/useRunStart.spec.ts (9 tests) 8ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (10 tests) 18ms
+ ✓ stores/__tests__/chatDraftStore.spec.ts (38 tests) 56ms
+ ✓ components/chat/__tests__/ChatDraftRows.spec.ts (8 tests) 67ms
+ ✓ components/__tests__/AppLeftPanel.navigation.spec.ts (12 tests) 157ms
+ ✓ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts (7 tests) 212ms
+ ✓ components/workspace/history/__tests__/RunSectionPanel.spec.ts (60 tests) 1343ms
+ ✓ pages/__tests__/chat.spec.ts (13 tests) 55ms
+ ✓ utils/collaborators/__tests__/collaboratorMentionText.spec.ts (8 tests) 5ms
+ ✓ utils/collaborators/__tests__/draftMentionEligibility.spec.ts (4 tests) 3ms
+ ✓ utils/collaborators/__tests__/collaborationIneligibleAgentDefinitionIds.contract.spec.ts (2 tests) 2ms
+ ✓ stores/__tests__/chatDraftProjectChoice.spec.ts (4 tests) 4ms
+ ✓ services/chat/__tests__/chatCopiedStartReadiness.spec.ts (2 tests) 5ms
+ Test Files  14 passed (14)
+      Tests  181 passed (181)

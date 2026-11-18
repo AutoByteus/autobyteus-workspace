@@ -1,0 +1,146 @@
+[
+ {
+  "id": "Q05",
+  "right_run_in_shell_output_at_step": 6,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 36,
+  "shell_seconds": 4.1
+ },
+ {
+  "id": "Q09",
+  "right_run_in_shell_output_at_step": null,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 227,
+  "shell_seconds": 183.6
+ },
+ {
+  "id": "Q12",
+  "right_run_in_shell_output_at_step": 6,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 116,
+  "shell_seconds": 86.7
+ },
+ {
+  "id": "Q14",
+  "right_run_in_shell_output_at_step": 8,
+  "opened_right_at_step": 9,
+  "cited": true,
+  "steps": 10,
+  "s": 51,
+  "shell_seconds": 8.6
+ },
+ {
+  "id": "Q15",
+  "right_run_in_shell_output_at_step": 8,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 26,
+  "shell_seconds": 1.4
+ },
+ {
+  "id": "Q17",
+  "right_run_in_shell_output_at_step": null,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 22,
+  "shell_seconds": 0.1
+ },
+ {
+  "id": "Q20",
+  "right_run_in_shell_output_at_step": null,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 7,
+  "s": 24,
+  "shell_seconds": 0.0
+ },
+ {
+  "id": "Q21",
+  "right_run_in_shell_output_at_step": 7,
+  "opened_right_at_step": 8,
+  "cited": false,
+  "steps": 12,
+  "s": 129,
+  "shell_seconds": 69.9
+ },
+ {
+  "id": "Q26",
+  "right_run_in_shell_output_at_step": 3,
+  "opened_right_at_step": 9,
+  "cited": false,
+  "steps": 13,
+  "s": 180,
+  "shell_seconds": 112.6
+ },
+ {
+  "id": "Q27",
+  "right_run_in_shell_output_at_step": 3,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 135,
+  "shell_seconds": 75.4
+ },
+ {
+  "id": "Q29",
+  "right_run_in_shell_output_at_step": 8,
+  "opened_right_at_step": 9,
+  "cited": true,
+  "steps": 10,
+  "s": 108,
+  "shell_seconds": 41.0
+ },
+ {
+  "id": "Q31",
+  "right_run_in_shell_output_at_step": 4,
+  "opened_right_at_step": null,
+  "cited": true,
+  "steps": 6,
+  "s": 41,
+  "shell_seconds": 4.8
+ },
+ {
+  "id": "Q32",
+  "right_run_in_shell_output_at_step": null,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 128,
+  "shell_seconds": 95.2
+ },
+ {
+  "id": "Q04",
+  "right_run_in_shell_output_at_step": 4,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 10,
+  "s": 67,
+  "shell_seconds": 18.6
+ },
+ {
+  "id": "Q13",
+  "right_run_in_shell_output_at_step": 8,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 224,
+  "shell_seconds": 177.1
+ },
+ {
+  "id": "Q25",
+  "right_run_in_shell_output_at_step": 6,
+  "opened_right_at_step": null,
+  "cited": false,
+  "steps": 12,
+  "s": 163,
+  "shell_seconds": 122.6
+ }
+]

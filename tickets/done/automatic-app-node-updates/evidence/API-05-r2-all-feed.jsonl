@@ -1,0 +1,57 @@
+{"at":"2026-11-02T05:09:19.817Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492197207,"sha512":"NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw=="}
+{"at":"2026-11-02T05:09:21.225Z","method":"GET","url":"/latest-mac.yml","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:09:39.919Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dajheb","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:11:00.509Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dam04r","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:11:10.344Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dam9o4","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:11:10.361Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:12:25.513Z","method":"GET","url":"/latest-mac.yml?noCache=1k6daoj55","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:13:08.695Z","method":"GET","url":"/latest-mac.yml?noCache=1k6daptaf","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:14:41.362Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dasnqc","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:14:47.429Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dasto0","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:14:52.496Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dat2me","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:14:52.510Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"marker":"API-04-r2 start 2026-11-02T05:17:07Z"}
+{"at":"2026-11-02T05:17:25.159Z","method":"GET","url":"/latest-mac.yml?noCache=1k6db1np4","status":200,"mode":"badsha","bytes":384}
+{"at":"2026-11-02T05:17:34.280Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"mode":"badsha"}
+{"at":"2026-11-02T05:17:34.282Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"badsha","bytes":492197207}
+{"marker":"API-04-r2 retry 2026-11-02T05:17:44Z"}
+{"at":"2026-11-02T05:17:46.496Z","method":"GET","url":"/latest-mac.yml?noCache=1k6db2cjs","status":200,"mode":"badsha","bytes":384}
+{"at":"2026-11-02T05:17:46.511Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"mode":"badsha"}
+{"at":"2026-11-02T05:17:46.512Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"badsha","bytes":492197207}
+{"marker":"API-05-r2 start 2026-11-02T05:19:44Z"}
+{"at":"2026-11-02T05:20:07.343Z","method":"GET","url":"/latest-mac.yml?noCache=1k6db6m56","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:20:16.505Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"mode":"good"}
+{"at":"2026-11-02T05:20:16.507Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:23:37.032Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbd2ss","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:23:46.296Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:24:25.953Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbeimr","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:24:35.141Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:25:14.726Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbg2b3","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:25:23.846Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:26:03.839Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbhi9s","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:26:12.955Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:26:50.712Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbj02k","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:26:59.830Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:27:39.364Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbkfj0","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:27:48.526Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:28:29.243Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbm09n","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:28:38.539Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:29:21.647Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbnjfc","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:29:30.798Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"marker":"API-05-r2 restart 2026-11-02T05:30:44Z"}
+{"at":"2026-11-02T05:30:58.822Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbqibu","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:32:58.822Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492197205,"sha512":"z389bcisw9cQCa6g+qRvQKukLvMC8N4pngIYSQFBjVssRhsKOO94B0jYxueDAIMw01rKXEUvV3GFlR2CbzOmKA=="}
+{"marker":"API-05C start 2026-11-02T05:33:28Z"}
+{"at":"2026-11-02T05:33:46.370Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbvlvr","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:33:55.439Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197205}
+{"at":"2026-11-02T05:35:29.395Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dc2qjg","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:36:32.051Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492197207,"sha512":"NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw=="}
+{"at":"2026-11-02T05:37:22.407Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dc68v1","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:37:28.500Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dc6etg","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:45:16.389Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dcknr2","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:45:16.403Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:49:08.548Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dcrqi1","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:49:14.590Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dcs0et","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-02T05:50:04.795Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dcthfo","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:50:04.813Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197207}
+{"at":"2026-11-02T05:51:41.005Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dd0fe7","status":200,"mode":"good","bytes":384}

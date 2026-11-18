@@ -37,7 +37,11 @@ import { TeamAgentMemoryLayoutAppDataMigration } from "../../../src/app-data-mig
 import { TeamRunExecutionTreeV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testExecutionTree as currentTestExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { toTreeBefore461 } from "../../fixtures/before-461-tree-fixtures.js";
+
+/** The released migrations read the tree shape before autobyteus-461 (`taskExecutions` lists). */
+const testExecutionTree = (...args: Parameters<typeof currentTestExecutionTree>): ReturnType<typeof currentTestExecutionTree> => toTreeBefore461(currentTestExecutionTree(...args));
 
 const obsoleteFiles = ["episodic.jsonl", "semantic.jsonl", "compacted_memory_manifest.json"];
 let memoryDir: string;

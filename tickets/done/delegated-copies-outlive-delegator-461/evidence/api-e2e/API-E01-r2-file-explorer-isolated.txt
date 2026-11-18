@@ -1,0 +1,9 @@
+# Case: API-E01 file-explorer-websocket-lifecycle (isolated reruns) (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1/ENV-3 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i … pnpm exec vitest run tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts --no-watch (twice)
+# In the full run it timed out waiting for FILE_SYSTEM_CHANGE (watcher under load); alone it passes.
+
+run 1: Tests  3 passed (3)
+run 2: Tests  3 passed (3)

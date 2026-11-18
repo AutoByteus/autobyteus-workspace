@@ -1,12 +1,14 @@
+import { createAgentRootExecutionIdentity, createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { ApplicationRunOwnershipReader } from "../../application-orchestration/services/application-run-ownership-service.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import type { TeamRunModelConfigPatch } from "../../agent-team-execution/services/team-run-model-config-mutator.js";
+import type { TeamRunSelectionPatch } from "../../agent-team-execution/services/team-run-selection-mutator.js";
 import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { RunModelConfigUpdateResult } from "../domain/run-model-config.js";
+import type { StoppedRunSelectionInput } from "../../agent-execution/services/standalone-stopped-run-selection-updater.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import type {
   AgentRunResumeConfig,
@@ -31,8 +33,10 @@ export class StudioRunModelConfigService {
     applicationRunOwnership: ApplicationRunOwnershipReader;
     agentResumeConfigService: Pick<AgentRunResumeConfigService, "getAgentRunResumeConfig">;
     teamResumeConfigService: Pick<TeamRunHistoryService, "getTeamRunResumeConfig">;
-    agentRunService: Pick<AgentRunService, "updateStoppedModelConfig">;
-    teamRunService: Pick<TeamRunService, "updateStoppedModelConfigs">;
+    agentRunService: Pick<AgentRunService, "updateStoppedSelection">;
+    teamRunService: Pick<TeamRunService, "updateStoppedSelections">;
+    /** A saved launch (SR-086 G-B1): the trees that hold the run's row show it at once (`ChildRowsFeed.rowChanged`). */
+    launchSaved(run: RootExecutionIdentity): void;
   }>) {}
 
   async getAgentRunResumeConfig(runId: string): Promise<AgentRunResumeConfig> {
@@ -84,11 +88,7 @@ export class StudioRunModelConfigService {
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
   }
 
-  async updateStoppedAgentRunModelConfig(input: {
-    agentRunId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
-  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+  async updateStoppedAgentRunSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     let canonical: AgentRunResumeConfig | null = null;
     try {
       canonical = await this.dependencies.agentResumeConfigService
@@ -120,12 +120,14 @@ export class StudioRunModelConfigService {
         fieldErrors: Object.freeze([]),
       });
     }
-    return this.dependencies.agentRunService.updateStoppedModelConfig(input);
+    const result = await this.dependencies.agentRunService.updateStoppedSelection(input);
+    if (result.success) this.dependencies.launchSaved(createAgentRootExecutionIdentity(input.agentRunId));
+    return result;
   }
 
-  async updateStoppedTeamRunModelConfigs(input: {
+  async updateStoppedTeamRunSelections(input: {
     teamRunId: string;
-    patches: readonly TeamRunModelConfigPatch[];
+    selectionPatches: readonly TeamRunSelectionPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
     let canonical: TeamRunResumeConfig | null = null;
     try {
@@ -158,6 +160,8 @@ export class StudioRunModelConfigService {
         fieldErrors: Object.freeze([]),
       });
     }
-    return this.dependencies.teamRunService.updateStoppedModelConfigs(input);
+    const result = await this.dependencies.teamRunService.updateStoppedSelections(input);
+    if (result.success) this.dependencies.launchSaved(createTeamRootExecutionIdentity(input.teamRunId));
+    return result;
   }
 }

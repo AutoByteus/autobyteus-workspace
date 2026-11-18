@@ -1,0 +1,4 @@
+remote-run-title probe: Fail
+Error: browser errors: console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) | console: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:58720/_nuxt/pages/index.vue | console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:58720/_nuxt/pages/index.vue
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:45:64)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:313:3

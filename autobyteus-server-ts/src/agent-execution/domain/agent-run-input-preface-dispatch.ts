@@ -4,7 +4,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { AgentRunBackendInputDispatch } from "../input/agent-run-input-contract.js";
 import type { AgentRun } from "./agent-run.js";
 import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
-import type { AgentRunInputPreface, AgentRunPreface } from "./agent-run-input-preface.js";
+import type { AgentRunInputPreface, AgentRunPreface, AgentRunPrefaceContext } from "./agent-run-input-preface.js";
 
 const logger = console;
 
@@ -34,6 +34,7 @@ export const combinePreface = (
         content: preface.text,
         senderId: preface.presentation.senderId,
         originalContent: original.content,
+        noticeId: preface.id,
       }),
     },
     original.recordingFileAttachments,
@@ -55,10 +56,10 @@ export class AgentRunInputPrefaceDispatch {
     publishEvent: (event: AgentRunEvent) => Promise<void>;
   }>) {}
 
-  async take(): Promise<AgentRunPreface | null> {
+  async take(dispatchKind: AgentRunPrefaceContext["dispatchKind"]): Promise<AgentRunPreface | null> {
     if (!this.input.port) return null;
     try {
-      return await this.input.port.takePreface(this.input.run);
+      return await this.input.port.takePreface(this.input.run, { dispatchKind });
     } catch (error) {
       logger.warn(`[AgentRun] input preface could not be taken for run '${this.input.run.runId}': ${String(error)}`);
       return null;
@@ -90,6 +91,7 @@ export class AgentRunInputPrefaceDispatch {
       payload: {
         sender_id: preface.presentation.senderId,
         content: preface.presentation.content,
+        message_id: preface.id,
         ...(forwardedTurnId ? { turn_id: forwardedTurnId } : {}),
       },
       statusHint: null,

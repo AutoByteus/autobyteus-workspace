@@ -1,0 +1,82 @@
+// IMP render check (autobyteus-426): Phone Setup in a remote node's window (D-16) at desktop and narrow widths.
+// Test-owned server built from the worktree + `nuxt dev` + headless Chrome; everything removed at the end.
+import { createWriteStream, existsSync, mkdtempSync, realpathSync } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+const [worktree, outputDir] = process.argv.slice(2);
+const webDir = path.join(worktree, 'autobyteus-web');
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const require = createRequire(path.join(webDir, 'package.json'));
+const { chromium } = require('playwright-core');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const freePort = () => new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const waitFor = async (label, fn, ms) => { const end = Date.now() + ms; while (Date.now() < end) { try { if (await fn()) return; } catch {} await sleep(500); } throw new Error(`timeout: ${label}`); };
+await fs.mkdir(outputDir, { recursive: true });
+const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'ie426-render-')));
+const port = await freePort(); const baseUrl = `http://127.0.0.1:${port}`;
+const dataDir = path.join(root, 'data'); const home = path.join(root, 'home');
+await fs.mkdir(dataDir, { recursive: true }); await fs.mkdir(home, { recursive: true });
+await fs.writeFile(path.join(dataDir, '.env'), `AUTOBYTEUS_SERVER_HOST=${baseUrl}\nAPP_ENV=test\nLOG_LEVEL=WARN\nHTTP_ACCESS_LOG_MODE=off\n`);
+const serverLog = createWriteStream(path.join(outputDir, 'server.log'));
+const server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], { cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'], env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR, APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl } });
+server.stdout.pipe(serverLog); server.stderr.pipe(serverLog);
+let frontend, browser; const result = { cases: {}, browserErrors: [] };
+try {
+  await waitFor('server', async () => (await fetch(`${baseUrl}/rest/health`)).ok, 120_000);
+  const fport = await freePort(); const frontendUrl = `http://127.0.0.1:${fport}`;
+  const flog = createWriteStream(path.join(outputDir, 'frontend.log'));
+  frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(fport)], { cwd: webDir, detached: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: baseUrl } });
+  frontend.stdout.pipe(flog); frontend.stderr.pipe(flog);
+  await waitFor('frontend', async () => (await fetch(frontendUrl)).ok, 240_000);
+  const executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  browser = await chromium.launch({ headless: true, executablePath });
+  const shot = async (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`), fullPage: true });
+  for (const [label, viewport] of [['desktop', { width: 1059, height: 738 }], ['narrow', { width: 640, height: 900 }]]) {
+    const context = await browser.newContext({ viewport, deviceScaleFactor: 2, locale: 'de-DE', timezoneId: 'UTC' });
+    await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    const page = await context.newPage();
+    page.on('pageerror', (e) => result.browserErrors.push(`${label} pageerror: ${e.message}`));
+    // Warm the cold dev server first (TESTING.md § Browser probes).
+    await page.goto(`${frontendUrl}/nodes?nodeTab=phoneSetup`, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+    await sleep(8_000);
+    await page.goto(`${frontendUrl}/nodes?nodeTab=phoneSetup`, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+    await page.locator('[role="tablist"]').first().waitFor({ timeout: 120_000 });
+    await sleep(4_000);
+    const cases = {};
+    for (const way of ['local_network', 'tailscale', 'vpn', 'company_address']) {
+      await page.locator(`[data-testid="phone-tab-${way}"]`).click();
+      await sleep(600);
+      const status = page.locator('[data-testid="phone-way-status"]');
+      const box = await status.boundingBox();
+      const panelBox = await page.locator(`[data-testid="phone-panel-${way}"]`).boundingBox();
+      const toggle = page.locator('[data-testid="phone-how-toggle"]');
+      if (await toggle.getAttribute('aria-expanded') === 'false') await toggle.click();
+      const checkAgain = page.locator('[data-testid="phone-check-again"]');
+      if (await checkAgain.count()) { await checkAgain.click(); await sleep(4_000); }
+      cases[way] = {
+        status: (await status.innerText()).trim(),
+        statusHeight: box?.height, statusRight: box ? box.x + box.width : null, panelRight: panelBox ? panelBox.x + panelBox.width : null,
+        statusScrollOverflow: await status.evaluate((el) => el.scrollWidth > el.clientWidth),
+        note: (await page.locator('[data-testid="phone-check-note"]').innerText().catch(() => '')).trim(),
+        how: (await page.locator('[data-testid="phone-how-body"]').innerText().catch(() => '')).trim(),
+        blocked: (await page.locator('[data-testid="phones-blocked"]').innerText().catch(() => '')).trim(),
+        allowedNote: (await page.locator('[data-testid="phone-wifi-allowed"]').innerText().catch(() => '')).trim(),
+      };
+      await shot(page, `IMP-render-${label}-${way}`);
+    }
+    result.cases[label] = cases;
+    await context.close();
+  }
+} finally {
+  await browser?.close();
+  if (frontend) { try { process.kill(-frontend.pid, 'SIGTERM'); } catch {} }
+  server.kill('SIGTERM'); await sleep(2_000);
+  await fs.writeFile(path.join(outputDir, 'IMP-render-result.json'), JSON.stringify(result, null, 2));
+  await fs.rm(root, { recursive: true, force: true });
+  result.cleanup = { serverExited: server.exitCode !== null || server.signalCode !== null };
+  console.log(JSON.stringify(result, null, 1));
+}

@@ -1,0 +1,30 @@
+# Check: IMP-04
+# Command: pnpm -C autobyteus-server-ts test:unit (excerpt: summary and the one failure)
+# Setup: worktree, before the first commit; tracked-imports rerun after commit 6407bfc15f: 2 passed
+# Commit: 6407bfc15f (sources; run before the commit)
+# Environment: macOS arm64, Node v22.23.1, Python 3.9.6, /bin/bash 3.2
+# Date: 2026-11-06
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
+AssertionError: expected 'Tracked-import check failed.\n\nTrack…' to contain 'Tracked-import check passed.'
+
+- Expected
++ Received
+
+- Tracked-import check passed.
++ Tracked-import check failed.
++
++ Tracked code importing files that are not tracked: 2
++ Action: Add the imported file to git (check `git check-ignore -v <file>`: an ignore rule may hide it), or fix the import. A clean checkout cannot build while these are missing.
++  - autobyteus-server-ts/src/api/rest/index.ts -> ./node-desktop.js
++  - autobyteus-server-ts/src/api/websocket/index.ts -> ./node-desktop.js
++
+
+ ❯ tests/architecture/tracked-imports.test.ts:27:43
+     25|   it("finds no tracked code importing an untracked file in this reposi…
+     26|     const result = runCheck(REPOSITORY_ROOT);
+     27|     expect(result.stdout + result.stderr).toContain("Tracked-import ch…
+       |                                           ^
+     28|     expect(result.status).toBe(0);

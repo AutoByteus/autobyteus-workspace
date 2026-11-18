@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
@@ -94,7 +95,7 @@ export class CodexProviderCompactionStatusProjector {
       this.open.delete(entry.itemId);
       return {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CODEX",
+        runtime_kind: RuntimeKind.CODEX_APP_SERVER,
         provider: "codex",
         source_surface: "codex.context_compaction_abandoned",
         boundary_key: ["codex", entry.threadId ?? "thread", entry.itemId, "failed"].join(":"),
@@ -153,7 +154,7 @@ export class CodexProviderCompactionStatusProjector {
         ];
     return {
       kind: "provider_compaction_boundary",
-      runtime_kind: "CODEX",
+      runtime_kind: RuntimeKind.CODEX_APP_SERVER,
       provider: "codex",
       source_surface: sourceSurface,
       boundary_key: boundaryKeyParts.join(":"),

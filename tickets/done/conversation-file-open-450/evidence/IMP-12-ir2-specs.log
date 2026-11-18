@@ -1,0 +1,14 @@
+# Check: IMP-12 (IR-002 specs)
+# Command: pnpm -C autobyteus-web test:nuxt --run components/agentInput/__tests__/ContextFilePathInputArea.spec.ts composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts components/conversation/__tests__
+# Commit: 5f06b08ce9
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts > useMobileAttachmentOpening > a path the phone cannot open here (another node's run) says so as file links do, and navigates nowhere (DEC-006) 0ms
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts > useMobileAttachmentOpening > an opened path shows no notice 0ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > delegated child of a standalone run (19.png) > agent_run_task_agent: × deletes the server draft at its locator and removes the item 13ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > delegated child of a standalone run (19.png) > agent_run_task_team_member: × deletes the server draft at its locator and removes the item 17ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > draft attachments on the phone (autobyteus-450 DEC-005) > shows a draft image's thumbnail and its full-screen view with the phone key (object URLs) 25ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts > ContextFilePathInputArea > draft attachments on the phone (autobyteus-450 DEC-005) > opens any other draft in the phone viewer, never a new window 19ms
+ Test Files  9 passed (9)
+      Tests  64 passed (64)

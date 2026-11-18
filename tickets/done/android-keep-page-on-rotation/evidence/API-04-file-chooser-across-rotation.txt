@@ -1,0 +1,17 @@
+# Case: API-04 — the WebView file chooser across a rotation (REQ-003, SCN-001b)
+# Steps: test file pushed to /sdcard/Download/abx415-upload.txt; in a Daily Assistant run (created on the test node, no message sent) the page is marked; real tap on the composer's 'Upload files' (CSS 369,677 -> device 969,1913) opens the system picker (DocumentsUI PickActivity); adb emu rotate while the picker is in front; tap the file in the picker (landscape); back in the app read the page (marker, navigationStart) and the composer's Context Files; then rotate back to 0° with adb emu rotate
+# Commit: dd129696a4; emulator autobyteus277_api35; node abx415-api-node through the access proxy
+# Date: 2026-11-06T20:45:11Z
+
+picker open: mCurrentFocus=Window{6c969e5 u0 com.google.android.documentsui/com.android.documentsui.picker.PickActivity}
+after rotate: mRotation=3 focus=mCurrentFocus=Window{51e6f23 u0 com.google.android.documentsui/com.android.documentsui.picker.PickActivity}
+pick: tapped 'abx415-upload.txt' at 359,551
+focus after pick: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+app pid: 5815
+page: {"href":"http://10.0.2.2:50364/mobile/","marker":"api04-before-picker","navigationStart":1793997597533,"viewport":"863x360","title":"","heading":null}
+composer: "Context Files (1) abx415-upload.txt Clear All "
+back at: mRotation=0 page: {"href":"http://10.0.2.2:50364/mobile/","marker":"api04-before-picker","navigationStart":1793997597533,"viewport":"412x839","title":"","heading":null} composer: "Context Files (1) abx415-upload.txt Clear All "
+
+node requests after the pick (access proxy, excluding /graphql and /rest/health):
+{"t":"2026-11-06T20:45:18.872Z","kind":"http","method":"POST","path":"/rest/context-files/upload"}
+{"t":"2026-11-06T20:45:19.743Z","kind":"upgrade","method":"GET","path":"/ws/agent-package-definitions"}

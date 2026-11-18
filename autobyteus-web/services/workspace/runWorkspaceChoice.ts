@@ -1,8 +1,9 @@
 import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace'
 import {
-  ensureRunHistoryWorkspaceByRootPath,
+  findOrRegisterWorkspaceByRootPath,
   resolveRunHistoryWorkspaceMetadataByRootPath,
 } from '~/stores/runHistoryLoadActions'
+import { readWorkspacePathRefusal, workspacePathRefusalText } from '~/utils/workspace/workspacePathRefusal'
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { normalizeWorkspaceRootPath, workspaceMetadataFromWorkspaceInfo } from '~/utils/workspaceMetadata'
 import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
@@ -110,10 +111,15 @@ export const resolveRunWorkspaceChoice = async (
     if (!rootPath) throw new Error(t('chat.launch.workspaceUnavailable'))
     return resolveRunWorkspaceChoice({ kind: 'folder', rootPath })
   }
-  const workspaceId = await ensureRunHistoryWorkspaceByRootPath(choice.rootPath)
-  const workspaceMetadata = workspaceId
-    ? await resolveRunHistoryWorkspaceMetadataByRootPath(choice.rootPath)
-    : null
-  if (!workspaceId || !workspaceMetadata) throw new Error(t('chat.launch.workspaceUnavailable'))
+  let workspaceId: string
+  try {
+    workspaceId = await findOrRegisterWorkspaceByRootPath(choice.rootPath)
+  } catch (cause) {
+    // The node says why it refused a folder that is not yet a workspace (missing, a file, not a full path).
+    const refusal = readWorkspacePathRefusal(cause)
+    throw new Error(refusal ? workspacePathRefusalText(refusal, choice.rootPath, t) : t('chat.launch.workspaceUnavailable'))
+  }
+  const workspaceMetadata = await resolveRunHistoryWorkspaceMetadataByRootPath(choice.rootPath)
+  if (!workspaceMetadata) throw new Error(t('chat.launch.workspaceUnavailable'))
   return { workspaceId, workspaceMetadata }
 }

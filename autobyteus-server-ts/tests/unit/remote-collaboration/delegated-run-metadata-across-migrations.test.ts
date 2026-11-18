@@ -18,7 +18,7 @@ const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 
 const RUN = "publisher_7f3a9c";
-const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", coordinatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: "lead_run" });
+const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", delegatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: "lead_run" });
 const metadata = (memoryDir: string): AgentRunMetadata => ({
   runId: RUN, agentDefinitionId: "publisher", workspaceRootPath: "/workspace", memoryDir,
   llmModelIdentifier: "model-1", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER,

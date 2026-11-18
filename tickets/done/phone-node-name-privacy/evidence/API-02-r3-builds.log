@@ -1,0 +1,11 @@
+# API-02 (r3) builds: /mobile production bundle and debug APK
+# command: pnpm -C autobyteus-web build:mobile-web; cd autobyteus-android && ./gradlew :app:assembleDebug (JDK 17)
+# commit: 9446d19783 (code 60adcf3bc8); server dist unchanged since round 1 (no server source change)
+# date: 2026-11-08T09:14:12Z
+
+mobile-web build exit=0
+files with 'pageReady' in dist/public: 1
+files with 'mobile-connection-url': 0
+apk build exit=0
+APK sha256 f9b040f33e36aa88331cf5f7cf01ba89c20eebd4ab541c9bfe1aafcb50cfaca6
+git diff 60adcf3bc8 -- autobyteus-android autobyteus-web (lines): 0

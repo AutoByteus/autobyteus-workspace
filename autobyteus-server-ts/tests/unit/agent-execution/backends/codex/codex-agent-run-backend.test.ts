@@ -2,9 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunEventType } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import { runningBackgroundTaskCount } from "../../../../../src/agent-execution/domain/agent-background-task-count.js";
 import { CodexAgentRunBackend } from "../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend.js";
 import { CodexThread } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread.js";
 import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
   TokenPriceConfigProvider: class TokenPriceConfigProvider {
@@ -128,11 +130,23 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
       runContext as any,
       codexThread as any,
       threadManager as any,
+      activatedAgentToolMcpRunSessionsStub(runContext.runId),
     ),
   };
 };
 
 describe("CodexAgentRunBackend", () => {
+  it("exposes read-only snapshots without changing idle work policy or publishing lifecycle events", async () => {
+    const inspectBackgroundTasks = vi.fn().mockResolvedValue({ kind: 'snapshot', observedAt: 'now', tasks: [] });
+    const { backend } = createBackend({ inspectBackgroundTasks });
+    const listener = vi.fn(); backend.subscribeToSourceEventBatches(listener);
+    expect(runningBackgroundTaskCount(backend.backgroundTaskInspection)).toBe(0);
+    expect(backend.backgroundTaskInspection.kind).toBe('snapshot');
+    expect(await backend.backgroundTaskInspection.read()).toEqual({ kind: 'snapshot', observedAt: 'now', tasks: [] });
+    expect(inspectBackgroundTasks).toHaveBeenCalledTimes(1);
+    expect(listener).not.toHaveBeenCalled();
+    expect(runningBackgroundTaskCount(backend.backgroundTaskInspection)).toBe(0);
+  });
   it("publishes the committed system instruction after listener binding and before the first input exactly once", async () => {
     const order: string[] = [];
     const { backend, codexThread } = createBackend({

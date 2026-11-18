@@ -130,7 +130,7 @@ describe('one-database live E2E runtime and evidence boundary', () => {
     const rawBackend = {
       runId,
       runtimeKind: context.config.runtimeKind,
-      compactionRecovery: { kind: "unsupported" } as const,
+      compactionRecovery: { kind: "unsupported" } as const, backgroundTaskInspection: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: 'unsupported' },
       getContext: () => context,
       isActive: () => true,

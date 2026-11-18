@@ -5,40 +5,36 @@ import org.autobyteus.mobile.connection.ConnectionDiagnosticMapper
 import org.autobyteus.mobile.connection.NodeUrlNormalizer
 import org.autobyteus.mobile.connection.PairingLinkParser
 import org.autobyteus.mobile.connection.ParsedPairingInput
-import org.autobyteus.mobile.connection.SavedNodeProfile
+import org.autobyteus.mobile.connection.SavedNodeEntry
 
+/**
+ * Turns what the user gave the app into an entry, per the entry-form table: a pairing link (scanned, pasted or
+ * shared) carries the desktop's decision, so its `http://` address needs no second acknowledgement (REQ-010); a
+ * typed plain `http://` address needs the sheet's tick.
+ */
 class ConnectionInputResolver {
-    fun resolve(rawText: String, httpAcknowledged: Boolean): ConnectionInputResolution {
-        val parsed = parseInput(rawText) ?: return ConnectionInputResolution.Failure(
-            ConnectionDiagnosticMapper.invalidUrl("The URL or pairing payload could not be parsed."),
-        )
-        val profile = parsed.profile.copy(
-            httpAcknowledged = parsed.profile.scheme == "https" || httpAcknowledged,
-        )
-        if (profile.isHttp && !profile.httpAcknowledged) {
-            return ConnectionInputResolution.Failure(
-                ConnectionDiagnosticMapper.httpNeedsAcknowledgement(profile.mobileUrl),
-            )
-        }
-        return ConnectionInputResolution.Success(profile, parsed.webViewUrl)
+    /** The entry and page of a pairing link, or `null` when the text is not one. */
+    fun resolvePairingLink(rawText: String): ParsedPairingInput? {
+        val parsed = runCatching { PairingLinkParser.parse(rawText) }.getOrNull() ?: return null
+        if (!parsed.hasPairingPayload) return null
+        return parsed.copy(entry = parsed.entry.copy(httpAcknowledged = true))
     }
 
-    private fun parseInput(rawText: String): ParsedPairingInput? {
-        return try {
-            PairingLinkParser.parse(rawText)
+    fun resolveTypedAddress(rawText: String, httpAcknowledged: Boolean): ConnectionInputResolution {
+        val normalized = try {
+            NodeUrlNormalizer.normalize(rawText)
         } catch (_: Exception) {
-            try {
-                val normalized = NodeUrlNormalizer.normalize(rawText)
-                val profile = SavedNodeProfile.fromNormalized(normalized)
-                ParsedPairingInput(profile, normalized.mobileUrl, false)
-            } catch (_: Exception) {
-                null
-            }
+            return ConnectionInputResolution.Failure(ConnectionDiagnosticMapper.invalidUrl())
         }
+        val entry = SavedNodeEntry.fromNormalized(normalized, httpAcknowledged = normalized.scheme == "https" || httpAcknowledged)
+        if (entry.isHttp && !entry.httpAcknowledged) {
+            return ConnectionInputResolution.Failure(ConnectionDiagnosticMapper.httpNeedsAcknowledgement())
+        }
+        return ConnectionInputResolution.Success(entry, normalized.mobileUrl)
     }
 }
 
 sealed class ConnectionInputResolution {
-    data class Success(val profile: SavedNodeProfile, val webViewUrl: String) : ConnectionInputResolution()
+    data class Success(val entry: SavedNodeEntry, val webViewUrl: String) : ConnectionInputResolution()
     data class Failure(val diagnostic: ConnectionDiagnostic) : ConnectionInputResolution()
 }

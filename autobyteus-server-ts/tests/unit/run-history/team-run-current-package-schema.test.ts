@@ -60,106 +60,46 @@ describe("TeamRun current (tree + messages) state package", () => {
   });
 });
 
-/** REQ-018: read tolerantly (AC-020), write exactly (AC-021). */
+/**
+ * REQ-018: read tolerantly (AC-020), write exactly (AC-021). A team run holds its own parts only: an old
+ * `taskExecutions` list is read as an unknown field and never written (autobyteus-461, E9).
+ */
 describe("TeamRun execution tree tolerant reading and exact writing", () => {
   const TOP_LEVEL_KEYS = ["applicationBinding", "archivedAt", "createdAt", "handoffs", "rootTeam"];
-  const TASK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "platformAgentRunId", "source", "startedAt"];
-  const TASK_TEAM_KEYS = ["address", "delegatorAgentRunId", "members", "source", "startedAt", "taskExecutions", "teamRunId"];
-  const launch = () => currentTree().rootTeam.defaultLaunchConfiguration;
   const keys = (value: unknown) => Object.keys(value as object).sort();
-
-  const withTasks = (taskExecutions: readonly Record<string, unknown>[], extra: Record<string, unknown> = {}) => {
+  const oldTask = () => ({
+    address: "/reviewer", agentRunId: "task-reviewer-run", platformAgentRunId: null, startedAt: "2026-09-01T00:00:00.000Z",
+    source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: currentTree().rootTeam.defaultLaunchConfiguration },
+  });
+  /** A tree as earlier releases wrote it: a version number, `settledAt` and the list of hosted copies. */
+  const releasedShape = () => {
     const tree = currentTree();
-    return { ...tree, ...extra, rootTeam: { ...tree.rootTeam, taskExecutions } };
+    return { ...tree, schemaVersion: 2, rootTeam: { ...tree.rootTeam, taskExecutions: [{ ...oldTask(), settledAt: null }] } };
   };
-  const taskAgent = (extra: Record<string, unknown> = {}) => ({
-    address: "/reviewer", agentRunId: "task-reviewer-run", platformAgentRunId: null,
-    startedAt: "2026-09-01T00:00:00.000Z", source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: launch() }, ...extra,
-  });
-  const taskTeam = (extra: Record<string, unknown> = {}) => ({
-    address: "/reviewer", teamRunId: "task-team-run", startedAt: "2026-09-01T00:00:00.000Z",
-    members: [{ address: "/reviewer/lead", agentRunId: "task-team-lead-run", platformAgentRunId: null, legacyNote: "x" }],
-    taskExecutions: [],
-    source: { kind: "agent_team", teamDefinitionId: "review-team", coordinatorAddress: "/reviewer/lead", handoffs: [], defaultLaunchConfiguration: launch(),
-      members: [{ address: "/reviewer/lead", agentDefinitionId: "lead", launchConfiguration: launch(), followsTeam: true }] },
-    ...extra,
-  });
-  /** The released (pre-change) shape: a version number and `settledAt`, no delegator. */
-  const releasedShape = () => withTasks(
-    [taskAgent({ settledAt: null }), taskTeam({ settledAt: "2026-09-02T00:00:00.000Z" })],
-    { schemaVersion: 2 },
-  );
 
-  it("loads trees with an unknown field, obsolete settledAt, with and without schemaVersion, keeping only current fields", () => {
-    const candidates = [
-      { ...currentTree(), revision: 7 },
-      releasedShape(),
-      withTasks([taskAgent({ delegatorAgentRunId: "agent-run-coordinator" })], { schemaVersion: 3 }),
-      withTasks([taskAgent({ delegatorAgentRunId: "agent-run-coordinator" })]),
-    ];
-    for (const candidate of candidates) {
+  it("loads trees with an unknown field, obsolete settledAt and lists, with and without schemaVersion, keeping only current fields", () => {
+    for (const candidate of [{ ...currentTree(), revision: 7 }, releasedShape(), { ...releasedShape(), schemaVersion: undefined }]) {
       const tree = validateTeamRunExecutionTreePayload(candidate);
       expect(keys(tree)).toEqual(TOP_LEVEL_KEYS);
-      expect(JSON.stringify(tree)).not.toMatch(/schemaVersion|settledAt|revision|legacyNote/);
+      expect(JSON.stringify(tree)).not.toMatch(/schemaVersion|settledAt|revision|taskExecutions/);
     }
-    const released = validateTeamRunExecutionTreePayload(releasedShape());
-    // Children recorded before the delegator was stored stay without one.
-    expect(released.rootTeam.taskExecutions.map(keys)).toEqual([
-      TASK_AGENT_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-      TASK_TEAM_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-    ]);
   });
 
-  it("rejects a tree missing a required field or naming an unresolvable delegator", () => {
+  it("rejects a tree missing a required field", () => {
     const { createdAt: _createdAt, ...withoutCreatedAt } = currentTree();
     expect(() => validateTeamRunExecutionTreePayload(withoutCreatedAt)).toThrow("missing required field(s): createdAt");
-    const { startedAt: _startedAt, ...taskWithoutStart } = taskAgent();
-    expect(() => validateTeamRunExecutionTreePayload(withTasks([taskWithoutStart])))
-      .toThrow("missing required field(s): startedAt");
-    expect(() => validateTeamRunExecutionTreePayload(withTasks([taskAgent({ delegatorAgentRunId: "unknown-run" })])))
-      .toThrow("delegator 'unknown-run' is not an AgentRun in this tree");
-    expect(() => validateTeamRunExecutionTreePayload(withTasks([taskAgent({ delegatorAgentRunId: "" })])))
-      .toThrow("delegatorAgentRunId must be a non-empty trimmed string");
-    // A task-Team member AgentRun is a valid delegator.
-    expect(validateTeamRunExecutionTreePayload(withTasks([
-      taskTeam(), taskAgent({ agentRunId: "nested-run", delegatorAgentRunId: "task-team-lead-run" }),
-    ])).rootTeam.taskExecutions).toHaveLength(2);
   });
 
-  it("writes the exact current shape: links in the tree, facts in each task agent's own file, the delegator on new children", async () => {
+  it("writes the exact current shape and reads back the same tree", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-tree-exact-"));
     const dir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: "team-run-current", ancestorTeamRunIds: [] });
-    const LINK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "startedAt"];
-    const LINK_TEAM_KEYS = ["address", "delegatorAgentRunId", "startedAt", "teamRunId"];
     try {
       const store = new TeamRunExecutionTreeStore();
-      const loaded = validateTeamRunExecutionTreePayload(releasedShape());
-      const launch = loaded.rootTeam.defaultLaunchConfiguration;
-      // A team run is flat: a Team copy is always a catalog copy with its recorded source.
-      const catalogTeam = loaded.rootTeam.taskExecutions[1]!;
-      const withNewChild = validateTeamRunExecutionTreePayload({
-        ...loaded,
-        rootTeam: {
-          ...loaded.rootTeam,
-          taskExecutions: [
-            loaded.rootTeam.taskExecutions[0]!, catalogTeam,
-            taskAgent({ agentRunId: "new-run", delegatorAgentRunId: "agent-run-coordinator" }),
-          ],
-        },
-      });
-      await store.write(dir, withNewChild);
+      await store.write(dir, { ...releasedShape(), extra: true } as never);
       const written = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dir), "utf8")) as Record<string, any>;
       expect(keys(written)).toEqual(TOP_LEVEL_KEYS);
-      expect(written.rootTeam.taskExecutions.map(keys)).toEqual([
-        LINK_AGENT_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-        LINK_TEAM_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-        LINK_AGENT_KEYS,
-      ]);
-      // Composing the links with the own files gives back today's records exactly.
-      expect(await store.read(dir, "team-run-current")).toEqual(withNewChild);
-      // Even a caller that passes stray fields cannot write them.
-      await store.write(dir, { ...(withNewChild as object), schemaVersion: 3, extra: true } as never);
-      expect(keys(JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dir), "utf8")))).toEqual(TOP_LEVEL_KEYS);
+      expect(JSON.stringify(written)).not.toMatch(/schemaVersion|settledAt|taskExecutions|extra/);
+      expect(await store.read(dir, "team-run-current")).toEqual(validateTeamRunExecutionTreePayload(currentTree()));
     } finally {
       await fs.rm(memoryDir, { recursive: true, force: true });
     }

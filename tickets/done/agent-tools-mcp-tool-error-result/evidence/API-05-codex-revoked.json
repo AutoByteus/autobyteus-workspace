@@ -1,0 +1,47 @@
+{
+  "runtime": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "toolNamesSelected": [
+    "tok_auth_probe"
+  ],
+  "remoteRequests": [
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "rpcMethod": "initialize",
+      "toolName": null,
+      "auth": "other"
+    }
+  ],
+  "events": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "TURN_STARTED",
+    "SEGMENT_START",
+    "TOKEN_USAGE_UPDATED",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "SEGMENT_START",
+    "TOOL_EXECUTION_STARTED",
+    "TOOL_EXECUTION_FAILED",
+    "SEGMENT_END",
+    "TOKEN_USAGE_UPDATED",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "TOKEN_USAGE_UPDATED",
+    "TURN_COMPLETED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE"
+  ],
+  "lastEvents": "AGENT_STATUS:{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b6312c3-a570-4e12-8421-d592ec77affd\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null} | AGENT_STATUS:{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b6312c3-a570-4e12-8421-d592ec77affd\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-6dafb1a7-78b1-49bb-9fea-67289735f292\",\"dedupe_key\":\"agent_run_input:e2e:e2e-6dafb1a7-7 | AGENT_COMMAND_ACK:{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24\",\"message_id\":\"e2e-6dafb1a7-78b1-49bb-9fea-67289735f292\",\"dedupe_key\":\"agent_ | SYSTEM_INSTRUCTIONS_SUPPLIED:{\"trace_id\":\"rt_1792863245883_ab42237f-04f6-4669-9c65-a5a6bd8fe499\",\"content\":\"## Agent Identity\\n\\n- Name: mcp-http-auth-codex-revoked-496d9e85-8691-44c8-81c1-35c7b444e605\\n- Description: Calls crede | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b6312c3-a570-4e12-8421-d592ec77affd\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-6dafb1a7-78b1-49bb-9fea-67289735f292\",\"dedupe_key\":\"agent_run_input:e2e:e2e-6dafb1a7-7 | AGENT_STATUS:{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24\"} | TURN_STARTED:{\"turnId\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\"} | SEGMENT_START:{\"id\":\"reasoning-block:6eddc401-96e4-45a1-b000-1e0eb3906965:1\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"segment_type\":\"reasoning\",\"metadata\":null} | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"52cd72ad-15ee-481a-859a-c0d9d0c9fb9d\",\"idempotency_key\":\"codex_token_usage:mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24:01a16efa-163f-7882-aa76- | SEGMENT_CONTENT:{\"id\":\"reasoning-block:6eddc401-96e4-45a1-b000-1e0eb3906965:1\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"segment_type\":\"reasoning\",\"delta\":\"**Planning exact tool invocation**\"} | SEGMENT_END:{\"id\":\"reasoning-block:6eddc401-96e4-45a1-b000-1e0eb3906965:1\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null} | SEGMENT_START:{\"id\":\"exec-e80080c1-9fba-438b-a944-53c3afd714a9\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"tok_auth_probe\"}} | TOOL_EXECUTION_STARTED:{\"item\":{\"type\":\"mcpToolCall\",\"id\":\"exec-e80080c1-9fba-438b-a944-53c3afd714a9\",\"tool\":\"tok_auth_probe\",\"status\":\"inProgress\",\"arguments\":{},\"appContext\":null,\"mcpAppUi\":null,\"pluginId\":null,\"readOnlyH | TOOL_EXECUTION_FAILED:{\"item\":{\"type\":\"mcpToolCall\",\"id\":\"exec-e80080c1-9fba-438b-a944-53c3afd714a9\",\"tool\":\"tok_auth_probe\",\"status\":\"failed\",\"arguments\":{},\"appContext\":null,\"mcpAppUi\":null,\"pluginId\":null,\"readOnlyHint\" | SEGMENT_END:{\"id\":\"exec-e80080c1-9fba-438b-a944-53c3afd714a9\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"metadata\":{\"tool_name\":\"tok_auth_probe\"},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":nu | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"dbfce53e-80b3-4fbf-bfa8-91a19879f888\",\"idempotency_key\":\"codex_token_usage:mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24:01a16efa-163f-7882-aa76- | SEGMENT_START:{\"id\":\"msg_07e63f919873161d016adcec141c148191b422ef51e446ae21\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"segment_type\":\"text\",\"metadata\":null} | SEGMENT_CONTENT:{\"id\":\"msg_07e63f919873161d016adcec141c148191b422ef51e446ae21\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"segment_type\":\"text\",\"delta\":\"HTTP 401 Unauthorized: Error POSTing to endpoint: unautho | SEGMENT_END:{\"id\":\"msg_07e63f919873161d016adcec141c148191b422ef51e446ae21\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null} | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"b570355d-72d8-4349-b63c-01beb8717ef8\",\"idempotency_key\":\"codex_token_usage:mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24:01a16efa-163f-7882-aa76- | TURN_COMPLETED:{\"turnId\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\",\"turn_id\":\"01a16efa-168c-7cc1-bfb9-22993178e23d\"} | AGENT_STATUS:{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_codex_revoked_496d9e85_8691_44c8_8_86aad66092c34f62b52471763c7beb24\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"0b6312c3-a570-4e12-8421-d592ec77affd\",\"revision\":4,\"entries\":[],\"recoverableBlock\":null}",
+  "statusInToolResult": true,
+  "dummyValueOnAgentWire": false
+}

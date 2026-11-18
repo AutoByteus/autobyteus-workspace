@@ -1,0 +1,132 @@
+{
+  "mode": "measure",
+  "label": "base",
+  "startedAt": "2026-11-05T21:03:12.847Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/wtvc-385-base",
+  "stackHead": "3ef5e33eec",
+  "probeHead": "c764619bd2",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    73.6,
+    90.1,
+    110.1
+  ],
+  "budgetMs": 250,
+  "checks": {},
+  "cleanup": {
+    "backend": {
+      "pid": 60270,
+      "status": "terminated",
+      "exit": 0
+    },
+    "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-home-OkKHdx",
+    "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-kTLgzZ removed"
+  },
+  "failures": [],
+  "seedShape": {
+    "agentRuns": 40,
+    "teamRuns": 200,
+    "orgRuns": 10,
+    "teamMembers": 5,
+    "perAgent": {
+      "main": 20,
+      "side": 12,
+      "third": 8
+    }
+  },
+  "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-kTLgzZ",
+  "queryHasLastActivity": false,
+  "windows": {
+    "capped": {
+      "limitPerAgent": 6,
+      "coldMs": 62.2,
+      "counts": {
+        "agentRuns": 24,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 876372,
+      "loadBefore": [
+        73.6,
+        90.1,
+        110.1
+      ],
+      "loadAfter": [
+        69,
+        88.5,
+        109.3
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 50.7,
+        "p95": 57.6,
+        "max": 60.8,
+        "mean": 50
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 48.4,
+        "p95": 55.6,
+        "max": 58.1,
+        "mean": 47.4
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 50.1,
+        "p95": 57,
+        "max": 59.8,
+        "mean": 49.4
+      },
+      "samplesMs": [
+        38,
+        50.6,
+        56.4,
+        57.6,
+        53.5,
+        48,
+        49.6,
+        52.7,
+        53.1,
+        52.8,
+        52.4,
+        53.6,
+        52.5,
+        55,
+        60.3,
+        56,
+        40.7,
+        50.7,
+        53.4,
+        51.7,
+        52.1,
+        53.3,
+        43.9,
+        39.1,
+        44.8,
+        50.4,
+        43.6,
+        45.2,
+        44.3,
+        43.4,
+        45.2,
+        44.9,
+        46.2,
+        50.1,
+        60.8,
+        53.3,
+        48.4,
+        49.8,
+        51.8,
+        50.8
+      ]
+    }
+  },
+  "completedAt": "2026-11-05T21:03:26.125Z",
+  "loadAtEnd": [
+    69,
+    88.5,
+    109.3
+  ]
+}

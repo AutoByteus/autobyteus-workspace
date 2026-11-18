@@ -1,0 +1,3058 @@
+{
+  "startedAt": "2026-11-08T18:11:29.860Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "servers": {
+    "lambda": {
+      "port": 49429,
+      "nodeId": "srv_7md_qcAN0S2dKeocR_kadtZWPOrwUBnv"
+    },
+    "gamma": {
+      "port": 49422,
+      "nodeId": "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W"
+    },
+    "delta": {
+      "port": 49423,
+      "nodeId": "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP"
+    },
+    "mu": {
+      "port": 49430,
+      "nodeId": "srv_kqZiV3VrJDJXxXMJ3JLWTsKUXM7-FMiR"
+    },
+    "kappa": {
+      "port": 49428,
+      "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+    },
+    "alpha": {
+      "port": 49420,
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    "beta": {
+      "port": 49421,
+      "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+    },
+    "epsilon": {
+      "port": 49424,
+      "nodeId": "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56"
+    },
+    "iota": {
+      "port": 49427,
+      "nodeId": "srv_A0yvzCachz_v_7flafgweYK3cD5iujQa"
+    },
+    "zeta": {
+      "port": 49425,
+      "nodeId": "srv_VtA3XgiWKmjuPbyDrD-ESWMUBUn1JIUq"
+    },
+    "theta": {
+      "port": 49426,
+      "nodeId": "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ"
+    }
+  },
+  "cases": {
+    "NP-01": {
+      "result": "Pass",
+      "ms": 6347,
+      "failedExpectations": [],
+      "url": "http://127.0.0.1:49419/nodes?nodeTab=remoteCollaboration",
+      "tabs": [
+        "manage",
+        "memorySync",
+        "phoneSetup",
+        "dockerGuide",
+        "nfsGuide"
+      ],
+      "fresh": {
+        "alphaSwitch": false,
+        "alphaPeersFile": null
+      },
+      "before": {
+        "switchChecked": "false",
+        "status": "Off",
+        "offNote": "Off by default. While it is off, this node asks no other node and refuses their requests.",
+        "thisNode": "Embedded Node Embedded",
+        "url": "http://127.0.0.1:49420"
+      },
+      "after": {
+        "alphaSwitch": true,
+        "status": "On"
+      }
+    },
+    "NP-02": {
+      "result": "Pass",
+      "ms": 208,
+      "failedExpectations": [],
+      "keys": [
+        "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ",
+        "d:remote-gamma-entry",
+        "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W",
+        "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP",
+        "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56",
+        "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y",
+        "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ"
+      ],
+      "names": [
+        "beta",
+        "gamma box",
+        "gamma",
+        "delta",
+        "epsilon",
+        "zeta",
+        "theta"
+      ],
+      "betaRow": {
+        "name": "beta",
+        "url": "localhost:49421",
+        "switch": "true"
+      },
+      "betaEntry": {
+        "id": "remote-beta-entry",
+        "name": "http://localhost:49421",
+        "baseUrl": "http://localhost:49421",
+        "nodeType": "remote",
+        "capabilities": {
+          "terminal": true,
+          "fileExplorerStreaming": true
+        },
+        "capabilityProbeState": "ready",
+        "createdAt": "2026-09-02T10:00:00.000Z",
+        "updatedAt": "2026-11-08T18:11:48.189Z",
+        "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+      },
+      "gammaEntry": {
+        "id": "remote-gamma-entry",
+        "name": "gamma box",
+        "baseUrl": "http://localhost:49422",
+        "nodeType": "remote",
+        "capabilities": {
+          "terminal": true,
+          "fileExplorerStreaming": true
+        },
+        "capabilityProbeState": "ready",
+        "createdAt": "2026-09-03T10:00:00.000Z",
+        "updatedAt": "2026-09-03T10:00:00.000Z"
+      }
+    },
+    "NP-03": {
+      "result": "Pass",
+      "ms": 20122,
+      "failedExpectations": [],
+      "settledAt": {
+        "gamma": {
+          "ms": 68,
+          "line": "Not reachable. Nothing answers at that address and port."
+        },
+        "delta": {
+          "ms": 79,
+          "line": "Remote collaboration is off on delta."
+        },
+        "epsilon": {
+          "ms": 87,
+          "line": "epsilon and this node aren't paired yet. Pair them so their agents can work together."
+        },
+        "zeta": {
+          "ms": 95,
+          "line": "A different node answers at this address."
+        },
+        "gammaEntry": {
+          "ms": 106,
+          "line": "Not reachable. Nothing answers at that address and port."
+        },
+        "beta": {
+          "ms": 213,
+          "line": null
+        },
+        "theta": {
+          "ms": 20164,
+          "line": "Not reachable. No answer within 20 seconds."
+        }
+      },
+      "thetaWhileOthersSettled": {
+        "line": "Checking theta… up to 20 seconds.",
+        "dot": "Checking"
+      },
+      "usableWhileTheta": "Checking theta… up to 20 seconds.",
+      "betaSummary": "3 Agents",
+      "betaEntries": 3,
+      "lines": {
+        "beta": {
+          "line": null,
+          "tone": null,
+          "fix": null,
+          "dot": "Reachable now"
+        },
+        "gamma": {
+          "line": "Not reachable. Nothing answers at that address and port.",
+          "tone": "info",
+          "fix": "Check again",
+          "dot": "Not reachable now"
+        },
+        "delta": {
+          "line": "Remote collaboration is off on delta.",
+          "tone": "warn",
+          "fix": "Turn on there",
+          "dot": "Reachable now"
+        },
+        "epsilon": {
+          "line": "epsilon and this node aren't paired yet. Pair them so their agents can work together.",
+          "tone": "warn",
+          "fix": "Pair again",
+          "dot": "Reachable now"
+        },
+        "zeta": {
+          "line": "A different node answers at this address.",
+          "tone": "error",
+          "fix": "Change address",
+          "dot": "Not reachable now"
+        },
+        "theta": {
+          "line": "Not reachable. No answer within 20 seconds.",
+          "tone": "info",
+          "fix": "Check again",
+          "dot": "Not reachable now"
+        },
+        "gammaEntry": {
+          "line": "Not reachable. Nothing answers at that address and port.",
+          "tone": "info",
+          "fix": "Check again",
+          "dot": "Not reachable now"
+        }
+      },
+      "betaDirections": {
+        "out": "This node → beta Working via http://127.0.0.1:49421Change address",
+        "in": "beta → this node Working via http://127.0.0.1:49420"
+      },
+      "openAsks": {
+        "beta": 1,
+        "gamma": 1,
+        "delta": 1,
+        "epsilon": 1,
+        "zeta": 1,
+        "theta": 1
+      }
+    },
+    "NP-11": {
+      "result": "Pass",
+      "ms": 59476,
+      "failedExpectations": [],
+      "refreshAsks": [
+        "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+      ],
+      "offRequests": 0,
+      "offLines": {
+        "beta": null,
+        "delta": null,
+        "epsilon": null,
+        "zeta": null
+      },
+      "offDirections": {
+        "out": "This node → beta Off on this node via http://127.0.0.1:49421Change address",
+        "in": "beta → this node Off on this node via http://127.0.0.1:49420"
+      },
+      "onAsks": {
+        "beta": 1,
+        "gamma": 1,
+        "delta": 1,
+        "epsilon": 1,
+        "zeta": 1,
+        "theta": 1
+      },
+      "quietMs": 30001,
+      "quietRequests": 0,
+      "appRequestsDuringQuiet": 18
+    },
+    "NP-04": {
+      "result": "Pass",
+      "ms": 3549,
+      "failedExpectations": [],
+      "before": {
+        "alpha": {
+          "peers": [
+            {
+              "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ",
+              "name": "beta",
+              "baseUrl": "http://127.0.0.1:49421",
+              "addedAt": "2026-11-08T18:11:36.209Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W",
+              "name": "gamma",
+              "baseUrl": "http://127.0.0.1:49422",
+              "addedAt": "2026-11-08T18:11:36.249Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP",
+              "name": "delta",
+              "baseUrl": "http://127.0.0.1:49423",
+              "addedAt": "2026-11-08T18:11:36.287Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56",
+              "name": "epsilon",
+              "baseUrl": "http://127.0.0.1:49424",
+              "addedAt": "2026-11-08T18:11:36.324Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y",
+              "name": "zeta",
+              "baseUrl": "http://127.0.0.1:49425",
+              "addedAt": "2026-11-08T18:11:36.362Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ",
+              "name": "theta",
+              "baseUrl": "http://127.0.0.1:49426",
+              "addedAt": "2026-11-08T18:11:36.395Z",
+              "peerSecret": "…"
+            }
+          ]
+        },
+        "iota": null,
+        "kappa": null
+      },
+      "iotaState": {
+        "dialog": 0,
+        "duplicate": 0,
+        "line": "Agents here can't work with iota yet.",
+        "tone": "info",
+        "fix": "Turn on",
+        "switch": "false"
+      },
+      "confirmText": "Let agents work with kappa? Agents on this node and on kappa will be able to work with each other. These changes happen: On kappa • Turn on remote collaboration (it is off) On both nodes • Pair this node with kappa (here it is called “kappa”) kappa calls this node “Embedded Node”. Paired nodes share a secret, and each proves every request to the other with it. Cancel Turn on",
+      "steps": [
+        {
+          "id": "turnOnThere",
+          "mark": "•",
+          "text": "Turn on remote collaboration (it is off)"
+        },
+        {
+          "id": "pair",
+          "mark": "•",
+          "text": "Pair this node with kappa (here it is called “kappa”) kappa calls this node “Embedded Node”."
+        }
+      ],
+      "afterCancel": {
+        "alpha": {
+          "peers": [
+            {
+              "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ",
+              "name": "beta",
+              "baseUrl": "http://127.0.0.1:49421",
+              "addedAt": "2026-11-08T18:11:36.209Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W",
+              "name": "gamma",
+              "baseUrl": "http://127.0.0.1:49422",
+              "addedAt": "2026-11-08T18:11:36.249Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP",
+              "name": "delta",
+              "baseUrl": "http://127.0.0.1:49423",
+              "addedAt": "2026-11-08T18:11:36.287Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56",
+              "name": "epsilon",
+              "baseUrl": "http://127.0.0.1:49424",
+              "addedAt": "2026-11-08T18:11:36.324Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y",
+              "name": "zeta",
+              "baseUrl": "http://127.0.0.1:49425",
+              "addedAt": "2026-11-08T18:11:36.362Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ",
+              "name": "theta",
+              "baseUrl": "http://127.0.0.1:49426",
+              "addedAt": "2026-11-08T18:11:36.395Z",
+              "peerSecret": "…"
+            }
+          ]
+        },
+        "iota": null,
+        "kappa": null,
+        "kappaSwitch": false,
+        "kappaLine": "Agents here can't work with kappa yet."
+      },
+      "byNodeId": "This is beta, already in your list.",
+      "byAddress": "This is gamma box, already in your list.",
+      "ghostState": {
+        "line": "Not reachable. Nothing answers at that address and port.",
+        "tone": "info",
+        "fix": "Check again",
+        "dialog": 0,
+        "switchDisabled": true
+      },
+      "added": [
+        {
+          "name": "iota",
+          "baseUrl": "http://127.0.0.1:49427",
+          "nodeId": "srv_A0yvzCachz_v_7flafgweYK3cD5iujQa"
+        },
+        {
+          "name": "kappa",
+          "baseUrl": "http://127.0.0.1:49428",
+          "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+        },
+        {
+          "name": "ghost",
+          "baseUrl": "http://127.0.0.1:49431",
+          "nodeId": null
+        }
+      ],
+      "ghostRemove": [
+        {
+          "id": "removeFromList",
+          "mark": "•",
+          "text": "Remove ghost from your list"
+        }
+      ]
+    },
+    "NP-05": {
+      "result": "Pass",
+      "ms": 1074,
+      "failedExpectations": [],
+      "steps": [
+        {
+          "id": "turnOnThere",
+          "mark": "•",
+          "text": "Turn on remote collaboration (it is off)"
+        },
+        {
+          "id": "pair",
+          "mark": "•",
+          "text": "Pair this node with kappa (here it is called “kappa”) kappa calls this node “Embedded Node”."
+        }
+      ],
+      "onAlpha": {
+        "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34",
+        "name": "kappa",
+        "baseUrl": "http://127.0.0.1:49428"
+      },
+      "onKappa": [
+        {
+          "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+          "name": "Embedded Node",
+          "baseUrl": "http://127.0.0.1:49420"
+        }
+      ],
+      "kappaFile": {
+        "peers": [
+          {
+            "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:49420",
+            "addedAt": "2026-11-08T18:13:17.484Z",
+            "peerSecret": "…"
+          }
+        ]
+      },
+      "kappaDirections": {
+        "out": "This node → kappa Working via http://127.0.0.1:49428Change address",
+        "in": "kappa → this node Working via http://127.0.0.1:49420"
+      },
+      "offers": {
+        "alphaAsksKappa": {
+          "refusalCode": null,
+          "entries": [
+            {
+              "name": "Kappa Helper",
+              "kind": "agent"
+            }
+          ]
+        },
+        "kappaAsksAlpha": {
+          "refusalCode": null,
+          "entries": [
+            {
+              "name": "Alpha Helper",
+              "kind": "agent"
+            }
+          ]
+        }
+      }
+    },
+    "NP-13": {
+      "result": "Pass",
+      "ms": 603,
+      "failedExpectations": [],
+      "refusedAddress": "http://lvh.me:49428",
+      "refused": "The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.",
+      "notNode": "Something answers there, but it isn't an AutoByteus node.",
+      "before": "http://127.0.0.1:49428",
+      "after": "http://127.0.0.1:49428"
+    },
+    "NP-06": {
+      "result": "Pass",
+      "ms": 1040,
+      "failedExpectations": [],
+      "steps": [
+        {
+          "id": "pair",
+          "mark": "•",
+          "text": "Pair this node with lambda (here it is called “lambda”) lambda calls this node “Embedded Node 2”."
+        }
+      ],
+      "nameThere": "lambda calls this node “Embedded Node 2”.",
+      "addressLine": null,
+      "onLambda": {
+        "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+        "name": "Embedded Node 2",
+        "baseUrl": "http://127.0.0.1:49420"
+      },
+      "lambdaPeers": [
+        {
+          "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y",
+          "name": "Embedded Node",
+          "baseUrl": "http://127.0.0.1:49425"
+        },
+        {
+          "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+          "name": "Embedded Node 2",
+          "baseUrl": "http://127.0.0.1:49420"
+        }
+      ]
+    },
+    "NP-07": {
+      "result": "Pass",
+      "ms": 1111,
+      "failedExpectations": [],
+      "planned": [
+        {
+          "id": "pair",
+          "mark": "•",
+          "text": "Pair this node with mu (here it is called “mu”) mu calls this node “Embedded Node”."
+        }
+      ],
+      "onMu": {
+        "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+        "name": "Embedded Node 2",
+        "baseUrl": "http://127.0.0.1:49420"
+      },
+      "muNames": [
+        "Embedded Node",
+        "Embedded Node 2"
+      ]
+    },
+    "NP-08": {
+      "result": "Pass",
+      "ms": 250,
+      "failedExpectations": [],
+      "invalid": "Use 1–64 letters, digits, spaces, _ . or - (start with a letter or digit).",
+      "taken": "Another node is already named Beta.",
+      "onAlpha": {
+        "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34",
+        "name": "kappa lab",
+        "baseUrl": "http://127.0.0.1:49428"
+      },
+      "entry": {
+        "name": "kappa lab",
+        "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+      },
+      "kappaKnowsAlphaAs": "Embedded Node"
+    },
+    "NP-09": {
+      "result": "Pass",
+      "ms": 1126,
+      "failedExpectations": [],
+      "confirmText": "Stop agents working with kappa lab? These changes happen: • Remove kappa lab from this node • Remove this node from kappa lab kappa lab stays in your list, and its own remote collaboration stays on. Cancel Turn off",
+      "steps": [
+        {
+          "id": "removeHere",
+          "mark": "•",
+          "text": "Remove kappa lab from this node"
+        },
+        {
+          "id": "removeThere",
+          "mark": "•",
+          "text": "Remove this node from kappa lab"
+        }
+      ],
+      "reachableOff": {
+        "alphaHasKappa": false,
+        "kappaPeers": [],
+        "kappaSwitch": true,
+        "listed": 1,
+        "line": "Agents here can't work with kappa lab yet."
+      },
+      "lambdaSteps": [
+        {
+          "id": "removeHere",
+          "mark": "•",
+          "text": "Remove lambda from this node"
+        },
+        {
+          "id": "removeThere",
+          "mark": "•",
+          "text": "Remove this node from lambda"
+        }
+      ],
+      "lambdaResult": {
+        "steps": [
+          {
+            "id": "removeHere",
+            "mark": "✓",
+            "text": "Remove lambda from this node"
+          },
+          {
+            "id": "removeThere",
+            "mark": "✗",
+            "text": "Remove this node from lambda Nothing answers at that address and port."
+          }
+        ],
+        "error": "Nothing answers at that address and port.",
+        "partial": "Not everything could be done. What was done stays done."
+      },
+      "lambdaAfter": {
+        "alphaHasLambda": false,
+        "lambdaFile": {
+          "peers": [
+            {
+              "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y",
+              "name": "Embedded Node",
+              "baseUrl": "http://127.0.0.1:49425",
+              "addedAt": "2026-11-08T18:11:36.445Z",
+              "peerSecret": "…"
+            },
+            {
+              "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+              "name": "Embedded Node 2",
+              "baseUrl": "http://127.0.0.1:49420",
+              "addedAt": "2026-11-08T18:13:19.252Z",
+              "peerSecret": "…"
+            }
+          ]
+        },
+        "line": "Not reachable. Nothing answers at that address and port."
+      }
+    },
+    "NP-10": {
+      "result": "Pass",
+      "ms": 1094,
+      "failedExpectations": [],
+      "muSteps": [
+        {
+          "id": "removeHere",
+          "mark": "•",
+          "text": "Remove mu from this node"
+        },
+        {
+          "id": "removeThere",
+          "mark": "•",
+          "text": "Remove this node from mu"
+        },
+        {
+          "id": "removeFromList",
+          "mark": "•",
+          "text": "Remove mu from your list"
+        }
+      ],
+      "muAfter": {
+        "alphaHasMu": false,
+        "muHasAlpha": false,
+        "listed": 0,
+        "entry": false
+      },
+      "betaSteps": [
+        {
+          "id": "removeHere",
+          "mark": "•",
+          "text": "Remove beta from this node"
+        },
+        {
+          "id": "removeThere",
+          "mark": "•",
+          "text": "Remove this node from beta"
+        },
+        {
+          "id": "removeFromList",
+          "mark": "•",
+          "text": "Remove beta from your list"
+        }
+      ],
+      "betaResult": {
+        "steps": [
+          {
+            "id": "removeHere",
+            "mark": "✓",
+            "text": "Remove beta from this node"
+          },
+          {
+            "id": "removeThere",
+            "mark": "✗",
+            "text": "Remove this node from beta Nothing answers at that address and port."
+          },
+          {
+            "id": "removeFromList",
+            "mark": "✓",
+            "text": "Remove beta from your list"
+          }
+        ],
+        "partial": "Removed here. beta could not be reached, so this node is still registered there.",
+        "retry": 0
+      },
+      "betaAfter": {
+        "alphaHasBeta": false,
+        "betaFile": {
+          "peers": [
+            {
+              "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F",
+              "name": "Embedded Node",
+              "baseUrl": "http://127.0.0.1:49420",
+              "addedAt": "2026-11-08T18:11:36.200Z",
+              "peerSecret": "…"
+            }
+          ]
+        },
+        "listed": 0,
+        "entry": false
+      }
+    },
+    "NP-12": {
+      "result": "Pass",
+      "ms": 0,
+      "failedExpectations": [],
+      "offerHosts": [
+        "alpha"
+      ],
+      "opsToOthers": [
+        "/rest/node-update",
+        "/rest/remote-access/status",
+        "CreatePeerInvite",
+        "GetPeerNodeAvailability",
+        "GetRemoteCollaborationCapability",
+        "GetRemoteCollaborationSettings",
+        "RemovePeerNode",
+        "SetRemoteCollaborationEnabled"
+      ],
+      "requestsToOthers": 153,
+      "totalRequests": 285,
+      "nonNodeHosts": [
+        "other:api.iconify.design"
+      ]
+    }
+  },
+  "requests": [
+    {
+      "at": 1794161508060,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetUpdateNotifications",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508061,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508073,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetUpdateAutomationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508141,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508142,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508142,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508142,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508142,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508142,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508143,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508143,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508143,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508146,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetApplicationsCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508147,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508149,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508149,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetAllWorkspaces",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508149,
+      "to": "other:api.iconify.design",
+      "via": "api.iconify.design",
+      "path": "/heroicons.json",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508149,
+      "to": "other:api.iconify.design",
+      "via": "api.iconify.design",
+      "path": "/ph.json",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508167,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetAgentDefinitions",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508168,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetAgentTeamDefinitions",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508169,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetAgentOrgDefinitions",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508169,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508176,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508183,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508183,
+      "to": "gamma",
+      "via": "localhost:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508183,
+      "to": "beta",
+      "via": "127.0.0.1:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508184,
+      "to": "gamma",
+      "via": "127.0.0.1:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508184,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508184,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508184,
+      "to": "zeta",
+      "via": "127.0.0.1:49425",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508184,
+      "to": "theta",
+      "via": "127.0.0.1:49426",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508191,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508193,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508193,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508194,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508195,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508195,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508195,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508201,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161508202,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161508202,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161510134,
+      "to": "alpha",
+      "via": "127.0.0.1:49419",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513188,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513191,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513191,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513884,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513927,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "SetRemoteCollaborationEnabled",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513935,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+    },
+    {
+      "at": 1794161513936,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513936,
+      "to": "gamma",
+      "via": "localhost:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513936,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W"
+    },
+    {
+      "at": 1794161513936,
+      "to": "gamma",
+      "via": "127.0.0.1:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513937,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP"
+    },
+    {
+      "at": 1794161513937,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513937,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56"
+    },
+    {
+      "at": 1794161513937,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513938,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y"
+    },
+    {
+      "at": 1794161513938,
+      "to": "zeta",
+      "via": "127.0.0.1:49425",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513938,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ"
+    },
+    {
+      "at": 1794161513938,
+      "to": "theta",
+      "via": "127.0.0.1:49426",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513945,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513945,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513945,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513946,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513948,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513948,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513949,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161513949,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513949,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161513955,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161514035,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetMemorySyncStatus",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514048,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListMemoryHubUrlCandidates",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514072,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514072,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514084,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+    },
+    {
+      "at": 1794161514084,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514084,
+      "to": "gamma",
+      "via": "localhost:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514085,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W"
+    },
+    {
+      "at": 1794161514085,
+      "to": "gamma",
+      "via": "127.0.0.1:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514086,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP"
+    },
+    {
+      "at": 1794161514086,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514086,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56"
+    },
+    {
+      "at": 1794161514086,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514087,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y"
+    },
+    {
+      "at": 1794161514087,
+      "to": "zeta",
+      "via": "127.0.0.1:49425",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514087,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ"
+    },
+    {
+      "at": 1794161514087,
+      "to": "theta",
+      "via": "127.0.0.1:49426",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514092,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514093,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514094,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514094,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514094,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514094,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514095,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161514095,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514096,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161514102,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161518194,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161518197,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161518197,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161523189,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161523193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161523193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161528188,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161528192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161528192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161533191,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161533195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161533195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161534366,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+    },
+    {
+      "at": 1794161534367,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161534380,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161534380,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161534380,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161534385,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161536005,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536015,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "SetRemoteCollaborationEnabled",
+      "nodeId": null
+    },
+    {
+      "at": 1794161536022,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536023,
+      "to": "gamma",
+      "via": "localhost:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536023,
+      "to": "gamma",
+      "via": "127.0.0.1:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536023,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536024,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536024,
+      "to": "zeta",
+      "via": "127.0.0.1:49425",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536024,
+      "to": "theta",
+      "via": "127.0.0.1:49426",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536033,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536034,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161536034,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161536036,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536036,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161536037,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161536037,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161536040,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161536040,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161538192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161538198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161538198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542229,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542246,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "SetRemoteCollaborationEnabled",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542253,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+    },
+    {
+      "at": 1794161542254,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542254,
+      "to": "gamma",
+      "via": "localhost:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542254,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_RlA_faL6XoVo_c0T1WpNzHkx3uknBq3W"
+    },
+    {
+      "at": 1794161542254,
+      "to": "gamma",
+      "via": "127.0.0.1:49422",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542255,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_Wr_ZhyLkp8w0jFft5nK5BOMt1V-qSclP"
+    },
+    {
+      "at": 1794161542255,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542256,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_mZ7DAF4CDariGxDlQBcqnU0hp7cWya56"
+    },
+    {
+      "at": 1794161542256,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542256,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_RJqAgjnT_5_Bt2qG2DuYsQBvK6i_X65Y"
+    },
+    {
+      "at": 1794161542256,
+      "to": "zeta",
+      "via": "127.0.0.1:49425",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542256,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_bIzOZJ0f7hRvsCBXXx94vgquirjBzwLJ"
+    },
+    {
+      "at": 1794161542257,
+      "to": "theta",
+      "via": "127.0.0.1:49426",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542261,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542263,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542263,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542263,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542264,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542264,
+      "to": "delta",
+      "via": "127.0.0.1:49423",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542267,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161542267,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542268,
+      "to": "epsilon",
+      "via": "127.0.0.1:49424",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161542272,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161543193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161543198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161543198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161548193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161548196,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161548197,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161553192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161553196,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161553197,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161558195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161558198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161558199,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161563193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161563198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161563198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161568192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161568195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161568196,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161573189,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161573193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161573194,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161578192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161578196,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161578197,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161583193,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161583199,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161583199,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161588191,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161588195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161588195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161593192,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161593197,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161593198,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161593896,
+      "to": "iota",
+      "via": "127.0.0.1:49427",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161593914,
+      "to": "iota",
+      "via": "127.0.0.1:49427",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161593919,
+      "to": "iota",
+      "via": "127.0.0.1:49427",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161593919,
+      "to": "iota",
+      "via": "127.0.0.1:49427",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161593919,
+      "to": "iota",
+      "via": "127.0.0.1:49427",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161595062,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161595081,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161595082,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161595082,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161595083,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161595087,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161595088,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161595088,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161595314,
+      "to": "beta",
+      "via": "127.0.0.1:49421",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161595429,
+      "to": "ghost",
+      "via": "127.0.0.1:49431",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161595445,
+      "to": "ghost",
+      "via": "127.0.0.1:49431",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161597383,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597383,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597383,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597446,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "SetRemoteCollaborationEnabled",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597460,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "CreatePeerInvite",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597466,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "AcceptPeerInvite",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597509,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+    },
+    {
+      "at": 1794161597510,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161597514,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161597514,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597514,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161597519,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161598190,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161598194,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161598195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161598496,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+    },
+    {
+      "at": 1794161598812,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+    },
+    {
+      "at": 1794161599062,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161599080,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161599081,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599081,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599081,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599087,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161599087,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599087,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599228,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "CreatePeerInvite",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599243,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "AcceptPeerInvite",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599274,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_7md_qcAN0S2dKeocR_kadtZWPOrwUBnv"
+    },
+    {
+      "at": 1794161599275,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161599279,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161599279,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599279,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161599284,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161600111,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161600131,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161600131,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600131,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600132,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600137,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161600138,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600138,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600278,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "CreatePeerInvite",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600293,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "AcceptPeerInvite",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600323,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "nodeId": "srv_kqZiV3VrJDJXxXMJ3JLWTsKUXM7-FMiR"
+    },
+    {
+      "at": 1794161600324,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161600329,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161600329,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600330,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161600335,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161601318,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161601330,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "RenamePeerNode",
+      "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+    },
+    {
+      "at": 1794161601462,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161601479,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161601511,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_XUzcbkZUF-SkkxGWqLRkmUpTaxJ5iV34"
+    },
+    {
+      "at": 1794161601529,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161601542,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161601545,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/rest/node-update",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161601546,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "nodeId": null
+    },
+    {
+      "at": 1794161601546,
+      "to": "kappa",
+      "via": "127.0.0.1:49428",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161602379,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161602396,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161602428,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_7md_qcAN0S2dKeocR_kadtZWPOrwUBnv"
+    },
+    {
+      "at": 1794161602445,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161602448,
+      "to": "lambda",
+      "via": "127.0.0.1:49429",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161602579,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161602595,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161602645,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_kqZiV3VrJDJXxXMJ3JLWTsKUXM7-FMiR"
+    },
+    {
+      "at": 1794161602662,
+      "to": "mu",
+      "via": "127.0.0.1:49430",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    },
+    {
+      "at": 1794161603195,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/rest/health",
+      "op": null,
+      "nodeId": null
+    },
+    {
+      "at": 1794161603199,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161603200,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "nodeId": null
+    },
+    {
+      "at": 1794161603478,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161603495,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "nodeId": null
+    },
+    {
+      "at": 1794161603527,
+      "to": "alpha",
+      "via": "127.0.0.1:49420",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_aDmQxMkArkKFh4dA1SFGzPQ-UbUK1RoZ"
+    },
+    {
+      "at": 1794161603544,
+      "to": "beta",
+      "via": "localhost:49421",
+      "path": "/graphql",
+      "op": "RemovePeerNode",
+      "nodeId": "srv_Whh1TMrHAnQJZnDZfHbsPru_dS1Ej-3F"
+    }
+  ],
+  "browserErrors": [
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-11-08T18:13:25.168Z"
+}

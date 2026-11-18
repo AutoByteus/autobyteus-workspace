@@ -1,0 +1,415 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T07:23:16.859Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-appdata-ETzOFG/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Populating agent definition cache for the first time...
+[2026-10-05T07:23:17.308Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[2026-10-05T07:23:17.312Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+In-memory cache: Added new agent definition with ID bq-probe-1791184997343.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Agent Definition created successfully with ID: bq-probe-1791184997343
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-6woPPW
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-6woPPW.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Created and registered workspace ID: agent_ws_2e87d63656ed9e9c5b7813f69fe26902518b9da76460869c3ec7d2c99e9ea9c8
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-6woPPW
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq-ws-6woPPW.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Reusing registered workspace ID: agent_ws_2e87d63656ed9e9c5b7813f69fe26902518b9da76460869c3ec7d2c99e9ea9c8
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Published claude_agent_sdk agent run 'bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7'.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Agent websocket attached for run bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+Created agent session 1cac97b6-a468-4c6c-8a3c-c09cb70ebca9 for run bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+Agent WebSocket connected: session=1cac97b6-a468-4c6c-8a3c-c09cb70ebca9, run=bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +0.7s WS AGENT_STATUS {"status":"idle","recoverableBlock":null,"agent_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7"}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +2.3s WS AGENT_STATUS {"status":"initializing","recoverableBlock":null,"agent_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7"}
+[BQ-PROBE] +2.3s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":2,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":null,"state":"queued","content":"Run this shell command in the foreground (not in the background) and wait for it to finish: python3 -c \"import time; time.sleep(
+[BQ-PROBE] +2.3s WS AGENT_STATUS {"status":"running","recoverableBlock":null,"agent_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7"}
+[BQ-PROBE] +2.3s WS TURN_STARTED {"turnId":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1
+[BQ-PROBE] +2.3s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":3,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"queued","content":"Run this shell command in the fore
+[BQ-PROBE] +2.3s WS AGENT_COMMAND_ACK {"command_type":"SEND_MESSAGE","run_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7","message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8
+
+(node:20707) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +2.4s WS-TOOL SYSTEM_INSTRUCTIONS_SUPPLIED {"trace_id":"rt_1791184999107_dd1dc22d-1272-4743-ac43-8e0b61c0cdaa","content":"## Agent Identity\n\n- Name: BQ Probe 1791184997343\n- Description: probe\n\n### Responsibilities and Boundaries\n\nFollow the user's instructions exactly.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowled
+[BQ-PROBE] +2.4s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":3,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"queued","content":"Run this shell command in the fore
+[BQ-PROBE] +2.4s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +6.3s WS-TOOL SEGMENT_START {"id":"toolu_01E1Ca6niPWt55dBZ2SLQY7y","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","segment_type":"tool_call","metadata":{"tool_name":"Bash","arguments":{"command":"python3 -c \"import time; time.sleep(300)\"","description":"Sleep for 300 seconds","timeout":600000}}}
+[BQ-PROBE] +6.3s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+[BQ-PROBE] +6.3s WS-TOOL TOOL_EXECUTION_STARTED {"invocation_id":"toolu_01E1Ca6niPWt55dBZ2SLQY7y","tool_name":"Bash","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","arguments":{"command":"python3 -c \"import time; time.sleep(300)\"","description":"Sleep for 300 seconds","timeout":600000}}
+[BQ-PROBE] +6.3s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +6.3s WS-TOOL TOOL_APPROVED {"invocation_id":"toolu_01E1Ca6niPWt55dBZ2SLQY7y","tool_name":"Bash","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","arguments":{"command":"python3 -c \"import time; time.sleep(300)\"","timeout":600000,"description":"Sleep for 300 seconds"},"reason":"auto_execute_tools_enabled"}
+[BQ-PROBE] +6.3s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +8.9s TREE busy (self pid 20707 pgid 20655) [
+ "20810/20707/pg20655 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku ",
+ "22229/20707/pg20655 ps -A -o pid=,ppid=,pgid=,command=",
+ "22141/20810/pg22141 /bin/bash -c source /Users/normy/.claude/shell-snapshots/snapshot-bash-1791185003108-livo4j.sh 2>/dev/null || ",
+ "22143/22141/pg22143 /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python."
+]
+[BQ-PROBE] +8.9s SLEEPS busy [{"pid":22143,"ppid":22141,"pgid":22143,"cmd":"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(300)"}]
+[BQ-PROBE] +9.0s ACTION interrupt: sending INTERRUPT_GENERATION
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:25.833 AgentRun.interrupt called bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7 turn= null
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +9.0s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +9.0s WS-TOOL SEGMENT_END {"id":"toolu_01E1Ca6niPWt55dBZ2SLQY7y","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","metadata":{"tool_name":"Bash","arguments":{"command":"python3 -c \"import time; time.sleep(300)\"","timeout":600000,"description":"Sleep for 300 seconds"},"error":"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if
+[BQ-PROBE] +9.0s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+[BQ-PROBE] +9.0s WS-TOOL TOOL_EXECUTION_FAILED {"invocation_id":"toolu_01E1Ca6niPWt55dBZ2SLQY7y","tool_name":"Bash","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","arguments":{"command":"python3 -c \"import time; time.sleep(300)\"","timeout":600000,"description":"Sleep for 300 seconds"},"error":"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if 
+[BQ-PROBE] +9.0s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +9.1s WS-TOOL TOKEN_USAGE_UPDATED {"usage_event_id":"a66d8511-61b0-43fc-96b9-7404751567e4","idempotency_key":"claude_sdk_result:cf62586f-fb6b-45a0-a122-67e29b3ba775","observed_at":"2026-10-05T07:23:25.845Z","run_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7","root_team_run_id":null,"turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","llm_call_id":null,"call_s
+[BQ-PROBE] +9.1s WS-TOOL AGENT_INPUT_STATE {"run_instance_id":"2de9bea7-975b-4d42-a71c-b0197afb3f97","revision":4,"entries":[{"sequence":1,"message_id":"e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","dedupe_key":"agent_run_input:e2e:e2e-3a609be8-a0b5-4a74-bbad-182f27ede636","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","state":"forwarded","content":"Run this shell command in the f
+[BQ-PROBE] +9.1s WS TURN_INTERRUPTED {"turnId":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1-8409-f7dd87a02c2a","turn_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7:turn:1788cf08-516a-47b1
+[BQ-PROBE] +9.1s WS AGENT_STATUS {"status":"idle","recoverableBlock":null,"agent_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7"}
+[BQ-PROBE] +9.1s WS AGENT_COMMAND_ACK {"command_type":"INTERRUPT_GENERATION","command_id":"bq-int-1791185005832","target":{"target_kind":"standalone_run","run_id":"bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7"},"state":"accepte
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +14.2s TREE interrupt+5s (self pid 20707 pgid 20655) [
+ "20810/20707/pg20655 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku ",
+ "22383/20707/pg20655 ps -A -o pid=,ppid=,pgid=,command="
+]
+[BQ-PROBE] +14.2s SLEEPS interrupt+5s []
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +24.4s TREE interrupt+15s (self pid 20707 pgid 20655) [
+ "20810/20707/pg20655 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku ",
+ "22533/20707/pg20655 ps -A -o pid=,ppid=,pgid=,command="
+]
+[BQ-PROBE] +24.5s SLEEPS interrupt+15s []
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +39.6s TREE interrupt+30s (self pid 20707 pgid 20655) [
+ "20810/20707/pg20655 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model haiku ",
+ "22657/20707/pg20655 ps -A -o pid=,ppid=,pgid=,command="
+]
+[BQ-PROBE] +39.7s SLEEPS interrupt+30s []
+[BQ-PROBE] +39.7s CLOSE start (fastify.close)
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 supervisor.closeInternal start
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 supervisor: org stopAll done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 supervisor: team stopAll done
+[BQ-DIAG] 07:23:56.561 standaloneRoots.stopAll: terminate root bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+[BQ-DIAG] 07:23:56.561 standaloneRoot.terminateOnce: closeAndDrain start
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 standaloneRoot.terminateOnce: closeAndDrain done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 standaloneRoot.terminateOnce: fence result {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 standaloneRoot.terminateOnce: drains done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 standaloneRoot.terminateOnce: finish {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 standaloneRoots.stopAll: root terminated bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7 {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 supervisor: standalone roots stopAll done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.561 agentRuns.stopAll: prepare bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7 claude_agent_sdk
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.562 termination.prepare bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7 recoveryBlocked= false activeTurn= {"kind":"NONE"} quiescentNow= true
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.562 termination.prepare: drained; waitForQuiescence bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.562 termination.prepare: quiescent bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.562 agentRuns.stopAll: prepared; finishing bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+Closed agent session 1cac97b6-a468-4c6c-8a3c-c09cb70ebca9
+Agent WebSocket disconnected: 1cac97b6-a468-4c6c-8a3c-c09cb70ebca9
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.941 agentRuns.stopAll: finished bq_probe_1791184997343_0bfbce053049438c8e2519440306ddc7 {"accepted":true}
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-DIAG] 07:23:56.942 supervisor: agent runs stopAll done
+
+stdout | tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts > TMP busy-quit probe > claude_agent_sdk interrupt
+[BQ-PROBE] +40.1s CLOSE after 60s window: closed 0.391s
+[BQ-PROBE] +40.3s TREE after-close-window (self pid 20707 pgid 20655) [
+ "22762/20707/pg20655 ps -A -o pid=,ppid=,pgid=,command="
+]
+[BQ-PROBE] +40.3s SLEEPS after-close-window []
+
+ ✓ tests/e2e/runtime/zz-tmp-bq-probe.e2e.test.ts (1 test) 40385ms
+     ✓ claude_agent_sdk interrupt  40384ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:23:10
+   Duration  47.11s (transform 4.44s, setup 16ms, import 6.23s, tests 40.39s, environment 0ms)
+

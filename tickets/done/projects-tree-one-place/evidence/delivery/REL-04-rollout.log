@@ -1,0 +1,35 @@
+# REL-04 rollout of v1.5.11-beta.9 (tag pushed 2026-10-31T22:33:44Z), watched together; checked 2026-10-31T23:23:21Z
+41248739669 Server Docker Release: success (finished 2026-10-31T23:22:59Z)
+41248739663 iOS App Store Connect Release: success (finished 2026-10-31T22:53:15Z)
+41248739603 Android APK Release: success (finished 2026-10-31T22:39:00Z)
+41248739598 Desktop Release: success (finished 2026-10-31T23:03:18Z)
+## GitHub release
+prerelease=true draft=false assets=23
+autobyteus-server-1.5.11-beta.9-linux-arm64.json
+autobyteus-server-1.5.11-beta.9-linux-arm64.json.sig
+autobyteus-server-1.5.11-beta.9-linux-arm64.tar.gz
+autobyteus-server-1.5.11-beta.9-linux-x64.json
+autobyteus-server-1.5.11-beta.9-linux-x64.json.sig
+autobyteus-server-1.5.11-beta.9-linux-x64.tar.gz
+AutoByteus_personal_android-1.5.11-beta.9-release.apk
+AutoByteus_personal_android-1.5.11-beta.9-release.apk.sha256
+AutoByteus_personal_linux-arm64-1.5.11-beta.9.AppImage
+AutoByteus_personal_linux-x64-1.5.11-beta.9.AppImage
+AutoByteus_personal_macos-arm64-1.5.11-beta.9.dmg
+AutoByteus_personal_macos-arm64-1.5.11-beta.9.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.11-beta.9.zip
+AutoByteus_personal_macos-arm64-1.5.11-beta.9.zip.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.9.dmg
+AutoByteus_personal_macos-x64-1.5.11-beta.9.dmg.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.9.zip
+AutoByteus_personal_macos-x64-1.5.11-beta.9.zip.blockmap
+AutoByteus_personal_windows-1.5.11-beta.9.exe
+latest-linux-arm64.yml
+latest-linux.yml
+latest-mac.yml
+latest.yml
+GitHub Latest: v1.5.10
+## Docker Hub autobyteus/autobyteus-server
+1.5.11-beta.9 sha256:2890c8fc165b 2026-10-31T23:03:43.782724Z
+beta sha256:2890c8fc165b 2026-10-31T23:14:37.668292Z
+latest sha256:a1c22e2e4186 2026-10-29T05:47:24.472633Z

@@ -1,0 +1,22 @@
+# Check: IMP-04
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -s codegen:local (after removing CreateAgentRun), then node ./scripts/codegen-local.mjs --check; git grep -n 'CreateAgentRun\b' -- autobyteus-web ':!**/tickets/**'
+# Commit: ee1178617c (codegen); 00339421ed (check, grep)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: this file
+
+## codegen:local
+[SUCCESS] Generate
+[SUCCESS] Generate to /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/autobyteus-web/generated/graphql.ts
+[SUCCESS] Generate outputs
+
+## codegen --check
+autobyteus-web/generated/graphql.ts is current.
+
+## git grep CreateAgentRun (web, excluding ticket history)
+(no matches; git grep exit=1)
+
+## generated/graphql.ts delta in ee1178617c
+ autobyteus-web/generated/graphql.ts                | 38 ----------------------
+ autobyteus-web/graphql/mutations/agentMutations.ts | 10 ------
+ 2 files changed, 48 deletions(-)

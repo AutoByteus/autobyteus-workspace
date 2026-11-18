@@ -1,0 +1,10 @@
+# Excerpt of IMP-03-server-unit-full.log (the full log is next to this file): its header, failed tests, totals and exit code
+# Check: IMP-03-server-unit-full
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s run test:unit
+# Commit: f0eb43c749 (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:39:45Z
+
+ Test Files  904 passed | 5 skipped (909)
+      Tests  7681 passed | 9 skipped (7690)
+# Exit code: 0

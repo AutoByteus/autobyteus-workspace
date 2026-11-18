@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION } from "../../../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
@@ -10,6 +11,8 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
 const { start, stop, streamListeners } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(),
   streamListeners: [] as Array<(message: unknown) => void> }));
 
@@ -52,6 +55,8 @@ describe("AGY backend capability admission and preserved bindings", () => {
     base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-factory-unit-"));
     workspace = path.join(base, "workspace");
     await fs.mkdir(workspace);
+    // The capsule checks the user-level AGY MCP config for a name collision: keep it in the fixture.
+    vi.spyOn(os, "homedir").mockReturnValue(base);
     instructions = "Original identity";
     initOverride = {};
     conversationId = null;
@@ -68,7 +73,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
         instructions, toolNames: [], skillNames: [] }) } as never,
       { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
-      { activateForRun: () => ({ kind: "not_exposed" }) } as never,
+      createAgentToolMcpRunSessionsStub() as never,
     );
     config = new AgentRunConfig({ agentDefinitionId: "test-agent", llmModelIdentifier: "test-model",
       autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
@@ -92,7 +97,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
         { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test", instructions, toolNames: [], skillNames: [] }) } as never,
         { resolveSkillScope: () => scope, hasEffectiveSkills: () => true, resolveConfiguredSkillBindingsForAgent: () => [binding] } as never,
         { resolveWorkingDirectory: async () => workspace } as never,
-        { activateForRun: () => ({ kind: "not_exposed" }) } as never,
+        createAgentToolMcpRunSessionsStub() as never,
       );
       const preloaded = new AgentRunConfig({ ...config } as never);
       if (outcome === "rejects") {
@@ -106,6 +111,37 @@ describe("AGY backend capability admission and preserved bindings", () => {
       expect(manifest.skills).toEqual([]);
       await backend.terminate();
     });
+
+  it("writes the Project section of a run started under a Project into the agent file (REQ-006, DS-005)", async () => {
+    const underProject = new AgentRunConfig({ ...config, project: { projectId: "project_a1", name: "AutoByteus" } } as never);
+    const backend = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: underProject, runId: "run" }));
+    const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
+    const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
+    expect(markdown).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
+    // autobyteus-483 AC-011: Antigravity's own Long-Running Commands section ends the composed prompt (before the capsule's Working Environment).
+    expect(markdown).toContain(`${ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION}\n\n## Working Environment`);
+    await backend.terminate();
+  });
+
+  it("writes an enabled agent's Semantic Memory section into the agent file and creates the folder (REQ-005)", async () => {
+    const memoryDir = path.join(base, "server-memory");
+    const enabled = new AgyAgentRunBackendFactory(
+      { getAgentDefinitionById: async () => ({ id: "test-agent", name: "Test agent", description: "Unit test",
+        instructions, toolNames: [], skillNames: [], semanticMemoryEnabled: true }) } as never,
+      { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+      { resolveWorkingDirectory: async () => workspace } as never,
+      createAgentToolMcpRunSessionsStub() as never,
+      null,
+      new AgentSemanticMemory({ memoryDir }),
+    );
+    const backend = await prepareAndReleaseOnFailure(enabled.beginPreparation({ kind: "new", config, runId: "run" }));
+    const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
+    const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
+    const folder = path.join(memoryDir, "semantic", "test-agent");
+    expect(markdown).toContain(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you`);
+    expect((await fs.stat(folder)).isDirectory()).toBe(true);
+    await backend.terminate();
+  });
 
   it("uses the catalog for new and restore while retaining capsule bytes and exact conversation", async () => {
     const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
@@ -142,6 +178,27 @@ describe("AGY backend capability admission and preserved bindings", () => {
     const off = new AgentRunConfig({ ...config, autoExecuteTools: false } as never);
     await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: off, runId: "run" }))).rejects.toThrow("AGY_PERMISSION_MODE_MISMATCH");
     expect(stop).toHaveBeenCalled();
+  });
+
+  it("retries a start that failed after the capsule was made: the retry replaces the leftover capsule and completes (autobyteus-440)", async () => {
+    initOverride = { model: "other" };
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_MODEL_MISMATCH");
+    initOverride = {};
+    const retried = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
+    expect(manifest.runId).toBe("run");
+    await retried.terminate();
+  });
+
+  it("starts a second era in the memory folder of an earlier era (a switch back to Antigravity)", async () => {
+    const first = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    await first.terminate();
+    instructions = "Second era identity";
+    const second = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    const root = path.join(config.memoryDir!, "agy-project");
+    const manifest = JSON.parse(await fs.readFile(path.join(root, "manifest.json"), "utf8"));
+    expect(await fs.readFile(path.join(root, ".agents", "agents", manifest.agentName, "agent.md"), "utf8")).toContain("Second era identity");
+    await second.terminate();
   });
 
   it("rejects a missing selected model before creating a capsule or launching", async () => {
@@ -193,6 +250,34 @@ describe("AGY backend capability admission and preserved bindings", () => {
     vi.mocked(listAntigravityModels).mockResolvedValue([]);
     await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "restore", context: initial.getContext() }))).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
     expect(start).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts an allowed run's AGY process, on create and restore, with the server's environment plus its integration variables (DS-002)", async () => {
+    const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
+    const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "test-agent" ? variables : {}));
+    const withAccess = new AgyAgentRunBackendFactory(
+      { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test", instructions, toolNames: [], skillNames: [] }) } as never,
+      { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+      { resolveWorkingDirectory: async () => workspace } as never,
+      createAgentToolMcpRunSessionsStub() as never,
+      { environmentForRun, integrationsStartingOnRestart: async () => [] },
+    );
+    const initial = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "new", config, runId: "run" }));
+    await initial.terminate();
+    const restored = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "restore", context: initial.getContext() }));
+    await restored.terminate();
+    expect(environmentForRun).toHaveBeenCalledWith({ runId: "run", agentDefinitionId: "test-agent" }, process.env);
+    expect(start).toHaveBeenCalledTimes(2);
+    for (const [input] of start.mock.calls) {
+      expect(input.env).toMatchObject(variables);
+      expect(input.env.PATH).toBe(process.env.PATH);
+    }
+    expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
+
+    const other = new AgentRunConfig({ ...config, agentDefinitionId: "other-agent", memoryDir: path.join(base, "memory-other") } as never);
+    const unallowed = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "new", config: other, runId: "run-other" }));
+    await unallowed.terminate();
+    expect(start.mock.calls[2]![0]).not.toHaveProperty("env");
   });
 
   describe("compaction detection version gate (REQ-A04)", () => {

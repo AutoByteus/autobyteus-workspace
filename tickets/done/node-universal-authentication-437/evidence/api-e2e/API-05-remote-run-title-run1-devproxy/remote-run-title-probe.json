@@ -1,0 +1,65 @@
+{
+  "startedAt": "2026-11-08T16:19:24.008Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 62484,
+      "nodeId": "srv_vAaD2-Fku2I328ejb5BrUX0F6VJH717T"
+    },
+    "alpha": {
+      "port": 62483,
+      "nodeId": "srv_sqJ-PHfRFJrnjL1Ok5_uL8fXT-eYMpDD"
+    }
+  },
+  "runs": {
+    "delegatorRun": "delegator_341973ce52c94f599d3811b2a299eb08",
+    "peerAgentRun": "publisher_001fece339f345408435995a957e558c",
+    "peerTeamRun": "studio_team_bb0ecbc6229c4dd99cf1981b866b2c59",
+    "peerCoordinator": "publisher_bacbe4021f92473e9599ea04879c6985",
+    "plainRun": "writer_2450ff72b5034c5cbd89d8c65624baf7",
+    "skillRun": "writer_b78e5ff6b7b44f36a37bfd7b1d06c5cf"
+  },
+  "storedTitles": {
+    "publisher_001fece339f345408435995a957e558c": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+    "studio_team_bb0ecbc6229c4dd99cf1981b866b2c59": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+    "writer_b78e5ff6b7b44f36a37bfd7b1d06c5cf": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE.",
+    "writer_2450ff72b5034c5cbd89d8c65624baf7": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE."
+  },
+  "cases": {
+    "RRT-01": {
+      "result": "Pass",
+      "stored": {
+        "publisher_001fece339f345408435995a957e558c": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "studio_team_bb0ecbc6229c4dd99cf1981b866b2c59": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "writer_2450ff72b5034c5cbd89d8c65624baf7": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "writer_b78e5ff6b7b44f36a37bfd7b1d06c5cf": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE."
+      }
+    }
+  },
+  "browserErrors": [
+    "console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "console: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:62482/_nuxt/pages/index.vue",
+    "console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:62482/_nuxt/pages/index.vue",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 200",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/update-notifications' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "pageerror: Failed to fetch dynamically imported module: http://127.0.0.1:62482/_nuxt/pages/chat.vue",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 200",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/update-notifications' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 200",
+    "console: WebSocket connection to 'ws://127.0.0.1:62482/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+    "pageerror: Failed to read the 'localStorage' property from 'Window': Access is denied for this document."
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": "Error: Timed out waiting for the app shell\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:55:9)\n    at async openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:203:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:227:3",
+  "finishedAt": "2026-11-08T16:21:42.518Z"
+}

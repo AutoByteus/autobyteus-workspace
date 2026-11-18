@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-import { expect, it, vi } from "vitest";
+import { expect, it, onTestFinished, vi } from "vitest";
 import { createAgyRunCapsule } from "../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { AGY_NATIVE_TOOL_NAMES } from "../../../src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.js";
 import { AgyStreamProcess } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
@@ -12,6 +12,7 @@ import { Skill } from "../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../src/skills/domain/configured-agent-skill-binding.js";
 import type { WorkspaceCollisionPolicy } from "../../../src/agent-execution/backends/shared/workspace-skill-collision-policy.js";
 import type { AgyStreamMessage } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
+import { activateAgentToolsMcpTestRun, startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 
 const enabled = process.env["RUN_AGY_CAPABILITY_E2E"] === "1";
 const evidenceDir = path.resolve(process.env["AGY_CAPABILITY_EVIDENCE_DIR"] ?? path.join(os.tmpdir(), "agy-capability-e2e-evidence"));
@@ -38,6 +39,8 @@ const summarize = (messages: AgyStreamMessage[]) => messages.filter((m) => m.eve
 async function run(input: { name: string; prompt: string; skillSource?: string;
   extraSkillBindings?: ConfiguredAgentSkillBinding[]; workspaceCollisionPolicy?: WorkspaceCollisionPolicy }) {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-capability-e2e-"));
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
   const workspace = path.join(base, "workspace");
   await fs.mkdir(workspace);
   const source = input.skillSource;
@@ -50,7 +53,7 @@ async function run(input: { name: string; prompt: string; skillSource?: string;
     workspacePath: workspace, identity: "You are an AutoByteus agent. Follow the user's request using your available tools and configured skills.",
     agentDefinitionId: "codex", configuredSkillBindings: [...bindings, ...(input.extraSkillBindings ?? [])],
     workspaceCollisionPolicy: input.workspaceCollisionPolicy ?? "fail",
-    mcpDescriptor: null });
+    mcpDescriptor: activateAgentToolsMcpTestRun(agentTools.runSessions, input["name"]) });
   const stream = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const closed: string[] = [];

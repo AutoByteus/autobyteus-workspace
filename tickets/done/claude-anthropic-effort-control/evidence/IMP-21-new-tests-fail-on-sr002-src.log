@@ -1,0 +1,47 @@
+# IMP-21 failing-first: the IR-002 tests against the production code before IR-002 (git stash of the 5 changed server src files, i.e. 574aa0bd7 state)
+# command: env -i PATH HOME=<temp> TMPDIR corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts tests/unit/launch-preferences/launch-usability-check.test.ts tests/unit/agent-org-execution/agent-org-run-service-model-selection.test.ts tests/unit/llm-management/run-model-selection-service.test.ts --no-watch
+# env: Linux 6.12.54-linuxkit, node v22.23.3; date: 2026-10-29T21:30:14Z
+     × AC-012 (a): a stopped agent run's settings save resending the stale key is UPDATED and saved without it 91ms
+     × AC-012 (a): a stopped team run's settings save resending the stale key is UPDATED and saved without it 53ms
+     × AC-012 (b): AgentOrg workspace-only edit leaves untouched stored configs as they were; a model edit saves without the key 69ms
+     × AC-013 (a): an AgentOrg launch whose launch configuration holds the stale key creates a tree without it 38ms
+     × AC-013 (b): a delegated catalog Agent whose default launch config holds the stale key runs on that default, without the key 287ms
+     ✓ validates all 18 equivalent AGY root, Team and Agent placements with one request-local catalog discovery 19ms
+     ✓ keeps different AGY workspaces as independent validation contexts 6ms
+     ✓ keeps a different runtime in the same workspace as a separate catalog context 6ms
+     ✓ preserves a safe AGY discovery diagnostic at the first affected address 5ms
+     ✓ distinguishes an unexpected AGY catalog exception from a valid missing model 4ms
+     ✓ rejects an incomplete batch at its first missing placement address 1ms
+     ✓ validates complete root, mounted Team and exact Agent scopes without treating launch as stopped replacement 4ms
+     ✓ rejects invalid schema at / before allocation or activation 3ms
+     ✓ rejects invalid schema at /team before allocation or activation 2ms
+     ✓ rejects invalid schema at /direct before allocation or activation 1ms
+     ✓ rejects invalid schema at /team/lead before allocation or activation 1ms
+     × builds the tree from canonical configs, leaving out settings the models do not declare, with inheritance unchanged 10ms
+     × returns a candidate's and the inherited launch's canonical selection, without undeclared settings 20ms
+     × still refuses an invalid value of a declared setting, for a candidate and for the inherited launch 2ms
+     × reports no inherited verdict when there is no inherited launch 3ms
+     ✓ keeps raw saved default editable but never offers or accepts it as a changed selection 4ms
+     ✓ retains only a safe AGY discovery diagnostic, distinct from a missing slug 1ms
+     ✓ retains only a safe Grok Build discovery diagnostic 0ms
+     ✓ offers and accepts any current claude_agent_sdk catalog replacement without reading capacity 0ms
+     ✓ offers and accepts any current codex_app_server catalog replacement without reading capacity 0ms
+     ✓ offers and accepts any current antigravity_cli catalog replacement without reading capacity 0ms
+     ✓ offers and accepts any current grok_build catalog replacement without reading capacity 0ms
+     ✓ accepts native verified equal/larger context 128000 0ms
+     ✓ accepts native verified equal/larger context 272000 1ms
+     ✓ rejects native unknown or decreasing target null 0ms
+     ✓ rejects native unknown or decreasing target 127999 0ms
+     ✓ keeps native same-model settings editable without capacity evidence 0ms
+     ✓ uses fresh catalog and saved baseline on Save, not earlier option evidence 0ms
+     × validates target schema for external models; undeclared top-level keys are left out, not reported 8ms
+     × canonicalizes {"reasoning_effort":"high","thinking_display":"omitted"} against an effort-only schema 2ms
+     × canonicalizes {"reasoning_effort":"ultra","thinking_display":"omitted"} against an effort-only schema 1ms
+     × canonicalizes {"thinking_display":"omitted"} against an effort-only schema 1ms
+     ✓ canonicalizes {} against an effort-only schema 0ms
+     ✓ canonicalizes null against an effort-only schema 0ms
+     × canonicalizes any config of a model without settings to null 1ms
+     ✓ validates mixed-runtime scopes independently against fresh catalog evidence 0ms
+     ✓ coalesces catalog reads across configured scopes only within a request 0ms
+ Test Files  4 failed (4)
+      Tests  14 failed | 28 passed (42)

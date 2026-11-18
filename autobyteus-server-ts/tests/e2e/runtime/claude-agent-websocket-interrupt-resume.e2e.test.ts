@@ -5,10 +5,8 @@
  * Run with a clean private HOME:
  * pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch
  * RUN_CLAUDE_E2E=1 and a ready Claude CLI enable the separate live interrupt case.
- * Optional scoped typecheck (this file and normal imports, inherited build compiler policy):
- * pnpm -C autobyteus-server-ts typecheck:claude-interrupt-resume-e2e
- * Run server prebuild first for shared outputs/Prisma. Any compiler diagnostic fails;
- * a clean scoped result is not a repository-wide test-typecheck or live-provider pass.
+ * Type-checked with the other server tests under the build policy: pnpm -C autobyteus-server-ts typecheck
+ * (run server prebuild first for shared outputs/Prisma). A type check is not a live-provider pass.
  */
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
@@ -36,13 +34,18 @@ import { ClaudeSessionManager } from "../../../src/agent-execution/backends/clau
 import type { AgentToolMcpRunSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
+import { CLAUDE_LONG_RUNNING_COMMAND_SECTION } from "../../../src/agent-execution/prompt/long-running-command-sections.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { ClaudeSdkClient, type ClaudeSdkQueryLike } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -194,6 +197,8 @@ const createClaudeRunContext = (input: {
   workspaceRoot: string;
 }): AgentRunContext<ClaudeAgentRunContext> => {
   const carpenterSystemPrompt = composeSharedCarpenterPrompt({
+    semanticMemoryPath: null,
+    longRunningCommandSection: CLAUDE_LONG_RUNNING_COMMAND_SECTION,
     agentDefinition: new AgentDefinition({
       name: "Claude WebSocket E2E Agent",
       description: "Exercises Claude create and resume instruction projection",
@@ -208,7 +213,7 @@ const createClaudeRunContext = (input: {
       autoExecuteTools: false,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: input.modelIdentifier ?? "claude-test-model",
         workingDirectory: input.workspaceRoot,
@@ -235,16 +240,14 @@ const createClaudeAgentRun = async (input: {
     modelIdentifier: input.modelIdentifier,
     workspaceRoot: input.workspaceRoot,
   });
-  const agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority = {
-    activateForRun: () => ({ kind: "not_exposed" }),
-    // No exposed tools means this fixture creates no MCP entries to deactivate.
-    deactivateForRun: () => 0,
-  };
+  // Every run has an Agent Tools MCP session, so the live Claude run needs a live endpoint.
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
+  const agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority = agentTools.runSessions;
   const sessionManager = new ClaudeSessionManager(
     agentToolMcpRunSessions,
     {} as never,
     input.sdkClient,
-    { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
   // The test holds the returned session itself, so it needs no ownership callback.
   const session = await sessionManager.createRunSession(runContext, () => undefined);
@@ -289,12 +292,14 @@ const waitForJsonMessage = (
       } catch {
         return;
       }
-      if (!predicate(parsed)) {
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+      const match = agentStreamFramesOf(parsed).find((frame) => predicate(frame));
+      if (!match) {
         return;
       }
       clearTimeout(timer);
       socket.off("message", onMessage);
-      resolve(parsed);
+      resolve(match);
     };
     socket.on("message", onMessage);
   });
@@ -325,10 +330,12 @@ const waitForAccumulatedSegmentContent = (
       } catch {
         return;
       }
-      if (parsed.type !== "SEGMENT_CONTENT" || typeof parsed.payload?.delta !== "string") {
+      // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT).
+      const deltas = agentStreamFramesOf(parsed).filter((frame) => frame.type === "SEGMENT_CONTENT" && typeof frame.payload.delta === "string");
+      if (!deltas.length) {
         return;
       }
-      accumulated += parsed.payload.delta;
+      accumulated += deltas.map((frame) => String(frame.payload.delta)).join("");
       if (!accumulated.includes(expectedText)) {
         return;
       }
@@ -422,13 +429,19 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
     agentRunService: agentRunService as never,
     projectionService: statusProjectionService as never,
   });
+  // Production attaches a stream sequence to every AgentRun as it is prepared (autobyteus-461 SR-089); this hand-built run
+  // gets its own, and its stored read is empty (the run writes no memory here).
+  const sequences = new AgentStreamSequences();
+  onTestFinished(sequences.attachToRun(agentRun, { whenPersisted: async () => undefined }));
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as never,
     undefined,
-    undefined,
     commandCoordinator,
     statusProjectionService as never,
+    null,
+    sequences,
+    async (runId) => ({ runId, conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false }),
   );
   const dummyTeamHandler = {
     connect: async () => null,
@@ -565,7 +578,7 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       const runId = `claude-runtime-error-${id}`;
       const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls, workspaceRoot: workspace });
       const frames: Array<{ type: string; payload: Record<string, unknown> }> = [];
-      harness.socket.on("message", (raw) => frames.push(JSON.parse(String(raw))));
+      harness.socket.on("message", (raw) => frames.push(...agentStreamFramesOf(JSON.parse(String(raw)))));
       await withHarness(harness, clis, async () => {
         const sessionId = harness.sessionManager.requireRunSession(runId).sessionId;
         const failed = waitForJsonMessage(harness.socket, (frame) => frame.type === "ERROR" && frame.payload?.error_effect === "terminal", "SDK terminal error");

@@ -1,3 +1,4 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -14,6 +15,7 @@ import { ApplicationExecutionScope } from "../../../src/application-platform/exe
 import type { ApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 
 const tempRoots: string[] = [];
 
@@ -50,6 +52,7 @@ const createScope = async () => {
     claude: { createBackend: vi.fn(), restoreBackend: vi.fn() },
     antigravity: { createBackend: vi.fn(), restoreBackend: vi.fn() },
     grok: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+    deepSeekHarness: { createBackend: vi.fn(), restoreBackend: vi.fn() },
   };
   const createForExecution = vi.fn(() => Object.freeze(factories));
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };
@@ -80,6 +83,10 @@ const createScope = async () => {
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
     applicationAgentTools,
+    providerRelayAccess: null,
+    runPasses: null,
+    delegationIndex: noDelegations(), viewStreams: testViewStreams(),
+    taskRecords: openTaskRecords(),
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;
   return {

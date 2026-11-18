@@ -4,7 +4,7 @@ import { useEventMonitorFilePreview } from '../useEventMonitorFilePreview';
 const {
   activeContextStoreMock,
   fileExplorerStoreMock,
-  mobileWorkStoreMock,
+  mobileNavigationMock,
   windowNodeContextStoreMock,
   workspaceStoreMock,
   mapAbsolutePathToWorkspaceRelativeMock,
@@ -14,7 +14,7 @@ const {
 } = vi.hoisted(() => ({
   activeContextStoreMock: { activeWorkspaceTarget: null as any, resolveWorkspaceMetadataForTarget: vi.fn() },
   fileExplorerStoreMock: { openFilePreview: vi.fn() },
-  mobileWorkStoreMock: { currentContext: null as any, requestFilePreview: vi.fn() },
+  mobileNavigationMock: { openFile: vi.fn(async () => undefined), openNodeFile: vi.fn(async () => undefined) },
   windowNodeContextStoreMock: { isEmbeddedWindow: false, bindingRevision: 0 },
   workspaceStoreMock: {
     activeWorkspaceMetadata: {
@@ -34,13 +34,11 @@ const {
 }));
 
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => activeContextStoreMock }));
+const remoteRunsMock = vi.hoisted(() => ({ peerRunOf: vi.fn((_agentRunId?: string | null): { nodeName: string } | null => null) }));
+vi.mock('~/stores/runTreeStore', () => ({ useRunTreeStore: () => remoteRunsMock }));
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
-}));
-
-vi.mock('~/stores/mobileWorkStore', () => ({
-  useMobileWorkStore: () => mobileWorkStoreMock,
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -69,7 +67,7 @@ vi.mock('~/composables/useLocalization', () => ({
   }),
 }));
 
-const options = () => ({ revealTool: revealToolMock, isOriginCurrent: () => true });
+const options = () => ({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' });
 
 describe('useEventMonitorFilePreview', () => {
   beforeEach(() => {
@@ -78,7 +76,6 @@ describe('useEventMonitorFilePreview', () => {
     activeContextStoreMock.activeWorkspaceTarget = null;
     activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockReset();
     windowNodeContextStoreMock.bindingRevision = 0;
-    mobileWorkStoreMock.currentContext = null;
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     isMobileRemoteAccessRuntimeMock.mockReturnValue(false);
     hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(false);
@@ -198,13 +195,25 @@ describe('selected execution preview identity', () => {
   });
 
   for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
-    it(`refuses outside-workspace in ${runtime} without native fallback`, async () => {
+    it(`opens a path outside the run's folder in ${runtime} as a node file, read-only, by its absolute path (autobyteus-471)`, async () => {
       windowNodeContextStoreMock.isEmbeddedWindow = runtime !== 'remote-electron';
       hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(runtime !== 'embedded-no-bridge');
-      expect((await useEventMonitorFilePreview(options()).openPath(action)).status).toBe('unavailable');
-      expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+      expect((await useEventMonitorFilePreview(options()).openPath(action)).status).toBe('opened');
+      expect(fileExplorerStoreMock.openFilePreview).toHaveBeenCalledWith(action.normalizedCandidate, 'B',
+        { accessIntent: { source: 'event-monitor', readOnly: true } });
     });
   }
+
+  it('says where a run another node runs keeps its file, and opens nothing (autobyteus-471 REQ-003)', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = false;
+    remoteRunsMock.peerRunOf.mockImplementation((id?: string | null) => (id === 'remote-run' ? { nodeName: 'studio' } : null));
+    expect(await useEventMonitorFilePreview({ ...options(), originRunId: () => 'remote-run' }).openPath(action)).toEqual({
+      status: 'unavailable', message: 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node' });
+    // The run whose conversation names the path decides, not the window's selected run.
+    expect(remoteRunsMock.peerRunOf).toHaveBeenCalledWith('remote-run');
+    expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+    expect(revealToolMock).not.toHaveBeenCalled();
+  });
 
   it('maps selected source root in a remote window without metadata', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow = false;
@@ -221,16 +230,23 @@ describe('preserved mobile containment', () => {
     vi.clearAllMocks();
     revealToolMock.mockReset().mockResolvedValue(true);
     isMobileRemoteAccessRuntimeMock.mockReturnValue(true);
-    mobileWorkStoreMock.currentContext = { kind: 'workspace', workspaceId: 'B', rootPath: '/owned/B' };
+    // autobyteus-277 DS-008: the open target's folder; the file opens on the phone's Files screen.
+    activeContextStoreMock.activeWorkspaceTarget = { context: { state: { runId: 'run-B' }, config: {} }, workspaceRootPath: '/owned/B' };
+    workspaceStoreMock.resolveWorkspaceMetadataByRootPath.mockResolvedValue({ workspaceId: 'B', workspaceRootPath: '/owned/B' });
   });
   for (const inside of [true, false]) {
-    it(`uses only mapped workspace content on mobile; inside: ${inside}`, async () => {
+    it(`opens a workspace file inside the folder, a node file by its absolute path outside it (autobyteus-436); inside: ${inside}`, async () => {
       mapAbsolutePathToWorkspaceRelativeMock.mockReturnValue(inside ? { workspaceId: 'B', relativePath: 'brief.md' } : null);
-      expect((await useEventMonitorFilePreview({ ...options(), revealTool: null }).openPath(action)).status).toBe(inside ? 'opened' : 'unavailable');
+      expect((await useEventMonitorFilePreview({ ...options(), revealTool: null, mobileNavigation: mobileNavigationMock }).openPath(action)).status).toBe('opened');
       expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
       expect(hasTrustedElectronLocalFileCapabilityMock).not.toHaveBeenCalled();
-      if (inside) expect(mobileWorkStoreMock.requestFilePreview).toHaveBeenCalledWith(expect.objectContaining({ workspaceId: 'B', relativePath: 'brief.md', readOnly: true }));
-      else expect(mobileWorkStoreMock.requestFilePreview).not.toHaveBeenCalled();
+      if (inside) {
+        expect(mobileNavigationMock.openFile).toHaveBeenCalledWith({ workspaceId: 'B', path: 'brief.md' });
+        expect(mobileNavigationMock.openNodeFile).not.toHaveBeenCalled();
+      } else {
+        expect(mobileNavigationMock.openNodeFile).toHaveBeenCalledWith({ path: action.normalizedCandidate });
+        expect(mobileNavigationMock.openFile).not.toHaveBeenCalled();
+      }
     });
   }
 });
@@ -270,7 +286,7 @@ describe('bounded reveal acceptance and focus', () => {
       const button = document.createElement('button');
       button.dataset.eventMonitorActiveFileTab = 'true'; document.body.appendChild(button);
       const focus = vi.spyOn(button, 'focus');
-      expect((await useEventMonitorFilePreview({ revealTool: revealToolMock, isOriginCurrent: () => current }).openPath(action)).status).toBe('failed');
+      expect((await useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current, originRunId: () => 'agent-task-lead' }).openPath(action)).status).toBe('failed');
       await new Promise(resolve => setTimeout(resolve, 0));
       expect(focus).not.toHaveBeenCalled(); button.remove();
     });
@@ -280,7 +296,7 @@ describe('bounded reveal acceptance and focus', () => {
     const button = document.createElement('button');
     button.dataset.eventMonitorActiveFileTab = 'true'; document.body.appendChild(button);
     const focus = vi.spyOn(button, 'focus');
-    const launch = useEventMonitorFilePreview({ revealTool: revealToolMock, isOriginCurrent: () => current });
+    const launch = useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current, originRunId: () => 'agent-task-lead' });
     expect((await launch.openPath(action)).status).toBe('opened');
     current = false; await new Promise(resolve => setTimeout(resolve, 0));
     expect(focus).not.toHaveBeenCalled();

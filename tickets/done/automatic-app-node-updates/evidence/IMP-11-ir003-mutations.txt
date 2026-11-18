@@ -1,0 +1,92 @@
+# IMP-11 mutation proof for IR-003 (SR-004..SR-006): each mutation must turn a test red.
+# Commit: working tree on top of 75793e0a8b (mutated and restored); the code commit is named in the handoff
+# Env: macOS 26.5.2, v22.23.1, vitest 3.2.7  Date: 2026-11-02
+# Command: vitest (electron config) appUpdaterAutomaticMac, appUpdaterAutomatic, appUpdateNotificationRecord specs; vitest AboutSettingsManager, NotificationCenter.appAutomatic specs
+
+== baseline
+      Tests  54 passed (54)
+      Tests  37 passed (37)
+== S1 macOS installs before Squirrel is done
+   × AppUpdater automatic install order on macOS (autobyteus-356) > stops nothing until the native event: status stays downloaded, the switch is read
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal after the zip is served (one error; activeOperation null) > reco
+== S2 a re-emit does not reset readiness
+   × AppUpdater automatic install order on macOS (autobyteus-356) > switch on while Squirrel still works waits; every re-emit resets readiness, whate
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S3 readiness forgets its version
+   × AppUpdater automatic update (autobyteus-356) > with a newer W found over a staged V, turning the switch on downloads W (the cache re-emit is pro
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S4 a refusal records nothing
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal after the zip is served (one error; activeOperation null) > reco
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal after the zip is served (one error; activeOperation null) > a la
+== S5 a refusal keeps the stage
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal after the zip is served (one error; activeOperation null) > reco
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 52 passed (54)
+== S6 the second error is handled as today
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S7 the settling flag is never set
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S8 the rejected download replaces the state
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S9 the settling flag is never cleared
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a native refusal before the zip is served (error, error, rejection; activeOperati
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S10 a check runs during the wait
+   × AppUpdater automatic install order on macOS (autobyteus-356) > no check and no download run during the wait, for every source; V stays unblocked
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S11 a download runs during the wait (N-17)
+   × AppUpdater automatic install order on macOS (autobyteus-356) > no check and no download run during the wait, for every source; V stays unblocked
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S12 a click does not end the wait
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a click during the wait ends it: a later native error follows the manual path, an
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S13 switch off does not drop the wait
+   × AppUpdater automatic install order on macOS (autobyteus-356) > a check after the wait ended runs as today, and its failure does not touch automa
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S14 a second native fetch for a ready copy (N-13, N-19)
+   × AppUpdater automatic install order on macOS (autobyteus-356) > switch on with V staged, status available and readiness true installs with no sec
+   × AppUpdater automatic install order on macOS (autobyteus-356) > switch on while a manual check runs, with V staged and ready, also needs no secon
+   × AppUpdater automatic update (autobyteus-356) > turning the switch on with V staged and a later check at `available` installs V with no second do
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+== S15 the bound records nothing
+   × AppUpdater automatic install order on macOS (autobyteus-356) > the bound: failure with its own reason, no recovery, status stays downloaded and 
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S16 a download failure replaces an install failure
+   × AppUpdateNotificationRecord > automatic updates (autobyteus-356) > a download failure never replaces an install failure of the same version, and
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S17 the failure after the stop records the classifier text
+   × AppUpdater automatic install order on macOS (autobyteus-356) > after the native event, a failure after the stop records the restart reason and r
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 53 passed (54)
+== S18 About's check stays enabled during the wait
+   × AboutSettingsManager > the automatic install wait (autobyteus-356) > disables the check button and says it is preparing, with Install still offe
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 36 passed (37)
+== S19 the failure box hides while still downloaded
+   × Notification Center: the app automatic update > a refused update still downloaded: the failure, that it is not retried, and the Install click (S
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 36 passed (37)
+== S20 About says could not restart
+   × AboutSettingsManager > the automatic install wait (autobyteus-356) > a refused preparation has its own text, not "could not restart" 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 36 passed (37)

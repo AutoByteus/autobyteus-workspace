@@ -1,0 +1,35 @@
+# Case: API-05a (DCP-001..005 before the probe update)
+# Command: cd autobyteus-web && pnpm test:e2e:delegated-copy-model-change --output-dir <dir>
+# Commit: 3261712e06
+# Environment: macOS arm64, Node 22, Google Chrome headless, owned temp roots
+# Date: 2026-11-02T06:06Z
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:delegated-copy-model-change /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003,DCP-004,DCP-005 --output-dir /tmp/rsm-dcp
+
+(node:58397) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+DCP-001 Fail delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+DCP-002 Fail delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+DCP-003 Fail delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+DCP-004 Fail delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+DCP-005 Fail delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-locked-runtime"]') to be visible
+
+Summary: 0 Pass, 5 Fail
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

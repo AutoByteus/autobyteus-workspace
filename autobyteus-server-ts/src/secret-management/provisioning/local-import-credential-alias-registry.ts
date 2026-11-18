@@ -1,5 +1,6 @@
 import type { SecretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
 import { secretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
+import { TEST_ONLY_SECRET_IDS } from '../catalog/provider-credential-catalog.js';
 
 const localImportCredentialAliases = Object.freeze({
   OPENAI_API_KEY: secretId('provider.openai.api-key'),
@@ -28,4 +29,14 @@ export const LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES = Object.freeze(
 export const localImportSecretIdForAlias = (alias: string): SecretId | null =>
   Object.hasOwn(localImportCredentialAliases, alias)
     ? localImportCredentialAliases[alias as LocalImportCredentialAlias]
+    : null;
+
+/** Aliases `test-vault setup` accepts in addition to the ones above; any other import refuses them. */
+const testVaultOnlyCredentialAliases = Object.freeze({
+  AUTOBYTEUS_TEST_GITHUB_TOKEN: TEST_ONLY_SECRET_IDS.githubToken,
+} satisfies Readonly<Record<string, SecretId>>);
+
+export const testVaultOnlySecretIdForAlias = (alias: string): SecretId | null =>
+  Object.hasOwn(testVaultOnlyCredentialAliases, alias)
+    ? testVaultOnlyCredentialAliases[alias as keyof typeof testVaultOnlyCredentialAliases]
     : null;

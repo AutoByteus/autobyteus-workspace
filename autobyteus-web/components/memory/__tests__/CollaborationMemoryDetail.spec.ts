@@ -5,7 +5,7 @@ import type { CollaborationMemberMemoryTargetSummary, CollaborationMemoryGroup, 
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
-const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+const memory = { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
 
 const member = (overrides: Partial<CollaborationMemberMemoryTargetSummary> & Pick<CollaborationMemberMemoryTargetSummary, 'agentRunId' | 'displayName'>): CollaborationMemberMemoryTargetSummary => ({
   memberAddress: `/${overrides.displayName}`,
@@ -24,7 +24,7 @@ const row = (overrides: Partial<CollaborationRunMemoryRow> = {}): CollaborationR
   memory,
   memberTargets: [
     member({ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1' }),
-    member({ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'task-member-1', executionKind: 'TASK_AGENT', startedAt: '2026-06-19T09:00:00.000Z' }),
+    member({ memberAddress: '/writer', displayName: 'Writer', agentRunId: 'member-2' }),
   ],
   ...overrides,
 });
@@ -53,9 +53,9 @@ const orgRow = () => row({
     member({ memberAddress: '/Teacher', displayName: 'Teacher', agentRunId: 'teacher-run' }),
     member({ memberAddress: '/StudentStudyGroup/student_one', displayName: 'StudentStudyGroup/student_one', agentRunId: 'one-configured', groupPath: [studyGroup] }),
     member({ memberAddress: '/StudentStudyGroup/student_two', displayName: 'StudentStudyGroup/student_two', agentRunId: 'two-configured', groupPath: [studyGroup] }),
-    member({ memberAddress: '/StudentStudyGroup/student_one', displayName: 'StudentStudyGroup/student_one', agentRunId: 'one-task', executionKind: 'TASK_TEAM_MEMBER', groupPath: [studyTask] }),
-    member({ memberAddress: '/StudentStudyGroup/student_two', displayName: 'StudentStudyGroup/student_two', agentRunId: 'two-task', executionKind: 'TASK_TEAM_MEMBER', groupPath: [studyTask] }),
-    member({ memberAddress: '/StudentStudyGroup/helpers/checker', displayName: 'StudentStudyGroup/helpers/checker', agentRunId: 'checker-task', executionKind: 'TASK_TEAM_MEMBER', groupPath: [studyTask, nested] }),
+    member({ memberAddress: '/StudentStudyGroup/student_one', displayName: 'StudentStudyGroup/student_one', agentRunId: 'one-task', groupPath: [studyTask] }),
+    member({ memberAddress: '/StudentStudyGroup/student_two', displayName: 'StudentStudyGroup/student_two', agentRunId: 'two-task', groupPath: [studyTask] }),
+    member({ memberAddress: '/StudentStudyGroup/helpers/checker', displayName: 'StudentStudyGroup/helpers/checker', agentRunId: 'checker-task', groupPath: [studyTask, nested] }),
   ],
 });
 
@@ -64,18 +64,18 @@ describe('CollaborationMemoryDetail', () => {
     const wrapper = mountDetail();
 
     expect(wrapper.find('header').exists()).toBe(false);
-    expect(wrapper.find('section h1').text()).toBe('Software Team');
+    expect(wrapper.find('h1').text()).toBe('Software Team');
     expect(wrapper.text()).not.toContain('Agent Team');
     expect(wrapper.text()).not.toContain('ID:');
     expect(wrapper.find('input').attributes('placeholder')).toMatch(/search runs/i);
-    expect(wrapper.text()).toContain('Members');
+    // No "Members" label (the chips say who they are).
+    expect(wrapper.text()).not.toContain('Members');
     expect(wrapper.text()).toContain('/tmp/team-project');
     const memberButtons = wrapper.findAll('article button');
     const spans = memberButtons.map((button) => button.findAll('span').map((span) => span.text()));
     expect(spans[0]).toEqual(['Lead', 'member-1']);
-    expect(spans[1]?.[0]).toBe('Lead');
-    expect(spans[1]?.[1]).toMatch(/^Task · \S/);
-    expect(spans[1]?.[2]).toBe('task-member-1');
+    // A team run's own agents only: a run it delegated to is a run of its own (autobyteus-461).
+    expect(spans[1]).toEqual(['Writer', 'member-2']);
     for (const button of memberButtons) {
       expect(button.find('span').text()).not.toBe('');
     }
@@ -138,12 +138,12 @@ describe('CollaborationMemoryDetail', () => {
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('plan');
 
     await wrapper.find('input').setValue(' planning ');
-    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    await wrapper.find('input').trigger('keyup.enter');
     expect(wrapper.emitted('search')).toEqual([['planning']]);
 
     await wrapper.findAll('article button')[1]!.trigger('click');
     expect(wrapper.emitted('inspectMember')?.[0]?.[0]).toBe('team-run-1');
-    expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberAddress: '/lead', agentRunId: 'task-member-1' });
+    expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberAddress: '/writer', agentRunId: 'member-2' });
 
     await wrapper.findAll('button').find((button) => button.text() === 'Next')!.trigger('click');
     await wrapper.findAll('button').find((button) => button.text() === 'Prev')!.trigger('click');

@@ -2,20 +2,33 @@ import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { renderCollaborationSections } from "./collaboration-prompt-sections.js";
+import type { RunProjectContext } from "../domain/run-project-context.js";
 import {
   BASH_OPERATING_PRACTICE_SECTION,
   FILE_AND_DIRECTORY_PRACTICE_SECTION,
   renderAgentIdentitySection,
+  renderProjectSection,
+  renderSemanticMemorySection,
   renderTeamInstructionSection,
   renderWorkingEnvironmentSection,
 } from "./carpenter-prompt-sections.js";
+import { NATIVE_LONG_RUNNING_COMMAND_SECTION } from "./long-running-command-sections.js";
 
-export type SharedCarpenterPromptComposerInput = {
+type CarpenterPromptComposerInput = {
   agentDefinition: AgentDefinition;
   memberExecutionContext?: MemberExecutionContext | null;
+  /** The Project the run was started under; its section is omitted when there is none. */
+  project?: RunProjectContext | null;
+  /** The agent's semantic memory folder (absolute), or null when the agent has none; its section follows the Project's. */
+  semanticMemoryPath: string | null;
 };
 
-export type NativeCarpenterPromptComposerInput = SharedCarpenterPromptComposerInput & {
+export type SharedCarpenterPromptComposerInput = CarpenterPromptComposerInput & {
+  /** The runtime's "Long-Running Commands" section (`long-running-command-sections.ts`); placed last. */
+  longRunningCommandSection: string;
+};
+
+export type NativeCarpenterPromptComposerInput = CarpenterPromptComposerInput & {
   workspaceRootPath: string;
 };
 
@@ -26,7 +39,7 @@ const assertNoUnresolvedPlaceholders = (prompt: string): void => {
 };
 
 const buildSharedCarpenterPromptSections = (
-  input: SharedCarpenterPromptComposerInput,
+  input: CarpenterPromptComposerInput,
 ): string[] => {
   if (!input.agentDefinition) {
     throw new Error("Agent definition is required to compose the carpenter prompt.");
@@ -40,6 +53,13 @@ const buildSharedCarpenterPromptSections = (
     if (teamInstruction) sections.push(teamInstruction);
     sections.push(renderCollaborationSections(member));
   }
+  if (input.project) sections.push(renderProjectSection(input.project));
+  if (input.semanticMemoryPath !== null) {
+    if (!path.isAbsolute(input.semanticMemoryPath)) {
+      throw new Error("Semantic memory folder must be an absolute path.");
+    }
+    sections.push(renderSemanticMemorySection(input.semanticMemoryPath));
+  }
   return sections;
 };
 
@@ -51,7 +71,13 @@ const finalizeCarpenterPrompt = (sections: string[]): string => {
 
 export const composeSharedCarpenterPrompt = (
   input: SharedCarpenterPromptComposerInput,
-): string => finalizeCarpenterPrompt(buildSharedCarpenterPromptSections(input));
+): string => {
+  const longRunningCommandSection = input.longRunningCommandSection?.trim() ?? "";
+  if (!longRunningCommandSection) {
+    throw new Error("The runtime's long-running command section is required to compose the carpenter prompt.");
+  }
+  return finalizeCarpenterPrompt([...buildSharedCarpenterPromptSections(input), longRunningCommandSection]);
+};
 
 export const composeNativeAutoByteusPrompt = (
   input: NativeCarpenterPromptComposerInput,
@@ -66,5 +92,6 @@ export const composeNativeAutoByteusPrompt = (
     renderWorkingEnvironmentSection(workspaceRootPath),
     BASH_OPERATING_PRACTICE_SECTION,
     FILE_AND_DIRECTORY_PRACTICE_SECTION,
+    NATIVE_LONG_RUNNING_COMMAND_SECTION,
   ]);
 };

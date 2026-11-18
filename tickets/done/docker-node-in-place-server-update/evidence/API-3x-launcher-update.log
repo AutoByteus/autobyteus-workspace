@@ -1,0 +1,334 @@
+# API-31/32/33/36 step-3 launcher update journeys on a test-owned Docker daemon
+# Command: /private/tmp/ab305-api-e2e/s3/api3x-launcher-update.sh /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/API-3x-launcher-update.log /private/tmp/ab305-api-e2e/s3
+# Commit: 213d86955a; Date: 2026-10-30T19:45:43Z
+# Environment: macOS 26.5.2 arm64, host Docker 29.0.1; launchers run by macOS /bin/bash 3.2.57(1)-release
+
+## Setup: launchers
+launcher-s2 from origin/personal (a8d7c87564): CONFIG_HASH_VERSION="v7"
+launcher-s1 from 77fb8bf2d1 (77fb8bf2d1): CONFIG_HASH_VERSION="v6"
+new launcher: CONFIG_HASH_VERSION="v7"
+
+## Setup: test daemon with a docker.io mirror at its own registry
+Unable to find image 'docker:dind' locally
+dind: Pulling from library/docker
+c4c05dc2e87f: Pulling fs layer
+dab0eedb503a: Pulling fs layer
+b382108e49e6: Pulling fs layer
+fc345138e05c: Pulling fs layer
+a96bffce6c38: Pulling fs layer
+bb02c9e184dc: Pulling fs layer
+fc345138e05c: Download complete
+c4c05dc2e87f: Download complete
+b382108e49e6: Download complete
+dab0eedb503a: Download complete
+a96bffce6c38: Download complete
+fc345138e05c: Pull complete
+b382108e49e6: Pull complete
+a96bffce6c38: Pull complete
+bb02c9e184dc: Download complete
+bb02c9e184dc: Pull complete
+c4c05dc2e87f: Pull complete
+dab0eedb503a: Pull complete
+Digest: sha256:9e79b879b177fbd72c34376a3dd3d91747da5db49e1f560f76aea59561471977
+Status: Downloaded newer image for docker:dind
+CHECK PASS: the test daemon is not the host daemon
+CHECK PASS: no launcher-managed container on the test daemon
+mirrors: ["http://127.0.0.1:5000/"]
+Unable to find image 'registry:2' locally
+2: Pulling from library/registry
+ddcb6d98388d: Pulling fs layer
+9a6b3f59ebc2: Pulling fs layer
+bd39ca3613a6: Pulling fs layer
+95459497489f: Pulling fs layer
+8bbaad1488a8: Pulling fs layer
+ddcb6d98388d: Download complete
+bd39ca3613a6: Download complete
+8bbaad1488a8: Download complete
+9a6b3f59ebc2: Download complete
+c4472e68032e: Download complete
+94a5ce400b19: Download complete
+95459497489f: Download complete
+bd39ca3613a6: Pull complete
+8bbaad1488a8: Pull complete
+9a6b3f59ebc2: Pull complete
+95459497489f: Pull complete
+ddcb6d98388d: Pull complete
+Digest: sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+Status: Downloaded newer image for registry:2
+
+## Setup: images
+FROM 127.0.0.1:5000/ab305/step3
+COPY test.pub /opt/autobyteus/starter/server-package-signing-key.pem
+ENV AUTOBYTEUS_SERVER_PACKAGE_SOURCE=http://172.18.0.1:18080/releases
+test image sha256:63c8a7958efe18d38213d87064e88d70ad8ddced23e60b446fee9209309a2b26; release source http://172.18.0.1:18080/releases
+from a container: /latest 302 http://source/releases/tag/v1.5.12
+CHECK PASS: docker pull of autobyteus/autobyteus-server:beta resolves to the test image through the mirror
+
+## API-31: the step-2 launcher creates a node on the step-2 image (with its volume)
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:52732
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+CHECK PASS: step-2 node healthy
+seeded on autobyteus-server-0: {"data":{"createAgentDefinition":{"id":"ab305-api3x-p1","name":"ab305-api3x-p1"}}}
+CHECK PASS: step-2 node has its server-packages volume
+
+## API-31: new launcher upgrade --all --tag beta (the step-3 image)
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+[AutoByteus Docker] Removed unused AutoByteus server image sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9.
+CHECK PASS: node 0 now runs the step-3 test image
+CHECK PASS: node 0 healthy after the upgrade
+CHECK PASS: node 0 status running 1.5.11-beta.5
+read back on autobyteus-server-0: {"data":{"agentDefinition":{"id":"ab305-api3x-p1","name":"ab305-api3x-p1"}}}
+CHECK PASS: node 0 data kept after the upgrade
+$ autobyteus-docker status
+NODE                     CONTAINER                STATUS         BACKEND                         
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:52732 (autobyteus/autobyteus-server:beta)
+  server: 1.5.11-beta.5
+CHECK PASS: status line for node 0 shows the starter's version
+
+## API-31: update --name autobyteus-server-0 (no version: beta track -> newest in the feed)
+$ autobyteus-docker update --name autobyteus-server-0
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.13
+[AutoByteus Docker] autobyteus-server-0: preparing
+[AutoByteus Docker] autobyteus-server-0: confirming
+[AutoByteus Docker] autobyteus-server-0: Updated to 1.5.13.
+CHECK PASS: update exit 0
+CHECK FAIL: launcher printed the steps and the result
+CHECK PASS: same container and same image after the update
+CHECK PASS: node 0 runs 1.5.13, installed
+CHECK PASS: the 1.5.13 migration ran (table present)
+read back on autobyteus-server-0: {"data":{"agentDefinition":{"id":"ab305-api3x-p1","name":"ab305-api3x-p1"}}}
+CHECK PASS: data written by 1.5.11-beta.5 kept
+CHECK PASS: no data copy left after the commit
+C1: {"inPlaceUpdate":"available","version":"1.5.13","target":{"version":"1.5.13","relation":"same"},"update":{"state":"succeeded","targetVersion":"1.5.13","step":"confirming","code":null,"message":"Updated to 1.5.13.","startedAt":"2026-10-30T19:49:50.851Z","finishedAt":"2026-10-30T19:51:03.657Z","requestedFrom":"host command"}}
+CHECK PASS: C1 reports 1.5.13 (relation same)
+state.json: {"current":{"source":"installed","version":"1.5.13"},"previous":{"source":"builtIn","version":"1.5.11-beta.5"}}
+
+## API-31: more nodes: latest, pinned 1.5.11-beta.5, a custom image
+[AutoByteus Docker] Started autobyteus-server-1.
+Backend: http://localhost:8002
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+[AutoByteus Docker] Started autobyteus-server-2.
+Backend: http://localhost:52991
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+[AutoByteus Docker] Started autobyteus-server-3.
+Backend: http://localhost:8004
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+## API-31: update --all (no version)
+$ autobyteus-docker update --all
+[AutoByteus Docker] autobyteus-server-0: refused (NOT_NEWER): This node runs 1.5.13; 1.5.13 is not newer.
+[AutoByteus Docker] autobyteus-server-1: updating to 1.5.12
+[AutoByteus Docker] autobyteus-server-1: preparing
+[AutoByteus Docker] autobyteus-server-1: confirming
+[AutoByteus Docker] autobyteus-server-1: Updated to 1.5.12.
+[AutoByteus Docker] autobyteus-server-2: This node is pinned to 1.5.11-beta.5; pass --version.
+[AutoByteus Docker] autobyteus-server-3: This node uses a custom image (127.0.0.1:5000/ab305/custom:s3); pass --version.
+CHECK PASS: update --all exits non-zero (some nodes refused)
+CHECK PASS: node 0 (beta, 1.5.13): refused NOT_NEWER
+CHECK PASS: node 1 (latest): stable track -> 1.5.12
+CHECK PASS: node 1 runs 1.5.12 installed
+CHECK PASS: node 2 (pinned): 'pinned to 1.5.11-beta.5; pass --version'
+CHECK PASS: node 3 (custom image): 'custom image …; pass --version'
+
+## API-31: update --all --version 1.5.12
+$ autobyteus-docker update --all --version 1.5.12
+[AutoByteus Docker] autobyteus-server-0: refused (NOT_NEWER): This node runs 1.5.13; 1.5.12 is not newer.
+[AutoByteus Docker] autobyteus-server-1: refused (NOT_NEWER): This node runs 1.5.12; 1.5.12 is not newer.
+[AutoByteus Docker] autobyteus-server-2: updating to 1.5.12
+[AutoByteus Docker] autobyteus-server-2: preparing
+[AutoByteus Docker] autobyteus-server-2: confirming
+[AutoByteus Docker] autobyteus-server-2: Updated to 1.5.12.
+[AutoByteus Docker] autobyteus-server-3: updating to 1.5.12
+[AutoByteus Docker] autobyteus-server-3: preparing
+[AutoByteus Docker] autobyteus-server-3: confirming
+[AutoByteus Docker] autobyteus-server-3: Updated to 1.5.12.
+CHECK PASS: nodes 0 and 1 refused NOT_NEWER
+CHECK PASS: nodes 2 and 3 updated to 1.5.12
+
+## API-31: status for running, stopped and pre-starter nodes
+[AutoByteus Docker] Started autobyteus-server-4.
+Backend: http://localhost:8005
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+$ autobyteus-docker status
+NODE                     CONTAINER                STATUS         BACKEND                         
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:52732 (autobyteus/autobyteus-server:beta)
+  server: 1.5.13
+autobyteus-server-1      autobyteus-server-1      running        http://localhost:8002 (autobyteus/autobyteus-server:latest)
+  server: 1.5.12
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:52991 (autobyteus/autobyteus-server:1.5.11-beta.5)
+  server: 1.5.12
+autobyteus-server-3      autobyteus-server-3      exited         http://localhost:8004 (127.0.0.1:5000/ab305/custom:s3)
+  server: not available (container exited)
+autobyteus-server-4      autobyteus-server-4      running        http://localhost:8005 (127.0.0.1:5000/ab305/step1:latest)
+  server: not available (no starter answer; images before the starter have none)
+CHECK PASS: status: node 0 server 1.5.13
+CHECK PASS: status: stopped node 3 'not available (container exited)'
+CHECK PASS: status: pre-starter node 4 'not available (no starter answer…)'
+$ autobyteus-docker update --name autobyteus-server-3 --version 1.5.13
+[AutoByteus Docker] autobyteus-server-3: the container is not running; start it first.
+CHECK PASS: update of the stopped node: 'the container is not running; start it first.'
+$ autobyteus-docker update --name autobyteus-server-4 --version 1.5.13
+[AutoByteus Docker] autobyteus-server-4: the node's starter did not answer. Images before the starter cannot update in place; run: autobyteus-docker upgrade --all
+CHECK PASS: update of the pre-starter node: names upgrade --all
+
+## API-31 (AC-006): a new :beta image with an older built-in package (1.5.11-beta.5, another image ID)
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+[AutoByteus Docker] autobyteus-server-1 is already running with the current image and launcher config.
+[AutoByteus Docker] autobyteus-server-2 is already running with the current image and launcher config.
+[AutoByteus Docker] autobyteus-server-3 is already running with the current image and launcher config.
+CHECK PASS: node 0 recreated on the new :beta image
+CHECK PASS: node 0 keeps the installed 1.5.13 (built-in 1.5.11-beta.5 is older)
+read back on autobyteus-server-0: {"data":{"agentDefinition":{"id":"ab305-api3x-p1","name":"ab305-api3x-p1"}}}
+CHECK PASS: node 0 data kept
+
+## API-31 (AC-006): a new :beta image with a newer built-in package (labelled 1.5.21)
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+[AutoByteus Docker] autobyteus-server-1 is already running with the current image and launcher config.
+[AutoByteus Docker] autobyteus-server-2 is already running with the current image and launcher config.
+[AutoByteus Docker] autobyteus-server-3 is already running with the current image and launcher config.
+CHECK PASS: node 0 runs the image's 1.5.21 (built-in)
+state.json: {"current":{"source":"builtIn","version":"1.5.21"},"previous":{"source":"builtIn","version":"1.5.11-beta.5"}}
+
+## API-32: a fresh node on beta
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:53794
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+seeded on autobyteus-server-0: {"data":{"createAgentDefinition":{"id":"ab305-api3x-p2","name":"ab305-api3x-p2"}}}
+
+## API-32: update --version 1.5.14 (migrates, then exits 30 s after its start)
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.14
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.14
+[AutoByteus Docker] autobyteus-server-0: preparing
+[AutoByteus Docker] autobyteus-server-0: confirming
+[AutoByteus Docker] autobyteus-server-0: failed (FAILED_AFTER_SWITCH): 1.5.14 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.
+CHECK PASS: the launcher reports the failure and exits non-zero
+CHECK PASS: the old version runs again, same container
+CHECK PASS: the 1.5.14 migration is gone (data restored)
+read back on autobyteus-server-0: {"data":{"agentDefinition":{"id":"ab305-api3x-p2","name":"ab305-api3x-p2"}}}
+CHECK PASS: data kept
+CHECK PASS: no data copy or 1.5.14 package left
+update after the rollback: {"state":"failed","targetVersion":"1.5.14","step":"rollingBack","code":"FAILED_AFTER_SWITCH","message":"1.5.14 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.","startedAt":"2026-10-30T19:55:59.952Z","finishedAt":"2026-10-30T19:56:40.972Z","requestedFrom":"host command"}
+
+## API-32: the failed version is not retried by itself (90 s, then a container restart)
+CHECK PASS: 90 s later: same update record, still 1.5.11-beta.5
+CHECK PASS: after a restart: still 1.5.11-beta.5, the update record unchanged
+CHECK PASS: the starter log has exactly one update request for 1.5.14
+{"time":"2026-10-30T19:55:59.952Z","starter":"update-requested","version":"1.5.14","requestedFrom":"host command"}
+{"time":"2026-10-30T19:56:40.972Z","starter":"update-failed","version":"1.5.14","code":"FAILED_AFTER_SWITCH","message":"1.5.14 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on
+
+## API-32: a second update after the rollback (1.5.12)
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.12
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.12
+[AutoByteus Docker] autobyteus-server-0: preparing
+[AutoByteus Docker] autobyteus-server-0: confirming
+[AutoByteus Docker] autobyteus-server-0: Updated to 1.5.12.
+CHECK PASS: second update succeeded
+read back on autobyteus-server-0: {"data":{"agentDefinition":{"id":"ab305-api3x-p2","name":"ab305-api3x-p2"}}}
+CHECK PASS: data kept
+
+## API-32: refusals through the launcher; each leaves the server and state.json as they were
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.12
+[AutoByteus Docker] autobyteus-server-0: refused (NOT_NEWER): This node runs 1.5.12; 1.5.12 is not newer.
+RESULT 1.5.12 -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (NOT_NEWER): This node runs 1.5.12; 1.5.12 is not newer.
+CHECK PASS: update 1.5.12: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+$ autobyteus-docker update --name autobyteus-server-0 --version latest
+[AutoByteus Docker] autobyteus-server-0: refused (INVALID_VERSION): 'latest' is not a release version (X.Y.Z or X.Y.Z-beta.N).
+RESULT latest -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (INVALID_VERSION): 'latest' is not a release version (X.Y.Z or X.Y.Z-beta.N).
+CHECK PASS: update latest: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.15
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.15
+[AutoByteus Docker] autobyteus-server-0: refused (NEEDS_NEW_IMAGE): This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.15
+RESULT 1.5.15 -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (NEEDS_NEW_IMAGE): This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.15
+CHECK PASS: update 1.5.15: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.16
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.16
+[AutoByteus Docker] autobyteus-server-0: refused (ARCHIVE_MISMATCH): autobyteus-server-1.5.16-linux-arm64.tar.gz is larger than its description says (315857213 bytes).
+RESULT 1.5.16 -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (ARCHIVE_MISMATCH): autobyteus-server-1.5.16-linux-arm64.tar.gz is larger than its description says (315857213 bytes).
+CHECK PASS: update 1.5.16: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.17
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.17
+[AutoByteus Docker] autobyteus-server-0: refused (DESCRIPTION_MISMATCH): The signed description is for 1.5.12 linux-arm64 (autobyteus-server-1.5.12-linux-arm64.tar.gz), not for 1.5.17 linux-arm64 (autobyteus-server-1.5.17-linux-arm64.tar.gz).
+RESULT 1.5.17 -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (DESCRIPTION_MISMATCH): The signed description is for 1.5.12 linux-arm64 (autobyteus-server-1.5.12-linux-arm64.tar.gz), not for 1.5.17 linux-arm64 (autobyteus-server-1.5.17-linux-arm64.tar.gz).
+CHECK PASS: update 1.5.17: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.18
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.18
+[AutoByteus Docker] autobyteus-server-0: refused (SIGNATURE_INVALID): The package description for 1.5.18 is not signed by AutoByteus.
+RESULT 1.5.18 -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (SIGNATURE_INVALID): The package description for 1.5.18 is not signed by AutoByteus.
+CHECK PASS: update 1.5.18: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.19
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.19
+[AutoByteus Docker] autobyteus-server-0: refused (NO_PACKAGE_FOR_VERSION): No server package was published for 1.5.19 (linux-arm64): autobyteus-server-1.5.19-linux-arm64.json is missing from the release.
+RESULT 1.5.19 -> exit 1: [AutoByteus Docker] autobyteus-server-0: refused (NO_PACKAGE_FOR_VERSION): No server package was published for 1.5.19 (linux-arm64): autobyteus-server-1.5.19-linux-arm64.json is missing from the release.
+CHECK PASS: update 1.5.19: refused or failed with exit 1, the same starter pid, state.json unchanged, still 1.5.12
+CHECK PASS: 1.5.12 again: NOT_NEWER
+CHECK PASS: latest: INVALID_VERSION
+CHECK PASS: 1.5.15: NEEDS_NEW_IMAGE with the launcher command
+CHECK PASS: 1.5.16: ARCHIVE_MISMATCH
+CHECK PASS: 1.5.17: DESCRIPTION_MISMATCH
+CHECK PASS: 1.5.18: SIGNATURE_INVALID
+CHECK PASS: 1.5.19: NO_PACKAGE_FOR_VERSION
+
+## API-32 (AC-012): no secrets in the node's logs and starter state
+scanned 211338 bytes of node logs and starter state
+CHECK PASS: no 'PRIVATE KEY' and no line of the test private key in the node's logs
+
+## API-33: the step-1 (v6) launcher creates a node on beta (no server-packages volume)
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:54196
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+$ autobyteus-docker status
+NODE                     CONTAINER                STATUS         BACKEND                         
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:54196 (autobyteus/autobyteus-server:beta)
+  server: 1.5.11-beta.5, in-place update unavailable: /home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all
+CHECK PASS: status names the blocker
+$ autobyteus-docker update --name autobyteus-server-0 --version 1.5.12
+[AutoByteus Docker] autobyteus-server-0: refused (NO_PACKAGES_VOLUME): /home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all
+CHECK PASS: update refused NO_PACKAGES_VOLUME
+[AutoByteus Docker] Launcher config changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+$ autobyteus-docker status
+NODE                     CONTAINER                STATUS         BACKEND                         
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:54196 (autobyteus/autobyteus-server:beta)
+  server: 1.5.11-beta.5
+CHECK PASS: after upgrade --all: no blocker in status, server-packages volume mounted
+
+## API-36: PowerShell launcher (Linux pwsh in the test daemon's network namespace)
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:34771
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+$ pwsh autobyteus-docker.ps1 status
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:34771 (autobyteus/autobyteus-server:beta)
+  server: 1.5.11-beta.5
+CHECK PASS: PowerShell status shows the starter's version
+$ pwsh autobyteus-docker.ps1 update --name autobyteus-server-0
+[AutoByteus Docker] autobyteus-server-0: updating to 1.5.13
+[AutoByteus Docker] autobyteus-server-0: preparing
+[AutoByteus Docker] autobyteus-server-0: confirming
+[AutoByteus Docker] autobyteus-server-0: Updated to 1.5.13.
+CHECK PASS: PowerShell update (beta track) exit 0
+CHECK FAIL: PowerShell update printed the target and steps
+CHECK PASS: the node runs 1.5.13 installed, same container
+$ pwsh autobyteus-docker.ps1 status
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:34771 (autobyteus/autobyteus-server:beta)
+  server: 1.5.13
+CHECK PASS: PowerShell status shows 1.5.13
+$ pwsh autobyteus-docker.ps1 update --name autobyteus-server-0 --version 1.5.12
+[AutoByteus Docker] autobyteus-server-0: refused (NOT_NEWER): This node runs 1.5.13; 1.5.12 is not newer.
+CHECK PASS: PowerShell: 1.5.12 refused NOT_NEWER, exit non-zero
+$ pwsh autobyteus-docker.ps1 status
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      exited         http://localhost:34771 (autobyteus/autobyteus-server:beta)
+  server: not available (container exited)
+CHECK PASS: PowerShell status of a stopped container: not available
+$ pwsh autobyteus-docker.ps1 update --name autobyteus-server-0 --version 1.5.13
+[AutoByteus Docker] autobyteus-server-0: the container is not running; start it first.
+CHECK PASS: PowerShell update of a stopped container: not running
+
+## Result
+CHECK FAILURES: 2

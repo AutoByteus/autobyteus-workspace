@@ -1,0 +1,63 @@
+[
+  {
+    "name": "chrome.pdf",
+    "size": 18590,
+    "firstNul": 476,
+    "outcome": "refused",
+    "message": "The file '/tmp/ab328/docs/chrome.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+  },
+  {
+    "name": "cups.pdf",
+    "size": 12647,
+    "firstNul": 313,
+    "outcome": "refused",
+    "message": "The file '/tmp/ab328/docs/cups.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+  },
+  {
+    "name": "note.docx",
+    "size": 3515,
+    "firstNul": 5,
+    "outcome": "refused",
+    "message": "The file '/tmp/ab328/docs/note.docx' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+  },
+  {
+    "name": "note.rtf",
+    "size": 361,
+    "firstNul": -1,
+    "outcome": "returned as text",
+    "resultChars": 388,
+    "resultLines": 9,
+    "replacementChars": 0,
+    "nulChars": 0,
+    "head": "1: {\\rtf1\\ansi\\ansicpg1252\\cocoartf2870\n2: \\cocoatextscaling0\\cocoaplatform0{\\fonttbl\\f0\\fswiss\\fcharset0 Helvetica-Light;}\n3: {\\colortbl;\\red255\\green255\\blue2"
+  },
+  {
+    "name": "note.zip",
+    "size": 208,
+    "firstNul": 5,
+    "outcome": "refused",
+    "message": "The file '/tmp/ab328/docs/note.zip' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+  },
+  {
+    "name": "os-keyboard.pdf",
+    "size": 69940,
+    "firstNul": 32001,
+    "outcome": "returned as text",
+    "resultChars": 29857,
+    "resultLines": 492,
+    "replacementChars": 1857,
+    "nulChars": 13,
+    "head": "1: \n2: \n3: \n4: \n5: \n6: \n7: \n8: \n9: \n10: \n11: \n12: \n13: \n14: \n15: \n16: \n17: \n18: \n19: \n20: \n21: \n22: \n23: \n24: \n25: \n26: \n27: \n28: \n29: \n30: \n31: \n32: \n33: \n34: "
+  },
+  {
+    "name": "os-premiumcard-logo.pdf",
+    "size": 224814,
+    "firstNul": 42388,
+    "outcome": "returned as text",
+    "resultChars": 126833,
+    "resultLines": 1339,
+    "replacementChars": 33499,
+    "nulChars": 292,
+    "head": "1: \n2: \n3: <?xpacket begin=\"﻿\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n4: <x:xmpmeta xmlns:x=\"adobe:ns:meta/\" x:xmptk=\"Adobe XMP Core 4.2.2-c063 53.352624, 2008/07/30-1"
+  }
+]

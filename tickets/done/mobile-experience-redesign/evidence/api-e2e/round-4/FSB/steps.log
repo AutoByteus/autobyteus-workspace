@@ -1,0 +1,8 @@
+== 17:21:47 clone 54e2eb4d0750ccdb914486a4272ebf3ace75661d into /private/tmp/autobyteus277-fresh-NzEcFQ
+== 17:23:13 build outputs before install: autobyteus-agent-presentation-contracts/dist autobyteus-collaboration-stream-contracts/dist autobyteus-team-stream-contracts/dist 
+== 17:23:13 pnpm install --frozen-lockfile
+== 17:23:22 Build Electron macOS ARM64 (autobyteus-web: pnpm build:electron:mac -- --arm64)
+== 17:29:36 Verify bundled Prisma ARM64 engine target
+== 17:29:36 Verify packaged terminal runtime ARM64
+== 17:29:42 result: Pass
+== 17:30:11 clone removed: yes

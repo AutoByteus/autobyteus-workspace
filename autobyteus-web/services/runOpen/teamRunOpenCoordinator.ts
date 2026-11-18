@@ -13,8 +13,6 @@ import {
   markCommittedTeamRunHydrationAuthority,
 } from '~/services/runHydration/teamRunHydrationCommit';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { isRemoteAgentRun } from '~/services/teamExecution/teamRemoteExecutions';
-import { readRemoteTeamMember } from '~/services/teamExecution/teamRemoteRunRegistry';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 export interface OpenTeamRunWithCoordinatorInput {
@@ -59,17 +57,14 @@ export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promi
   if (contexts.getTeamContextById(input.teamRunId)) {
     throw new Error(`Team context '${input.teamRunId}' became mounted while it was loading.`);
   }
-  // autobyteus-278 (F-006): a focused agent of a run another node runs is read from its node after the commit.
-  const remoteFocus = isRemoteAgentRun(hydrated.remoteTaskExecutions, hydrated.focusedAgentRunId);
   if (context.view.getRootTeamRunId() !== input.teamRunId
     || context.view.getFocusedAgentRunId() !== hydrated.focusedAgentRunId
-    || (!remoteFocus && hydrated.projectionByAgentRunId.get(hydrated.focusedAgentRunId) == null)) {
+    || hydrated.projectionByAgentRunId.get(hydrated.focusedAgentRunId) == null) {
     throw new Error(`Team '${input.teamRunId}' did not load its exact focused AgentRun.`);
   }
   commitTeamRunHydration(hydrated);
   contexts.addTeamContext(context);
   markCommittedTeamRunHydrationAuthority(hydrated);
-  if (remoteFocus) readRemoteTeamMember(context, hydrated.focusedAgentRunId);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();
 
@@ -89,8 +84,8 @@ export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promi
     resumeConfig: hydrated.resumeConfig,
   };
   input.onCommitted?.(result);
-  if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
-  else runStore.disconnectTeamStream(input.teamRunId);
+  // The open Team's view has its stream whether the Team runs or not (autobyteus-461 SR-045); it never starts the Team.
+  runStore.connectToTeamStream(input.teamRunId);
   return result;
 }
 
@@ -139,7 +134,6 @@ export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordin
   }
   if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   markCommittedTeamRunHydrationAuthority(hydrated);
-  if (isRemoteAgentRun(hydrated.remoteTaskExecutions, preferredAgentRunId)) readRemoteTeamMember(context, preferredAgentRunId);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();
   if (input.selectRun !== false) {

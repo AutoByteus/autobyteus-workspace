@@ -28,6 +28,8 @@ import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-
 import { RuntimeMemoryEventAccumulator } from "../../../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../helpers/fake-claude-streaming-sdk.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const SID = "11111111-1111-4111-8111-111111111111";
 const memoryDirs: string[] = [];
@@ -47,7 +49,7 @@ const createHarness = () => {
     runId: "run-1",
     config: new AgentRunConfig({ agentDefinitionId: "agent-1", llmModelIdentifier: "haiku", autoExecuteTools: true,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memoryDir: null, llmConfig: null }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({ model: "haiku", workingDirectory: "/tmp", permissionMode: "default",
         autoExecuteTools: true, llmConfig: null }),
       carpenterSystemPrompt: "x", runtimeToolExposure: buildRuntimeAgentToolExposure([]), sessionId: null,
@@ -58,7 +60,7 @@ const createHarness = () => {
     providerSessionLifecycle: ClaudeProviderSessionLifecycle.reserveNew(() => SID),
     dependencies: {
       sessionMessageCache: new ClaudeSessionMessageCache(), sdkClient: sdkClient as never, toolingCoordinator,
-      agentToolMcpRunSessions: { activateForRun: vi.fn() } as never, systemInstructionCaptureService: undefined,
+      agentToolMcpRunSessions: createAgentToolMcpRunSessionsStub() as never, systemInstructionCaptureService: undefined,
       isRunSessionActive: () => true, terminateRunSession: vi.fn(async () => undefined),
     },
   });

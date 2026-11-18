@@ -1,0 +1,20 @@
+API-18 — AC-013 vue-tsc on the five named web specs
+Commit: 959b5cc048 (specs last changed 588c78cba1); date 2026-10-24 11:15; macOS, vue-tsc 6.0.2 via npx, after nuxt prepare (.nuxt present)
+Command: cd autobyteus-web && NODE_OPTIONS=--max-old-space-size=16384 npx vue-tsc --noEmit   (rc=2: the project has known errors, FU-001)
+Note: the default heap ran out of memory (FATAL ... heap out of memory, twice incl. 8 GB) because the untracked packaged build outputs left by IMP-08b (autobyteus-web/resources/server, autobyteus-web/electron-dist/mac-arm64, both git-ignored) are inside the web tsconfig scope; they account for 7716 of the 8170 errors. Not source; a clean clone has neither folder.
+
+== total errors: 8170
+== errors in ignored build outputs (resources/server, electron-dist/): 7716
+== errors elsewhere: 454
+== errors in the five named files (expect none):
+(end, count=0)
+
+== the five specs: pnpm -C autobyteus-web exec vitest run <the five files>
+ Test Files  5 passed (5)
+      Tests  49 passed (49)
+
+== assertion lines changed by the branch in the five files (8b34e8ae10..af81b3d7d2): two, both type-only rewrites of the same expectation
+-    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({
++    expect((teacher.state.conversation.messages[0] as AIMessage | undefined)?.segments[0]).toMatchObject({
+-    expect(store.childTargetFor('host-run')?.address).toBe('/product_team/bootstrapper')
++    expect(addressOf(store.childTargetFor('host-run'))).toBe('/product_team/bootstrapper')

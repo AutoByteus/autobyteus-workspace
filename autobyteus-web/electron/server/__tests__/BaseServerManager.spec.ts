@@ -12,6 +12,8 @@ import type { EmbeddedServerLaunchConfig } from '../embeddedServerLaunchConfig'
 
 const { axiosGet } = vi.hoisted(() => ({ axiosGet: vi.fn() }))
 
+vi.mock('../backendPortAvailability', async importOriginal => ({ ...await importOriginal<typeof import('../backendPortAvailability')>(), assertBackendPortAvailable: vi.fn().mockResolvedValue(undefined) }))
+
 vi.mock('axios', () => ({ default: { get: axiosGet } }))
 
 vi.mock('fs', () => ({
@@ -59,6 +61,7 @@ const launchConfig: EmbeddedServerLaunchConfig = {
   listenerPolicy: 'preserve-backend-default',
   baseDataRoot: path.join('/user/home', '.autobyteus'),
   environmentPolicy: 'inherit-caller',
+  developmentRendererOrigin: null,
 }
 
 class TestServerManager extends BaseServerManager {
@@ -188,7 +191,7 @@ describe('BaseServerManager', () => {
 
     const start = manager.startServer()
     await waitFor(() => axiosGet.mock.calls.length > 0)
-    manager.child.emit('close', 0)
+    manager.child.emit('exit', 0)
 
     await expect(start).rejects.toThrow('exited before health was available (code 0)')
     expect(ready).not.toHaveBeenCalled()
@@ -224,7 +227,7 @@ describe('BaseServerManager', () => {
       + 'CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/isolated/readable.log '
       + 'Server log: /isolated/server-data/logs/server.log',
     )
-    manager.child.emit('close', 1)
+    manager.child.emit('exit', 1)
     await new Promise((resolve) => setTimeout(resolve, 10))
     expect(ready).not.toHaveBeenCalled()
     expect(errors).toHaveLength(1)

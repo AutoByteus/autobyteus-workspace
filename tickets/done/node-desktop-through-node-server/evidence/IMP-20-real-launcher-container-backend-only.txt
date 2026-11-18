@@ -1,0 +1,43 @@
+# Check: IMP-20
+# Command: worktree launcher: seed state (no ports), AUTOBYTEUS_DOCKER_STATE_DIR=<tmp>/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=<tmp>/shared ./autobyteus-docker.sh workspace apply --name abx405-launcher-check; docker ps; docker inspect PortBindings and Env; state file; then destroy --name and docker volume rm
+# Setup: Test node abx405-launcher-check, image autobyteus/autobyteus-server:1.5.12-beta.3 (same ID 9c5aa01bb2fc as the local beta; the extra tag was removed afterwards)
+# Commit: ce13fa9727
+# Environment: macOS arm64, Docker Desktop, /bin/bash 3.2
+# Date: 2026-11-06
+
+## launcher output
+[AutoByteus Docker] Applying shared workspace bind mounts to abx405-launcher-check. Named volumes will be kept.
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:1.5.12-beta.3
+docker.io/autobyteus/autobyteus-server:1.5.12-beta.3
+[AutoByteus Docker] Started abx405-launcher-check.
+AutoByteus Docker node: abx405-launcher-check
+Container: abx405-launcher-check
+Image: autobyteus/autobyteus-server:1.5.12-beta.3
+Backend: http://localhost:58298
+GraphQL: http://localhost:58298/graphql
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx-405-real/launcher/shared/nodes/abx405-launcher-check
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx-405-real/launcher/shared/shared
+Private app data: /home/autobyteus/data -> abx405-launcher-check-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+## docker ps
+abx405-launcher-check	0.0.0.0:58298->8000/tcp, [::]:58298->8000/tcp
+
+## PortBindings
+{"8000/tcp":[{"HostIp":"","HostPort":"58298"}]}
+
+## AUTOBYTEUS_VNC* entries in the container env: 0
+
+## state file
+NODE_NAME=abx405-launcher-check
+CONTAINER_NAME=abx405-launcher-check
+BACKEND_PORT=58298
+IMAGE_REF=autobyteus/autobyteus-server:1.5.12-beta.3
+CREATED_AT=2026-11-06T00:00:00Z
+CONFIG_HASH=7fc1f403f83cbb730ecbf95c7728ba087e63feede7fc449d42df2b598fabaa85
+UPDATED_AT=2026-11-06T17:20:17Z
+
+## destroy
+[AutoByteus Docker] Removed managed container abx405-launcher-check for abx405-launcher-check. Named volumes and host workspaces were kept.
+[AutoByteus Docker] Removed launcher state for abx405-launcher-check.
+[AutoByteus Docker] Keeping image sha256:9c5aa01bb2fc16bd84c43e11e5cf47a24968831c35351f54c353662991b53cdb; it is still used by a Docker container.

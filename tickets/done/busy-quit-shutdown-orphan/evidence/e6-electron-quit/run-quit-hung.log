@@ -1,0 +1,10 @@
++0.04s main ready main=37364 child=37367 mode=ignore-sigterm
++3.04s main user quit -> app.quit()
++3.04s main before-quit
++3.05s main will-quit
++3.05s main stopServer: SIGTERM child
++3.05s main process exit 0
++3.05s main quit exitCode=0
+child got SIGTERM (ignored, like a hung shutdown)
+main alive after loop: no (~2s after trigger)
+child 37367 alive: yes ppid=1

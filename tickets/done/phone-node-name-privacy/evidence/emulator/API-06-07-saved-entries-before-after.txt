@@ -1,0 +1,11 @@
+# API-06 saved_nodes.xml (adb shell run-as org.autobyteus.mobile cat shared_prefs/saved_nodes.xml), 2026-11-08T07:42:30Z
+## before B's page paired
+selected_entry_id = http://nodebox-2c7.home.arpa:47332
+{'id': 'http://nodebox-2c7.home.arpa:47332', 'displayName': 'nodebox-2c7.home.arpa', 'host': 'nodebox-2c7.home.arpa'}
+{'id': 'http://hostbox-9f3.example-tailnet.ts.net:47331', 'displayName': 'hostbox-9f3.example-tailnet.ts.net', 'host': 'hostbox-9f3.example-tailnet.ts.net'}
+{'id': 'http://hostbox-9f3.home.arpa:47331', 'displayName': 'Test Desktop', 'host': 'hostbox-9f3.home.arpa'}
+## after B's page paired with the link named "Test Node"
+selected_entry_id = http://nodebox-2c7.home.arpa:47332
+{'id': 'http://nodebox-2c7.home.arpa:47332', 'displayName': 'Test Node', 'host': 'nodebox-2c7.home.arpa'}
+{'id': 'http://hostbox-9f3.example-tailnet.ts.net:47331', 'displayName': 'hostbox-9f3.example-tailnet.ts.net', 'host': 'hostbox-9f3.example-tailnet.ts.net'}
+{'id': 'http://hostbox-9f3.home.arpa:47331', 'displayName': 'Test Desktop', 'host': 'hostbox-9f3.home.arpa'}

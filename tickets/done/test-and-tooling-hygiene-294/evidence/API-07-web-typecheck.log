@@ -1,0 +1,26 @@
+# API-07 pnpm -C autobyteus-web typecheck
+# clean clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo, commit dfef14abc6, 2026-10-27T20:24:53Z, macOS, node v22.23.1; no vitest running
+
+> autobyteus@1.5.9-beta.13 typecheck /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-web
+> nuxt prepare && node ./scripts/typecheck.mjs
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+
+real	0m42.534s
+user	0m55.696s
+sys	0m3.870s
+exit: 0

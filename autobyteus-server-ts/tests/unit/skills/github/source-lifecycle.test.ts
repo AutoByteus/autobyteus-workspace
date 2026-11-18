@@ -92,7 +92,7 @@ describe("GitHub skill source lifecycle through its public owner", () => {
     await expect(f.service.importGitHubSkillSource(url)).rejects.toThrow(/name/i);
     fs.rmSync(path.join(f.skills, "existing"), { recursive: true });
     const runtime = path.join(f.root, "runtime-default"); writeSkill(path.join(runtime, "writer"));
-    f.service.addSkillSource(runtime);
+    await f.service.addSkillSource(runtime);
     await f.service.importGitHubSkillSource(url);
     expect(f.catalog.getSkill("writer")?.managedSource).not.toBeNull();
     expect(fs.existsSync(path.join(runtime, "writer", "SKILL.md"))).toBe(true);
@@ -153,11 +153,11 @@ describe("GitHub skill source lifecycle through its public owner", () => {
 
   it("keeps local unlink non-destructive and blocks default/managed local mutations", async () => {
     const f = setup(); const local = path.join(f.root, "local"); writeSkill(path.join(local, "other"), "other");
-    f.service.addSkillSource(local); f.service.removeSkillSource(local);
+    await f.service.addSkillSource(local); await f.service.removeSkillSource(local);
     expect(fs.existsSync(local)).toBe(true);
-    expect(() => f.service.removeSkillSource(f.skills)).toThrow("default");
+    await expect(f.service.removeSkillSource(f.skills)).rejects.toThrow("default");
     await f.service.importGitHubSkillSource(url);
-    expect(() => f.service.addSkillSource(f.catalog.getSkill("writer")!.rootPath)).toThrow("Managed");
+    await expect(f.service.addSkillSource(f.catalog.getSkill("writer")!.rootPath)).rejects.toThrow("Managed");
   });
 
   it("preserves malformed registry bytes while admitting unrelated local skills", async () => {

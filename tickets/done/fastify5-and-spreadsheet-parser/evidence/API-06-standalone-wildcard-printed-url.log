@@ -1,0 +1,18 @@
+# API-06 standalone application host, explicit wildcard bind: env -i PATH HOME=<temp> TMPDIR CODEX_HOME=/tmp/ab-api/codex-home (config.toml empty; auth.json symlink) node ../../autobyteus-application-devkit/dist/cli.js start --host 0.0.0.0 --port 57176 --public-base-url http://192.168.2.158:57176 --data-dir /tmp/ab-api/standalone-data
+# cwd applications/brief-studio (worktree 4dcdceea11, server dist built at HEAD, fastify 5.12.7); macOS 26.5.2, node v22.23.1; date 2026-10-24T21:09:47Z
+# Case: API-06 (implementation-handoff Known Risk: listen() return for a wildcard bind)
+
+## host log (listen lines and the printed URL)
+{"level":30,"msg":"Server listening at http://127.0.0.1:57194"}
+{"level":30,"msg":"Server listening at http://127.0.0.1:57176"}
+{"level":30,"msg":"Server listening at http://192.168.2.158:57176"}
+{"level":30,"msg":"Server listening at http://100.127.30.107:57176"}
+Standalone application ready: http://127.0.0.1:57176
+
+## fetch the printed URL and the LAN address
+GET http://127.0.0.1:57176/ -> 200 text/html  first bytes: <!doctype html> <html lang="en">   <head>     <meta charset=
+GET http://192.168.2.158:57176/ -> 200 text/html  first bytes: <!doctype html> <html lang="en">   <head>     <meta charset=
+
+## listening sockets
+node *:57176
+## cleanup: host stopped (SIGINT); leftover processes referencing /tmp/ab-api/codex-home or the data dir: 0

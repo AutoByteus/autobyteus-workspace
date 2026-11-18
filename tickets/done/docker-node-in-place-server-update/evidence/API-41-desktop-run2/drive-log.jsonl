@@ -1,0 +1,31 @@
+{"time":"2026-10-30T23:14:16.534Z","event":"nodes page open (second run in the same window)","url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes?nodeTab=manage"}
+{"time":"2026-10-30T23:14:16.546Z","event":"clipboard probe","clip":"writeText ok"}
+{"time":"2026-10-30T23:14:17.084Z","event":"CHECK PASS","desc":"L: copy button confirms \"Copied\" (read 500 ms after the click)","after":"Copied","clip":"writeText ok"}
+{"time":"2026-10-30T23:14:17.170Z","event":"screenshot","file":"API-41-L-copied.png"}
+{"time":"2026-10-30T23:14:17.425Z","event":"node started","id":"r2","name":"ab305-api4-r2","variant":"good","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:62635"}
+{"time":"2026-10-30T23:14:22.544Z","event":"node added","id":"r2","label":"long-restart-2","address":"http://127.0.0.1:62635"}
+{"time":"2026-10-30T23:14:22.824Z","event":"clicked","label":"long-restart-2"}
+{"time":"2026-10-30T23:14:22.826Z","event":"row line","label":"long-restart-2","text":"Server 1.5.11-beta.5 Starting the update…"}
+{"time":"2026-10-30T23:14:22.882Z","event":"screenshot","file":"API-41-R2-01.png"}
+{"time":"2026-10-30T23:14:23.085Z","event":"row line","label":"long-restart-2","text":"Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…"}
+{"time":"2026-10-30T23:14:23.146Z","event":"screenshot","file":"API-41-R2-02.png"}
+{"time":"2026-10-30T23:14:24.997Z","event":"row line","label":"long-restart-2","text":"Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…"}
+{"time":"2026-10-30T23:14:25.053Z","event":"screenshot","file":"API-41-R2-03.png"}
+{"time":"2026-10-30T23:15:45.479Z","event":"row line","label":"long-restart-2","text":"Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…"}
+{"time":"2026-10-30T23:15:45.535Z","event":"screenshot","file":"API-41-R2-04.png"}
+{"time":"2026-10-30T23:15:55.583Z","event":"row line","label":"long-restart-2","text":"Restarting…"}
+{"time":"2026-10-30T23:15:55.634Z","event":"screenshot","file":"API-41-R2-05.png"}
+{"time":"2026-10-30T23:15:55.782Z","event":"docker stop (the node goes away mid-update)","status":{"state":"running","targetVersion":"1.5.11-beta.6","step":"confirming","code":null,"message":null,"startedAt":"2026-10-30T23:14:22.830Z","finishedAt":null,"requestedFrom":"172.17.0.1"}}
+{"time":"2026-10-30T23:20:56.403Z","event":"row line","label":"long-restart-2","text":"Not reachable. Last known: updating to 1.5.11-beta.6."}
+{"time":"2026-10-30T23:20:56.460Z","event":"screenshot","file":"API-41-R2-06.png"}
+{"time":"2026-10-30T23:20:56.460Z","event":"CHECK PASS","desc":"R2: Restarting… while down, then \"Not reachable. Last known: updating to 1.5.11-beta.6.\" after about 5 min","lines":["Server 1.5.11-beta.5 Starting the update…","Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…","Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…","Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…","Restarting…","Not reachable. Last known: updating to 1.5.11-beta.6."],"secondsDownBeforeUnreachable":298}
+{"time":"2026-10-30T23:21:26.593Z","event":"docker start (the node comes back)","port":"127.0.0.1:62635"}
+{"time":"2026-10-30T23:21:26.595Z","event":"row line","label":"long-restart-2","text":"Not reachable. Last known: updating to 1.5.11-beta.6."}
+{"time":"2026-10-30T23:21:26.644Z","event":"screenshot","file":"API-41-R2-back-01.png"}
+{"time":"2026-10-30T23:21:36.500Z","event":"row line","label":"long-restart-2","text":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. The update to 1.5.11-beta.6 was interrupted; this node runs 1.5.11-beta.5 again."}
+{"time":"2026-10-30T23:21:36.580Z","event":"screenshot","file":"API-41-R2-back-02.png"}
+{"time":"2026-10-30T23:21:36.713Z","event":"R2 node after the outage","status":{"version":"1.5.11-beta.5","state":"running","server":{"pid":346,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"failed","targetVersion":"1.5.11-beta.6","step":"confirming","code":"INTERRUPTED","message":"The update to 1.5.11-beta.6 was interrupted; this node runs 1.5.11-beta.5 again.","startedAt":"2026-10-30T23:14:22.830Z","finishedAt":"2026-10-30T23:21:28.224Z","requestedFrom":"172.17.0.1"}},"secondsToRecover":10}
+{"time":"2026-10-30T23:21:36.714Z","event":"CHECK PASS","desc":"R2: the row recovers by itself (no reload, no click)","last":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. The update to 1.5.11-beta.6 was interrupted; this node runs 1.5.11-beta.5 again."}
+{"time":"2026-10-30T23:21:36.718Z","event":"CHECK PASS","desc":"R2: the outcome is shown with the old version, the reason and the button","last":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. The update to 1.5.11-beta.6 was interrupted; this node runs 1.5.11-beta.5 again."}
+{"time":"2026-10-30T23:21:36.771Z","event":"screenshot","file":"API-41-R2-result.png"}
+{"time":"2026-10-30T23:21:36.772Z","event":"result","checkFailures":0}

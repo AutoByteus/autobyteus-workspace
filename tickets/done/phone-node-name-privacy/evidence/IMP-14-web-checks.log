@@ -1,0 +1,27 @@
+# IMP-14 web checks for IR-004
+# commands: cd autobyteus-web && pnpm exec vitest run components/mobile composables/mobile utils/remoteAccess stores/__tests__/mobileNodeSessionStore --reporter=verbose;
+#   pnpm -C autobyteus-web guard:web-boundary, guard:localization-boundary, audit:localization-literals; pnpm -C autobyteus-web typecheck
+# commit: 60adcf3bc8 (ran on the working tree this commit records unchanged)
+# env: macOS, Node v22.23.1
+# date: 2026-11-08
+
+## vitest
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, a paired phone tells the app once that the page is ready 17ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, an unpaired phone (the pairing page) tells the app once that the page is ready 4ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in a browser there is no bridge, so nothing is sent and the page still mounts 6ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in a browser there is no bridge, so nothing is sent and the page still mounts 6ms
+ Test Files  22 passed (22)
+      Tests  175 passed (175)
+
+## guards
+web-boundary exit=0
+loc-boundary exit=0
+loc-literals exit=0
+
+## typecheck
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 40.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.2s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS

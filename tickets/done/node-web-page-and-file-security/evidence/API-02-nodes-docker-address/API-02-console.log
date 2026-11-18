@@ -1,0 +1,19 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:nodes-docker-address /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/nodes-docker-address-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-02-nodes-docker-address
+
+[probe] ND-01 started
+[probe] ND-01 Pass
+[probe] ND-04 started
+[probe] ND-04 Pass
+[probe] ND-05 started
+[probe] ND-05 Pass
+[probe] ND-02 started
+[probe] ND-02 Pass
+[probe] ND-03 started
+[probe] ND-03 Pass
+nodes-docker-address probe: Pass
+
+real	2m5.627s
+user	0m41.070s
+sys	0m9.988s

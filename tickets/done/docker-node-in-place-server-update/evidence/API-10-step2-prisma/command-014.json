@@ -1,0 +1,12 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "--format",
+    "{{json .Mounts}}",
+    "api-prisma-a73a37eb-fc6-first"
+  ],
+  "exit": 0,
+  "stdout": "[{\"Type\":\"bind\",\"Source\":\"/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/home\",\"Destination\":\"/root\",\"Mode\":\"\",\"RW\":true,\"Propagation\":\"rprivate\"},{\"Type\":\"bind\",\"Source\":\"/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/data\",\"Destination\":\"/home/autobyteus/data\",\"Mode\":\"\",\"RW\":true,\"Propagation\":\"rprivate\"},{\"Type\":\"bind\",\"Source\":\"/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/dist\",\"Destination\":\"/opt/autobyteus/server-package/dist\",\"Mode\":\"\",\"RW\":false,\"Propagation\":\"rprivate\"}]\n",
+  "stderr": ""
+}

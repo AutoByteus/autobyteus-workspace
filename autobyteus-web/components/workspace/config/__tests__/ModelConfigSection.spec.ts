@@ -653,7 +653,7 @@ describe('ModelConfigSection', () => {
   describe('thinking-dependent Advanced edits (chat-composer-polish REQ-008)', () => {
     const claudeSchema = {
       thinking_enabled: { type: 'boolean', default: false },
-      reasoning_effort: { type: 'string', title: 'Reasoning Effort', enum: ['low', 'medium', 'high'], default: 'medium' },
+      reasoning_effort: { type: 'string', title: 'Reasoning Effort', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
       temperature: { type: 'number', minimum: 0, maximum: 1, default: 0.7 },
     };
 

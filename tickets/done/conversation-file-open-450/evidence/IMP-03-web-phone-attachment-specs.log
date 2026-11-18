@@ -1,0 +1,22 @@
+# Check: IMP-03 (DS-001 phone attachment specs)
+# Command: pnpm -C autobyteus-web test:nuxt --run composables/mobile/__tests__ components/conversation/__tests__ composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts composables/__tests__/useEventMonitorFilePreview.spec.ts components/mobile/views/__tests__
+# Commit: 486ba3c395
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+ ✓ composables/mobile/__tests__/useNodeDesktopZoom.spec.ts > useNodeDesktopZoom (View only) > pinches to zoom around the pinch centre and clamps to 1×–4× 9ms
+stderr | components/conversation/__tests__/UserMessageMobileAttachments.spec.ts
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > a message's attached file (autobyteus-450) opens on the Files screen by its node URL path and name; Back returns 1ms
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > ← on an attached file entered without an entry under it (a reload) goes to the Files screen 1ms
+stdout | components/conversation/__tests__/UserMessageMobileAttachments.spec.ts
+ ✓ components/conversation/__tests__/UserMessageMobileAttachments.spec.ts > UserMessage attachments on the phone > shows an image as a thumbnail loaded with the phone key (an object URL), the others as names 18ms
+ ✓ components/conversation/__tests__/UserMessageMobileAttachments.spec.ts > UserMessage attachments on the phone > a tap opens the attachment in the phone viewer, never a new window or a page navigation 5ms
+ ✓ components/conversation/__tests__/UserMessageMobileAttachments.spec.ts > UserMessage attachments on the phone > a thumbnail the node refuses shows the attachment by its name 9ms
+stderr | composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts
+stdout | composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts > useMobileAttachmentOpening > opens an uploaded file (sent or draft) on the Files screen by its node URL path and name, with no navigation 2ms
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts > useMobileAttachmentOpening > opens a path on the node through the phone's path open (a workspace or node file), as a file link does 1ms
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts > useMobileAttachmentOpening > a path the phone cannot open here (another node's run) opens nothing and navigates nowhere 0ms
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts > useMobileAttachmentOpening > an external URL (another site) still opens outside the page; an unsupported local file opens nothing 0ms
+ Test Files  20 passed (20)
+      Tests  180 passed (180)

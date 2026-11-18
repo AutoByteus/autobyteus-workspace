@@ -1,0 +1,14 @@
+{
+  "case": "R02",
+  "date": "2026-10-26T06:42:20.266665+00:00",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "command": "Inspect failure-body.txt/current catalogs/design vs inherited R2 required-text assertion",
+  "environment": "actual current Nodes/Chrome en1280",
+  "classification": "API harness obsolete assertion, not product defect",
+  "expectedCurrent": "R3 AC007 removes platform/testing caveat paragraphs; AC005 retains detail in docs/nfs_guide.md",
+  "observed": "Renderer correctly omitted Windows text from removed footer; inherited R2 driver still demanded it",
+  "cause": "Stale required text Windows in English and Chinese needle lists copied from old API002 driver",
+  "correction": "Remove only stale Windows requirement; retain intended-host text, exact footers, all other assertions. Confirm detailed exclusion at docs/nfs_guide.md:43. Failed original driver/result retained. No product/test change.",
+  "result": "Resolved harness before fresh R02 rerun",
+  "priorCaseDisposition": "No R02 viewport case completed; R03 not reached; R01 stays completed/reused. First driver cleanup aborted ENOTEMPTY while owned Node compile cache shut down; exact groups verified absent and residual owned temp root removed, C01-03-cleanup-assist.json. Original raw failure/empty cleanup preserved."
+}

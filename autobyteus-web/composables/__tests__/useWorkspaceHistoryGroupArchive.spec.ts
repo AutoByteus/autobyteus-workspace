@@ -35,6 +35,7 @@ const buildHarness = () => {
     archiveAgentRunGroup: vi.fn(async (): Promise<AgentRunGroupArchiveOutcome> =>
       ({ archivedRunIds: ['run-1', 'run-2'], activeRunIds: [], failedRunIds: [] })),
     archiveTeamRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] as string[] })),
+    archiveRuns: vi.fn(async (targets: { agentRunIds: readonly string[] }) => ({ archivedRunIds: [...targets.agentRunIds], failedRunIds: [] as string[], failureReasons: [] as string[] })),
     archiveAgentOrgRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] as string[] })),
     onAgentOrgArchived: vi.fn(async () => undefined),
     addToast: vi.fn(),
@@ -84,6 +85,16 @@ describe('useWorkspaceHistoryGroupArchive', () => {
     expect(groupArchive.showGroupArchiveConfirmation.value).toBe(false);
     expect(params.archiveTeamRuns).not.toHaveBeenCalled();
     expect(params.addToast).not.toHaveBeenCalled();
+  });
+
+  it('CR-461-087: a listed agent group archives each run by its own archive; a refusal shows the server\'s reason, naming the working run', async () => {
+    const reason = "This run can't be archived while a run it delegated to is working (/fact_checker_924b).";
+    const { params, groupArchive } = buildHarness();
+    params.archiveRuns.mockResolvedValueOnce({ archivedRunIds: ['run-1'], failedRunIds: ['run-2'], failureReasons: [reason] });
+    groupArchive.onArchiveListedAgentGroup(workspaceNode, agentNode([agentRun('run-1'), agentRun('run-2'), agentRun('draft', { source: 'draft' })]));
+    await groupArchive.confirmGroupArchive();
+    expect(params.archiveRuns).toHaveBeenCalledExactlyOnceWith({ agentRunIds: ['run-1', 'run-2'], teamRunIds: [], orgRunIds: [] });
+    expect(params.addToast).toHaveBeenCalledExactlyOnceWith(`Archived 1 run. 1 failed. ${reason}`, 'error');
   });
 
   it('archives a whole agent group through the server operation and reports one short summary', async () => {

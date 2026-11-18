@@ -1,0 +1,37 @@
+# API-04 real-network admission; node port 60848; commit b6a57ab154; 2026-11-08T16:06:27.078Z
+PASS NAS-14 loopback exempt: GET 127.0.0.1 /rest/health -> 200 
+PASS NAS-14 loopback no key: POST 127.0.0.1 /graphql -> 401 NODE_CREDENTIAL_REQUIRED
+PASS NAS-12 loopback made-up key: POST 127.0.0.1 /graphql -> 401 NODE_CREDENTIAL_INVALID
+PASS NAS-05 loopback owner key: POST 127.0.0.1 /graphql -> 200 
+PASS NAS-14 tailscale exempt: GET 100.127.30.107 /rest/health -> 200 
+PASS NAS-14 tailscale no key: POST 100.127.30.107 /graphql -> 401 NODE_CREDENTIAL_REQUIRED
+PASS NAS-12 tailscale made-up key: POST 100.127.30.107 /graphql -> 401 NODE_CREDENTIAL_INVALID
+PASS NAS-05 tailscale owner key: POST 100.127.30.107 /graphql -> 200 
+PASS NAS-11 LAN not allowed, exempt: GET 192.168.2.158 /rest/health -> 403 NODE_NETWORK_REFUSED
+PASS NAS-11 LAN not allowed, pairing exchange: POST 192.168.2.158 /rest/node-access/setup-exchanges -> 403 NODE_NETWORK_REFUSED
+PASS NAS-07 LAN not allowed, valid owner key: POST 192.168.2.158 /graphql -> 403 NODE_NETWORK_REFUSED
+NAS-07 LAN not allowed, terminal WebSocket with valid key: close 4403 NODE_NETWORK_REFUSED
+phone paired: session 201, credential mra_…
+PASS NAS-07 phone on LAN not allowed: POST 192.168.2.158 /graphql -> 403 NODE_NETWORK_REFUSED
+local network of 192.168.2.158: {"networkId":"gw_510ab652d63d0882","addresses":["192.168.2.158"],"allowed":false}
+PASS DEC-011 owner allows the network: PUT 127.0.0.1 /rest/remote-access/network/local-networks/gw_510ab652d63d0882 -> 200 
+PASS NAS-06 LAN allowed, exempt: GET 192.168.2.158 /rest/health -> 200 
+PASS NAS-12 LAN allowed, no key: POST 192.168.2.158 /graphql -> 401 NODE_CREDENTIAL_REQUIRED
+PASS NAS-12 LAN allowed, made-up key: POST 192.168.2.158 /graphql -> 401 NODE_CREDENTIAL_INVALID
+NAS-12 LAN allowed, terminal WebSocket with no key: close 4401 NODE_CREDENTIAL_REQUIRED
+PASS NAS-06 phone on allowed LAN: POST 192.168.2.158 /graphql -> 200 
+PASS NAS-08 phone owner action on allowed LAN: PUT 192.168.2.158 /rest/remote-access/settings -> 403 NODE_ROUTE_NOT_PERMITTED
+NAS-09 phone terminal WebSocket on allowed LAN: close 4403 PHONE_ACCESS_ROUTE_REFUSED
+PASS NAS-05 owner key on allowed LAN: POST 192.168.2.158 /graphql -> 200 
+PASS DEC-011 owner disallows the network: PUT 127.0.0.1 /rest/remote-access/network/local-networks/gw_510ab652d63d0882 -> 200 
+PASS NAS-07 phone on LAN disallowed again: POST 192.168.2.158 /graphql -> 403 NODE_NETWORK_REFUSED
+RSK-006 container -> host.docker.internal health: 200
+RSK-006 container -> host.docker.internal graphql no key: 401
+RSK-006 container -> 192.168.2.158 health: 403
+PASS NAS-28 LAN listed in AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS, phone: POST 192.168.2.158 /graphql -> 200 
+PASS NAS-28 listed network, no key: POST 192.168.2.158 /graphql -> 401 NODE_CREDENTIAL_REQUIRED
+PASS NAS-10 owner revokes all phones: DELETE 127.0.0.1 /rest/remote-access/devices -> 200 
+NAS-10 the phone's open WebSocket: close 4403 REMOTE_ACCESS_DEVICE_REVOKED
+PASS NAS-10 revoked phone: POST 192.168.2.158 /graphql -> 403 REMOTE_ACCESS_DEVICE_REVOKED
+credential strings in the node log: 0
+refusal lines: 19

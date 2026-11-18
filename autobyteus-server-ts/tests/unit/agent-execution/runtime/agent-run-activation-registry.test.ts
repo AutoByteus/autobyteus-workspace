@@ -33,6 +33,20 @@ const createRegistry = (errorsByRunId: Record<string, Error[]> = {}) => {
 };
 
 describe("AgentRunActivationRegistry", () => {
+  it("observational peek never prunes an inactive published run or includes pending/retired runs", () => {
+    const { registry, resourceManager } = createRegistry();
+    const run = createRun("peek-only"); const claim = registry.claim(run.runId);
+    registry.markPrepared(claim, run as never);
+    expect(registry.peekPublishedRun(run.runId)).toBeNull();
+    registry.publish(claim, run as never); run.active = false; run.isActive.mockClear();
+    expect(registry.peekPublishedRun(run.runId)).toBe(run);
+    expect(registry.peekPublishedRun(run.runId)).toBe(run);
+    expect(run.isActive).not.toHaveBeenCalled(); expect(resourceManager.release).not.toHaveBeenCalled();
+    // Existing lifecycle lookup retains its own cleanup/retirement semantics.
+    expect(registry.getActiveRun(run.runId)).toBeNull();
+    expect(registry.getRetiredRun(run.runId)).toBe(run);
+    expect(registry.peekPublishedRun(run.runId)).toBeNull();
+  });
   it("keeps a prepared run private until the exact claim publishes it", () => {
     const { registry, resourceManager } = createRegistry();
     const run = createRun("run-1");

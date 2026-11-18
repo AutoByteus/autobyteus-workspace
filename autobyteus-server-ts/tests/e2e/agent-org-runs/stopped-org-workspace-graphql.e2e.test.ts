@@ -98,7 +98,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     } });
     expect(created.createAgentOrgRun, JSON.stringify(created)).toMatchObject({ success: true });
     const orgRunId = created.createAgentOrgRun.agentOrgRunId;
-    const input = { orgRunId, modelPatches: [], teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: b }] };
+    const input = { orgRunId, selectionPatches: [], teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: b }] };
     const active = await readConfig(first, orgRunId);
     await expect(updateConfig(first, input)).resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
     expect((await readConfig(first, orgRunId)).executionTree).toEqual(active.executionTree);
@@ -119,9 +119,9 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
         .resolves.toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
       expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);
     }
-    const modelPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/team/lead",
-      llmModelIdentifier: model.modelIdentifier, llmConfig: { unsupported_setting: true } };
-    await expect(updateConfig(first, { ...input, modelPatches: [modelPatch] }))
+    const modelPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/team/lead", runtimeKind: "autobyteus",
+      llmModelIdentifier: model.modelIdentifier, llmConfig: { reasoning_effort: "not-a-level" } };
+    await expect(updateConfig(first, { ...input, selectionPatches: [modelPatch] }))
       .resolves.toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
     expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);
     // Option preview is read-only and uses the same candidate Team intent.
@@ -136,9 +136,13 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     const affected = expected.rootOrg.members.find((member: Json) => member.address === "/team");
     affected.defaultLaunchConfiguration.workspaceRootPath = b;
     for (const member of affected.members) member.launchConfiguration.workspaceRootPath = b;
-    expect(saved.canonical).toEqual(expected); // Protect every field except approved Team/child paths.
-    expect((await readConfig(first, orgRunId)).executionTree).toEqual(expected);
-    expect(JSON.parse(await fs.readFile(treeFile, "utf8"))).toEqual(expected);
+    // autobyteus-461 contract §6: the stored tree has no `taskExecutions` (each run's delegations are its Task entries); the
+    // config read keeps base's view shape (rule 1) with its rows. Every other field is compared exactly.
+    const stored = <T>(value: T): T => JSON.parse(JSON.stringify(value, (key, inner) => key === "taskExecutions" ? undefined : inner));
+    expect(JSON.stringify(JSON.parse(await fs.readFile(treeFile, "utf8")))).not.toContain("taskExecutions");
+    expect(stored(saved.canonical)).toEqual(stored(expected)); // Protect every field except approved Team/child paths.
+    expect(stored((await readConfig(first, orgRunId)).executionTree)).toEqual(stored(expected));
+    expect(JSON.parse(await fs.readFile(treeFile, "utf8"))).toEqual(stored(expected));
     expect(expected).not.toHaveProperty("schemaVersion");
     for (const member of expected.rootOrg.members) {
       for (const agent of member.members ?? [member]) expect(agent.platformAgentRunId).toBeNull();
@@ -147,18 +151,19 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     // Existing model edits compose with a second workspace edit in one command.
     const mixed = await updateConfig(first, { ...input,
       teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: c }],
-      modelPatches: [{ ...modelPatch, llmConfig: { reasoning_effort: "high" } }],
+      selectionPatches: [{ ...modelPatch, llmConfig: { reasoning_effort: "high" } }],
     });
     expect(mixed).toMatchObject({ success: true, outcome: "UPDATED" });
     affected.defaultLaunchConfiguration.workspaceRootPath = c;
     for (const member of affected.members) member.launchConfiguration.workspaceRootPath = c;
     affected.members.find((member: Json) => member.address === "/team/lead").launchConfiguration.llmConfig = { reasoning_effort: "high" };
-    expect(mixed.canonical).toEqual(expected);
+    expect(stored(mixed.canonical)).toEqual(stored(expected));
 
     await first.stop(); servers.delete(first);
     const second = await start();
-    expect(await readConfig(second, orgRunId)).toMatchObject({ isActive: false, executionTree: expected,
-      editability: { editable: true } });
+    const reread = await readConfig(second, orgRunId);
+    expect(reread).toMatchObject({ isActive: false, editability: { editable: true } });
+    expect(stored(reread.executionTree)).toEqual(stored(expected));
     expect(await fs.readFile(path.join(a!, "retained.txt"), "utf8")).toBe("A project file must not move\n");
     expect(await fs.readdir(b!)).toEqual(["destination.txt"]);
     expect(await fs.readdir(c!)).toEqual([]);

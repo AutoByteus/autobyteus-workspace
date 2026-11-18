@@ -1,0 +1,9 @@
+# REL-03 build-only release run on personal 746b2f5016 (pnpm release:test --ref personal), 2026-11-01T09:44:05Z
+run 41292724829 conclusion: success headSha 746b2f501657b222d05199a1453a6b9c6b5db39e
+Resolve Release Metadata: success
+Build macOS Intel x64: success
+Build macOS ARM64: success
+Build Linux ARM64: success
+Build Windows x64: success
+Build Linux x64: success
+Publish GitHub Release: skipped

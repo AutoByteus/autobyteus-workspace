@@ -1,0 +1,16 @@
+# API-03 node-vocabulary probe (NVP-05, AC-011) — summary of API-03/node-vocabulary-probe.json
+# command: pnpm -C autobyteus-web test:e2e:node-vocabulary --output-dir=<evidence>/API-03 (worktree root)
+# commit: product 42a86a5e93 + probe baseline fix 898fbd2a31 (nodes allow the LAN window origin; one-source Memory page); server dist of 42a86a5e93
+# env: macOS arm64, Node v22.23.1, sqlite3, LAN IPv4 192.168.2.158, nuxt dev on the LAN address + headless Chrome
+# date: 2026-11-07T22:05:15.581Z .. 2026-11-07T22:06:14.253Z
+# run1 (API-03-run1-origin-refused/): NVP-02 Fail, beta log 'Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/remote-access/status origin http://192.168.2.158:58228'
+# run2 (API-03-run2-memory-select/): NVP-01..04 Pass; NVP-05 card Pass after the restart (D-11 wait), then 'waiting for locator(#memory-source-select)' (select shown only for >1 source)
+
+result: Pass
+NVP-01: Pass  {"failedExpectations": []}
+NVP-02: Pass  {"failedExpectations": []}
+NVP-03: Pass  {"failedExpectations": [], "sources": ["local", "imported:nvp-beta-source"]}
+NVP-04: Pass  {"failedExpectations": []}
+NVP-05: Pass  {"failedExpectations": [], "sources": ["local"], "cardHasReason": true}
+unexpectedBrowserErrors: []
+cleanup: {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}

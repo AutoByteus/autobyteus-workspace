@@ -1,0 +1,7 @@
+# IMP-125 (IR-040, CR-461-116): RSW-01 on the server built with the fix, via a temporary copy of runtime-switch-probe.mjs (deleted after):
+# the stale runtime-change hint assertions relaxed (as API-r19 §7 did on both trees) and the live chat's notices counted after the reply settles
+4:DIAG liveMarkerCount 1
+7:RSW-01 Pass
+8:EXIT 0
+# before the fix (API-r19 §7): branch 2 live, base 1; after a reload 1 on both
+# agent-stream-sequence.test.ts with the sequence at HEAD (before): Tests 1 failed | 15 passed; after: 16 passed

@@ -1,0 +1,21 @@
+API-12 isolated desktop instance (autobyteus-260, REQ-004, REQ-006, REQ-017; AC-003, AC-005)
+Command: pnpm --silent isolated-app start --build (Electron worktree build of fccf1227a6; first start on the wrong data-root level showed no Projects, stopped),
+then pnpm --silent isolated-app start --from-worktree --data-root /tmp/api-e2e-260/desktop-copy (a copy of the large-hub probe's test-owned seed: 9 + 2 delegated Team copies, one Project Task each)
+Instance: iso-54178-34b6, controlPort 54178, serverPort 54179; macOS arm64; 2026-10-25
+Driver: autobyteus-skills/browser-automation scripts/browser (CHROME_REMOTE_DEBUGGING_PORT=54178 BROWSER_AUTOMATION_ATTACH_ONLY=1), run-script DOM reads
+
+Workspaces tree, hub run opened (no Error 500 — the round-1 F-002 crash is gone):
+  workspace-task-worker-task-summary: ["Other hub Task 1","Other hub Task 2","Engineering Task 1",…,"Engineering Task 9"]   (screenshot API-12-desktop-tree-task-titles.png)
+Right-panel Projects tab beside the hub chat:
+  cards: {"text":"Engineering Task 1","preview":"Implement and deliver part 1 of the large hub workload."} … (the repeated first line is skipped)   (API-12-desktop-projects-tab-titles.png)
+Task page large-hub-project-1:
+  {"title":"Engineering Task 1","desc":"Engineering Task 1\nImplement and deliver part 1 of the large hub workload."}   (API-12-desktop-task-page-title.png)
+Edit task, title "   ", Save:
+  {"error":"Give the task a title.","invalid":"true","focused":true}   (API-12-desktop-edit-blank-title-refused.png)
+Edit task, title "Ship part 1 of the hub workload", Save:
+  hash …/tasks/large-hub-project-1?notice=saved; {"title":"Ship part 1 of the hub workload","desc":"Engineering Task 1\nImplement and deliver part 1 of the large hub workload."}
+Delete (then Cancel): "Delete the task “Ship part 1 of the hub workload”? This cannot be undone."
+Back in the hub chat, the tree line follows the rename:
+  summaries: ["Other hub Task 1","Other hub Task 2","Ship part 1 of the hub workload","Engineering Task 2",…]   (API-12-desktop-tree-after-rename.png)
+Board after the rename: {"text":"Ship part 1 of the hub workload","preview":"Engineering Task 1 Implement and deliver part 1 of the large hub workload."}; an unrenamed card keeps its skipped first line: "Implement and deliver part 2 of the large hub workload."   (API-12-desktop-board-after-rename.png)
+Cleanup: instance stopped (see API-12-isolated-desktop-stop.json); the data copy /tmp/api-e2e-260/desktop-copy removed afterwards.

@@ -1,0 +1,59 @@
+# IMP-17 memory search gates on the SR-004b question set (AC-001 to AC-005, AC-007 refined)
+# Command: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index --questions <private: queries.json of SR-004b, Q30 left out (no recorded history), Q13 with its two rephrasings> --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private>
+# Commit: 41501c5a41 (dist emitted from it with tsc -p tsconfig.build.json; the rest of dist from the IMP-14 build at 8529960b80, server source otherwise unchanged)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; isolated copy /tmp/wjs-copy/memory (3,680 runs, 1,084,815 chunks), the index of IMP-06; host load averages 18-20
+# Date: 2026-10-26
+# Only IDs, ranks and counts are recorded; the questions stay private.
+
+## Gate report
+{
+ "questions": 31,
+ "gate1": {
+  "passed": 31,
+  "oneSearchTop10": 30,
+  "withinThreeSearches": 31
+ },
+ "gate2": {
+  "number1": 18,
+  "top3": 26,
+  "top3Share": 0.8387096774193549,
+  "mrr": 0.7288018433179723,
+  "p90Ms": 556,
+  "maxMs": 879
+ },
+ "meaningPointers": {
+  "total": 83,
+  "textChunk": 25,
+  "cardPart": 26,
+  "firstRequest": 32,
+  "emptySnippet": 0
+ },
+ "unmaskedSecrets": 0,
+ "offTopic": {
+  "questions": 3,
+  "passed": 3,
+  "failed": []
+ },
+ "falseOnlyWeak": [],
+ "partial": [
+  {
+   "id": "N01",
+   "onlyWeak": false
+  },
+  {
+   "id": "N03",
+   "onlyWeak": false
+  }
+ ]
+}
+
+Per question (rank in the first search; Q13 found at search 3): {"Q01": 1, "Q02": 1, "Q03": 1, "Q04": 8, "Q05": 1, "Q06": 1, "Q07": 5, "Q08": 2, "Q09": 2, "Q10": 1, "Q11": 1, "Q12": 1, "Q13": null, "Q14": 8, "Q15": 1, "Q16": 1, "Q17": 1, "Q18": 1, "Q19": 1, "Q20": 2, "Q21": 2, "Q22": 1, "Q23": 1, "Q24": 1, "Q25": 1, "Q26": 2, "Q27": 7, "Q28": 2, "Q29": 1, "Q31": 2, "Q32": 2}
+
+## Reading
+- AC-001: 31/31 within 3 searches, 30/31 in one search.
+- AC-002: top 3 26/31 (83.9%); p90 556 ms, max 879 ms.
+- AC-003: Q01-Q03 #1.
+- AC-004: Q07 #5, Q10 #1, Q19 #1, Q22 #1, Q29 #1.
+- AC-005: 0 unmasked.
+- AC-007 (refined, SR-004b): every off-topic question (N02, N04, N05) ends with the only-weak note, and no answerable question's first search does (falseOnlyWeak []). The partial questions N01 and N03 are reported, not gated: both end with fair matches.
+- The optional CJK weighting (SR-004b) was not added: N05 (Chinese) already ends only-weak, so the condition for keeping it cannot add anything.

@@ -27,7 +27,6 @@ export type ProviderCredentialSetting = {
 };
 
 export type ModelSourceStatus = {
-  modelKind: ModelKind;
   state: ModelSourceState;
   modelCount: number;
   successfulUnitCount: number;

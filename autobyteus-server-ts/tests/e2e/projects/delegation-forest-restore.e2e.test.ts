@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { callTool, objectsIn, segment, startCollaborationHarness, stringsOf, type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // remove-nested-task-team AC-003 (REQ-001, REQ-004): delegation keeps working now that a team's members are agents only.
 // A delegation forest — a member delegates a task agent team, a member of that task team delegates another task agent team,
@@ -137,13 +138,20 @@ suite("Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MC
 
   it("DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop", async () => {
     const root = await h.startRoot("org", ids);
-    const mountedBefore = JSON.stringify(objectsIn(await root.liveTree()).find((record) => record.address === "/squad" && Array.isArray(record.members))?.members ?? null);
+    // The mounted team is one of the Org's own parts: its row and its members' rows in the Org's tree (SR-084).
+    const mountedTeam = async () => {
+      const rows = (await readRunTree(h.graphql, "org", root.rootId)).rows;
+      const team = rows.find((row) => row.kind === "org_team" && row.address === "/squad");
+      return team ? rows.filter((row) => row.parentKey === team.key).map((row) => ({ address: row.address, agentRunId: row.openTarget?.agentRunId ?? null })) : null;
+    };
+    const mountedBefore = JSON.stringify(await mountedTeam());
+    expect(mountedBefore, "the mounted team is in the Org's tree").not.toBe("null");
     const forest = await buildForest(root, root.managerRunId, "/manager", "/squad");
     const tree = await root.liveTree();
     expectForest(tree, forest, "org root");
-    const mounted = objectsIn(tree).find((record) => record.address === "/squad" && Array.isArray(record.members) && !(record.startedAt ?? record.started_at));
+    const mounted = await mountedTeam();
     expect(mounted, "the mounted team stays in the organization").toBeTruthy();
-    expect(JSON.stringify(mounted!.members), "the mounted team's members are unchanged").toBe(mountedBefore);
+    expect(JSON.stringify(mounted), "the mounted team's members are unchanged").toBe(mountedBefore);
     await stopReopenAndReach(root, forest, "org root");
   }, 400_000);
 });

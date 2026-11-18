@@ -1,4 +1,6 @@
+import { spawnSync } from "node:child_process";
 import fs from "node:fs/promises";
+import fsSync from "node:fs";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import os from "node:os";
 import path from "node:path";
@@ -6,17 +8,19 @@ import { once } from "node:events";
 import { createHash } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
-import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
+import { AgentMemoryLayout } from "../../../src/app-data-migrations/frozen/server/agent-memory/store/agent-memory-layout.js";
+import { StandaloneRootPackageStore } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
+import { emptyStandaloneRootTree, toTreeBefore461, writeReleasedTreeFile } from "../../fixtures/before-461-tree-fixtures.js";
+import { TeamRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-store.js";
+import { AgentOrgRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-store.js";
+import { getTeamRunExecutionTreePath } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-path.js";
+import { getAgentOrgRunExecutionTreePath } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { readRunTree } from "../helpers/run-tree-delegated.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data
@@ -119,7 +123,7 @@ const seed = async (root: string) => {
   // Agent root `agent-host`: oldest Agent entry + oldest Team entry (never started: no memory folder) + newest Agent entry + a sourceless copy.
   const agentDir = getStandaloneRootDirPath(memory, "agent-host");
   const agentTree = emptyStandaloneRootTree({ host: { address: "/host" as never, agentRunId: "agent-host", agentDefinitionId: "host-definition" }, createdAt: T1 });
-  expect((await new StandaloneRootPackageStore().writeTree(agentDir, agentTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getStandaloneRootTreePath(agentDir), agentTree)).outcome).toBe("committed");
   await withCollaborators(getStandaloneRootTreePath(agentDir), null, [
     oldestAgentEntry("/writer", "agent-writer", "agent-host", workspace),
     oldestTeamEntry("/squad", "agent-squad", "agent-host", workspace),
@@ -133,7 +137,7 @@ const seed = async (root: string) => {
   // Team root: a collaborator Team (oldest shape) added by the coordinator.
   const teamDir = layout.getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
   const teamTree = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/lead", createdAt: T1, children: [testAgentNode("/lead", { agentRunId: "team-lead" })] });
-  expect((await new TeamRunExecutionTreeStore().write(teamDir, teamTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getTeamRunExecutionTreePath(teamDir), toTreeBefore461(teamTree))).outcome).toBe("committed");
   await withCollaborators(getTeamRunExecutionTreePath(teamDir), "rootTeam", [oldestTeamEntry("/qa_team", "team-qa", "team-lead", workspace)]);
   await put(path.join(teamDir, "team-qa-lead", "raw_traces_active.jsonl"), "qa lead memory\n");
   await put(path.join(teamDir, "team_communication_messages.json"), { schemaVersion: 1, rootTeamRunId: "team-root", messages: [] });
@@ -141,7 +145,7 @@ const seed = async (root: string) => {
   // Org root: a collaborator Agent (oldest shape) added by a director, plus a sourceless copy at its address.
   const orgDir = layout.getOrgDirPath("org-root");
   const orgTree = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "org-director")] });
-  expect((await new AgentOrgRunExecutionTreeStore().write(orgDir, orgTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getAgentOrgRunExecutionTreePath(orgDir), toTreeBefore461(orgTree))).outcome).toBe("committed");
   await withCollaborators(getAgentOrgRunExecutionTreePath(orgDir), "rootOrg", [oldestAgentEntry("/designer", "org-designer", "org-director", workspace)],
     [sourcelessCopy("/designer", "org-designer-copy", "org-director")]);
   await put(path.join(orgDir, "org-designer", "raw_traces_active.jsonl"), "designer memory\n");
@@ -163,7 +167,7 @@ const environment = (root: string): NodeJS.ProcessEnv => {
 const studio = async (root: string) => {
   await fs.access(path.resolve("dist/app.js"));
   const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { env: environment(root), stdio: ["ignore", "pipe", "pipe"] });
+    { env: { ...environment(root), ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
@@ -242,37 +246,56 @@ describe("collaborators → delegated runs: the built server upgrades released a
     for (const [name, json] of [["agent", agentRaw], ["team", teamRaw], ["org", orgRaw]] as const) {
       expect(objectsIn(json).some((record) => "collaborators" in record), `${name} tree has no collaborators`).toBe(false);
     }
-    const agentJson = await new StandaloneRootPackageStore().readTree(dirs.agentDir, "agent-host");
-    const teamJson = await new TeamRunExecutionTreeStore().read(dirs.teamDir, "team-root");
-    const orgJson = await new AgentOrgRunExecutionTreeStore().read(dirs.orgDir, "org-root");
-    const copyOf = (json: unknown, address: string, runId: string) => objectsIn(json).find((record) =>
-      record["address"] === address && (record["agentRunId"] === runId || record["teamRunId"] === runId) && record["startedAt"]);
-    const writer = copyOf(agentJson, "/writer", "agent-writer");
-    const squad = copyOf(agentJson, "/squad", "agent-squad");
-    const reviewer = copyOf(agentJson, "/code_reviewer", "agent-reviewer");
-    const reviewerCopy = copyOf(agentJson, "/code_reviewer", "agent-reviewer-copy");
-    const qa = copyOf(teamJson, "/qa_team", "team-qa");
-    const designer = copyOf(orgJson, "/designer", "org-designer");
-    const designerCopy = copyOf(orgJson, "/designer", "org-designer-copy");
-    for (const [label, copy, delegator] of [["writer", writer, "agent-host"], ["squad", squad, "agent-host"], ["reviewer", reviewer, "agent-host"],
-      ["qa", qa, "team-lead"], ["designer", designer, "org-director"]] as const) {
-      expect(copy, `${label} is a delegated run`).toBeTruthy();
-      expect(copy!["delegatorAgentRunId"], `${label} delegator`).toBe(delegator);
-      expect(copy!["source"], `${label} carries a source`).toBeTruthy();
+    // autobyteus-461 (its migration runs last, CR-461-048): every converted collaborator is a delegated run with its own file,
+    // which names its delegator one hop (`delegatedFrom`, contract E6) and carries its address and launch source; the host's
+    // tree composes none of them.
+    const ownFileOf = async (runId: string): Promise<Json | null> => {
+      const found = spawnSync("find", [memory, "-type", "d", "-name", runId], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);
+      for (const dir of found) {
+        for (const name of ["run_metadata.json", "team_run_execution_tree.json"]) {
+          const text = await fs.readFile(path.join(dir, name), "utf8").catch(() => null);
+          if (text) return JSON.parse(text) as Json;
+        }
+      }
+      return null;
+    };
+    for (const [label, runId, delegator] of [["writer", "agent-writer", "agent-host"], ["squad", "agent-squad", "agent-host"],
+      ["reviewer", "agent-reviewer", "agent-host"], ["qa", "team-qa", "team-lead"], ["designer", "org-designer", "org-director"]] as const) {
+      const own = await ownFileOf(runId);
+      expect(own, `${label} is a delegated run of its own`).toBeTruthy();
+      expect(JSON.stringify(own), `${label} delegator`).toContain(`"delegatorAgentRunId":"${delegator}"`);
+      expect(own!["delegatedFrom"], `${label} names its delegator one hop`).toBeTruthy();
     }
-    expect(squad!["members"].map((member: Json) => member["agentRunId"]).sort()).toEqual(["agent-squad-lead", "agent-squad-mate"]);
-    // AC-011: the sourceless copies at a collaborator's address are stamped from that collaborator's snapshot.
-    expect(reviewerCopy!["source"], "agent sourceless copy stamped").toBeTruthy();
-    expect(designerCopy!["source"], "org sourceless copy stamped").toBeTruthy();
+    const squadOwn = await ownFileOf("agent-squad");
+    expect((((squadOwn!["rootTeam"] as Json | undefined)?.["members"] ?? []) as Json[]).map((member) => member["agentRunId"]).sort()).toEqual(["agent-squad-lead", "agent-squad-mate"]);
+    // AC-011: the sourceless copies at a collaborator's address are stamped from that collaborator's snapshot. The stamp became
+    // the copy's own definition and launch (a catalog copy, task-agent-own-run); 461 keeps them as the run's own fields (E6).
+    // A launch source exists only where the collaborator's snapshot had one: the newest Agent entry has it, the oldest (the
+    // Org's designer) never had one.
+    for (const [runId, collaborator, hadLaunchSource] of [["agent-reviewer-copy", "agent-reviewer", true], ["org-designer-copy", "org-designer", false]] as const) {
+      const own = await ownFileOf(runId);
+      const from = await ownFileOf(collaborator);
+      expect(own, `${runId} is a run of its own`).toBeTruthy();
+      expect(own, `${runId} stamped from ${collaborator}: ${JSON.stringify(own).slice(0, 1200)}`).toMatchObject({
+        agentDefinitionId: from!["agentDefinitionId"], runtimeKind: from!["runtimeKind"], llmModelIdentifier: from!["llmModelIdentifier"] });
+      if (hadLaunchSource) expect(own!["launchSource"], `${runId} keeps its launch source`).toBeTruthy();
+    }
 
-    // The roots open through the public API with their delegated runs.
-    const agentView = (await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "agent-host" })).agentRunCollaboration.root_agent.execution_tree;
-    expect(objectsIn(agentView).filter((record) => record["startedAt"] || record["started_at"]).map((record) => record["agentRunId"] ?? record["agent_run_id"] ?? record["teamRunId"] ?? record["team_run_id"]))
-      .toEqual(expect.arrayContaining(["agent-writer", "agent-squad", "agent-reviewer", "agent-reviewer-copy"]));
+    // The roots open through the public API. autobyteus-469 DEC-008: a converted collaborator is no Task's root and has no
+    // Task record, so it is in no tree; its own folder and file stay (above).
+    // The synthetic `agent-host` has no run metadata (see the second start below); it opened at base only through its
+    // `collaboration_tree.json`, which 461 removes (contract E8). Whatever it serves holds none of the converted runs.
+    const agentView = (await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "agent-host" })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // (R8-F observed its tree file kept for this metadata-less synthetic run; recorded, not asserted.)
+    console.log(`collaborators: agent-host tree file kept: ${fsSync.existsSync(getStandaloneRootTreePath(dirs.agentDir))}`);
+    for (const runId of ["agent-writer", "agent-squad", "agent-reviewer", "agent-reviewer-copy"]) expect(JSON.stringify(agentView)).not.toContain(runId);
     const teamView = (await first.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: "team-root" })).getTeamRunResumeConfig.executionTree;
-    expect(JSON.stringify(teamView)).toContain("team-qa");
+    expect(teamView, "the Team root opens").toBeTruthy();
+    // autobyteus-461 SR-084: its delegated rows are its tree's (its own config carries its own parts only).
+    expect(JSON.stringify(await readRunTree(first.gql, "agent_team", "team-root"))).not.toContain("team-qa");
     const orgView = (await first.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: "org-root" })).getAgentOrgRunConfig.executionTree;
-    expect(JSON.stringify(orgView)).toContain("org-designer");
+    expect(orgView, "the Org root opens").toBeTruthy();
+    expect(JSON.stringify(await readRunTree(first.gql, "agent_org", "org-root"))).not.toContain("org-designer");
     await first.stop();
 
     // Second start: nothing changes (idempotent), the migration stays done. The one new file is the standalone run history
@@ -283,12 +306,20 @@ describe("collaborators → delegated runs: the built server upgrades released a
     expect((await second.migration()).status).toBe("SUCCEEDED");
     const again = await state(memory);
     expect(again.trees).toEqual(after.trees);
-    const { ["run_history_index.json"]: retriedIndex, ...othersAgain } = again.others;
+    // autobyteus-461: the first start already wrote the index (461's history rows, step 8); the retried released index
+    // migration keeps that file as a backup (same bytes) and writes the index anew.
+    const isIndex = (file: string) => file === "run_history_index.json" || file.startsWith("run_history_index.json.backup-");
+    const { ["run_history_index.json"]: retriedIndex } = again.others;
     expect(retriedIndex, "the retried released index migration wrote the index").toBeTruthy();
-    expect(othersAgain).toEqual(after.others);
+    const backups = Object.entries(again.others).filter(([file]) => file.startsWith("run_history_index.json.backup-")).map(([, hash]) => hash);
+    if (after.others["run_history_index.json"]) expect([retriedIndex, ...backups], "the first start's index is kept").toContain(after.others["run_history_index.json"]);
+    const without = (others: Record<string, string>) => Object.fromEntries(Object.entries(others).filter(([file]) => !isIndex(file)));
+    expect(without(again.others)).toEqual(without(after.others));
+    // 461 TC-9 / DS-11: a converted collaborator has no Task record (469 DEC-008), so it is a run of its own: a top-level row.
     const history = await second.gql("{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}");
     const listed = objectsIn(history).flatMap((record) => typeof record["runId"] === "string" ? [record["runId"]] : []);
-    expect(listed.filter((runId) => Object.values(movedTo).some((file) => file.startsWith(`agents/${runId}/`)))).toEqual([]);
+    console.log(`collaborators: listed after the second start: ${JSON.stringify(listed)}`);
+    for (const runId of ["agent-writer", "agent-reviewer", "org-designer"]) expect(listed, `${runId} is listed as a run of its own (TC-9)`).toContain(runId);
     expect(await second.health()).toBe(200);
     await second.stop();
   }, 300_000);

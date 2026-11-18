@@ -1,0 +1,38 @@
+# API-02 Docker probe, desktop part: the packaged app of this worktree against the test-owned Docker node
+# Launcher part: ../API-02-docker-launcher.log (api02.sh). Image: abtest437/autobyteus-server:test (Dockerfile.testimage:
+#   autobyteus/autobyteus-server:beta with this worktree's server package, ../API-02-server-package-build.log).
+# Steps: isolated-app start --from-worktree (iso-62106-b5ee, control 62106, embedded node 127.0.0.1:62107); CDP attach-only,
+#   step scripts d1.js…d4.js (exact code run, via ../API-01-electron/steps/cdp-eval.mjs). The docker CLI was the guarded
+#   wrapper (guarded-docker-wrapper.sh): 73 docker calls, none mutating the user's autobyteus-server-0/1/2.
+# Build: electron-dist from b6a57ab154 (API-00). macOS 26 arm64, Docker Desktop, Tailscale 100.127.30.107. Date 2026-11-08 16:16Z–16:20Z.
+# Output copied verbatim from the step scripts; setup codes were read from files and never printed.
+
+## D1 Add the Docker node, Needs connecting, Connect with the code from `autobyteus-docker setup-code` (NAS-02, NAS-03, AC-004)
+before: "docker-3 / 127.0.0.1:8004 / Needs connecting. This desktop has no key for docker-3 yet. On that computer, run “autobyteus-docker setup-code <node>” (Docker) or … then enter the code here. / Setup code for docker-3 / Connect"   (API-02-d1a.png)
+after:  "docker-3 / 127.0.0.1:8004 / Server 1.5.12-beta.8 / Update automatically / Keep this node on this app's version."   (API-02-d1b.png; node update status read with the owner credential)
+
+## D2 One-click pairing of the app's own node with the Docker node (NAS-19, RU-01, M-9)
+dialog: "Let agents work with docker-3? … On this node (Embedded Node) • Turn on remote collaboration … On docker-3 • Turn on remote collaboration … On both nodes • Pair this node with docker-3 (here it is called “docker-3”) docker-3 calls this node “Embedded Node”."
+after: row "docker-3 shares no Agents or Agent Teams." (embedded → Docker signed request)
+Docker node's peers.json: [{'nodeId': 'srv_QqdI…', 'name': 'Embedded Node', 'baseUrl': 'http://host.docker.internal:62107', 'peerSecret': '<43 chars>'}]
+Docker → embedded signed request (curl with the API-02 owner credential to the Docker node): peerNodeOffer(nodeId: <embedded>) ->
+  {"data":{"peerNodeOffer":{"refusalCode":null,"unreachableReason":null,"entries":[]}}}
+embedded node log during pairing: "Node request refused NODE_NETWORK_REFUSED /rest/remote-access/status from 192.168.2.158"
+  (the Docker node tried the host's LAN candidate first; refused by admission; it then used host.docker.internal, which arrives as 127.0.0.1)
+
+## D3 The Docker node's own window: terminal and node desktop under the credential (AC-003 node desktop; AC-004 "everything works")
+WebSockets: ws://127.0.0.1:8004/ws/terminal/… handshake 101; ws://127.0.0.1:8004/ws/node-desktop handshake 101; canvas 1920×1080
+VNC Viewer: "Node desktop / Connected · View only" with the container desktop rendered (API-02-d3.png)
+
+## D4 Disconnect while the node desktop stream is open (NAS-33, NAS-37; handoff edge case)
+Disconnect at t=3017 ms: four WebSockets closed at 3068–3071 ms (node desktop, terminal and the two feeds);
+reconnects of /ws/update-notifications and /ws/agent-package-definitions close within 4–28 ms (refused);
+viewer shows "Node desktop / This viewer is not allowed on this node" (API-02-d4-window.png);
+main window row: "Needs connecting. This desktop has no key for docker-3 yet." (API-02-d4-main.png);
+Docker node owner-credentials.json after: ['API-02 probe'] (only this desktop's credential was revoked; the probe's own stays, NA-11);
+Docker node log: "Node request refused NODE_CREDENTIAL_REQUIRED /ws/update-notifications from 172.17.0.1" (no credential in the line).
+
+## Cleanup
+isolated-app stop iso-62106-b5ee -> ok, dataRootRemoved true; isolated-app list -> none.
+docker rm -f -v autobyteus-server-3, autobyteus-server-4; their 10 named volumes removed; launcher state and shared folders removed.
+docker ps afterwards: autobyteus-server-0/1/2 "Up 2 days" (the user's nodes, untouched).

@@ -1,0 +1,8 @@
+API-R3W round 3: web guards and unit tests on the integrated branch (head d49d1fac16; web unchanged since the merge 54cd6803f4); macOS arm64 node 22; 2026-10-25
+Commands: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals; test:nuxt --run components/projects components/workspace components/settings utils/projects stores
+
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+ Test Files  236 passed (236)
+      Tests  2044 passed (2044)

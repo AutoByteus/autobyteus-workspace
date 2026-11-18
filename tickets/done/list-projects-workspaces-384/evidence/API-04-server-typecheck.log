@@ -1,0 +1,7 @@
+# API-04 — server type gate with the E-006 assertions, 2026-11-05T06:23:11Z, env -i PATH HOME=<temp> TMPDIR
+# Look for: 'production errors: 0; test-file errors: 1184 in 366 files (baseline 1184 in 366 files)', '[typecheck] PASS'
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.7s
+[typecheck] server tests (tsconfig.tests.json): 1184 errors, exit 2, 24.3s
+[typecheck] production errors: 0; test-file errors: 1184 in 366 files (baseline 1184 in 366 files)
+[typecheck] PASS
+exit=0

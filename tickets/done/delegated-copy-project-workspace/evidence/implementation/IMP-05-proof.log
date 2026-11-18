@@ -1,0 +1,11 @@
+# IMP-05 real delegation and rendered check (AC-001...AC-006, AC-009) on an owned stack: built server, Nuxt dev, headless Chrome; manager and copies on the SCRIPTED AGY CLI; one copy on the NATIVE runtime against a FAKE OpenAI-compatible endpoint
+# Command: env -i PATH HOME TMPDIR node tickets/in-progress/delegated-copy-project-workspace/evidence/implementation/new-copy-folder-proof.mjs --output-dir tickets/in-progress/delegated-copy-project-workspace/evidence/implementation/IMP-05-proof
+# Commit: 8959bc507a, server dist from it; macOS, Node v22.23.1
+# Date: 2026-11-02T06:45Z
+
+Pass: AC-001/003/004/005/006 + AC-002: real delegation from a manager in another folder (scripted AGY)
+Pass: Native runtime: the copy's real working directory (run_bash pwd; fake OpenAI-compatible endpoint)
+Pass: AC-009 Agent root, Workspaces mode: focus shows the copy's folder; row stays under the manager
+Pass: AC-009 Projects mode: a manager started under another Project keeps the copy nested; focus shows the copy's folder
+new-copy folder proof: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/tickets/in-progress/delegated-copy-project-workspace/evidence/implementation/IMP-05-proof/evidence.json
+exit=0

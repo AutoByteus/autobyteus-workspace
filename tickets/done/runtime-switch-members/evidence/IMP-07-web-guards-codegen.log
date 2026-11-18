@@ -1,0 +1,10 @@
+Check: IMP-07
+Command: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals; codegen:check (clean clone)
+Commit: d3463e0a7e
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+/tmp/clean-guards.log:[audit:localization-literals] Passed with zero unresolved findings.
+/tmp/clean-codegen.log:Built-in agents bootstrap smoke check passed.
+/tmp/clean-codegen.log:Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+/tmp/clean-codegen.log:autobyteus-web/generated/graphql.ts is current.

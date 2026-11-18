@@ -1,0 +1,26 @@
+# commit a18c16f5d8 (F-47 0e1bb399e2, CR-461-061 a18c16f5d8); load: 10.84 11.01 10.95
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ pnpm test:unit
+exit 0
+ Test Files  982 passed | 5 skipped (987)
+      Tests  8048 passed | 9 skipped (8057)
+$ pnpm test:integration:prepare && pnpm test:integration
+exit 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  4 failed | 491 passed | 69 skipped (564)
+$ DTL e2e again (scripted AGY; load: 16.49 18.55 14.12)
+ Test Files  1 passed (1)
+      Tests  2 passed | 1 skipped (3)
+$ the watcher file alone, run 1 (load: 8.85 15.14 13.35)
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+$ the watcher file alone, run 2 (load: 8.65 14.70 13.23)
+ Test Files  1 passed (1)
+      Tests  14 passed (14)

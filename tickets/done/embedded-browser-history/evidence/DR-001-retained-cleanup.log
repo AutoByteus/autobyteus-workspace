@@ -1,0 +1,11 @@
+DR-001 independent retained API cleanup recheck; 2026-10-26
+iso-49479-27bc: root absent; known ports closed; stop forced=True
+iso-49757-15fa: root absent; known ports closed; stop forced=True
+iso-49855-1995: root absent; known ports closed; stop forced=True
+iso-50065-1066: root absent; known ports closed; stop forced=True
+iso-50251-5536: root absent; known ports closed; stop forced=True
+iso-50423-296d: root absent; known ports closed; stop forced=True
+iso-50501-2ddb: root absent; known ports closed; stop forced=True
+iso-50653-7b85: root absent; known ports closed; stop forced=True
+iso-49253-b946: root absent; known ports closed; stop forced=True
+All 9 API-owned roots absent; no running user app selected or controlled.

@@ -1,0 +1,2 @@
+{"conversation_id":"09c83c43-80c5-418b-82f9-7c6b729e3af6","turns":1,"line":{"event":"user","message":{"content":"SIZE-READY-WS6 ready"}}}
+{"conversation_id":"09c83c43-80c5-418b-82f9-7c6b729e3af6","turns":2,"line":{"event":"user","message":{"content":"SENT-VIDEO-WS6 a 26 MiB video\n\nReference files:\n- /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/mobile-shell-probe-ZngGmZ/eta/data/memory/agents/size_checker_b171fa2014754db691fdac5a23a7587b/context_files/ctx_3f12ba101780__video-26mib.mp4"}}}

@@ -4,7 +4,6 @@ import os from 'node:os';
 import path from 'node:path';
 import { DirectShellSession } from '../../../../src/tools/terminal/direct-shell-session.js';
 import { TerminalSessionManager } from '../../../../src/tools/terminal/terminal-session-manager.js';
-import { BackgroundProcessManager } from '../../../../src/tools/terminal/background-process-manager.js';
 
 const runDirectShellIntegration = process.platform === 'win32' ? describe.skip : describe;
 
@@ -47,21 +46,4 @@ runDirectShellIntegration('DirectShellSession integration', () => {
     });
   });
 
-  it('supports non-PTY background process lifecycle separately from direct shell sessions', async () => {
-    await withTempDir(async (tempDir) => {
-      const background = new BackgroundProcessManager();
-      const info = await background.startCommand(
-        'for i in 1 2 3; do echo ds_$i; sleep 0.1; done; sleep 10',
-        tempDir
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      const output = await background.getOutput(info.pid, 20);
-      expect(output.output).toContain('ds_');
-      expect(output.isRunning).toBe(true);
-
-      const stopped = await background.stopProcess(info.pid);
-      expect(stopped).toBe(true);
-    });
-  });
 });

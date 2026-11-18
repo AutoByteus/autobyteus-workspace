@@ -5,7 +5,8 @@ import {
 } from "./browser-tool-contract.js";
 import { getBrowserToolManifestEntry } from "./browser-tool-manifest.js";
 import { buildDomSnapshotParameterSchema } from "./browser-tool-parameter-schemas.js";
-import { toBrowserToolErrorPayload, toBrowserJsonString } from "./browser-tool-serialization.js";
+import { toBrowserToolErrorPayload } from "./browser-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { getBrowserToolService } from "./browser-tool-service.js";
 
 const DESCRIPTION = getBrowserToolManifestEntry(DOM_SNAPSHOT_TOOL_NAME).description;
@@ -38,13 +39,13 @@ export async function domSnapshot(
       include_bounding_boxes: include_bounding_boxes ?? true,
       max_elements: max_elements ?? 200,
     });
-    return toBrowserJsonString(result);
+    return toToolResultJson(result);
   } catch (error) {
     const payload = toBrowserToolErrorPayload(error);
     logger.error(
       `dom_snapshot failed for agent run ${agentRunId}: ${payload.error.message}`,
     );
-    throw new Error(toBrowserJsonString(payload));
+    throw new Error(toToolResultJson(payload));
   }
 }
 

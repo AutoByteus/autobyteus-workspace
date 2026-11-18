@@ -1,0 +1,6 @@
+# DEL-03 web unit/component suite on a20c9f56d3, 2026-11-01T07:35:28Z
+ Test Files  679 passed (679)
+      Tests  4927 passed | 2 skipped (4929)
+   Duration  275.73s (transform 27.28s, setup 1860.99s, collect 173.98s, tests 76.76s, environment 161.75s, prepare 85.13s)
+exit=0
+# full log: DEL-03-web-test-nuxt.full.log.gz

@@ -9,7 +9,7 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
     }
     source {
       enabled
-      sourceNodeId
+      memorySyncSourceId
       displayName
       hubBaseUrl
       hubTokenConfigured
@@ -28,7 +28,7 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
       credentials {
         credentialId
         label
-        boundSourceNodeId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -40,9 +40,19 @@ const MEMORY_SYNC_STATUS_FIELDS = gql`
       lastSuccessfulSyncAt
       lastError
       trackedFileCount
+      fileFailureCount
+      fileFailures {
+        kind
+        relativePath
+        size
+        reason
+        attempts
+        lastFailedAt
+        nextAttemptAt
+      }
     }
     imports {
-      sourceNodeId
+      memorySyncSourceId
       displayName
       lastKnownEndpoint
       firstImportedAt
@@ -83,7 +93,7 @@ export const CREATE_MEMORY_HUB_SOURCE_CREDENTIAL = gql`
       credential {
         credentialId
         label
-        boundSourceNodeId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -100,7 +110,7 @@ export const REGENERATE_MEMORY_HUB_SOURCE_CREDENTIAL = gql`
       credential {
         credentialId
         label
-        boundSourceNodeId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt
@@ -115,7 +125,7 @@ export const REVOKE_MEMORY_HUB_SOURCE_CREDENTIAL = gql`
     revokeMemoryHubSourceCredential(credentialId: $credentialId) {
       credentialId
       label
-      boundSourceNodeId
+      boundMemorySyncSourceId
       createdAt
       lastUsedAt
       revokedAt
@@ -129,7 +139,7 @@ export const TEST_MEMORY_HUB_CONNECTION = gql`
     testMemoryHubConnection(input: $input) {
       ok
       hubEnabled
-      sourceNodeId
+      memorySyncSourceId
       authenticated
       message
     }
@@ -145,6 +155,7 @@ export const START_MEMORY_SYNC = gql`
       changedFiles
       unchangedFiles
       deferredFiles
+      failedFiles
       committedBatches
       duplicateBatches
     }

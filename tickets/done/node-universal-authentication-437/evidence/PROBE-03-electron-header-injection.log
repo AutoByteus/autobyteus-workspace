@@ -1,0 +1,32 @@
+[
+ {
+  "kind": "ws-upgrade",
+  "url": "/ws",
+  "auth": "probe-key-1"
+ },
+ {
+  "kind": "http",
+  "url": "/frame",
+  "auth": "probe-key-1"
+ },
+ {
+  "kind": "http",
+  "url": "/fetch",
+  "auth": "probe-key-1"
+ },
+ {
+  "kind": "http",
+  "url": "/img.png",
+  "auth": "probe-key-1"
+ },
+ {
+  "kind": "http",
+  "url": "/frame-sub.png",
+  "auth": "probe-key-1"
+ },
+ {
+  "kind": "http",
+  "url": "/other-partition-page",
+  "auth": null
+ }
+]

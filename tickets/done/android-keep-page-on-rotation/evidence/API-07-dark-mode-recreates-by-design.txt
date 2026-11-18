@@ -1,0 +1,10 @@
+# Case: API-07 — dark mode still recreates the screen, by design (DEC-001), and the app comes back on the saved node's page, still paired
+# Steps: page marked; adb shell cmd uimode night yes; wait; read the activity record, the page (re-attach DevTools to the new WebView), node GET /mobile count; screenshot; cmd uimode night no; read again
+# Commit: dd129696a4; emulator autobyteus277_api35
+# Date: 2026-11-06T20:50:19Z
+
+before: {"href":"http://10.0.2.2:50364/mobile/","marker":"api07-before-night","navigationStart":1793998172824,"viewport":"412x831","title":"","heading":"AutoByteus"} node[GET /mobile, all]=3 173 topResumedActivity=ActivityRecord{8fca4f8
+Night mode: yes
+night: pid=5815 {"href":"http://10.0.2.2:50364/mobile/","marker":null,"navigationStart":1793998219014,"viewport":"412x839","title":"","heading":"AutoByteus"} node[GET /mobile, all]=4 223 topResumedActivity=ActivityRecord{8fca4f8
+Night mode: no
+day:   pid=5815 {"href":"http://10.0.2.2:50364/mobile/","marker":null,"navigationStart":1793998228405,"viewport":"412x839","title":"","heading":"AutoByteus"} node[GET /mobile, all]=5 273 topResumedActivity=ActivityRecord{8fca4f8

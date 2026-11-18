@@ -1,0 +1,24 @@
+# IMP-12
+# command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch (regression check; first run failed AAR-01 only on the O-1 rounding values, which were then updated)
+# environment: macOS darwin 25.5, v22.23.1; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+## first run
+     × AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009) 924ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  1064ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14301ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once (AC-002, AC-012, RSK-002)  888ms
+     ✓ AAR-05 no provider key or account value in any response, the server's log file, its output or its data files (REQ-008, QR-002) 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+-     "remainingPercent": 100,
++     "remainingPercent": 99,
+-     "remainingPercent": 99,
++     "remainingPercent": 98,
+      Tests  1 failed | 4 passed (5)
+## after updating AAR-01's two expected values
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (5 tests) 17133ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  524ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  586ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14316ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once (AC-002, AC-012, RSK-002)  907ms
+      Tests  5 passed (5)

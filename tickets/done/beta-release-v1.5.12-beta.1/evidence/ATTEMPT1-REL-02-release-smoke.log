@@ -1,0 +1,27 @@
+# REL-02 release smoke check (python3 scripts/release_smoke.py) on personal 1964ce9874, before tagging v1.5.12-beta.1
+# Waivers by the user, 2026-11-04, verbatim: "waive for both" (Codex and Grok, as asked through the Solution Designer).
+#  - Codex 0/3: quota ("You've hit your usage limit", ChatGPT plan).
+#  - Grok 2/3: 'different same-named skill' failed its assertion on the fallback model grok-4.5 (grok-4.7 not offered): the all-installed agent searched with grep/list_dir/read_file instead of using the workspace skill and did not reply OWNCODE-924d1812. Its refusal half passed. The case last passed on grok-4.7 (beta.8 record); no Grok backend change since; Claude passed the same case on this code. Likely the fallback model, not proven (reply logged cut at 200 chars).
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 10th, 2026 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1a715-12f5-7583-b776-1f9b0222d6b1"} |
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 10th, 2026 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1a715-20c3-7470-8d5f-3daa92a2f387","ch
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 10th, 2026 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1a715-2d88-7a92-9c63-19fe5b881132"} |
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               FAIL    failed: AssertionError: expected 'The user wants me to use a link-probe…' to contain 'OWNCODE-924d1812'
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    1964ce9874a698f0a947203af00dd96ff0630f8a
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  live 160s, antigravity 19s, autobyteus 8s
+result    FAIL
+logs      <temp folder>
+smoke exit 1

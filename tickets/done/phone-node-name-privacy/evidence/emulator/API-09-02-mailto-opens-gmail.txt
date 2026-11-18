@@ -1,0 +1,4 @@
+text: Welcome to Gmail
+text: One app for all of your email
+text: SKIP
+content-desc: Next

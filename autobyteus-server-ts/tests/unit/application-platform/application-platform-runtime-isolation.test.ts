@@ -1,3 +1,4 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -11,6 +12,7 @@ import {
 import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 
 const createCatalogSnapshot = (applicationId: string) => ({
   applications: [{
@@ -61,6 +63,7 @@ describe("application platform runtime isolation", () => {
         claude: {} as never,
         antigravity: {} as never,
         grok: {} as never,
+        deepSeekHarness: {} as never,
       })),
     };
     const buildRuntime = async (applicationId: string) => {
@@ -83,6 +86,8 @@ describe("application platform runtime isolation", () => {
       const get = vi.fn(() => '{malformed current setting');
       const setDurably = vi.fn();
       const runtime = buildApplicationPlatformRuntime({
+        delegationIndex: noDelegations(), viewStreams: testViewStreams(),
+        taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
           baseUrl: "http://localhost:8000",
@@ -110,6 +115,8 @@ describe("application platform runtime isolation", () => {
         codexClientManager: {} as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+        providerRelayAccess: null,
+        runPasses: null,
         staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
         selectedApplicationIds: new Set([applicationId]),
       });
@@ -198,6 +205,7 @@ describe("application platform runtime isolation", () => {
         claude: {} as never,
         antigravity: {} as never,
         grok: {} as never,
+        deepSeekHarness: {} as never,
       })),
     };
     const processOwners = {
@@ -218,6 +226,8 @@ describe("application platform runtime isolation", () => {
 
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
+        delegationIndex: noDelegations(), viewStreams: testViewStreams(),
+        taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
           baseUrl: "http://localhost:8000",
@@ -240,6 +250,8 @@ describe("application platform runtime isolation", () => {
         codexClientManager: processOwners.codexClient as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+        providerRelayAccess: null,
+        runPasses: null,
         staticAdapterToolNames: new Set(),
         selectedApplicationIds: new Set(["app-a"]),
       });

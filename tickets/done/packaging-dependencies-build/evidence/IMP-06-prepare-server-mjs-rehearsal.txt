@@ -1,0 +1,19 @@
+# IMP-06
+# Command: node autobyteus-web/scripts/prepare-server.mjs (macOS rehearsal; the script's final symlink check is a Windows rule, npm makes .bin symlinks on POSIX)
+# Commit: 4db26446cb
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+Expected end on macOS: the run stops at assertNoSymlinks (8 npm .bin symlinks); nothing before it is affected. What it proves:
+Packing local workspace dependencies...
+Installing portable runtime dependencies...
+npm install is bounded to packages published before 2026-11-01T07:04:07+01:00
+added 321 packages in 21s
+Generating Prisma client in staging...
+Removing runtime test fixture directories...
+Pruning node-pty prebuilds for host platform...
+Pruning onnxruntime-web to its Node build...
+Error: Found 8 symlink/junction entries in packaged node_modules:
+
+After: no autobyteus-server-ts/autobyteus-web (the deploy mirror was removed by the script); the stage folder autobyteus-web/.server-packaging-stage is left behind (existing behaviour, FU-003)
+The Windows run itself: not run here (build-only desktop release run, left to API/E2E).

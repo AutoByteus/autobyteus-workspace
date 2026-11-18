@@ -4,7 +4,7 @@
 // real tool), Nuxt dev and fresh headless Chrome. Copies are created by the real `delegate_task` / `send_message_to`.
 // Two network conditions are emulated in the browser with Playwright `routeWebSocket`, never the server:
 //   - PMU-024 drops the page's `/ws/projects` connection for a while (a lost network) to prove the reconnect re-read;
-//   - PMU-024 holds the run's collaboration-stream frames that close a Task's rows, so the still-shown summary is
+//   - PMU-024 holds the run's collaboration-stream frames that close a Task's rows (the tree change removing them, SR-084), so the still-shown summary is
 //     clicked after the Task closed (the "closed just before the click" edge, DEC-006 / VIS-010).
 import { randomUUID } from 'node:crypto';
 
@@ -342,8 +342,15 @@ export const createTaskLocatorCases = (h) => {
     await shot(page, 'pmu-021-search-cleared-located');
 
     // Keyboard: Tab from the row reaches the summary (focus ring); Enter and Space locate, the row is not opened.
+    // The row's own disclosure (CR-461-104) comes before its summary in the Tab order.
     await agentRow(page, s.workers.agent).focus();
-    await page.keyboard.press('Tab');
+    details.tabStops = [];
+    for (let i = 0; i < 3; i += 1) {
+      await page.keyboard.press('Tab');
+      const stop = await page.evaluate(() => document.activeElement?.getAttribute('data-test'));
+      details.tabStops.push(stop);
+      if (stop === 'workspace-task-worker-task-summary') break;
+    }
     details.keyboardFocus = await page.evaluate(() => ({ test: document.activeElement?.getAttribute('data-test'), ring: getComputedStyle(document.activeElement).boxShadow }));
     assert(details.keyboardFocus.test === 'workspace-task-worker-task-summary' && details.keyboardFocus.ring.includes(INDIGO_500), 'Tab reaches the summary with the indigo-500 ring', details.keyboardFocus);
     await shot(page, 'pmu-021-summary-keyboard-focus');
@@ -362,7 +369,7 @@ export const createTaskLocatorCases = (h) => {
     await summaryIn(agentRow(page, s.workers.agent)).click();
     await located(page, s.tasks.agent, 'before reload');
     await sleep(500);
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reloadOwn({ waitUntil: 'networkidle' });
     await showProjectsTab(page);
     details.pickerAfterReload = await until('picker restored', async () => { const v = await pickerSelect(page).inputValue(); return v || null; }, 15000);
     assert(details.pickerAfterReload === `project:${s.projectA}`, 'locate choice remembered after reload', details);
@@ -525,7 +532,9 @@ export const createTaskLocatorCases = (h) => {
       const server = ws.connectToServer();
       // A delayed stream keeps its order: from the closure frame on, every later frame waits too.
       server.onMessage((message) => {
-        if (net.holdClosure && (net.held.length || String(message).includes('task_executions_closed'))) net.held.push(() => ws.send(message)); else ws.send(message);
+        // autobyteus-461 SR-084: a closure reaches the open view as a tree change removing the closed runs' rows.
+        const closure = /"kind":"run_tree_changed"/.test(String(message)) && /"removed":\["/.test(String(message));
+        if (net.holdClosure && (net.held.length || closure)) net.held.push(() => ws.send(message)); else ws.send(message);
       });
       ws.onMessage((message) => server.send(message));
     });
@@ -535,8 +544,8 @@ export const createTaskLocatorCases = (h) => {
     const workerSummary = () => summaryIn(agentRow(page, worker));
     const details = {};
 
-    // Rename (the Task page's Save).
-    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, description: 'Write the changelog for 1.6\nwith links' } });
+    // Rename (the Task page's Save): autobyteus-260, the tree line is the Task's title.
+    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, title: 'Write the changelog for 1.6', description: 'Write the changelog for 1.6\nwith links' } });
     await until('summary renamed live', async () => (await summaryLabel(workerSummary())) === 'Write the changelog for 1.6', 15000);
 
     // The feed is lost; a rename made meanwhile is missed; the reconnect re-reads it.
@@ -544,7 +553,7 @@ export const createTaskLocatorCases = (h) => {
     for (const ws of net.feedSockets) ws.close({ code: 1006 });
     net.feedSockets.clear();
     await sleep(500);
-    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, description: 'Write the changelog while offline' } });
+    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, title: 'Write the changelog while offline', description: 'Write the changelog while offline' } });
     await sleep(3000);
     details.whileOffline = await summaryLabel(workerSummary());
     assert(details.whileOffline === 'Write the changelog for 1.6', 'the rename is not seen while the feed is lost', details);
@@ -594,7 +603,11 @@ export const createTaskLocatorCases = (h) => {
     // A Task deleted; a Project deleted (its Task's worker answers null): the summaries disappear.
     await gql('mutation($input:DeleteProjectTaskInput!){deleteProjectTask(input:$input)}', { input: { projectId: projectL, taskId: live.deleted } });
     await until('summary removed after Task delete', async () => (await summaryIn(agentRow(page, helper)).count()) === 0, 15000);
-    assert((await agentRow(page, helper).count()) === 1, 'the copy row stays, one line', {});
+    // autobyteus-461 (design: deleting a Task stops its open runs, and they are ordinary runs; DS-11 / TC-9: a run with no Task
+    // entry is a top-level row): the copy leaves its delegator's tree and is listed as a run of its own.
+    await until('the copy leaves its delegator\'s tree after its Task is deleted', async () => (await agentRow(page, helper).count()) === 0, 15000);
+    const listedRuns = JSON.stringify((await gql('{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}')).listWorkspaceRunHistory);
+    assert(listedRuns.includes(helper), 'the copy is listed as a run of its own', {});
     await gql('mutation($id:String!){deleteProject(projectId:$id)}', { id: projectD });
     await until('summary removed after Project delete', async () => (await summaryIn(teamRow(page, root.rootId, s.names.squad)).count()) === 0, 15000);
     await shot(page, 'pmu-024-deleted-summaries-removed');

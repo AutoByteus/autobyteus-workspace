@@ -20,50 +20,50 @@ public final class SavedNodeStore {
         }
     }
 
-    public func loadProfiles() -> [SavedNodeProfile] {
-        guard let data = userDefaults.data(forKey: Keys.profiles) else { return [] }
-        return (try? decoder.decode([SavedNodeProfile].self, from: data))?
+    public func loadEntries() -> [SavedNodeEntry] {
+        guard let data = userDefaults.data(forKey: Keys.entries) else { return [] }
+        return (try? decoder.decode([SavedNodeEntry].self, from: data))?
             .sorted { $0.updatedAtEpochMilliseconds > $1.updatedAtEpochMilliseconds } ?? []
     }
 
-    public func loadSelectedProfile() -> SavedNodeProfile? {
-        let selectedID = userDefaults.string(forKey: Keys.selectedProfileID)
-        let profiles = loadProfiles()
-        return profiles.first { $0.id == selectedID } ?? profiles.first
+    public func loadSelectedEntry() -> SavedNodeEntry? {
+        let selectedID = userDefaults.string(forKey: Keys.selectedEntryID)
+        let entries = loadEntries()
+        return entries.first { $0.id == selectedID } ?? entries.first
     }
 
     @discardableResult
-    public func saveProfile(_ profile: SavedNodeProfile) -> SavedNodeProfile {
-        let existing = loadProfiles()
-        let merged = [profile] + existing.filter { $0.id != profile.id }
+    public func saveEntry(_ entry: SavedNodeEntry) -> SavedNodeEntry {
+        let existing = loadEntries()
+        let merged = [entry] + existing.filter { $0.id != entry.id }
         persist(merged)
-        userDefaults.set(profile.id, forKey: Keys.selectedProfileID)
-        return profile
+        userDefaults.set(entry.id, forKey: Keys.selectedEntryID)
+        return entry
     }
 
-    public func removeProfile(id profileID: String) {
-        let remaining = loadProfiles().filter { $0.id != profileID }
+    public func removeEntry(id entryID: String) {
+        let remaining = loadEntries().filter { $0.id != entryID }
         persist(remaining)
-        userDefaults.set(remaining.first?.id, forKey: Keys.selectedProfileID)
+        userDefaults.set(remaining.first?.id, forKey: Keys.selectedEntryID)
     }
 
-    public func selectProfile(id profileID: String) {
-        guard loadProfiles().contains(where: { $0.id == profileID }) else { return }
-        userDefaults.set(profileID, forKey: Keys.selectedProfileID)
+    public func selectEntry(id entryID: String) {
+        guard loadEntries().contains(where: { $0.id == entryID }) else { return }
+        userDefaults.set(entryID, forKey: Keys.selectedEntryID)
     }
 
     public func clear() {
-        userDefaults.removeObject(forKey: Keys.profiles)
-        userDefaults.removeObject(forKey: Keys.selectedProfileID)
+        userDefaults.removeObject(forKey: Keys.entries)
+        userDefaults.removeObject(forKey: Keys.selectedEntryID)
     }
 
-    private func persist(_ profiles: [SavedNodeProfile]) {
-        guard let data = try? encoder.encode(profiles) else { return }
-        userDefaults.set(data, forKey: Keys.profiles)
+    private func persist(_ entries: [SavedNodeEntry]) {
+        guard let data = try? encoder.encode(entries) else { return }
+        userDefaults.set(data, forKey: Keys.entries)
     }
 
     private enum Keys {
-        static let profiles = "autobyteus.saved-node-profiles"
-        static let selectedProfileID = "autobyteus.selected-node-profile-id"
+        static let entries = "autobyteus.saved-node-entries"
+        static let selectedEntryID = "autobyteus.selected-node-entry-id"
     }
 }

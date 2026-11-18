@@ -16,6 +16,11 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { prepareOutputDir, probeOutputDir } from './fixtures/probe-output-dir.mjs';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -26,7 +31,8 @@ const arg = (name, fallback) => {
   const value = process.argv.find(item => item.startsWith(`--${name}=`));
   return value ? value.slice(name.length + 3) : fallback;
 };
-const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/embedding-settings'));
+// A fresh per-run folder unless --output-dir names one; a non-empty folder is refused, never cleared.
+const outputDir = prepareOutputDir(probeOutputDir(webDir, 'embedding-settings', arg('output-dir')));
 const skipServerBuild = process.argv.includes('--skip-server-build');
 const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
@@ -104,7 +110,7 @@ const createNode = async ownedRoot => {
 };
 const startNode = async node => {
   node.process = start(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(node.port), '--data-dir', node.dataRoot],
-    serverDir, node.env, path.join(outputDir, 'backend.log'));
+    serverDir, withNodeCredential(node.env), path.join(outputDir, 'backend.log'));
   await waitFor('backend health', async () => {
     if (exited(node.process)) throw new Error(`backend exited ${node.process.exitCode}/${node.process.signalCode}`);
     return fetch(`${node.url}/rest/health`).then(response => response.ok).catch(() => false);
@@ -117,7 +123,8 @@ const gql = async (node, query, variables = {}) => {
   return body.data;
 };
 const createProject = async (node, name) => (await gql(node, 'mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}', { i: { name } })).createProject.projectId;
-const createTask = (node, projectId, description) => gql(node, 'mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}', { i: { projectId, description } });
+// autobyteus-260: every Project Task has a title; these one-line descriptions are their own titles.
+const createTask = (node, projectId, description) => gql(node, 'mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}', { i: { projectId, title: description, description } });
 const modelsDir = node => path.join(node.dataRoot, 'embeddings', 'models');
 const present = file => fs.stat(file).then(() => true, () => false);
 
@@ -143,20 +150,20 @@ const kase = async (id, title, body) => {
 
 let ownedRoot, node, frontend, browser;
 try {
-  await fs.rm(outputDir, { recursive: true, force: true });
-  await fs.mkdir(outputDir, { recursive: true });
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
   ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-embedding-settings-e2e-'));
-  node = await createNode(ownedRoot);
-  await startNode(node);
   const frontendPort = await choosePort();
   const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  node = await createNode(ownedRoot);
+  node.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
+  await startNode(node);
   evidence.isolation = { tempRoot: ownedRoot, backend: node.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: node.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });
   evidence.browserVersion = browser.version();
   const context = await browser.newContext({ viewport: { width: 1440, height: 1180 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
+  await attachToBrowserContext(context);
   await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage();
   page.on('pageerror', e => evidence.browserErrors.push(e.message));

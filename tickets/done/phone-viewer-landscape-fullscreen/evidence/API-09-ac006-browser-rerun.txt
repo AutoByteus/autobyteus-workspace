@@ -1,0 +1,12 @@
+# Case: API-09 — AC-006 independent rerun: the implementation's browser probe (evidence/browser-probe.mjs, unchanged) against this round's node
+# Command: node browser-probe.mjs <playwright-core> <pairing URL http://abx432-node.lan:52316/...> abx432-api-node <out>
+# Commit: d76be54fb0 (fresh-clone /mobile bundle); headless system Chrome; node abx432-api-node
+# Date: 2026-11-08T08:14:11Z
+
+{"name":"opened","query":"?screen=desktop","fullscreenElement":null,"fullscreenEnabled":true,"bar":true,"handle":false,"picture":"translate(0px, 0px) scale(1)"}
+{"name":"full-screen-entered","query":"?screen=desktop&full=1","fullscreenElement":"HTML","fullscreenEnabled":true,"bar":false,"handle":true,"picture":"translate(0px, 0px) scale(1)"}
+{"name":"fill-and-fit","filled":"translate(-71.1111px, -44.4444px) scale(1.11111)","fittedAgain":"translate(0px, 0px) scale(1)","mouseOnNode":"x:300 y:300","expected":"x:300 y:300"}
+{"name":"browser-left-full-screen","leftBy":"document.exitFullscreen() from the probe (Esc not handled by headless Chrome)","query":"?screen=desktop","fullscreenElement":null,"fullscreenEnabled":true,"bar":true,"handle":false,"picture":"translate(0px, 0px) scale(1)"}
+{"name":"handle-leaves-both","entered":{"query":"?screen=desktop&full=1","fullscreenElement":"HTML","fullscreenEnabled":true,"bar":false,"handle":true,"picture":"translate(0px, 0px) scale(1)"},"after":{"query":"?screen=desktop","fullscreenElement":null,"fullscreenEnabled":true,"bar":true,"handle":false,"picture":"translate(0px, 0px) scale(1)"}}
+{"name":"reload-with-full","query":"","fullscreenElement":null,"fullscreenEnabled":true,"bar":false,"handle":false,"picture":null,"pageErrors":[]}
+{"result":"done","error":null}

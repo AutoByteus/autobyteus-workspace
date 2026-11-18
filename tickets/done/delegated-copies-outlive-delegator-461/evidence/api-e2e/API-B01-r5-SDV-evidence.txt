@@ -1,0 +1,201 @@
+API-B01 round 5 — stopped-delegator views probe (desktop), code 56e4ce773b
+Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/stopped-delegator-views-probe.mjs --output-dir <dir>
+Result: Pass (SDV-01, SDV-02, SDV-03, SDV-04)
+
+{
+    "startedAt": "2026-11-13T10:56:52.519Z",
+    "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "cases": {
+        "SDV-01": {
+            "result": "Pass",
+            "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+            "details": {
+                "streams": [
+                    {
+                        "closed": true,
+                        "frames": 5
+                    },
+                    {
+                        "closed": false,
+                        "frames": 1
+                    }
+                ],
+                "workerRowKept": true,
+                "renderedRootStatus": {
+                    "view open after Stop": {
+                        "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                        "samples": [
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+                        ]
+                    },
+                    "after a child command": {
+                        "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                        "samples": [
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+                        ]
+                    }
+                },
+                "workerAnsweredLive": true,
+                "sentMessages": [
+                    {
+                        "at": 1794567451201,
+                        "socket": "/ws/agent/worker_sdvagent_f573_bcb08c7bf38c4f008a8bd1fd153ca458",
+                        "target": null
+                    }
+                ],
+                "workerMessageSockets": [
+                    "/ws/agent/worker_sdvagent_f573_bcb08c7bf38c4f008a8bd1fd153ca458"
+                ],
+                "workerTeamTab": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+                "rootStayedStopped": true,
+                "helperRunId": "helper_sdvagent_f573_bddf5dbf5a034fdb800dcb285cd9ca5f",
+                "helperRowLive": true,
+                "managerStarted": true,
+                "streamsAfterStart": 0
+            }
+        },
+        "SDV-02": {
+            "result": "Pass",
+            "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+            "details": {
+                "renderedRootStatus": {
+                    "view open while stopped": {
+                        "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                        "samples": [
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400"
+                        ]
+                    },
+                    "after a child command": {
+                        "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                        "samples": [
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400"
+                        ]
+                    }
+                },
+                "workerAnsweredLive": true,
+                "sentMessages": [
+                    {
+                        "at": 1794567484761,
+                        "socket": "/ws/agent/worker_sdvteam_45bd_fac638ad23b247a397c0d8529361c6a1",
+                        "target": null
+                    }
+                ],
+                "workerMessageSockets": [
+                    "/ws/agent/worker_sdvteam_45bd_fac638ad23b247a397c0d8529361c6a1"
+                ],
+                "workerTeamTab": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+                "rootStayedStopped": true,
+                "helperRunId": "helper_sdvteam_45bd_447ac54f875d4909a829f1af1682a398",
+                "helperRowLive": true,
+                "composerPendingIndicators": 0,
+                "restoredLive": true
+            }
+        },
+        "SDV-03": {
+            "result": "Pass",
+            "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+            "details": {
+                "renderedRootStatus": {
+                    "view open while stopped": {
+                        "settled": "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                        "samples": [
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+                        ]
+                    },
+                    "after a child command": {
+                        "settled": "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                        "samples": [
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+                        ]
+                    }
+                },
+                "workerAnsweredLive": true,
+                "sentMessages": [
+                    {
+                        "at": 1794567517334,
+                        "socket": "/ws/agent/worker_sdvorg_3b86_6659de56839e4a8db8df79efdad4c81a",
+                        "target": null
+                    }
+                ],
+                "workerMessageSockets": [
+                    "/ws/agent/worker_sdvorg_3b86_6659de56839e4a8db8df79efdad4c81a"
+                ],
+                "workerTeamTab": "no Team tab for the selected worker",
+                "rootStayedStopped": true,
+                "helperRunId": "helper_sdvorg_3b86_b82f42c5d73b4132aa832f773761b834",
+                "helperRowLive": true,
+                "composerPendingIndicators": 0,
+                "restoredLive": true
+            }
+        },
+        "SDV-04": {
+            "result": "Pass",
+            "description": "Agent-run view: the worker's row leaves at DONE and is listed again, live, after the Manager reopens and continues it (CR-461-042)",
+            "details": {
+                "root": "manager_sdvreopen_9d73_2532a76eb91241b59bc429ec882f7a7c",
+                "worker": "worker_sdvreopen_9d73_0a440c6e2a3142c29c0b604a221900a0",
+                "leftAfterDone": true,
+                "backAfterReopen": true
+            }
+        }
+    },
+    "cleanup": {
+        "browser": "closed",
+        "frontend": {
+            "pid": 76688,
+            "status": "terminated",
+            "exit": "SIGTERM"
+        },
+        "backend": {
+            "pid": 76626,
+            "status": "terminated",
+            "exit": 0
+        },
+        "dataRootRemoved": true
+    },
+    "failures": [],
+    "stack": {
+        "backendUrl": "http://127.0.0.1:60959",
+        "frontendUrl": "http://127.0.0.1:60960",
+        "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-dvdYNz"
+    },
+    "browserVersion": "157.0.8103.51",
+    "result": "Pass",
+    "finishedAt": "2026-11-13T10:59:17.086Z"
+}

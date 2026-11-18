@@ -6,6 +6,13 @@
         <p class="mt-1 text-sm text-gray-500">
           {{ $t('workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help') }}
         </p>
+        <PersonalSettingMark
+          class="mt-2"
+          :base="personalSettingsBase"
+          :active="personal"
+          :busy="resettingPersonal"
+          @reset="emit('resetPersonal')"
+        />
       </div>
       <button
         v-if="hasConfiguredPreferences"
@@ -41,6 +48,8 @@
 import { computed } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import RuntimeModelConfigFields from './RuntimeModelConfigFields.vue'
+import PersonalSettingMark from '~/components/definitions/PersonalSettingMark.vue'
+import type { PersonalSettingsBase } from '~/types/personalSettings'
 import { hasMeaningfulDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 
 const props = defineProps<{
@@ -49,6 +58,11 @@ const props = defineProps<{
   seedModelIdentifier?: string | null
   llmConfig?: Record<string, unknown> | null
   idPrefix?: string
+  /** Set for a package or built-in definition: the runtime/model can be a personal setting. */
+  personalSettingsBase?: PersonalSettingsBase | null
+  /** Whether the saved runtime/model is personal (shows the mark and its reset). */
+  personal?: boolean
+  resettingPersonal?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -56,6 +70,7 @@ const emit = defineEmits<{
   (e: 'update:llmModelIdentifier', value: string): void
   (e: 'update:llmConfig', value: Record<string, unknown> | null): void
   (e: 'clear'): void
+  (e: 'resetPersonal'): void
 }>()
 
 const { t: $t } = useLocalization()

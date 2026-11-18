@@ -1,0 +1,60 @@
+{
+  "at": "2026-10-26T07:14:19.304978+00:00",
+  "result": "Sufficient / all AC001\u2013007 Proven",
+  "currentAuthority": "R3/SR005 Approved/SR006 Ready/IR003, Small/Low/Direct",
+  "source": "1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708",
+  "apiValidated": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "deliveryInput": "3d63afcec9574fa4d98e71b674de37f981a29040",
+  "apiConfidence": "95.71 (670/7), minimum95; accepted for copy-only renderer, not score alone",
+  "cases": {
+    "AC001": [
+      "R01/R02",
+      "IMP-16-focused.log; R02-03-attempt-2/result.json; unchanged command helper",
+      "Both pinned installer chains/digest/version and 36 independent exact displayed/native clipboard comparisons; six inert shell controls within24helper tests"
+    ],
+    "AC002": [
+      "R01/R02",
+      "Same plus actual view text/driver",
+      "All seven installed commands/order/role/admin/drain guidance retained; advanced line removal approved"
+    ],
+    "AC003": [
+      "R01/R02/R03",
+      "R02-03-attempt-3/result.json and driver; IMP16; denied.png",
+      "Nine unique names/polite state, Enter/native copy/reset, controlled pending/all9disabled/second exclusion/unmount-late settle/denial/missing/manual selection"
+    ],
+    "AC004": [
+      "R01/R02",
+      "IMP-17-preview-final/result.json; IMP16 source assertions",
+      "Null/invalid/partial data+version controls, no anchors any state; parent10/Docker7 and actual before/after commands preserved"
+    ],
+    "AC005": [
+      "R01/R02/C01",
+      "Four actual locale/width views; autobyteus-web/docs/nfs_guide.md",
+      "Essential unencrypted/private-network/no-internet/outage advice current; removed detailed trust/platform/field facts remain in docs; no qualification promotion"
+    ],
+    "AC006": [
+      "R01/R02",
+      "R02-03-attempt-2/result.json",
+      "R2 links absent, coherent review via command URL and normal17px install padding, no reserved link area"
+    ],
+    "AC007": [
+      "R01/R02",
+      "Four actual footer screenshots and DOM/layout values",
+      "No anchors/advanced line/blue block/trailing prose;43English words/equivalentChinese unboxed readable tip, compact warning,20/16pxgaps,no document overflow"
+    ]
+  },
+  "selectedRawHashes": {
+    "IMP-16-focused.log": "03ae1a416e7170731673bfb3f73f0833d2e279d33c1c7657b59f1037f924af9d",
+    "IMP-16-typecheck.log": "bc289f7a1229e9a8fff0b3ee856e519b4747a3f825a77747427ab15cbfa5ff62",
+    "IMP-17-preview-final/result.json": "1522b321a6b2aef0a1ae34c0bdf0eef94a8f0731aa6bf578f0b90ae2117d0c05",
+    "R02-03-attempt-2/result.json": "3eee71e8f0b405d2a6924fe976c9c567040dfba1c7f3dabddcef7827ddd31799",
+    "R02-03-attempt-3/result.json": "716be55ddb9fd54048a677664342042a86ce76a040a10f0a7cb11c8882bfcb13",
+    "C01-03-cleanup.json": "31fbf71e3a8189b7690b5964e8595fa76a459f54e1b5f6185b105407f3eaaaa4"
+  },
+  "visualInspection": "Delivery personally viewed all4 footer screenshots plus en390top and attempt3denied: concise legible tip+amber warning, no obsolete link/blue panel, local clipped code scrolls by raw DOM, no page overflow; no credentials",
+  "attemptJudgement": "Attempt1 stale R2 Windows-on-page assertion failed. Attempts1/2 cleanup wrapper/Node-cache ENOTEMPTY retained. R02 attempt2 case proven by4saved raw views+post-Docker Completed row, aggregate remains Not Tested. Lost attempt2 R03 detail not used; only attempt3 durable R03 Pass accepted. Initial standalone tsc Vue-alias failure superseded by scoped correct Nuxt-alias check; not whole-web typecheck.",
+  "integration": "Already current at fresh personal d74f75a; all non-ticket inputs equal current API; no repeat check required by impact rules",
+  "emulation": "Unrelated read GraphQL/identity/health/feeds mocked; negative clipboard controlled. Actual current router/parent/catalog/normal clipboard and sandboxedChrome real. No backend/Electron/CLI/installer/NFS/physical/provider/user qualification.",
+  "userCheck": "Not required or performed",
+  "findings": []
+}

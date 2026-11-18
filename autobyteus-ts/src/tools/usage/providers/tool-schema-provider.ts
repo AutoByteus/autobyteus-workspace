@@ -32,12 +32,20 @@ export class ToolSchemaProvider {
       }
     }
 
-    if (toolDefinitions.length === 0) {
+    return this.formatDefinitions(toolDefinitions, provider, options);
+  }
+
+  /** Formats the given definitions for `provider`, as `buildSchema` formats registered ones. */
+  formatDefinitions(
+    definitions: readonly ToolDefinition[],
+    provider?: LLMProvider | null,
+    options: ToolSchemaProviderOptions = {}
+  ): Array<Record<string, unknown>> {
+    if (definitions.length === 0) {
       return [];
     }
-
     const formatter = this.selectFormatter(provider ?? null, options);
-    return toolDefinitions.map((definition) => formatter.provide(definition));
+    return definitions.map((definition) => formatter.provide(definition));
   }
 
   private selectFormatter(provider: LLMProvider | null, options: ToolSchemaProviderOptions) {

@@ -1,0 +1,21 @@
+{
+  "case": "API-pause-cleanup",
+  "date": "2026-10-26T05:05:08.960871+00:00",
+  "commit": "f5b09560e9982c8a2f27e9dd25d78e5c90808c18",
+  "knownHistoricalFixturePids": [
+    88067,
+    88217,
+    88332,
+    88514,
+    88540,
+    88600,
+    88601,
+    88607,
+    88702,
+    88707,
+    88708,
+    88714
+  ],
+  "stillPresent": [],
+  "note": "Read-only PID absence audit; no process signalled; completed runners closed model/sentinel servers and removed owned roots. Historical numeric IDs not authority for future signalling."
+}

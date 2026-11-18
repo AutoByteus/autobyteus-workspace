@@ -1,0 +1,10 @@
+# IMP-03
+# command: node scripts/typecheck.mjs
+# commit: 3a78c3eee
+# environment: macOS (Darwin 25.6), Node v26.12.0, real built server processes (dist/app.js) hub + source + counting proxy
+# date: 2026-11-15
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 7.7s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 21.4s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS

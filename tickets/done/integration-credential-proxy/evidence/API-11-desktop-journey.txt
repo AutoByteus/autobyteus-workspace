@@ -1,0 +1,47 @@
+# Case: API-11 — isolated desktop instance journey (packaged worktree build)
+# Start: CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build --data-root /private/tmp/s311/desktop-root  → instance iso-62750-f12f, controlPort 62750, serverPort 62751
+# Driver: node /tmp/s311/journey.mjs 62750 62751 /private/tmp/s311/desktop-root <evidence>/API-11-desktop (source in API-11-driver-source.txt). Lines are JSON; the run pass is masked as rp_<pass>; the token is never printed.
+# Commit: b95bad702f (code 2529eaaec1); macOS 26.5.2 arm64; app 1.5.11-beta.2 (worktree build); date 2026-10-30T09:32:23Z
+
+{"step":"agent-created","agentId":"github-desktop-agent"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="github-integration-card"]') to be visible
+
+    at goSettings (/private/tmp/s311/journey.mjs:53:65)
+    at async file:///private/tmp/s311/journey.mjs:70:1 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
+
+## Attempt 2 (driver navigation now retries until the card shows; attempt 1 above stopped at the first navigation, before any card action)
+# date 2026-10-30T09:33:36Z
+{"step":"agent-created","agentId":"github-desktop-agent-17059"}
+{"step":"card-agent-listed","listed":true}
+{"step":"card-initial","status":"Not connected","api":{"connected":false,"login":null,"connectedAt":null,"agentDefinitionIds":[]}}
+{"step":"screenshot","file":"API-11-01-card-not-connected.png"}
+(node:54625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"step":"card-connected","status":"Connected as @ryan-zheng-teki","api":{"connected":true,"login":"ryan-zheng-teki","connectedAt":"2026-10-30T09:33:40.742Z","agentDefinitionIds":[]},"tokenFieldEmptyAfterSave":true}
+{"step":"screenshot","file":"API-11-02-card-connected.png"}
+{"step":"card-tested","message":"The token works: @ryan-zheng-teki."}
+{"step":"card-ticked","checked":true,"api":{"connected":true,"login":"ryan-zheng-teki","connectedAt":"2026-10-30T09:33:40.742Z","agentDefinitionIds":["github-desktop-agent-17059"]}}
+{"step":"screenshot","file":"API-11-03-card-agent-ticked.png"}
+{"step":"run-created","model":"gpt-5.6-luna","success":true,"message":"Agent run created successfully.","runId":"github_desktop_agent_17059_879c08d3238341b8adbcf53854876233"}
+{"step":"run-probe","endTypes":["TURN_COMPLETED"],"approvalsRequested":0,"result":{"apiHttp":"200","gitStatus":0,"psStatus":126,"psEnvStatus":126},"address":"http://127.0.0.1:62799/r/rp_<pass>/github/api","gitConfig":{"GIT_CONFIG_VALUE_0":"https://github.com/","GIT_TERMINAL_PROMPT":"0","GIT_CONFIG_KEY_0":"url.http://127.0.0.1:62799/r/rp_<pass>/github/git/.insteadOf","GIT_CONFIG_COUNT":"1"},"issueNumber":1,"lsRemoteHead":true}
+{"step":"phone-access","enabled":true,"info":null,"error":null}
+{"step":"screenshot","file":"API-11-04-phone-access-on.png"}
+{"step":"qr-001","proxyListen":["AutoByteu 52267 127.0.0.1:62799"],"serverListen":["AutoByteu 52267 *:62751"],"lanAddress":"<LAN address>","proxyFromLan":"ECONNREFUSED","serverFromLan":"connected","proxyWithNonLoopbackHost":{"status":403,"error":"NOT_LOOPBACK"}}
+{"step":"qr-002-candidate","candidate":"expressjs/express","sizeKb":10066}
+{"step":"qr-002","repo":"expressjs/express","sizeKb":10066,"cloneExit":0,"cloneStderr":"","seconds":2.658,"serverPid":52267,"proxyInServerProcess":true,"gitDirBytes":12181504,"rssKbBefore":238640,"rssKbPeak":243376,"rssKbPeakDelta":4736,"samples":26}
+{"step":"untick-retick","unticked":{"status":403,"error":"INTEGRATION_NOT_ALLOWED"},"reticked":{"status":200,"error":null}}
+{"step":"card-removed","status":"Not connected","api":{"connected":false,"login":null,"connectedAt":null,"agentDefinitionIds":["github-desktop-agent-17059"]},"afterRemove":{"status":403,"error":"INTEGRATION_NOT_CONNECTED"}}
+{"step":"screenshot","file":"API-11-05-card-removed.png"}
+{"step":"run-stopped","terminate":{"success":true,"message":"Agent run terminated successfully."},"afterStop":{"status":403,"error":"RUN_PASS_INVALID"}}
+{"step":"phone-access-restored","enabled":false}
+{"step":"activity","file":"<data root>/server-data/integrations/activity.jsonl","records":["api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 200","git GET /ryan-zheng-teki/autobyteus-mcp-test.git/info/refs 200","git POST /ryan-zheng-teki/autobyteus-mcp-test.git/git-upload-pack 200","api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 403 NOT_LOOPBACK","api GET /repos/expressjs/express 200","git GET /expressjs/express.git/info/refs 200","git POST /expressjs/express.git/git-upload-pack 200","git POST /expressjs/express.git/git-upload-pack 200","api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 403 INTEGRATION_NOT_ALLOWED","api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 200","api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 403 INTEGRATION_NOT_CONNECTED","api GET /repos/ryan-zheng-teki/autobyteus-mcp-test/issues/1 403 RUN_PASS_INVALID"]}

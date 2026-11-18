@@ -1,0 +1,9 @@
+Check: IMP-04
+Command: pnpm -C autobyteus-server-ts test:integration:prepare; test:integration (clean clone)
+Commit: d3463e0a7e
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+ Test Files  87 passed | 20 skipped (107)
+      Tests  500 passed | 69 skipped (569)
+exit 0

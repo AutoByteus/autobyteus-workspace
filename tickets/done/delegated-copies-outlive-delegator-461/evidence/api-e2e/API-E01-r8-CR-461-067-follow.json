@@ -1,0 +1,164 @@
+{
+  "agent": {
+    "agentChild": {
+      "worker": "follow_worker_3a4871_90404520d1c24f5a98f28235179d2667",
+      "afterStop": "offline",
+      "afterRestore": [
+        "idle",
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "ownStreamAfterRestore": [
+        "AGENT_INPUT_STATE",
+        "INTER_AGENT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ]
+    },
+    "earlyStream": {
+      "early": "follow_worker_3a4871_fbb58a92e8d445499bafc425be1e3c13",
+      "typesAfterMessage": [
+        "INTER_AGENT_MESSAGE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ]
+    },
+    "teamChild": {
+      "team": "follow_squad_3a4871_fe2c3cb1700746179f5fd5cbceb0482c",
+      "lead": "follow_lead_3a4871_f9077ff19b704d868d57b99aa91cf765",
+      "brokenStart": "{\"accepted\":false,\"code\":\"AGENT_RUN_ACTIVATION_FAILED\",\"message\":\"AGY_MODEL_UNAVAILABLE: follow-retiring-model\"}",
+      "afterRestore": [
+        "initializing",
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ]
+    }
+  },
+  "team": {
+    "agentChild": {
+      "worker": "follow_worker_3a4871_875d24c4cfa143ef82e5fa39c4834d06",
+      "afterStop": "offline",
+      "afterRestore": [
+        "idle",
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "ownStreamAfterRestore": [
+        "AGENT_INPUT_STATE",
+        "INTER_AGENT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ]
+    },
+    "earlyStream": {
+      "early": "follow_worker_3a4871_3f7d5c48c459471a946d9d6dc3f61a0f",
+      "typesAfterMessage": [
+        "INTER_AGENT_MESSAGE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ]
+    },
+    "teamChild": {
+      "team": "follow_squad_3a4871_95033363743044acbcbdb7814107d433",
+      "lead": "follow_lead_3a4871_366deb1f02e24fdfb27176209db6c007",
+      "brokenStart": "{\"accepted\":false,\"code\":\"AGENT_RUN_ACTIVATION_FAILED\",\"message\":\"AGY_MODEL_UNAVAILABLE: follow-retiring-model\"}",
+      "afterRestore": [
+        "initializing",
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ]
+    }
+  },
+  "org": {
+    "agentChild": {
+      "worker": "follow_worker_3a4871_e9f5d62d175b4f05ac8031a2af40a18e",
+      "afterStop": "offline",
+      "afterRestore": [
+        "idle",
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "ownStreamAfterRestore": [
+        "AGENT_INPUT_STATE",
+        "INTER_AGENT_MESSAGE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ]
+    },
+    "earlyStream": {
+      "early": "follow_worker_3a4871_b62dda49f11840759779f002bdf87e97",
+      "typesAfterMessage": [
+        "INTER_AGENT_MESSAGE",
+        "AGENT_INPUT_STATE",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ]
+    },
+    "teamChild": {
+      "team": "follow_squad_3a4871_39cf1fb67b634df69c14a89ca41420d7",
+      "lead": "follow_lead_3a4871_43fb1abee1dc468187104317f04cba28",
+      "brokenStart": "{\"accepted\":false,\"code\":\"AGENT_RUN_ACTIVATION_FAILED\",\"message\":\"AGY_MODEL_UNAVAILABLE: follow-retiring-model\"}",
+      "afterRestore": [
+        "initializing",
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ]
+    }
+  }
+}

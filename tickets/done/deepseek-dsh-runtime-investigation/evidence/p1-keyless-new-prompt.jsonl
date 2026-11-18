@@ -1,0 +1,17 @@
+{"t":2,"dir":"probe","frame":{"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{"fs":{"readTextFile":false,"writeTextFile":false},"terminal":false},"clientInfo":{"name":"autobyteus-probe","version":"0"}}}}
+{"t":2,"dir":"out","frame":{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{"fs":{"readTextFile":false,"writeTextFile":false},"terminal":false},"clientInfo":{"name":"autobyteus-probe","version":"0"}}}}
+{"t":2185,"dir":"in","frame":{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentInfo":{"name":"deepseek-harness-acp","version":"0.0.1"},"agentCapabilities":{"mcpCapabilities":{"http":true},"promptCapabilities":{"image":false,"audio":false,"embeddedContext":false},"sessionCapabilities":{"close":{},"list":{},"resume":{}}},"authMethods":[]}}}
+{"t":2186,"dir":"probe","frame":{"method":"session/new","params":{"cwd":"/tmp/ab387-ext/ws","mcpServers":[]}}}
+{"t":2186,"dir":"out","frame":{"jsonrpc":"2.0","id":2,"method":"session/new","params":{"cwd":"/tmp/ab387-ext/ws","mcpServers":[]}}}
+{"t":2400,"dir":"in","frame":{"jsonrpc":"2.0","id":2,"result":{"sessionId":"a9af1152-1f29-48a3-99b2-41f3a0a4d2a1","configOptions":[{"id":"model","name":"Model","category":"model","type":"select","currentValue":"[\"deepseek-official\",\"deepseek-v4-flash\"]","options":[{"group":"deepseek-official","name":"DeepSeek","options":[{"value":"[\"deepseek-official\",\"deepseek-v4-flash\"]","name":"deepseek-v4-flash"}]}]},{"id":"reasoning_effort","name":"Reasoning effort","category":"thought_level","type":"select","currentValue":"high","options":[{"value":"off","name":"Off","description":"Use for simple tasks that do not need reasoning."},{"value":"low","name":"Low","description":"Prefer for routine or latency-sensitive tasks."},{"value":"high","name":"High","description":"The default balance for most tasks."},{"value":"max","name":"Max","description":"Reserve for the hardest quality-first tasks."}]}]}}}
+{"t":2400,"dir":"probe","frame":{"method":"session/prompt","params":{"sessionId":"$session","prompt":[{"type":"text","text":"Say hello."}]},"timeoutMs":60000}}
+{"t":2400,"dir":"out","frame":{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"a9af1152-1f29-48a3-99b2-41f3a0a4d2a1","prompt":[{"type":"text","text":"Say hello."}]}}}
+{"t":2443,"dir":"in","frame":{"jsonrpc":"2.0","id":3,"error":{"code":-32603,"message":"Internal error: turn failed: llm-deepseek: no API key for provider route \"deepseek-official\"; store DEEPSEEK_API_KEY through the credentials service (the web Models page writes it), or export DEEPSEEK_API_KEY in the launching environment"}}}
+{"t":2443,"dir":"probe","frame":{"method":"session/list","params":{}}}
+{"t":2443,"dir":"out","frame":{"jsonrpc":"2.0","id":4,"method":"session/list","params":{}}}
+{"t":2446,"dir":"in","frame":{"jsonrpc":"2.0","id":4,"result":{"sessions":[]}}}
+{"t":2446,"dir":"probe","frame":{"method":"session/close","params":{"sessionId":"$session"}}}
+{"t":2446,"dir":"out","frame":{"jsonrpc":"2.0","id":5,"method":"session/close","params":{"sessionId":"a9af1152-1f29-48a3-99b2-41f3a0a4d2a1"}}}
+{"t":2450,"dir":"in","frame":{"jsonrpc":"2.0","id":5,"result":{}}}
+{"t":2450,"dir":"probe","frame":"DONE"}
+{"t":2504,"dir":"exit","frame":{"code":0,"signal":null}}

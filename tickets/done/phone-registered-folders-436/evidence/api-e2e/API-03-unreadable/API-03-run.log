@@ -1,0 +1,7 @@
+# API-03 unreadable node file; node 0.0.0.0:55108; 2026-11-09T05:08:59.164Z; node runs as uid 501
+PASS GET a chmod-000 file: 400 NODE_FILE_UNREADABLE
+PASS GET a readable file next to it: 200
+PASS phone, the unreadable file: "The file preview could not be opened."
+PASS phone, the readable file: "HOST-READABLE-436"
+FAIL the node's log names no node file path (31 occurrences of the temp folder)
+result Fail; node stopped; temp root removed

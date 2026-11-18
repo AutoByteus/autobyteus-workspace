@@ -1,0 +1,673 @@
+{
+  "case": "API-04-05-06",
+  "mode": "mixed",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api2.zP1abU/clean/autobyteus-server-ts",
+  "date": "2026-10-30T13:15:57.179Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-mixed-rU93bZ",
+  "runTag": "BQ284Lmvuzwn0b",
+  "versions": {
+    "codex": "codex-cli 0.166.0",
+    "claude": "2.1.314 (Claude Code)",
+    "node": "v22.23.1",
+    "python3": "Python 3.9.6"
+  },
+  "steps": [
+    {
+      "at": "2.4",
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 99775,
+        "port": 62438
+      }
+    },
+    {
+      "at": "3.6",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "4.3",
+      "step": "standalone sent",
+      "value": {
+        "label": "API-04",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82"
+      }
+    },
+    {
+      "at": "10.0",
+      "step": "busy",
+      "value": {
+        "label": "API-04",
+        "marker": "BQ284Lmvuzwn0b_API-04",
+        "pid": 2140,
+        "ppid": 242,
+        "pgid": 2140,
+        "afterMs": 5646
+      }
+    },
+    {
+      "at": "10.2",
+      "step": "terminate",
+      "value": {
+        "case": "API-04",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82",
+        "marker": "BQ284Lmvuzwn0b_API-04",
+        "result": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "elapsedMs": 98,
+        "toolCommand": {
+          "pid": 2140,
+          "ppid": 242,
+          "pgid": 2140,
+          "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_API-04",
+          "aliveAfter": false
+        },
+        "treeAtBusy": [
+          {
+            "pid": 242,
+            "ppid": 99775,
+            "pgid": 99741,
+            "command": "codex app-server -c agents.enabled=false"
+          },
+          {
+            "pid": 2110,
+            "ppid": 242,
+            "pgid": 2110,
+            "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+          },
+          {
+            "pid": 2140,
+            "ppid": 242,
+            "pgid": 2140,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_API-04"
+          }
+        ],
+        "markedLeft": []
+      }
+    },
+    {
+      "at": "10.5",
+      "step": "standalone sent",
+      "value": {
+        "label": "API-05",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40"
+      }
+    },
+    {
+      "at": "14.1",
+      "step": "busy",
+      "value": {
+        "label": "API-05",
+        "marker": "BQ284Lmvuzwn0b_API-05",
+        "pid": 3560,
+        "ppid": 2573,
+        "pgid": 3560,
+        "afterMs": 3539
+      }
+    },
+    {
+      "at": "14.9",
+      "step": "terminate",
+      "value": {
+        "case": "API-05",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40",
+        "marker": "BQ284Lmvuzwn0b_API-05",
+        "result": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "elapsedMs": 762,
+        "toolCommand": {
+          "pid": 3560,
+          "ppid": 2573,
+          "pgid": 3560,
+          "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366170113-j7lj7l.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuzwn0b_API-05' < /dev/null && pwd -P >| /tmp/claude-585c-cwd",
+          "aliveAfter": false
+        },
+        "treeAtBusy": [
+          {
+            "pid": 2573,
+            "ppid": 99775,
+            "pgid": 99741,
+            "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … T_nNA4pn41fZumEOwM\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=e77d036a-e281-47f4-93f8-c54f5d5e165b"
+          },
+          {
+            "pid": 3560,
+            "ppid": 2573,
+            "pgid": 3560,
+            "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366170113-j7lj7l.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuzwn0b_API-05' < /dev/null && pwd -P >| /tmp/claude-585c-cwd"
+          },
+          {
+            "pid": 3561,
+            "ppid": 3560,
+            "pgid": 3560,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_API-05"
+          }
+        ],
+        "markedLeft": []
+      }
+    },
+    {
+      "at": "15.3",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-codex",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b"
+      }
+    },
+    {
+      "at": "15.6",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-claude",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b"
+      }
+    },
+    {
+      "at": "16.8",
+      "step": "team sent",
+      "value": {
+        "label": "team-codex",
+        "runtime": "codex",
+        "teamRunId": "probe_team_bq284lmvuzwn0b_team_codex_ff28464b49b7417cb86329b2cf23b9c9",
+        "memberRunId": "probe_team_coordinator_team_codex_bq284lmvuzwn0b_41e6a57974c54b838522697225e18dbf"
+      }
+    },
+    {
+      "at": "18.7",
+      "step": "org sent",
+      "value": {
+        "label": "org-claude",
+        "runtime": "claude",
+        "orgRunId": "probe_org_bq284lmvuzwn0b_org_claude_bdcc0388404744a190dbf51665906fa8",
+        "memberRunId": "probe_org_manager_org_claude_bq284lmvuzwn0b_fbfd4b7ffb1e46fdaafc13e73c9352ff"
+      }
+    },
+    {
+      "at": "20.0",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "marker": "BQ284Lmvuzwn0b_sa-codex",
+        "pid": 6042,
+        "ppid": 3645,
+        "pgid": 6042,
+        "afterMs": 1306
+      }
+    },
+    {
+      "at": "20.1",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "marker": "BQ284Lmvuzwn0b_sa-claude",
+        "pid": 6039,
+        "ppid": 4140,
+        "pgid": 6039,
+        "afterMs": 50
+      }
+    },
+    {
+      "at": "21.0",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "marker": "BQ284Lmvuzwn0b_team-codex",
+        "pid": 6205,
+        "ppid": 3645,
+        "pgid": 6205,
+        "afterMs": 961
+      }
+    },
+    {
+      "at": "22.6",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "marker": "BQ284Lmvuzwn0b_org-claude",
+        "pid": 6723,
+        "ppid": 5564,
+        "pgid": 6723,
+        "afterMs": 1576
+      }
+    },
+    {
+      "at": "26.7",
+      "step": "shutdown",
+      "value": {
+        "case": "API-06",
+        "serverPid": 99775,
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793366182687
+        },
+        "elapsedMs": 1332,
+        "runs": [
+          {
+            "label": "sa-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "runId": "probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b",
+            "toolCommand": {
+              "pid": 6042,
+              "ppid": 3645,
+              "pgid": 6042,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "sa-claude",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b",
+            "toolCommand": {
+              "pid": 6039,
+              "ppid": 4140,
+              "pgid": 6039,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "team-codex",
+            "kind": "team",
+            "runtime": "codex",
+            "runId": "probe_team_coordinator_team_codex_bq284lmvuzwn0b_41e6a57974c54b838522697225e18dbf",
+            "toolCommand": {
+              "pid": 6205,
+              "ppid": 3645,
+              "pgid": 6205,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "org-claude",
+            "kind": "org",
+            "runtime": "claude",
+            "runId": "probe_org_manager_org_claude_bq284lmvuzwn0b_fbfd4b7ffb1e46fdaafc13e73c9352ff",
+            "toolCommand": {
+              "pid": 6723,
+              "ppid": 5564,
+              "pgid": 6723,
+              "aliveAfter": false
+            }
+          }
+        ],
+        "before": 10,
+        "survivors": [],
+        "markedLeft": [],
+        "shutdownLog": []
+      }
+    },
+    {
+      "at": "30.0",
+      "step": "server started",
+      "value": {
+        "label": "second",
+        "pid": 7149,
+        "port": 62612
+      }
+    },
+    {
+      "at": "30.0",
+      "step": "history after relaunch",
+      "value": {
+        "userTerminated": [
+          {
+            "case": "API-04",
+            "runId": "probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82",
+            "listed": true,
+            "terminatedAt": "2026-10-30T13:16:07.283Z"
+          },
+          {
+            "case": "API-05",
+            "runId": "probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40",
+            "listed": true,
+            "terminatedAt": "2026-10-30T13:16:12.036Z"
+          }
+        ],
+        "shutdownStopped": [
+          {
+            "label": "sa-codex",
+            "runId": "probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b",
+            "listed": true,
+            "terminatedAt": null
+          },
+          {
+            "label": "sa-claude",
+            "runId": "probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b",
+            "listed": true,
+            "terminatedAt": null
+          }
+        ],
+        "teamRoot": [
+          {
+            "teamRunId": "probe_team_bq284lmvuzwn0b_team_codex_ff28464b49b7417cb86329b2cf23b9c9",
+            "listed": true,
+            "terminatedAt": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "30.3",
+      "step": "idle shutdown",
+      "value": {
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793366187272
+        },
+        "elapsedMs": 59,
+        "shutdownLog": []
+      }
+    }
+  ],
+  "API-04": {
+    "case": "API-04",
+    "runtime": "codex",
+    "runId": "probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82",
+    "marker": "BQ284Lmvuzwn0b_API-04",
+    "result": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "elapsedMs": 98,
+    "toolCommand": {
+      "pid": 2140,
+      "ppid": 242,
+      "pgid": 2140,
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_API-04",
+      "aliveAfter": false
+    },
+    "treeAtBusy": [
+      {
+        "pid": 242,
+        "ppid": 99775,
+        "pgid": 99741,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 2110,
+        "ppid": 242,
+        "pgid": 2110,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 2140,
+        "ppid": 242,
+        "pgid": 2140,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_API-04"
+      }
+    ],
+    "markedLeft": []
+  },
+  "API-05": {
+    "case": "API-05",
+    "runtime": "claude",
+    "runId": "probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40",
+    "marker": "BQ284Lmvuzwn0b_API-05",
+    "result": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "elapsedMs": 762,
+    "toolCommand": {
+      "pid": 3560,
+      "ppid": 2573,
+      "pgid": 3560,
+      "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366170113-j7lj7l.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuzwn0b_API-05' < /dev/null && pwd -P >| /tmp/claude-585c-cwd",
+      "aliveAfter": false
+    },
+    "treeAtBusy": [
+      {
+        "pid": 2573,
+        "ppid": 99775,
+        "pgid": 99741,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … T_nNA4pn41fZumEOwM\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=e77d036a-e281-47f4-93f8-c54f5d5e165b"
+      },
+      {
+        "pid": 3560,
+        "ppid": 2573,
+        "pgid": 3560,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366170113-j7lj7l.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuzwn0b_API-05' < /dev/null && pwd -P >| /tmp/claude-585c-cwd"
+      },
+      {
+        "pid": 3561,
+        "ppid": 3560,
+        "pgid": 3560,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_API-05"
+      }
+    ],
+    "markedLeft": []
+  },
+  "API-06": {
+    "case": "API-06",
+    "serverPid": 99775,
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793366182687
+    },
+    "elapsedMs": 1332,
+    "runs": [
+      {
+        "label": "sa-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b",
+        "toolCommand": {
+          "pid": 6042,
+          "ppid": 3645,
+          "pgid": 6042,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "sa-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b",
+        "toolCommand": {
+          "pid": 6039,
+          "ppid": 4140,
+          "pgid": 6039,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "team-codex",
+        "kind": "team",
+        "runtime": "codex",
+        "runId": "probe_team_coordinator_team_codex_bq284lmvuzwn0b_41e6a57974c54b838522697225e18dbf",
+        "toolCommand": {
+          "pid": 6205,
+          "ppid": 3645,
+          "pgid": 6205,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "org-claude",
+        "kind": "org",
+        "runtime": "claude",
+        "runId": "probe_org_manager_org_claude_bq284lmvuzwn0b_fbfd4b7ffb1e46fdaafc13e73c9352ff",
+        "toolCommand": {
+          "pid": 6723,
+          "ppid": 5564,
+          "pgid": 6723,
+          "aliveAfter": false
+        }
+      }
+    ],
+    "before": [
+      {
+        "pid": 3645,
+        "ppid": 99775,
+        "pgid": 99741,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 4140,
+        "ppid": 99775,
+        "pgid": 99741,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … qXQFq8gwq-gu1kwCrg\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=caf9f85d-7265-4886-a0e8-9d34a109965d"
+      },
+      {
+        "pid": 5564,
+        "ppid": 99775,
+        "pgid": 99741,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … rAvmMDXzO11ZUZ2anA\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=1b5cc21a-24a6-4d3f-a7ea-c42798e3a3a4"
+      },
+      {
+        "pid": 6039,
+        "ppid": 4140,
+        "pgid": 6039,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366176024-i1sae9.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuzwn0b_sa-claude' < /dev/null && pwd -P >| /tmp/claude-ee03-cwd"
+      },
+      {
+        "pid": 6041,
+        "ppid": 3645,
+        "pgid": 6041,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 6042,
+        "ppid": 3645,
+        "pgid": 6042,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_sa-codex"
+      },
+      {
+        "pid": 6205,
+        "ppid": 3645,
+        "pgid": 6205,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_team-codex"
+      },
+      {
+        "pid": 6723,
+        "ppid": 5564,
+        "pgid": 6723,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366178805-p6usrn.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … uiltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuzwn0b_org-claude' < /dev/null && pwd -P >| /tmp/claude-aa4a-cwd"
+      },
+      {
+        "pid": 6040,
+        "ppid": 6039,
+        "pgid": 6039,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_sa-claude"
+      },
+      {
+        "pid": 6725,
+        "ppid": 6723,
+        "pgid": 6723,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzwn0b_org-claude"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "shutdownLog": []
+  },
+  "rawHistoryAfterRelaunch": [
+    {
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-mixed-rU93bZ/workspace",
+      "agentDefinitions": [
+        {
+          "agentName": "Probe Agent BQ284Lmvuzwn0b",
+          "runs": [
+            {
+              "runId": "probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b",
+              "terminatedAt": null,
+              "isActive": false
+            },
+            {
+              "runId": "probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b",
+              "terminatedAt": null,
+              "isActive": false
+            },
+            {
+              "runId": "probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40",
+              "terminatedAt": "2026-10-30T13:16:12.036Z",
+              "isActive": false
+            },
+            {
+              "runId": "probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82",
+              "terminatedAt": "2026-10-30T13:16:07.283Z",
+              "isActive": false
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": [
+        {
+          "teamDefinitionName": "Probe Team BQ284Lmvuzwn0b team-codex",
+          "runs": [
+            {
+              "teamRunId": "probe_team_bq284lmvuzwn0b_team_codex_ff28464b49b7417cb86329b2cf23b9c9",
+              "terminatedAt": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "history": {
+    "userTerminated": [
+      {
+        "case": "API-04",
+        "runId": "probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82",
+        "listed": true,
+        "terminatedAt": "2026-10-30T13:16:07.283Z"
+      },
+      {
+        "case": "API-05",
+        "runId": "probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40",
+        "listed": true,
+        "terminatedAt": "2026-10-30T13:16:12.036Z"
+      }
+    ],
+    "shutdownStopped": [
+      {
+        "label": "sa-codex",
+        "runId": "probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b",
+        "listed": true,
+        "terminatedAt": null
+      },
+      {
+        "label": "sa-claude",
+        "runId": "probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b",
+        "listed": true,
+        "terminatedAt": null
+      }
+    ],
+    "teamRoot": [
+      {
+        "teamRunId": "probe_team_bq284lmvuzwn0b_team_codex_ff28464b49b7417cb86329b2cf23b9c9",
+        "listed": true,
+        "terminatedAt": null
+      }
+    ]
+  },
+  "idleShutdown": {
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793366187272
+    },
+    "elapsedMs": 59,
+    "shutdownLog": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "rootRemoved": true
+}

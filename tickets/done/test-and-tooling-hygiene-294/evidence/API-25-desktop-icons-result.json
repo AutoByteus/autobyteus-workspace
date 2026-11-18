@@ -1,0 +1,236 @@
+{
+  "startedAt": "2026-10-28T05:10:05.751Z",
+  "endpoint": "http://127.0.0.1:60457",
+  "steps": [
+    {
+      "id": "D-01",
+      "title": "Settings navigation icons",
+      "checks": [
+        {
+          "label": "nav: API Keys",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Agent Runtimes",
+          "ok": true,
+          "svg": true,
+          "paths": 2,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Model Routing",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Token Statistics",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Display",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Language",
+          "ok": true,
+          "svg": true,
+          "paths": 2,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Local Tools",
+          "ok": true,
+          "svg": true,
+          "paths": 2,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: MCP Servers",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        },
+        {
+          "label": "nav: Server Settings",
+          "ok": true,
+          "svg": true,
+          "paths": 2,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        }
+      ],
+      "result": "Pass",
+      "leftoverClassElements": 0,
+      "heroiconSvgsOnPage": 57,
+      "screenshot": "API-25-D-01.png"
+    },
+    {
+      "id": "D-02",
+      "title": "MCP Servers: Bulk Import and Add Server buttons",
+      "checks": [
+        {
+          "label": "button: Bulk Import",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 16,
+          "height": 16,
+          "cls": "iconify iconify--heroicons w-4 h-4 mr-1"
+        },
+        {
+          "label": "button: Add Server",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 16,
+          "height": 16,
+          "cls": "iconify iconify--heroicons w-4 h-4 mr-1"
+        }
+      ],
+      "result": "Pass",
+      "leftoverClassElements": 0,
+      "heroiconSvgsOnPage": 20,
+      "screenshot": "API-25-D-02.png"
+    },
+    {
+      "id": "D-03",
+      "title": "Add MCP Server form: Add Argument and the argument delete button",
+      "checks": [
+        {
+          "label": "button: Add Argument",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5 mr-1 text-gray-500"
+        },
+        {
+          "label": "icon-only button: argument delete (trash)",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5"
+        }
+      ],
+      "result": "Pass",
+      "iconOnlyButtonsInForm": 1,
+      "leftoverClassElements": 0,
+      "heroiconSvgsOnPage": 16,
+      "screenshot": "API-25-D-03.png"
+    },
+    {
+      "id": "D-04",
+      "title": "Bulk Import view: back button",
+      "checks": [
+        {
+          "label": "Bulk Import view button: Back (arrow-left)",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons w-5 h-5 mr-2 -ml-1"
+        }
+      ],
+      "result": "Pass",
+      "backButtonText": "Back",
+      "leftoverClassElements": 0,
+      "heroiconSvgsOnPage": 15,
+      "screenshot": "API-25-D-04.png"
+    },
+    {
+      "id": "D-05",
+      "title": "Local Tools workspace",
+      "checks": [
+        {
+          "label": "ToolCard icons (computed name)",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons text-purple-600 w-5 h-5"
+        }
+      ],
+      "result": "Pass",
+      "localToolCardIcons": 42,
+      "leftoverClassElements": 0,
+      "heroiconSvgsOnPage": 57,
+      "screenshot": "API-25-D-05.png"
+    },
+    {
+      "id": "D-06",
+      "title": "Agent detail: Run, Edit, Delete buttons",
+      "checks": [
+        {
+          "label": "button: Run Agent",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons block w-5 h-5 mr-2"
+        },
+        {
+          "label": "button: Edit",
+          "ok": true,
+          "svg": true,
+          "paths": 2,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons block w-5 h-5 mr-2"
+        },
+        {
+          "label": "button: Delete",
+          "ok": true,
+          "svg": true,
+          "paths": 1,
+          "width": 20,
+          "height": 20,
+          "cls": "iconify iconify--heroicons block w-5 h-5 mr-2"
+        }
+      ],
+      "result": "Pass",
+      "url": "/agents?view=detail&id=autobyteus-daily-assistant",
+      "leftoverClassElements": 0,
+      "heroiconSvgsOnPage": 15,
+      "screenshot": "API-25-D-06.png"
+    }
+  ],
+  "result": "Pass",
+  "error": null,
+  "consoleErrors": [],
+  "finishedAt": "2026-10-28T05:10:19.562Z"
+}

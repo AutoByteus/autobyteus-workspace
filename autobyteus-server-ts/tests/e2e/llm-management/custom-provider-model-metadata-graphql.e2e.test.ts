@@ -41,7 +41,6 @@ type GraphqlProvider = {
     baseUrl: string | null;
   };
   sources: Array<{
-    modelKind: string;
     state: string;
     modelCount: number;
   }>;
@@ -75,7 +74,7 @@ describe('custom provider metadata GraphQL E2E', () => {
             isCustom
             baseUrl
           }
-          sources { modelKind state modelCount }
+          sources { state modelCount }
           llmModels {
             modelIdentifier
             value
@@ -213,7 +212,6 @@ describe('custom provider metadata GraphQL E2E', () => {
       baseUrl: 'https://gateway.example.test/v1',
     });
     expect(provider.sources).toContainEqual(expect.objectContaining({
-      modelKind: 'LLM',
       state: 'READY',
       modelCount: 5,
     }));
@@ -284,7 +282,7 @@ describe('custom provider metadata GraphQL E2E', () => {
           runtimeKind: "autobyteus"
         ) {
           ownerProvider { id name providerType isCustom baseUrl }
-          sources { modelKind state modelCount }
+          sources { state modelCount }
           llmModels {
             modelIdentifier
             value
@@ -299,7 +297,6 @@ describe('custom provider metadata GraphQL E2E', () => {
       }
     `, { providerId: createdProviderId });
     expect(refreshed.reloadProviderModelCatalog.sources).toContainEqual(expect.objectContaining({
-      modelKind: 'LLM',
       state: 'STALE_ERROR',
       modelCount: 5,
     }));

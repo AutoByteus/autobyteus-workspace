@@ -6,6 +6,8 @@ import {
   type AnyMessage,
   type Client,
   type InitializeResponse,
+  type ListSessionsRequest,
+  type ListSessionsResponse,
   type LoadSessionRequest,
   type LoadSessionResponse,
   type NewSessionRequest,
@@ -14,7 +16,11 @@ import {
   type PromptResponse,
   type RequestPermissionRequest,
   type RequestPermissionResponse,
+  type ResumeSessionRequest,
+  type ResumeSessionResponse,
   type SessionNotification,
+  type SetSessionConfigOptionRequest,
+  type SetSessionConfigOptionResponse,
   type Stream,
 } from "@agentclientprotocol/sdk";
 import type { AcpAgentProcess, AcpAgentProcessExit } from "./acp-agent-process.js";
@@ -147,6 +153,27 @@ export class AcpClientConnection {
   loadSession(request: LoadSessionRequest): Promise<LoadSessionResponse> {
     return this.guard("session/load",
       withTimeout(this.sdk.loadSession(request), SESSION_OPEN_TIMEOUT_MS, "session/load"));
+  }
+
+  /** Reopens an existing session without replaying its history. */
+  resumeSession(request: ResumeSessionRequest): Promise<ResumeSessionResponse> {
+    return this.guard("session/resume",
+      withTimeout(this.sdk.resumeSession(request), SESSION_OPEN_TIMEOUT_MS, "session/resume"));
+  }
+
+  setSessionConfigOption(request: SetSessionConfigOptionRequest): Promise<SetSessionConfigOptionResponse> {
+    return this.guard("session/set_config_option",
+      withTimeout(this.sdk.setSessionConfigOption(request), INITIALIZE_TIMEOUT_MS, "session/set_config_option"));
+  }
+
+  listSessions(request: ListSessionsRequest): Promise<ListSessionsResponse> {
+    return this.guard("session/list",
+      withTimeout(this.sdk.listSessions(request), INITIALIZE_TIMEOUT_MS, "session/list"));
+  }
+
+  async closeSession(sessionId: string): Promise<void> {
+    await this.guard("session/close",
+      withTimeout(this.sdk.closeSession({ sessionId }), INITIALIZE_TIMEOUT_MS, "session/close"));
   }
 
   /** No request timeout: turn liveness is owned by the session's idle timer. */

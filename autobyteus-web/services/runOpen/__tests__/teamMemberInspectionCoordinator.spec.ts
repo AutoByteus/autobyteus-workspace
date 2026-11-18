@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { inspectMountedTeamMember } from '../teamMemberInspectionCoordinator';
-import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const mocks = vi.hoisted(() => ({
   mounted: null as any,
@@ -18,8 +18,7 @@ const team = () => buildTestTeamContext({
   teamRunId: 'team-1',
   coordinatorAddress: '/member-a',
   focusedAgentRunId: 'run-a',
-  rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' })],
-  delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-a', target: { agentRunId: 'task-run' } })],
+  rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' }), testAgentNode('/member-b', { agentRunId: 'run-b' })],
 });
 
 describe('teamMemberInspectionCoordinator', () => {
@@ -34,15 +33,15 @@ describe('teamMemberInspectionCoordinator', () => {
     mocks.ensureProjection.mockReturnValue(new Promise<void>((resolve) => { finish = resolve; }));
     const commit = vi.fn();
 
-    const pending = inspectMountedTeamMember({ teamRunId: 'team-1', agentRunId: 'task-run', commit });
+    const pending = inspectMountedTeamMember({ teamRunId: 'team-1', agentRunId: 'run-b', commit });
     await vi.waitFor(() => expect(mocks.ensureProjection).toHaveBeenCalledTimes(1));
     expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('run-a');
     expect(commit).not.toHaveBeenCalled();
     finish();
     await expect(pending).resolves.toMatchObject({
-      disposition: 'committed', teamRunId: 'team-1', agentRunId: 'task-run', memberAddress: '/member-a',
+      disposition: 'committed', teamRunId: 'team-1', agentRunId: 'run-b', memberAddress: '/member-b',
     });
-    expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('task-run');
+    expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('run-b');
     expect(commit).toHaveBeenCalledTimes(1);
   });
 
@@ -51,7 +50,7 @@ describe('teamMemberInspectionCoordinator', () => {
     const commit = vi.fn();
 
     await expect(inspectMountedTeamMember({
-      teamRunId: 'team-1', agentRunId: 'task-run', commit,
+      teamRunId: 'team-1', agentRunId: 'run-b', commit,
     })).resolves.toMatchObject({ disposition: 'rejected', message: 'projection unavailable' });
 
     expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('run-a');
@@ -64,7 +63,7 @@ describe('teamMemberInspectionCoordinator', () => {
     const commit = vi.fn();
 
     await expect(inspectMountedTeamMember({
-      teamRunId: 'team-1', agentRunId: 'task-run', commit,
+      teamRunId: 'team-1', agentRunId: 'run-b', commit,
     })).resolves.toMatchObject({ disposition: 'rejected', message: expect.stringContaining('changed before selection commit') });
 
     expect(original.view.getFocusedAgentRunId()).toBe('run-a');

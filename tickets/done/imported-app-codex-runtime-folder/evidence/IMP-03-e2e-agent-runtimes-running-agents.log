@@ -1,0 +1,12 @@
+# IMP-03 existing Agent Runtimes running-agents E2E (AC-004)
+# cmd: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" \&\& pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts --no-watch
+# commit: 1d49973440  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:37Z
+
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8613ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  1006ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1884ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2447ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2266ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  17.23s (transform 6.09s, setup 40ms, import 8.15s, tests 8.61s, environment 0ms)

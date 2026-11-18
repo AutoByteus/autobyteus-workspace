@@ -1,13 +1,20 @@
 import type { WorkspaceSelectionIntent, WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+import { useRunTreeStore } from '~/stores/runTreeStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { delegatedSubjectOfRow, teamCoordinatorFocusOf, treeRowOfAgent } from '~/utils/runTree/runTreeAgents';
 import {
   getTeamStreamRecoverySelectionFeedback,
   type TeamStreamRecoverySelectionFeedback,
 } from '~/stores/runHistorySelectionActions';
 
 interface RunHistorySelectionStoreLike {
-  selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget, options: { selectionIntent: WorkspaceSelectionIntent }) => Promise<WorkspaceSelectionOutcome>;
+  selectTreeRun: (
+    row: RunTreeRow | TeamMemberFocusTarget,
+    options: { selectionIntent: WorkspaceSelectionIntent; selectionMode?: 'desktop' | 'mobile' },
+  ) => Promise<WorkspaceSelectionOutcome>;
 }
 
 interface SelectionStoreLike {
@@ -15,7 +22,11 @@ interface SelectionStoreLike {
   selectedType: 'agent' | 'team' | 'team_draft' | null;
   selectedRunId: string | null;
   selectRun: (runId: string, type: 'agent' | 'team') => void;
+  selectRunWithoutShellNavigation: (runId: string, type: 'agent' | 'team') => void;
 }
+
+/** Which shell opens runs: the desktop navigates its shell; the phone (`/mobile`) only selects, its route is its own. */
+export type WorkspaceHistoryShell = 'desktop' | 'mobile';
 
 export const useWorkspaceHistorySelectionActions = (params: {
   runHistoryStore: RunHistorySelectionStoreLike;
@@ -28,10 +39,16 @@ export const useWorkspaceHistorySelectionActions = (params: {
     agentRunId: string,
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
-  /** `+` on an agent row: a New chat preset to that agent and workspace. */
-  startPresetChat: (preset: { workspaceRootPath: string; agentDefinitionId: string }) => Promise<void>;
   presentTeamStreamRecoveryFeedback: (feedback: TeamStreamRecoverySelectionFeedback) => void;
+  shell?: WorkspaceHistoryShell;
 }) => {
+  const mobile = params.shell === 'mobile';
+  const selectionMode = mobile ? { selectionMode: 'mobile' as const } : {};
+  const selectTeamRun = (teamRunId: string): void => {
+    if (mobile) params.selectionStore.selectRunWithoutShellNavigation(teamRunId, 'team');
+    else params.selectionStore.selectRun(teamRunId, 'team');
+  };
+
   const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
     rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
 
@@ -51,12 +68,18 @@ export const useWorkspaceHistorySelectionActions = (params: {
   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
     const intent = params.selectionStore.beginSelectionIntent();
     try {
-      const result = await params.runHistoryStore.selectTreeRun(run, { selectionIntent: intent });
+      const result = await params.runHistoryStore.selectTreeRun(run, { selectionIntent: intent, ...selectionMode });
       if (result.disposition !== 'committed' || !intent.isCurrent()) return;
       params.emitRunSelected({ type: 'agent', runId: run.runId });
     } catch (error) {
       if (intent.isCurrent()) console.error('Failed to open run:', error);
     }
+  };
+
+  /** The run row: the run's own agent again, not a delegated child under it (autobyteus-277 AR-006). */
+  const onOpenAgentRun = (run: RunTreeRow): Promise<void> => {
+    useAgentRunCollaborationStore().selectHost(run.runId);
+    return onSelectRun(run);
   };
 
   const presentRecoveryFeedback = (error: unknown): boolean => {
@@ -75,7 +98,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
     params.setTeamExpanded(team.teamRunId, true);
     const targetMember = resolveTeamTargetMember(team);
     if (!targetMember) {
-      params.selectionStore.selectRun(team.teamRunId, 'team');
+      selectTeamRun(team.teamRunId);
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
       return;
     }
@@ -88,9 +111,9 @@ export const useWorkspaceHistorySelectionActions = (params: {
         teamRunId: targetMember.teamRunId,
         memberAddress: targetMember.memberAddress,
         agentRunId: targetMember.agentRunId,
-      }, { selectionIntent: intent });
+      }, { selectionIntent: intent, ...selectionMode });
       if (result.disposition !== 'committed' || !intent.isCurrent()) return;
-      params.selectionStore.selectRun(team.teamRunId, 'team');
+      selectTeamRun(team.teamRunId);
       params.emitRunSelected({ type: 'team', runId: team.teamRunId });
     } catch (error) {
       if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team:', error);
@@ -112,6 +135,10 @@ export const useWorkspaceHistorySelectionActions = (params: {
     params.emitRunSelected({ type: 'team', runId: team.teamRunId });
   };
 
+  /**
+   * A row under a Team run: its own member is focused in it; a run it delegated (its tree's row, SR-084) opens as its own
+   * run (rule 2) while the Team shows at its coordinator.
+   */
   const onSelectTeamMember = async (
     member: TeamMemberFocusTarget,
     workspaceId = '',
@@ -120,32 +147,27 @@ export const useWorkspaceHistorySelectionActions = (params: {
     try {
       params.setTeamExpanded(member.teamRunId, true);
       params.expandTeamMemberAncestors?.(workspaceId, member.teamRunId, member.agentRunId);
-      const result = await params.runHistoryStore.selectTreeRun(member, { selectionIntent: intent });
+      const rows = useRunTreeStore().rowsOf({ kind: 'agent_team', runId: member.teamRunId });
+      const row = treeRowOfAgent(rows, member.agentRunId);
+      const delegated = row && delegatedSubjectOfRow(row, member.teamRunId) ? row : null;
+      const focus = delegated ? teamCoordinatorFocusOf(rows, member.teamRunId) : member;
+      if (!focus) throw new Error(`Team run '${member.teamRunId}' has no coordinator in its tree.`);
+      const result = await params.runHistoryStore.selectTreeRun(focus, { selectionIntent: intent, ...selectionMode });
       if (result.disposition !== 'committed' || !intent.isCurrent()) return;
+      const teams = useAgentTeamContextsStore();
+      if (delegated) teams.selectTreeRow(member.teamRunId, delegated);
+      else teams.clearTreeRow(member.teamRunId);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {
       if (intent.isCurrent() && !presentRecoveryFeedback(error)) console.error('Failed to open team member run:', error);
     }
   };
 
-  const onCreateRun = async (
-    workspaceRootPath: string,
-    agentDefinitionId: string,
-  ): Promise<void> => {
-    // A new user intent supersedes any in-flight run open.
-    params.selectionStore.beginSelectionIntent();
-    try {
-      await params.startPresetChat({ workspaceRootPath, agentDefinitionId });
-    } catch (error) {
-      console.error('Failed to start a chat:', error);
-    }
-  };
-
   return {
     onSelectRun,
+    onOpenAgentRun,
     onSelectTeam,
     onOpenTeamRun,
     onSelectTeamMember,
-    onCreateRun,
   };
 };

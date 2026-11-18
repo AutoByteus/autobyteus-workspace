@@ -1,0 +1,4 @@
+# Key-absence scan of this evidence folder (value-free: prints the key length, file count and matching names only)
+# Command: node <scan.mjs> autobyteus-ts/dist/secrets/vault/open-test-vault.js ~/.autobyteus-test/vault <evidence/api-e2e>  (script outside the repo, reads provider DEEPSEEK from the test vault)
+# Commit: 145ae81d06; Date: 2026-11-06T09:06:36Z
+{"keyLength":35,"files":32,"hits":[]}

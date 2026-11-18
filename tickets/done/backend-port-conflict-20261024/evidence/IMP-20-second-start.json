@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-52676-257c",
+    "pid": 83559,
+    "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:52677",
+    "graphqlUrl": "http://127.0.0.1:52677/graphql",
+    "controlEndpoint": "http://127.0.0.1:52676",
+    "controlPort": 52676,
+    "serverPort": 52677,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-a9T9I9",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-a9T9I9/server-data/db/production.db",
+    "logPath": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-app/iso-52676-257c.log"
+  },
+  "evidenceMetadata": {
+    "checkId": "IMP-20",
+    "commit": "10990feb1",
+    "environment": "macOS arm64 / Electron42.11.16 / Node26.12.0 / task-local isolated desktop",
+    "date": "2026-10-24",
+    "steps": "IMP-20-rendered-notes.md; not API/E2E sign-off"
+  }
+}

@@ -1,0 +1,25 @@
+# Case: API-02
+# Command / steps: excerpt of API-02-fresh-build-full.log (guards, typecheck, result)
+# Commit: 405c28d45e (code = df789a89a5)
+# Environment: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2, Python 3.9.6, Docker; packaged AutoByteus 1.5.12-beta.7 built in the fresh clone; isolated instance (e2e profile) on data root /private/tmp/ab412-e2e/data-root; test node ab412-e2e-node (autobyteus/autobyteus-server:beta, built-in 1.5.12-beta.3, 127.0.0.1:18412) behind the logging proxy 127.0.0.1:18413
+# Date: 2026-11-07
+# ---
+9:[guard:web-boundary] Passed.
+14:[guard:localization-boundary] Passed.
+19:[audit:localization-literals] Passed with zero unresolved findings.
+66:[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 43.2s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.5s
+70:[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+71:[typecheck] PASS
+892:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg
+893:  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip
+895:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg.blockmap
+896:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip.blockmap
+897:Build completed: [
+898:  '/private/tmp/ab412-e2e/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg.blockmap',
+899:  '/private/tmp/ab412-e2e/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg',
+900:  '/private/tmp/ab412-e2e/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip.blockmap',
+901:  '/private/tmp/ab412-e2e/clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip'
+903:EXIT 0

@@ -4,7 +4,8 @@
 
 A local, server-side embedding layer: it obtains and runs a compact embedding model on the server's CPU, keeps vectors
 of named **collections** in step with their items, and answers "the items of collection C most similar to text T" with
-scored item IDs. Project Task search ([projects.md](./projects.md#project-task-search)) is its first collection.
+scored item IDs. Project Task search ([projects.md](./projects.md#project-task-search)) is its first collection; memory
+search's journal cards ([memory_search.md](./memory_search.md), `memory-journal-cards`) are the second.
 
 Everything runs inside the server process, the same on the desktop app, a Docker node and a self-hosted server. There
 is no GPU, hosted embedding API, vector database or database server. Item text never leaves the server machine; after
@@ -38,6 +39,12 @@ const result = await index.search("project-tasks/<projectId>", items /* complete
 // result.matches: [{id, score}] best-first, relevant items only
 // result.scores: {id: score} for the requested scoreIds
 // result.readiness: {state: "ready"} | {state: "preparing", phase, done, total} | {state: "unavailable", reason}
+index.sync(collection, items);       // complete current items; embeds what changed in the background, never waits
+// The nearest items among the vectors the collection has for its current text, best first, each with its score
+// only (the caller judges what a score means for its items). It never creates a job, never syncs, never prepares or downloads a model:
+// with no job in this process it answers collection "notSynced" (the caller syncs first); while the model is not
+// ready it answers its readiness with no matches.
+await index.nearest(collection, "query text", { limit: 300 }); // {matches: [{id, score}], collection, readiness}
 index.removeItems(collection, ids);  // never waits for indexing
 index.dropCollection(collection);
 index.retryModel();                  // clears "unavailable"; the next search (or prepareActiveModel()) tries again
@@ -58,6 +65,11 @@ A collection key is a string its consumer owns (Project Task search uses `projec
 `sync` passes the **complete current** item set: items absent from it are removed, and items whose text changed are
 embedded again. A new collection needs no change to the layer: a consumer service builds its key and items and calls
 `search` (a test-only second collection proves this).
+
+`search` suits a consumer that has its items at hand for every query (Project Tasks). A large collection kept by its
+own pipeline (memory search's journal cards) calls `sync` when its items change and `nearest` per query, so a query
+never reads or passes the whole item set; `nearest` tells it, with `notSynced`, when the collection has not been
+synced in this process (after a restart).
 
 ## Models
 

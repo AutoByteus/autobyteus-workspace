@@ -21,6 +21,8 @@ test("accepts a background-task snapshot with a required nullable command and re
     command: "sleep 20 && touch marker",
     status: "running",
     summary: null,
+    end_reason: null,
+    exit_code: null,
     started_at: "2026-09-29T16:48:20.000Z",
   };
   assert.equal(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload }).type, "BACKGROUND_TASK_UPDATED");
@@ -30,6 +32,13 @@ test("accepts a background-task snapshot with a required nullable command and re
   const { command: _command, ...withoutCommand } = payload;
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: withoutCommand }));
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, command: 42 } }));
+  const ended = { ...payload, status: "stopped", end_reason: "time_limit", exit_code: null };
+  assert.equal(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: ended }).payload.end_reason, "time_limit");
+  assert.equal(agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, status: "failed", exit_code: 1 } }).payload.exit_code, 1);
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, end_reason: "timeout" } }));
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, exit_code: 1.5 } }));
+  const { end_reason: _endReason, exit_code: _exitCode, ...withoutEnd } = payload;
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: withoutEnd }));
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TODO_LIST_UPDATE", payload: { todos: [] } }));
 });
 
@@ -110,4 +119,14 @@ test("live token event carries one model call's TPS or null", () => {
   }
   const { output_throughput: _tps, ...withoutTps } = tokenPayload();
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TOKEN_USAGE_UPDATED", payload: withoutTps }));
+});
+
+test("autobyteus-448: AGENT_STATUS carries the required running background task count, a non-negative integer", () => {
+  const payload = { recoverableBlock: null, status: "idle", background_tasks_running: 2, trigger: null, tool_name: null, error_message: null, error_details: null };
+  assert.equal(agentPresentationMessageSchema.parse({ type: "AGENT_STATUS", payload }).payload.background_tasks_running, 2);
+  const { background_tasks_running: _count, ...withoutCount } = payload;
+  assert.throws(() => agentPresentationMessageSchema.parse({ type: "AGENT_STATUS", payload: withoutCount }));
+  for (const bad of [-1, 1.5, "1", null]) {
+    assert.throws(() => agentPresentationMessageSchema.parse({ type: "AGENT_STATUS", payload: { ...payload, background_tasks_running: bad } }));
+  }
 });

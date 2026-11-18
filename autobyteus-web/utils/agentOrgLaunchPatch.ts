@@ -56,8 +56,9 @@ export const canonicalizeAgentOrgPlacementLaunchPatch = <T extends AgentOrgPlace
   if (owns(patch, 'autoExecuteTools') && patch.autoExecuteTools !== undefined) {
     result.autoExecuteTools = patch.autoExecuteTools
   }
-  if ('workspace' in patch && owns(patch, 'workspace') && patch.workspace) {
-    (result as TeamScopeConfigOverride).workspace = cloneWorkspace(patch.workspace)
+  const scopePatch: Readonly<AgentOrgPlacementLaunchPatch> = patch
+  if ('workspace' in scopePatch && owns(scopePatch, 'workspace') && scopePatch.workspace) {
+    (result as TeamScopeConfigOverride).workspace = cloneWorkspace(scopePatch.workspace)
   }
 
   if (owns(patch, 'llmConfig')) {

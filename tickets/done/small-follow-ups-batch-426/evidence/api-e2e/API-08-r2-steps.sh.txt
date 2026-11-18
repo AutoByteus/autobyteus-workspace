@@ -1,0 +1,30 @@
+#!/bin/bash
+# API-08 round 2 helpers (autobyteus-426 AC-004a). Usage: api-08-steps.sh <step> [args]
+#   cdp            forward the current WebView DevTools socket to tcp:9433
+#   page           print {href, loadedWith (navigation entry), screen texts}
+#   go <url>       navigate the page (same node, /mobile URL) and print page
+#   kill-reopen    Home → am kill → Recents → tap the card; prints pids
+#   shot <file>    screencap
+#   screen         uiautomator texts
+A=~/Library/Android/sdk/platform-tools/adb
+S="-s emulator-5584"
+CDP=/tmp/426-api-scripts/cdp.mjs
+cdp() { local sock; for i in $(seq 1 20); do sock=$($A $S shell cat /proc/net/unix | grep -o 'webview_devtools_remote_[0-9]*' | head -1); [ -n "$sock" ] && break; sleep 1; done; $A $S forward tcp:9433 localabstract:$sock >/dev/null; echo "cdp $sock"; }
+screen() { $A $S shell uiautomator dump /sdcard/ui.xml >/dev/null; $A $S shell cat /sdcard/ui.xml | grep -o 'text="[^"]*"' | grep -v 'text=""' | head -6 | tr '\n' ' '; echo; }
+page() { node $CDP 9433 eval 'JSON.stringify({href: location.href, loadedWith: performance.getEntriesByType("navigation").map(n => n.name)[0], historyLength: history.length, notice: !!document.querySelector("[data-testid=\"mobile-unsupported-feature\"]"), list: !!document.querySelector("[data-testid=\"mobile-run-tree\"]"), pairing: !!document.querySelector("[data-testid=\"mobile-pairing-bootstrap\"]")})' | sed 's/pairing=[A-Za-z0-9_.-]*/pairing=…/g'; }
+case "$1" in
+  cdp) cdp ;;
+  page) page; screen ;;
+  go) node $CDP 9433 eval "(()=>{setTimeout(()=>{location.href='$2'},100);return 1})()" >/dev/null; sleep 6; page; screen ;;
+  kill-reopen)
+    echo "pid before: $($A $S shell pidof org.autobyteus.mobile)"
+    $A $S shell input keyevent KEYCODE_HOME; sleep 3
+    $A $S shell am kill org.autobyteus.mobile; sleep 2
+    echo "pid after kill: [$($A $S shell pidof org.autobyteus.mobile)]"
+    $A $S shell input keyevent KEYCODE_APP_SWITCH; sleep 3
+    $A $S shell input tap 540 1100; sleep 10
+    echo "pid after reopen: $($A $S shell pidof org.autobyteus.mobile)"
+    cdp ;;
+  shot) $A $S exec-out screencap -p > "$2" ;;
+  screen) screen ;;
+esac

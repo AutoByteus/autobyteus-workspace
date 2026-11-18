@@ -15,12 +15,17 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 describe("Task delegation public API surface on the running studio server", () => {
   let testDataDir: string | null = null;
   let app: FastifyInstance | null = null;
+  let ownerCredential = "";
+  // `inject` does not pass through the credential attachment: each call names the owner credential itself.
+  const owner = () => ({ authorization: `Bearer ${ownerCredential}` });
 
   beforeAll(async () => {
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "task-delegation-api-surface-e2e-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    app = (await startStudioE2eRuntimeServer()).fastify;
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify;
+    ownerCredential = started.ownerCredential;
   }, 180_000);
 
   afterAll(async () => {
@@ -30,7 +35,7 @@ describe("Task delegation public API surface on the running studio server", () =
   }, 60_000);
 
   const postGraphql = async (query: string, variables?: Record<string, unknown>, expectedStatus = 200) => {
-    const response = await app!.inject({ method: "POST", url: "/graphql", payload: { query, variables } });
+    const response = await app!.inject({ method: "POST", url: "/graphql", payload: { query, variables }, headers: owner() });
     expect(response.statusCode).toBe(expectedStatus);
     return response.json() as { data?: Record<string, unknown>; errors?: Array<{ message: string }> };
   };
@@ -65,14 +70,14 @@ describe("Task delegation public API surface on the running studio server", () =
       "/rest/team-runs/team-run-1/task-delegations/task-1/references/reference-1/content",
       "/rest/agent-org-runs/org-run-1/task-delegations/task-1/references/reference-1/content",
     ]) {
-      const response = await app!.inject({ method: "GET", url });
+      const response = await app!.inject({ method: "GET", url, headers: owner() });
       expect(response.statusCode).toBe(404);
       expect(response.json()).toMatchObject({ message: `Route GET:${url} not found` });
     }
 
     // The retained Org communication reference route is still registered (it answers for the resource, not the route).
     const retained = "/rest/agent-org-runs/org-run-1/communication/messages/message-1/references/reference-1/content";
-    const retainedResponse = await app!.inject({ method: "GET", url: retained });
+    const retainedResponse = await app!.inject({ method: "GET", url: retained, headers: owner() });
     expect(JSON.stringify(retainedResponse.json())).not.toContain(`Route GET:${retained} not found`);
   });
 

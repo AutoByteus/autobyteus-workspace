@@ -10,7 +10,7 @@ export const SEND_MESSAGE_TO_LLM_DESCRIPTION = [
   "Send a self-contained request, result, question or blocker to an agent or agent team that already exists. Use exactly one selector, never both:",
   "- recipient_address: an exact address beginning with '/'. A team's address reaches its coordinator. An address inside your own team reaches the member of your own team.",
   "- target_agent_run_id: an agent's run id. For a task agent team, use its coordinator's run id; a team's own run id is refused.",
-  "send_message_to never creates an agent; to have work done by a new agent, use delegate_task. It returns the run id of the agent that received the message as target_agent_run_id, or null with the reason when the message can't be delivered.",
+  "send_message_to never creates an agent; to have work done by a new agent, use delegate_task. It returns the run id of the agent that received the message as target_agent_run_id, or leaves it out, with the reason, when the message can't be delivered.",
 ].join("\n");
 
 export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =

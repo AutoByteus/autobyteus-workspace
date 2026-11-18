@@ -1,0 +1,31 @@
+# Case: API-E02 §5.1, API-REV-008 round 8, code fdf5ad8380; model regenerated (SR-077: S26 stops M first; refusal code only when the model names one)
+# Command: as API-E02-r6-contract-stories-5.1.txt
+# Result: 28 of 28 steps match
+S0 ['RUN-1'] match
+S1 ['DL-1'] match
+S2 ['IN-2', 'IN-1', 'A-4'] match
+S3 ['B-1', 'E-3'] match
+S4 ['R-1', 'E-2', 'C-1'] match
+S5 ['DL-5'] match
+S6 ['DL-5'] match
+S7 ['B-2', 'R-3', 'R-4', 'C-2'] match
+S8 ['T-4'] match
+S9 ['T-4', 'R-3'] match
+S10 ['T-1', 'R-8'] match
+S11 ['T-2', 'R-6'] match
+S12 ['DL-7'] match
+S13 ['DL-12'] match
+S14 ['T-1', 'DL-12'] match
+S15 ['DL-13'] match
+S23 ['DL-11'] match
+S24 ['A-5', 'A-6'] match
+S16 ['T-3', 'R-9'] match
+S17 ['DL-9', 'DL-10', 'DL-8'] match
+S18 ['R-10'] match
+S19 ['T-1', 'R-8', 'R-10'] match
+S20 ['R-8', 'R-7'] match
+S21 ['IN-7'] match
+S22 ['C-1', 'C-3'] match
+S25 ['DL-9', 'DL-11'] match
+S26 ['T-5'] match
+S27 ['T-4', 'T-8', 'R-11'] match

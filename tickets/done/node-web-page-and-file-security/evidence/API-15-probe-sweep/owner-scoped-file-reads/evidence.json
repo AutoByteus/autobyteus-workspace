@@ -1,0 +1,719 @@
+{
+  "mode": "real-stack",
+  "startedAt": "2026-11-07T22:31:18.578Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security",
+  "stackHead": "fa59313c67",
+  "dirty": [
+    "M tickets/in-progress/node-web-page-and-file-security/follow-ups.md"
+  ],
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    10.9,
+    24.8,
+    22.7
+  ],
+  "cases": {
+    "T-API": {
+      "result": "Pass",
+      "description": "Server time of owner-scoped list and content reads, member run-id reads and a scanning control (AC-010, QR-001, QR-002)",
+      "ms": 421,
+      "load": [
+        11.8,
+        24.8,
+        22.7
+      ],
+      "details": {
+        "unrelatedTeamRuns": 10,
+        "samples": 7,
+        "slowestMedian": {
+          "name": "standalone run list",
+          "ms": 3.6
+        },
+        "slowestSample": {
+          "name": "standalone run list",
+          "ms": 5.5
+        },
+        "reads": {
+          "standalone run list": {
+            "firstMs": 5.1,
+            "medianMs": 3.6,
+            "maxMs": 5.5,
+            "samples": [
+              3.9,
+              3.6,
+              3.7,
+              3.4,
+              3.2,
+              3,
+              5.5
+            ]
+          },
+          "standalone run content": {
+            "firstMs": 3.1,
+            "medianMs": 2.6,
+            "maxMs": 3,
+            "samples": [
+              1.5,
+              2.7,
+              3,
+              2.6,
+              2.7,
+              2.4,
+              2.4
+            ]
+          },
+          "delegated copy list": {
+            "firstMs": 5,
+            "medianMs": 2.8,
+            "maxMs": 2.9,
+            "samples": [
+              2.9,
+              2.7,
+              2.8,
+              2.7,
+              2.8,
+              2.8,
+              2.8
+            ]
+          },
+          "delegated copy content": {
+            "firstMs": 3.3,
+            "medianMs": 2.7,
+            "maxMs": 3.2,
+            "samples": [
+              3.2,
+              2.9,
+              2.4,
+              2.7,
+              2.6,
+              2.8,
+              2.6
+            ]
+          },
+          "team configured member list": {
+            "firstMs": 4,
+            "medianMs": 2.6,
+            "maxMs": 2.7,
+            "samples": [
+              2.7,
+              2.7,
+              2.4,
+              2.7,
+              2.6,
+              2.4,
+              2.3
+            ]
+          },
+          "team configured member content": {
+            "firstMs": 2.8,
+            "medianMs": 2.4,
+            "maxMs": 3.1,
+            "samples": [
+              2.4,
+              2.8,
+              3.1,
+              2.5,
+              2.4,
+              2.4,
+              1
+            ]
+          },
+          "team task agent list": {
+            "firstMs": 2.6,
+            "medianMs": 2.5,
+            "maxMs": 2.9,
+            "samples": [
+              2.9,
+              2.7,
+              2.4,
+              2.4,
+              2.5,
+              2.3,
+              2.5
+            ]
+          },
+          "team task agent content": {
+            "firstMs": 3.8,
+            "medianMs": 2.3,
+            "maxMs": 2.8,
+            "samples": [
+              2.4,
+              2.5,
+              2.3,
+              2.3,
+              2.3,
+              2.3,
+              2.8
+            ]
+          },
+          "org direct agent list": {
+            "firstMs": 4.5,
+            "medianMs": 2.8,
+            "maxMs": 3.1,
+            "samples": [
+              2.8,
+              2.6,
+              2.6,
+              2.7,
+              3,
+              2.9,
+              3.1
+            ]
+          },
+          "org direct agent content": {
+            "firstMs": 3.4,
+            "medianMs": 2.6,
+            "maxMs": 2.8,
+            "samples": [
+              2.6,
+              2.6,
+              2.8,
+              1.4,
+              2.4,
+              2.6,
+              2.6
+            ]
+          },
+          "org member-team member list": {
+            "firstMs": 2.8,
+            "medianMs": 2.5,
+            "maxMs": 2.8,
+            "samples": [
+              2.8,
+              2.8,
+              2.6,
+              2.5,
+              2.5,
+              2.4,
+              2.4
+            ]
+          },
+          "org member-team member content": {
+            "firstMs": 2.6,
+            "medianMs": 2.8,
+            "maxMs": 3,
+            "samples": [
+              3,
+              2.8,
+              2.6,
+              2.5,
+              2.8,
+              3,
+              2.8
+            ]
+          },
+          "org-root task agent list": {
+            "firstMs": 2.7,
+            "medianMs": 2.4,
+            "maxMs": 2.9,
+            "samples": [
+              2.5,
+              2.4,
+              2.4,
+              2.4,
+              2.3,
+              2.5,
+              2.9
+            ]
+          },
+          "org-root task agent content": {
+            "firstMs": 2.9,
+            "medianMs": 2.7,
+            "maxMs": 3.7,
+            "samples": [
+              2.7,
+              2.7,
+              2.7,
+              2.6,
+              2.5,
+              2.7,
+              3.7
+            ]
+          },
+          "org member-team task agent list": {
+            "firstMs": 3.5,
+            "medianMs": 2.8,
+            "maxMs": 3.5,
+            "samples": [
+              3.5,
+              1.5,
+              2.8,
+              2.8,
+              2.6,
+              2.7,
+              2.8
+            ]
+          },
+          "org member-team task agent content": {
+            "firstMs": 2.7,
+            "medianMs": 2.5,
+            "maxMs": 3.1,
+            "samples": [
+              2.6,
+              2.5,
+              1.2,
+              3.1,
+              3,
+              2.5,
+              2.5
+            ]
+          },
+          "run-id list of a member (QR-002)": {
+            "firstMs": 2.7,
+            "medianMs": 2.1,
+            "maxMs": 2.4,
+            "samples": [
+              2.1,
+              2.4,
+              2.2,
+              2.1,
+              2.3,
+              2.1,
+              2
+            ]
+          },
+          "run-id content of a member (QR-002)": {
+            "firstMs": 2.2,
+            "medianMs": 2,
+            "maxMs": 2.1,
+            "samples": [
+              2.1,
+              1.9,
+              1.9,
+              2,
+              2,
+              1.9,
+              2
+            ]
+          },
+          "control: scanning context-file read (FU-A)": {
+            "firstMs": 5.8,
+            "medianMs": 4.1,
+            "maxMs": 4.4,
+            "samples": [
+              4.4,
+              4.3,
+              2.9,
+              2.7,
+              4.1,
+              4.2,
+              2.9
+            ]
+          }
+        }
+      }
+    },
+    "B-001": {
+      "result": "Pass",
+      "description": "Desktop: a delegated copy's file opens through the hub route (AC-001, REQ-007)",
+      "ms": 4445,
+      "load": [
+        13,
+        24.1,
+        22.5
+      ],
+      "details": {
+        "opened": {
+          "label": "delegated copy",
+          "subject": {
+            "kind": "standaloneMember",
+            "hostRunId": "osr_manager_0d09f2659fbb4d5984f8ec80a30530d8",
+            "memberAddress": "/osr_helper",
+            "agentRunId": "osr_helper_4da1c11039cb420a8fc00599076a0232"
+          },
+          "path": "copy-notes.md",
+          "requestUrl": "/rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "statuses": [
+            200,
+            200
+          ],
+          "requestsOnTabOpen": 1,
+          "requestsOnItemClick": 1,
+          "shown": "copy-notes.md Owner-scoped file of delegated copy (copy-notes.md) 29847e61",
+          "sinceClickMs": 1187
+        },
+        "requests": [
+          "200 /rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "200 /rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    },
+    "B-002": {
+      "result": "Pass",
+      "description": "Desktop: a Team run's configured member and team task agent files open through the team route (AC-002, AC-003, REQ-007)",
+      "ms": 7023,
+      "load": [
+        12.3,
+        23.7,
+        22.4
+      ],
+      "details": {
+        "opened": [
+          {
+            "label": "team configured member",
+            "subject": {
+              "kind": "teamMember",
+              "teamRunId": "osr_team_6fa1453bc9534559ad0ada22d380cff4",
+              "memberAddress": "/manager",
+              "agentRunId": "osr_manager_d768a36c8f414e0eb268f7c32594722e"
+            },
+            "path": "team-manager-notes.md",
+            "requestUrl": "/rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_manager_d768a36c8f414e0eb268f7c32594722e/file-change-content?path=team-manager-notes.md",
+            "statuses": [
+              200,
+              200
+            ],
+            "requestsOnTabOpen": 1,
+            "requestsOnItemClick": 1,
+            "shown": "team-manager-notes.md Owner-scoped file of team configured member (team-manager-notes.md) 4adf4b90",
+            "sinceClickMs": 1173
+          },
+          {
+            "label": "team task agent",
+            "subject": {
+              "kind": "teamMember",
+              "teamRunId": "osr_team_6fa1453bc9534559ad0ada22d380cff4",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_a3a5c36df4984f719e2ed07983249e2e"
+            },
+            "path": "team-task-agent-notes.md",
+            "requestUrl": "/rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_helper_a3a5c36df4984f719e2ed07983249e2e/file-change-content?path=team-task-agent-notes.md",
+            "statuses": [
+              200,
+              200
+            ],
+            "requestsOnTabOpen": 1,
+            "requestsOnItemClick": 1,
+            "shown": "team-task-agent-notes.md Owner-scoped file of team task agent (team-task-agent-notes.md) 9d99163e",
+            "sinceClickMs": 1174
+          }
+        ],
+        "requests": [
+          "200 /rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_manager_d768a36c8f414e0eb268f7c32594722e/file-change-content?path=team-manager-notes.md",
+          "200 /rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_manager_d768a36c8f414e0eb268f7c32594722e/file-change-content?path=team-manager-notes.md",
+          "200 /rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_helper_a3a5c36df4984f719e2ed07983249e2e/file-change-content?path=team-task-agent-notes.md",
+          "200 /rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_helper_a3a5c36df4984f719e2ed07983249e2e/file-change-content?path=team-task-agent-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    },
+    "B-003": {
+      "result": "Pass",
+      "description": "Desktop: an Org run's direct agent, member-team member, org-root and member-team task agent files open through the org route (AC-004, AC-005, REQ-007)",
+      "ms": 12631,
+      "load": [
+        13.2,
+        23.4,
+        22.3
+      ],
+      "details": {
+        "opened": [
+          {
+            "label": "org direct agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_e783b50f0da64dae8082a0ddc35f098e",
+              "memberAddress": "/manager",
+              "agentRunId": "osr_manager_73e52c68bf094609b2bc9098d3f279ba"
+            },
+            "path": "org-manager-notes.md",
+            "requestUrl": "/rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_manager_73e52c68bf094609b2bc9098d3f279ba/file-change-content?memberAddress=%2Fmanager&path=org-manager-notes.md",
+            "statuses": [
+              200,
+              200
+            ],
+            "requestsOnTabOpen": 1,
+            "requestsOnItemClick": 1,
+            "shown": "org-manager-notes.md Owner-scoped file of org direct agent (org-manager-notes.md) 14d88b06",
+            "sinceClickMs": 1179
+          },
+          {
+            "label": "org member-team member",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_e783b50f0da64dae8082a0ddc35f098e",
+              "memberAddress": "/squad/lead",
+              "agentRunId": "osr_lead_2f9562393d5f47c6841a13cab7f922d6"
+            },
+            "path": "org-squad-lead-notes.md",
+            "requestUrl": "/rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_lead_2f9562393d5f47c6841a13cab7f922d6/file-change-content?memberAddress=%2Fsquad%2Flead&path=org-squad-lead-notes.md",
+            "statuses": [
+              200
+            ],
+            "requestsOnTabOpen": 0,
+            "requestsOnItemClick": 1,
+            "shown": "org-squad-lead-notes.md Owner-scoped file of org member-team member (org-squad-lead-notes.md) 38ba9853",
+            "sinceClickMs": 1177
+          },
+          {
+            "label": "org-root task agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_e783b50f0da64dae8082a0ddc35f098e",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_9fbd8001c1bc449ab2494c1669696d49"
+            },
+            "path": "org-task-agent-notes.md",
+            "requestUrl": "/rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_helper_9fbd8001c1bc449ab2494c1669696d49/file-change-content?memberAddress=%2Fosr_helper&path=org-task-agent-notes.md",
+            "statuses": [
+              200,
+              200
+            ],
+            "requestsOnTabOpen": 1,
+            "requestsOnItemClick": 1,
+            "shown": "org-task-agent-notes.md Owner-scoped file of org-root task agent (org-task-agent-notes.md) 8fa88be2",
+            "sinceClickMs": 1174
+          },
+          {
+            "label": "org member-team task agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_e783b50f0da64dae8082a0ddc35f098e",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_29a97ab322114071beae956174468cf9"
+            },
+            "path": "org-squad-task-agent-notes.md",
+            "requestUrl": "/rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_helper_29a97ab322114071beae956174468cf9/file-change-content?memberAddress=%2Fosr_helper&path=org-squad-task-agent-notes.md",
+            "statuses": [
+              200,
+              200
+            ],
+            "requestsOnTabOpen": 1,
+            "requestsOnItemClick": 1,
+            "shown": "org-squad-task-agent-notes.md Owner-scoped file of org member-team task agent (org-squad-task-agent-notes.md) e66b14e7",
+            "sinceClickMs": 1173
+          }
+        ],
+        "requests": [
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_manager_73e52c68bf094609b2bc9098d3f279ba/file-change-content?memberAddress=%2Fmanager&path=org-manager-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_manager_73e52c68bf094609b2bc9098d3f279ba/file-change-content?memberAddress=%2Fmanager&path=org-manager-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_lead_2f9562393d5f47c6841a13cab7f922d6/file-change-content?memberAddress=%2Fsquad%2Flead&path=org-squad-lead-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_lead_2f9562393d5f47c6841a13cab7f922d6/file-change-content?memberAddress=%2Fsquad%2Flead&path=org-squad-lead-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_helper_9fbd8001c1bc449ab2494c1669696d49/file-change-content?memberAddress=%2Fosr_helper&path=org-task-agent-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_helper_9fbd8001c1bc449ab2494c1669696d49/file-change-content?memberAddress=%2Fosr_helper&path=org-task-agent-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_helper_29a97ab322114071beae956174468cf9/file-change-content?memberAddress=%2Fosr_helper&path=org-squad-task-agent-notes.md",
+          "200 /rest/agent-org-runs/osr_org_e783b50f0da64dae8082a0ddc35f098e/agent-runs/osr_helper_29a97ab322114071beae956174468cf9/file-change-content?memberAddress=%2Fosr_helper&path=org-squad-task-agent-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    },
+    "B-004": {
+      "result": "Pass",
+      "description": "Desktop: a standalone run's own file opens through the run route (AC-006)",
+      "ms": 4956,
+      "load": [
+        12.8,
+        23.1,
+        22.2
+      ],
+      "details": {
+        "opened": {
+          "label": "standalone run",
+          "subject": {
+            "kind": "run",
+            "runId": "osr_manager_0d09f2659fbb4d5984f8ec80a30530d8"
+          },
+          "path": "hub-notes.md",
+          "requestUrl": "/rest/runs/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/file-change-content?path=hub-notes.md",
+          "statuses": [
+            200,
+            200
+          ],
+          "requestsOnTabOpen": 1,
+          "requestsOnItemClick": 1,
+          "shown": "hub-notes.md Owner-scoped file of standalone run (hub-notes.md) 7c758856",
+          "sinceClickMs": 1183
+        },
+        "requests": [
+          "200 /rest/runs/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/file-change-content?path=hub-notes.md",
+          "200 /rest/runs/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/file-change-content?path=hub-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    },
+    "B-005": {
+      "result": "Pass",
+      "description": "Desktop: a delegated copy's deleted file shows \"File not found\" through the hub route (AC-001 alternate, REQ-008)",
+      "ms": 4443,
+      "load": [
+        12.2,
+        22.8,
+        22.1
+      ],
+      "details": {
+        "opened": {
+          "label": "delegated copy",
+          "subject": {
+            "kind": "standaloneMember",
+            "hostRunId": "osr_manager_0d09f2659fbb4d5984f8ec80a30530d8",
+            "memberAddress": "/osr_helper",
+            "agentRunId": "osr_helper_4da1c11039cb420a8fc00599076a0232"
+          },
+          "path": "copy-notes.md",
+          "requestUrl": "/rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "statuses": [
+            404,
+            404
+          ],
+          "requestsOnTabOpen": 1,
+          "requestsOnItemClick": 1,
+          "shown": "copy-notes.md File not found This file has been deleted from the workspace or moved to a different location.",
+          "sinceClickMs": 1182
+        },
+        "serverBody": "{\"detail\":\"File change content is not available\"}",
+        "requests": [
+          "404 /rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "404 /rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+        ],
+        "browserErrors": [
+          {
+            "at": 1794090733681,
+            "kind": "console",
+            "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+            "url": "http://127.0.0.1:65313/rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+          },
+          {
+            "at": 1794090735213,
+            "kind": "console",
+            "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+            "url": "http://127.0.0.1:65313/rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+          }
+        ],
+        "allowedContent404Errors": 2,
+        "content404Responses": 2
+      }
+    },
+    "B-006": {
+      "result": "Pass",
+      "description": "Mobile (Phone Access): an agent run's file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)",
+      "ms": 3589,
+      "load": [
+        12.2,
+        22.8,
+        22.1
+      ],
+      "details": {
+        "opened": {
+          "label": "standalone run",
+          "requestUrl": "/rest/runs/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/file-change-content?path=hub-notes.md",
+          "statuses": [
+            200
+          ],
+          "shown": "hub-notes.md Owner-scoped file of standalone run (hub-notes.md) 7c758856",
+          "mark": 1794090738608
+        },
+        "requests": [
+          "200 /rest/runs/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/file-change-content?path=hub-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    },
+    "B-007": {
+      "result": "Pass",
+      "description": "Mobile (Phone Access): a Team run member's file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)",
+      "ms": 3226,
+      "load": [
+        12.8,
+        22.8,
+        22.1
+      ],
+      "details": {
+        "opened": {
+          "label": "team configured member",
+          "requestUrl": "/rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_manager_d768a36c8f414e0eb268f7c32594722e/file-change-content?path=team-manager-notes.md",
+          "statuses": [
+            200
+          ],
+          "shown": "team-manager-notes.md Owner-scoped file of team configured member (team-manager-notes.md) 4adf4b90",
+          "mark": 1794090741832
+        },
+        "requests": [
+          "200 /rest/team-runs/osr_team_6fa1453bc9534559ad0ada22d380cff4/agent-runs/osr_manager_d768a36c8f414e0eb268f7c32594722e/file-change-content?path=team-manager-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": 55737,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 55296,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataCopyRemoved": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-QE4IZe"
+  },
+  "failures": [],
+  "seed": {
+    "from": "/tmp/api416-15-seed-GozQ/owner",
+    "copy": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-QE4IZe",
+    "unrelatedTeamRuns": 10,
+    "memoryFolders": {
+      "agent_org_run_history_index.json": 0,
+      "agent_orgs": 1,
+      "agent_teams": 11,
+      "agents": 5,
+      "run_history_index.json": 0,
+      "team_run_history_index.json": 0
+    }
+  },
+  "warmUpBrowserErrors": [
+    {
+      "at": 1794090691058,
+      "kind": "console",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+      "url": "http://127.0.0.1:65314/_nuxt/node_modules/.cache/vite/client/deps/dompurify.js?v=595aaedd"
+    },
+    {
+      "at": 1794090691058,
+      "kind": "console",
+      "text": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:65314/_nuxt/pages/workspace.vue",
+      "url": "http://127.0.0.1:65314/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/node_modules/.pnpm/vue-router@4.6.4_vue@3.5.44_typescript@5.9.3_/node_modules/vue-router/dist/vue-router.mjs?v=d1e7276f"
+    },
+    {
+      "at": 1794090691059,
+      "kind": "console",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:65314/_nuxt/pages/workspace.vue",
+      "url": "http://127.0.0.1:65314/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/nuxt.js?v=d1e7276f"
+    }
+  ],
+  "browserErrors": [
+    {
+      "at": 1794090733681,
+      "kind": "console",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:65313/rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+    },
+    {
+      "at": 1794090735213,
+      "kind": "console",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:65313/rest/agent-collaborations/osr_manager_0d09f2659fbb4d5984f8ec80a30530d8/agent-runs/osr_helper_4da1c11039cb420a8fc00599076a0232/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+    }
+  ],
+  "finishedAt": "2026-11-07T22:32:25.191Z",
+  "loadAtEnd": [
+    12.8,
+    22.8,
+    22.1
+  ]
+}

@@ -1,5 +1,6 @@
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { containAuthoredMarkdownHeadings } from "./markdown-heading-containment.js";
+import type { RunProjectContext } from "../domain/run-project-context.js";
 
 const normalizeScalar = (value: string | null | undefined): string | null => {
   const normalized = value?.trim().replace(/\r?\n|\r/g, " ").trim() ?? "";
@@ -36,6 +37,16 @@ export const renderTeamInstructionSection = (teamInstruction: string | null): st
   const body = normalizeBody(teamInstruction);
   return body ? `## Team Instruction\n\n${containAuthoredMarkdownHeadings(body, 2)}` : null;
 };
+
+/** The Project a run was started under (REQ-006): the run relies on it with the Project tools. */
+export const renderProjectSection = (project: RunProjectContext): string => `## Project
+
+You work in the Project ${requirePromptScalar(project.name, "Project name")} (Project ID ${requirePromptScalar(project.projectId, "Project ID")}). Use this Project ID with the Project tools; ask the user before working on another Project.`;
+
+/** An enabled agent's semantic memory folder (semantic-memory-prompt-contract.md §2): exactly this text. */
+export const renderSemanticMemorySection = (semanticMemoryPath: string): string => `## Semantic Memory
+
+Your semantic memory is the folder \`${semanticMemoryPath}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.`;
 
 export const renderWorkingEnvironmentSection = (workspaceRootPath: string): string => `## Working Environment
 

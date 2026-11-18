@@ -1,0 +1,18 @@
+# F-50 (USR-4, unclean-shutdown-delegated-team-restore), R8-D
+# Expected (earlier ticket's AC-006, base): TEAM_SEND_MESSAGE_REJECTED / TASK_EXECUTION_CONTEXT_UNAVAILABLE, 'The delegated Team at ... cannot be restored ...' naming the Team, coordinator, damaged line and next step; file unchanged (passes).
+
+   → {"code":"COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE","message":"The local conversation state cannot be inspected safely: line 3 of raw_traces_active.jsonl is damaged.","error_scope":"runtime","error_effect":"terminal","turn_id":null,"change_sequence":2,"agent_run_id":"usdr_lead_72f350_5f296d187ded4614850005c77f11e3eb"}: expected { …(7) } to match object { …(2) }
+(6 matching properties omitted from actual)
+...
+   → expected 'The local conversation state cannot b…' to be 'The delegated Team at \'/usdr_marketi…' // Object.is equality
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut 2799ms
+...
+AssertionError: {"code":"COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE","message":"The local conversation state cannot be inspected safely: line 3 of raw_traces_active.jsonl is damaged.","error_scope":"runtime","error_effect":"terminal","turn_id":null,"change_sequence":2,"agent_run_id":"usdr_lead_72f350_5f296d187ded4614850005c77f11e3eb"}: expected { …(7) } to match object { …(2) }
+(6 matching properties omitted from actual)
+...
++   "code": "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE",
+  }
+...
+AssertionError: expected 'The local conversation state cannot b…' to be 'The delegated Team at \'/usdr_marketi…' // Object.is equality
+
+...

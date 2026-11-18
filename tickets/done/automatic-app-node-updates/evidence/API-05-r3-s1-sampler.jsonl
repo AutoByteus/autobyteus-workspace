@@ -1,0 +1,4 @@
+{"at":"2026-11-02T07:34:30.843Z","state":"available|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T07:34:33.374Z","state":"downloading|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T07:34:34.384Z","state":"error|preparing=false|staged=false|install-preparation|AUTO_FAILED","health":200,"marker":null}
+{"end":"2026-11-02T07:34:56.052Z"}

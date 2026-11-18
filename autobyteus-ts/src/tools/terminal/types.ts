@@ -1,101 +1,64 @@
-export class TerminalResult {
-  stdout: string;
-  stderr: string;
-  exitCode: number | null;
-  timedOut: boolean;
+/**
+ * A background task of a native run: a command started with `run_bash(run_in_background: true)`, or an `&` job
+ * of a foreground `run_bash` call that was still running when the call's foreground part ended.
+ */
+export interface BackgroundTaskStart {
+  /** The task's process id: `kill <pid>` stops it. */
+  pid: number;
+  /** The `run_bash` command text of the call that started it (no job text is parsed). */
+  command: string;
   effectiveCwd: string;
-  backgroundProcesses: BackgroundProcessInfo[];
+  /** The call's output log; every task of one call shares it. */
+  outputFile: string;
+  /** ISO-8601 start time. */
+  startedAt: string;
+}
 
+/** How a background task ended: its exit code, the signal that killed it, or why its end is unknown. */
+export type BackgroundTaskOutcome = { exitCode: number } | { signal: string } | { error: string };
+
+export interface BackgroundTaskEnd {
+  pid: number;
+  command: string;
+  outcome: BackgroundTaskOutcome;
+  durationMs: number;
+  outputFile: string;
+  /** The call's output log's last lines when the task ended (tasks of the same call share it). */
+  lastLines: string;
+}
+
+/** The result of a foreground `run_bash` call. */
+export class TerminalResult {
   constructor(
-    stdout: string,
-    stderr: string,
-    exitCode: number | null,
-    timedOut: boolean,
-    effectiveCwd: string,
-    backgroundProcesses: BackgroundProcessInfo[] = []
-  ) {
-    this.stdout = stdout;
-    this.stderr = stderr;
-    this.exitCode = exitCode;
-    this.timedOut = timedOut;
-    this.effectiveCwd = effectiveCwd;
-    this.backgroundProcesses = backgroundProcesses;
-  }
+    public stdout: string,
+    public stderr: string,
+    public exitCode: number | null,
+    public timedOut: boolean,
+    public effectiveCwd: string,
+    /** `&` jobs still running when the foreground part ended. */
+    public backgroundTasksStarted: BackgroundTaskStart[] = [],
+    /** Background tasks of this agent that ended while this call ran. */
+    public backgroundTasksEnded: BackgroundTaskEnd[] = []
+  ) {}
 
   toJSON(): Record<string, unknown> {
     const json: Record<string, unknown> = {
       exitCode: this.exitCode,
       effectiveCwd: this.effectiveCwd
     };
-    if (this.stdout !== '') {
-      json.stdout = this.stdout;
-    }
-    if (this.stderr !== '') {
-      json.stderr = this.stderr;
-    }
-    if (this.timedOut) {
-      json.timedOut = this.timedOut;
-    }
-    if (this.backgroundProcesses.length > 0) {
-      json.backgroundProcesses = this.backgroundProcesses;
-    }
+    if (this.stdout !== '') json.stdout = this.stdout;
+    if (this.stderr !== '') json.stderr = this.stderr;
+    if (this.timedOut) json.timedOut = this.timedOut;
+    if (this.backgroundTasksStarted.length > 0) json.backgroundTasksStarted = this.backgroundTasksStarted;
+    if (this.backgroundTasksEnded.length > 0) json.backgroundTasksEnded = this.backgroundTasksEnded;
     return json;
   }
 }
 
-export type BackgroundProcessStatus = 'running' | 'exited' | 'stopped';
-
-export class BackgroundProcessInfo {
+/** The result of `run_bash(run_in_background: true)`. */
+export type BackgroundCommandStarted = {
   pid: number;
-  command: string;
-  startedAt: string;
-  status: BackgroundProcessStatus;
+  status: 'running';
   effectiveCwd: string;
-
-  constructor(
-    pid: number,
-    command: string,
-    startedAt: string | Date,
-    status: BackgroundProcessStatus,
-    effectiveCwd: string
-  ) {
-    this.pid = pid;
-    this.command = command;
-    this.startedAt = startedAt instanceof Date ? startedAt.toISOString() : startedAt;
-    this.status = status;
-    this.effectiveCwd = effectiveCwd;
-  }
-
-  toJSON(): Record<string, unknown> {
-    return {
-      pid: this.pid,
-      command: this.command,
-      startedAt: this.startedAt,
-      status: this.status,
-      effectiveCwd: this.effectiveCwd
-    };
-  }
-}
-
-export class BackgroundProcessOutput {
-  output: string;
-  isRunning: boolean;
-  pid: number;
-  status: BackgroundProcessStatus;
-
-  constructor(output: string, isRunning: boolean, pid: number, status: BackgroundProcessStatus) {
-    this.output = output;
-    this.isRunning = isRunning;
-    this.pid = pid;
-    this.status = status;
-  }
-
-  toJSON(): Record<string, unknown> {
-    return {
-      output: this.output,
-      isRunning: this.isRunning,
-      pid: this.pid,
-      status: this.status
-    };
-  }
-}
+  outputFile: string;
+};

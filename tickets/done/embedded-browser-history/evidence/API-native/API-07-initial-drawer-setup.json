@@ -1,0 +1,143 @@
+{
+  "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+  "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+  "date": "2026-10-26T17:22:51.969Z",
+  "environment": "darwin-arm64 Node v22.23.3",
+  "dirtyPaths": "autobyteus-web/package.json",
+  "caseId": "API-07",
+  "instanceId": "iso-50501-2ddb",
+  "fixtureOrigin": "http://127.0.0.1:50500",
+  "observations": [
+    {
+      "label": "keyboard Back, disabled skipped",
+      "time": "2026-10-26T17:22:56.349Z",
+      "shell": {
+        "activeTabId": "d334ea",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "d334ea",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:50500/A",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50500/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50500/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 2"
+      }
+    },
+    {
+      "label": "normal panel",
+      "formWidth": 434,
+      "scrollWidth": 434,
+      "clientWidth": 434,
+      "inputWidth": 166,
+      "controls": [
+        {
+          "title": "Open new tab",
+          "disabled": false,
+          "x": 758,
+          "width": 38,
+          "right": 796
+        },
+        {
+          "title": "Back",
+          "disabled": true,
+          "x": 804,
+          "width": 34,
+          "right": 838
+        },
+        {
+          "title": "Forward",
+          "disabled": false,
+          "x": 846,
+          "width": 34,
+          "right": 880
+        },
+        {
+          "title": "",
+          "disabled": false,
+          "x": 888,
+          "width": 166,
+          "right": 1054
+        },
+        {
+          "title": "Refresh active tab",
+          "disabled": false,
+          "x": 1062,
+          "width": 38,
+          "right": 1100
+        },
+        {
+          "title": "Switch active tab to mobile view",
+          "disabled": false,
+          "x": 1108,
+          "width": 38,
+          "right": 1146
+        },
+        {
+          "title": "Close active tab",
+          "disabled": false,
+          "x": 1154,
+          "width": 38,
+          "right": 1192
+        }
+      ],
+      "right": 1192
+    },
+    {
+      "label": "failure state",
+      "time": "2026-10-26T17:23:07.310Z",
+      "shell": {
+        "activeTabId": "d334ea",
+        "sessions": [
+          {
+            "canGoBack": false,
+            "canGoForward": true,
+            "tab_id": "d334ea",
+            "title": "Fixture /A",
+            "url": "http://127.0.0.1:50500/A",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "address": "http://127.0.0.1:50500/A",
+      "buttons": {
+        "backDisabled": true,
+        "forwardDisabled": false
+      },
+      "document": {
+        "url": "http://127.0.0.1:50500/A",
+        "title": "Fixture /A",
+        "heading": "Page /A",
+        "state": null,
+        "length": 2,
+        "marker": "base",
+        "loads": "Request 3"
+      }
+    }
+  ],
+  "startedAt": "2026-10-26T17:22:56.056Z",
+  "result": "Fail",
+  "error": "locator.boundingBox: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"workspace-right-resize-handle\"]')\u001b[22m\n\n    at API-07 (/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:256:28)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs:301:30",
+  "completedAt": "2026-10-26T17:23:07.859Z"
+}

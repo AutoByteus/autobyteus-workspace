@@ -1,16 +1,19 @@
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
-import type {
-  TaskAgentExecutionSource,
-  TaskExecutionSource,
-  TaskTeamExecutionSource,
+import {
+  sourceInFolder,
+  type TaskAgentExecutionSource,
+  type TaskExecutionSource,
+  type TaskTeamExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CatalogTaskSource } from "./collaborator-admission.js";
-import { CollaboratorAddError, ownTeamDelegationRefusedMessage } from "./collaborator-errors.js";
-import type { RemotePeer } from "../execution/remote/remote-run-channel.js";
+import { CollaboratorAddError, ownTeamDelegationRefusedMessage, selfDelegationRefusedMessage } from "./collaborator-errors.js";
+import type { PeerNodeRef } from "../execution/remote/remote-run-channel.js";
+import type { DelegationWork, RoutingDecisionDraft } from "../../model-routing/domain/model-routing-types.js";
 
-/** The index fact a root supplies for the own-Team delegation rule (CM-1, DEC-008). */
+/** The index facts a root supplies for the self and own-Team delegation rules (CM-1, DEC-008; autobyteus-435 REQ-013). */
 export interface DelegationSourceIndexPort {
+  agentAddressOf(agentRunId: string): AgentTeamAddress | null;
   isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
 }
 
@@ -22,13 +25,17 @@ export interface DelegationSourceIndexPort {
  * re-projection or an in-run placement), so a recorded fallback is never repeated as new.
  */
 export type DelegationPlacement =
-  | Readonly<{ kind: "agent"; address: AgentTeamAddress; source: TaskAgentExecutionSource; launchNotes?: readonly string[] }>
+  | Readonly<{
+      kind: "agent"; address: AgentTeamAddress; source: TaskAgentExecutionSource; launchNotes?: readonly string[];
+      routingDecision?: RoutingDecisionDraft;
+    }>
   | Readonly<{
       kind: "agent_team";
       address: AgentTeamAddress;
       coordinatorAddress: AgentTeamAddress;
       source: TaskTeamExecutionSource;
       launchNotes?: readonly string[];
+      routingDecision?: RoutingDecisionDraft;
     }>
   | RemoteAgentPlacement;
 
@@ -39,44 +46,70 @@ export type DelegationPlacement =
 export type RemoteAgentPlacement = Readonly<{
   kind: "remote_agent";
   address: AgentTeamAddress;
-  peer: RemotePeer;
+  peer: PeerNodeRef;
   description: string;
+  /** The work and its Task, sent with the start request: the peer's Model Router is told it (DS-002). */
+  work: DelegationWork;
   launchNotes?: never;
+  routingDecision?: never;
 }>;
 
-/** The placement of a copy at `address` that starts from `source`. */
-export const sourcedPlacement = (address: AgentTeamAddress, source: TaskExecutionSource, launchNotes: readonly string[] = []): DelegationPlacement => {
-  const notes = launchNotes.length ? { launchNotes } : {};
+/**
+ * The placement of a copy at `address` that starts from `source`; a fresh catalog admission's notes and (Model Routing
+ * on) decision draft go with it.
+ */
+export const sourcedPlacement = (
+  address: AgentTeamAddress,
+  source: TaskExecutionSource,
+  admission: Readonly<{ launchNotes?: readonly string[]; routingDecision?: RoutingDecisionDraft }> = {},
+): DelegationPlacement => {
+  const extras = {
+    ...(admission.launchNotes?.length ? { launchNotes: admission.launchNotes } : {}),
+    ...(admission.routingDecision ? { routingDecision: admission.routingDecision } : {}),
+  };
   return source.kind === "agent"
-    ? Object.freeze({ kind: "agent", address, source, ...notes })
-    : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source, ...notes });
+    ? Object.freeze({ kind: "agent", address, source, ...extras })
+    : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source, ...extras });
 };
+
+const placementInFolder = (placement: DelegationPlacement, folder: string | null): DelegationPlacement =>
+  folder === null || placement.kind === "remote_agent"
+    ? placement
+    : Object.freeze({ ...placement, source: sourceInFolder(placement.source, folder) }) as DelegationPlacement;
 
 /**
  * `delegate_task(address)` placement (DS-001), called inside the root gate:
  * 1. CM-1: the sender itself, a teammate or its own Team is refused before any placement,
  *    preparation or Task link, with guidance to use `send_message_to`;
- * 2. the root's in-run configured placements, with the placement's snapshot;
+ * 2. the root's in-run configured placements, then a configured placement its address step 2 reaches (SR-059, as base
+ *    answered a hosted copy), with the placement's snapshot;
  * 3. a listed catalog definition that is not in the run: a fresh copy with its source snapshot.
  * A catalog definition that cannot run returns its reason as a not-found delegation result.
+ * A new copy with its own folder (`newCopyFolder`) runs there in both forms; `null` keeps the placement's or base's.
  */
 export const resolveDelegationPlacement = async (input: Readonly<{
   port: DelegationSourceIndexPort;
   senderAgentRunId: string;
   address: AgentTeamAddress;
-  resolveInRun(): DelegationPlacement;
-  catalogSource(): Promise<CatalogTaskSource | null>;
+  newCopyFolder: string | null;
+  /** An in-run placement (the run's own configured one, else one its address step 2 reaches, SR-059). */
+  resolveInRun(): Promise<DelegationPlacement>;
+  catalogSource(workspaceRootPath: string | null): Promise<CatalogTaskSource | null>;
 }>): Promise<DelegationPlacement> => {
+  // The sender's own address is told apart from a teammate's, so the agent is not told to message itself.
+  if (input.address === input.port.agentAddressOf(input.senderAgentRunId)) {
+    throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", selfDelegationRefusedMessage(input.address));
+  }
   if (input.port.isOwnTeamAddress(input.senderAgentRunId, input.address)) {
     throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(input.address));
   }
   try {
-    return input.resolveInRun();
+    return placementInFolder(await input.resolveInRun(), input.newCopyFolder);
   } catch (error) {
     if (!(error instanceof CollaborationContractError) || error.code !== "COLLABORATION_TARGET_NOT_FOUND") throw error;
     let catalog: CatalogTaskSource | null;
     try {
-      catalog = await input.catalogSource();
+      catalog = await input.catalogSource(input.newCopyFolder);
     } catch (cause) {
       if (cause instanceof CollaboratorAddError) {
         throw new CollaborationContractError(
@@ -87,6 +120,6 @@ export const resolveDelegationPlacement = async (input: Readonly<{
       throw cause;
     }
     if (!catalog) throw error;
-    return sourcedPlacement(input.address, catalog.source, catalog.launchNotes);
+    return sourcedPlacement(input.address, catalog.source, catalog);
   }
 };

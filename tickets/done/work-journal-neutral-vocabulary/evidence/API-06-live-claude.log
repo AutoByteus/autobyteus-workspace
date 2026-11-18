@@ -1,0 +1,8 @@
+# API-06 command: env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-06-live-claude pnpm exec vitest run tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts --no-watch
+# commit 40fb8233d5 + new tests; date 2026-10-30T10:46:17Z
+
+ ✓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 3 skipped) 31336ms
+     ✓ Claude: journal current; /compact closes a journal file written once  30578ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Duration  42.65s (transform 7.70s, setup 67ms, import 10.80s, tests 31.34s, environment 0ms)

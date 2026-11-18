@@ -1,0 +1,13 @@
+# API-06 mobile-shell-probe MSP-06 and MSP-09 (updated for REQ-019, REQ-011, DEC-018, AC-015, AC-016)
+# command: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/ospp-e2e/msp/run1 --cases=MSP-06,MSP-09
+# commit: 27b24037dd (code 55fdae0a34) + the probe change in this round; macOS, Node 22, headless Chrome; 2026-11-07
+
+
+> autobyteus@1.5.12-beta.6 test:e2e:mobile-shell /Users/<user>/autobyteus_org/autobyteus-worktrees/one-step-phone-pairing/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/ospp-e2e/msp/run1 --cases=MSP-06,MSP-09
+
+[mobile-shell] MSP-06 …
+[mobile-shell] MSP-06 Pass
+[mobile-shell] MSP-09 …
+[mobile-shell] MSP-09 Pass
+mobile-shell probe: Pass

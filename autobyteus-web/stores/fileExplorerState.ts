@@ -9,7 +9,8 @@ export type { FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
 export type FileOpenMode = 'edit' | 'preview'
 
 export type FilePreviewAccessIntent = {
-  source: 'event-monitor'
+  /** Who made it read-only: a conversation's file link, or the node-file route itself (autobyteus-471). */
+  source: 'event-monitor' | 'node-file'
   readOnly: true
 }
 
@@ -27,6 +28,11 @@ export interface OpenFileState {
   // Session-only editor state; committed refreshes never replace a draft.
   editorDraft?: { content: string }
   url: string | null
+  /**
+   * Bumped when an explicit open reads an already-open file again (autobyteus-450): a viewer of `url` loads it again,
+   * since the URL itself does not change. Text is read again into `content` instead.
+   */
+  contentRevision: number
   relativeResourceContext: FileRelativeResourceContext | null
   isLoading: boolean
   error: string | null

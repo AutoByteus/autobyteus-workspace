@@ -7,6 +7,10 @@ import { AcpClientConnection } from "../../../../../src/runtime-management/acp/a
 import type { AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { AcpAgentSession } from "../../../../../src/agent-execution/backends/acp/session/acp-agent-session.js";
 import type { AcpAgentSessionProfile } from "../../../../../src/agent-execution/backends/acp/acp-agent-session-profile.js";
+import type {
+  AcpAgentLaunchProfile,
+  AcpRunLaunchRequest,
+} from "../../../../../src/runtime-management/acp/acp-agent-launch-profile.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 
 export const GROK_ACP_FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../fixtures/grok-acp");
@@ -14,6 +18,25 @@ export const FAKE_ACP_AGENT = path.join(GROK_ACP_FIXTURES, "fake-acp-agent.mjs")
 export const FAKE_GROK_CLI = path.join(GROK_ACP_FIXTURES, "fake-grok-cli.mjs");
 
 export type FixtureRow = { dir: "in" | "out"; msg: Record<string, any> };
+
+/**
+ * A launch profile that starts the fake ACP agent with the server environment plus `fixtureEnv()` (read per launch).
+ * `onRunLaunch` sees each run launch request; `release` is each run launch's release.
+ */
+export const fakeAcpLaunchProfile = (agentLabel: string, fixtureEnv: () => Record<string, string>, options: {
+  providerRelayId?: string | null;
+  onRunLaunch?: (request: AcpRunLaunchRequest) => void;
+  release?: () => Promise<void>;
+} = {}): AcpAgentLaunchProfile => ({
+  agentLabel,
+  providerRelayId: options.providerRelayId ?? null,
+  command: () => process.execPath,
+  runLaunch: async (request) => {
+    options.onRunLaunch?.(request);
+    return { args: [FAKE_ACP_AGENT], env: { ...process.env, ...fixtureEnv() }, release: options.release ?? (async () => undefined) };
+  },
+  discoveryLaunch: async () => ({ args: [FAKE_ACP_AGENT], env: { ...process.env, ...fixtureEnv() }, release: async () => undefined }),
+});
 
 export const readFixture = (name: string): FixtureRow[] =>
   fs.readFileSync(path.join(GROK_ACP_FIXTURES, `${name}.jsonl`), "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line));
@@ -27,8 +50,22 @@ export const fixtureSessionId = (name: string): string => {
   throw new Error(`No session id in fixture ${name}`);
 };
 
+const testTempDirs: string[] = [];
+
+/** A folder in the OS temp dir that the test owns; `removeTestTempDirs` (in the file's `afterAll`) removes it. */
+export const makeTestTempDir = (prefix: string): string => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  testTempDirs.push(dir);
+  return dir;
+};
+
+/** Removes every folder `makeTestTempDir` made in this test file, so a run leaves nothing in the temp dir. */
+export const removeTestTempDirs = (): void => {
+  for (const dir of testTempDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
+};
+
 export const writeCustomFixture = (rows: FixtureRow[]): string => {
-  const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "acp-fixture-")), "custom.jsonl");
+  const file = path.join(makeTestTempDir("acp-fixture-"), "custom.jsonl");
   fs.writeFileSync(file, `${rows.map((row) => JSON.stringify(row)).join("\n")}\n`);
   return file;
 };

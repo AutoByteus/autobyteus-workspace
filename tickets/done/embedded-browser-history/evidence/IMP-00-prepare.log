@@ -1,0 +1,13 @@
+IMP-00 setup | 0389c68 + IR-001 working tree | macOS arm64 Node v26.12.0, pnpm resolved v10.28.2 | 2026-10-26
+Command: npx -y pnpm@10.28.1 -C autobyteus-web exec nuxt prepare
+Exit: 0
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.

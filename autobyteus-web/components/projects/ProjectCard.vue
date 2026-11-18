@@ -6,7 +6,7 @@
   >
     <div class="flex items-start gap-3">
       <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600" aria-hidden="true">
-        <Icon icon="heroicons:folder" class="h-5 w-5" />
+        <Icon icon="heroicons:briefcase" class="h-5 w-5" />
       </span>
       <div class="min-w-0 flex-1">
         <h2 class="truncate text-base font-semibold text-slate-900 group-hover:text-blue-700">{{ project.name }}</h2>

@@ -1,0 +1,6 @@
+# IMP-06 new and updated server tests (IR-002)
+# Command: pnpm -C autobyteus-server-ts exec vitest run <files below> --no-watch
+# Commit: 467cff24c0; macOS, Node v22.23.1
+# Date: 2026-10-31T11:41Z
+ Test Files  13 passed (13)
+      Tests  132 passed (132)

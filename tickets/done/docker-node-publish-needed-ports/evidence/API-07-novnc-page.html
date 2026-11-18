@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>abx402 VNC Viewer transport check</title>
+<style>body{font-family:sans-serif;margin:8px} #screen{width:960px;height:540px;border:1px solid #888}</style></head>
+<body>
+<div>autobyteus-402 API-07: the app's noVNC RFB (@novnc/novnc 1.7.0, same options as composables/useVncSession.ts) against <code id="target"></code></div>
+<div>status: <b id="status">init</b> <span id="detail"></span></div>
+<div id="screen"></div>
+<script type="module">
+import RFB from './novnc/core/rfb.js';
+const params = new URLSearchParams(location.search);
+const url = params.get('url');
+document.getElementById('target').textContent = url;
+const status = (s, d = '') => { document.getElementById('status').textContent = s; document.getElementById('detail').textContent = d; window.__abx402 = { status: s, detail: d, url }; };
+status('connecting');
+const rfb = new RFB(document.getElementById('screen'), url, { credentials: { password: '' }, shared: true });
+rfb.scaleViewport = true;
+rfb.addEventListener('connect', () => {
+  const c = document.querySelector('#screen canvas');
+  status('connected', `fb=${rfb._fbWidth}x${rfb._fbHeight} name=${rfb._fbName} canvas=${c ? c.width + 'x' + c.height : 'none'}`);
+});
+rfb.addEventListener('disconnect', (e) => status('disconnected', JSON.stringify(e.detail)));
+rfb.addEventListener('securityfailure', (e) => status('securityfailure', JSON.stringify(e.detail)));
+</script></body></html>

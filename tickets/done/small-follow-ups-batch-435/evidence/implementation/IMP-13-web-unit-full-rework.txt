@@ -1,0 +1,13 @@
+# IMP-13 full web unit suite on the IR-002 rework: pnpm -C autobyteus-web test:nuxt --run
+# Commit f9cb6f7153; macOS darwin 25.5.0, Node v22.23.1; 2026-11-10. Also web typecheck on the same code: production errors 0; test-file errors 93 in 40 files (baseline 93), PASS.
+
+ Test Files  740 passed (740)
+      Tests  5586 passed | 2 skipped (5588)
+   Duration  393.42s (transform 39.15s, setup 2669.56s, collect 282.94s, tests 100.15s, environment 194.75s, prepare 119.17s)
+
+## The rework's specs (from the same run)
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (28 tests) 880ms
+ ✓ composables/mobile/__tests__/useMobileRouteRunSync.spec.ts (4 tests) 29ms
+ ✓ composables/mobile/__tests__/useMobileSubjectRestore.spec.ts (13 tests) 179ms
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts (19 tests) 30ms
+ ✓ composables/__tests__/useDraftRunPromotionRouteSync.spec.ts (2 tests) 12ms

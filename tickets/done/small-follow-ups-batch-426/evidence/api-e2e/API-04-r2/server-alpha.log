@@ -1,0 +1,394 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:64684
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:64684
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:39943) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/docs_review_team_baff95726e8c4bdcb05205b59e15c915/release_notes_writer_7e161a6d0cd74855b4bb100bf7d69e0e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/docs_review_team_baff95726e8c4bdcb05205b59e15c915/release_notes_writer_7e161a6d0cd74855b4bb100bf7d69e0e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/review_org_f3106efd95294a1990a74af1cfa2d2cf/docs_review_team_31a3b180299248e6bcc1ea77f92977c3/release_notes_writer_ef73a5f0496f45a9ba58921b2ad20eb2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/docs_review_team_992fe19180a94714b27a6d00da9fc4e4/release_notes_writer_de12a5c9a81c4e888569f9184c06068b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/release_notes_writer_ce9a09024152462490110c553a200169/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/release_notes_writer_ce9a09024152462490110c553a200169/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/docs_review_team_baff95726e8c4bdcb05205b59e15c915/release_notes_writer_7e161a6d0cd74855b4bb100bf7d69e0e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/docs_review_team_baff95726e8c4bdcb05205b59e15c915/release_notes_writer_7e161a6d0cd74855b4bb100bf7d69e0e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/review_org_f3106efd95294a1990a74af1cfa2d2cf/docs_review_team_31a3b180299248e6bcc1ea77f92977c3/release_notes_writer_ef73a5f0496f45a9ba58921b2ad20eb2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/review_org_f3106efd95294a1990a74af1cfa2d2cf/docs_review_team_31a3b180299248e6bcc1ea77f92977c3/release_notes_writer_ef73a5f0496f45a9ba58921b2ad20eb2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/review_org_f3106efd95294a1990a74af1cfa2d2cf/docs_review_team_31a3b180299248e6bcc1ea77f92977c3/release_notes_writer_ef73a5f0496f45a9ba58921b2ad20eb2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/review_org_f3106efd95294a1990a74af1cfa2d2cf/docs_review_team_31a3b180299248e6bcc1ea77f92977c3/release_notes_writer_ef73a5f0496f45a9ba58921b2ad20eb2/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_8c71c34868ea4327aed6f7337392535f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_50838ca22d7a4253884f73a9e5f15931/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/approver_76ee074108d94497adae28e36fa93b57/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/fact_checker_a29231d609a640d7adb6d2a79fae6791/raw_traces_manifest.json
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:64684
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:64684
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.33                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:36256) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Empty never-started run removal skipped 4 folder(s) without a standalone run record
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_orgs/delivery_org_db5fb61e18584eb2bdbaecc74fb08f57/release_notes_writer_74a6cc649ef144488f89228a476107bf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/changelog_helper_598796cb40c04767a19007f545ab5675/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/changelog_helper_598796cb40c04767a19007f545ab5675/raw_traces_manifest.json
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38c80afc6adc4a2a83ed5369406e991f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agents/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Remote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Server shutdown exceeded 10s; forcing exit
+Server process-tree sweep: 3 process(es) and 0 process group(s) still running; sending SIGTERM.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:64684
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:64684
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/db/test.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+(node:95324) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+AgentRunManager initialized.
+Empty never-started run removal skipped 5 folder(s) without a standalone run record
+Overwriting existing tool definition for name: 'search_web'
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access request refused PHONE_ACCESS_DISABLED /graphql
+Remote Access WebSocket rejected /ws/agent/project_task_manager_38329aa6ea8c4d5184ea4bd5ef4c865e?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Remote Access WebSocket rejected /ws/agent/project_task_manager_38c80afc6adc4a2a83ed5369406e991f?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Remote Access WebSocket rejected /ws/agent-team/delivery_team_9c6f92234290448f8a3ce0d702f7c06f?access_token=%5BREDACTED%5D: PHONE_ACCESS_DISABLED
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-FLQaWs/alpha/data/memory/agent_teams/delivery_team_9c6f92234290448f8a3ce0d702f7c06f/fact_checker_72c12a7f2bbe44cd87566a06307aef38/raw_traces_manifest.json
+Remote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: REMOTE_ACCESS_AUTH_INVALID
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access WebSocket rejected /ws/agent-package-definitions?access_token=%5BREDACTED%5D: REMOTE_ACCESS_DEVICE_REVOKED
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql

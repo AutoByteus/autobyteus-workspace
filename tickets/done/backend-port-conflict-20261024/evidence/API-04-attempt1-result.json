@@ -1,0 +1,93 @@
+{
+  "case": "API-04",
+  "commit": "5fd30310ef973c74377f4dded25ebc759a14910e",
+  "date": "2026-10-26T05:01:47.151Z",
+  "own": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa",
+  "model": "deterministic local SSE; real Codex exec_command",
+  "steps": [
+    {
+      "step": "isolated-cli",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/data"
+        ],
+        "exit": 0,
+        "out": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"start\",\n  \"result\": {\n    \"instanceId\": \"iso-60506-8426\",\n    \"pid\": 88067,\n    \"executablePath\": \"/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus\",\n    \"backendUrl\": \"http://127.0.0.1:60507\",\n    \"graphqlUrl\": \"http://127.0.0.1:60507/graphql\",\n    \"controlEndpoint\": \"http://127.0.0.1:60506\",\n    \"controlPort\": 60506,\n    \"serverPort\": 60507,\n    \"dataRoot\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/data\",\n    \"ownsDataRoot\": false,\n    \"keepDataRoot\": false,\n    \"testUpdateFeedUrl\": null,\n    \"databaseUrl\": \"file:/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/data/server-data/db/production.db\",\n    \"logPath\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/autobyteus-isolated-app/iso-60506-8426.log\"\n  }\n}\n",
+        "err": ""
+      },
+      "at": "2026-10-26T05:01:55.714Z"
+    },
+    {
+      "step": "desktop",
+      "value": {
+        "url": "file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html",
+        "status": {
+          "status": "running",
+          "baseUrl": "http://127.0.0.1:60507",
+          "urls": {
+            "graphql": "http://127.0.0.1:60507/graphql",
+            "rest": "http://127.0.0.1:60507/rest",
+            "graphqlWs": "ws://127.0.0.1:60507/graphql",
+            "transcription": "ws://127.0.0.1:60507/ws/transcribe",
+            "terminalWs": "ws://127.0.0.1:60507/ws/terminal",
+            "health": "http://127.0.0.1:60507/rest/health"
+          },
+          "healthCheckStatus": ""
+        }
+      },
+      "at": "2026-10-26T05:01:55.819Z"
+    },
+    {
+      "step": "graphql",
+      "value": {
+        "data": null,
+        "errors": [
+          {
+            "message": "DYNAMIC_PROVIDER_NOT_AVAILABLE_FOR_RUNTIME",
+            "locations": [
+              {
+                "line": 1,
+                "column": 12
+              }
+            ],
+            "path": [
+              "ensureProviderModelCatalog"
+            ]
+          }
+        ]
+      },
+      "at": "2026-10-26T05:01:55.834Z"
+    },
+    {
+      "step": "isolated-cli",
+      "value": {
+        "args": [
+          "stop",
+          "iso-60506-8426",
+          "--keep"
+        ],
+        "exit": 0,
+        "out": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"stop\",\n  \"result\": {\n    \"instanceId\": \"iso-60506-8426\",\n    \"wasRunning\": true,\n    \"forced\": true,\n    \"dataRoot\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/data\",\n    \"dataRootRemoved\": false,\n    \"controlPortReleased\": true,\n    \"serverPortReleased\": true,\n    \"logPath\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/autobyteus-isolated-app/iso-60506-8426.log\"\n  }\n}\n",
+        "err": ""
+      },
+      "at": "2026-10-26T05:02:06.033Z"
+    }
+  ],
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: [{\"message\":\"DYNAMIC_PROVIDER_NOT_AVAILABLE_FOR_RUNTIME\",\"locations\":[{\"line\":1,\"column\":12}],\"path\":[\"ensureProviderModelCatalog\"]}]\n    at gql (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-04-desktop-codex.mjs:51:248)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-04-desktop-codex.mjs:52:12",
+  "cleanup": {
+    "instanceId": "iso-60506-8426",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/data",
+    "dataRootRemoved": false,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api04-sqLVDa/autobyteus-isolated-app/iso-60506-8426.log"
+  },
+  "listenerAbsentAfterCleanup": null,
+  "privateRootRemoved": true
+}

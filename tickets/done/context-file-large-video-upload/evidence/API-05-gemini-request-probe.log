@@ -1,0 +1,43 @@
+# API-05 | node probe/api-05-gemini-request-probe.mjs <worktree>/autobyteus-ts <tmp data> | built autobyteus-ts dist at 80f958bc5 | macOS Node 26.12 | 2026-11-15 14:33:09
+{
+  "INLINE_MEDIA_MAX_BYTES": 26214400,
+  "kept": {
+    "image": [
+      "image-1mib.png"
+    ],
+    "audio": [],
+    "video": [
+      "video-25mib.mp4",
+      "video-3mib.mp4",
+      "data:video/mp4;base64,AA"
+    ]
+  },
+  "diagnostics": [
+    "image:too_large",
+    "audio:too_large",
+    "video:too_large"
+  ],
+  "inlineDataParts": [
+    {
+      "mimeType": "image/png",
+      "base64Chars": 1398104
+    },
+    {
+      "mimeType": "video/mp4",
+      "base64Chars": 34952536
+    },
+    {
+      "mimeType": "video/mp4",
+      "base64Chars": 4194304
+    },
+    {
+      "mimeType": "video/mp4",
+      "base64Chars": 4
+    }
+  ],
+  "pathsStillInText": true,
+  "urlKept": true,
+  "canonicalUntouched": true,
+  "rssGrowthMiB": 42
+}
+PASS

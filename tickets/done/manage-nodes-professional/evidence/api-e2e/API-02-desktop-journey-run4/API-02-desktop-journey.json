@@ -1,0 +1,1204 @@
+{
+  "startedAt": "2026-11-02T10:06:56.579Z",
+  "result": "Pass",
+  "appVersion": "1.5.11-beta.10",
+  "servers": {
+    "plain": {
+      "baseUrl": "http://127.0.0.1:64984",
+      "nodeId": "srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+      "starter": false
+    },
+    "upd": {
+      "baseUrl": "http://127.0.0.1:64985",
+      "nodeId": "srv_CUdHUS2J_vY6um85ykeMioyU9qvuR4d5",
+      "starter": true
+    },
+    "refuse": {
+      "baseUrl": "http://127.0.0.1:64986",
+      "nodeId": "srv_KNqygBDB-6B608g_dWRLmDc-AH4KZ-oH",
+      "starter": true
+    },
+    "fail": {
+      "baseUrl": "http://127.0.0.1:64987",
+      "nodeId": "srv_dSG52TKe97Lpk1-TFAxrA3D-tzEbTCs0",
+      "starter": true
+    },
+    "running": {
+      "baseUrl": "http://127.0.0.1:64988",
+      "nodeId": "srv__doW0QZa9qrrqtVjqzhnYtt3bSoXAfL0",
+      "starter": true
+    },
+    "blocked": {
+      "baseUrl": "http://127.0.0.1:64989",
+      "nodeId": "srv_2MCC5mJJvVM1cisZaVxY0-tOfsm1w1kt",
+      "starter": true
+    },
+    "newer": {
+      "baseUrl": "http://127.0.0.1:64990",
+      "nodeId": "srv_9AFA2F_jmNO0y1Td6UmU4GZ6SXZcWeCo",
+      "starter": true
+    },
+    "lost": {
+      "baseUrl": "http://127.0.0.1:64991",
+      "nodeId": "srv_ThIyEfXTlDlXtbT_0vYHU06-fCeuUHtQ",
+      "starter": true
+    }
+  },
+  "starterLog": [
+    {
+      "at": "2026-11-02T10:07:38.779Z",
+      "node": "lost",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T10:07:42.780Z",
+      "node": "lost",
+      "step": "server stopped for good"
+    },
+    {
+      "at": "2026-11-02T10:07:42.888Z",
+      "node": "upd",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T10:07:42.888Z",
+      "node": "upd",
+      "step": "checking"
+    },
+    {
+      "at": "2026-11-02T10:07:47.889Z",
+      "node": "upd",
+      "step": "downloading"
+    },
+    {
+      "at": "2026-11-02T10:07:52.890Z",
+      "node": "upd",
+      "step": "preparing"
+    },
+    {
+      "at": "2026-11-02T10:07:57.895Z",
+      "node": "upd",
+      "step": "restarting (server stopped)"
+    },
+    {
+      "at": "2026-11-02T10:08:08.252Z",
+      "node": "upd",
+      "step": "restarted with the new version; succeeded"
+    },
+    {
+      "at": "2026-11-02T10:08:09.117Z",
+      "node": "refuse",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T10:08:09.765Z",
+      "node": "fail",
+      "request": "POST /updates",
+      "version": "1.5.11-beta.10"
+    },
+    {
+      "at": "2026-11-02T10:08:15.766Z",
+      "node": "fail",
+      "step": "failed"
+    },
+    {
+      "node": "upd",
+      "requests": 16
+    },
+    {
+      "node": "refuse",
+      "requests": 8
+    },
+    {
+      "node": "fail",
+      "requests": 11
+    },
+    {
+      "node": "running",
+      "requests": 6
+    },
+    {
+      "node": "blocked",
+      "requests": 6
+    },
+    {
+      "node": "newer",
+      "requests": 6
+    },
+    {
+      "node": "lost",
+      "requests": 9
+    }
+  ],
+  "instance": {
+    "instanceId": "iso-65101-730d",
+    "pid": 41701,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:65102",
+    "graphqlUrl": "http://127.0.0.1:65102/graphql",
+    "controlEndpoint": "http://127.0.0.1:65101",
+    "controlPort": 65101,
+    "serverPort": 65102,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-6OVyka/instance",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-6OVyka/instance/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-65101-730d.log"
+  },
+  "cases": {
+    "EL-01": {
+      "result": "Pass",
+      "ms": 9960,
+      "failedExpectations": [],
+      "rowsCount": 9,
+      "openXs": [
+        1319
+      ],
+      "removeXs": [
+        1355
+      ],
+      "switchXs": [
+        1250
+      ]
+    },
+    "EL-02": {
+      "result": "Pass",
+      "ms": 67,
+      "failedExpectations": [],
+      "cells": {
+        "plain": {
+          "cell": "Server version unknown",
+          "notice": null
+        },
+        "upd": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        },
+        "refuse": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        },
+        "fail": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        },
+        "running": {
+          "cell": "Server 1.5.10 Downloading 1.5.11-beta.10…",
+          "notice": null
+        },
+        "blocked": {
+          "cell": "Server 1.5.10",
+          "notice": "This node has no volume for server packages, so it cannot update in place."
+        },
+        "newer": {
+          "cell": "Server 1.6.0 Newer than this app. Update this app.",
+          "notice": null
+        },
+        "lost": {
+          "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+          "notice": null
+        }
+      },
+      "ghostLine": "Not reachable. Nothing answers at that address and port. Check again"
+    },
+    "EL-08": {
+      "result": "Pass",
+      "ms": 7054,
+      "failedExpectations": [],
+      "en": {
+        "overflow": {
+          "scroll": 390,
+          "client": 390,
+          "clipped": []
+        },
+        "fix": {
+          "textBottom": 3517,
+          "buttonTop": 3525
+        }
+      },
+      "zh-CN": {
+        "overflow": {
+          "scroll": 390,
+          "client": 390,
+          "clipped": []
+        },
+        "fix": {
+          "textBottom": 3385,
+          "buttonTop": 3393
+        }
+      }
+    },
+    "EL-06a": {
+      "result": "Pass",
+      "ms": 4106,
+      "failedExpectations": [],
+      "restartingAfterMs": 4085
+    },
+    "EL-03": {
+      "result": "Pass",
+      "ms": 26229,
+      "failedExpectations": [],
+      "seen": [
+        "Server 1.5.10 Starting the update… | null",
+        "Server 1.5.10 Checking the update to 1.5.11-beta.10… | null",
+        "Server 1.5.10 Downloading 1.5.11-beta.10… | null",
+        "Server 1.5.10 Preparing 1.5.11-beta.10… | null",
+        "Restarting… | null",
+        "Server 1.5.11-beta.10 | Updated to 1.5.11-beta.10."
+      ],
+      "steps": [
+        "starting",
+        "checking",
+        "downloading",
+        "preparing",
+        "restarting",
+        "succeeded"
+      ],
+      "final": {
+        "cell": "Server 1.5.11-beta.10",
+        "notice": "Updated to 1.5.11-beta.10.",
+        "noticeClass": "flex flex-wrap items-start justify-between gap-x-3 gap-y-2 rounded-lg border px-3 py-2 text-sm border-emerald-200 bg-emerald-50 text-emerald-900"
+      }
+    },
+    "EL-04": {
+      "result": "Pass",
+      "ms": 643,
+      "failedExpectations": [],
+      "before": {
+        "notice": "The update to 1.5.11-beta.10 did not happen. This node runs an image that is too old for this update. Upgrade the image first. Copy command",
+        "copyTitle": "autobyteus-docker upgrade --all --tag 1.5.11-beta.10",
+        "cls": "flex flex-wrap items-start justify-between gap-x-3 gap-y-2 rounded-lg border px-3 py-2 text-sm border-amber-200 bg-amber-50 text-amber-900"
+      },
+      "focused": true,
+      "after": "Copied",
+      "clipboard": "autobyteus-docker upgrade --all --tag 1.5.11-beta.10",
+      "errorsOnClick": []
+    },
+    "EL-05": {
+      "result": "Pass",
+      "ms": 6213,
+      "failedExpectations": [],
+      "cell": "Server 1.5.10 Update to 1.5.11-beta.10 Same version as this app",
+      "notice": "The update to 1.5.11-beta.10 did not happen. The download of the server package was interrupted."
+    },
+    "EL-07": {
+      "result": "Pass",
+      "ms": 874,
+      "failedExpectations": [],
+      "windowWidth": 1100,
+      "cardWidth": 713,
+      "switchXs": [
+        910
+      ],
+      "removeXs": [
+        1015
+      ],
+      "plainRow": {
+        "name": {
+          "x": 394,
+          "y": 405,
+          "w": 65
+        },
+        "server": {
+          "x": 400,
+          "y": 455,
+          "w": 647
+        },
+        "offer": {
+          "x": 394,
+          "y": 489,
+          "w": 83
+        },
+        "capsule": {
+          "x": 910,
+          "y": 408,
+          "w": 44
+        }
+      }
+    },
+    "EL-09": {
+      "result": "Pass",
+      "ms": 112,
+      "failedExpectations": [],
+      "capsules": 9,
+      "expandedBefore": "false",
+      "expandedAfter": "true",
+      "live": {
+        "cell": "polite",
+        "notices": 17
+      },
+      "order": [
+        "add-node-name",
+        "add-node-collaborate",
+        "add-node-submit",
+        "node-name-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+        "node-offer-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1-toggle",
+        "node-agents-switch-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+        "node-open-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+        "node-remove-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+        "node-change-address-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+        "node-refresh-srv_WMowZOfJKAVfQg6ODI7vMhHtP-BNDmj1",
+        "node-name-srv_CUdHUS2J_vY6um85ykeMioyU9qvuR4d5",
+        "node-agents-switch-srv_CUdHUS2J_vY6um85ykeMioyU9qvuR4d5",
+        "node-open-srv_CUdHUS2J_vY6um85ykeMioyU9qvuR4d5",
+        "node-remove-srv_CUdHUS2J_vY6um85ykeMioyU9qvuR4d5",
+        "node-fix-srv_CUdHUS2J_vY6um85ykeMioyU9qvuR4d5",
+        "node-name-srv_KNqygBDB-6B608g_dWRLmDc-AH4KZ-oH",
+        "node-server-update-srv_KNqygBDB-6B608g_dWRLmDc-AH4KZ-oH",
+        "node-agents-switch-srv_KNqygBDB-6B608g_dWRLmDc-AH4KZ-oH"
+      ]
+    },
+    "EL-10": {
+      "result": "Pass",
+      "ms": 314,
+      "failedExpectations": [],
+      "windowsBefore": 1,
+      "windowsAfter": 2
+    },
+    "EL-06": {
+      "result": "Pass",
+      "ms": 266455,
+      "failedExpectations": [],
+      "cell": "Not reachable. Last known: updating to 1.5.11-beta.10.",
+      "afterMs": 304925
+    }
+  },
+  "errors": [],
+  "cleanup": {
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-65101-730d",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mnp-api-6OVyka/instance",
+        "dataRootRemoved": false,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-65101-730d.log"
+      }
+    },
+    "rootRemoved": true,
+    "mineStillListed": []
+  },
+  "error": null,
+  "consoleErrors": [
+    {
+      "at": 1793614049911,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614051914,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614054217,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614056488,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614058750,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614062792,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614064795,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614066801,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614068804,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614070810,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614072818,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614074822,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614076828,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614078833,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614078945,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614080834,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614080946,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614082838,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614082952,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614084840,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614084955,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614086843,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614086957,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614088847,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614089122,
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "at": 1793614090849,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614092851,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614094855,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614096856,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614098858,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614100860,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614102863,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614104869,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614106873,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614108881,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614110883,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614112892,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614114894,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614116902,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614118910,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614120913,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614122919,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614124921,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614126925,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614128932,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614130940,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614132944,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614134953,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614136959,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614138962,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614140971,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614142977,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614144981,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614146988,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614148993,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614150995,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614152999,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614155002,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614157007,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614159011,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614161019,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614163021,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614165024,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614167031,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614169033,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614171040,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614173046,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614175049,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614177056,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614179060,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614181065,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614183067,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614185070,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614187074,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614189077,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614191080,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614193088,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614195093,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614197097,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614199100,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614201102,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614203107,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614205110,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614207114,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614209115,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614211118,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614213121,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614215124,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614217127,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614219131,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614221135,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614223138,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614225144,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614227149,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614229151,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614231154,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614233156,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614235159,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614237162,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614239164,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614241167,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614243171,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614245173,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614247176,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614249181,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614251185,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614253191,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614255195,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614257199,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614259200,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614261202,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614263211,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614265210,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614267217,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614269218,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614271224,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614273226,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614275230,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614277237,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614279240,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614281246,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614283247,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614285252,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614287255,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614289259,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614291263,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614293270,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614295277,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614297284,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614299284,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614301289,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614303296,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614305303,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614307311,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614309315,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614311318,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614313320,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614315327,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614317329,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614319332,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614321334,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614323336,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614325340,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614327342,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614329345,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614331347,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614333349,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614335352,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614337355,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614339356,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614341358,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614343364,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614345364,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614347366,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614349371,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614351373,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614353374,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614355379,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614357380,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614359387,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614361389,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "at": 1793614363392,
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "finishedAt": "2026-11-02T10:12:54.792Z"
+}

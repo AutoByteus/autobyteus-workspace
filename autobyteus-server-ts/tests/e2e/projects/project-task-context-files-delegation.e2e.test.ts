@@ -8,9 +8,11 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { removedRunIdsIn } from "../helpers/run-tree-delegated.js";
 
 // project-task-tool-context-files AC-005 (DONE half), AC-007 and AC-010 through the real Studio HTTP/WebSocket
 // server, the Manager's scoped Agent Tools MCP session, Project/Task services, a live delegated worker and the
@@ -24,7 +26,7 @@ const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
 const suite = enabled ? describe : describe.skip;
 
 type Frame = { type: string; payload: Record<string, any> };
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "get_project_task", "create_project", "update_project", "create_task", "update_task"];
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
@@ -141,8 +143,8 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     const view = await connect("agent-collaboration", rootId, (frames) => frames.some((f) => f.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
     const conversationOf = async (agentRunId: string, address: string) => agentRunId === rootId
       ? (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation
-      : (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-        { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+      // Any other agent is in a run this root delegated to: read by its own run (autobyteus-461 rule 2).
+      : (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     const managerCalls = async (content: string) => {
       const before = calledResults(await conversationOf(rootId, "/")).length;
       sendE2eSendMessageCommand(input.socket, { agent_run_id: rootId, content });
@@ -151,26 +153,33 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
         `Manager tool result for ${content.slice(0, 120)}`, 60_000);
       return toolResult(results[before]!);
     };
-    const closedFrame = (frame: Frame) => frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
+    // autobyteus-461 SR-084: a closed Task's copy leaves the tree; the view tells it as a tree change removing its row.
+    const closedFrame = (frame: Frame) => removedRunIdsIn([frame]).length > 0;
     const workerAddress = `/${segment(workerName)}`;
 
     // 1. AC-001/AC-002 through the Manager's own MCP session: create with [png, md], then a files-only patch.
-    const create = await managerCalls(callTool("create_task", { project_id: projectId, description: "READ_REFERENCE_FILES", context_files: [shot, notes] }));
-    // Tool results name the Project Task by its key; its saved files stay under the stored long ID.
-    expect(create).toEqual({ task: { projectId, taskId: expect.stringMatching(/^task-context-files-[0-9a-f]+-1$/), status: "TODO", dependsOn: [], partOf: null,
-      attachedContextFiles: [{ storedFilename: expect.any(String), displayName: path.basename(shot) }, { storedFilename: expect.any(String), displayName: "notes.md" }] } });
+    const create = await managerCalls(callTool("create_task", { project_id: projectId, title: "Read the reference files", description: "READ_REFERENCE_FILES", context_files: [shot, notes] }));
+    // Tool results name the Project Task by its key; its saved files stay under the stored long ID. Attached files are
+    // {name, path} (autobyteus-260 REQ-013): the path of the saved copy.
+    const savedCopy = (name: string) => ({ name, path: expect.stringMatching(/\/context\/ctx_[^/]+$/) });
+    expect(create).toEqual({ task: { projectId, taskId: expect.stringMatching(/^task-context-files-[0-9a-f]+-1$/), title: "Read the reference files", status: "TODO",
+      attachedContextFiles: [savedCopy(path.basename(shot)), savedCopy("notes.md")] } });
     const taskKey = create.task.taskId as string;
     const taskId = (await projectTask(projectId, taskKey)).taskId as string;
     const patch = await managerCalls(callTool("update_task", { task_id: taskKey, context_files: [log] }));
-    expect(patch).toEqual({ task: { projectId, taskId: taskKey, status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "server.log.txt" }] } });
+    expect(patch).toEqual({ task: { projectId, taskId: taskKey, title: "Read the reference files", status: "TODO", attachedContextFiles: [savedCopy("server.log.txt")] } });
     // AC-006: the sources go away (temp screenshot cleaned up); the Task keeps its copies.
     await fs.rm(shot); await fs.rm(notes); await fs.rm(log);
     const saved = await projectTask(projectId, taskId);
     expect(saved.contextFiles.map((file: any) => [file.displayName, file.mimeType, file.sizeBytes])).toEqual(
       expected.map((file, index) => [file.name, ["image/png", "text/markdown", "text/plain"][index], file.bytes.length]));
+    // The list is short (REQ-007); the Task in full names its saved copies by path (REQ-014), the ones the acknowledgements named.
     const listed = await managerCalls(callTool("list_project_tasks", { project_id: projectId }));
-    const localPaths = (listed.tasks[0].contextFiles as any[]).map((file) => file.localPath as string);
+    expect(listed.tasks[0]).not.toHaveProperty("contextFiles");
+    const full = await managerCalls(callTool("get_project_task", { project_id: projectId, task_id: taskKey }));
+    const localPaths = (full.contextFiles as any[]).map((file) => file.path as string);
     expect(localPaths).toEqual(saved.contextFiles.map((file: any) => path.join(taskDir(projectId, taskId), "context", file.storedFilename)));
+    expect(localPaths).toEqual([...create.task.attachedContextFiles, ...patch.task.attachedContextFiles].map((file: any) => file.path));
 
     // 2. AC-010: linked delegation hands the saved copies to the worker, which opens them in its own process.
     const delegated = await managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
@@ -183,7 +192,7 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     const firstMessage = workerTexts.find((text) => text.includes("Reference files:"))!;
     expect(firstMessage, JSON.stringify(workerTexts).slice(0, 2000)).toBeTruthy();
     expect(firstMessage).toContain(`sender run id "${rootId}"`);
-    expect(firstMessage).toContain("Description:\nREAD_REFERENCE_FILES\n\nReference files:");
+    expect(firstMessage).toContain(`Task: ${taskKey} in Project ${projectId}\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nREAD_REFERENCE_FILES\n\nReference files:`);
     expect(firstMessage.slice(firstMessage.indexOf("Reference files:")).trim()).toBe(["Reference files:", ...localPaths.map((file) => `- ${file}`)].join("\n"));
     const reply = workerTexts.find((text) => text.includes("REFERENCES:"))!;
     const read = JSON.parse(reply.slice(reply.indexOf("REFERENCES:") + "REFERENCES:".length));
@@ -209,10 +218,8 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     // 4. The corrected DONE attaches the file and closes the worker as today (AC-003 alternate).
     const doneFrom = view.frames.length;
     const done = await managerCalls(callTool("update_task", { task_id: taskKey, status: "DONE", context_files: [final] }));
-    expect(done).toEqual({ task: { projectId, taskId: taskKey, status: "DONE", dependsOn: [], partOf: null, attachedContextFiles: [{ storedFilename: expect.any(String), displayName: "final.md" }] } });
-    await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
-    const closedRefs = view.frames.slice(doneFrom).find(closedFrame)!.payload.event.task_executions as any[];
-    expect(closedRefs.map((ref) => ref.agentRunId ?? ref.agent_run_id)).toContain(worker);
+    expect(done).toEqual({ task: { projectId, taskId: taskKey, title: "Read the reference files", status: "DONE", attachedContextFiles: [savedCopy("final.md")] } });
+    await until(() => removedRunIdsIn(view.frames.slice(doneFrom)).includes(worker), "the worker's row removed live from the tree", 60_000);
     const doneTask = await projectTask(projectId, taskId);
     expect(doneTask.status).toBe("DONE");
     expect(doneTask.contextFiles.map((file: any) => file.displayName)).toEqual([...expected.map((file) => file.name), "final.md"]);
@@ -231,13 +238,13 @@ suite("Agent-attached Task context files reach the worker and never break DONE o
     expect(await fs.readFile(path.join(adHocDir, "task.json"), "utf8")).toBe(adHocBefore);
     expect(await adHocEntries()).toEqual(["agent_run_resources.json", "task.json"]);
     const textPatch = await managerCalls(callTool("update_task", { task_id: adHocTaskId, description: "Patched text", status: "IN_PROGRESS" }));
-    expect(textPatch).toEqual({ task: { projectId: null, taskId: adHocTaskId, status: "IN_PROGRESS" } });
+    expect(textPatch).toEqual({ task: { taskId: adHocTaskId, status: "IN_PROGRESS" } }); // a Task with no Project has no projectId (REQ-001)
     expect(JSON.parse(await fs.readFile(path.join(adHocDir, "task.json"), "utf8"))).toMatchObject({ description: "Patched text", status: "IN_PROGRESS" });
     expect(await fs.readFile(final, "utf8")).toBe("Verified.\n");
 
     input.socket.close(); view.socket.close();
     await terminate(rootId);
     Object.assign(evidence, { rootId, projectId, taskId, worker, create, patch, localPaths, workerFirstMessage: firstMessage, workerRead: read,
-      badDone, stillOpen, done, closedRefs, adHocTaskId, refused, textPatch });
+      badDone, stillOpen, done, adHocTaskId, refused, textPatch });
   }, 300000);
 });

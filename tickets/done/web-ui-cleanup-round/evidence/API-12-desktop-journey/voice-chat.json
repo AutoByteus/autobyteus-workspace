@@ -1,0 +1,56 @@
+{
+ "label": "chat-speech",
+ "log": [
+  {
+   "step": "tab from input",
+   "focused": "Workspace: Temp workspace. Change workspace"
+  },
+  {
+   "step": "after Enter (start)",
+   "t": 1793206878406,
+   "value": "",
+   "button": "Start voice input",
+   "disabled": false,
+   "focus": "INPUT[Search workspaces]",
+   "status": []
+  },
+  {
+   "step": "while recording",
+   "t": 1793206881024,
+   "value": "",
+   "button": "Start voice input",
+   "disabled": false,
+   "focus": "INPUT[Search workspaces]",
+   "status": []
+  },
+  {
+   "step": "tab back to the button",
+   "focused": "BUTTON[Workspace: Temp workspace. Change workspace]"
+  },
+  {
+   "step": "after Enter (stop)",
+   "t": 1793206881425,
+   "value": "",
+   "button": "Start voice input",
+   "disabled": false,
+   "focus": "BUTTON[Workspace: Temp workspace. Change workspace]",
+   "status": []
+  },
+  {
+   "step": "settled",
+   "t": 1793206882520,
+   "value": "",
+   "button": "Start voice input",
+   "disabled": false,
+   "focus": "BUTTON[Workspace: Temp workspace. Change workspace]",
+   "status": []
+  }
+ ],
+ "graphqlDuringVoice": [
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory"
+ ],
+ "resultsChanged": false,
+ "resultsAfter": "Daily Assistant All your skills are available. Type / to use a skill, or @ to delegate to an agent or team. Context Files (0) (drag, paste, or upload) Temp workspace Auto-approve qwen/qwen3.6-35b-a3b:",
+ "micCalls": 2
+}

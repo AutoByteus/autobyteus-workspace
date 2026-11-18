@@ -1,0 +1,6 @@
+  · the native agent answered in the chat
+  · the runtime menu of the stopped run offers the other agent runtimes
+  · saved: the server holds the pending switch
+  · the chat shows the marker after the first message
+RSW-01 Fail — Timed out waiting for the reloaded chat
+PROBE EXIT 1

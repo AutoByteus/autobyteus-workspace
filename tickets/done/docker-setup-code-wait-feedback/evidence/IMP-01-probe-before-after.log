@@ -1,0 +1,11 @@
+# IMP-01 — probe before/after (commit 2de5fa0873053f5044b2119cbd48c14ad8463087)
+Command: bash tickets/in-progress/docker-setup-code-wait-feedback/probes/silent-socket-attempt.sh "$PWD" 15
+Environment: macOS (Darwin 25.6.0), bash, node (host)
+Date: 2026-11-09T15:49:02Z
+
+## Before the client-timeout fix (expected UNBOUNDED) — reproduced at the start of this ticket, same probe:
+UNBOUNDED: the attempt was still waiting after 15s
+
+## After the fix (this commit):
+BOUNDED: the attempt ended after 6s with exit 1: the node did not answer within 5 seconds
+tickets/in-progress/docker-setup-code-wait-feedback/probes/silent-socket-attempt.sh: line 30: 66597 Terminated: 15          node -e 'require("net").createServer(()=>{}).listen(process.argv[1],()=>console.log("listening"))' "$sock" > "$work/server.log"

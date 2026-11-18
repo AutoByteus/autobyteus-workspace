@@ -1,0 +1,5 @@
+(node:77530) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+LRL-004 Pass AC-006: a Team run with a damaged stored message log opens; its Team tab and the phone show the messages as unavailable with the reason; a message to it is refused with the reason
+Summary: 1 Pass, 0 Fail
+exit 0

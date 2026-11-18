@@ -1,3 +1,7 @@
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+import { createTopLevelRunRule } from "./top-level-run-rule.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type {
   RunHistoryAgentGroup,
 } from "../domain/agent-run-history-index-types.js";
@@ -52,23 +56,30 @@ const workspaceNameFromRootPath = (workspaceRootPath: string): string => {
 export class WorkspaceRunHistoryService {
   private readonly agentRunHistoryService: AgentRunHistoryService;
   private readonly teamRunHistoryService: TeamRunHistoryService;
+  /** DS-11: a run delegated from a stored run is listed under that run, not as a top-level row. */
+  private readonly topLevel: (run: TaskExecutionReference) => boolean;
 
   constructor(
     options: {
+      /** The relationships between runs, from the Task entries (SR-047). */
+      tree: Pick<DelegationIndex, "parentOf">;
       agentRunHistoryService?: AgentRunHistoryService;
       teamRunHistoryService?: TeamRunHistoryService;
-    } = {},
+      topLevel?: (run: TaskExecutionReference) => boolean;
+    },
   ) {
+    this.topLevel = options.topLevel ?? createTopLevelRunRule(() => appConfigProvider.config.getMemoryDir(), options.tree);
     this.agentRunHistoryService =
       options.agentRunHistoryService ?? getAgentRunHistoryService();
     this.teamRunHistoryService =
       options.teamRunHistoryService ?? getTeamRunHistoryService();
   }
 
-  async listWorkspaceRunHistory(limitPerAgent = 6): Promise<WorkspaceRunHistoryGroup[]> {
+  /** Every folder's runs; `limitPerAgent: null` keeps every agent run (see `AgentRunHistoryService.listRunHistory`). */
+  async listWorkspaceRunHistory(limitPerAgent: number | null = 6): Promise<WorkspaceRunHistoryGroup[]> {
     const [agentWorkspaceGroups, teamRuns] = await Promise.all([
-      this.agentRunHistoryService.listRunHistory(limitPerAgent),
-      this.teamRunHistoryService.listTeamRunHistory(),
+      this.agentRunHistoryService.listRunHistory(limitPerAgent, (row) => this.topLevel({ agentRunId: row.runId })),
+      this.teamRunHistoryService.listTeamRunHistory((row) => this.topLevel({ teamRunId: row.teamRunId })),
     ]);
 
     return buildWorkspaceGroups(agentWorkspaceGroups, teamRuns)
@@ -77,12 +88,12 @@ export class WorkspaceRunHistoryService {
 
   async getWorkspaceRunHistory(
     workspaceRootPath: string,
-    limitPerAgent = 6,
+    limitPerAgent: number | null = 6,
   ): Promise<WorkspaceRunHistoryGroup> {
     const canonicalRootPath = canonicalizeWorkspaceRootPath(workspaceRootPath);
     const [agentWorkspaceGroups, teamRuns] = await Promise.all([
-      this.agentRunHistoryService.listRunHistory(limitPerAgent),
-      this.teamRunHistoryService.listTeamRunHistory(),
+      this.agentRunHistoryService.listRunHistory(limitPerAgent, (row) => this.topLevel({ agentRunId: row.runId })),
+      this.teamRunHistoryService.listTeamRunHistory((row) => this.topLevel({ teamRunId: row.teamRunId })),
     ]);
 
     return buildWorkspaceGroups(agentWorkspaceGroups, teamRuns, canonicalRootPath)[0] ?? {
@@ -94,13 +105,16 @@ export class WorkspaceRunHistoryService {
   }
 }
 
-let cachedWorkspaceRunHistoryService: WorkspaceRunHistoryService | null = null;
-
+let processService: WorkspaceRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessWorkspaceRunHistoryService = (service: WorkspaceRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
 export const getWorkspaceRunHistoryService = (): WorkspaceRunHistoryService => {
-  if (!cachedWorkspaceRunHistoryService) {
-    cachedWorkspaceRunHistoryService = new WorkspaceRunHistoryService();
-  }
-  return cachedWorkspaceRunHistoryService;
+  if (!processService) throw new Error("WorkspaceRunHistoryService is created by the composition root.");
+  return processService;
 };
 
 

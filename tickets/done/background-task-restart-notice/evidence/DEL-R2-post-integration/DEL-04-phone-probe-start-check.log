@@ -1,0 +1,3 @@
+# node tests/e2e/mobile-shell-probe.mjs --cases=MSP-67 on merge e93d477539
+mobile-shell probe: duplicate case IDs MSP-67 (mobile-shell-probe.mjs, mobile-every-run-settings-cases.mjs)
+exit=1

@@ -6,6 +6,10 @@ deploying. A generic delivery process covers the order of the steps. This file
 holds what is specific to this repository, and for this repository it wins
 where the two differ.
 
+Read the copy on `origin/personal`, for example in the ticket worktree after
+integrating the latest base, not the one in the main checkout: that checkout
+is often behind and may lack newer rules.
+
 For what each release workflow builds, signs and validates, and for the
 required secrets, see [Workflow Reference](#workflow-reference) at the end of
 this file.
@@ -32,6 +36,18 @@ this file.
 
 - Never commit build output: `*/dist/`, `autobyteus-web/electron-dist/` and
   other packaged app files. CI builds every release from source.
+- **Before the merge, delivery audits; it does not redo.** It opens the
+  ticket's evidence (the API/E2E execution report and the files it names)
+  and checks that each acceptance criterion is proven. It does not rerun the
+  suites, clean clones or builds that implementation and API/E2E already ran.
+  It reruns something only when:
+  - the evidence has a gap (send it back to API/E2E, which closes it);
+  - new base commits came in when the branch was brought current (one
+    relevant check on the merged state, and both typechecks, web and
+    server, as TESTING.md's "Rerun by impact" step 5 says);
+  - the ticket or this guide asks delivery for it by name.
+  The checks this guide lists before tagging are the release's own and always
+  run.
 
 ## Secret Gate
 
@@ -77,19 +93,23 @@ The user decides at verification. There are three options:
   is the default when the user does not ask for one.
 - **Beta** (`vX.Y.Z-beta.N`). The tag is published as a GitHub pre-release with
   generated notes. It is offered only to desktop installs with
-  **Settings > Updates > Receive beta updates** on.
+  **Settings > Updates > Receive beta updates** on. When a ticket in the
+  release needs an action from users, the beta's notes also carry it (see
+  [Beta notes with a user action](#beta-notes-with-a-user-action)).
 - **Stable** (`vX.Y.Z`). The tag becomes GitHub "Latest", with curated notes
   taken from the ticket's `release-notes.md`.
 
 ## Checks Before Tagging
 
 Run these checks on the merged `personal` state. The release workflows run
-the first two too, but by then the tag is already pushed.
+the first two too, but by then the tag is already pushed. They do not run the
+release smoke check.
 
 ```bash
 python3 scripts/check_licensing.py
 python3 scripts/check_repository_artifact_hygiene.py
 scripts/check_secrets.sh <previous-release-tag>..HEAD   # Secret Gate over everything the release adds
+python3 scripts/release_smoke.py
 ```
 
 The hygiene check rejects these tracked paths:
@@ -103,11 +123,114 @@ The hygiene check rejects these tracked paths:
   passes in your worktree and fails in a clean checkout
   (`--only tracked-imports` runs this check alone).
 
-Ticket evidence is the usual source. For example, a log named after a script
-such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
-Windows build at checkout. Name evidence files with `-` instead of `:`.
+A `:` in a file name breaks a Windows checkout, and ticket evidence is the usual
+source (logs named after a script, such as `web-audit:localization-literals.log`).
+Name evidence files with `-` instead of `:`.
+
+### Release smoke check
+
+`python3 scripts/release_smoke.py` starts agent runs with configured skills the
+way users do, on all five runtimes: Claude, Codex, Grok, Antigravity and
+AutoByteus. It covers a brand-new run, a brand-new team member with no memory
+folder yet, a run in a workspace whose `.claude/.codex/.grok/skills` link to
+the same skill, a restored run, and a different same-named skill. No other check
+before tagging starts a run, so a change that stops new runs from starting would
+otherwise ship unnoticed.
+
+- **When:** before every beta and stable tag, on the merged state you will
+  tag, after `pnpm install` and `pnpm -C autobyteus-server-ts prebuild`.
+- **Prerequisites:** `claude`, `codex` and `grok` on `PATH` and signed in on
+  this machine.
+- **Cost:** about five short turns per live runtime (Claude, Codex, Grok), each
+  on its cheapest model. Antigravity and AutoByteus run scripted, with no
+  provider calls. A few minutes in total. The binding limit is the live CLIs'
+  subscription quotas, not money:
+  - **Grok:** one run uses about 150–240k tokens against the free tier's 600k
+    per rolling 24 hours, roughly two runs a day.
+  - **Codex:** it uses the same ChatGPT account quota as your other Codex work.
+  - A quota refusal, such as "usage limit" or a 429, is handled like a runtime
+    that cannot run: wait for the reset, or the user waives that runtime for
+    this release and the waiver is recorded.
+- **Models:** each live runtime checks its own model; a model the CLI does not
+  offer fails only that runtime's cases, and the others still run. xAI changes
+  the Grok CLI's model list, so Grok uses `grok-4.7` when offered and otherwise
+  the first model the CLI offers. The summary's models line then says, for
+  example, `grok-4.5 (pinned grok-4.7 not offered)`. Setting `GROK_E2E_MODEL`
+  (or `CLAUDE_E2E_MODEL`, `CODEX_E2E_MODEL`) requires exactly that model.
+- **Pass:** exit 0. Put the printed summary in the delivery report.
+- **Failure, or a runtime that cannot run:** no tag. The summary names the
+  runtime, the scenario and the reason, and the step logs stay in the temp
+  folder it prints. Find the cause first (TESTING.md Rule 9). The only
+  exception is the user explicitly waiving a named runtime at the release
+  decision. Record the waiver and its reason in the delivery report.
+
+### Build-only release run
+
+A release has no build-only run before its tag (the user's decision). The
+failure class it used to catch, a build or gate that passes on a prepared machine
+and fails on a fresh runner, is proven before the merge instead, by API/E2E's
+[Fresh-start build](TESTING.md#fresh-start-build) for every change that touches a
+build input. The change and its reasons: [`tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md`](tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md).
+
+Run the build-only release run on the ticket branch, before the merge, for a
+change a Mac cannot reproduce and for the build-step and gate changes
+[DESIGN.md](DESIGN.md) rule 12 names:
+
+- a release workflow (`.github/workflows/release-*.yml`);
+- Windows or Linux packaging;
+- a runner image or OS (for example `macos-14` → `macos-15`);
+- a build step or gate.
+
+```bash
+pnpm release:test --ref <ticket-branch>   # builds all five desktop targets; publishes nothing
+gh run list --workflow release-desktop.yml --limit 1
+gh run watch <run-id> --exit-status       # about 25 minutes
+```
+
+`pnpm release:test` runs only the Desktop Release. A change to
+`.github/workflows/release-server-docker.yml` or `autobyteus-server-ts/docker/**`
+needs the Server Docker Release's own build-only run:
+
+```bash
+gh workflow run release-server-docker.yml --ref <ticket-branch> -f build_only=true
+gh run list --workflow release-server-docker.yml --limit 1
+gh run watch <run-id> --exit-status
+gh run view <run-id> --json jobs          # job and step timings
+```
+
+It builds both architectures as a release does and pushes them untagged, by
+digest; checks the multi-arch index of those two digests without pushing a
+tag; and takes out, describes and signs both server packages. It publishes
+nothing: no Docker Hub tag, no `:beta` or `:latest` move, no GitHub release
+change. It has its own concurrency group, so it never waits for or blocks a
+release run. It refuses `release_tag`; add `-f publish_zh=true` to build the
+`zh` variant (no packages).
+
+- Local builds are never signed. A local build (TESTING.md's Fresh-start
+  build, or any test build) is unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`);
+  signing and notarization need the release runners' secrets and happen only
+  there. Record them as not tested locally; do not try to sign locally.
+- The accepted trade-off: a local Mac proves the macOS build from a fresh
+  start, but not the Windows and Linux builds, which only the runners make.
+  A change that breaks only those, without touching packaging, shows up in the
+  real release as a partial release, fixed forward with the next version. The
+  user accepted that risk for the time every release saves.
+- If it fails, nothing is published. Fix the problem on the branch and run it
+  again.
+- A failure in the real release is triaged first ([Recovery](#recovery)): a
+  platform failure is rerun, with no version used up; ours goes back to API/E2E.
 
 ## Cutting The Release
+
+Before the script, record the migrations this release ships. In
+`autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts`,
+set `RELEASED` to the registry as it will be released, in its order, and name
+the version and its commit in the comment above it. Run that test, and commit
+it on the finalize branch (`test(app-data-migrations): released set as of
+vX.Y.Z[-beta.N]`). The data migration guideline's "Registry order and late
+predecessors" (`autobyteus-server-ts/docs/design/data_migration_guideline.md`)
+makes this list the rule that no new migration runs ahead of a released one.
+A release that adds no migration leaves it unchanged.
 
 The release script refuses to run unless the worktree is clean, including
 untracked files, so delete the untracked `*/dist/` folders first. Run it on the
@@ -144,37 +267,127 @@ git push origin vX.Y.Z[-beta.N]
   checks a version.
 - Release notes are user-facing and functional. Leave internal IDs, review
   rounds and file paths out.
-- Build-only validation, with no GitHub release published:
-  `pnpm release:test --ref personal`.
+
+### Beta notes with a user action
+
+1. A ticket whose change needs an action from users writes it under
+   `## What you need to do` in its `release-notes.md`. Otherwise it leaves the
+   section out.
+2. Before tagging, list the release's tickets
+   (`git log --merges --first-parent <previous-tag>..HEAD`, which leaves out
+   the tickets' base-refresh merges) and collect their sections under one
+   `## What you need to do` heading in `/tmp/actions.md`. With none, the
+   generated notes stand alone.
+3. After all four workflows have succeeded and the assets are complete (see
+   [Watching The Rollout](#watching-the-rollout)), put the section above the
+   generated notes:
+
+   ```bash
+   gh release view vX.Y.Z-beta.N --json body --jq .body > /tmp/generated.md
+   { cat /tmp/actions.md; echo; cat /tmp/generated.md; } > /tmp/notes.md
+   gh release edit vX.Y.Z-beta.N --notes-file /tmp/notes.md
+   ```
+
+   Only the notes change; the tag and the assets do not.
+4. The delivery report names the tickets whose sections were used.
 
 ## Watching The Rollout
 
-Pushing a `v*` tag starts four independent workflows:
+Pushing a `v*` tag starts four workflows:
 
 | Workflow | Publishes |
 | --- | --- |
-| Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release |
+| Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release. The updater metadata goes up last, after the server packages (below) |
 | Android APK Release | The signed APK and its `.sha256`, on the same GitHub release |
 | iOS App Store Connect Release | A TestFlight upload |
-| Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta` |
+| Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta`. Then, on the GitHub release, the signed server package per architecture (`x64`, `arm64`): `autobyteus-server-X.Y.Z[-beta.N]-linux-<arch>.tar.gz`, `.json` and `.json.sig`. Each architecture builds natively on its own runner (`ubuntu-latest`, `ubuntu-24.04-arm`) at the same time, with no layer cache; nothing is tagged until both have built |
 
-A release is done only when all four have succeeded:
+The four runs start independently, with one order between them on the GitHub
+release. A desktop is offered a version as soon as the release has its
+`latest*.yml` files, and a desktop that updates asks its Docker nodes for the
+same version 2 minutes after it starts, so the nodes need the server packages
+by then (autobyteus-412). So Desktop Release's publish job:
+
+1. uploads the binaries (this creates the GitHub release when the Android APK
+   Release has not yet);
+2. "Wait for the server packages": waits until the six server package files
+   (`x64` and `arm64`, each `.tar.gz`, `.json` and `.json.sig`) are on the
+   release, checking every 30 seconds for up to 60 minutes. A ref without
+   `autobyteus-server-ts/docker/system-level.json` predates server packages and
+   does not wait;
+3. "Publish the desktop updater files": uploads the four `latest*.yml` files.
+
+The Server Docker Release's package job waits up to 60 minutes for the GitHub
+release to exist, then uploads its files. The desktop publish job therefore
+usually finishes after the Server Docker Release, and nothing waits in a
+circle. After the run, the asset times show the order (AC-005 of autobyteus-412):
 
 ```bash
-gh run list --limit 4
-gh run watch <run-id> --exit-status
+gh release view vX.Y.Z[-beta.N] --json assets --jq '.assets[] | [.createdAt, .name] | @tsv' | sort
+```
+
+Every `latest*.yml` is newer than all six `autobyteus-server-*` files.
+
+A release is done only when all four have succeeded. Watch the four runs
+together, not one after another, and act on the first failure. Desktop builds
+can fail within minutes while Docker is still running (watching them one after
+another once let a partial release go unseen: [`tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md`](tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md)):
+
+```bash
+gh run list --limit 4   # the four run IDs of the tag
+for id in <run-id-1> <run-id-2> <run-id-3> <run-id-4>; do
+  gh run watch "$id" --exit-status > "/tmp/release-watch-$id.log" 2>&1 &
+done
+gh run list --limit 4   # repeat every few minutes until all four have finished
 gh release view vX.Y.Z[-beta.N] --json isPrerelease,assets --jq '{pre: .isPrerelease, assets: [.assets[].name]}'
 ```
 
-Compare the assets with the table above: a complete release has 17. The
+Compare the assets with the table above: a complete release has 23. Until all
+four runs have succeeded and the assets are complete, the release is in
+progress: report it as "tagged, workflows running", never as released. The
 workflows publish independently, so a desktop failure still leaves the Android
-APK, the TestFlight build and the Docker image published. That is a partial
-release. Record it as one.
+APK, the TestFlight build and the Docker image published. A failed or late
+server package job now also leaves the desktop without its updater files:
+the installers are on the release, but no desktop is offered the version.
+Either is a partial release. Record it as one.
 
 ## Recovery
 
 - **Never move or delete a published tag.** Other workflows have already
   published artifacts from it.
+
+### Triage every pipeline failure first
+
+Before acting on a failed job, or on a failed check before tagging, read its
+log and decide whose failure it is. Record each failed job's classification,
+the log line that shows it, the action and the result in the delivery report.
+
+- **The platform's** (GitHub runners, Apple notarization or stapling, an app
+  store, a package CDN, the network): the same commit would pass on a rerun.
+  Examples: "The job was not acquired by Runner", `NSURLErrorDomain … The
+  network connection was lost` followed by "staple … failed", and
+  `ERR_PNPM_FETCH_503`. Rerun only the failed jobs (below).
+- **Ours** (our code, configuration, scripts, dependencies or workflow files):
+  the same commit would fail again, so do not keep rerunning it.
+  1. Hand it to API/E2E with the run, the job and the failing log lines.
+     API/E2E reproduces it locally ([Fresh-start build](TESTING.md#fresh-start-build)),
+     or shows by a real attempt why no local machine can.
+  2. The failure's class becomes a local check, a TESTING.md rule or a durable
+     test, so a future change of the same kind fails before it is merged.
+     A pipeline step is added only for what API/E2E showed no local machine
+     can reproduce.
+  3. The defect is fixed through the normal route (on a release request, as a
+     new change through the Solution Designer).
+- **Unclear:** one rerun of the failed job decides; a second identical failure
+  is ours.
+
+An escape is fixed at the earliest stage that can reproduce it, in that stage's
+document, whoever owns it, not at the stage that noticed it: a check added where
+a problem was noticed catches it late and slowly. Example: the per-tag build-only
+run, removed on the user's decision ([`tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md`](tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md)).
+
+### Acting on it
+
 - **The tag's content is at fault** (a checkout-hostile path, a build break): a
   manual re-dispatch checks out the same tag and fails again. Fix the problem
   on `personal` and cut the next version (the next beta, or the next patch for
@@ -184,6 +397,33 @@ release. Record it as one.
   with `gh run rerun <run-id> --failed`, or republish an existing tag with
   `pnpm release:manual-dispatch vX.Y.Z --ref personal`. Do not dispatch manually
   right after a fresh tag push. The push has already started the workflows.
+- **One Server Docker architecture failed** ("Build Server Image (linux/amd64)"
+  or "(linux/arm64)"): nothing is tagged until both architectures succeed, so
+  no tag, `:beta` move or package exists yet. Triage it (above), then
+  `gh run rerun <server-run-id> --failed`. That reruns only the failed
+  architecture's build job, then "Publish Server Image" and the package jobs;
+  the other architecture's earlier image is used as it is. Do not use "Re-run
+  all jobs": it rebuilds both architectures and re-pushes the version tag with
+  new images.
+- **The server packages are missing** (the desktop job "Publish GitHub Release"
+  failed at "Wait for the server packages", whose error names the tag and the
+  missing files; no `latest*.yml` is on the release). Triage the Server Docker
+  Release's failure first (above). Then:
+  1. Rerun its failed jobs: `gh run rerun <server-run-id> --failed`, or fix
+     and cut the next version when the failure is ours. Wait until the six
+     files are on the release (`gh release view vX.Y.Z[-beta.N] --json assets`).
+  2. Rerun the desktop run's failed job: `gh run rerun <desktop-run-id>
+     --failed`. It re-uploads the binaries, finds the packages at once and
+     publishes the updater files. The build jobs are not rerun.
+
+  The same steps recover the combined case. When the Android APK Release
+  fails, the desktop publish job creates the release with its binaries, about
+  30 minutes after the tag push; the server package job waits up to 60 minutes
+  for it and then uploads. Only when no release exists within that wait does the
+  package job fail ("did not appear within 60 minutes"); the desktop publish job
+  then fails after its own 60-minute wait. Once the release exists, rerunning
+  the Server Docker Release's failed jobs uploads the packages; then rerun the
+  desktop publish job. Recover the Android release on its own, as above.
 
 ## Rollback
 
@@ -209,9 +449,11 @@ release. Record it as one.
 ## Deployment
 
 This repository deploys no hosted service. A server rollout is the published
-Docker image. Users upgrade with the public launcher
-(`autobyteus-docker upgrade --all --tag latest|beta`, see
-`autobyteus-server-ts/docker/README.md`) or with the desktop auto-updater.
+Docker image and the signed server packages on the GitHub release. Users
+upgrade with the public launcher (`autobyteus-docker upgrade --all --tag
+latest|beta`, a new image), update a Docker node's server in place
+(`autobyteus-docker update`, the release's server package; see
+`autobyteus-server-ts/docker/README.md`), or use the desktop auto-updater.
 
 ## Workflow Reference
 
@@ -233,11 +475,17 @@ What the release workflows build, validate and need.
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - Docker Hub server image for `linux/amd64,linux/arm64`
+  - signed server packages for `linux-x64` and `linux-arm64` on the same GitHub Release (archive, description, signature), taken out of the pushed image
+- Desktop publish order (`release-desktop.yml`, job `publish-release`; autobyteus-412):
+  - the binaries go up with `softprops/action-gh-release` (curated or generated notes); its `files` lists hold no `latest*.yml`
+  - "Wait for the server packages" polls `gh release view --json assets` 120 times, 30 s apart, for the six `autobyteus-server-<version>-linux-<x64|arm64>{.tar.gz,.json,.json.sig}` files, and fails naming the tag and the missing files; it is skipped for a ref without `autobyteus-server-ts/docker/system-level.json`
+  - "Publish the desktop updater files" then runs `gh release upload --clobber` for `release-artifacts/latest-mac.yml` (the merged one), `linux-x64/latest-linux.yml`, `linux-arm64/latest-linux-arm64.yml` and `windows-x64/latest.yml`
+  - `scripts/tests/test_desktop_release_server_package_wait.py` runs both steps with a fake `gh` and `sleep`; the order itself shows only on a real tag (Watching The Rollout)
 - Release notes:
   - Stable GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
   - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
-  - Pre-release tags (any tag containing `-`, such as `vX.Y.Z-beta.N`) always use GitHub generated notes in both the desktop and Android jobs.
+  - Pre-release tags (any tag containing `-`, such as `vX.Y.Z-beta.N`) always use GitHub generated notes in both the desktop and Android jobs. A user-action section is added afterwards by hand, as [Beta notes with a user action](#beta-notes-with-a-user-action) says.
 - Release channels (stable and beta):
   - Any tag containing `-` is published as a GitHub **pre-release**, including a manual dispatch of such a tag. GitHub "Latest" therefore stays on the newest stable release.
   - Desktop installs are offered pre-releases only when **Settings > Updates > Receive beta updates** is on (off by default). Turning it off never downgrades; the install waits for the next newer stable.
@@ -277,7 +525,7 @@ What the release workflows build, validate and need.
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
   - prerelease tags such as `v1.2.7-beta.1` publish `autobyteus/autobyteus-server:1.2.7-beta.1` and never move `:latest`
-  - `autobyteus/autobyteus-server:beta` (default variant only) moves forward only: after the version image is pushed, it points at that image when the tag is the newest recognized release tag, stable or beta (`scripts/release_versions.py is-newest`); re-publishing an older tag leaves it unchanged
+  - `autobyteus/autobyteus-server:beta` (default variant only) moves forward only: after both architectures are built and the version image is pushed, it points at that image when the tag is the newest recognized release tag, stable or beta (`scripts/release_versions.py is-newest`); re-publishing an older tag leaves it unchanged
   - public launcher users follow the beta track with `autobyteus-docker upgrade --all --tag beta` and return with `--tag latest` only once a stable release at least as new as their beta exists (see `autobyteus-server-ts/docker/README.md`)
 - Required GitHub repository secrets for Android APK publish:
   - `ANDROID_KEYSTORE_B64`
@@ -296,6 +544,10 @@ What the release workflows build, validate and need.
 - Required GitHub repository secrets for Docker Hub publish:
   - `DOCKERHUB_USERNAME`
   - `DOCKERHUB_TOKEN`
+- Required GitHub repository secret for server package publish:
+  - `SERVER_PACKAGE_SIGNING_KEY`: the Ed25519 private key that signs server packages. Created once with `node scripts/server-package/generate-signing-key.mjs`, which sets the secret through `gh` and writes the matching public key to `autobyteus-server-ts/docker/server-package-signing-key.pem`. The package job checks each signature against that public key and fails when they do not match. A new key pair (`--replace`) makes every older image refuse newer packages.
+- Server Docker system level:
+  - the workflow runs `node scripts/server-package/check-system-level.mjs` before it builds; it fails when the image's system part (the pinned base images or the Dockerfile runtime stage up to its end-of-system-part marker) changed without a new level in `autobyteus-server-ts/docker/system-level.json`. Raise the level and the hash it prints in the same change.
 - Optional GitHub repository variable:
   - `DOCKERHUB_IMAGE_NAME`
   - use this if the image repo should not be `autobyteus/autobyteus-server`

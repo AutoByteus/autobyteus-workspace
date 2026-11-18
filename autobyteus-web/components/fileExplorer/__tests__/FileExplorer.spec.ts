@@ -213,13 +213,13 @@ const mockCreateMutation = (parentId: string, path: string, isFile: boolean) => 
   });
 };
 
-const mockDeleteMutation = (nodeId: string, parentId: string) => {
+const mockDeleteMutation = (treeNodeId: string, parentId: string) => {
   mutateMock.mockResolvedValueOnce({
     data: {
       deleteFileOrFolder: JSON.stringify({
         changes: [{
           type: "delete",
-          node_id: nodeId,
+          node_id: treeNodeId,
           parent_id: parentId,
         }],
       }),

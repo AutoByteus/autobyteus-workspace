@@ -1,0 +1,136 @@
+# Case: API-B01 phone, MSP-50 … MSP-52 (API-REV-005, round 5), code 56e4ce773b; phone bundle built from it
+# Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/mobile-shell-probe.mjs --output-dir=<dir> --cases=MSP-50,MSP-51,MSP-52
+# Result: Fail (MSP-50 Pass; MSP-51, MSP-52 Fail). Look for: MSP-51 details.node.rootRows task_executions has the worker while details.rows has none under the team; listedAgentRuns has no worker (the server does not list it top level) while rows has depth 0 'Worker agent …'; MSP-52 rowKey task-agent:… and screenState null
+{
+ "result": "Fail",
+ "summary": {
+  "cases": {
+   "MSP-50": "Pass",
+   "MSP-51": "Fail",
+   "MSP-52": "Fail"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "cases": {
+  "MSP-50": {
+   "result": "Pass",
+   "seconds": 27,
+   "root": {
+    "kind": "agent",
+    "rootId": "manager_agent_d8be_42d7668e44774dcdb7749135299769ef",
+    "worker": "worker_agent_d8be_61a3fedb131140529c4c4edbe4e8004b"
+   },
+   "rootRowStatus": {
+    "listed while stopped": [
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ],
+    "after a child command": [
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline",
+     "offline"
+    ]
+   },
+   "workerTopLevelRows": [],
+   "markerInWorkerRun": true,
+   "rootActiveAfterChild": false,
+   "rootStartedOnOwnMember": true
+  },
+  "MSP-51": {
+   "result": "Fail",
+   "seconds": 38.2,
+   "error": "Timed out waiting for the worker's row under the team root",
+   "details": {
+    "rows": [
+     {
+      "key": "mobile-run-row-agent:manager_agent_d8be_42d7668e44774dcdb7749135299769ef",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Manager agent d8be"
+     },
+     {
+      "key": "mobile-run-row-agent:manager_agent_d8be_42d7668e44774dcdb7749135299769ef/agent:worker_agent_d8be_61a3fedb131140529c4c4edbe4e8004b",
+      "depth": "1",
+      "expanded": null,
+      "name": "worker agent d8be"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_ce92_798c687c21fb46e99a8ea3b9b5ad8a3f",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Org org ce92"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_ce92_798c687c21fb46e99a8ea3b9b5ad8a3f/agent:manager_org_ce92_231934d1f43149118ab4713de60708ce",
+      "depth": "1",
+      "expanded": null,
+      "name": "manager"
+     },
+     {
+      "key": "mobile-run-row-org:org_org_ce92_798c687c21fb46e99a8ea3b9b5ad8a3f/task-agent:worker_org_ce92_67ef8352f2504382bddd16c4f5812400",
+      "depth": "1",
+      "expanded": null,
+      "name": "worker org ce92"
+     },
+     {
+      "key": "mobile-run-row-team:team_team_2d72_b35f8195ca1e420da5b125a081a96b2f",
+      "depth": "0",
+      "expanded": "true",
+      "name": "Team team 2d72"
+     },
+     {
+      "key": "mobile-run-row-team:team_team_2d72_b35f8195ca1e420da5b125a081a96b2f/agent:manager_team_2d72_f41966d24b6c4bb78afb2d5713ab0e78",
+      "depth": "1",
+      "expanded": null,
+      "name": "manager"
+     },
+     {
+      "key": "mobile-run-row-agent:worker_agent_d8be_61a3fedb131140529c4c4edbe4e8004b",
+      "depth": "0",
+      "expanded": null,
+      "name": "Worker agent d8be"
+     }
+    ],
+    "node": {
+     "listedAgentRuns": [
+      {
+       "agent": "Manager agent d8be",
+       "runId": "manager_agent_d8be_42d7668e44774dcdb7749135299769ef",
+       "isActive": true,
+       "hasCollaboration": true
+      }
+     ],
+     "workerListedAsAgentRun": false,
+     "rootRows": "{\"getTeamRunResumeConfig\":{\"executionTree\":{\"created_at\":\"2026-11-13T11:12:32.145Z\",\"archived_at\":null,\"application_binding\":null,\"handoffs\":[],\"root_team\":{\"address\":\"/\",\"team_definition_id\":\"team-team-2d72\",\"team_definition_name\":\"Team team 2d72\",\"team_run_id\":\"team_team_2d72_b35f8195ca1e420da5b125a081a96b2f\",\"coordinator_address\":\"/manager\",\"default_launch_configuration\":{\"runtime_kind\":\"antigravity_cli\",\"llm_model_identifier\":\"gemini-3.8-flash-low\",\"llm_config\":null,\"auto_execute_tools\":true,\"workspace_root_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-tkb6NM/eta/workspace-stopped-delegator\"},\"members\":[{\"kind\":\"configured_agent\",\"address\":\"/manager\",\"agent_definition_id\":\"manager-team-2d72\",\"role\":null,\"description\":null,\"agent_run_id\":\"manager_team_2d72_f41966d24b6c4bb78afb2d5713ab0e78\",\"platform_agent_run_id\":\"9f295ce0-30c7-416a-a8aa-4d0cb1a01851\",\"launch_configuration\":{\"runtime_kind\":\"antigravity_cli\",\"llm_model_identifier\":\"gemini-3.8-flash-low\",\"llm_config\":null,\"auto_execute_tools\":true,\"workspace_root_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-tkb6NM/eta/workspace-stopped-delegator\"}}],\"task_executions\":[{\"kind\":\"task_agent\",\"address\":\"/worker_team_2d72\",\"agent_run_id\":\"worker_team_2d72_3962d04865044938ae17a7d0ac01587f\",\"platform_agent_run_id\":\"37878e86-eb9c-423d-8af6-d934950af43f\",\"delegator_agent_run_id\":\"manager_team_2d72_f41966d24b6c4bb78afb2d5713ab0e78\",\"started_at\":\"2026-11-13T11:12:33.027Z\",\"source\":{\"kind\":\"agent\",\"agent_definition_id\":\"worker-team-2d72\",\"launch_configuration\":{\"runtime_kind\":\"antigravity_cli\",\"llm_model_identifier\":\"gemini-3.8-flash-low\",\"llm_config\":null,\"auto_execute_tools\":true,\"workspace_root_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-tkb6NM/eta/workspace-stopped-delegator\"},\"launch_source\":{\"origin\":\"agent_default\",\"fallbacks\":[]}}}]}}}}"
+    }
+   }
+  },
+  "MSP-52": {
+   "result": "Fail",
+   "seconds": 39.5,
+   "error": "Timed out waiting for the run screen",
+   "details": {
+    "rowKey": "mobile-run-row-org:org_org_ce92_798c687c21fb46e99a8ea3b9b5ad8a3f/task-agent:worker_org_ce92_67ef8352f2504382bddd16c4f5812400",
+    "screenState": null,
+    "alerts": [],
+    "openControls": 1
+   }
+  }
+ },
+ "browserErrors": [],
+ "failedRequests": [],
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}

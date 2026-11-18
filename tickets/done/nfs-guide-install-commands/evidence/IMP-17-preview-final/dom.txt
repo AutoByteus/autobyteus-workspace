@@ -1,0 +1,89 @@
+# IMP-17; 2026-10-26; source 1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708; Chrome156 / Nuxt private preview, final descriptor-state DOM snapshot
+SHARED NETWORK WORKSPACES
+
+AutoByteus NFS
+
+AutoByteus NFS is an independent host storage service. AutoByteus uses ordinary filesystem paths and does not detect or manage the underlying storage.
+
+Could not copy. Select and copy the displayed command manually.
+
+1. Install the CLI
+
+Copy only—nothing runs in AutoByteus. Review the installer at the URL shown in the command first, then paste into a host terminal (not an agent container) in an empty working directory. The script is saved there, installs the tool and prints its version; it does not configure storage. Requires curl, a shell and the checksum utility shown below, not a compiler or Homebrew.
+
+macOS
+
+macOS 26+ with APFS. ARM64 / x64 downloads; native storage hosting and host connections.
+
+Copy
+
+Installer command unavailable
+
+Linux
+
+Ubuntu 24.04 with ext4. ARM64 / x64 downloads; native or Linux Docker storage hosting and host connections.
+
+Copy
+
+Installer command unavailable
+
+No valid installer command is available here for one or more platforms. Install separately before using the installed-tool reference below.
+
+2. Choose what this computer does
+
+After installation: create on the storage host, then connect the other computers. These commands are interactive and may request administrator approval.
+
+Create storage once
+Copy
+
+On the storage host, choose an existing or new source folder and trusted computers or private subnet. Existing files stay in place; review administrator changes before approving.
+
+~/.local/bin/autobyteus-nfs create
+Connect each other computer
+Copy
+
+On each other host, paste the connection JSON printed by create. Review and approve the setup. Application and container configuration stays separate.
+
+~/.local/bin/autobyteus-nfs connect
+3. Installed commands
+
+Run these only after installing the CLI. Commands use its explicit path, so no PATH setup is needed. Except for version, they may request administrator approval.
+
+Interactive menu
+Copy
+
+Open setup or saved-state options without arguments.
+
+~/.local/bin/autobyteus-nfs
+Check status
+Copy
+
+Report actual host readiness. This can wait while checking storage or the network.
+
+~/.local/bin/autobyteus-nfs status
+Reconnect
+Copy
+
+Resume saved storage or pending setup with consent. This is not data recovery.
+
+~/.local/bin/autobyteus-nfs reconnect
+Detach safely
+Copy
+
+Stop users of the mount first, then review and approve detach. Source files and private data are preserved.
+
+~/.local/bin/autobyteus-nfs detach
+Show version
+Copy
+
+Print the installed version without configuring storage.
+
+~/.local/bin/autobyteus-nfs version
+
+Use the printed mount path as a normal folder.
+
+Use only on a trusted private network
+
+NFS is unencrypted—do not expose it to the internet.
+
+If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying.

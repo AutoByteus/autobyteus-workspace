@@ -1,0 +1,621 @@
+{
+  "case": "native-standalone-host-shutdown",
+  "date": "2026-10-31T09:47:21.396Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK",
+  "steps": [
+    {
+      "step": "host IPC",
+      "value": {
+        "kind": "ready",
+        "url": "http://127.0.0.1:64519",
+        "model": "shutdown-fixture:lmstudio@127.0.0.1:64513"
+      },
+      "at": "2026-10-31T09:47:23.406Z"
+    },
+    {
+      "step": "application start",
+      "value": {
+        "result": {
+          "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-1",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-10-31T09:47:23.590Z",
+          "updatedAt": "2026-10-31T09:47:23.590Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        }
+      },
+      "at": "2026-10-31T09:47:23.636Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 1,
+        "turn": 1,
+        "invoke": true,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "start_background_process"
+        ]
+      },
+      "at": "2026-10-31T09:47:23.645Z"
+    },
+    {
+      "step": "application events",
+      "value": {
+        "result": [
+          {
+            "sequence": 1,
+            "observedAt": "2026-10-31T09:47:23.634Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          }
+        ]
+      },
+      "at": "2026-10-31T09:47:23.946Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 2,
+        "turn": 1,
+        "invoke": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "start_background_process"
+        ]
+      },
+      "at": "2026-10-31T09:47:24.013Z"
+    },
+    {
+      "step": "application events",
+      "value": {
+        "result": [
+          {
+            "sequence": 1,
+            "observedAt": "2026-10-31T09:47:23.634Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          },
+          {
+            "sequence": 2,
+            "observedAt": "2026-10-31T09:47:24.025Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TEXT_DELTA",
+              "delta": "Owned work submitted."
+            }
+          },
+          {
+            "sequence": 3,
+            "observedAt": "2026-10-31T09:47:24.026Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_COMPLETED"
+            }
+          }
+        ]
+      },
+      "at": "2026-10-31T09:47:24.032Z"
+    },
+    {
+      "step": "application end",
+      "value": {
+        "result": {
+          "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-1",
+          "status": "TERMINATED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-10-31T09:47:23.590Z",
+          "updatedAt": "2026-10-31T09:47:24.070Z",
+          "terminatedAt": "2026-10-31T09:47:24.070Z",
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        }
+      },
+      "at": "2026-10-31T09:47:24.084Z"
+    },
+    {
+      "step": "live work",
+      "value": {
+        "turn": 1,
+        "binding": {
+          "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-1",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-10-31T09:47:23.590Z",
+          "updatedAt": "2026-10-31T09:47:23.590Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        },
+        "current": [
+          {
+            "pid": 62288,
+            "port": 64524,
+            "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-0.json",
+            "anchor": 62259
+          },
+          {
+            "pid": 62319,
+            "port": 64525,
+            "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-1.json",
+            "anchor": 62289
+          }
+        ]
+      },
+      "at": "2026-10-31T09:47:24.091Z"
+    },
+    {
+      "step": "application start",
+      "value": {
+        "result": {
+          "bindingId": "dcc57c51-1a52-4b4e-924e-312533a1f0cf",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-2",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-10-31T09:47:24.152Z",
+          "updatedAt": "2026-10-31T09:47:24.152Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_bcc9956ed3d04882aba1500299e1e842",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        }
+      },
+      "at": "2026-10-31T09:47:24.204Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 3,
+        "turn": 2,
+        "invoke": true,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "start_background_process"
+        ]
+      },
+      "at": "2026-10-31T09:47:24.207Z"
+    },
+    {
+      "step": "application events",
+      "value": {
+        "result": [
+          {
+            "sequence": 1,
+            "observedAt": "2026-10-31T09:47:23.634Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          },
+          {
+            "sequence": 2,
+            "observedAt": "2026-10-31T09:47:24.025Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TEXT_DELTA",
+              "delta": "Owned work submitted."
+            }
+          },
+          {
+            "sequence": 3,
+            "observedAt": "2026-10-31T09:47:24.026Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_COMPLETED"
+            }
+          },
+          {
+            "sequence": 1,
+            "observedAt": "2026-10-31T09:47:24.203Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "dcc57c51-1a52-4b4e-924e-312533a1f0cf",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_bcc9956ed3d04882aba1500299e1e842",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          }
+        ]
+      },
+      "at": "2026-10-31T09:47:24.673Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 4,
+        "turn": 2,
+        "invoke": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "start_background_process"
+        ]
+      },
+      "at": "2026-10-31T09:47:24.734Z"
+    },
+    {
+      "step": "application events",
+      "value": {
+        "result": [
+          {
+            "sequence": 1,
+            "observedAt": "2026-10-31T09:47:23.634Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          },
+          {
+            "sequence": 2,
+            "observedAt": "2026-10-31T09:47:24.025Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TEXT_DELTA",
+              "delta": "Owned work submitted."
+            }
+          },
+          {
+            "sequence": 3,
+            "observedAt": "2026-10-31T09:47:24.026Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "fd520346-06f6-424c-b818-a1eb6889ea20",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_ef250bec63174dc9ad5c69c64f9a5aba",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_COMPLETED"
+            }
+          },
+          {
+            "sequence": 1,
+            "observedAt": "2026-10-31T09:47:24.203Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "dcc57c51-1a52-4b4e-924e-312533a1f0cf",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_bcc9956ed3d04882aba1500299e1e842",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_STARTED"
+            }
+          },
+          {
+            "sequence": 2,
+            "observedAt": "2026-10-31T09:47:24.749Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "dcc57c51-1a52-4b4e-924e-312533a1f0cf",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_bcc9956ed3d04882aba1500299e1e842",
+              "displayName": null
+            },
+            "event": {
+              "type": "TEXT_DELTA",
+              "delta": "Owned work submitted."
+            }
+          },
+          {
+            "sequence": 3,
+            "observedAt": "2026-10-31T09:47:24.750Z",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "address": {
+              "bindingId": "dcc57c51-1a52-4b4e-924e-312533a1f0cf",
+              "memberAddress": null
+            },
+            "runtimeSubject": "AGENT_RUN",
+            "producer": {
+              "agentRunId": "worker_bcc9956ed3d04882aba1500299e1e842",
+              "displayName": null
+            },
+            "event": {
+              "type": "TURN_COMPLETED"
+            }
+          }
+        ]
+      },
+      "at": "2026-10-31T09:47:24.757Z"
+    },
+    {
+      "step": "live work",
+      "value": {
+        "turn": 2,
+        "binding": {
+          "bindingId": "dcc57c51-1a52-4b4e-924e-312533a1f0cf",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "owned-2",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-10-31T09:47:24.152Z",
+          "updatedAt": "2026-10-31T09:47:24.152Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_bcc9956ed3d04882aba1500299e1e842",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        },
+        "current": [
+          {
+            "pid": 62467,
+            "port": 64528,
+            "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-0.json",
+            "anchor": 62438
+          },
+          {
+            "pid": 62498,
+            "port": 64529,
+            "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-1.json",
+            "anchor": 62468
+          }
+        ]
+      },
+      "at": "2026-10-31T09:47:24.790Z"
+    },
+    {
+      "step": "host IPC",
+      "value": {
+        "kind": "closed"
+      },
+      "at": "2026-10-31T09:47:25.769Z"
+    },
+    {
+      "step": "post close",
+      "value": [
+        {
+          "pid": 62288,
+          "port": 64524,
+          "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-0.json",
+          "anchor": 62259,
+          "absent": true,
+          "anchorAbsent": true,
+          "listenerStatus": null,
+          "termObserved": true
+        },
+        {
+          "pid": 62319,
+          "port": 64525,
+          "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-1.json",
+          "anchor": 62289,
+          "absent": true,
+          "anchorAbsent": true,
+          "listenerStatus": null,
+          "termObserved": false
+        },
+        {
+          "pid": 62467,
+          "port": 64528,
+          "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-0.json",
+          "anchor": 62438,
+          "absent": true,
+          "anchorAbsent": true,
+          "listenerStatus": null,
+          "termObserved": true
+        },
+        {
+          "pid": 62498,
+          "port": 64529,
+          "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-1.json",
+          "anchor": 62468,
+          "absent": true,
+          "anchorAbsent": true,
+          "listenerStatus": null,
+          "termObserved": false
+        }
+      ],
+      "at": "2026-10-31T09:47:25.855Z"
+    }
+  ],
+  "hostPid": 62244,
+  "elapsedMs": 1064,
+  "observations": [
+    {
+      "pid": 62288,
+      "port": 64524,
+      "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-0.json",
+      "anchor": 62259,
+      "absent": true,
+      "anchorAbsent": true,
+      "listenerStatus": null,
+      "termObserved": true
+    },
+    {
+      "pid": 62319,
+      "port": 64525,
+      "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-1.json",
+      "anchor": 62289,
+      "absent": true,
+      "anchorAbsent": true,
+      "listenerStatus": null,
+      "termObserved": false
+    },
+    {
+      "pid": 62467,
+      "port": 64528,
+      "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-0.json",
+      "anchor": 62438,
+      "absent": true,
+      "anchorAbsent": true,
+      "listenerStatus": null,
+      "termObserved": true
+    },
+    {
+      "pid": 62498,
+      "port": 64529,
+      "receipt": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-1.json",
+      "anchor": 62468,
+      "absent": true,
+      "anchorAbsent": true,
+      "listenerStatus": null,
+      "termObserved": false
+    }
+  ],
+  "sentinel": 200,
+  "data": "preserve owned data",
+  "result": "Pass",
+  "childrenAbsent": true,
+  "rootRemoved": true
+}

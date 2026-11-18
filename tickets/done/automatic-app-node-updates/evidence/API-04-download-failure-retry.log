@@ -1,0 +1,41 @@
+# API-04 (AC-005 download) 2026-11-01T20:56:05Z: fresh V1 copy, data root <R>/data-dl, feed mode badsha (wrong sha512 for the 1.5.11-beta.11 zip)
+{"marker":"API-04 start 2026-11-01T20:54:45Z"}
+{"at":"2026-11-01T20:55:03.184Z","method":"GET","url":"/latest-mac.yml?noCache=1k6ce9s8c","status":200,"mode":"badsha","bytes":384}
+{"at":"2026-11-01T20:55:12.384Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"mode":"badsha"}
+{"at":"2026-11-01T20:55:12.386Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"badsha","bytes":492196979}
+{"marker":"API-04 retry 2026-11-01T20:55:31Z"}
+{"at":"2026-11-01T20:55:33.598Z","method":"GET","url":"/latest-mac.yml?noCache=1k6ceapus","status":200,"mode":"badsha","bytes":384}
+{"at":"2026-11-01T20:55:33.610Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"mode":"badsha"}
+{"at":"2026-11-01T20:55:33.611Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"badsha","bytes":492196979}
+## record after the failure and after the retry
+{
+  "version": "1.5.11-beta.11",
+  "fromVersion": "1.5.11-beta.10",
+  "foundAt": "2026-11-01T20:55:03.186Z",
+  "read": true,
+  "handledVersion": null,
+  "handledAt": null,
+  "automatic": null,
+  "automaticFailure": {
+    "version": "1.5.11-beta.11",
+    "step": "download",
+    "reason": "Update information is incomplete right now. Try again in a few minutes."
+  },
+  "outcome": null
+}
+
+## updater lines
+Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM912qY6e5Xz6AWMMjhsruYRGEg==
+    at Transform._read (node:internal/streams/transform:202:5) Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM
+[2026-11-01T20:55:33.596Z] [INFO] [electron] [updater] Checking for update
+[2026-11-01T20:55:33.600Z] [INFO] [electron] [updater] Found version 1.5.11-beta.11 (url: AutoByteus-1.5.11-beta.11-arm64-mac.zip)
+[2026-11-01T20:55:33.600Z] [INFO] [electron] [updater] Downloading update from AutoByteus-1.5.11-beta.11-arm64-mac.zip
+[2026-11-01T20:55:33.605Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+[2026-11-01T20:55:33.608Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+[2026-11-01T20:55:33.609Z] [INFO] [electron] [updater] Download block maps (old: "http://127.0.0.1:47911/AutoByteus-1.5.11-beta.10-arm64-mac.zip.blockmap", new: http://127.0.0.1:47911/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap)
+[2026-11-01T20:55:33.610Z] [ERROR] [electron] [updater] Cannot download differentially, fallback to full download: Error: Cannot download "http://127.0.0.1/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap", status 404: Not Found
+[2026-11-01T20:55:34.123Z] [ERROR] [electron] [updater] Error: Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM
+[2026-11-01T20:55:34.124Z] [ERROR] [electron] [updater] Auto-update failed. (kind=metadata, operation=download, code=ERR_CHECKSUM_MISMATCH)
+sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM912qY6e5Xz6AWMMjhsruYRGEg==
+Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM912qY6e5Xz6AWMMjhsruYRGEg==
+    at Transform._read (node:internal/streams/transform:202:5) Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM

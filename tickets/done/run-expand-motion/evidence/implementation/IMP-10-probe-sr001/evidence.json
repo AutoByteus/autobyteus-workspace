@@ -1,0 +1,825 @@
+{
+  "startedAt": "2026-11-06T06:47:23.464Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "REM-01": {
+      "description": "Expanded at first: twelve delegated rows at rest, before their Task answers arrive",
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "key": "row-0",
+            "top": 244,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-1",
+            "top": 274,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-2",
+            "top": 304,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-3",
+            "top": 334,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-4",
+            "top": 364,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-5",
+            "top": 394,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-6",
+            "top": 424,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-7",
+            "top": 454,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-8",
+            "top": 484,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-9",
+            "top": 514,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-10",
+            "top": 544,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-11",
+            "top": 574,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          }
+        ]
+      }
+    },
+    "REM-02": {
+      "description": "Task answers arrive after the rows are shown: the rows below move to their new place at once, with no transform (AC-005)",
+      "result": "Fail",
+      "message": "143 row samples slid while the Task lines arrived",
+      "details": {
+        "firstOffending": [
+          {
+            "t": 8,
+            "key": "row-1",
+            "top": 274,
+            "transform": "matrix(1, 0, 0, 1, 0, -18)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 274,
+            "after": 292
+          },
+          {
+            "t": 8,
+            "key": "row-2",
+            "top": 304,
+            "transform": "matrix(1, 0, 0, 1, 0, -36)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 304,
+            "after": 340
+          },
+          {
+            "t": 8,
+            "key": "row-3",
+            "top": 334,
+            "transform": "matrix(1, 0, 0, 1, 0, -54)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 334,
+            "after": 388
+          },
+          {
+            "t": 8,
+            "key": "row-4",
+            "top": 364,
+            "transform": "matrix(1, 0, 0, 1, 0, -72)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 364,
+            "after": 436
+          },
+          {
+            "t": 8,
+            "key": "row-5",
+            "top": 394,
+            "transform": "matrix(1, 0, 0, 1, 0, -90)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 394,
+            "after": 484
+          },
+          {
+            "t": 8,
+            "key": "row-6",
+            "top": 424,
+            "transform": "matrix(1, 0, 0, 1, 0, -108)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 424,
+            "after": 532
+          }
+        ]
+      }
+    },
+    "REM-03": {
+      "description": "Collapse: the delegated rows are hidden at once (AC-002)",
+      "result": "Pass",
+      "details": {
+        "perFrame": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "REM-04": {
+      "description": "Expand: from the first frame, every row is complete (its Task line) at its final place with no transform (AC-001; 4 frames)",
+      "result": "Fail",
+      "message": "44 row samples moved from elsewhere on screen, or lacked their Task line",
+      "details": {
+        "firstOffending": [
+          {
+            "frame": 0,
+            "index": 1,
+            "key": "row-13",
+            "top": 274,
+            "transform": "matrix(1, 0, 0, 1, 0, -18)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "final": 292
+          },
+          {
+            "frame": 0,
+            "index": 2,
+            "key": "row-14",
+            "top": 304,
+            "transform": "matrix(1, 0, 0, 1, 0, -36)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "final": 340
+          },
+          {
+            "frame": 0,
+            "index": 3,
+            "key": "row-15",
+            "top": 334,
+            "transform": "matrix(1, 0, 0, 1, 0, -54)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "final": 388
+          },
+          {
+            "frame": 0,
+            "index": 4,
+            "key": "row-16",
+            "top": 364,
+            "transform": "matrix(1, 0, 0, 1, 0, -72)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "final": 436
+          },
+          {
+            "frame": 0,
+            "index": 5,
+            "key": "row-17",
+            "top": 394,
+            "transform": "matrix(1, 0, 0, 1, 0, -90)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "final": 484
+          },
+          {
+            "frame": 0,
+            "index": 6,
+            "key": "row-18",
+            "top": 424,
+            "transform": "matrix(1, 0, 0, 1, 0, -108)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "final": 532
+          }
+        ],
+        "frames": [
+          [
+            {
+              "key": "row-12",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-13",
+              "top": 274,
+              "transform": "matrix(1, 0, 0, 1, 0, -18)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-14",
+              "top": 304,
+              "transform": "matrix(1, 0, 0, 1, 0, -36)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-15",
+              "top": 334,
+              "transform": "matrix(1, 0, 0, 1, 0, -54)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-16",
+              "top": 364,
+              "transform": "matrix(1, 0, 0, 1, 0, -72)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-17",
+              "top": 394,
+              "transform": "matrix(1, 0, 0, 1, 0, -90)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-18",
+              "top": 424,
+              "transform": "matrix(1, 0, 0, 1, 0, -108)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-19",
+              "top": 454,
+              "transform": "matrix(1, 0, 0, 1, 0, -126)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-20",
+              "top": 484,
+              "transform": "matrix(1, 0, 0, 1, 0, -144)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-21",
+              "top": 514,
+              "transform": "matrix(1, 0, 0, 1, 0, -162)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-22",
+              "top": 544,
+              "transform": "matrix(1, 0, 0, 1, 0, -180)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-23",
+              "top": 574,
+              "transform": "matrix(1, 0, 0, 1, 0, -198)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ],
+          [
+            {
+              "key": "row-12",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-13",
+              "top": 276,
+              "transform": "matrix(1, 0, 0, 1, 0, -15.5665)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-14",
+              "top": 309,
+              "transform": "matrix(1, 0, 0, 1, 0, -31.133)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-15",
+              "top": 341,
+              "transform": "matrix(1, 0, 0, 1, 0, -46.6995)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-16",
+              "top": 374,
+              "transform": "matrix(1, 0, 0, 1, 0, -62.266)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-17",
+              "top": 406,
+              "transform": "matrix(1, 0, 0, 1, 0, -77.8325)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-18",
+              "top": 439,
+              "transform": "matrix(1, 0, 0, 1, 0, -93.399)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-19",
+              "top": 471,
+              "transform": "matrix(1, 0, 0, 1, 0, -108.965)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-20",
+              "top": 503,
+              "transform": "matrix(1, 0, 0, 1, 0, -124.532)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-21",
+              "top": 536,
+              "transform": "matrix(1, 0, 0, 1, 0, -140.098)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-22",
+              "top": 568,
+              "transform": "matrix(1, 0, 0, 1, 0, -155.665)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-23",
+              "top": 601,
+              "transform": "matrix(1, 0, 0, 1, 0, -171.232)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ],
+          [
+            {
+              "key": "row-12",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-13",
+              "top": 279,
+              "transform": "matrix(1, 0, 0, 1, 0, -13.3032)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-14",
+              "top": 313,
+              "transform": "matrix(1, 0, 0, 1, 0, -26.6063)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-15",
+              "top": 348,
+              "transform": "matrix(1, 0, 0, 1, 0, -39.9095)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-16",
+              "top": 383,
+              "transform": "matrix(1, 0, 0, 1, 0, -53.2126)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-17",
+              "top": 417,
+              "transform": "matrix(1, 0, 0, 1, 0, -66.5158)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-18",
+              "top": 452,
+              "transform": "matrix(1, 0, 0, 1, 0, -79.8189)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-19",
+              "top": 487,
+              "transform": "matrix(1, 0, 0, 1, 0, -93.1221)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-20",
+              "top": 522,
+              "transform": "matrix(1, 0, 0, 1, 0, -106.425)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-21",
+              "top": 556,
+              "transform": "matrix(1, 0, 0, 1, 0, -119.728)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-22",
+              "top": 591,
+              "transform": "matrix(1, 0, 0, 1, 0, -133.032)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-23",
+              "top": 626,
+              "transform": "matrix(1, 0, 0, 1, 0, -146.335)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ],
+          [
+            {
+              "key": "row-12",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-13",
+              "top": 281,
+              "transform": "matrix(1, 0, 0, 1, 0, -11.1917)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-14",
+              "top": 318,
+              "transform": "matrix(1, 0, 0, 1, 0, -22.3833)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-15",
+              "top": 354,
+              "transform": "matrix(1, 0, 0, 1, 0, -33.575)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-16",
+              "top": 391,
+              "transform": "matrix(1, 0, 0, 1, 0, -44.7667)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-17",
+              "top": 428,
+              "transform": "matrix(1, 0, 0, 1, 0, -55.9583)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-18",
+              "top": 465,
+              "transform": "matrix(1, 0, 0, 1, 0, -67.15)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-19",
+              "top": 502,
+              "transform": "matrix(1, 0, 0, 1, 0, -78.3417)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-20",
+              "top": 538,
+              "transform": "matrix(1, 0, 0, 1, 0, -89.5333)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-21",
+              "top": 575,
+              "transform": "matrix(1, 0, 0, 1, 0, -100.725)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-22",
+              "top": 612,
+              "transform": "matrix(1, 0, 0, 1, 0, -111.917)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-23",
+              "top": 649,
+              "transform": "matrix(1, 0, 0, 1, 0, -123.108)",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ]
+        ]
+      }
+    },
+    "REM-05": {
+      "description": "Expanding a delegated Team: its members appear and the rows below move at once, with no transform (AC-005)",
+      "result": "Fail",
+      "message": "117 row samples slid when the Team expanded",
+      "details": {
+        "firstOffending": [
+          {
+            "t": 7,
+            "key": "row-15",
+            "top": 388,
+            "transform": "matrix(1, 0, 0, 1, 0, -180)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 388,
+            "after": 568
+          },
+          {
+            "t": 7,
+            "key": "row-16",
+            "top": 436,
+            "transform": "matrix(1, 0, 0, 1, 0, -180)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 436,
+            "after": 616
+          },
+          {
+            "t": 7,
+            "key": "row-17",
+            "top": 484,
+            "transform": "matrix(1, 0, 0, 1, 0, -180)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 484,
+            "after": 664
+          },
+          {
+            "t": 7,
+            "key": "row-18",
+            "top": 532,
+            "transform": "matrix(1, 0, 0, 1, 0, -180)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 532,
+            "after": 712
+          },
+          {
+            "t": 7,
+            "key": "row-19",
+            "top": 580,
+            "transform": "matrix(1, 0, 0, 1, 0, -180)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 580,
+            "after": 760
+          },
+          {
+            "t": 7,
+            "key": "row-20",
+            "top": 628,
+            "transform": "matrix(1, 0, 0, 1, 0, -180)",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true,
+            "before": 628,
+            "after": 808
+          }
+        ]
+      }
+    },
+    "REM-06": {
+      "description": "A finished Task's row fades and closes; the row below glides up by layout, with no transform (AC-005, E-11)",
+      "result": "Pass",
+      "details": {
+        "closedKey": "row-17",
+        "nextKey": "row-18",
+        "leavingOpacities": [
+          1,
+          1,
+          0.865163,
+          0.739399,
+          0.62139,
+          0.511636,
+          0.409681,
+          0.315523,
+          0.230604,
+          0.156017,
+          0.0935692,
+          0.0444925,
+          0.0121064,
+          4.53906e-8
+        ],
+        "nextTops": [
+          712,
+          706,
+          699,
+          694,
+          689,
+          684,
+          679,
+          675,
+          671,
+          668,
+          666,
+          665,
+          664
+        ]
+      }
+    },
+    "REM-07": {
+      "description": "AC-006: the move is off inside the Runs view only; the same tree row outside it keeps the shared move rule",
+      "result": "Fail",
+      "message": "The Runs view still moves rows",
+      "details": {
+        "insideRunsView": "transform 0.2s ease-out",
+        "outsideRunsView": "transform 0.2s ease-out"
+      }
+    },
+    "REM-08": {
+      "description": "No browser errors during the cases",
+      "result": "Pass",
+      "details": {
+        "events": 0
+      }
+    }
+  },
+  "browserEvents": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxt": "SIGTERM",
+    "installedPageRemoved": true
+  },
+  "failures": [
+    {
+      "id": "REM-02",
+      "message": "143 row samples slid while the Task lines arrived"
+    },
+    {
+      "id": "REM-04",
+      "message": "44 row samples moved from elsewhere on screen, or lacked their Task line"
+    },
+    {
+      "id": "REM-05",
+      "message": "117 row samples slid when the Team expanded"
+    },
+    {
+      "id": "REM-07",
+      "message": "The Runs view still moves rows"
+    }
+  ],
+  "browserVersion": "156.0.8078.80",
+  "result": "Fail",
+  "finishedAt": "2026-11-06T06:47:41.024Z"
+}

@@ -1,0 +1,37 @@
+{
+  "type": "function",
+  "function": {
+    "name": "read_file",
+    "description": "Reads content from a specified file. Supports optional 1-based inclusive line ranges via start_line/end_line. Each returned line is prefixed with its line number when include_line_numbers is true. Image, audio and video files (by extension) are attached for the model to see in the next turn instead of being returned as text; line ranges do not apply to them, a kind the current model cannot take is refused, and other binary files are refused. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Raises ValueError if a relative path is given without an absolute base_dir or if line range arguments are invalid. Raises FileNotFoundError if the file does not exist. Raises IOError if file reading fails for other reasons.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Absolute filesystem path, or a relative file path paired with base_dir. If path is relative, you must provide an absolute base_dir. If base_dir is omitted, path must be absolute. Absolute paths are used directly and take precedence if base_dir is also supplied. Relative paths are never resolved from the configured workspace, process cwd, or prior shell cd state.",
+          "type": "string"
+        },
+        "base_dir": {
+          "description": "Optional absolute directory used only when path is relative; it is required for a relative path. If path is absolute, omit base_dir (an absolute path takes precedence if both are supplied). This applies to this tool call only and does not change shell or agent working-directory state. Do not provide a relative base_dir.",
+          "type": "string"
+        },
+        "start_line": {
+          "description": "Parameter 'start_line' for tool 'read_file' (text files only).",
+          "type": "integer"
+        },
+        "end_line": {
+          "description": "Parameter 'end_line' for tool 'read_file' (text files only).",
+          "type": "integer"
+        },
+        "include_line_numbers": {
+          "description": "If true, prefix each returned line with its line number (default).",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

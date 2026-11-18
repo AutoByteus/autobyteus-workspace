@@ -1,0 +1,180 @@
+{
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "codeword": "OKAPI-6782",
+  "turns": [
+    {
+      "label": "1 call alpha",
+      "content": "Remember this codeword: OKAPI-6782. Call the list_projects tool once, then reply with exactly: DONE-1",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember this codeword: OKAPI-6782. Call the list_projects tool once, then reply with exactly: DONE-1",
+          "media": null,
+          "ts": 1793291826.389
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-c1c9b648-6f49-49ab-bad4-1b566c88452f-2",
+          "role": null,
+          "content": "",
+          "toolName": "view_file",
+          "toolArgs": {
+            "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/list_projects.json"
+          },
+          "toolResult": {
+            "provider_state": "DONE",
+            "output": "1 lines, 255 bytes"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793291828.412
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-c1c9b648-6f49-49ab-bad4-1b566c88452f-4",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": {
+            "provider_state": "DONE",
+            "output": {
+              "projects": [
+                {
+                  "projectId": "project_020accf6-cca7-4718-91a3-4c1948b84948",
+                  "name": "Tool List Live f3b81b"
+                }
+              ]
+            }
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793291831.034
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-1",
+          "media": null,
+          "ts": 1793291833.084
+        }
+      ]
+    },
+    {
+      "label": "2 add beta, call beta",
+      "content": "Call the list_project_tasks tool once with project_id \"project_020accf6-cca7-4718-91a3-4c1948b84948\". Then reply with DONE-2 followed by the codeword from my first message.",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Call the list_project_tasks tool once with project_id \"project_020accf6-cca7-4718-91a3-4c1948b84948\". Then reply with DONE-2 followed by the codeword from my first message.",
+          "media": null,
+          "ts": 1793291838.51
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+          "ts": 1793291838.511
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-37c09c89-a2b4-4554-a6ac-f95d8abe9fa1-8",
+          "role": null,
+          "content": "",
+          "toolName": "view_file",
+          "toolArgs": {
+            "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/list_project_tasks.json"
+          },
+          "toolResult": {
+            "provider_state": "DONE",
+            "output": "1 lines, 1716 bytes"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793291840.795
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-37c09c89-a2b4-4554-a6ac-f95d8abe9fa1-10",
+          "role": null,
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {
+            "project_id": "project_020accf6-cca7-4718-91a3-4c1948b84948"
+          },
+          "toolResult": {
+            "provider_state": "DONE",
+            "output": {
+              "projectId": "project_020accf6-cca7-4718-91a3-4c1948b84948"
+            }
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793291843.448
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-2 OKAPI-6782",
+          "media": null,
+          "ts": 1793291845.695
+        }
+      ]
+    },
+    {
+      "label": "3 remove alpha, try alpha",
+      "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+          "media": null,
+          "ts": 1793291851.615
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+          "ts": 1793291851.616
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-24849443-82c7-482e-8a7e-fc6d0ad9487c-14",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": {
+            "provider_state": "ERROR",
+            "output": null
+          },
+          "toolError": "calling \"tools/call\": Tool is not enabled for this session",
+          "media": null,
+          "ts": 1793291853.432
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-3",
+          "media": null,
+          "ts": 1793291855.622
+        }
+      ]
+    }
+  ],
+  "seenToolNames": [
+    "{\n  \"version\": 1,\n  \"toolNames\": [\n    \"delegate_task\",\n    \"list_project_tasks\",\n    \"send_message_to\"\n  ]\n}\n"
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

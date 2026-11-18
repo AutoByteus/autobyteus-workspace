@@ -1,8 +1,8 @@
 import fs from "node:fs";
-import path from "node:path";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+import { sendUserFile } from "./user-file-reply.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -34,9 +34,10 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
         throw new Error(`File does not exist at path: ${filePath}`);
       }
 
-      const mimeType = lookupMime(absolutePath) || "application/octet-stream";
-      reply.type(mimeType.toString());
-      return reply.send(fs.createReadStream(absolutePath));
+      return sendUserFile(reply, {
+        mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
+        body: fs.createReadStream(absolutePath),
+      });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Access denied")) {
         logger.error(
@@ -80,9 +81,10 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
         throw new Error(`File does not exist at path: ${filePath}`);
       }
 
-      const mimeType = lookupMime(absolutePath) || "application/octet-stream";
-      reply.type(mimeType.toString());
-      return reply.send(fs.createReadStream(absolutePath));
+      return sendUserFile(reply, {
+        mimeType: (lookupMime(absolutePath) || "application/octet-stream").toString(),
+        body: fs.createReadStream(absolutePath),
+      });
     } catch (error) {
       if (error instanceof Error && error.message.includes("Access denied")) {
         logger.error(

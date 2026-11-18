@@ -2,7 +2,7 @@
 
 The canonical model for how agents work together in AutoByteus: what a run is,
 who may message whom, who may delegate to whom, how Tasks own delegated work,
-who coordinates a delegated run, and where each run's memory and messages are
+how runs relate to the runs they delegated to, and where each run's memory and messages are
 stored. Read it before designing or reviewing any change to teams, Orgs,
 standalone collaboration, `send_message_to`, `delegate_task`, Tasks, run
 storage or messaging.
@@ -23,19 +23,34 @@ listed in [Current State Versus Target](#5-current-state-versus-target).
 - **Standing instance**: the single instance at an address inside a run: a
   Team's member, an Org's direct agent or mounted Team, or a standalone run's
   own agent.
-- **Delegated run (copy)**: an independent Agent or Team run started by
-  `delegate_task` to do one Task's work.
-- **Coordinating run**: the run that records and coordinates a delegated run
-  (see CM-7 for nested delegation).
-- **Node**: one AutoByteus server (the desktop's embedded server, a remote or
-  Docker server), identified by its stable server ID (`serverInstanceId`).
-- **Peer**: another node that this node's owner registered for remote
-  collaboration. Its name is this owner's local label for it.
+- **Delegated run**: an ordinary Agent or Team run started by `delegate_task`
+  to do one Task's work. It is a root of its own (CM-7).
+- **Delegator**: the agent that called `delegate_task`. The **delegating run**
+  is the run that agent is a part of: one hop, never the top of a chain.
+- **Entry agent**: the agent a message to a run enters through: an Agent run's
+  own agent, a Team run's coordinator.
+- **Assigner** of a Task: the delegating run of the Task's `assigned` entry.
+  Only it continues the Task's runs after a reopen.
+- **Node** and **Peer**: defined in the project
+  [Glossary](../../../GLOSSARY.md#nodes) (a node is one AutoByteus server with
+  its node ID; a peer is a remote node registered with this node). A peer's
+  name is this owner's local label for it.
 - **Remote delegated run**: a delegated run that runs on a peer. It is a run
   of the node that runs it.
 - **Link**: what the two nodes keep of a remote delegated run. On the
-  delegating node, the coordinating run's record of it; on the node that runs
-  it, its back-link to its coordinating run.
+  delegating node, the run's Task entry with the peer's facts (`nodeId`, a
+  Team's `members`); on the node that runs it, its own `delegatedFrom`, the
+  back-link to its delegating run (CM-10).
+- **Delegation tree**: the relationships between runs, built in memory from
+  the Task entries (`DelegationIndex`, CM-8). A run's **children** are the runs
+  it delegated to that have an open Task entry. The tree relates runs; it never
+  holds a run's life and never gives one run's agents an address in another.
+- **Closed delegated run**: a delegated run with no open Task entry; it is not
+  a child of anyone. A delegated run whose delegating run was deleted keeps
+  working as a run of its own.
+
+The word **coordinating run** (the top run of a delegation chain, which hosted
+every local delegated run in it) is gone since autobyteus-461.
 
 These are the engineer-facing terms. The words an agent reads in its prompt, tool
 descriptions and refusal texts ("task agent", "task agent team", "run id") are
@@ -56,8 +71,8 @@ are parts of one run. They work together only by **messages**
 
 `delegate_task` hands one Task's work to an **independent** unit. It starts a
 new delegated run of that Agent or Team, or gives a saved Task to an existing
-delegated run by its run ID. A delegated run is a peer, not a part: it has its
-own identity, conversation and memory.
+delegated run by its run ID. A delegated run is a run of its own, not a part:
+it has its own identity, conversation and memory.
 
 **Inside your run you message; outside your run you delegate first, then
 message the delegated run by its run ID.**
@@ -66,18 +81,18 @@ message the delegated run by its run ID.**
 
 | Rule | Statement | Why |
 | --- | --- | --- |
-| CM-1 | You never delegate inside your own Team: `delegate_task` to yourself, a teammate, or your own Team is refused and points to `send_message_to`. "Inside your own Team" means any address inside a Team instance that contains you, at any depth (exactly what `send_message_to` resolves within it), and, for a configured member of a Team run's root Team, every configured placement of that Team. | The Team run already exists with one instance of every member; a copy would only duplicate what you can already message. |
+| CM-1 | You never delegate inside your own Team: `delegate_task` to yourself, a teammate, or your own Team is refused and points to `send_message_to`. "Inside your own Team" means any address inside a Team instance that contains you, at any depth (exactly what `send_message_to` resolves within it), and, for a configured member of a Team run's root Team, every configured placement of that Team. | The Team run already exists with one instance of every member; a delegated run would only duplicate what you can already message. |
 | CM-2 | Every other delegation target is an independent unit: a sibling Agent or Team in the same Org, an Agent or Team placed elsewhere in the run, or any catalog Agent or Team. Delegation always starts (or reuses, by run ID) an independent delegated run. | Independent units do their own work in their own run. |
 | CM-3 | An Org is a container, not a Team. Its direct agents and mounted Teams are independent units: they message each other's standing instances and may delegate to each other (for example a Project Task Manager in an Org delegates to the Org's software engineering Team). Inside one mounted Team, CM-1 applies. | Orgs exist to put independent units under one roof. |
 | CM-4 | `send_message_to(recipient_address)` reaches the **standing instance** at that address, inside your own Team instance first. It **never creates a run**: an address that is not a standing instance of your run is not found, with guidance to use `delegate_task`. | One way to create runs (delegation), one way to talk (messages). |
-| CM-5 | A delegated run has no address of its own: it is reached only by its run ID (`target_agent_run_id`; a Team's coordinator run ID), in both directions. Members of a delegated run may also message the coordinating run's standing instances by address. The work packet is delivered once, by `delegate_task`. | An address names a place in a run; a copy is an extra run, so only its ID names it unambiguously. |
-| CM-6 | Every delegated run belongs to one or more open Tasks: Project Tasks (delegated by key or ID; its delegator can give a task agent another Project Task with `delegate_task` while its earlier ones are open), the delegator's own Task (sub-work, which joins the newest open Task), or a Task with no Project created by a description-only delegation (a temp Task). Closing a Task (DONE or CANCELLED, with `update_task`) ends its work for its delegated runs and stops those that have no other open Task; closing a Project Task that has parts also closes its open parts the same way, and so their delegated runs. Closing is optional: an agent without `update_task` never has to close anything, and a quiet delegated run is shut down after the idle grace period anyway. | Work is tracked and can be ended by its Task, without making every agent manage Tasks. |
-| CM-7 | The coordinating run coordinates its delegated runs' lifecycle: idle shutdown, wake-on-message, stop on Task closure, reactivation by the assigner. Only senders in the same coordinating run can wake a delegated run. Today the topmost run of a delegation chain is the coordinating run for every delegated run in it, including runs delegated by members of a delegated run. | One owner decides when delegated work sleeps and wakes. |
-| CM-8 | A delegated run never becomes a part of its coordinating run. The coordinating run keeps **links** (which runs it delegated to, for which Task) and coordination data, not the delegated run's content. | A run owns its own content; the coordinator owns the relationship. |
-| CM-9 | A message is stored with the run(s) it belongs to: between parts of one run, once, in that run's message log; between two runs, in both runs' logs (sent and received), with one message ID. Each agent's own memory also records what it sent and received. | Every run is self-contained, and the same shape works when two runs are on different nodes (email model). |
-| CM-10 | A delegated run may run on a peer node. The agent names the node only when it delegates (`delegate_task` with `node`); without `node` the target is on its own node. The node that runs a delegated run owns it: runtime, memory, message log and lifecycle (idle shutdown, wake on message, stop). The delegating node keeps only the link (peer, run ID, delegator; for an Agent Team also its coordinator's address and its members' addresses and run IDs), recorded by the topmost coordinating run (CM-7, CM-8), and the run's Task (CM-6). No node hosts or reads another node's run. | Each node is authoritative for its own runs (federation); a link is enough to coordinate. |
-| CM-11 | Across nodes, a remote delegated run and the run that delegated it message each other by run ID only (CM-5), in both directions; the link routes the run ID, so follow-ups never name the node. For a remote Agent Team, every member is reachable this way, the coordinator included, and a member that is idle or never started is woken first, as with a local Team copy; the delegation result names the team run and its coordinator. Every message names the root that receives it on the other node. No other run is reachable across nodes. Each side stores the message in its own run's log with the shared message ID (CM-9). Results and message headers name the other run's node, so an agent always knows when a run is remote. The delegating node also shows a remote delegated run as a child of its delegator's root, as it shows a local copy: it reads the run's title, statuses and stored conversation from the run's node, follows its live output over a stream while someone is viewing, and passes its owner's messages, interrupts and terminate to it through the link. The run's node answers only for runs that node's delegation started and only about the paired agents (an Agent's host, a Team's members), each from where that run kind keeps them: an Agent run's host, or a Team run's root (since autobyteus-278). | One way to name a run on every node; the agent copies the run ID it was given. |
-| CM-12 | A node accepts requests from other nodes only while its owner has remote collaboration on, only from registered peers, and offers them every shared Agent and Agent Team of the node, at the same catalog addresses as a local catalog copy. A remote run starts with each agent's own default runtime and model (a Team member without one uses the Team's default), in the node's temp workspace, with tool calls auto-approved for every agent; a target with an agent no default covers is refused. No credential travels between nodes; a remote run uses its own node's models, tools, credentials and workspace. When a registered peer asks, the node says whether it takes that peer's requests now, and lists the Agents and Agent Teams it offers: name, kind, catalog address and description only, never definitions, prompts or settings; nothing is cached (since autobyteus-261). Every inbound request kind enters through one entry point, where peer authentication is added later. | The receiving owner turns it on and chooses the peers; each target's own defaults decide how it runs, with no per-agent setup; security is added in one place. |
+| CM-5 | A delegated run has no address in its delegator's space: it is reached only by its run ID (`target_agent_run_id`; a Team's entry agent), in both directions. The address it was delegated to is kept as its Task entry's `recipientAddress`, a name in the delegator's space. Two runs may message each other by run ID when both work on one open Task, or one is the assigner of an open Task the other works on; runs of different Tasks are refused, and a run whose Task is closed takes input only from its assigner after a reopen. By address, an agent reaches its own team first (a miss there is not found), then, in a delegated run, the standing agents of the run that assigned its Task, then, in a run the user started, its own run's standing agents. A delegated Team is rooted at `/`, like any Team run. The work packet is delivered once, by `delegate_task`. | An address names a place in a run; a delegated run is a run of its own, so only its ID names it unambiguously. The Task decides who works together. |
+| CM-6 | Every delegated run belongs to one or more open Tasks: Project Tasks (delegated by key or ID; its delegator can give a task agent another Project Task with `delegate_task` while its earlier ones are open), the delegator's own Task (sub-work, which joins the newest open Task), or a Task with no Project created by a description-only delegation (a temp Task). A new local delegated run of a Task whose Project has a linked folder works in that Project's first linked folder; otherwise in its top-level run's folder (since autobyteus-97; an existing run keeps its folder). Closing a Task (DONE or CANCELLED, with `update_task`) ends its work for its delegated runs and stops those that have no other open Task; closing a Project Task that has parts also closes its open parts the same way, and so their delegated runs. Closing is optional: an agent without `update_task` never has to close anything, and a quiet delegated run is shut down after the idle grace period anyway. A delegated run is a child of its delegating run while it has an open Task entry: once its last open Task closes and it is stopped, it is no longer shown as a child, and it is again when its assigner continues it or gives it another Task (since autobyteus-469). Sub-work joins the delegating run's current Task: its newest open entry; a run that works on a Task cannot assign another by `task_id`. | Work is tracked and can be ended by its Task, without making every agent manage Tasks. |
+| CM-7 | A run's life is bound to its Task, never to the run that delegated it. Every delegated run is an ordinary run and a root of its own: it starts, idles out, wakes on a message, stops and resumes after a restart like a run the user started. Closing a Task stops its runs that have no other open Task, through each run's ordinary Stop; stopping or deleting the delegating run stops nothing it delegated to. A delegating run's view shows its children with their statuses, and its owner's commands and Settings changes on a child row go to that child's own run, which saves its own launch while it is stopped. | Nothing hosts, idles, wakes or stops another run: the Task owns the work (since autobyteus-461). |
+| CM-8 | A delegated run never becomes a part of its delegating run, and the delegating run stores nothing about the runs it delegated to. A delegation is stored where each side needs it, under one name, `delegatedFrom` (one hop: the delegating run and the delegator): on the Task entry, the assignment, which opens, closes and reopens with the Task (with `recipientAddress`, and for a peer's run `nodeId` and a Team's `members`); on the delegated run's own file, its origin, written once when it is created. The two are equal by rule. The delegation tree is built in memory from the Task entries and kept current by every delegation, closure, reopen and Task deletion. | A run owns its own content; the Task owns the relationship; one owner per fact. |
+| CM-9 | A message is stored with the run(s) it belongs to: between parts of one run, once, in that run's message log; between two runs, in both runs' logs (sent and received), with one message ID. Each agent's own memory also records what it sent and received. An Agent run's log is in its own folder, whether the user or a delegation started it. | Every run is self-contained, and the same shape works when two runs are on different nodes (email model). |
+| CM-10 | A delegated run may run on a peer node. The agent names the node only when it delegates (`delegate_task` with `node`); without `node` the target is on its own node. The node that runs a delegated run owns it: runtime, memory, message log and lifecycle (idle shutdown, wake on message, stop). The delegating node keeps only the run's Task entry (CM-6, CM-8), which names the peer (`nodeId`) and, for an Agent Team, its members by run ID and by their address in their own team (`/lead`); the run's launches are its own facts on its node, read while a view shows them. No node hosts or reads another node's run. | Each node is authoritative for its own runs (federation); a link is enough to coordinate. |
+| CM-11 | Across nodes, a remote delegated run and the run that delegated it message each other by run ID only (CM-5), in both directions; the link routes the run ID, so follow-ups never name the node. For a remote Agent Team, every member is reachable this way, the coordinator included, and a member that is idle or never started is woken first, as in a local Team run; the delegation result names the team run and its coordinator. Every message names the root that receives it on the other node. No other run is reachable across nodes. Each side stores the message in its own run's log with the shared message ID (CM-9). Results and message headers name the other run's node, so an agent always knows when a run is remote. The delegating node also shows a remote delegated run as a child of its delegating run, as it shows a local delegated run: it reads the run's title, statuses and stored conversation from the run's node, follows its live output over a stream while someone is viewing, and passes its owner's messages, interrupts and terminate to it through the link. The run's node answers only for runs that node's delegation started and only about the paired agents (an Agent's host, a Team's members), each from where that run kind keeps them: an Agent run's host, or a Team run's root (since autobyteus-278). | One way to name a run on every node; the agent copies the run ID it was given. |
+| CM-12 | A node accepts requests from other nodes only while its owner has remote collaboration on, only from paired peers, and offers them every shared Agent and Agent Team of the node, at the same catalog addresses as a local catalog delegation. A remote run starts with each agent's own default runtime and model (a Team member without one uses the Team's default); an agent no usable default covers gets the runtime and model the node's own Model Router chooses, while the node has Model Routing on (since autobyteus-32: the start request carries the work and its Task, and the answer carries every agent's launch, source and reason, which the delegating node shows); it runs in the node's temp workspace, with tool calls auto-approved for every agent. A target with an agent nothing covers (no usable default and Model Routing off, the router not active, or the router unable to choose) is refused before anything starts, and the refusal says which. No credential travels between nodes: two paired nodes share a peer secret, which signs each request (method, node route, sender, receiver, time, a one-time nonce and the body) and is never sent (since autobyteus-437, [Node Access Model](node_access_model.md) NA-9); a remote run uses its own node's models, tools, credentials and workspace. When a paired peer asks, the node says whether it takes that peer's requests now, and lists the Agents and Agent Teams it offers: name, kind, catalog address and description only, never definitions, prompts or settings; nothing is cached (since autobyteus-261). Every inbound request kind enters through one entry point, after the node access gate verified the peer's signature. | The receiving owner turns it on and pairs the peers (one invite, accepted on the other node); each target's own defaults decide how it runs, and the node's own router fills the gaps (it alone knows its runtimes, sign-ins and limits), with no per-agent setup; security is added in one place. |
 
 Task tools are configured, not automatic: an agent gets `create_task`
 (creates a Project Task) and/or `update_task` (updates, closes or reopens a Task)
@@ -89,59 +104,65 @@ are given to every collaborating agent.
 Every run has the same shape: its own folder, its own memory (raw traces,
 snapshots, file changes, context files, the Work Journal rendered from its raw
 traces) and its own message log. A delegated
-run is a run like any other, plus a back-link to its coordinating run.
+run is a run like any other, plus its own `delegatedFrom`.
 
 ```text
 memory/
   agents/<agentRunId>/              # a standalone Agent run, or a delegated Agent run
   agent_teams/<teamRunId>/          # a Team run, or a delegated Team run; members inside
   agent_orgs/<orgRunId>/            # an Org run; its direct agents and mounted Teams inside
+  semantic/<agentDefinitionId>/     # not a run: an agent's semantic memory, shared by all its runs
 ```
 
 - A Team's members and an Org's units live inside that run's folder (they are
   parts of it).
 - A delegated run lives in its own folder at the standard place for its kind,
-  wherever its delegator sits; its own run file (`run_metadata.json` or a team
-  tree) carries a `taskAgent` section naming its coordinating run.
-- The coordinating run's folder holds its own memory, its parts, its execution
-  tree (including the links to its delegated runs) and its message log.
+  wherever its delegator sits. Its own run file (`run_metadata.json` with its
+  `address` and `launchSource`, or a Team tree rooted at `/`) carries
+  `delegatedFrom { delegatingRun, delegatorAgentRunId }`, and for a run a peer
+  started also `nodeId`.
+- A delegating run's folder holds its own memory, its parts, its own run file
+  and its message log, and nothing about the runs it delegated to: no list of
+  local or remote delegated runs. A standalone Agent run has no tree file.
+- Every delegation is a Task entry
+  (`projects/<p>/tasks/<t>/agent_run_resources.json`, or
+  `ad-hoc-tasks/<t>/agent_run_resources.json`): `role` (`assigned` or
+  `subWork`), `delegatedFrom`, `recipientAddress`, the run, and for a peer's
+  run `nodeId` and `members`.
 
 A remote delegated run (CM-10) is split over two nodes. Each side names the
 other by node and run:
 
 ```text
 delegating node                                      node that runs it
-memory/<kind>/<coordinatingRunId>/
-  <tree root>: remoteTaskExecutions
-    Agent: {address, agentRunId, nodeId,               memory/agents/<remoteRunId>/      # a standalone run
-            delegatorAgentRunId, startedAt}              run_metadata.json: delegatedFrom {nodeId,
-                                                           coordinatingRun, delegatorAgentRunId}
-    Team:  {address, teamRunId, nodeId,                memory/agent_teams/<teamRunId>/   # a top-level Team run
-            coordinatorAddress,                          team_run_execution_tree.json: the Team tree
-            members [{address, agentRunId}],               + delegatedFrom {nodeId, coordinatingRun,
-            delegatorAgentRunId, startedAt}                  delegatorAgentRunId}
-  the delegator's message log                          its own message log and memory
+<Task folder>/agent_run_resources.json
+  entry: {role, delegatedFrom, recipientAddress,
+          agentRun, nodeId,                          memory/agents/<remoteRunId>/      # a standalone run
+          members [{address, agentRunId}]  (Team)      run_metadata.json: delegatedFrom {nodeId,
+          linkedAt, start, closedAt}                     delegatingRun, delegatorAgentRunId}
+                                                     memory/agent_teams/<teamRunId>/   # a top-level Team run
+memory/<kind>/<delegatingRunId>/                       team_run_execution_tree.json: the Team tree
+  the delegating run's message log                       + delegatedFrom {nodeId, delegatingRun,
+                                                           delegatorAgentRunId}
+                                                       its own message log and memory
 ```
 
-- On the delegating node, the link has the fields of a `taskExecutions` entry
-  plus `nodeId`, the server ID of the node that runs it. It is stored whole in
-  the root's own `remoteTaskExecutions` list, never in `taskExecutions`, so
-  everything that walks local copies leaves it out. There is no folder for that
-  run on the delegating node, and that node never restores or idle-stops it; it
-  stops it only when its owner asks, through the link (since autobyteus-278).
-- A remote Team's link also holds what a local Team link reads from the Team
-  copy's own tree on the same node, under the same names as that tree: the
-  coordinator's address (`coordinatorAddress`) and every member's address and
-  run ID (`members`). The coordinator's run ID is the member at that address, so
-  each fact is stored once. These are assigned when the Team run is created and never
-  change. It holds no member content: no launch settings, status or conversation.
+- On the delegating node, the link is the run's Task entry with `nodeId`, the
+  server ID of the node that runs it. There is no folder for that run on the
+  delegating node, and that node never restores or idle-stops it; it stops it
+  only when its owner asks, through the link (since autobyteus-278).
+- A remote Team's entry also holds its members by run ID and by their address
+  in their own team (`members`); the coordinator is the entry's
+  `coordinatorAgentRunId`. These are assigned when the Team run is created and
+  never change. The entry holds no member content: no launch settings, status
+  or conversation.
 - On the node that runs it, the run is a run of its own: a standalone run for
   an Agent, a top-level Team run for an Agent Team. It is the root of its own run
   tree, and run history lists it as a run of its own. Its `delegatedFrom` names
-  the delegating node (`nodeId`), the coordinating run, which it echoes on every
+  the delegating node (`nodeId`), the delegating run, which it echoes on every
   message back, and the delegator, the only run on the other node that may
-  message it. It is not a `taskAgent` section, whose presence means a run hosted
-  by a coordinating run on the same node.
+  message it. A local delegated run has the same `delegatedFrom` without
+  `nodeId`.
 - A message between the two runs is one line in each node's log (for a Team on
   the node that runs it, the Team's log), with one message ID.
 
@@ -153,18 +174,18 @@ File names and layout mechanics are owned by
 
 A delegated run can live on another node (CM-10 … CM-12). The model already
 fitted this: a delegated run owns its own storage (CM-8), messages between
-runs are recorded on each side (CM-9), and the coordinating run relates to its
-delegated runs through links. Collaboration with remote nodes adds:
+runs are recorded on each side (CM-9), and the delegating run relates to its
+delegated runs through their Task entries. Collaboration with remote nodes adds:
 
 - **a channel between nodes**: request/response calls from one node to
   another, with no version negotiation (both nodes run the same release);
-- **links instead of hosting, for remote runs**: the delegating node records
-  the link, and the node that runs it hosts it as an independent run. Local
-  delegated runs are still hosted in the coordinating run's process (CM-7);
+- **links, never hosting**: the delegating node records the Task entry, and
+  the node that runs it runs it as an independent run, as every node does with
+  its own delegated runs (CM-7);
 - **routing by run ID through the link** (CM-11);
-- **remote runs in the delegator's tree** (CM-11, since autobyteus-278): the
-  delegating node lists each remote run as a child of its delegator's root, beside
-  the local copies. The root:
+- **remote runs in the delegator's view** (CM-11, since autobyteus-278): the
+  delegating node lists each remote run as a child of its delegating run, beside
+  the local delegated runs. The delegating run's root:
   1. asks each run's node for the run's title and its agents' statuses whenever
      someone opens the root's view, with one request per node;
   2. while someone views the root, follows each run's live output over one stream
@@ -192,21 +213,23 @@ Status as of the change that published this document (Task 259ddae7,
 
 | Item | Status | Notes |
 | --- | --- | --- |
-| CM-1 … CM-7 | Holds | Since `collaboration-model-contract`: teammate delegation is refused; `send_message_to` no longer brings in collaborators or Task helper copies; stored collaborators were converted into delegated runs. Delegated runs made of a teammate before that change remain ordinary delegated runs. |
+| CM-1 … CM-6 | Holds | Since `collaboration-model-contract`: teammate delegation is refused; `send_message_to` no longer brings in collaborators or Task helper copies; stored collaborators were converted into delegated runs. Delegated runs made of a teammate before that change remain ordinary delegated runs. |
 | CM-6 several open Tasks per task agent | Holds | Since `task-agent-several-tasks` (autobyteus-275): a task agent may hold several Project Tasks given by `delegate_task`; it is stopped when its last open Task closes. The given-Task message names its other open Tasks and asks for the Task key in each report. |
-| CM-6 exception: unowned delegated runs | Holds as stored history | Delegated runs recorded before Task ownership existed, and collaborators converted into delegated runs, belong to no Task. They behave like any delegated run (sleep, wake by run ID, stop by the user) but are not closed by a Task. New delegations always belong to a Task. |
+| CM-6 folder of a new delegated run | Holds | Since `delegated-copy-project-workspace` (autobyteus-97): a new local copy of a Task whose Project has a linked folder runs in the Project's first linked folder (Agent, Team and Org runs; saved Tasks and sub-work; a delegated Team's every member); a missing first link refuses the delegation (`TASK_PROJECT_FOLDER_UNAVAILABLE`); no link or a Temp task inherits the top-level run's folder; existing delegated runs keep theirs. See `docs/modules/projects.md` "Folder of a new copy". |
+| CM-6 exception: unowned delegated runs | Holds as stored history | Delegated runs recorded before Task ownership existed, and collaborators converted into delegated runs, belong to no Task. Since autobyteus-469 they are in no tree (a tree is built from the Task records); since autobyteus-461 they are ordinary runs of their own. New delegations always belong to a Task. |
 | Task tools configured, not automatic | Holds | Since `task-tool-split` (`create_task`, `update_task`). |
-| CM-8 Delegated run memory in its own folder | Holds | Since `delegated-copy-own-run-memory` (Task 8641c0ac): a task agent is a run of its own (`agents/<id>/` or `agent_teams/<id>/`) with its own file (a `taskAgent` section); the coordinating run's tree keeps links; deleting a coordinating run keeps its task agents' folders. Startup migration `20261017_task_agent_own_run_v1` moved existing data. Since `delegated-copy-restore-from-own-file` (autobyteus-197) every task agent, also one started from a configured placement, restores from its own file only; startup migration `20261019_delegated_copy_own_file_complete_v1` completed existing own files and removed `taskAgent.origin`. |
-| CM-9 Per-run message logs | Holds | Since `delegated-copy-own-run-memory`: a message between parts of one run is stored once in that run's log; a message between two runs in both logs (receiver's first) with one message ID. The coordinating log keeps its older entries; the migration gave each task agent its own log. Since `append-only-message-logs`, each log is append-only JSON Lines that rotates at 4 MiB (`<base>_active.jsonl` plus sealed `<base>_<6 digits>.jsonl`; startup migration `20261018_append_only_message_logs_v1`). |
-| CM-7 through links instead of hosting | **Remote runs: holds** (since remote-delegation slice 1, autobyteus-191). **Local runs: hosting** | A remote delegated run is linked, not hosted (CM-10). Local delegated runs are still hosted in the coordinating run's process, and nested delegations are recorded in the topmost coordinating run's tree. |
-| CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Since autobyteus-278, remote runs are children in the delegator's root tree (standalone, Team and Org roots) with their node's title, statuses, stored conversation and live output, and the owner messages, interrupts and stops them through the link. Attachments, a remote run's files, stop on Task closure, messages to unlinked active runs on a peer and peer authentication come in later slices. |
+| CM-8 Delegated run memory in its own folder | Holds | Since `delegated-copy-own-run-memory` (Task 8641c0ac): a task agent is a run of its own (`agents/<id>/` or `agent_teams/<id>/`); deleting the run that delegated keeps its task agents' folders. Startup migration `20261017_task_agent_own_run_v1` moved existing data. Since `delegated-copy-restore-from-own-file` (autobyteus-197) every task agent, also one started from a configured placement, restores from its own file only; startup migration `20261019_delegated_copy_own_file_complete_v1` completed existing own files and removed `taskAgent.origin`. Since autobyteus-461 the own file holds `delegatedFrom` in place of `taskAgent`. |
+| CM-9 Per-run message logs | Holds | Since `delegated-copy-own-run-memory`: a message between parts of one run is stored once in that run's log; a message between two runs in both logs (receiver's first) with one message ID. A former host's log keeps its older copies (nothing is deleted); the migration gave each task agent its own log. Since autobyteus-461 a user-started Agent run's log is in its run folder too (`agents/<id>/`, no `collaboration/` folder). Since `append-only-message-logs`, each log is append-only JSON Lines that rotates at 4 MiB (`<base>_active.jsonl` plus sealed `<base>_<6 digits>.jsonl`; startup migration `20261018_append_only_message_logs_v1`). |
+| CM-8 tree built from the Task records | Holds | Since autobyteus-469 no run stores a list of its local delegated runs. Since autobyteus-461 (`delegated-copies-outlive-delegator-461`) none stores its remote ones either: every delegation is a Task entry with `delegatedFrom` and `recipientAddress`, the run's own file holds its origin, and the `DelegationIndex` is built in memory from the Task entries. Startup migration `20261111_delegated_runs_own_runs_v1` converted existing data (`taskAgent`, `hostRoot`, `assignedBy`, `collaboration_tree.json`, tree `taskExecutions` and `remoteTaskExecutions`, delegated Teams rebased to `/`, busy-run entries). |
+| CM-7 a run's life bound to its Task, not its delegator | Holds | Since autobyteus-461: every delegated run, local or remote, is a root of its own; no run hosts, idles, wakes or stops another. A delegating run's view shows its children by their Task entries, and a child row's commands, Stop and Settings go to the child's own run. After a restart, runs resume bottom-up along `delegatedFrom`, each with its own notice. |
+| CM-10 … CM-12 Remote delegated runs | Holds for Agents (since autobyteus-191 and 245) and Agent Teams (since autobyteus-247), text only | Discovery of peers and their offers holds since autobyteus-261. Since autobyteus-278, remote runs are children in the delegator's root tree (standalone, Team and Org roots) with their node's title, statuses, stored conversation and live output, and the owner messages, interrupts and stops them through the link. Peers pair and sign their requests since autobyteus-437. Attachments, a remote run's files, stop on Task closure and messages to unlinked active runs on a peer come in later slices. |
 
 ## 6. Where The Mechanics Live
 
 - Messaging, address resolution, Task-linked message scope:
   [Agent Communication](../modules/agent_communication.md).
-- Delegation in Team runs, delegated child lifecycle (idle shutdown, wake,
-  status): [Agent Team Execution](../modules/agent_team_execution.md#server-owned-task-delegation).
+- Delegation in Team runs:
+  [Agent Team Execution](../modules/agent_team_execution.md#server-owned-task-delegation).
 - Org runs: [AgentOrg](../modules/agent_orgs.md).
 - Standalone Agent runs that collaborate:
   [Standalone Agent Run Root](../modules/standalone_agent_run_root.md).

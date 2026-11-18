@@ -1,0 +1,48 @@
+# IMP local checks, autobyteus-358 IR-001 (implementation engineer). Environment: macOS 26.5, node v22.23.1, isolated HOME (env -i), one heavy run at a time.
+# Date: 2026-11-01T10:52:59Z. Commits named per check; branch codex/large-runs-load-less.
+
+## IMP-01 contract packages (pnpm -C <pkg> test, which builds dist) — tree of f48bdfc0ab
+collaboration-stream-contracts: # pass 38 / # fail 0; team-stream-contracts: # pass 21 / # fail 0
+
+## IMP-02 server typecheck (pnpm -C autobyteus-server-ts typecheck) — f48bdfc0ab: exit 0
+
+## IMP-03 server unit (pnpm -s test:unit) — tree of f48bdfc0ab before commit
+ Test Files  2 failed | 901 passed | 5 skipped (908)
+      Tests  2 failed | 7666 passed | 9 skipped (7677)
+Failures: tracked-imports (new files not yet committed; passes after commit, see IMP-04 architecture) and standalone-remote-delegation (read stored messages through the records owner; fixed, file rerun 8/8 passed).
+
+## IMP-04 server integration (test:integration:prepare, test:integration) + architecture — f48bdfc0ab
+ Test Files  3 failed | 83 passed | 20 skipped (106)
+      Tests  6 failed | 480 passed | 69 skipped (555)
+The 6 failures also fail on base efd28d5c4a (throwaway worktree, same 6) -> FU-001. Architecture: 8 files / 55 tests passed.
+
+## IMP-05 server E2E changed by this ticket — server dist built at 1cf03b9a0f; scripted AGY = RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=tests/fixtures/agy-failure-cli.mjs
+ab358-e2e-append.log:       Tests  2 passed (2)
+ab358-e2e-org.log:       Tests  1 passed (1)
+ab358-e2e-task-closure-root-visibility.log:       Tests  3 passed (3)
+ab358-e2e-delegated-copy-member-contact-host.log:       Tests  1 passed (1)
+ab358-e2e-teammate-delivery-task-closure-race.log:       Tests  3 passed (3)
+
+## IMP-06 web Nuxt suite (NUXT_TEST=true vitest run) — tree of 0d6a53914d
+ Test Files  678 passed (678)
+      Tests  4920 passed | 2 skipped (4922)
+Later commits (cc7e204798..e66b453d5b) reran their affected specs: agentRunCollaborationStore 6/6, useOncePerFrame 2/2, agentRunCollaboration* + compaction 45/45.
+
+## IMP-07 web Electron (vitest --config electron/vitest.config.ts) — 0d6a53914d
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+
+## IMP-08 web typecheck (pnpm typecheck) — 0d6a53914d tree
+[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)
+[typecheck] PASS
+Baseline shrunk 298 -> 297 with typecheck:update-baseline (test-file errors went down).
+
+## IMP-09 web guards, each run on its own — 0d6a53914d tree
+guard:web-boundary: [guard:web-boundary] Passed. (exit 0)
+guard:localization-boundary: [guard:localization-boundary] Passed. (exit 0)
+audit:localization-literals: [audit:localization-literals] Passed with zero unresolved findings. (exit 0)
+
+## IMP-10 measurements on the test-owned seed (/tmp/ab358-seed), before files are the Solution Designer's
+M-156 scan (IMP-M156-startup-scan-after.log): 85 ms at 100.4 MB logs vs 89 ms at 2.5 MB (before 328 vs 139) -> QR-003 met
+Hub S (IMP-hub-after-S/evidence.json, e66b453d5b): view 176,226 bytes (before 2,790,524) -> QR-001 met; hub click ops: GetAgentRunCollaboration 0 (the row read it once before), CollaborationParticipantMessages 1 (before: GetAgentRunCollaboration 2) -> QR-002 met; hub click to conversation 170 ms (before 436); copy click: 1 projection + 1 file list
+L-010 unbroken (IMP-L010-unbroken-after/evidence.json, e66b453d5b): clickToStoreLoadedMs 85,946 (before 87,014) -> QR-004 MISSED; profile IMP-L010-unbroken-after.cpuprofile: 87.6 of 88.7 s self in AgentConversationFeed scrollToBottom/writeScrollTop (el.scrollTop = el.scrollHeight), 23 separate runs of 3.9-7.1 s

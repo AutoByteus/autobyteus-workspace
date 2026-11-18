@@ -30,9 +30,6 @@ export const E2E_TEAM_MEMBER_RUN_MEMORY_VIEW_DOCUMENT = `
     getTeamMemberRunMemoryView(
       teamRunId: $teamRunId
       agentRunId: $agentRunId
-      includeWorkingContext: false
-      includeEpisodic: false
-      includeSemantic: false
       includeRawTraces: true
       rawTraceLimit: $rawTraceLimit
     ) {

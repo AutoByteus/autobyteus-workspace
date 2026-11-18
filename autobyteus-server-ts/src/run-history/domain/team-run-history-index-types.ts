@@ -26,12 +26,16 @@ export interface TeamRunMemberHistoryItem {
 
 export interface TeamRunHistoryItem {
   teamRunId: string;
+  /** The run's name (SR-091): a delegated team run's slot; `null` for one the user started, which its definition names. */
+  displayName: string | null;
   teamDefinitionId: string;
   teamDefinitionName: string;
   coordinatorAddress: string;
   workspaceRootPath: string | null;
   summary: string;
   createdAt: string;
+  /** Newest memory file of any agent of the run; `createdAt` before any (`RunLastActivityReader`). */
+  lastActivityAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
   isActive: boolean;

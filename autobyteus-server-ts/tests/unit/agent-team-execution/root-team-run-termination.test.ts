@@ -1,12 +1,13 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
 import type { FrozenTeamRunTerminationScope } from "../../../src/agent-team-execution/domain/frozen-team-run-termination-scope.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 const deferred = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -46,21 +47,18 @@ const buildRoot = (input: {
     drain: vi.fn(async () => undefined),
     commitTaskMutation: vi.fn(),
     commitTaskSettlement: vi.fn(),
-    commitReservedMessageAppend: vi.fn(),
+    commitMessageAppend: vi.fn(),
     commitExecutionTreeMutation: vi.fn(),
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),
   };
-  const root = new RootTeamRun({
+  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
     rootRun: rootRun as never,
     config,
     tree,
     messages: Object.freeze({ schemaVersion: 1, rootTeamRunId: config.rootTeam.teamRunId, messages: Object.freeze([]) }),
     persistence: persistence as never,
-    publisher: new TeamRunEventPublisher(),
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
-      allocateForAgentDefinition: async () => "task-agent-run",
-    }),
+    publisher: new TeamRunEventPublisher({ isMessageEvent: isTeamRunMessageEvent }),
     onTerminated: input.onTerminated,
   });
   return { root, lead, persistence, executeDirectAgentCommand, freezeForRootTermination };
@@ -136,7 +134,7 @@ describe("RootTeamRun termination stabilization", () => {
     expect(onTerminated).toHaveBeenCalledOnce();
   });
 
-  it("completes the Agent fence before task drain, persistence drain, and local finish", async () => {
+  it("completes the Agent fence before the persistence drain and local finish", async () => {
     const order: string[] = [];
     const scope: FrozenTeamRunTerminationScope = {
       fenceAgentRunsForRootShutdown: vi.fn(async () => {
@@ -149,19 +147,12 @@ describe("RootTeamRun termination stabilization", () => {
       }),
     };
     const { root, persistence } = buildRoot({ scope });
-    const taskExecutions = (root as never as {
-      taskExecutions: { drain(): Promise<void> };
-    }).taskExecutions;
-    vi.spyOn(taskExecutions, "drain").mockImplementation(async () => {
-      order.push("task-drain");
-    });
     persistence.drain.mockImplementation(async () => { order.push("persistence-drain"); });
 
     await expect(root.terminate()).resolves.toEqual({ accepted: true });
 
     expect(order).toEqual([
       "agent-fence",
-      "task-drain",
       "persistence-drain",
       "local-finish",
     ]);

@@ -1,0 +1,146 @@
+# Case: API-B01/B02 desktop, SDV-01 … SDV-03 (API-REV-003, round 3, run 3: strict helper step, Team-tab check)
+# Commit: da80596b0a (merged state 8a47481617); server dist built from it; Nuxt dev from the worktree
+# Environment: ENV-2 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), probe-owned built server + Nuxt dev + headless Chrome, scripted AGY CLI
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir>
+# Look for: SDV-01/SDV-03 "helperRunId" set and "rowsShown" = [the worker only] (F-14, REQ-002); SDV-02 "helperRunId": null with the worker's conversation ending at its STOPPED-team answer, and the screenshot's 'already has a pending Team message admission' (F-15); "workerTeamTab" without "These messages can't be shown" (F-9 resolved); "rootStayedStopped": true
+# Run 2 (same commit, before the strict step): SDV-02 Pass, SDV-01/03 helper row missing (/tmp/api461/r3-B01-desktop-2.log)
+
+{
+  "startedAt": "2026-11-12T13:54:28.932Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "SDV-01": {
+      "result": "Fail",
+      "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-agent-run-id=\"helper_sdvagent_4205_7a1ec9255cf749559bb668d43e878ddb\"], [data-test=\"agent-org-task-agent-row-helper_sdvagent_4205_7a1ec9255cf749559bb668d43e878ddb\"]').first() to be visible\n",
+      "details": {
+        "streams": [
+          {
+            "closed": true,
+            "frames": 6
+          },
+          {
+            "closed": false,
+            "frames": 5
+          }
+        ],
+        "workerRowKept": true,
+        "renderedRootStatus": {
+          "view open after Stop": [
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+          ]
+        },
+        "workerAnsweredLive": true,
+        "sentMessages": [
+          {
+            "at": 1794491694146,
+            "socket": "/ws/agent-collaboration/manager_sdvagent_4205_bf735dd10cd04cf29a2156a8fa494976",
+            "target": "worker_sdvagent_4205_ba8487d2b5f444bd8eb086e75e8eb238"
+          }
+        ],
+        "workerTeamTab": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "rootStayedStopped": true,
+        "helperRunId": "helper_sdvagent_4205_7a1ec9255cf749559bb668d43e878ddb",
+        "rowsShown": [
+          "worker_sdvagent_4205_ba8487d2b5f444bd8eb086e75e8eb238"
+        ]
+      }
+    },
+    "SDV-02": {
+      "result": "Fail",
+      "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+      "message": "team: the worker did not delegate to the helper",
+      "details": {
+        "renderedRootStatus": {
+          "view open while stopped": [
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400"
+          ]
+        },
+        "workerAnsweredLive": true,
+        "sentMessages": [
+          {
+            "at": 1794491736782,
+            "socket": "/ws/agent-team/team_sdvteam_2bc7_93b25a1bf81347589bffbb02d35a7b63",
+            "target": "worker_sdvteam_2bc7_1ccc0eec3b0d4cdb80a5d3c806daaacb"
+          }
+        ],
+        "workerTeamTab": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+        "rootStayedStopped": true,
+        "helperRunId": null,
+        "workerConversationTail": "{\"getRunProjection\":{\"conversation\":[{\"kind\":\"message\",\"role\":\"user\",\"content\":\"You have a new task from the agent with sender address \\\"/manager\\\" and sender run id \\\"manager_sdvteam_2bc7_118ea2ba2ccf401484ee496c1933b073\\\".\\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\\n\\nTask: sdvteam-b3bc87-1 in Project project_bcdcc3b3-6045-4151-9c3a-14c3ef53bc34\\nIf you have get_project_task, it reads this Task again, including comments added later.\\nDescription:\\nWrite the notes.\",\"media\":null,\"ts\":1794491728.816},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"OK\",\"media\":null,\"ts\":1794491728.817},{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"client_838e0394-49bf-4391-8456-1181ae701d70\",\"dedupeKey\":\"member_input:team_sdvteam_2bc7_93b25a1bf81347589bffbb02d35a7b63:worker_sdvteam_2bc7_1ccc0eec3b0d4cdb80a5d3c806daaacb:client_838e0394-49bf-4391-8456-1181ae701d70\",\"content\":\"Status of the notes? Marker STOPPED-team\",\"media\":null,\"ts\":1794491736.783},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"OK\",\"media\":null,\"ts\":1794491736.787}]}}"
+      }
+    },
+    "SDV-03": {
+      "result": "Fail",
+      "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-agent-run-id=\"helper_sdvorg_c60c_ff39b92cc84946f1a4b45e364da4a451\"], [data-test=\"agent-org-task-agent-row-helper_sdvorg_c60c_ff39b92cc84946f1a4b45e364da4a451\"]').first() to be visible\n",
+      "details": {
+        "renderedRootStatus": {
+          "view open while stopped": [
+            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+          ]
+        },
+        "workerAnsweredLive": true,
+        "sentMessages": [
+          {
+            "at": 1794491839090,
+            "socket": "/ws/agent-org/org_sdvorg_c60c_7795d4f1dd76415690f9a3770d171259",
+            "target": "worker_sdvorg_c60c_ff44b1af82a44000b838666cf6c8d361"
+          }
+        ],
+        "workerTeamTab": "no Team tab for the selected worker",
+        "rootStayedStopped": true,
+        "helperRunId": "helper_sdvorg_c60c_ff39b92cc84946f1a4b45e364da4a451",
+        "rowsShown": [
+          "worker_sdvorg_c60c_ff44b1af82a44000b838666cf6c8d361"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 25031,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 24435,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "SDV-01",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-agent-run-id=\"helper_sdvagent_4205_7a1ec9255cf749559bb668d43e878ddb\"], [data-test=\"agent-org-task-agent-row-helper_sdvagent_4205_7a1ec9255cf749559bb668d43e878ddb\"]').first() to be visible\n"
+    },
+    {
+      "id": "SDV-02",
+      "message": "team: the worker did not delegate to the helper"
+    },
+    {
+      "id": "SDV-03",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-agent-run-id=\"helper_sdvorg_c60c_ff39b92cc84946f1a4b45e364da4a451\"], [data-test=\"agent-org-task-agent-row-helper_sdvorg_c60c_ff39b92cc84946f1a4b45e364da4a451\"]').first() to be visible\n"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:59234",
+    "frontendUrl": "http://127.0.0.1:59235",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-Wxuyt7"
+  },
+  "browserVersion": "157.0.8103.51",
+  "result": "Fail",
+  "finishedAt": "2026-11-12T13:57:51.159Z"
+}

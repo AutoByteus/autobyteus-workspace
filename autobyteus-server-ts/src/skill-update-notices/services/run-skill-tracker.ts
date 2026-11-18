@@ -1,4 +1,5 @@
 import path from "node:path";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentRunActivationKind } from "../../agent-execution/domain/agent-run-lifecycle-observer.js";
 import type { ResolvedSkill, SeenSkillVersions, SkillFolderSnapshot } from "../domain/skill-update-notice-types.js";
@@ -6,37 +7,44 @@ import type { SeenSkillVersionsStore } from "../providers/seen-skill-versions-st
 import type { SkillFolderSnapshotter } from "../providers/skill-folder-snapshotter.js";
 
 /**
- * The skills of one run, bound when the run is tracked to the agent definition its runtime was
- * activated with. `resolve()` resolves that definition's skills through the current catalog
- * (`ALL_INSTALLED` and application bundles included), so a later edit or deletion of the
- * definition never changes what the active run uses; only the catalog does.
+ * How a run's skills are found: its agent definition (read by ID when the run is tracked, null when it no longer
+ * exists) and the definition's effective skills through the current catalog (`ALL_INSTALLED` and application
+ * bundles included), as its runtime resolves them at activation.
  */
-export type RunSkillSource = Readonly<{ resolve(): readonly ResolvedSkill[] }>;
+export type RunSkillResolution = Readonly<{
+  readDefinition(run: AgentRun): Promise<AgentDefinition | null>;
+  resolveSkills(definition: AgentDefinition | null): readonly ResolvedSkill[];
+}>;
 
-/** Binds a run to its skill source (reads its agent definition once). */
-export type RunUsedSkillsResolver = (run: AgentRun) => Promise<RunSkillSource>;
+/** The skill names a definition change gave or took from a run (in `skillDirs` terms). */
+export type RunSkillNameChanges = Readonly<{ added: readonly string[]; removed: readonly string[] }>;
 
-/** One tracked run: the skill names it uses, the folder each resolves to now, and what it has seen. */
+/** One tracked run: its current definition, the skill names it uses, the folder each resolves to now, and what it has seen. */
 export type TrackedRun = {
   readonly run: AgentRun;
   readonly activationKind: AgentRunActivationKind;
-  readonly skillSource: RunSkillSource;
+  /** The run's agent definition now (replaced on every definition change). */
+  definition: AgentDefinition | null;
   /** Skill name → the folder it resolves to now for this run (null: it no longer resolves). */
   readonly skillDirs: Map<string, string | null>;
+  /** Skill name → its description, as last resolved (for the "now available" notice). */
+  readonly descriptions: Map<string, string>;
   readonly seen: Map<string, SkillFolderSnapshot>;
 };
 
 const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 
 /**
- * Tracks which skills each active or restored run uses, the folder each resolves to now (the
- * watch set), and the versions the run has seen. It is the only writer of seen versions.
+ * Tracks which skills each active or restored run uses (those of its current definition), the folder
+ * each resolves to now (the watch set), and the versions the run has seen. It is the only writer of
+ * seen versions.
  *
  * - A **new** run was just given the current skills: their snapshots are recorded as seen.
  * - A **restored** run keeps the record in its memory folder, because its conversation still holds
- *   what it saw then. Skills it saw that no longer resolve stay tracked (it is told they are gone);
- *   skills it uses now but never saw are recorded as seen (its runtime just advertised them). A
- *   missing record is re-created from current files (no retroactive notice).
+ *   what it saw then: it hears what changed since. Skills it saw that no longer resolve stay tracked
+ *   (it is told they are gone); skills it uses now but never saw stay unseen (it is told they are
+ *   available). A missing record is re-created from current files (no retroactive notice).
+ * - A **definition change** replaces the run's definition (`applyDefinition`).
  */
 export const DEFAULT_SEEN_VERSIONS_RETRY_DELAYS_MS: readonly number[] = [1_000, 5_000, 15_000, 60_000];
 
@@ -57,7 +65,7 @@ export class RunSkillTracker {
   private closed = false;
 
   constructor(private readonly deps: Readonly<{
-    resolveUsedSkills: RunUsedSkillsResolver;
+    resolution: RunSkillResolution;
     snapshotter: Pick<SkillFolderSnapshotter, "snapshot">;
     store: Pick<SeenSkillVersionsStore, "read" | "write" | "forget">;
     /** Delays between attempts to write a record whose memory folder does not exist yet (the last repeats). */
@@ -124,15 +132,55 @@ export class RunSkillTracker {
     });
   }
 
+  /** Every tracked run, once the tracking of each run published so far has completed. */
+  async trackedRuns(): Promise<TrackedRun[]> {
+    await Promise.all([...this.tracking.values()].map((entry) => entry.promise));
+    return [...this.runs.values()];
+  }
+
+  /** Whether this tracked run is still tracked (not released, not closed). */
+  isCurrent(tracked: TrackedRun): boolean {
+    return !this.closed && this.runs.get(tracked.run.runId) === tracked;
+  }
+
   /**
-   * Re-resolves a run's used skill names through its skill source (a name may now resolve to a
+   * Gives a tracked run its definition now and re-resolves its skills by name:
+   * - **added**: a name that resolves now and had no folder before (absent from `skillDirs`, or null);
+   * - **removed**: a name that had a folder before and no longer resolves (its folder becomes null).
+   * A name that resolved before and still does keeps its folder here; a moved folder is the watcher's
+   * (`refreshSkillDirs`). Whether the run hears anything is decided at delivery, against what it saw.
+   */
+  applyDefinition(runId: string, definition: AgentDefinition): RunSkillNameChanges {
+    const tracked = this.runs.get(runId);
+    if (!tracked) return { added: [], removed: [] };
+    const resolved = new Map(this.deps.resolution.resolveSkills(definition).map((skill) => [skill.name, skill] as const));
+    tracked.definition = definition;
+    const added: string[] = [];
+    const removed: string[] = [];
+    for (const [name, skill] of resolved) {
+      tracked.descriptions.set(name, skill.description);
+      if ((tracked.skillDirs.get(name) ?? null) !== null) continue;
+      tracked.skillDirs.set(name, path.resolve(skill.rootPath));
+      added.push(name);
+    }
+    for (const [name, dir] of tracked.skillDirs) {
+      if (dir !== null && !resolved.has(name)) {
+        tracked.skillDirs.set(name, null);
+        removed.push(name);
+      }
+    }
+    return { added, removed };
+  }
+
+  /**
+   * Re-resolves a run's used skill names through its current definition (a name may now resolve to a
    * new folder, such as a new GitHub source generation, or not at all: no longer installed).
    * Returns the names whose folder changed.
    */
   refreshSkillDirs(runId: string): string[] {
     const tracked = this.runs.get(runId);
     if (!tracked) return [];
-    const resolved = new Map(tracked.skillSource.resolve()
+    const resolved = new Map(this.deps.resolution.resolveSkills(tracked.definition)
       .map((skill) => [skill.name, path.resolve(skill.rootPath)] as const));
     const moved: string[] = [];
     for (const [name, dir] of tracked.skillDirs) {
@@ -163,29 +211,26 @@ export class RunSkillTracker {
     await this.persist(tracked);
   }
 
-  /** Whether this tracked run is still tracked (not released, not closed). */
-  private isCurrent(tracked: TrackedRun): boolean {
-    return !this.closed && this.runs.get(tracked.run.runId) === tracked;
-  }
-
   private async loadRun(run: AgentRun, activationKind: AgentRunActivationKind): Promise<TrackedRun | null> {
-    const skillSource = await this.deps.resolveUsedSkills(run);
-    const used = skillSource.resolve();
+    const definition = await this.deps.resolution.readDefinition(run);
+    const used = this.deps.resolution.resolveSkills(definition);
     const current = new Map<string, SkillFolderSnapshot>();
+    const descriptions = new Map<string, string>();
     for (const skill of used) {
+      descriptions.set(skill.name, skill.description);
       const snapshot = await this.deps.snapshotter.snapshot(skill);
       if (snapshot) current.set(skill.name, snapshot);
     }
     const owner = { runId: run.runId, memoryDir: run.config.memoryDir };
     const stored = activationKind === "new" ? null : await this.deps.store.read(owner);
-    const seen = new Map<string, SkillFolderSnapshot>(stored ?? []);
-    for (const [name, snapshot] of current) if (!seen.has(name)) seen.set(name, snapshot);
+    // A restored run's record is what it saw; without one (or for a new run) it has seen its current skills.
+    const seen = new Map<string, SkillFolderSnapshot>(stored ?? current);
     const skillDirs = new Map<string, string | null>();
     for (const name of [...current.keys(), ...(stored ? stored.keys() : [])]) {
       skillDirs.set(name, current.get(name)?.skillDir ?? null);
     }
     if (this.closed || this.tracking.get(run.runId)?.run !== run) return null; // released meanwhile
-    const tracked: TrackedRun = { run, activationKind, skillSource, skillDirs, seen };
+    const tracked: TrackedRun = { run, activationKind, definition, skillDirs, descriptions, seen };
     this.runs.set(run.runId, tracked);
     void this.persist(tracked);
     return tracked;

@@ -1,0 +1,716 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53722
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53722
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:90659) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-08T18:35:15.300Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Empty never-started run removal skipped 7 folder(s) without a standalone run record
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794162915527,"pid":90659,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55405"}
+{"level":30,"time":1794162915552,"pid":90659,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53722"}
+[2026-11-08T18:35:15.552Z] [INFO] [server.runtime] Server listening on 127.0.0.1:53722
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/writer_7ee5_569a4b3baafc41e1855d16195f34a8c8/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 2647070f-90c0-4912-8838-44c3c8d6a1fe for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=2647070f-90c0-4912-8838-44c3c8d6a1fe, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_28da_b0a1398486144e5e851caafe79b643b8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run writer_7ee5_569a4b3baafc41e1855d16195f34a8c8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 2647070f-90c0-4912-8838-44c3c8d6a1fe
+Agent WebSocket disconnected: 2647070f-90c0-4912-8838-44c3c8d6a1fe
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 9bc30c35-cf6c-4837-a5dc-0ba69a05007d for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=9bc30c35-cf6c-4837-a5dc-0ba69a05007d, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 9d9a712a-a977-4756-b08d-0b9363820853 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=9d9a712a-a977-4756-b08d-0b9363820853, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run manager_28da_035519eb754940499a62d111a1f3eb33: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_74bf_e0d04ef685214d8da8a71ad057412955: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 9d9a712a-a977-4756-b08d-0b9363820853
+Closed agent session 9bc30c35-cf6c-4837-a5dc-0ba69a05007d
+Agent WebSocket disconnected: 9bc30c35-cf6c-4837-a5dc-0ba69a05007d
+Created terminal session 30f8d93c-c06a-416b-a6fa-0b86840c06ae using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: 30f8d93c-c06a-416b-a6fa-0b86840c06ae
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 69f923ed-19a4-4679-9bfe-2fb36dd9d7b6 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=69f923ed-19a4-4679-9bfe-2fb36dd9d7b6, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 11bc071d-d953-4d6b-a985-656a8f527793 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=11bc071d-d953-4d6b-a985-656a8f527793, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/pair_team_e91d_4f024bcef3e4489d997ce57898919dad/lead_74bf_e0d04ef685214d8da8a71ad057412955/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run unoffered_bf5f_8aee74cf99b34c56b7a277203e3eddd9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 11bc071d-d953-4d6b-a985-656a8f527793
+Closed agent session 69f923ed-19a4-4679-9bfe-2fb36dd9d7b6
+Agent WebSocket disconnected: 69f923ed-19a4-4679-9bfe-2fb36dd9d7b6
+Closed PTY session 30f8d93c-c06a-416b-a6fa-0b86840c06ae
+Terminal WebSocket disconnected: 30f8d93c-c06a-416b-a6fa-0b86840c06ae
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Created terminal session 469caa90-324e-4c04-99bb-2346db18b46d using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: 469caa90-324e-4c04-99bb-2346db18b46d
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 7cedf074-9412-4e75-a686-d3cb776d4add for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=7cedf074-9412-4e75-a686-d3cb776d4add, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session da013afc-82e2-4c7e-a2fe-db25e526fcce for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=da013afc-82e2-4c7e-a2fe-db25e526fcce, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/pair_team_e91d_4f024bcef3e4489d997ce57898919dad/lead_74bf_e0d04ef685214d8da8a71ad057412955/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/pair_team_e91d_4f024bcef3e4489d997ce57898919dad/unoffered_bf5f_8aee74cf99b34c56b7a277203e3eddd9/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lead_74bf_e0d04ef685214d8da8a71ad057412955: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run unoffered_bf5f_8aee74cf99b34c56b7a277203e3eddd9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent Definition created successfully with ID: slot-manager-a69b
+Agent Definition created successfully with ID: slot-worker-a69b
+Agent Definition created successfully with ID: scribe-a69b
+Agent Team Definition created successfully with ID: slot-team-a69b
+Closed agent session da013afc-82e2-4c7e-a2fe-db25e526fcce
+Closed agent session 7cedf074-9412-4e75-a686-d3cb776d4add
+Agent WebSocket disconnected: 7cedf074-9412-4e75-a686-d3cb776d4add
+Closed PTY session 469caa90-324e-4c04-99bb-2346db18b46d
+Terminal WebSocket disconnected: 469caa90-324e-4c04-99bb-2346db18b46d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session e2151d1b-f4de-4aa1-a214-9763fcfb4268 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=e2151d1b-f4de-4aa1-a214-9763fcfb4268, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 08c001e7-c86d-4752-b339-3137d28d0d05 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=08c001e7-c86d-4752-b339-3137d28d0d05, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 55e5794d-afee-4786-8e9b-eafb3a6b4c13 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=55e5794d-afee-4786-8e9b-eafb3a6b4c13, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run scribe_a69b_cac651d141434366b0f8aceab22d5c7f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 08c001e7-c86d-4752-b339-3137d28d0d05
+Closed agent session e2151d1b-f4de-4aa1-a214-9763fcfb4268
+Agent WebSocket disconnected: e2151d1b-f4de-4aa1-a214-9763fcfb4268
+Closed agent session 55e5794d-afee-4786-8e9b-eafb3a6b4c13
+Created terminal session d94bdce5-72b0-4fef-9788-26d64f1341ff using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: d94bdce5-72b0-4fef-9788-26d64f1341ff
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session a59df7ba-1556-4061-89d3-8c0980a906bc for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=a59df7ba-1556-4061-89d3-8c0980a906bc, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session cc3f97f5-35be-4f34-b3ab-bf362d350c19 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=cc3f97f5-35be-4f34-b3ab-bf362d350c19, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 8707298e-1b8a-4ee9-b3b8-5a1991ae47f4 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=8707298e-1b8a-4ee9-b3b8-5a1991ae47f4, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run slot_worker_a69b_28e1d535d6ae42f4a27d0b4c6707fa0a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/scribe_a69b_cac651d141434366b0f8aceab22d5c7f/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run slot_worker_a69b_c6dc907490774a7fb17e625210f0b83e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session a59df7ba-1556-4061-89d3-8c0980a906bc
+Agent WebSocket disconnected: a59df7ba-1556-4061-89d3-8c0980a906bc
+Closed agent session 8707298e-1b8a-4ee9-b3b8-5a1991ae47f4
+Closed agent session cc3f97f5-35be-4f34-b3ab-bf362d350c19
+Closed PTY session d94bdce5-72b0-4fef-9788-26d64f1341ff
+Terminal WebSocket disconnected: d94bdce5-72b0-4fef-9788-26d64f1341ff
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Created terminal session bbfcef90-1e72-4f96-b771-b1e23a0f4051 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: bbfcef90-1e72-4f96-b771-b1e23a0f4051
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 7e2b79a0-7fde-4826-af38-914ca3076061 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=7e2b79a0-7fde-4826-af38-914ca3076061, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 044b0c50-e139-47cd-bcfe-e87ed7801e31 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=044b0c50-e139-47cd-bcfe-e87ed7801e31, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 45ed59e6-d8d1-4a59-8c63-84633befbb0f for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=45ed59e6-d8d1-4a59-8c63-84633befbb0f, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/slot_worker_a69b_c6dc907490774a7fb17e625210f0b83e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/scribe_a69b_cac651d141434366b0f8aceab22d5c7f/raw_traces_manifest.json
+Closed agent session 044b0c50-e139-47cd-bcfe-e87ed7801e31
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_worker_a69b_28e1d535d6ae42f4a27d0b4c6707fa0a/raw_traces_manifest.json
+Closed agent session 45ed59e6-d8d1-4a59-8c63-84633befbb0f
+Closed agent session 7e2b79a0-7fde-4826-af38-914ca3076061
+Agent WebSocket disconnected: 7e2b79a0-7fde-4826-af38-914ca3076061
+Closed PTY session bbfcef90-1e72-4f96-b771-b1e23a0f4051
+Terminal WebSocket disconnected: bbfcef90-1e72-4f96-b771-b1e23a0f4051
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 8ca70501-01a6-4608-b79d-1af2cc408b34 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=8ca70501-01a6-4608-b79d-1af2cc408b34, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Created terminal session ea376270-ab60-456f-b317-0d72f1cbf55c using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: ea376270-ab60-456f-b317-0d72f1cbf55c
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session ec76a2f2-b231-47aa-8f0b-bb1f958b11d2 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=ec76a2f2-b231-47aa-8f0b-bb1f958b11d2, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 71979dba-76b5-439b-ac0d-9656bb0df3f8 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=71979dba-76b5-439b-ac0d-9656bb0df3f8, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run slot_worker_a69b_c6dc907490774a7fb17e625210f0b83e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/scribe_a69b_cac651d141434366b0f8aceab22d5c7f/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run scribe_a69b_cac651d141434366b0f8aceab22d5c7f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run slot_worker_a69b_7a10126eb4574a6e96170053f8848612: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session ec76a2f2-b231-47aa-8f0b-bb1f958b11d2
+Closed agent session 8ca70501-01a6-4608-b79d-1af2cc408b34
+Agent WebSocket disconnected: 8ca70501-01a6-4608-b79d-1af2cc408b34
+Closed agent session 71979dba-76b5-439b-ac0d-9656bb0df3f8
+Closed PTY session ea376270-ab60-456f-b317-0d72f1cbf55c
+Terminal WebSocket disconnected: ea376270-ab60-456f-b317-0d72f1cbf55c
+Created terminal session 83dcfee8-a8c3-41d8-8004-89c23a8e4593 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: 83dcfee8-a8c3-41d8-8004-89c23a8e4593
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 4ce9e469-9e81-4b89-8ab6-96d8824139a6 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=4ce9e469-9e81-4b89-8ab6-96d8824139a6, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 503f108e-6eed-4f41-ae15-e89d5f6db553 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=503f108e-6eed-4f41-ae15-e89d5f6db553, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 3f4773f2-5ded-431d-a13e-c6a0e0d115e6 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=3f4773f2-5ded-431d-a13e-c6a0e0d115e6, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/slot_worker_a69b_c6dc907490774a7fb17e625210f0b83e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/slot_worker_a69b_7a10126eb4574a6e96170053f8848612/raw_traces_manifest.json
+Closed agent session 503f108e-6eed-4f41-ae15-e89d5f6db553
+Closed agent session 4ce9e469-9e81-4b89-8ab6-96d8824139a6
+Agent WebSocket disconnected: 4ce9e469-9e81-4b89-8ab6-96d8824139a6
+Closed agent session 3f4773f2-5ded-431d-a13e-c6a0e0d115e6
+Closed PTY session 83dcfee8-a8c3-41d8-8004-89c23a8e4593
+Terminal WebSocket disconnected: 83dcfee8-a8c3-41d8-8004-89c23a8e4593
+Created terminal session 28216eb0-ca22-4177-9750-9070c4914faa using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: 28216eb0-ca22-4177-9750-9070c4914faa
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 6ce1ab27-2f8d-43c7-b717-daebb984a8c5 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=6ce1ab27-2f8d-43c7-b717-daebb984a8c5, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 11997aba-4d31-438d-9934-37e36dea118c for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=11997aba-4d31-438d-9934-37e36dea118c, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 34d44d4c-ebb8-4457-a2da-ac77bb7e6bb7 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=34d44d4c-ebb8-4457-a2da-ac77bb7e6bb7, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/slot_worker_a69b_c6dc907490774a7fb17e625210f0b83e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/slot_worker_a69b_7a10126eb4574a6e96170053f8848612/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/scribe_a69b_cac651d141434366b0f8aceab22d5c7f/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/slot_worker_a69b_c6dc907490774a7fb17e625210f0b83e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_worker_a69b_28e1d535d6ae42f4a27d0b4c6707fa0a/raw_traces_manifest.json
+Agent Definition created successfully with ID: org-manager-8c01
+Agent Definition created successfully with ID: org-writer-8c01
+Agent Definition created successfully with ID: pair-lead-8c01
+Agent Definition created successfully with ID: pair-engineer-8c01
+Agent Team Definition created successfully with ID: slot-pair-8c01
+Closed agent session 6ce1ab27-2f8d-43c7-b717-daebb984a8c5
+Agent WebSocket disconnected: 6ce1ab27-2f8d-43c7-b717-daebb984a8c5
+Closed agent session 34d44d4c-ebb8-4457-a2da-ac77bb7e6bb7
+Closed agent session 11997aba-4d31-438d-9934-37e36dea118c
+Closed PTY session 28216eb0-ca22-4177-9750-9070c4914faa
+Terminal WebSocket disconnected: 28216eb0-ca22-4177-9750-9070c4914faa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session bcba5fe1-36b1-43aa-8dcf-e5488637fdb3 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=bcba5fe1-36b1-43aa-8dcf-e5488637fdb3, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 7f05d8c4-c5e1-444f-8bd4-0797d168fb80 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=7f05d8c4-c5e1-444f-8bd4-0797d168fb80, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session cb60e7c8-ba79-46d4-8a41-1796622d3a47 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=cb60e7c8-ba79-46d4-8a41-1796622d3a47, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Created terminal session 9f47c20d-1af3-484f-8389-8582a1ec5c36 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: 9f47c20d-1af3-484f-8389-8582a1ec5c36
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org_manager_8c01_b3828bd9130442f4af40a4815102250b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org_writer_8c01_c00be204b5d14b35a0dba0556440f0df: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org_writer_8c01_33fecb893b814b45a4fa3a8f4dd45454: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+AGY compaction detection off for run pair_lead_8c01_54256a5feb3949afb7f2cb49e786c46f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/org_writer_8c01_33fecb893b814b45a4fa3a8f4dd45454/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_pair_8c01_d1143ca6f66740e5b5a5ae9fd680afa8/pair_lead_8c01_54256a5feb3949afb7f2cb49e786c46f/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_writer_8c01_c00be204b5d14b35a0dba0556440f0df/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/org_writer_8c01_33fecb893b814b45a4fa3a8f4dd45454/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_pair_8c01_d1143ca6f66740e5b5a5ae9fd680afa8/pair_lead_8c01_54256a5feb3949afb7f2cb49e786c46f/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+AGY compaction detection off for run org_manager_8c01_b3828bd9130442f4af40a4815102250b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org_writer_8c01_33fecb893b814b45a4fa3a8f4dd45454: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run pair_lead_8c01_54256a5feb3949afb7f2cb49e786c46f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org_writer_8c01_d9a4a18e17e8434e9dfb6b89c08c8a5c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org_8c01_c1ba29041be74c13b4f62a177e383c7c/org_manager_8c01_b3828bd9130442f4af40a4815102250b/raw_traces_manifest.json
+AGY compaction detection off for run pair_lead_8c01_30e04e22f8704d559c4c75e0a4836748: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/org_writer_8c01_33fecb893b814b45a4fa3a8f4dd45454/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_pair_8c01_d1143ca6f66740e5b5a5ae9fd680afa8/pair_lead_8c01_54256a5feb3949afb7f2cb49e786c46f/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/org_writer_8c01_d9a4a18e17e8434e9dfb6b89c08c8a5c/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_pair_8c01_b3c9ab74b7c8422fa2c2d38864e3fd17/pair_lead_8c01_30e04e22f8704d559c4c75e0a4836748/raw_traces_manifest.json
+Agent Definition created successfully with ID: org3-manager-7f6b
+Agent Definition created successfully with ID: org3-lead-7f6b
+Agent Definition created successfully with ID: org3-engineer-7f6b
+Agent Definition created successfully with ID: org3-helper-7f6b
+Agent Team Definition created successfully with ID: org3-pair-7f6b
+Agent Team Definition created successfully with ID: org3-grok-pair-7f6b
+Closed agent session bcba5fe1-36b1-43aa-8dcf-e5488637fdb3
+Agent WebSocket disconnected: bcba5fe1-36b1-43aa-8dcf-e5488637fdb3
+Closed agent session cb60e7c8-ba79-46d4-8a41-1796622d3a47
+Closed agent session 7f05d8c4-c5e1-444f-8bd4-0797d168fb80
+Closed PTY session 9f47c20d-1af3-484f-8389-8582a1ec5c36
+Terminal WebSocket disconnected: 9f47c20d-1af3-484f-8389-8582a1ec5c36
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 21af804d-0344-4e82-8b36-cf63bcc5d500 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=21af804d-0344-4e82-8b36-cf63bcc5d500, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 62a168c6-208c-46b4-b559-cfc7bfc682ea for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=62a168c6-208c-46b4-b559-cfc7bfc682ea, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session ab755fdf-8a2c-4b9c-be64-82c3d3bd1e08 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=ab755fdf-8a2c-4b9c-be64-82c3d3bd1e08, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Created terminal session ef8fa8a0-881f-4391-8eb6-e0d72d3e0ece using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: ef8fa8a0-881f-4391-8eb6-e0d72d3e0ece
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org3_7f6b_bec4fc94c46b4a85b5f0309bb0e5e6ec/org3_manager_7f6b_ef7bfc318c384b868e388c65dbf34723/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org3_manager_7f6b_ef7bfc318c384b868e388c65dbf34723: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org3_7f6b_bec4fc94c46b4a85b5f0309bb0e5e6ec/org3_manager_7f6b_ef7bfc318c384b868e388c65dbf34723/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org3_7f6b_bec4fc94c46b4a85b5f0309bb0e5e6ec/org3_manager_7f6b_ef7bfc318c384b868e388c65dbf34723/raw_traces_manifest.json
+AGY compaction detection off for run org3_lead_7f6b_918b5f9ab98b4dc08aee1332dcedea5e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/org3_pair_7f6b_31317c43707c40969c00093df0b27800/org3_lead_7f6b_918b5f9ab98b4dc08aee1332dcedea5e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/org3_pair_7f6b_31317c43707c40969c00093df0b27800/org3_lead_7f6b_918b5f9ab98b4dc08aee1332dcedea5e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_orgs/slot_org3_7f6b_bec4fc94c46b4a85b5f0309bb0e5e6ec/org3_manager_7f6b_ef7bfc318c384b868e388c65dbf34723/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run org3_lead_7f6b_918b5f9ab98b4dc08aee1332dcedea5e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent Definition created successfully with ID: sender-8b33
+Agent Definition created successfully with ID: receiver-8b33
+Agent Definition created successfully with ID: relay-lead-8b33
+Agent Definition created successfully with ID: relay-member-8b33
+Agent Team Definition created successfully with ID: relay-team-8b33
+Agent Team Definition created successfully with ID: relay-pair-8b33
+Closed agent session 62a168c6-208c-46b4-b559-cfc7bfc682ea
+Closed agent session 21af804d-0344-4e82-8b36-cf63bcc5d500
+Agent WebSocket disconnected: 21af804d-0344-4e82-8b36-cf63bcc5d500
+Closed agent session ab755fdf-8a2c-4b9c-be64-82c3d3bd1e08
+Closed PTY session ef8fa8a0-881f-4391-8eb6-e0d72d3e0ece
+Terminal WebSocket disconnected: ef8fa8a0-881f-4391-8eb6-e0d72d3e0ece
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 25cef47d-5f34-417d-b909-614d5f29e832 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=25cef47d-5f34-417d-b909-614d5f29e832, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 297aeb96-b2ab-466c-becf-37b5a4eb0ab4 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=297aeb96-b2ab-466c-becf-37b5a4eb0ab4, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 036c5a19-04fa-4b2f-aa8f-78b6976b0932 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=036c5a19-04fa-4b2f-aa8f-78b6976b0932, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Created agent session cfd2e098-66d9-496e-a907-40d8edadcd16 for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Agent WebSocket connected: session=cfd2e098-66d9-496e-a907-40d8edadcd16, run=receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session cfd2e098-66d9-496e-a907-40d8edadcd16
+Agent WebSocket disconnected: cfd2e098-66d9-496e-a907-40d8edadcd16
+Closed agent session 036c5a19-04fa-4b2f-aa8f-78b6976b0932
+Closed agent session 297aeb96-b2ab-466c-becf-37b5a4eb0ab4
+Closed agent session 25cef47d-5f34-417d-b909-614d5f29e832
+Agent WebSocket disconnected: 25cef47d-5f34-417d-b909-614d5f29e832
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 54148a91-fd25-4fbc-880b-e8518ed7cb23 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=54148a91-fd25-4fbc-880b-e8518ed7cb23, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/receiver_8b33_3419988f6ace4812a7167b2c90f1886e/raw_traces_manifest.json
+Agent websocket attached for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Created agent session 4476da44-e435-4f69-894b-30bea2955fb4 for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Agent WebSocket connected: session=4476da44-e435-4f69-894b-30bea2955fb4, run=receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session f9d88273-651a-4841-a31f-fcbd539b2506 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=f9d88273-651a-4841-a31f-fcbd539b2506, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 5c003182-33c3-4040-9f50-305290e707d8 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=5c003182-33c3-4040-9f50-305290e707d8, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Created agent session 4a31e02f-a5ce-4f95-8bf3-964f77a05708 for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Agent WebSocket connected: session=4a31e02f-a5ce-4f95-8bf3-964f77a05708, run=sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/receiver_8b33_3419988f6ace4812a7167b2c90f1886e/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run relay_lead_8b33_edd47eee0b654e17be8a737f06ae3bd8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session f9d88273-651a-4841-a31f-fcbd539b2506
+Closed agent session 4476da44-e435-4f69-894b-30bea2955fb4
+Agent WebSocket disconnected: 4476da44-e435-4f69-894b-30bea2955fb4
+Closed agent session 54148a91-fd25-4fbc-880b-e8518ed7cb23
+Agent WebSocket disconnected: 54148a91-fd25-4fbc-880b-e8518ed7cb23
+Closed agent session 4a31e02f-a5ce-4f95-8bf3-964f77a05708
+Agent WebSocket disconnected: 4a31e02f-a5ce-4f95-8bf3-964f77a05708
+Closed agent session 5c003182-33c3-4040-9f50-305290e707d8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 7e0bcb0c-9c8d-4ceb-9bc6-39daeb63579c for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=7e0bcb0c-9c8d-4ceb-9bc6-39daeb63579c, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/receiver_8b33_3419988f6ace4812a7167b2c90f1886e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/sender_8b33_8c41813a5469488e9fa9ba51c811fbe4/raw_traces_manifest.json
+Agent websocket attached for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Created agent session c078dd89-4502-4546-9679-f915df54bc3f for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Agent WebSocket connected: session=c078dd89-4502-4546-9679-f915df54bc3f, run=receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent websocket attached for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Created agent session b4864d70-d1e6-4fbf-a71e-8a0a0dc32346 for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Agent WebSocket connected: session=b4864d70-d1e6-4fbf-a71e-8a0a0dc32346, run=sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session b1726be2-7478-4302-87cc-b14740897284 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=b1726be2-7478-4302-87cc-b14740897284, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session eefd77a7-ff9a-4ebd-b64d-06d328f77e84 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=eefd77a7-ff9a-4ebd-b64d-06d328f77e84, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Agent team websocket attached for team run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Created agent session c7822f58-4e88-4594-a556-7373a028d526 for run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Agent Team WebSocket connected: session=c7822f58-4e88-4594-a556-7373a028d526, run=relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run relay_lead_8b33_c3249c7417e34660888da6011e88abb6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 7e0bcb0c-9c8d-4ceb-9bc6-39daeb63579c
+Agent WebSocket disconnected: 7e0bcb0c-9c8d-4ceb-9bc6-39daeb63579c
+Closed agent session c078dd89-4502-4546-9679-f915df54bc3f
+Agent WebSocket disconnected: c078dd89-4502-4546-9679-f915df54bc3f
+Closed agent session eefd77a7-ff9a-4ebd-b64d-06d328f77e84
+Closed agent session b1726be2-7478-4302-87cc-b14740897284
+Closed agent session b4864d70-d1e6-4fbf-a71e-8a0a0dc32346
+Agent WebSocket disconnected: b4864d70-d1e6-4fbf-a71e-8a0a0dc32346
+Closed agent session c7822f58-4e88-4594-a556-7373a028d526
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 5ee5be5e-0fe1-4848-ab4d-0187e10d9204 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=5ee5be5e-0fe1-4848-ab4d-0187e10d9204, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/receiver_8b33_3419988f6ace4812a7167b2c90f1886e/raw_traces_manifest.json
+Created terminal session 3ecb4acd-b03f-4bff-a9fa-a3b74ceff181 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Terminal WebSocket connected: 3ecb4acd-b03f-4bff-a9fa-a3b74ceff181
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/sender_8b33_8c41813a5469488e9fa9ba51c811fbe4/raw_traces_manifest.json
+Agent websocket attached for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Created agent session 20b800bf-4e5f-4780-b471-667c438397e1 for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Agent WebSocket connected: session=20b800bf-4e5f-4780-b471-667c438397e1, run=receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Agent websocket attached for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Created agent session 4f1220c2-d9fb-44b4-873a-ee0e77728f11 for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Agent WebSocket connected: session=4f1220c2-d9fb-44b4-873a-ee0e77728f11, run=sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Created agent session 22707fe4-a32a-46f8-8848-3d39691ab02e for run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Agent Team WebSocket connected: session=22707fe4-a32a-46f8-8848-3d39691ab02e, run=relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session fb283c0d-7467-4af7-9949-4dfdc60acd68 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=fb283c0d-7467-4af7-9949-4dfdc60acd68, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 9d41813b-34d3-4690-8743-4e7565cda1cf for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=9d41813b-34d3-4690-8743-4e7565cda1cf, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run relay_member_8b33_3cbd490dfc2b4d5bbbc30b8cc6ca3897: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent Definition created successfully with ID: upgrade-agent-07b3
+Agent Definition created successfully with ID: upgrade-lead-07b3
+Agent Definition created successfully with ID: upgrade-member-07b3
+Agent Team Definition created successfully with ID: upgrade-team-07b3
+Closed agent session 5ee5be5e-0fe1-4848-ab4d-0187e10d9204
+Agent WebSocket disconnected: 5ee5be5e-0fe1-4848-ab4d-0187e10d9204
+Closed agent session fb283c0d-7467-4af7-9949-4dfdc60acd68
+Closed agent session 22707fe4-a32a-46f8-8848-3d39691ab02e
+Closed agent session 4f1220c2-d9fb-44b4-873a-ee0e77728f11
+Agent WebSocket disconnected: 4f1220c2-d9fb-44b4-873a-ee0e77728f11
+Closed agent session 20b800bf-4e5f-4780-b471-667c438397e1
+Agent WebSocket disconnected: 20b800bf-4e5f-4780-b471-667c438397e1
+Closed agent session 9d41813b-34d3-4690-8743-4e7565cda1cf
+Closed PTY session 3ecb4acd-b03f-4bff-a9fa-a3b74ceff181
+Terminal WebSocket disconnected: 3ecb4acd-b03f-4bff-a9fa-a3b74ceff181
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 4a91dc4a-a0a4-432f-ba7e-098b99f9d6da for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=4a91dc4a-a0a4-432f-ba7e-098b99f9d6da, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/receiver_8b33_3419988f6ace4812a7167b2c90f1886e/raw_traces_manifest.json
+Agent websocket attached for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Created agent session e92559a7-2508-4a26-8779-85747b7bce37 for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Agent WebSocket connected: session=e92559a7-2508-4a26-8779-85747b7bce37, run=receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/sender_8b33_8c41813a5469488e9fa9ba51c811fbe4/raw_traces_manifest.json
+Agent websocket attached for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Created agent session c9913de5-fc70-4f94-bf03-d23665d8b7d8 for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Agent WebSocket connected: session=c9913de5-fc70-4f94-bf03-d23665d8b7d8, run=sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Agent team websocket attached for team run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Created agent session 21f236dd-5ede-4a9a-8968-066f35c3aa1a for run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Agent Team WebSocket connected: session=21f236dd-5ede-4a9a-8968-066f35c3aa1a, run=relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 54f4ed2e-465a-464d-b9b9-62012eaf1ea5 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=54f4ed2e-465a-464d-b9b9-62012eaf1ea5, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 6f7ebca8-959c-4cd2-9dfd-07b0c601880c for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=6f7ebca8-959c-4cd2-9dfd-07b0c601880c, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564
+Created agent session 95ef5eff-b6c8-49fb-8e22-49cda4515782 for run upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564
+Agent WebSocket connected: session=95ef5eff-b6c8-49fb-8e22-49cda4515782, run=upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 95ef5eff-b6c8-49fb-8e22-49cda4515782
+Agent WebSocket disconnected: 95ef5eff-b6c8-49fb-8e22-49cda4515782
+Closed agent session 6f7ebca8-959c-4cd2-9dfd-07b0c601880c
+Closed agent session 54f4ed2e-465a-464d-b9b9-62012eaf1ea5
+Closed agent session 21f236dd-5ede-4a9a-8968-066f35c3aa1a
+Closed agent session c9913de5-fc70-4f94-bf03-d23665d8b7d8
+Agent WebSocket disconnected: c9913de5-fc70-4f94-bf03-d23665d8b7d8
+Closed agent session e92559a7-2508-4a26-8779-85747b7bce37
+Agent WebSocket disconnected: e92559a7-2508-4a26-8779-85747b7bce37
+Closed agent session 4a91dc4a-a0a4-432f-ba7e-098b99f9d6da
+Agent WebSocket disconnected: 4a91dc4a-a0a4-432f-ba7e-098b99f9d6da
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/manager_28da_b0a1398486144e5e851caafe79b643b8/raw_traces_manifest.json
+Agent websocket attached for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Created agent session 0e8f27b0-9a56-4ea4-9b7a-6333b2f692c3 for run manager_28da_b0a1398486144e5e851caafe79b643b8
+Agent WebSocket connected: session=0e8f27b0-9a56-4ea4-9b7a-6333b2f692c3, run=manager_28da_b0a1398486144e5e851caafe79b643b8
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/receiver_8b33_3419988f6ace4812a7167b2c90f1886e/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/sender_8b33_8c41813a5469488e9fa9ba51c811fbe4/raw_traces_manifest.json
+Agent websocket attached for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Created agent session 71ae559f-8dfd-41b5-930e-759cbe244b61 for run receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Agent WebSocket connected: session=71ae559f-8dfd-41b5-930e-759cbe244b61, run=receiver_8b33_3419988f6ace4812a7167b2c90f1886e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agents/upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Agent websocket attached for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Created agent session 2699077f-42df-4a16-8c16-461e56a633ce for run sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Agent WebSocket connected: session=2699077f-42df-4a16-8c16-461e56a633ce, run=sender_8b33_8c41813a5469488e9fa9ba51c811fbe4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent websocket attached for run upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564
+Created agent session d30ce9ba-f77d-478a-aef9-f6e83a79819a for run upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564
+Agent WebSocket connected: session=d30ce9ba-f77d-478a-aef9-f6e83a79819a, run=upgrade_agent_07b3_7c6fc3799e2f458e8e208f71eaa5f564
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Agent team websocket attached for team run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Created agent session 06cadc39-b80a-4703-b3c5-abde5baf6fb6 for run relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Agent Team WebSocket connected: session=06cadc39-b80a-4703-b3c5-abde5baf6fb6, run=relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/relay_team_8b33_b4e07db6bfef43cc8b59c439b353f2c5/relay_lead_8b33_c3249c7417e34660888da6011e88abb6/raw_traces_manifest.json
+Agent team websocket attached for team run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Created agent session 4fa7d2e3-078b-4cc2-92b9-068517596bf6 for run slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Agent Team WebSocket connected: session=4fa7d2e3-078b-4cc2-92b9-068517596bf6, run=slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/slot_team_a69b_be75bb6fd94f44408919191afcc8f4fa/slot_manager_a69b_58e56ca846a94c35b820ef4d8669f821/raw_traces_manifest.json
+Agent team websocket attached for team run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Created agent session 9eee0e9b-756a-4ecb-af99-95a323e497f5 for run home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Agent Team WebSocket connected: session=9eee0e9b-756a-4ecb-af99-95a323e497f5, run=home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/home_team_19fc_e6d2ef3f8c344f21ae950a71375940c7/manager_28da_035519eb754940499a62d111a1f3eb33/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/upgrade_team_07b3_f84b399f46a14dda8b2c963549ae3254/upgrade_lead_07b3_03761fbf1d594f7b97f52e02d55e30fa/raw_traces_manifest.json
+Agent team websocket attached for team run upgrade_team_07b3_f84b399f46a14dda8b2c963549ae3254
+Created agent session c108eaa3-19d5-44bf-9d98-dd27a8bea264 for run upgrade_team_07b3_f84b399f46a14dda8b2c963549ae3254
+Agent Team WebSocket connected: session=c108eaa3-19d5-44bf-9d98-dd27a8bea264, run=upgrade_team_07b3_f84b399f46a14dda8b2c963549ae3254
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-JDBBtk/server-data/memory/agent_teams/upgrade_team_07b3_f84b399f46a14dda8b2c963549ae3254/upgrade_lead_07b3_03761fbf1d594f7b97f52e02d55e30fa/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run upgrade_lead_07b3_03761fbf1d594f7b97f52e02d55e30fa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run upgrade_member_07b3_c5a54944b5ab4230a6976d7d4e86f315: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session d30ce9ba-f77d-478a-aef9-f6e83a79819a
+Agent WebSocket disconnected: d30ce9ba-f77d-478a-aef9-f6e83a79819a
+Closed agent session 2699077f-42df-4a16-8c16-461e56a633ce
+Agent WebSocket disconnected: 2699077f-42df-4a16-8c16-461e56a633ce
+Closed agent session 71ae559f-8dfd-41b5-930e-759cbe244b61
+Agent WebSocket disconnected: 71ae559f-8dfd-41b5-930e-759cbe244b61
+Closed agent session 0e8f27b0-9a56-4ea4-9b7a-6333b2f692c3
+Agent WebSocket disconnected: 0e8f27b0-9a56-4ea4-9b7a-6333b2f692c3
+Closed agent session c108eaa3-19d5-44bf-9d98-dd27a8bea264
+Closed agent session 9eee0e9b-756a-4ecb-af99-95a323e497f5
+Closed agent session 4fa7d2e3-078b-4cc2-92b9-068517596bf6
+Closed agent session 06cadc39-b80a-4703-b3c5-abde5baf6fb6

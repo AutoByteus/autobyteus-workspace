@@ -1,0 +1,26 @@
+{
+  "attachment": {
+    "label": "attachment",
+    "statusBefore": "",
+    "status": "This file is on host-b-471, where this run runs.",
+    "drawer": 0,
+    "requests": [],
+    "filesBefore": [],
+    "filesAfter": []
+  },
+  "link": {
+    "label": "link",
+    "statusBefore": "",
+    "status": "This file is on host-b-471, where this run runs.",
+    "drawer": 0,
+    "requests": [],
+    "filesBefore": [],
+    "filesAfter": []
+  },
+  "pass": {
+    "attachment": true,
+    "link": true
+  },
+  "oldText": false,
+  "hostWorkspaceText": false
+}

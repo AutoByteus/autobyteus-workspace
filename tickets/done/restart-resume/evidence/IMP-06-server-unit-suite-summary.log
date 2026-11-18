@@ -1,0 +1,9 @@
+# IMP-06
+# Command: pnpm -C autobyteus-server-ts test:unit (full; summary)
+# Commit: b4d770d364 (b50e2354ab only removes a comment line in root-team-run.ts)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+ Test Files  908 passed | 5 skipped (913)
+      Tests  7694 passed | 9 skipped (7703)
+   Duration  722.38s (transform 19.10s, setup 10.98s, import 332.70s, tests 292.06s, environment 991ms)

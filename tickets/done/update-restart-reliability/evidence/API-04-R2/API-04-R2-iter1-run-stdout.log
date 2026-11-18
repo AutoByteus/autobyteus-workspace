@@ -1,0 +1,26 @@
+[+11.3s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-5G7aGR/data-root"],"exit":0,"ok":true,"error":null}
+[+11.4s] instance started {"label":"first","instanceId":"iso-52486-c99b","electronPid":65872,"serverPid":67440,"serverPort":52487,"servers":1}
+[+12.7s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+13.3s] standalone sent {"label":"restart-codex","runtime":"codex","kind":"agent","runId":"desk_agent_bq284dmvw9zlmj_63914116de5c4035897cca6a94fae716","rootId":"desk_agent_bq284dmvw9zlmj_63914116de5c4035897cca6a94fae716"}
+[+17.9s] busy {"label":"restart-codex","pid":69230,"ppid":67616,"pgid":69230}
+[+22.6s] restart observed {"oldServerPid":67440,"newServerPid":69801,"readyMs":2531,"oldServerAlive":false,"toolAliveAfter":false,"survivors":[],"serversForData":[{"pid":69801,"ppid":65872,"pgid":65872,"command":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api2.cFIEfA/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus … 87 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-5G7aGR/data-root/server-data"}]}
+[+22.8s] standalone sent {"label":"sa-codex","runtime":"codex","kind":"agent","runId":"desk_agent_bq284dmvw9zlmj_aaa228c146b04fb8ad615aa2937cdae3","rootId":"desk_agent_bq284dmvw9zlmj_aaa228c146b04fb8ad615aa2937cdae3"}
+[+23.0s] standalone sent {"label":"sa-claude","runtime":"claude","kind":"agent","runId":"desk_agent_bq284dmvw9zlmj_a50f5ab42dfd4371bd58fe0f6e61d89a","rootId":"desk_agent_bq284dmvw9zlmj_a50f5ab42dfd4371bd58fe0f6e61d89a"}
+[+24.2s] team sent {"label":"team-codex","runtime":"codex","kind":"team","runId":"desk_team_coordinator_bq284dmvw9zlmj_a999599dbcb94cbeb02d78113962e585","rootId":"desk_team_bq284dmvw9zlmj_6828aeffd9274c8ea44f89f0589eac93"}
+[+25.7s] org sent {"label":"org-claude","runtime":"claude","kind":"org","runId":"desk_org_manager_bq284dmvw9zlmj_a2a0382f730e4813baed18f79ff8cd28","rootId":"desk_org_bq284dmvw9zlmj_2c40c0a895de4fa89b5757608dd97a51"}
+[+27.0s] busy {"label":"sa-codex","pid":72925,"ppid":70039,"pgid":72925}
+[+27.1s] busy {"label":"sa-claude","pid":72892,"ppid":70418,"pgid":72892}
+[+27.8s] busy {"label":"team-codex","pid":73036,"ppid":70039,"pgid":73036}
+[+29.5s] busy {"label":"org-claude","pid":73887,"ppid":72409,"pgid":73887}
+[+35.5s] busy user quit observed {"label":"busy user quit","electronPid":65872,"serverPid":69801,"serverGoneMs":1397,"electronGoneMs":3357,"before":16,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[{"label":"sa-codex","kind":"agent","runtime":"codex","pid":72925,"ppid":70039,"pgid":72925,"aliveAfter":false},{"label":"sa-claude","kind":"agent","runtime":"claude","pid":72892,"ppid":70418,"pgid":72892,"aliveAfter":false},{"label":"team-codex","kind":"team","runtime":"codex","pid":73036,"ppid":70039,"pgid":73036,"
+[+35.5s] isolated-app {"args":["stop","iso-52486-c99b"],"exit":0,"ok":true,"error":null}
+[+39.2s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-5G7aGR/data-root"],"exit":0,"ok":true,"error":null}
+[+39.4s] instance started {"label":"second","instanceId":"iso-52754-b49a","electronPid":74062,"serverPid":74973,"serverPort":52755,"servers":1}
+[+39.5s] relaunch check {"label":"second","serversForData":[{"pid":74973,"ppid":74062,"pgid":74062,"command":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api2.cFIEfA/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus … 55 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-5G7aGR/data-root/server-data"}],"exactlyOne":true,"previousSessionLeft":[]}
+[+42.6s] continued {"label":"sa-codex","kind":"agent","runtime":"codex","rootId":"desk_agent_bq284dmvw9zlmj_aaa228c146b04fb8ad615aa2937cdae3","replied":"CONTINUED_sacodex","afterMs":2765}
+[+44.8s] continued {"label":"sa-claude","kind":"agent","runtime":"claude","rootId":"desk_agent_bq284dmvw9zlmj_a50f5ab42dfd4371bd58fe0f6e61d89a","replied":"CONTINUED_saclaude","afterMs":2013}
+[+48.1s] continued {"label":"team-codex","kind":"team","runtime":"codex","rootId":"desk_team_bq284dmvw9zlmj_6828aeffd9274c8ea44f89f0589eac93","replied":"CONTINUED_teamcodex","afterMs":2260}
+[+50.9s] continued {"label":"org-claude","kind":"org","runtime":"claude","rootId":"desk_org_bq284dmvw9zlmj_2c40c0a895de4fa89b5757608dd97a51","replied":"CONTINUED_orgclaude","afterMs":1763}
+[+53.7s] final quit observed {"label":"final quit","electronPid":74062,"serverPid":74973,"serverGoneMs":1549,"electronGoneMs":1601,"before":9,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+53.8s] isolated-app {"args":["stop","iso-52754-b49a"],"exit":0,"ok":true,"error":null}
+{"result":"Completed","error":null,"fallbackCleanup":0}

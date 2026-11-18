@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
@@ -17,7 +18,8 @@ import { ApplicationExecutionResourceResolver } from "../../../src/application-o
 import { createBundleBackedDefinitionServices } from "../../../src/application-platform/definitions/create-bundle-backed-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTaskCommandCapability } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../fixtures/current-team-run-fixtures.js";
+import { testPreparationGuard } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 const packageRoot = path.resolve("../applications/brief-studio/dist/importable-package");
 const workspaceRoot = path.resolve("../applications/brief-studio");
@@ -78,10 +80,9 @@ describe("Brief package team prompt authority", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     } as const;
     const memberExecutionContext = await new MemberExecutionContextBuilder(
-      definitions.agentTeamDefinitionService,
+      definitions.agentTeamDefinitionService, NOT_DELEGATED,
     ).build({
       teamContext: new TeamRunContext({
-        teamKind: "configured",
         physicalScope: createRootExecutionPhysicalScope({
           root: createTeamRootExecutionIdentity("brief-team-run"),
           ancestorTeamRunIds: [],
@@ -105,7 +106,7 @@ describe("Brief package team prompt authority", () => {
       }),
       agentNode: researcherNode as never,
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
-      taskCommands: testMemberTaskCommandCapability("brief-team-run"),
+      taskCapability: testMemberTaskCapability("brief-team-run"),
     });
     const activateForRun = vi.fn((input: {
       owner: { runId: string };
@@ -154,7 +155,7 @@ describe("Brief package team prompt authority", () => {
         memberExecutionContext,
       }),
       runtimeContext: null,
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    }), testPreparationGuard(bootstrapper));
 
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
     expect(memberExecutionContext.authoredEnclosingScopeInstruction).toBe(packageTeam.instructions.trim());

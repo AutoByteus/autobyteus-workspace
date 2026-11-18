@@ -1,0 +1,8 @@
+# IMP-04 server typecheck (AC-004)
+# cmd: pnpm -C autobyteus-server-ts typecheck
+# commit: 253854bf8d  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:44Z
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tools-mcp-tool-error-result/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

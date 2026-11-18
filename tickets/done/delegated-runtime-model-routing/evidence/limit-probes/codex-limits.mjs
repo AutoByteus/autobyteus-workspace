@@ -1,0 +1,14 @@
+import { spawn } from "node:child_process";
+import readline from "node:readline";
+const t0 = Date.now();
+const p = spawn("/Users/normy/.local/bin/codex", ["app-server"], { cwd: "/tmp/routing-probes", stdio: ["pipe", "pipe", "ignore"] });
+const rl = readline.createInterface({ input: p.stdout });
+const pending = new Map(); let id = 0;
+rl.on("line", (line) => { let m; try { m = JSON.parse(line); } catch { return; } if (m.id != null && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } });
+const req = (method, params) => new Promise((res) => { const i = ++id; pending.set(i, res); p.stdin.write(JSON.stringify({ id: i, method, params }) + "\n"); });
+const init = await req("initialize", { clientInfo: { name: "routing-probe", version: "0.0.1" } });
+p.stdin.write(JSON.stringify({ method: "initialized" }) + "\n");
+const limits = await req("account/rateLimits/read", {});
+console.log("ms", Date.now() - t0, init.error ? "initErr " + JSON.stringify(init.error) : "");
+console.log(JSON.stringify(limits.result ?? limits.error, null, 1).slice(0, 3500));
+p.kill(); process.exit(0);

@@ -1,0 +1,120 @@
+{
+  "startedAt": "2026-11-10T16:15:49.259Z",
+  "result": "Fail",
+  "node": "v22.23.3",
+  "servers": {
+    "beta": {
+      "port": 34703,
+      "nodeId": "srv_SW8blDgjUmTopzwSeYuJzNoKePSH7JVY",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 46541,
+      "nodeId": "srv_4iUObdts4QMV_ysnOMYtgzYdgVgBqYG3",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_2c32c9d1d34145fe8d1eff95f1e11c34",
+    "writerRun": "release_notes_writer_e724c8d6f5c547f8ab000a911d2afa5b",
+    "squadRun": "docs_review_team_3ee0d7485b834bad974ebca248346d3e",
+    "reviewer": "release_notes_writer_82dccdfa06854725a44e239b371c409e",
+    "memberDelegated": "fact_checker_975c2a32dc5643a38748934f13acd23a",
+    "remoteAgentRun": "publisher_759ccd16551d48b9aadefa243b8b901f",
+    "remoteTeamRun": "studio_team_56efd83825f44749969f6c45c2aef6b7",
+    "plain": [
+      "fact_checker_fd776546e260441db3788b02ce1baf89",
+      "fact_checker_1813c7022f1941db915d5d264d915a06",
+      "fact_checker_35137468286d4e169a0e044b11804d4b"
+    ],
+    "org": "delivery_org_66fc09ddc32d47639e482f8820743421",
+    "orgPlanner": "release_notes_writer_4b1989c05113437a967e4f77c7514e83",
+    "reviewOrg": "review_org_cafebf1024fe454bbc1fe07aa373f101",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_9818b367992e456eae14c8f6da2fe9a7",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_ab9723eada2d464c9b51b89317420a4f",
+    "deliveryLead": "fact_checker_2f52cd44e95e4a979cf3f474b6ca59eb",
+    "deliveryMate": "release_notes_writer_0854e4be5083475ab653afee28edb4df",
+    "leadDelegated": "changelog_helper_eb9a3cc0800d4a53b67091d8afbdb72c",
+    "approver": "approver_ab4b5debfe4f4a74a8144154fa8a5d37",
+    "taskA": "launch-0adc13-1",
+    "taskB": "launch-0adc13-2"
+  },
+  "cases": {
+    "MSP-32": {
+      "result": "Pass",
+      "seconds": 7.2,
+      "modelRowBefore": "Model Gemini test",
+      "opened": {
+        "reads": 1,
+        "runtime": "antigravity_cli",
+        "rows": [
+          "Gemini test"
+        ]
+      },
+      "control": {
+        "text": "Refresh models",
+        "box": {
+          "x": 241.78125,
+          "y": 788,
+          "width": 132.21875,
+          "height": 44
+        }
+      },
+      "afterRefresh": {
+        "reads": 1,
+        "runtime": "antigravity_cli",
+        "rows": [
+          "Gemini test"
+        ],
+        "error": 0,
+        "button": "Refresh models"
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Access to XMLHttpRequest at 'http://localhost:8000/health' from origin 'http://192.168.77.10:46541' has been blocked by CORS policy: The request client is not a secure context and the resource is in more-private address space `loopback`.",
+      "known": false
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_FAILED",
+      "known": false
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_FAILED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-32": "Pass"
+    },
+    "unknownBrowserErrors": 2
+  },
+  "finishedAt": "2026-11-10T16:16:37.736Z"
+}

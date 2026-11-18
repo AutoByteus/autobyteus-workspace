@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { ensureAuthoritativeTeamMemberProjection } from '../teamMemberProjectionHydrationService';
 
@@ -26,13 +26,13 @@ const projection = () => ({
   hasEarlierActiveTraceEvents: true,
 });
 
+/** A Team whose member `TASK_RUN` is read through the Team (a delegated run is not: autobyteus-461 rule 2). */
 const mountTaskTeam = () => {
   const team = buildTestTeamContext({
     teamRunId: ROOT,
     coordinatorAddress: '/member-a',
     focusedAgentRunId: TASK_RUN,
-    rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' })],
-    delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-a', target: { agentRunId: TASK_RUN } })],
+    rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' }), testAgentNode('/member-b', { agentRunId: TASK_RUN })],
   });
   const contexts = useAgentTeamContextsStore();
   contexts.teams = new Map([[ROOT, team]]);
@@ -101,7 +101,7 @@ describe('teamMemberProjectionHydrationService', () => {
     });
 
     await expect(ensureAuthoritativeTeamMemberProjection({ team, agentRunId: TASK_RUN }))
-      .rejects.toThrow(`Task activity for '${TASK_RUN}' changed while it was loading.`);
+      .rejects.toThrow(`The stored state of '${TASK_RUN}' changed while it was loading.`);
 
     expect(fetchProjection).toHaveBeenCalledTimes(3);
     expect(member.state.conversation).toBe(originalConversation);
@@ -109,7 +109,7 @@ describe('teamMemberProjectionHydrationService', () => {
       .toEqual(Array.from({ length: 3 }, (_, index) => `${_name === 'system instruction' ? 'live-system' : 'live-tool'}-${index + 1}`));
   });
 
-  it('rejects a mounted Team context replacement without changing the stale target', async () => {
+  it('leaves the stale target unchanged when the mounted Team context is replaced', async () => {
     const team = mountTaskTeam();
     const member = team.view.getAgentContext(TASK_RUN)!;
     const originalConversation = member.state.conversation;
@@ -123,10 +123,19 @@ describe('teamMemberProjectionHydrationService', () => {
       return projection();
     });
 
+    // The load of a replaced context writes nothing (autobyteus-358: the member loader supersedes it).
     await expect(ensureAuthoritativeTeamMemberProjection({ team, agentRunId: TASK_RUN }))
-      .rejects.toThrow(`Team context '${ROOT}' changed before task activity could be loaded.`);
+      .resolves.toEqual({ disposition: 'superseded', agentRunId: TASK_RUN });
     expect(member.state.conversation).toBe(originalConversation);
     expect(useAgentActivityStore().getActivities(TASK_RUN)).toEqual([]);
+  });
+
+  it('a run the Team delegated is not one of its members: it is never read through the Team (autobyteus-461 rule 2)', async () => {
+    const team = mountTaskTeam();
+    await expect(ensureAuthoritativeTeamMemberProjection({ team, agentRunId: 'delegated-run' }))
+      .rejects.toThrow("AgentRun 'delegated-run' is not a retained member");
+    expect(fetchProjection).not.toHaveBeenCalled();
+    expect(fetchFileChanges).not.toHaveBeenCalled();
   });
 
   describe('member artifacts (selection of a member not hydrated at Team open)', () => {

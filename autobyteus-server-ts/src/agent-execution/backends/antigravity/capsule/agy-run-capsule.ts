@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { ConfiguredAgentSkillBinding } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { materializeAgyMcpConfig } from "./agy-mcp-config-materializer.js";
@@ -25,6 +25,12 @@ export type AgyRunCapsule = { path: string; manifest: AgyCapsuleManifest };
 const capsulePath = (memoryDir: string): string => path.join(memoryDir, "agy-project");
 const agentPath = (root: string, name: string): string => path.join(root, ".agents", "agents", name, "agent.md");
 
+/**
+ * A new start replaces the capsule of any earlier era or failed start of this run (a run can return to Antigravity after another
+ * agent runtime, autobyteus-440), so it always begins on an empty capsule; the exclusive writes below stay as a correctness guard.
+ * Only the capsule folder goes: a skill link in it is removed without following it, and nothing outside it is touched.
+ * A restore never calls this; it reads its own era's capsule (`restoreAgyRunCapsule`).
+ */
 export const createAgyRunCapsule = async (input: {
   runId: string;
   memoryDir: string;
@@ -33,12 +39,13 @@ export const createAgyRunCapsule = async (input: {
   agentDefinitionId: string;
   configuredSkillBindings: readonly ConfiguredAgentSkillBinding[];
   workspaceCollisionPolicy: WorkspaceCollisionPolicy;
-  mcpDescriptor: AgentToolMcpDescriptor | null;
+  mcpDescriptor: AgentToolMcpDescriptor;
 }): Promise<AgyRunCapsule> => {
   const workspacePath = await fs.realpath(input.workspacePath);
   if (!(await fs.stat(workspacePath)).isDirectory()) throw new Error("AGY_WORKSPACE_INVALID: selected workspace is not a directory.");
   const root = capsulePath(input.memoryDir);
   await fs.mkdir(input.memoryDir, { recursive: true, mode: 0o700 });
+  await fs.rm(root, { recursive: true, force: true });
   await fs.mkdir(root, { recursive: false, mode: 0o700 });
   try {
     const agentName = `autobyteus-${sha256(input.runId).slice(0, 16)}`;
@@ -68,6 +75,55 @@ export const createAgyRunCapsule = async (input: {
   }
 };
 
+/**
+ * Links skills added to the run's definition while it runs into its capsule, one binding per linker call (a name
+ * that cannot be linked is logged and never stops the others), then rewrites the manifest with the names that were
+ * linked, so a resume keeps them. Names the manifest already lists are skipped; a name that failed is tried again by
+ * the next add. The capsule is this run's own and kept for resume, so a link written while the run stops is still
+ * its own.
+ */
+export const addAgyRunCapsuleSkills = async (input: {
+  capsule: AgyRunCapsule;
+  runId: string;
+  agentDefinitionId: string;
+  bindings: readonly ConfiguredAgentSkillBinding[];
+  workspaceCollisionPolicy: WorkspaceCollisionPolicy;
+}): Promise<void> => {
+  const { capsule } = input;
+  const listed = new Set(capsule.manifest.skills.map((skill) => skill.name.toLowerCase()));
+  const added: AgySkillLink[] = [];
+  for (const binding of input.bindings) {
+    if (binding.kind !== "resolved" || listed.has(binding.skill.name.trim().toLowerCase())) continue;
+    try {
+      const links = await linkAgyConfiguredSkills({
+        capsulePath: capsule.path, workspacePath: capsule.manifest.workspacePath, bindings: [binding],
+        runId: input.runId, agentDefinitionId: input.agentDefinitionId,
+        workspaceCollisionPolicy: input.workspaceCollisionPolicy,
+      });
+      for (const link of links) { added.push(link); listed.add(link.name.toLowerCase()); }
+    } catch (error) {
+      console.warn(`AGY configured skill not added: run=${logIdentity(input.runId)}, skill=${logIdentity(binding.skill.name)}: ${String(error)}`);
+    }
+  }
+  if (added.length === 0) return;
+  const manifest: AgyCapsuleManifest = { ...capsule.manifest, skills: [...capsule.manifest.skills, ...added] };
+  await rewriteAgyCapsuleManifest(capsule.path, manifest);
+  capsule.manifest = manifest;
+};
+
+/** Replaces `manifest.json` in one step (a temporary file renamed over it), so a resume never reads half of it. */
+const rewriteAgyCapsuleManifest = async (root: string, manifest: AgyCapsuleManifest): Promise<void> => {
+  const target = path.join(root, "manifest.json");
+  const temporary = path.join(root, `.manifest-${randomUUID()}.json`);
+  try {
+    await fs.writeFile(temporary, `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o600, flag: "wx" });
+    await fs.rename(temporary, target);
+  } catch (error) {
+    await fs.rm(temporary, { force: true });
+    throw error;
+  }
+};
+
 const isMissing = (error: unknown): boolean =>
   ["ENOENT", "ENOTDIR"].includes((error as NodeJS.ErrnoException).code ?? "");
 
@@ -86,7 +142,7 @@ export const restoreAgyRunCapsule = async (input: {
   runId: string;
   memoryDir: string;
   selectedWorkspacePath: string | null;
-  mcpDescriptor: AgentToolMcpDescriptor | null;
+  mcpDescriptor: AgentToolMcpDescriptor;
 }): Promise<AgyRunCapsule> => {
   const root = capsulePath(input.memoryDir);
   const manifest = JSON.parse(await fs.readFile(path.join(root, "manifest.json"), "utf8")) as AgyCapsuleManifest;

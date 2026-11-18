@@ -1,0 +1,1393 @@
+{
+  "case": "API-04E-s3",
+  "mode": "queue-race",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/clean/autobyteus-server-ts",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T08:03:11.931Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-CLZX33",
+  "tag": "RR285mvxjm4zf",
+  "steps": [
+    {
+      "at": "0.01",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "2.04",
+      "step": "server started",
+      "value": {
+        "label": "X",
+        "pid": 71612,
+        "port": 56534
+      }
+    },
+    {
+      "at": "3.15",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:56533",
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "7.87",
+      "step": "busy",
+      "value": {
+        "label": "e1-arch",
+        "pid": 71797
+      }
+    },
+    {
+      "at": "7.91",
+      "step": "busy",
+      "value": {
+        "label": "e2-msg",
+        "pid": 71829
+      }
+    },
+    {
+      "at": "7.95",
+      "step": "busy",
+      "value": {
+        "label": "e3-arch",
+        "pid": 71970
+      }
+    },
+    {
+      "at": "7.99",
+      "step": "busy",
+      "value": {
+        "label": "e4-msg",
+        "pid": 72002
+      }
+    },
+    {
+      "at": "8.03",
+      "step": "busy",
+      "value": {
+        "label": "e5-arch",
+        "pid": 72035
+      }
+    },
+    {
+      "at": "8.07",
+      "step": "busy",
+      "value": {
+        "label": "e6-msg",
+        "pid": 72069
+      }
+    },
+    {
+      "at": "8.12",
+      "step": "busy",
+      "value": {
+        "label": "e7-arch",
+        "pid": 72103
+      }
+    },
+    {
+      "at": "8.16",
+      "step": "busy",
+      "value": {
+        "label": "e8-msg",
+        "pid": 72135
+      }
+    },
+    {
+      "at": "8.20",
+      "step": "busy",
+      "value": {
+        "label": "e9-arch",
+        "pid": 72169
+      }
+    },
+    {
+      "at": "8.24",
+      "step": "busy",
+      "value": {
+        "label": "e10-msg",
+        "pid": 72202
+      }
+    },
+    {
+      "at": "8.28",
+      "step": "busy",
+      "value": {
+        "label": "e11-arch",
+        "pid": 72235
+      }
+    },
+    {
+      "at": "8.32",
+      "step": "busy",
+      "value": {
+        "label": "e12-msg",
+        "pid": 72268
+      }
+    },
+    {
+      "at": "8.36",
+      "step": "busy",
+      "value": {
+        "label": "e13-arch",
+        "pid": 72296
+      }
+    },
+    {
+      "at": "8.70",
+      "step": "busy",
+      "value": {
+        "label": "e14-msg",
+        "pid": 72699
+      }
+    },
+    {
+      "at": "11.20",
+      "step": "server stopped",
+      "value": {
+        "label": "X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793520203000
+        },
+        "ms": 868
+      }
+    },
+    {
+      "at": "11.21",
+      "step": "record",
+      "value": [
+        {
+          "place": "host",
+          "run": "8ba95a6364"
+        },
+        {
+          "place": "host",
+          "run": "24b28bf4f5"
+        },
+        {
+          "place": "host",
+          "run": "3c7c30731c"
+        },
+        {
+          "place": "host",
+          "run": "c22d9791ad"
+        },
+        {
+          "place": "host",
+          "run": "9db53d7e17"
+        },
+        {
+          "place": "host",
+          "run": "fa7c073467"
+        },
+        {
+          "place": "host",
+          "run": "eb16db82ce"
+        },
+        {
+          "place": "host",
+          "run": "e687dc1f25"
+        },
+        {
+          "place": "host",
+          "run": "e42165ac1f"
+        },
+        {
+          "place": "host",
+          "run": "e006133eab"
+        },
+        {
+          "place": "host",
+          "run": "61eb8a2960"
+        },
+        {
+          "place": "host",
+          "run": "c4e507ec7e"
+        },
+        {
+          "place": "host",
+          "run": "1fd3d6a437"
+        },
+        {
+          "place": "host",
+          "run": "cda6731204"
+        }
+      ]
+    },
+    {
+      "at": "11.21",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "13.04",
+      "step": "server started",
+      "value": {
+        "label": "X1",
+        "pid": 73229,
+        "port": 56649
+      }
+    },
+    {
+      "at": "23.83",
+      "step": "queue race",
+      "value": {
+        "lines": [
+          "[12.93] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364' of agent 'native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364'",
+          "[13.00] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c' of agent 'native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c'",
+          "[13.06] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5' of agent 'native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5'",
+          "[13.16] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad' of agent 'native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad'",
+          "[13.25] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17' of agent 'native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17'",
+          "[13.30] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467' of agent 'native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467'",
+          "[13.39] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' of agent 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce': Error: Agent root 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' is not accepting execution operations.",
+          "[13.42] Restart resume skipped host run 'native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25' of agent 'native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25': the run already had input",
+          "[13.48] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' of agent 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f': Error: Agent root 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' is not accepting execution operations.",
+          "[13.52] Restart resume skipped host run 'native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab' of agent 'native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab': the run already had input",
+          "[13.58] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' of agent 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960': Error: Agent root 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' is not accepting execution operations.",
+          "[13.61] Restart resume skipped host run 'native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e' of agent 'native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e': the run already had input",
+          "[13.67] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' of agent 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437': Error: Agent root 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' is not accepting execution operations.",
+          "[13.69] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204' of agent 'native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204'",
+          "[13.69] Restart resume after the update to 1.5.11-beta.9-rr285next: 7 resumed, 3 skipped, 4 failed"
+        ],
+        "summary": {
+          "targets": [
+            {
+              "label": "e1-arch",
+              "action": "archive",
+              "plannedMs": 25,
+              "startAtLogSec": "13.08",
+              "archive": "Run is active. Terminate it before archiving history.",
+              "outcome": "resumed@12.93",
+              "notices": 1,
+              "ok": true
+            },
+            {
+              "label": "e2-msg",
+              "action": "message",
+              "plannedMs": 75,
+              "startAtLogSec": "13.11",
+              "outcome": "resumed@13.06",
+              "notices": 1,
+              "ok": true
+            },
+            {
+              "label": "e3-arch",
+              "action": "archive",
+              "plannedMs": 125,
+              "startAtLogSec": "13.16",
+              "archive": "Run is active. Terminate it before archiving history.",
+              "outcome": "resumed@13.00",
+              "notices": 1,
+              "ok": true
+            },
+            {
+              "label": "e4-msg",
+              "action": "message",
+              "plannedMs": 175,
+              "startAtLogSec": "13.21",
+              "outcome": "resumed@13.16",
+              "notices": 1,
+              "ok": true
+            },
+            {
+              "label": "e5-arch",
+              "action": "archive",
+              "plannedMs": 225,
+              "startAtLogSec": "13.26",
+              "archive": "Run is active. Terminate it before archiving history.",
+              "outcome": "resumed@13.25",
+              "notices": 1,
+              "ok": true
+            },
+            {
+              "label": "e6-msg",
+              "action": "message",
+              "plannedMs": 275,
+              "startAtLogSec": "13.31",
+              "outcome": "resumed@13.30",
+              "notices": 1,
+              "ok": true
+            },
+            {
+              "label": "e7-arch",
+              "action": "archive",
+              "plannedMs": 325,
+              "startAtLogSec": "13.36",
+              "archive": "Run 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' archived.",
+              "outcome": "failed@13.39 Error: Agent root 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' is not accepting execution operations.",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e8-msg",
+              "action": "message",
+              "plannedMs": 375,
+              "startAtLogSec": "13.41",
+              "outcome": "skipped@13.42 the run already had input",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e9-arch",
+              "action": "archive",
+              "plannedMs": 425,
+              "startAtLogSec": "13.46",
+              "archive": "Run 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' archived.",
+              "outcome": "failed@13.48 Error: Agent root 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' is not accepting execution operations.",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e10-msg",
+              "action": "message",
+              "plannedMs": 475,
+              "startAtLogSec": "13.51",
+              "outcome": "skipped@13.52 the run already had input",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e11-arch",
+              "action": "archive",
+              "plannedMs": 525,
+              "startAtLogSec": "13.56",
+              "archive": "Run 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' archived.",
+              "outcome": "failed@13.58 Error: Agent root 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' is not accepting execution operations.",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e12-msg",
+              "action": "message",
+              "plannedMs": 575,
+              "startAtLogSec": "13.61",
+              "outcome": "skipped@13.61 the run already had input",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e13-arch",
+              "action": "archive",
+              "plannedMs": 625,
+              "startAtLogSec": "13.66",
+              "archive": "Run 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' archived.",
+              "outcome": "failed@13.67 Error: Agent root 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' is not accepting execution operations.",
+              "notices": 0,
+              "ok": true
+            },
+            {
+              "label": "e14-msg",
+              "action": "message",
+              "plannedMs": 675,
+              "startAtLogSec": "13.71",
+              "outcome": "resumed@13.69",
+              "notices": 1,
+              "ok": true
+            }
+          ],
+          "violations": []
+        }
+      }
+    },
+    {
+      "at": "24.03",
+      "step": "server stopped",
+      "value": {
+        "label": "X1",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793520215949
+        },
+        "ms": 187
+      }
+    }
+  ],
+  "spec": [
+    {
+      "label": "e1-arch",
+      "action": "archive",
+      "delayMs": 25
+    },
+    {
+      "label": "e2-msg",
+      "action": "message",
+      "delayMs": 75
+    },
+    {
+      "label": "e3-arch",
+      "action": "archive",
+      "delayMs": 125
+    },
+    {
+      "label": "e4-msg",
+      "action": "message",
+      "delayMs": 175
+    },
+    {
+      "label": "e5-arch",
+      "action": "archive",
+      "delayMs": 225
+    },
+    {
+      "label": "e6-msg",
+      "action": "message",
+      "delayMs": 275
+    },
+    {
+      "label": "e7-arch",
+      "action": "archive",
+      "delayMs": 325
+    },
+    {
+      "label": "e8-msg",
+      "action": "message",
+      "delayMs": 375
+    },
+    {
+      "label": "e9-arch",
+      "action": "archive",
+      "delayMs": 425
+    },
+    {
+      "label": "e10-msg",
+      "action": "message",
+      "delayMs": 475
+    },
+    {
+      "label": "e11-arch",
+      "action": "archive",
+      "delayMs": 525
+    },
+    {
+      "label": "e12-msg",
+      "action": "message",
+      "delayMs": 575
+    },
+    {
+      "label": "e13-arch",
+      "action": "archive",
+      "delayMs": 625
+    },
+    {
+      "label": "e14-msg",
+      "action": "message",
+      "delayMs": 675
+    }
+  ],
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204"
+        },
+        "agentRunId": "native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:03:22.133Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "x1StartAtLogSec": "11.21",
+  "x1HealthyAtLogSec": "13.04",
+  "acted": {
+    "e1-arch": {
+      "action": "archive",
+      "plannedMs": 25,
+      "startMs": 43,
+      "startAtLogSec": "13.08",
+      "result": {
+        "success": false,
+        "message": "Run is active. Terminate it before archiving history."
+      },
+      "doneAtLogSec": "13.10"
+    },
+    "e2-msg": {
+      "action": "message",
+      "plannedMs": 75,
+      "startMs": 76,
+      "startAtLogSec": "13.11",
+      "sentAtLogSec": "13.11",
+      "doneAtLogSec": "13.11"
+    },
+    "e3-arch": {
+      "action": "archive",
+      "plannedMs": 125,
+      "startMs": 126,
+      "startAtLogSec": "13.16",
+      "result": {
+        "success": false,
+        "message": "Run is active. Terminate it before archiving history."
+      },
+      "doneAtLogSec": "13.18"
+    },
+    "e4-msg": {
+      "action": "message",
+      "plannedMs": 175,
+      "startMs": 175,
+      "startAtLogSec": "13.21",
+      "sentAtLogSec": "13.21",
+      "doneAtLogSec": "13.21"
+    },
+    "e5-arch": {
+      "action": "archive",
+      "plannedMs": 225,
+      "startMs": 226,
+      "startAtLogSec": "13.26",
+      "result": {
+        "success": false,
+        "message": "Run is active. Terminate it before archiving history."
+      },
+      "doneAtLogSec": "13.28"
+    },
+    "e6-msg": {
+      "action": "message",
+      "plannedMs": 275,
+      "startMs": 276,
+      "startAtLogSec": "13.31",
+      "sentAtLogSec": "13.31",
+      "doneAtLogSec": "13.31"
+    },
+    "e7-arch": {
+      "action": "archive",
+      "plannedMs": 325,
+      "startMs": 327,
+      "startAtLogSec": "13.36",
+      "result": {
+        "success": true,
+        "message": "Run 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' archived."
+      },
+      "doneAtLogSec": "13.66"
+    },
+    "e8-msg": {
+      "action": "message",
+      "plannedMs": 375,
+      "startMs": 375,
+      "startAtLogSec": "13.41",
+      "sentAtLogSec": "13.41",
+      "doneAtLogSec": "13.41"
+    },
+    "e9-arch": {
+      "action": "archive",
+      "plannedMs": 425,
+      "startMs": 426,
+      "startAtLogSec": "13.46",
+      "result": {
+        "success": true,
+        "message": "Run 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' archived."
+      },
+      "doneAtLogSec": "13.76"
+    },
+    "e10-msg": {
+      "action": "message",
+      "plannedMs": 475,
+      "startMs": 476,
+      "startAtLogSec": "13.51",
+      "sentAtLogSec": "13.51",
+      "doneAtLogSec": "13.51"
+    },
+    "e11-arch": {
+      "action": "archive",
+      "plannedMs": 525,
+      "startMs": 526,
+      "startAtLogSec": "13.56",
+      "result": {
+        "success": true,
+        "message": "Run 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' archived."
+      },
+      "doneAtLogSec": "13.78"
+    },
+    "e12-msg": {
+      "action": "message",
+      "plannedMs": 575,
+      "startMs": 575,
+      "startAtLogSec": "13.61",
+      "sentAtLogSec": "13.61",
+      "doneAtLogSec": "13.61"
+    },
+    "e13-arch": {
+      "action": "archive",
+      "plannedMs": 625,
+      "startMs": 625,
+      "startAtLogSec": "13.66",
+      "result": {
+        "success": true,
+        "message": "Run 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' archived."
+      },
+      "doneAtLogSec": "13.79"
+    },
+    "e14-msg": {
+      "action": "message",
+      "plannedMs": 675,
+      "startMs": 676,
+      "startAtLogSec": "13.71",
+      "sentAtLogSec": "13.71",
+      "doneAtLogSec": "13.71"
+    }
+  },
+  "lines": [
+    "[12.93] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364' of agent 'native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364'",
+    "[13.00] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c' of agent 'native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c'",
+    "[13.06] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5' of agent 'native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5'",
+    "[13.16] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad' of agent 'native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad'",
+    "[13.25] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17' of agent 'native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17'",
+    "[13.30] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467' of agent 'native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467'",
+    "[13.39] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' of agent 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce': Error: Agent root 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' is not accepting execution operations.",
+    "[13.42] Restart resume skipped host run 'native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25' of agent 'native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25': the run already had input",
+    "[13.48] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' of agent 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f': Error: Agent root 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' is not accepting execution operations.",
+    "[13.52] Restart resume skipped host run 'native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab' of agent 'native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab': the run already had input",
+    "[13.58] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' of agent 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960': Error: Agent root 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' is not accepting execution operations.",
+    "[13.61] Restart resume skipped host run 'native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e' of agent 'native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e': the run already had input",
+    "[13.67] Restart resume could not resume host run 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' of agent 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437': Error: Agent root 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' is not accepting execution operations.",
+    "[13.69] Restart resume resumed host run 'native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204' of agent 'native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204'",
+    "[13.69] Restart resume after the update to 1.5.11-beta.9-rr285next: 7 resumed, 3 skipped, 4 failed"
+  ],
+  "after": {
+    "e1-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_92c333ec84af47a28192f78ba95a6364",
+      "outcome": {
+        "at": "12.93",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [
+        {
+          "at": "12.95",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"b0ac6006-87c5-4033-8c71-b2cbe5ffd581\",\"dedupeKey\":\"agent_run_input:b0ac6006-87c5-4033-8c71-b2cbe5ffd581\",\"content\":\"TURN:e1-arch run it\",\"media\":null,\"ts\":1793520195.425}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520195.472}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e1-arch-1-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e1-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.465}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520204.889}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e2-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_c1978209b7364a318ec75e24b28bf4f5",
+      "outcome": {
+        "at": "13.06",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": true,
+      "modelSeq": [
+        {
+          "at": "13.08",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        },
+        {
+          "at": "13.14",
+          "kind": "user",
+          "noticesInHistory": 1,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e2-msg-2-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e2-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-q",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.524}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520205.012}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"778fa39c-5642-497f-ac36-b5d045638b44\",\"dedupeKey\":\"agent_run_input:778fa39c-5642-497f-ac36-b5d045638b44\",\"content\":\"User message after the restart (e2-msg).\",\"media\":null,\"ts\":1793520205.054}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.069}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e3-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_c49a795731414a86b442893c7c30731c",
+      "outcome": {
+        "at": "13.00",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [
+        {
+          "at": "13.02",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"991668e2-8c17-4ade-ab57-4f161b963cb4\",\"dedupeKey\":\"agent_run_input:991668e2-8c17-4ade-ab57-4f161b963cb4\",\"content\":\"TURN:e3-arch run it\",\"media\":null,\"ts\":1793520196.112}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520196.145}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e3-arch-3-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e3-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.438}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520204.949}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e4-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_f1b6e23a52af4f28826db7c22d9791ad",
+      "outcome": {
+        "at": "13.16",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": true,
+      "modelSeq": [
+        {
+          "at": "13.18",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        },
+        {
+          "at": "13.23",
+          "kind": "user",
+          "noticesInHistory": 1,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e4-msg-4-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e4-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-q",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.489}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520205.108}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"fbb9cc06-5781-488b-934a-a3fd6d84f0bc\",\"dedupeKey\":\"agent_run_input:fbb9cc06-5781-488b-934a-a3fd6d84f0bc\",\"content\":\"User message after the restart (e4-msg).\",\"media\":null,\"ts\":1793520205.148}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.163}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e5-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_1bded121817147ed8106b19db53d7e17",
+      "outcome": {
+        "at": "13.25",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [
+        {
+          "at": "13.26",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"7d87f5cb-7917-415f-9fe3-6091dcc9f31b\",\"dedupeKey\":\"agent_run_input:7d87f5cb-7917-415f-9fe3-6091dcc9f31b\",\"content\":\"TURN:e5-arch run it\",\"media\":null,\"ts\":1793520196.762}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520196.8}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e5-arch-5-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e5-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.477}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520205.194}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e6-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_ef85877561014368892f47fa7c073467",
+      "outcome": {
+        "at": "13.30",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": true,
+      "modelSeq": [
+        {
+          "at": "13.32",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        },
+        {
+          "at": "13.35",
+          "kind": "user",
+          "noticesInHistory": 1,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e6-msg-6-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e6-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-q",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.453}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520205.248}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"69654af2-7211-40c6-8429-c60639df1051\",\"dedupeKey\":\"agent_run_input:69654af2-7211-40c6-8429-c60639df1051\",\"content\":\"User message after the restart (e6-msg).\",\"media\":null,\"ts\":1793520205.262}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.279}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e7-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce",
+      "outcome": {
+        "at": "13.39",
+        "kind": "failed",
+        "reason": "Error: Agent root 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' is not accepting execution operations."
+      },
+      "notices": 0,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"15820892-4baf-45ef-b463-661bf15fa330\",\"dedupeKey\":\"agent_run_input:15820892-4baf-45ef-b463-661bf15fa330\",\"content\":\"TURN:e7-arch run it\",\"media\":null,\"ts\":1793520197.399}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520197.424}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e7-arch-7-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e7-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.598}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e8-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_8937a52429fe49af84f50de687dc1f25",
+      "outcome": {
+        "at": "13.42",
+        "kind": "skipped",
+        "reason": "the run already had input"
+      },
+      "notices": 0,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": null,
+      "modelSeq": [
+        {
+          "at": "13.44",
+          "kind": "user",
+          "noticesInHistory": 0,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"9b1a2776-7cb8-4c5f-9936-4e248df6cfcc\",\"dedupeKey\":\"agent_run_input:9b1a2776-7cb8-4c5f-9936-4e248df6cfcc\",\"content\":\"TURN:e8-msg run it\",\"media\":null,\"ts\":1793520197.722}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520197.752}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e8-msg-8-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e8-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-q",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.535}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"444b8977-2d03-42df-a82f-20b1f62f8a0e\",\"dedupeKey\":\"agent_run_input:444b8977-2d03-42df-a82f-20b1f62f8a0e\",\"content\":\"User message after the restart (e8-msg).\",\"media\":null,\"ts\":1793520205.352}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.369}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e9-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f",
+      "outcome": {
+        "at": "13.48",
+        "kind": "failed",
+        "reason": "Error: Agent root 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' is not accepting execution operations."
+      },
+      "notices": 0,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"98ab2e58-2d72-4c46-ae27-3ce414732db9\",\"dedupeKey\":\"agent_run_input:98ab2e58-2d72-4c46-ae27-3ce414732db9\",\"content\":\"TURN:e9-arch run it\",\"media\":null,\"ts\":1793520198.051}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520198.08}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e9-arch-9-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e9-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.501}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e10-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_11ea0bbe017a4dbb8ac660e006133eab",
+      "outcome": {
+        "at": "13.52",
+        "kind": "skipped",
+        "reason": "the run already had input"
+      },
+      "notices": 0,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": null,
+      "modelSeq": [
+        {
+          "at": "13.54",
+          "kind": "user",
+          "noticesInHistory": 0,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"0ee36847-faf6-46c7-8829-b396f40424c8\",\"dedupeKey\":\"agent_run_input:0ee36847-faf6-46c7-8829-b396f40424c8\",\"content\":\"TURN:e10-msg run it\",\"media\":null,\"ts\":1793520198.403}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520198.43}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e10-msg-10-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e10-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr28",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.587}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"68e0577e-7c94-4a61-aa65-91c7a38f9d82\",\"dedupeKey\":\"agent_run_input:68e0577e-7c94-4a61-aa65-91c7a38f9d82\",\"content\":\"User message after the restart (e10-msg).\",\"media\":null,\"ts\":1793520205.454}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.468}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e11-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960",
+      "outcome": {
+        "at": "13.58",
+        "kind": "failed",
+        "reason": "Error: Agent root 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' is not accepting execution operations."
+      },
+      "notices": 0,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"c17a5481-725f-4bec-975d-7af0433f8c59\",\"dedupeKey\":\"agent_run_input:c17a5481-725f-4bec-975d-7af0433f8c59\",\"content\":\"TURN:e11-arch run it\",\"media\":null,\"ts\":1793520198.732}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520198.758}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e11-arch-11-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e11-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.512}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e12-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_14949c9c3f0746e89293d4c4e507ec7e",
+      "outcome": {
+        "at": "13.61",
+        "kind": "skipped",
+        "reason": "the run already had input"
+      },
+      "notices": 0,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": null,
+      "modelSeq": [
+        {
+          "at": "13.63",
+          "kind": "user",
+          "noticesInHistory": 0,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"6ebad997-6d3f-4d73-8a69-6a6d26ce7919\",\"dedupeKey\":\"agent_run_input:6ebad997-6d3f-4d73-8a69-6a6d26ce7919\",\"content\":\"TURN:e12-msg run it\",\"media\":null,\"ts\":1793520199.067}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520199.093}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e12-msg-12-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e12-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr28",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.574}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"65ae454c-c8e1-477a-8d36-018f1e6383c8\",\"dedupeKey\":\"agent_run_input:65ae454c-c8e1-477a-8d36-018f1e6383c8\",\"content\":\"User message after the restart (e12-msg).\",\"media\":null,\"ts\":1793520205.55}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.564}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e13-arch": {
+      "runId": "native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437",
+      "outcome": {
+        "at": "13.67",
+        "kind": "failed",
+        "reason": "Error: Agent root 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' is not accepting execution operations."
+      },
+      "notices": 0,
+      "userMessageAfterRestart": false,
+      "noticeBeforeUser": null,
+      "modelSeq": [],
+      "conversationTail": [
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"45a640bc-c74c-4d78-89ea-56a0f75a31ff\",\"dedupeKey\":\"agent_run_input:45a640bc-c74c-4d78-89ea-56a0f75a31ff\",\"content\":\"TURN:e13-arch run it\",\"media\":null,\"ts\":1793520199.402}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"\",\"media\":null,\"ts\":1793520199.436}",
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e13-arch-13-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e13-arch\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.547}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    },
+    "e14-msg": {
+      "runId": "native_agent_rr285mvxjm4zf_d6eda8883a2346fcaa981bcda6731204",
+      "outcome": {
+        "at": "13.69",
+        "kind": "resumed",
+        "reason": null
+      },
+      "notices": 1,
+      "userMessageAfterRestart": true,
+      "noticeBeforeUser": true,
+      "modelSeq": [
+        {
+          "at": "13.70",
+          "kind": "notice",
+          "noticesInHistory": 1,
+          "userInHistory": false
+        },
+        {
+          "at": "13.73",
+          "kind": "user",
+          "noticesInHistory": 1,
+          "userInHistory": true
+        }
+      ],
+      "conversationTail": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"call-e14-msg-14-0\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" RR285mvxjm4zf_e14-msg\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr28",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520202.558}",
+        "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running ha",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Noted the restart; continuing.\",\"media\":null,\"ts\":1793520205.636}",
+        "{\"kind\":\"message\",\"role\":\"user\",\"messageId\":\"d1d011e1-d5c4-4ca1-8497-e238be3b7add\",\"dedupeKey\":\"agent_run_input:d1d011e1-d5c4-4ca1-8497-e238be3b7add\",\"content\":\"User message after the restart (e14-msg).\",\"media\":null,\"ts\":1793520205.649}",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Done.\",\"media\":null,\"ts\":1793520205.662}"
+      ],
+      "projectionError": null,
+      "verdict": {
+        "ok": true
+      }
+    }
+  },
+  "summary": {
+    "targets": [
+      {
+        "label": "e1-arch",
+        "action": "archive",
+        "plannedMs": 25,
+        "startAtLogSec": "13.08",
+        "archive": "Run is active. Terminate it before archiving history.",
+        "outcome": "resumed@12.93",
+        "notices": 1,
+        "ok": true
+      },
+      {
+        "label": "e2-msg",
+        "action": "message",
+        "plannedMs": 75,
+        "startAtLogSec": "13.11",
+        "outcome": "resumed@13.06",
+        "notices": 1,
+        "ok": true
+      },
+      {
+        "label": "e3-arch",
+        "action": "archive",
+        "plannedMs": 125,
+        "startAtLogSec": "13.16",
+        "archive": "Run is active. Terminate it before archiving history.",
+        "outcome": "resumed@13.00",
+        "notices": 1,
+        "ok": true
+      },
+      {
+        "label": "e4-msg",
+        "action": "message",
+        "plannedMs": 175,
+        "startAtLogSec": "13.21",
+        "outcome": "resumed@13.16",
+        "notices": 1,
+        "ok": true
+      },
+      {
+        "label": "e5-arch",
+        "action": "archive",
+        "plannedMs": 225,
+        "startAtLogSec": "13.26",
+        "archive": "Run is active. Terminate it before archiving history.",
+        "outcome": "resumed@13.25",
+        "notices": 1,
+        "ok": true
+      },
+      {
+        "label": "e6-msg",
+        "action": "message",
+        "plannedMs": 275,
+        "startAtLogSec": "13.31",
+        "outcome": "resumed@13.30",
+        "notices": 1,
+        "ok": true
+      },
+      {
+        "label": "e7-arch",
+        "action": "archive",
+        "plannedMs": 325,
+        "startAtLogSec": "13.36",
+        "archive": "Run 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' archived.",
+        "outcome": "failed@13.39 Error: Agent root 'native_agent_rr285mvxjm4zf_0df469ff502e46d19c9801eb16db82ce' is not accepting execution operations.",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e8-msg",
+        "action": "message",
+        "plannedMs": 375,
+        "startAtLogSec": "13.41",
+        "outcome": "skipped@13.42 the run already had input",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e9-arch",
+        "action": "archive",
+        "plannedMs": 425,
+        "startAtLogSec": "13.46",
+        "archive": "Run 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' archived.",
+        "outcome": "failed@13.48 Error: Agent root 'native_agent_rr285mvxjm4zf_e0428a4a34c0404bad092de42165ac1f' is not accepting execution operations.",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e10-msg",
+        "action": "message",
+        "plannedMs": 475,
+        "startAtLogSec": "13.51",
+        "outcome": "skipped@13.52 the run already had input",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e11-arch",
+        "action": "archive",
+        "plannedMs": 525,
+        "startAtLogSec": "13.56",
+        "archive": "Run 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' archived.",
+        "outcome": "failed@13.58 Error: Agent root 'native_agent_rr285mvxjm4zf_08be994682fa4e1194592b61eb8a2960' is not accepting execution operations.",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e12-msg",
+        "action": "message",
+        "plannedMs": 575,
+        "startAtLogSec": "13.61",
+        "outcome": "skipped@13.61 the run already had input",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e13-arch",
+        "action": "archive",
+        "plannedMs": 625,
+        "startAtLogSec": "13.66",
+        "archive": "Run 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' archived.",
+        "outcome": "failed@13.67 Error: Agent root 'native_agent_rr285mvxjm4zf_85ee357b1d9940139c34b81fd3d6a437' is not accepting execution operations.",
+        "notices": 0,
+        "ok": true
+      },
+      {
+        "label": "e14-msg",
+        "action": "message",
+        "plannedMs": 675,
+        "startAtLogSec": "13.71",
+        "outcome": "resumed@13.69",
+        "notices": 1,
+        "ok": true
+      }
+    ],
+    "violations": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "stampRestored": true,
+  "modelCalls": 42,
+  "scriptedNotices": [
+    {
+      "at": 1793520204885,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793520204948,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793520205011,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793520205107,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793520205193,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793520205247,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    },
+    {
+      "at": 1793520205635,
+      "head": "The application restarted at 2026-11-01T08:03:24.775Z after an update to 1.5.11-beta.9-rr285next.\nYour previous turn was interrupted.\nTool calls that were running have unknown results; check before repeating any of them."
+    }
+  ],
+  "rootRemoved": true
+}

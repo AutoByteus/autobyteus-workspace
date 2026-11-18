@@ -1,0 +1,19 @@
+# IMP-03 builds the probe and API/E2E use: worktree server dist and the /mobile production bundle
+# command: pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web
+# commit: ba3ba5b23e (built from the working tree that this commit records unchanged)
+# env: macOS 26.5.2, Node v22.23.1
+# date: 2026-11-08
+
+## server build (tail)
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+## mobile bundle build (tail)
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/autobyteus-web/dist-mobile/public
+
+## the bundle carries the new label and no sheet address line
+files with 'AutoByteus node': 2
+files with 'mobile-connection-url': 0

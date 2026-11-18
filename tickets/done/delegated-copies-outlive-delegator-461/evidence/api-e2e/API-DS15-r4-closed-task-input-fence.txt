@@ -1,0 +1,11 @@
+# Case: DS-15 closed-task-input-fence (API-REV-004, round 4)
+# Commit: code 262afbd6bb; in-process Studio server; ENV-1, clean env, scripted AGY CLI
+# Date: 2026-11-13
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/closed-task-input-fence.e2e.test.ts --no-watch
+# Look for: Tests 3 passed (3)
+
+ ✓ tests/e2e/projects/closed-task-input-fence.e2e.test.ts (3 tests) 11071ms
+     ✓ FENCE-1 an agent run: refused with base's text while its Task is closed, not restored, no status in the delegator's view; delivered after the assigner continues it  4343ms
+     ✓ FENCE-2 a member of a team run: refused with base's text while its Task is closed, not restored; delivered after the assigner continues it  4255ms
+     ✓ FENCE-3 a run whose Task was deleted is not fenced: it takes the user's message  1456ms
+      Tests  3 passed (3)

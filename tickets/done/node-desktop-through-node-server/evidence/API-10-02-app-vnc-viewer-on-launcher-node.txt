@@ -1,0 +1,13 @@
+# Case: API-10 step 02 — the desktop app's VNC Viewer on the launcher-created S1 node, added as http://localhost:64491 (AC-001 local, AC-022 'VNC Viewer works through the server')
+# Steps: isolated instance iso-64528-e090 (fresh-clone app); Nodes -> Add node http://localhost:64491 (collaboration unticked) -> Open in its own window; node window: clipboard guard as API-05, Show tools -> VNC Viewer; tile status and canvas; CDP network capture of the node window for 25 s (API-05-cdp.mjs netcapture)
+# Commit: 952bc1fcd0
+# Date: 2026-11-06
+
+tile: {"status":"Connected · View only","canvas":{"w":1920,"h":1080}}
+screenshot: API-10-02-launcher-node-vnc-viewer.png
+
+node window websockets and node-desktop requests:
+  2026-11-06T18:04:16.585Z websocket ws://localhost:64491/ws/terminal/25e1474f-705a-424e-bf05-a4549b577a71?cwd=%2Fhome%2Fautobyteus%2Fworkspace
+  2026-11-06T18:04:17.776Z request http://localhost:64491/rest/node-desktop
+  2026-11-06T18:04:17.796Z websocket ws://localhost:64491/ws/node-desktop?mode=view
+network hosts: ['api.iconify.design', 'localhost:64491']

@@ -7,25 +7,25 @@ final class PairingLinkParserTests: XCTestCase {
         let parsed = try PairingLinkParser.parse("https://desktop.tailnet.ts.net/mobile?pairing=\(payload)")
         XCTAssertTrue(parsed.hasPairingPayload)
         XCTAssertEqual("https://desktop.tailnet.ts.net/mobile?pairing=\(payload)", parsed.webViewURL)
-        XCTAssertEqual("https://desktop.tailnet.ts.net/mobile", parsed.profile.mobileURL)
-        XCTAssertEqual("Desk", parsed.profile.displayName)
+        XCTAssertEqual("https://desktop.tailnet.ts.net/mobile", parsed.entry.mobileURL)
+        XCTAssertEqual("Desk", parsed.entry.displayName)
     }
 
     func testParsesDockerNodePairingPayloadUsingAdvertisedHTTPSOrigin() throws {
         let payload = payloadParam(serverBaseURL: "https://docker.tailnet.ts.net", serverName: "AutoByteus Docker Node")
         let parsed = try PairingLinkParser.parse("https://docker.tailnet.ts.net/mobile?pairing=\(payload)")
         XCTAssertTrue(parsed.hasPairingPayload)
-        XCTAssertEqual("https://docker.tailnet.ts.net/mobile", parsed.profile.mobileURL)
-        XCTAssertEqual("AutoByteus Docker Node", parsed.profile.displayName)
+        XCTAssertEqual("https://docker.tailnet.ts.net/mobile", parsed.entry.mobileURL)
+        XCTAssertEqual("AutoByteus Docker Node", parsed.entry.displayName)
     }
 
     func testParsesRawJSONPairingPayload() throws {
         let json = #"{"version":1,"serverBaseUrl":"http://desktop.local:29695","pairingCode":"abc","expiresAt":"2026-05-21T00:00:00.000Z","serverName":"Home Desktop"}"#
         let parsed = try PairingLinkParser.parse(json)
         XCTAssertTrue(parsed.hasPairingPayload)
-        XCTAssertEqual("http://desktop.local:29695/mobile", parsed.profile.mobileURL)
+        XCTAssertEqual("http://desktop.local:29695/mobile", parsed.entry.mobileURL)
         XCTAssertTrue(parsed.webViewURL.hasPrefix("http://desktop.local:29695/mobile?pairing="))
-        XCTAssertEqual("Home Desktop", parsed.profile.displayName)
+        XCTAssertEqual("Home Desktop", parsed.entry.displayName)
     }
 
     func testTreatsPlainNodeURLAsNonPairingInput() throws {

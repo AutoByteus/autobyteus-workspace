@@ -1,0 +1,256 @@
+# API-03B server crash-1 (new build) pid 84441; data root <temp>/crash; 2026-10-31T20:34:08.243Z
+[0.06] Platform detection: Windows=false
+[0.06] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts
+[0.06] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash
+[0.06] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/.env
+[0.06] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/.env
+[0.06] ◇ injected env (0) from ../../../ar349-ac004-csu0sj/crash/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[0.06] Environment variables loaded successfully
+[0.06] Server public base URL configured to: http://127.0.0.1:52703
+[0.06] === Starting logging configuration ===
+[0.06] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts/logging_config.ini
+[0.06] ============================================================
+[0.06] SERVER PUBLIC URL: http://127.0.0.1:52703
+[0.06] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts
+[0.06] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash
+[0.06] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/db
+[0.06] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/logs
+[0.06] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/download
+[0.06] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/memory
+[0.06] ============================================================
+[0.99] AgentFactory (Singleton) initialized.
+[1.16] Running Prisma migrations...
+[1.16] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[1.35] Prisma schema loaded from prisma/schema.prisma
+[1.36] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/db/test.db"
+[1.38] SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/db/test.db
+[1.39] 27 migrations found in prisma/migrations
+[1.40] Applying migration `20260203074245_init`
+[1.40] Applying migration `20260208094000_add_external_channel_tables`
+[1.40] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[1.41] Applying migration `20260209213000_remove_agent_conversation_tables`
+[1.41] Applying migration `20260210101500_add_agent_avatar`
+[1.41] Applying migration `20260210192000_add_agent_team_avatar`
+[1.41] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[1.41] Applying migration `20260212070000_remove_workflow_definition`
+[1.42] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[1.42] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[1.42] Applying migration `20260331102000_remove_channel_bindings_table`
+[1.42] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[1.42] Applying migration `20260517090000_add_app_data_migration_records`
+[1.43] Applying migration `20260624090000_add_token_usage_ledger_events`
+[1.43] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[1.43] Applying migration `20260629120000_add_token_usage_display_fields`
+[1.44] Applying migration `20260702093000_token_usage_execution_address`
+[1.44] Applying migration `20260726090000_add_secret_vault`
+[1.44] Applying migration `20260730090000_add_token_usage_provider_name`
+[1.44] Applying migration `20260801090000_token_usage_member_display_name`
+[1.44] Applying migration `20260814090000_team_run_execution_tree_v1`
+[1.44] Applying migration `20260819090000_add_token_usage_run_records`
+[1.44] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[1.45] Applying migration `20260822090000_add_token_usage_analytics`
+[1.45] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[1.45] Applying migration `20260924120000_remove_external_channel_tables`
+[1.45] Applying migration `20261009120000_token_meter_context_readings`
+
+[1.45] The following migration(s) have been applied:
+[1.45] migrations/
+[1.45]   └─ 20260203074245_init/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260208094000_add_external_channel_tables/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260209213000_remove_agent_conversation_tables/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260210101500_add_agent_avatar/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260210192000_add_agent_team_avatar/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260212070000_remove_workflow_definition/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260309103000_add_channel_binding_launch_preset/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260331102000_remove_channel_bindings_table/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260517090000_add_app_data_migration_records/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260624090000_add_token_usage_ledger_events/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260629120000_add_token_usage_display_fields/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260702093000_token_usage_execution_address/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260726090000_add_secret_vault/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260730090000_add_token_usage_provider_name/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260801090000_token_usage_member_display_name/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260814090000_team_run_execution_tree_v1/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260819090000_add_token_usage_run_records/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260820090000_redesign_app_data_migration_summary/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260822090000_add_token_usage_analytics/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260923130000_add_claude_sdk_usage_state/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20260924120000_remove_external_channel_tables/
+[1.45]     └─ migration.sql
+[1.45]   └─ 20261009120000_token_meter_context_readings/
+[1.45]     └─ migration.sql
+[1.45]       
+[1.45] All migrations have been successfully applied.
+[1.47] Database migrations completed successfully.
+[1.47] (node:84441) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[1.47] (Use `node --trace-warnings ...` to show where the warning was created)
+[1.47] prisma:info Starting a sqlite pool with 21 connections.
+[1.49] [2026-10-31T20:34:09.735Z] [INFO] [secret-management.vault] Secret vault: application database
+[1.65] Initialized server settings service with 33 predefined settings
+[1.68] AgentRunManager initialized.
+[1.68] AgentRunManager initialized.
+[1.76] Loading workspace packages to trigger registration...
+[1.76] Successfully loaded workspace packages.
+[1.76] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/temp_workspace
+[1.76] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/temp_workspace.
+[1.76] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/crash/temp_workspace with fixed ID 'temp_ws_default'
+[1.76] Temp workspace created and cached with ID: temp_ws_default
+[1.76] Registering agent customization processors...
+[1.76] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[1.76] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[1.76] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[1.76] Registered input processor 'UserInputContextBuildingProcessor'.
+[1.76] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[1.76] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[1.76] Agent customization processor registration complete.
+[1.76] Successfully registered tool definition: 'read_file'
+[1.76] Successfully registered tool definition: 'write_file'
+[1.76] Successfully registered tool definition: 'edit_file'
+[1.76] Successfully registered tool definition: 'run_bash'
+[1.76] Successfully registered tool definition: 'start_background_process'
+[1.76] Successfully registered tool definition: 'get_background_processes'
+[1.76] Successfully registered tool definition: 'get_process_output'
+[1.76] Successfully registered tool definition: 'stop_background_process'
+[1.76] Successfully registered tool definition: 'search_web'
+[1.76] Successfully registered tool definition: 'download_media'
+[1.76] Successfully registered tool definition: 'read_url'
+[1.76] Registered required tool unit: Core Tools
+[1.76] Successfully registered tool definition: 'get_project_task'
+[1.76] Successfully registered tool definition: 'list_projects'
+[1.76] Successfully registered tool definition: 'list_project_tasks'
+[1.76] Successfully registered tool definition: 'search_project_tasks'
+[1.76] Successfully registered tool definition: 'create_project'
+[1.76] Successfully registered tool definition: 'update_project'
+[1.76] Successfully registered tool definition: 'create_task'
+[1.76] Successfully registered tool definition: 'update_task'
+[1.76] Successfully registered tool definition: 'delegate_task'
+[1.77] Successfully registered tool definition: 'generate_image'
+[1.77] Successfully registered tool definition: 'edit_image'
+[1.77] Successfully registered tool definition: 'generate_speech'
+[1.77] Successfully registered tool definition: 'generate_video'
+[1.77] Registered required tool unit: Project Task Tools
+[1.77] Registered required tool unit: Task Delegation Tools
+[1.77] Registered required tool unit: Media Tools
+[1.77] Successfully registered tool definition: 'list_available_agents'
+[1.77] Successfully registered tool definition: 'list_peer_nodes'
+[1.77] Registered required tool unit: Agent Discovery Tools
+[1.77] Successfully registered tool definition: 'list_available_agent_runtimes'
+[1.77] Successfully registered tool definition: 'submit_launch_choices'
+[1.77] Registered required tool unit: Agent Runtime Tools
+[1.77] Registered required tool unit: Browser Tools
+[1.77] Successfully registered tool definition: 'publish_artifacts'
+[1.77] Registered required tool unit: Published Artifact Tools
+[1.77] Successfully registered tool definition: 'search_memory'
+[1.77] Registered required tool unit: Memory Tools
+[1.77] Successfully registered tool definition: 'send_message_to'
+[1.77] Successfully registered tool definition: 'get_handoff_rules'
+[1.77] Registered required tool unit: Agent Communication Tools
+[1.78] Overwriting existing tool definition for name: 'search_web'
+[1.78] Successfully registered tool definition: 'search_web'
+[1.78] Registered required tool unit: Search Tools
+[1.79] {"level":30,"time":1793478850032,"pid":84441,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52723"}
+[1.81] {"level":30,"time":1793478850055,"pid":84441,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52703"}
+[1.81] {"level":30,"time":1793478850056,"pid":84441,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:52703"}
+[1.81] {"level":30,"time":1793478850056,"pid":84441,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:52703"}
+[1.81] [2026-10-31T20:34:10.056Z] [INFO] [server.runtime] Server listening on 0.0.0.0:52703
+[1.81] Scheduling Studio-only non-critical startup tasks...
+[1.82] Background cache pre-loading process has started.
+[1.82] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[1.82] Populating MCP server config cache for the first time...
+[1.82] Running MCP tool registration background task...
+[1.82] Loading and registering all MCP server configurations from file...
+[1.82] Background task 'Memory Sync Worker' completed successfully.
+[1.82] Background task 'Memory Search' completed successfully.
+[1.82] MCP server config cache populated with 0 items.
+[1.82] Found 0 total MCP server configs.
+[1.82] Synchronized cached configurations with the core MCP config service.
+[1.82] Pre-loaded 0 MCP server configs into cache.
+[1.82] Finished loading and registering all MCP server configurations.
+[1.82] Background task 'MCP Tool Registration' completed successfully.
+[1.82] Pre-loaded 33 LLM models into cache.
+[1.82] Pre-loaded 7 image models into cache.
+[1.82] Pre-loaded 3 audio models into cache.
+[1.82] Background application cache pre-loading completed.
+[1.82] Background task 'Cache Pre-loading' completed successfully.
+[1.88] Agent Definition created successfully with ID: probe-agent-mvwv01f7
+[1.88] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[1.88] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[1.88] Created and registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[1.91] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[1.91] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[1.91] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.56] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.56] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.56] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.59] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.59] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.59] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.60] [CodexClientThreadRouter] app-server message was not routed {
+[2.60]   kind: 'notification',
+[2.60]   method: 'thread/started',
+[2.60]   requestId: undefined,
+[2.60]   threadCount: 2,
+[2.60]   paramKeys: [ 'thread' ]
+[2.60] }
+[2.62] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.62] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.62] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.65] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.65] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.65] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.66] [CodexClientThreadRouter] app-server message was not routed {
+[2.66]   kind: 'notification',
+[2.66]   method: 'thread/started',
+[2.66]   requestId: undefined,
+[2.66]   threadCount: 3,
+[2.66]   paramKeys: [ 'thread' ]
+[2.66] }
+[2.73] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.73] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.73] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.76] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.76] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.76] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.77] [CodexClientThreadRouter] app-server message was not routed {
+[2.77]   kind: 'notification',
+[2.77]   method: 'thread/started',
+[2.77]   requestId: undefined,
+[2.77]   threadCount: 4,
+[2.77]   paramKeys: [ 'thread' ]
+[2.77] }
+[2.84] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.84] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.84] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6
+[2.88] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace
+[2.88] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/workspace.
+[2.88] Reusing registered workspace ID: agent_ws_9954a250491caec2fa2cc5510dc914e97bfe20ae8de4fe7f9b86c1734c5c69a6

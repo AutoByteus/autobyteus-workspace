@@ -10,7 +10,10 @@ describe('actual AgentRun/native shutdown queue ordering', () => {
     });
     try {
       f.request(); f.compress.mockRejectedValueOnce(new Error('hold first'));
-      await f.submit('cancelled-A'); await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
+      // The recovery state is retained before the `failed` event is emitted: wait for the event too, or it lands
+      // after `phases` is cleared and breaks the exact ['started', 'stopped'] check below.
+      await f.submit('cancelled-A');
+      await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user' && phases.includes('failed'));
       phases.length = 0;
       f.compress.mockImplementationOnce(() => new Promise(done => { release = done; }));
       await f.submit('queued-B'); await eventually(() => !!release && phases.includes('started'));

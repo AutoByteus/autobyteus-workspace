@@ -1,0 +1,15 @@
+# API-11 — independent rerun of the full offline launcher discovery suite on the IR-002 commit
+Command: python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'
+Commit: 63365f010a14e9b2ad38d69680bbb0f656567012
+Environment: macOS (Darwin 25.6.0), Python 3.9.6, pwsh 7.6.9
+Date: 2026-11-09
+
+Ran 60 tests in 99.196s
+
+OK (skipped=1)
+
+Skipped: test_preferred_port_collision_falls_back_for_that_service — unrelated, environment-only precondition
+(port 8001 genuinely in use by the real user node on this machine), same as every prior round.
+
+What to look for: `Ran 60 tests ... OK (skipped=1)` — no regression anywhere in the whole offline launcher
+suite from the PowerShell-only IR-002 fix; independently confirms IMP-06 on the same commit.

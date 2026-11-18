@@ -1,0 +1,20 @@
+# API-06 round 2 — existing scripted-CLI server E2E files
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch
+# Commit: 5a87647318 (source 7ece4e2069); Brief Studio package from round 1's test:integration:prepare (no application change since); macOS darwin 25.5; 2026-10-25T09:18Z
+
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (13 tests) 16912ms
+     ✓ AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006)  2299ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  722ms
+     ✓ AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003)  3238ms
+     ✓ AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011)  328ms
+     ✓ AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003)  9242ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8184ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  864ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1681ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2385ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2230ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2235ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1122ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  430ms
+ Test Files  3 passed (3)
+      Tests  19 passed (19)

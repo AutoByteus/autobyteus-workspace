@@ -2,12 +2,10 @@
 
 ## Scope
 
-This module covers two separate boundaries:
-
-1. persisted/versioned prompt lookup under `src/prompt-engineering`; and
-2. the platform-owned Carpenter composition used to construct the stable runtime
-   instructions for native AutoByteus, Codex App Server, and Claude Agent SDK
-   runs.
+This module covers the platform-owned Carpenter composition used to construct the
+stable runtime instructions for native AutoByteus, Codex App Server, and Claude
+Agent SDK runs. (The old persisted/versioned prompt lookup under
+`src/prompt-engineering` and its GraphQL prompt API no longer exist.)
 
 The Carpenter boundary supplies shared identity and team context to every
 runtime. Native AutoByteus additionally receives workspace facts and the
@@ -17,11 +15,9 @@ text.
 
 ## TS Source
 
-- `src/prompt-engineering`
-- `src/api/graphql/types/prompt.ts`
-- `src/agent-tools/prompt-engineering`
 - `src/agent-execution/prompt/carpenter-prompt-composer.ts`
 - `src/agent-execution/prompt/carpenter-prompt-sections.ts`
+- `src/agent-execution/prompt/long-running-command-sections.ts`
 - `src/agent-execution/prompt/markdown-heading-containment.ts`
 - `src/agent-execution/prompt/collaboration-prompt-sections.ts`
 - `src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` (tool descriptions)
@@ -30,12 +26,10 @@ text.
 
 ## Main Services
 
-- `src/prompt-engineering/services/prompt-service.ts`
 - `composeSharedCarpenterPrompt(...)`
 - `composeNativeAutoByteusPrompt(...)`
 
-The prompt service and cached provider are singleton-backed to avoid repeated
-cache initialization. Carpenter composition is pure and fail-fast. Shared
+Carpenter composition is pure and fail-fast. Shared
 composition accepts the selected agent definition and optional validated
 `MemberTeamContext`; native composition adds the exact absolute workspace.
 
@@ -49,19 +43,65 @@ Each section has one owner:
 | `Team Instruction` | Exact non-blank selected `team.md` body | Whenever the run has one (any role), after Agent Identity |
 | `Working With Other Agents` (and, for team and organization members, `AgentTeam Addressing` before it) | The member's `collaborationRole` (`standalone_agent`, `task_agent`, `team_member`, `org_agent`) and `renderCollaborationSections(...)`, the one owner of the collaboration text | Every run that has a member context, shared across runtimes |
 | `Handoffs` (a subsection) | The same renderer | Only when the agent has handoff rules |
+| `Project` | `renderProjectSection` from `AgentRunConfig.project`, which the run's config builder reads with `RunProjectContextReader.contextOfRun(root)` from the Project's [`project_runs.json`](./projects.md#runs-started-under-a-project) and the Project's current name | Only for a run started under a Project (an Agent run, or every member of a Team run, by the Team's run id), on start and on every restore (Antigravity restores its start-time instructions, which already hold it); omitted when the Project was deleted. Org members and Task copies get none |
+| `Semantic Memory` | `renderSemanticMemorySection` with the folder `AgentSemanticMemory.prepareForRun(definition)` returned (the composer requires the key `semanticMemoryPath`, an absolute path or `null`) | Only for an agent with `semanticMemoryEnabled`, every runtime and run kind, after the Project section; absent otherwise, with no other change to the prompt |
 | `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
+| `Long-Running Commands` | The runtime's own text in `long-running-command-sections.ts`, passed to the composer by each backend ([below](#long-running-commands-section)) | Every runtime, always last of the Carpenter sections |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
-The shared logical order is Agent Identity, optional Team Instruction, and the
-collaboration sections for the agent's role. Native AutoByteus appends
-Working Environment, Bash Operating Practice, and File And Directory Practice
-in that order, then the native core appends its terminal configured-skills
-catalog. Blank optional values omit their line, subsection, or section; they do
+The shared logical order is Agent Identity, optional Team Instruction, the
+collaboration sections for the agent's role, the optional Project section and
+the optional Semantic Memory section, then Long-Running Commands. The Project section reads: "You work in the
+Project <name> (Project ID <id>). Use this Project ID with the Project tools; ask
+the user before working on another Project." The Semantic Memory section is
+exactly:
+
+```text
+## Semantic Memory
+
+Your semantic memory is the folder `<folder>`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+```
+
+with `<folder>` the absolute folder (see [Agent Memory](./agent_memory.md#semantic-memory)). All
+five runtime paths (native AutoByteus, Codex, Claude, Antigravity, ACP/Grok)
+compose it the same way. Native AutoByteus appends
+Working Environment, Bash Operating Practice, File And Directory Practice and
+Long-Running Commands in that order, then the native core appends its terminal
+configured-skills catalog. Blank optional values omit their line, subsection, or section; they do
 not produce empty headings. An invalid required name, native workspace, Team
 identity/delivery binding, or unresolved Carpenter placeholder stops bootstrap
 before provider invocation.
+
+### Long-Running Commands Section
+
+Every runtime's prompt ends with a short (at most about 8 lines) `## Long-Running
+Commands` section that teaches one habit in that runtime's own terms: start a long
+build or test suite once, with the runtime's background mechanism; act on its
+completion notice where the runtime gives one, otherwise wait on the same job;
+never wait with loops of short sleeps; never start the same command again while it
+runs, or a second command that only waits for it; and state the runtime's limit
+where it has one. Each text names only that runtime's tools. The texts live in
+`long-running-command-sections.ts`:
+
+| Runtime | Section | Mechanism it names |
+| --- | --- | --- |
+| Claude Agent SDK | `CLAUDE_LONG_RUNNING_COMMAND_SECTION` | `run_in_background`, the automatic completion notice; the 2-hour limit |
+| Codex App Server | `CODEX_LONG_RUNNING_COMMAND_SECTION` | `exec_command`, then `write_stdin` with empty input and a long `yield_time_ms` (Codex sends no completion notice) |
+| Grok Build | `GROK_LONG_RUNNING_COMMAND_SECTION` | `run_terminal_command` with `block_until_ms: 0`, then `get_command_or_subagent_output` with a positive `timeout_ms` (at most 1 hour per call) |
+| Antigravity CLI | `ANTIGRAVITY_LONG_RUNNING_COMMAND_SECTION` | `run_command`; a command still running after `WaitMsBeforeAsync` continues in the background and AGY notifies the agent |
+| DeepSeek Harness | `GENERIC_LONG_RUNNING_COMMAND_SECTION` | general terms (its shell tool's background mechanism is not investigated) |
+| Native AutoByteus | `NATIVE_LONG_RUNNING_COMMAND_SECTION` | `run_bash` with `run_in_background` and its exit-code notice; background commands have no time limit; a foreground command is killed at its `timeout_seconds` (default 30) |
+
+`composeSharedCarpenterPrompt` requires the section as an input
+(`longRunningCommandSection`; a blank one fails fast), so a new runtime cannot
+ship without choosing its text. The ACP session profile carries it for Grok and
+DeepSeek; the Claude, Codex and Antigravity bootstrappers pass theirs;
+`composeNativeAutoByteusPrompt` appends the native text after File And Directory
+Practice. The section text is the one place a runtime's mechanism or limit is
+stated to its agent: when a runtime's tool, notice or limit changes, change its
+text here.
 
 Authored ATX headings in `agent.md` and `team.md` are shifted beneath their
 owning section. A heading inside a same-or-longer Markdown fence remains content,
@@ -285,7 +325,8 @@ Tools are authorized and projected independently of prompt prose. Provider tool
 schemas—not an `Available Tools` section—define capability, arguments, path
 rules, and result shape.
 
-- A standalone run receives its explicitly configured effective tool set.
+- A standalone run receives its explicitly configured effective tool set plus
+  the platform-given `search_memory`, which every run has.
 - Every valid team member context automatically unions exactly
   `get_handoff_rules`, `send_message_to`, and `delegate_task` into runtime
   exposure, even when the selected agent definition omitted those names.
@@ -336,6 +377,7 @@ rewording:
 | Codex App Server | `composeSharedCarpenterPrompt` -> thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
 | Claude Agent SDK | `composeSharedCarpenterPrompt` -> SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
 | Grok Build | `composeSharedCarpenterPrompt` -> ACP `session/new` `_meta.rules` (Grok `<human_rules>` block; harness guidance kept; not re-injected on `session/load`) | Configured `.grok/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP over HTTP, reached through Grok `search_tool`/`use_tool`; see [Grok Build Runtime](./grok_build_runtime.md) |
+| DeepSeek Harness | `composeSharedCarpenterPrompt` -> the run's instructions file, which the AutoByteus plugin in the dsh home adds as one system-prompt section with `interpolate: false` (dsh's persona emptied); written again at every launch (create, restore, reopen), since dsh keeps no instructions with the session | Configured `.dsh/skills` materialization; dsh's default skill roots off | Session-scoped `autobyteus_agent_tools` MCP over HTTP; see [DeepSeek Harness Runtime](./deepseek_harness_runtime.md) |
 
 Claude user turns remain user/context-file content; stable Carpenter instructions
 are not rebuilt as XML inside every user message.
@@ -352,6 +394,8 @@ handoff boundary, not a reconstruction from current definitions:
   thread start or resume after the thread ID is valid.
 - Grok Build records the exact `_meta.rules` string after `session/new`
   succeeds and the Grok `sessionId` is bound.
+- DeepSeek Harness records the exact instructions-file content after
+  `session/new` succeeds.
 - Claude records the exact SDK `options.systemPrompt` after the query has
   started successfully and before output iteration.
 

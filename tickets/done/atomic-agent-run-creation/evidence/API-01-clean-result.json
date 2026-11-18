@@ -1,0 +1,103 @@
+{
+  "case": "API-01-clean",
+  "mode": "ac001",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts",
+  "baseDir": null,
+  "date": "2026-10-31T20:30:25.726Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac001-EpjBar",
+  "steps": [
+    {
+      "at": "4.81",
+      "step": "server started",
+      "value": {
+        "label": "nocodex",
+        "pid": 45137,
+        "port": 52000,
+        "readyMs": 4801,
+        "data": "<own>/data"
+      }
+    },
+    {
+      "at": "4.91",
+      "step": "createAgentRun",
+      "value": {
+        "label": "codex-not-installed",
+        "ms": 57,
+        "result": {
+          "success": false,
+          "message": "Error: Codex app server process error: Error: spawn codex ENOENT. [CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd=\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac001-EpjBar/workspace\" command=\"codex\" args=[\"app-server\",\"-c\",\"agents.enabled=false\"] code=ENOENT open_fds=47 fs_read=0 fs_write=0",
+          "runId": null
+        }
+      }
+    },
+    {
+      "at": "4.95",
+      "step": "createAgentRun",
+      "value": {
+        "label": "native-unknown-model",
+        "ms": 42,
+        "result": {
+          "success": false,
+          "message": "Error: MODEL_IDENTIFIER_NOT_AVAILABLE",
+          "runId": null
+        }
+      }
+    },
+    {
+      "at": "4.96",
+      "step": "after",
+      "value": {
+        "historyRows": 0,
+        "diskRuns": 0,
+        "lines": [
+          "[4.91] Error in createAgentRun: Error: Codex app server process error: Error: spawn codex ENOENT. [CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd=\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac001-EpjBar/workspace\" command=\"codex\" args=[\"app-server\",\"-c\",\"agents.enabled=false\"] code=ENOENT open_fds=47 fs_read=0 fs_write=0",
+          "[4.95] Error in createAgentRun: Error: MODEL_IDENTIFIER_NOT_AVAILABLE"
+        ]
+      }
+    },
+    {
+      "at": "5.06",
+      "step": "server stopped",
+      "value": {
+        "label": "nocodex",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478630732
+        },
+        "ms": 50
+      }
+    }
+  ],
+  "serverPath": "/usr/bin:/bin:/usr/sbin:/sbin (no codex)",
+  "creates": [
+    {
+      "label": "codex-not-installed",
+      "ms": 57,
+      "result": {
+        "success": false,
+        "message": "Error: Codex app server process error: Error: spawn codex ENOENT. [CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd=\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac001-EpjBar/workspace\" command=\"codex\" args=[\"app-server\",\"-c\",\"agents.enabled=false\"] code=ENOENT open_fds=47 fs_read=0 fs_write=0",
+        "runId": null
+      }
+    },
+    {
+      "label": "native-unknown-model",
+      "ms": 42,
+      "result": {
+        "success": false,
+        "message": "Error: MODEL_IDENTIFIER_NOT_AVAILABLE",
+        "runId": null
+      }
+    }
+  ],
+  "historyAfter": [],
+  "diskAfter": {},
+  "serverLogLines": [
+    "[4.91] Error in createAgentRun: Error: Codex app server process error: Error: spawn codex ENOENT. [CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd=\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac001-EpjBar/workspace\" command=\"codex\" args=[\"app-server\",\"-c\",\"agents.enabled=false\"] code=ENOENT open_fds=47 fs_read=0 fs_write=0",
+    "[4.95] Error in createAgentRun: Error: MODEL_IDENTIFIER_NOT_AVAILABLE"
+  ],
+  "result": "Completed",
+  "modelCalls": 0,
+  "rootRemoved": true
+}

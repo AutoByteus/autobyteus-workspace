@@ -1,0 +1,22 @@
+# Case: API-05 step 08b — hiding the app (macOS hide, as Cmd-H) ends the stream; showing it reconnects in View only (AC-010)
+# Steps: a visibilitychange recorder (window.__abxVis) installed in the node window at 17:56:57Z; tile connected; osascript System Events: set visible of the instance process (unix id 25627) to false; sample upstream every ~250 ms; node log; set visible true; tile; dump the recorder
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:57:09Z
+
+tile before: "Connected · View only" visibility="visible" upstream=1
+hidden at epochMs=1793987829637 (17:57:09)
+  +264ms upstream=0
+  +584ms upstream=0
+  +918ms upstream=0
+  +1255ms upstream=0
+  +1583ms upstream=0
+  +1911ms upstream=0
+  +2250ms upstream=0
+  +2555ms upstream=0
+  +2882ms upstream=0
+  +3209ms upstream=0
+while hidden: visibility node="hidden" tile="Disconnected"
+node log: 2026-11-06T17:57:09.884397051Z [node-desktop] stream ended mode=view viewer=trusted_network durationMs=38936 toViewer=1290836 fromViewer=1146 reason=viewer-closed
+upstream 3 s later (still hidden): 0
+after show: visibility="visible" tile="Connected · View only" upstream=1
+visibility recorder: "[{\"t\":\"2026-11-06T17:56:57.715Z\",\"state\":\"visible\",\"ev\":\"install\"},{\"t\":\"2026-11-06T17:57:09.870Z\",\"state\":\"hidden\"},{\"t\":\"2026-11-06T17:57:17.609Z\",\"state\":\"visible\"}]"

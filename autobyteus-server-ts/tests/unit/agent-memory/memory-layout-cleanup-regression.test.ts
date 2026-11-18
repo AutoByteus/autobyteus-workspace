@@ -36,5 +36,7 @@ describe("memory layout cleanup regression", () => {
     }
 
     expect(hits).toEqual([]);
-  });
+    // It reads every .ts file of the package (about 3,500): 0.6–1.9 s alone, past the 5 s default under the full
+    // suite's load (timed out once on 2026-11-11). The limit is for that read, not for waiting on behavior.
+  }, 30_000);
 });

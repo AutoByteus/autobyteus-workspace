@@ -1,0 +1,23 @@
+# API-03 AFS-002 (run r8): node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases AFS-002 --output-dir <fresh>; head 243baa36ca (code cba2e085e7); ENV-1; 2026-11-02.
+# Look for: settingsClosedBy lists every Org row clicked with Settings open; pendingEditKept false; copySaveFailed state refresh-required while copyStored holds the model.
+
+settingsClosedBy: ["placed Team row", "placed Team member", "Org copy", "manager", "analyst, with the writer's edit pending", "writer, to edit again", "writer", "analyst"]
+pendingEditKept: False
+writerEdited.saveText: Unsaved changes: writer · they apply when this run resumes
+analystWhilePending.saveText (after focusing the analyst and reopening Settings): None
+
+copyEdited: {"open": true, "name": "afs helper 0b72", "status": "stopped", "group": null, "switchLabel": null, "switchPressed": null, "card": true, "rootCard": false, "hint": false, "list": 0, "memberRows": 0, "model": "ModelAlt test modelAntigravity CLI", "modelLocked": false, "stopHint": null, "copyStop": false, "runStop": false, "saveText": "Unsaved changes: afs helper 0b72 \u00b7 they apply when this run resumes", "state": "stopped"}
+copySaveFailed (after Save): {"open": true, "name": "afs helper 0b72", "status": "stopped", "group": null, "switchLabel": null, "switchPressed": null, "card": true, "rootCard": false, "hint": false, "list": 0, "memberRows": 0, "model": "ModelGemini testAntigravity CLI", "modelLocked": true, "stopHint": null, "copyStop": false, "runStop": false, "saveText": null, "state": "refresh-required", "note": "Settings were saved, but could not be refreshed. Refresh before making more changes.\nRefresh"}
+copySaved (after pressing Refresh): {"open": true, "name": "afs helper 0b72", "status": "stopped", "group": null, "switchLabel": null, "switchPressed": null, "card": true, "rootCard": false, "hint": false, "list": 0, "memberRows": 0, "model": "ModelGemini testAntigravity CLI", "modelLocked": true, "stopHint": null, "copyStop": false, "runStop": false, "saveText": null, "state": "refresh-required"}
+copyStored (server): {"llmModelIdentifier": "dlc-alt-model", "llmConfig": null, "selectedAt": "2026-11-02T06:43:07.255Z"}
+
+Passing in the same run:
+managerRunning: {"open": true, "name": "manager", "status": "active", "group": "In AFS Org 0b72", "switchLabel": "Organization settings", "switchPressed": "false", "card": true, "rootCard": false, "hint": false, "list": 0, "memberRows": 0, "model": "ModelGemini testAntigravity CLI", "modelLocked": true, "stopHint": null, "copyStop": false, "runStop": true, "saveText": null, "state": "active"}
+engineerRunning: {"open": true, "name": "engineer", "status": "active", "group": "In AFS Org 0b72", "switchLabel": "Organization settings", "switchPressed": "false", "card": true, "rootCard": false, "hint": false, "list": 0, "memberRows": 0, "model": "ModelGemini testAntigravity CLI", "modelLocked": true, "stopHint": null, "copyStop": false, "runStop": true, "saveText": null, "state": "active"}
+copyRunning: {"open": true, "name": "afs helper 0b72", "status": "active", "group": null, "switchLabel": null, "switchPressed": null, "card": true, "rootCard": false, "hint": false, "list": 0, "memberRows": 0, "model": "ModelGemini testAntigravity CLI", "modelLocked": true, "stopHint": "Stop this copy to change its model; its next message resumes it on the new model.", "copyStop": true, "runStop": false, "saveText": null, "state": "active"}
+groupRunning: {"open": true, "name": "AFS Org 0b72", "status": "active", "group": null, "switchLabel": "Organization settings", "switchPressed": "true", "card": false, "rootCard": true, "hint": false, "list": 0, "memberRows": 4, "model": "ModelGemini testAntigravity CLI", "modelLocked": true, "stopHint": null, "copyStop": false, "runStop": true, "saveText": null, "state": "active"}
+copyHeaderActions: {"gear": true, "plus": true}
+writerSaved.model: ModelAlt test modelAntigravity CLIReset; analystSaved.model: ModelGemini testAntigravity CLI
+writerResumed: ["dlc-alt-model"]
+
+# Cause of the closing, from the code: useWorkspaceHistorySubjectActions.execute (composables/useWorkspaceHistorySubjectActions.ts, 'select' and 'inspect') calls selection.clearSelection(); agentSelectionStore.clearSelection calls useWorkspaceCenterViewStore().showChat() unconditionally. autobyteus-366 changed selectRun and the Org view's watcher, not this path. AgentOrgWorkspaceView.spec covers only the watcher.

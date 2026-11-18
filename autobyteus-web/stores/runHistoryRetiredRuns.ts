@@ -4,7 +4,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type { RunHistoryWorkspaceGroup } from '~/stores/runHistoryTypes';
 
-/** Where a run was listed. Agent history lists only the newest runs per agent (`limitPerAgent`); team history lists all. */
+/** Where a run was listed. Agent history lists the newest runs per agent (`limitPerAgent`, or all when `null`); team history lists all. */
 type ListedRun = Readonly<{ kind: 'agent'; groupKey: string; createdAt: string }> | Readonly<{ kind: 'team' }>;
 type AgentGroupWindow = Readonly<{ count: number; oldestCreatedAt: string }>;
 
@@ -32,12 +32,13 @@ const readListing = (groups: readonly RunHistoryWorkspaceGroup[]) => {
 };
 
 /**
- * A run absent from a read has left the history only if the read would have listed it: every team run is listed, but
- * an agent run is listed only while it is among the newest `limitPerAgent` runs of its agent (it may just have fallen
- * out of that window).
+ * A run absent from a read has left the history only if the read would have listed it: every team run is listed, and
+ * every agent run when the read had no window (`null`); with a window, an agent run is listed only while it is among
+ * the newest `limitPerAgent` runs of its agent (it may just have fallen out of that window, as when the window shrinks
+ * from `null` to 6 on a view change).
  */
-const leftHistory = (run: ListedRun, windows: ReadonlyMap<string, AgentGroupWindow>, limitPerAgent: number): boolean => {
-  if (run.kind === 'team') return true;
+const leftHistory = (run: ListedRun, windows: ReadonlyMap<string, AgentGroupWindow>, limitPerAgent: number | null): boolean => {
+  if (run.kind === 'team' || limitPerAgent === null) return true;
   const window = windows.get(run.groupKey);
   return !window || window.count < Math.max(limitPerAgent, 1) || run.createdAt.localeCompare(window.oldestCreatedAt) > 0;
 };
@@ -58,7 +59,7 @@ export const useRunHistoryRetiredRunsStore = defineStore('runHistoryRetiredRuns'
     retiredRunIds: (state): ReadonlySet<string> => new Set(Object.keys(state.departedRunIds)),
   },
   actions: {
-    reconcileHistoryRead(groups: readonly RunHistoryWorkspaceGroup[], limitPerAgent: number): void {
+    reconcileHistoryRead(groups: readonly RunHistoryWorkspaceGroup[], limitPerAgent: number | null): void {
       const { runs, windows } = readListing(groups);
       const departed = { ...this.departedRunIds };
       const listed: Record<string, ListedRun> = {};

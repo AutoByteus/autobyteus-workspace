@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { createInMemoryPackageDefinitions } from "../../helpers/agent-package-definitions-test-support.js";
+import { buildCanonicalApplicationOwnedAgentId } from "../../../src/application-bundles/utils/application-bundle-identity.js";
 
 type FakeOption = { name: string; isMandatory: boolean };
 
@@ -45,10 +46,11 @@ describe("AgentDefinitionService processor filtering", () => {
     definitions = createInMemoryPackageDefinitions();
   });
 
-  const buildService = () =>
+  const buildService = (changeSignal?: { notifyChanged: () => void }) =>
     new AgentDefinitionService({
       fileStore: provider as never,
       packageDefinitions: definitions.packageDefinitions,
+      changeSignal,
       registries: {
         input: registry,
         llmResponse: registry,
@@ -111,5 +113,24 @@ describe("AgentDefinitionService processor filtering", () => {
     // The stored definition is never mutated in place, and the owning unit is reconciled.
     expect(definitions.store.getDefinition("agent", "test-id")?.inputProcessorNames).toEqual(["MANDATORY_A", "legacy_optional"]);
     expect(definitions.reloader.reloadFoldersNow).toHaveBeenCalledWith("agent", ["test-id"]);
+  });
+
+  it("announces a saved application-owned agent, which has no folder reload to announce it (autobyteus-324)", async () => {
+    const notifyChanged = vi.fn();
+    const service = buildService({ notifyChanged });
+    const appAgentId = buildCanonicalApplicationOwnedAgentId("pkg", "app", "writer");
+    provider.getById.mockImplementation(async (id: string) => id === appAgentId
+      ? new AgentDefinition({ id: appAgentId, name: "Writer", role: "Role", description: "Desc" })
+      : null);
+
+    await service.updateAgentDefinition(appAgentId, { toolNames: ["send_message_to"] });
+    expect(notifyChanged).toHaveBeenCalledTimes(1);
+    expect(definitions.reloader.reloadFoldersNow).not.toHaveBeenCalled();
+
+    definitions.seed("agent", new AgentDefinition({ id: "shared-id", name: "Shared", role: "Role", description: "Desc" }));
+    await service.updateAgentDefinition("shared-id", { toolNames: ["send_message_to"] });
+    // A package agent is announced by its folder reload, not here.
+    expect(notifyChanged).toHaveBeenCalledTimes(1);
+    expect(definitions.reloader.reloadFoldersNow).toHaveBeenCalledWith("agent", ["shared-id"]);
   });
 });

@@ -1,0 +1,9 @@
+# API-16 delegated-copies-large-hub-seed: node tests/e2e/delegated-copies-large-hub-probe.mjs --seed-to /tmp/abtest437r2/seeds/large-hub --teams 10 --unrelated 50 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/delegated-copies-large-hub-seed
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:33:47Z
+[2026-11-08T19:33:50.318Z] SEED start: Seed 10 Team copies, 50 unrelated team runs through public APIs
+  delegated 10/10
+  report commands: 10 acks; problems: []; first ack: {"type":"AGENT_COMMAND_ACK","payload":{"root_subject_kind":"agent","root_run_id":"large_hub_manager_probe_6639b19bee4740a797797846a0143b0d","command_id":"20d47658-c9a3-4c0d-b5f4-2a08b00ae68d","command_type":"SEND_MESSAGE","target_agent_run_id":"solution_designer_df85d540ff8e497a96629e5d854b6bd1","st
+  message log: {"at":"2026-11-08T19:34:16.818Z","liveViewMessages":52,"liveViewReports":50,"storedMessages":52,"storedReports":50,"storedFiles":["communication_messages_active.jsonl"]}
+  unrelated team runs 50/50
+[2026-11-08T19:34:20.419Z] SEED Pass
+{"result":"Seeded","label":"current","cases":{"SEED":"Pass"},"errors":0,"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":37072,"status":"terminated","exit":0},"backendPortClosed":true,"frontendPortClosed":true,"seedKept":"/tmp/abtest437r2/seeds/large-hub (test-owned seed; remove after the measurements)"},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/delegated-copies-large-hub-seed/evidence.json"}

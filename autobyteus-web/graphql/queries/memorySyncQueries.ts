@@ -10,7 +10,7 @@ export const GET_MEMORY_SYNC_STATUS = gql`
       }
       source {
         enabled
-        sourceNodeId
+        memorySyncSourceId
         displayName
         hubBaseUrl
         hubTokenConfigured
@@ -29,7 +29,7 @@ export const GET_MEMORY_SYNC_STATUS = gql`
         credentials {
           credentialId
           label
-          boundSourceNodeId
+          boundMemorySyncSourceId
           createdAt
           lastUsedAt
           revokedAt
@@ -41,9 +41,19 @@ export const GET_MEMORY_SYNC_STATUS = gql`
         lastSuccessfulSyncAt
         lastError
         trackedFileCount
+        fileFailureCount
+        fileFailures {
+          kind
+          relativePath
+          size
+          reason
+          attempts
+          lastFailedAt
+          nextAttemptAt
+        }
       }
       imports {
-        sourceNodeId
+        memorySyncSourceId
         displayName
         lastKnownEndpoint
         firstImportedAt
@@ -83,7 +93,7 @@ export const GET_MEMORY_HUB_CONNECTION_INFO = gql`
       credentials {
         credentialId
         label
-        boundSourceNodeId
+        boundMemorySyncSourceId
         createdAt
         lastUsedAt
         revokedAt

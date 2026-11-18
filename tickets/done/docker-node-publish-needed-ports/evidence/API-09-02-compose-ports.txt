@@ -1,0 +1,93 @@
+# Case: API-09 step 02
+# Command: cat .runtime/abx402-compose.env; docker ps; PortBindings; lsof; Node probe (API-07-localhost-probe.mjs) on backend + VNC Viewer port
+# Setup: compose project abx402-compose; local image tag autobyteus-server:latest-abx402 created by this run from autobyteus/autobyteus-server:1.5.11-beta.7 (variant 'abx402' -> tag latest-abx402); worktree autobyteus-server-ts/docker/{docker-start.sh,docker-compose.yml}
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, Docker Desktop 29.0.1, Docker Compose 2.40.3-desktop.1, LAN IP 192.168.2.158
+# Date: 2026-11-06T15:40:45Z
+
+AUTOBYTEUS_BACKEND_PORT=59111
+AUTOBYTEUS_WEB_VNC_PORT=59112
+AUTOBYTEUS_IMAGE_TAG=latest-abx402
+
+abx402-compose-autobyteus-server-1	Up 4 seconds	127.0.0.1:59112->6080/tcp, 0.0.0.0:59111->8000/tcp, [::]:59111->8000/tcp
+{"6080/tcp":[{"HostIp":"127.0.0.1","HostPort":"59112"}],"8000/tcp":[{"HostIp":"","HostPort":"59111"}]}
+
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+com.docke 11834 normy  207u  IPv4 0x4f0b89c4dc4be62a      0t0  TCP 127.0.0.1:59112 (LISTEN)
+com.docke 11834 normy  229u  IPv6 0xa92aa45e6b35b8a7      0t0  TCP *:59111 (LISTEN)
+
+{
+  "node": "v22.23.1",
+  "defaultAutoSelectFamily": true,
+  "localhostLookupAll": [
+    {
+      "address": "::1",
+      "family": 6
+    },
+    {
+      "address": "127.0.0.1",
+      "family": 4
+    }
+  ],
+  "tcp": [
+    {
+      "label": "backend",
+      "host": "127.0.0.1",
+      "port": 59111,
+      "result": "connected",
+      "remoteAddress": "127.0.0.1"
+    },
+    {
+      "label": "backend",
+      "host": "::1",
+      "port": 59111,
+      "result": "connected",
+      "remoteAddress": "::1"
+    },
+    {
+      "label": "backend",
+      "host": "localhost",
+      "port": 59111,
+      "result": "connected",
+      "remoteAddress": "::1"
+    },
+    {
+      "label": "backend",
+      "host": "192.168.2.158",
+      "port": 59111,
+      "result": "connected",
+      "remoteAddress": "192.168.2.158"
+    },
+    {
+      "label": "vncViewer",
+      "host": "127.0.0.1",
+      "port": 59112,
+      "result": "connected",
+      "remoteAddress": "127.0.0.1"
+    },
+    {
+      "label": "vncViewer",
+      "host": "::1",
+      "port": 59112,
+      "result": "ECONNREFUSED"
+    },
+    {
+      "label": "vncViewer",
+      "host": "localhost",
+      "port": 59112,
+      "result": "connected",
+      "remoteAddress": "127.0.0.1"
+    },
+    {
+      "label": "vncViewer",
+      "host": "192.168.2.158",
+      "port": 59112,
+      "result": "ECONNREFUSED"
+    }
+  ],
+  "wsLocalhost": {
+    "url": "ws://localhost:59112",
+    "remoteAddress": "127.0.0.1",
+    "serverVersion": "RFB 003.008"
+  }
+}

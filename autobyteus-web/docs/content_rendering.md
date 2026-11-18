@@ -56,24 +56,33 @@ flowchart TD
 | PDF       | `.pdf`                          | PdfViewer         |
 | Markdown  | `.md`, `.markdown`              | MarkdownPreviewer |
 | HTML      | `.html`, `.htm`                 | HtmlPreviewer     |
-| Excel     | `.xlsx`, `.xls`, `.csv`         | ExcelViewer       |
+| Excel     | `.xlsx`, `.xls`, `.xlsm`, `.csv` | ExcelViewer       |
+
+`ExcelViewer` parses spreadsheets with SheetJS CE (the `xlsx` package, installed
+from the integrity-pinned cdn.sheetjs.com tarball) and sanitises the generated
+sheet HTML with DOMPurify down to table structure (`table`, rows, cells, `br`,
+`colspan`/`rowspan`) before rendering. Hyperlinked cells show their text without
+a link.
 
 ## Shared Read-Only Viewer Surfaces
 
 `FileViewer.vue` is also reused outside the desktop file-explorer tabs for
 read-only surfaces:
 
-- `components/mobile/MobileFileViewer.vue` opens workspace files from the
-  `/mobile` Files tab in a full-screen phone viewer. It passes the
-  `fileExplorerStore.openFilePreview(...)` state to `FileViewer` with
-  `read-only=true`; text/Markdown/code, image, audio, video, PDF, CSV, and Excel
-  families use the same protected workspace content routes as desktop. Mobile
-  workspace HTML is shown as raw/read-only text rather than rich iframe preview.
-- `components/workspace/team/TeamCommunicationReferenceViewer.vue` opens
-  Team Communication `referenceFiles` through the message-owned team reference
-  route. The mobile wrapper `MobileTeamReferenceViewer.vue` uses that same
-  viewer in a phone full-screen shell and disables rich HTML preview while
-  preserving raw/Markdown and protected binary/object-URL preview paths.
+- `components/mobile/views/MobileFileViewer.vue` opens workspace files from the
+  `/mobile` Files screen (⋮ → Files) full screen, with a 48 px bar (← and the
+  name) and no Attach. It passes the `fileExplorerStore.openFilePreview(...)`
+  state to `FileViewer` with `read-only=true`; text/Markdown/code, image, audio,
+  video, PDF, CSV, and Excel families use the same protected workspace content
+  routes as desktop. Mobile workspace HTML is shown as raw/read-only text rather
+  than rich iframe preview.
+- `components/workspace/collaboration/CollaborationMessageReferenceViewer.vue`
+  opens a message's `referenceFiles` (Team, AgentOrg and standalone Messages)
+  through the message-owned reference content route, with Raw/Preview for
+  Markdown and HTML and an inline/maximized view. The phone's wrapper `components/mobile/views/MobileTeamReferenceViewer.vue`
+  wraps `CollaborationMessageReferenceViewer` in a full-screen phone shell and
+  disables rich HTML preview while preserving raw/Markdown and protected
+  binary/object-URL preview paths.
 - There is no task-delegation reference preview; the former
   `TeamTaskReferenceViewer.vue` and its task reference route are removed.
 
@@ -107,9 +116,9 @@ contract, while the rendered DOM contains only the render-scoped action ID and
 display label. Empty-authority absolute URIs such as `file:///tmp/report.md`
 can become actions; authorities, query strings, fragments, malformed escapes,
 relative/empty paths, and unsupported file types remain inert. A valid URI may
-still be unavailable in a browser/remote runtime, in which case the existing
-localized host-only/unavailable state is shown before Files, mobile, workspace,
-or filesystem access.
+still be unavailable: a path of a run on another node shows "This file is on
+<node>, where this run runs." before Files, mobile, workspace, or filesystem
+access.
 
 Path recognition rejects incomplete or placeholder components such as `.`, `..`,
 `...`, and the Unicode ellipsis `…` before action/type classification. Complete
@@ -129,8 +138,11 @@ existing `FileViewer` path with an
 explicit `source: 'event-monitor'` and `readOnly: true` intent. Existing file
 tabs are reused by the File Explorer store, and no artifact/reference row or
 persisted record is created. `AgentEventMonitor` captures the local workspace
-shell's reveal capability during setup and passes it into the lazy launcher;
-the launcher does not attempt injection from its asynchronous action handler.
+shell's reveal capability and, on the phone, the phone navigation
+(`useMobileNavigation()`, as the `mobileNavigation` option; `null` elsewhere)
+during setup and passes both into the lazy launcher. The launcher calls no
+`inject`-based composable itself: it runs after setup, from an asynchronous
+action handler, where `inject` returns nothing.
 Once content or an ordinary file error settles, the shell selects Files
 explicitly before mounting its tab host and reveals the fitting dock or its
 responsive drawer from that same activation. No second Files-strip click is
@@ -138,10 +150,11 @@ required, and repeated activation does not close an open drawer. Desktop
 previews preserve the center feed and selected member, wait for the shell's
 render flush, then focus the active file tab only while the originating monitor,
 selected context/source root, and node binding remain current. Existing drawer
-focus/Escape/return handling is retained. Phone-first
-previews are delivered as a typed pending request to `MobileFiles`, where the
-matching workspace/context request is rendered inline without Attach controls,
-an overlay, or automatic full-screen presentation.
+focus/Escape/return handling is retained. On the phone, the file opens in the
+open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) on the Files
+screen, full screen and without Attach controls. It is a history entry
+(`useMobileNavigation`), so ← or Back closes it first. A path outside that
+folder shows the localized unavailable state.
 
 Native preview uses the selected execution's existing workspace ID even when
 its metadata projection is missing. If its ID is also missing, metadata recovery
@@ -152,10 +165,15 @@ contract is detailed in [Event Monitor Preview Requests](./file_explorer.md#even
 
 Runtime access remains environment-specific: an embedded node binding plus
 trusted Electron local-file bridge may use the native boundary, while
-browser/remote/mobile clients must map the host path inside the selected
-workspace to a workspace-relative locator. A remote-node Electron window must
-not use client-local reads even if a bridge exists. Unmapped
-paths remain copyable and show a localized host-only/unavailable state.
+browser/remote/mobile clients open a path inside the selected workspace as a
+workspace-relative locator and any other absolute path as a **node file**, read
+only, from the run's node (`GET /rest/node-files/content?path=`, autobyteus-436
+and autobyteus-471). A remote-node Electron window must not use client-local
+reads even if a bridge exists. A path of a run on another node shows "This file
+is on <node>, where this run runs." and opens nothing.
+`AgentEventMonitor` shows that status line (`filePreviewStatus`, a polite live
+region) in its own block, so a read-only conversation (a finished run, the
+phone's read-only run screen) shows the same text with no composer.
 
 For embedded Electron binary previews, the action path uses the shared
 `local-file://local/<encoded-absolute-path>` codec and trusted default-session
@@ -191,6 +209,7 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 - Markdown code blocks are kept on root-scale-compatible sizing so prose and code grow together.
 - `MonacoEditor.vue` consumes the shared resolved editor metrics from `appFontSizeStore` because Monaco does not inherit CSS font sizing automatically.
 - This keeps file explorer viewing and artifact viewing aligned with the same app-wide accessibility setting.
+- On the phone page (`/mobile`) the same owner, `appFontSizeStore`, takes the phone's **Text size** step (Standard, Large or Largest, chosen under **Text size** in the run list's ⋮ menu) as its source instead of the Display preset: the root size and the Monaco size (14 px × step/17, rounded) follow the step, and the phone never reads **Settings -> Display**. The desktop never reads the phone step. See [Phone Access](./remote_access.md).
 
 ## Markdown Rendering
 
@@ -262,6 +281,52 @@ transport and completion ownership boundaries.
 - **Syntax Highlighting**: Uses PrismJS for code blocks.
 - **Math Support**: Uses KaTeX for explicit LaTeX equations (`$...$`, `$$...$$`, `\(...\)`, `\[...\]`, and `math` fences). The renderer does not infer inline math from ordinary prose or file paths.
 - **Mermaid Diagrams**: Native support for Mermaid diagrams.
+- **Heading links**: a Contents list's `[Section](#section)` scrolls to that heading (below).
+- **Wrapping**: long lines in fenced code, and long paths, URLs and words in inline text, wrap to the width; wide tables and display equations scroll inside their own box (below).
+
+### Long Lines And Wide Content
+
+Rendered Markdown never needs a sideways scroll of the whole message or document (autobyteus-23). The rules live
+in `MarkdownRenderer.vue`'s stylesheet, so every surface that shows rendered Markdown (conversation segments, the
+Messages panel, every Markdown file preview on desktop and phone) behaves the same; a surface does not style
+`.markdown-body pre` itself.
+
+- **Inline text (autobyteus-24):** `.markdown-body` sets `overflow-wrap: break-word`, inherited by inline code,
+  links (file-action links and linkified URLs included), prose, headings and list items. A path, URL or word longer
+  than the line breaks inside it; text with spaces or hyphens still breaks there. Table cells inherit the same rule,
+  which does not shrink a table, so a wide table keeps scrolling in its box. Inline code's hidden backticks
+  (typography `code::before`/`code::after` in `tailwind.config.js`) are `content: none`, not an empty string: an
+  empty generated box let the code's end padding hang a few pixels past the line. Copying wrapped text gives the
+  original text.
+- **Fenced code, with or without a language:** `pre` and `pre > code` use `white-space: pre-wrap` and
+  `overflow-wrap: anywhere`. Long lines wrap to the block's width; a run with no break opportunity (a long URL or
+  token) breaks where needed. Every original line still starts on a new line with its own leading spaces and tabs;
+  a wrapped continuation starts at the block's left edge (no hanging indent). Highlighting is unchanged.
+- **Copying:** a soft wrap adds no character, so selecting and copying a block gives exactly its original text.
+  The Files tab's Edit view (Monaco) still shows a Markdown file's raw, unwrapped source.
+- **Tables:** `utils/markdownItScrollableTables.ts` (a markdown-it plugin on the HTML renderer in
+  `useMarkdownSegments.ts`) puts each table in `<div class="markdown-table-scroll">`. A table that fits looks as
+  before; one that is still wider than the box after its cells wrap scrolls sideways inside that box.
+- **Display math:** `.katex-display` (`$$…$$`, `\[…\]`, `math` fences) scrolls sideways inside its own box, as
+  KaTeX cannot wrap an equation. It clips vertically, with `0.5em` of vertical padding so tall glyphs (big
+  delimiters, matrices, limits) stay inside the clip.
+
+### Heading Links
+
+A `#section` link scrolls within its own rendered document, as on GitHub (autobyteus-480). This holds in conversations, the Files panel, the Skills page preview and the phone viewer.
+
+- **Heading ids (`useMarkdownSegments`, `utils/markdownHeadingAnchors.ts`):**
+  - After parsing, each heading gets `id="user-content-<slug>"`.
+  - The slug follows GitHub's rule (`githubHeadingSlug`): lowercase, characters other than letters, marks, numbers, connector punctuation, spaces and hyphens removed, then each space a hyphen.
+  - A repeated heading is numbered `-1`, `-2`, … by a per-document slugger.
+  - The `user-content-` prefix keeps the ids clear of the app's own element ids and of DOM-property names, and DOMPurify keeps them.
+  - The slug is a small own function, not a library, so no dependency or lockfile change was needed.
+- **Clicks (`MarkdownRenderer.handleLinkClick`, also on Enter):**
+  - A `#anchor` is decoded and looked up only inside this renderer's root element, so two messages with the same headings never scroll to each other. The heading is brought to the top of its scroll container.
+  - The URL does not change: the app's hash router would read `#section` as a route.
+  - A missing anchor does nothing.
+  - A link with no scheme (`other.md`, `other.md#x`, `/x.md`, `./x.md`) does nothing instead of opening a 404. Opening such files is FU-001.
+  - These rules run before the external-link rule. External `http(s)` links still open once in a new tab, `mailto:` is left to the browser, and file actions keep their own handling.
 
 ### Workspace-Relative Images
 
@@ -312,17 +377,25 @@ global active-workspace store or from the file path alone.
   already-loaded content in a managed `Blob` URL. The adapter does not send
   the host absolute path to a workspace route. Blob URLs are revoked when the
   source changes or the viewer unmounts.
-- The iframe remains sandboxed with `allow-scripts allow-same-origin` for both
-  source strategies. Mobile workspace HTML continues to use the raw,
-  read-only mobile presentation described above rather than this rich iframe
-  path.
+- The iframe is sandboxed with `allow-scripts` only, for both source
+  strategies, so the previewed page has an opaque origin: it cannot reach the
+  app window, the preload API or app storage, and nodes refuse its requests.
+  The workspace static route also sends
+  `Content-Security-Policy: sandbox allow-scripts` on the files it serves.
+  Mobile workspace HTML continues to use the raw, read-only mobile
+  presentation described above rather than this rich iframe path.
+- Previewed pages run inline and classic scripts and load stylesheets, images
+  and CDN resources; relative module scripts, `fetch` of workspace files,
+  workspace web fonts, Web Workers and browser storage are unavailable. The
+  full contract is in
+  [File Explorer: HTML Preview Resource Contract](./file_explorer.md#html-preview-resource-contract).
 
 The backend static route remains the containment authority. An absolute path
 or traversal candidate must not be converted into a workspace static URL or
 used to bypass the workspace boundary; the server rejects such candidates
-without returning the outside file payload. Relative local HTML assets loaded
-from the existing Blob base may retain browser-origin limitations; changing
-that behavior requires a separate trusted-resource design.
+without returning the outside file payload. The Blob holds the content only
+and has no base URL, so relative resources of local HTML do not resolve;
+changing that behavior requires a separate trusted-resource design.
 
 ### Mermaid Support
 
@@ -412,8 +485,10 @@ Focused unit/component coverage is colocated under
 probe starts its own temporary Nuxt route and Chrome session, then removes both:
 
 ```bash
-pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer
+pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer-$(date +%Y%m%dT%H%M%S)
 ```
+
+The output directory must be new or empty: the probe refuses a non-empty one and exits without writing.
 
 ## Related Documentation
 

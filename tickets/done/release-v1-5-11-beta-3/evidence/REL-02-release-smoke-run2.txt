@@ -1,0 +1,20 @@
+# run 2: GROK_E2E_MODEL=grok-4.6 (grok-4.7 not offered by the Grok CLI on 2026-10-30); HEAD 8760c83788
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+claude      brand-new team member                    FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+claude      different same-named skill               FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+codex       new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+codex       brand-new team member                    FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+codex       different same-named skill               FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: grok model grok-4.6 is not offered; available: grok-4.7
+commit    8760c837881a274505ac3c7f982dcbf360fd7fbf
+models    not reported
+result    FAIL
+release_smoke exit 1

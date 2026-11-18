@@ -1,0 +1,20 @@
+# IMP-34 web checks and full spec suite (CR-461-019, CR-461-020, SR-055 web)
+# commands: (autobyteus-web) pnpm typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals; codegen:check; npx vitest run --no-watch
+# commit: 40927e92ea (web code as of a9f34ce3e6; 40927e92ea changes one server test); macOS, Node v22.23.1; 2026-11-12T09:50Z
+
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 35.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.6s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+> autobyteus@1.5.13-beta.4 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[codegen:check] generated/graphql.ts matches the server schema (exit 0)
+
+## npx vitest run --no-watch
+ Test Files  750 passed (750)
+      Tests  5645 passed | 2 skipped (5647)

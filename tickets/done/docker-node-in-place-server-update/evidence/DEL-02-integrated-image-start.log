@@ -1,0 +1,18 @@
+# DEL-02 integrated-state container start, 2026-10-30T16:47:02Z, HEAD a85cf65c52 (merge of origin/personal e4bebdc858)
+#46 25.23 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 61 migrations
+build exit 0
+image: sha256:e3cf82ae9e13f3ccf3cb1ed33e2eee3e52e5c77b08c4c3f3b66a433e09c95ee8 arm64
+container: 8de87b3ad499
+health after 4x2s: {"status":"ok","message":"Server is running"}
+mobile: 200
+graphql: {"data":{"__typename":"Query"}}
+server cwd: 
+supervisor: autobyteus_server                RUNNING   pid 46, uptime 0:00:06
+base-284 code in package: server-process-shutdown.d.ts server-process-shutdown.d.ts.map server-process-shutdown.js server-process-tree-sweep.d.ts server-process-tree-sweep.d.ts.map server-process-tree-sweep.js 
+ps in image (used by the 284 process-tree sweep): /usr/bin/ps
+bootstrap present: no
+cleanup: container removed
+# rerun of the cwd check (first try used the wrong supervisord program name)
+server pid 52 cwd: /opt/autobyteus/server-package
+server cmdline: node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data 
+cleanup: container removed

@@ -4,7 +4,7 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
-import { buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
+import { backgroundTasksRunningOf, buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import { serializePayload } from "./payload-serialization.js";
 import { resolveAgentRunErrorEvidence } from "../../agent-execution/domain/agent-run-error-evidence.js";
 import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/domain/system-instructions-supplied-event.js";
@@ -12,6 +12,7 @@ import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/do
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
     status: payload.status,
+    backgroundTasksRunning: backgroundTasksRunningOf(payload.background_tasks_running),
     recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(payload.recoverableBlock ?? null),
     agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
     agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,
@@ -133,7 +134,11 @@ export class AgentRunEventMessageMapper {
       case AgentRunEventType.TEAM_COMMUNICATION_MESSAGE:
         return new ServerMessage(ServerMessageType.TEAM_COMMUNICATION_MESSAGE, payload);
       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION:
-        return new ServerMessage(ServerMessageType.SYSTEM_TASK_NOTIFICATION, payload);
+        // The notice's one id on every copy (autobyteus-526); null for a notice that has none.
+        return new ServerMessage(ServerMessageType.SYSTEM_TASK_NOTIFICATION, {
+          ...payload,
+          message_id: typeof payload.message_id === "string" && payload.message_id.trim() ? payload.message_id : null,
+        });
       case AgentRunEventType.ARTIFACT_PERSISTED:
         return new ServerMessage(ServerMessageType.ARTIFACT_PERSISTED, payload);
       case AgentRunEventType.FILE_CHANGE:

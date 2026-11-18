@@ -1,0 +1,53 @@
+{
+  "check": "IMP-18",
+  "date": "2026-10-26",
+  "commit": "1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708",
+  "base": "0c27b150d2fd01a573b49aa45597ff78e5b6fc0d",
+  "result": "Pass",
+  "nonTicketDelta": [
+    "autobyteus-web/components/settings/NfsGuideCard.vue",
+    "autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts",
+    "autobyteus-web/docs/nfs_guide.md",
+    "autobyteus-web/localization/messages/en/settings.ts",
+    "autobyteus-web/localization/messages/zh-CN/settings.ts"
+  ],
+  "commandHelperAndPinUnchanged": true,
+  "componentCardsAndEntireScriptUnchanged": true,
+  "parentDockerAndDependencyInputsUnchanged": true,
+  "localeDelta": {
+    "en": {
+      "removed": [
+        "advanced",
+        "deferred",
+        "limitations"
+      ],
+      "shortened": [
+        "outageDetail",
+        "trustDetail",
+        "workspaceHint"
+      ],
+      "otherLinesUnchanged": true
+    },
+    "zh-CN": {
+      "removed": [
+        "advanced",
+        "deferred",
+        "limitations"
+      ],
+      "shortened": [
+        "outageDetail",
+        "trustDetail",
+        "workspaceHint"
+      ],
+      "otherLinesUnchanged": true
+    }
+  },
+  "nonemptySourceLines": {
+    "autobyteus-web/components/settings/NfsGuideCard.vue": 92,
+    "autobyteus-web/localization/messages/en/settings.ts": 451,
+    "autobyteus-web/localization/messages/zh-CN/settings.ts": 451
+  },
+  "deadKeyProductReferences": 0,
+  "scope": "Small/Low; no runtime, API, persistence or policy changes; no refactor/new compatibility path",
+  "limitations": "Focused structural self-review, not independent API acceptance"
+}

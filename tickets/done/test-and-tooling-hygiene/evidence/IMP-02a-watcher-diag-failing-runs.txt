@@ -1,0 +1,73 @@
+IMP-02a — watcher catch-up diagnostics of the four failing DCF-E2E-002 runs (autobyteus-253, W-02)
+Command: 30 x `env -i ... pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts -t DCF-E2E-002 --no-watch`
+         under 2 x ncpu `yes` busy loops (macOS, 10 cores, Node 22), with TEMPORARY console.error lines (not committed) in the
+         watcher (every event / ready / catch-up fire) and before the CREATE and EDIT writes of the test.
+Commit under test: f14a84e2b8 + 7bce694c91 (instrumentation on top, since reverted). Date: 2026-10-24.
+Result: 26 pass, 4 FAIL (runs 1, 12, 13, 18). Times are ms since the first DIAG line of the run.
+What to look for: in every failing run NO `event ... agents/scout` line exists (the OS never reported the new agent folder, so
+chokidar never added a watch on agents/scout); the catch-up (`catchup-fire local-package-*`) lists scout in the store, then EDIT-WRITE
+changes scout/agent.md ~30-50 ms later and no event ever arrives for it: "edited instructions: not met within 5000 ms".
+
+----- failing run 1
+DIAG 0 ready server-data
+DIAG 321 catchup-fire server-data
+DIAG 521 event addDir agents/autobyteus-daily-assistant
+DIAG 523 event add agents/autobyteus-daily-assistant/agent-config.json
+DIAG 524 event add agents/autobyteus-daily-assistant/agent.md
+DIAG 746 CREATE-WRITE
+DIAG 747 ready local-package-a83ff1
+DIAG 770 ready local-package-a83ff1
+DIAG 794 event addDir agent-teams/squad
+DIAG 796 event add agent-teams/squad/team-config.json
+DIAG 797 event add agent-teams/squad/team.md
+DIAG 822 catchup-fire server-data
+DIAG 1095 catchup-fire local-package-a83ff1
+DIAG 1128 EDIT-WRITE
+Error: edited instructions: not met within 5000 ms; last value: {"id":"scout","name":"APAR Scout","instructions":"APAR Scout instructions.\n","loadIssue":null}
+
+----- failing run 12
+DIAG 0 ready server-data
+DIAG 301 catchup-fire server-data
+DIAG 392 event addDir agents/autobyteus-daily-assistant
+DIAG 394 event add agents/autobyteus-daily-assistant/agent-config.json
+DIAG 394 event add agents/autobyteus-daily-assistant/agent.md
+DIAG 705 catchup-fire server-data
+DIAG 707 CREATE-WRITE
+DIAG 707 ready local-package-09db44
+DIAG 796 event addDir agent-teams/squad
+DIAG 801 event add agent-teams/squad/team-config.json
+DIAG 806 event add agent-teams/squad/team.md
+DIAG 1097 catchup-fire local-package-09db44
+DIAG 1132 EDIT-WRITE
+Error: edited instructions: not met within 5000 ms; last value: {"id":"scout","name":"APAR Scout","instructions":"APAR Scout instructions.\n","loadIssue":null}
+
+----- failing run 13
+DIAG 0 ready server-data
+DIAG 337 catchup-fire server-data
+DIAG 685 event addDir agents/autobyteus-daily-assistant
+DIAG 689 event add agents/autobyteus-daily-assistant/agent-config.json
+DIAG 689 event add agents/autobyteus-daily-assistant/agent.md
+DIAG 884 CREATE-WRITE
+DIAG 888 ready local-package-ea9c41
+DIAG 889 ready local-package-ea9c41
+DIAG 921 event addDir agent-teams/squad
+DIAG 932 event add agent-teams/squad/team-config.json
+DIAG 933 event add agent-teams/squad/team.md
+DIAG 985 catchup-fire server-data
+DIAG 1221 catchup-fire local-package-ea9c41
+DIAG 1360 EDIT-WRITE
+Error: edited instructions: not met within 5000 ms; last value: {"id":"scout","name":"APAR Scout","instructions":"APAR Scout instructions.\n","loadIssue":null}
+
+----- failing run 18
+DIAG 0 ready server-data
+DIAG 302 catchup-fire server-data
+DIAG 362 event addDir agents/autobyteus-daily-assistant
+DIAG 368 event add agents/autobyteus-daily-assistant/agent-config.json
+DIAG 368 event add agents/autobyteus-daily-assistant/agent.md
+DIAG 553 CREATE-WRITE
+DIAG 554 ready local-package-390760
+DIAG 554 ready local-package-390760
+DIAG 663 catchup-fire server-data
+DIAG 855 catchup-fire local-package-390760
+DIAG 897 EDIT-WRITE
+Error: edited instructions: not met within 5000 ms; last value: {"id":"scout","name":"APAR Scout","instructions":"APAR Scout instructions.\n","loadIssue":null}

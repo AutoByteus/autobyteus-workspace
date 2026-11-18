@@ -1,0 +1,1 @@
+# NOTE: two earlier attempts of the probe stopped at tab 2 (probe navigation, not product): run 1 reopened /mobile/?screen=desktop, which carries no run; run 2 looked for the draft run in the run list, where a run without a message is not listed. Run 3 (AC021-results.json) starts a draft run per tab.

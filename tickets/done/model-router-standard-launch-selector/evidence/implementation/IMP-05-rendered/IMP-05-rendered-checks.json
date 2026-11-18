@@ -1,0 +1,162 @@
+{
+  "cases": {
+    "off-inert": {
+      "ok": true,
+      "detail": {
+        "trigger": "Choose a model"
+      }
+    },
+    "not-set-on": {
+      "ok": true,
+      "detail": {
+        "status": {
+          "enabled": true,
+          "routerLaunch": null,
+          "active": false,
+          "reasonCode": "ROUTER_NOT_SET",
+          "reasonParams": {},
+          "reasonText": "the router has no runtime/model",
+          "agentRunId": null
+        },
+        "trigger": "Choose a model"
+      }
+    },
+    "model-chosen": {
+      "ok": true,
+      "detail": {
+        "chosenRuntime": "claude_agent_sdk",
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "opus",
+          "llmConfig": {
+            "thinking_enabled": false,
+            "reasoning_effort": "medium"
+          }
+        },
+        "trigger": "claude-opus-5-5 Claude SDK"
+      }
+    },
+    "thinking-saved": {
+      "ok": true,
+      "detail": {
+        "options": [
+          {
+            "id": "chat-thinking-option-primary-off",
+            "checked": "true"
+          },
+          {
+            "id": "chat-thinking-option-primary-low",
+            "checked": "false"
+          },
+          {
+            "id": "chat-thinking-option-primary-medium",
+            "checked": "false"
+          },
+          {
+            "id": "chat-thinking-option-primary-high",
+            "checked": "false"
+          },
+          {
+            "id": "chat-thinking-option-primary-xhigh",
+            "checked": "false"
+          },
+          {
+            "id": "chat-thinking-option-primary-max",
+            "checked": "false"
+          }
+        ],
+        "picked": "chat-thinking-option-primary-low",
+        "before": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "after": {
+          "thinking_enabled": true,
+          "reasoning_effort": "low"
+        }
+      }
+    },
+    "reload-shows-launch": {
+      "ok": true,
+      "detail": {
+        "reloaded": "claude-opus-5-5 Claude SDK",
+        "trigger": "claude-opus-5-5 Claude SDK"
+      }
+    },
+    "same-menu": {
+      "ok": true,
+      "detail": {
+        "configuration": [
+          "chat-runtime-autobyteus",
+          "chat-runtime-codex_app_server",
+          "chat-runtime-claude_agent_sdk",
+          "chat-runtime-grok_build",
+          "chat-runtime-antigravity_cli"
+        ],
+        "composer": [
+          "chat-runtime-autobyteus",
+          "chat-runtime-codex_app_server",
+          "chat-runtime-claude_agent_sdk",
+          "chat-runtime-grok_build",
+          "chat-runtime-antigravity_cli"
+        ]
+      }
+    },
+    "decisions-names": {
+      "ok": true,
+      "detail": {
+        "launches": [
+          "claude-sonnet-5-5 Claude SDK",
+          "gpt-5-codex Codex",
+          "claude-sonnet-5-5 Claude SDK"
+        ]
+      }
+    },
+    "overview-names": {
+      "ok": true,
+      "detail": {
+        "legend": "Codex App Server\nClaude Agent SDK"
+      }
+    },
+    "runtimes-names": {
+      "ok": true,
+      "detail": {
+        "headings": [
+          "Codex App Server",
+          "Claude Agent SDK",
+          "Antigravity CLI",
+          "Grok Build",
+          "AutoByteus"
+        ]
+      }
+    },
+    "zh-CN": {
+      "ok": true,
+      "detail": "配置"
+    },
+    "narrow-390": {
+      "ok": true,
+      "detail": "no horizontal overflow"
+    }
+  },
+  "observations": {
+    "menuRuntimes": [
+      "chat-runtime-autobyteus",
+      "chat-runtime-codex_app_server",
+      "chat-runtime-claude_agent_sdk",
+      "chat-runtime-grok_build",
+      "chat-runtime-antigravity_cli"
+    ],
+    "submenuModels": "claude-opus-5-5 Recommended Opus 5.5 · For complex work and everyday tasks claude-fable-5 Fable 5 · Most capable for your hardest and longest-running tasks claude-fable-5-1 Fable 5.1 · For your toughest challenges claude-haiku-4-5-20251001 Haiku 4.5 · Fastest for quick answers claude-haiku-5-5 Haiku",
+    "composerTrigger": "claude-fable-5 AutoByteus",
+    "composerMenuRuntimes": [
+      "chat-runtime-autobyteus",
+      "chat-runtime-codex_app_server",
+      "chat-runtime-claude_agent_sdk",
+      "chat-runtime-grok_build",
+      "chat-runtime-antigravity_cli"
+    ]
+  },
+  "browserErrors": [],
+  "failures": []
+}

@@ -1,0 +1,20 @@
+# SD-01 base 1138e8fbef: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run utils/runSettings/__tests__/zz-probe-delegated-row-names.spec.ts
+   × probe: Settings delegated rows use the sidebar name > Team root 7ms
+   × probe: Settings delegated rows use the sidebar name > Org and Agent roots 1ms
+     → expected [ [ '/scribe_5083@scribe-run', …(1) ] ] to deeply equal [ [ '/scribe_5083@scribe-run', …(1) ] ]
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      "/scribe_5083@scribe-run",
+-     "scribe 5083",
++     "scribe_5083",
+      "/code_reviewer@cr-copy",
+      "code_reviewer",
+     34| describe('probe: Settings delegated rows use the sidebar name', () => {
+     37|       ['/scribe_5083@scribe-run', sidebarName('/scribe_5083')],
+     38|       ['/code_reviewer@cr-copy', sidebarName('/code_reviewer')],
+AssertionError: expected [ [ '/scribe_5083@scribe-run', …(1) ] ] to deeply equal [ [ '/scribe_5083@scribe-run', …(1) ] ]
+      "/scribe_5083@scribe-run",
+-     "scribe 5083",
++     "scribe_5083",
+     45|         source: { kind: 'agent', agentDefinitionId: 'scribe', launchCo…
+     47|     expect(names(nodes)).toEqual([['/scribe_5083@scribe-run', memberDi…
+      Tests  2 failed (2)

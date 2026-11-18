@@ -97,14 +97,18 @@ function pickBaselineEnv(callerEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
  */
 export const DESKTOP_EMBEDDED_NODE_ENV = 'AUTOBYTEUS_DESKTOP_EMBEDDED_NODE'
 
+/** The node setting listing the browser origins it accepts besides its own and the packaged app's. */
+const ALLOWED_ORIGINS_SETTING_NAME = 'AUTOBYTEUS_ALLOWED_ORIGINS'
+
 export type BuildServerProcessEnvInput = Readonly<{
   policy: ServerEnvironmentPolicy
   callerEnv: NodeJS.ProcessEnv
   /** PATH resolved from the user's login shell; `null` when unavailable or not used (Windows). */
   loginShellPath: string | null
-  port: number
   appDataDir: string
   publicServerUrl: string
+  /** Appended to `AUTOBYTEUS_ALLOWED_ORIGINS`, so the node accepts the development renderer (autobyteus-416). */
+  developmentRendererOrigin: string | null
   runtimeOverrides: Record<string, string>
 }>
 
@@ -116,25 +120,31 @@ export function buildServerProcessEnv({
   policy,
   callerEnv,
   loginShellPath,
-  port,
   appDataDir,
   publicServerUrl,
+  developmentRendererOrigin,
   runtimeOverrides,
 }: BuildServerProcessEnvInput): NodeJS.ProcessEnv {
   const inherited = policy === 'inherit-caller' ? { ...callerEnv } : pickBaselineEnv(callerEnv)
   const dbType = policy === 'inherit-caller' ? callerEnv.DB_TYPE ?? 'sqlite' : 'sqlite'
+  const allowedOrigins = [inherited[ALLOWED_ORIGINS_SETTING_NAME]?.trim(), developmentRendererOrigin]
+    .filter((origin): origin is string => Boolean(origin))
+    .join(',')
 
   return {
     ...inherited,
     ...(loginShellPath ? { PATH: loginShellPath } : {}),
     ELECTRON_RUN_AS_NODE: '1',
-    PORT: port.toString(),
-    SERVER_PORT: port.toString(),
+    // The server takes its port only from `--port` (see the spawn call in BaseServerManager).
+    // Do not add generic PORT/SERVER_PORT here: every agent runtime and tool shell this
+    // process spawns inherits this env, and a generic PORT would steer their own programs
+    // (e.g. a Nuxt dev server) onto the backend's port instead of their own default.
     // Ensure Prisma uses runtime server-data DB path from process start.
     DATABASE_URL: toPrismaSqliteUrl(path.join(appDataDir, 'db', 'production.db')),
     DB_TYPE: dbType,
     AUTOBYTEUS_DATA_DIR: appDataDir,
     AUTOBYTEUS_SERVER_HOST: publicServerUrl,
+    ...(allowedOrigins ? { [ALLOWED_ORIGINS_SETTING_NAME]: allowedOrigins } : {}),
     ...runtimeOverrides,
     [DESKTOP_EMBEDDED_NODE_ENV]: '1',
   }

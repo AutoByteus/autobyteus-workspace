@@ -1,0 +1,10 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "api-prisma-276c90f7-58c-native"
+  ],
+  "exit": 1,
+  "stdout": "[]\n",
+  "stderr": "error: no such object: api-prisma-276c90f7-58c-native\n"
+}

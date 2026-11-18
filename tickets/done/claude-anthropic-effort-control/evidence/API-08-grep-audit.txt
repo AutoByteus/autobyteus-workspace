@@ -1,0 +1,34 @@
+# API-08 grep audit (AC-007, AC-010): removed IDs / keys outside tickets/, node_modules and build outputs
+# command: git grep -n -E 'claude-opus-4[-.]8|claude-opus-4[-.]7|claude-sonnet-4[-.]6|thinking_budget_tokens|legacy_budget|thinking_display|summaryWithEffort|getIndependentThinkingParamKeys' -- . ':!tickets'
+# commit: a2a5d0e47 working tree (with API/E2E test additions); date: 2026-10-29
+
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts:3: * (real saved runs hold `thinking_display`) keep resuming and running, and the stale key never reaches
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts:15: * current config, send a message, stop it, add `thinking_display: "omitted"` to the run's stored llmConfig
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts:44:const STALE_KEY = "thinking_display";
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts:178:      for (const removed of ['claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-4.6']) {
+autobyteus-ts/tests/integration/llm/api/anthropic-llm.test.ts:121: * `thinking_display`) is never sent. Anthropic rejecting a request fails the case.
+autobyteus-ts/tests/integration/llm/api/anthropic-llm.test.ts:131:      { label: 'stored config', definition, extraParams: { ...(hasSwitch ? { thinking_enabled: true } : {}), reasoning_effort: 'high', thinking_display: '
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts:151:    for (const removed of ['claude-sonnet-4.8', 'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-4.6']) {
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts:332:      expect(model.config_schema?.properties ?? {}, model.model_identifier).not.toHaveProperty('thinking_display');
+autobyteus-ts/tests/unit/llm/api/anthropic-llm-claude-5-5.test.ts:85:  expect(params).not.toHaveProperty('thinking_display');
+autobyteus-ts/tests/unit/llm/api/anthropic-llm-claude-5-5.test.ts:123:    const extraParams = { ...schemaDefaults(id), thinking_enabled: true, ...(display ? { thinking_display: display } : {}) };
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts:137:          thinking_display: 'summarized'
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts:149:    expect(params).not.toHaveProperty('thinking_display');
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts:172:          thinking_display: 'summarized'
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts:185:    expect(params).not.toHaveProperty('thinking_display');
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts:236:      thinking_display: 'omitted',
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts:237:      thinking_budget_tokens: 4096,
+autobyteus-ts/tests/unit/llm/api/anthropic-model-request-policy.test.ts:35:    expect(() => resolveAnthropicModelRequestPolicy('claude-sonnet-4-6'))
+autobyteus-ts/tests/unit/llm/api/anthropic-model-request-policy.test.ts:36:      .toThrow('Anthropic model claude-sonnet-4-6 is not in the AutoByteus Anthropic catalog.');
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts:133:      expect(properties, value).not.toHaveProperty('thinking_display');
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts:139:    for (const removed of ['claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-4.6']) {
+
+# files:
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+autobyteus-ts/tests/integration/llm/api/anthropic-llm.test.ts
+autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts
+autobyteus-ts/tests/unit/llm/api/anthropic-llm-claude-5-5.test.ts
+autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts
+autobyteus-ts/tests/unit/llm/api/anthropic-model-request-policy.test.ts
+autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts

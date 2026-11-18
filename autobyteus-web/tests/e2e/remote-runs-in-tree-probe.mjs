@@ -2,7 +2,7 @@
 // Browser + server probe for remote delegated runs in the run tree (autobyteus-278): what the delegating node's owner
 // sees and does in the window, against test-owned servers built from this worktree (the scripted AGY CLI, no model).
 //
-// Servers: alpha (the window's node) and beta, switched on and registered both ways. Beta shares Publisher (AGY default)
+// Servers: alpha (the window's node) and beta, switched on and paired by invite, each with the probe's launch owner credential (fixtures/probe-node-access.mjs). Beta shares Publisher (AGY default)
 // and the Agent Team "Studio Team" (lead Publisher, checker Checker; Team default AGY). Alpha has Delegator and Helper
 // (AGY default), the Team "Remote Squad" (lead and mate Delegator) and the Org "Remote Org" (lead and mate Delegator).
 // The delegations are the agents' own delegate_task calls:
@@ -32,6 +32,8 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
+import { openRunStatus } from './fixtures/run-status-client.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -69,12 +71,38 @@ const exited = child => child.exitCode !== null || child.signalCode !== null;
 const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'remote-runs-in-tree-')));
 const children = new Set();
 
-const serverAt = async (name, port) => {
+// The probe's frontend origin, chosen before any node starts: every node accepts it (autobyteus-416).
+const frontendPort = await freePort();
+const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+
+/**
+ * A counting TCP proxy in front of a node (autobyteus-461 CRR-049, the churn check): every connection to the node goes
+ * through it, and each new connection's first request line is recorded, so the observations another node opens are counted.
+ */
+const proxyLog = [];
+const startCountingProxy = (name, publicPort, targetPort) => new Promise((resolve) => {
+  const server = net.createServer((client) => {
+    const upstream = net.connect(targetPort, '127.0.0.1');
+    let first = true;
+    client.on('data', (chunk) => {
+      if (first) { first = false; proxyLog.push({ node: name, at: Date.now(), line: chunk.toString('latin1').split('\r\n')[0].replace(/\?.*? HTTP/, ' HTTP') }); }
+      upstream.write(chunk);
+    });
+    upstream.on('data', (chunk) => client.write(chunk));
+    const close = () => { client.destroy(); upstream.destroy(); };
+    client.on('error', close); upstream.on('error', close); client.on('close', close); upstream.on('close', close);
+  });
+  server.listen(publicPort, '127.0.0.1', () => resolve(server));
+});
+const proxies = [];
+const serverAt = async (name, port, { viaProxy = false } = {}) => {
   const dataDir = path.join(root, name, 'data');
   const home = path.join(root, name, 'home');
   await fs.mkdir(dataDir, { recursive: true });
   await fs.mkdir(home, { recursive: true });
-  const baseUrl = `http://127.0.0.1:${port}`;
+  const publicPort = viaProxy ? await freePort() : port;
+  if (viaProxy) proxies.push(await startCountingProxy(name, publicPort, port));
+  const baseUrl = `http://127.0.0.1:${publicPort}`;
   if (!existsSync(path.join(dataDir, '.env'))) await fs.writeFile(path.join(dataDir, '.env'), `AUTOBYTEUS_SERVER_HOST=${baseUrl}\nAPP_ENV=test\nLOG_LEVEL=WARN\nHTTP_ACCESS_LOG_MODE=off\n`);
   const node = { name, port, baseUrl, dataDir, child: null, nodeId: '' };
   node.start = async () => {
@@ -82,7 +110,7 @@ const serverAt = async (name, port) => {
     const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off',
-        AUTOBYTEUS_SERVER_HOST: baseUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills' } });
+        AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...probeNodeEnvironment() } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
     children.add(child);
@@ -91,7 +119,7 @@ const serverAt = async (name, port) => {
       if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
       return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
     }, 120_000);
-    node.nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+    node.nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
     evidence.servers[name] = { port, nodeId: node.nodeId };
   };
   node.stop = async () => {
@@ -103,7 +131,7 @@ const serverAt = async (name, port) => {
     children.delete(child);
   };
   node.gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
   };
@@ -111,7 +139,7 @@ const serverAt = async (name, port) => {
   return node;
 };
 const withSocket = async (url, fn) => {
-  const socket = new WebSocket(url);
+  const socket = new WebSocket(ownerSocketUrl(url));
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
   await sleep(500);
   try { await fn(socket); } finally { await sleep(800); socket.close(); }
@@ -123,10 +151,10 @@ let frontend, browser;
 await fs.mkdir(outputDir, { recursive: true });
 try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
-  const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort())]);
+  const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort(), { viaProxy: true })]);
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-  await alpha.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: beta.nodeId, baseUrl: beta.baseUrl, name: NODE } });
-  await beta.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: 'alpha-node' } });
+  // The nodes pair by invite (autobyteus-437 DS-004): alpha names beta NODE, beta names alpha 'alpha-node'.
+  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: NODE, accepterName: 'alpha-node' });
   const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
   const def = async (node, name, defaultLaunchConfig) => (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
     { i: { name, role: 'assistant', description: `${name} (tree probe)`, instructions: 'Help.', toolNames: [], ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}) } })).createAgentDefinition.id;
@@ -225,8 +253,6 @@ try {
   evidence.runs = { standalone: standalone.runId, remoteTeamRun, studioMembers, team: team.teamRunId, leadRun, localA, remoteAgentRun, localB, org: org.agentOrgRunId, orgLead, orgRemoteRun, orgRemoteTeamRun, orgTeamMembers };
 
   // The web app against alpha.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   const frontendLog = createWriteStream(path.join(outputDir, 'frontend.log'));
   frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], { cwd: webDir, detached: true,
     stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: alpha.baseUrl } });
@@ -237,6 +263,9 @@ try {
   }, 240_000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The desktop window carries the probe's credential (fixtures/probe-node-access.mjs), as the desktop's main process
+  // attaches it.
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   const page = await context.newPage();
   page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));
@@ -377,7 +406,11 @@ try {
   const betaRunConversation = async runId => JSON.stringify((await beta.gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
   await textarea.fill('status? Marker OWNER-FROM-WINDOW');
   const send = page.locator('[data-test="workspace-center-pane"] button[aria-label="Send message"]:not([data-test="chat-primary-action"]):visible').last();
-  await waitFor('Send enabled', async () => (await send.count()) > 0 && await send.isEnabled(), 15_000);
+  // The composer can re-mount right after the view switches back, emptying the box; type again until Send is enabled.
+  await waitFor('Send enabled', async () => {
+    if (!(await textarea.inputValue().catch(() => ''))) await textarea.fill('status? Marker OWNER-FROM-WINDOW').catch(() => undefined);
+    return (await send.count()) > 0 && await send.isEnabled();
+  }, 15_000);
   await send.click();
   await waitFor('the owner message on beta', async () => (await betaRunConversation(remoteAgentRun)).includes('OWNER-FROM-WINDOW'), 30_000);
   await waitFor('the answer on beta', async () => { const text = await betaRunConversation(remoteAgentRun); return text.lastIndexOf('"OK"') > text.indexOf('OWNER-FROM-WINDOW'); }, 30_000);
@@ -398,6 +431,8 @@ try {
 
   // RTP-05: Stop on the remote row stops the run on beta.
   const stop = rowOf(remoteAgentRun).first().locator('[data-test="workspace-delegated-stop"]');
+  // The row's live status (and its stop icon) arrives by the run's ID on /ws/run-status: wait for it (autobyteus-461 SR-083).
+  const rowBeforeStop = await waitFor('the remote row\'s stop icon', async () => (await stop.count()) > 0, 30_000).then(() => null, async () => rowInfo(remoteAgentRun));
   const stopVisible = (await stop.count()) > 0;
   if (stopVisible) await stop.click();
   let stoppedOnBeta = false;
@@ -405,7 +440,7 @@ try {
     const groups = (await beta.gql('query{listWorkspaceRunHistory(limitPerAgent:50){agentDefinitions{runs{runId isActive}}}}')).listWorkspaceRunHistory;
     return (stoppedOnBeta = groups.flatMap(group => group.agentDefinitions.flatMap(definition => definition.runs)).some(run => run.runId === remoteAgentRun && run.isActive === false));
   }, 30_000).catch(() => undefined);
-  evidence.cases['RTP-05'] = { result: stopVisible && stoppedOnBeta ? 'Pass' : 'Fail', stopVisible, stoppedOnBeta, rowAfter: await rowInfo(remoteAgentRun) };
+  evidence.cases['RTP-05'] = { result: stopVisible && stoppedOnBeta ? 'Pass' : 'Fail', stopVisible, stoppedOnBeta, rowBeforeStop, rowAfter: await rowInfo(remoteAgentRun) };
 
   // RTP-06 / RTP-07: beta stopped: every family's remote row says "Couldn't reach beta-node." with Retry, and an opened
   // remote run shows the notice with Retry; the rest of the tree works; beta back: Retry from the row (RTP-06) and from
@@ -439,8 +474,36 @@ try {
     await page.reload({ waitUntil: 'domcontentloaded' });
     await openTree(downReady);
   };
+  // RTP-09 (autobyteus-461 CRR-049, CR-461-094: the churn check): a view with peer rows stays open for three minutes; the
+  // peer's status settles and alpha opens no new observation of beta in a loop (counted on beta's counting proxy).
+  const churnMs = Number(arg('churn-ms', '180000'));
+  await page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${standalone.runId}"]`).first().click();
+  await waitFor('the standalone view with its peer rows', async () => (await centerPane.innerText()).includes('studio_team'), 30_000).catch(() => undefined);
+  const churnStatus = await openRunStatus(alpha.baseUrl);
+  await churnStatus.subscribe([{ kind: 'agent_team', runId: remoteTeamRun }]);
+  const observationLines = (from, to = Date.now()) => proxyLog.filter((entry) => entry.node === 'beta' && entry.at >= from && entry.at <= to && /run-observations/.test(entry.line));
+  const churnFrom = Date.now();
+  const sinceStatus = churnStatus.messages.length;
+  await sleep(churnMs);
+  const churnTo = Date.now();
+  const statusChanges = churnStatus.messages.slice(sinceStatus).filter((m) => m.type === 'RUN_STATUS_CHANGED');
+  const rtp09 = { windowMs: churnTo - churnFrom, observationsOpened: observationLines(churnFrom, churnTo).length,
+    observationsBeforeWindow: observationLines(0, churnFrom).length, statusChanges: statusChanges.length,
+    lastStatuses: churnStatus.agentsOf('agent_team', remoteTeamRun), connectionsByPath: Object.entries(proxyLog.filter((e) => e.at >= churnFrom && e.at <= churnTo)
+      .reduce((acc, e) => { const key = e.line.replace(/\/[A-Za-z0-9_-]{20,}/g, '/:id'); acc[key] = (acc[key] ?? 0) + 1; return acc; }, {})) };
+  churnStatus.close();
+  // Settled: at most a handful of new observations and status changes in three quiet minutes (round 31's loop: ~33,000).
+  evidence.cases['RTP-09'] = { result: rtp09.observationsOpened <= 3 && rtp09.statusChanges <= 3 ? 'Pass' : 'Fail', ...rtp09 };
+  await page.screenshot({ path: path.join(outputDir, 'RTP-09-after-three-minutes.png'), fullPage: true });
+
+  // RTP-08 (autobyteus-461 SR-083, CR-461-085, AR-403): the peer Agent run's status by its run ID on alpha's /ws/run-status,
+  // held across beta's outage: the unasked end shows `offline`; after beta is back and Retry, a turn on beta is live again.
+  const peerStatus = await openRunStatus(alpha.baseUrl);
+  await peerStatus.subscribe([{ kind: 'agent', runId: remoteAgentRun }]);
+  const rtp08 = { before: peerStatus.agentsOf('agent', remoteAgentRun) };
   const rowRetry = {};
   await betaDownAndReload();
+  rtp08.offlineAtEnd = await peerStatus.waitStatus('agent', remoteAgentRun, remoteAgentRun, (status) => status === 'offline', 45_000).then(() => true, () => false);
   for (const family of families) {
     rowRetry[family.name] = { beforeRootOpened: await rowStateOf(family) };
     await family.root().click();
@@ -489,11 +552,24 @@ try {
     noticeRetry[family.name] = { opened: memberRowShown ? family.open : 'the remote Team row', notice, retryShown, recovered, rowAtOpen, viewAtOpen };
   }
   await page.screenshot({ path: path.join(outputDir, 'RTP-07-after-notice-retry.png'), fullPage: true });
+  // A turn on beta after Retry: its live status reaches alpha's subscription again (one writer, run-status; CR-461-085).
+  const sinceRetry = peerStatus.messages.length;
+  await withSocket(`${beta.baseUrl.replace(/^http/, 'ws')}/ws/agent/${remoteAgentRun}`, async (socket) => {
+    const id = randomUUID();
+    socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: remoteAgentRun, message_id: `rtp08-${id}`, dedupe_key: `agent_run_input:rtp08:${id}`, content: 'One more line, please.', context_file_paths: [], image_urls: [] } }));
+  });
+  rtp08.liveAgain = await waitFor('the peer run live again on alpha', async () => peerStatus.messages.slice(sinceRetry)
+    .some((m) => m.type === 'RUN_STATUS_CHANGED' && m.payload.agentRunId === remoteAgentRun && ['running', 'idle', 'initializing'].includes(m.payload.status)), 60_000).then(() => true, () => false);
+  rtp08.changesAfterRetry = peerStatus.messages.slice(sinceRetry).filter((m) => m.type === 'RUN_STATUS_CHANGED').map((m) => m.payload.status);
+  peerStatus.close();
+  evidence.cases['RTP-08'] = { result: rtp08.offlineAtEnd && rtp08.liveAgain ? 'Pass' : 'Fail', ...rtp08 };
   evidence.cases['RTP-07'] = { result: Object.values(noticeRetry).every(entry => entry.notice?.includes(`${NODE} isn't reachable`) && entry.retryShown && entry.recovered
     // One red line on the row: the remote run's, not a second loading error (SR-008, CRR-006 F-006).
     && !entry.rowAtOpen?.text?.includes("Couldn't load")) ? 'Pass' : 'Fail', noticeRetry };
 
-  evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') && evidence.browserErrors.filter(line => !/favicon|DevTools/.test(line)).length === 0 ? 'Pass' : 'Fail';
+  // A cold `nuxt dev` re-optimizes its dependencies and reloads (TESTING.md § Browser probes): its 504 and the failed
+  // module load are the harness, not the product (baseline fix, autobyteus-290 API/E2E).
+  evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') && evidence.browserErrors.filter(line => !/favicon|DevTools|504 \(Outdated Optimize Dep\)|Failed to fetch dynamically imported module|error caught during app initialization/.test(line)).length === 0 ? 'Pass' : 'Fail';
   if (evidence.result !== 'Pass') process.exitCode = 1;
 } catch (error) {
   evidence.error = error instanceof Error ? error.stack ?? error.message : String(error);
@@ -510,6 +586,8 @@ try {
     children.delete(child);
   }
   await fs.rm(root, { recursive: true, force: true }).catch(() => undefined);
+  for (const proxy of proxies) proxy.close();
+  evidence.proxyConnections = { total: proxyLog.length, observations: proxyLog.filter((e) => /run-observations/.test(e.line)).length };
   evidence.cleanup = { frontendExited: !frontend || exited(frontend), serversLeft: children.size, rootRemoved: !existsSync(root) };
   evidence.finishedAt = new Date().toISOString();
   await fs.writeFile(path.join(outputDir, 'remote-runs-in-tree-probe.json'), `${JSON.stringify(evidence, null, 2)}\n`);

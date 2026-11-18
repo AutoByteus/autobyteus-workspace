@@ -1,0 +1,147 @@
+{
+  "jobState": "success",
+  "lastError": null,
+  "fileFailureCount": 23,
+  "fileFailures": [
+    {
+      "relativePath": "000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/000-run-with-a-deep-path/context_files/nested-folder-with-a-long-name/nested-folder-with-a-long-name/nested-folder-with-a-long-name/very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-very-long-attachment-name-end.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-01/context_files/video-1.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-01/context_files/video-1.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-02/context_files/video-2.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-02/context_files/video-2.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-03/context_files/video-3.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-03/context_files/video-3.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-04/context_files/video-4.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-04/context_files/video-4.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-05/context_files/video-5.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-05/context_files/video-5.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-06/context_files/video-6.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-06/context_files/video-6.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-07/context_files/video-7.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-07/context_files/video-7.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-08/context_files/video-8.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-08/context_files/video-8.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-09/context_files/video-9.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-09/context_files/video-9.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-10/context_files/video-10.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-10/context_files/video-10.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-11/context_files/video-11.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-11/context_files/video-11.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-12/context_files/video-12.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-12/context_files/video-12.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-13/context_files/video-13.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-13/context_files/video-13.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-14/context_files/video-14.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-14/context_files/video-14.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-15/context_files/video-15.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-15/context_files/video-15.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-16/context_files/video-16.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-16/context_files/video-16.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-17/context_files/video-17.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-17/context_files/video-17.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-18/context_files/video-18.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-18/context_files/video-18.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    },
+    {
+      "relativePath": "run-19/context_files/video-19.mp4",
+      "size": 8912896,
+      "reason": "Uploaded file hash mismatch for agents/run-19/context_files/video-19.mp4.",
+      "attempts": 1,
+      "nextAttemptAt": "2026-11-15T14:00:32.567Z"
+    }
+  ]
+}

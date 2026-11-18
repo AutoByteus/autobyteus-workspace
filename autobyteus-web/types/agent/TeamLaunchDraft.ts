@@ -7,6 +7,7 @@ import type {
 import type { AgentTeamAddress } from './AgentTeamAddress'
 import type { ContextAttachment } from '~/types/conversation'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
+import { createRandomId } from '~/utils/randomId'
 
 export type TeamLaunchDraftId = string & { readonly __teamLaunchDraftId: unique symbol }
 
@@ -103,4 +104,4 @@ export const isTeamLaunchRepairRequiredError = (error: unknown): error is TeamLa
   typeof error === 'object' && error !== null && 'code' in error && error.code === 'TEAM_LAUNCH_REPAIR_REQUIRED'
 
 export const createTeamLaunchDraftId = (): TeamLaunchDraftId =>
-  `team-draft-${crypto.randomUUID()}` as TeamLaunchDraftId
+  `team-draft-${createRandomId()}` as TeamLaunchDraftId

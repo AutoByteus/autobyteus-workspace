@@ -1,0 +1,18 @@
+# Check: IMP-09
+# Command: pnpm -C autobyteus-web guard:web-boundary && guard:localization-boundary && audit:localization-literals
+# Commit: 9e0a09dc81
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08
+
+## guard:web-boundary
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+## guard:localization-boundary
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+## audit:localization-literals
+
+[audit:localization-literals] Passed with zero unresolved findings.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.

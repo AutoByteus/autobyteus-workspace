@@ -1,0 +1,15 @@
+# API-02/API-03 mutation check: the new team/Org cases fail when stored config keys are forwarded raw
+# steps: inserted after applySafeProviderRequestKwargs(...) in autobyteus-ts/src/llm/api/anthropic-llm.ts a line copying every non-owned config key onto the request; ran the same command; restored the file from a copy (0 markers, git diff empty)
+# commit: a2a5d0e47 + API/E2E test additions (working tree); env: Linux, Node v22.23.3, in-process studio server, synthetic test vault, canned Anthropic stream; date: 2026-10-29
+
+     × claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key 355ms
+     × claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key 339ms
+     × team run: restore succeeds and every member's request after restore carries no stored stale key 735ms
+     × Org run: restore succeeds and the member requests after restore carry no stored stale key 4231ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { model: 'claude-opus-5-5', …(9) } to not have property "thinking_display"
+AssertionError: expected { model: 'claude-sonnet-5-5', …(9) } to not have property "thinking_display"
+AssertionError: expected '{"model":"claude-opus-5-5","max_token…' not to contain 'thinking_display'
+AssertionError: expected '{"model":"claude-opus-5-5","max_token…' not to contain 'thinking_display'
+      Tests  4 failed (4)
+after restoring the file: see API-02-03-resume-team-org-synthetic.log (4 passed)

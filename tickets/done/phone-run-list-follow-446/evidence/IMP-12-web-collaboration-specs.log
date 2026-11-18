@@ -1,0 +1,14 @@
+# Check: IMP-12
+# Command: pnpm -C autobyteus-web test:nuxt --run services/agentCollaboration stores/__tests__/agentRunCollaboration
+# Commit: ff9a0c7b0c
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+ ✓ stores/__tests__/agentRunCollaborationListedStatuses.spec.ts > agentRunCollaborationStore.refreshListedStatuses > the closed-set digest (autobyteus-446) > re-reads the view once when a listed run's Task closed (the digest differs), and applies no states from that answer 2ms
+ ✓ stores/__tests__/agentRunCollaborationListedStatuses.spec.ts > agentRunCollaborationStore.refreshListedStatuses > the closed-set digest (autobyteus-446) > re-reads the view once when a closed Task was reopened (the node's set shrank) 1ms
+ ✓ stores/__tests__/agentRunCollaborationListedStatuses.spec.ts > agentRunCollaborationStore.refreshListedStatuses > the closed-set digest (autobyteus-446) > reads no view over ten refreshes while the digests match: one batched states read each (AC-005) 1ms
+ ✓ stores/__tests__/agentRunCollaborationListedStatuses.spec.ts > agentRunCollaborationStore.refreshListedStatuses > the closed-set digest (autobyteus-446) > a closed set the context already follows (a live event) matches the node's digest: no extra re-read 1ms
+ ✓ stores/__tests__/agentRunCollaborationListedStatuses.spec.ts > agentRunCollaborationStore.refreshListedStatuses > the closed-set digest (autobyteus-446) > an inactive answer carries no digest and re-reads nothing for an inactive view 1ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStatuses.spec.ts > readAgentRunCollaborationStatuses > asks once for the runs, uncached, and maps each answer into the client status shape, with its closed-set digest 3ms
+ Test Files  16 passed (16)
+      Tests  108 passed (108)

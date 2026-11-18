@@ -1,4 +1,6 @@
 import { NodeCatalogPort } from "../agent-collaboration/collaborators/node-catalog-port.js";
+import { RemoteCollaborationSettingsError } from "./domain/remote-collaboration-settings-error.js";
+import { NodeIdentityNotMigratedError } from "../remote-access/services/node-identity-service.js";
 import type { ServerSettingsService } from "../services/server-settings-service.js";
 import { PeerClient } from "./channel/peer-client.js";
 import {
@@ -8,10 +10,14 @@ import {
   type RemoteMessageHandler,
   type RemoteRunViewHandler,
 } from "./channel/peer-gateway.js";
-import { RemoteNodeDiscovery } from "./discovery/remote-node-discovery.js";
+import { PeerNodeDiscovery } from "./discovery/peer-node-discovery.js";
 import { PeerAddressResolver } from "./settings/peer-address-resolver.js";
 import { PeerDirectory } from "./settings/peer-directory.js";
 import { PeerStore } from "./settings/peer-store.js";
+import { PeerPairingService } from "./settings/peer-pairing-service.js";
+import { PeerRequestSignatureVerifier } from "./channel/peer-request-signature.js";
+import { getServerAddressCandidateService } from "../server-addressing/server-address-candidate-service.js";
+import { readComputerName } from "../remote-access/services/computer-name.js";
 import { RemoteCollaborationCapability } from "./settings/remote-collaboration-capability.js";
 import type { AppDataDirSource } from "./settings/settings-file-schema.js";
 import { runsInContainer as processRunsInContainer } from "../server-addressing/runs-in-container.js";
@@ -29,8 +35,12 @@ export type RemoteCollaborationServices = Readonly<{
   catalogPort: NodeCatalogPort;
   client: PeerClient;
   gateway: PeerGateway;
-  /** autobyteus-261: the peers with their status, and a peer's offer (the `RemoteDiscoveryChannel`). */
-  discovery: RemoteNodeDiscovery;
+  /** autobyteus-261: the peers with their status, and a peer's offer (the `PeerDiscoveryChannel`). */
+  discovery: PeerNodeDiscovery;
+  /** autobyteus-437: peer invites and the pairing exchange (DS-004). */
+  pairing: PeerPairingService;
+  /** autobyteus-437: the peer credential kind of the node's request gate (DS-005). */
+  peerRequestVerifier: PeerRequestSignatureVerifier;
 }>;
 
 /**
@@ -45,7 +55,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   tempWorkspaceDir: string;
   /** Whether this server runs in a container (the loopback hint); the process check by default. */
   runsInContainer?(): boolean;
-  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses">): Readonly<{
+  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
     runViews: RemoteRunViewHandler;
   }>;
@@ -54,18 +64,44 @@ export const composeRemoteCollaboration = (input: Readonly<{
   const store = new PeerStore(input.config);
   let peers: PeerDirectory;
   const client = new PeerClient({
-    peers: { findByName: (name) => peers.findByName(name), findByNodeId: (nodeId) => peers.findByNodeId(nodeId) },
+    peers: {
+      findByName: (name) => peers.findByName(name),
+      findByNodeId: (nodeId) => peers.findByNodeId(nodeId),
+      peerSecret: (nodeId) => peers.peerSecret(nodeId),
+    },
     capability,
     ownNodeId: input.ownNodeId,
   });
   const runsInContainer = input.runsInContainer ?? processRunsInContainer;
-  peers = new PeerDirectory({ store, probe: client, capability, ownNodeId: input.ownNodeId, runsInContainer });
+  // autobyteus-290: a settings change while this node's identity is held back is refused with that reason.
+  const ownNodeIdForSettings = async (): Promise<string> => {
+    try {
+      return await input.ownNodeId();
+    } catch (error) {
+      if (error instanceof NodeIdentityNotMigratedError) throw new RemoteCollaborationSettingsError("NODE_IDENTITY_NOT_MIGRATED", error.message);
+      throw error;
+    }
+  };
+  peers = new PeerDirectory({ store, probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
   const services = { capability, peers, catalogPort: new NodeCatalogPort(input.tempWorkspaceDir), client };
   const handlers = input.handlers(services);
   const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, ...handlers });
-  const discovery = new RemoteNodeDiscovery({ capability, peers, client });
-  const addresses = new PeerAddressResolver({ probe: client, capability, ownNodeId: input.ownNodeId, runsInContainer });
-  return Object.freeze({ ...services, gateway, discovery, addresses });
+  const discovery = new PeerNodeDiscovery({ capability, peers, client });
+  const addresses = new PeerAddressResolver({ probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
+  const pairing = new PeerPairingService({
+    capability,
+    peers,
+    addresses,
+    transport: client,
+    ownNodeId: ownNodeIdForSettings,
+    ownAddressCandidates: () => getServerAddressCandidateService().listCandidates().map((candidate) => candidate.baseUrl),
+    ownName: () => readComputerName(),
+  });
+  const peerRequestVerifier = new PeerRequestSignatureVerifier({
+    ownNodeId: input.ownNodeId,
+    peerSecret: (nodeId) => peers.peerSecret(nodeId),
+  });
+  return Object.freeze({ ...services, gateway, discovery, addresses, pairing, peerRequestVerifier });
 };
 
 let processServices: RemoteCollaborationServices | null = null;

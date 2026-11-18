@@ -5,6 +5,7 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { remoteObservationFrameOf } from "./peer-run-view-answers.js";
+import { peerRequestTarget, signPeerRequest } from "./peer-request-signature.js";
 
 /** The part of a WebSocket the observation client uses (the runtime's `WebSocket`, or a test double). */
 export type PeerWebSocket = {
@@ -15,25 +16,32 @@ export type PeerWebSocket = {
   send(data: string): void;
   close(code?: number): void;
 };
-export type OpenWebSocket = (url: string) => PeerWebSocket;
+/** Opens a WebSocket with the upgrade request's headers (the peer signature). */
+export type OpenWebSocket = (url: string, headers: Readonly<Record<string, string>>) => PeerWebSocket;
 
-const openRuntimeWebSocket: OpenWebSocket = (url) => new WebSocket(url) as unknown as PeerWebSocket;
+// Node's WebSocket takes request headers as a non-standard option.
+const openRuntimeWebSocket: OpenWebSocket = (url, headers) =>
+  new WebSocket(url, { headers } as unknown as string[]) as unknown as PeerWebSocket;
 
 const frameText = (data: unknown): string | null =>
   typeof data === "string" ? data : data instanceof ArrayBuffer ? Buffer.from(data).toString("utf8") : Buffer.isBuffer(data) ? data.toString("utf8") : null;
 
 /**
- * The outbound end of one observation stream (autobyteus-278). It opens the peer's observation route, sends the
+ * The outbound end of one observation stream (autobyteus-278). It opens the peer's observation route with a signed
+ * upgrade (node access model NA-9; a peer without a secret is never opened), sends the
  * envelope with the run, and accepts frames only after the peer's first frame names the pinned node (N-401). A
  * refusal, a different node, a malformed first frame, no first frame within the bound, a failure or a close by the
  * peer ends it with `onEnd` once; `close()` ends it silently. A malformed later frame is dropped.
  */
 export const openPeerRunObservation = (input: Readonly<{
   resolvePeer(): Promise<PeerNode | null>;
+  peerSecret(nodeId: string): Promise<string | null>;
   ownNodeId(): Promise<string>;
   path: string;
   targetRoot: RemoteTargetRoot;
   observer: RemoteRunObserver;
+  /** One agent's own stream (SR-088): named in the opening; its frames go to `onAgentStreamFrame` instead. */
+  agentStream?: Readonly<{ agentRunId: string; onFrame(liveSequenceId: string, frame: Readonly<Record<string, unknown>>): void }>;
   openWebSocket?: OpenWebSocket;
   openingTimeoutMs: number;
 }>): RemoteRunObservationStream => {
@@ -53,12 +61,18 @@ export const openPeerRunObservation = (input: Readonly<{
   void (async () => {
     const peer = await input.resolvePeer().catch(() => null);
     if (!peer || closedByUs) return end();
-    const fromNodeId = await input.ownNodeId();
-    const url = `${peer.baseUrl.replace(/^http/, "ws")}${input.path}`;
-    try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(url); } catch { return end(); }
+    // This node's identity held back (autobyteus-290): nothing is opened, and the stream ends as any refusal does.
+    const fromNodeId = await input.ownNodeId().catch(() => null);
+    if (!fromNodeId || closedByUs) return end();
+    const secret = await input.peerSecret(peer.nodeId).catch(() => null);
+    if (!secret || closedByUs) return end();
+    const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl.replace(/^http/, "ws"), input.path);
+    const headers = signPeerRequest({ secret, method: "GET", pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: null });
+    try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(url.toString(), headers); } catch { return end(); }
     openingTimer = setTimeout(() => { if (!accepted) end(); }, input.openingTimeoutMs);
     socket.onopen = () => socket?.send(JSON.stringify({
       fromNodeId, toNodeId: peer.nodeId, targetRoot: { kind: input.targetRoot.kind, runId: input.targetRoot.runId },
+      ...(input.agentStream ? { agentRunId: input.agentStream.agentRunId } : {}),
     }));
     socket.onmessage = (event) => {
       if (ended) return;
@@ -71,6 +85,15 @@ export const openPeerRunObservation = (input: Readonly<{
         accepted = true;
         if (openingTimer) clearTimeout(openingTimer);
         openingTimer = null;
+        return;
+      }
+      if (input.agentStream) {
+        // An agent's own frame: its node's number and sequence; the frame itself is read where it is applied.
+        const numbered = value as { agentRunId?: unknown; liveSequenceId?: unknown; frame?: unknown } | null;
+        if (numbered && numbered.agentRunId === input.agentStream.agentRunId && typeof numbered.liveSequenceId === "string"
+          && numbered.frame && typeof numbered.frame === "object" && !Array.isArray(numbered.frame)) {
+          input.agentStream.onFrame(numbered.liveSequenceId, numbered.frame as Record<string, unknown>);
+        } else console.warn(`An agent stream frame from node '${peer.name}' was not readable; it was dropped.`);
         return;
       }
       const frame = remoteObservationFrameOf(value);

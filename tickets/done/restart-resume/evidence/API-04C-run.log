@@ -1,0 +1,25 @@
+[+0.01s] stamp "1.5.11-beta.9"
+[+2.65s] server started {"label":"X","pid":54871,"port":61813}
+[+3.81s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:61812","codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+9.95s] busy {"label":"slow-1","pid":58832}
+[+10.00s] busy {"label":"slow-2","pid":55575}
+[+10.04s] busy {"label":"slow-3","pid":56956}
+[+10.09s] busy {"label":"slow-4","pid":57289}
+[+10.13s] busy {"label":"slow-5","pid":57439}
+[+10.18s] busy {"label":"slow-6","pid":58319}
+[+10.23s] busy {"label":"slow-7","pid":57113}
+[+10.28s] busy {"label":"slow-8","pid":58216}
+[+10.33s] busy {"label":"slow-9","pid":58664}
+[+23.70s] busy {"label":"slow-10","pid":62086}
+[+23.74s] busy {"label":"slow-11","pid":59846}
+[+23.79s] busy {"label":"slow-12","pid":61141}
+[+23.83s] busy {"label":"t-message","pid":55383}
+[+23.88s] busy {"label":"t-stop","pid":55577}
+[+23.92s] busy {"label":"t-archive","pid":56153}
+[+31.06s] server stopped {"label":"X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793516131403},"ms":5616}
+[+31.06s] record [{"place":"host","run":"c25dedf5f6"},{"place":"host","run":"b427f336b7"},{"place":"host","run":"6d811df0e7"},{"place":"host","run":"c1d88d175d"},{"place":"host","run":"58b7ce9fba"},{"place":"host","run":"59bb8112d9"},{"place":"host","run":"d158c33876"},{"place":"host","run":"a68c6c3858"},{"place":"host","run":"43190102f4"},{"place":"host","run":"3452c9f1d9"},{"place":"host","run":"0c4eca7aa1"},{"place":"host","run":"bcb90a9ec9"},{"place":"host","run":"f087d6efc3"},{"place":"host","run":"2986707ed5"},{"place":"host","run":"a8d944e223"}]
+[+31.06s] stamp "1.5.11-beta.9-rr285next"
+[+32.89s] server started {"label":"X1","pid":62457,"port":62187}
+[+43.78s] queue race {"acted":{"stop":{"success":false,"message":"Agent run not found."},"stopMs":20,"archive":{"success":true,"message":"Run 'native_agent_rr285mvxh6fwt_3a965e569a0d4d2ab49d36a8d944e223' archived."},"archiveMs":73,"archiveDoneAtLogSec":"32.97","message":205,"messageAtLogSec":"33.10"},"lines":["[32.81] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7' of agent 'probe_agent_rr285mvxh6fwt_9e70c1258cbc4d3da156506d811df0e7'","[32.91] Restart resume resumed host run 'probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7' of agent 'probe_agent_rr285mvxh6fwt_349b02b6ccff411c8cb376b427f336b7'","[32.93] Restart resume resumed host run 'probe_agent_rr285mvxh6
+[+50.23s] server stopped {"label":"X1","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793516150544},"ms":6394}
+{"result":"Completed","error":null}

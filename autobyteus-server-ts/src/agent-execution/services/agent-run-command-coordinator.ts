@@ -1,6 +1,9 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
 import type { AgentRunInputLifecycle } from "../input/agent-run-input-contract.js";
+import { createUnsentInputFailureObserver } from "../input/unsent-input-failure-observer.js";
+import type { AgentRunEvent } from "../domain/agent-run-event.js";
+import { getAgentRunEventMessageMapper } from "../../services/agent-streaming/agent-run-event-message-mapper.js";
 import { AgentRunService, getAgentRunService } from "./agent-run-service.js";
 import {
   AgentRunCommandRegistry,
@@ -60,6 +63,10 @@ export class AgentRunCommandCoordinator {
     if (begin.kind === "duplicate") return this.duplicateResult(begin.record);
 
     const record = begin.record;
+    // DS-15 (SR-070): a run whose Task is closed takes no input; a delegated run that cannot be restored is refused with
+    // base's text (CR-461-070). Refused before anything is resolved, restored or shown.
+    const refusal = await this.standaloneRuns?.inputRefusal(record.runId) ?? null;
+    if (refusal) return this.refuse(record, refusal);
     const activeRunAtStart = this.agentRunService.getAgentRun(record.runId);
     const requiresActivation = !activeRunAtStart;
     if (requiresActivation) {
@@ -71,6 +78,11 @@ export class AgentRunCommandCoordinator {
 
     try {
       const outcome = await this.post(record, input);
+      if (outcome.kind === "refused") {
+        // Closed between the check above and the root's gate: nothing was made ready or posted.
+        this.clearOverlayForCommand(record);
+        return this.refuse(record, outcome.refusal);
+      }
       if (outcome.kind === "admission_failed") {
         return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", outcome.message, { publishErrorStatus: false });
       }
@@ -116,7 +128,15 @@ export class AgentRunCommandCoordinator {
    */
   private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {
     const message = this.withCommandMetadata(input.message, record);
-    const postOptions = { lifecycleObserver: (fact: AgentRunInputLifecycle) => this.applyInputLifecycle(record, fact) };
+    // An input that fails before it is sent (e.g. a tool-list reopen failure) is otherwise silent on the
+    // run's stream: it is shown as a run ERROR there, once (autobyteus-324 SR-010).
+    const unsentFailure = createUnsentInputFailureObserver({
+      runId: record.runId, publish: (event) => this.publishRunEvent(record.runId, event),
+    });
+    const postOptions = { lifecycleObserver: (fact: AgentRunInputLifecycle) => {
+      this.applyInputLifecycle(record, fact);
+      unsentFailure(fact);
+    } };
     const onActiveRunReady = (run: AgentRun) => {
       this.clearOverlayForCommand(record);
       input.onActiveRunReady?.(run);
@@ -134,6 +154,11 @@ export class AgentRunCommandCoordinator {
     }
     const post: AgentOperationResult = await run.postUserMessage(message, postOptions);
     return { kind: "posted", run, post };
+  }
+
+  private refuse(record: AgentRunCommandRecord, refusal: Readonly<{ code: "TASK_AGENT_RESOURCE_CLOSED" | "TASK_AGENT_RESOURCES_UNAVAILABLE" | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"; message: string }>): Promise<AgentRunCommandCoordinatorResult> {
+    this.registry.markRejected({ runId: record.runId, messageId: record.messageId, code: refusal.code, message: refusal.message });
+    return this.recordResult(this.latestRecord(record), "rejected", false, false);
   }
 
   private applyInputLifecycle(
@@ -290,6 +315,14 @@ export class AgentRunCommandCoordinator {
       this.broadcaster.publishToRun(runId, new ServerMessage(ServerMessageType.AGENT_STATUS, payload));
     } catch (error) {
       logger.warn(`Failed to publish command status for run '${runId}'.`, error);
+    }
+  }
+
+  private publishRunEvent(runId: string, event: AgentRunEvent): void {
+    try {
+      this.broadcaster.publishToRun(runId, getAgentRunEventMessageMapper().map(event));
+    } catch (error) {
+      logger.warn(`Failed to publish input failure for run '${runId}'.`, error);
     }
   }
 

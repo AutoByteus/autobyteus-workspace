@@ -1,0 +1,21 @@
+# IMP-07 web-guards
+# Command: bash -c pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web audit:localization-literals
+# Environment mode: shell
+# Commit: 2d01ca639d (branch codex/phone-background-tasks-473)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12T05:32:42Z
+
+
+> autobyteus@1.5.13-beta.5 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.13-beta.5 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Failed.
+components/mobile/views/MobileBackgroundTasks.vue:72: date/time/number formatting with the OS locale is forbidden; pass useLocalization().resolvedLocale.
+components/mobile/views/MobileBackgroundTasks.vue:73: date/time/number formatting with the OS locale is forbidden; pass useLocalization().resolvedLocale.
+ ELIFECYCLE  Command failed with exit code 1.
+# Exit status: 1

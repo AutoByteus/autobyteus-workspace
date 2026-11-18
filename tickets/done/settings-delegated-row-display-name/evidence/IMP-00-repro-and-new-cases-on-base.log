@@ -1,0 +1,16 @@
+# IMP-00 (a) reproduction evidence/repro-delegated-row-names.spec.ts copied to utils/runSettings/__tests__/zz-probe-delegated-row-names.spec.ts and run on base (then removed);
+#        (b) the committed delegatedLaunchRows.spec.ts run with the three source files stashed (base sources)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run utils/runSettings/__tests__/<file> --run
+# base sources 1138e8fbef  env: macOS (darwin)  date: 2026-10-24  (output excerpt)
+
+(a)
+   × probe: Settings delegated rows use the sidebar name > Team root 7ms
+   × probe: Settings delegated rows use the sidebar name > Org and Agent roots 1ms
+      Tests  2 failed (2)
+(b)
+   ✓ delegated launch nodes (REQ-007, AC-010, SR-006) > Team root: one read-only row per open copy; a Team copy has its agents as child rows
+   ✓ delegated launch nodes (REQ-007, AC-010, SR-006) > a Team-level fallback is noted once, on the Team row; a member's own fallback stays on the member
+   ✓ delegated launch nodes (REQ-007, AC-010, SR-006) > Org and Agent roots (camelCase): the same rules, every value from the copy's own recorded source
+   × delegated row names follow the root's naming rule (autobyteus-208) > Team root: catalog copies (and a Team copy's members) by display name, a configured member's copy by basename, as the sidebar
+   × delegated row names follow the root's naming rule (autobyteus-208) > Org and Agent roots: every copy row by display name, as their sidebar and contexts
+      Tests  2 failed | 3 passed (5)

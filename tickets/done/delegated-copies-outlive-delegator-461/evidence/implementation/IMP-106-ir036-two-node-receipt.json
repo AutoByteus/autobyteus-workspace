@@ -1,0 +1,2062 @@
+{
+  "cases": {
+    "RC-01": {
+      "inbound": {
+        "start": {
+          "status": 401,
+          "answer": {
+            "error": "NODE_CREDENTIAL_INVALID",
+            "code": "NODE_CREDENTIAL_INVALID",
+            "message": "This node does not accept this credential."
+          }
+        },
+        "message": {
+          "status": 401,
+          "answer": {
+            "error": "NODE_CREDENTIAL_INVALID",
+            "code": "NODE_CREDENTIAL_INVALID",
+            "message": "This node does not accept this credential."
+          }
+        }
+      },
+      "addWhileOff": {
+        "message": "Turn on Remote Collaboration before pairing nodes.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 10
+          }
+        ],
+        "path": [
+          "createPeerInvite"
+        ],
+        "extensions": {
+          "code": "REMOTE_COLLABORATION_OFF"
+        }
+      }
+    },
+    "RC-03": {
+      "unregisteredCaller": {
+        "status": 401,
+        "answer": {
+          "error": "NODE_CREDENTIAL_INVALID",
+          "code": "NODE_CREDENTIAL_INVALID",
+          "message": "This node does not accept this credential."
+        }
+      },
+      "alphaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+            "name": "beta-node",
+            "baseUrl": "http://127.0.0.1:60744",
+            "addedAt": "2026-11-15T14:07:11.847Z"
+          }
+        ]
+      },
+      "betaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+            "name": "alpha-node",
+            "baseUrl": "http://127.0.0.1:60745",
+            "addedAt": "2026-11-15T14:07:11.840Z"
+          }
+        ]
+      },
+      "notAutobyteus": {
+        "message": "http://127.0.0.1:60834 is not an AutoByteus node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 34
+          }
+        ],
+        "path": [
+          "changePeerAddress"
+        ],
+        "extensions": {
+          "code": "PEER_NOT_AUTOBYTEUS"
+        }
+      },
+      "notFound": {
+        "message": "http://127.0.0.1:60834/missing is not an AutoByteus node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 34
+          }
+        ],
+        "path": [
+          "changePeerAddress"
+        ],
+        "extensions": {
+          "code": "PEER_NOT_AUTOBYTEUS"
+        }
+      },
+      "dead": {
+        "message": "http://127.0.0.1:60836 could not be reached: nothing answers at that address and port.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 34
+          }
+        ],
+        "path": [
+          "changePeerAddress"
+        ],
+        "extensions": {
+          "code": "PEER_UNREACHABLE",
+          "reason": "refused",
+          "address": "http://127.0.0.1:60836",
+          "loopbackInContainer": false
+        }
+      },
+      "gateway": {
+        "mismatchStart": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "mismatchMessage": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "unregisteredStart": {
+          "status": 401,
+          "answer": {
+            "error": "NODE_CREDENTIAL_INVALID",
+            "code": "NODE_CREDENTIAL_INVALID",
+            "message": "This node does not accept this credential."
+          }
+        },
+        "malformedStart": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "toNodeId must be a non-empty trimmed string."
+          }
+        },
+        "malformedMessage": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "kind must be 'work_packet' or 'message'."
+          }
+        }
+      },
+      "noPublishing": {
+        "publishQuery": "Cannot query field \"publishedAgents\" on type \"Query\".",
+        "oldField": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "address must be a non-empty trimmed string."
+          }
+        }
+      }
+    },
+    "RC-46": {
+      "a1": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+      "t1": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37",
+      "checker": "checker_f13083ded7b14f86bc102334733f06ae",
+      "agentLive": 1,
+      "agentSnapshotAgain": 1,
+      "interrupted": {
+        "command_type": "INTERRUPT_GENERATION",
+        "command_id": "27d02433-5e73-4e3f-aebf-b4a03825afc7",
+        "target": {
+          "target_kind": "standalone_run",
+          "run_id": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "state": "accepted"
+      },
+      "agentTurnEnds": [
+        "TURN_COMPLETED",
+        "TURN_INTERRUPTED"
+      ],
+      "files": {
+        "beta": [
+          {
+            "path": "gd1-image.png",
+            "status": "available"
+          }
+        ],
+        "alpha": {
+          "data": []
+        },
+        "alphaContentStatus": 404
+      },
+      "memberSnapshotsBefore": 1,
+      "memberLive": 1,
+      "memberSnapshotsAfter": 2,
+      "memberSnapshotAgain": 1,
+      "memberInterrupted": {
+        "command_type": "INTERRUPT_GENERATION",
+        "command_id": "bd089363-1cc2-48a9-91a9-a643d306298e",
+        "target": {
+          "target_kind": "standalone_run",
+          "run_id": "checker_f13083ded7b14f86bc102334733f06ae"
+        },
+        "state": "accepted"
+      },
+      "retryWhileDown": {
+        "state": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+          "answer": "unreachable",
+          "node": "beta-node",
+          "status": null
+        },
+        "elapsedMs": 103
+      },
+      "retryBack": {
+        "state": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+          "answer": "ok",
+          "node": null,
+          "status": "offline"
+        },
+        "elapsedMs": 102
+      }
+    }
+  },
+  "nodes": {
+    "alpha": {
+      "nodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+      "port": 60742,
+      "peerUrlOnBeta": "http://127.0.0.1:60745",
+      "canaryKeySaved": true
+    },
+    "beta": {
+      "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+      "port": 60743,
+      "peerUrlOnAlpha": "http://127.0.0.1:60744",
+      "canaryKeySaved": true
+    }
+  },
+  "betaDefinitions": {
+    "delegator": "delegator",
+    "manager": "remote-manager",
+    "worker": "remote-worker",
+    "scout": "scout",
+    "oldNameScout": "old-name-scout",
+    "team": "remote-squad",
+    "org": "remote-org",
+    "publisher": "publisher",
+    "blank": "blank-slate",
+    "half": "half-set",
+    "codex": "codex-writer",
+    "fragile": "fragile",
+    "bystander": "bystander",
+    "checker": "checker",
+    "studioTeam": "studio-team",
+    "hollowTeam": "hollow-team",
+    "codexTeam": "codex-team",
+    "betaOrg": "remote-org-b"
+  },
+  "captured": [
+    {
+      "seq": 1,
+      "at": 1794751631860,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 2,
+      "at": 1794751639298,
+      "via": "toAlpha",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:60745",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "nodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN"
+      }
+    },
+    {
+      "seq": 3,
+      "at": 1794751639832,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751639",
+        "x-autobyteus-peer-nonce": "a384f0f7afb566382a31d5844ff427b2",
+        "x-autobyteus-peer-body-sha256": "5f367866afbfcde2c46d35352db07d9dd505d72e20b4b55ddbaa679fa09435d3",
+        "x-autobyteus-peer-signature": "1d1abadffabb53dc3f835762287001c85974d5f6cbe3d81bfba45a6a92faa58d",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "442"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "address": "/publisher",
+        "delegator": {
+          "agentRunId": "delegator_3dbdb3c059d84977a7afef334067338a"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3dbdb3c059d84977a7afef334067338a"
+        },
+        "task": {
+          "text": "G-D1 agent work. Marker GD1-AGENT-PACKET.",
+          "title": "G-D1 agent work. Marker GD1-AGENT-PACKET.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent",
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+        "launches": [
+          {
+            "address": "/publisher",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          }
+        ],
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 4,
+      "at": 1794751640068,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751640",
+        "x-autobyteus-peer-nonce": "91104496152d6c6be038a39e8703d494",
+        "x-autobyteus-peer-body-sha256": "7e214cdae176910dd3de7eccd58084ad4a26cf5f8117595d54c9778c62e901f2",
+        "x-autobyteus-peer-signature": "c511b6c543b105b8c5844614441803bc52494022e8942704a7befe927bbddbbf",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "471"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3dbdb3c059d84977a7afef334067338a"
+        },
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "target": {
+          "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "content": "G-D1 agent work. Marker GD1-AGENT-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-11-15T14:07:20.065Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 5,
+      "at": 1794751640468,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/delegated-runs",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751640",
+        "x-autobyteus-peer-nonce": "82d39dce2d41f23d05c5badbbe33c2f1",
+        "x-autobyteus-peer-body-sha256": "da73e2ad837481a0d852d0f4a5f7d39c39be530b5d0cee4b43344649f1fb466f",
+        "x-autobyteus-peer-signature": "9e80b3bb3bfc92130e127358c21591f4efd6aa3f4706d662dee8bcfe2ba4967d",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "444"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "address": "/studio_team",
+        "delegator": {
+          "agentRunId": "delegator_3dbdb3c059d84977a7afef334067338a"
+        },
+        "delegatingRun": {
+          "kind": "agent",
+          "runId": "delegator_3dbdb3c059d84977a7afef334067338a"
+        },
+        "task": {
+          "text": "G-D1 studio work. Marker GD1-TEAM-PACKET.",
+          "title": "G-D1 studio work. Marker GD1-TEAM-PACKET.",
+          "taskKey": null,
+          "projectId": null,
+          "taskId": null
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "kind": "agent_team",
+        "teamRunId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37",
+        "coordinatorAddress": "/lead",
+        "members": [
+          {
+            "address": "/lead",
+            "agentRunId": "publisher_c054b5b0cd0840e1b18143dc6ff9a2ef"
+          },
+          {
+            "address": "/checker",
+            "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae"
+          }
+        ],
+        "launches": [
+          {
+            "address": "/studio_team/lead",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "source": {
+              "origin": "agent_default",
+              "fallbacks": []
+            }
+          },
+          {
+            "address": "/studio_team/checker",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "source": {
+              "origin": "team_default",
+              "fallbacks": []
+            }
+          }
+        ],
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 6,
+      "at": 1794751640690,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/messages",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751640",
+        "x-autobyteus-peer-nonce": "5374e0de3705d200b97c5914a2f55fea",
+        "x-autobyteus-peer-body-sha256": "b28da3471fadc2e93302ff7069e840461ba47f075491e2086c790dacc81d668f",
+        "x-autobyteus-peer-signature": "8f6f1add7dfe11d6d0e83630a3232d5a26d4de71164fa2ca481b8bd59b10fed4",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "478"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "kind": "work_packet",
+        "sender": {
+          "agentRunId": "delegator_3dbdb3c059d84977a7afef334067338a"
+        },
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "target": {
+          "agentRunId": "publisher_c054b5b0cd0840e1b18143dc6ff9a2ef"
+        },
+        "content": "G-D1 studio work. Marker GD1-TEAM-PACKET.",
+        "messageType": "task_work_packet",
+        "createdAt": "2026-11-15T14:07:20.688Z"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 7,
+      "at": 1794751640969,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/agent-stream-snapshot",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751640",
+        "x-autobyteus-peer-nonce": "32abd81faf2b56939bf8e744b890a27e",
+        "x-autobyteus-peer-body-sha256": "2c83521ba00e922763c272cbae46626107b491b41c80a418eaef1cb810f34b76",
+        "x-autobyteus-peer-signature": "edd7e9584b4bc5b6a2ab803554fac16cddf0ee96c1a6f46893241e51d54a41e2",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "244"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "snapshot": {
+          "stored": {
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+            "conversation": [
+              {
+                "kind": "message",
+                "role": "user",
+                "content": "You have a new task from the agent with sender run id \"delegator_3dbdb3c059d84977a7afef334067338a\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nG-D1 agent work. Marker GD1-AGENT-PACKET.",
+                "media": null,
+                "ts": 1794751640.277
+              },
+              {
+                "kind": "message",
+                "role": "assistant",
+                "turnId": "35267b5c-5ae8-40ed-bab5-fad294e79a5d",
+                "content": "OK",
+                "media": null,
+                "ts": 1794751640.284
+              }
+            ],
+            "activities": [],
+            "summary": "You have a new task from the agent with sender run id \"delegator_3dbdb3c059d84977a7afef334067338a...",
+            "lastActivityAt": "2026-11-15T14:07:20.284Z",
+            "hasEarlierActiveTraceEvents": false
+          },
+          "turn_frames": [],
+          "base_sequence": 13,
+          "live_sequence_id": "931a361f-4585-47d9-8e53-7ef498d8c920"
+        },
+        "status": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        },
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 8,
+      "at": 1794751640970,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751640",
+        "x-autobyteus-peer-nonce": "483923f365152cfbb0494cf19e8788d6",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "3a0ea8c003afa1939e20191dd0de8a65d186109ad0e1647f09b4d5539d92bb71",
+        "sec-websocket-key": "teaIMk0Fp0gjfMNagWbSJg==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: taHWsgyv6H/lDk5OuWhfdi1TgMM=\r\n\r\n"
+    },
+    {
+      "seq": 9,
+      "at": 1794751641071,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751641",
+        "x-autobyteus-peer-nonce": "686ea0a502af4f56ab2acfbad89ace2b",
+        "x-autobyteus-peer-body-sha256": "69eb1ae598b7378255e6fefef27539a7531c241826983413e683f2dd04da56e7",
+        "x-autobyteus-peer-signature": "89afe7dea639747cabdd7767635fc7dec3932d765eac48c2ff85dbd4aa956e8f",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "516"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+        "command": {
+          "kind": "post_message",
+          "content": "REPLY_FILE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-veEVja/beta/gd1-live-agent.txt",
+          "messageId": "78408df2-7b65-4611-97e1-19fa0b724285",
+          "dedupeKey": "78408df2-7b65-4611-97e1-19fa0b724285"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 10,
+      "at": 1794751643179,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/agent-stream-snapshot",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "1f98629fd95d10406d5580a80fb7a8c9",
+        "x-autobyteus-peer-body-sha256": "2c83521ba00e922763c272cbae46626107b491b41c80a418eaef1cb810f34b76",
+        "x-autobyteus-peer-signature": "1a437de2c9b2123d0f88d4984406e39ac2fdffca97f4f661ed88d98203760816",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "244"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "snapshot": {
+          "stored": {
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+            "conversation": [
+              {
+                "kind": "message",
+                "role": "user",
+                "content": "You have a new task from the agent with sender run id \"delegator_3dbdb3c059d84977a7afef334067338a\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nG-D1 agent work. Marker GD1-AGENT-PACKET.",
+                "media": null,
+                "ts": 1794751640.277
+              },
+              {
+                "kind": "message",
+                "role": "assistant",
+                "turnId": "35267b5c-5ae8-40ed-bab5-fad294e79a5d",
+                "content": "OK",
+                "media": null,
+                "ts": 1794751640.284
+              },
+              {
+                "kind": "message",
+                "role": "user",
+                "messageId": "78408df2-7b65-4611-97e1-19fa0b724285",
+                "dedupeKey": "78408df2-7b65-4611-97e1-19fa0b724285",
+                "content": "From the owner of node \"alpha-node\":\n\nREPLY_FILE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-veEVja/beta/gd1-live-agent.txt",
+                "media": null,
+                "ts": 1794751641.074
+              },
+              {
+                "kind": "message",
+                "role": "assistant",
+                "turnId": "95484ea1-4991-44a7-b2ab-9f8a7edc539c",
+                "content": "GD1-LIVE-AGENT-REPLY",
+                "media": null,
+                "ts": 1794751641.075
+              }
+            ],
+            "activities": [],
+            "summary": "You have a new task from the agent with sender run id \"delegator_3dbdb3c059d84977a7afef334067338a...",
+            "lastActivityAt": "2026-11-15T14:07:21.075Z",
+            "hasEarlierActiveTraceEvents": false
+          },
+          "turn_frames": [],
+          "base_sequence": 25,
+          "live_sequence_id": "931a361f-4585-47d9-8e53-7ef498d8c920"
+        },
+        "status": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        },
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 11,
+      "at": 1794751643179,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "6dcc9e42353c9bcaaf67467497eba041",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "4afd31196aea4b297d1d2062b4071dc5b92f7ac19bc90d7c81bfca653f36f545",
+        "sec-websocket-key": "YkXDqB9uxK0ElLA5dONeyA==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: oWFbG/4mcTjm5FLC0rVxbLJEFPg=\r\n\r\n"
+    },
+    {
+      "seq": 12,
+      "at": 1794751643285,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "4203776c6d49dcadbea7166af375547c",
+        "x-autobyteus-peer-body-sha256": "27204741287edc1c2783bab3baad3d8b3ff2e9155eff6d992bb60964b511cb81",
+        "x-autobyteus-peer-signature": "954e6070339d79cfe9d91a2db24f95ce85369bf07e69a3a3b5710b6685834c69",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "182"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+          }
+        ]
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+            "title": "G-D1 agent work. Marker GD1-AGENT-PACKET.",
+            "statuses": [
+              {
+                "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+                "status": "idle"
+              }
+            ],
+            "launches": [
+              {
+                "address": "/publisher",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "source": {
+                  "origin": "agent_default",
+                  "fallbacks": []
+                }
+              }
+            ]
+          }
+        ],
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 13,
+      "at": 1794751643286,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "77a69267c6ae33cb59ccd26613a1b81f",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "1aab5871b06dc72faa140e2bd3c5fae3ff4e7bc549f95753963c931dcc637b13",
+        "sec-websocket-key": "1oac3u3EpXWf/1/3a5Kd2g==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: VLXCH+kYFT+l+EnV9/lMXpXuy2A=\r\n\r\n"
+    },
+    {
+      "seq": 14,
+      "at": 1794751643389,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "c591d4ba443118f1a81832584819127f",
+        "x-autobyteus-peer-body-sha256": "52527d9ea17b5e207ccace261dab075d6824d92101b1ac34b3942f671fa80262",
+        "x-autobyteus-peer-signature": "eb99dc7ce1482b830167c6806b5593f900db65512b38b77e7ade8a346487e71f",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "418"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+        "command": {
+          "kind": "post_message",
+          "content": "HOLD_TURN Marker GD1-HOLD",
+          "messageId": "a5c19dee-74bf-49af-84e9-9eee59c9044a",
+          "dedupeKey": "a5c19dee-74bf-49af-84e9-9eee59c9044a"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 15,
+      "at": 1794751643494,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "3ca19410b4e08b2007adae5ee0a30057",
+        "x-autobyteus-peer-body-sha256": "39c0692862244d6c64bbd1e2db016fb4fb0bcae6181b72e50b0f11ae054eacde",
+        "x-autobyteus-peer-signature": "fe88d484c9f93903ae476e476b3bec4c2cb4635ea92e55d7a1d261daeb1c7165",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "275"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+        "command": {
+          "kind": "interrupt"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 16,
+      "at": 1794751643593,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "0900659dcfa50c04f413c8c6caf561ee",
+        "x-autobyteus-peer-body-sha256": "f4259f80490f414b3d882792e9ccfd387913be3ec1d6c1e5f80f3bc9424793d8",
+        "x-autobyteus-peer-signature": "e4f52de9bbf2d6f4fbd0889a00d170694314a1f7630f0cc1ffc749deea9e00d3",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "535"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+        "command": {
+          "kind": "post_message",
+          "content": "GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-veEVja/beta/data/temp_workspace/gd1-image.png",
+          "messageId": "809c2354-bcb5-4394-a2c7-7a2a1fca9bbd",
+          "dedupeKey": "809c2354-bcb5-4394-a2c7-7a2a1fca9bbd"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 17,
+      "at": 1794751643725,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/agent-stream-snapshot",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "9dafa31798f438d07886577f7531ebc1",
+        "x-autobyteus-peer-body-sha256": "2c83521ba00e922763c272cbae46626107b491b41c80a418eaef1cb810f34b76",
+        "x-autobyteus-peer-signature": "b26af67d471818e18f444d6abd46d8815f6108b212601f0f2658ba91d7bd8ccf",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "244"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent",
+          "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+        },
+        "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "snapshot": {
+          "stored": {
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+            "conversation": [
+              {
+                "kind": "message",
+                "role": "user",
+                "content": "You have a new task from the agent with sender run id \"delegator_3dbdb3c059d84977a7afef334067338a\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nG-D1 agent work. Marker GD1-AGENT-PACKET.",
+                "media": null,
+                "ts": 1794751640.277
+              },
+              {
+                "kind": "message",
+                "role": "assistant",
+                "turnId": "35267b5c-5ae8-40ed-bab5-fad294e79a5d",
+                "content": "OK",
+                "media": null,
+                "ts": 1794751640.284
+              },
+              {
+                "kind": "message",
+                "role": "user",
+                "messageId": "78408df2-7b65-4611-97e1-19fa0b724285",
+                "dedupeKey": "78408df2-7b65-4611-97e1-19fa0b724285",
+                "content": "From the owner of node \"alpha-node\":\n\nREPLY_FILE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-veEVja/beta/gd1-live-agent.txt",
+                "media": null,
+                "ts": 1794751641.074
+              },
+              {
+                "kind": "message",
+                "role": "assistant",
+                "turnId": "95484ea1-4991-44a7-b2ab-9f8a7edc539c",
+                "content": "GD1-LIVE-AGENT-REPLY",
+                "media": null,
+                "ts": 1794751641.075
+              },
+              {
+                "kind": "message",
+                "role": "user",
+                "messageId": "a5c19dee-74bf-49af-84e9-9eee59c9044a",
+                "dedupeKey": "a5c19dee-74bf-49af-84e9-9eee59c9044a",
+                "content": "From the owner of node \"alpha-node\":\n\nHOLD_TURN Marker GD1-HOLD",
+                "media": null,
+                "ts": 1794751643.395
+              },
+              {
+                "kind": "tool_call",
+                "invocationId": "agy-tool-f735a747-a60a-45be-802f-58cf64c7d237-30",
+                "role": null,
+                "turnId": "f735a747-a60a-45be-802f-58cf64c7d237",
+                "content": "Tool execution interrupted.",
+                "toolName": "run_command",
+                "toolArgs": {
+                  "CommandLine": "sleep 600 # HOLD_TURN"
+                },
+                "toolResult": null,
+                "toolError": "Tool execution interrupted.",
+                "media": null,
+                "ts": 1794751643.529
+              }
+            ],
+            "activities": [
+              {
+                "kind": "tool",
+                "invocationId": "agy-tool-f735a747-a60a-45be-802f-58cf64c7d237-30",
+                "toolName": "run_command",
+                "type": "tool_call",
+                "status": "error",
+                "contextText": "run_command",
+                "arguments": {
+                  "CommandLine": "sleep 600 # HOLD_TURN"
+                },
+                "logs": [],
+                "result": null,
+                "error": "Tool execution interrupted.",
+                "ts": 1794751643.529,
+                "detailLevel": "source_limited"
+              }
+            ],
+            "summary": "You have a new task from the agent with sender run id \"delegator_3dbdb3c059d84977a7afef334067338a...",
+            "lastActivityAt": "2026-11-15T14:07:23.529Z",
+            "hasEarlierActiveTraceEvents": false
+          },
+          "turn_frames": [],
+          "base_sequence": 1,
+          "live_sequence_id": "6d621aa3-696c-4af7-a6be-9f6175290117"
+        },
+        "status": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        },
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 18,
+      "at": 1794751643805,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/agent-stream-snapshot",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "528c360d9b1574028220db51545e1e64",
+        "x-autobyteus-peer-body-sha256": "5fa37a9045243cefb6264cc6f3cbd5e5bc87332640e30374682ab62973b5873f",
+        "x-autobyteus-peer-signature": "163831b993c13434d7b275b0407f35931279ffb02388c6f178ad1e84538151b8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "249"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "snapshot": {
+          "stored": {
+            "runId": "checker_f13083ded7b14f86bc102334733f06ae",
+            "conversation": [],
+            "activities": [],
+            "summary": null,
+            "lastActivityAt": null,
+            "hasEarlierActiveTraceEvents": false
+          },
+          "turn_frames": [],
+          "base_sequence": 0,
+          "live_sequence_id": null
+        },
+        "status": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        },
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 19,
+      "at": 1794751643805,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "2b4e9cf8be34526759bacf9097b80208",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "b29635c9f89158133b7bef0b68109124cc93f963cd4e03b854cef981193eab2a",
+        "sec-websocket-key": "Yfe4powv2hZKxJAQQV7wdg==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ag2FUSMohmFCaCr/AL695CVf844=\r\n\r\n"
+    },
+    {
+      "seq": 20,
+      "at": 1794751643909,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751643",
+        "x-autobyteus-peer-nonce": "426a5e271873cec62ac5593b3fa757fc",
+        "x-autobyteus-peer-body-sha256": "5b0c2bc979f7c472388f1a3e88061b7cd72c0db66b621b414844f31484f2fe04",
+        "x-autobyteus-peer-signature": "85c20a19c11af95211e37667a3a63f877ad9dcdb686e9fd3126045d62e5d337a",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "522"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae",
+        "command": {
+          "kind": "post_message",
+          "content": "REPLY_FILE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-veEVja/beta/gd1-live-member.txt",
+          "messageId": "d50604fd-17d9-4d8b-8a9d-e589650aaafc",
+          "dedupeKey": "d50604fd-17d9-4d8b-8a9d-e589650aaafc"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 21,
+      "at": 1794751644037,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/agent-stream-snapshot",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751644",
+        "x-autobyteus-peer-nonce": "3614219bc28c084f4922b85e3e3d77e2",
+        "x-autobyteus-peer-body-sha256": "5fa37a9045243cefb6264cc6f3cbd5e5bc87332640e30374682ab62973b5873f",
+        "x-autobyteus-peer-signature": "198fa4918491beda57f50bd98f3c453f6f4a744f46647b81e930280e0e74af42",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "249"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "snapshot": {
+          "stored": {
+            "runId": "checker_f13083ded7b14f86bc102334733f06ae",
+            "conversation": [],
+            "activities": [],
+            "summary": null,
+            "lastActivityAt": null,
+            "hasEarlierActiveTraceEvents": false
+          },
+          "turn_frames": [],
+          "base_sequence": 1,
+          "live_sequence_id": "de419fa7-9f73-49fa-bf3b-7199b5a51e17"
+        },
+        "status": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "initializing",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        },
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 22,
+      "at": 1794751646117,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/agent-stream-snapshot",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "044b469c7d81e091380d2cc8be8d82b2",
+        "x-autobyteus-peer-body-sha256": "5fa37a9045243cefb6264cc6f3cbd5e5bc87332640e30374682ab62973b5873f",
+        "x-autobyteus-peer-signature": "20b5f59a953f78c4be381e228e7c752405817d81e02a5b6f28fe4732da367538",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "249"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae"
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "snapshot": {
+          "stored": {
+            "runId": "checker_f13083ded7b14f86bc102334733f06ae",
+            "conversation": [
+              {
+                "kind": "message",
+                "role": "user",
+                "messageId": "d50604fd-17d9-4d8b-8a9d-e589650aaafc",
+                "dedupeKey": "d50604fd-17d9-4d8b-8a9d-e589650aaafc",
+                "content": "From the owner of node \"alpha-node\":\n\nREPLY_FILE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-veEVja/beta/gd1-live-member.txt",
+                "media": null,
+                "ts": 1794751644.052
+              },
+              {
+                "kind": "message",
+                "role": "assistant",
+                "turnId": "08826a67-4671-4672-8d3c-4877a53015f1",
+                "content": "GD1-LIVE-MEMBER-REPLY",
+                "media": null,
+                "ts": 1794751644.054
+              }
+            ],
+            "activities": [],
+            "summary": "From the owner of node \"alpha-node\": REPLY_FILE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0...",
+            "lastActivityAt": "2026-11-15T14:07:24.054Z",
+            "hasEarlierActiveTraceEvents": false
+          },
+          "turn_frames": [],
+          "base_sequence": 13,
+          "live_sequence_id": "de419fa7-9f73-49fa-bf3b-7199b5a51e17"
+        },
+        "status": {
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "trigger": null,
+            "tool_name": null,
+            "error_message": null,
+            "error_details": null,
+            "recoverableBlock": null
+          }
+        },
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 23,
+      "at": 1794751646118,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "9c825a0bbdc6b8a1eee863b5a24f5051",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "2cac4d2dc432d6fd69a5699a57f5db6f158696ac8cafa086e7cb94b546c15f56",
+        "sec-websocket-key": "OEGWZdLE2fA0iamjtc/Akg==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: vHQMABJoQwXQru9IY/K863QjQ+Y=\r\n\r\n"
+    },
+    {
+      "seq": 24,
+      "at": 1794751646221,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "2870d4a5deb10964020c6ef29b5d4fdc",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "b46a4703ff0fe33ac44ff7cb3ce51cdc339b0cf621e34664689ab567ae9e2a2a",
+        "sec-websocket-key": "3oUnvlLPxblzT16nqO2x4w==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: JszIRFoJI4hn1L+v++a+tUbyknM=\r\n\r\n"
+    },
+    {
+      "seq": 25,
+      "at": 1794751646223,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "19d50acf28f16cb0965ab8e31fe2c014",
+        "x-autobyteus-peer-body-sha256": "2a58ba1fb59d011f02a1ba8b64a76d1516f4dfa57a7ca7ec2822514e92170403",
+        "x-autobyteus-peer-signature": "d08e9c3f84b828d75de32e942719cf448f80769bc81ade0fa18e6b9b477e8ee8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "189"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent_team",
+            "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+          }
+        ]
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "runs": [
+          {
+            "kind": "agent_team",
+            "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37",
+            "title": "G-D1 studio work. Marker GD1-TEAM-PACKET.",
+            "statuses": [
+              {
+                "agentRunId": "publisher_c054b5b0cd0840e1b18143dc6ff9a2ef",
+                "status": "idle"
+              },
+              {
+                "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae",
+                "status": "idle"
+              }
+            ],
+            "launches": [
+              {
+                "address": "/lead",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "source": {
+                  "origin": "agent_default",
+                  "fallbacks": []
+                }
+              },
+              {
+                "address": "/checker",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "alt-model",
+                "source": {
+                  "origin": "team_default",
+                  "fallbacks": []
+                }
+              }
+            ]
+          }
+        ],
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 26,
+      "at": 1794751646325,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "1e1ac624272ff6945b3817f605785412",
+        "x-autobyteus-peer-body-sha256": "058bcc6805762fb857008da572927b901be1d8b3e16008ff2f68d62c7217069e",
+        "x-autobyteus-peer-signature": "355f2cb6314935a7637dde2928438f838545386739b8467ec7a5b5e5cdb5394a",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "430"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae",
+        "command": {
+          "kind": "post_message",
+          "content": "HOLD_TURN Marker GD1-MEMBER-HOLD",
+          "messageId": "704fd9e2-1691-4caa-90ba-3b1e1514ab23",
+          "dedupeKey": "704fd9e2-1691-4caa-90ba-3b1e1514ab23"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 27,
+      "at": 1794751646428,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/owner-commands",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "1bc01a4fdf10a7186cb7a9aec2fecd6e",
+        "x-autobyteus-peer-body-sha256": "6ea41e6fa01c2e19e129645e870d8958c9b9628e391c1cf9a9c1396b6821b7f8",
+        "x-autobyteus-peer-signature": "cd4be2c02e8356bc31687752c27d089d8e9878c23225c896c365ea7d38b26ae1",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "280"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "targetRoot": {
+          "kind": "agent_team",
+          "runId": "studio_team_0b2579f42f8f41728ecbad9e1ba31f37"
+        },
+        "agentRunId": "checker_f13083ded7b14f86bc102334733f06ae",
+        "command": {
+          "kind": "interrupt"
+        }
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 28,
+      "at": 1794751646533,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "3f3099418c3fb28943a155ccbe4f6375",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "e2f36369ac71dee314f318833b217253e7b59925b20ce7ea6e09b9a625b2a542",
+        "sec-websocket-key": "9Sr8WSSq8mc1SzTd1BQUvA==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: 6g8vEcNMRKsYZQgCt2GgVfB1Clo=\r\n\r\n"
+    },
+    {
+      "seq": 29,
+      "at": 1794751646535,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "90674a75b856dd9699792647f825db21",
+        "x-autobyteus-peer-body-sha256": "27204741287edc1c2783bab3baad3d8b3ff2e9155eff6d992bb60964b511cb81",
+        "x-autobyteus-peer-signature": "0ccea99820d5955720fe9b07a87a92940c7b74ab8c75984bfd216740ec783a3a",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "182"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+          }
+        ]
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+            "title": "G-D1 agent work. Marker GD1-AGENT-PACKET.",
+            "statuses": [
+              {
+                "agentRunId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+                "status": "idle"
+              }
+            ],
+            "launches": [
+              {
+                "address": "/publisher",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "source": {
+                  "origin": "agent_default",
+                  "fallbacks": []
+                }
+              }
+            ]
+          }
+        ],
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 30,
+      "at": 1794751646639,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "d8c23a762194bb41f958e2e39127165c",
+        "x-autobyteus-peer-body-sha256": "27204741287edc1c2783bab3baad3d8b3ff2e9155eff6d992bb60964b511cb81",
+        "x-autobyteus-peer-signature": "aa158654a3e595f6fe1dbe538396d6bbfec9032ee2431c66343b27dc71240d00",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "182"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+          }
+        ]
+      },
+      "outcome": "upstream error: connect ECONNREFUSED 127.0.0.1:60743"
+    },
+    {
+      "seq": 31,
+      "at": 1794751646826,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "8790117db462bf111d48aef995034a49",
+        "x-autobyteus-peer-body-sha256": "27204741287edc1c2783bab3baad3d8b3ff2e9155eff6d992bb60964b511cb81",
+        "x-autobyteus-peer-signature": "c5c3d40619d8021489d9a24890ca652fafbd840b887a6a60cc7f4e81c33f43d9",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "182"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+          }
+        ]
+      },
+      "outcome": "upstream error: connect ECONNREFUSED 127.0.0.1:60743"
+    },
+    {
+      "seq": 32,
+      "at": 1794751646826,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "e4ea814c33fdce7911287bbebd449303",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "86c4c654ef152d135682d9ce74d3f5874488f44b1ff1ebda8799b23db445f605",
+        "sec-websocket-key": "4PurXynPeau0fTNfTePdZg==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "upstream error: connect ECONNREFUSED 127.0.0.1:60743"
+    },
+    {
+      "seq": 33,
+      "at": 1794751646828,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751646",
+        "x-autobyteus-peer-nonce": "1ecb3cf888670287c71c0c012ae73f34",
+        "x-autobyteus-peer-body-sha256": "27204741287edc1c2783bab3baad3d8b3ff2e9155eff6d992bb60964b511cb81",
+        "x-autobyteus-peer-signature": "3ed6bd514fcde37816746b5e223abe04c99edd7bb4648d5d363c0701d8f93be8",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "182"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+          }
+        ]
+      },
+      "outcome": "upstream error: connect ECONNREFUSED 127.0.0.1:60743"
+    },
+    {
+      "seq": 34,
+      "at": 1794751648756,
+      "via": "toBeta",
+      "method": "POST",
+      "path": "/rest/remote/run-summaries",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "keep-alive",
+        "content-type": "application/json",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751648",
+        "x-autobyteus-peer-nonce": "bd0fda10e54373b2dfc017958bafe095",
+        "x-autobyteus-peer-body-sha256": "27204741287edc1c2783bab3baad3d8b3ff2e9155eff6d992bb60964b511cb81",
+        "x-autobyteus-peer-signature": "624619e44492bc993bf2660a5aaa180c9e14760560786029be077e2eae130435",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "182"
+      },
+      "body": {
+        "fromNodeId": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "toNodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66"
+          }
+        ]
+      },
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "accepted": true,
+        "runs": [
+          {
+            "kind": "agent",
+            "runId": "publisher_af4f7cf07f1e4385a3b77257cbef8e66",
+            "title": "G-D1 agent work. Marker GD1-AGENT-PACKET.",
+            "statuses": [],
+            "launches": [
+              {
+                "address": "/publisher",
+                "runtimeKind": "antigravity_cli",
+                "llmModelIdentifier": "gemini-3.8-flash-low",
+                "source": {
+                  "origin": "agent_default",
+                  "fallbacks": []
+                }
+              }
+            ]
+          }
+        ],
+        "nodeId": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk"
+      }
+    },
+    {
+      "seq": 35,
+      "at": 1794751648756,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote/run-observations",
+      "headers": {
+        "host": "127.0.0.1:60744",
+        "connection": "upgrade",
+        "upgrade": "websocket",
+        "x-autobyteus-peer-from": "srv_bdCBp3FUWjDxHWiVFXoFAOTcvRylE8qN",
+        "x-autobyteus-peer-to": "srv_miHNLDEeaJyQiw3BsLzvUxyxoJ46BBjk",
+        "x-autobyteus-peer-timestamp": "1794751648",
+        "x-autobyteus-peer-nonce": "2d14c2b40b022c240a81d7d706418ef2",
+        "x-autobyteus-peer-body-sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "x-autobyteus-peer-signature": "479997f3e47ae3937ad795fe566a582a446bed3e38d1baba1d1a572e283c4545",
+        "sec-websocket-key": "VHwIR7bPYm5nFiLIwZopMw==",
+        "sec-websocket-version": "13",
+        "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "websocket",
+        "user-agent": "node",
+        "pragma": "no-cache",
+        "cache-control": "no-cache",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "upgrade": true,
+      "outcome": "forwarded",
+      "status": 101,
+      "answer": "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: Usrwy1VrJ9FW9iJNs51L/QR5w7M=\r\n\r\n"
+    }
+  ],
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true,
+    "leftoverAgy": [],
+    "errors": []
+  }
+}

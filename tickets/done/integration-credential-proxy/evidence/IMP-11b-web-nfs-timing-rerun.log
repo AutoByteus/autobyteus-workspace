@@ -1,0 +1,36 @@
+# Check: IMP-11b-web-nfs-timing-rerun
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s exec vitest run utils/__tests__/nfsLauncherCommands.spec.ts
+# Commit: 2529eaaec1 (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:39:39Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+stderr | utils/__tests__/nfsLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/nfsLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nfsLauncherCommands.spec.ts (24 tests) 3569ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > macos: success  1254ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > macos: checksum-failure  421ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: success  846ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: checksum-failure  532ms
+
+ Test Files  1 passed (1)
+      Tests  24 passed (24)
+   Start at  09:39:45
+   Duration  14.02s (transform 6.28s, setup 9.49s, collect 18ms, tests 3.57s, environment 414ms, prepare 192ms)
+
+
+# Exit code: 0

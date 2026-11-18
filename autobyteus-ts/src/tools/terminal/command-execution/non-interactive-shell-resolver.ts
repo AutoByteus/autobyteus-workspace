@@ -1,12 +1,12 @@
 import path from 'node:path';
 import { accessSync, constants as fsConstants, statSync } from 'node:fs';
-import { randomBytes } from 'node:crypto';
 import {
   ensureWslAvailable,
   selectWslDistro,
   windowsPathToWsl
 } from '../wsl-utils.js';
 import { HOST_PROCESS_TARGET, type ProcessExecutionTarget } from './process-identity.js';
+import type { CommandShell } from './command-wrapper.js';
 
 export type ShellInvocationKind = 'posix' | 'windows-wsl';
 
@@ -17,7 +17,9 @@ export interface NonInteractiveShellInvocation {
   env: NodeJS.ProcessEnv;
   kind: ShellInvocationKind;
   processTarget: ProcessExecutionTarget;
-  shellIdentityMarker?: string;
+  wslCwd?: string;
+  /** Set when the script is the command wrapper: the nonce of its control frames. */
+  wrapperNonce?: string;
 }
 
 export interface NonInteractiveShellResolverOptions {
@@ -67,6 +69,19 @@ function findExecutable(
 export class NonInteractiveShellResolver {
   constructor(private readonly options: NonInteractiveShellResolverOptions = {}) {}
 
+  /** The shell `resolve` runs a script with: bash (WSL always), or the POSIX `sh` fallback without bash. */
+  shell(): CommandShell {
+    if ((this.options.platform ?? process.platform) === 'win32') return 'bash';
+    return findExecutable('bash', this.options.env ?? process.env, this.options.platform ?? process.platform) ? 'bash' : 'sh';
+  }
+
+  /** A host file's path as the command's shell sees it (a WSL path on Windows). */
+  shellPath(hostPath: string): string {
+    if ((this.options.platform ?? process.platform) !== 'win32') return hostPath;
+    const wslExe = this.options.ensureWslAvailable?.() ?? ensureWslAvailable();
+    return this.options.windowsPathToWsl?.(hostPath, wslExe) ?? windowsPathToWsl(hostPath, wslExe);
+  }
+
   resolve(command: string, cwd: string): NonInteractiveShellInvocation {
     if ((this.options.platform ?? process.platform) === 'win32') {
       return this.resolveWsl(command, cwd);
@@ -105,24 +120,14 @@ export class NonInteractiveShellResolver {
     const wslExe = this.options.ensureWslAvailable?.() ?? ensureWslAvailable();
     const distro = this.options.selectWslDistro?.(wslExe) ?? selectWslDistro(wslExe);
     const wslCwd = this.options.windowsPathToWsl?.(cwd, wslExe) ?? windowsPathToWsl(cwd, wslExe);
-    const marker = `__AUTOBYTEUS_SHELL_ID_${randomBytes(4).toString('hex')}__`;
-    const markedCommand =
-      `__autobyteus_pgid="$(ps -o pgid= -p "$$" | tr -d ' ')"; ` +
-      `if [ -z "$__autobyteus_pgid" ]; then __autobyteus_pgid="$$"; fi; ` +
-      `printf '%s:%s:%s\\n' ${shellSingleQuote(marker)} "$$" "$__autobyteus_pgid" >&2; ` +
-      command;
 
     return {
-      executable: wslExe,
-      args: ['-d', distro, '--cd', wslCwd, '--exec', 'bash', '--noprofile', '--norc', '-lc', markedCommand],
+      executable: 'bash',
+      args: ['--noprofile', '--norc', '-lc', command],
+      wslCwd,
       env: { ...(this.options.env ?? process.env) },
       kind: 'windows-wsl',
       processTarget: { kind: 'wsl', wslExecutable: wslExe, distro },
-      shellIdentityMarker: marker
     };
   }
-}
-
-function shellSingleQuote(value: string): string {
-  return `'${value.replace(/'/g, `'\\''`)}'`;
 }

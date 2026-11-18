@@ -20,7 +20,7 @@
       :team-status="display.teamStatus ?? undefined"
       :is-selected="isSelected(display.row)"
       :has-children="display.row.hasChildren"
-      :expanded="isExpanded(display.row)"
+      :expanded="collaboration.isTreeRowExpanded(runId, display.tree)"
       :continuing-ancestor-depths="display.continuingAncestorDepths"
       :has-following-sibling="display.hasFollowingSibling"
       :task="taskOf(display.row)"
@@ -33,13 +33,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue'
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows'
 import { useLocalization } from '~/composables/useLocalization'
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
+import { useRunTreeStore } from '~/stores/runTreeStore'
+import { useRunStatusStore } from '~/stores/runStatusStore'
+import { openRunTarget } from '~/composables/useRunOpening'
+import { runTreeDisplayRows } from '~/utils/runTree/runTreeDisplayRows'
 import type { TaskWorkerTask } from '~/types/project'
 
 const props = defineProps<{
@@ -58,14 +62,26 @@ const emit = defineEmits<{ (event: 'select-run'): void; (event: 'open-run'): voi
 const { t } = useLocalization()
 const collaboration = useAgentRunCollaborationStore()
 
-// The stored view is read without restoring the run; a live run is kept current by its stream.
-const loadStored = () => {
-  if (props.hasCollaboration && !collaboration.contextFor(props.runId)) void collaboration.inspect(props.runId)
-}
-onMounted(loadStored)
-watch(() => props.hasCollaboration, loadStored)
+const trees = useRunTreeStore()
+const runStatus = useRunStatusStore()
+const tree = computed(() => ({ kind: 'agent' as const, runId: props.runId }))
 
-const rows = computed(() => collaboration.taskRows(props.runId))
+// The run's tree, built on the server (autobyteus-461 SR-084): its open view's stream feeds it, else it is read, and
+// read again when its rows change. The stored view is still read for the Team tab and a peer's run (rule 2 aside).
+watch(() => [props.runId, props.hasCollaboration] as const, ([, hasCollaboration], _previous, onCleanup) => {
+  if (!hasCollaboration) return
+  collaboration.ensureStoredView(props.runId, true)
+  onCleanup(trees.hold(tree.value))
+}, { immediate: true })
+
+const rows = computed(() => runTreeDisplayRows({
+  rows: trees.rowsOf(tree.value), rootKey: `agent:${props.runId}`, topRunId: props.runId,
+  isExpanded: (row) => collaboration.isTreeRowExpanded(props.runId, row),
+  // Each row's status is its own run's, by the ID the server named: an agent's, or a team run's own (SR-086 G-A4).
+  statusOf: (row, id) => row.kind === 'team' || row.kind === 'peer_team'
+    ? runStatus.runStateOf({ kind: 'agent_team', runId: id })?.status ?? null
+    : runStatus.statusOf(id),
+}))
 // Task workers show their current Task's summary; it locates the Task in Projects.
 const { taskOf, locate } = useTaskWorkerTasks(() => rows.value.map((display) => display.row))
 // The run row directly precedes this tree.
@@ -79,26 +95,20 @@ const onRowLeaveSettled = (): void => {
   onLeaveSettled()
   if (leaving.value === 0 && rows.value.length === 0) rendered.value = false
 }
-const isExpanded = (row: RunHistoryTransientExecutionRow): boolean =>
-  Boolean(row.teamRunIdForNode && collaboration.isTaskTeamExpanded(props.runId, row.teamRunIdForNode))
+/** The row that shows the opened agent (CR-461-108): a delegated Team opened at its coordinator selects the coordinator's row. */
 const isSelected = (row: RunHistoryTransientExecutionRow): boolean =>
   props.runSelected && row.agentRunId !== null && collaboration.selectedChild(props.runId) === row.agentRunId
 
-const toggle = (row: RunHistoryTransientExecutionRow): void => {
-  if (row.teamRunIdForNode) collaboration.toggleTaskTeam(props.runId, row.teamRunIdForNode)
-}
+const toggle = (row: RunHistoryTransientExecutionRow): void => collaboration.toggleTreeRow(props.runId, row.rowKey)
 
 /**
- * Opens the task Agent's conversation; a task Team row opens its coordinator. The run is always
- * (re)opened as well, so a click opens the conversation from any page, also when this run is
- * already the selected run (F-006); re-selecting the current run only navigates.
+ * Opens the row where the server says (`openRunTarget`): a delegated agent's conversation, a delegated team at its
+ * coordinator. The run is always (re)opened as well, so a click opens the conversation from any page, also when this
+ * run is already the selected run (F-006); re-selecting the current run only navigates.
  */
 const select = (row: RunHistoryTransientExecutionRow): void => {
-  const context = collaboration.contextFor(props.runId)
-  if (!context) return
-  const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
-  collaboration.selectChild(props.runId, agentRunId)
-  emit('select-run')
+  const display = rows.value.find((candidate) => candidate.row.rowKey === row.rowKey)
+  if (display && openRunTarget(tree.value, display.tree)) emit('select-run')
 }
 </script>
 

@@ -1,0 +1,14 @@
+# API-01 full web unit/component suite
+# command: pnpm -C autobyteus-web test:nuxt --run (worktree root); commit 42a86a5e93; macOS, Node v22.23.1; 2026-11-07 22:19-22:25
+# excerpt: summary; full log kept at /tmp/426-API-01.log (too large to commit;    49177 lines), failures grep below
+
+## grep for failed files (expect none)
+(none)
+
+
+ Test Files  718 passed (718)
+      Tests  5357 passed | 2 skipped (5359)
+   Start at  22:19:27
+   Duration  328.94s (transform 35.38s, setup 2210.92s, collect 231.92s, tests 85.04s, environment 171.46s, prepare 104.41s)
+
+exit 0

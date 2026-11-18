@@ -9,7 +9,7 @@ import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-m
 import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { cloneCollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import type { AgentToolMcpRunSessionId } from "./agent-tool-mcp-run-session-id.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 
@@ -70,7 +70,7 @@ export type CollaborationMemberSessionExecutionCapabilities = Readonly<{
   applicationAgentTools: ApplicationAgentToolCapability | null;
   taskDelegation: Readonly<{
     identity: CollaborationMemberExecutionIdentity;
-    commands: MemberTaskCommandCapability;
+    commands: MemberTaskCapability;
   }>;
 }>;
 
@@ -105,6 +105,13 @@ export type AgentToolMcpActivateSessionInput = {
   runtimeKind?: RuntimeKind | string | null;
   toolExecutionObserver?: AgentToolMcpToolExecutionObserver | null;
 };
+
+export type AgentToolMcpSessionToolExposureRecord = Readonly<{
+  runtimeExposure: RuntimeAgentToolExposure;
+  enabledTools: readonly string[];
+  toolRoutes: AgentToolMcpToolRouteTable;
+  configuredMcpToolSources?: readonly ConfiguredMcpAgentToolSource[];
+}>;
 
 export type AgentToolMcpSessionResolveFailureReason = "missing_session";
 

@@ -1,0 +1,17 @@
+# DEL-07 build-only desktop release run 41121610105 on personal 0a223aa397 (pnpm release:test --ref personal), 2026-10-30T20:26:28Z
+Resolve Release Metadata | success | 2026-10-30T20:14:27Z -> 2026-10-30T20:16:00Z
+Build macOS ARM64 | cancelled | 2026-10-30T20:16:00Z -> 2026-10-30T20:16:01Z
+Build Windows x64 | failure | 2026-10-30T20:16:02Z -> 2026-10-30T20:23:27Z
+Build Linux x64 | success | 2026-10-30T20:16:02Z -> 2026-10-30T20:22:46Z
+Build macOS Intel x64 | cancelled | 2026-10-30T20:16:00Z -> 2026-10-30T20:16:01Z
+Build Linux ARM64 | success | 2026-10-30T20:16:05Z -> 2026-10-30T20:21:53Z
+Publish GitHub Release | skipped | 2026-10-30T20:24:45Z -> 2026-10-30T20:23:27Z
+## macOS ARM64 / Intel x64 annotation
+failure: "This job failed because of a scheduled macOS 14 runner image brownout. macOS 14 runner images will be retired on November 2, 2026. ... https://github.com/actions/runner-images/issues/13518"
+## Windows x64: Build Electron Windows x64 (prepare-server npm install)
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/tslib/-/tslib-2.9.1.tgz - Not found
+Error: Command failed (1): npm.cmd install --no-audit --no-fund[0m
+Command failed (1): C:\hostedtoolcache\windows\node\22.23.4\x64\node.exe D:\a\autobyteus-workspace\autobyteus-workspace\autobyteus-web\scripts\prepare-server.mjs
+## cause of the Windows failure: tslib 2.9.1 published 2026-10-30T20:20:28.741Z (npm view tslib time); its tarball returned 404 at 20:23 and at my first check, then HTTP 200 at 20:25:45Z (registry propagation). Transient; Linux builds ran before the publish and resolved tslib 2.8.1.
+## macOS 14 brownouts (issue 13518): Oct 30 14:00-Oct 31 00:00, Oct 31 14:00-Nov 1 00:00, Nov 1 14:00-Nov 2 00:00 UTC; retirement Nov 2, 2026. release-desktop.yml:118 and :248 run on macos-14; release-ios.yml uses macos-latest.

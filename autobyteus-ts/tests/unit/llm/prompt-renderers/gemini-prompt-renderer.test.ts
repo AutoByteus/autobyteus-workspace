@@ -84,7 +84,7 @@ describe('GeminiPromptRenderer', () => {
     const renderer = new GeminiPromptRenderer();
     const rendered = await renderer.render([
       new Message(MessageRole.USER, {
-        content: 'The read_media_file tool call completed successfully.',
+        content: 'The read_file tool call completed successfully.',
         image_urls: ['data:image/png;base64,aW1hZ2U=']
       })
     ]);
@@ -93,7 +93,7 @@ describe('GeminiPromptRenderer', () => {
       {
         role: 'user',
         parts: [
-          { text: 'The read_media_file tool call completed successfully.' },
+          { text: 'The read_file tool call completed successfully.' },
           {
             inlineData: {
               data: 'aW1hZ2U=',

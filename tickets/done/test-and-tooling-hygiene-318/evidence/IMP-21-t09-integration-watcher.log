@@ -1,0 +1,431 @@
+# IMP-21 — T-09 (REQ-011, U-01): full server test:integration with per-event watcher latency; the 4 base failures (FU-004)
+# Command: cd autobyteus-server-ts && env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm test:integration, with a TEMPORARY (uncommitted, restored afterwards) latency record in file-system-watcher.integration.test.ts and the watcher trace switched on in that file; then the two failing files alone
+# Commit: 975527ec0c (plus the temporary instrumentation)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "file-system-watcher.integration.test.ts (14 tests)" passed; latency "records 13 timeouts 0 max 570 median 485 min 267" (the wait is 8000 ms); "Tests  4 failed | 481 passed | 69 skipped (554)" — the 4 are agent-run-service (cancelPreparedRun missing on the double) and agent-team-run-manager (projectRunRoot), also alone: "Tests  4 failed | 20 passed (24)"
+
+===== t09-latency-summary.txt =====
+records 13 timeouts 0 max 570 median 485 min 267
+
+===== t09-latency.jsonl =====
+{"test":"FileSystemWatcher integration > emits add + modify + delete events","latencyMs":485,"at":1793536245077}
+{"test":"FileSystemWatcher integration > emits add + modify + delete events","latencyMs":520,"at":1793536245565}
+{"test":"FileSystemWatcher integration > emits add + modify + delete events","latencyMs":570,"at":1793536246088}
+{"test":"FileSystemWatcher integration > returns one idle event stream without stopping other subscribers","latencyMs":483,"at":1793536246727}
+{"test":"FileSystemWatcher integration > emits folder creation and deletion events","latencyMs":267,"at":1793536248904}
+{"test":"FileSystemWatcher integration > respects nested .gitignore files","latencyMs":269,"at":1793536252283}
+{"test":"FileSystemWatcher integration > respects nested .gitignore files","latencyMs":499,"at":1793536252553}
+{"test":"FileSystemWatcher integration > respects nested .gitignore files","latencyMs":488,"at":1793536254060}
+{"test":"FileSystemWatcher integration > respects root .gitignore files","latencyMs":482,"at":1793536254622}
+{"test":"FileSystemWatcher integration > captures rapid changes without dropping events","latencyMs":276,"at":1793536256184}
+{"test":"FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree","latencyMs":485,"at":1793536256534}
+{"test":"FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree","latencyMs":485,"at":1793536257020}
+{"test":"FileSystemWatcher integration > emits delete events even if the in-memory node is missing","latencyMs":491,"at":1793536259160}
+
+===== t09-watcher-trace.txt =====
+[TIMING][FileSystemWatcher] start.begin {"at":1793536242752,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-2gpXYA","watcherId":"5b27b7b1-c293-4aa4-886f-a1de3580bf48","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536242797,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-2gpXYA","watcherId":"5b27b7b1-c293-4aa4-886f-a1de3580bf48","generation":1,"durationMs":45}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536242809,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EE13DT","watcherId":"a6437ae8-5ca0-4943-a75e-35629ce3d593","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536242859,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EE13DT","watcherId":"a6437ae8-5ca0-4943-a75e-35629ce3d593","generation":1,"durationMs":50}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536243863,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EE13DT","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"a6437ae8-5ca0-4943-a75e-35629ce3d593","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536243866,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EE13DT","durationMs":3,"watcherId":"a6437ae8-5ca0-4943-a75e-35629ce3d593","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536243871,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EE13DT","watcherId":"a6437ae8-5ca0-4943-a75e-35629ce3d593","generation":1,"stats":{"watchedDirectoryCount":3,"watchedEntryCount":3}}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536243874,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-2gpXYA","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"5b27b7b1-c293-4aa4-886f-a1de3580bf48","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536243874,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-2gpXYA","durationMs":0,"watcherId":"5b27b7b1-c293-4aa4-886f-a1de3580bf48","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536243876,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-2gpXYA","watcherId":"5b27b7b1-c293-4aa4-886f-a1de3580bf48","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536243879,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-dEoCyk","watcherId":"df0aae7f-41a0-4222-9465-11bc7243b740","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536243940,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-dEoCyk","watcherId":"df0aae7f-41a0-4222-9465-11bc7243b740","generation":1,"durationMs":61}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536243943,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Viltxx","watcherId":"94dfc602-294e-49a0-ba38-45829345c46e","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536243994,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Viltxx","watcherId":"94dfc602-294e-49a0-ba38-45829345c46e","generation":1,"durationMs":51}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536244997,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Viltxx","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"94dfc602-294e-49a0-ba38-45829345c46e","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536244998,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Viltxx","durationMs":1,"watcherId":"94dfc602-294e-49a0-ba38-45829345c46e","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536245008,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-dEoCyk","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"df0aae7f-41a0-4222-9465-11bc7243b740","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536245008,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-dEoCyk","durationMs":0,"watcherId":"df0aae7f-41a0-4222-9465-11bc7243b740","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536245010,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-dEoCyk","watcherId":"df0aae7f-41a0-4222-9465-11bc7243b740","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536245012,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-8FalMF","watcherId":"bdd5a82a-5234-458f-bd63-3afa9cd32cb8","generation":1}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536245014,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Viltxx","watcherId":"94dfc602-294e-49a0-ba38-45829345c46e","generation":1,"stats":{"watchedDirectoryCount":4,"watchedEntryCount":4}}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536245077,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-8FalMF","watcherId":"bdd5a82a-5234-458f-bd63-3afa9cd32cb8","generation":1,"durationMs":65}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536246659,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-8FalMF","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"bdd5a82a-5234-458f-bd63-3afa9cd32cb8","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536246660,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-8FalMF","durationMs":1,"watcherId":"bdd5a82a-5234-458f-bd63-3afa9cd32cb8","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536246661,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-8FalMF","watcherId":"bdd5a82a-5234-458f-bd63-3afa9cd32cb8","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536246663,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-PxTpHp","watcherId":"53de4b5e-8c69-4755-a18f-0091a19fd5e0","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536246726,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-PxTpHp","watcherId":"53de4b5e-8c69-4755-a18f-0091a19fd5e0","generation":1,"durationMs":63}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536247214,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-PxTpHp","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"53de4b5e-8c69-4755-a18f-0091a19fd5e0","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536247214,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-PxTpHp","durationMs":0,"watcherId":"53de4b5e-8c69-4755-a18f-0091a19fd5e0","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536247216,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-PxTpHp","watcherId":"53de4b5e-8c69-4755-a18f-0091a19fd5e0","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536247220,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ctrwXo","watcherId":"2d863a78-cc1a-4beb-a33d-9d4a4238c2f8","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536247288,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ctrwXo","watcherId":"2d863a78-cc1a-4beb-a33d-9d4a4238c2f8","generation":1,"durationMs":68}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536248271,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ctrwXo","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"2d863a78-cc1a-4beb-a33d-9d4a4238c2f8","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536248271,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ctrwXo","durationMs":0,"watcherId":"2d863a78-cc1a-4beb-a33d-9d4a4238c2f8","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536248273,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ctrwXo","watcherId":"2d863a78-cc1a-4beb-a33d-9d4a4238c2f8","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536248275,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-5cpSSJ","watcherId":"9fa6dbde-7d3e-4c23-9f88-0d0f8bcf92a1","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536248344,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-5cpSSJ","watcherId":"9fa6dbde-7d3e-4c23-9f88-0d0f8bcf92a1","generation":1,"durationMs":69}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536248827,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-5cpSSJ","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"9fa6dbde-7d3e-4c23-9f88-0d0f8bcf92a1","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536248828,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-5cpSSJ","durationMs":1,"watcherId":"9fa6dbde-7d3e-4c23-9f88-0d0f8bcf92a1","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536248831,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-5cpSSJ","watcherId":"9fa6dbde-7d3e-4c23-9f88-0d0f8bcf92a1","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536248834,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-GI1OjI","watcherId":"6f598a66-6fdf-4ba5-95a1-1597db4dc3b5","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536248903,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-GI1OjI","watcherId":"6f598a66-6fdf-4ba5-95a1-1597db4dc3b5","generation":1,"durationMs":69}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536249663,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-GI1OjI","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"6f598a66-6fdf-4ba5-95a1-1597db4dc3b5","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536249663,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-GI1OjI","durationMs":0,"watcherId":"6f598a66-6fdf-4ba5-95a1-1597db4dc3b5","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536249664,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-GI1OjI","watcherId":"6f598a66-6fdf-4ba5-95a1-1597db4dc3b5","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536249667,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-3Jb58F","watcherId":"14b36875-7d4b-4796-b646-40d255cab3e2","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536249737,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-3Jb58F","watcherId":"14b36875-7d4b-4796-b646-40d255cab3e2","generation":1,"durationMs":70}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536250539,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-3Jb58F","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"14b36875-7d4b-4796-b646-40d255cab3e2","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536250540,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-3Jb58F","durationMs":1,"watcherId":"14b36875-7d4b-4796-b646-40d255cab3e2","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536250541,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-3Jb58F","watcherId":"14b36875-7d4b-4796-b646-40d255cab3e2","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536250543,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-c75wsm","watcherId":"6df01483-140b-4e0f-a3a8-1a652a133543","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536250606,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-c75wsm","watcherId":"6df01483-140b-4e0f-a3a8-1a652a133543","generation":1,"durationMs":64}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536252212,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-c75wsm","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"6df01483-140b-4e0f-a3a8-1a652a133543","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536252213,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-c75wsm","durationMs":1,"watcherId":"6df01483-140b-4e0f-a3a8-1a652a133543","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536252214,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-c75wsm","watcherId":"6df01483-140b-4e0f-a3a8-1a652a133543","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536252219,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ld2Nkf","watcherId":"c537a180-6923-4b26-a51c-21e75c3fd2d2","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536252283,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ld2Nkf","watcherId":"c537a180-6923-4b26-a51c-21e75c3fd2d2","generation":1,"durationMs":64}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536254550,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ld2Nkf","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"c537a180-6923-4b26-a51c-21e75c3fd2d2","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536254550,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ld2Nkf","durationMs":0,"watcherId":"c537a180-6923-4b26-a51c-21e75c3fd2d2","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536254553,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ld2Nkf","watcherId":"c537a180-6923-4b26-a51c-21e75c3fd2d2","generation":1,"stats":{"watchedDirectoryCount":3,"watchedEntryCount":4}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536254555,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NYKLNJ","watcherId":"2949ade9-bea9-4a1a-a950-6704122587c2","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536254622,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NYKLNJ","watcherId":"2949ade9-bea9-4a1a-a950-6704122587c2","generation":1,"durationMs":67}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536256110,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NYKLNJ","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"2949ade9-bea9-4a1a-a950-6704122587c2","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536256111,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NYKLNJ","durationMs":1,"watcherId":"2949ade9-bea9-4a1a-a950-6704122587c2","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536256112,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NYKLNJ","watcherId":"2949ade9-bea9-4a1a-a950-6704122587c2","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536256114,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-kOUiTN","watcherId":"d446e0c2-3104-44dd-8352-ccb5d9b17f1f","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536256184,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-kOUiTN","watcherId":"d446e0c2-3104-44dd-8352-ccb5d9b17f1f","generation":1,"durationMs":70}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536256461,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-kOUiTN","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"d446e0c2-3104-44dd-8352-ccb5d9b17f1f","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536256462,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-kOUiTN","durationMs":1,"watcherId":"d446e0c2-3104-44dd-8352-ccb5d9b17f1f","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536256466,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-A6Bwak","watcherId":"ce19ed9e-7a13-4ac1-bdca-27e4f07a446b","generation":1}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536256468,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-kOUiTN","watcherId":"d446e0c2-3104-44dd-8352-ccb5d9b17f1f","generation":1,"stats":{"watchedDirectoryCount":3,"watchedEntryCount":3}}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536256534,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-A6Bwak","watcherId":"ce19ed9e-7a13-4ac1-bdca-27e4f07a446b","generation":1,"durationMs":68}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536259080,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-A6Bwak","subscriberCount":1,"pendingUnlinkTimerCount":0,"watcherId":"ce19ed9e-7a13-4ac1-bdca-27e4f07a446b","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536259081,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-A6Bwak","durationMs":1,"watcherId":"ce19ed9e-7a13-4ac1-bdca-27e4f07a446b","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536259084,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-A6Bwak","watcherId":"ce19ed9e-7a13-4ac1-bdca-27e4f07a446b","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2}}
+[TIMING][FileSystemWatcher] start.begin {"at":1793536259089,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-zhKjIU","watcherId":"2cee92aa-118a-4a66-ba4d-574a4cf87138","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1793536259159,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-zhKjIU","watcherId":"2cee92aa-118a-4a66-ba4d-574a4cf87138","generation":1,"durationMs":71}
+[TIMING][FileSystemWatcher] stop.begin {"at":1793536260222,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-zhKjIU","subscriberCount":0,"pendingUnlinkTimerCount":0,"watcherId":"2cee92aa-118a-4a66-ba4d-574a4cf87138","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] stop.end {"at":1793536260222,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-zhKjIU","durationMs":0,"watcherId":"2cee92aa-118a-4a66-ba4d-574a4cf87138","generation":1,"reason":"logical-stop"}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1793536260224,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-zhKjIU","watcherId":"2cee92aa-118a-4a66-ba4d-574a4cf87138","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":1}}
+
+===== t09b-integration.log =====
+(excerpt: 8632 lines, 938307 bytes; the key lines, then the last 40 lines; the full log stayed at /tmp/h318/t09b-integration.log)
+[TIMING][WatcherRuntimeClient] exit {"at":1793536243883,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-2gpXYA","code":0,"signal":null,"stopRequested":true,"watcherId":"5b27b7b1-c293-4aa4-886f-a1de3580bf48","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536243883,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-EE13DT","code":0,"signal":null,"stopRequested":true,"watcherId":"a6437ae8-5ca0-4943-a75e-35629ce3d593","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536245016,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-dEoCyk","code":0,"signal":null,"stopRequested":true,"watcherId":"df0aae7f-41a0-4222-9465-11bc7243b740","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536245016,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-Viltxx","code":0,"signal":null,"stopRequested":true,"watcherId":"94dfc602-294e-49a0-ba38-45829345c46e","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536246668,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-8FalMF","code":0,"signal":null,"stopRequested":true,"watcherId":"bdd5a82a-5234-458f-bd63-3afa9cd32cb8","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536247224,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-PxTpHp","code":0,"signal":null,"stopRequested":true,"watcherId":"53de4b5e-8c69-4755-a18f-0091a19fd5e0","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536248278,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ctrwXo","code":0,"signal":null,"stopRequested":true,"watcherId":"2d863a78-cc1a-4beb-a33d-9d4a4238c2f8","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536248837,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-5cpSSJ","code":0,"signal":null,"stopRequested":true,"watcherId":"9fa6dbde-7d3e-4c23-9f88-0d0f8bcf92a1","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536249670,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-GI1OjI","code":0,"signal":null,"stopRequested":true,"watcherId":"6f598a66-6fdf-4ba5-95a1-1597db4dc3b5","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536250545,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-3Jb58F","code":0,"signal":null,"stopRequested":true,"watcherId":"14b36875-7d4b-4796-b646-40d255cab3e2","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536252221,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-c75wsm","code":0,"signal":null,"stopRequested":true,"watcherId":"6df01483-140b-4e0f-a3a8-1a652a133543","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536254559,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-ld2Nkf","code":0,"signal":null,"stopRequested":true,"watcherId":"c537a180-6923-4b26-a51c-21e75c3fd2d2","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536256117,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-NYKLNJ","code":0,"signal":null,"stopRequested":true,"watcherId":"2949ade9-bea9-4a1a-a950-6704122587c2","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536256471,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-kOUiTN","code":0,"signal":null,"stopRequested":true,"watcherId":"d446e0c2-3104-44dd-8352-ccb5d9b17f1f","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1793536259091,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-watch-A6Bwak","code":0,"signal":null,"stopRequested":true,"watcherId":"ce19ed9e-7a13-4ac1-bdca-27e4f07a446b","generation":1}
+stdout | tests/integration/agent-execution/codex-segment-turn-rejection-logging.integration.test.ts > Codex exact-turn rejection logging through the real Codex client path > an app-server exit writes the pending summaries (client close)
+ ✓ tests/integration/agent-execution/claude-session-manager.integration.test.ts (9 tests | 8 skipped) 272ms
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+ ↓ tests/integration/agent-definition/github-agent-package-import.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts (8 tests | 8 skipped)
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts (11 tests | 11 skipped)
+ ↓ tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/embeddings/embedding-model-quality.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/projects/project-task-index-status-load.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/mcp-server-management/mcp-config-service.integration.test.ts (4 tests | 4 skipped)
+ ↓ tests/integration/terminal/terminal-websocket-wsl.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/services/claude-model-catalog.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/services/codex-model-catalog.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/utils/download-utils.integration.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-long-turn-cadence.probe.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-raw-vs-backend-cadence.probe.test.ts (1 test | 1 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts (3 tests | 3 skipped)
+ ↓ tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts (5 tests | 5 skipped)
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts (5 tests | 5 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts (2 tests | 2 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-app-server-client.integration.test.ts (2 tests | 2 skipped)
+ ↓ tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts (4 tests | 4 skipped)
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+      Tests  4 failed | 481 passed | 69 skipped (554)
+ ELIFECYCLE  Command failed with exit code 1.
+----- last 40 lines -----
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+AssertionError: expected [ 'applicationExecutionContext', …(5) ] to deeply equal [ 'applicationExecutionContext', …(4) ]
+
+- Expected
++ Received
+
+  [
+    "applicationExecutionContext",
+    "assertExecutionInputAllowed",
+    "buildMemberExecutionContext",
+    "commitPlatformBindingChange",
++   "projectRunRoot",
+    "publishAgentEvent",
+  ]
+
+ ❯ Object.<anonymous> tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:246:45
+    244|     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    245|     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecut…
+    246|       expect(Object.keys(callbacks).sort()).toEqual([
+       |                                             ^
+    247|         "applicationExecutionContext",
+    248|         "assertExecutionInputAllowed",
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:126:17
+ ❯ Object.prepare tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:136:41
+ ❯ materializeTeamRoot src/agent-team-execution/services/team-root-materializer.ts:105:6
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:151:26
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:478:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+      Tests  4 failed | 481 passed | 69 skipped (554)
+   Start at  13:29:48
+   Duration  203.92s (transform 6.83s, setup 924ms, import 62.53s, tests 131.64s, environment 5ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+===== int-failures-alone.log =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:64625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts (14 tests | 1 failed) 576ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"] 57ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"] 26ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"] 26ms
+     ✓ creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"] 23ms
+     × supplies only root-neutral local Team callbacks during materialization 6ms
+     ✓ restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity 28ms
+     ✓ emits root lifecycle transitions and unregisters only after accepted termination 26ms
+     ✓ holds one exact-ID transition lane across unmanaged deletion and restore registration 31ms
+     ✓ refuses Team archive and unarchive after Restore owns the exact-root lane 37ms
+     ✓ holds Team archive's manager lane through tree/index commit before Restore 63ms
+     ✓ holds Team unarchive's manager lane through tree/index commit before Restore 85ms
+     ✓ rejects active updates, then persists a stopped narrow patch for the next restore 44ms
+     ✓ orders an exact-ID Team restore after an in-flight Save and restores committed config 94ms
+     ✓ returns RUN_ACTIVE when an exact-ID Team restore completes before Save 27ms
+stdout | tests/integration/agent-execution/agent-run-service.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:64629) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+Run 'run-create-autobyteus' failed to activate and was kept: TypeError: this.historyCatalogService.cancelPreparedRun is not a function
+
+stderr | tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+Run 'run-create-codex_app_server' failed to activate and was kept: TypeError: this.historyCatalogService.cancelPreparedRun is not a function
+
+stderr | tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+Run 'run-create-claude_agent_sdk' failed to activate and was kept: TypeError: this.historyCatalogService.cancelPreparedRun is not a function
+
+ ❯ tests/integration/agent-execution/agent-run-service.integration.test.ts (10 tests | 3 failed) 15ms
+     × prepares, durably starts, and only then publishes a autobyteus run 6ms
+     × prepares, durably starts, and only then publishes a codex_app_server run 1ms
+     × prepares, durably starts, and only then publishes a claude_agent_sdk run 1ms
+     ✓ restores a started autobyteus run through the correct exact continuation path 2ms
+     ✓ restores a started codex_app_server run through the correct exact continuation path 1ms
+     ✓ restores a started claude_agent_sdk run through the correct exact continuation path 1ms
+     ✓ returns an already-active run only when its durable metadata is present 0ms
+     ✓ terminates native and external active runs through the manager and records termination 1ms
+     ✓ returns not_found for a missing run or a manager-rejected termination 1ms
+     ✓ rejects unsupported runtime kinds before allocating or constructing a candidate 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+AgentRunActivationError: Run 'run-create-autobyteus' activation commit is indeterminate and is quarantined until restart.
+ ❯ StandaloneAgentRunLifecycleService.abortForIndeterminateCommit src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:409:12
+    407|     const cleanup = await candidate.abort();
+    408|     const cause = cleanup.kind === "quarantined" ? cleanup.error : und…
+    409|     return new AgentRunActivationError(
+       |            ^
+    410|       "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
+    411|       `Run '${runId}' activation commit is indeterminate and is quaran…
+ ❯ StandaloneAgentRunLifecycleService.persistAndPublish src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:369:15
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:148:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:188:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+AgentRunActivationError: Run 'run-create-codex_app_server' activation commit is indeterminate and is quarantined until restart.
+ ❯ StandaloneAgentRunLifecycleService.abortForIndeterminateCommit src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:409:12
+    407|     const cleanup = await candidate.abort();
+    408|     const cause = cleanup.kind === "quarantined" ? cleanup.error : und…
+    409|     return new AgentRunActivationError(
+       |            ^
+    410|       "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
+    411|       `Run '${runId}' activation commit is indeterminate and is quaran…
+ ❯ StandaloneAgentRunLifecycleService.persistAndPublish src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:369:15
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:148:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:188:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+AgentRunActivationError: Run 'run-create-claude_agent_sdk' activation commit is indeterminate and is quarantined until restart.
+ ❯ StandaloneAgentRunLifecycleService.abortForIndeterminateCommit src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:409:12
+    407|     const cleanup = await candidate.abort();
+    408|     const cause = cleanup.kind === "quarantined" ? cleanup.error : und…
+    409|     return new AgentRunActivationError(
+       |            ^
+    410|       "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE",
+    411|       `Run '${runId}' activation commit is indeterminate and is quaran…
+ ❯ StandaloneAgentRunLifecycleService.persistAndPublish src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:369:15
+ ❯ StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:148:14
+ ❯ StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:188:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+AssertionError: expected [ 'applicationExecutionContext', …(5) ] to deeply equal [ 'applicationExecutionContext', …(4) ]
+
+- Expected
++ Received
+
+  [
+    "applicationExecutionContext",
+    "assertExecutionInputAllowed",
+    "buildMemberExecutionContext",
+    "commitPlatformBindingChange",
++   "projectRunRoot",
+    "publishAgentEvent",
+  ]
+
+ ❯ Object.<anonymous> tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:246:45
+    244|     const config = createConfig([RuntimeKind.AUTOBYTEUS]);
+    245|     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecut…
+    246|       expect(Object.keys(callbacks).sort()).toEqual([
+       |                                             ^
+    247|         "applicationExecutionContext",
+    248|         "assertExecutionInputAllowed",
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:126:17
+ ❯ Object.prepare tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:136:41
+ ❯ materializeTeamRoot src/agent-team-execution/services/team-root-materializer.ts:105:6
+ ❯ src/agent-team-execution/services/agent-team-run-manager.ts:151:26
+ ❯ AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:478:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 20 passed (24)
+   Start at  12:47:09
+   Duration  6.39s (transform 3.11s, setup 55ms, import 5.21s, tests 592ms, environment 0ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+

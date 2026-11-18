@@ -1,0 +1,8 @@
+IMP-04 server unit suite
+Command: pnpm -C autobyteus-server-ts test:unit
+Commit: 17d631c704
+Environment: macOS arm64, node v22.23.1, pnpm
+Date: 2026-10-25
+---
+ Test Files  820 passed | 4 skipped (824)
+      Tests  6847 passed | 7 skipped (6854)

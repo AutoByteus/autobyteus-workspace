@@ -1,0 +1,47 @@
+{
+  "runId": "sm_live_keeper_claude_de24f0cf_5e59a38d4d274ee4836c4a5542aae6cf",
+  "reads": {
+    "text": "- Workspace codeword: `WSCODE-de24f0cf`\n- Deploy codeword: `SMCODE-CLAUDE-de24f0cf`",
+    "tools": [
+      "Read {\"file_path\":\"/root/.autobyteus-e2e/semantic-memory-live-cnJnpk/ws-claude-approvals/ws-fact.md\"}",
+      "Read {\"file_path\":\"/root/.autobyteus-e2e/semantic-memory-live-cnJnpk/app-data/memory/semantic/sm-live-keeper-claude-de24f0cf/deploy-codeword.md\"}"
+    ],
+    "approvals": []
+  },
+  "writes": {
+    "text": "DONE",
+    "tools": [
+      "Write {\"file_path\":\"/root/.autobyteus-e2e/semantic-memory-live-cnJnpk/ws-claude-approvals/ws-out.md\",\"content\":\"WS-de24f0cf\"}",
+      "Write {\"file_path\":\"/root/.autobyteus-e2e/semantic-memory-live-cnJnpk/app-data/memory/semantic/sm-live-keeper-claude-de24f0cf/approvals.md\",\"content\":\"MEM-de24f0cf\"}"
+    ],
+    "approvals": [
+      {
+        "tool": "Write",
+        "target": "workspace",
+        "decision": "approved"
+      },
+      {
+        "tool": "Write",
+        "target": "semantic",
+        "decision": "approved"
+      }
+    ]
+  },
+  "outsideRead": {
+    "text": "I couldn't read `/root/.autobyteus-e2e/semantic-memory-live-cnJnpk/outside/outside-fact.md`. The read was denied by the semantic memory live e2e, so I have no codeword to give you.",
+    "tools": [
+      "Read {\"file_path\":\"/root/.autobyteus-e2e/semantic-memory-live-cnJnpk/outside/outside-fact.md\"}"
+    ],
+    "approvals": [
+      {
+        "tool": "Read",
+        "target": "outside",
+        "decision": "denied"
+      }
+    ]
+  },
+  "files": {
+    "workspace": "WS-de24f0cf",
+    "memory": "MEM-de24f0cf"
+  }
+}

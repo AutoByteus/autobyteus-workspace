@@ -1,0 +1,10 @@
+const responses = [];
+app.on('response', r => { const u = r.url(); if (u.includes('127.0.0.1:59229')) responses.push(`${r.status()} ${r.request().method()} ${u.replace(/\?.*/, '').replace(/bundle-app__[0-9a-f_]+/, 'bundle-app__…')}`); });
+await app.getByText('Enter application', { exact: true }).click();
+await app.waitForTimeout(15000);
+const frames = app.frames().filter(f => f !== app.mainFrame()).map(f => f.url().replace(/bundle-app__[0-9a-f_]+/, 'bundle-app__…'));
+const af = app.frames().find(f => f !== app.mainFrame());
+let inner = null;
+if (af) inner = (await af.evaluate(() => document.body.innerText).catch(e => 'ERR ' + e.message)).slice(0, 500);
+await app.screenshot({ path: '/tmp/abtest437/e11.png' });
+return { frames, inner, bad: responses.filter(l => /^(401|403)/.test(l)), all: [...new Set(responses)] };

@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AIMessage } from '~/types/conversation';
 import { TeamStreamingService } from '../TeamStreamingService';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
-import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const { handleBrowserToolExecutionSucceededMock, runHistoryStoreMock, teamContextsStoreMock } = vi.hoisted(() => ({
@@ -24,11 +24,13 @@ vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
 }));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => runHistoryStoreMock }));
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub);
 
 const rootTeamRunId = 'classroom-run';
 const teacherRunId = 'teacher-run';
 const persistentStudentRunId = 'persistent-student-run';
-const taskStudentRunId = 'task-student-run';
+// A third own member (a run a member delegated is its own run, outside the Team: autobyteus-461 rule 2).
+const taskStudentRunId = 'tutor-run';
 
 const createHarness = () => {
   const callbacks = new Map<string, (payload?: any) => void>();
@@ -46,12 +48,8 @@ const createHarness = () => {
     rootChildren: [
       testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
       testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+      testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' }),
     ],
-    delegations: [testDelegation({
-      delegatorAgentRunId: teacherRunId,
-      recipientAddress: '/Student',
-      target: { agentRunId: taskStudentRunId },
-    })],
   });
   const recoveryRequired = vi.fn();
   const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
@@ -70,18 +68,16 @@ const emit = (
 
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
-  base_change_sequence: baseChangeSequence,
-  closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-  messages: team.view.listCommunicationMessages(),
-  agent_input_states: [], remote_task_executions: [],
-  agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+  base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
+  execution_tree: team.view.getExecutionTree(),
+  agent_input_states: [], agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
     member_address: entry.memberAddress,
     status: 'idle',
     trigger: null,
     tool_name: null,
     error_message: null,
-    error_details: null,
+    error_details: null, background_tasks_running: 0,
     recoverableBlock: null,
   })),
 });
@@ -102,7 +98,7 @@ const statusPayload = (changeSequence: number, agentRunId: string, status: strin
   trigger: null,
   tool_name: null,
   error_message: null,
-  error_details: null,
+  error_details: null, background_tasks_running: 0,
     recoverableBlock: null,
 });
 
@@ -118,7 +114,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(service.isReady).toBe(false);
     emit(callbacks, 'CONNECTED', { session_id: 'team-session-1', root_team_run_id: rootTeamRunId });
     expect(service.isReady).toBe(false);
-    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team));
+    // A rebuilt view (a newer base): the focused member is reconciled (an unchanged one keeps it, CR-461-082).
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team, team.view.getChangeSequence() + 1));
     expect(service.isReady).toBe(true);
     expect(runHistoryStoreMock.refreshRunNavigationTopology)
       .toHaveBeenCalledWith('team-stream-structure');
@@ -138,24 +135,35 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(team.view.isRootTeamActive()).toBe(false);
   });
 
-  it('reconciles a mounted task activation without stealing exact focus', () => {
-    const { callbacks, team } = createHarness();
+  it('a stopped Team\'s first message to its own member settles after the in-band live snapshot, and the composer does not stay pending (autobyteus-461 SR-048)', async () => {
+    const { callbacks, service, team } = createHarness();
     teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
+    // The view of a stopped Team: its stored-mode snapshot and lifecycle.
     admitReady(callbacks, team);
-    vi.clearAllMocks();
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
+    let settled = false;
+    const sending = service.sendMessage('start on this input', teacherRunId, [], [], { messageId: 'message-start', dedupeKey: 'dedupe-start' })
+      .then(() => { settled = true; });
 
-    emit(callbacks, 'TASK_EXECUTION_STARTED', {
-      change_sequence: 1, parent_team_run_id: rootTeamRunId,
-      execution: {
-        kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
+    // The server restores the Team and switches the view to live first: a fresh snapshot with a new sequence base.
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(team, 7), live_sequence_id: 'live-2' });
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: true });
+    await Promise.resolve();
+    // A snapshot neither drains nor settles the pending send.
+    expect(settled).toBe(false);
+    expect(service.isReady).toBe(true);
+
+    // Then it posts the message: its echo is an ordinary live event after the snapshot, and settles the send by identity.
+    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
+      change_sequence: 8, recipient_agent_run_id: teacherRunId, message_id: 'message-start', dedupe_key: 'dedupe-start',
+      content: 'start on this input', input_origin: 'user_message', received_at: '2026-11-11T00:00:00.000Z', context_file_paths: [],
+      sender_agent_run_id: null, parent_communication_message_id: null,
     });
-
-    expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);
-    expect(isTeamMemberProjectionAuthoritative(team, 'dynamic-task-run')).toBe(false);
-    expect(team.view.getFocusedAgentRunId()).toBe(teacherRunId);
-    expect(runHistoryStoreMock.refreshRunNavigationTopology)
-      .toHaveBeenCalledWith('team-stream-structure');
+    await sending;
+    expect(settled).toBe(true);
+    expect(team.view.isRootTeamActive()).toBe(true);
+    // Nothing is left pending for the member: its next message is admitted.
+    expect(() => service.sendMessage('next input', teacherRunId, [], [], { messageId: 'message-next', dedupeKey: 'dedupe-next' })).not.toThrow();
   });
 
   it('rejects a foreign connected root and cannot admit its snapshot', () => {
@@ -196,11 +204,33 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     });
 
     expect(teacher.state.currentStatus).toBe(AgentStatus.Running);
-    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({
+    expect((teacher.state.conversation.messages[0] as AIMessage | undefined)?.segments[0]).toMatchObject({
       content: 'Exact teacher output',
     });
     expect(persistentStudent.state.conversation.messages).toHaveLength(0);
     expect(taskStudent.state.conversation.messages).toHaveLength(0);
+  });
+
+  it('shows a member\'s failed message (a failed tool-list reopen) as an error in that member\'s conversation only (autobyteus-324 AC-007)', () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+    const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
+    const message = "Couldn't give this run its new tools (thread/resume refused). Send your message again to retry, or stop and resume the run.";
+
+    emit(callbacks, 'ERROR', {
+      change_sequence: 1,
+      agent_run_id: teacherRunId,
+      code: 'RUNTIME_SESSION_REOPEN_FAILED',
+      message,
+      error_scope: null,
+      error_effect: null,
+      turn_id: null,
+    });
+
+    const segments = (teacher.state.conversation.messages.at(-1) as AIMessage | undefined)?.segments ?? [];
+    expect(segments).toEqual([expect.objectContaining({ type: 'error', code: 'RUNTIME_SESSION_REOPEN_FAILED', message })]);
+    expect(persistentStudent.state.conversation.messages).toHaveLength(0);
   });
 
   it('applies a content batch per member in item order and continues after its covered range (autobyteus-139)', () => {
@@ -236,11 +266,30 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       command: 'sleep 20 && pnpm build',
       status: 'running',
       summary: null,
+      end_reason: null,
+      exit_code: null,
       started_at: '2026-09-29T16:48:20.000Z',
     });
 
     expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.taskId, task.status, task.command]))
       .toEqual([['bg-1', 'running', 'sleep 20 && pnpm build']]);
+
+    // autobyteus-483: a member's task carries why it ended through the team stream.
+    emit(callbacks, 'BACKGROUND_TASK_UPDATED', {
+      change_sequence: 2,
+      agent_run_id: teacherRunId,
+      task_id: 'bg-1',
+      kind: 'shell',
+      description: 'Wait for the build',
+      command: 'sleep 20 && pnpm build',
+      status: 'stopped',
+      summary: 'Background command "Wait for the build" was stopped after reaching its background time limit',
+      end_reason: 'time_limit',
+      exit_code: null,
+      started_at: '2026-09-29T16:48:20.000Z',
+    });
+    expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.status, task.endReason, task.exitCode]))
+      .toEqual([['stopped', 'time_limit', null]]);
     expect(backgroundTasks.getTasks(persistentStudentRunId)).toEqual([]);
     expect(team.view.getAgentContext(teacherRunId)!.state.currentStatus).not.toBe(AgentStatus.Running);
   });
@@ -257,7 +306,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       trigger: null,
       tool_name: null,
       error_message: null,
-      error_details: null,
+      error_details: null, background_tasks_running: 0,
     recoverableBlock: null,
     });
 
@@ -286,7 +335,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     }));
   });
 
-  it('projects MEMBER_INPUT into the exact task AgentRun without persistent substitution', () => {
+  it('projects MEMBER_INPUT into the exact AgentRun without substitution', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);
     const taskStudent = team.view.getAgentContext(taskStudentRunId)!;
@@ -340,9 +389,13 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     error.mockRestore();
   });
 
-  it('adds the exact public Team communication record to the authoritative view once', () => {
+  it('adds the exact public Team communication record to the loaded Team-tab lists once (autobyteus-358)', async () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: rootTeamRunId, agentRunId: teacherRunId } as const;
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
     emit(callbacks, 'TEAM_COMMUNICATION_MESSAGE', {
       change_sequence: 1,
       message: {
@@ -356,15 +409,56 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       },
     });
 
-    expect(team.view.listCommunicationMessages()).toEqual([{
-      message_id: 'team-message-1',
-      sender_agent_run_id: teacherRunId,
-      receiver_agent_run_id: taskStudentRunId,
+    expect(owner.messagesOf(key)).toEqual([{
+      messageId: 'team-message-1',
+      senderAgentRunId: teacherRunId,
+      receiverAgentRunId: taskStudentRunId,
       content: 'Coordinate the delegated task.',
-      message_type: 'peer_message',
-      created_at: '2026-08-11T00:04:00.000Z',
-      reference_files: [],
+      messageType: 'peer_message',
+      createdAt: '2026-08-11T00:04:00.000Z',
+      referenceFiles: [],
     }]);
+    expect(team.view.getChangeSequence()).toBe(1);
+  });
+
+  it('keeps the Team-tab lists across a snapshot in the same live sequence they saw; another live sequence reloads them (SR-004, SR-005)', async () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: rootTeamRunId, agentRunId: teacherRunId } as const;
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    emit(callbacks, 'AGENT_STATUS', statusPayload(1, teacherRunId, 'running'));
+    expect(owner.statusOf(key).state).toBe('loaded');
+    const candidate = (snapshot: Record<string, unknown>) => {
+      const candidateCallbacks = new Map<string, (payload?: any) => void>();
+      const wsClient = { state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+        on: vi.fn((event: string, callback: (payload?: any) => void) => candidateCallbacks.set(event, callback)) } as any;
+      // The rebuilt view holds the same agents (a view that drops one a list names re-fetches that list, autobyteus-469 CR-002).
+      const candidateTeam = buildTestTeamContext({ teamRunId: rootTeamRunId, coordinatorAddress: '/Teacher',
+        rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
+          testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' }),
+          testAgentNode('/Tutor', { agentRunId: taskStudentRunId, displayName: 'Tutor' })] });
+      const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+      void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
+      emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
+      emit(candidateCallbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(candidateTeam), ...snapshot });
+    };
+
+    // A recovery whose snapshot is based on an event the lists saw keeps them (no fetch).
+    candidate({ base_change_sequence: 1 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // Members' output moved the base, but no message is past what the lists hold (SR-007): kept.
+    candidate({ base_change_sequence: 9, last_message_change_sequence: 1 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // A message the lists did not see (sequence 11): they load again.
+    candidate({ base_change_sequence: 12, last_message_change_sequence: 11 });
+    expect(owner.statusOf(key).state).toBe('loading');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // Another publisher (a stop and resume, or a restart) at a base the lists saw: they load again.
+    candidate({ base_change_sequence: 1, live_sequence_id: 'live-2', last_message_change_sequence: 0 });
+    expect(owner.statusOf(key).state).toBe('loading');
   });
 
   it('acts on the first rejected gap effect once and cannot revive the failed instance', () => {

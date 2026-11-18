@@ -8,10 +8,12 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { delegatedConversation, ownRunSender } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // The collaboration model (collaboration-model-contract REQ-001..REQ-004, AC-001..AC-006): inside your run you message;
 // outside your run you delegate first and then message the copy by its run ID; messaging never creates a run.
@@ -152,7 +154,10 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
     const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-    const sendTo = (agentRunId: string, content: string) => {
+    // A run this root (or one of its runs) delegated to is messaged on its own run's stream (autobyteus-461 rule 2).
+    const own = ownRunSender(`ws://${url.host}`, path.join(dataDir, "memory"), rootId);
+    const sendTo = async (agentRunId: string, content: string) => {
+      if (await own.send(agentRunId, content)) return;
       if (kind === "org") view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent_org", root_run_id: rootId, target_agent_run_id: agentRunId,
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
@@ -161,12 +166,12 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
         content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds() } }));
       else sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: agentRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
@@ -177,7 +182,7 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
     /** One scripted tool call by an agent of the root (by run ID and address); returns the tool result it reports. */
     const calls = async (agentRunId: string, address: string, content: string): Promise<Rec> => {
       const before = calledResults(await conversationOf(agentRunId, address)).length;
-      sendTo(agentRunId, content);
+      await sendTo(agentRunId, content);
       let results: string[] = [];
       await until(async () => { results = calledResults(await conversationOf(agentRunId, address)); return results.length > before; },
         `${kind} ${address} tool result for ${content.slice(0, 110)}`, 60_000);
@@ -193,10 +198,12 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
 
-  const expectRefused = (result: Rec, address: string) => {
+  // The guidance: a teammate or the own Team is messaged (`send_message_to`); the sender's own address has words of its own
+  // (small-follow-ups-batch-435 REQ-013).
+  const expectRefused = (result: Rec, address: string, guidance = "send_message_to") => {
     expect(JSON.stringify(result), JSON.stringify(result)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
     expect(JSON.stringify(result)).toContain(address);
-    expect(JSON.stringify(result)).toContain("send_message_to");
+    expect(JSON.stringify(result)).toContain(guidance);
     expect(result).not.toHaveProperty("target_agent_run_id");
   };
   const expectNotFound = (result: Rec) => {
@@ -275,7 +282,8 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
     // AC-001: a teammate is messaged, not delegated.
     expectRefused(await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/mate", description: "Reply OK." })), "/mate");
     // The member itself.
-    expectRefused(await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." })), "/manager");
+    expectRefused(await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." })), "/manager",
+      "you can't delegate to yourself");
     expect((await root.copies()).length, "the refusals start nothing").toBe(before);
     // The teammate is reached by messaging (AC-006).
     expect(await root.calls(root.managerRunId, "/manager", callTool("send_message_to", { recipient_address: "/mate", content: "Hello mate." })))

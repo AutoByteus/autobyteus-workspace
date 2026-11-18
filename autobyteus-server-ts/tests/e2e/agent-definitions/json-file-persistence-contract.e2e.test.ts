@@ -346,7 +346,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
         stdioConfig: {
           command: "node",
           args: ["-e", "console.log('ok')"],
-          env: { TEST_ENV: "1" },
+          env: [{ name: "TEST_ENV", secret: false, value: "1" }],
         },
       },
     });

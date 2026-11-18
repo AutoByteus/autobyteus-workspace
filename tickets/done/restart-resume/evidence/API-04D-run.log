@@ -1,0 +1,16 @@
+[+0.01s] stamp "1.5.11-beta.9"
+[+1.85s] server started {"label":"X","pid":68791,"port":62681}
+[+2.97s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:62680","codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+6.40s] busy {"label":"slow-1","pid":69815}
+[+15.42s] busy {"label":"slow-2","pid":71441}
+[+15.46s] busy {"label":"slow-3","pid":70286}
+[+15.51s] busy {"label":"t-1","pid":68927}
+[+15.55s] busy {"label":"t-2","pid":69007}
+[+19.67s] server stopped {"label":"X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793516232945},"ms":2495}
+[+19.67s] record [{"place":"host","run":"0e6cef4a63"},{"place":"host","run":"220b35f2f8"},{"place":"host","run":"718ae43fa1"},{"place":"host","run":"80f1a0db4c"},{"place":"host","run":"e7f12f23a8"}]
+[+19.67s] stamp "1.5.11-beta.9-rr285next"
+[+23.89s] crash during resume {"killed":true,"exit":{"code":null,"signal":"SIGKILL","at":1793516235211},"recordAfterCrash":null,"lines":["[21.77] Restart resume resumed host run 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63' of agent 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63'"]}
+[+25.52s] server started {"label":"X1-after-crash","pid":71787,"port":62800}
+[+33.54s] after crash, next start {"lines":[],"notices":{"slow-1":0,"slow-2":0,"slow-3":0,"t-1":0,"t-2":0}}
+[+33.74s] server stopped {"label":"X1-after-crash","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793516246995},"ms":56}
+{"result":"Completed","error":null}

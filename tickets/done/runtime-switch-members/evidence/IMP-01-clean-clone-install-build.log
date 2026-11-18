@@ -1,0 +1,13 @@
+Check: IMP-01
+Command: git clone (branch codex/runtime-switch-members) /tmp/clean-348; pnpm install --frozen-lockfile; pnpm -C autobyteus-server-ts build
+Commit: d3463e0a7e
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9.6s using pnpm v10.28.2
+exit 0
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

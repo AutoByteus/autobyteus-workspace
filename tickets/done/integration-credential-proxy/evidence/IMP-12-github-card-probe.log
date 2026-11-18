@@ -1,0 +1,14 @@
+# Check: IMP-12-github-card-probe
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): node tests/e2e/github-integration-card-probe.mjs --skip-server-build --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/tickets/in-progress/integration-credential-proxy/evidence/IMP-12-github-card-ui
+# Commit: 2529eaaec1 (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:33:32Z
+
+Pass GHC-001 Not connected card renders with the agents, none ticked
+Pass GHC-002 An agent tick is saved on the node and survives a reload
+Pass GHC-003 A token GitHub rejects shows the plain error and stores nothing
+Pass GHC-004 Connected state renders login, Test and Remove (intercepted status)
+Pass GHC-005 zh-CN copy and a narrow layout render
+Result Pass; evidence in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/tickets/in-progress/integration-credential-proxy/evidence/IMP-12-github-card-ui
+
+# Exit code: 0

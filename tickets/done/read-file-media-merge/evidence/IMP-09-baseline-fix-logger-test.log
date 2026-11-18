@@ -1,0 +1,28 @@
+# Check: IMP-09 baseline fix: tests/unit/utils/logger.test.ts (TESTING.md Rule 9)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge && env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/unit/utils/logger.test.ts)
+# Commit: failure in the full run at 90c6204a3b (IMP-04 round 2); fix 16b3e2452d (branch codex/read-file-media-merge)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment
+# Date: 2026-10-29 local
+# Cause: the test read the log file a fixed 25 ms after logging; the logger writes through fs.createWriteStream, which opens the file and writes asynchronously, so under full-suite load the file did not exist yet (ENOENT). Not caused by this ticket (no logger code touched).
+# Fix: wait, bounded at 5 s, for the last expected line; the level case logs an error-level sentinel after the suppressed line so the absence check stays meaningful.
+
+===== failure (full run, round 2) =====
+ FAIL  tests/unit/utils/logger.test.ts > logger initialization > does not override existing logger when called without explicit options
+Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-logger-5ZbymK/team.log'
+ ❯ tests/unit/utils/logger.test.ts:55:23
+     53|
+     54|     await new Promise((resolve) => setTimeout(resolve, 25));
+     55|     const output = fs.readFileSync(filePath, 'utf8');
+       |                       ^
+     56|     expect(output).toContain('first');
+     57|     expect(output).toContain('second');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+
+===== after the fix =====
+ ✓ tests/unit/utils/logger.test.ts (2 tests) 54ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  21:44:39

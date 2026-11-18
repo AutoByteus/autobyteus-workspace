@@ -1,0 +1,7 @@
+IMP-100 — CR-461-094 with real nodes: remote-delegation-two-server.e2e.test.ts with RC-45 (built dist, temp roots, scripted AGY)
+RC-45: two runs on beta from two delegators; alpha's /ws/run-status holds the second; beta stops (the run reads offline),
+starts; only the first delegator's view opens and beta answers it; a turn on beta: the second run's status must follow.
+Before (re-observation keyed by the subscribed runs only): Tests 1 failed | 44 passed (45): RC-45 'Timed out waiting for the
+  followed run live again on alpha after beta's outage'.
+After (b8e2d0f527):  Tests 45 passed (45)
+RC-45 receipt: {"shown": "publisher_147731ee81d149719a51a1c025f2b320", "followed": "publisher_8a03edf12b84443aa4f2c9fec88d735c", "after": ["initializing", "running", "idle"]}

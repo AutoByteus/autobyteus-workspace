@@ -1,0 +1,109 @@
+# IMP-03
+# Command: pnpm -C autobyteus-web test:electron --run (whole Electron main-process suite)
+# Commit: 927079c6cd (run on the working tree before the commit; it differed only in the server test file, which this suite does not run)
+# Environment: macOS (Darwin 25.5.0, arm64), Electron 42.11.16, Node 22.23.1, machine load average 130-240 during runs
+# Date: 2026-11-17
+
+
+> autobyteus@1.5.13-beta.7 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web/electron
+
+ ✓ __tests__/nodeRegistryStore.spec.ts (9 tests) 9ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts (32 tests) 96ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 81ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 84ms
+ ✓ updater/__tests__/appUpdaterAutomaticMac.spec.ts (17 tests) 129ms
+ ✓ updater/__tests__/appUpdaterAutomatic.spec.ts (23 tests) 149ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (12 tests) 10ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (19 tests) 5ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 10ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (12 tests) 212ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (14 tests) 35ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts (36 tests) 8ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 35ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (4 tests) 18ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 68ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (16 tests) 1081ms
+ ✓ application/__tests__/ElectronAutomaticUpdateWiring.spec.ts (7 tests) 6ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 62ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (5 tests) 4ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 9ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts (3 tests) 4ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (5 tests) 13ms
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (4 tests) 3ms
+ ✓ nodeAccess/__tests__/nodeConnectService.spec.ts (4 tests) 6ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts (10 tests) 14ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (4 tests) 12ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 85ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts (7 tests) 424ms
+   ✓ nodeUpdateClient (C1) > gives up on a node that does not answer within the timeout (real fetch)  413ms
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 8ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 192ms
+stdout | server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+AC002 actual deadline receipt {"elapsedMs":1009,"pid":79047,"absent":true}
+
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 3ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (3 tests) 4ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 4ms
+ ✓ browser/__tests__/browser-file-document-request.spec.ts (25 tests) 5ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts (5 tests) 9ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 3ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 3ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 4ms
+ ✓ nodeAccess/__tests__/nodeCredentialAttacher.spec.ts (4 tests) 3ms
+ ✓ __tests__/logger.spec.ts (4 tests) 119ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (5 tests) 6ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 6ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 8ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 10ms
+ ✓ nodeAccess/__tests__/nodeCredentialStore.spec.ts (3 tests) 7ms
+ ✓ __tests__/preload.spec.ts (5 tests) 20ms
+ ✓ updater/__tests__/electronUpdaterCachedDownload.spec.ts (1 test) 5ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (4 tests) 366ms
+ ✓ server/__tests__/serverProcessTree.spec.ts (5 tests) 111ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateIpc.spec.ts (4 tests) 7ms
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-tool-errors-507/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+ ✓ server/__tests__/ServerForceStopTree.spec.ts (2 tests) 2029ms
+   ✓ force-stops a wedged server and its whole tree, leaving no process behind  2029ms
+ ✓ updater/__tests__/appUpdateAutomaticStore.spec.ts (4 tests) 6ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 5ms
+ ✓ browser/__tests__/register-browser-shell-ipc-handlers.spec.ts (2 tests) 5ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 58ms
+ ✓ browser/__tests__/browser-tab-observers.spec.ts (1 test) 3ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 17ms
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 1ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 2ms
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 9ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 2ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts (11 tests) 4312ms
+   ✓ actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child  1015ms
+   ✓ actual advisory inspector faults > rejects over-32KiB output rather than publishing a truncated owner  326ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "" does not fabricate an owner  374ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "unstructured text" does not fabricate an owner  314ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p0\ncnode\n" does not fabricate an owner  354ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "pNaN\ncnode\n" does not fabricate an owner  400ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p9007199254740992\ncnode\n" does not fabricate an owner  526ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p12\ncnode\npbad\n" does not fabricate an owner  508ms
+   ✓ actual advisory inspector faults > discards racing/nonzero partial evidence, recovers fresh, then forgets vanished owners  453ms
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 5091ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  3923ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  759ms
+   ✓ ManagedExtensionService > marks a broken installation as requiring attention  409ms
+RESULT {"electron":"42.11.16","cases":[{"id":"AC-002","ok":true,"ms":368,"size":{"width":2560,"height":1800},"tabId":"953054"},{"id":"AC-001","ok":true,"ms":167,"size":{"width":2560,"height":1800},"tabId":"953054"},{"id":"AC-005","ok":true,"ms":479,"size":{"width":2560,"height":8000},"tabId":"953054","boundsBefore":{"x":0,"y":0,"width":1280,"height":900},"boundsAfter":{"x":0,"y":0,"width":1280,"height":900}},{"id":"AC-003","ok":true,"ms":162,"size":{"width":810,"height":1800},"tabId":"94e30a","viewportBefore":[980,2176],"viewportAfter":[980,2176]},{"id":"AC-004","ok":true,"ms":168,"size":{"width":2560,"height":1800},"tabId":"a035d7","attachedWhileShown":true,"attachedWhileMinimized":false},{"id":"AC-004-restored","ok":true,"ms":52,"size":{"width":2560,"height":1800},"tabId":"a035d7","attachedAfterRestore":true}]}
+ ✓ browser/__tests__/browser-screenshot-capture.electron.spec.ts (7 tests) 9914ms
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts (4 tests) 10617ms
+
+ Test Files  67 passed | 1 skipped (68)
+      Tests  503 passed | 1 skipped (504)
+   Start at  07:45:25
+   Duration  11.53s (transform 2.32s, setup 0ms, collect 7.23s, tests 35.65s, environment 13ms, prepare 4.67s)
+

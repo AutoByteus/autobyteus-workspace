@@ -1,0 +1,97 @@
+# API-05 — git grep at HEAD 67ed4d9e03, 2026-11-04T13:34:26Z
+# command: git grep -i -n -I "read_media_file\|readMediaFile"
+
+## hits per top folder
+   1 .github/release-notes/release-notes.md
+   1 autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/schema-best-practice-compliance-report.json
+   1 autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-v1.3.28-origin-5875b06d.log
+   1 autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523-v1.3.28.log
+   1 autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260523.log
+   1 autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260528-v1.3.31-origin-7b265708-localfix.log
+   1 autobyteus-web/tickets/done/mobile-artifacts-tab/evidence/electron-build-mac-20260528-v1.3.31-origin-7b265708.log
+   1 autobyteus-web/tickets/done/mobile-file-reference-controls/evidence/electron-build-mac-20260528-local.log
+   3 test-results
+5290 tickets
+
+## hits outside tickets/ and test-results/ (full lines)
+.github/release-notes/release-notes.md:33:- **`read_file` reads images, audio and video** for the model's next turn, and refuses binary files. `read_media_file` is gone; agents that listed it use `read_file` instead.
+
+## binary-file hits
+binary: autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log
+binary: test-results/autobyteus-runtime-streaming-ui-performance/electron-build-personal-macos-arm64.log
+binary: tickets/done/agent-idle-status-lifecycle/execution-evidence/129-electron-build-v1428-macos-personal.log
+binary: tickets/done/agent-idle-status-lifecycle/execution-evidence/138-dr002-electron-build-v1428-macos-personal.log
+binary: tickets/done/agent-idle-status-lifecycle/execution-evidence/46-electron-build-macos.log
+binary: tickets/done/agent-idle-status-lifecycle/execution-evidence/60-electron-build-macos-latest-v1.4.19-personal.log
+binary: tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-latest-personal-rebuild-20260721.log
+binary: tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-rebuild-20260721.log
+binary: tickets/done/application-framework-architecture-diagrams/delivery-electron-mac-build.log
+binary: tickets/done/article-writing-image-generation-hang/electron-build-macos-arm64-delivery.log
+binary: tickets/done/article-writing-image-generation-hang/electron-build-main-personal-macos-arm64.log
+binary: tickets/done/background-agent-renderer-contention/electron-build-macos-arm64-ir-006-delivery.log
+binary: tickets/done/codex-luna-agent-run-prepare-failure/electron-build-macos-arm64.log
+binary: tickets/done/codex-shell-cwd-conversion-investigation/electron-build-macos-arm64.log
+binary: tickets/done/codex-token-cache-rate-statistics/delivery-evidence/electron-build-mac.log
+binary: tickets/done/compaction-response-robustness/electron-build-macos-arm64-dr-003.log
+binary: tickets/done/compaction-response-robustness/electron-build-macos-arm64-dr-004.log
+binary: tickets/done/compaction-response-robustness/electron-build-macos-arm64.log
+binary: tickets/done/configured-skill-on-demand-loading/delivery-electron-build.log
+binary: tickets/done/custom-provider-model-context-metadata/electron-build-mac-dr-005.log
+binary: tickets/done/custom-provider-model-context-metadata/electron-build-mac-dr-007.log
+binary: tickets/done/custom-provider-model-context-metadata/electron-build-mac-dr-009.log
+binary: tickets/done/custom-provider-model-context-metadata/electron-build-mac-dr-010.log
+binary: tickets/done/custom-provider-model-context-metadata/electron-build-mac.log
+binary: tickets/done/daily-assistant-luna-image-error/electron-main-personal-build.log
+binary: tickets/done/daily-assistant-luna-image-error/electron-test-build.log
+binary: tickets/done/deepseek-edit-newline-boundary/electron-build-macos-arm64.log
+binary: tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-build.log
+binary: tickets/done/diagram-zoom-viewer/delivery-electron-mac-build-round-4.log
+binary: tickets/done/edit-file-actionable-context-errors/electron-build-integrated-macos-arm64.log
+binary: tickets/done/event-monitor-history-transparency/delivery-evidence/dr-002-electron-build-macos-arm64.log
+binary: tickets/done/event-monitor-history-transparency/delivery-evidence/dr-005-main-personal-electron-build.log
+binary: tickets/done/memory-lineage-provenance-analysis/evidence/delivery/api-rev-006-electron-macos-1.4.32-build.log
+binary: tickets/done/memory-lineage-provenance-analysis/evidence/delivery/api-rev-007-electron-macos-1.4.32-build.log
+binary: tickets/done/memory-lineage-provenance-analysis/evidence/delivery/api-rev-007-electron-macos-1.4.32-user-request-rebuild.log
+binary: tickets/done/memory-lineage-provenance-analysis/evidence/delivery/api-rev-009-electron-macos-1.4.34-build.log
+binary: tickets/done/memory-lineage-provenance-analysis/evidence/delivery/electron-macos-build.log
+binary: tickets/done/nested-team-history-restart-hydration/delivery-evidence/dr-002-electron-mac-build.log
+binary: tickets/done/openai-new-api-models/evidence/round2-electron-test-build.log
+binary: tickets/done/pluggable-memory-compaction-strategies/validation-evidence/delivery-integrated-electron-build-mac-20260714.log
+binary: tickets/done/pluggable-memory-compaction-strategies/validation-evidence/delivery-user-requested-electron-build-mac-20260713.log
+binary: tickets/done/prisma-repository-adoption-token-stats-secret-store/electron-build.log
+binary: tickets/done/runtime-agent-tools-mcp-unification/logs/delivery/electron-build-mac-20260614T082344Z.log
+binary: tickets/done/secure-centralized-secret-provisioning/execution-evidence/106-delivery-electron-macos-arm64-build.log
+binary: tickets/done/secure-centralized-secret-provisioning/execution-evidence/354-delivery-round21-electron-build.log
+binary: tickets/done/secure-centralized-secret-provisioning/execution-evidence/372-delivery-round22-electron-build.log
+binary: tickets/done/secure-centralized-secret-provisioning/execution-evidence/375-delivery-round22-adhoc-signed-electron-rebuild.log
+binary: tickets/done/secure-centralized-secret-provisioning/execution-evidence/384-delivery-round22-clean-unsigned-electron-rebuild.log
+binary: tickets/done/secure-centralized-secret-provisioning/execution-evidence/393-delivery-main-personal-clean-unsigned-electron-build.log
+binary: tickets/done/self-evolve-agent-subject-naming/validation-evidence/delivery-electron-build-mac-20260708.log
+binary: tickets/done/simplify-native-tool-continuation/validation-logs/delivery-refresh-round5/electron-macos-build-latest-base.log
+binary: tickets/done/taskagent-team-tab-ui/delivery-evidence/electron-build-mac.log
+binary: tickets/done/team-run-config-ui-retune/validation-evidence/delivery-electron-build-mac-20260708-round3.log
+binary: tickets/done/team-run-offline-delete-action/electron-build-macos-arm64-dr003.log
+binary: tickets/done/team-task-delegation-analysis/delivery-evidence/round-10/logs/electron-mac-build.log
+binary: tickets/done/token-meter-team-member-focus/delivery-evidence/finalization/logs/main-electron-mac-build.log
+binary: tickets/done/token-meter-team-member-focus/delivery-evidence/round-1/logs/electron-mac-build.log
+binary: tickets/done/token-meter-team-member-focus/delivery-evidence/round-2/logs/electron-mac-build.log
+binary: tickets/done/token-statistics-full-width/delivery-evidence/electron-test-build.log
+binary: tickets/done/token-statistics-full-width/delivery-evidence/workspace-visual-electron-build/electron-test-build.log
+binary: tickets/done/token-statistics-persistence/delivery-evidence/dr-002-electron-mac-build.log
+binary: tickets/done/token-statistics-persistence/delivery-evidence/dr-002-electron-mac-personal-build.log
+binary: tickets/done/token-statistics-persistence/delivery-evidence/dr-003-electron-mac-personal-rebuild.log
+binary: tickets/done/token-statistics-persistence/delivery-evidence/dr-004-corrected-electron-mac-personal-build.log
+binary: tickets/done/token-statistics-persistence/delivery-evidence/dr-006-main-personal-electron-build.log
+binary: tickets/done/token-statistics-run-team-analysis/electron-build-macos-round5-20260629-094509.log
+binary: tickets/done/token-usage-one-row-per-agent-run/delivery-evidence/06-electron-build-macos-arm64-dr003.log
+binary: tickets/done/tool-result-trace-simplification/delivery-evidence/electron-build/electron-macos-arm64-build.log
+binary: tickets/done/upgrade-electron-latest-stable/logs/electron-build-mac-arm64-20260619T1944Z.log
+binary: tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/delivery-electron-build-dr008.log
+binary: tickets/in-progress/agent-team-hierarchical-handoffs/delivery-evidence/delivery-electron-build-dr010.log
+(end)
+
+## summary
+non-historical text hits: 1 (.github/release-notes/release-notes.md, the v1.5.11 release note, DEC-003)
+binary hits: 71, outside tickets/ and test-results/: 0
+all other text hits are under tickets/ (root and package-level tickets/done) or test-results/: historical (DEC-003)
+RESULT: PASS

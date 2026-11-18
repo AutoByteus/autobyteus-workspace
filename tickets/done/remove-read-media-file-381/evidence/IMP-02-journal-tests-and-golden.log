@@ -1,0 +1,245 @@
+# IMP-02 — AC-002: journal and memory-search tests; the regenerated golden's diff (DEC-004)
+# Command: golden: with the base translation file (git show fe351591f2:…/autobyteus-translation.ts) temporarily in place and the synthetic row removed, a throwaway test rendered groups 1-2 of every synthetic trace as unchanged-lines.test.ts does; the file was written as JSON.stringify(…, 2) with _about kept; then the edited translation restored. Tests: cd autobyteus-server-ts && env -i … npx vitest run tests/agent-work-journal tests/unit/memory-search
+# Commit: bba6ab3edd
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-04
+# Look for: golden: claude/codex/antigravity/grok "same", autobyteus "changed"; the markdown diff is exactly the two removed lines "[06:00:29] Command: cat /work/shipping/images/parcel.png → ok" and its media marker line, no other added/removed line, no rt_NNN shift; tests "Test Files  18 passed | 1 skipped (19)", "Tests  222 passed | 2 skipped (224)", "unchanged-lines.test.ts (5 tests)"; WORK_JOURNAL_RENDERER_REVISION = 2
+
+===== golden-markdown-diff.txt =====
+--- before (fe351591f2)
++++ after
+@@ -35,2 +34,0 @@
+-[06:00:29] Command: cat /work/shipping/images/parcel.png → ok
+-           [image, not reproduced] [↗](../raw_traces_active.jsonl#rt_029)
+
+== removed lines that are not a renumbered copy of an added line:
+   [06:00:29] Command: cat /work/shipping/images/parcel.png → ok
+              [image, not reproduced] [↗](../raw_traces_active.jsonl#rt_029)
+== added lines that are not renumbered copies: []
+
+===== golden-git-diff.txt =====
+commit bba6ab3edda0026b5c49318fffe9885f44ee5472
+Author: normy <normy@macbookpro.speedport.ip>
+Date:   Wed Nov 4 14:29:53 2026 +0100
+
+    refactor(server): remove the Work Journal converter of the removed read_media_file tool (autobyteus-381)
+    
+    The AutoByteus journal translation no longer has a read_media_file entry; a recorded call of
+    it now renders as the generic tool line when its file is rendered again for another reason.
+    mediaReadRecorded stays (read_file uses it), and WORK_JOURNAL_RENDERER_REVISION stays 2:
+    existing journal files are reused as written (DEC-001).
+    
+    Removed with it: the oracle entry, the synthetic trace row, the test lines and the doc
+
+===== ac002-journal.log =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-read-media-file-381/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-read-media-file-381/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/agent-work-journal/rendering/platform-completeness.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:92495) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/agent-work-journal/rendering/platform-completeness.test.ts > platform tool converters > cover every platform tool the registry offers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-read-media-file-381/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-read-media-file-381/autobyteus-server-ts
+
+ ✓ tests/agent-work-journal/rendering/platform-completeness.test.ts (3 tests) 5ms
+stdout | tests/agent-work-journal/services/work-journal-run-updater.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:95262) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/agent-work-journal/services/work-journal-run-updater.test.ts > WorkJournalRunUpdater (DS-001) > a burst of events is merged into at most one more update; other events do not update
+[AgentSegmentLifecycleRejected] {
+  runtimeKind: 'codex_app_server',
+  runId: 'run-1',
+  turnId: 'turn-1',
+  eventType: 'SEGMENT_CONTENT',
+  segmentId: 's',
+  reason: 'PAYLOAD_INVALID'
+}
+
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts (6 tests) 90ms
+stdout | tests/unit/memory-search/memory-search.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:95281) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/memory-search/memory-search.test.ts > MemorySearch (pipeline and search over Work Journals) > before the first build says so, writes no journal and starts nothing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-read-media-file-381/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-read-media-file-381/autobyteus-server-ts
+
+ ✓ tests/unit/memory-search/memory-search.test.ts (21 tests) 1092ms
+     ✓ drops only its own Journals step's notifications: a build is not followed by a live pass of every run  331ms
+stdout | tests/agent-work-journal/services/work-journal-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts (15 tests) 72ms
+stdout | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > a journal manifest written by the previous release (one runtime for the run, none per file) is read once and rewritten without changing any journal text
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > a journal manifest written by the previous release (one runtime for the run, none per file) is read once and rewritten without changing any journal text
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > claude: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > claude: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > codex: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > codex: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > antigravity: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > antigravity: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > grok: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > grok: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > autobyteus: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+stderr | tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts > journals of a run that never switched (REQ-012) > autobyteus: archived segments and the open file render exactly as the run's one runtime renders them
+[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts (6 tests) 60ms
+ ✓ tests/unit/memory-search/memory-run-discovery.test.ts (6 tests) 47ms
+stdout | tests/agent-work-journal/services/work-journal-reading.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts (5 tests) 48ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts (32 tests) 15ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts (23 tests) 15ms
+(node:97163) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/memory-search/memory-search-store.test.ts (2 tests) 18ms
+ ✓ tests/unit/memory-search/memory-search-evaluation.test.ts (3 tests) 11ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts (14 tests) 10ms
+ ✓ tests/unit/memory-search/memory-search-index-units.test.ts (12 tests) 10ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts (15 tests) 9ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts (5 tests) 9ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts (37 tests) 5ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts (10 tests) 4ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts (7 tests) 4ms
+stdout | tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/agent-work-journal/perf/work-journal-open-file-cost.perf.test.ts (2 tests | 2 skipped)
+
+ Test Files  18 passed | 1 skipped (19)
+      Tests  222 passed | 2 skipped (224)
+   Start at  14:24:14
+   Duration  11.81s (transform 3.11s, setup 209ms, import 8.12s, tests 1.52s, environment 1ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+

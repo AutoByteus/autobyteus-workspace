@@ -1,0 +1,200 @@
+# API-03 (round 2) presentation-only check against the new base
+# Commands: git diff --stat 84ea944ac5 35e5853a22 -- autobyteus-web/stores autobyteus-web/utils autobyteus-web/localization autobyteus-server-ts autobyteus-web/electron; git diff --stat d5f670021b 35e5853a22 -- <this ticket's files>
+# Date: 2026-11-02T09:59:12Z
+--- this ticket's delta over origin/personal 84ea944ac5 in stores/utils/localization/server/electron (expected empty):
+--- end
+--- this ticket's own files changed by the merge (expected empty):
+--- end
+--- whole delta over the new base:
+ autobyteus-web/components/settings/NodeManager.vue |     2 +-
+ .../RemoteCollaborationOfferDisclosure.vue         |    60 -
+ .../settings/RemoteCollaborationOfferToggle.vue    |    40 +
+ .../RemoteCollaborationOfferDisclosure.spec.ts     |   101 -
+ .../RemoteCollaborationOfferToggle.spec.ts         |    43 +
+ .../components/settings/nodes/AddNodePanel.vue     |    43 +-
+ .../components/settings/nodes/NodeAddressHint.vue  |     7 +-
+ .../settings/nodes/NodeCollaborationSwitch.vue     |    46 +
+ .../settings/nodes/NodeConnectionDetails.vue       |    17 +-
+ .../components/settings/nodes/NodeList.vue         |    15 +-
+ .../components/settings/nodes/NodeNoticeIcon.vue   |    16 +
+ .../components/settings/nodes/NodeRow.vue          |   161 +-
+ .../components/settings/nodes/NodeServerUpdate.vue |   101 +-
+ .../components/settings/nodes/ThisNodeCard.vue     |    94 +-
+ .../settings/nodes/__tests__/AddNodePanel.spec.ts  |     3 +-
+ .../settings/nodes/__tests__/NodeRow.spec.ts       |    63 +-
+ .../nodes/__tests__/NodeServerUpdate.spec.ts       |    28 +-
+ autobyteus-web/docs/settings.md                    |    62 +-
+ .../tests/e2e/nodes-docker-address-probe.mjs       |    22 +-
+ .../tests/e2e/remote-nodes-page-probe.mjs          |    61 +-
+ .../api-e2e-coverage-investigation.md              |   168 +
+ .../api-e2e-execution-coverage-report.md           |   143 +
+ .../api-e2e-revision-record.md                     |    32 +
+ .../api-e2e-test-progress.md                       |    18 +
+ .../delivery-revision-record.md                    |    28 +
+ .../manage-nodes-professional/design-spec.md       |   324 +
+ .../evidence/api-e2e/API-01-electron-build.log     |    30 +
+ .../API-02-desktop-journey.json                    |   108 +
+ .../API-02-desktop-journey-run1/instance.log       |   255 +
+ .../API-02-desktop-journey-run1/server-blocked.log |   119 +
+ .../API-02-desktop-journey-run1/server-fail.log    |   119 +
+ .../API-02-desktop-journey-run1/server-lost.log    |   119 +
+ .../API-02-desktop-journey-run1/server-newer.log   |   119 +
+ .../API-02-desktop-journey-run1/server-plain.log   |   119 +
+ .../API-02-desktop-journey-run1/server-refuse.log  |   119 +
+ .../API-02-desktop-journey-run1/server-running.log |   119 +
+ .../API-02-desktop-journey-run1/server-upd.log     |   119 +
+ .../API-02-desktop-journey.json                    |   389 +
+ .../EL-01-desktop-1440-default-full.png            |   Bin 0 -> 122651 bytes
+ .../EL-01-desktop-1440-default.png                 |   Bin 0 -> 122651 bytes
+ .../EL-02-update-states-at-open.png                |   Bin 0 -> 122651 bytes
+ .../EL-03-update-checking.png                      |   Bin 0 -> 132380 bytes
+ .../EL-03-update-downloading.png                   |   Bin 0 -> 131052 bytes
+ .../EL-03-update-preparing.png                     |   Bin 0 -> 130619 bytes
+ .../EL-03-update-restarting.png                    |   Bin 0 -> 128300 bytes
+ .../EL-03-update-starting.png                      |   Bin 0 -> 132367 bytes
+ .../EL-03-update-succeeded.png                     |   Bin 0 -> 131231 bytes
+ .../EL-04-update-refused-copy-command.png          |   Bin 0 -> 135803 bytes
+ .../EL-05-update-failed.png                        |   Bin 0 -> 135726 bytes
+ .../EL-07-medium-window-1100.png                   |   Bin 0 -> 112748 bytes
+ .../EL-08-narrow-390-en.png                        |   Bin 0 -> 59331 bytes
+ .../EL-08-narrow-390-zh-CN.png                     |   Bin 0 -> 64701 bytes
+ .../EL-08-zh-CN-1440.png                           |   Bin 0 -> 129099 bytes
+ .../EL-09-offer-panel-open-by-keyboard.png         |   Bin 0 -> 121718 bytes
+ .../API-02-desktop-journey-run2/instance.log       |   450 +
+ .../API-02-desktop-journey-run2/server-blocked.log |   119 +
+ .../API-02-desktop-journey-run2/server-fail.log    |   119 +
+ .../API-02-desktop-journey-run2/server-lost.log    |   119 +
+ .../API-02-desktop-journey-run2/server-newer.log   |   119 +
+ .../API-02-desktop-journey-run2/server-plain.log   |   119 +
+ .../API-02-desktop-journey-run2/server-refuse.log  |   120 +
+ .../API-02-desktop-journey-run2/server-running.log |   119 +
+ .../API-02-desktop-journey-run2/server-upd.log     |   161 +
+ .../API-02-desktop-journey.json                    |  1204 +
+ .../EL-01-desktop-1440-default-full.png            |   Bin 0 -> 122922 bytes
+ .../EL-01-desktop-1440-default.png                 |   Bin 0 -> 122922 bytes
+ .../EL-02-update-states-at-open.png                |   Bin 0 -> 122922 bytes
+ .../EL-03-update-checking.png                      |   Bin 0 -> 132821 bytes
+ .../EL-03-update-downloading.png                   |   Bin 0 -> 131470 bytes
+ .../EL-03-update-preparing.png                     |   Bin 0 -> 131044 bytes
+ .../EL-03-update-restarting.png                    |   Bin 0 -> 128726 bytes
+ .../EL-03-update-starting.png                      |   Bin 0 -> 132848 bytes
+ .../EL-03-update-succeeded.png                     |   Bin 0 -> 131651 bytes
+ .../EL-04-update-refused-copy-command.png          |   Bin 0 -> 136246 bytes
+ .../EL-05-update-failed.png                        |   Bin 0 -> 136115 bytes
+ .../EL-06-update-lost-not-reachable.png            |   Bin 0 -> 109778 bytes
+ .../EL-07-medium-window-1100.png                   |   Bin 0 -> 112972 bytes
+ .../EL-08-narrow-390-en.png                        |   Bin 0 -> 59338 bytes
+ .../EL-08-narrow-390-zh-CN.png                     |   Bin 0 -> 64700 bytes
+ .../EL-08-zh-CN-1440.png                           |   Bin 0 -> 133098 bytes
+ .../EL-09-offer-panel-open-by-keyboard.png         |   Bin 0 -> 115179 bytes
+ .../API-02-desktop-journey-run3/instance.log       |   412 +
+ .../API-02-desktop-journey-run3/server-blocked.log |   119 +
+ .../API-02-desktop-journey-run3/server-fail.log    |   119 +
+ .../API-02-desktop-journey-run3/server-lost.log    |   119 +
+ .../API-02-desktop-journey-run3/server-newer.log   |   119 +
+ .../API-02-desktop-journey-run3/server-plain.log   |   119 +
+ .../API-02-desktop-journey-run3/server-refuse.log  |   120 +
+ .../API-02-desktop-journey-run3/server-running.log |   119 +
+ .../API-02-desktop-journey-run3/server-upd.log     |   161 +
+ .../evidence/api-e2e/API-02-desktop-journey.mjs    |   434 +
+ .../api-e2e/API-03-presentation-only-diff.log      |    28 +
+ .../IMP-01-web-unit-suite-excerpt.log              |    36 +
+ .../implementation/IMP-01-web-unit-suite.log       | 47286 +++++++++++++++++++
+ .../implementation/IMP-02a-guard-web-boundary.log  |    15 +
+ .../IMP-02b-guard-localization-boundary.log        |    15 +
+ .../IMP-02c-audit-localization-literals.log        |    19 +
+ .../implementation/IMP-03-web-typecheck.log        |    37 +
+ .../IMP-04-remote-nodes-page-probe.log             |    38 +
+ .../NP-01-fresh-this-node-off.png                  |   Bin 0 -> 141461 bytes
+ .../NP-03-all-settled.png                          |   Bin 0 -> 127809 bytes
+ .../NP-03-theta-checking-others-settled.png        |   Bin 0 -> 127874 bytes
+ .../NP-04-add-kappa-confirmation.png               |   Bin 0 -> 141598 bytes
+ .../NP-05-kappa-working.png                        |   Bin 0 -> 131126 bytes
+ .../NP-06-lambda-name-collision.png                |   Bin 0 -> 135731 bytes
+ .../NP-07-mu-name-race-dialog.png                  |   Bin 0 -> 134772 bytes
+ .../NP-07-mu-row-try-again.png                     |   Bin 0 -> 150852 bytes
+ .../NP-09-lambda-stopped-turn-off.png              |   Bin 0 -> 144988 bytes
+ .../NP-10-beta-stopped-removed.png                 |   Bin 0 -> 137991 bytes
+ .../NP-11-this-node-off.png                        |   Bin 0 -> 141597 bytes
+ .../IMP-04-remote-nodes-page-probe/frontend.log    |    30 +
+ .../remote-nodes-page-probe.json                   |  3300 ++
+ .../server-alpha.log                               |   119 +
+ .../IMP-04-remote-nodes-page-probe/server-beta.log |   119 +
+ .../server-delta.log                               |   119 +
+ .../server-epsilon.log                             |   119 +
+ .../server-gamma.log                               |   119 +
+ .../IMP-04-remote-nodes-page-probe/server-iota.log |   119 +
+ .../server-kappa.log                               |   119 +
+ .../server-lambda.log                              |   119 +
+ .../IMP-04-remote-nodes-page-probe/server-mu.log   |   119 +
+ .../server-theta.log                               |   119 +
+ .../IMP-04-remote-nodes-page-probe/server-zeta.log |   238 +
+ .../IMP-05-nodes-docker-address-probe.log          |    23 +
+ .../ND-01-confirmation.png                         |   Bin 0 -> 129369 bytes
+ .../ND-01-working-details.png                      |   Bin 0 -> 138698 bytes
+ .../ND-02-after-use-this.png                       |   Bin 0 -> 122373 bytes
+ .../ND-02-change-address-loopback-hint.png         |   Bin 0 -> 141347 bytes
+ .../ND-03-different-node.png                       |   Bin 0 -> 136085 bytes
+ .../ND-05-window-on-docker.png                     |   Bin 0 -> 93607 bytes
+ .../docker-node.log                                |   900 +
+ .../frontend-desk.log                              |    28 +
+ .../frontend-docker.log                            |    28 +
+ .../nodes-docker-address-probe.json                |  1194 +
+ .../server-desk.log                                |   119 +
+ .../server-other.log                               |   119 +
+ .../IMP-06-rendered-check/IMP-06-rendered-check.md |    38 +
+ .../desktop-1440-en-details-open.png               |   Bin 0 -> 146564 bytes
+ .../desktop-1440-zh-CN-details-open.png            |   Bin 0 -> 148306 bytes
+ .../medium-card713-en-before-gap-fix.png           |   Bin 0 -> 138407 bytes
+ .../medium-card713-en-details-open.png             |   Bin 0 -> 140894 bytes
+ .../narrow-390-en-details-open.png                 |   Bin 0 -> 153396 bytes
+ .../IMP-06-rendered-check/start-node.sh            |    11 +
+ .../IMP-07-remote-nodes-page-probe.log             |    39 +
+ .../NP-01-fresh-this-node-off.png                  |   Bin 0 -> 142118 bytes
+ .../NP-03-all-settled.png                          |   Bin 0 -> 127774 bytes
+ .../NP-03-theta-checking-others-settled.png        |   Bin 0 -> 127847 bytes
+ .../NP-04-add-kappa-confirmation.png               |   Bin 0 -> 141607 bytes
+ .../NP-05-kappa-working.png                        |   Bin 0 -> 133060 bytes
+ .../NP-06-lambda-name-collision.png                |   Bin 0 -> 136510 bytes
+ .../NP-07-mu-name-race-dialog.png                  |   Bin 0 -> 135363 bytes
+ .../NP-07-mu-row-try-again.png                     |   Bin 0 -> 152036 bytes
+ .../NP-09-lambda-stopped-turn-off.png              |   Bin 0 -> 145530 bytes
+ .../NP-10-beta-stopped-removed.png                 |   Bin 0 -> 138397 bytes
+ .../NP-11-this-node-off.png                        |   Bin 0 -> 141531 bytes
+ .../IMP-07-remote-nodes-page-probe/frontend.log    |    83 +
+ .../remote-nodes-page-probe.json                   |  3322 ++
+ .../server-alpha.log                               |   119 +
+ .../IMP-07-remote-nodes-page-probe/server-beta.log |   119 +
+ .../server-delta.log                               |   119 +
+ .../server-epsilon.log                             |   119 +
+ .../server-gamma.log                               |   119 +
+ .../IMP-07-remote-nodes-page-probe/server-iota.log |   119 +
+ .../server-kappa.log                               |   119 +
+ .../server-lambda.log                              |   120 +
+ .../IMP-07-remote-nodes-page-probe/server-mu.log   |   119 +
+ .../server-theta.log                               |   119 +
+ .../IMP-07-remote-nodes-page-probe/server-zeta.log |   238 +
+ .../IMP-08-nodes-docker-address-probe.log          |    25 +
+ .../ND-01-confirmation.png                         |   Bin 0 -> 129073 bytes
+ .../ND-01-working-details.png                      |   Bin 0 -> 137598 bytes
+ .../ND-02-after-use-this.png                       |   Bin 0 -> 122036 bytes
+ .../ND-02-change-address-loopback-hint.png         |   Bin 0 -> 140381 bytes
+ .../ND-03-different-node.png                       |   Bin 0 -> 135641 bytes
+ .../ND-05-window-on-docker.png                     |   Bin 0 -> 93115 bytes
+ .../docker-node.log                                |   818 +
+ .../frontend-desk.log                              |    28 +
+ .../frontend-docker.log                            |    28 +
+ .../nodes-docker-address-probe.json                |  1194 +
+ .../server-desk.log                                |   119 +
+ .../server-other.log                               |   119 +
+ .../manage-nodes-professional/follow-ups.md        |     5 +
+ .../handoff-implementation.md                      |    61 +
+ .../handoff-product-design.md                      |    66 +
+ .../implementation-handoff.md                      |   199 +
+ .../implementation-revision-record.md              |    43 +
+ .../investigation-notes.md                         |    94 +
+ .../release-deployment-report.md                   |    57 +
+ .../manage-nodes-professional/requirements-doc.md  |   130 +
+ .../solution-revision-record.md                    |    34 +
+ .../user-screenshot-2026-11-01-beta10.png          |   Bin 0 -> 564027 bytes
+ 191 files changed, 70088 insertions(+), 419 deletions(-)

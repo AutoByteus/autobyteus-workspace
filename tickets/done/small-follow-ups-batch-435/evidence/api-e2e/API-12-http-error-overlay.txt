@@ -1,0 +1,8 @@
+# command: probes/api12.sh; commit d37397b40d
+# API-12; 2026-11-10T08:19:46Z; emulator-5600; APK of d37397b40d; saved node 'abx435 Proxy Node' at 10.0.2.2:63826 (test proxy)
+502page (proxy mode)
+O1 overlay: Can’t open abx435 Proxy Node | abx435 Proxy Node answered, but its page didn’t open (error 502).&#10;&#10;Check that AutoByteus is running on the computer, then tap Retry. | RETRY | EDIT | BROWSER
+forbidden words present: []
+pass (proxy mode)
+tapped 'Retry' at 242 1393
+O2 after Retry with the node answering: "{\"q\":\"\",\"connected\":true}"

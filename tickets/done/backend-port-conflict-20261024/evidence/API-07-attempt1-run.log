@@ -1,0 +1,13 @@
+# Case: API-07; source: 9bd72c20893dedb8c7dc99aacfcb0b732d092d6c; review HEAD: a201abe848cdff500948dfbd40dcd71d97926e26
+# Environment: isolated macOS arm64; date: 2026-10-26; command/steps: C + API-07-packaged-ipc.mjs
+# Full retained output follows; attempt/pre-safety names retain their original outcome.
+Error: child exited before ready Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+App data directory: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data
+ERROR: Configuration file not found: Error: Configuration file not found: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data/.env
+Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data/.env
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_CONFIG_INITIALIZATION_FAILED","summary":"Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc/startup-cancel/data/.env","logPath":null}
+
+    at file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs:21:51
+    at wait (file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs:8:94)
+    at async file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs:21:3

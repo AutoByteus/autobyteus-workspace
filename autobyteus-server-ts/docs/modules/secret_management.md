@@ -3,7 +3,7 @@
 ## Scope
 
 The TypeScript server stores bounded provider, search, media, metadata, and
-managed Claude credentials in an encrypted vault inside
+managed Claude credentials, and MCP server secrets, in an encrypted vault inside
 the same SQLite application database used by the rest of the server. Product
 callers identify an authorized semantic consumer; they do not read environment
 aliases, database paths, encryption keys, or ciphertext records directly.
@@ -113,6 +113,31 @@ governance and keeps its Codex-owned authentication behavior.
   settings. Callers do not receive raw Prisma clients or transaction delegates.
 - `SecretCatalog` maps semantic consumer identities to stable `SecretId`
   records and rejects unknown or mismatched consumers before vault access.
+- **MCP server secrets** use the consumer kind `mcpServer` with the vault
+  secret ID itself (`{ kind: "mcpServer", vaultSecretId }`). The catalog accepts
+  only `mcp.<uuid>` IDs for it; any other ID is refused (and an MCP state reads
+  it as `MISSING`). Each new value gets a new ID; `mcps.json` holds the
+  reference, so the owner (server) and field are kept there, not in the vault
+  record. `McpServerSecretFields` is the only MCP code that saves, removes or
+  reads the state of these entries, and `SecretManagementMcpSecretResolver`
+  (installed at startup by `installRuntimeMcpSecretResolver`) the only one that
+  resolves them, when a managed MCP server connects. An `mcp.*` ID is not a
+  fixed ID: `isKnownSecretId` (batch import, test-vault status) does not accept
+  it. See [MCP Server Management](mcp_server_management.md#secret-values).
+- **Integration tokens** use the consumer kind `integration`
+  (`{ kind: "integration", integrationId: "github" }`), bound to the fixed ID
+  `integration.github.token`. Only `IntegrationConnectionService` saves or
+  removes it (after GitHub accepts the token), and only the credential proxy
+  resolves it, per forwarded call. The ID is not in `isKnownSecretId`: it is not
+  a provider credential for batch import or test-vault status. See
+  [Credential Proxy](credential_proxy.md).
+- **The DeepSeek Harness key** uses the consumer
+  `{ kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" }`,
+  bound to `provider.deepseek.api-key` (the same entry the native DeepSeek
+  provider uses, set in Settings → API Keys). Only the credential proxy's DeepSeek
+  provider relay resolves it, per forwarded call; dsh never receives it. Its
+  value-free status is the runtime's "signed in" on the Agent Runtimes page. See
+  [DeepSeek Harness Runtime](deepseek_harness_runtime.md).
 - Provider clients take a `ProviderApiKeyResolver` and call it lazily when
   constructing the SDK/client for an authorized operation. The server always
   passes its own resolver. autobyteus-ts owns the vault format's read side
@@ -369,6 +394,15 @@ The vault is an ordinary current-schema application database plus key:
   `pnpm test-vault status` reports the location and configured/missing
   `SecretId`s; `pnpm test-vault remove` deletes exactly the database, key and
   SQLite sidecars. These are the only writers of the test vault.
+- **Test-only secret IDs.** Besides provider keys, the test vault can hold
+  secrets a live check hands to the system under test itself:
+  `test.github.token` (source alias `AUTOBYTEUS_TEST_GITHUB_TOKEN`) for the
+  GitHub MCP live check. Such an ID is known to `isKnownSecretId` and listed by
+  `listFixedSecretIds` (so `status` shows it), but `resolve` returns it for no
+  consumer. Only `test-vault setup` accepts its alias; `secrets:import` into an
+  application vault refuses it (`IMPORT_MAPPING_INVALID`). The test reads it
+  with `readLiveTestSecret(context, id)` (`test-support/test-vault/live-test-secret.ts`:
+  read-only, skipped with its reason when missing).
 - **Refused locations.** Every command and a selected vault refuse, before any
   file is touched (`TEST_VAULT_LOCATION_FORBIDDEN`), a location inside the
   user's app data: `~/.autobyteus/**` and the desktop app's OS data folders
@@ -454,5 +488,6 @@ read-only `SecretVaultInspectionService`.
 
 - [LLM Management](./llm_management.md)
 - [Agent Execution](./agent_execution.md)
+- [Credential Proxy](./credential_proxy.md)
 - [Server environment and data-directory strategy](../URL_GENERATION_AND_ENV_STRATEGY.md)
 - [Electron packaging and reset behavior](../../../autobyteus-web/docs/electron_packaging.md)

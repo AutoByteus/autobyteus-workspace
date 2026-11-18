@@ -1,0 +1,44 @@
+# API-FS fresh-start desktop build; commit d115fd9c713bc79d6c89e5d86bf6adfdeb9fc62b; macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; 2026-11-08T19:54:33Z
+
+## git clone --no-local <worktree> && git checkout <commit> && git submodule update --init --recursive (19:54:33)
+clone exit 0; HEAD d115fd9c7; dist folders before install: 3 (the contract packages track their dist)
+
+## pnpm install --frozen-lockfile (19:56:02)
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.8s using pnpm v10.28.2
+install exit 0
+
+## cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64 (19:56:11)
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.12-beta.8 guard:localization-boundary /private/tmp/abtest437r2/fs-clone/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+> autobyteus@1.5.12-beta.8 typecheck /private/tmp/abtest437r2/fs-clone/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 35.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 24.0s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.8.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.8.zip
+build exit 0
+
+## Verify bundled Prisma ARM64 engine target (20:02:56)
+prisma engines ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines, autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+prisma verify exit 0
+
+## Verify packaged terminal runtime ARM64 (resources, app bundle, spawn probe) (20:02:57)
+[terminal-runtime] ok target helper: /private/tmp/abtest437r2/fs-clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/abtest437r2/fs-clone/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok target helper: /private/tmp/abtest437r2/fs-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/abtest437r2/fs-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/abtest437r2/fs-clone/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+terminal verify exit 0
+
+## Not tested: Apple signing/notarization and the signing-policy step (runner secrets); macOS x64, Linux, Windows jobs (other runners) (20:03:02)

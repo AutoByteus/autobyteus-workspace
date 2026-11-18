@@ -1,0 +1,19 @@
+# Case: API-E01 rerun: get-project-task-worker-scope (SCP-E2E-006 unreadable Task record, DEC-010)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  6 passed (6)'
+
+## scope-run1.log
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 13658ms
+     ✓ SCP-E2E-001 AC-015: each saved Task's first message names it and its Project (AGY agent, AGY Team, native agent); described work does not  1474ms
+     ✓ SCP-E2E-002 AC-012, AC-013 MCP route: workers read only their own Task; the manager reads any; unknown and other-Project keys are not found  1642ms
+     ✓ SCP-E2E-003 AC-012, AC-013 native route: the native task agent reads only its Task; the native mate on no Task reads any  537ms
+     ✓ SCP-E2E-004 AC-014: get_project_task is there only for agents whose definition lists it, on MCP and on the native request  510ms
+     ✓ SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope  6401ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  01:06:59
+   Duration  22.00s (transform 5.80s, setup 51ms, import 7.91s, tests 13.66s, environment 0ms)
+

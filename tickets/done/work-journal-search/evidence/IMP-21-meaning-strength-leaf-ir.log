@@ -1,0 +1,110 @@
+# IMP-21 meaning strength on LEAF-IR (SR-005b verification) and the second R-9 trigger
+# Commands:
+#   LEAF-IR index: copy of the default model's memory-search.sqlite, then evaluate-memory-search.mjs --model mdbr-leaf-ir --build on the isolated copy (download + embedding of 7,426 cards, about 15 min)
+#   gates: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index-leaf --model mdbr-leaf-ir --questions <private SR-005b file> --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private>
+#   merge analysis: <local script> collecting, per question and model, each result run's text strengths and the raw nearest scores (limit 300), then the feasible Lf window per k
+# Commit: 0f3c2a2d87 (dist of IMP-19)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; isolated copy; models granite-embedding-small-english-r2 (index) and mdbr-leaf-ir (index-leaf), both complete
+# Date: 2026-10-26
+# Only IDs and numbers; the questions stay private.
+
+## LEAF-IR with the default model's values (k 200, Lf 0.0477, Ls 0.0567)
+{
+ "gate1": {
+  "passed": 30,
+  "oneSearchTop10": 29,
+  "withinThreeSearches": 30
+ },
+ "gate2": {
+  "number1": 18,
+  "top3": 27,
+  "top3Share": 0.9,
+  "mrr": 0.7566666666666666,
+  "p90Ms": 578,
+  "maxMs": 852
+ },
+ "offTopic": {
+  "questions": 12,
+  "passed": 0,
+  "failed": [
+   "N02",
+   "N04",
+   "N05",
+   "OT-C1",
+   "OT-C2",
+   "OT-C3",
+   "OT-C4",
+   "OT-S1",
+   "OT-S2",
+   "OT-S3",
+   "OT-S4",
+   "OT-T1"
+  ]
+ },
+ "falseOnlyWeak": [
+  "Q08"
+ ],
+ "partial": [
+  {
+   "id": "N01",
+   "onlyWeak": false
+  },
+  {
+   "id": "N03",
+   "onlyWeak": false
+  },
+  {
+   "id": "OT-T2",
+   "onlyWeak": false
+  },
+  {
+   "id": "OT-T3",
+   "onlyWeak": false
+  }
+ ],
+ "unmaskedSecrets": 0
+}
+- Constraint 1: 0 of 12 off-topic questions end only-weak (LEAF-IR's score scale differs; its catalog floor is 0.3 vs Granite's 0.78).
+- Constraint 2: Q08 gets a false only-weak note.
+- Gates: LEAF-IR's own ranking misses Q14 within 3 searches (30/31). The strength rule does not rank, so this is the model, not the rule (see API/E2E F-001-03 for LEAF-IR's earlier run).
+
+## Why Q08 fails for any values: a match found by both tiers keeps only its text strength
+Q08 on LEAF-IR: 10 result runs; text strengths all weak; meaning matches shown: 0. Its best meaning card (rank 1, score 0.54939) belongs to a run that also has text matches: the meaning pointer resolves to that run's text chunk (pointer rule, case 1), and toResult drops a meaning pointer that duplicates a listed text pointer. The design does not define this merge (implementation choice in IR-001). On Granite, Q08 escapes only because two other runs' meaning matches rate Fair.
+
+## Feasible Lf windows per k
+Rule A: as implemented (only shown meaning matches count). Rule B: a match found by both tiers carries the stronger strength (every result run's best card counts).
+granite-embedding-small-english-r2 rule A:
+  k= 20: Lf in (0.0266 N04, 0.0135 Q07]  feasible=False
+  k= 50: Lf in (0.0333 N04, 0.0282 Q07]  feasible=False
+  k=100: Lf in (0.0373 N04, 0.0465 Q08]  feasible=True  mid 0.0419 margin ±0.0046
+  k=150: Lf in (0.0397 N04, 0.0502 Q08]  feasible=True  mid 0.0449 margin ±0.0052
+  k=200: Lf in (0.0420 N04, 0.0535 Q08]  feasible=True  mid 0.0477 margin ±0.0057
+  k=250: Lf in (0.0450 OT-S2, 0.0558 Q08]  feasible=True  mid 0.0504 margin ±0.0054
+  k=300: Lf in (0.0474 OT-S2, 0.0577 Q08]  feasible=True  mid 0.0526 margin ±0.0051
+granite-embedding-small-english-r2 rule B:
+  k= 20: Lf in (0.0266 N04, 0.0336 Q07]  feasible=True  mid 0.0301 margin ±0.0035
+  k= 50: Lf in (0.0406 N05, 0.0483 Q07]  feasible=True  mid 0.0445 margin ±0.0038
+  k=100: Lf in (0.0551 N05, 0.0676 Q07]  feasible=True  mid 0.0614 margin ±0.0063
+  k=150: Lf in (0.0589 N05, 0.0738 Q07]  feasible=True  mid 0.0664 margin ±0.0074
+  k=200: Lf in (0.0611 N05, 0.0768 Q07]  feasible=True  mid 0.0689 margin ±0.0078
+  k=250: Lf in (0.0628 N05, 0.0787 Q07]  feasible=True  mid 0.0707 margin ±0.0079
+  k=300: Lf in (0.0636 N05, 0.0801 Q07]  feasible=True  mid 0.0719 margin ±0.0082
+mdbr-leaf-ir rule A:
+  k= 20: Lf in (0.0407 OT-T1, -9.0000 Q08]  feasible=False
+  k= 50: Lf in (0.0551 OT-T1, -9.0000 Q08]  feasible=False
+  k=100: Lf in (0.0702 OT-T1, -9.0000 Q08]  feasible=False
+  k=150: Lf in (0.0980 N05, -9.0000 Q08]  feasible=False
+  k=200: Lf in (0.1093 N05, -9.0000 Q08]  feasible=False
+  k=250: Lf in (0.1179 N05, -9.0000 Q08]  feasible=False
+  k=300: Lf in (0.1239 N05, -9.0000 Q08]  feasible=False
+mdbr-leaf-ir rule B:
+  k= 20: Lf in (0.0407 OT-T1, 0.0451 Q07]  feasible=True  mid 0.0429 margin ±0.0022
+  k= 50: Lf in (0.0551 OT-T1, 0.0572 Q07]  feasible=True  mid 0.0562 margin ±0.0011
+  k=100: Lf in (0.1014 N05, 0.0944 Q07]  feasible=False
+  k=150: Lf in (0.1378 N05, 0.1341 Q07]  feasible=False
+  k=200: Lf in (0.1491 N05, 0.1489 Q07]  feasible=False
+  k=250: Lf in (0.1577 N05, 0.1576 Q07]  feasible=False
+  k=300: Lf in (0.1637 N05, 0.1643 Q07]  feasible=True  mid 0.1640 margin ±0.0003
+
+## R-9
+Under the decided merge (A), no k, Lf (per-model table included) meets constraint 2 on LEAF-IR. This is R-9: the implementation stops and returns a Design Impact; no constraint is relaxed. The default model meets all three constraints with the decided values (IMP-20).

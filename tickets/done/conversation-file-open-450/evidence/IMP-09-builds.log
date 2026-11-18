@@ -1,0 +1,11 @@
+# Check: IMP-09
+# Command: pnpm -C autobyteus-server-ts build && pnpm -C autobyteus-web build:mobile-web
+# Commit: e470edf165
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-web/dist-mobile/public
+served phone bundle files with contextFileName: 1

@@ -1,0 +1,23 @@
+# mutations of the COMPILED output (untracked dist/), restored with cmp after each; tests: runtime-switch-members-extended-built-server.e2e.test.ts; date 2026-11-02T04:45:55Z
+== X-A: a failed attempt discards nothing (discardUnlessRecorded does nothing)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the previous agent's file is byte-identical after the failure: expected '{"id":"rt_1793594763097_54df084e-0076…' to be '{"id":"rt_1793594763097_54df084e-0076…' // Object.is equalit
+AssertionError: the previous agent's file is byte-identical after the failed start: expected '{"id":"rt_1793594766717_0d85e0c4-358a…' to be '{"id":"rt_1793594766717_0d85e0c4-358a…' // Object.is eq
+      Tests  2 failed | 1 skipped (3)
+== X-B: the archive step ignores the watermark (everything goes into the segment)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the reason names the failing archive step: expected '[{"root_subject_kind":"agent_org","ro…' to contain 'EISDIR'
+      Tests  2 failed | 1 skipped (3)
+restored
+
+== X-C (live suite, LV-01): the archive step is given no watermark (recorder: throughTraceId: ticket.watermarkTraceId -> undefined); date 2026-11-02T06:07Z; restored with cmp
+     × LV-01: a Team member, Claude -> Codex -> Claude 7614ms
+AssertionError: team-member: codex follow-up: errors: expected [ { …(7) }, { …(8) } ] to deeply equal []
+exit 1
+(the mutation breaks the switch itself with a server error on the live pair; it does not isolate I-7. The exact-equality I-7 assertions are mutation-proven by X-B on the built-server file.)
+
+== X-D (EX-05, round 2): the undo restores no external session (runtime-selection-rule: platformAgentRunId: pending.from.platformAgentRunId -> null); date 2026-11-02T07:39Z; restored with cmp
+     × EX-05: a Team member's saves before its first input: a second save keeps the first previous binding and session, and selecting the original runtime again undoes the switch (binding and session back, no pending, no marker or segment on the next message)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the original session is back: expected null to be '03bbd8cb-2979-4713-8645-d77ebc02e3de' // Object.is equality
+      Tests  1 failed | 4 skipped (5)

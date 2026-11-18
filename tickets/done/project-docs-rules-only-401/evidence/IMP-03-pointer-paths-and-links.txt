@@ -1,0 +1,17 @@
+# IMP-03 — AC-005 and AC-004 links: the pointer paths exist on origin/personal; every relative link and anchor resolves
+# Command: git ls-tree --name-only origin/personal -- <each record path>; python3 link check over RELEASE.md, DESIGN.md and the three appended sections (file exists; GitHub heading anchor exists); git grep -n "RELEASE.md#" in the other documents
+# Commit: working tree committed as 277660ed19 / 5b6ae4805b (origin/personal 6324fb056d)
+# Environment: macOS 26.5.2 arm64; git and python3 only (docs ticket: no test suites, builds or gates, per the user)
+# Date: 2026-11-06
+# Look for: three "exists:" lines; "38 relative links checked, 0 broken"; TESTING.md's RELEASE.md#release-smoke-check resolves (heading at RELEASE.md L129)
+
+===== ac005-links.txt =====
+== AC-005: the pointer paths on origin/personal (6324fb056d)
+exists: tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md
+exists: tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md
+exists: tickets/done/release-beta-20261102/release-deployment-report.md
+== link check (relative links and anchors) in RELEASE.md, DESIGN.md and the three appended sections
+38 relative links checked, 0 broken
+== links to RELEASE.md anchors from other documents
+TESTING.md:44:| Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [REL
+

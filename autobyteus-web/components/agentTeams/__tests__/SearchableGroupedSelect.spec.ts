@@ -215,3 +215,70 @@ describe('current-only Claude display', () => {
     wrapper.unmount()
   })
 })
+
+describe('SearchableGroupedSelect as a model picker (REQ-010, REQ-011)', () => {
+  const mountPicker = (props: Record<string, unknown> = {}) => mount(SearchableGroupedSelect, {
+    attachTo: document.body,
+    props: { modelValue: 'opus', options: describedOptions, refreshable: true, ...props },
+    global: { mocks: { $t: (key: string) => key } },
+  })
+  const refreshButton = () => document.body.querySelector<HTMLButtonElement>('[data-test="model-list-refresh-button"]')
+
+  it('tells its owner each time the list opens, and not when it closes', async () => {
+    const wrapper = mountPicker()
+    expect(wrapper.emitted('open')).toBeUndefined()
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+    expect(wrapper.emitted('open')).toHaveLength(1)
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+    expect(wrapper.emitted('open')).toHaveLength(1)
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+    expect(wrapper.emitted('open')).toHaveLength(2)
+  })
+
+  it('offers "Refresh models" inside the open list and asks its owner to refresh', async () => {
+    const wrapper = mountPicker()
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(optionRows()).toHaveLength(3)
+    refreshButton()!.click()
+    await nextTick()
+
+    expect(wrapper.emitted('refresh')).toHaveLength(1)
+  })
+
+  it('keeps every row selectable while refreshing, with a busy state and a disabled control', async () => {
+    const wrapper = mountPicker({ refreshing: true })
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(optionRows()).toHaveLength(3)
+    expect(document.body.querySelector('[data-test="model-list-refreshing"]')).not.toBeNull()
+    expect(refreshButton()!.disabled).toBe(true)
+  })
+
+  it('keeps the last rows and shows the failure with Retry when the refresh failed', async () => {
+    const wrapper = mountPicker({ refreshFailed: true })
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(optionRows()).toHaveLength(3)
+    expect(document.body.querySelector('[data-test="model-list-refresh-error"]')).not.toBeNull()
+    expect(refreshButton()!.textContent).toBe('chat.model.retry')
+  })
+
+  it('shows no refresh control unless the picker is refreshable (other selects, such as media models)', async () => {
+    const wrapper = mountPicker({ refreshable: false })
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(optionRows()).toHaveLength(3)
+    expect(refreshButton()).toBeNull()
+  })
+})

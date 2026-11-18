@@ -1,0 +1,372 @@
+{
+  "startedAt": "2026-11-17T11:43:27.500Z",
+  "cases": {
+    "U03": {
+      "title": "Workspace, Model (flyout, search) and Thinking open above their trigger at four wide viewports (AC-002, AC-004)",
+      "result": "Fail",
+      "ms": 48368,
+      "error": "AC-002/AC-004: 1024x440: model: rows overflow the menu",
+      "details": {
+        "1512x952": {
+          "workspace": {
+            "menuTop": 191.1,
+            "menuBottom": 611.1,
+            "anchorTop": 617.1,
+            "maxHeight": "420px",
+            "limit": 420,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 287.1,
+            "menuBottom": 611.1,
+            "anchorTop": 617.1,
+            "maxHeight": "360px",
+            "limit": 360,
+            "runtimes": 6
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 59.6,
+              "bottom": 389.6,
+              "rowBottom": 384.6,
+              "listMax": "320px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1173.4,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 95.6,
+              "bottom": 421.1,
+              "rowBottom": 416.1,
+              "listMax": "320px",
+              "rows": 9,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1173.4,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 212.1,
+              "bottom": 452.6,
+              "rowBottom": 447.6,
+              "listMax": "320px",
+              "rows": 4,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1173.4,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 361.1,
+              "bottom": 484.1,
+              "rowBottom": 479.1,
+              "listMax": "320px",
+              "rows": 2,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1173.4,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 47,
+            "menuHeight": 360,
+            "limit": 360,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 421.1,
+            "menuBottom": 611.1,
+            "anchorTop": 617.1,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 190,
+            "rows": 5
+          }
+        },
+        "1280x720": {
+          "workspace": {
+            "menuTop": 58.9,
+            "menuBottom": 478.9,
+            "anchorTop": 484.9,
+            "maxHeight": "420px",
+            "limit": 420,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 154.9,
+            "menuBottom": 478.9,
+            "anchorTop": 484.9,
+            "maxHeight": "360px",
+            "limit": 360,
+            "runtimes": 6
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 12.4,
+              "bottom": 257.4,
+              "rowBottom": 252.4,
+              "listMax": "235px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 479.4,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 12.9,
+              "bottom": 288.9,
+              "rowBottom": 283.9,
+              "listMax": "266px",
+              "rows": 9,
+              "listScrolls": true,
+              "side": "left",
+              "left": 479.4,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 79.9,
+              "bottom": 320.4,
+              "rowBottom": 315.4,
+              "listMax": "298px",
+              "rows": 4,
+              "listScrolls": false,
+              "side": "left",
+              "left": 479.4,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 228.9,
+              "bottom": 351.9,
+              "rowBottom": 346.9,
+              "listMax": "320px",
+              "rows": 2,
+              "listScrolls": false,
+              "side": "left",
+              "left": 479.4,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 47,
+            "menuHeight": 360,
+            "limit": 360,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 288.9,
+            "menuBottom": 478.9,
+            "anchorTop": 484.9,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 190,
+            "rows": 5
+          }
+        },
+        "1024x520": {
+          "workspace": {
+            "menuTop": 16.9,
+            "menuBottom": 364.9,
+            "anchorTop": 370.9,
+            "maxHeight": "348px",
+            "limit": 348,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 40.9,
+            "menuBottom": 364.9,
+            "anchorTop": 370.9,
+            "maxHeight": "348px",
+            "limit": 348,
+            "runtimes": 6
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 12.4,
+              "bottom": 143.4,
+              "rowBottom": 138.4,
+              "listMax": "121px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 12.9,
+              "bottom": 174.9,
+              "rowBottom": 169.9,
+              "listMax": "152px",
+              "rows": 9,
+              "listScrolls": true,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 12.4,
+              "bottom": 206.4,
+              "rowBottom": 201.4,
+              "listMax": "184px",
+              "rows": 4,
+              "listScrolls": true,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 114.9,
+              "bottom": 237.9,
+              "rowBottom": 232.9,
+              "listMax": "215px",
+              "rows": 2,
+              "listScrolls": false,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 47,
+            "menuHeight": 348,
+            "limit": 348,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 189.9,
+            "menuBottom": 379.9,
+            "anchorTop": 385.9,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 190,
+            "rows": 5
+          }
+        },
+        "1024x440": {
+          "workspace": {
+            "menuTop": 16.3,
+            "menuBottom": 319.3,
+            "anchorTop": 325.3,
+            "maxHeight": "303px",
+            "limit": 303,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 16.3,
+            "menuBottom": 319.3,
+            "anchorTop": 325.3,
+            "maxHeight": "303px",
+            "limit": 303,
+            "runtimes": 6
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 12.8,
+              "bottom": 118.8,
+              "rowBottom": 113.8,
+              "listMax": "96px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 12.3,
+              "bottom": 150.3,
+              "rowBottom": 145.3,
+              "listMax": "128px",
+              "rows": 9,
+              "listScrolls": true,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 12.8,
+              "bottom": 181.8,
+              "rowBottom": 176.8,
+              "listMax": "159px",
+              "rows": 4,
+              "listScrolls": true,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 90.3,
+              "bottom": 213.3,
+              "rowBottom": 208.3,
+              "listMax": "191px",
+              "rows": 2,
+              "listScrolls": false,
+              "side": "left",
+              "left": 293.9,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 47,
+            "menuHeight": 303,
+            "limit": 303,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 144.3,
+            "menuBottom": 334.3,
+            "anchorTop": 340.3,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 190,
+            "rows": 5
+          }
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 48179
+    },
+    {
+      "label": "frontend",
+      "pid": 49215
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 49215,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 48179,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-Xzjgeq"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-Xzjgeq",
+  "backendUrl": "http://127.0.0.1:55000",
+  "frontUrl": "http://127.0.0.1:55001",
+  "completedAt": "2026-11-17T11:44:53.590Z"
+}

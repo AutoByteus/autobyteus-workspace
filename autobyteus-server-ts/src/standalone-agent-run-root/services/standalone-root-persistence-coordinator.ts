@@ -1,12 +1,8 @@
+import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
-import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { StoredMessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
-import type {
-  StandaloneRootMessagesFile,
-  StandaloneRootTreeSnapshot,
-} from "../domain/standalone-root-tree.js";
+import type { StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
 
 export class StandaloneRootPersistenceFailStoppedError extends Error {
   constructor(readonly hostRunId: string) {
@@ -16,140 +12,54 @@ export class StandaloneRootPersistenceFailStoppedError extends Error {
 }
 
 /**
- * Serializes the Agent-root package writes. The package is created lazily: the first tree
- * commit (the first catalog copy started by `delegate_task`) writes
- * the messages file, then the tree, and then records the catalog flag. A run that never delegates
- * never gets a package; listing writes nothing.
+ * Serializes a standalone run's writes of its own message log (contract §3.4): the log is created by the run's first
+ * message, then each message is appended. A refused or conflicting message writes nothing. An indeterminate write
+ * fail-stops the root.
  */
 export class StandaloneRootPersistenceCoordinator {
   private tail: Promise<void> = Promise.resolve();
   private failStopped = false;
-  private created: boolean;
+  private created: boolean | null = null;
 
   constructor(private readonly options: Readonly<{
     hostRunId: string;
-    collaborationDir: string;
+    runDir: string;
     store: StandaloneRootPackageStore;
-    packageExists: boolean;
     getMessages(): StandaloneRootMessagesFile;
-    /** The current tree, for a package created by a run's first message (a run a peer node started). */
-    getTree(): StandaloneRootTreeSnapshot;
-    onPackageCreated(): Promise<void>;
     enterPersistenceFailStop(error: Error): void;
-  }>) {
-    this.created = options.packageExists;
-  }
+  }>) {}
 
-  commitTreeMutation(input: Readonly<{
-    prepareAgainstCurrent(): Readonly<{
-      nextTree: StandaloneRootTreeSnapshot;
-      commitAfterDurability(): void;
-      cancelBeforeDurability(): void;
-    }>;
-  }>): Promise<void> {
+  /** One message: prepared, then appended to the run's log under the lock (the log first created when absent). */
+  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult> {
     return this.withLock(async () => {
-      const prepared = input.prepareAgainstCurrent();
-      const createsPackage = !this.created;
-      if (createsPackage) {
-        const messages = await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages());
-        if (messages.outcome === "not_renamed") {
-          prepared.cancelBeforeDurability();
-          throw messages.cause;
-        }
-        if (messages.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(messages);
+      const prepared = append.prepare();
+      if (prepared.kind !== "append") return { outcome: prepared.kind };
+      // Only the run's own log is written here: another run's log is written by its own root (CM-9).
+      if (!prepared.logOwners.some((owner) => owner.kind === "own")) {
+        this.finalize(() => append.commitAfterDurability());
+        return { outcome: "committed" };
       }
-      const result = await this.options.store.writeTree(this.options.collaborationDir, prepared.nextTree);
-      if (result.outcome === "not_renamed") {
-        prepared.cancelBeforeDurability();
-        throw result.cause;
-      }
-      if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
-      this.created = true;
-      this.finalize("execution_tree", prepared.commitAfterDurability);
-      if (createsPackage) await this.recordPackageCreated();
-    });
-  }
-
-  /** Task activation is one tree write (execution + delegator + staged bindings). */
-  commitTaskActivation(input: Readonly<{
-    prepareAgainstCurrent(): Readonly<{ nextTree: StandaloneRootTreeSnapshot }>;
-    commitAfterDurability(): void;
-    abortBeforeDurability(): Promise<void>;
-  }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; message: string }>> {
-    return this.withLock(async () => {
-      let prepared: ReturnType<typeof input.prepareAgainstCurrent>;
-      try {
-        prepared = input.prepareAgainstCurrent();
-      } catch (error) {
-        await input.abortBeforeDurability();
-        throw error;
-      }
-      // A catalog copy can be the run's first write (REQ-008): it creates the package.
-      const createsPackage = !this.created;
-      for (const write of createsPackage ? ["messages", "tree"] as const : ["tree"] as const) {
-        const result = write === "messages"
-          ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
-          : await this.options.store.writeTree(this.options.collaborationDir, prepared.nextTree);
-        if (result.outcome === "not_renamed") {
-          await input.abortBeforeDurability();
-          return { committed: false, message: result.cause.message };
+      this.created ??= await this.options.store.logExists(this.options.runDir);
+      if (!this.created) {
+        const created = await this.options.store.writeMessages(this.options.runDir, this.options.getMessages());
+        if (created.outcome === "not_committed") {
+          append.cancelBeforeDurability();
+          return { outcome: "not_committed", cause: created.cause };
         }
-        if (result.outcome === "renamed_finalization_indeterminate") {
-          await input.abortBeforeDurability();
-          this.latchAndThrow(result);
-        }
-      }
-      this.created = true;
-      this.finalize("execution_tree", input.commitAfterDurability);
-      if (createsPackage) await this.recordPackageCreated();
-      return { committed: true };
-    });
-  }
-
-  commitCommunication(input: Readonly<{
-    nextMessages: StandaloneRootMessagesFile;
-    /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
-    message: CollaborationCommunicationMessage;
-    logOwners: readonly StoredMessageLogOwner[];
-    commitAfterDurability(): void;
-    cancelBeforeDurability(): void;
-  }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
-    return this.withLock(async () => {
-      // A run a peer node started has no package until its first message (design § On-Disk item 8).
-      const createsPackage = !this.created;
-      if (createsPackage) {
-        for (const write of ["messages", "tree"] as const) {
-          const created = write === "messages"
-            ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
-            : await this.options.store.writeTree(this.options.collaborationDir, this.options.getTree());
-          if (created.outcome === "not_renamed") {
-            input.cancelBeforeDurability();
-            return { committed: false, code: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED", message: created.cause.message };
-          }
-          if (created.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(created);
-        }
+        if (created.outcome === "finalization_indeterminate") this.latchAndThrow(created);
         this.created = true;
-        await this.recordPackageCreated();
       }
-      const result = await this.options.store.appendMessage(
-        this.options.collaborationDir, this.options.hostRunId, input.message, input.logOwners);
-      if (result.outcome === "not_renamed") {
-        input.cancelBeforeDurability();
-        return { committed: false, code: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };
+      const result = await this.options.store.appendMessage(this.options.runDir, append.message);
+      if (result.outcome === "not_committed") {
+        append.cancelBeforeDurability();
+        return { outcome: "not_committed", cause: result.cause };
       }
-      if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
-      this.finalize("communication_messages", input.commitAfterDurability);
-      return { committed: true };
+      if (result.outcome === "finalization_indeterminate") this.latchAndThrow(result);
+      this.finalize(() => append.commitAfterDurability());
+      return { outcome: "committed" };
     });
   }
 
-  readConsistent<T>(reader: () => T): Promise<T> { return this.withLock(async () => reader()); }
-
-  private async recordPackageCreated(): Promise<void> {
-    await this.options.onPackageCreated().catch((error: unknown) => {
-      console.error(`Agent root '${this.options.hostRunId}' catalog flag was not recorded:`, error);
-    });
-  }
   drain(): Promise<void> { return this.tail; }
   enterRootFailStop(): void { this.failStopped = true; }
 
@@ -162,14 +72,14 @@ export class StandaloneRootPersistenceCoordinator {
     return scheduled;
   }
 
-  private latchAndThrow(result: Extract<RunPackageFileWriteResult, { outcome: "renamed_finalization_indeterminate" }>): never {
+  private latchAndThrow(result: Extract<RunPackageFileWriteResult, { outcome: "finalization_indeterminate" }>): never {
     const error = new RootTaskPersistenceFinalizationIndeterminateError("agent", result.file, result.stage);
     this.failStopped = true;
     this.options.enterPersistenceFailStop(error);
     throw error;
   }
 
-  private finalize(fileRole: string, action: () => void): void {
+  private finalize(action: () => void): void {
     try {
       action();
     } catch (cause) {
@@ -177,8 +87,8 @@ export class StandaloneRootPersistenceCoordinator {
       this.failStopped = true;
       this.options.enterPersistenceFailStop(error);
       throw new RootTaskPersistenceFinalizationIndeterminateError(
-        "agent", fileRole, "post_durability_publication",
-        `Agent root '${fileRole}' is durable but local publication failed: ${error.message}`,
+        "agent", "communication_messages", "post_durability_publication",
+        `Agent root 'communication_messages' is durable but local publication failed: ${error.message}`,
       );
     }
   }

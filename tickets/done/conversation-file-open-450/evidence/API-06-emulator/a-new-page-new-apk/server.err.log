@@ -1,0 +1,43 @@
+(node:18404) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Node access: local control socket not opened. The node's local control socket path is 115 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/node-access/local-control.sock. Use a shorter data folder path.
+Overwriting existing tool definition for name: 'search_web'
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-cfpJC1/data/memory/agents/content_creator_e67db0d0631c480e8c890ac0b52ba472/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /ws/agent-package-definitions?access_token=%5BREDACTED%5D from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql from 127.0.0.1

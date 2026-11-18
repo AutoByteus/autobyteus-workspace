@@ -1,0 +1,7 @@
+text: This link can’t open here
+text: AutoByteus on your phone opens only its own pages.
+
+Tap Retry to go back to your runs.
+text: RETRY
+text: EDIT
+text: BROWSER

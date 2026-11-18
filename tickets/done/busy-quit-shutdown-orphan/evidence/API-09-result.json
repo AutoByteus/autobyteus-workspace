@@ -1,0 +1,378 @@
+{
+  "case": "API-09",
+  "mode": "baseline",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/base/autobyteus-server-ts",
+  "date": "2026-10-30T12:55:02.242Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-baseline-2sbuG4",
+  "runTag": "BQ284Lmvuz5qoy",
+  "versions": {
+    "codex": "codex-cli 0.166.0",
+    "claude": "2.1.314 (Claude Code)",
+    "node": "v22.23.1",
+    "python3": "Python 3.9.6"
+  },
+  "steps": [
+    {
+      "at": "2.1",
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 98312,
+        "port": 60558
+      }
+    },
+    {
+      "at": "3.2",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "3.9",
+      "step": "standalone sent",
+      "value": {
+        "label": "base-codex",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuz5qoy_d2aebdccdfe2451db45383117f076c49"
+      }
+    },
+    {
+      "at": "4.2",
+      "step": "standalone sent",
+      "value": {
+        "label": "base-claude",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuz5qoy_130e109d119c4219bacf5117cf651c58"
+      }
+    },
+    {
+      "at": "9.2",
+      "step": "busy",
+      "value": {
+        "label": "base-codex",
+        "marker": "BQ284Lmvuz5qoy_base-codex",
+        "pid": 1038,
+        "ppid": 98679,
+        "pgid": 1038,
+        "afterMs": 4990
+      }
+    },
+    {
+      "at": "9.3",
+      "step": "busy",
+      "value": {
+        "label": "base-claude",
+        "marker": "BQ284Lmvuz5qoy_base-claude",
+        "pid": 854,
+        "ppid": 99278,
+        "pgid": 854,
+        "afterMs": 46
+      }
+    },
+    {
+      "at": "42.0",
+      "step": "shutdown",
+      "value": {
+        "case": "API-09",
+        "serverPid": 98312,
+        "exit": null,
+        "elapsedMs": null,
+        "runs": [
+          {
+            "label": "base-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "runId": "probe_agent_bq284lmvuz5qoy_d2aebdccdfe2451db45383117f076c49",
+            "toolCommand": {
+              "pid": 1038,
+              "ppid": 98679,
+              "pgid": 1038,
+              "aliveAfter": true
+            }
+          },
+          {
+            "label": "base-claude",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvuz5qoy_130e109d119c4219bacf5117cf651c58",
+            "toolCommand": {
+              "pid": 854,
+              "ppid": 99278,
+              "pgid": 854,
+              "aliveAfter": true
+            }
+          }
+        ],
+        "before": 6,
+        "survivors": [
+          {
+            "pid": 98679,
+            "ppid": 98312,
+            "pgid": 98278,
+            "command": "codex app-server -c agents.enabled=false",
+            "alive": true
+          },
+          {
+            "pid": 99278,
+            "ppid": 98312,
+            "pgid": 98278,
+            "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … oyMRK2yVj8ns0wisbk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=66f32715-6f4d-408d-a565-aca824e7ef7f",
+            "alive": true
+          },
+          {
+            "pid": 854,
+            "ppid": 99278,
+            "pgid": 854,
+            "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd",
+            "alive": true
+          },
+          {
+            "pid": 1004,
+            "ppid": 98679,
+            "pgid": 1004,
+            "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+            "alive": true
+          },
+          {
+            "pid": 1038,
+            "ppid": 98679,
+            "pgid": 1038,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-codex",
+            "alive": true
+          },
+          {
+            "pid": 856,
+            "ppid": 854,
+            "pgid": 854,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude",
+            "alive": true
+          }
+        ],
+        "markedLeft": [
+          {
+            "pid": 854,
+            "ppid": 99278,
+            "pgid": 854,
+            "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd"
+          },
+          {
+            "pid": 856,
+            "ppid": 854,
+            "pgid": 854,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude"
+          },
+          {
+            "pid": 1038,
+            "ppid": 98679,
+            "pgid": 1038,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-codex"
+          }
+        ],
+        "shutdownLog": []
+      }
+    },
+    {
+      "at": "62.1",
+      "step": "cleanup stopped server",
+      "value": 98312
+    }
+  ],
+  "API-09": {
+    "case": "API-09",
+    "serverPid": 98312,
+    "exit": null,
+    "elapsedMs": null,
+    "runs": [
+      {
+        "label": "base-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuz5qoy_d2aebdccdfe2451db45383117f076c49",
+        "toolCommand": {
+          "pid": 1038,
+          "ppid": 98679,
+          "pgid": 1038,
+          "aliveAfter": true
+        }
+      },
+      {
+        "label": "base-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuz5qoy_130e109d119c4219bacf5117cf651c58",
+        "toolCommand": {
+          "pid": 854,
+          "ppid": 99278,
+          "pgid": 854,
+          "aliveAfter": true
+        }
+      }
+    ],
+    "before": [
+      {
+        "pid": 98679,
+        "ppid": 98312,
+        "pgid": 98278,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 99278,
+        "ppid": 98312,
+        "pgid": 98278,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … oyMRK2yVj8ns0wisbk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=66f32715-6f4d-408d-a565-aca824e7ef7f"
+      },
+      {
+        "pid": 854,
+        "ppid": 99278,
+        "pgid": 854,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd"
+      },
+      {
+        "pid": 1004,
+        "ppid": 98679,
+        "pgid": 1004,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 1038,
+        "ppid": 98679,
+        "pgid": 1038,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-codex"
+      },
+      {
+        "pid": 856,
+        "ppid": 854,
+        "pgid": 854,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude"
+      }
+    ],
+    "survivors": [
+      {
+        "pid": 98679,
+        "ppid": 98312,
+        "pgid": 98278,
+        "command": "codex app-server -c agents.enabled=false",
+        "alive": true
+      },
+      {
+        "pid": 99278,
+        "ppid": 98312,
+        "pgid": 98278,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … oyMRK2yVj8ns0wisbk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=66f32715-6f4d-408d-a565-aca824e7ef7f",
+        "alive": true
+      },
+      {
+        "pid": 854,
+        "ppid": 99278,
+        "pgid": 854,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd",
+        "alive": true
+      },
+      {
+        "pid": 1004,
+        "ppid": 98679,
+        "pgid": 1004,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host",
+        "alive": true
+      },
+      {
+        "pid": 1038,
+        "ppid": 98679,
+        "pgid": 1038,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-codex",
+        "alive": true
+      },
+      {
+        "pid": 856,
+        "ppid": 854,
+        "pgid": 854,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude",
+        "alive": true
+      }
+    ],
+    "markedLeft": [
+      {
+        "pid": 854,
+        "ppid": 99278,
+        "pgid": 854,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd"
+      },
+      {
+        "pid": 856,
+        "ppid": 854,
+        "pgid": 854,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude"
+      },
+      {
+        "pid": 1038,
+        "ppid": 98679,
+        "pgid": 1038,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-codex"
+      }
+    ],
+    "shutdownLog": []
+  },
+  "baselineTreeToClean": [
+    {
+      "pid": 98679,
+      "ppid": 98312,
+      "pgid": 98278,
+      "command": "codex app-server -c agents.enabled=false"
+    },
+    {
+      "pid": 99278,
+      "ppid": 98312,
+      "pgid": 98278,
+      "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … oyMRK2yVj8ns0wisbk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=66f32715-6f4d-408d-a565-aca824e7ef7f"
+    },
+    {
+      "pid": 854,
+      "ppid": 99278,
+      "pgid": 854,
+      "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd"
+    },
+    {
+      "pid": 1004,
+      "ppid": 98679,
+      "pgid": 1004,
+      "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+    },
+    {
+      "pid": 1038,
+      "ppid": 98679,
+      "pgid": 1038,
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-codex"
+    },
+    {
+      "pid": 856,
+      "ppid": 854,
+      "pgid": 854,
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude"
+    }
+  ],
+  "result": "Completed",
+  "baselineLeftAfterServerKill": [
+    {
+      "pid": 99278,
+      "ppid": 98312,
+      "pgid": 98278,
+      "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … oyMRK2yVj8ns0wisbk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=66f32715-6f4d-408d-a565-aca824e7ef7f"
+    },
+    {
+      "pid": 854,
+      "ppid": 99278,
+      "pgid": 854,
+      "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793364908971-tuue3s.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … iltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuz5qoy_base-claude' < /dev/null && pwd -P >| /tmp/claude-e8f0-cwd"
+    },
+    {
+      "pid": 856,
+      "ppid": 854,
+      "pgid": 854,
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuz5qoy_base-claude"
+    }
+  ],
+  "fallbackCleanup": [],
+  "rootRemoved": true
+}

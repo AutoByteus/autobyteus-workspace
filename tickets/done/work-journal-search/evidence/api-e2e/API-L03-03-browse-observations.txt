@@ -1,0 +1,15 @@
+# API-L03: Browse on the real-size copy (desktop iso-53567-504c, after the first build); 2026-10-26 18:3x
+# Steps: go #/memory?view=home&section=browse&tab=teams|agents; probe eval over CDP
+
+## Agent Teams (screenshot API-L03-01-browse-teams.png)
+4 team cards, each with the 'Task team' tag (data-test memory-task-team-tag):
+  software_engineering_team · Task team · 76 runs · 6 members · Archive (tooltip none: its task runs have more than one delegator)
+  product_team · Task team · 19 runs · 4 members · Archive (tooltip none)
+  opportunity_scouting_team · Task team · 1 runs · 2 members (tooltip 'Task team · started by Project Task Manager')
+  StudentStudyGroup (agent-org-owned-team:nested-classroom-test:student-study-group) · Task team · 2 runs (tooltip none)
+Copy limitation: the copy's team_run_history_index.json has 0 rows and the instance's database is new, so configured (non-task) team runs have no list record here; their member folders are still found and searched as runs (Find runs: 3680 of 3680).
+
+## Agents (screenshot API-L03-02-browse-agents.png)
+Cards include Memory Compactor 104 runs, Codex 107 runs, Daily Assistant 164 runs, Project Task Manager 11 runs …; availability note only 'Archive' where an archive exists
+Page text contains none of 'episodic', 'semantic', 'working context' (case-insensitive): episodic=false
+Run detail tabs (API-L01): ['Work Journal', 'Raw Traces']

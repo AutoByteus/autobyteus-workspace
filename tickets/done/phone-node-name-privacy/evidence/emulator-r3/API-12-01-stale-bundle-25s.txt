@@ -1,0 +1,3 @@
+text: Connecting to Test Server
+content-desc: Cancel
+text: Cancel

@@ -1,0 +1,227 @@
+{
+  "mode": "seed",
+  "startedAt": "2026-11-08T19:31:48.851Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437",
+  "stackHead": "32e9ad944c",
+  "dirty": [
+    "M autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs",
+    " M autobyteus-web/tests/e2e/agent-runtimes-settings-probe.mjs",
+    " M autobyteus-web/tests/e2e/agy-actual-solution-designer-skill-org-probe.mjs",
+    " M autobyteus-web/tests/e2e/agy-large-org-launch-health-probe.mjs",
+    " M autobyteus-web/tests/e2e/agy-process-restart-focus-continuation-probe.mjs",
+    " M autobyteus-web/tests/e2e/chat-composer-menus-open-upward-probe.mjs",
+    " M autobyteus-web/tests/e2e/chat-composer-polish-probe.mjs",
+    " M autobyteus-web/tests/e2e/chat-draft-rows-live-probe.mjs",
+    " M autobyteus-web/tests/e2e/chat-entry-live-probe.mjs",
+    " M autobyteus-web/tests/e2e/composer-context-file-removal-probe.mjs",
+    " M autobyteus-web/tests/e2e/cross-scope-agent-mentions-live-probe.mjs",
+    " M autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs",
+    " M autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs",
+    " M autobyteus-web/tests/e2e/delegated-team-default-collapse-probe.mjs",
+    " M autobyteus-web/tests/e2e/embedding-settings-probe.mjs",
+    " M autobyteus-web/tests/e2e/file-explorer-pending-save-draft-probe.mjs",
+    " M autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs",
+    " M autobyteus-web/tests/e2e/github-skill-sources-probe.mjs",
+    " M autobyteus-web/tests/e2e/integrations-page-probe.mjs",
+    " M autobyteus-web/tests/e2e/internal-agents-probe.mjs",
+    " M autobyteus-web/tests/e2e/large-runs-load-less-cases.mjs",
+    " M autobyteus-web/tests/e2e/memory-search-probe.mjs",
+    " M autobyteus-web/tests/e2e/model-routing-settings-probe.mjs",
+    " M autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs",
+    " M autobyteus-web/tests/e2e/project-manager-ux-probe.mjs",
+    " M autobyteus-web/tests/e2e/projects-feature-probe.mjs",
+    " M autobyteus-web/tests/e2e/projects-left-navigation-probe.mjs",
+    " M autobyteus-web/tests/e2e/provider-api-key-save-probe.mjs",
+    " M autobyteus-web/tests/e2e/run-history-read-budget-probe.mjs",
+    " M autobyteus-web/tests/e2e/run-settings-live-probe.mjs",
+    " M autobyteus-web/tests/e2e/runtime-switch-members-probe.mjs",
+    " M autobyteus-web/tests/e2e/runtime-switch-probe.mjs",
+    " M autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs",
+    " M autobyteus-web/tests/e2e/task-closure-tree-probe.mjs",
+    " M autobyteus-web/tests/e2e/team-status-live-probe.mjs",
+    " M autobyteus-web/tests/e2e/token-statistics-ui-probe.mjs",
+    " M tickets/in-progress/node-universal-authentication-437/api-e2e-coverage-investigation.md",
+    " M tickets/in-progress/node-universal-authentication-437/api-e2e-test-progress.md",
+    " M tickets/in-progress/node-universal-authentication-437/code-review-report.md",
+    " M tickets/in-progress/node-universal-authentication-437/code-review-revision-record.md",
+    " M tickets/in-progress/node-universal-authentication-437/follow-ups.md"
+  ],
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    105.6,
+    86.7,
+    60.9
+  ],
+  "cases": {
+    "SEED": {
+      "result": "Pass",
+      "description": "Seed hub, Team and Org runs with member files, plus 100 unrelated saved team runs, through public APIs",
+      "ms": 10745,
+      "load": [
+        105.5,
+        87.6,
+        61.6
+      ],
+      "details": {
+        "names": {
+          "manager": "OSR Manager",
+          "mate": "OSR Mate",
+          "sibling": "OSR Sibling",
+          "lead": "OSR Lead",
+          "peer": "OSR Peer",
+          "helper": "OSR Helper",
+          "team": "OSR Team",
+          "squad": "OSR Squad",
+          "org": "OSR Org",
+          "unrelatedTeam": "OSR Unrelated Team"
+        },
+        "workspace": "/tmp/abtest437r2/seeds/owner-scoped/workspace",
+        "archive": "/tmp/abtest437r2/seeds/owner-scoped/archive",
+        "hubRunId": "osr_manager_d43779f4576b4933b9282e490bbcd164",
+        "teamRunId": "osr_team_ec1e2fe6b77c42448707a2822648b4ef",
+        "orgRunId": "osr_org_bed97f19281e415b8af656b9b3eff6d5",
+        "copy": {
+          "agentRunId": "osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e",
+          "address": "/osr_helper"
+        },
+        "teamTask": {
+          "agentRunId": "osr_helper_7a0d3777200b493b98e2288d2c23be15",
+          "address": "/osr_helper"
+        },
+        "orgTask": {
+          "agentRunId": "osr_helper_aba0b892269a4cee97fdce5945aa89b9",
+          "address": "/osr_helper"
+        },
+        "squadTask": {
+          "agentRunId": "osr_helper_2fbfb94b6d3d417c83a3552c9e730571",
+          "address": "/osr_helper"
+        },
+        "files": [
+          {
+            "label": "standalone run",
+            "subject": {
+              "kind": "run",
+              "runId": "osr_manager_d43779f4576b4933b9282e490bbcd164"
+            },
+            "path": "hub-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/hub-notes.md",
+            "text": "Owner-scoped file of standalone run (hub-notes.md) b4dc028a"
+          },
+          {
+            "label": "delegated copy",
+            "subject": {
+              "kind": "standaloneMember",
+              "hostRunId": "osr_manager_d43779f4576b4933b9282e490bbcd164",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e"
+            },
+            "path": "copy-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/copy-notes.md",
+            "text": "Owner-scoped file of delegated copy (copy-notes.md) 9086a73b"
+          },
+          {
+            "label": "team configured member",
+            "subject": {
+              "kind": "teamMember",
+              "teamRunId": "osr_team_ec1e2fe6b77c42448707a2822648b4ef",
+              "memberAddress": "/manager",
+              "agentRunId": "osr_manager_8beffcddb75345d0b77d00cdfc96a7ea"
+            },
+            "path": "team-manager-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/team-manager-notes.md",
+            "text": "Owner-scoped file of team configured member (team-manager-notes.md) 137b5dfb"
+          },
+          {
+            "label": "team task agent",
+            "subject": {
+              "kind": "teamMember",
+              "teamRunId": "osr_team_ec1e2fe6b77c42448707a2822648b4ef",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_7a0d3777200b493b98e2288d2c23be15"
+            },
+            "path": "team-task-agent-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/team-task-agent-notes.md",
+            "text": "Owner-scoped file of team task agent (team-task-agent-notes.md) d14ca3d3"
+          },
+          {
+            "label": "org direct agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_bed97f19281e415b8af656b9b3eff6d5",
+              "memberAddress": "/manager",
+              "agentRunId": "osr_manager_374d60112a704dcc987284aca4a0aed7"
+            },
+            "path": "org-manager-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/org-manager-notes.md",
+            "text": "Owner-scoped file of org direct agent (org-manager-notes.md) c85d06ac"
+          },
+          {
+            "label": "org member-team member",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_bed97f19281e415b8af656b9b3eff6d5",
+              "memberAddress": "/squad/lead",
+              "agentRunId": "osr_lead_30ae3b49601f4d3c9e2428ab2494920c"
+            },
+            "path": "org-squad-lead-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/org-squad-lead-notes.md",
+            "text": "Owner-scoped file of org member-team member (org-squad-lead-notes.md) b6e7ea0e"
+          },
+          {
+            "label": "org-root task agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_bed97f19281e415b8af656b9b3eff6d5",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_aba0b892269a4cee97fdce5945aa89b9"
+            },
+            "path": "org-task-agent-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/org-task-agent-notes.md",
+            "text": "Owner-scoped file of org-root task agent (org-task-agent-notes.md) 7895fe79"
+          },
+          {
+            "label": "org member-team task agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_bed97f19281e415b8af656b9b3eff6d5",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_2fbfb94b6d3d417c83a3552c9e730571"
+            },
+            "path": "org-squad-task-agent-notes.md",
+            "absolutePath": "/tmp/abtest437r2/seeds/owner-scoped/workspace/org-squad-task-agent-notes.md",
+            "text": "Owner-scoped file of org member-team task agent (org-squad-task-agent-notes.md) 9b41e18a"
+          }
+        ],
+        "unrelatedTeamRuns": 100,
+        "memoryFolders": {
+          "agent_org_run_history_index.json": 0,
+          "agent_orgs": 1,
+          "agent_teams": 101,
+          "agents": 5,
+          "run_history_index.json": 0,
+          "team_run_history_index.json": 0
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": null,
+      "status": "not-running"
+    },
+    "backend": {
+      "pid": 55930,
+      "status": "terminated",
+      "exit": 0
+    }
+  },
+  "failures": [],
+  "finishedAt": "2026-11-08T19:32:04.451Z",
+  "loadAtEnd": [
+    105.5,
+    87.6,
+    61.6
+  ]
+}

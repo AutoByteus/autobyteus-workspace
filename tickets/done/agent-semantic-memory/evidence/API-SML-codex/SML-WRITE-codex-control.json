@@ -1,0 +1,18 @@
+{
+  "control": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt",
+  "reply": "The command was not run because permission was denied.",
+  "approvals": [
+    {
+      "tool": "run_bash",
+      "args": "{\"command\":\"/bin/bash -lc 'echo control > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a\"}",
+      "decision": "denied"
+    }
+  ],
+  "tools": [
+    "run_bash {\"command\":\"/bin/bash -lc 'echo control > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a\"}"
+  ],
+  "failures": [
+    "{\"item\":{\"type\":\"commandExecution\",\"id\":\"exec-7ace4489-41ce-413d-be19-361a60733c05\",\"pluginId\":null,\"scriptPath\":null,\"command\":\"/bin/bash -lc 'echo control > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a\",\"processId\":null,\"source\":\"agent\",\"status\":\"declined\",\"commandActions\":[{\"type"
+  ],
+  "exists": false
+}

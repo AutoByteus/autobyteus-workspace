@@ -1,0 +1,83 @@
+# API-07 read-vs-reload timing per Save (base store)
+Save 1:
+       +80ms gql-req AgentOrgRunConfig
+       +81ms gql-res UpdateDelegatedLaunchSelections
+       +88ms gql-res AgentOrgRunConfig
+       +88ms ws CONNECTED
+       +89ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+       +97ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 2:
+      +133ms gql-req AgentOrgRunConfig
+      +133ms gql-res UpdateDelegatedLaunchSelections
+      +138ms ws CONNECTED
+      +145ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +155ms gql-res AgentOrgRunConfig
+      +217ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 3:
+      +187ms gql-req AgentOrgRunConfig
+      +189ms gql-res UpdateDelegatedLaunchSelections
+      +191ms ws CONNECTED
+      +192ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +207ms gql-res AgentOrgRunConfig
+      +293ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 4:
+      +121ms gql-req AgentOrgRunConfig
+      +122ms gql-res UpdateDelegatedLaunchSelections
+      +130ms gql-res AgentOrgRunConfig
+      +131ms ws CONNECTED
+      +137ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +157ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 5:
+      +219ms gql-req AgentOrgRunConfig
+      +232ms ws CONNECTED
+      +232ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +233ms gql-res UpdateDelegatedLaunchSelections
+      +272ms gql-res AgentOrgRunConfig
+Save 6:
+      +140ms gql-req AgentOrgRunConfig
+      +140ms gql-res UpdateDelegatedLaunchSelections
+      +142ms ws CONNECTED
+      +150ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +166ms gql-res AgentOrgRunConfig
+      +212ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 7:
+      +245ms gql-req AgentOrgRunConfig
+      +246ms ws CONNECTED
+      +247ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +247ms gql-res UpdateDelegatedLaunchSelections
+      +269ms gql-res AgentOrgRunConfig
+Save 8:
+      +292ms gql-req AgentOrgRunConfig
+      +293ms gql-res UpdateDelegatedLaunchSelections
+      +297ms ws CONNECTED
+      +301ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +334ms gql-res AgentOrgRunConfig
+      +386ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 9:
+      +118ms gql-req AgentOrgRunConfig
+      +118ms gql-res UpdateDelegatedLaunchSelections
+      +121ms ws CONNECTED
+      +122ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +129ms gql-res AgentOrgRunConfig
+      +147ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 10:
+       +93ms gql-req AgentOrgRunConfig
+       +93ms gql-res UpdateDelegatedLaunchSelections
+       +99ms gql-res AgentOrgRunConfig
+      +102ms ws CONNECTED
+      +105ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +180ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 11:
+      +106ms gql-req AgentOrgRunConfig
+      +111ms ws CONNECTED
+      +111ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +115ms gql-res UpdateDelegatedLaunchSelections
+      +117ms gql-res AgentOrgRunConfig
+      +127ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 12:
+      +108ms gql-req AgentOrgRunConfig
+      +108ms gql-res UpdateDelegatedLaunchSelections
+      +109ms ws CONNECTED
+      +115ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +126ms gql-res AgentOrgRunConfig
+      +153ms [OBS] savebar "Saved. Changes apply when this run resumes."

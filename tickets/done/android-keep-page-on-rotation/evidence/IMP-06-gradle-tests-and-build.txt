@@ -1,0 +1,24 @@
+# Check: IMP-06
+# Steps: ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin (after); the new test alone against the unchanged manifest (git stash of AndroidManifest.xml)
+# Build: worktree with the manifest change (committed as the implementation commit)
+# Environment: Emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, 136 px top cutout, Android 15 / API 35, google_apis arm64), started -no-window -wipe-data; debug APK built in this worktree; isolated test node abx415-rotation-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:62261:8000, fresh volumes, test data only) reached from the emulator at http://10.0.2.2:62261, paired through its own REST routes
+# Date: 2026-11-06
+
+## after: tail
+> Task :app:testDebugUnitTest
+
+BUILD SUCCESSFUL in 3s
+51 actionable tasks: 51 executed
+## MainActivityManifestTest result
+tests="1" skipped="0" failures="0" errors="0"
+## all unit test result files
+TEST-org.autobyteus.mobile.MainActivityManifestTest.xml tests="1" skipped="0" failures="0" errors="0"
+TEST-org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest.xml tests="2" skipped="0" failures="0" errors="0"
+TEST-org.autobyteus.mobile.connection.NodeUrlNormalizerTest.xml tests="4" skipped="0" failures="0" errors="0"
+TEST-org.autobyteus.mobile.connection.PairingLinkParserTest.xml tests="5" skipped="0" failures="0" errors="0"
+TEST-org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest.xml tests="6" skipped="0" failures="0" errors="0"
+TEST-org.autobyteus.mobile.web.FileChooserRequestPolicyTest.xml tests="3" skipped="0" failures="0" errors="0"
+TEST-org.autobyteus.mobile.web.TrustedNavigationPolicyTest.xml tests="3" skipped="0" failures="0" errors="0"
+## the new test against the unchanged manifest
+MainActivityManifestTest > mainActivityHandlesRotationWindowSizeAndKeyboardChangesItself FAILED
+    java.lang.AssertionError at MainActivityManifestTest.kt:27

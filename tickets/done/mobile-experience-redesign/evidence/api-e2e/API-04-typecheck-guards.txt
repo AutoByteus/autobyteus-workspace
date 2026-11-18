@@ -1,0 +1,12 @@
+# API-04 typecheck and guards — 2026-11-06 12:06, HEAD bb80e60c97 + this round's probe changes
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 19.9s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+exit 0
+
+[guard:web-boundary] Passed.
+
+[guard:localization-boundary] Passed.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -1,0 +1,35 @@
+IMP-07 | 7e2704199a6cf192546506f7e265301aee014dc0 | macOS arm64 Node v22.23.3 | Mon Oct 26 17:01:50 UTC 2026
+Command: pnpm --silent isolated-app start --build
+[guard:web-boundary] Passed.
+Full build log: IMP-07-desktop-build.log
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+  • executing @electron/rebuild  electronVersion=42.11.16 arch=arm64 buildFromSource=false appDir=./
+Build completed: [
+  '/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.zip.blockmap',
+  '/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.zip'
+]
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-65117-0fae",
+    "pid": 88938,
+    "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:65118",
+    "graphqlUrl": "http://127.0.0.1:65118/graphql",
+    "controlEndpoint": "http://127.0.0.1:65117",
+    "controlPort": 65117,
+    "serverPort": 65118,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-aszO4F",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-aszO4F/server-data/db/production.db",
+    "logPath": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-app/iso-65117-0fae.log"
+  }
+}
+
+Exit: 0

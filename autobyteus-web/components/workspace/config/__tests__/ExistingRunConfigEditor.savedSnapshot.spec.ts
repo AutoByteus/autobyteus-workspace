@@ -5,28 +5,60 @@ import { defineComponent, h } from 'vue'
 import ExistingRunConfigEditor from '../ExistingRunConfigEditor.vue'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
+import { injectLockedModelOptionsRefresh } from '~/composables/useLockedModelOptionsRefresh'
+import { useRunStatusStore } from '~/stores/runStatusStore'
 
 // Render the real editor + Settings/Save bar with real draft stores. Only network, unrelated
 // runtime stores and leaf controls are replaced; the stale live view deliberately never changes.
-const mocks = vi.hoisted(() => ({ read: vi.fn(), mutate: vi.fn(), live: null as any, stored: null as any, active: false, schema: null as any }))
+const mocks = await vi.hoisted(async () => {
+  const { ref } = await import('vue')
+  return { read: vi.fn(), mutate: vi.fn(), ownRead: vi.fn((): unknown => undefined), live: null as any, stored: null as any, active: false, schema: null as any,
+    /** The copy focused in the left tree (autobyteus-366: Settings show it). */
+    focused: ref<string | null>('copy'),
+    /** The server answers that the runtime's model list could not be read (SR-004: it answers, it does not throw). */
+    unreadable: false }
+})
 const launch = () => ({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'old', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null })
 const snapshot = () => ({ execution_tree: { taskExecutions: [{ address: '/writer', agentRunId: 'copy', platformAgentRunId: null, delegatorAgentRunId: 'host',
-  startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] }, closed_task_executions: [] })
+  startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] } })
 const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canonicalName: id, providerName: 'test', configSchema: null })
-const options = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
-vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: mocks.read }))
+const readableOptions = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
+const options = () => mocks.unreadable
+  ? { status: 'unavailable', options: null, message: 'The model list of Codex App Server could not be read. Try again.' } : readableOptions()
+// The run's tree, as the server builds it from what its runs have now (SR-084): answered from the same stored state;
+// `mocks.read` is each read of it.
+vi.mock('~/utils/apolloClient', async () => {
+  const { agentRunTreeRows } = await import('~/test-support/runTreeFixtures')
+  return { getApolloClient: () => ({ query: async ({ variables }: { variables: { kind: string; runId: string } }) => {
+    const stored = await mocks.read(variables.runId)
+    return { data: { runTree: { kind: variables.kind, runId: variables.runId, rows: agentRunTreeRows(variables.runId, stored.execution_tree.taskExecutions) } } }
+  } }) }
+})
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async original => ({ ...await original<object>(),
-  loadDelegatedLaunchModelOptions: async () => ({ 'agent:copy': options(), 'team:team-copy': options(), 'agent:follower': options(), 'agent:own': options() }), updateDelegatedLaunchSelections: mocks.mutate,
+  // Each row's options from its own run's query; each run's change by its own save (autobyteus-461 SR-064, SR-065).
+  loadDelegatedRunOptions: async (targets: ReadonlyMap<string, unknown>) => ({ options: Object.fromEntries([...targets.keys()].map((key) => [key, options()])), complete: true }),
+  saveDelegatedRuns: mocks.mutate,
+  // Each run's launch read from the run itself (CR-461-086): none answered here, so the rows keep their records'.
+  loadDelegatedRunLaunches: async () => ({}),
+}))
+// The run's own setting is saved by its own save, before the delegated runs' (autobyteus-461 SR-064).
+vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
+  updateStoppedAgentSelection: async (input: { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown }) => ({ success: true, outcome: 'UPDATED',
+    message: 'Saved.', isActive: false, editability: { editable: true, reason: null }, fieldErrors: [],
+    canonicalSelection: { runtimeKind: input.runtimeKind, llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig } }),
+  updateStoppedTeamSelections: vi.fn(),
 }))
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: async () => ({ '/': options() }) }))
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ subject: { kind: 'agent_run', runId: 'host' } }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resumeConfigByRunId: {}, teamResumeConfigByTeamRunId: {},
-  refreshAgentResumeConfig: async () => ({ runId: 'host', isActive: mocks.active, modelConfigEditability: { editable: !mocks.active, reason: mocks.active ? 'RUN_ACTIVE' : null },
+  refreshAgentResumeConfig: async () => mocks.ownRead() ?? ({ runId: 'host', isActive: mocks.active, modelConfigEditability: { editable: !mocks.active, reason: mocks.active ? 'RUN_ACTIVE' : null },
     metadataConfig: { agentDefinitionId: 'host', ...launch() } }),
 }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Host' }) }) }))
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => ({ view: mocks.live, getAgentContext: () => null }) }) }))
+// The row selected in the run's tree (autobyteus-366: Settings show it).
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ selectedChild: () => mocks.focused.value,
+  contextFor: () => null }) }))
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => ({ ensureCatalog: vi.fn(), schemaFor: () => mocks.schema, modelLabel: (_runtime: string, id: string) => id }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => mocks.schema }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {
@@ -38,34 +70,52 @@ const rows = defineComponent({ props: ['nodes'], emits: ['change'], setup: (prop
   h('span', { 'data-test': node.key }, `${node.values.llmModelIdentifier}:${JSON.stringify(node.values.llmConfig)}`),
   h('button', { 'data-test': `edit-${node.key}`, onClick: () => emit('change', node.key, { field: 'model', choice: choice('new') }) }, 'Change'),
 ]))) })
-const mountEditor = () => mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: rows, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+const subjectCard = defineComponent({ props: ['node'], emits: ['change'], setup: (props, { emit }) => () => h('div', [
+  h('span', { 'data-test': props.node.key }, `${props.node.values.llmModelIdentifier}:${JSON.stringify(props.node.values.llmConfig)}`),
+  h('button', { 'data-test': `edit-${props.node.key}`, onClick: () => emit('change', { field: 'model', choice: choice('new') }) }, 'Change'),
+]) })
+const mountEditor = () => mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: rows, RunSubjectCard: subjectCard, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
 
 beforeEach(() => {
   setActivePinia(createPinia())
-  mocks.read.mockReset(); mocks.mutate.mockReset()
-  mocks.active = false; mocks.schema = null
+  mocks.read.mockReset(); mocks.mutate.mockReset(); mocks.ownRead.mockReset().mockReturnValue(undefined)
+  mocks.active = false; mocks.schema = null; mocks.focused.value = 'copy'; mocks.unreadable = false
   mocks.live = snapshot(); mocks.stored = snapshot()
   mocks.read.mockImplementation(async () => structuredClone(mocks.stored))
   mocks.mutate.mockImplementation(async ({ changes }) => {
     for (const { key, selection } of changes) {
       const entries = mocks.stored.execution_tree.taskExecutions.flatMap((e: any) => [e, ...(e.members ?? [])])
       const entry = entries.find((e: any) => key === `agent:${e.agentRunId}` || key === `team:${e.teamRunId}`)
-      entry[key.startsWith('team:') ? 'userTeamLaunchSelection' : 'userLaunchSelection'] = { ...selection, selectedAt: '2026-10-13T01:00:00.000Z' }
+      // Each child's change is saved by its own run (SR-039): its launch is the new one. A Team child's team-level save
+      // changes its default only (CR-461-089); a member's own save its own launch.
+      const apply = (target: any) => Object.assign(target, Object.fromEntries(Object.entries(selection).filter(([, value]) => value !== undefined)))
+      if (key.startsWith('team:')) {
+        apply(entry.source.defaultLaunchConfiguration)
+      } else if (entry.source) apply(entry.source.launchConfiguration)
+      else {
+        const team = mocks.stored.execution_tree.taskExecutions.find((t: any) => t.members?.includes(entry))
+        const member = team.source.members.find((m: any) => m.address === entry.address)
+        apply(member.launchConfiguration)
+      }
     }
-    return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] }
+    // The runs' saves tell the trees that hold their rows (SR-086 G-B1): the run's tree is read again.
+    useRunStatusStore().apply({ type: 'RUN_TREE_CHANGED', payload: { kind: 'agent', runId: 'host' } })
+    return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [], saved: {} }
   })
 })
 
 describe('stopped Agent same-view canonical saved rows', () => {
   it('keeps the accepted saved model in the mounted row after Save, not the stale live view', async () => {
     const wrapper = mountEditor(); await flushPromises()
-    const row = () => wrapper.get('[data-test="/writer@copy"]').text()
+    const row = () => wrapper.get('[data-test="agent:copy"]').text()
     expect(row()).toBe('old:null')
-    await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click'); await flushPromises()
+    await wrapper.get('[data-test="edit-agent:copy"]').trigger('click'); await flushPromises()
     expect(row()).toBe('new:null')
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-    expect(mocks.stored.execution_tree.taskExecutions[0].userLaunchSelection.llmModelIdentifier).toBe('new')
+    expect(mocks.stored.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('new')
     expect(mocks.live.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('old')
+    // The first load reads the run's tree once; the committed Save reads it again (autobyteus-366, CR-003).
+    expect(mocks.read.mock.calls).toEqual([['host'], ['host']])
     expect(row()).toBe('new:null')
     expect(useDelegatedLaunchDraftStore().dirty).toBe(false)
     expect(useExistingRunConfigStore().reconciliationRequired).toBe(false)
@@ -73,30 +123,23 @@ describe('stopped Agent same-view canonical saved rows', () => {
   })
 })
 
-it('retains the mounted Settings view and edit lock through readback, then uses the new value as the next original', async () => {
+it('keeps the mounted Settings view through Save, then uses the new value as the next original', async () => {
   const wrapper = mountEditor(); await flushPromises()
   const mounted = wrapper.get('[data-test="existing-run-settings"]').element
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
-  let finish!: (value: any) => void
-  mocks.read.mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   const delegated = useDelegatedLaunchDraftStore()
-  expect(delegated.saving).toBe(true)
-  expect(delegated.feedback).toBeNull()
-  expect(wrapper.get('[data-test="existing-run-settings"]').element).toBe(mounted)
-  expect(wrapper.get('[data-test="save-existing-model-config"]').attributes('disabled')).toBeDefined()
-  finish(structuredClone(mocks.stored)); await flushPromises()
   expect(wrapper.get('[data-test="existing-run-settings"]').element).toBe(mounted)
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
-  settings.vm.$emit('change-delegated', '/writer@copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
+  settings.vm.$emit('change-delegated', 'agent:copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
   await flushPromises()
-  expect(delegated.originals['agent:copy']).toEqual({ llmModelIdentifier: 'new', llmConfig: null })
+  expect(delegated.originals['agent:copy']).toEqual({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'new', llmConfig: null })
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:{"reasoning_effort":"high","service_tier":"fast"}')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:{"reasoning_effort":"high","service_tier":"fast"}')
   expect(delegated.dirty).toBe(false)
   wrapper.unmount()
   const reopened = mountEditor(); await flushPromises()
-  expect(reopened.get('[data-test="/writer@copy"]').text()).toContain('new:{"reasoning_effort":"high"')
+  expect(reopened.get('[data-test="agent:copy"]').text()).toContain('new:{"reasoning_effort":"high"')
   reopened.unmount()
 })
 
@@ -104,8 +147,10 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   const wrapper = mountEditor(); await flushPromises()
   const store = useExistingRunConfigStore()
   store.updateAgentModelConfig({ llmModelIdentifier: 'new', llmConfig: null })
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
-  mocks.read.mockRejectedValueOnce(new Error('read unavailable'))
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
+  // The run's own save and the delegated runs' saves each read the run again after (SR-064): both reads fail.
+  const unavailable = () => { throw new Error('read unavailable') }
+  mocks.ownRead.mockImplementationOnce(unavailable).mockImplementationOnce(unavailable)
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(store.reconciliationRequired).toBe(true)
   expect(store.dirty).toBe(false)
@@ -113,64 +158,55 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   expect(useDelegatedLaunchDraftStore().feedback).toBeNull()
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Settings were saved, but could not be refreshed')
   expect(wrapper.find('[data-test="existing-run-save-bar"]').exists()).toBe(false)
+  // No success, and the fields are locked until Refresh (CR-003).
+  expect(useDelegatedLaunchDraftStore().feedback?.kind).not.toBe('success')
+  expect(wrapper.get('[data-test="existing-run-settings"]').attributes('data-state')).toBe('refresh-required')
   await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+  // Refresh reads the run's tree again, and shows the saved model.
+  expect(mocks.read).toHaveBeenLastCalledWith('host')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(store.reconciliationRequired).toBe(false)
   expect(mocks.mutate).toHaveBeenCalledTimes(1)
   wrapper.unmount()
 })
 
-it('initial failed snapshot load has no stale live fallback and exposes a working Refresh', async () => {
-  mocks.read.mockRejectedValueOnce(new Error('read unavailable'))
-  const wrapper = mountEditor(); await flushPromises()
-  expect(wrapper.find('[data-test="/writer@copy"]').exists()).toBe(false)
-  await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
-  expect(mocks.mutate).not.toHaveBeenCalled()
-  wrapper.unmount()
-})
-
 it('Cancel writes nothing and rejected Save keeps the recoverable edit without Saved feedback', async () => {
   const wrapper = mountEditor(); await flushPromises()
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   await wrapper.get('[data-test="existing-run-cancel"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
   expect(mocks.mutate).not.toHaveBeenCalled()
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
-  mocks.mutate.mockResolvedValueOnce({ success: false, message: 'Copy running', fieldErrors: [] })
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
+  mocks.mutate.mockResolvedValueOnce({ success: false, message: 'Copy running', fieldErrors: [], saved: {} })
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Copy running')
   expect(useDelegatedLaunchDraftStore().dirty).toBe(true)
+  // A refused Save changes no run, so the run's tree is not read again (a run that saved tells it: SR-086 G-B1).
   expect(mocks.read).toHaveBeenCalledTimes(1)
   wrapper.unmount()
 })
 
 
-it('renders the refreshed canonical summary in real member rows and preserves their open disclosure', async () => {
+it('renders the refreshed canonical settings on the real card of the focused copy', async () => {
   mocks.schema = { reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] }, service_tier: { type: 'string', enum: ['fast'], title: 'Fast mode' } }
   const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunSettingsCard: true, Icon: true } } })
   await flushPromises()
-  const row = () => wrapper.get('[data-test="run-member-/writer@copy"]')
-  expect(row().get('[data-test="run-member-summary"]').text()).toContain('old')
-  await row().get('[data-test="run-member-toggle"]').trigger('click')
+  const values = () => wrapper.get('[data-test="existing-run-subject-card"]').getComponent({ name: 'RunSettingsCard' }).props('values')
+  expect(values().llmModelIdentifier).toBe('old')
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
-  settings.vm.$emit('change-delegated', '/writer@copy', { field: 'model', choice: choice('new') })
+  settings.vm.$emit('change-delegated', 'agent:copy', { field: 'model', choice: choice('new') })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(row().get('[data-test="run-member-summary"]').text()).toContain('new')
-  expect(row().find('[data-test="run-member-detail"]').exists()).toBe(true)
-  expect(row().getComponent({ name: 'RunSettingsCard' }).props('values').llmModelIdentifier).toBe('new')
-  settings.vm.$emit('change-delegated', '/writer@copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
+  expect(values().llmModelIdentifier).toBe('new')
+  settings.vm.$emit('change-delegated', 'agent:copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(row().get('[data-test="run-member-summary"]').text()).toContain('Fast')
-  expect(row().getComponent({ name: 'RunSettingsCard' }).props('values').llmConfig).toEqual({ reasoning_effort: 'high', service_tier: 'fast' })
+  expect(values().llmConfig).toEqual({ reasoning_effort: 'high', service_tier: 'fast' })
   wrapper.unmount()
 })
 
-
-it('refreshes a Team selection and its follower, preserves own defaults and neighboring instances', async () => {
+it('refreshes a Team selection only (CR-461-089: each member keeps its own launch), and neighboring instances', async () => {
   const own = { ...launch(), llmModelIdentifier: 'own-model' }
   mocks.stored.execution_tree.taskExecutions.push({ address: '/team', teamRunId: 'team-copy', delegatorAgentRunId: 'host', startedAt: '2026-10-13T00:00:00.000Z',
     taskExecutions: [], members: [
@@ -178,26 +214,72 @@ it('refreshes a Team selection and its follower, preserves own defaults and neig
       { address: '/team/own', agentRunId: 'own', platformAgentRunId: null },
     ],
     source: { kind: 'agent_team', teamDefinitionId: 'team', coordinatorAddress: '/team/lead', handoffs: [], defaultLaunchConfiguration: launch(), members: [
-      { address: '/team/lead', agentDefinitionId: 'lead', launchConfiguration: launch(), followsTeam: true },
-      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, followsTeam: false, launchSource: { origin: 'agent_default', fallbacks: [] } },
+      { address: '/team/lead', agentDefinitionId: 'lead', launchConfiguration: launch() },
+      { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, launchSource: { origin: 'agent_default', fallbacks: [] } },
     ] } })
+  mocks.focused.value = 'follower'
   const wrapper = mountEditor(); await flushPromises()
-  await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('click')
+  // The member's own card first; the switch shows its Team copy and that copy's agents.
+  expect(wrapper.find('[data-test="team:team-copy"]').exists()).toBe(false)
+  await wrapper.get('[data-test="run-settings-switch-group"]').trigger('click')
+  await wrapper.get('[data-test="edit-team:team-copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
-  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('new:null')
-  expect(wrapper.get('[data-test="/team/own@own"]').text()).toBe('own-model:null')
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
-  // A following member can now choose its own model/config without changing the Team or sibling.
-  wrapper.getComponent({ name: 'ExistingRunSettings' }).vm.$emit('change-delegated', '/team/lead@follower', { field: 'thinking', llmConfig: { reasoning_effort: 'high' } })
+  expect(wrapper.get('[data-test="team:team-copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="team_member:team-copy:follower"]').text()).toBe('old:null')
+  expect(wrapper.get('[data-test="team_member:team-copy:own"]').text()).toBe('own-model:null')
+  // A member chooses its own model/config without changing the Team or sibling.
+  wrapper.getComponent({ name: 'ExistingRunSettings' }).vm.$emit('change-delegated', 'team_member:team-copy:follower', { field: 'thinking', llmConfig: { reasoning_effort: 'high' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('new:{"reasoning_effort":"high"}')
-  expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
+  expect(wrapper.get('[data-test="team_member:team-copy:follower"]').text()).toBe('old:{"reasoning_effort":"high"}')
+  expect(wrapper.get('[data-test="team:team-copy"]').text()).toBe('new:null')
+  // A neighboring copy is untouched; another focus starts at that agent's own settings.
+  mocks.focused.value = 'copy'; await flushPromises()
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
+  expect(wrapper.find('[data-test="team:team-copy"]').exists()).toBe(false)
   wrapper.unmount()
 })
 
-it('leaves active Agent rows live-view-backed and does not request a stopped snapshot after Save', async () => {
+describe('edits across focus changes (autobyteus-366, AC-005)', () => {
+  const twoCopies = () => mocks.stored.execution_tree.taskExecutions.push({ address: '/reviewer', agentRunId: 'follower', platformAgentRunId: null, delegatorAgentRunId: 'host',
+    startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'reviewer', launchConfiguration: launch() } })
+  const saveText = (wrapper: ReturnType<typeof mountEditor>) => wrapper.get('[data-test="existing-run-save-text"]').text()
+
+  it('an edit stays pending after the focus moves, the save bar names it, and Save commits exactly it', async () => {
+    twoCopies()
+    const wrapper = mountEditor(); await flushPromises()
+    await wrapper.get('[data-test="edit-agent:copy"]').trigger('click'); await flushPromises()
+    expect(saveText(wrapper)).toContain('writer')
+    mocks.focused.value = 'follower'; await flushPromises()
+    expect(wrapper.get('[data-test="agent:follower"]').text()).toBe('old:null')
+    expect(saveText(wrapper)).toContain('writer')
+    expect(saveText(wrapper)).not.toContain('reviewer')
+    await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
+    expect(mocks.mutate).toHaveBeenCalledTimes(1)
+    expect(mocks.mutate.mock.calls[0]![0].changes.map((change: any) => change.key)).toEqual(['agent:copy'])
+    expect(wrapper.get('[data-test="agent:follower"]').text()).toBe('old:null')
+    mocks.focused.value = 'copy'; await flushPromises()
+    expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
+    wrapper.unmount()
+  })
+
+  it('Cancel discards the edit of an agent no longer on screen; edits on two agents are both named', async () => {
+    twoCopies()
+    const wrapper = mountEditor(); await flushPromises()
+    await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
+    mocks.focused.value = 'follower'; await flushPromises()
+    await wrapper.get('[data-test="edit-agent:follower"]').trigger('click'); await flushPromises()
+    expect(saveText(wrapper)).toContain('writer, reviewer')
+    await wrapper.get('[data-test="existing-run-cancel"]').trigger('click'); await flushPromises()
+    expect(mocks.mutate).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-test="agent:follower"]').text()).toBe('old:null')
+    mocks.focused.value = 'copy'; await flushPromises()
+    expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
+    wrapper.unmount()
+  })
+})
+
+it('an active run\'s rows are its tree\'s too: after Save they show the saved value from its next read', async () => {
   mocks.active = true
   const mutate = mocks.mutate.getMockImplementation()!
   mocks.mutate.mockImplementation(async (input) => {
@@ -206,11 +288,87 @@ it('leaves active Agent rows live-view-backed and does not request a stopped sna
     return result
   })
   const wrapper = mountEditor(); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
-  await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('old:null')
+  await wrapper.get('[data-test="edit-agent:copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
-  expect(mocks.read).not.toHaveBeenCalled()
+  expect(wrapper.get('[data-test="agent:copy"]').text()).toBe('new:null')
+  expect(mocks.read).toHaveBeenCalledTimes(2)
   expect(useDelegatedLaunchDraftStore().feedback?.kind).toBe('success')
   wrapper.unmount()
+})
+
+describe('the saved model\'s "no longer offered" label (REQ-016, SR-004)', () => {
+  it('shows only for a readable answer that lacks the model, never for a list the server could not read (first read included)', async () => {
+    mocks.unreadable = true
+    const wrapper = mountEditor(); await flushPromises()
+    const run = useExistingRunConfigStore()
+    const label = () => wrapper.getComponent({ name: 'ExistingRunSettings' }).props('rootModelUnavailable')
+    expect(run.modelOptionsByAddress['/']!.status).toBe('unavailable')
+    expect(label()).toBe(false)
+
+    mocks.unreadable = false
+    run.modelOptionsByAddress = { '/': { status: 'ready', options: { currentModelIdentifier: 'old', currentModel: null, replacements: [choice('new')], unavailableReason: null } } as never }
+    await flushPromises()
+    expect(label()).toBe(true)
+
+    run.modelOptionsByAddress = { '/': readableOptions() as never }
+    await flushPromises()
+    expect(label()).toBe(false)
+    wrapper.unmount()
+  })
+})
+
+describe('saved-run model menus re-read the options through the editor (REQ-010, AC-012)', () => {
+  it('provides one refresh that re-reads the run\'s options and its copies\' options, and reports success', async () => {
+    let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
+    const menu = defineComponent({ props: ['node'], setup: () => { refresh = injectLockedModelOptionsRefresh(); return () => h('span') } })
+    const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: true, RunSubjectCard: menu, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+    await flushPromises()
+    const reloadRun = vi.spyOn(useExistingRunConfigStore(), 'reloadModelOptions')
+    const reloadCopies = vi.spyOn(useDelegatedLaunchDraftStore(), 'reloadOptions')
+
+    expect(refresh).not.toBeNull()
+    await refresh!.refresh()
+
+    expect(reloadRun).toHaveBeenCalledOnce()
+    expect(reloadCopies).toHaveBeenCalledOnce()
+    expect(refresh!.failed.value).toBe(false)
+    wrapper.unmount()
+  })
+
+  // API-14 (CR-004): the server answers (it does not throw) that the CLI cannot list its models.
+  it('reports a failure when the server answers that the model list could not be read, and keeps the options already shown', async () => {
+    let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
+    const menu = defineComponent({ props: ['node'], setup: () => { refresh = injectLockedModelOptionsRefresh(); return () => h('span') } })
+    const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: true, RunSubjectCard: menu, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+    await flushPromises()
+    const run = useExistingRunConfigStore(), copies = useDelegatedLaunchDraftStore()
+    expect(run.modelOptionsByAddress['/']).toEqual(readableOptions())
+    expect(copies.optionsByKey['agent:copy']).toEqual(readableOptions())
+
+    mocks.unreadable = true
+    await refresh!.refresh()
+
+    expect(refresh!.failed.value).toBe(true)
+    expect(run.modelOptionsByAddress['/']).toEqual(readableOptions())
+    expect(copies.optionsByKey['agent:copy']).toEqual(readableOptions())
+
+    mocks.unreadable = false
+    await refresh!.refresh()
+    expect(refresh!.failed.value).toBe(false)
+    wrapper.unmount()
+  })
+
+  it('reports a failure when either read fails, so the menu keeps its last options and offers Retry', async () => {
+    let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
+    const menu = defineComponent({ props: ['node'], setup: () => { refresh = injectLockedModelOptionsRefresh(); return () => h('span') } })
+    const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: true, RunSubjectCard: menu, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+    await flushPromises()
+    vi.spyOn(useExistingRunConfigStore(), 'reloadModelOptions').mockResolvedValue(false)
+
+    await refresh!.refresh()
+
+    expect(refresh!.failed.value).toBe(true)
+    wrapper.unmount()
+  })
 })

@@ -1,0 +1,319 @@
+{
+  "case": "API-13 Docker peer, round 3 (merged base): this worktree's server dist and all five workspace package dists mounted read-only on autobyteus/autobyteus-server:beta",
+  "commit": "7541be3e6d",
+  "note": "rounds 1\u20132 mounted only the server dist (the image's autobyteus-ts and contract packages were beta.7's); the five packages' package.json are unchanged since the image, so the image's node_modules fit",
+  "what_to_look_for": "D-1\u2026D-4 ok true; container.mounts lists the seven read-only binds; containerRemoved true",
+  "startedAt": "2026-10-27T05:32:56.048Z",
+  "head": "7541be3e6d",
+  "image": {
+    "name": "autobyteus/autobyteus-server:beta",
+    "id": "sha256:6d52877c3685cd4cd03b7624c6d7a1223fb3797723720fbdb79ceb48f8b813cf"
+  },
+  "cases": {
+    "D-1": {
+      "result": {
+        "delegated": false,
+        "message": "There is no default runtime configured for the target agent Blank Slate on node \"docker-1\", and Model Routing is off on node \"docker-1\".",
+        "elapsedMs": 316
+      },
+      "ok": true
+    },
+    "bStatusOn": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low"
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": null
+    },
+    "D-2": {
+      "result": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "blank_slate_2cc6739daea542adafc8fd07574083d6",
+        "node": "docker-1",
+        "task_id": "ad_hoc_task_0b4f9aef-2bac-4877-bb57-14a33b7e90c6",
+        "launch_notes": [
+          "blank_slate: runs on antigravity_cli / alt-model, chosen by the Model Router (writing): Gemini has limit left on the Docker node."
+        ],
+        "elapsedMs": 1549
+      },
+      "link": {
+        "address": "/blank_slate",
+        "agentRunId": "blank_slate_2cc6739daea542adafc8fd07574083d6",
+        "nodeId": "srv_vF2V3h3c4fpAVeFG5BCVgnP7YMOXvYJV",
+        "delegatorAgentRunId": "delegator_e53da2d99909422289a419da53812aa2",
+        "startedAt": "2026-10-27T05:33:06.255Z",
+        "launches": [
+          {
+            "address": "/blank_slate",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "source": {
+              "origin": "model_router",
+              "fallbacks": [],
+              "choiceReason": "Gemini has limit left on the Docker node.",
+              "taskKind": "writing"
+            }
+          }
+        ]
+      },
+      "windowTree": {
+        "agentRunCollaboration": {
+          "root_subject_kind": "agent",
+          "root_run_id": "delegator_e53da2d99909422289a419da53812aa2",
+          "root_agent": {
+            "base_change_sequence": 1,
+            "is_active": true,
+            "execution_tree": {
+              "subjectKind": "agent",
+              "createdAt": "2026-10-27T05:33:05.111Z",
+              "host": {
+                "address": "/delegator",
+                "agentRunId": "delegator_e53da2d99909422289a419da53812aa2",
+                "agentDefinitionId": "delegator"
+              },
+              "taskExecutions": []
+            },
+            "closed_task_executions": [],
+            "communication_messages": {
+              "schemaVersion": 1,
+              "subjectKind": "agent",
+              "hostRunId": "delegator_e53da2d99909422289a419da53812aa2",
+              "messages": []
+            },
+            "agent_statuses": [],
+            "agent_input_states": [],
+            "remote_task_executions": [
+              {
+                "kind": "agent",
+                "address": "/blank_slate",
+                "agent_run_id": "blank_slate_2cc6739daea542adafc8fd07574083d6",
+                "node_id": "srv_vF2V3h3c4fpAVeFG5BCVgnP7YMOXvYJV",
+                "node_name": "docker-1",
+                "delegator_agent_run_id": "delegator_e53da2d99909422289a419da53812aa2",
+                "started_at": "2026-10-27T05:33:06.255Z",
+                "launches": [
+                  {
+                    "address": "/blank_slate",
+                    "runtime_kind": "antigravity_cli",
+                    "llm_model_identifier": "alt-model",
+                    "source": {
+                      "origin": "model_router",
+                      "fallbacks": [],
+                      "choice_reason": "Gemini has limit left on the Docker node.",
+                      "task_kind": "writing"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "bDecisions": {
+        "groups": [
+          {
+            "taskId": null,
+            "taskKey": null,
+            "projectId": null,
+            "taskTitle": "Write the Docker release note. Reply OK.",
+            "latestAt": "2026-10-27T05:33:07.644Z",
+            "delegations": [
+              {
+                "recordedAt": "2026-10-27T05:33:07.644Z",
+                "delegatingRunId": null,
+                "delegatingAgentName": null,
+                "fromNode": "host-a",
+                "copyAddress": "/blank_slate",
+                "copyKind": "agent",
+                "records": [
+                  {
+                    "recordedAt": "2026-10-27T05:33:07.644Z",
+                    "taskId": null,
+                    "taskKey": null,
+                    "projectId": null,
+                    "taskTitle": "Write the Docker release note. Reply OK.",
+                    "delegatingRunId": null,
+                    "delegatingAgentName": null,
+                    "fromNode": "host-a",
+                    "copyAddress": "/blank_slate",
+                    "copyKind": "agent",
+                    "agentAddress": "/blank_slate",
+                    "runtimeKind": "antigravity_cli",
+                    "llmModelIdentifier": "alt-model",
+                    "source": "model_router",
+                    "taskKind": "writing",
+                    "choiceReason": "Gemini has limit left on the Docker node.",
+                    "routerFailure": null,
+                    "skipped": []
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "totalTasks": 1
+      },
+      "routerLog": [
+        {
+          "requestId": "req_96f66913",
+          "addresses": [
+            "/blank_slate"
+          ],
+          "receivedAt": 1793079186865,
+          "answeredAt": 1793079187488,
+          "results": [
+            {
+              "tool": "list_available_agent_runtimes",
+              "ok": true
+            },
+            {
+              "tool": "submit_launch_choices",
+              "isError": false,
+              "text": "Accepted: 1 launch choice for request req_96f66913."
+            }
+          ]
+        }
+      ],
+      "ok": true
+    },
+    "D-3": {
+      "result": {
+        "delegated": false,
+        "message": "The Model Router on node \"docker-1\" could not choose a runtime for Blank Slate: no valid answer within 40 seconds.",
+        "elapsedMs": 40298
+      },
+      "ok": true
+    },
+    "D-4": {
+      "result": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "blank_slate_3dfe8ed3941943fca6323034e3b6ec81",
+        "node": "docker-1",
+        "task_id": "ad_hoc_task_2150b4c2-7f95-46ec-9565-c758c7ab31dd",
+        "launch_notes": [
+          "blank_slate: runs on antigravity_cli / alt-model, chosen by the Model Router (writing): Back after a silent turn."
+        ],
+        "elapsedMs": 617
+      },
+      "routerLog": [
+        {
+          "requestId": "req_96f66913",
+          "addresses": [
+            "/blank_slate"
+          ],
+          "receivedAt": 1793079186865,
+          "answeredAt": 1793079187488,
+          "results": [
+            {
+              "tool": "list_available_agent_runtimes",
+              "ok": true
+            },
+            {
+              "tool": "submit_launch_choices",
+              "isError": false,
+              "text": "Accepted: 1 launch choice for request req_96f66913."
+            }
+          ]
+        },
+        {
+          "requestId": "req_01190c20",
+          "addresses": [
+            "/blank_slate"
+          ],
+          "receivedAt": 1793079188354,
+          "answeredAt": 1793079243375,
+          "results": []
+        },
+        {
+          "requestId": "req_6eeb1876",
+          "addresses": [
+            "/blank_slate"
+          ],
+          "receivedAt": 1793079243883,
+          "answeredAt": 1793079243912,
+          "results": [
+            {
+              "tool": "submit_launch_choices",
+              "isError": false,
+              "text": "Accepted: 1 launch choice for request req_6eeb1876."
+            }
+          ]
+        }
+      ],
+      "ok": true
+    }
+  },
+  "container": {
+    "name": "mr-docker-peer-8ebd230d",
+    "port": 56995,
+    "mounts": [
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-collaboration-stream-contracts/dist",
+        "destination": "/app/autobyteus-collaboration-stream-contracts/dist",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-team-stream-contracts/dist",
+        "destination": "/app/autobyteus-team-stream-contracts/dist",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts/tests/fixtures",
+        "destination": "/app/autobyteus-server-ts/tests/fixtures",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts/dist",
+        "destination": "/app/autobyteus-server-ts/dist",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-ts/dist",
+        "destination": "/app/autobyteus-ts/dist",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-agent-presentation-contracts/dist",
+        "destination": "/app/autobyteus-agent-presentation-contracts/dist",
+        "rw": false,
+        "type": "bind"
+      },
+      {
+        "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-application-sdk-contracts/dist",
+        "destination": "/app/autobyteus-application-sdk-contracts/dist",
+        "rw": false,
+        "type": "bind"
+      }
+    ],
+    "distInUse": [
+      "daily-assistant",
+      "model-router"
+    ],
+    "cliCommand": [
+      "ANTIGRAVITY_CLI_COMMAND=/app/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "AGY_FAKE_CASE=linked_skills"
+    ]
+  },
+  "nodes": {
+    "a": "srv_ppr85zV58sWpLXDYqGhABruiYGzWpagb",
+    "b": "srv_vF2V3h3c4fpAVeFG5BCVgnP7YMOXvYJV"
+  },
+  "containerLog": "e strategy.\nPopulating MCP server config cache for the first time...\nRunning MCP tool registration background task...\nLoading and registering all MCP server configurations from file...\nBackground task 'Memory Sync Worker' completed successfully.\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nPre-loaded 0 MCP server configs into cache.\nFinished loading and registering all MCP server configurations.\nBackground task 'MCP Tool Registration' completed successfully.\nPre-loaded 35 LLM models into cache.\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\nAgent Definition created successfully with ID: blank-slate\nServer setting 'AUTOBYTEUS_MODEL_ROUTER_RUNTIME' updated\nServer setting 'AUTOBYTEUS_MODEL_ROUTER_MODEL' updated\nServer setting 'AUTOBYTEUS_MODEL_ROUTING_ENABLED' updated\nDiscovering LM Studio models from host: http://localhost:1234\nDiscovering Ollama models from host: http://localhost:11434\nDiscovering LM Studio models from host: http://localhost:1234\nDiscovering Ollama models from host: http://localhost:11434\nCreating new workspace for rootPath: /home/autobyteus/data/internal-workspaces/autobyteus-model-router\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/data/internal-workspaces/autobyteus-model-router.\nCreated and registered workspace ID: agent_ws_48fea3eb33906d2305ade234bc58ebad890ed082015f715da1c1434fbbd7cab8\nCreating new workspace for rootPath: /home/autobyteus/data/internal-workspaces/autobyteus-model-router\nCreated metadata-only FileSystemWorkspace at /home/autobyteus/data/internal-workspaces/autobyteus-model-router.\nReusing registered workspace ID: agent_ws_48fea3eb33906d2305ade234bc58ebad890ed082015f715da1c1434fbbd7cab8\nAGY compaction detection off for run model_router_28de0c0b7a5046fcb800da26e4f731af: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.\n{\"level\":40,\"time\":1793079187204,\"pid\":48,\"hostname\":\"da68537d283c\",\"reqId\":\"req-3\",\"method\":\"GET\",\"url\":\"/mcp/agent-tools/agtrun_8ADIDECyzVCbX6pcEI3BgF68o5EtOfDBYSSm5kQyfnA\",\"statusCode\":405,\"elapsedMs\":0.3594170000014856,\"msg\":\"http request completed\"}\nDiscovering LM Studio models from host: http://localhost:1234\nDiscovering Ollama models from host: http://localhost:11434\n{\"level\":40,\"time\":1793079187485,\"pid\":48,\"hostname\":\"da68537d283c\",\"reqId\":\"req-7\",\"method\":\"GET\",\"url\":\"/mcp/agent-tools/agtrun_8ADIDECyzVCbX6pcEI3BgF68o5EtOfDBYSSm5kQyfnA\",\"statusCode\":405,\"elapsedMs\":0.22987499999908323,\"msg\":\"http request completed\"}\nResolved configured temp workspace root to TempWorkspace.\nResolved configured temp workspace root to TempWorkspace.\nAGY compaction detection off for run blank_slate_2cc6739daea542adafc8fd07574083d6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.\nDiscovering LM Studio models from host: http://localhost:1234\nDiscovering Ollama models from host: http://localhost:11434\nDiscovering LM Studio models from host: http://localhost:1234\nDiscovering Ollama models from host: http://localhost:11434\n{\"level\":40,\"time\":1793079243907,\"pid\":48,\"hostname\":\"da68537d283c\",\"reqId\":\"req-b\",\"method\":\"GET\",\"url\":\"/mcp/agent-tools/agtrun_8ADIDECyzVCbX6pcEI3BgF68o5EtOfDBYSSm5kQyfnA\",\"statusCode\":405,\"elapsedMs\":0.6503749999974389,\"msg\":\"http request completed\"}\nResolved configured temp workspace root to TempWorkspace.\nResolved configured temp workspace root to TempWorkspace.\nAGY compaction detection off for run blank_slate_3dfe8ed3941943fca6323034e3b6ec81: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.\nServer setting 'AUTOBYTEUS_MODEL_ROUTING_ENABLED' updated\n\n==> /var/log/supervisor/autobyteus_server.err.log <==\n(node:48) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:48) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.\n(node:48) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use \"options.routerOptions\" instead for accessing router options. The router options will be removed in `fastify@6`.\n(node:48) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.\n(node:48) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use \"options.routerOptions\" instead for accessing router options. The router options will be removed in `fastify@6`.\nOverwriting existing tool definition for name: 'search_web'\nCould not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\nCould not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\nCould not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\nCould not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\nCould not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n",
+  "cleanup": {
+    "containerRemoved": true,
+    "tempRoot": true
+  },
+  "finishedAt": "2026-10-27T05:34:08.974Z"
+}

@@ -280,9 +280,9 @@ export const sanitizeModelConfigAgainstSchema = (
 
 /**
  * The non-thinking schema defaults the launch form records for a model: every schema key without
- * a value takes its default, except the thinking keys (the thinking control owns them). A Claude
- * thinking budget default is added when thinking is enabled. Pure; returns `config` unchanged when
- * there is nothing to add (D-18; used by `ModelConfigSection` and the Chat draft).
+ * a value takes its default, except the thinking keys (the thinking control owns them). Pure;
+ * returns `config` unchanged when there is nothing to add (D-18; used by `ModelConfigSection` and
+ * the Chat draft).
  */
 export const applyModelConfigSchemaDefaults = (
   schema: UiModelConfigSchema | null | undefined,
@@ -299,12 +299,6 @@ export const applyModelConfigSchemaDefaults = (
       nextConfig[key] = paramSchema.default;
       changed = true;
     }
-  }
-
-  if (config?.thinking_enabled === true && schema.thinking_budget_tokens?.default !== undefined
-    && nextConfig.thinking_budget_tokens === undefined) {
-    nextConfig.thinking_budget_tokens = schema.thinking_budget_tokens.default;
-    changed = true;
   }
 
   return changed ? nextConfig : config ?? null;

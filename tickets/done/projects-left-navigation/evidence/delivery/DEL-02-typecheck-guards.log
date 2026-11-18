@@ -1,0 +1,31 @@
+# DEL-02 typechecks and web guards, commit 0c8a6f4d22, 2026-10-31T14:25:25Z
+## server typecheck
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+server-typecheck-exit=0
+## web typecheck
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 31.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+web-typecheck-exit=0
+## guard:web-boundary
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+guard:web-boundary-exit=0
+## guard:localization-boundary
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+guard:localization-boundary-exit=0
+## audit:localization-literals
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+audit:localization-literals-exit=0

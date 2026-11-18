@@ -19,15 +19,10 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { hasSendableDraft, resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 import { useAgentOrgContextsStore } from './agentOrgContextsStore';
 import { useAgentRunCollaborationStore } from './agentRunCollaborationStore';
-import type {
-  ActiveAgentWorkspaceTarget,
-  TeamWorkspaceContextView,
-} from '~/types/workspace/activeAgentWorkspaceTarget';
-import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
-import { projectTeamCommunicationPerspective, projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective';
-import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
+import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
+import { teamWorkspaceContextViewOf } from '~/services/teamExecution/teamWorkspaceContextView';
+import { useDelegatedRunsStore } from './delegatedRunsStore';
 
 /**
  * @store useActiveContextStore
@@ -43,54 +38,10 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   const contextFileUploadStore = useContextFileUploadStore();
   const agentOrgContextsStore = useAgentOrgContextsStore();
   const agentRunCollaborationStore = useAgentRunCollaborationStore();
+  const delegatedRunsStore = useDelegatedRunsStore();
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
   const windowNodeContextStore = useWindowNodeContextStore();
-
-  const standaloneTeamView = (team: AgentTeamContext): TeamWorkspaceContextView => {
-    const view = team.view;
-    const tree = view.getExecutionTree();
-    const focusedContext = view.getFocusedAgentContext();
-    if (!focusedContext) throw new Error('Standalone Team has no focused Agent context.');
-    const entries = view.listAgentContextEntries();
-    return Object.freeze({
-      rootKind: 'agent_team', rootRunId: view.getRootTeamRunId(),
-      teamRunId: view.getRootTeamRunId(), teamAddress: parseAgentTeamAddress('/'),
-      teamDefinitionName: view.getTeamDefinitionName(),
-      coordinatorAddress: parseAgentTeamAddress(tree.root_team.coordinator_address),
-      focusedMemberAddress: view.getFocusedMemberAddress(),
-      focusedAgentRunId: view.getFocusedAgentRunId(), focusedAgentContext: focusedContext,
-      isFocusedProjectionAuthoritative: () =>
-        isTeamMemberProjectionAuthoritative(team, view.getFocusedAgentRunId()),
-      listMembers: () => Object.freeze(entries.map((entry) => Object.freeze({
-        address: entry.memberAddress, agentRunId: entry.agentRunId,
-        context: entry.agentContext, coordinator: entry.memberAddress === tree.root_team.coordinator_address,
-      }))),
-
-    });
-  };
-
-  const standaloneTeamMessagesView = (team: AgentTeamContext): CollaborationMessagesContextView => {
-    const view = team.view;
-    const entries = view.listAgentContextEntries();
-    return Object.freeze({
-      rootKind: 'agent_team',
-      rootRunId: view.getRootTeamRunId(),
-      focusedAgentRunId: view.getFocusedAgentRunId(),
-      focusedMemberAddress: view.getFocusedMemberAddress(),
-      memberIdentityByAgentRunId: () => Object.freeze(Object.fromEntries(entries.map((entry) => [
-        entry.agentRunId,
-        projectTeamCommunicationMemberIdentity(view, entry.agentRunId),
-      ]))),
-      listMessages: () => Object.freeze(projectTeamCommunicationPerspective({
-        view,
-        messages: view.listCommunicationMessages(),
-        focusedAgentRunId: view.getFocusedAgentRunId(),
-      }).messages),
-      referenceContentPath: (messageId: string, referenceId: string) =>
-        `team-runs/${encodeURIComponent(view.getRootTeamRunId())}/team-communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
-    });
-  };
 
   const activeWorkspaceTarget = computed<ActiveAgentWorkspaceTarget | null>(() => {
     if (route?.query.rootSubjectKind === 'agent_org' && (route.query.mode === 'active' || route.query.mode === 'history')) {
@@ -103,6 +54,8 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       // A task child selected under this run is the target; the run row selects the run's own agent.
       const childTarget = agentRunCollaborationStore.childTargetFor(context.state.runId);
       if (childTarget) return childTarget;
+      // A selected delegated run still opening: no target yet, never this run's own (CR-461-057).
+      if (agentRunCollaborationStore.isSelectedChildOpening(context.state.runId)) return null;
       const collaborationMessages = agentRunCollaborationStore.hostMessagesView(context.state.runId);
       return Object.freeze({
         kind: 'standalone_agent', access: 'live', context,
@@ -126,11 +79,20 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       const team = agentTeamContextsStore.activeTeamContext;
       const context = team?.view.getFocusedAgentContext() ?? null;
       if (!team || !context) return null;
-      const teamView = standaloneTeamView(team);
+      const teamView = teamWorkspaceContextViewOf(team);
+      // A run this Team delegated, selected in its tree: its own run's context, stream and reads (autobyteus-461 rule 2).
+      const delegated = agentTeamContextsStore.delegatedFocusOf(team.view.getRootTeamRunId());
+      if (delegated) {
+        const binding = delegatedRunsStore.bindingOf(delegated.subject);
+        return binding ? Object.freeze({
+          kind: 'standalone_team_member' as const, team: teamView, collaborationMessages: teamCollaborationMessagesView(team, delegated),
+          access: 'live' as const, ...binding,
+        }) : null;
+      }
       const target = {
         kind: 'standalone_team_member' as const, context, team: teamView,
         workspaceRootPath: team.view.getAgentWorkspaceRootPath(context.state.runId),
-        collaborationMessages: standaloneTeamMessagesView(team),
+        collaborationMessages: teamCollaborationMessagesView(team),
         browse: Object.freeze({
           kind: 'teamMember' as const, teamRunId: team.view.getRootTeamRunId(),
           memberAddress: team.view.getFocusedMemberAddress(), agentRunId: context.state.runId,

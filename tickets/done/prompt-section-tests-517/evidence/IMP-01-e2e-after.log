@@ -1,0 +1,5 @@
+# IMP-01 the e2e test after the fix (AC-001)
+# command: cd autobyteus-server-ts && pnpm exec vitest run tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts --no-watch
+# commit: 2e9ac1e65b + the one-line test change; node v22.23.1; 2026-11-18T05:16:18Z
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

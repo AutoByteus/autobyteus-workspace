@@ -1,0 +1,18 @@
+{
+ "label": "API-11",
+ "checkedAt": "2026-11-07T04:57:48.687Z",
+ "since": "2026-11-07T04:55:22.000Z",
+ "markers": [],
+ "hostileDefinitions": [],
+ "allDefinitions": [
+  "Daily Assistant",
+  "Preview Writer"
+ ],
+ "refusals": [
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/hostile-artifact?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null"
+ ],
+ "terminalAttached": []
+}

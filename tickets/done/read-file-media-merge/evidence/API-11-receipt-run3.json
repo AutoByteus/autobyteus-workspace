@@ -1,0 +1,162 @@
+{
+  "startedAt": "2026-10-30T04:42:59.439Z",
+  "runs": {},
+  "catalog": {
+    "OPENAI": [],
+    "LMSTUDIO": [
+      "deepseek-ocr:lmstudio@localhost:1234",
+      "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+      "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234"
+    ]
+  },
+  "api11": [
+    {
+      "label": "neutral image on LM Studio qwen3.6-35b-a3b",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "rep": 1,
+      "runId": "api11_plain_1793335379713_61aadfd92c674254997951283bc08796",
+      "outcome": "idle",
+      "seconds": 7,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/picture.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": "_file tool to examine the image.\n\n\n{\"path\":\"/tmp/ab328/fixtures/picture.png\"}The user asked for the main color of the image /tmp/ab328/fixtures/picture.png. I have successfully read the file and can see it's a solid green color. The user requested a one-word answer.\n\nThe main color is green.\n\n\nGreen",
+      "assistantChars": 390,
+      "errors": []
+    },
+    {
+      "label": "neutral image on LM Studio qwen3.6-35b-a3b",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "rep": 2,
+      "runId": "api11_plain_1793335379713_b63640ce25344df19ffd264356306b55",
+      "outcome": "idle",
+      "seconds": 4,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/picture.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": " read_file tool. Let me read the file.\n\n\n{\"path\":\"/tmp/ab328/fixtures/picture.png\"}The user asked for the main color of the image /tmp/ab328/fixtures/picture.png. I have read the file and it is an image. The image appears to be a solid green color. I should answer with one word as requested.\n\n\nGreen",
+      "assistantChars": 399,
+      "errors": []
+    },
+    {
+      "label": "neutral image, audio, video on LM Studio qwen3.6-35b-a3b",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "rep": 1,
+      "runId": "api11_plain_1793335379713_e7d69b7a6c5f43bdb99733b8c9f631d7",
+      "outcome": "idle",
+      "seconds": 10,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/picture.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+        },
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/recording.m4a"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/recording.m4a\",\"fileType\":\"audio\",\"fileName\":\"recording.m4a\",\"metadata\":{}}"
+        },
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/clip.mp4"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/clip.mp4\",\"fileType\":\"video\",\"fileName\":\"clip.mp4\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": "LABLE.\n\nFor the video, I don't have information about the main color - the read_file tool only returned metadata. I don't have video analysis capabilities, so VIDEO_COLOR=UNAVAILABLE.\n\nLet me provide the answer in the requested format.\n\n\nIMAGE_COLOR=GREEN; SPOKEN=UNAVAILABLE; VIDEO_COLOR=UNAVAILABLE",
+      "assistantChars": 1579,
+      "errors": []
+    },
+    {
+      "label": "neutral image, audio, video on Gemini 3.8 Flash",
+      "model": "gemini-3.8-flash",
+      "rep": 1,
+      "runId": "api11_plain_1793335379713_be618c99131a4e5ca64f8fc16d40fec3",
+      "outcome": "idle",
+      "seconds": 14,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/picture.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+        },
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/recording.m4a"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/recording.m4a\",\"fileType\":\"audio\",\"fileName\":\"recording.m4a\",\"metadata\":{}}"
+        },
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/clip.mp4"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/clip.mp4\",\"fileType\":\"video\",\"fileName\":\"clip.mp4\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": "{\"path\":\"/tmp/ab328/fixtures/picture.png\"}{\"path\":\"/tmp/ab328/fixtures/recording.m4a\"}{\"path\":\"/tmp/ab328/fixtures/clip.mp4\"}IMAGE_COLOR=green\nSPOKEN=hello\nVIDEO_COLOR=yellow",
+      "assistantChars": 174,
+      "errors": []
+    },
+    {
+      "label": "neutral image on Grok 4.7",
+      "model": "grok-4.7",
+      "rep": 1,
+      "runId": "api11_plain_1793335379713_0a1b48e097b44bc3bd676c4958881091",
+      "outcome": "idle",
+      "seconds": 3,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/picture.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": "{\"path\":\"/tmp/ab328/fixtures/picture.png\"}Green",
+      "assistantChars": 47,
+      "errors": []
+    }
+  ],
+  "finishedAt": "2026-10-30T04:43:39.257Z"
+}

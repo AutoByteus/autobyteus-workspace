@@ -1,0 +1,9 @@
+# NOTE (API-06 deviation): first attempt of step 02 under amd64 emulation (mcr.microsoft.com/powershell:latest has no arm64 image; Rosetta). pwsh 7.4.2 aborted with PAL_SEHException and hung until its container was removed (exit=137). Not a launcher result; step 02 was rerun with native arm64 pwsh 7.4.6 (API-06b-02-v7-ps-create.log).
+# Case: API-06 (b) step 02
+# Command: ps-run.sh <base v7 launcher> workspace apply --name abx402-ps-node
+# Setup: test node abx402-ps-node; real Docker Desktop 29.0.1 engine through /var/run/docker.sock; PowerShell 7.4.2 in mcr.microsoft.com/powershell:latest (linux/amd64); static docker CLI from docker:cli; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx402-api/ps/state, AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx402-api/ps/shared (same absolute path inside and outside the pwsh container); base v7 PS launcher = git archive 6324fb056d at /private/tmp/abx402-api/base; v8 PS launcher = worktree scripts/public/docker; runner /private/tmp/abx402-api/ps-run.sh (copied as API-06-ps-run.sh)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Date: 2026-11-06T15:26:57Z
+
+terminate called after throwing an instance of 'PAL_SEHException'
+exit=137

@@ -1,0 +1,201 @@
+# Case: API-B01 desktop SDV-01 … 04 (API-REV-006 round 6), code 958cb22462
+# Command: cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/stopped-delegator-views-probe.mjs --output-dir <dir> [--cases SDV-01]
+# Result: Fail. Full run: SDV-02, SDV-03, SDV-04 Pass; SDV-01 Fail. SDV-01 alone x3: Fail x3 (runs 1, 3: 'worker reply live', sentMessages []; run 2: 'the Manager started').
+# Look for: SDV-01 details.sentMessages [] and markerInWorkerRun false (the message was not sent; the composer is empty in the screenshot)
+
+## full run
+{
+    "startedAt": "2026-11-13T16:59:43.520Z",
+    "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "cases": {
+        "SDV-01": {
+            "result": "Fail",
+            "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+            "message": "Timed out: worker reply live",
+            "details": {
+                "sentMessages": [],
+                "markerInWorkerRun": false,
+                "pageErrors": null,
+                "sockets": null,
+                "rootActive": false,
+                "center": "address \"/manager_sdvagent_af26\" and sender run id \"manager_sdvagent_af26_eea973a6132f41f395955d86597712de\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: sdvagent-8d7c19-1 in Project project_77086f83-c2c2-42b4-9e93-ee8e91a42192\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nWrite the notes.\nWS\nWorker SdvAgent af26\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)"
+            }
+        },
+        "SDV-02": {
+            "result": "Pass",
+            "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+            "details": {
+                "renderedRootStatus": {
+                    "view open while stopped": {
+                        "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                        "samples": [
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400"
+                        ]
+                    },
+                    "after a child command": {
+                        "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                        "samples": [
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400"
+                        ]
+                    }
+                },
+                "workerAnsweredLive": true,
+                "sentMessages": [
+                    {
+                        "at": 1794589290206,
+                        "socket": "/ws/agent/worker_sdvteam_82ec_19fa2914c6e343cca5df77fb0ee6646f",
+                        "target": null
+                    }
+                ],
+                "workerMessageSockets": [
+                    "/ws/agent/worker_sdvteam_82ec_19fa2914c6e343cca5df77fb0ee6646f"
+                ],
+                "workerTeamTab": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+                "rootStayedStopped": true,
+                "helperRunId": "helper_sdvteam_82ec_6f1737b9d49e46588a306f865997a776",
+                "helperRowLive": true,
+                "composerPendingIndicators": 0,
+                "restoredLive": true
+            }
+        },
+        "SDV-03": {
+            "result": "Pass",
+            "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+            "details": {
+                "renderedRootStatus": {
+                    "view open while stopped": {
+                        "settled": "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                        "samples": [
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+                        ]
+                    },
+                    "after a child command": {
+                        "settled": "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                        "samples": [
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+                            "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+                        ]
+                    }
+                },
+                "workerAnsweredLive": true,
+                "sentMessages": [
+                    {
+                        "at": 1794589334182,
+                        "socket": "/ws/agent/worker_sdvorg_2ec9_d73dd684ed4b40c688ccc2a9740854f6",
+                        "target": null
+                    }
+                ],
+                "workerMessageSockets": [
+                    "/ws/agent/worker_sdvorg_2ec9_d73dd684ed4b40c688ccc2a9740854f6"
+                ],
+                "workerTeamTab": "no Team tab for the selected worker",
+                "rootStayedStopped": true,
+                "helperRunId": "helper_sdvorg_2ec9_5dbf9e64058a41c1b07650b5a2e9936e",
+                "helperRowLive": true,
+                "composerPendingIndicators": 0,
+                "restoredLive": true
+            }
+        },
+        "SDV-04": {
+            "result": "Pass",
+            "description": "Agent-run view: the worker's row leaves at DONE and is listed again, live, after the Manager reopens and continues it (CR-461-042)",
+            "details": {
+                "root": "manager_sdvreopen_2f16_f629c852d7e447569281beaf3ee644ee",
+                "worker": "worker_sdvreopen_2f16_9df5e04b26ce4e6ca84dc17f83cd9d10",
+                "leftAfterDone": true,
+                "backAfterReopen": true
+            }
+        }
+    },
+    "cleanup": {
+        "browser": "closed",
+        "frontend": {
+            "pid": 26427,
+            "status": "terminated",
+            "exit": "SIGTERM"
+        },
+        "backend": {
+            "pid": 26338,
+            "status": "terminated",
+            "exit": "SIGKILL"
+        },
+        "dataRootRemoved": true
+    },
+    "failures": [
+        {
+            "id": "SDV-01",
+            "message": "Timed out: worker reply live"
+        }
+    ],
+    "stack": {
+        "backendUrl": "http://127.0.0.1:54608",
+        "frontendUrl": "http://127.0.0.1:54609",
+        "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-ccP46p"
+    },
+    "browserVersion": "157.0.8103.51",
+    "result": "Fail",
+    "finishedAt": "2026-11-13T17:02:53.904Z"
+}
+## SDV-01 alone, run 1
+{
+ "SDV-01": {
+  "result": "Fail",
+  "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+  "message": "Timed out: worker reply live",
+  "details": {
+   "sentMessages": [],
+   "markerInWorkerRun": false,
+   "pageErrors": null,
+   "sockets": null,
+   "rootActive": false,
+   "center": "address \"/manager_sdvagent_8176\" and sender run id \"manager_sdvagent_8176_d251ea94fd694009a9c5bdd7c641a397\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: sdvagent-b7f769-1 in Project project_81ba1e5c-eece-4f78-b1ca-5ad89176abba\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nWrite the notes.\nWS\nWorker SdvAgent 8176\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)"
+  }
+ }
+}
+## SDV-01 alone, run 2
+{
+ "SDV-01": {
+  "result": "Fail",
+  "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+  "message": "Timed out: the Manager started"
+ }
+}
+## SDV-01 alone, run 3
+{
+ "SDV-01": {
+  "result": "Fail",
+  "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+  "message": "Timed out: worker reply live",
+  "details": {
+   "sentMessages": [],
+   "markerInWorkerRun": false,
+   "pageErrors": null,
+   "sockets": null,
+   "rootActive": false,
+   "center": "address \"/manager_sdvagent_04fe\" and sender run id \"manager_sdvagent_04fe_088cead2486f45a3b4ed344bc1b17217\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: sdvagent-34c3e1-1 in Project project_813dc2dc-2d54-4c5b-97f4-8faa36532a83\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nWrite the notes.\nWS\nWorker SdvAgent 04fe\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)"
+  }
+ }
+}

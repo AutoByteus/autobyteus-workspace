@@ -1,0 +1,27 @@
+# IMP-02 transition, journal recovery and platform lifecycle unit tests (AC-003, AC-004)
+# cmd: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" \&\& pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-orchestration/application-catalog-transition-service.test.ts tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts tests/unit/application-platform/application-platform-lifecycle.test.ts tests/unit/application-platform/application-platform-runtime-isolation.test.ts --no-watch
+# commit: 1d49973440  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:37Z
+
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > does not create platform or journal state while inspecting absent recovery state 3ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > leaves an existing database without journal state byte-for-byte unchanged 3ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > reads an appended pending record through a new read-only store without changing SQLite bytes 109ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > projects old binding and producer supersets, then dispatches and acknowledges them 62ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event 61ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation 63ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > awaits named readiness and recovers only the selected canonical application 4ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > materializes a fresh selected application runtime cwd before definition/provider readiness 4ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > keeps full lifecycle cleanup available when runtime directory preparation fails 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > stops all owned boundaries in order, remains idempotent, and reports cleanup failures after continuing 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > drains a real admitted application-tool call before stopping workers during shutdown 52ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > drains only old target-package participants before mutation and commits paired target slices before recovery 3ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > serializes concurrent package transitions while ordinary work remains outside its mutex 53ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > restores and re-stages actual source state before rethrowing the original transition failure 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > quarantines affected participants and releases the mutex when rollback restoration also fails 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > prepares each current application's runtime folder after the commits and before readiness on import 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > prepares the reloaded application's runtime folder before readiness 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > uses the same staged owner for exact-application repair and can recover a previously inactive participant 1ms
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run 27ms
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners 2ms
+ Test Files  4 passed (4)
+      Tests  20 passed (20)
+   Duration  7.96s (transform 3.78s, setup 77ms, import 6.69s, tests 455ms, environment 0ms)

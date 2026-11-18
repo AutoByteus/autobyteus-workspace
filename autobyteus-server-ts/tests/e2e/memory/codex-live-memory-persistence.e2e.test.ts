@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
@@ -14,7 +14,6 @@ import {
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import type { CodexAppServerMessage } from "../../../src/agent-execution/backends/codex/thread/codex-app-server-message.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
@@ -31,9 +30,25 @@ import { CodexModelCatalog } from "../../../src/llm-management/services/codex-mo
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
+
+// Every run has an Agent Tools MCP session, so a live Codex run needs a live endpoint.
+let agentToolsTestHost: Awaited<ReturnType<typeof startAgentToolsMcpTestHost>> | null = null;
+const requireAgentToolsTestHost = () => {
+  if (!agentToolsTestHost) throw new Error("The Agent Tools MCP test host is not started.");
+  return agentToolsTestHost;
+};
+beforeAll(async () => {
+  if (liveCodexTestsEnabled) agentToolsTestHost = await startAgentToolsMcpTestHost();
+});
+afterAll(async () => {
+  await agentToolsTestHost?.close();
+  agentToolsTestHost = null;
+});
 const describeLiveCodexMemory = codexBinaryReady && liveCodexTestsEnabled ? describe : describe.skip;
 
 const FLOW_TIMEOUT_MS = Number(process.env.CODEX_MEMORY_E2E_TIMEOUT_MS || 180_000);
@@ -52,11 +67,8 @@ const createNoopSidecar = () => ({
 });
 
 const unusedBackendFactory: AgentRunBackendFactory = {
-  createBackend: async () => {
+  beginPreparation: () => {
     throw new Error("Unexpected backend factory use in Codex live memory e2e.");
-  },
-  restoreBackend: async () => {
-    throw new Error("Unexpected backend restore use in Codex live memory e2e.");
   },
 };
 
@@ -166,9 +178,7 @@ const createCodexFactory = (input: {
   runId: string;
 }): CodexAgentRunBackendFactory => {
   const threadBootstrapper = new CodexThreadBootstrapper(
-    {
-      activateForRun: () => ({ kind: "not_exposed" }),
-    },
+    requireAgentToolsTestHost().runSessions,
     {
       materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }),
     } as never,
@@ -194,7 +204,7 @@ const createCodexFactory = (input: {
   return new CodexAgentRunBackendFactory(
     input.threadManager,
     threadBootstrapper,
-    new CodexThreadCleanup(undefined, input.clientManager),
+    requireAgentToolsTestHost().runSessions,
   );
 };
 
@@ -230,7 +240,8 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
   afterEach(async () => {
     if (threadManager) {
       for (const runId of createdRunIds) {
-        await threadManager.terminateThread(runId).catch(() => undefined);
+        const thread = threadManager.getThread(runId);
+        if (thread) await threadManager.terminateThread(runId, thread).catch(() => undefined);
       }
     }
     createdRunIds.clear();
@@ -259,7 +270,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -273,8 +283,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
+        memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
+        runPasses: null,
       }),
     );
     const manager = new AgentRunManager({
@@ -288,10 +299,12 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
+      runPasses: null,
     });
 
     const config = new AgentRunConfig({
@@ -305,7 +318,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
           reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
         },
       });
-    const candidate = await manager.prepareNewAgentRun({ runId, config });
+    const candidate = await manager.beginActivation({ kind: "new", runId, config }).prepare();
     const run = candidate.commitPublication();
     createdRunIds.add(run.runId);
     expect(run.runId).toBe(runId);
@@ -472,7 +485,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -483,8 +495,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
+        memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
+        runPasses: null,
       }),
     );
     const manager = new AgentRunManager({
@@ -498,10 +511,12 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
+      runPasses: null,
     });
 
     const config = new AgentRunConfig({
@@ -515,7 +530,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
       },
     });
-    const candidate = await manager.prepareNewAgentRun({ runId, config });
+    const candidate = await manager.beginActivation({ kind: "new", runId, config }).prepare();
     const run = candidate.commitPublication();
     createdRunIds.add(run.runId);
 
@@ -625,7 +640,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -636,8 +650,9 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runSessions: deactivator,
         runFileChangeService: createNoopSidecar() as never,
         publishedArtifactRelayService: createNoopSidecar() as never,
-        memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
+        memoryRecorder: recorder, streamSequences: getAgentStreamSequences(), workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
+        runPasses: null,
       }),
     );
     const manager = new AgentRunManager({
@@ -651,10 +666,12 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
+      runPasses: null,
     });
     const config = new AgentRunConfig({
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -665,7 +682,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         memoryDir,
         llmConfig: { reasoning_effort: "medium" },
       });
-    const candidate = await manager.prepareNewAgentRun({ runId, config });
+    const candidate = await manager.beginActivation({ kind: "new", runId, config }).prepare();
     const run = candidate.commitPublication();
     createdRunIds.add(run.runId);
 

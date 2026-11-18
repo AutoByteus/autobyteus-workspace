@@ -9,9 +9,10 @@
  * changed is rejected with a 400 instead of being silently dropped. The wrapper records each request body exactly
  * as production built it, plus status and usage. APC-E2E-008 proves the harness is enforcing.
  *
- * The user's messages ask for a dependency-cycle audit over plain data files (reasoning after every read), and the run
- * uses the user-selectable `thinking_display: "summarized"`, so adaptive thinking happens at tool steps the way it does
- * in real agent work. The files hold data only, never instructions. (An arithmetic "compute the next file" chain was
+ * The user's messages ask for a dependency-cycle audit over plain data files (reasoning after every read), so
+ * adaptive thinking happens at tool steps the way it does in real agent work. Thinking display is Anthropic's default
+ * (`omitted`): the returned thinking blocks carry empty text with the full signature, which is what continuation
+ * must keep and pass back. The files hold data only, never instructions. (An arithmetic "compute the next file" chain was
  * tried first and is refused by the model's safety classifier, see the ticket's refusal probe.)
  *
  * Cases (one agent run, sequential, in this order):
@@ -21,7 +22,9 @@
  *   APC-E2E-007  Token Meter run summary = cost of Anthropic's raw usage at catalog prices, over T1..T4 (AC-006, REQ-006)
  *   APC-E2E-005  Stop → restore → continue with thinking in the persisted snapshot (AC-013b)
  *   APC-E2E-004  Settings → Default image model changed while waiting on the approval of a tool_use that came with
- *                thinking, i.e. between that tool_use and its continuation (AC-013a, P-005)
+ *                thinking, i.e. between that tool_use and its continuation (AC-013a, P-005). With native tool search
+ *                (autobyteus-515) generate_image is searchable, so the change leaves the tools unchanged: the
+ *                continuation keeps the thinking and reads the cache
  *   APC-E2E-008  strict-mode control: kept thinking + a changed tool → 400 (harness validity)
  * Not included, because of two pre-existing defects (both reproduced on base 927796780, reported separately):
  *   - APC-E2E-006 (Stop while a tool approval is pending): that Stop does not return.
@@ -76,9 +79,7 @@ const CATALOG_PRICES: Record<string, { tiers: Array<{ maxGrossInput: number | nu
   ] },
 };
 /** The thinking-On llmConfig the app writes for the model's schema (Opus 5.5 has no toggle). */
-const RUN_LLM_CONFIG: Json = MODEL === "claude-opus-5-5"
-  ? { thinking_display: "summarized" }
-  : { thinking_enabled: true, thinking_display: "summarized" };
+const RUN_LLM_CONFIG: Json = MODEL === "claude-opus-5-5" ? {} : { thinking_enabled: true };
 const CHUNK_COUNT = 30;
 const AUDIT = "After each file, carefully check whether any component depends on itself directly or through components "
   + "seen in earlier files, and keep a running list of such cycles.";
@@ -658,7 +659,7 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     for (const call of t5.slice(1)) expect(call.usage!.cache_read_input_tokens).toBeGreaterThan(0);
   }, CASE_TIMEOUT_MS);
 
-  it("APC-E2E-004: a Settings media-model change while a thinking tool_use awaits approval strips thinking once and is accepted", async () => {
+  it("APC-E2E-004: a Settings media-model change while a thinking tool_use awaits approval leaves the tools unchanged; the continuation keeps the thinking", async () => {
     phase = "T6";
     autoApprove = false;
     pendingApprovals.length = 0;
@@ -702,13 +703,14 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     expect(error, `ERROR frame in T6: ${JSON.stringify(error?.payload)}`).toBeUndefined();
     assertAccepted(afterChange, "T6 after change");
     expect(continuation, "continuation request after the change").toBeDefined();
-    expect(JSON.stringify(continuation!.body.tools), "generate_image schema changed with the setting").not.toBe(JSON.stringify(waitingCall!.body.tools));
-    expect(JSON.stringify(continuation!.body.tools)).toContain(CHANGED_IMAGE_MODEL);
-    expect(thinkingBlockCount(continuation!.body), "every thinking block removed once, incl. the pending round's").toBe(0);
+    // generate_image is searchable (native tool search): the setting changes no definition in the request.
+    expect(JSON.stringify(continuation!.body.tools), "the setting left the tools unchanged").toBe(JSON.stringify(waitingCall!.body.tools));
+    expect(JSON.stringify(continuation!.body.tools)).not.toContain(CHANGED_IMAGE_MODEL);
+    expect(thinkingBlockCount(continuation!.body), "the prefix is unchanged, so the thinking is kept").toBeGreaterThan(0);
     expect((continuation!.body.messages as Json[]).at(-1)?.role, "continuation of the pending tool round").toBe("user");
-    // Later requests are append-only again under the new prefix.
-    assertAppendOnly(afterChange, "T6 after change");
-    for (const call of afterChange.slice(1)) expect(call.usage!.cache_read_input_tokens).toBeGreaterThan(0);
+    // The continuation extends the waiting request, and every request reads the cache.
+    assertAppendOnly([waitingCall!, ...afterChange], "T6 across the change");
+    for (const call of afterChange) expect(call.usage!.cache_read_input_tokens).toBeGreaterThan(0);
   }, CASE_TIMEOUT_MS);
 
   it("APC-E2E-008: control — the strict harness accepts the unchanged request and rejects kept thinking under a changed tool", async () => {

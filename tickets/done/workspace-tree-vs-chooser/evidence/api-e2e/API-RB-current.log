@@ -1,0 +1,10 @@
+current window null: poll p50 143.1 ms, p95 151.2 ms, max 160.1 ms (cold 157 ms); {"agentRuns":40,"teamRuns":200,"orgRuns":10}; 892522 bytes; load 69/87.9/108.9 → 67/86.8/108.2
+current window 6: poll p50 140.9 ms, p95 148.9 ms, max 157.6 ms (cold 144.7 ms); {"agentRuns":24,"teamRuns":200,"orgRuns":10}; 886688 bytes; load 67/86.8/108.2 → 65.9/85.7/107.4
+RB-C1 Pass window null returns every seeded run (Agent, Team, Org)
+RB-C2 Pass window 6 returns the newest 6 runs per agent and folder, and every Team and Org run
+RB-C3 Pass per-folder workspaceRunHistory with null is complete
+RB-C4 Pass every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn
+RB-B1 Pass uncapped poll read (Runs view) p95 within 250 ms
+RB-B2 Pass capped poll read (Workspaces view) p95 within 250 ms
+RB-B3 Pass capped poll read not slower than base (3ef5e33eec) by more than 250 ms
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/evidence/api-e2e/API-RB-current/evidence.json

@@ -9,8 +9,15 @@ import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../agent-tools/agent-discovery/list-available-agents-contract.js";
-import { LIST_AVAILABLE_NODES_TOOL_NAME } from "../../agent-tools/agent-discovery/list-available-nodes-contract.js";
+import { LIST_PEER_NODES_TOOL_NAME } from "../../agent-tools/agent-discovery/list-peer-nodes-contract.js";
+import { SEARCH_MEMORY_TOOL_NAME } from "../../agent-tools/memory/memory-tool-contract.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
+
+/**
+ * Tools the platform gives every run on every runtime, whether or not its definition lists them
+ * (autobyteus-496: `search_memory`).
+ */
+export const PLATFORM_GIVEN_TOOL_NAMES: readonly string[] = Object.freeze([SEARCH_MEMORY_TOOL_NAME]);
 
 /**
  * Collaboration tools every member context always gets: `send_message_to` and `delegate_task` for every
@@ -40,7 +47,23 @@ export type RuntimeAgentToolExposure = {
   /** Opt-in only: selected by the agent definition (REQ-001), never added automatically. */
   listAvailableAgentsEnabled: boolean;
   /** Opt-in only (autobyteus-261 DEC-401): selected by the agent definition, never added automatically. */
-  listAvailableNodesEnabled: boolean;
+  listPeerNodesEnabled: boolean;
+};
+
+/** Whether two exposures select the same tools (each is derived from its requested names). */
+export const isSameRuntimeAgentToolExposure = (
+  left: RuntimeAgentToolExposure,
+  right: RuntimeAgentToolExposure,
+): boolean => {
+  const leftNames = [...new Set(left.requestedToolNames)].sort();
+  const rightNames = [...new Set(right.requestedToolNames)].sort();
+  return leftNames.length === rightNames.length
+    && leftNames.every((name, index) => name === rightNames[index])
+    && left.sendMessageToEnabled === right.sendMessageToEnabled
+    && left.getHandoffRulesEnabled === right.getHandoffRulesEnabled
+    && left.publishArtifactsEnabled === right.publishArtifactsEnabled
+    && left.listAvailableAgentsEnabled === right.listAvailableAgentsEnabled
+    && left.listPeerNodesEnabled === right.listPeerNodesEnabled;
 };
 
 export const resolveRuntimeAgentToolExposure = (agentDefinition: {
@@ -58,6 +81,7 @@ export const buildRuntimeAgentToolExposure = (
   const requestedToolNames = Array.from(new Set([
     ...normalizedConfiguredNames,
     ...automaticCollaborationToolNames(memberExecutionContext),
+    ...PLATFORM_GIVEN_TOOL_NAMES,
   ]));
   const requestedToolNameSet = new Set(requestedToolNames);
 
@@ -77,7 +101,7 @@ export const buildRuntimeAgentToolExposure = (
     getHandoffRulesEnabled: requestedToolNameSet.has(GET_HANDOFF_RULES_TOOL_NAME),
     publishArtifactsEnabled: requestedToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),
     listAvailableAgentsEnabled: requestedToolNameSet.has(LIST_AVAILABLE_AGENTS_TOOL_NAME),
-    listAvailableNodesEnabled: requestedToolNameSet.has(LIST_AVAILABLE_NODES_TOOL_NAME),
+    listPeerNodesEnabled: requestedToolNameSet.has(LIST_PEER_NODES_TOOL_NAME),
   };
 };
 

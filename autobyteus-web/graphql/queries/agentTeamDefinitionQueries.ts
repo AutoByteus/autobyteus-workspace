@@ -20,6 +20,8 @@ export const GetAgentTeamDefinitions = gql`
       ownerApplicationName
       ownerPackageId
       ownerLocalApplicationId
+      personalSettings
+      personalSettingsBase
       defaultLaunchConfig {
         llmModelIdentifier
         runtimeKind

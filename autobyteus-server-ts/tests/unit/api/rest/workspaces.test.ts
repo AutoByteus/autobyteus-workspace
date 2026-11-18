@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import fastify from "fastify";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockWorkspaceManager = vi.hoisted(() => ({
   getWorkspaceById: vi.fn(),
@@ -105,6 +105,77 @@ describe("REST workspaces routes", () => {
     expect(response.statusCode).toBe(400);
     expect(response.json()).toEqual({
       detail: "Access denied: Path resolves outside the workspace boundary.",
+    });
+  });
+
+  describe("user file sandbox", () => {
+    const PREVIEW_SANDBOX = "sandbox allow-scripts";
+    let root: string;
+
+    beforeEach(() => {
+      root = fs.mkdtempSync(path.join(os.tmpdir(), "workspace-preview-sandbox-"));
+      fs.mkdirSync(path.join(root, "site"), { recursive: true });
+      fs.writeFileSync(
+        path.join(root, "site", "index.html"),
+        '<!doctype html><link rel="stylesheet" href="style.css"><script src="app.js"></script><h1>Synthetic</h1>',
+      );
+      fs.writeFileSync(path.join(root, "site", "style.css"), "h1 { color: teal; }");
+      mockWorkspaceManager.getWorkspaceById.mockReturnValue({
+        getAbsolutePath: (relative: string) => {
+          if (relative === "escape/secret.html") {
+            throw new Error("Access denied: Path resolves outside the workspace boundary.");
+          }
+          return path.join(root, relative);
+        },
+      });
+    });
+
+    afterEach(() => {
+      fs.rmSync(root, { recursive: true, force: true });
+    });
+
+    it("sandboxes every file both routes serve, HTML and assets alike, with nosniff (416 REQ-007)", async () => {
+      const app = fastify();
+      await registerWorkspaceRoutes(app);
+      try {
+        for (const [url, mime] of [
+          ["/workspaces/ws1/static/site/index.html", "text/html"],
+          ["/workspaces/ws1/static/site/style.css", "text/css"],
+          [`/workspaces/ws1/content?path=${encodeURIComponent("site/index.html")}`, "text/html"],
+          [`/workspaces/ws1/content?path=${encodeURIComponent("site/style.css")}`, "text/css"],
+        ]) {
+          const response = await app.inject({ method: "GET", url });
+          expect(response.statusCode).toBe(200);
+          expect(String(response.headers["content-type"])).toContain(mime);
+          expect(response.headers["content-security-policy"]).toBe(PREVIEW_SANDBOX);
+          expect(response.headers["x-content-type-options"]).toBe("nosniff");
+        }
+      } finally {
+        await app.close();
+      }
+    });
+
+    it("leaves error replies without the sandbox header", async () => {
+      const app = fastify();
+      await registerWorkspaceRoutes(app);
+      try {
+        const missingFile = await app.inject({ method: "GET", url: "/workspaces/ws1/static/site/gone.html" });
+        expect(missingFile.statusCode).toBe(404);
+        expect(missingFile.json()).toEqual({ detail: "File not found in workspace" });
+
+        const outside = await app.inject({ method: "GET", url: "/workspaces/ws1/static/escape/secret.html" });
+        expect(outside.statusCode).toBe(400);
+
+        mockWorkspaceManager.getWorkspaceById.mockReturnValue(undefined);
+        const missingWorkspace = await app.inject({ method: "GET", url: "/workspaces/gone/static/site/index.html" });
+        expect(missingWorkspace.statusCode).toBe(404);
+
+        for (const response of [missingFile, outside, missingWorkspace]) {
+          expect(response.headers["content-security-policy"]).toBeUndefined();
+        }
+      } finally {
+        await app.close();
+      }
     });
   });
 });

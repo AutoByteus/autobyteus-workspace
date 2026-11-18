@@ -1,0 +1,60 @@
+IMP-07-electron-initial
+Command (root, clean env): pnpm -C autobyteus-web test:electron --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: 1ad504c03 (SR-006 documentation concurrently committed as b8b0b2e56)
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:42:35.195213+00:00
+
+
+> autobyteus@1.5.9-beta.4 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 11ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 18ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 20ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 8ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 47ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 69ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 134ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (3 tests) 144ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (13 tests) 5ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 11ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (13 tests) 281ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 10ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 6ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (2 tests) 7ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 3ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 4ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 4ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 1ms
+ ❯ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests | 1 failed) 5031ms
+   ✓ production Windows launcher attaches IPC to the captured child and stop waits for complete plus exit 22ms
+   × uses taskkill only after the graceful deadline and reports forced stop as incomplete 5008ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  server/__tests__/WindowsServerManagerShutdown.spec.ts > uses taskkill only after the graceful deadline and reports forced stop as incomplete
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ server/__tests__/WindowsServerManagerShutdown.spec.ts:37:1
+     35|   await stopping; expect(mocks.force).not.toHaveBeenCalled()
+     36| })
+     37| it('uses taskkill only after the graceful deadline and reports forced …
+       | ^
+     38|   const owner = manager(); await owner.startServer()
+     39|   const rejected = expect(owner.stopServer()).rejects.toThrow('incompl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  1 failed | 136 passed (137)
+   Start at  20:42:29
+   Duration  5.82s (transform 656ms, setup 0ms, collect 1.50s, tests 5.82s, environment 2ms, prepare 1.38s)
+
+ ELIFECYCLE  Command failed with exit code 1.

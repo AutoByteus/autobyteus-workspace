@@ -1,0 +1,27 @@
+# Case: API-07 (B) — SCN-a / AC-004: a run that survives the page (one message to the local LM Studio model qwen/qwen3.6-35b-a3b, loaded just in time; nothing else was loaded: 'lms ps' showed none); its VNC Viewer in full screen; Home; Android ends the app (am kill); the user reopens it from the launcher; the restored page re-enters full screen
+# Command: probes/ac004.sh B; no uiautomator while in landscape
+# Commit: d76be54fb0; emulator-5554 autobyteus277_api35; node abx432-api-node
+# Date: 2026-11-08T08:04:43Z
+
+"typed"
+"sent"
+B0 reply seen after ~2 s: "?screen=run"
+B1 viewer of the run | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+B2 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+B3 Home, then Android ends the app (am kill) | mDisplayRotation=ROTATION_0 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=true visible=true  pid=6452
+B4 reopened from the launcher (restored page) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+B4 android | mDisplayRotation=ROTATION_90 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=6452
+B5 after the handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+
+## reading of B0-B5: the run did get its message and the model's reply (run screen afterwards: 'You / Reply with the single word ok. / … / ok', Idle; LM Studio showed the model loaded), but 'am kill' did not end the process (pid 6452 before and after), so B3-B5 were a Home + return, not a process death. Repeated with a checked kill (C1-C5):
+C1 viewer of the run (message + reply) | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+C2 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+C3 Home, then Android ends the app (am kill; pid before: 6452) | mDisplayRotation=ROTATION_0 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=true visible=true  pid=
+C4 reopened from the launcher (restored page) | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"\",\"status\":null,\"bar\":false,\"handle\":false,\"viewport\":[412,867],\"canvas\":null,\"picture\":null}"
+C4 android (new pid) | mDisplayRotation=ROTATION_0 SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=6803
+C5 after the handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"\",\"status\":null,\"bar\":false,\"handle\":false,\"viewport\":[412,867],\"canvas\":null,\"picture\":null}"
+
+## where the restored page went (after C4): navigation entry and URL
+"{\"loaded\":\"http://10.0.2.2:52316/mobile/?screen=desktop&full=1\",\"now\":\"http://10.0.2.2:52316/mobile/\"}"
+orientation requests by the app around the restart (events): 11-08 09:06:40.947   560   601 I am_proc_start: [0,6803,10207,org.autobyteus.mobile,next-top-activity,{org.autobyteus.mobile/org.a 11-08 09:06:41.838   560  1872 I wm_set_requested_orientation: [-1,org.autobyteus.mobile/.MainActivity] 
+reading: Android restored the page at /mobile/?screen=desktop&full=1 (OpenPageRestore), but that route names no run, so the web app replaced it with /mobile/ (Home) before any viewer mounted; the app asked only for UNSPECIFIED (-1). Orientation and page agree (AC-004). The viewer itself is not restored after a process death even for a run with a message: the route carries no run (FU-002).

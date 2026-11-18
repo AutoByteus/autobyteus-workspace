@@ -1,4 +1,4 @@
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamWorkspaceAuthoringState } from '~/types/agent/TeamLaunchDraft'
 import type { TeamRunConfig, TeamRunConfigurationView } from '~/types/agent/TeamRunConfig'
@@ -103,9 +103,9 @@ export const evaluateTeamRunLaunchReadiness = (
     }
     const catalog = catalogFor(runtimeModelCatalogs, runtimeKind)
     if (!catalog) issues.push({ code: 'MODEL_CATALOG_PENDING', subjectAddress: subject.address, subjectKind: subject.kind, memberName: subject.name, runtimeKind,
-      message: `Models for ${runtimeKindToLabel(runtimeKind)} are still loading (${subject.address}).` })
+      message: `Models for ${agentRuntimeName(runtimeKind)} are still loading (${subject.address}).` })
     else if (!catalog.includes(model)) issues.push({ code: 'MODEL_UNAVAILABLE', subjectAddress: subject.address, subjectKind: subject.kind, memberName: subject.name, runtimeKind,
-      message: `${model} is unavailable for ${runtimeKindToLabel(runtimeKind)} at ${subject.address}.` })
+      message: `${model} is unavailable for ${agentRuntimeName(runtimeKind)} at ${subject.address}.` })
   }
   const unresolvedMembers = issues.filter((issue) => issue.subjectKind === 'AGENT').map((issue) => ({
     memberName: issue.subjectAddress || issue.memberName || '',

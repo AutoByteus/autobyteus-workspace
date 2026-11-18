@@ -14,6 +14,7 @@ import { CodexThreadManager } from "../../../../../src/agent-execution/backends/
 import { CodexApprovalPolicy } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import { CodexModelCatalog } from "../../../../../src/llm-management/services/codex-model-catalog.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -42,7 +43,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: input.model,
         workingDirectory: input.workingDirectory,
@@ -97,17 +98,20 @@ const waitForIdle = async (
   }
 };
 
-const fetchCodexMiniModelIdentifier = async (
+// The model comes from the live Codex catalog: CODEX_BACKEND_MODEL, else the live Codex test model (TESTING.md).
+const fetchCodexModelIdentifier = async (
   clientManager: CodexAppServerClientManager,
   cwd: string,
 ): Promise<string> => {
+  const modelIdentifier = process.env.CODEX_BACKEND_MODEL?.trim() || "gpt-6.1-terra";
   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
-  const gpt54Mini = models.find((model) => model.model_identifier === "gpt-5.4-mini");
-  if (!gpt54Mini) {
-    throw new Error("Codex model catalog did not return gpt-5.4-mini.");
+  if (!models.some((model) => model.model_identifier === modelIdentifier)) {
+    throw new Error(`Codex model catalog did not return ${modelIdentifier} (set CODEX_BACKEND_MODEL).`);
   }
-  return gpt54Mini.model_identifier;
+  return modelIdentifier;
 };
+/** The caller of a thread creation or restore here never withdraws it. */
+const stillAccepting = () => undefined;
 
 describeCodexThreadManagerIntegration("CodexThreadManager integration (live transport)", () => {
   let clientManager: CodexAppServerClientManager | null = null;
@@ -118,7 +122,8 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     if (threadManager) {
       for (const runId of createdRunIds) {
         try {
-          await threadManager.terminateThread(runId);
+          const thread = threadManager.getThread(runId);
+          if (thread) await threadManager.terminateThread(runId, thread);
         } catch {
           // ignore cleanup failures in test teardown
         }
@@ -145,10 +150,9 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runId = "run-thread-manager-create";
     createdRunIds.add(runId);
@@ -159,6 +163,7 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
         workingDirectory: workspaceRoot,
         model: modelIdentifier,
       }),
+      stillAccepting,
     );
 
     await waitForStartupReady(thread.startup.waitForReady);
@@ -168,7 +173,7 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     expect(thread.threadId).toBeTruthy();
     expect(thread.startup.status).toBe("ready");
     expect(thread.workingDirectory).toBe(workspaceRoot);
-    expect(thread.model).toBe("gpt-5.4-mini");
+    expect(thread.model).toBe(modelIdentifier);
     expect(thread.reasoningEffort).toBe("medium");
   }, 45_000);
 
@@ -185,10 +190,9 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runId = "run-thread-manager-restore";
     createdRunIds.add(runId);
@@ -198,16 +202,16 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
       workingDirectory: workspaceRoot,
       model: modelIdentifier,
     });
-    const firstThread = await threadManager.createThread(initialContext);
+    const firstThread = await threadManager.createThread(initialContext, stillAccepting);
     await waitForStartupReady(firstThread.startup.waitForReady);
 
-    await firstThread.submitInput(
+    await firstThread.startInput(
       new AgentInputUserMessage("Reply with the single word READY."),
     );
     await waitForIdle(() => firstThread.getStatusSnapshotSource().currentStatus === "IDLE" || firstThread.getStatusSnapshotSource().currentStatus === "ERROR");
 
     const firstThreadId = firstThread.threadId;
-    await threadManager.terminateThread(runId);
+    await threadManager.terminateThread(runId, firstThread);
 
     const restoreContext = createRunContext({
       runId,
@@ -215,12 +219,12 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
       model: modelIdentifier,
       threadId: firstThreadId,
     });
-    const restoredThread = await threadManager.restoreThread(restoreContext);
+    const restoredThread = await threadManager.restoreThread(restoreContext, stillAccepting);
     await waitForStartupReady(restoredThread.startup.waitForReady);
 
     expect(restoredThread.threadId).toBe(firstThreadId);
 
-    await restoredThread.submitInput(
+    await restoredThread.startInput(
       new AgentInputUserMessage("Reply with the single word RESTORED."),
     );
     await waitForIdle(() => restoredThread.getStatusSnapshotSource().currentStatus === "IDLE" || restoredThread.getStatusSnapshotSource().currentStatus === "ERROR");
@@ -240,10 +244,9 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runA = "run-thread-manager-shared-a";
     const runB = "run-thread-manager-shared-b";
@@ -256,6 +259,7 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
         workingDirectory: workspaceRoot,
         model: modelIdentifier,
       }),
+      stillAccepting,
     );
     await waitForStartupReady(threadA.startup.waitForReady);
 
@@ -265,18 +269,19 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
         workingDirectory: workspaceRoot,
         model: modelIdentifier,
       }),
+      stillAccepting,
     );
     await waitForStartupReady(threadB.startup.waitForReady);
 
     expect(threadA.client).toBe(threadB.client);
     expect(threadA.threadId).not.toBe(threadB.threadId);
 
-    await threadA.submitInput(
+    await threadA.startInput(
       new AgentInputUserMessage("Reply with the single word ALPHA."),
     );
     await waitForIdle(() => threadA.getStatusSnapshotSource().currentStatus === "IDLE" || threadA.getStatusSnapshotSource().currentStatus === "ERROR");
 
-    await threadB.submitInput(
+    await threadB.startInput(
       new AgentInputUserMessage("Reply with the single word BRAVO."),
     );
     await waitForIdle(() => threadB.getStatusSnapshotSource().currentStatus === "IDLE" || threadB.getStatusSnapshotSource().currentStatus === "ERROR");

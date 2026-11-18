@@ -1,0 +1,28 @@
+# IMP-12 rendered-result check, SR-002: one thinking list, no display control (AC-005, AC-006, REQ-010)
+# steps: real backend `node autobyteus-server-ts/dist/app.js` (owned temp data root, sanitized env, throwaway HOME, no provider keys;
+#        autobyteus-ts dist rebuilt from commit 574aa0bd7 src) + `pnpm -C autobyteus-web dev` against it;
+#        headless Chrome via the agent browser tool; DOM read with scripts after clicks (data-test="chat-thinking-*", aria-checked).
+# commit: 574aa0bd7 (SR-002 implementation)
+# env: Linux, Node v22, Nuxt dev; date: 2026-10-29
+
+## Composer, AutoByteus runtime, claude-fable-5 (switch row)  [AC-005]
+trigger: Off
+menu: # Thinking | Off ✓ | Low | Medium | High | Xhigh | Max     (height 222px, scrollHeight 220 = clientHeight: no scrolling)
+pick High -> trigger "High", menu checked: High ✓
+pick Off  -> trigger "Off"
+"Thinking display" text anywhere on the page: false
+
+## Composer, claude-sonnet-5-5 (switch row)  [AC-005]
+trigger: Off; menu: # Thinking | Off ✓ | Low | Medium | High | Xhigh | Max; display control: false
+
+## Composer, claude-opus-5-5 (no switch)  [AC-006]
+trigger: Medium; menu: # Reasoning effort | Low | Medium ✓ | High | Xhigh | Max; display control: false
+pick Max -> trigger "Max"
+
+## Run settings (Edit Config) of a run launched on claude-opus-5-5 with Max  [AC-006]
+card: "Model | claude-opus-5-5 | AutoByteus | Thinking | Max | Tool approval | Auto-approve"
+Thinking display row: absent; "Not available for this model": absent.
+Launch accepted by server schema validation; the turn then failed with
+"MissingApiKeyError: API key not provided for ANTHROPIC" (no key in this preview backend, by design).
+
+Screenshots: IMP-12-composer-fable5-one-list.png, IMP-12-composer-opus55-effort-list.png, IMP-12-run-settings-opus55-thinking-max.png

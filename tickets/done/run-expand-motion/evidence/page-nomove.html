@@ -1,0 +1,11 @@
+<!doctype html><html><head><style>
+body{margin:0;font:14px sans-serif} .row{height:40px;border-bottom:1px solid #ddd}
+
+</style><script src="vue.global.js"></script></head><body><div id="app"></div><script>
+const { createApp, ref, defineComponent, h, TransitionGroup } = Vue;
+const Rows = defineComponent({ props:['n'], setup(p){ return () => h(TransitionGroup,{tag:'div',name:'tree-row',id:'group'},
+  ()=>Array.from({length:p.n},(_,i)=>h('div',{key:'r'+i,class:'row','data-i':i},'delegated '+i))) } });
+createApp({ setup(){ const open=ref(true); window.toggle=()=>{open.value=!open.value};
+  return ()=>h('div',{style:'padding-top:300px'},[h('div',{class:'row',id:'head'},'Project Task Manager '+(open.value?'v':'>')),
+   Vue.withDirectives(h(Rows,{n:12}),[[Vue.vShow,open.value]]), h('div',{class:'row'},'next run')]) } }).mount('#app');
+</script></body></html>

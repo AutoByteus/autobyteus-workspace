@@ -1,108 +1,165 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { AgentContext } from '~/types/agent/AgentContext'
-import { AgentRunState } from '~/types/agent/AgentRunState'
-import { AgentStatus } from '~/types/agent/AgentStatus'
-import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
-import { AgentRunCollaborationIndex } from '~/services/agentCollaboration/agentRunCollaborationIndex'
-import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
+import type { RunTreeRowDto } from '@autobyteus/collaboration-stream-contracts'
+import { agentRootTreeRows, agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 
 const stream = vi.hoisted(() => ({
-  instances: [] as Array<{ options: any; connect: any; whenReady: any; sendMessage: any; isReady: any; disconnect: any }>,
+  instances: [] as Array<{ options: any; connect: any; disconnect: any }>,
 }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationStreamingService', () => ({
   AgentRunCollaborationStreamingService: class {
-    connect = vi.fn(); whenReady = vi.fn(async () => undefined); sendMessage = vi.fn(async () => undefined)
-    isReady = vi.fn(() => false); disconnect = vi.fn(); interrupt = vi.fn(); decideTool = vi.fn()
+    connect = vi.fn(); disconnect = vi.fn()
     constructor(public options: any) { stream.instances.push(this as never) }
   },
 }))
-const build = () => {
-  const view = agentRootView()
-  return new AgentRunCollaborationContext({
-    hostRunId: 'host-run', view,
-    entries: [...new AgentRunCollaborationIndex(view.execution_tree).agents.values()].map((agent) => {
-      const state = new AgentRunState(agent.agentRunId, { id: agent.agentRunId, messages: [], createdAt: 'x', updatedAt: 'x', agentDefinitionId: 'd', agentName: agent.address })
-      state.currentStatus = AgentStatus.Offline
-      return { agentRunId: agent.agentRunId, memberAddress: agent.address, context: new AgentContext({ agentDefinitionId: 'd', agentDefinitionName: agent.address } as never, state) }
-    }),
-  })
-}
-vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
-  readAgentRunCollaboration: vi.fn(async () => ({})),
-  buildAgentRunCollaborationContext: vi.fn(async () => build()),
-}))
-const childHydration = vi.hoisted(() => ({ hydrate: vi.fn(async (_input: { agentRunId: string }) => 'hydrated') }))
-vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
-  hydrateAgentRunCollaborationChild: childHydration.hydrate,
-}))
+const hydration = vi.hoisted(() => ({ read: vi.fn() }))
+vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: hydration.read }))
+// autobyteus-461 rule 2: a delegated run is its own run; the fake owner records the opens and gives each a bound context.
+const own = vi.hoisted(() => ({ ensureOpen: vi.fn(), send: vi.fn(async () => undefined), contexts: new Map<string, unknown>() }))
+vi.mock('~/stores/delegatedRunsStore', () => ({ useDelegatedRunsStore: () => ({
+  ensureOpen: own.ensureOpen,
+  bindingOf: (subject: { kind: string; agentRunId: string; teamRunId?: string }) => {
+    if (!own.contexts.has(subject.agentRunId)) return null
+    return { context: own.contexts.get(subject.agentRunId), workspaceRootPath: '/own-ws',
+      browse: subject.kind === 'agent' ? { kind: 'run', runId: subject.agentRunId }
+        : { kind: 'teamMember', teamRunId: subject.teamRunId, memberAddress: '/product_team/prototyper', agentRunId: subject.agentRunId },
+      interaction: { send: own.send, interrupt: vi.fn(), decideTool: vi.fn() } }
+  },
+}) }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: vi.fn(async () => ({ data: { runTree: null } })) }) }))
 
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
+import { useRunTreeStore } from '../runTreeStore'
 
+const HOST = { kind: 'agent' as const, runId: 'host-run' }
+const rowOf = (key: string): RunTreeRowDto => useRunTreeStore().rowsOf(HOST).find((row) => row.key === key)!
+
+/**
+ * autobyteus-461 SR-084: the agent runs' views, and the row selected in each run's tree. A selected row opens its own run
+ * (rule 2) by the target the server gave it; the store keeps only which one.
+ */
 describe('agentRunCollaborationStore', () => {
-  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; childHydration.hydrate.mockClear() })
+  beforeEach(() => {
+    setActivePinia(createPinia()); stream.instances.length = 0; own.ensureOpen.mockClear(); own.contexts.clear()
+    hydration.read.mockReset(); hydration.read.mockResolvedValue(agentRootView())
+    useRunTreeStore().streamSnapshot(HOST, agentRootTreeRows())
+  })
 
-  it('reads a stopped run without connecting, keeps a new task Team collapsed and preserves explicit disclosure', async () => {
+  it('rule 2: a selected tree row opens as its own run, and the target is that run\'s; the run row returns to the host with a Team tab', async () => {
     const store = useAgentRunCollaborationStore()
-    store.syncHost('host-run', false)
     await store.inspect('host-run')
     expect(stream.instances).toHaveLength(0)
-    expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
-    expect(store.taskRows('host-run').map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team'])
-    store.toggleTaskTeam('host-run', 'team-run')
-    await store.inspect('host-run')
-    expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
-    expect(store.taskRows('host-run').map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team', 'prototyper', 'bootstrapper'])
-    store.toggleTaskTeam('host-run', 'team-run')
-    await store.inspect('host-run')
-    expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
-  })
-
-  it('selects a child as the target, and the run row returns to the host with a Team tab', async () => {
-    const store = useAgentRunCollaborationStore()
-    await store.inspect('host-run')
     expect(store.childTargetFor('host-run')).toBeNull()
     expect(store.hostMessagesView('host-run')).toMatchObject({ rootKind: 'agent', focusedAgentRunId: 'host-run' })
-    store.selectChild('host-run', 'pp-run')
+    expect(store.selectTreeRow('host-run', rowOf('team_member:team-run:pp-run'))).toBe(true)
+    expect(store.selectedRowKey('host-run')).toBe('team_member:team-run:pp-run')
+    expect(store.selectedChild('host-run')).toBe('pp-run')
+    // Until its own run is open there is no target; the host never loads it. The view knows it is opening (CR-461-057).
+    expect(store.childTargetFor('host-run')).toBeNull()
+    expect(store.isSelectedChildOpening('host-run')).toBe(true)
+    const member = { conversation: 'own pp' }
+    own.contexts.set('pp-run', member)
+    expect(store.isSelectedChildOpening('host-run')).toBe(false)
     expect(store.childTargetFor('host-run')).toMatchObject({
       kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' }, address: '/product_team/prototyper', agentRunId: 'pp-run', access: 'live',
-      collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/ws',
+      collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/own-ws', context: member,
     })
-    store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', workspaceRootPath: '/ws' })
-    store.selectChild('host-run', 'unknown')
-    expect(store.childTargetFor('host-run')).toBeNull()
-    // Each selected child starts one load of its details; the run's own agent and unknown children none.
-    expect(childHydration.hydrate.mock.calls.map(([input]) => input.agentRunId)).toEqual(['pp-run', 'cua-run'])
+    expect(store.selectTreeRow('host-run', rowOf('agent:cua-run'))).toBe(true)
+    own.contexts.set('cua-run', { conversation: 'own cua' })
+    expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', context: { conversation: 'own cua' },
+      browse: { kind: 'run', runId: 'cua-run' } })
+    expect(own.ensureOpen.mock.calls.map(([subject]) => subject)).toEqual([
+      { kind: 'team_member', teamRunId: 'team-run', agentRunId: 'pp-run' },
+      { kind: 'agent', agentRunId: 'cua-run' },
+    ])
+    // The run's own row selects its own agent.
+    expect(store.selectTreeRow('host-run', rowOf('agent:host-run'))).toBe(true)
+    expect(store.selectedChild('host-run')).toBeNull()
   })
 
-  it('reads a child\'s earlier events from the host\'s collaboration package, not as a top-level run (CR-002)', async () => {
+  it('a selected row that leaves the tree returns the view to the run\'s own agent; a peer\'s row opens by its own identity on its node (G-D1); a row error is not selected', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
-    store.selectChild('host-run', 'pp-run')
-    expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
-    })
-    store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/computer_use_agent', agentRunId: 'cua-run',
-    })
+    store.selectTreeRow('host-run', rowOf('agent:cua-run'))
+    useRunTreeStore().streamChange(HOST, { added: [], removed: ['agent:cua-run'], updated: [] })
+    expect(store.selectedChild('host-run')).toBeNull()
+    expect(store.isSelectedChildOpening('host-run')).toBe(false)
+    const peer: RunTreeRowDto = { ...rowOf('agent:host-run'), key: 'peer_agent:remote', kind: 'peer_agent', parentKey: 'agent:host-run',
+      openTarget: { runKind: 'agent', runId: 'remote', agentRunId: 'remote', nodeId: 'beta' } }
+    expect(store.selectTreeRow('host-run', { ...peer, address: '/publisher' })).toBe(true)
+    expect(own.ensureOpen).toHaveBeenLastCalledWith({ kind: 'peer', nodeId: 'beta', runKind: 'agent', runId: 'remote', agentRunId: 'remote', address: '/publisher' })
+    expect(store.selectTreeRow('host-run', { ...peer, openTarget: null })).toBe(false)
   })
 
-  it('sending to a child attaches the stream (which restores the host) and carries mentions', async () => {
+  it('a message to a delegated run goes to its own run, never over the view\'s stream', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
-    const context = store.contextFor('host-run')!.getAgentContext('cua-run')!
-    context.requestedMentions = [{ kind: 'agent', definitionId: 'code-reviewer', name: 'Code Reviewer' }]
-    await store.submit('host-run', 'cua-run', context, 'ask @Code Reviewer', [])
+    own.contexts.set('cua-run', {})
+    store.selectTreeRow('host-run', rowOf('agent:cua-run'))
+    const target = store.childTargetFor('host-run')!
+    if (target.access !== 'live') throw new Error('expected a live target')
+    await target.interaction.send('hello', [])
+    expect(own.send).toHaveBeenCalledOnce()
+    expect(stream.instances).toHaveLength(0)
+  })
+
+  it('a run with no delegated run in its tree has no Team tab', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    useRunTreeStore().streamSnapshot(HOST, [rowOf('agent:host-run')])
+    expect(store.hostMessagesView('host-run')).toBeNull()
+  })
+
+  it('ensureStoredView reads a run with collaboration once, and never one without', async () => {
+    const store = useAgentRunCollaborationStore()
+    store.ensureStoredView('plain-run', false)
+    store.ensureStoredView('host-run', true)
+    store.ensureStoredView('host-run', true)
+    await Promise.resolve(); await Promise.resolve()
+    expect(hydration.read).toHaveBeenCalledTimes(1)
+    expect(hydration.read).toHaveBeenCalledWith('host-run')
+    store.ensureStoredView('host-run', true)
+    expect(hydration.read).toHaveBeenCalledTimes(1)
+    expect(stream.instances).toHaveLength(0)
+  })
+
+  it('releaseAll closes every host stream and drops every host view (autobyteus-435 REQ-010 (b))', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    store.attach('host-run')
     expect(stream.instances).toHaveLength(1)
-    expect(stream.instances[0]!.connect).toHaveBeenCalled()
-    expect(stream.instances[0]!.sendMessage).toHaveBeenCalledWith(expect.objectContaining({
-      agentRunId: 'cua-run', content: 'ask @Code Reviewer', mentions: [{ kind: 'agent', definition_id: 'code-reviewer' }],
-    }))
-    expect(context.state.conversation.messages.at(-1)).toMatchObject({ type: 'user', text: 'ask @Code Reviewer', mentionNames: ['Code Reviewer'] })
-    expect(context.requestedMentions).toEqual([])
+    store.releaseAll()
+    expect(stream.instances[0]!.disconnect).toHaveBeenCalled()
+    expect(store.contextFor('host-run')).toBeNull()
+  })
+
+  it('SR-045: the open run keeps one view stream whether its agent runs or not; its agent state only updates the view', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    hydration.read.mockClear()
+    store.syncHost('host-run', false)
+    store.syncHost('host-run', false)
+    expect(stream.instances).toHaveLength(1)
+    expect(stream.instances[0]!.connect).toHaveBeenCalledOnce()
+    expect(store.contextFor('host-run')!.isActive).toBe(false)
+    store.syncHost('host-run', true)
+    expect(store.contextFor('host-run')!.isActive).toBe(true)
+    store.syncHost('host-run', false)
+    expect(stream.instances).toHaveLength(1)
+    expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
+    expect(hydration.read).not.toHaveBeenCalled()
+    // A Stop leaves the service; the server ended the view's stream, so its end reconnects the view to the stopped run's
+    // fresh one (CR-461-111): its tree stays live, and a later Save's row change is shown.
+    const stop = store.beginHostTermination('host-run')
+    expect(stop.confirm()).toBe(true)
+    expect(stream.instances[0]!.connect).toHaveBeenCalledOnce()
+    stop.finish()
+    expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
+    expect(stream.instances[0]!.connect).toHaveBeenCalledTimes(2)
+    // A Stop that is not this one's ends nothing.
+    stop.finish()
+    expect(stream.instances[0]!.connect).toHaveBeenCalledTimes(2)
   })
 })

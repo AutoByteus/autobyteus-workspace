@@ -1,0 +1,31 @@
+# IMP-15 — web TypeScript check filtered to the touched files
+# Command: pnpm -C autobyteus-web exec nuxi prepare; pnpm -C autobyteus-web exec tsc --noEmit -p .nuxt/tsconfig.json (vue-tsc is not installed, so .vue files are checked through their importers only)
+# Commit: bd1ed1a232
+# Environment: macOS Darwin 25.5.0, Node v22.23.1
+# Date: 2026-10-26
+# Note: the whole project reports pre-existing errors (cross-package strictness, unresolved Apollo modules, implicit any on Apollo results); below: every error in the touched files.
+
+total errors in project: 740
+generated/graphql.ts(2,38): error TS2307: Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+generated/graphql.ts(3,36): error TS2307: Cannot find module '@vue/composition-api' or its corresponding type declarations.
+stores/toolManagementStore.ts(135,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(161,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(185,69): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(204,69): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(205,79): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+stores/toolManagementStore.ts(226,69): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(233,38): error TS7031: Binding element 'serverId' implicitly has an 'any' type.
+stores/toolManagementStore.ts(233,48): error TS7031: Binding element 'field' implicitly has an 'any' type.
+stores/toolManagementStore.ts(234,42): error TS7031: Binding element 'serverId' implicitly has an 'any' type.
+stores/toolManagementStore.ts(234,52): error TS7031: Binding element 'field' implicitly has an 'any' type.
+stores/toolManagementStore.ts(235,74): error TS7031: Binding element 'serverId' implicitly has an 'any' type.
+stores/toolManagementStore.ts(235,84): error TS7031: Binding element 'reason' implicitly has an 'any' type.
+stores/toolManagementStore.ts(257,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(312,44): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(346,44): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(374,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(402,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(431,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+stores/toolManagementStore.ts(460,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+# The TS7006/TS7031 lines are the same error as the store's existing `errors.map(e => …)` lines: Apollo result types do not resolve in this check (see the two TS2307 lines).

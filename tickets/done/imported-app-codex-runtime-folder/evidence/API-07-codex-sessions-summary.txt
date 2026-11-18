@@ -1,0 +1,7 @@
+# API-07 real codex sessions written under the throwaway CODEX_HOME during the draft launch (sanitized: no account ids, no prompts)
+session 01a16f1b-08d5-7f71-ba21-86002558aee6 agent='Brief Studio Researcher' cli_version=0.164.0 originator=autobyteus-server-ts model_provider=openai
+  cwd=<dataRoot>/server-data/applications/bundle-app__brief-studio__f317f1fc6f87b6faed4d6cdc7fc6cd3fc780346b33850b45ea8fd6af1a42271a/runtime
+  first=2026-10-24T18:10:05.210Z last=2026-10-24T18:10:39.299Z task_complete=True total_token_usage={"input_tokens": 193026, "cached_input_tokens": 173696, "cache_write_input_tokens": 0, "output_tokens": 1752, "reasoning_output_tokens": 367, "total_tokens": 194778}
+session 01a16f1b-562f-7681-95e7-e12a8ec1d3b5 agent='Brief Studio Writer' cli_version=0.164.0 originator=autobyteus-server-ts model_provider=openai
+  cwd=<dataRoot>/server-data/applications/bundle-app__brief-studio__f317f1fc6f87b6faed4d6cdc7fc6cd3fc780346b33850b45ea8fd6af1a42271a/runtime
+  first=2026-10-24T18:10:24.986Z last=2026-10-24T18:10:39.752Z task_complete=True total_token_usage={"input_tokens": 122092, "cached_input_tokens": 105216, "cache_write_input_tokens": 0, "output_tokens": 1171, "reasoning_output_tokens": 131, "total_tokens": 123263}

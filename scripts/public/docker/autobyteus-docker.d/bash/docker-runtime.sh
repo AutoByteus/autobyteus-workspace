@@ -182,18 +182,12 @@ preferred_port_for_node() {
 
 choose_ports_for_node() {
   local node_name="$1" allow_friendly_preferences="$2"
-  local preferred_backend="" preferred_vnc="" preferred_novnc="" preferred_debug=""
+  local preferred_backend=""
   collect_used_ports
   if [[ "$allow_friendly_preferences" == "1" ]]; then
     preferred_backend="$(preferred_port_for_node "$node_name" 8001 || true)"
-    preferred_vnc="$(preferred_port_for_node "$node_name" 5908 || true)"
-    preferred_novnc="$(preferred_port_for_node "$node_name" 6080 || true)"
-    preferred_debug="$(preferred_port_for_node "$node_name" 9228 || true)"
   fi
   BACKEND_PORT="$(pick_port "$preferred_backend")"
-  VNC_PORT="$(pick_port "$preferred_vnc")"
-  NOVNC_PORT="$(pick_port "$preferred_novnc")"
-  DEBUG_PORT="$(pick_port "$preferred_debug")"
 }
 
 node_name_available() {
@@ -254,13 +248,10 @@ Container: ${container_name}
 Image: ${image_ref}
 Backend: http://localhost:${BACKEND_PORT}
 GraphQL: http://localhost:${BACKEND_PORT}/graphql
-noVNC: http://localhost:${NOVNC_PORT}
-VNC: localhost:${VNC_PORT}
-Chrome debug: localhost:${DEBUG_PORT}
 Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
 Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
 URLS
 }
 
@@ -277,31 +268,14 @@ Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=${TEMP_WORKSPACE_ENV_V
 PATHS
 }
 
-print_storage_for_node() {
-  local node_name="$1" volume_prefix
-  volume_prefix="$(volume_prefix_for "$node_name")"
-  cat <<STORAGE
-AutoByteus Docker storage: ${node_name}
-Private Docker named volumes (kept during recreate/destroy/reset):
-  ${volume_prefix}-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
-  ${volume_prefix}-root-home -> /root (Codex/Claude auth and root home settings)
-  ${volume_prefix}-chromium-profile -> ${CHROMIUM_PROFILE_CONTAINER_PATH} (private Chromium browser profile state: cookies, local storage, preferences)
-  ${volume_prefix}-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
-Host bind mounts (host-visible user files):
-  $(node_workspace_host_path "$node_name") -> ${WORKSPACE_CONTAINER_PATH} (this node's user workspace and default temp workspace)
-  $(shared_workspace_host_path) -> ${SHARED_CONTAINER_PATH} (shared across launcher-managed Docker nodes)
-Launcher state directory: $(state_root)
-Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
-Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes ${WORKSPACE_CONTAINER_PATH} after apply.
-STORAGE
-}
-
 start_node() {
-  local node_name="$1" image_ref="$2" state_file container_name created_at attempt output start_check_output
+  local node_name="$1" image_ref="$2" print_urls_flag="${3:-1}" state_file container_name created_at attempt output start_check_output
   local desired_image_id current_image_id current_config_hash config_hash start_output
   local allow_friendly_preferences=1
   state_file="$(state_path_for "$node_name")"
   load_state "$state_file"
+  # new-container --allow-local-network: kept in the node's state for every later recreate.
+  [[ "${REQUESTED_ALLOW_LOCAL_NETWORK:-0}" == "1" ]] && ALLOW_LOCAL_NETWORK=1
   container_name="${CONTAINER_NAME:-$node_name}"
   created_at="${CREATED_AT:-$(now_utc)}"
   if container_exists "$container_name" && ! managed_container "$container_name"; then
@@ -314,24 +288,24 @@ start_node() {
   [[ -n "$desired_image_id" ]] || fail "Could not inspect image ${image_ref} after pull."
 
   if container_exists "$container_name" \
-    && [[ -n "${BACKEND_PORT:-}" && -n "${VNC_PORT:-}" && -n "${NOVNC_PORT:-}" && -n "${DEBUG_PORT:-}" ]]; then
+    && [[ -n "${BACKEND_PORT:-}" ]]; then
     config_hash="$(desired_config_hash "$node_name" "$image_ref")"
     current_image_id="$(container_image_id "$container_name")"
     current_config_hash="$(container_config_hash "$container_name")"
 
     if [[ "$current_image_id" == "$desired_image_id" && "$current_config_hash" == "$config_hash" ]]; then
       if container_running "$container_name"; then
-        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash"
+        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
         log "${node_name} is already running with the current image and launcher config."
-        print_urls "$node_name" "$container_name" "$image_ref"
+        [[ "$print_urls_flag" != "1" ]] || print_urls "$node_name" "$container_name" "$image_ref"
         return
       fi
 
       if start_output="$(docker start "$container_name" 2>&1)"; then
         if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
-          write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash"
+          write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
           log "Started ${node_name}."
-          print_urls "$node_name" "$container_name" "$image_ref"
+          [[ "$print_urls_flag" != "1" ]] || print_urls "$node_name" "$container_name" "$image_ref"
           return
         fi
         start_output="${start_output}"$'\n'"${start_check_output}"
@@ -340,22 +314,22 @@ start_node() {
       if is_bind_failure "$start_output"; then
         log "Saved ports are unavailable; recreating ${node_name} with fresh ports."
         docker rm -f "$container_name" >/dev/null 2>&1 || true
-        BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT=""
+        BACKEND_PORT=""
         allow_friendly_preferences=0
       else
         fail "docker start failed: ${start_output}"
       fi
     elif [[ "$current_image_id" != "$desired_image_id" ]]; then
-      log "Image changed for ${node_name}; recreating the managed container while keeping named volumes."
+      log "Recreating the container of ${node_name}: a newer image was downloaded. Its named volumes are kept."
     elif [[ -z "$current_config_hash" ]]; then
-      log "Refreshing ${node_name}; existing container predates launcher config tracking."
+      log "Recreating the container of ${node_name}: the container predates launcher configuration tracking. Its named volumes are kept."
     else
-      log "Launcher config changed for ${node_name}; recreating the managed container while keeping named volumes."
+      log "Recreating the container of ${node_name}: the launcher configuration changed. Its named volumes are kept."
     fi
   fi
 
   for attempt in $(seq 1 "$MAX_RUN_ATTEMPTS"); do
-    if [[ "$attempt" -gt 1 || -z "${BACKEND_PORT:-}" || -z "${VNC_PORT:-}" || -z "${NOVNC_PORT:-}" || -z "${DEBUG_PORT:-}" ]]; then
+    if [[ "$attempt" -gt 1 || -z "${BACKEND_PORT:-}" ]]; then
       choose_ports_for_node "$node_name" "$allow_friendly_preferences"
     fi
     config_hash="$(desired_config_hash "$node_name" "$image_ref")"
@@ -366,9 +340,9 @@ start_node() {
 
     if output="$(run_container "$node_name" "$container_name" "$image_ref" "$config_hash")"; then
       if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
-        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash"
+        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
         log "Started ${node_name}."
-        print_urls "$node_name" "$container_name" "$image_ref"
+        [[ "$print_urls_flag" != "1" ]] || print_urls "$node_name" "$container_name" "$image_ref"
         return
       fi
       output="${output}"$'\n'"${start_check_output}"
@@ -377,7 +351,7 @@ start_node() {
     docker rm -f "$container_name" >/dev/null 2>&1 || true
     if is_bind_failure "$output" && [[ "$attempt" -lt "$MAX_RUN_ATTEMPTS" ]]; then
       log "Port bind failed; retrying with fresh ports (attempt $((attempt + 1))/${MAX_RUN_ATTEMPTS})."
-      BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT=""
+      BACKEND_PORT=""
       allow_friendly_preferences=0
       continue
     fi
@@ -502,6 +476,7 @@ create_new_container() {
   local image_ref="$1" node_name
   node_name="$(next_node_name)"
   start_node "$node_name" "$image_ref"
+  print_setup_code_of_running_node "$node_name"
 }
 
 reset_nodes() {

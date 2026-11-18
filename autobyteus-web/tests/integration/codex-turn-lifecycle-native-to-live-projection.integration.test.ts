@@ -21,6 +21,7 @@ import { CodexThreadEventName } from '../../../autobyteus-server-ts/src/agent-ex
 import { RuntimeKind } from '../../../autobyteus-server-ts/src/runtime-management/runtime-kind-enum.js';
 import { AgentRunEventMessageMapper } from '../../../autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.js';
 import { AgentRunMemoryRecorder } from '../../../autobyteus-server-ts/src/agent-memory/services/agent-run-memory-recorder.js';
+import { createTestRunWorkspaceSkills } from '../../../autobyteus-server-ts/tests/fixtures/run-workspace-skills-fixtures.js';
 
 const tempDirs = new Set<string>();
 
@@ -63,9 +64,9 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
       workspaceId: '/tmp/codex-turn-lifecycle',
       ...(memoryDir ? { memoryDir } : {}),
       llmConfig: null,
-      memberTeamContext: null,
     }),
     runtimeContext: new CodexAgentRunContext({
+      workspaceSkills: createTestRunWorkspaceSkills({ runId }),
       threadId: 'thread-1',
       codexThreadConfig: {
         model: 'gpt-5.6-sol',
@@ -95,7 +96,12 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
     getThread: vi.fn(() => thread),
     terminateThread: vi.fn().mockResolvedValue(undefined),
   };
-  const backend = new CodexAgentRunBackend(runContext, thread, threadManager as never);
+  // The run's Agent Tools session (autobyteus-324): the backend reads the tools its thread opened with.
+  const agentToolSessions = {
+    describeForRun: () => ({ name: 'autobyteus_agent_tools', transport: 'streamable_http', serverUrl: 'http://127.0.0.1:9', enabledTools: [] }),
+    replaceForRun: vi.fn(),
+  };
+  const backend = new CodexAgentRunBackend(runContext, thread, threadManager as never, agentToolSessions as never);
   const run = new AgentRun({
     context: runContext,
     backend,

@@ -8,7 +8,7 @@ import type { AgentInputStateDto, CompactionRecoveryBlockDto, CompactionRecovery
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
 import type { JsonValue } from '@autobyteus/team-stream-contracts';
-import type { BackgroundTaskKind, BackgroundTaskStatus } from '~/types/backgroundTask';
+import type { BackgroundTaskEndReason, BackgroundTaskKind, BackgroundTaskStatus } from '~/types/backgroundTask';
 export type {
   AgentCommandAckPayload,
   InterruptCommandTarget,
@@ -111,6 +111,8 @@ export interface SegmentEndPayload {
 export interface AgentStatusPayload {
   recoverableBlock?: CompactionRecoveryBlockDto | null;
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
+  /** Background tasks the agent has running (autobyteus-448). */
+  background_tasks_running: number;
   trigger?: string | null;
   tool_name?: string | null;
   error_message?: string | null;
@@ -201,6 +203,8 @@ export interface BackgroundTaskUpdatedPayload {
   command: string | null;
   status: BackgroundTaskStatus;
   summary: string | null;
+  end_reason: BackgroundTaskEndReason | null;
+  exit_code: number | null;
   started_at: string;
 }
 
@@ -222,6 +226,8 @@ export interface InterAgentMessagePayload {
 export interface SystemTaskNotificationPayload {
   sender_id: string;
   content: string;
+  /** The notice's one id (autobyteus-526); null when it has none. */
+  message_id: string | null;
 }
 
 export interface ArtifactPersistedPayload {

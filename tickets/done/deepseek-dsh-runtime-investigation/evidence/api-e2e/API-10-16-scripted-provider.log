@@ -1,0 +1,533 @@
+# API-10…API-16 scripted-provider suite (real dsh 0.2.2-rc.1, product relay, scripted DeepSeek endpoint, no key) — final run
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR RUN_DEEPSEEK_HARNESS_SCRIPTED_E2E=1 DEEPSEEK_HARNESS_COMMAND=/tmp/ab387-dsh-bin/dsh pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts --no-watch
+# Commit: fddcff0f13 + new test files (working tree; committed with the API/E2E round)
+# Env: macOS, server Node v22.23.1, dsh 0.2.2-rc.1 on Node 25.2.1
+# Date: 2026-11-06T08:38:54Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:9124) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/.env
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39m[2026-11-06T08:39:25.532Z] [INFO] [secret-management.vault] Secret vault: application database
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mLoading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrefuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-no-key-384c4d8b-950c-4382-b341-16fcb364187a
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrefuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-no-key
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-no-key.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrefuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009)
+[22m[39mCreated and registered workspace ID: agent_ws_ad8d89dc937bb93aea629ffef76dfaaf613d5f404d5ba9f7f24864aaeade4173
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrefuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-no-key
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-no-key.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrefuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009)
+[22m[39mReusing registered workspace ID: agent_ws_ad8d89dc937bb93aea629ffef76dfaaf613d5f404d5ba9f7f24864aaeade4173
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrefuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009)
+[22m[39mError in createAgentRun: AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.
+
+DSH_SCRIPTED NO_KEY {"success":false,"message":"AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.","runId":null}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-key-change-3d92a1bd-6a0e-4c66-a23b-6d64fcb437d4
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mCreated and registered workspace ID: agent_ws_07d2ecca026d000eb0a00665a92b7ad6cd62125766ca1547d88633e7ed656414
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mReusing registered workspace ID: agent_ws_07d2ecca026d000eb0a00665a92b7ad6cd62125766ca1547d88633e7ed656414
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mAgent websocket attached for run dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f
+Created agent session 3322ee68-aa57-4f8a-a81f-dd728d1edea1 for run dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f
+Agent WebSocket connected: session=3322ee68-aa57-4f8a-a81f-dd728d1edea1, run=dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f
+
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello.","terminal":"TURN_COMPLETED","ms":311,"text":"SCRIPTED-REPLY-1"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello again.","terminal":"TURN_COMPLETED","ms":101,"text":"SCRIPTED-REPLY-2"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello a third time.","terminal":"ERROR","ms":101,"text":"","error":"{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"Internal error: turn failed: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.\",\"error_scope\":\"turn\",\"error_effect\":\"terminal\",\"turn_id\":\"b2787ae8-8a9b-42ca-bb94-3cbe1b34ba4e\"}"}
+DSH_SCRIPTED KEY_REMOVED_TURN {"terminal":"ERROR","payload":"{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"Internal error: turn failed: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.\",\"error_scope\":\"turn\",\"error_effect\":\"terminal\",\"turn_id\":\"b2787ae8-8a9b-42ca-bb94-3cbe1b34ba4e\"}"}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mClosed agent session 3322ee68-aa57-4f8a-a81f-dd728d1edea1
+Agent WebSocket disconnected: 3322ee68-aa57-4f8a-a81f-dd728d1edea1
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mReusing registered workspace ID: agent_ws_07d2ecca026d000eb0a00665a92b7ad6cd62125766ca1547d88633e7ed656414
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mError restoring agent run with ID dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f: AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.
+
+DSH_SCRIPTED RESTORE_NO_KEY {"success":false,"message":"AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys."}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-key-change.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mReusing registered workspace ID: agent_ws_07d2ecca026d000eb0a00665a92b7ad6cd62125766ca1547d88633e7ed656414
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mAgent websocket attached for run dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f
+Created agent session 9cf92c25-3b2a-4361-912b-b61f1490959c for run dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f
+Agent WebSocket connected: session=9cf92c25-3b2a-4361-912b-b61f1490959c, run=dsh_scripted_key_change_3d92a1bd_6a0e_4c66_a23b_a4c2653c116647149edc2f841e153c6f
+
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello after the restore.","terminal":"TURN_COMPLETED","ms":204,"text":"SCRIPTED-REPLY-3"}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2muses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009)
+[22m[39mClosed agent session 9cf92c25-3b2a-4361-912b-b61f1490959c
+Agent WebSocket disconnected: 9cf92c25-3b2a-4361-912b-b61f1490959c
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-compaction-b9e56e24-f9f2-4cf5-9ab6-636d8738c780
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mCreated and registered workspace ID: agent_ws_a4eddb72856c052fe0ef86eddbe261597e5b9c8a2f505d306c261edfc0d55f8a
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mReusing registered workspace ID: agent_ws_a4eddb72856c052fe0ef86eddbe261597e5b9c8a2f505d306c261edfc0d55f8a
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mAgent websocket attached for run dsh_scripted_compaction_b9e56e24_f9f2_4cf5_9ab6_27413f5413e54ed09463e698fedc1031
+Created agent session 758280fe-4ca7-45df-b90e-01daf0100414 for run dsh_scripted_compaction_b9e56e24_f9f2_4cf5_9ab6_27413f5413e54ed09463e698fedc1031
+Agent WebSocket connected: session=758280fe-4ca7-45df-b90e-01daf0100414, run=dsh_scripted_compaction_b9e56e24_f9f2_4cf5_9ab6_27413f5413e54ed09463e698fedc1031
+
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"The code word is PELICAN-77. Remember it. Backgrou","terminal":"TURN_COMPLETED","ms":202,"text":"SCRIPTED-REPLY-4"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"More background; reply only OK. Filler sentence nu","terminal":"TURN_COMPLETED","ms":100,"text":"SCRIPTED-REPLY-5"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Even more background; reply only OK. Filler senten","terminal":"TURN_COMPLETED","ms":200,"text":"SCRIPTED-REPLY-8"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Without tools: what was the code word I gave you i","terminal":"TURN_COMPLETED","ms":320,"text":"SCRIPTED-REPLY-11"}
+DSH_SCRIPTED COMPACTION {"calls":[{"n":4,"compaction":false,"inputTokens":9232,"key":"C","session":true},{"n":5,"compaction":false,"inputTokens":11610,"key":"C","session":true},{"n":6,"compaction":true,"inputTokens":9725,"key":"C","session":true},{"n":7,"compaction":true,"inputTokens":7281,"key":"C","session":true},{"n":8,"compaction":false,"inputTokens":11726,"key":"C","session":true},{"n":9,"compaction":true,"inputTokens":9659,"key":"C","session":true},{"n":10,"compaction":true,"inputTokens":7281,"key":"C","session":true},{"n":11,"compaction":false,"inputTokens":9398,"key":"C","session":true}],"statuses":[["compacting","deepseek_harness.relay_compaction_started",false],["compacted","deepseek_harness.relay_compaction_completed",true],["compacting","deepseek_harness.relay_compaction_started",false],["compacted","deepseek_harness.relay_compaction_completed",true],["compacting","deepseek_harness.relay_compaction_started",false],["compacted","deepseek_harness.relay_compaction_completed",true],["compacting","deepseek_harness.relay_compaction_started",false],["compacted","deepseek_harness.relay_compaction_completed",true]],"usage":[["deepseek_harness_call",9232],["deepseek_harness_call",11610],["deepseek_harness_compaction_call",9725],["deepseek_harness_compaction_call",7281],["deepseek_harness_call",11726],["deepseek_harness_compaction_call",9659],["deepseek_harness_compaction_call",7281],["deepseek_harness_call",9398]],"files":["active","segment","segment","segment","segment"]}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011)
+[22m[39mClosed agent session 758280fe-4ca7-45df-b90e-01daf0100414
+Agent WebSocket disconnected: 758280fe-4ca7-45df-b90e-01daf0100414
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-compaction-refused-9e5ddf60-86f9-4a4e-916b-de442629e604
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction-refused
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction-refused.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mCreated and registered workspace ID: agent_ws_4999514f7ef5f80618b080fd1987e05ed032dd29ca0ba54df9509a609d244286
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction-refused
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-compaction-refused.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mReusing registered workspace ID: agent_ws_4999514f7ef5f80618b080fd1987e05ed032dd29ca0ba54df9509a609d244286
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mAgent websocket attached for run dsh_scripted_compaction_refused_9e5ddf60_86f9_4a_b9fc58608a994e42840b56a692119c81
+Created agent session 0ccbdae0-9eda-4ddb-b88a-8440c0c09508 for run dsh_scripted_compaction_refused_9e5ddf60_86f9_4a_b9fc58608a994e42840b56a692119c81
+Agent WebSocket connected: session=0ccbdae0-9eda-4ddb-b88a-8440c0c09508, run=dsh_scripted_compaction_refused_9e5ddf60_86f9_4a_b9fc58608a994e42840b56a692119c81
+
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"The code word is HERON-12. Background text follows","terminal":"TURN_COMPLETED","ms":312,"text":"SCRIPTED-REPLY-12"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"More background; reply only OK. Filler sentence nu","terminal":"TURN_COMPLETED","ms":100,"text":"SCRIPTED-REPLY-13"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Even more background; reply only OK. Filler senten","terminal":"TURN_COMPLETED","ms":209,"text":"SCRIPTED-REPLY-15"}
+DSH_SCRIPTED COMPACTION_REFUSED {"calls":1,"statuses":[["compacting",null],["failed","DeepSeek did not complete the compaction call (HTTP 400)."]],"terminals":["TURN_COMPLETED","TURN_COMPLETED","TURN_COMPLETED"]}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mrecords a refused compaction call as a failed compaction with no rotation (AC-010 failure)
+[22m[39mClosed agent session 0ccbdae0-9eda-4ddb-b88a-8440c0c09508
+Agent WebSocket disconnected: 0ccbdae0-9eda-4ddb-b88a-8440c0c09508
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-liveness-fc280182-117e-476e-86ef-690cd0ef6868
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-liveness
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-liveness.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mCreated and registered workspace ID: agent_ws_10bd2a9afb22ca17bdca548d7208dd7136f4ebef183046d0e19562807191c9ab
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-liveness
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-liveness.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mReusing registered workspace ID: agent_ws_10bd2a9afb22ca17bdca548d7208dd7136f4ebef183046d0e19562807191c9ab
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mAgent websocket attached for run dsh_scripted_liveness_fc280182_117e_476e_86ef_69_a99314b17b9e4d5383b3f1709e1b43aa
+Created agent session 51931542-b297-49fc-810a-2edcd368d9be for run dsh_scripted_liveness_fc280182_117e_476e_86ef_69_a99314b17b9e4d5383b3f1709e1b43aa
+Agent WebSocket connected: session=51931542-b297-49fc-810a-2edcd368d9be, run=dsh_scripted_liveness_fc280182_117e_476e_86ef_69_a99314b17b9e4d5383b3f1709e1b43aa
+
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Think hard, then answer.","terminal":"TURN_COMPLETED","ms":15160,"text":"KEPT-ALIVE-16"}
+DSH_SCRIPTED KEEPALIVE {"terminal":"TURN_COMPLETED","ms":15160,"text":"KEPT-ALIVE-16","events":["AGENT_STATUS","AGENT_INPUT_STATE","AGENT_COMMAND_ACK","SYSTEM_INSTRUCTIONS_SUPPLIED","AGENT_STATUS","TURN_STARTED","AGENT_INPUT_STATE","AGENT_INPUT_STATE","TOKEN_USAGE_UPDATED","SEGMENT_START","SEGMENT_CONTENT","SEGMENT_END","TURN_COMPLETED","AGENT_STATUS","AGENT_INPUT_STATE"]}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Answer now.","terminal":"TURN_INTERRUPTED","ms":6054,"text":""}
+DSH_SCRIPTED STALL {"terminal":"TURN_INTERRUPTED","ms":6054,"failure":"{\"code\":\"ACP_TURN_IDLE_TIMEOUT\",\"message\":\"DeepSeek Harness sent no turn activity for 6 seconds.\",\"error_scope\":\"runtime\",\"error_effect\":\"terminal\",\"turn_id\":null}"}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mkeeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012)
+[22m[39mClosed agent session 51931542-b297-49fc-810a-2edcd368d9be
+Agent WebSocket disconnected: 51931542-b297-49fc-810a-2edcd368d9be
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-memory-0-c75e0ba7-828c-4e0f-b26c-b89645fb31ae
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-0
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-0.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreated and registered workspace ID: agent_ws_c732ef40d68eaac5e5d8945c4e19a62048e7fadb96c8a3d3fdb34b9ed74c997c
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-0
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-0.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mReusing registered workspace ID: agent_ws_c732ef40d68eaac5e5d8945c4e19a62048e7fadb96c8a3d3fdb34b9ed74c997c
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mAgent websocket attached for run dsh_scripted_memory_0_c75e0ba7_828c_4e0f_b26c_b8_28c6928c8e854ef1b5072cec181df2b2
+Created agent session cbed52de-c641-4b6f-8b5f-e1724f9bfdcd for run dsh_scripted_memory_0_c75e0ba7_828c_4e0f_b26c_b8_28c6928c8e854ef1b5072cec181df2b2
+Agent WebSocket connected: session=cbed52de-c641-4b6f-8b5f-e1724f9bfdcd, run=dsh_scripted_memory_0_c75e0ba7_828c_4e0f_b26c_b8_28c6928c8e854ef1b5072cec181df2b2
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-memory-1-34c15629-f886-4b98-b7a5-190b4915d856
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-1
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-1.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreated and registered workspace ID: agent_ws_df129eaebdab879409eee6cc047fdb88fa7b5ae3fe38562f1b8ad4264a75fa63
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-1
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-1.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mReusing registered workspace ID: agent_ws_df129eaebdab879409eee6cc047fdb88fa7b5ae3fe38562f1b8ad4264a75fa63
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mAgent websocket attached for run dsh_scripted_memory_1_34c15629_f886_4b98_b7a5_19_2b204cb4fc5f4a959498337275186021
+Created agent session 5162b248-cb1a-482c-a231-6c389791a73e for run dsh_scripted_memory_1_34c15629_f886_4b98_b7a5_19_2b204cb4fc5f4a959498337275186021
+Agent WebSocket connected: session=5162b248-cb1a-482c-a231-6c389791a73e, run=dsh_scripted_memory_1_34c15629_f886_4b98_b7a5_19_2b204cb4fc5f4a959498337275186021
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mAgent Definition created successfully with ID: dsh-scripted-memory-2-98ea2513-c5f0-4d77-b911-c9da6f9f8a92
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-2
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-2.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreated and registered workspace ID: agent_ws_42cf0909d1008f102b257b26fc1c03e67b7f070e923ba91bab96e7f8d927e122
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-2
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-scripted-e2e-6ZyXkk/ws-memory-2.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mReusing registered workspace ID: agent_ws_42cf0909d1008f102b257b26fc1c03e67b7f070e923ba91bab96e7f8d927e122
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22m[2mmeasures the memory of several concurrent dsh processes (RSK-004)
+[22m[39mAgent websocket attached for run dsh_scripted_memory_2_98ea2513_c5f0_4d77_b911_c9_de44f84290084f1f87f3be4ac2661f67
+Created agent session 82d837b0-57a4-4623-8d65-a7f53c5d0109 for run dsh_scripted_memory_2_98ea2513_c5f0_4d77_b911_c9_de44f84290084f1f87f3be4ac2661f67
+Agent WebSocket connected: session=82d837b0-57a4-4623-8d65-a7f53c5d0109, run=dsh_scripted_memory_2_98ea2513_c5f0_4d77_b911_c9_de44f84290084f1f87f3be4ac2661f67
+
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello.","terminal":"TURN_COMPLETED","ms":201,"text":"SCRIPTED-REPLY-18"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello.","terminal":"TURN_COMPLETED","ms":201,"text":"SCRIPTED-REPLY-19"}
+DSH_SCRIPTED TURN {"runId":"dsh_scri","prompt":"Say hello.","terminal":"TURN_COMPLETED","ms":201,"text":"SCRIPTED-REPLY-20"}
+DSH_SCRIPTED MEMORY {"processes":0,"rssMb":[],"totalMb":0}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mClosed agent session 82d837b0-57a4-4623-8d65-a7f53c5d0109
+Agent WebSocket disconnected: 82d837b0-57a4-4623-8d65-a7f53c5d0109
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mClosed agent session 5162b248-cb1a-482c-a231-6c389791a73e
+Agent WebSocket disconnected: 5162b248-cb1a-482c-a231-6c389791a73e
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22m[2mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)
+[22m[39mClosed agent session cbed52de-c641-4b6f-8b5f-e1724f9bfdcd
+Agent WebSocket disconnected: cbed52de-c641-4b6f-8b5f-e1724f9bfdcd
+
+ [31m❯[39m tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 50762[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses a dsh run when the vault holds no DeepSeek key, naming the key and where to set it (AC-009) [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m uses the key the vault holds at each call: a changed key is used by the next call, a removed key fails the next turn with the relay's text, and a restore without it fails (AC-009) [33m 10178[2mms[22m[39m
+     [33m[2m✓[22m[39m records each dsh compaction as a completed provider compaction boundary that archives the raw traces, and the conversation continues (AC-010, AC-011) [33m 4989[2mms[22m[39m
+     [33m[2m✓[22m[39m records a refused compaction call as a failed compaction with no rotation (AC-010 failure) [33m 4200[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps a turn alive while the model streams only keep-alive events for longer than the idle timeout, and fails a stalled stream with ACP_TURN_IDLE_TIMEOUT (AC-012) [33m 24457[2mms[22m[39m
+[31m     [31m×[31m measures the memory of several concurrent dsh processes (RSK-004)[39m[33m 5435[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts[2m > [22mDeepSeek Harness with a scripted DeepSeek endpoint (real dsh, product relay, no key)[2m > [22mmeasures the memory of several concurrent dsh processes (RSK-004)
+[31m[1mAssertionError[22m: one dsh process per open run: expected +0 to be 3 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 3[39m
+[31m+ 0[39m
+
+[36m [2m❯[22m tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts:[2m510:60[22m[39m
+    [90m508|[39m     const rssMb = running.map((entry) => Math.round(entry.rssKb / 1024…
+    [90m509|[39m     log("MEMORY", { processes: running.length, rssMb, totalMb: rssMb.r…
+    [90m510|[39m     [34mexpect[39m(running[33m.[39mlength[33m,[39m [32m"one dsh process per open run"[39m)[33m.[39m[34mtoBe[39m([34m3[39m)[33m;[39m
+    [90m   |[39m                                                            [31m^[39m
+    [90m511|[39m     [35mfor[39m ([35mconst[39m entry [35mof[39m opened) {
+    [90m512|[39m       entry[33m.[39msocket[33m.[39m[34mclose[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 09:38:57
+[2m   Duration [22m 78.93s[2m (transform 20.62s, setup 69ms, import 27.06s, tests 50.76s, environment 0ms)[22m
+
+EXIT 1

@@ -1,3 +1,4 @@
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
 import {
@@ -5,7 +6,7 @@ import {
   type ResolvedTeamDefinitionAgent,
   type ResolvedFlatTeamDefinition,
 } from "../../agent-team-definition/services/flat-team-definition-resolver.js";
-import { CollaborationHandoffCompiler } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
+import { CollaborationHandoffCompiler, type TeamHandoffCompilation } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
 import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import {
   assertAgentTeamAddress,
@@ -29,10 +30,14 @@ import {
 export type TeamAgentLaunchInput = Omit<TeamAgentLaunchSettings, "memberAddress" | "agentDefinitionId"> & {
   memberAddress: string;
   agentDefinitionId?: string | null;
+  /** A delegated team member's resolved launch source (autobyteus-461), recorded on the member. */
+  launchSource?: LaunchConfigurationSource;
 };
 
 export type TeamScopeLaunchInput = Omit<TeamScopeLaunchSettings, "teamAddress"> & {
   teamAddress: string;
+  /** A delegated team's resolved default launch source (DS-10 step 4), recorded on the team. */
+  launchSource?: LaunchConfigurationSource;
 };
 
 export type FlatTeamTopologyPlan = Readonly<{
@@ -83,6 +88,8 @@ export class FlatTeamTopologyPlanner {
     teamConfigs: readonly TeamScopeLaunchInput[];
     memberConfigs: readonly TeamAgentLaunchInput[];
     applicationBinding?: TeamRunApplicationBinding | null;
+    /** A delegated team (its run has `delegatedFrom`): an outside `to` is kept, and the delegation's rules may be given. */
+    handoffs?: TeamHandoffCompilation;
   }): Promise<FlatTeamTopologyPlan> {
     const { definition, graph } = await this.resolveGraph(input.teamDefinitionId, input.rootDefinition);
     const rootConfig = this.validateRootConfig(input.teamConfigs);
@@ -91,7 +98,7 @@ export class FlatTeamTopologyPlanner {
     const config = new TeamRunConfig({
       teamBackendKind: TeamBackendKind.MIXED,
       rootTeam,
-      handoffs: new CollaborationHandoffCompiler().compileTeam(graph),
+      handoffs: new CollaborationHandoffCompiler().compileTeam(graph, input.handoffs),
       applicationBinding: input.applicationBinding ?? null,
     });
     return Object.freeze({
@@ -195,6 +202,7 @@ export class FlatTeamTopologyPlanner {
         role: null,
         description: null,
         ...launchValue(launch),
+        ...(launch.launchSource ? { launchSource: launch.launchSource } : {}),
       });
     }
     return {
@@ -204,6 +212,7 @@ export class FlatTeamTopologyPlanner {
       teamRunId: this.teamRunIdentityAllocator.allocateForTeamDefinitionName(teamDefinitionName),
       coordinatorAddress: createAgentTeamAddress(graph.coordinator.absolutePath),
       defaultLaunchConfiguration: launchValue(rootConfig),
+      ...(rootConfig.launchSource ? { defaultLaunchSource: rootConfig.launchSource } : {}),
       children,
     };
   }

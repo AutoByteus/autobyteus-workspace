@@ -71,8 +71,10 @@ describe("get_handoff_rules", () => {
       memberExecutionContext,
     });
     const adapter = new GetHandoffRulesMcpAdapterProvider(service).getAdapters()[0]!;
-    const expectedResult = service.getRules(memberExecutionContext.collaboration);
-    const expectedText = JSON.stringify(expectedResult);
+    expect(service.getRules(memberExecutionContext.collaboration)).toEqual({ handoffs: [] });
+    // No rules: the empty list is left out (REQ-001), the same on both copies.
+    const expectedResult = {};
+    const expectedText = "{}";
 
     const projected = await adapter.execute({
       session: { sender } as never,

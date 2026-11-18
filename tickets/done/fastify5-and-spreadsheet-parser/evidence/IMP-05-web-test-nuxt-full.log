@@ -1,0 +1,25 @@
+# Full web unit/component suite after the viewer commit
+# Check: IMP-05
+# Command: pnpm -C autobyteus-web test:nuxt --run 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E '×|FAIL|Test Files|Tests |Errors'
+# Commit: 195db3c42e
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:49:46Z
+
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+   × ApplicationShell > shows the setup-first route, hides technical details by default, and does not auto-launch on initial load 114ms
+   × ApplicationShell > starts a fresh immersive launch after the setup panel reports launch-ready state 0ms
+   × ApplicationShell > owns immersive launch failure before an iframe launch exists 0ms
+ FAIL  tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts [ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts ]
+ FAIL  components/applications/__tests__/ApplicationIframeHost.spec.ts [ components/applications/__tests__/ApplicationIframeHost.spec.ts ]
+ FAIL  components/applications/__tests__/ApplicationSurface.spec.ts [ components/applications/__tests__/ApplicationSurface.spec.ts ]
+ FAIL  stores/__tests__/applicationHostStore.spec.ts [ stores/__tests__/applicationHostStore.spec.ts ]
+ FAIL  utils/application/__tests__/applicationAssetUrl.spec.ts [ utils/application/__tests__/applicationAssetUrl.spec.ts ]
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  components/applications/__tests__/ApplicationShell.spec.ts > ApplicationShell > shows the setup-first route, hides technical details by default, and does not auto-launch on initial load
+ FAIL  components/applications/__tests__/ApplicationShell.spec.ts > ApplicationShell > starts a fresh immersive launch after the setup panel reports launch-ready state
+ FAIL  components/applications/__tests__/ApplicationShell.spec.ts > ApplicationShell > owns immersive launch failure before an iframe launch exists
+ Test Files  6 failed | 680 passed | 2 skipped (688)
+      Tests  3 failed | 4879 passed | 5 skipped (4887)
+
+# exit code: 0

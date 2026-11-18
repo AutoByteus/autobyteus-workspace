@@ -1,0 +1,579 @@
+{
+  "startedAt": "2026-11-08T00:16:59.820Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 50372,
+      "nodeId": "srv_HqxMf3m_BL5HxTFFxmBW_YjFPrlynoOJ"
+    },
+    "alpha": {
+      "port": 50371,
+      "nodeId": "srv_YbjSy4LzwrxVXYl1M7KtYx4cQuIyWIjo"
+    }
+  },
+  "cases": {
+    "NVP-01": {
+      "result": "Pass",
+      "ms": 177,
+      "failedExpectations": [],
+      "stored": {
+        "version": 7,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:50371",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_YbjSy4LzwrxVXYl1M7KtYx4cQuIyWIjo"
+          },
+          {
+            "id": "remote-beta-entry",
+            "name": "beta box",
+            "baseUrl": "http://127.0.0.1:50372",
+            "nodeType": "remote",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_HqxMf3m_BL5HxTFFxmBW_YjFPrlynoOJ"
+          }
+        ]
+      },
+      "names": [
+        "beta"
+      ],
+      "backup": "{\"version\":7,\"nodes\":[{\"id\":\"embedded-local\",\"name\":\"Embedded Node\",\"baseUrl\":\"http://127.0.0.1:50371\",\"nodeType\":\"embedded\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":true,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_YbjSy4LzwrxVXYl1M7KtYx4cQuIyWIjo\"},{\"id\":\"remote-beta-entry\",\"name\":\"beta box\",\"baseUrl\":\"http://127.0.0.1:50372\",\"nodeType\":\"remote\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":false,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_HqxMf3m_BL5HxTFFxmBW_YjFPrlynoOJ\"}]}"
+    },
+    "NVP-02": {
+      "result": "Pass",
+      "ms": 59,
+      "failedExpectations": [],
+      "lines": [
+        "Not reachable. This node's identity is waiting for its data migration.\n\nCheck again"
+      ]
+    },
+    "NVP-03": {
+      "result": "Pass",
+      "ms": 2545,
+      "failedExpectations": [],
+      "en": "Memory Sync source ID",
+      "zh": "记忆同步源 ID",
+      "sources": [
+        "local",
+        "imported:nvp-beta-source"
+      ]
+    },
+    "NVP-04": {
+      "result": "Pass",
+      "ms": 2230,
+      "failedExpectations": [],
+      "shown": "runs",
+      "storedKeys": [
+        "entryId",
+        "serverBaseUrl",
+        "credential",
+        "device",
+        "pairedAt"
+      ],
+      "entryId": "mobile-paired-node"
+    },
+    "NVP-05": {
+      "result": "Pass",
+      "ms": 21548,
+      "failedExpectations": [],
+      "sources": [
+        "local"
+      ],
+      "cardHasReason": true
+    }
+  },
+  "browserErrors": [
+    {
+      "phase": "NVP-01..03",
+      "text": "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: WebSocket connection to 'ws://192.168.2.158:50370/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: Unexpected response code: 200"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: WebSocket connection to 'ws://192.168.2.158:50370/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: Unexpected response code: 200"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:50371/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:50371/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:50371/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:50371/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:50371/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/server.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/client-data-migrations/frozen/released-node-registry.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/integrations.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/memorySyncSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/tools.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/nodesPage.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/shell.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/memory.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/projects.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/token-usage-settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/graphql/queries/applicationCapabilityQueries.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/nodesPage.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/workspace.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/runSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/memorySyncSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/common.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agents.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/updateNotifications.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/server.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/skills.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/phoneSetupRemoteNode.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/skills.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/client-data-migrations/frozen/released-mobile-session.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agentPackageDefinitions.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agentTeams.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/mobileNodeDesktop.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/tools.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/api-key-settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/skills.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agentRuntimesSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/applications.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/token-usage-settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/runSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/workspace.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/shell.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/utils/remoteAccess/mobileCredentialStorage.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/memory.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/modelRoutingSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/stores/capabilities/createBoundNodeCapabilityStore.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/phoneSetupRemoteNode.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/tools.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/memory.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agentRuntimesSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/integrations.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/skills/SkillNameConflictDialog.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/updateNotifications.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/modelRoutingSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/embeddingSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/common.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/workspace.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/server.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agentTeams.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agents.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/mobileNodeDesktop.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/settings.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/notifications/NotificationCenter.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agentTeams.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agentInput.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/applications.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/chat.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/common/ToastContainer.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/server.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/workspaceFolders.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/graphql/mutations/applicationCapabilityMutations.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/voiceInput.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/remoteRuns.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agentOrgs.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/applications.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/remoteRuns.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/chat.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/utils/remoteAccess/remoteAccessReadRefusal.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/settings.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/package-migration-settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/shell.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/utils/remoteAccess/mobileConnectionDiagnostics.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agentTeams.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/remoteCollaborationSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/remoteCollaborationSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/server/ServerLoading.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agentOrgs.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/projects.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/app/AppLocalizationGate.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/applications.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/server/ServerShutdown.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/handoffs.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/workspace.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/composables/notifications/useUpdateNotificationChangeFeed.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/app.vue?vue&type=style&index=0&lang.css net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agentInput.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/composables/agentPackages/useAgentPackageDefinitionChangeFeed.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/components/ui/UiErrorPanel.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agents.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/package-migration-settings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/workspaceFolders.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/handoffs.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/skills.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/agents.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/embeddingSettings.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/tools.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/shell.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/voiceInput.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/en/memory.generated.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/agentPackageDefinitions.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:50370/_nuxt/localization/messages/zh-CN/api-key-settings.ts net::ERR_ABORTED"
+    }
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-11-08T00:17:57.894Z"
+}

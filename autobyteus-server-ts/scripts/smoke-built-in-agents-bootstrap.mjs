@@ -25,9 +25,13 @@ const assertDistTemplateAbsent = async (templateDirName) => {
 const [
   dailyAssistantDistAgentMdPath,
   dailyAssistantDistAgentConfigPath,
+  modelRouterDistAgentMdPath,
+  modelRouterDistAgentConfigPath,
 ] = await Promise.all([
   assertDistAssetPresent("daily-assistant", "agent.md"),
   assertDistAssetPresent("daily-assistant", "agent-config.json"),
+  assertDistAssetPresent("model-router", "agent.md"),
+  assertDistAssetPresent("model-router", "agent-config.json"),
 ]);
 await assertDistTemplateAbsent("memory-compactor");
 await assertDistTemplateAbsent("project-task-manager");
@@ -37,6 +41,7 @@ const { bootstrapBuiltInAgents } = await import(
 );
 const {
   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+  MODEL_ROUTER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/built-in-agents/built-in-agent-registry.js"
 );
@@ -70,7 +75,7 @@ try {
     },
   });
 
-  assert.deepEqual(result.builtInAgents.map(item => item.agentDefinitionId), [DAILY_ASSISTANT_AGENT_DEFINITION_ID]);
+  assert.deepEqual(result.builtInAgents.map(item => item.agentDefinitionId), [DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID]);
   assert.equal(result.refreshedCache, true);
 
   assert.equal(await fs.readFile(path.join(staleCompactorAgentDir, 'agent.md'), 'utf8'), 'stale memory compactor');
@@ -89,6 +94,10 @@ try {
     await fs.readFile(path.join(dailyAssistantAgentDir, "agent-config.json"), "utf8"),
     await fs.readFile(dailyAssistantDistAgentConfigPath, "utf8"),
   );
+  // autobyteus-32: the internal Model Router ships its instructions and tools the same way.
+  const modelRouterAgentDir = path.join(agentsDir, MODEL_ROUTER_AGENT_DEFINITION_ID);
+  assert.equal(await fs.readFile(path.join(modelRouterAgentDir, "agent.md"), "utf8"), await fs.readFile(modelRouterDistAgentMdPath, "utf8"));
+  assert.equal(await fs.readFile(path.join(modelRouterAgentDir, "agent-config.json"), "utf8"), await fs.readFile(modelRouterDistAgentConfigPath, "utf8"));
   await fs.writeFile(path.join(dailyAssistantAgentDir, "agent.md"), "user edited daily assistant", "utf8");
   const resyncResult = await bootstrapBuiltInAgents({
     agentsDir,

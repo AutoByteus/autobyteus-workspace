@@ -1,0 +1,103 @@
+# IMP-03 node auto-update main-process tests
+# Command: pnpm -C autobyteus-web exec vitest run --config ./electron/vitest.config.ts electron/nodeAutoUpdate --reporter=verbose
+# Commit: df789a89a5
+# Env: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2, python 3.9.6, bash 3.2.57
+# Date: 2026-11-07T19:42:11Z
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/node-update-failure-and-release-order/autobyteus-web/electron
+
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > requests an older node that can update in place with no attempt at the version 1ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: in-place update unavailable 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: the starter did not answer 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: the same version 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: a newer node (no downgrade) 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: no target relation 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: a target for another version 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: an update running 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > skips: an update blocker 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > one attempt per version: an entry PENDING for the version → skip 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > one attempt per version: an entry AUTO_FAILED for the version → skip 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > one attempt per version: an entry AUTO_UPDATED for the version → request 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > decideNodeAutoUpdate (DS-003 step 3) > an attempt at an older version does not block the new one 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > changes nothing without a pending entry for the version 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > the node runs the version with no update running → AUTO_UPDATED, unread 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > the update succeeded for the version → AUTO_UPDATED 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > a node in its trial (on the version, update still running) is not updated yet 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > the update failed with a message for the version → AUTO_FAILED with the node reason 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > the update failed with only a code for the version → AUTO_FAILED with the node reason 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > the update refused for the version → AUTO_FAILED with the node reason 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > the update failed with nothing said for the version → AUTO_FAILED with the node reason 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > a failure of another version leaves the entry pending 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > 30 minutes with no update running and not on the version → AUTO_FAILED "did not finish" 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > reconcileNodeAutoUpdate (DS-003 step 2) > a running update is never timed out 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > cleared: RUN-02: the node runs V after its own update succeeded 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > cleared: the node runs V, no update on record (a new image) 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > cleared: the node runs a newer version (AC-002) 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > cleared: the node runs V, a later update of another version failed 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > cleared: the node runs V and gives no update state 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: the node is still older than V (AC-004) 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: the node runs V in its trial (update running; it can roll back) 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: AR-003: a pass of a desktop at V+1 (target V+1, node runs V+1) leaves the V failure 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: no target in the answer 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: no entry 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: a pending entry 0ms
+ ✓ nodeAutoUpdate/__tests__/decideNodeAutoUpdate.spec.ts > isSupersededFailure (autobyteus-412, FU-003) > not cleared: an automatic success 0ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateIpc.spec.ts > registerNodeAutoUpdateIpc recheck > forwards a string entry ID and returns nothing; the record is left to the updater 3ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateIpc.spec.ts > registerNodeAutoUpdateIpc recheck > ignores a non-string argument (undefined) 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateIpc.spec.ts > registerNodeAutoUpdateIpc recheck > ignores a non-string argument (7) 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateIpc.spec.ts > registerNodeAutoUpdateIpc recheck > ignores a non-string argument ({"entryId":"remote-1"}) 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > starts empty without a file, quietly 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > starts empty with a warning when the file is not JSON 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > starts empty with a warning when the file is an unknown shape 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > starts empty with a warning when the file is no entries 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > drops invalid entries and reads optional fields tolerantly 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > writes atomically and reads back what it wrote 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > marks an outcome read once; a pending entry has nothing to mark 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > drops the entries of nodes that are no longer registered 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > 412: removes one entry and saves; nothing to remove is false 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdateRecord.spec.ts > NodeAutoUpdateRecord > 412 QR-002: a file written before this change, with a stale failure, is read unchanged 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > does nothing in an unpackaged build 3ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > first pass after 2 minutes: an older node with the switch on is asked to update to the desktop version (AC-004) 5ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a node at the same version gets no request (AC-004) 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a node at a newer version gets no request (AC-004) 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a node at in-place update unavailable gets no request (AC-004) 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > follows an accepted update every 10 s through the restart and records AUTO_UPDATED (AC-004) 3ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a trial that rolls back records AUTO_FAILED with the node reason and is not tried again for that version (AC-005) 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a follow ends after 15 minutes with the entry pending; a later pass finds it unfinished and does not repeat 4ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a node being followed is skipped by a pass 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a request refused before the start (409) changes nothing and is tried again at the next pass 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a request not delivered (network error or timeout) changes nothing and is tried again at the next pass 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > an unreachable node gets no request and is tried again later (AC-005) 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > passes never overlap, and nodes are checked one after another 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a node whose switch turns on is checked at once 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a switch turned off while the node is asked sends no request 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > a removed node loses its entry and its follow 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > 412 RUN-02: a pass clears AUTO_FAILED for V once the node runs V (updated another way), and requests nothing (AC-001) 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > 412 AC-004: a pass leaves AUTO_FAILED for V while the node is still older, and does not request V again 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > 412 AR-003: a pass of a desktop that moved past the failed version neither clears that failure nor needs to 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > (b) a switch-off node: asks ?target=<entry version>, removes the failure, broadcasts, never requests an update 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > a node that runs a newer version than the failed one is cleared too (AC-002) 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > a node still older keeps its failure, with no broadcast 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > a node in its trial keeps its failure, with no broadcast 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > a node not reachable keeps its failure, with no broadcast 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > does not ask the node for a pending entry 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > does not ask the node for an automatic success 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > does not ask the node for no entry 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > does not ask the node for an entry whose node is gone 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > does nothing after shutdown, or once stopped while it waits for the node 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > (c) AR-002: a pass that starts while a recheck waits does nothing for that node; a PENDING stored meanwhile is kept 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > recheckFailure (412 DS-002) > a second recheck while the first waits is dropped (the guard), and the guard is released after the answer 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > stops its passes and follows at shutdown 1ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts > nodeUpdateClient (C1) > asks GET {baseUrl}/rest/node-update?target=V and returns the C1 status 2ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts > nodeUpdateClient (C1) > returns null for an answer that is not a C1 status, or a network error 0ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts > nodeUpdateClient (C1) > POSTs { version }: 202 accepted is the only attempt 0ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts > nodeUpdateClient (C1) > 409 is a refusal with the node code and message; an unknown answer says its HTTP status 0ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts > nodeUpdateClient (C1) > a network error is not delivered 0ms
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts > nodeUpdateClient (C1) > gives up on a node that does not answer within the timeout (real fetch) 418ms
+
+ Test Files  5 passed (5)
+      Tests  88 passed (88)
+   Start at  20:42:11
+   Duration  843ms (transform 197ms, setup 0ms, collect 399ms, tests 506ms, environment 1ms, prepare 459ms)
+

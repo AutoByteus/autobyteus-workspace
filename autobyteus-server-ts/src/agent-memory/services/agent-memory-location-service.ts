@@ -10,14 +10,11 @@ import {
   type LocatedTeamAgentExecution,
 } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import type {
-  AgentMemoryScope,
   AgentOrgMemberAgentMemoryLocation,
   StandaloneAgentMemoryLocation,
-  TeamAgentRunMemoryLocation,
   TeamMemberAgentMemoryLocation,
 } from "../domain/agent-memory-location.js";
 import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
-import { normalizeTeamRunPhysicalScope } from "../../agent-team-execution/domain/team-run-physical-scope.js";
 
 const optional = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim() ? value.trim() : null;
@@ -56,17 +53,6 @@ export class AgentMemoryLocationService {
     };
   }
 
-  getTeamAgentRunLocation(input: AgentMemoryScope & { agentRunId: string }): TeamAgentRunMemoryLocation {
-    const scope = this.normalizeScope(input);
-    const agentRunId = required(input.agentRunId, "agentRunId");
-    return {
-      kind: "team_agent_run",
-      ...scope,
-      agentRunId,
-      memoryDir: this.layout.getTeamAgentRunDirPath(scope, agentRunId),
-    };
-  }
-
   async resolveTeamMemberLocation(input: {
     teamRunId: string;
     memberAddress?: string | null;
@@ -79,7 +65,8 @@ export class AgentMemoryLocationService {
     const matches = candidates.filter((item) =>
       (!agentRunId || item.agentRunId === agentRunId) &&
       (!memberAddress || item.memberAddress === assertAgentTeamAddress(memberAddress)));
-    return matches.length === 1 ? toMemoryLocation(matches[0]!) : null;
+    if (matches.length === 1) return toMemoryLocation(matches[0]!);
+    return null;
   }
 
   async resolveAgentOrgMemberLocation(input: {
@@ -102,10 +89,6 @@ export class AgentMemoryLocationService {
       return this.locations.listAgents({ rootTeamRunId: teamRunId });
     }
     return (await this.locations.listAgents()).filter((item) => this.matchesTeam(item, teamRunId));
-  }
-
-  private normalizeScope(input: AgentMemoryScope): AgentMemoryScope {
-    return normalizeTeamRunPhysicalScope(input);
   }
 
   private matchesTeam(location: LocatedTeamAgentExecution, teamRunId: string): boolean {
@@ -135,5 +118,3 @@ const toOrgMemoryLocation = (located: LocatedAgentOrgAgentExecution): AgentOrgMe
   memoryDir: located.memoryDir,
 });
 
-let cached: AgentMemoryLocationService | null = null;
-export const getAgentMemoryLocationService = (): AgentMemoryLocationService => cached ??= new AgentMemoryLocationService();

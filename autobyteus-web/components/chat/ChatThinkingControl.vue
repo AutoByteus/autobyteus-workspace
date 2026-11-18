@@ -57,21 +57,8 @@
 
       <template v-for="parameter in groups" :key="parameter.key">
         <p class="px-2 pb-0.5 pt-1 text-[0.6875rem] font-medium text-gray-400">{{ parameter.label }}</p>
-        <div v-if="parameter.kind === 'number'" class="px-2 py-1">
-          <input
-            type="number"
-            class="w-full rounded-md border border-gray-200 px-2 py-1 text-[0.8125rem] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-            :min="parameter.minimum ?? undefined"
-            :max="parameter.maximum ?? undefined"
-            :value="parameter.value"
-            :aria-label="parameter.label"
-            :data-test="`chat-thinking-input-${parameter.key}`"
-            @change="setNumber(parameter, ($event.target as HTMLInputElement).value)"
-          >
-        </div>
         <button
           v-for="option in parameter.options"
-          v-else
           :key="option.id"
           type="button"
           role="menuitemradio"
@@ -130,7 +117,7 @@ const toggle = async () => {
   if (popover.open.value) {
     await nextTick()
     menuRef.value?.querySelector<HTMLElement>('[aria-checked="true"]')?.focus()
-      ?? menuRef.value?.querySelector<HTMLElement>('[role="menuitemradio"], input')?.focus()
+      ?? menuRef.value?.querySelector<HTMLElement>('[role="menuitemradio"]')?.focus()
   }
 }
 
@@ -139,15 +126,9 @@ const choose = (next: Record<string, unknown> | null) => {
   popover.close(true)
 }
 
-const setNumber = (parameter: ChatThinkingParameter, raw: string) => {
-  const parsed = Number(raw)
-  if (!raw.trim() || !Number.isFinite(parsed)) return
-  emit('update', parameter.applyNumber(parsed))
-}
-
 const onKeydown = (event: KeyboardEvent) => {
   if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
-  const items = Array.from(menuRef.value?.querySelectorAll<HTMLElement>('[role="menuitemradio"], input') ?? [])
+  const items = Array.from(menuRef.value?.querySelectorAll<HTMLElement>('[role="menuitemradio"]') ?? [])
   const index = items.indexOf(document.activeElement as HTMLElement)
   event.preventDefault()
   items[event.key === 'ArrowDown' ? Math.min(items.length - 1, index + 1) : Math.max(0, index - 1)]?.focus()

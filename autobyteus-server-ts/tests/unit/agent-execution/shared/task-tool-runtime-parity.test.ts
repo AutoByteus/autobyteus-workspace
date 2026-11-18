@@ -18,7 +18,7 @@ import { testMemberExecutionContext } from "../../../fixtures/current-team-run-f
 const teamMember = testMemberExecutionContext({
   teamRunId: "team-run", rootTeamRunId: "team-run", teamDefinitionId: "team-def", memberAddress: "/worker", agentRunId: "run-worker",
 });
-const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent" });
+const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false });
 const TASK_TOOLS = ["create_task", "update_task"];
 
 describe("task tool exposure and schemas across runtimes", () => {
@@ -87,7 +87,7 @@ describe("task tool exposure and schemas across runtimes", () => {
       {
         "properties": {
           "context_files": {
-            "description": "Absolute local file paths on this node to copy into the new Task's saved context. Same file types and 25 MiB limit as the app.",
+            "description": "Absolute local file paths on this node to copy into the new Task's saved context. Same file types and size limits as the app.",
             "items": {
               "type": "string",
             },
@@ -112,9 +112,14 @@ describe("task tool exposure and schemas across runtimes", () => {
             "description": "Project identity on the current node.",
             "type": "string",
           },
+          "title": {
+            "description": "The Task's one-line name: trimmed, non-empty; no length limit.",
+            "type": "string",
+          },
         },
         "required": [
           "project_id",
+          "title",
           "description",
         ],
         "type": "object",
@@ -128,7 +133,7 @@ describe("task tool exposure and schemas across runtimes", () => {
             "type": "string",
           },
           "context_files": {
-            "description": "Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and 25 MiB limit as the app.",
+            "description": "Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and size limits as the app.",
             "items": {
               "type": "string",
             },
@@ -161,6 +166,10 @@ describe("task tool exposure and schemas across runtimes", () => {
           },
           "task_id": {
             "description": "The Task's ID: a Project Task's key (e.g. autobyteus-42), or the Task ID of a Task with no Project.",
+            "type": "string",
+          },
+          "title": {
+            "description": "Project Tasks only: the Task's new one-line name, trimmed non-empty; omit to preserve.",
             "type": "string",
           },
         },

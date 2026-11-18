@@ -1,0 +1,447 @@
+# IMP-24 — Step 10: merge origin/personal; both gates shrink and pass; merge drift fixed; T-35/T-36 probes pass; the merged probe refuses a non-empty dir
+# Command: git merge origin/personal (conflicts resolved: projects-feature probe, both baselines, the Apollo spec import, two server tests; github-integration-card-probe deleted upstream); pnpm install --frozen-lockfile; env -i ... pnpm -C autobyteus-web typecheck:update-baseline then typecheck; env -i ... pnpm -C autobyteus-server-ts typecheck:update-baseline then typecheck (before and after the drift fixes); npx vitest run <the 7 drift-fixed server files>; node tests/e2e/task-agent-monitor-visibility-probe.mjs and team-reload-member-freshness-probe.mjs (npm_config_store_dir=<the install's store>); node tests/e2e/integrations-page-probe.mjs --output-dir=<non-empty dir>
+# Commit: merge 32b8f5a763; gates and probes on 52aedc6237 (web) and on the tree committed as 023aaeefff/ab0027a398 (server gate, drift tests, final probes)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: web "baseline written: 99 errors in 43 files (was 102 in 44)" then "[typecheck] PASS"; server before the drift fixes "FAIL: the baseline only shrinks" (1214 vs 1203), after "baseline written: 1200 errors in 370 files (was 1203 in 371)" then "[typecheck] PASS"; drift tests "Tests 97 passed | 2 skipped (99)"; final probes "tamv exit 0", "trmf exit 0" (E-001..E-007 Pass); integrations probe "Refusing to write probe evidence" and "exit 1"
+
+===== step10-summary.txt =====
+HEAD 52aedc6237
+web-update exit 0 | [typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 102 in 44 files) [typecheck] baseline written: 99 errors in 43 files (was 102 in 44) 
+web-gate exit 0 | [typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files) [typecheck] PASS 
+server-update exit 1 | [typecheck] production errors: 0; test-file errors: 1214 in 374 files (baseline 1203 in 371 files) [typecheck] FAIL: the baseline only shrinks; fix the new or higher test-file errors above 
+server-gate exit 1 | [typecheck] production errors: 0; test-file errors: 1214 in 374 files (baseline 1203 in 371 files) [typecheck] FAIL: fix the new type errors in the test files above 
+tamv exit 1
+trmf exit 1
+
+===== step10-web-update.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.11-beta.10 typecheck:update-baseline /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs --update-baseline
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.11-beta.10 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 29.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.5s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 18.7s
+[typecheck] fewer errors than the baseline: tests/e2e/fixtures/task-agent-monitor-visibility.page.vue (0, baseline 3)
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 102 in 44 files)
+[typecheck] baseline written: 99 errors in 43 files (was 102 in 44)
+
+===== step10-server-update.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 typecheck:update-baseline /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm prepare:shared && node ./scripts/typecheck.mjs --update-baseline
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.3s
+[typecheck] server tests (tsconfig.tests.json): 1214 errors, exit 2, 23.2s
+
+Test files above their baseline count:
+tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts(95,5): error TS18047: 'child.stdout' is possibly 'null'.
+tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts(96,5): error TS18047: 'child.stderr' is possibly 'null'.
+tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts(212,51): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+  Property '#private' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts(249,43): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+  Property '#private' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+tests/unit/agent-execution/agent-provider-factory-builder.test.ts(164,7): error TS2322: Type '{ environmentForRun: Mock<() => {}>; revokeForRun: Mock<Procedure>; }' is not assignable to type 'IntegrationRunAccess'.
+  The types returned by 'environmentForRun(...)' are incompatible between these types.
+    Type '{}' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(69,76): error TS2345: Argument of type '{ id: string; name: string; role: string; description: string; toolNames: never[]; }' is not assignable to parameter of type '{ name: string; role?: string | undefined; description: string; instructions: string; category?: string | undefined; avatarUrl?: string | null | undefined; id?: string | null | undefined; ... 19 more ...; sourceInfo?: AgentDefinitionSourceInfo | ... 1 more ... | undefined; }'.
+  Property 'instructions' is missing in type '{ id: string; name: string; role: string; description: string; toolNames: never[]; }' but required in type '{ name: string; role?: string | undefined; description: string; instructions: string; category?: string | undefined; avatarUrl?: string | null | undefined; id?: string | null | undefined; ... 19 more ...; sourceInfo?: AgentDefinitionSourceInfo | ... 1 more ... | undefined; }'.
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(74,5): error TS2322: Type 'AgentToolMcpRunSessionActivator' is not assignable to type 'AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure'.
+  Type 'AgentToolMcpRunSessionActivator' is missing the following properties from type 'AgentToolMcpRunSessionExposure': replaceForRun, describeForRun
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(104,19): error TS2345: Argument of type 'AgentRunBackend' is not assignable to parameter of type 'AcpAgentRunBackend'.
+  Type 'AgentRunBackend' is missing the following properties from type 'AcpAgentRunBackend': listeners, pendingSystemInstruction, eventQueue, active, and 12 more.
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(132,90): error TS2322: Type 'Mock<(run: { agentDefinitionId: string; }) => {}>' is not assignable to type '(run: Readonly<{ runId: string; agentDefinitionId: string; }>, baseEnv: Readonly<Record<string, string | undefined>>) => Promise<Readonly<Record<string, string>>>'.
+  Type '{}' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(133,21): error TS2345: Argument of type 'AgentRunBackend' is not assignable to parameter of type 'AcpAgentRunBackend'.
+  Type 'AgentRunBackend' is missing the following properties from type 'AcpAgentRunBackend': listeners, pendingSystemInstruction, eventQueue, active, and 12 more.
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(139,97): error TS2322: Type 'Mock<(run: { agentDefinitionId: string; }) => {}>' is not assignable to type '(run: Readonly<{ runId: string; agentDefinitionId: string; }>, baseEnv: Readonly<Record<string, string | undefined>>) => Promise<Readonly<Record<string, string>>>'.
+  Type '{}' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(140,21): error TS2345: Argument of type 'AgentRunBackend' is not assignable to parameter of type 'AcpAgentRunBackend'.
+  Type 'AgentRunBackend' is missing the following properties from type 'AcpAgentRunBackend': listeners, pendingSystemInstruction, eventQueue, active, and 12 more.
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(160,19): error TS2345: Argument of type 'AgentRunBackend' is not assignable to parameter of type 'AcpAgentRunBackend'.
+  Type 'AgentRunBackend' is missing the following properties from type 'AcpAgentRunBackend': listeners, pendingSystemInstruction, eventQueue, active, and 12 more.
+tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts(197,19): error TS2345: Argument of type 'AgentRunBackend' is not assignable to parameter of type 'AcpAgentRunBackend'.
+  Type 'AgentRunBackend' is missing the following properties from type 'AcpAgentRunBackend': listeners, pendingSystemInstruction, eventQueue, active, and 12 more.
+tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts(218,9): error TS2322: Type 'Mock<(run: { agentDefinitionId: string; }) => {}>' is not assignable to type '(run: Readonly<{ runId: string; agentDefinitionId: string; }>, baseEnv: Readonly<Record<string, string | undefined>>) => Promise<Readonly<Record<string, string>>>'.
+  Type '{}' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts(247,42): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts(68,5): error TS2322: Type 'Mock<(run: { agentDefinitionId: string; }) => Record<string, string>>' is not assignable to type '(run: Readonly<{ runId: string; agentDefinitionId: string; }>, baseEnv: Readonly<Record<string, string | undefined>>) => Promise<Readonly<Record<string, string>>>'.
+  Type 'Record<string, string>' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/claude/session/claude-session-integration-environment.test.ts(35,5): error TS2322: Type 'Mock<(run: { agentDefinitionId: string; }) => Record<string, string>>' is not assignable to type '(run: Readonly<{ runId: string; agentDefinitionId: string; }>, baseEnv: Readonly<Record<string, string | undefined>>) => Promise<Readonly<Record<string, string>>>'.
+  Type 'Record<string, string>' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts(96,5): error TS2353: Object literal may only specify known properties, and 'teamRunId' does not exist in type '{ memberAddress?: string | undefined; rootTeamRunId?: string | undefined; agentRunId?: string | undefined; deliverInterAgentMessage?: ((input: unknown) => Promise<{ accepted: boolean; }>) | undefined; outgoingHandoffs?: readonly Readonly<...>[] | undefined; teamInstruction?: string | ... 1 more ... | undefined; task...'.
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts(184,35): error TS2352: Conversion of type '{ activateForRun: Mock<(issueInput: any) => { kind: "active"; sessionId: string; owner: any; descriptor: AgentToolMcpDescriptor; }>; }' to type 'AgentToolMcpRunSessionActivator' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  The types of 'activateForRun(...).sessionId' are incompatible between these types.
+    Type 'string' is not comparable to type 'AgentToolMcpRunSessionId'.
+      Type 'string' is not comparable to type '{ readonly [agentToolMcpRunSessionIdBrand]: true; }'.
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts(318,7): error TS2322: Type 'Mock<() => { AUTOBYTEUS_GITHUB_API_URL: string; GIT_TERMINAL_PROMPT: string; }>' is not assignable to type '(run: Readonly<{ runId: string; agentDefinitionId: string; }>, baseEnv: Readonly<Record<string, string | undefined>>) => Promise<Readonly<Record<string, string>>>'.
+  Type '{ AUTOBYTEUS_GITHUB_API_URL: string; GIT_TERMINAL_PROMPT: string; }' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts(351,58): error TS2739: Type '{}' is missing the following properties from type 'Promise<Readonly<Record<string, string>>>': then, catch, finally, [Symbol.toStringTag]
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts(484,26): error TS2339: Property 'releaseClient' does not exist on type 'CodexAppServerClientManager'.
+tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts(668,26): error TS2339: Property 'releaseClient' does not exist on type 'CodexAppServerClientManager'.
+../test-support/live-e2e/live-e2e-harness.ts(120,63): error TS2345: Argument of type '{ teams: TeamRunExecutionTreeLocationService; orgs: AgentOrgExecutionTreeLocationService; }' is not assignable to parameter of type 'Readonly<{ teams: Pick<TeamRunExecutionTreeLocationService, Family>; orgs: Pick<AgentOrgExecutionTreeLocationService, Family>; agents: Pick<...>; }>'.
+  Property 'agents' is missing in type '{ teams: TeamRunExecutionTreeLocationService; orgs: AgentOrgExecutionTreeLocationService; }' but required in type 'Readonly<{ teams: Pick<TeamRunExecutionTreeLocationService, Family>; orgs: Pick<AgentOrgExecutionTreeLocationService, Family>; agents: Pick<...>; }>'.
+../test-support/live-e2e/live-e2e-harness.ts(189,3): error TS1470: The 'import.meta' meta-property is not allowed in files which will build into CommonJS output.
+../test-support/live-e2e/live-e2e-harness.ts(321,35): error TS2550: Property 'findLastIndex' does not exist on type 'InvocationSnapshot[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2023' or later.
+../test-support/live-e2e/live-e2e-harness.ts(321,52): error TS7031: Binding element 'summary' implicitly has an 'any' type.
+../test-support/live-e2e/live-e2e-harness.ts(594,7): error TS2322: Type '(modelIdentifier: string, configInput: LLMFactoryConfigInput | undefined) => Promise<BaseLLM>' is not assignable to type 'AutoByteusLlmFactory'.
+  Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM>'.
+    Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM'.
+      Types of property 'model' are incompatible.
+        Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/models", { with: { "resolution-mode": "import" } }).LLMModel' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/models", { with: { "resolution-mode": "import" } }).LLMModel'.
+          Types have separate declarations of a private property '_name'.
+../test-support/live-e2e/live-e2e-harness.ts(595,47): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/llm-factory", { with: { "resolution-mode": "import" } }).LLMFactoryConfigInput | undefined' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/llm-factory", { with: { "resolution-mode": "import" } }).LLMFactoryConfigInput | undefined'.
+  Type 'LLMConfig' is not assignable to type 'LLMFactoryConfigInput | undefined'.
+    Type 'LLMConfig' is not assignable to type 'RawLlmConfigOverrides'.
+      Index signature for type 'string' is missing in type 'LLMConfig'.
+../test-support/live-e2e/live-e2e-harness.ts(597,7): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope", { with: { "resolution-mode": "import" } }).NativeCommandProcessScope' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/tools/terminal/command-execution/native-command-process-scope", { with: { "resolution-mode": "import" } }).NativeCommandProcessScope'.
+  Types have separate declarations of a private property 'observer'.
+../test-support/live-e2e/live-e2e-harness.ts(718,7): error TS2322: Type '(modelIdentifier: string, configInput: LLMFactoryConfigInput | undefined) => Promise<BaseLLM>' is not assignable to type 'AutoByteusLlmFactory'.
+  Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM>'.
+    Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM'.
+      Types of property 'model' are incompatible.
+        Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/models", { with: { "resolution-mode": "import" } }).LLMModel' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/models", { with: { "resolution-mode": "import" } }).LLMModel'.
+          Types have separate declarations of a private property '_name'.
+../test-support/live-e2e/live-e2e-harness.ts(719,65): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/llm-factory", { with: { "resolution-mode": "import" } }).LLMFactoryConfigInput | undefined' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/llm-factory", { with: { "resolution-mode": "import" } }).LLMFactoryConfigInput | undefined'.
+  Type 'LLMConfig' is not assignable to type 'LLMFactoryConfigInput | undefined'.
+    Type 'LLMConfig' is not assignable to type 'RawLlmConfigOverrides'.
+      Index signature for type 'string' is missing in type 'LLMConfig'.
+../test-support/live-e2e/live-e2e-harness.ts(726,7): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope", { with: { "resolution-mode": "import" } }).NativeCommandProcessScope' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/tools/terminal/command-execution/native-command-process-scope", { with: { "resolution-mode": "import" } }).NativeCommandProcessScope'.
+  Types have separate declarations of a private property 'observer'.
+../test-support/live-e2e/live-e2e-harness.ts(1012,50): error TS2345: Argument of type '{ messages: { role: MessageRole; content: string | null; toolPayload: ToolPayload | null; provenance: WorkingContextMessageProvenance | null; }[]; }' is not assignable to parameter of type 'InvocationSnapshot'.
+  Property 'summary' is missing in type '{ messages: { role: MessageRole; content: string | null; toolPayload: ToolPayload | null; provenance: WorkingContextMessageProvenance | null; }[]; }' but required in type 'InvocationSnapshot'.
+../test-support/live-e2e/live-e2e-harness.ts(1169,7): error TS2345: Argument of type 'SecretManagementProviderApiKeyResolver' is not assignable to parameter of type 'ProviderApiKeyResolver'.
+  The types returned by 'resolve(...)' are incompatible between these types.
+    Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>'.
+      Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+../test-support/live-e2e/live-e2e-harness.ts(1179,7): error TS2345: Argument of type 'SecretManagementProviderApiKeyResolver' is not assignable to parameter of type 'ProviderApiKeyResolver'.
+  The types returned by 'resolve(...)' are incompatible between these types.
+    Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>'.
+      Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+../test-support/live-e2e/live-e2e-harness.ts(1189,7): error TS2345: Argument of type 'SecretManagementProviderApiKeyResolver' is not assignable to parameter of type 'ProviderApiKeyResolver'.
+  The types returned by 'resolve(...)' are incompatible between these types.
+    Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>'.
+      Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+../test-support/live-e2e/live-e2e-harness.ts(1211,7): error TS2741: Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue'.
+[typecheck] new test file with errors: tests/unit/agent-execution/agent-provider-factory-builder.test.ts (1)
+[typecheck] new test file with errors: tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts (1)
+[typecheck] new test file with errors: tests/unit/agent-execution/backends/claude/session/claude-session-integration-environment.test.ts (1)
+[typecheck] more errors than the baseline: ../test-support/live-e2e/live-e2e-harness.ts (15, baseline 13)
+[typecheck] more errors than the baseline: tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts (4, baseline 1)
+[typecheck] more errors than the baseline: tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts (9, baseline 7)
+[typecheck] more errors than the baseline: tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts (2, baseline 1)
+[typecheck] more errors than the baseline: tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (6, baseline 4)
+[typecheck] fewer errors than the baseline: tests/unit/application-backend/socratic-lesson-target-address.test.ts (1, baseline 2)
+[typecheck] fewer errors than the baseline: tests/unit/application-backend/socratic-lesson-target-projection.test.ts (2, baseline 3)
+[typecheck] production errors: 0; test-file errors: 1214 in 374 files (baseline 1203 in 371 files)
+[typecheck] FAIL: the baseline only shrinks; fix the new or higher test-file errors above
+ ELIFECYCLE  Command failed with exit code 1.
+
+===== final-summary.txt =====
+HEAD 52aedc6237 + uncommitted drift fixes
+server-update exit 0 | [typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1203 in 371 files) [typecheck] baseline written: 1200 errors in 370 files (was 1203 in 371) 
+server-gate exit 0 | [typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files) [typecheck] PASS 
+drift tests exit 0 |  Test Files 6 passed | 1 skipped (7) Tests 97 passed | 2 skipped (99) 
+tamv exit 0
+trmf exit 0
+
+===== final-server-gate.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.1s
+[typecheck] server tests (tsconfig.tests.json): 1200 errors, exit 2, 21.6s
+[typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)
+[typecheck] PASS
+
+===== final-drift-tests.log =====
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:23541) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (35 tests) 20ms
+stdout | tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts (12 tests) 436ms
+(node:23557) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts (2 tests | 2 skipped)
+stdout | tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts (23 tests) 320ms
+stdout | tests/unit/agent-execution/agent-provider-factory-builder.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:23565) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/agent-provider-factory-builder.test.ts (23 tests) 9ms
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24119) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+Using temp workspace (ID: workspace-1) for agent.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+Tool 'run_bash' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+AgentRuntimeState initialized for agent_id 'run-allowed'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'run-allowed': No tools provided in config.
+Agent 'run-allowed': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'run-allowed'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'run-allowed' with config: 'Gitter'.
+AgentWorker initialized for agent_id 'run-allowed'.
+Registered AgentContext for agent_id 'run-allowed'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'run-allowed'. Context registered.
+Agent facade initialized for agent_id 'run-allowed'.
+Agent 'run-allowed' created and stored successfully.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives an allowed run's shell commands the variables, through a real core agent's context
+Removing agent 'run-allowed'. Attempting graceful shutdown.
+Agent 'run-allowed' requesting runtime to stop (timeout: 1s).
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives a run of an agent without access nothing
+Using temp workspace (ID: workspace-1) for agent.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives a run of an agent without access nothing
+Tool 'run_bash' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'Gitter' not found in registry. Skipping.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts > AutoByteus run integration shell environment > gives a run of an agent without access nothing
+Agent with ID 'run-allowed' not found for removal.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.test.ts (2 tests) 175ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-integration-environment.test.ts (2 tests) 4ms
+
+ Test Files  6 passed | 1 skipped (7)
+      Tests  97 passed | 2 skipped (99)
+   Start at  13:56:44
+   Duration  9.78s (transform 3.00s, setup 92ms, import 7.78s, tests 963ms, environment 0ms)
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+===== final-probe-results.txt =====
+## task-agent-monitor-visibility, final (socket routes)
+/tmp/h318/probes/tamv-final2/evidence.json
+result: Pass
+  API-E2E-TMV-001: Pass
+  API-E2E-TMV-002: Pass
+
+## task-agent-monitor-visibility, before the socket routes
+/tmp/h318/probes/tamv-final/evidence.json
+result: Fail
+  API-E2E-TMV-001: Pass
+  API-E2E-TMV-002: Pass
+  failure: {"id": "HARNESS", "description": "Run task Agent monitor visibility browser probe", "message": "Browser page/console errors were observed", "details": [{"type": "console:error", "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"}, {"type": "console:error", "text": "WebSocket connection to 'ws:
+
+## team-reload-member-freshness, final (E-005 sequence per DEC-007)
+/tmp/h318/probes/trmf-final2/evidence.json
+result: Pass
+  E-001: Pass
+  E-002: Pass
+  E-003: Pass
+  E-004: Pass
+  E-005: Pass
+  E-006: Pass
+  E-007: Pass
+
+## team-reload-member-freshness, before (E-005)
+/tmp/h318/probes/trmf-final/evidence.json
+result: Fail
+  E-001: Pass
+  E-002: Pass
+  E-003: Pass
+  E-004: Pass
+  E-005: Fail — AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    'ReloadAgentPackageDefinitions',
+    'GetAgentDefinitions',
++   'GetAgentTeamDefinitions'
+  ]
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteu
+  E-007: Pass
+
+## team-reload-member-freshness, first runs (packaging build stopped by pnpm under a fresh HOME)
+/tmp/h318/probes/trmf/evidence.json
+result: Fail
+  E-001: Fail — AssertionError [ERR_ASSERTION]: {"schemaVersion":1,"ok":false,"command":"start","error":{"code":"BUILD_FAILED","message":"pnpm build:electron:mac failed with exit code 1 in /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web"}}
+
+3 !== 0
+
+    at ChildProcess.<
+  E-007: Pass
+
+===== probe-refusal-integrations.log =====
+Refusing to write probe evidence into /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.YU7WdoA3a2/full: it is not empty (1 entries), and earlier evidence is never overwritten. Pass a fresh --output-dir, or omit it for a new per-run folder.
+exit 1
+

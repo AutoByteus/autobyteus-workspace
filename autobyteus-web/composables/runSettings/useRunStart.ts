@@ -1,7 +1,9 @@
 import { useRouter } from 'vue-router'
 import { useAgentOrgLaunchDraftStore } from '~/stores/agentOrgLaunchDraftStore'
-import { chatStartSettingsOf, useChatDraftStore, type ChatTarget } from '~/stores/chatDraftStore'
+import { useChatDraftStore, type ChatTarget } from '~/stores/chatDraftStore'
+import { chatStartSettingsOf, projectFolderOf, startDraftUnderProject } from '~/stores/chatDraftProjectChoice'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
+import { useProjectStore } from '~/stores/projectStore'
 import type { RunStartSettings } from '~/types/runSettings/RunSettings'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { loadTeamRunLaunchSeed } from '~/services/runConfigEditing/teamRunLaunchSeed'
@@ -140,5 +142,21 @@ export function useRunStart() {
     await router.push('/chat')
   }
 
-  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChat, newChatInWorkspace, openChatDraft }
+  /**
+   * projects-left-navigation (REQ-004): "+" on a Project (no target) or on one of its agent or team groups: New chat
+   * under that Project, in its first linked folder (else the temp workspace); the Project stays changeable until sent.
+   */
+  const newChatInProject = async (input: Readonly<{ projectId: string; target: Readonly<{ kind: 'agent' | 'team'; definitionId: string }> | null }>) => {
+    const target: ChatTarget | null = !input.target ? null : input.target.kind === 'team'
+      ? { kind: 'team', teamDefinitionId: input.target.definitionId }
+      : { kind: 'agent', agentDefinitionId: input.target.definitionId }
+    startDraftUnderProject(chatDraftStore, {
+      projectId: input.projectId,
+      folderRootPath: projectFolderOf(useProjectStore().getProjectById(input.projectId)),
+      target,
+    })
+    await router.push('/chat')
+  }
+
+  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChat, newChatInWorkspace, newChatInProject, openChatDraft }
 }

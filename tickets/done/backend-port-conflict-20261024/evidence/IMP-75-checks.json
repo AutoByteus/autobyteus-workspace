@@ -1,0 +1,86 @@
+{
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "base": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+  "cwd": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024",
+  "currentUniquePassingCases": 1110,
+  "composition": "246 core +575 server +156 Electron +123 unique web +10 core transport",
+  "initialFailure": "IMP69 was110 pass/10 fail, not all green; focused70 fixes storage test-host issue without source edits;28 prior cases rerun not counted twice",
+  "prerequisites": {
+    "IMP62": "clean frozen pnpm install exit0",
+    "IMP63": "clean pnpm -C autobyteus-server-ts build exit0; full core/SDK production compilers and smoke",
+    "IMP64": "compiled buildGraphqlSchema/printSchema export to IMP-64-integrated-schema.graphql exit0",
+    "IMP65": "repository codegen from absolute IMP64 SDL with DOTENV_CONFIG_PATH=/dev/null exit0",
+    "IMP70prepare": "clean pnpm -C autobyteus-web exec nuxt prepare exit0"
+  },
+  "checks": [
+    {
+      "id": "IMP-66",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal tests/unit/agent/context/agent-config.test.ts tests/unit/tools/tool-result-json.test.ts tests/unit/tools/mcp",
+      "log": "IMP-66-integrated-tests.log",
+      "exit": 0,
+      "summaries": [
+        "Test Files  34 passed (34)",
+        "Tests  246 passed (246)"
+      ]
+    },
+    {
+      "id": "IMP-67",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-provider-factory-builder.test.ts tests/unit/agent-execution/backends/autobyteus tests/unit/startup tests/unit/compositions tests/unit/shutdown tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts tests/unit/agent-execution/backends/codex/thread tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts tests/unit/api/graphql/agent-background-task-view.test.ts tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts --no-watch tests/unit/api/graphql/converters/mcp-server-input-and-view-mapping.test.ts tests/unit/mcp-server-management tests/unit/secret-management/mcp-secret-resolver.test.ts",
+      "log": "IMP-67-integrated-tests.log",
+      "exit": 0,
+      "summaries": [
+        "Test Files  51 passed (51)",
+        "Tests  575 passed (575)"
+      ]
+    },
+    {
+      "id": "IMP-68",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:electron --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__ electron/__tests__/nodeRegistryStore.spec.ts electron/__tests__/rendererConsoleDiagnostics.spec.ts electron/shell/__tests__",
+      "log": "IMP-68-integrated-tests.log",
+      "exit": 0,
+      "summaries": [
+        "Test Files  23 passed (23)",
+        "Tests  156 passed (156)"
+      ]
+    },
+    {
+      "id": "IMP-69",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:nuxt --run components/server/__tests__ components/progress/__tests__/BackgroundTaskPanel.spec.ts components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts stores/__tests__/windowNodeContextStore.spec.ts components/settings/__tests__/MemorySyncCard.spec.ts components/tools/__tests__/McpBulkImportView.spec.ts components/tools/__tests__/McpSecretMoveBanner.spec.ts components/tools/__tests__/McpServerCard.spec.ts components/tools/__tests__/McpServerFormModal.spec.ts utils/mcp/__tests__/mcpConfigRows.spec.ts utils/mcp/__tests__/mcpSecretReviewState.spec.ts",
+      "log": "IMP-69-integrated-tests.log",
+      "exit": 1,
+      "summaries": [
+        "Test Files  3 failed | 13 passed (16)",
+        "Tests  10 failed | 110 passed (120)"
+      ]
+    },
+    {
+      "id": "IMP-70",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" NODE_OPTIONS=--no-experimental-webstorage npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:nuxt --run components/tools/__tests__/McpSecretMoveBanner.spec.ts components/tools/__tests__/McpServerFormModal.spec.ts utils/mcp/__tests__/mcpSecretReviewState.spec.ts stores/__tests__/toolManagementStore.mcpImport.spec.ts stores/__tests__/toolManagementStore.mcpGateway.spec.ts",
+      "exit": 0,
+      "passed": 31,
+      "newUniqueCases": 3,
+      "correctedFailedCases": 10,
+      "evidence": "IMP-70-focused-web.log"
+    },
+    {
+      "id": "IMP-71",
+      "command": "env -i PATH=\"$PATH\" HOME=<IMP71-private-root>/home TMPDIR=<IMP71-private-root> UV_PROJECT_ENVIRONMENT=<IMP71-private-root>/venv UV_CACHE_DIR=<IMP71-private-root>/uv-cache autobyteus-ts/node_modules/.bin/vitest run --root autobyteus-ts tests/integration/tools/mcp/secret-reference-resolution.test.ts",
+      "exit": 0,
+      "passed": 10,
+      "evidence": "IMP-71-secret-transport.log",
+      "scope": "dummy resolver/values, real tiny Node and Python MCP transports; no live provider"
+    }
+  ],
+  "build": {
+    "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" CSC_IDENTITY_AUTO_DISCOVERY=false npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web build:electron:mac",
+    "exit": 0,
+    "evidence": "IMP-72-desktop-build.log",
+    "dmgVerifyCommand": "hdiutil verify autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.dmg",
+    "dmgVerifyExit": 0
+  },
+  "rendered": {
+    "commands": "private-HOME isolated-app start --app <current worktree .app> --data-root <private root>; IMP-73-control.mjs inspect, seed, states; IMP-73-quiet-quit.mjs; CLI stop returned instance",
+    "result": "passed; actual no-work app quit220ms, CLI already stopped/forced=false; sentinel retained/root disposed",
+    "limits": "frontend fixture/query interception, NOT actual provider or active shutdown acceptance"
+  }
+}

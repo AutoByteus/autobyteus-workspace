@@ -1,0 +1,44 @@
+# Check: IMP-05 (DS-002 reload specs)
+# Command: pnpm -C autobyteus-web test:nuxt --run stores/__tests__/fileExplorerReopen.spec.ts stores/__tests__/fileExplorerStore.spec.ts components/fileExplorer composables/__tests__/useAuthorizedObjectUrl.spec.ts composables/__tests__/useAuthorizedObjectUrl.reload.spec.ts
+# Commit: 486ba3c395
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/fileExplorerReopen.spec.ts stores/__tests__/fileExplorerStore.spec.ts components/fileExplorer composables/__tests__/useAuthorizedObjectUrl.spec.ts composables/__tests__/useAuthorizedObjectUrl.reload.spec.ts --reporter=verbose
+stderr | stores/__tests__/fileExplorerReopen.spec.ts
+stdout | stores/__tests__/fileExplorerReopen.spec.ts
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > a first open reads the file once, at revision 0
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > a first open reads the file once, at revision 0
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads a text file again on every open (link, link again, Files tab), one read each
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads a text file again on every open (link, link again, Files tab), one read each
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads a text file again on every open (link, link again, Files tab), one read each
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads a text file again on every open (link, link again, Files tab), one read each
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > keeps an unsaved edit: the committed content is read again, the draft stays
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > keeps an unsaved edit: the committed content is read again, the draft stays
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > keeps an unsaved edit: the committed content is read again, the draft stays
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > bumps the revision of a media file (same URL) and reads nothing itself
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > bumps the revision of a media file (same URL) and reads nothing itself
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > bumps the revision of a media file (same URL) and reads nothing itself
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > bumps the revision of a media file (same URL) and reads nothing itself
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads an embedded window's local text file again through the desktop app
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads an embedded window's local text file again through the desktop app
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads an embedded window's local text file again through the desktop app
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > switching tabs (setActiveFile) reads nothing
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > switching tabs (setActiveFile) reads nothing
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > switching tabs (setActiveFile) reads nothing
+stdout | stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > switching tabs (setActiveFile) reads nothing
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > a first open reads the file once, at revision 0 5ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads a text file again on every open (link, link again, Files tab), one read each 6ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > keeps an unsaved edit: the committed content is read again, the draft stays 5ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > bumps the revision of a media file (same URL) and reads nothing itself 1ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads an embedded window's local text file again through the desktop app 2ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > switching tabs (setActiveFile) reads nothing 5ms
+stderr | components/fileExplorer/__tests__/FileViewer.reload.spec.ts
+stdout | components/fileExplorer/__tests__/FileViewer.reload.spec.ts
+ ✓ composables/__tests__/useAuthorizedObjectUrl.reload.spec.ts > useAuthorizedObjectUrl reload by revision > a desktop window (no phone key) shows the URL itself first, and after a reload the bytes read again, uncached 9ms
+ ✓ composables/__tests__/useAuthorizedObjectUrl.reload.spec.ts > useAuthorizedObjectUrl reload by revision > an Electron local file reloads the same way (its scheme supports fetch) 2ms
+ ✓ composables/__tests__/useAuthorizedObjectUrl.reload.spec.ts > useAuthorizedObjectUrl reload by revision > a blob URL (already bytes) is shown as it is, even on a reload 1ms
+ ✓ components/fileExplorer/__tests__/FileViewer.reload.spec.ts > FileViewer reload on contentRevision > hands a media viewer the revision, with the same URL 8ms
+ ✓ components/fileExplorer/__tests__/FileViewer.reload.spec.ts > FileViewer reload on contentRevision > keeps the text editor mounted across a reload; it shows the new content 3ms
+ Test Files  18 passed (18)
+      Tests  105 passed (105)

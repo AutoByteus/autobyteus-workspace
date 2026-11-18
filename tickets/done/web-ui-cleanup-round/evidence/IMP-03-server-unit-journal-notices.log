@@ -1,0 +1,7 @@
+# IMP-03 server unit + journal + notice integration (AC-004, AC-009)
+# cmd: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/unit/available-agent-runtimes tests/unit/model-routing tests/unit/launch-preferences tests/unit/agent-collaboration tests/unit/application-platform tests/unit/application-orchestration tests/unit/agent-execution tests/unit/runtime-management tests/unit/skill-update-notices tests/unit/agent-memory tests/agent-work-journal tests/integration/skill-update-notices --no-watch
+# commit: a3dbfcb495  env: macOS, Node v22.23.1  date: 2026-10-28T16:03Z
+
+ Test Files  281 passed | 5 skipped (286)
+      Tests  2903 passed | 8 skipped (2911)
+   Duration  291.43s (transform 8.23s, setup 3.39s, import 104.61s, tests 153.96s, environment 17ms)

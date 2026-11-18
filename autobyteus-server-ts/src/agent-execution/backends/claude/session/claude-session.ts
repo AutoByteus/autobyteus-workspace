@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   logger,
@@ -44,6 +45,8 @@ import {
   type ClaudeSdkStreamingSession,
 } from "../../../../runtime-management/claude/client/claude-sdk-streaming-session.js";
 import type { ClaudeSdkQueryKind, ClaudeSdkSelectedBinding } from "../../../domain/claude-sdk-usage.js";
+import type { AgentBackgroundTask } from "../../../domain/agent-background-task.js";
+import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
 
@@ -154,8 +157,8 @@ export class ClaudeSession {
     return this.process.state;
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return this.taskRegistry.hasRunningTasks();
+  listBackgroundTasks(): readonly AgentBackgroundTask[] {
+    return this.taskRegistry.list();
   }
 
   getStatusSnapshotSource() {
@@ -190,6 +193,9 @@ export class ClaudeSession {
   }
 
   releaseAgentToolsMcp(): void { this.agentToolsMcpSessionState.release(this.runId); }
+
+  getAgentToolNames(): readonly string[] { return this.agentToolsMcpSessionState.currentToolNames(this.runContext); }
+  applyToolExposure(exposure: RuntimeAgentToolExposure): readonly string[] { return this.agentToolsMcpSessionState.applyExposure(this.runContext, exposure); }
 
   clearRuntimeListeners(): void {
     this.listeners.clear();
@@ -354,6 +360,7 @@ export class ClaudeSession {
       diagnostics,
       agentToolsMcpSessionState: this.agentToolsMcpSessionState,
       toolingCoordinator: this.dependencies.toolingCoordinator,
+      integrationRunAccess: this.dependencies.integrationRunAccess ?? null,
     }) });
   }
 
@@ -420,7 +427,8 @@ export class ClaudeSession {
       turnStarted: (turnId, origin) => this.handleTurnStarted(turnId, origin),
       notice: (turnId, content) => this.emitRuntimeEvent({
         method: ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION,
-        params: { turnId, sender_id: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID, content },
+        // One id per notice (autobyteus-526): the published notice and its recorded trace share it.
+        params: { turnId, sender_id: CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID, content, message_id: randomUUID() },
       }),
       turnContent: (turnId, frame) => this.projectTurnFrame(turnId, frame),
       turnResult: (turnId, frame, isErrorResult) => {

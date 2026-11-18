@@ -1,0 +1,6 @@
+{"rpc":"server/discover","authOk":true}
+{"rpc":"initialize","authOk":true}
+{"rpc":"notifications/initialized","authOk":true}
+{"method":"GET","authOk":true}
+{"rpc":"tools/list","authOk":true}
+{"rpc":"tools/call","authOk":true,"params":{"name":"lookup_order","arguments":{"order_id":"42"}}}

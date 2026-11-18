@@ -3,7 +3,9 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { LLMUserMessage } from 'autobyteus-ts/llm/user-message.js';
+// From autobyteus-ts source, the same module graph the live harness builds its LLMs from.
+import { LLMUserMessage } from '../../../../autobyteus-ts/src/llm/user-message.js';
+import type { ClaudeSdkStreamingSession } from '../../../src/runtime-management/claude/client/claude-sdk-streaming-session.js';
 import {
   LiveE2eHarness,
   type LiveE2ePreflight,
@@ -164,7 +166,6 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         try {
           const response = await safeExternalOperation(scenarioId, () => llm.sendUserMessage(
             new LLMUserMessage({ content: 'Reply with the single word pong.' }),
-            { logicalConversationId: `secure-secret-real-${scenarioId.replace('.', '-')}` },
           ));
           assertEvidenceClean(response);
           expect(response.content.trim().length).toBeGreaterThan(0);
@@ -182,7 +183,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
       }
 
       if (scenario.operation === 'audio') {
-        const client = await safeExternalOperation(scenarioId, () => execution.createAudioClient(scenario.model!));
+        const client = await safeExternalOperation(scenarioId, async () => execution.createAudioClient(scenario.model!));
         let generatedFile: string | undefined;
         try {
           const result = await safeExternalOperation(scenarioId, () => client.generateSpeech(
@@ -204,7 +205,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
       }
 
       if (scenario.operation === 'image') {
-        const client = await safeExternalOperation(scenarioId, () => execution.createImageClient(scenario.model!));
+        const client = await safeExternalOperation(scenarioId, async () => execution.createImageClient(scenario.model!));
         try {
           const result = await safeExternalOperation(scenarioId, () => client.generateImage(
             'A simple blue circle centered on a white background.',
@@ -220,9 +221,9 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
       if (scenario.operation === 'claude-api-key') {
         const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-api-key-real-e2e-'));
         const client = execution.createApiKeyClaudeClient();
-        let session: Awaited<ReturnType<typeof client.openStreamingSession>> | null = null;
+        let session: ClaudeSdkStreamingSession | null = null;
         try {
-          session = await safeExternalOperation(scenarioId, () => client.openStreamingSession({
+          session = await safeExternalOperation(scenarioId, () => client.beginStreamingSession({ resolveOptions: () => ({
             systemPrompt: '',
             sessionBinding: { kind: 'create', sessionId: randomUUID() },
             model: scenario.model!,
@@ -233,7 +234,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
             },
             mcpServers: {},
             allowedTools: [],
-          }));
+          }) }).open());
           session.send({
             type: 'user',
             uuid: randomUUID(),
@@ -250,7 +251,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           });
           expect(observedEvents).toBeGreaterThan(0);
         } finally {
-          session?.close();
+          session?.requestClose();
           await fs.rm(tempDirectory, { recursive: true, force: true });
         }
         return;

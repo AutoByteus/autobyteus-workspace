@@ -88,6 +88,18 @@ describe("Update notifications through the renderer's GraphQL documents", () => 
     expect(stored).toEqual([expect.objectContaining({ kind: "AGENT_PACKAGE", latestRevision: B, fromRevision: A, read: true })]);
   });
 
+  it("serves multi-argument mutations correctly from a second schema built in the same process", async () => {
+    // type-graphql 2.0.0-rc.3 appended every `@Arg` to its params cache again on each build, so the second build
+    // handed `clearUpdateNotification` its arguments shifted; 2.0.0-rc.4 rebuilds the cache from scratch.
+    const secondSchema = await buildGraphqlSchema();
+    const clear = vi.spyOn(UpdateNotificationService.prototype, "clear").mockResolvedValue([]);
+    const result = await graphql({ schema: secondSchema, source: documents.CLEAR_UPDATE_NOTIFICATION!,
+      variableValues: { kind: "AGENT_PACKAGE", sourceId: "github:acme/agents" } });
+    expect(result.errors).toBeUndefined();
+    expect(clear).toHaveBeenCalledExactlyOnceWith("AGENT_PACKAGE", "github:acme/agents");
+    clear.mockRestore();
+  });
+
   it("lists package notifications while the skill source registry is unreadable (CR-001)", async () => {
     fs.mkdirSync(path.join(data, "skill-sources", "github"), { recursive: true });
     fs.writeFileSync(path.join(data, "skill-sources", "github", "registry.json"), "{not json");

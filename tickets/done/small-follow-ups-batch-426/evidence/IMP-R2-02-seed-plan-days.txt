@@ -1,0 +1,49 @@
+# IMP-R2-02 D-21 seed plan: three distinct partial-pricing days on every day of the month
+# Commands: node /tmp/ie426-scratch/oldplan.mjs (the base rule, copied); node /tmp/ie426-scratch/plancheck.mjs autobyteus-web/tests/e2e/token-statistics-seed.mjs (the new tokenStatisticsFixturePlan)
+# Days checked: every day of Jan, Feb, Mar, Nov, Dec 2026 at 12:00 UTC; 2026-11-08
+## base rule (reproduction)
+old rule 2026-12-01 2026-12-01,2026-12-01,2026-12-01
+old rule 2026-12-07 2026-12-07,2026-12-07,2026-12-07
+old rule 2026-12-08 2026-12-08,2026-12-08,2026-12-08
+old rule 2026-12-20 2026-12-12,2026-12-13,2026-12-14
+{"oldRule":{"days":151,"daysWithCollidingPartialBuckets":65}}
+## new plan
+{"checked":151,"failures":[]}
+2026-12-01 2026-11-27 2026-11-28,2026-11-29,2026-11-30 full partial
+2026-12-07 2026-12-04 2026-12-05,2026-12-06,2026-12-07 partial before_tracking
+2026-12-20 2026-12-11 2026-12-12,2026-12-13,2026-12-14 partial before_tracking
+## scripts
+#   const dayStart = (d) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+#   const addDays = (d, n) => new Date(d.getTime() + n * 86400000);
+#   let colliding = 0, total = 0;
+#   for (const month of [0, 1, 2, 10, 11]) for (let day = 1; day <= 31; day += 1) {
+#     const now = new Date(Date.UTC(2026, month, day, 12)); if (now.getUTCMonth() !== month) continue;
+#     const today = dayStart(now), monthStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+#     const dom = today.getUTCDate(), coverageDay = Math.min(11, Math.max(1, dom - 1));
+#     const coverageStart = addDays(monthStart, coverageDay - 1), fixtureDays = Math.max(1, dom - coverageDay + 1);
+#     const partial = [1, 2, 3].map((o) => addDays(coverageStart, Math.min(o, fixtureDays - 1)).toISOString().slice(0, 10));
+#     total += 1; if (new Set(partial).size < 3) colliding += 1;
+#     if (['2026-12-01', '2026-12-07', '2026-12-08', '2026-12-20'].includes(today.toISOString().slice(0, 10))) console.log('old rule', today.toISOString().slice(0, 10), partial.join(','));
+#   }
+#   console.log(JSON.stringify({ oldRule: { days: total, daysWithCollidingPartialBuckets: colliding } }));
+#   const { tokenStatisticsFixturePlan } = await import(process.argv[2]);
+#   const failures = [];
+#   let checked = 0;
+#   for (const month of [0, 1, 2, 10, 11]) for (let day = 1; day <= 31; day += 1) {
+#     const now = new Date(Date.UTC(2026, month, day, 12));
+#     if (now.getUTCMonth() !== month) continue;
+#     const p = tokenStatisticsFixturePlan(now);
+#     const days = p.partialDays.map((d) => d.toISOString());
+#     const distinct = new Set(days).size === 3;
+#     const inside = p.partialDays.every((d) => d >= p.coverageStart && d <= p.today) && p.singleDay >= p.coverageStart && p.singleDay <= p.today;
+#     const thisMonthOk = p.coverageBeforeMonth ? p.thisMonthCoverage === 'full' : p.coverageStart > p.monthStart && p.thisMonthCoverage === 'partial';
+#     const prevStart = new Date(Date.UTC(2026, month - 1, 1));
+#     const lastMonthOk = p.coverageBeforeMonth ? p.coverageStart > prevStart && p.lastMonthCoverage === 'partial' : p.lastMonthCoverage === 'before_tracking';
+#     checked += 1;
+#     if (!distinct || !inside || !thisMonthOk || !lastMonthOk) failures.push({ now: now.toISOString(), days, coverageStart: p.coverageStart.toISOString(), distinct, inside, thisMonthOk, lastMonthOk });
+#   }
+#   console.log(JSON.stringify({ checked, failures }));
+#   for (const day of ['2026-12-01', '2026-12-07', '2026-12-20']) {
+#     const p = tokenStatisticsFixturePlan(new Date(`${day}T12:00:00.000Z`));
+#     console.log(day, p.coverageStart.toISOString().slice(0, 10), p.partialDays.map((d) => d.toISOString().slice(0, 10)).join(','), p.thisMonthCoverage, p.lastMonthCoverage);
+#   }

@@ -1,0 +1,879 @@
+{
+  "startedAt": "2026-11-06T14:48:48.526Z",
+  "device": {
+    "model": "sdk_gphone64_arm64",
+    "sdk": "35",
+    "webview": "com.google.android.webview, 124.0.6367.219"
+  },
+  "cases": {
+    "ADR-01": {
+      "result": "Pass",
+      "rows": 13,
+      "firstRowsAfterPairMs": 542,
+      "layout": {
+        "width": 412,
+        "height": 839,
+        "dpr": 2.625,
+        "horizontalScroll": false,
+        "secure": false,
+        "randomUUID": "undefined"
+      }
+    },
+    "ADR-02": {
+      "result": "Pass",
+      "filesWalk": [
+        "files",
+        "run",
+        "list"
+      ],
+      "referenceWalk": [
+        "messages",
+        "run",
+        "list"
+      ]
+    },
+    "ADR-05": {
+      "result": "Pass",
+      "bars": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 136,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 0,
+          "bottom": 0,
+          "visible": false
+        },
+        "webView": {
+          "top": 136,
+          "bottom": 2337
+        }
+      },
+      "statusBarBottomPx": 136,
+      "menuButtonCss": {
+        "top": 3.6190476417541504,
+        "bottom": 51.61904764175415,
+        "dpr": 2.625,
+        "innerHeight": 839
+      },
+      "menuButtonDevicePx": {
+        "top": 10,
+        "bottom": 136
+      },
+      "atCenter": {
+        "x": 1009,
+        "y": 209,
+        "centerY": 209
+      },
+      "openedByCenterTap": 1,
+      "below": {
+        "x": 1009,
+        "y": 209,
+        "centerY": 209
+      },
+      "openedByLowerTap": 1,
+      "underStatusBarCss": 48
+    },
+    "ADR-06": {
+      "result": "Pass",
+      "marker": "ADR06MW53BWS0",
+      "reached": true,
+      "shown": true,
+      "context": {
+        "secure": false,
+        "randomUUID": "undefined"
+      }
+    },
+    "ADR-07": {
+      "result": "Fail",
+      "error": "keyboard: {\"sdk\":\"35\",\"closed\":{\"statusBars\":{\"top\":0,\"bottom\":136,\"visible\":true},\"navigationBars\":{\"top\":2337,\"bottom\":2400,\"visible\":true},\"ime\":{\"top\":0,\"bottom\":0,\"visible\":false},\"webView\":{\"top\":136,\"bottom\":2337}},\"open\":{\"statusBars\":{\"top\":0,\"bottom\":136,\"visible\":true},\"navigationBars\":{\"top\":2337,\"bottom\":2400,\"visible\":true},\"ime\":{\"top\":1517,\"bottom\":2400,\"visible\":true},\"webView\":{\"top\":136,\"bottom\":1517}},\"composer\":{\"textareaBottom\":173.33333587646484,\"sendBottom\":172.1904754638672,\"innerHeight\":527,\"dpr\":2.625,\"safeBottom\":null,\"focused\":true,\"value\":\"typing with the keyboard\"},\"sendBottomPx\":588,\"gapToKeyboard\":929,\"layout\":{\"innerHeight\":527,\"visualViewport\":{\"height\":527,\"offsetTop\":0},\"scrollY\":0,\"conversationScrollTop\":330.28570556640625,\"screen\":{\"tag\":\"SECTION\",\"testid\":\"mobile-run-screen\",\"cls\":\"fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900\",\"top\":0,\"bottom\":527,\"h\":527,\"pb\":\"0px\",\"mb\":\"0px\"},\"screenChildren\":[{\"tag\":\"HEADER\",\"testid\":null,\"cls\":\"relative flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-1 pr-1\",\"top\":0,\"bottom\":56,\"h\":56,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":\"mobile-run-conversation\",\"cls\":\"flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 over\",\"top\":56,\"bottom\":527,\"h\":471,\"pb\":\"16px\",\"mb\":\"0px\"}],\"conversationChildren\":[{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"relative h-full min-h-0 min-h-0 flex-1\",\"top\":-258,\"bottom\":48,\"h\":306,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"shrink-0\",\"top\":60,\"bottom\":181,\"h\":121,\"pb\":\"0px\",\"mb\":\"0px\"}],\"chain\":[{\"tag\":\"TEXTAREA\",\"testid\":null,\"cls\":\"composer-text relative w-full border-0 focus:ring-0 focus:outline-none resize-none bg-tran\",\"top\":105,\"bottom\":173,\"h\":68,\"pb\":\"10px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"relative flex-grow\",\"top\":105,\"bottom\":180,\"h\":75,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"flex flex-col bg-white\",\"top\":105,\"bottom\":180,\"h\":75,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"border-t border-gray-100 rounded-b-xl\",\"top\":105,\"bottom\":180,\"h\":76,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"rounded-xl border border-gray-200 bg-white shadow-sm focus-within:ring-2 focus-within:ring\",\"top\":60,\"bottom\":181,\"h\":121,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"shrink-0\",\"top\":60,\"bottom\":181,\"h\":121,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":\"mobile-run-conversation\",\"cls\":\"flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 over\",\"top\":56,\"bottom\":527,\"h\":471,\"pb\":\"16px\",\"mb\":\"0px\"},{\"tag\":\"SECTION\",\"testid\":\"mobile-run-screen\",\"cls\":\"fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900\",\"top\":0,\"bottom\":527,\"h\":527,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"MAIN\",\"testid\":\"mobile-remote-access-shell\",\"cls\":\"min-h-screen bg-white text-slate-900\",\"top\":0,\"bottom\":527,\"h\":527,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"\",\"top\":0,\"bottom\":527,\"h\":527,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"\",\"top\":0,\"bottom\":527,\"h\":527,\"pb\":\"0px\",\"mb\":\"0px\"}],\"keyboardInset\":null,\"virtualKeyboard\":null},\"noDoublePadding\":true,\"composerAboveKeyboard\":false}"
+    },
+    "ADR-04": {
+      "result": "Pass",
+      "listed": true,
+      "listedAfterMs": 3112,
+      "inFront15s": 3,
+      "inBackground25s": 0,
+      "readsAfterFront": [
+        1676
+      ],
+      "created": {
+        "success": true,
+        "runId": "fact_checker_5771dd728b1e4a708622e38eb5939efd"
+      }
+    },
+    "ADR-03": {
+      "result": "Pass",
+      "afterRestart": "list",
+      "notice": "Unsupported on phone The desktop workspace isn’t on the phone. Your runs are here.",
+      "confirmShown": 1,
+      "confirmOnTop": true,
+      "afterUnpairTap": "pairing"
+    }
+  },
+  "network": [
+    {
+      "at": 1793976541159,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541160,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541179,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976541180,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541180,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541186,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541232,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541236,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541237,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541240,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541269,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541282,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541283,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541283,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541289,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541320,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541320,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541320,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541355,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541355,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541356,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541387,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541388,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541388,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541420,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541421,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541422,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541451,
+      "op": "GetTeamRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541471,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541471,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541512,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541522,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976541522,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976544734,
+      "op": "GetFolderChildren",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976544774,
+      "op": "GetFolderChildren",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976545308,
+      "op": "GetFolderChildren",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976546729,
+      "op": "GetFileContent",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976549259,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976549259,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976552302,
+      "op": "CollaborationParticipantMessages",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976556008,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976556011,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976565565,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976565568,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567201,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567201,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567202,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567202,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567202,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567305,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976567305,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976574345,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976574346,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976587242,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976587245,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976592263,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976592264,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976597294,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976597295,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976602278,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976602278,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976607264,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976607264,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976612257,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976612265,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644500,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976644500,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644528,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644530,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644534,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644541,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644574,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644612,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644622,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644622,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644676,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644677,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644677,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644725,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644741,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644744,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644744,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644782,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644783,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644783,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644824,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644824,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644824,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644854,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644854,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644854,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644884,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644885,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644885,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644916,
+      "op": "GetTeamRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644933,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644934,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976644962,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976651969,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976651969,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652026,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652027,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652028,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652028,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652078,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652105,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652108,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652123,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652400,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652400,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652400,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652400,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976652409,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653628,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793976653629,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653630,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653630,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653630,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653630,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653672,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653739,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653739,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653741,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653775,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653795,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653795,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653796,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653801,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653836,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653836,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653836,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653873,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653874,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653874,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653916,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653916,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653916,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653955,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653956,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653956,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653989,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653989,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976653989,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976654026,
+      "op": "GetTeamRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976654048,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976654048,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976654076,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976654088,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976654088,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976656049,
+      "op": "GetRemoteCollaborationSettings",
+      "window": "omitted"
+    },
+    {
+      "at": 1793976656079,
+      "op": "GetPeerNodeOffer",
+      "window": "omitted"
+    }
+  ],
+  "notes": [],
+  "finishedAt": "2026-11-06T14:51:00.164Z"
+}

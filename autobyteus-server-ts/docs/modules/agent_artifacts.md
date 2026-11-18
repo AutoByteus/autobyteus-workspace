@@ -43,7 +43,8 @@ Team Communication.
   - `src/api/rest/run-file-changes.ts`
 - Team Communication references for accepted `recipient_address` deliveries:
   - `src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
-  - `src/services/team-communication/team-communication-service.ts`
+  - `src/agent-collaboration/execution/communication/root-communication-engine.ts` (with the Team root's `RootCommunicationPort`; see [Agent Communication](./agent_communication.md#teammate-delivery-path))
+  - `src/agent-collaboration/execution/communication/root-message-append.ts`
   - `src/services/team-communication/team-communication-store.ts`
   - `src/services/team-communication/team-communication-projection-service.ts`
   - `src/services/team-communication/team-communication-content-service.ts`
@@ -88,10 +89,8 @@ Team Communication.
     `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content`.
   - org member: `getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)`
     and `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...`.
-  - a standalone run's delegated copy:
-    `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`
-    and `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...`
-    (see [Standalone Agent Run Root](./standalone_agent_run_root.md)).
+  - a run another run delegated to is a run of its own (autobyteus-461): it is read by its own identity
+    (its run, or its team run's member), never through the run that delegated to it.
 - The family's member-view service locates a member inside the named root, and
   `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection` /
   `resolveLocatedCollaborationMemberEntry` serve the located member: live while

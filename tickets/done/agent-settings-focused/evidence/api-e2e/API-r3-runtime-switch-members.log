@@ -1,0 +1,10 @@
+# RSM (autobyteus-348's probe, reworked here for focused Settings): pnpm -C autobyteus-web test:e2e:runtime-switch-members --output-dir <fresh>; merged head ebf20e056f; 2026-11-02. Scripted LM Studio stand-in and scripted AGY; owned stack.
+# Look for: RSM-01..RSM-07 Pass.
+
+RSM-01 Pass
+RSM-02 Pass
+RSM-03 Pass
+RSM-04 Pass
+RSM-05 Pass
+RSM-06 Pass
+RSM-07 Pass

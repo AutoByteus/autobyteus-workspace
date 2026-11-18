@@ -21,11 +21,7 @@ it("finalizes and reads only the selected execution despite repeated address and
   const teamDir = path.join(memoryDir, "agent_teams", "team");
   await fs.mkdir(teamDir, { recursive: true });
   const tree = testExecutionTree({ rootTeamRunId: "team", children: [testAgentNode("/worker", { agentRunId: "configured" })], coordinatorAddress: "/worker" });
-  // Written as the app writes it: the task agent's own file at `agents/task/`, its link in the team tree.
-  await new TeamRunExecutionTreeStore().write(teamDir, validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [
-    { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z",
-      source: { kind: "agent", agentDefinitionId: "worker", launchConfiguration: tree.rootTeam.defaultLaunchConfiguration } },
-  ] } }, "team"));
+  await new TeamRunExecutionTreeStore().write(teamDir, validateTeamRunExecutionTreePayload(tree, "team"));
   await fs.writeFile(path.join(teamDir, "team_communication_messages_active.jsonl"), "");
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });
   const resolver = () => new ContextFileOwnerResolver({ memoryDir, locations: createStoredTeamRunExecutionTreeLocationService(memoryDir) });
@@ -34,7 +30,7 @@ it("finalizes and reads only the selected execution despite repeated address and
   const filename = "ctx_unique__notes.txt";
   const draftFile = layout.getDraftFilePath(draftOwner, filename);
   await fs.mkdir(path.dirname(draftFile), { recursive: true }); await fs.writeFile(draftFile, "configured bytes");
-  // The task agent is a normal run: its memory (and context files) at `agents/<agentRunId>/` (contract L1).
+  // A run the member delegated to is its own run (autobyteus-461): its files at `agents/<agentRunId>/`, never the team's.
   const otherFile = path.join(memoryDir, "agents", "task", "context_files", filename);
   await fs.mkdir(path.dirname(otherFile), { recursive: true }); await fs.writeFile(otherFile, "retained task bytes");
   const finalOwner = { kind: "team_member_final" as const, teamRunId: "team", agentRunId: "configured" };
@@ -45,7 +41,7 @@ it("finalizes and reads only the selected execution despite repeated address and
   expect(file?.locator).toBe(`/rest/team-runs/team/agent-runs/configured/context-files/${filename}`);
   const reader = new ContextFileReadService(layout, cleanup, resolver());
   expect(await fs.readFile((await reader.getFinalFilePath(finalOwner, filename))!, "utf8")).toBe("configured bytes");
-  expect(await fs.readFile((await reader.getFinalFilePath({ ...finalOwner, agentRunId: "task" }, filename))!, "utf8")).toBe("retained task bytes");
+  await expect(reader.getFinalFilePath({ ...finalOwner, agentRunId: "task" }, filename)).rejects.toThrow("Unable to resolve");
   const local = new ContextFileLocalPathResolver({ layout, ownerResolver: resolver(), baseUrl: "http://localhost:8000" });
   expect(await fs.readFile(local.resolve(file!.locator)!, "utf8")).toBe("configured bytes");
   expect(local.resolve(`/rest/team-runs/other/agent-runs/configured/context-files/${filename}`)).toBeNull();

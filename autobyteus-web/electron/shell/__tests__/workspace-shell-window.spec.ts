@@ -29,6 +29,8 @@ vi.mock('electron', () => {
 
     private readonly listeners = new Map<string, Array<() => void>>()
     private destroyed = false
+    minimized = false
+    visible = true
 
     constructor() {
       electronMockState.windows.push(this)
@@ -51,10 +53,33 @@ vi.mock('electron', () => {
     }
 
     isMinimized(): boolean {
-      return false
+      return this.minimized
     }
 
-    restore(): void {}
+    isVisible(): boolean {
+      return this.visible
+    }
+
+    minimize(): void {
+      this.minimized = true
+      this.emit('minimize')
+    }
+
+    restore(): void {
+      this.minimized = false
+      this.emit('restore')
+    }
+
+    hide(): void {
+      this.visible = false
+      this.emit('hide')
+    }
+
+    show(): void {
+      this.visible = true
+      this.emit('show')
+    }
+
     focus(): void {}
 
     close(): void {
@@ -72,7 +97,7 @@ import { WorkspaceShellWindow } from '../workspace-shell-window'
 
 const createShell = (): WorkspaceShellWindow =>
   new WorkspaceShellWindow({
-    nodeId: 'node-1',
+    entryId: 'node-1',
     startUrl: 'http://localhost:3000',
     preloadPath: '/tmp/preload.js',
     iconPath: '/tmp/icon.png',
@@ -112,5 +137,35 @@ describe('WorkspaceShellWindow', () => {
 
     expect(browserWindow.contentView.added).toEqual([view])
     expect(browserWindow.contentView.removed).toEqual([view])
+  })
+
+  it('holds the browser view only while the window is shown, not while it is minimized or hidden', () => {
+    const shell = createShell()
+    const browserWindow = electronMockState.windows[0]!
+    const view = { setBounds: () => undefined }
+
+    shell.updateBrowserHostBounds({ x: 0, y: 0, width: 1000, height: 900 })
+    shell.attachBrowserView(view as any)
+    browserWindow.minimize()
+    expect(browserWindow.contentView.removed).toEqual([view])
+    browserWindow.restore()
+    expect(browserWindow.contentView.added).toEqual([view, view])
+    browserWindow.hide()
+    expect(browserWindow.contentView.removed).toEqual([view, view])
+    browserWindow.show()
+    expect(browserWindow.contentView.added).toEqual([view, view, view])
+  })
+
+  it('does not attach a view chosen while the window is minimized until it is restored', () => {
+    const shell = createShell()
+    const browserWindow = electronMockState.windows[0]!
+    const view = { setBounds: () => undefined }
+
+    shell.updateBrowserHostBounds({ x: 0, y: 0, width: 1000, height: 900 })
+    browserWindow.minimize()
+    shell.attachBrowserView(view as any)
+    expect(browserWindow.contentView.added).toEqual([])
+    shell.focus()
+    expect(browserWindow.contentView.added).toEqual([view])
   })
 })

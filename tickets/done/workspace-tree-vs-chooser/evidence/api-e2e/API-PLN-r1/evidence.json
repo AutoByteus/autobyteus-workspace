@@ -1,0 +1,305 @@
+{
+  "startedAt": "2026-11-05T21:12:49.434Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PLN-01": {
+      "result": "Pass",
+      "description": "353 AC-001 (user's case): a Workspaces run hosting Tasks of 3 Projects is in no Project; it stays in Workspaces with its work; modes keep the run; mode remembered",
+      "startedAt": "2026-11-05T21:13:08.993Z",
+      "finishedAt": "2026-11-05T21:13:13.760Z",
+      "details": {
+        "W": "project_task_manager_c617_9293a16e7cb340b786c888196f01f959",
+        "wCopies": [
+          "release_notes_writer_c617_704c6d4c09164fe5bf3fba42c4963ef2",
+          "release_notes_writer_c617_a9d28c6afce343798f4e3fb880929bed",
+          "fact_checker_c617_a1e27da93f79467f9a372d93fab888df"
+        ],
+        "projectNames": [],
+        "hints": {
+          "noRuns": "No Project has a run yet\n\nA Project is listed here once it has a run. Your Projects are on the Projects page."
+        },
+        "inProjects": {
+          "runRows": 0,
+          "copyRows": 0,
+          "orgGroups": 0
+        },
+        "marked": [
+          "project_task_manager_c617_9293a16e7cb340b786c888196f01f959"
+        ],
+        "remembered": "Projects"
+      }
+    },
+    "PLN-02": {
+      "result": "Pass",
+      "description": "347 AC-003: \"+\" on P → agent → send → listed under P at once; P folder; ## Project prompt; in Workspaces under its folder",
+      "startedAt": "2026-11-05T21:13:13.762Z",
+      "finishedAt": "2026-11-05T21:13:18.090Z",
+      "details": {
+        "runId": "project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52",
+        "chip": "Prototype Launch c617",
+        "chipAria": "Project: Prototype Launch c617",
+        "listedMs": 212,
+        "startedUnder": [
+          {
+            "kind": "agent",
+            "runId": "project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52"
+          }
+        ],
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-iHyNbo/p-folder",
+        "promptSection": "## Project\n\nYou work in the Project Prototype Launch c617 (Project ID project_32030cd8-ae16-462b-adc7-3bce5a2e482e). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environment\n- Agent"
+      }
+    },
+    "PLN-03": {
+      "result": "Pass",
+      "description": "347 AC-015/AC-004: chip — first of two folders, temp for none, picked folder kept, \"No project\" plain",
+      "startedAt": "2026-11-05T21:13:18.090Z",
+      "finishedAt": "2026-11-05T21:13:29.928Z",
+      "details": {
+        "chipBefore": "Temp workspace",
+        "chipR": "Website c617",
+        "rFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-iHyNbo/r-first",
+        "chipQ": "Docs Site c617",
+        "qFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-iHyNbo/temp_workspace",
+        "chipPicked": "Website c617 · picked-folder",
+        "pickedFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-iHyNbo/picked-folder",
+        "chipNone": "p-folder",
+        "runtimeOfRuns": [
+          "antigravity_cli",
+          "antigravity_cli",
+          "antigravity_cli",
+          "antigravity_cli"
+        ],
+        "rListed": [
+          "project_task_manager_c617_a7aba745d8aa4d6da635207b299ebb5b",
+          "project_task_manager_c617_437393a7e0214af496b89ab599c83a40"
+        ],
+        "rRun": "project_task_manager_c617_437393a7e0214af496b89ab599c83a40",
+        "qRun": "project_task_manager_c617_af3252d0b942487c957fa3693d6f1698",
+        "pickedRun": "project_task_manager_c617_a7aba745d8aa4d6da635207b299ebb5b",
+        "plainRun": "project_task_manager_c617_532d371cabc54ccd8c6a37eaafa729ad"
+      }
+    },
+    "PLN-04": {
+      "result": "Pass",
+      "description": "353 AC-003, 347 AC-005: Team under P listed once; \"+\" on P's agent group",
+      "startedAt": "2026-11-05T21:13:29.929Z",
+      "finishedAt": "2026-11-05T21:13:34.743Z",
+      "details": {
+        "chip": "Prototype Launch c617",
+        "teamRunId": "docs_review_team_c617_875eea2844914ab4ac11ad78486d7d11",
+        "recordedMs": 173,
+        "listedMs": 384,
+        "teamWorkspace": true,
+        "chipGroup": "Prototype Launch c617",
+        "second": "project_task_manager_c617_a2fdaf055e87482383972b8b0c222785",
+        "secondFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-iHyNbo/p-folder"
+      }
+    },
+    "PLN-05": {
+      "result": "Pass",
+      "description": "353 AC-002, 347 AC-006/010: P Team with Task line and members, Q and Temp work all nested under the run in P live; not under Q; board",
+      "startedAt": "2026-11-05T21:13:34.744Z",
+      "finishedAt": "2026-11-05T21:14:10.000Z",
+      "details": {
+        "teamRowMs": 814,
+        "taskLine": "Review the launch checklist",
+        "memberOpened": "R\nreviewer\nIdle\nR\nreviewer\n\nYou have a new task from the agent with sender address “/project_task_manager_c617” and sender run id “project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52”.\nWhen you finish, or need something you can’t get yourself, tell that agent using send_message_to with recipi",
+        "qTaskLineUnderP": "Check the docs links",
+        "rowsOfAInProjectsMode": 1,
+        "aUnderQ": 0,
+        "copiesUnderQ": 0,
+        "boardProject": "project:project_32030cd8-ae16-462b-adc7-3bce5a2e482e",
+        "locatedTaskId": "project_task_9091d5e2-a3d3-489b-8b41-bffed6c0781c",
+        "qCopy": "fact_checker_c617_786a071020aa48f5a2f06694804a75f0",
+        "tempCopy": "release_notes_writer_c617_3b0ca0c403c34de3bced89b9f8e07983",
+        "wCopy": "release_notes_writer_c617_d44ff52c5d8941859e81748b734fba37",
+        "squad": "docs_review_team_c617_a5595ee51b464f7b9acaa6682d723c4b"
+      }
+    },
+    "PLN-06": {
+      "result": "Pass",
+      "description": "347 AC-008: DONE removes rows live; reopen + message brings them back",
+      "startedAt": "2026-11-05T21:14:10.000Z",
+      "finishedAt": "2026-11-05T21:14:12.580Z",
+      "details": {
+        "closed": "docs_review_team_c617_a5595ee51b464f7b9acaa6682d723c4b",
+        "memberConversationEntries": 2
+      }
+    },
+    "PLN-07": {
+      "result": "Pass",
+      "description": "353 REQ-001/DEC-003: 6 newest only, no pinning; listed again after archives and opens",
+      "startedAt": "2026-11-05T21:14:12.580Z",
+      "finishedAt": "2026-11-05T21:14:17.938Z",
+      "details": {
+        "pListed": [
+          "project_task_manager_c617_3b85c138019c4c618be8fab7005fb3a4",
+          "project_task_manager_c617_9d1d161c985041b0afe59d8d8f6c728c",
+          "project_task_manager_c617_821db40b5ff74518bb9e8667abbb0972",
+          "project_task_manager_c617_05fdec568e664914b49295f032e6298e",
+          "project_task_manager_c617_9463d033437448d69580e20a71ab2338",
+          "project_task_manager_c617_156148834bef4642b09bfbbc536dccfa"
+        ],
+        "pListedAfterArchive": [
+          "project_task_manager_c617_3b85c138019c4c618be8fab7005fb3a4",
+          "project_task_manager_c617_9d1d161c985041b0afe59d8d8f6c728c",
+          "project_task_manager_c617_821db40b5ff74518bb9e8667abbb0972",
+          "project_task_manager_c617_a2fdaf055e87482383972b8b0c222785",
+          "project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52"
+        ],
+        "newer": [
+          "project_task_manager_c617_156148834bef4642b09bfbbc536dccfa",
+          "project_task_manager_c617_9463d033437448d69580e20a71ab2338",
+          "project_task_manager_c617_05fdec568e664914b49295f032e6298e",
+          "project_task_manager_c617_821db40b5ff74518bb9e8667abbb0972",
+          "project_task_manager_c617_9d1d161c985041b0afe59d8d8f6c728c",
+          "project_task_manager_c617_3b85c138019c4c618be8fab7005fb3a4"
+        ],
+        "A": "project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52"
+      }
+    },
+    "PLN-08": {
+      "result": "Fail",
+      "description": "353 AC-004 reconnect: real backend restart keeps the tree; Project created after it live; current after reload",
+      "startedAt": "2026-11-05T21:14:17.939Z",
+      "finishedAt": "2026-11-05T21:15:22.543Z",
+      "message": "Timed out: Project created after the restart listed live"
+    },
+    "PLN-09-stop-observation": {
+      "running": [
+        "project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52"
+      ],
+      "serverActiveAfterStop": [
+        false
+      ],
+      "projectsStopButtonsAfter5s": 0,
+      "teamStopShownBefore": 1,
+      "teamStopShownAfter5s": 0,
+      "workspacesStopButtons": [],
+      "projectsStopButtonsAfterModeSwitch": 0
+    },
+    "PLN-09": {
+      "result": "Pass",
+      "description": "353 AC-004: archive and delete in Projects mode, Agent and Team Stop read stopped, group Archive all scoped, deleted Project leaves live",
+      "startedAt": "2026-11-05T21:15:22.545Z",
+      "finishedAt": "2026-11-05T21:15:26.345Z",
+      "details": {
+        "stopDiag": {
+          "running": [
+            "project_task_manager_c617_67af9793e6874cbca0e1f95992f64a52"
+          ],
+          "serverActiveAfterStop": [
+            false
+          ],
+          "projectsStopButtonsAfter5s": 0,
+          "teamStopShownBefore": 1,
+          "teamStopShownAfter5s": 0,
+          "workspacesStopButtons": [],
+          "projectsStopButtonsAfterModeSwitch": 0
+        },
+        "aButtons": [
+          "terminate-agent-run"
+        ],
+        "archived": "project_task_manager_c617_3b85c138019c4c618be8fab7005fb3a4",
+        "deleted": "project_task_manager_c617_9d1d161c985041b0afe59d8d8f6c728c",
+        "blockedToast": true,
+        "dialogText": "Archive all runs? Project Task Manager c617 · 3 runs will be hidden from history. Cancel Archive all",
+        "remainingInP": [],
+        "outsider": "project_task_manager_c617_42b489168fb44bb0980212add2579d2c",
+        "rRuns": [
+          "project_task_manager_c617_437393a7e0214af496b89ab599c83a40",
+          "project_task_manager_c617_a7aba745d8aa4d6da635207b299ebb5b"
+        ]
+      }
+    },
+    "PLN-10": {
+      "result": "Pass",
+      "description": "347 AC-013/016/017: keyboard, zh-CN, narrow, briefcase, reference screenshots",
+      "startedAt": "2026-11-05T21:15:26.347Z",
+      "finishedAt": "2026-11-05T21:17:36.922Z",
+      "details": {
+        "keyboardSwitch": true,
+        "keyboardExpanded": "true",
+        "briefcaseInTree": 7,
+        "stripLabel": "Workspaces",
+        "narrowMenuVisible": true,
+        "zhViews": [
+          "运行",
+          "工作区",
+          "项目"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 80238,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 13630,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PLN-08",
+      "message": "Timed out: Project created after the restart listed live"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:61823",
+    "frontendUrl": "http://127.0.0.1:61824",
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-iHyNbo"
+  },
+  "seed": {
+    "ids": {
+      "manager": "project-task-manager-c617",
+      "writer": "release-notes-writer-c617",
+      "checker": "fact-checker-c617",
+      "squad": "docs-review-team-c617"
+    },
+    "names": {
+      "manager": "Project Task Manager c617",
+      "writer": "Release Notes Writer c617",
+      "checker": "Fact Checker c617",
+      "squad": "Docs Review Team c617"
+    },
+    "projects": {
+      "P": {
+        "projectId": "project_32030cd8-ae16-462b-adc7-3bce5a2e482e",
+        "name": "Prototype Launch c617"
+      },
+      "Q": {
+        "projectId": "project_6cc3e517-ff9c-4c19-b2e5-923ac53c5847",
+        "name": "Docs Site c617"
+      },
+      "R": {
+        "projectId": "project_637f1257-6642-4a5a-9e07-cbd33a9bde1c",
+        "name": "Website c617"
+      },
+      "L": {
+        "projectId": "project_f59c0cac-4c4c-43bd-a90f-790b80628f03",
+        "name": "After Restart b75e"
+      }
+    },
+    "tasks": {
+      "P1": "project_task_9091d5e2-a3d3-489b-8b41-bffed6c0781c",
+      "P2": "project_task_4f5091ee-177b-4f09-8e1d-033d0e275191",
+      "P3": "project_task_70931779-eba4-42be-8e0a-f42c542dfe2c",
+      "P4": "project_task_759c351c-1806-43bd-9b92-98294e384773",
+      "P5": "project_task_f2672a79-07d6-4fb1-94d5-183abf75f02c",
+      "Q1": "project_task_79edf97d-8b23-47a2-9d16-28a6f3e9d3e8",
+      "Q2": "project_task_e9c2b722-8752-4731-b912-198778df018b",
+      "Q3": "project_task_3b2a6470-d644-4c27-8943-31a190732538",
+      "R1": "project_task_a4277ec9-3cb9-4c30-bc44-b8e543226c36"
+    }
+  },
+  "browserVersion": "156.0.8078.80",
+  "result": "Fail",
+  "finishedAt": "2026-11-05T21:17:41.355Z"
+}

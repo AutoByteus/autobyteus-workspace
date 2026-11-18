@@ -1,0 +1,26 @@
+{
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "basis": "854 unique preceding controls rerun plus changed core/server/web MCP controls",
+  "checks": [
+    {
+      "id": "IMP-66",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal tests/unit/agent/context/agent-config.test.ts tests/unit/tools/tool-result-json.test.ts tests/unit/tools/mcp",
+      "log": "IMP-66-integrated-tests.log"
+    },
+    {
+      "id": "IMP-67",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-provider-factory-builder.test.ts tests/unit/agent-execution/backends/autobyteus tests/unit/startup tests/unit/compositions tests/unit/shutdown tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts tests/unit/agent-execution/backends/codex/thread tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts tests/unit/api/graphql/agent-background-task-view.test.ts tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts --no-watch tests/unit/api/graphql/converters/mcp-server-input-and-view-mapping.test.ts tests/unit/mcp-server-management tests/unit/secret-management/mcp-secret-resolver.test.ts",
+      "log": "IMP-67-integrated-tests.log"
+    },
+    {
+      "id": "IMP-68",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:electron --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__ electron/__tests__/nodeRegistryStore.spec.ts electron/__tests__/rendererConsoleDiagnostics.spec.ts electron/shell/__tests__",
+      "log": "IMP-68-integrated-tests.log"
+    },
+    {
+      "id": "IMP-69",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:nuxt --run components/server/__tests__ components/progress/__tests__/BackgroundTaskPanel.spec.ts components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts stores/__tests__/windowNodeContextStore.spec.ts components/settings/__tests__/MemorySyncCard.spec.ts components/tools/__tests__/McpBulkImportView.spec.ts components/tools/__tests__/McpSecretMoveBanner.spec.ts components/tools/__tests__/McpServerCard.spec.ts components/tools/__tests__/McpServerFormModal.spec.ts utils/mcp/__tests__/mcpConfigRows.spec.ts utils/mcp/__tests__/mcpSecretReviewState.spec.ts",
+      "log": "IMP-69-integrated-tests.log"
+    }
+  ]
+}

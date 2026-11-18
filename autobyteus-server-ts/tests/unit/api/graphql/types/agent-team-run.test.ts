@@ -1,14 +1,14 @@
+import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import "reflect-metadata";
 import { buildSchema, Query, Resolver } from "type-graphql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockTeamRunService = vi.hoisted(() => ({
-  restoreTeamRun: vi.fn(),
   createTeamRun: vi.fn(),
   terminateTeamRun: vi.fn(),
 }));
 const mockRunModelConfigService = vi.hoisted(() => ({
-  updateStoppedTeamRunModelConfigs: vi.fn(),
+  updateStoppedTeamRunSelections: vi.fn(),
 }));
 
 vi.mock(
@@ -30,14 +30,13 @@ class TestQueryResolver {
 describe("AgentTeamRunResolver", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    mockTeamRunService.restoreTeamRun.mockReset();
     mockTeamRunService.createTeamRun.mockReset();
     mockTeamRunService.terminateTeamRun.mockReset();
-    mockRunModelConfigService.updateStoppedTeamRunModelConfigs.mockReset();
+    mockRunModelConfigService.updateStoppedTeamRunSelections.mockReset();
   });
 
   it("routes only stopped model-config updates through the owner-aware Studio service", async () => {
-    mockRunModelConfigService.updateStoppedTeamRunModelConfigs.mockResolvedValue({
+    mockRunModelConfigService.updateStoppedTeamRunSelections.mockResolvedValue({
       success: false,
       outcome: "RUN_ACTIVE",
       message: "locked",
@@ -49,28 +48,12 @@ describe("AgentTeamRunResolver", () => {
     const resolver = new AgentTeamRunResolver();
     const input = {
       teamRunId: "team-run-1",
-      patches: [{ scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", llmConfig: null }],
+      selectionPatches: [{ scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", runtimeKind: RuntimeKind.AUTOBYTEUS, llmConfig: null }],
     };
 
-    await expect(resolver.updateStoppedTeamRunModelConfigs(input))
+    await expect(resolver.updateStoppedTeamRunSelections(input))
       .resolves.toMatchObject({ outcome: "RUN_ACTIVE", canonicalExecutionTree: null });
-    expect(mockRunModelConfigService.updateStoppedTeamRunModelConfigs).toHaveBeenCalledWith(input);
-  });
-
-  it("routes restore through TeamRunService", async () => {
-    mockTeamRunService.restoreTeamRun.mockResolvedValue({
-      teamRunId: "team-run-1",
-    });
-    const resolver = new AgentTeamRunResolver();
-
-    const result = await resolver.restoreAgentTeamRun("team-run-1");
-
-    expect(result).toEqual({
-      success: true,
-      message: "Agent team run restored successfully.",
-      teamRunId: "team-run-1",
-    });
-    expect(mockTeamRunService.restoreTeamRun).toHaveBeenCalledWith("team-run-1");
+    expect(mockRunModelConfigService.updateStoppedTeamRunSelections).toHaveBeenCalledWith(input);
   });
 
   it("requires runtimeKind on every full-hierarchy Team and Agent input", async () => {

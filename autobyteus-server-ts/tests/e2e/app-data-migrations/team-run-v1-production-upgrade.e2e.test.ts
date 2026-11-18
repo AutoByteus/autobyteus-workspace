@@ -18,6 +18,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
@@ -751,21 +752,32 @@ const terminateAgentRun = async (serverUrl: string, runId: string): Promise<void
   expect(terminated.terminateAgentRun.success).toBe(true);
 };
 
-const restoreTeamRun = async (serverUrl: string, teamRunId: string) => executeGraphql<{
-  restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
-}>(serverUrl, `
-  mutation RestoreMigrationLifecycleTeam($teamRunId: String!) {
-    restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
+/**
+ * Restores a stopped run as the app does: a message to one of its own members on its view (autobyteus-461 CR-461-008: the
+ * Team and Org restore mutations are gone). The answer keeps the removed mutation's shape for the assertions: a refusal's
+ * text is the view's or the message's error. A run whose config cannot be read gets a placeholder member: the view refuses it.
+ */
+const restoreByMessage = async (serverUrl: string, kind: "team" | "org", runId: string) => {
+  const memberRunId = await (kind === "team"
+    ? executeGraphql<any>(serverUrl, "query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}", { id: runId })
+      .then((data) => data.getTeamRunResumeConfig.executionTree.root_team.members[0].agent_run_id as string)
+    : executeGraphql<any>(serverUrl, "query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}", { id: runId })
+      .then((data) => data.getAgentOrgRunConfig.executionTree.rootOrg.members[0].agentRunId as string)).catch(() => "unreadable-run-member");
+  try {
+    await restoreByMemberMessage({ url: serverUrl, gql: (query, variables) => executeGraphql<any>(serverUrl, query, variables ?? {}), kind, runId, memberRunId, timeoutMs: 30_000 });
+    return { success: true, runId, message: "" };
+  } catch (error) {
+    return { success: false, runId: null, message: String(error) };
   }
-`, { teamRunId });
-
-const restoreOrgRun = async (serverUrl: string, orgRunId: string) => executeGraphql<{
-  restoreAgentOrgRun: { success: boolean; agentOrgRunId: string | null; message: string };
-}>(serverUrl, `
-  mutation RestoreMigratedAgentOrgRun($orgRunId: String!) {
-    restoreAgentOrgRun(agentOrgRunId: $orgRunId) { success agentOrgRunId message }
-  }
-`, { orgRunId });
+};
+const restoreTeamRun = async (serverUrl: string, teamRunId: string) => {
+  const r = await restoreByMessage(serverUrl, "team", teamRunId);
+  return { restoreAgentTeamRun: { success: r.success, teamRunId: r.runId, message: r.message } };
+};
+const restoreOrgRun = async (serverUrl: string, orgRunId: string) => {
+  const r = await restoreByMessage(serverUrl, "org", orgRunId);
+  return { restoreAgentOrgRun: { success: r.success, agentOrgRunId: r.runId, message: r.message } };
+};
 
 const terminateOrgRun = async (serverUrl: string, orgRunId: string) => executeGraphql<{
   terminateAgentOrgRun: { success: boolean; agentOrgRunId: string | null };
@@ -841,22 +853,15 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
             agentRunId: `${rootTeamRunId}-reviewer-run`,
             launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
           })],
-          // The task agent is its own run (20261017_task_agent_own_run_v1, contract L1): the tree keeps a
-          // link and its facts are in its own run_metadata.json. A link has no `settledAt` (current trees
-          // never record it; the released field survived only while nothing rewrote this tree).
-          taskExecutions: [{
-            address: "/research/reviewer",
-            agentRunId: supported.taskAgentRunId,
-            startedAt: "2026-08-16T12:03:00.000Z",
-          }],
+          // The task agent is its own run (20261017_task_agent_own_run_v1, contract L1); since autobyteus-461 (its migration
+          // runs last) the tree keeps no list of delegated runs (contract §6): the run names its delegator in its own file.
         }),
       ],
-      taskExecutions: [],
     },
   });
-  expect(tree.rootOrg.members[1].taskExecutions[0]).not.toHaveProperty("settledAt");
   const memoryRoot = path.dirname(path.dirname(supported.orgDir));
   const own = JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", supported.taskAgentRunId!, "run_metadata.json"), "utf8"));
+  expect(JSON.stringify(tree), `no stored list of delegated runs (461 contract §6); the task agent's own file: ${JSON.stringify(own).slice(0, 900)}`).not.toContain("taskExecutions");
   // A copy of the configured place `/research/reviewer`: 20261019_delegated_copy_own_file_complete_v1 records the
   // place's launch as the copy's own, with the `configured` origin, and drops the released `origin` (REQ-001, M4).
   expect(own).toMatchObject({
@@ -867,10 +872,12 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
     llmConfig: NESTED_COORDINATOR_CONFIGURATION.llmConfig,
     autoExecuteTools: NESTED_COORDINATOR_CONFIGURATION.autoExecuteTools,
     workspaceRootPath: NESTED_COORDINATOR_CONFIGURATION.workspaceRootPath,
-    taskAgent: { coordinatingRun: { kind: "agent_org", runId: rootTeamRunId }, address: "/research/reviewer",
-      launchSource: { origin: "configured", fallbacks: [] } },
+    // autobyteus-461 (contract E6): `taskAgent` is replaced by the run's own `address`, `launchSource` and `delegatedFrom`.
+    address: "/research/reviewer",
+    launchSource: { origin: "configured", fallbacks: [] },
+    delegatedFrom: { delegatingRun: { kind: "agent_org", runId: rootTeamRunId } },
   });
-  expect(own.taskAgent).not.toHaveProperty("origin");
+  expect(own).not.toHaveProperty("taskAgent");
   expect(own).not.toHaveProperty("skillAccessMode");
   // Startup ends with the append-only message log conversion: the org's log is JSON Lines.
   const messages = { messages: readMessageLog(supported.orgDir, "agent_org_communication_messages") };
@@ -1143,15 +1150,15 @@ const exerciseHistoryAndNewWork = async (
               agentRunId: `${orgRunId}-reviewer-run`,
               launchConfiguration: nestedLaunch,
             })],
-            taskExecutions: [expect.objectContaining({
-              address: "/research/reviewer",
-              agentRunId: scenario.supported.taskAgentRunId,
-            })],
+            // autobyteus-469 DEC-008: the task reviewer was delegated before Task records existed (this shape keeps
+            // `task_delegation_records.json`); a run with no Task record is in no tree. Its folder stays (below). The stored
+            // tree keeps no list of delegated runs (461 contract §6).
           }),
         ],
       },
     },
   });
+  expect(JSON.stringify(history.getAgentOrgRootHistory), "the run with no Task record is in no tree").not.toContain(scenario.supported.taskAgentRunId);
 
   const memberReads = await executeGraphql<{
     getAgentOrgMemberRunProjection: { agentRunId: string; memberAddress: string };
@@ -1493,9 +1500,6 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
     })]));
     // The delegated-copy own-file completion (registered last) waits for the task-agent migration the same way.
     expect(await delegatedCopyOwnFileStatus(first.serverUrl)).toMatchObject({ status: "FAILED", attempts: 1 });
-    // The preserved V1 warning package is intentionally excluded by the V1
-    // promotion, so the follow-on V2 migration itself remains clean.
-    expect(first.output()).not.toContain("startup continues with strict current-package admission");
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
     assertV2TeamPackage(scenario);
@@ -1521,11 +1525,15 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       }),
     ]));
     // The unconverted root is not served, and new current work is still admitted.
-    expect((await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId)).restoreAgentTeamRun).toMatchObject({
+    const notCataloged = (await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId)).restoreAgentTeamRun;
+    expect(notCataloged).toMatchObject({
       success: false,
       teamRunId: null,
       message: expect.stringContaining("TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED"),
     });
+    // autobyteus-461 CR-461-073: the view's connect answers the admission's own code and base's text; no schema field is named.
+    expect(notCataloged.message).toContain(`TeamRun '${scenario.rootTeamRunId}' is not an admitted current package.`);
+    expect(notCataloged.message).not.toMatch(/missing required field|rootTeam\.members|TEAM_STREAM_UNAVAILABLE/);
     await terminateAgentRun(first.serverUrl, await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "warning-current-agent"));
 
     await first.stop();
@@ -1596,6 +1604,8 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       teamRunId: null,
       message: expect.stringContaining("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED"),
     });
+    // autobyteus-461 CR-461-073: the admission's own code at the view's connect; no schema field is named.
+    expect(blockedRestore.restoreAgentTeamRun.message).not.toMatch(/missing required field|rootTeam\.members|TEAM_STREAM_UNAVAILABLE/);
 
     const currentRunId = await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "degraded-current-agent");
     const currentPrisma = new PrismaClient({ datasources: { db: { url: target.database.databaseUrl } } });
@@ -1615,6 +1625,16 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
     await terminateAgentRun(first.serverUrl, currentRunId);
     await first.stop();
     ownedServers.delete(first);
+    // autobyteus-461 (API-REV-010): optionally keep this still-blocked data root (synthesized, never user data) for the web
+    // probe of the connect's rendered answer (`autobyteus-web/tests/e2e/blocked-team-root-reason-probe.mjs`).
+    const keep = process.env["TEAM_RUN_V1_KEEP_BLOCKED"];
+    if (keep) {
+      fs.mkdirSync(keep, { recursive: true });
+      fs.cpSync(target.runtimeRoot, path.join(keep, "root"), { recursive: true });
+      fs.copyFileSync(target.database.databasePath, path.join(keep, "production.db"));
+      fs.writeFileSync(path.join(keep, "kept.json"), `${JSON.stringify({ rootTeamRunId: scenario.rootTeamRunId,
+        expectedCode: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED", serverAnswer: blockedRestore.restoreAgentTeamRun.message })}\n`);
+    }
 
     const database = new DatabaseSync(target.database.databasePath);
     try {

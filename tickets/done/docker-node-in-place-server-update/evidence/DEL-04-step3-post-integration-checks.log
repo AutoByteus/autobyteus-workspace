@@ -1,0 +1,31 @@
+# DEL-04 step-3 post-integration checks, 2026-10-30T20:06:53Z, merged origin/personal a8d7c87564 as f0b2b43dbc
+## file overlap: none (checked with comm against 6b34f900b6..origin/personal)
+## pnpm -C autobyteus-server-ts test:starter
+# tests 48
+# pass 48
+# fail 0
+## python3 -m unittest discover -s scripts/tests -p 'test_*.py'
+Ran 184 tests in 89.224s
+
+OK (skipped=2)
+## vitest node-update, remote-access, app-data-migrations registry, architecture
+ Test Files  17 passed (17)
+      Tests  123 passed (123)
+## server typecheck
+typecheck exit 0
+## check-system-level
+System level 1: the system part is unchanged (b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562)
+## actionlint / shellcheck
+actionlint: no findings
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2148 -- Tips depend on target shell and y...
+shellcheck node-update.sh exit 1
+## check_licensing
+Licensing is consistent.
+## hygiene
+Repository artifact hygiene check passed.
+## secret gate origin/personal..HEAD
+secret gate: scanning 9 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
+## shellcheck -s bash -x node-update.sh (sourced module, no shebang; the run above without -s gives SC2148 only): exit 0, no findings

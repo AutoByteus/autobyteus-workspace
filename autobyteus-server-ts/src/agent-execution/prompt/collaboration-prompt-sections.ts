@@ -128,7 +128,6 @@ const withOrganizationLine = (section: string, inOrganization: boolean): string 
  * the identity and these sections and is added by the composer.
  */
 export const renderCollaborationSections = (context: MemberExecutionContext): string => {
-  const inOrganization = context.identity.root.rootSubjectKind === "agent_org";
   const parts: string[] = [];
   switch (context.collaborationRole) {
     case "standalone_agent":
@@ -138,7 +137,7 @@ export const renderCollaborationSections = (context: MemberExecutionContext): st
       parts.push(TASK_AGENT_SECTION);
       break;
     case "team_member":
-      parts.push(AGENT_TEAM_ADDRESSING_SECTION, withOrganizationLine(TEAM_MEMBER_SECTION, inOrganization));
+      parts.push(AGENT_TEAM_ADDRESSING_SECTION, withOrganizationLine(TEAM_MEMBER_SECTION, context.inOrganization));
       break;
     case "org_agent":
       parts.push(AGENT_TEAM_ADDRESSING_SECTION, ORG_AGENT_SECTION);

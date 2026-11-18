@@ -1,0 +1,18 @@
+IMP-10 isolated desktop instance (autobyteus-260, REQ-004, REQ-006, AC-003, AC-005)
+Command: pnpm --silent isolated-app start --build (instance iso-60458-3318, own data root, stopped afterwards)
+Commit: 17d631c704 (worktree build of codex/agent-tool-results-omit-empty); macOS arm64; 2026-10-25
+Driver: autobyteus-skills/browser-automation scripts/browser (attach-only, control port 60458)
+
+GraphQL createProjectTask with title "  " -> errors[0].extensions.code = "TASK_TITLE_REQUIRED", message "Task title is required."
+Board cards (project "Title check"):
+  {"text":"Fix login","preview":"The session is lost after refresh.","label":"Fix login"}   (description starts with "Fix login": preview skips that line)
+  {"text":"Release the desktop app","preview":"Build the ARM64 image first. Then Intel.","label":"Release the desktop app"}
+New task, blank title, description typed, Create:
+  {"label":"Title (required)","placeholder":"Name the task in one line","maxlength":null,"titleBeforeDescription":true,"error":"Give the task a title.","focused":"task-page-title","invalid":"true"}
+Typed title "Release notes 1.5.9", Create:
+  {"errorGone":true,"hash":"#/projects/<id>?notice=task-created","rows":["Release notes 1.5.9","Fix login","Release the desktop app"]}
+Task page title-check-2:
+  {"title":"Fix login","desc":"Fix login\nThe session is lost after refresh.","confirm":"Delete task?Delete the task “Fix login”? This cannot be undone.CancelDelete task"}
+Edit task title -> "Fix login session loss", Save:
+  {"before":"Fix login","hash":".../tasks/title-check-2?notice=saved","title":"Fix login session loss"}
+Screenshots: IMP-10-board-titles.png, IMP-10-new-task-title-required.png, IMP-10-task-page-title-and-delete.png

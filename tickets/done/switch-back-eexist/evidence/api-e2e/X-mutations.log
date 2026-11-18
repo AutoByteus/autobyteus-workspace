@@ -1,0 +1,22 @@
+# mutation of the COMPILED output (untracked dist/), restored with cmp; commit 4408d54504; 2026-11-08T19:49:01Z
+== X-A: createAgyRunCapsule does not remove the earlier capsule (the base behavior)
+      Tests  3 failed (3)
+     × SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry 5478ms
+     × SB-02: a delegated copy Antigravity -> native -> Antigravity 94639ms
+     × SB-03: a Team member Antigravity -> native -> Antigravity with a restart between the save and the message of the third era 3794ms
+    293|     expect(JSON.stringify(failed.acks)).not.toContain("EEXIST");
++     "code": "EEXIST",
++     "message": "EEXIST: file already exists, mkdir '/Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts/tests/.tmp/rsm-extended-63556-1794167342677/memory/agent_teams/ex_team_7f6c4f_d5cb9d9f055f43bca6884ad5c1e71373/sb_tea
+AssertionError: the user is told, and the reason is the archive step (not EEXIST): expected '[{"root_subject_kind":"agent_org","ro…' to contain 'EISDIR'
+AssertionError: worker era 3 after the restart: errors: expected [ { code: 'EEXIST', …(6) }, { …(8) } ] to deeply equal []
+Received: "[{"root_subject_kind":"agent_org","root_run_id":"sb_org_1d38bc_20d529cf4e814f89b39d2ae1ceb5e1e6","command_id":"e2e-172ec5ff-d50c-4984-a844-f1ae2d55689c","command_type":"SEND_MESSAGE","target_agent_run_id":"sb_org_member_5d7bc0_e8628b2155a24cae9fc4ab
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+restored
+
+== X-B (live, real agy + claude): the same mutation; 2026-11-08T19:54:03Z
+      Tests  1 failed (1)
+     × LV-01: a Team member, Antigravity -> other runtime -> Antigravity 22068ms
++     "code": "EEXIST",
++     "message": "EEXIST: file already exists, mkdir '/Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts/tests/.tmp/rsm-live-70714-1794167617632/memory/agent_teams/live_team_e25a8c_8663b22dbabe478794a817441c70c6bf/live_team_member_43cfb4_77984c1f7385420db0933a21
+AssertionError: team-member: claude follow-up: errors: expected [ { code: 'EEXIST', …(6) }, { …(8) } ] to deeply equal []
+restored (cmp identical)

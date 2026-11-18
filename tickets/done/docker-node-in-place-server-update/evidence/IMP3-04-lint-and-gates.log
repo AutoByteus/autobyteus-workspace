@@ -1,0 +1,22 @@
+# IMP3-04 lint and gates
+# Command: actionlint; shellcheck of the launcher modules (vs base 6b34f900b6); node --check of the starter; check-system-level; check_licensing; artifact hygiene; secret gate origin/personal..HEAD
+# Commit: 71604951d4
+# Environment: macOS arm64, v22.23.1
+# Date: 2026-10-30T19:25Z
+
+actionlint: no findings
+shellcheck node-update.sh (new): no findings
+shellcheck distinct findings commands.sh: base 0, now 0
+shellcheck distinct findings core.sh: base 20, now 20
+node --check: 19 starter files ok
+System level 1: the system part is unchanged (b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562)
+Licensing is consistent.
+Tracked files scanned: 7577
+artifact hygiene exit 0
+secret gate: scanning 4 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
+secret gate exit 0
+     140 autobyteus-server-ts/docker/starter/starter.mjs
+     186 autobyteus-server-ts/docker/starter/package-store.mjs
+     202 autobyteus-server-ts/docker/starter/update-run.mjs
+    1517 total

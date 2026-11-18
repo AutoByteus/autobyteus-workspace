@@ -1,0 +1,7 @@
+# IMP-10 cause of the remaining autobyteus-ts full-suite failure ('run_bash respects timeout' got timedOut=false under the suite's load)
+# Steps: temporary vitest file (not kept): 64 'yes' CPU hogs, then 40 parallel runBash(ctx,'sleep 5',null,1); prints each result's timedOut, exitCode, stderr
+# Commit: c434d852ac + the wrapper stderr fix (same start path); macOS Darwin 25.5.0 arm64, node v22.23.1; 2026-11-10T10:37Z
+# Reading: every start fails its budget (min(1500 ms, timeout)) under load: FU-003 of autobyteus-333, deferred by DEC-005. A start that is refused before the 1 s timer fires returns timedOut=false, as on base.
+  10 DIAG timedOut=true exitCode=null stderr="Command did not start: Command control deadline exceeded\n"
+   2 DIAG timedOut=true exitCode=null stderr="Command did not start: Command launch cancelled\n"
+  28 DIAG timedOut=true exitCode=null stderr="Command did not start: Process observation deadline exceeded\n"

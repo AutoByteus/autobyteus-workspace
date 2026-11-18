@@ -12,6 +12,7 @@ import {
   type AgentToolMcpAdapterProvider,
   type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
+import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
 
 export class GetHandoffRulesMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(private readonly service: GetHandoffRulesService = getGetHandoffRulesService()) {}
@@ -27,10 +28,7 @@ export class GetHandoffRulesMcpAdapterProvider implements AgentToolMcpAdapterPro
       isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext?.collaboration),
       execute: async ({ session }) => {
         const result = this.service.getRules(session.sender.memberExecutionContext?.collaboration);
-        return toAgentToolMcpToolResult({
-          content: [{ type: "text", text: JSON.stringify(result) }],
-          structuredContent: result,
-        });
+        return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(result));
       },
     }];
   }

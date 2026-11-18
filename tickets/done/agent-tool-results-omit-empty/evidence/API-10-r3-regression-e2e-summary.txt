@@ -1,0 +1,25 @@
+API-10 round 3: gated server E2E regression on the integrated branch (merge 54cd6803f4 of origin/personal@63a36d00d8; DR-001 fix 7c60cb4909; head d49d1fac16, ticket documents only after 7c60cb4909)
+Command: pnpm -C autobyteus-server-ts build; env -i PATH HOME=<resolved temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch; macOS arm64 node 22; 2026-10-25
+Summary: Test Files  3 failed | 146 passed | 50 skipped (199); Tests  4 failed | 652 passed | 260 skipped (916)
+
+ FAIL tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts :: in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse record | AssertionError: expected [ …(3) ] to deeply equal []
+ FAIL tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts :: Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop | AssertionError: expected [ …(2) ] to deeply equal []
+ FAIL tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts :: E-002/E-004 Team member: images previewable during the turn and after the team run is terminated | AssertionError: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-multi-image-home-0qmCsu/.gemini/antigravity-cli/brain/8c0a72f0-fb20-4fb4-a881-704ab8a33b62/image_1_1.pn
+ FAIL tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts :: SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the s | Error: [{"message":"GitHub repository not found or not public: https://github.com/apar-sun-e2e/skills. For private repositories, clone locally and import the local path.","location
+
+Classification: delegated-launch-config-defaults = FU-002, agy-native-image-multi-artifact-preview = FU-003, agy-skill-update-notice-roots = FU-004 (all fail identically on the base). agent-runtimes-running-agents (FU-007) passed in this run. No failure is caused by this ticket or by the DR-001 fix.
+
+  project-task-titles-startup.e2e.test.ts {'passed': 1}
+  remote-delegation-two-server.e2e.test.ts {'passed': 37}
+  get-project-task-worker-scope.e2e.test.ts {'passed': 6}
+  project-task-boundaries.e2e.test.ts {'passed': 18}
+  projects-startup-migration.e2e.test.ts {'passed': 6}
+  agent-runtimes-running-agents.e2e.test.ts {'passed': 4}
+  available-agent-runtimes-graphql.e2e.test.ts {'passed': 6}
+      passed AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)
+      passed AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)
+      passed AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)
+      passed AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once 
+      passed AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed w
+      passed AAR-05 no provider key or account value in any response, the server's log file, its output or its data files (REQ-008, QR-002)
+  mcp-runtime-tool-matrix.e2e.test.ts {'passed': 1, 'skipped': 5}

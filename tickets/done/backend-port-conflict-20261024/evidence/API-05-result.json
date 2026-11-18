@@ -1,0 +1,172 @@
+{
+  "case": "API-05",
+  "commit": "a201abe848cdff500948dfbd40dcd71d97926e26",
+  "date": "2026-10-26T09:04:17.617Z",
+  "own": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb",
+  "steps": [
+    {
+      "step": "cli",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/data"
+        ],
+        "exit": 0,
+        "out": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"start\",\n  \"result\": {\n    \"instanceId\": \"iso-55828-1e9e\",\n    \"pid\": 84574,\n    \"executablePath\": \"/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus\",\n    \"backendUrl\": \"http://127.0.0.1:55829\",\n    \"graphqlUrl\": \"http://127.0.0.1:55829/graphql\",\n    \"controlEndpoint\": \"http://127.0.0.1:55828\",\n    \"controlPort\": 55828,\n    \"serverPort\": 55829,\n    \"dataRoot\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/data\",\n    \"ownsDataRoot\": false,\n    \"keepDataRoot\": false,\n    \"testUpdateFeedUrl\": null,\n    \"databaseUrl\": \"file:/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/data/server-data/db/production.db\",\n    \"logPath\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/autobyteus-isolated-app/iso-55828-1e9e.log\"\n  }\n}\n",
+        "err": ""
+      },
+      "at": "2026-10-26T09:04:20.011Z"
+    },
+    {
+      "step": "captured own backend",
+      "value": {
+        "backendPid": 84580,
+        "identity": "84580 84574 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 55829 --data-dir /private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/data/server-data"
+      },
+      "at": "2026-10-26T09:04:20.271Z"
+    },
+    {
+      "step": "post backend exit status",
+      "value": {
+        "status": "running",
+        "baseUrl": "http://127.0.0.1:55829",
+        "urls": {
+          "graphql": "http://127.0.0.1:55829/graphql",
+          "rest": "http://127.0.0.1:55829/rest",
+          "graphqlWs": "ws://127.0.0.1:55829/graphql",
+          "transcription": "ws://127.0.0.1:55829/ws/transcribe",
+          "terminalWs": "ws://127.0.0.1:55829/ws/terminal",
+          "health": "http://127.0.0.1:55829/rest/health"
+        },
+        "healthCheckStatus": "Healthy"
+      },
+      "at": "2026-10-26T09:04:21.283Z"
+    },
+    {
+      "step": "conflict first",
+      "value": {
+        "first": {
+          "status": "error",
+          "baseUrl": "http://127.0.0.1:55829",
+          "urls": {
+            "graphql": "http://127.0.0.1:55829/graphql",
+            "rest": "http://127.0.0.1:55829/rest",
+            "graphqlWs": "ws://127.0.0.1:55829/graphql",
+            "transcription": "ws://127.0.0.1:55829/ws/transcribe",
+            "terminalWs": "ws://127.0.0.1:55829/ws/terminal",
+            "health": "http://127.0.0.1:55829/rest/health"
+          },
+          "healthCheckStatus": "Healthy",
+          "diagnostic": {
+            "kind": "port-conflict",
+            "port": 55829,
+            "owners": [
+              {
+                "pid": 84566,
+                "executable": "node"
+              }
+            ],
+            "inspection": "available",
+            "observedAt": "2026-10-26T09:04:26.286Z"
+          },
+          "message": "Backend port 55829 is in use"
+        },
+        "text": "\u274c\nApplication Error\n\nBackend port 55829 is already in use.\n\nnode (PID 84566)\n\nRestart Server controls only this app\u2019s managed backend. It cannot stop another application\u2019s listener. Verify which application owns this port, stop or reconfigure it, then retry. The identity shown is a current snapshot, not permission to stop an unfamiliar process.\n\nResetting server data will not free this port. Your data does not need to be reset.\n\nRestart Server\nCheck Server Health\nShow technical details",
+        "fixtureStatus": 426,
+        "runnerPid": 84566
+      },
+      "at": "2026-10-26T09:04:26.408Z"
+    },
+    {
+      "step": "retry preserves external owner",
+      "value": {
+        "second": {
+          "status": "error",
+          "baseUrl": "http://127.0.0.1:55829",
+          "urls": {
+            "graphql": "http://127.0.0.1:55829/graphql",
+            "rest": "http://127.0.0.1:55829/rest",
+            "graphqlWs": "ws://127.0.0.1:55829/graphql",
+            "transcription": "ws://127.0.0.1:55829/ws/transcribe",
+            "terminalWs": "ws://127.0.0.1:55829/ws/terminal",
+            "health": "http://127.0.0.1:55829/rest/health"
+          },
+          "healthCheckStatus": "Healthy",
+          "diagnostic": {
+            "kind": "port-conflict",
+            "port": 55829,
+            "owners": [
+              {
+                "pid": 84566,
+                "executable": "node"
+              }
+            ],
+            "inspection": "available",
+            "observedAt": "2026-10-26T09:04:31.777Z"
+          },
+          "message": "Backend port 55829 is in use"
+        },
+        "fixtureStatus": 426,
+        "sentinel": 200
+      },
+      "at": "2026-10-26T09:04:31.914Z"
+    },
+    {
+      "step": "recovered",
+      "value": {
+        "healthy": {
+          "status": "running",
+          "baseUrl": "http://127.0.0.1:55829",
+          "urls": {
+            "graphql": "http://127.0.0.1:55829/graphql",
+            "rest": "http://127.0.0.1:55829/rest",
+            "graphqlWs": "ws://127.0.0.1:55829/graphql",
+            "transcription": "ws://127.0.0.1:55829/ws/transcribe",
+            "terminalWs": "ws://127.0.0.1:55829/ws/terminal",
+            "health": "http://127.0.0.1:55829/rest/health"
+          },
+          "healthCheckStatus": "Healthy"
+        },
+        "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nChoose a model\nAutoByteus",
+        "sentinel": 200,
+        "data": "preserve owned data"
+      },
+      "at": "2026-10-26T09:04:33.464Z"
+    },
+    {
+      "step": "cli",
+      "value": {
+        "args": [
+          "stop",
+          "iso-55828-1e9e",
+          "--keep"
+        ],
+        "exit": 0,
+        "out": "{\n  \"schemaVersion\": 1,\n  \"ok\": true,\n  \"command\": \"stop\",\n  \"result\": {\n    \"instanceId\": \"iso-55828-1e9e\",\n    \"wasRunning\": false,\n    \"forced\": false,\n    \"dataRoot\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/data\",\n    \"dataRootRemoved\": false,\n    \"controlPortReleased\": true,\n    \"serverPortReleased\": true,\n    \"logPath\": \"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/autobyteus-isolated-app/iso-55828-1e9e.log\"\n  }\n}\n",
+        "err": ""
+      },
+      "at": "2026-10-26T09:04:33.819Z"
+    }
+  ],
+  "result": "Pass",
+  "cleanup": {
+    "instanceId": "iso-55828-1e9e",
+    "wasRunning": false,
+    "forced": false,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/data",
+    "dataRootRemoved": false,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb/autobyteus-isolated-app/iso-55828-1e9e.log"
+  },
+  "rootRemoved": true,
+  "validationProvenance": {
+    "source": "9bd72c20893dedb8c7dc99aacfcb0b732d092d6c",
+    "reviewHead": "a201abe848cdff500948dfbd40dcd71d97926e26",
+    "commandKey": "C + API-05-conflict-recovery.mjs",
+    "environment": "macOS arm64; isolated roots and deterministic local inference where used; no paid provider",
+    "note": "New durable tests uncommitted at execution; final hashes in API-validation-provenance.json"
+  }
+}

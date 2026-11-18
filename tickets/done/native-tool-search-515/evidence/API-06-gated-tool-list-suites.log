@@ -1,0 +1,56 @@
+# API-06 / API-06b (autobyteus-515 API/E2E): gated suites with exact native tool lists, and the native background-task transport suite
+# API-06 search: grep -rlE 'toolInstances|enabledTools|tools/list|requestedToolNames|request.tools|body.tools' autobyteus-server-ts/tests/e2e tests/integration test-support; then the provider-request 'tools' assertions on native runs:
+#   tests/e2e/mcp/mcp-gateway-token.e2e.test.ts
+#   tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts
+#   tests/e2e/projects/project-task-boundaries.e2e.test.ts
+#   tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+#   tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts
+#   tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts
+#   tests/e2e/runtime/autobyteus-background-task-live.e2e.test.ts
+#   tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts
+#   tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts
+#   tests/e2e/runtime/autobyteus-native-tool-search.e2e.test.ts
+#   tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts
+#   tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts
+#   tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+#   tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+#   tests/e2e/runtime/search-memory-default-tool-live.e2e.test.ts
+#   tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts
+#   tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts
+#   tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts
+#   tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+#   tests/integration/agent-execution/claude-session-manager.integration.test.ts
+#   tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts
+#   tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+#   tests/integration/agent-tools/mcp/application-agent-tools-mcp-routes.integration.test.ts
+#   tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+#   tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
+#   tests/integration/credential-proxy/integration-catalog.integration.test.ts
+#   tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts
+#   tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts
+#   tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts
+# Native provider-request tool assertions found: get-project-task-worker-scope (rewritten, IMP-14), autobyteus-anthropic-prompt-caching-live and autobyteus-compaction-cache-reuse-live (K-2, API-09/10), autobyteus-anthropic-stored-config-edit-launch (IMP-13), autobyteus-background-task-live/-transport (key on run_bash: listed; scripted calls of delegate_task/send_message_to by name).
+
+# API-06b command: env -i PATH HOME=<temp> TMPDIR RUN_NATIVE_BACKGROUND_TASK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts --no-watch
+# commit 03da73d550; Node v22.23.1; 2026-11-17 19:30
+     ✓ BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)  26111ms
+     ✓ BGT-02: a command failing while the agent is busy is told in one notice right after the turn (AC-002)  10457ms
+     ✓ BGT-03: three commands ending within 1 s arrive in exactly one notice that also lists the one still running (AC-004)  10358ms
+     ✓ BGT-04: kill <pid> of an `npm run dev` stops everything it started, reported in the kill's own result, no notice (AC-005)  56397ms
+     ✓ BGT-05: & jobs of a foreground call are background tasks; kill, children (DEC-012), disown, Terminate (AC-010)  14821ms
+     ✓ BGT-06: Terminate stops a running background command within 10 s, with no notice, and removes its output (AC-006)  7356ms
+     ✓ BGT-07: Stop during a foreground command leaves the background command running; its notice still arrives (AC-013)  10607ms
+     ✓ BGT-08: a background command killed from outside while the agent is idle is told as a signal in a notice (AC-002)  2787ms
+     × BGT-09: a delegated copy with a running command is not idle-shut-down; the notice wakes it; shut down one grace after quiet (AC-009) 60697ms
+Error: Timed out after 60000 ms waiting for copy's running task
+    171|   throw new Error(`Timed out after ${ms} ms waiting for ${label}`);
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+
+== BGT-09 alone (-t BGT-09): base 4cbf9e7881 19:35 and branch 19:37
+native-tool-search-515-base: Error: Timed out after 60000 ms waiting for copy's running task  171| throw new Error(`Timed out after ${ms} ms waiting for ${label}`);  Tests 1 failed | 8 skipped (9) 
+native-tool-search-515: Error: Timed out after 60000 ms waiting for copy's running task  171| throw new Error(`Timed out after ${ms} ms waiting for ${label}`);  Tests 1 failed | 8 skipped (9) 
+
+== Temporary diagnostic (reverted): what the root's /ws/agent-collaboration view received in 50 s, by frame type, and {agent_run_id, message} records (CHILD/ROOT:type:status)
+DIAG-BGT09 frames {"CONNECTED":1,"ROOT_EXECUTION_VIEW_SNAPSHOT":1,"RUN_TREE_SNAPSHOT":1,"ROOT_LIFECYCLE":1,"ROOT_EXECUTION_EVENT":1} []
+Reading: the view sends no per-agent message records in the shape the test reads (none for the root either), so 'copy's running task' never arrives; the copy itself ran its run_bash call (worker 'LlmStreamingResponseHandler finalized 1 tool invocations'). Same on base: not this ticket (FU-008).

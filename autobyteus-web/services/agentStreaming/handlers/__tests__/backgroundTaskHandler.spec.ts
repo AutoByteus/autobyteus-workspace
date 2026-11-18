@@ -16,8 +16,10 @@ describe('backgroundTaskHandler', () => {
       kind: 'subagent',
       description: 'Research lighthouses',
       command: null,
-      status: 'completed',
+      status: 'stopped',
       summary: 'Wrote the report.',
+      end_reason: 'time_limit',
+      exit_code: null,
       started_at: '2026-09-29T16:48:20.000Z',
     };
 
@@ -28,8 +30,10 @@ describe('backgroundTaskHandler', () => {
       kind: 'subagent',
       description: 'Research lighthouses',
       command: null,
-      status: 'completed',
+      status: 'stopped',
       summary: 'Wrote the report.',
+      endReason: 'time_limit',
+      exitCode: null,
       startedAt: '2026-09-29T16:48:20.000Z',
     }]);
   });
@@ -37,7 +41,7 @@ describe('backgroundTaskHandler', () => {
   it('carries the command of a shell task into the store (AC-006)', () => {
     handleBackgroundTaskUpdated({
       task_id: 'bg-2', kind: 'shell', description: 'Wait for release workflows to complete',
-      command: 'gh run watch 42', status: 'running', summary: null, started_at: '2026-09-29T16:48:20.000Z',
+      command: 'gh run watch 42', status: 'running', summary: null, end_reason: null, exit_code: null, started_at: '2026-09-29T16:48:20.000Z',
     }, { state: { runId: 'run-1' } } as unknown as AgentContext);
 
     expect(useAgentBackgroundTaskStore().getTasks('run-1')[0]?.command).toBe('gh run watch 42');

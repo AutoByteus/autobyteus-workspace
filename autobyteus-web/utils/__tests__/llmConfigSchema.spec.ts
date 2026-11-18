@@ -92,9 +92,9 @@ describe('normalizeModelConfigSchema', () => {
           description: 'Enable extended thinking',
           default: false,
         },
-        thinking_budget_tokens: {
+        max_tokens: {
           type: 'integer',
-          description: 'Token budget',
+          description: 'Output token limit',
           default: 1024,
           minimum: 1024,
         },
@@ -111,9 +111,9 @@ describe('normalizeModelConfigSchema', () => {
       default: false,
       required: true,
     });
-    expect(result?.thinking_budget_tokens).toMatchObject({
+    expect(result?.max_tokens).toMatchObject({
       type: 'integer',
-      description: 'Token budget',
+      description: 'Output token limit',
       default: 1024,
       minimum: 1024,
       required: false,
@@ -236,17 +236,17 @@ describe('sanitizeModelConfigAgainstSchema', () => {
 });
 
 describe('applyModelConfigSchemaDefaults (D-18: the launch form’s non-thinking defaults)', () => {
-  it('fills non-thinking defaults, skips thinking keys, and adds the Claude budget only with thinking on', async () => {
+  it('fills non-thinking defaults and skips thinking keys', async () => {
     const { applyModelConfigSchemaDefaults } = await import('../llmConfigSchema')
     const schema = {
       temperature: { type: 'number', default: 0.7 },
       top_p: { type: 'number' },
       thinking_enabled: { type: 'boolean', default: false },
-      thinking_budget_tokens: { type: 'integer', default: 1024 },
+      reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' },
     }
     expect(applyModelConfigSchemaDefaults(schema, null)).toEqual({ temperature: 0.7 })
     expect(applyModelConfigSchemaDefaults(schema, { thinking_enabled: true }))
-      .toEqual({ thinking_enabled: true, temperature: 0.7, thinking_budget_tokens: 1024 })
+      .toEqual({ thinking_enabled: true, temperature: 0.7 })
     const complete = { temperature: 0.2 }
     expect(applyModelConfigSchemaDefaults({ temperature: { type: 'number', default: 0.7 } }, complete)).toBe(complete)
     expect(applyModelConfigSchemaDefaults(null, null)).toBeNull()

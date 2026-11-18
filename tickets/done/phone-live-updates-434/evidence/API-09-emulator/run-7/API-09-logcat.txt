@@ -1,0 +1,30 @@
+11-08 11:33:51.483 I/wm_on_paused_called(10879): [15648516,org.autobyteus.mobile.MainActivity,performPause,1]
+11-08 11:33:52.253 I/wm_on_stop_called(10879): [15648516,org.autobyteus.mobile.MainActivity,STOP_ACTIVITY_ITEM,0]
+11-08 11:33:53.187 I/power_screen_state(  562): [0,2,0,0,677]
+11-08 11:33:57.207 I/chromium(10879): [INFO:CONSOLE(1883)] "Agent WebSocket disconnected: undefined", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:36:21.524 I/power_screen_state(  562): [1,0,0,0,15]
+11-08 11:36:21.768 I/wm_on_restart_called(10879): [15648516,org.autobyteus.mobile.MainActivity,performRestart,0]
+11-08 11:36:21.768 I/wm_on_start_called(10879): [15648516,org.autobyteus.mobile.MainActivity,handleStartActivity,0]
+11-08 11:36:21.768 I/wm_on_resume_called(10879): [15648516,org.autobyteus.mobile.MainActivity,RESUME_ACTIVITY,0]
+11-08 11:36:25.765 I/chromium(10879): [INFO:CONSOLE(1883)] "Team WebSocket transport connected", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:36:25.779 I/chromium(10879): [INFO:CONSOLE(1883)] "Agent WebSocket connected", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:36:46.941 I/wm_on_paused_called(10879): [15648516,org.autobyteus.mobile.MainActivity,performPause,0]
+11-08 11:36:47.906 I/wm_on_stop_called(10879): [15648516,org.autobyteus.mobile.MainActivity,STOP_ACTIVITY_ITEM,0]
+11-08 11:36:48.840 I/power_screen_state(  562): [0,2,0,0,832]
+11-08 11:36:52.843 I/chromium(10879): [INFO:CONSOLE(1883)] "Agent WebSocket disconnected: undefined", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:39:16.945 I/power_screen_state(  562): [1,0,0,0,15]
+11-08 11:39:17.226 I/wm_on_restart_called(10879): [15648516,org.autobyteus.mobile.MainActivity,performRestart,0]
+11-08 11:39:17.226 I/wm_on_start_called(10879): [15648516,org.autobyteus.mobile.MainActivity,handleStartActivity,0]
+11-08 11:39:17.362 I/wm_on_resume_called(10879): [15648516,org.autobyteus.mobile.MainActivity,RESUME_ACTIVITY,0]
+11-08 11:39:17.908 I/chromium(10879): [INFO:CONSOLE(1883)] "Team WebSocket transport connected", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:39:18.060 I/chromium(10879): [INFO:CONSOLE(1883)] "Agent WebSocket connected", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:39:42.216 I/wm_on_paused_called(10879): [15648516,org.autobyteus.mobile.MainActivity,performPause,0]
+11-08 11:39:42.965 I/wm_on_stop_called(10879): [15648516,org.autobyteus.mobile.MainActivity,STOP_ACTIVITY_ITEM,0]
+11-08 11:39:43.896 I/power_screen_state(  562): [0,2,0,0,647]
+11-08 11:39:44.377 I/chromium(10879): [INFO:CONSOLE(1883)] "Agent WebSocket disconnected: undefined", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:42:12.296 I/power_screen_state(  562): [1,0,0,0,22]
+11-08 11:42:12.519 I/wm_on_restart_called(10879): [15648516,org.autobyteus.mobile.MainActivity,performRestart,0]
+11-08 11:42:12.519 I/wm_on_start_called(10879): [15648516,org.autobyteus.mobile.MainActivity,handleStartActivity,0]
+11-08 11:42:12.519 I/wm_on_resume_called(10879): [15648516,org.autobyteus.mobile.MainActivity,RESUME_ACTIVITY,0]
+11-08 11:42:13.740 I/chromium(10879): [INFO:CONSOLE(1883)] "Team WebSocket transport connected", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)
+11-08 11:42:13.740 I/chromium(10879): [INFO:CONSOLE(1883)] "Agent WebSocket connected", source: http://10.0.2.2:65088/mobile/_nuxt/6gKLa7nn.js (1883)

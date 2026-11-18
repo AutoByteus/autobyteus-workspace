@@ -1,11 +1,10 @@
+import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
-import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { StoredMessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 
 export class AgentOrgPersistenceFailStoppedError extends Error {
   constructor(readonly orgRunId: string) {
@@ -50,11 +49,11 @@ export class AgentOrgRunPersistenceCoordinator {
     return this.withLock(async () => {
       const prepared = input.prepareAgainstCurrent();
       const result = await this.options.executionTreeStore.write(this.options.orgMemoryDir, prepared.nextTree);
-      if (result.outcome === "not_renamed") {
+      if (result.outcome === "not_committed") {
         prepared.cancelBeforeDurability();
         throw result.cause;
       }
-      if (result.outcome === "renamed_finalization_indeterminate") {
+      if (result.outcome === "finalization_indeterminate") {
         this.latch(result);
         throw this.indeterminate(result);
       }
@@ -77,11 +76,11 @@ export class AgentOrgRunPersistenceCoordinator {
         throw error;
       }
       const tree = await this.options.executionTreeStore.write(this.options.orgMemoryDir, prepared.nextTree);
-      if (tree.outcome === "not_renamed") {
+      if (tree.outcome === "not_committed") {
         await input.abortBeforeDurability();
         return { committed: false, message: tree.cause.message };
       }
-      if (tree.outcome === "renamed_finalization_indeterminate") {
+      if (tree.outcome === "finalization_indeterminate") {
         this.latch(tree);
         await input.abortBeforeDurability();
         throw this.indeterminate(tree);
@@ -91,27 +90,23 @@ export class AgentOrgRunPersistenceCoordinator {
     });
   }
 
-  commitCommunication(input: Readonly<{
-    nextMessages: AgentOrgCommunicationMessagesFile;
-    /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
-    message: CollaborationCommunicationMessage;
-    logOwners: readonly StoredMessageLogOwner[];
-    commitAfterDurability(): void;
-    cancelBeforeDurability(): void;
-  }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
+  /** One message: prepared, then appended to its logs under the lock; an indeterminate write is thrown. */
+  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult> {
     return this.withLock(async () => {
+      const prepared = append.prepare();
+      if (prepared.kind !== "append") return { outcome: prepared.kind };
       const result = await this.options.communicationStore.appendMessage(
-        this.options.orgMemoryDir, this.options.orgRunId, input.message, input.logOwners);
-      if (result.outcome === "not_renamed") {
-        input.cancelBeforeDurability();
-        return { committed: false, code: "AGENT_ORG_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };
+        this.options.orgMemoryDir, this.options.orgRunId, append.message, prepared.logOwners);
+      if (result.outcome === "not_committed") {
+        append.cancelBeforeDurability();
+        return { outcome: "not_committed", cause: result.cause };
       }
-      if (result.outcome === "renamed_finalization_indeterminate") {
+      if (result.outcome === "finalization_indeterminate") {
         this.latch(result);
         throw this.indeterminate(result);
       }
-      this.finalizeAfterDurability("communication_messages", input.commitAfterDurability);
-      return { committed: true };
+      this.finalizeAfterDurability("communication_messages", () => append.commitAfterDurability());
+      return { outcome: "committed" };
     });
   }
 
@@ -130,15 +125,15 @@ export class AgentOrgRunPersistenceCoordinator {
 
   private async requireCommitted(result: RunPackageFileWriteResult): Promise<void> {
     if (result.outcome === "committed") return;
-    if (result.outcome === "not_renamed") throw result.cause;
+    if (result.outcome === "not_committed") throw result.cause;
     this.latch(result);
     throw this.indeterminate(result);
   }
-  private latch(result: Extract<RunPackageFileWriteResult, { outcome: "renamed_finalization_indeterminate" }>): void {
+  private latch(result: Extract<RunPackageFileWriteResult, { outcome: "finalization_indeterminate" }>): void {
     this.failStopped = true;
     this.options.enterPersistenceFailStop(this.indeterminate(result));
   }
-  private indeterminate(result: Extract<RunPackageFileWriteResult, { outcome: "renamed_finalization_indeterminate" }>) {
+  private indeterminate(result: Extract<RunPackageFileWriteResult, { outcome: "finalization_indeterminate" }>) {
     return new RootTaskPersistenceFinalizationIndeterminateError("agent_org", result.file, result.stage);
   }
 

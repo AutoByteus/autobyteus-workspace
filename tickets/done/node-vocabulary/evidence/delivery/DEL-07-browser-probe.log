@@ -1,0 +1,9 @@
+# DEL-07 browser probe node-vocabulary | beda3ed8c2
+[probe] NVP-03 started
+[probe] NVP-03 Pass
+[probe] NVP-04 started
+[probe] NVP-04 Pass
+[probe] NVP-05 started
+[probe] NVP-05 Pass
+[probe] result Pass; evidence /tmp/dr290/DEL-probe
+probe exit=0

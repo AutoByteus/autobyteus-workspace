@@ -1,0 +1,13 @@
+# API-05 start 2026-10-24T17:37:16Z commit aa4d8b0b6f
+# cmd (cwd autobyteus-web): node tests/.e2e-ab208-observer/delegated-launch-defaults-probe.mjs --output-dir /tmp/ab208e2e/API-05/out --ledger-file /tmp/ab208e2e/API-05/ledger.md --cases DLP-003,DLP-004,DCP-002,DCP-003,DCP-005,DCR-001,DCR-002
+(node:34666) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+DLP-003 Pass AC-001/003/004/005/010: Manager chat from the UI; copies and a second Pair copy from its composer; teammate refusal, helper copy and Grok engineer from the copy lead's conversation; Settings rows
+DLP-004 Pass AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and the Pair from the composer: Settings lists the rows
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model
+DCP-005 Pass delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own
+DCR-001 Pass AC-001..AC-004 (Team root): a copy of the configured member /worker records its own snapshot; after /worker is edited in the stopped run, it restores on its started model and own conversation, and a new copy starts on the edit
+DCR-002 Pass AC-001..AC-004 (Org root): copies of the direct agent /writer and the mounted Team /pair record their snapshots; after both slots are edited in the stopped Org, the copies restore on their started values and new copies start on the edits
+Summary: 7 Pass, 0 Fail
+exit=0 end 2026-10-24T17:43:37Z

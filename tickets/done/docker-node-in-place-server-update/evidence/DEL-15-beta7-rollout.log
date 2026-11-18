@@ -1,0 +1,33 @@
+# DEL-15 beta v1.5.11-beta.7 rollout, 2026-10-31T05:50:12Z
+Desktop Release success: Resolve Release Metadata=success, Build macOS Intel x64=success, Build Linux x64=success, Build Linux ARM64=success, Build Windows x64=success, Build macOS ARM64=success, Publish GitHub Release=success
+Android APK Release success: Resolve Android Release Metadata=success, Build Android APK=success, Publish Android APK To GitHub Release=success
+iOS App Store Connect Release success: Resolve iOS Release Metadata=success, Build And Test iOS App=success, Validate iOS Publish Secrets=success, Archive And Upload To App Store Connect=success
+Server Docker Release success: Resolve Release Metadata=success, Build And Push Server Image=success, Publish Server Package (linux/arm64)=success, Publish Server Package (linux/amd64)=success
+pre=true draft=false assets=23
+autobyteus-server-1.5.11-beta.7-linux-arm64.json
+autobyteus-server-1.5.11-beta.7-linux-arm64.json.sig
+autobyteus-server-1.5.11-beta.7-linux-arm64.tar.gz
+autobyteus-server-1.5.11-beta.7-linux-x64.json
+autobyteus-server-1.5.11-beta.7-linux-x64.json.sig
+autobyteus-server-1.5.11-beta.7-linux-x64.tar.gz
+AutoByteus_personal_android-1.5.11-beta.7-release.apk
+AutoByteus_personal_android-1.5.11-beta.7-release.apk.sha256
+AutoByteus_personal_linux-arm64-1.5.11-beta.7.AppImage
+AutoByteus_personal_linux-x64-1.5.11-beta.7.AppImage
+AutoByteus_personal_macos-arm64-1.5.11-beta.7.dmg
+AutoByteus_personal_macos-arm64-1.5.11-beta.7.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.11-beta.7.zip
+AutoByteus_personal_macos-arm64-1.5.11-beta.7.zip.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.7.dmg
+AutoByteus_personal_macos-x64-1.5.11-beta.7.dmg.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.7.zip
+AutoByteus_personal_macos-x64-1.5.11-beta.7.zip.blockmap
+AutoByteus_personal_windows-1.5.11-beta.7.exe
+latest-linux-arm64.yml
+latest-linux.yml
+latest-mac.yml
+latest.yml
+GitHub Latest: v1.5.10
+docker 1.5.11-beta.7: "sha256:8bcf8eabfafef982577b327951cb34f655daad77e1f2513b5f07d49797649666"
+docker beta: "sha256:8bcf8eabfafef982577b327951cb34f655daad77e1f2513b5f07d49797649666"
+docker latest: "sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd"

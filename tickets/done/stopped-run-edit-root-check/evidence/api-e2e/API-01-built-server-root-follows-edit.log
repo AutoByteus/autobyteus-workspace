@@ -1,0 +1,27 @@
+# Case: API-01
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<fresh> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts --no-watch (3 consecutive passes: run 7 and two reruns)
+# Commit: 747f2ae65d (code = 79b268d2f9; the test file is committed with this round)
+# Environment: macOS arm64, Node v22.23.1, built server (pnpm build exit 0), owned temp data root, private HOME
+# Date: 2026-11-06
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-edit-root-check/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-edit-root-check/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts (1 test) 5262ms
+     ✓ SRE-01..03: copies delegated from the registered root after a saved edit of the crashed host carry the saved launch; a runtime change is pending on the host and inherited; a live host refuses the edit  3113ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  13:50:25
+   Duration  5.82s (transform 55ms, setup 39ms, import 96ms, tests 5.26s, environment 0ms)
+
+reruns: Tests  1 passed (1); Tests  1 passed (1)

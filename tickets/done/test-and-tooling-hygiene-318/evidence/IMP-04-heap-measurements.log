@@ -1,0 +1,945 @@
+# IMP-04 — Heap limits of the cross-package tests project and the server tests project
+# Command: node --max-old-space-size=<1536|2048|2560> <vue-tsc|tsc> -p <tsconfig.cross-package-tests.json|tsconfig.tests.json> --noEmit; /usr/bin/time -l for the maximum RSS
+# Commit: dd47f30810 (cross-package project), 0a050de62e (server tests project)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "Reached heap limit" at 1536 and 2048 MB; the 2560 MB runs finish; "2689810432  maximum resident set size" (web) and "2723774464  maximum resident set size" (server) — about 2.7 GB, so heapMb 4096
+
+===== cross-heap-1536.log =====
+
+<--- Last few GCs --->
+
+[33863:0x8a680c000]    12349 ms: Scavenge 1527.5 (1568.0) -> 1525.7 (1576.8) MB, pooled: 0 MB, 2.54 / 0.00 ms  (average mu = 0.864, current mu = 0.840) allocation failure; 
+[33863:0x8a680c000]    12597 ms: Mark-Compact (reduce) 1532.6 (1577.0) -> 1527.8 (1567.3) MB, pooled: 0 MB, 227.92 / 0.00 ms  (+ 0.1 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 248 ms) (average mu = 0.696, cu
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x10437f680 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 2: 0x10455aa94 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 3: 0x10476a0a8 v8::internal::Heap::stack() [/Users/normy/.hermes/node/bin/node]
+ 4: 0x104768448 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/normy/.hermes/node/bin/node]
+ 5: 0x10475ca3c v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 6: 0x10475d274 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 7: 0x10472df24 v8::internal::FactoryBase<v8::internal::Factory>::NewFixedArrayWithFiller(v8::internal::Handle<v8::internal::Map>, int, v8::internal::Handle<v8::internal::HeapObject>, v8::internal::AllocationType) [/Users/normy/.hermes/node/bin/node]
+ 8: 0x104a532d4 v8::internal::OrderedHashTable<v8::internal::OrderedHashMap, 2>::Rehash(v8::internal::Isolate*, v8::internal::Handle<v8::internal::OrderedHashMap>, int) [/Users/normy/.hermes/node/bin/node]
+ 9: 0x104b5426c v8::internal::Runtime_MapGrow(int, unsigned long*, v8::internal::Isolate*) [/Users/normy/.hermes/node/bin/node]
+10: 0x10501ddf4 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/Users/normy/.hermes/node/bin/node]
+11: 0x104fe82c0 Builtins_MapPrototypeSet [/Users/normy/.hermes/node/bin/node]
+12: 0x11059edf8 
+13: 0x110ad1f74 
+14: 0x1109dc5d4 
+15: 0x110b6307c 
+16: 0x110ad29b4 
+17: 0x1109dc5d4 
+18: 0x11059e13c 
+19: 0x10fadeff8 
+20: 0x110995918 
+21: 0x110618f74 
+22: 0x11063722c 
+23: 0x11030d8a4 
+24: 0x10faa9b18 
+25: 0x10ff48638 
+26: 0x1109d0e70 
+27: 0x10fa28114 
+28: 0x1102f446c 
+29: 0x1103fb5f0 
+30: 0x10ff4bf04 
+31: 0x1109ab560 
+32: 0x10ff4b6a8 
+33: 0x1107d958c 
+34: 0x110334820 
+35: 0x1104eeb4c 
+36: 0x110448ef4 
+37: 0x1101f3b84 
+38: 0x110a342e8 
+39: 0x1104da8b0 
+40: 0x10faa8808 
+41: 0x110356748 
+42: 0x1104da9c4 
+43: 0x11071b0ac 
+44: 0x1103347bc 
+45: 0x1104eeb4c 
+46: 0x110448ef4 
+47: 0x1101f3b84 
+48: 0x110a342e8 
+49: 0x1104da8b0 
+50: 0x10faa8808 
+51: 0x110356748 
+52: 0x1104da9c4 
+53: 0x11071b0ac 
+54: 0x1103347bc 
+55: 0x1104eeb4c 
+56: 0x110448ef4 
+57: 0x1101f3b84 
+58: 0x110a342e8 
+59: 0x1104da8b0 
+60: 0x110b70764 
+61: 0x10fadac88 
+62: 0x11045a998 
+63: 0x110330658 
+64: 0x11032bfdc 
+65: 0x1104da714 
+66: 0x110b70764 
+67: 0x10fadac88 
+68: 0x110335660 
+69: 0x1106357a4 
+70: 0x10fb53e00 
+71: 0x110635764 
+72: 0x11032b7b8 
+73: 0x10fa10ebc 
+74: 0x11045acf8 
+75: 0x110330658 
+76: 0x11032bfdc 
+77: 0x1104ab3fc 
+78: 0x1107f3930 
+79: 0x1104da98c 
+80: 0x11071b0ac 
+81: 0x1103347bc 
+82: 0x1104ef658 
+83: 0x110448ef4 
+84: 0x1101f3b84 
+85: 0x110a342e8 
+86: 0x1104da8b0 
+87: 0x10fadb000 
+88: 0x1104ce098 
+89: 0x1109ef700 
+90: 0x11010d904 
+91: 0x110370a90 
+92: 0x1104f1b18 
+93: 0x110aca370 
+94: 0x10fad9d90 
+95: 0x1107e1504 
+96: 0x110b8ae18 
+97: 0x1107e10cc 
+98: 0x1107cc5e0 
+99: 0x10fde5374 
+100: 0x110637998 
+101: 0x110626e6c 
+102: 0x1106270f8 
+103: 0x110638398 
+104: 0x11062723c 
+105: 0x1100ac29c 
+106: 0x1100abd20 
+107: 0x10ff3bfc8 
+108: 0x10ff0ccd4 
+109: 0x10ff0cf3c 
+110: 0x10ff0d0d8 
+111: 0x10feb00f0 
+112: 0x10f94a2d8 
+113: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+114: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+115: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+116: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+117: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+118: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+119: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+120: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+121: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+122: 0x10f8ddab8 
+123: 0x10f8dcdac 
+124: 0x10f8de6e0 
+125: 0x10f8dbdf0 
+126: 0x10f8d8cf8 
+127: 0x10f8d9154 
+128: 0x10f8d935c 
+129: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+130: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+131: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+132: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+133: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+134: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+135: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+136: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+137: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+138: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+139: 0x104f88ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+140: 0x104f86c0c Builtins_JSEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+141: 0x104f868f4 Builtins_JSEntry [/Users/normy/.hermes/node/bin/node]
+142: 0x1046c1e94 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/Users/normy/.hermes/node/bin/node]
+143: 0x1046c17f0 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) [/Users/normy/.hermes/node/bin/node]
+144: 0x104570a4c v8::Function::Call(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [/Users/normy/.hermes/node/bin/node]
+145: 0x10435965c node::builtins::BuiltinLoader::CompileAndCall(v8::Local<v8::Context>, char const*, node::Realm*) [/Users/normy/.hermes/node/bin/node]
+146: 0x10441176c node::Realm::ExecuteBootstrapper(char const*) [/Users/normy/.hermes/node/bin/node]
+147: 0x1043370a0 node::StartExecution(node::Environment*, char const*) [/Users/normy/.hermes/node/bin/node]
+148: 0x104336ff4 node::StartExecution(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) [/Users/normy/.hermes/node/bin/node]
+149: 0x104282efc node::LoadEnvironment(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>, std::__1::function<void (node::Environment*, v8::Local<v8::Value>, v8::Local<v8::Value>)>) [/Users/normy/.hermes/node/bin/node]
+150: 0x1043c9870 node::NodeMainInstance::Run() [/Users/normy/.hermes/node/bin/node]
+151: 0x10433a7e8 node::Start(int, char**) [/Users/normy/.hermes/node/bin/node]
+152: 0x180a93e00 start [/usr/lib/dyld]
+
+===== cross-heap-2048.log =====
+
+<--- Last few GCs --->
+
+[34527:0x8b2000000]    21343 ms: Scavenge (interleaved) 2034.2 (2086.0) -> 2029.3 (2086.0) MB, pooled: 7 MB, 5.21 / 0.00 ms  (average mu = 0.489, current mu = 0.205) allocation failure; 
+[34527:0x8b2000000]    21392 ms: Scavenge (interleaved) 2034.8 (2086.5) -> 2031.6 (2105.2) MB, pooled: 0 MB, 41.00 / 0.00 ms  (average mu = 0.489, current mu = 0.205) allocation failure; 
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x104417680 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 2: 0x1045f2a94 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 3: 0x1048020a8 v8::internal::Heap::stack() [/Users/normy/.hermes/node/bin/node]
+ 4: 0x104800448 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/normy/.hermes/node/bin/node]
+ 5: 0x1047f4a3c v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 6: 0x1047f5274 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 7: 0x1047d8560 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/Users/normy/.hermes/node/bin/node]
+ 8: 0x104bf49c0 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/normy/.hermes/node/bin/node]
+ 9: 0x1050b5df4 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/Users/normy/.hermes/node/bin/node]
+10: 0x1051021fc Builtins_CreateEmptyArrayLiteral [/Users/normy/.hermes/node/bin/node]
+11: 0x1105ae2c4 
+12: 0x105080f28 Builtins_MapPrototypeForEach [/Users/normy/.hermes/node/bin/node]
+13: 0x1115960d8 
+14: 0x1101670e0 
+15: 0x110f69fe4 
+16: 0x1110722c4 
+17: 0x11159563c 
+18: 0x110167078 
+19: 0x1111aa3b8 
+20: 0x11015742c 
+21: 0x10ff5a548 
+22: 0x1106a6530 
+23: 0x10ff1be3c 
+24: 0x11008e234 
+25: 0x111454a24 
+26: 0x111189390 
+27: 0x110157b34 
+28: 0x111109320 
+29: 0x1103aa9d0 
+30: 0x11008e134 
+31: 0x111454a24 
+32: 0x111189390 
+33: 0x110157b34 
+34: 0x11125de84 
+35: 0x110150de4 
+36: 0x110088284 
+37: 0x111454a24 
+38: 0x111189390 
+39: 0x110157b34 
+40: 0x11125a4b0 
+41: 0x110150e84 
+42: 0x110088284 
+43: 0x111454a24 
+44: 0x111189390 
+45: 0x110157b34 
+46: 0x110152114 
+47: 0x110088284 
+48: 0x111454a24 
+49: 0x111189390 
+50: 0x110157b34 
+51: 0x10ff5a548 
+52: 0x1106a6530 
+53: 0x10ff1be3c 
+54: 0x11008e234 
+55: 0x111454a24 
+56: 0x111189390 
+57: 0x110157b34 
+58: 0x111109320 
+59: 0x1103aa9d0 
+60: 0x11008e134 
+61: 0x111454a24 
+62: 0x111189390 
+63: 0x110157b34 
+64: 0x111321ad4 
+65: 0x10ffaa98c 
+66: 0x1111342a4 
+67: 0x111475560 
+68: 0x11008de8c 
+69: 0x111454a24 
+70: 0x111189390 
+71: 0x110157b34 
+72: 0x10ff5a548 
+73: 0x1106a6530 
+74: 0x10ff1be3c 
+75: 0x11008e234 
+76: 0x111454a24 
+77: 0x111189390 
+78: 0x110157b34 
+79: 0x111109320 
+80: 0x1103aa9d0 
+81: 0x11008e134 
+82: 0x111454a24 
+83: 0x111189390 
+84: 0x110157b34 
+85: 0x11125de84 
+86: 0x110150de4 
+87: 0x110088284 
+88: 0x111454a24 
+89: 0x111189390 
+90: 0x110157b34 
+91: 0x11125a370 
+92: 0x110150e84 
+93: 0x110088284 
+94: 0x111454a24 
+95: 0x111189390 
+96: 0x110157b34 
+97: 0x110152114 
+98: 0x110088284 
+99: 0x111454a24 
+100: 0x111189390 
+101: 0x110157b34 
+102: 0x10ff5a548 
+103: 0x1106a6530 
+104: 0x10ff1be3c 
+105: 0x11008e234 
+106: 0x111454a24 
+107: 0x111189390 
+108: 0x110157b34 
+109: 0x111109320 
+110: 0x1103aa9d0 
+111: 0x11008e134 
+112: 0x111454a24 
+113: 0x111189390 
+114: 0x110157b34 
+115: 0x111321ad4 
+116: 0x10ffaa98c 
+117: 0x111133ca4 
+118: 0x111475560 
+119: 0x11008de8c 
+120: 0x111454a24 
+121: 0x111189390 
+122: 0x110157b34 
+123: 0x10ff5a548 
+124: 0x1106a6530 
+125: 0x10ff1be3c 
+126: 0x11008e234 
+127: 0x111454a24 
+128: 0x111189390 
+129: 0x110157b34 
+130: 0x111109320 
+131: 0x1103aa9d0 
+132: 0x11008e134 
+133: 0x111454a24 
+134: 0x111189390 
+135: 0x110157b34 
+136: 0x11125de84 
+137: 0x110150de4 
+138: 0x110088284 
+139: 0x111454a24 
+140: 0x111189390 
+141: 0x110157b34 
+142: 0x11125a370 
+143: 0x110150e84 
+144: 0x110088284 
+145: 0x111454a24 
+146: 0x111189390 
+147: 0x110157b34 
+148: 0x110152114 
+149: 0x110088284 
+150: 0x111454a24 
+151: 0x111189390 
+152: 0x110157b34 
+153: 0x10ff5a548 
+154: 0x1106a6530 
+155: 0x10ff1be3c 
+156: 0x11008e234 
+157: 0x111454a24 
+158: 0x111189390 
+159: 0x110157b34 
+160: 0x111109320 
+161: 0x1103aa9d0 
+162: 0x11008e134 
+163: 0x111454a24 
+164: 0x111189390 
+165: 0x110157b34 
+166: 0x111321ad4 
+167: 0x10ffaa98c 
+168: 0x111133ca4 
+169: 0x111475560 
+170: 0x11008de8c 
+171: 0x111454a24 
+172: 0x111189390 
+173: 0x110157b34 
+174: 0x10ff5a548 
+175: 0x1106a6530 
+176: 0x10ff1be3c 
+177: 0x11008e234 
+178: 0x111454a24 
+179: 0x111189390 
+180: 0x110157b34 
+181: 0x111109320 
+182: 0x1103aa9d0 
+183: 0x11008e134 
+184: 0x111454a24 
+185: 0x111189390 
+186: 0x110157b34 
+187: 0x11125de84 
+188: 0x110150de4 
+189: 0x110088284 
+190: 0x111454a24 
+191: 0x111189390 
+192: 0x110157b34 
+193: 0x11125a370 
+194: 0x110150e84 
+195: 0x110088284 
+196: 0x111454a24 
+197: 0x111189390 
+198: 0x110157b34 
+199: 0x110152114 
+200: 0x110088284 
+201: 0x111454a24 
+202: 0x111189390 
+203: 0x110157b34 
+204: 0x10ff5a548 
+205: 0x1106a6530 
+206: 0x10ff1be3c 
+207: 0x11008e234 
+208: 0x111454a24 
+209: 0x111189390 
+210: 0x110157b34 
+211: 0x111109320 
+212: 0x1103aa9d0 
+213: 0x11008e134 
+214: 0x111454a24 
+215: 0x111189390 
+216: 0x110157b34 
+217: 0x111321ad4 
+218: 0x10ffaa98c 
+219: 0x111133ca4 
+220: 0x111475560 
+221: 0x11008de8c 
+222: 0x111454a24 
+223: 0x111189390 
+224: 0x110157b34 
+225: 0x10ff5a548 
+226: 0x1106a6530 
+227: 0x10ff1be3c 
+228: 0x11008e234 
+229: 0x111454a24 
+230: 0x111189390 
+231: 0x110157b34 
+232: 0x111109320 
+233: 0x1103aa9d0 
+234: 0x11008e134 
+235: 0x111454a24 
+236: 0x111189390 
+237: 0x110157b34 
+238: 0x11125de84 
+239: 0x110150de4 
+240: 0x110088284 
+241: 0x111454a24 
+242: 0x111189390 
+243: 0x110157b34 
+244: 0x11125a370 
+245: 0x110150e84 
+246: 0x110088284 
+247: 0x111454a24 
+248: 0x111189390 
+249: 0x110157b34 
+250: 0x110152114 
+251: 0x110088284 
+252: 0x111454a24 
+253: 0x111189390 
+254: 0x110157b34 
+255: 0x10ff5a548 
+
+===== cross-heap-2560.log =====
+
+
+===== cross-mem.log =====
+       18.62 real        29.64 user         1.21 sys
+          2689810432  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              166550  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               35461  involuntary context switches
+        245830513399  instructions retired
+         94557006918  cycles elapsed
+          2823689256  peak memory footprint
+
+===== srv-heap-1536.log =====
+
+<--- Last few GCs --->
+
+[33906:0xc88000000]    17447 ms: Scavenge 1531.4 (1565.9) -> 1529.7 (1569.9) MB, pooled: 0 MB, 2.92 / 0.00 ms  (average mu = 0.241, current mu = 0.023) allocation failure; 
+[33906:0xc88000000]    17791 ms: Mark-Compact (reduce) 1533.5 (1570.1) -> 1532.4 (1566.1) MB, pooled: 0 MB, 330.62 / 0.00 ms  (+ 0.1 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 344 ms) (average mu = 0.244, cu
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x1025d3680 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 2: 0x1027aea94 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 3: 0x1029be0a8 v8::internal::Heap::stack() [/Users/normy/.hermes/node/bin/node]
+ 4: 0x1029bc448 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/normy/.hermes/node/bin/node]
+ 5: 0x1029b0a3c v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 6: 0x1029b1274 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 7: 0x102994560 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/Users/normy/.hermes/node/bin/node]
+ 8: 0x102db09c0 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/normy/.hermes/node/bin/node]
+ 9: 0x103271df4 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/Users/normy/.hermes/node/bin/node]
+10: 0x10e527ee0 
+11: 0x10e1b196c 
+12: 0x10e64a148 
+13: 0x10e52e714 
+14: 0x10e52e434 
+15: 0x10e250150 
+16: 0x10e8e2990 
+17: 0x10e8ca368 
+18: 0x10e52df24 
+19: 0x10e8fbc04 
+20: 0x10e52a108 
+21: 0x10e85063c 
+22: 0x10e5ad7e8 
+23: 0x10e86bd7c 
+24: 0x10e52e15c 
+25: 0x10e5b2708 
+26: 0x10e1b49b4 
+27: 0x10de720a0 
+28: 0x10df77880 
+29: 0x10e4e3c2c 
+30: 0x10e912630 
+31: 0x10e52e31c 
+32: 0x10e52a454 
+33: 0x10e5b5708 
+34: 0x10e8cb870 
+35: 0x10e6b6394 
+36: 0x10e86d504 
+37: 0x10e6b60f4 
+38: 0x10e1d3174 
+39: 0x10e6b60c4 
+40: 0x10e2762d0 
+41: 0x10e2ad48c 
+42: 0x10e6b5a60 
+43: 0x10e92f480 
+44: 0x10e58cad4 
+45: 0x10e260568 
+46: 0x10e6b63fc 
+47: 0x10e92f480 
+48: 0x10e58cad4 
+49: 0x10e0fa378 
+50: 0x10e0fbd0c 
+51: 0x10df5fe18 
+52: 0x10e120218 
+53: 0x10e07bd7c 
+54: 0x10dfd537c 
+55: 0x10e1abc5c 
+56: 0x10e19f8b0 
+57: 0x10e1db7b4 
+58: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+59: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+60: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+61: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+62: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+63: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+64: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+65: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+66: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+67: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+68: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+69: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+70: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+71: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+72: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+73: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+74: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+75: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+76: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+77: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+78: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+79: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+80: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+81: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+82: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+83: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+84: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+85: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+86: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+87: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+88: 0x1031dcef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+89: 0x1031dac0c Builtins_JSEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+90: 0x1031da8f4 Builtins_JSEntry [/Users/normy/.hermes/node/bin/node]
+91: 0x102915e94 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/Users/normy/.hermes/node/bin/node]
+92: 0x1029157f0 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) [/Users/normy/.hermes/node/bin/node]
+93: 0x1027c4a4c v8::Function::Call(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [/Users/normy/.hermes/node/bin/node]
+94: 0x1025ad65c node::builtins::BuiltinLoader::CompileAndCall(v8::Local<v8::Context>, char const*, node::Realm*) [/Users/normy/.hermes/node/bin/node]
+95: 0x10266576c node::Realm::ExecuteBootstrapper(char const*) [/Users/normy/.hermes/node/bin/node]
+96: 0x10258b0a0 node::StartExecution(node::Environment*, char const*) [/Users/normy/.hermes/node/bin/node]
+97: 0x10258aff4 node::StartExecution(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) [/Users/normy/.hermes/node/bin/node]
+98: 0x1024d6efc node::LoadEnvironment(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>, std::__1::function<void (node::Environment*, v8::Local<v8::Value>, v8::Local<v8::Value>)>) [/Users/normy/.hermes/node/bin/node]
+99: 0x10261d870 node::NodeMainInstance::Run() [/Users/normy/.hermes/node/bin/node]
+100: 0x10258e7e8 node::Start(int, char**) [/Users/normy/.hermes/node/bin/node]
+101: 0x180a93e00 start [/usr/lib/dyld]
+
+===== srv-heap-2048.log =====
+
+<--- Last few GCs --->
+
+[34189:0xc8480c000]    24908 ms: Scavenge 2032.5 (2084.2) -> 2026.9 (2085.0) MB, pooled: 6 MB, 4.00 / 0.00 ms  (average mu = 0.527, current mu = 0.284) allocation failure; 
+[34189:0xc8480c000]    24923 ms: Scavenge 2033.6 (2085.0) -> 2027.6 (2102.5) MB, pooled: 0 MB, 4.58 / 0.00 ms  (average mu = 0.527, current mu = 0.284) allocation failure; 
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x100acf680 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 2: 0x100caaa94 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/Users/normy/.hermes/node/bin/node]
+ 3: 0x100eba0a8 v8::internal::Heap::stack() [/Users/normy/.hermes/node/bin/node]
+ 4: 0x100eb8448 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/normy/.hermes/node/bin/node]
+ 5: 0x100eaca3c v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 6: 0x100ead274 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/normy/.hermes/node/bin/node]
+ 7: 0x100e90560 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/Users/normy/.hermes/node/bin/node]
+ 8: 0x1012ac9c0 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/normy/.hermes/node/bin/node]
+ 9: 0x10176ddf4 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/Users/normy/.hermes/node/bin/node]
+10: 0x10d01bf34 
+11: 0x10cc62110 
+12: 0x10d1e4418 
+13: 0x10d16e10c 
+14: 0x10cc75b10 
+15: 0x10d024438 
+16: 0x10d05ef18 
+17: 0x10c31ffa0 
+18: 0x10d16afa0 
+19: 0x10c59eef4 
+20: 0x10c1b3e74 
+21: 0x10d021a10 
+22: 0x10cc753bc 
+23: 0x10d024438 
+24: 0x10c6265b0 
+25: 0x10c31f704 
+26: 0x10d16b090 
+27: 0x10d172094 
+28: 0x10c1b3eac 
+29: 0x10d021a10 
+30: 0x10cc754a4 
+31: 0x10cb79944 
+32: 0x10cd49c00 
+33: 0x10cf35fb0 
+34: 0x10cd49ba0 
+35: 0x10cf64950 
+36: 0x10c679ecc 
+37: 0x1017524c8 Builtins_SetPrototypeForEach [/Users/normy/.hermes/node/bin/node]
+38: 0x10c5a1990 
+39: 0x10c5a21c0 
+40: 0x10ce0e080 
+41: 0x10c03a758 
+42: 0x10cc17a88 
+43: 0x10cf6c97c 
+44: 0x10cb8b6f0 
+45: 0x10cf4c7f4 
+46: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+47: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+48: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+49: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+50: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+51: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+52: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+53: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+54: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+55: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+56: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+57: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+58: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+59: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+60: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+61: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+62: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+63: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+64: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+65: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+66: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+67: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+68: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+69: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+70: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+71: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+72: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+73: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+74: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+75: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+76: 0x1016d8ef0 Builtins_InterpreterEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+77: 0x1016d6c0c Builtins_JSEntryTrampoline [/Users/normy/.hermes/node/bin/node]
+78: 0x1016d68f4 Builtins_JSEntry [/Users/normy/.hermes/node/bin/node]
+79: 0x100e11e94 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/Users/normy/.hermes/node/bin/node]
+80: 0x100e117f0 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) [/Users/normy/.hermes/node/bin/node]
+81: 0x100cc0a4c v8::Function::Call(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [/Users/normy/.hermes/node/bin/node]
+82: 0x100aa965c node::builtins::BuiltinLoader::CompileAndCall(v8::Local<v8::Context>, char const*, node::Realm*) [/Users/normy/.hermes/node/bin/node]
+83: 0x100b6176c node::Realm::ExecuteBootstrapper(char const*) [/Users/normy/.hermes/node/bin/node]
+84: 0x100a870a0 node::StartExecution(node::Environment*, char const*) [/Users/normy/.hermes/node/bin/node]
+85: 0x100a86ff4 node::StartExecution(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) [/Users/normy/.hermes/node/bin/node]
+86: 0x1009d2efc node::LoadEnvironment(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>, std::__1::function<void (node::Environment*, v8::Local<v8::Value>, v8::Local<v8::Value>)>) [/Users/normy/.hermes/node/bin/node]
+87: 0x100b19870 node::NodeMainInstance::Run() [/Users/normy/.hermes/node/bin/node]
+88: 0x100a8a7e8 node::Start(int, char**) [/Users/normy/.hermes/node/bin/node]
+89: 0x180a93e00 start [/usr/lib/dyld]
+
+===== srv-heap-2560.log =====
+(excerpt: 2617 lines, 648993 bytes; the key lines, then the last 40 lines; the full log stayed at /tmp/h318/srv-heap-2560.log)
+tests/agent-work-journal/services/work-journal-run-updater.test.ts(41,9): error TS2739: Type '{ runId: string; runtimeKind: RuntimeKind; compactionRecovery: { readonly kind: "unsupported"; }; inputCapabilities: { activeTurnAppend: "unsupported"; }; getContext: () => AgentRunContext<null>; ... 8 more ...; terminate: Mock<...>; }' is missing the following properties from type 'AgentRunBackend': back
+tests/agent-work-journal/services/work-journal-run-updater.test.ts(82,51): error TS2345: Argument of type '{ runSessions: { deactivateForRun: () => number; }; runFileChangeService: { attachToRun: () => () => undefined; }; publishedArtifactRelayService: { attachToRun: () => () => undefined; }; memoryRecorder: AgentRunMemoryRecorder; workJournalUpdater: WorkJournalRunUpdater; mcpServerInstances: { .
+tests/agent-work-journal/services/work-journal-run-updater.test.ts(111,33): error TS2345: Argument of type '{ runSessions: { deactivateForRun: () => number; }; runFileChangeService: { attachToRun: () => () => undefined; }; publishedArtifactRelayService: { attachToRun: () => () => undefined; }; memoryRecorder: { attachToRun: () => () => undefined; }; workJournalUpdater: { attachToRun: () => () => u
+tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-safety.test.ts(96,137): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-safety.test.ts(99,167): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition-classification.test.ts(15,3): error TS2739: Type 'AgentOrgExecutionIndex' is missing the following properties from type 'AgentOrgExecutionIndex': isLiveAgent, isLiveTeam, visitTaskMember
+tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts(101,46): error TS2345: Argument of type 'Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly
+tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts(206,46): error TS2345: Argument of type 'Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly
+tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts(236,46): error TS2345: Argument of type 'Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly
+tests/app-data-migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.test.ts(285,46): error TS2345: Argument of type 'Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly
+tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts(423,13): error TS2352: Conversion of type 'ConfiguredExecutionNode' to type '{ taskExecutions: unknown[]; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+tests/app-data-migrations/frozen/native-working-context-snapshot-shapes.test.ts(7,61): error TS2345: Argument of type '({ payload, valid }: any) => void' is not assignable to parameter of type '(...args: any[] | [any]) => Awaitable<void>'.
+tests/app-data-migrations/frozen/native-working-context-snapshot-shapes.test.ts(24,39): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/memory/working-context", { with: { "resolution-mode": "import" } }).WorkingContext' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-workt
+tests/app-data-migrations/frozen/released-own-file-ownership.test.ts(86,75): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/run-history/store/atomic-run-package-file-commit-writer", { with: { "resolution-mode": "import" } }).AtomicRunPackageFileCommitWriter' is not assignable to parameter of type 'impor
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(104,3): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyt
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(123,3): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyt
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(126,3): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyt
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(259,7): error TS2322: Type 'AgentTeamAddress' is not assignable to type 'AgentTeamAddress | undefined'.
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(260,7): error TS2322: Type 'AgentTeamAddress' is not assignable to type 'AgentTeamAddress | undefined'.
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(284,9): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyt
+tests/app-data-migrations/frozen/released-skill-access-mode-frozen-shapes.test.ts(286,11): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/normy/autobyteus_org/autoby
+tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts(91,7): error TS2353: Object literal may only specify known properties, and 'skillAccessMode' does not exist in type 'Partial<Readonly<{ kind: "agent"; address: AgentTeamAddress; agentDefinitionId: string; agentRunId: string; platformAgentRunId: string | null; role: st
+tests/app-data-migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.test.ts(153,50): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/memory/working-context", { with: { "resolution-mode": "import" } }).WorkingContext' is not assignable to parameter of type
+tests/app-data-migrations/project-task-titles/project-task-titles-app-data-migration.test.ts(96,15): error TS2339: Property 'taskKey' does not exist on type '{ projectId: string; }'.
+tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts(145,32): error TS2345: Argument of type 'AgentDefinition[]' is not assignable to parameter of type '{ id: string; name: string; }[]'.
+tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts(155,32): error TS2345: Argument of type 'AgentDefinition[]' is not assignable to parameter of type '{ id: string; name: string; }[]'.
+tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts(165,32): error TS2345: Argument of type 'AgentDefinition[]' is not assignable to parameter of type '{ id: string; name: string; }[]'.
+tests/app-data-migrations/remove-built-in-project-task-manager/remove-built-in-project-task-manager-startup.integration.test.ts(202,32): error TS2345: Argument of type 'AgentDefinition[]' is not assignable to parameter of type '{ id: string; name: string; }[]'.
+tests/app-data-migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.test.ts(94,7): error TS2322: Type '{ kind: "agent"; address: string; agentRunId: string; runtimeKind: RuntimeKind; platformAgentRunId: null; agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; ... 5 more ...; description: null; }[]' i
+tests/app-data-migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.test.ts(60,7): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/normy/au
+tests/app-data-migrations/team-agent-memory-layout/team-agent-memory-layout-app-data-migration.test.ts(69,11): error TS2322: Type '{ address: AgentTeamAddress; teamDefinitionId: string; role: null; description: null; teamRunId: string; coordinatorAddress: AgentTeamAddress; members: Readonly<...>[]; taskExecutions: never[]; }[]' is not assignable to type 'Readonly<{ address: AgentTeamAddress; teamD
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts(25,5): error TS2322: Type 'Readonly<{ schemaVersion: 1; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; rootTeam: Readonly<...>;
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts(34,7): error TS2741: Property 'schemaVersion' is missing in type 'Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; roo
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts(51,7): error TS2741: Property 'schemaVersion' is missing in type 'Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; roo
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts(76,7): error TS2741: Property 'schemaVersion' is missing in type 'Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; roo
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.test.ts(83,7): error TS2741: Property 'schemaVersion' is missing in type 'Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; roo
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-run-planner.test.ts(18,3): error TS2322: Type 'Readonly<{ kind: "agent"; address: AgentTeamAddress; agentDefinitionId: `definition-${string}`; agentRunId: `run-${string}`; platformAgentRunId: null; role: null; description: null; runtimeKind: RuntimeKind.AUTOBYTEUS; ... 5 more ...; applicationExecutionContext: Readonly<...> | nul
+tests/app-data-migrations/team-run-execution-tree-v1/predecessor-team-run-planner.test.ts(40,36): error TS2322: Type 'Readonly<{ kind: "agent_team"; address: AgentTeamAddress; teamDefinitionId: `definition-${string}`; teamRunId: `run-${string}`; coordinatorAddress: AgentTeamAddress; role: null | undefined; description: null | undefined; children: readonly TeamRunMemberMetadata[]; }>' is not assign
+tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts(25,5): error TS2322: Type 'Readonly<{ schemaVersion: 1; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; rootTeam: Readonly<...>; }>' is
+tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts(58,46): error TS2345: Argument of type 'Map<string, Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; rootTeam: Readonly<...>;
+tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts(76,47): error TS2345: Argument of type 'Map<string, Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; rootTeam: Readonly<...>;
+tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts(96,18): error TS2345: Argument of type 'Map<string, Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; rootTeam: Readonly<...>;
+tests/app-data-migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.test.ts(114,18): error TS2345: Argument of type 'Map<string, Readonly<{ createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[]; }>[]; rootTeam: Readonly<...>
+tests/app-data-migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.test.ts(41,11): error TS2322: Type 'Readonly<{ entries: Map<string, Readonly<{ rootTeamRunId: "root-retained"; taskTeamRunIds: string[]; teamAddress: AgentTeamAddress; sourceFilePath: "/tmp/tasks.json"; taskId: "task-retained"; }>>; unusableTaskTeamRunIds: Set<...>; issues: never[]; }>' is not assignable to ty
+tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts(40,3): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/norm
+tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts(54,5): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/norm
+tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts(59,5): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/norm
+tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts(73,7): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/norm
+tests/app-data-migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.test.ts(188,39): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address", { with: { "resolution-mode": "import" } }).AgentTeamAddress' is not assignable to type 'import("/Users/no
+tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts(20,5): error TS2322: Type 'string' is not assignable to type 'AgentTeamAddress'.
+tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts(23,5): error TS2322: Type 'string' is not assignable to type 'AgentTeamAddress'.
+tests/app-data-migrations/team-run-history-index-v2/team-run-history-index-v2-migration.test.ts(26,7): error TS2322: Type 'string' is not assignable to type 'AgentTeamAddress'.
+tests/architecture/agent-provider-composition-boundaries.test.ts(197,20): error TS18048: 'node.arguments' is possibly 'undefined'.
+tests/architecture/agent-provider-composition-boundaries.test.ts(218,3): error TS18048: 'node.arguments' is possibly 'undefined'.
+tests/architecture/agent-provider-composition-boundaries.test.ts(317,7): error TS18048: 'occurrence.node.arguments' is possibly 'undefined'.
+tests/architecture/agent-provider-composition-boundaries.test.ts(342,43): error TS18048: 'node.arguments' is possibly 'undefined'.
+tests/architecture/application-framework-boundaries.test.ts(1729,39): error TS2345: Argument of type 'Expression | undefined' is not assignable to parameter of type 'Node'.
+tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts(329,5): error TS2322: Type 'Mock<() => Promise<{}>>' is not assignable to type 'AutoByteusLlmFactory | undefined'.
+tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts(55,5): error TS2353: Object literal may only specify known properties, and 'serverSettingsService' does not exist in type 'BuiltInAgentBootstrapperOptions'.
+tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts(111,45): error TS2353: Object literal may only specify known properties, and 'unsupported_setting' does not exist in type '{ reasoning_effort: string; }'.
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts(107,3): error TS2416: Property 'getContext' in type 'ScriptedAgentRunBackend' is not assignable to the same property in base type 'AgentRunBackend'.
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts(188,5): error TS2739: Type 'ScriptedAgentRunBackend' is missing the following properties from type 'AgentRunBackend': backgroundTaskInspection, applyDefinitionTools, getToolNames
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts(201,3): error TS2353: Object literal may only specify known properties, and 'lastKnownStatus' does not exist in type 'AgentRunMetadata'.
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts(332,11): error TS2353: Object literal may only specify known properties, and 'lastKnownStatus' does not exist in type 'AgentRunMetadata'.
+tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts(93,7): error TS2322: Type 'Mock<() => Promise<{ accepted: true; turnId: string; }>>' is not assignable to type '(dispatch: AgentRunBackendInputDispatch) => Promise<Readonly<{ forwarded: boolean; code?: string | undefined; message?: string | undefined; turnId: string | null; platformAgentRunId?: string | ... 1 more ... | undefined; 
+tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts(113,52): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: AgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoByteu
+tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts(136,3): error TS2353: Object literal may only specify known properties, and 'activationState' does not exist in type 'AgentRunMetadata'.
+tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts(91,3): error TS2322: Type 'ChildProcessByStdio<null, Readable, Readable>' is not assignable to type 'ChildProcessWithoutNullStreams'.
+tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts(164,50): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-to
+tests/e2e/helpers/claude-live-agent-harness.ts(80,9): error TS2740: Type '{ name: string; description: string; instructions: string; }' is missing the following properties from type 'AgentDefinition': toolNames, inputProcessorNames, llmResponseProcessorNames, toolExecutionResultProcessorNames, and 7 more.
+tests/e2e/helpers/claude-live-agent-harness.ts(137,9): error TS2353: Object literal may only specify known properties, and 'canInterrupt' does not exist in type 'AgentRunStatusProjection'.
+tests/e2e/helpers/claude-live-agent-harness.ts(137,32): error TS2339: Property 'can_interrupt' does not exist on type 'AgentStatusPayload'.
+tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts(161,34): error TS2339: Property 'providerId' does not exist on type 'SecretConsumerIdentity'.
+tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts(188,23): error TS2345: Argument of type '{ name: string; port: number; baseUrl: string; dataDir: string; child: ChildProcessByStdio<null, Readable, Readable>; logs: string[]; }' is not assignable to parameter of type 'ServerProcess'.
+tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts(189,3): error TS2322: Type '{ name: string; port: number; baseUrl: string; dataDir: string; child: ChildProcessByStdio<null, Readable, Readable>; logs: string[]; }' is not assignable to type 'ServerProcess'.
+tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts(72,59): error TS2322: Type '{ name: string; baseUrl: string; dataDir: string; child: ChildProcessByStdio<null, Readable, Readable>; logs: string[]; }' is not assignable to type 'ServerProcess'.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(70,3): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(207,10): error TS2554: Expected 4 arguments, but got 3.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(210,39): error TS2554: Expected 0-1 arguments, but got 2.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(246,29): error TS2554: Expected 2 arguments, but got 1.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(285,35): error TS2345: Argument of type '{ runSessions: AgentToolMcpRunSessionDeactivator; runFileChangeService: never; publishedArtifactRelayService: never; memoryRecorder: AgentRunMemoryRecorder; workJournalUpdater: never; mcpServerInstances: { ...; }; }' is not assignable to parameter of type '{ runSessions: AgentToolMcpRunSessionDeacti
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(293,41): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: CodexAgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoByteusBa
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(321,37): error TS2339: Property 'prepareNewAgentRun' does not exist on type 'AgentRunManager'.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(332,48): error TS7006: Parameter 'event' implicitly has an 'any' type.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(495,35): error TS2345: Argument of type '{ runSessions: AgentToolMcpRunSessionDeactivator; runFileChangeService: never; publishedArtifactRelayService: never; memoryRecorder: AgentRunMemoryRecorder; workJournalUpdater: never; mcpServerInstances: { ...; }; }' is not assignable to parameter of type '{ runSessions: AgentToolMcpRunSessionDeacti
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(503,41): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: CodexAgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoByteusBa
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(531,37): error TS2339: Property 'prepareNewAgentRun' does not exist on type 'AgentRunManager'.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(541,48): error TS7006: Parameter 'event' implicitly has an 'any' type.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(648,35): error TS2345: Argument of type '{ runSessions: AgentToolMcpRunSessionDeactivator; runFileChangeService: never; publishedArtifactRelayService: never; memoryRecorder: AgentRunMemoryRecorder; workJournalUpdater: never; mcpServerInstances: { ...; }; }' is not assignable to parameter of type '{ runSessions: AgentToolMcpRunSessionDeacti
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(656,41): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: CodexAgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoByteusBa
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(681,37): error TS2339: Property 'prepareNewAgentRun' does not exist on type 'AgentRunManager'.
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(690,48): error TS7006: Parameter 'event' implicitly has an 'any' type.
+tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts(134,9): error TS2322: Type '{ entries: null; error: null; }' is not assignable to type '{ entries: Rec[]; error: string | null; } | { entries: null; error: string; }'.
+tests/e2e/projects/project-change-feed.e2e.test.ts(350,12): error TS2531: Object is possibly 'null'.
+tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts(366,64): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts(214,5): error TS2322: Type 'ChildProcessByStdio<null, Readable, Readable>' is not assignable to type 'ChildProcessWithoutNullStreams'.
+tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts(1203,37): error TS2339: Property 'teamRunId' does not exist on type '{ workspaceRootPath: any; }'.
+tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts(2265,52): error TS2345: Argument of type 'string' is not assignable to parameter of type '"/rest/remote-access/status" | "/rest/remote/delegated-runs" | "/rest/remote/messages" | "/rest/remote/availability" | "/rest/remote/available-agents" | "/rest/remote/run-summaries" | "/rest/remote/agent-projection" | "/rest/remote/owner-
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts(272,70): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: AgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoByteusBa
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts(291,7): error TS2741: Property 'validateMany' is missing in type '{ validate: () => never; }' but required in type 'RunModelSelectionValidator'.
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts(336,7): error TS2353: Object literal may only specify known properties, and 'lastKnownStatus' does not exist in type 'AgentRunMetadata'.
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts(595,7): error TS2353: Object literal may only specify known properties, and 'lastKnownStatus' does not exist in type 'AgentRunMetadata'.
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts(700,15): error TS7022: 'result' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts(763,15): error TS7022: 'result' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts(181,72): error TS2345: Argument of type '{ autoByteusBackendFactory: never; codexBackendFactory: never; claudeBackendFactory: never; agyBackendFactory: never; grokBackendFactory: never; activationRegistry: never; memoryRecorder: never; providerInputNormalizer: { ...; }; agentToolMcpRunSessionDeactivator: never; }' is not assignable
+tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts(1272,7): error TS2322: Type 'TeamMemberRunProjection' is not assignable to type 'TeamMemberProjection'.
+tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts(279,16): error TS2698: Spread types may only be created from object types.
+tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts(279,40): error TS18046: 'provider' is of type 'unknown'.
+tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts(279,74): error TS18046: 'provider' is of type 'unknown'.
+tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts(382,37): error TS2550: Property 'findLastIndex' does not exist on type '{ turnId: string; calls: TokenUsageUpdatedPayload[]; results: TokenUsageUpdatedPayload[]; compacted: boolean; last: TokenUsageUpdatedPayload | undefined; }[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2023' or later.
+tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts(382,52): error TS7006: Parameter 'turn' implicitly has an 'any' type.
+tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts(191,75): error TS2550: Property 'findLastIndex' does not exist on type 'string[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2023' or later.
+tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts(191,90): error TS7006: Parameter 'status' implicitly has an 'any' type.
+tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts(1744,9): error TS2322: Type 'TeamMemberRunProjection' is not assignable to type 'TeamMemberProjection'.
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(43,3): error TS2353: Object literal may only specify known properties, and 'createBackend' does not exist in type 'AgentRunBackendFactory'.
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(61,53): error TS2554: Expected 2 arguments, but got 1.
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(88,41): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: CodexAgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoByteusBac
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(90,28): error TS2554: Expected 4 arguments, but got 3.
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(99,44): error TS2554: Expected 0-1 arguments, but got 2.
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(103,86): error TS2345: Argument of type '{ runSessions: AgentToolMcpRunSessionDeactivator; runFileChangeService: never; publishedArtifactRelayService: never; memoryRecorder: AgentRunMemoryRecorder; workJournalUpdater: never; mcpServerInstances: { ...; }; }' is not assignable to parameter of type '{ runSessions: AgentToolMcpRunSessionDeacti
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(112,32): error TS2339: Property 'prepareNewAgentRun' does not exist on type 'AgentRunManager'.
+tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts(117,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts(2001,9): error TS2322: Type 'TeamMemberRunProjection' is not assignable to type 'TeamMemberProjection'.
+tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts(288,12): error TS18047: 'noReaderContext.processedSystemPrompt' is possibly 'null'.
+tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts(479,32): error TS18047: 'prompt' is possibly 'null'.
+tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts(155,5): error TS18047: 'socket' is possibly 'null'.
+tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts(203,5): error TS18047: 'socket' is possibly 'null'.
+tests/e2e/runtime/mixed-task-delegation.e2e.test.ts(435,8): error TS2550: Property 'findLastIndex' does not exist on type 'string[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2023' or later.
+tests/e2e/runtime/mixed-task-delegation.e2e.test.ts(435,23): error TS7006: Parameter 'status' implicitly has an 'any' type.
+tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts(659,7): error TS2322: Type 'TeamMemberRunProjection' is not assignable to type '{ agentRunId: string; summary: string | null; lastActivityAt: string | null; conversation: Record<string, unknown>[]; }'.
+tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts(663,53): error TS18047: 'projection' is possibly 'null'.
+tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts(669,9): error TS2322: Type '{ agentRunId: string; summary: string | null; lastActivityAt: string | null; conversation: Record<string, unknown>[]; } | null' is not assignable to type '{ agentRunId: string; summary: string | null; lastActivityAt: string | null; conversation: Record<string, unknown>[]; }'.
+tests/e2e/runtime/skill-update-notice-live.e2e.test.ts(130,89): error TS2559: Type '(runtimeKind: any, context: any) => Promise<void>' has no properties in common with type 'TestCollectorOptions'.
+tests/e2e/runtime/skill-update-notice-live.e2e.test.ts(130,96): error TS7006: Parameter 'runtimeKind' implicitly has an 'any' type.
+tests/e2e/runtime/skill-update-notice-live.e2e.test.ts(130,109): error TS7006: Parameter 'context' implicitly has an 'any' type.
+tests/e2e/runtime/skill-update-notice-live.e2e.test.ts(263,120): error TS2559: Type '(runtimeKind: any, context: any) => Promise<void>' has no properties in common with type 'TestCollectorOptions'.
+tests/e2e/runtime/skill-update-notice-live.e2e.test.ts(263,127): error TS7006: Parameter 'runtimeKind' implicitly has an 'any' type.
+tests/e2e/runtime/skill-update-notice-live.e2e.test.ts(263,140): error TS7006: Parameter 'context' implicitly has an 'any' type.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(166,13): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/user-message", { with: { "resolution-mode": "import" } }).LLMUserMessage' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(185,70): error TS2739: Type 'BaseAudioClient' is missing the following properties from type 'Promise<unknown>': then, catch, finally, [Symbol.toStringTag]
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(188,72): error TS18046: 'client' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(192,18): error TS18046: 'result' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(193,27): error TS18046: 'result' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(201,17): error TS18046: 'client' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(207,70): error TS2739: Type 'BaseImageClient' is missing the following properties from type 'Promise<unknown>': then, catch, finally, [Symbol.toStringTag]
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(209,72): error TS18046: 'client' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(213,18): error TS18046: 'result' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(215,17): error TS18046: 'client' is of type 'unknown'.
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(223,55): error TS2551: Property 'openStreamingSession' does not exist on type 'ClaudeSdkClient'. Did you mean 'beginStreamingSession'?
+tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts(225,74): error TS2551: Property 'openStreamingSession' does not exist on type 'ClaudeSdkClient'. Did you mean 'beginStreamingSession'?
+tests/e2e/skills/github-skill-runtime-harness.ts(48,78): error TS2345: Argument of type '{ definitions: never; skills: SkillService; workspaces: { resolveWorkingDirectory: () => Promise<string>; }; mcpSessions: never; }' is not assignable to parameter of type 'Readonly<{ definitions: AgentDefinitionService; skills: SkillService; workspaces: Readonly<{ resolveWorkingDirectory(workspaceId?: string |
+tests/e2e/skills/github-skill-runtime-harness.ts(55,66): error TS2345: Argument of type '() => Promise<AgentOperationResult>' is not assignable to parameter of type '() => Promise<void>'.
+tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts(144,67): error TS2554: Expected 0 arguments, but got 1.
+tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts(126,67): error TS2554: Expected 0 arguments, but got 1.
+tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts(100,28): error TS18048: 'input' is possibly 'undefined'.
+tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts(71,40): error TS18047: 'sum' is possibly 'null'.
+tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts(161,7): error TS2353: Object literal may only specify known properties, and 'applicationExecutionContext' does not exist in type 'Partial<Readonly<{ kind: "agent"; address: AgentTeamAddress; agentDefinitionId: string; agentRunId: string; platformAgentRunId: string | null; role: string | null; description: string | null; ... 4 more ...; w
+tests/fixtures/accepted-attachment-message.ts(23,45): error TS2741: Property 'list' is missing in type 'RunMemoryFileStore' but required in type 'MemoryStore'.
+tests/fixtures/accepted-attachment-message.ts(41,9): error TS2739: Type '{ runId: string; runtimeKind: RuntimeKind; compactionRecovery: { readonly kind: "unsupported"; }; inputCapabilities: { activeTurnAppend: "unsupported"; }; getContext: () => AgentRunContext<null>; ... 7 more ...; terminate: () => Promise<...>; }' is missing the following properties from type 'AgentRunBackend': backgroundTaskIn
+tests/fixtures/agent-run-manager-infrastructure-fixtures.ts(10,55): error TS2345: Argument of type '{ runSessions: AgentToolMcpRunSessionDeactivator; runFileChangeService: { attachToRun: () => () => undefined; }; publishedArtifactRelayService: { attachToRun: () => () => undefined; }; memoryRecorder: AgentRunMemoryRecorder; workJournalUpdater: { ...; }; mcpServerInstances: { ...; }; }' is not assig
+tests/fixtures/collaboration-public-projection-fixtures.ts(79,55): error TS2322: Type '{ runtimeKind: string; llmModelIdentifier: string; llmConfig: { reasoning_effort: string; nested: { enabled: boolean; budget: number; options: (string | null)[]; }; }; autoExecuteTools: boolean; workspaceRootPath: string; }' is not assignable to type 'Readonly<{ runtimeKind: RuntimeKind; llmModelIdentifier: stri
+tests/fixtures/collaboration-public-projection-fixtures.ts(80,22): error TS2322: Type '{ source: { kind: string; agentDefinitionId: string; launchConfiguration: { runtimeKind: string; llmModelIdentifier: string; llmConfig: { reasoning_effort: string; nested: { enabled: boolean; budget: number; options: (string | null)[]; }; }; autoExecuteTools: boolean; workspaceRootPath: string; }; }; ... 5 more 
+tests/fixtures/root-task-copy-resume-fixtures.ts(35,9): error TS2741: Property 'shutDownForUser' is missing in type '{ root: RootExecutionIdentity; isOpen: () => true; authorize: () => undefined; assertCurrentSchemaReady: () => undefined; planActivation: Mock<Procedure>; ... 18 more ...; tryShutDownIfQuiet: () => Promise<...>; }' but required in type 'RootTaskExecutionAdapter<string>'.
+tests/fixtures/root-task-copy-resume-fixtures.ts(81,52): error TS2345: Argument of type 'RootTaskExecutionAdapter<string>' is not assignable to parameter of type 'RootTaskExecutionAdapter<Readonly<{ launchNotes?: readonly string[] | undefined; routingDecision?: Readonly<{ copyAddress: string; copyKind: "agent_team" | "agent"; agents: readonly RoutingDecisionAgent[]; }> | undefined; }>>'.
+tests/fixtures/standalone-run-roots-fixture.ts(42,30): error TS2554: Expected 3-4 arguments, but got 2.
+tests/fixtures/task-release-generation-fixtures.ts(167,40): error TS2345: Argument of type '{ taskId: string; execution: { teamRunId: string; }; teamCoordinatorAgentRunId: string; role: "assigned"; assignedBy: string; hostRoot: RootExecutionIdentity; }' is not assignable to parameter of type 'NewTaskExecutionLinkInput'.
+tests/fixtures/task-release-generation-fixtures.ts(172,40): error TS2345: Argument of type '{ taskId: string; execution: { agentRunId: string; }; role: "assigned"; assignedBy: string; hostRoot: RootExecutionIdentity; }' is not assignable to parameter of type 'NewTaskExecutionLinkInput'.
+tests/helpers/org-migration-continuation-fixtures.ts(41,5): error TS2739: Type '{ runId: string; runtimeKind: RuntimeKind; compactionRecovery: { readonly kind: "unsupported"; }; inputCapabilities: { activeTurnAppend: "unsupported"; }; getContext: () => AgentRunContext<RuntimeAgentRunContext>; ... 7 more ...; terminate: () => Promise<...>; }' is missing the following properties from type 'AgentRunB
+tests/helpers/org-migration-continuation-fixtures.ts(77,44): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: AgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; activationRegistry: AgentRunActivationRegistry; }' is not assignable to parameter of type 'Readonly<{ autoByteusBackendFactory: AgentRunBackendFacto
+tests/helpers/org-migration-continuation-fixtures.ts(83,84): error TS2345: Argument of type '{ runSessions: AgentToolMcpRunSessionDeactivator; memoryRecorder: AgentRunMemoryRecorder; runFileChangeService: never; publishedArtifactRelayService: never; workJournalUpdater: never; mcpServerInstances: { ...; }; }' is not assignable to parameter of type '{ runSessions: AgentToolMcpRunSessionDeactivator; 
+tests/integration/agent-definition/github-agent-package-import.integration.test.ts(68,11): error TS2353: Object literal may only specify known properties, and 'getAdditionalAgentPackageRoots' does not exist in type 'AppConfigLike'.
+tests/integration/agent-definition/github-agent-package-import.integration.test.ts(134,73): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+tests/integration/agent-definition/github-agent-package-import.integration.test.ts(137,71): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+tests/integration/agent-definition/github-agent-package-import.integration.test.ts(157,37): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+tests/integration/agent-definition/github-agent-package-import.integration.test.ts(162,36): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+tests/integration/agent-definition/org-owned-cached-graphql.integration.test.ts(23,36): error TS2352: Conversion of type '{ getAgentsDir: () => string; getAgentMdPath: (id: string) => string; getAgentConfigPath: (id: string) => string; getAgentTeamsDir: () => string; getAgentOrgsDir: () => string; getAdditionalAgentPackageRoots: () => never[]; getRegisteredAgentPackageRoots: () => never[]; }' to t
+tests/integration/agent-execution/agent-run-manager.integration.test.ts(50,23): error TS2322: Type 'AgentRunContext<unknown>' is not assignable to type 'AgentRunContext<RuntimeAgentRunContext>'.
+tests/integration/agent-execution/agent-run-manager.integration.test.ts(99,30): error TS2345: Argument of type '{ autoByteusBackendFactory: AgentRunBackendFactory; codexBackendFactory: AgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of type 'Readonly<{ autoB
+tests/integration/agent-execution/agent-run-manager.integration.test.ts(179,72): error TS2322: Type 'AgentRunContext<{ threadId: string; activeTurnId: null; sessionId?: undefined; hasCompletedTurn?: undefined; } | { sessionId: string; hasCompletedTurn: boolean; activeTurnId: null; threadId?: undefined; } | null>' is not assignable to type 'AgentRunContext<RuntimeAgentRunContext>'.
+tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts(23,7): error TS2741: Property 'beginPreparation' is missing in type 'Readonly<{ createBackend: () => Promise<never>; restoreBackend: () => Promise<never>; }>' but required in type 'AgentRunBackendFactory'.
+tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts(83,31): error TS2345: Argument of type '{ id: string; name: string; role: string; description: string; }' is not assignable to parameter of type '{ name: string; role?: string | undefined; description: string; instructions: string; category?: string | undefined; avatarUrl?: string | null | undefined; id?: st
+tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts(116,35): error TS2345: Argument of type '{ autoByteusBackendFactory: AutoByteusAgentRunBackendFactory; codexBackendFactory: AgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to param
+tests/integration/agent-execution/agent-run-manager.memory-layout.real.integration.test.ts(146,44): error TS2322: Type 'Promise<{ kind: "valid"; selection: { llmModelIdentifier: string; llmConfig: unknown; }; }>' is not assignable to type 'Promise<RunModelSelectionValidationResult>'.
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts(22,7): error TS2741: Property 'beginPreparation' is missing in type 'Readonly<{ createBackend: () => Promise<never>; restoreBackend: () => Promise<never>; }>' but required in type 'AgentRunBackendFactory'.
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts(123,9): error TS2353: Object literal may only specify known properties, and 'systemPrompt' does not exist in type 'Partial<ProcessorRegistries>'.
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts(147,41): error TS2345: Argument of type '{ autoByteusBackendFactory: AutoByteusAgentRunBackendFactory; codexBackendFactory: AgentRunBackendFactory; claudeBackendFactory: AgentRunBackendFactory; ... 5 more ...; agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator; }' is not assignable to parameter of typ
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts(163,44): error TS2322: Type 'Promise<{ kind: "valid"; selection: { llmModelIdentifier: string; llmConfig: unknown; }; }>' is not assignable to type 'Promise<RunModelSelectionValidationResult>'.
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts(235,28): error TS2339: Property 'systemPrompt' does not exist on type 'never'.
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts(289,28): error TS2339: Property 'systemPrompt' does not exist on type 'never'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(203,30): error TS2339: Property 'newPreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(278,49): error TS2339: Property 'restorePreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(288,32): error TS2339: Property 'platformPreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(290,32): error TS2339: Property 'platformPreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(299,32): error TS2339: Property 'restorePreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(301,30): error TS2339: Property 'newPreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/agent-run-service.integration.test.ts(431,28): error TS2339: Property 'newPreparation' does not exist on type '{ beginActivation: Mock<(request: any) => { inspect: () => "preparing" | "released" | "reserved" | "prepared" | "closing"; cancel: () => void; prepare: () => Promise<any>; releasePrivate: () => Promise<...>; }>; releaseRetiredRun: Mock<...>; }'.
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts(58,24): error TS2345: Argument of type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: false; memoryDir: string; }' is not assignable to parameter of type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; workspaceId?: string | null | undefined; 
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts(227,36): error TS2345: Argument of type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: false; memoryDir: string; }' is not assignable to parameter of type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; workspaceId?: string | null | undefined;
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts(265,28): error TS2345: Argument of type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: false; }' is not assignable to parameter of type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; workspaceId?: string | null | undefined; memoryDir?: string
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts(28,7): error TS2741: Property 'beginPreparation' is missing in type 'Readonly<{ createBackend: () => Promise<never>; restoreBackend: () => Promise<never>; }>' but required in type 'AgentRunBackendFactory'.
+----- last 40 lines -----
+        Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/models", { with: { "resolution-mode": "import" } }).LLMModel' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/models", { with: { "resolution-mode": "import" } }).LLMModel'.
+          Types have separate declarations of a private property '_name'.
+../test-support/live-e2e/live-e2e-harness.ts(594,47): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/llm-factory", { with: { "resolution-mode": "import" } }).LLMFactoryConfigInput | undefined' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling
+  Type 'LLMConfig' is not assignable to type 'LLMFactoryConfigInput | undefined'.
+    Type 'LLMConfig' is not assignable to type 'RawLlmConfigOverrides'.
+      Index signature for type 'string' is missing in type 'LLMConfig'.
+../test-support/live-e2e/live-e2e-harness.ts(596,7): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope", { with: { "resolution-mode": "import" } }).NativeCommandProcessScope' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-
+  Types have separate declarations of a private property 'observer'.
+../test-support/live-e2e/live-e2e-harness.ts(717,7): error TS2322: Type '(modelIdentifier: string, configInput: LLMFactoryConfigInput | undefined) => Promise<BaseLLM>' is not assignable to type 'AutoByteusLlmFactory'.
+  Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM>'.
+    Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/base", { with: { "resolution-mode": "import" } }).BaseLLM'.
+      Types of property 'model' are incompatible.
+        Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/llm/models", { with: { "resolution-mode": "import" } }).LLMModel' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/models", { with: { "resolution-mode": "import" } }).LLMModel'.
+          Types have separate declarations of a private property '_name'.
+../test-support/live-e2e/live-e2e-harness.ts(718,65): error TS2345: Argument of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/llm/llm-factory", { with: { "resolution-mode": "import" } }).LLMFactoryConfigInput | undefined' is not assignable to parameter of type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling
+  Type 'LLMConfig' is not assignable to type 'LLMFactoryConfigInput | undefined'.
+    Type 'LLMConfig' is not assignable to type 'RawLlmConfigOverrides'.
+      Index signature for type 'string' is missing in type 'LLMConfig'.
+../test-support/live-e2e/live-e2e-harness.ts(725,7): error TS2322: Type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/tools/terminal/command-execution/native-command-process-scope", { with: { "resolution-mode": "import" } }).NativeCommandProcessScope' is not assignable to type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-
+  Types have separate declarations of a private property 'observer'.
+../test-support/live-e2e/live-e2e-harness.ts(1010,50): error TS2345: Argument of type '{ messages: { role: MessageRole; content: string | null; toolPayload: ToolPayload | null; provenance: WorkingContextMessageProvenance | null; }[]; }' is not assignable to parameter of type 'InvocationSnapshot'.
+  Property 'conversationId' is missing in type '{ messages: { role: MessageRole; content: string | null; toolPayload: ToolPayload | null; provenance: WorkingContextMessageProvenance | null; }[]; }' but required in type 'InvocationSnapshot'.
+../test-support/live-e2e/live-e2e-harness.ts(1167,7): error TS2345: Argument of type 'SecretManagementProviderApiKeyResolver' is not assignable to parameter of type 'ProviderApiKeyResolver'.
+  The types returned by 'resolve(...)' are incompatible between these types.
+    Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "impor
+      Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-m
+../test-support/live-e2e/live-e2e-harness.ts(1177,7): error TS2345: Argument of type 'SecretManagementProviderApiKeyResolver' is not assignable to parameter of type 'ProviderApiKeyResolver'.
+  The types returned by 'resolve(...)' are incompatible between these types.
+    Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "impor
+      Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-m
+../test-support/live-e2e/live-e2e-harness.ts(1187,7): error TS2345: Argument of type 'SecretManagementProviderApiKeyResolver' is not assignable to parameter of type 'ProviderApiKeyResolver'.
+  The types returned by 'resolve(...)' are incompatible between these types.
+    Type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue>' is not assignable to type 'Promise<import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-mode": "impor
+      Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/src/secrets/secret-value", { with: { "resolution-m
+../test-support/live-e2e/live-e2e-harness.ts(1209,7): error TS2741: Property '#value' is missing in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-ts/dist/secrets/secret-value", { with: { "resolution-mode": "import" } }).SecretValue' but required in type 'import("/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/au
+../test-support/test-vault/live-provider-test.ts(1,48): error TS2307: Cannot find module 'vitest' or its corresponding type declarations.
+../test-support/test-vault/live-provider-test.ts(58,3): error TS2322: Type 'any' is not assignable to type 'never'.
+../test-support/test-vault/live-provider-test.ts(77,45): error TS7006: Parameter 'context' implicitly has an 'any' type.
+../test-support/test-vault/live-server-vault.ts(1,34): error TS2307: Cannot find module 'vitest' or its corresponding type declarations.
+../test-support/test-vault/live-test-secret.ts(1,34): error TS2307: Cannot find module 'vitest' or its corresponding type declarations.
+
+===== server-tests-mem.log =====
+       25.84 real        36.81 user         1.58 sys
+          2723774464  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              170244  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                8562  voluntary context switches
+               66172  involuntary context switches
+        267664073632  instructions retired
+        118531280093  cycles elapsed
+          2860228864  peak memory footprint
+

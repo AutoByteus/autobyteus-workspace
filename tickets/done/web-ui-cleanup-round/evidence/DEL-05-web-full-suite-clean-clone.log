@@ -1,0 +1,10 @@
+# Summary of the clean-clone run (/tmp/ab320-clone at a2a431fcd1); the full log was DEL-05-web-full-suite.log (2178974 bytes), trimmed to summaries, skips and failures.
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ ✓ tests/integration/product-license-packaging.integration.test.ts (4 tests | 1 skipped) 3ms
+ ✓ tests/integration/isolated-launch-marker.integration.test.ts (4 tests | 1 skipped) 3ms
+ Test Files  668 passed (668)
+      Tests  4857 passed | 2 skipped (4859)
+   Start at  19:08:49
+   Duration  195.06s (transform 25.51s, setup 1276.24s, collect 131.14s, tests 68.78s, environment 102.33s, prepare 67.28s)
+exit=0

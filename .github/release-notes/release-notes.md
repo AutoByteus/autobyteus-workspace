@@ -1,39 +1,68 @@
-## Before You Update
-- **Back up your data first. You can't go back to an earlier version afterwards.** On the first start, this update deletes the data of the removed Skill Improvement feature (details under Upgrade Notes), and Remote Collaboration saves new information with your runs that earlier versions were never checked against. Installing an earlier version after this update is not supported. To back up, quit AutoByteus and copy the `~/.autobyteus/server-data` folder (on a Docker node, the server's data volume). If you need to go back after updating, don't install an older version: open an issue at https://github.com/AutoByteus/autobyteus-workspace/issues and we will help.
-- **Update the desktop app and every remote or Docker node it connects to together.** Different versions of the app and a node are not supported together, and Remote Collaboration needs both nodes on this version.
+## What you need to do
+- **This release cannot be rolled back.** On its first start it converts how delegated runs are stored, once, so that each is a run of its own; conversations, Tasks and files are kept. An older version cannot read the converted runs. If you need to go back after updating, contact support instead of installing an older version.
+- **Update the desktop app and every node together**, including every paired node: nodes on different versions cannot reach each other's delegated runs. If you use Memory Sync, update each source and the hub together too: an older hub does not accept the new large-file uploads.
+- **Docker nodes:** run
+
+  ```bash
+  autobyteus-docker upgrade --all
+  ```
+
+  Each node keeps its track: nodes on the stable track (the default) get 1.5.13, and nodes on the beta track get it too and stay on the beta track. Your volumes and data are kept. `autobyteus-docker update --all` updates the nodes in place instead. To get the launcher's new progress messages for `setup-code` and `new-container`, run its install command again first (the command in the Docker guide); your nodes and their setup codes are not touched.
+- **Beta-track Docker nodes that should go back to stable:** run `autobyteus-docker upgrade --all --tag latest`. It is safe now: this release is at least as new as every 1.5.13 beta.
+- **Android:** install this release's APK (`AutoByteus_personal_android-1.5.13-release.apk`). Downloading files on the phone needs it; it also brings full screen under the camera cutout, and a phone that reopens on the same run and screen.
+- **The first start builds the agents' run catalogs once,** in the background: new files under `episodic/` in the memory folder only, about 12 seconds for around 4,000 runs. Nothing in any run folder changes, and the catalogs can be deleted at any time. On a long-used installation, the server log can show, at each start, one warning for each old team run saved without its team structure; those runs are left out of the catalogs.
+- **Reviewing tool calls on the AutoByteus runtime:** a tool other than the four base tools now asks for approval twice, first for the search, then for the tool. Running tools automatically is unchanged.
+- **Daily Assistant on another node:** to delegate to a paired node's Daily Assistant, give it a runtime and model on that node, or turn on Model Routing there.
+
+## Good To Know
+- Conversations of agents restored before this update keep the turns they already stored: replies from before this update can still appear merged there, and their older restart reminders behave as before. Everything from this update on shows correctly.
+- Codex, Grok and DeepSeek agents still show "Idle" while a background task of theirs runs (no live count).
+- On the desktop, some small text with a fixed size does not follow **Settings → Display → App font size**.
+- Delegated runs from builds before mid-October 2026 that belong to no Task are no longer shown under the run that started them. Their conversations stay on disk and on the Memory page.
+- In our checks, a Grok agent was not woken when its background command ended. It can still wait for the command itself.
 
 ## What's New
-- **Remote Collaboration: agents on different nodes work together.** Your desktop node and your Docker or other nodes can now hand work to each other. It is off by default and meant for a trusted private network only: nodes do not authenticate each other, and no key, token or sign-in ever travels between them.
-  - **Set it up** in **Nodes → Remote Collaboration** on each node: turn it on, then add the other node by its URL and a name. Register each node on the other one too.
-  - **Delegate across nodes.** An agent can give a text task to any shared agent or agent team of another node, naming the node by the name you gave it. The task runs on that node as an ordinary run you can open, watch, message and stop there, and it appears in that node's history titled with the task.
-  - **Talk both ways.** The two agents keep messaging each other by run ID, also after the remote run went idle or either node restarted. For a remote team, every member can be reached, including members that haven't started yet.
-  - **How runs started by another node work.** Each agent runs with its own default runtime and model (a team member without one uses its team's default), in the node's temp workspace, with tool calls auto-approved. An agent whose runtime signs in with that node's local login (for example Codex or Claude) uses that login for every registered peer. An agent without a default runtime and model is refused with a message saying so.
-  - **Let agents find the other node themselves.** Give an agent the new **list_available_nodes** and **list_available_agents** tools: it can then list the registered nodes and their status, and see which agents and agent teams another node offers, without being told an address.
-  - **See every peer at a glance.** **Nodes → Remote Collaboration** shows each peer's state (Available, Not reachable, Off there, Not registered there, Different server) and, when it is available, its agents and agent teams, with search for long lists.
-- **Notification Center.** A badge in the sidebar shows waiting updates of the app and of the agent packages and skill sources you imported from GitHub. Open it to see what changed and update with one click. AutoByteus checks GitHub in the background at most every 6 hours, without an account or token, and downloads nothing until you press **Update**. Turn the checks off in **Settings → Server Settings → Basics → Update checks**. The update card that used to open by itself is gone; **Settings → Updates** is unchanged.
-- **Settings → Agent Runtimes.** See Codex, Claude, Antigravity and Grok for the current node: the installed version, whether a newer one exists, and whether you are signed in. **Update** runs the runtime's own updater, and **Sign in** starts Codex's or Grok's own browser sign-in. On a Docker node, Codex and Grok sign-in opens in the node's own browser, which you finish in the workspace's VNC viewer. AutoByteus never sees or stores your sign-in.
-- **NFS Guide.** Copyable, checksum-checked macOS and Linux installation commands for AutoByteus NFS v0.1.0, storage setup guidance and the command reference. The guide only copies text; it runs nothing.
+- **Delegated work keeps going on its own.** An agent, team or org that was given a Task now runs on its own: stopping the run that delegated it no longer stops it, and its report wakes the stopped run when it arrives, also across nodes. Each run shows its own status, delegated runs are listed under the member that delegated them, and a run cannot be archived or deleted while work it delegated is still running.
+- **Long-running managers stay fast.** When a Task is closed, the agents and teams delegated for it leave the tree of the run that delegated them once they have stopped. They come back when the Task is reopened and messaged, or the same run gets a follow-up Task. Nothing is lost: the Team tab, the Memory page and token totals keep everything.
+- **Semantic memory for agents.** An agent can have its own private memory folder for the knowledge it learns; every run of that agent uses the same folder. Turn it on with the **Semantic memory** switch in the agent's form.
+- **Every agent can search memory.** Every agent run has `search_memory`, without any package change.
+- **A catalog of each agent's past runs.** The server keeps one readable catalog per agent, listing all its runs with their dates, Task titles, workspaces and work-journal files, so an agent can review its history from one file. Catalogs update on their own within a minute.
+- **The restart reminder.** After the application restarts, every agent that was in the middle of a turn, or was waiting for a background task, gets one short reminder of when and why it restarted: after an update or a restart its background tasks were stopped; after an unexpected stop some may still be running untracked. After an update the agent is woken with it; otherwise it comes with your next message. The card shows the time in your own time zone.
+- **"Background task running".** An agent that finished its turn but still has background tasks running shows "Background task running" (or "2 background tasks running") with a steady blue dot on the desktop and the phone, instead of "Idle". A team shows the same when none of its agents is in a turn.
+- **Background commands for AutoByteus agents.** `run_bash` can run a long command in the background, such as a build or a dev server, and the agent is told once when it ends, with the exit code and its last output. The Background Tasks panel shows them.
+- **Long commands for Claude agents.** Claude agents can run a shell command for up to 2 hours, in the foreground or in the background. The Background Tasks panel and the phone's Activity say in one line why a task ended (a time limit, low memory, the run ended, or the exit code).
+- **AutoByteus agents use far fewer tokens per request.** They send only the four base tools plus a tool search, and find any other tool when they need it. The first request of a conversation falls by about two thirds in our checks, and changing an agent's tools mid-conversation no longer invalidates the provider's cache.
+- **Running agents pick up new skills.** A skill added to an agent's definition reaches its running runs, and the agent is told which skills were added or removed.
+- **Your personal settings survive package updates.** Tools, skills, avatar and default runtime/model you set on a package's agents, Teams and Orgs are kept outside the package files, and stay after the package updates.
+- **The Daily Assistant can be delegated to.** It is listed at `/daily_assistant`, so any agent can hand it a Task, and `@` offers it in chat, on this node and on a paired node.
+- **Phone: Settings for every run.** Every agent you open on the phone has **Settings** (the last entry of its ⋮ menu): change a stopped run's runtime and model. A live run shows a red stop button that stops that run only, never the agent that started it. A run on another computer says where it can be changed.
+- **Phone: one Text size for the whole phone.** In the run list's ⋮, **Text size** offers **Standard**, **Large** and **Largest**, and applies to every phone screen at once.
+- **Phone: an easier-to-read conversation**, with wider text, a larger type size, and each speaker's name and picture shown once per turn.
+- **Phone: background tasks in Activity**, running and ended, with how each ended, updating live.
+- **Phone: zoom and download.** PDFs and images zoom with two fingers and double tap, PDFs stay sharp, and **Download** saves the file to the phone (Android app) or through the browser.
+- **Phone: files open everywhere.** A file a conversation names opens read-only wherever it is on the node, attached images, PDFs and text files open in the phone's viewer, and a text file of any size shows in full.
+- **Desktop: node files open read-only.** In a window that shows a Docker node or a node on another computer, a file a conversation names opens read-only in the Files panel wherever it is on that node. A path in a run on another node says which node it is on.
+- **Open files follow their changes.** A file you have open shows its new content within a second when it changes on disk, on the desktop and the phone, for text, images and PDFs; an unsaved edit is kept.
+- **Memory Sync carries large files.** Files of any size, such as 2 GB videos, sync in 8 MB pieces and continue after an interruption. Nodes → Memory Sync lists the files that could not be synced and why, and **Sync now** retries them.
+- **Large videos as attachments.** Audio and video files up to 2 GB can be attached and sent to an agent (other files up to 25 MB; both limits are node settings), with a progress percentage and a cancel control.
+- **Smaller downloads.** The desktop apps and the Docker server package no longer include an unused copy of Claude Code: downloads are about 75 to 190 MB smaller per platform. Claude agents keep using the Claude Code you installed.
 
 ## Improvements
-- **MCP servers that split their tool list into pages now show all their tools.** Before, only the first page appeared. AutoByteus now connects to MCP servers with version 2 of the MCP TypeScript client, on every agent runtime.
-- **MCP connection errors start with the HTTP status,** for example `HTTP 401 Unauthorized: …`, in tool preview, discovery and agent tool calls. No token or header value appears in any message.
-- **A stopped skill-tagged run keeps a clean title.** Its history row reads as your message, without the "Use the … skill for this request." prefix, just as it did while the run was active.
+- Markdown: long paths, URLs and words wrap within the width, long code-block lines wrap instead of scrolling sideways, and wide tables and equations scroll in their own box. Links to a section in a document's Contents scroll to that heading.
+- Claude thinking settings tell the truth: Opus 5 "Off" really turns thinking off, Fable 5 and 5.1 offer effort only, and only the settings a model declares reach the provider. Model pickers read the current list each time they open.
+- Commands start reliably on a busy computer: each command has up to 30 seconds to start, and a command that does not start says how long it was given.
+- Quitting the app or stopping a node no longer waits seconds for the server to stop while macOS is busy.
+- `autobyteus-docker setup-code` and `new-container` show what they are doing and how long they have waited, and end a stuck wait after 90 seconds with the node's name and what to check.
+- The server's Docker image is built and published much faster, so releases reach Docker nodes sooner.
+- Android: full screen uses the whole screen also under the camera cutout, and a reload or Android reopening the app brings back the same run and screen.
 
-## Security
-- **The desktop app now runs on Electron 42.11.16** (Chromium 148, Node.js 24.19), which fixes the security issues reported for the earlier Electron 42 build.
-- **Security fixes in libraries the app and server use,** including `tar`, `undici`, `axios`, `protobufjs` and `markdown-it`. 17 unused dependencies were removed, which makes installs and the packaged app smaller.
-
-## Changes
-- **Skill Improvement has been removed.** The **Skill Improvement** card in Server Settings and the **Improve skills** button in agent and team chats are gone. It may return later in a different form. To improve a skill today, ask an agent to read a run's Work Journal and update the skill.
-- **Some MCP error messages read differently,** because they come from the new MCP client: remote server errors start with `SdkHttpError: …`, a local server that exits at start says `SdkError: Connection closed`, and one that doesn't answer says `SdkError: Request timed out` (still after 60 seconds).
-
-## Known Limitations
-- **Remote Collaboration is text only.** Files and saved Tasks can't be sent to another node yet, and a run started by another node can't be stopped from the node that started it.
-- **Nodes trust each other on the network.** A node accepts requests from any node registered on it; identities are not yet proven. Use Remote Collaboration only on a network you trust.
-- **A message between nodes is sent once.** If the other node doesn't answer within 20 seconds, the agent is told the message may have been delivered; nothing is retried.
-- Two libraries still have known security advisories without a fix in their current versions: the server's web framework (moving to its next major version is planned) and the spreadsheet viewer's `.xlsx` reader.
+## Fixes
+- After a restart, a restored agent's conversation no longer merges its replies from before and after the restart, and every platform notice, such as the restart reminder, shows once.
+- A manager that closes a copy's Task and gives the same copy its next Task at the same time now works in either order.
+- A stray file link on the phone no longer shows the pairing screen, and tapping an attachment no longer shows "Pair this phone again".
+- One large attachment no longer stops all of Memory Sync.
+- Delegating a task to an agent's own address is refused with a clear message.
 
 ## Upgrade Notes
-- **What the first start deletes:** the earlier skill-improvement and self-evolution records, the built-in **Retrospective Skill Improver** agent and all of its runs (they disappear from your run history), and the settings `ENABLE_SKILL_IMPROVEMENT`, `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` and `ENABLE_SELF_EVOLUTION`. The **Skill Self-Evolver** agent, if you have it, is kept, but the runs that the old self-evolution feature started with it are deleted too. Nothing else is changed. If something can't be deleted, the app still starts normally and tries again on the next start.
-- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.8`, and `:latest` and `:beta` now point to it. If you follow the beta track with the public launcher, you can return to stable with `autobyteus-docker upgrade --all --tag latest`, because this release is newer than every 1.5.8 beta. A Docker node deletes the Skill Improvement data on its first start too, so back up its data volume first.
-- Existing runs, agents, teams, Projects, settings and MCP servers load unchanged. Remote Collaboration stays off until you turn it on.
+- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.13`; `:latest` and `:beta` point to it. Beta-track nodes stay on the beta track with a plain `autobyteus-docker upgrade --all`; `autobyteus-docker upgrade --all --tag latest` returns them to stable, which is safe now because this release is at least as new as every 1.5.13 beta.
+- **Desktop.** Installs on the beta track that already have a 1.5.13 beta are offered this release as an update too.

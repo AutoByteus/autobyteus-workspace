@@ -1,0 +1,139 @@
+{
+  "header": "CR-T-001 Local Fix (round 4): node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases LRL-002,LRL-004,LRL-005 --output-dir <fresh>; head 3ca9d444cb (code 65a5b34c9b, server dist from round 3) + the strengthened LRL-002/004/005 (LRL-002's title reworded after this run, text only); ENV-1; 2026-11-01.",
+  "cases": {
+    "LRL-002": {
+      "title": "AC-003, QR-005 (Org): opening a stopped Org run loads only the focused member; another member loads when opened",
+      "result": "Pass",
+      "ms": 31526,
+      "details": {
+        "names": {
+          "org": "LRL Org d26e"
+        },
+        "orgDefinitionId": "lrl-org-d26e",
+        "orgRunId": "lrl_org_d26e_126d5532010a47539eb60df0a63eacc2",
+        "orgAgents": [
+          {
+            "address": "/manager",
+            "agentRunId": "lrlo_manager_d26e_79563736206740c1af105bb2dffcf056"
+          },
+          {
+            "address": "/writer",
+            "agentRunId": "lrlo_writer_d26e_be59b48963c8464486ff83b8976a9cfd"
+          },
+          {
+            "address": "/analyst",
+            "agentRunId": "lrlo_analyst_d26e_919eb04d428f46ec8ff55a7703ecd784"
+          },
+          {
+            "address": "/pair/lead",
+            "agentRunId": "lrlo_lead_d26e_ce12a14f79b94495b2201fc9b9fcd6da"
+          },
+          {
+            "address": "/pair/engineer",
+            "agentRunId": "lrlo_engineer_d26e_22ef8759f5ac4af999e6672ef5184684"
+          }
+        ],
+        "openMs": 3320,
+        "openOps": {},
+        "loadedAtOpen": [],
+        "centerAtOpen": "Stopped Agent Org Select a member from the historical run in the sidebar to continue from its saved state.",
+        "writerOps": {
+          "GetAgentOrgMemberRunProjection:lrlo_writer_d26e_be59b48963c8464486ff83b8976a9cfd": 1,
+          "GetAgentOrgMemberFileChanges:lrlo_writer_d26e_be59b48963c8464486ff83b8976a9cfd": 1
+        },
+        "memberRowsShown": 3,
+        "allOrgMemberLoads": {
+          "GetAgentOrgMemberRunProjection:lrlo_writer_d26e_be59b48963c8464486ff83b8976a9cfd": 1,
+          "GetAgentOrgMemberFileChanges:lrlo_writer_d26e_be59b48963c8464486ff83b8976a9cfd": 1
+        }
+      }
+    },
+    "LRL-004": {
+      "title": "AC-006: a Team run with a damaged stored message log opens; its Team tab and the phone show the messages as unavailable with the reason; a message to it is refused with the reason",
+      "result": "Pass",
+      "ms": 36593,
+      "details": {
+        "names": {
+          "team": "LRL Damaged a347"
+        },
+        "teamDefinitionId": "lrl-damaged-a347",
+        "teamRunId": "lrl_damaged_a347_d8f467b6e7af49cfa626518615fa3741",
+        "members": {
+          "lead": "lrld_lead_a347_c66ebf3f95684665b84f935fccb8908f",
+          "worker": "lrld_worker_a347_813ca9847640422c8967260fee215c36"
+        },
+        "logFiles": [
+          "team_communication_messages_active.jsonl"
+        ],
+        "damaged": {
+          "file": "team_communication_messages_active.jsonl",
+          "line": 2,
+          "nonEmptyLines": 3
+        },
+        "memberRowsShown": 2,
+        "teamTabText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+        "serverReason": "GraphQL: [{\"message\":\"team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"locations\":[{\"line\":1,\"column\":41}],\"path\":[\"collaborationParticipantMessages\"]}]",
+        "expectedReason": "team_communication_messages_active.jsonl:line 2 is not valid JSON",
+        "restoreResponses": [
+          "{\"data\":{\"restoreAgentTeamRun\":{\"__typename\":\"RestoreAgentTeamRunResult\",\"success\":false,\"message\":\"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\",\"teamRunId\":null}}}"
+        ],
+        "resumeConsoleErrors": [
+          "Failed to send message via activeContextStore: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:51952/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:51952/_nuxt/stores/acti",
+          "Error sending requirement: Error: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at Proxy.sendMessageToFocusedMember (http://127.0.0.1:51952/_nuxt/stores/agentTeamRunStore.ts:270:58)\n    at async Object.send (http://127.0.0.1:51952/_nuxt/stores/activeContextStore.ts:11"
+        ],
+        "activeAfterResume": false,
+        "composerStillHolds": true,
+        "reasonVisibleAfterResume": 1,
+        "phoneText": "These messages can't be shown team_communication_messages_active.jsonl:line 2 is not valid JSON.",
+        "phoneRows": 0
+      }
+    },
+    "LRL-005": {
+      "title": "Reload rule (SR-004\u2026SR-006): a running Team opens with one participant request; a live message adds none; a stop and resume reloads the list",
+      "result": "Pass",
+      "ms": 34653,
+      "details": {
+        "names": {
+          "team": "LRL Running a507"
+        },
+        "teamDefinitionId": "lrl-running-a507",
+        "teamRunId": "lrl_running_a507_9da80d48706743a0a48ac1f5a7fa1ecd",
+        "members": {
+          "lead": "lrlr_lead_a507_7ac030d350864ce983690035a3aa6a43",
+          "worker": "lrlr_worker_a507_e7fd02d7b4104fcdb6935926537d7fca"
+        },
+        "openParticipantOps": {
+          "CollaborationParticipantMessages:lrlr_lead_a507_7ac030d350864ce983690035a3aa6a43": 1
+        },
+        "focused": "lrlr_lead_a507_7ac030d350864ce983690035a3aa6a43",
+        "liveParticipantOps": {},
+        "resumeParticipantOps": {
+          "CollaborationParticipantMessages:lrlr_lead_a507_7ac030d350864ce983690035a3aa6a43": 1
+        },
+        "afterResume": [
+          "Message Nov 1, 04:47 PM to worker Resumed a507 M3",
+          "Message Nov 1, 04:47 PM to worker Running a507 M2",
+          "Message Nov 1, 04:46 PM to worker Running a507 M1"
+        ]
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": [
+    {
+      "pid": 3729,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 3326,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 3301,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dNNESv"
+    }
+  ]
+}

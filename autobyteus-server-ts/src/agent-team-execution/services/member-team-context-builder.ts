@@ -1,4 +1,5 @@
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import {
   MemberCollaborationContext,
   MemberExecutionContext,
@@ -9,7 +10,7 @@ import {
   type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import {
   buildDeliveryEndpointForParticipant,
   type InterAgentMessageDeliveryHandler,
@@ -21,13 +22,14 @@ import {
   type MemberHostTeam,
 } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 
-/** The enclosing scope of an Agent that is not a member of the TeamRun's own definition. */
 /** Team subject adapter that prepares the root-neutral AgentRun member context. */
 export class MemberExecutionContextBuilder {
   private readonly summaryCache = new Map<string, Promise<{ instruction: string | null }>>();
 
   constructor(
-    private readonly teamDefinitionService: AgentTeamDefinitionService = AgentTeamDefinitionService.getInstance(),
+    private readonly teamDefinitionService: Pick<AgentTeamDefinitionService, "getDefinitionById">,
+    /** Whether the team run works on a Task an org assigned (the organization line, SR-058). */
+    private readonly tree: Pick<DelegationIndex, "collaborationTreeOf">,
   ) {}
 
   async build(input: {
@@ -36,7 +38,7 @@ export class MemberExecutionContextBuilder {
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
     /** The root's `list_available_agents` for this member; absent in application-owned runs. */
     listAvailableAgents?: ((identity: CollaborationMemberExecutionIdentity) => Promise<readonly AvailableCollaborator[]>) | null;
-    taskCommands: MemberTaskCommandCapability;
+    taskCapability: MemberTaskCapability;
     /** The TeamRun hosting the Agent (a Team copy); absent for the root TeamRun's own members. */
     hostTeam?: MemberHostTeam | null;
   }): Promise<MemberExecutionContext> {
@@ -84,9 +86,10 @@ export class MemberExecutionContextBuilder {
       identity,
       teamScoped: true,
       collaborationRole: scope.role,
+      inOrganization: this.tree.collaborationTreeOf(root).inOrganization(),
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
-      tasks: input.taskCommands,
+      tasks: input.taskCapability,
     });
   }
 
@@ -98,7 +101,3 @@ export class MemberExecutionContextBuilder {
     return this.summaryCache.get(teamDefinitionId)!;
   }
 }
-
-let cached: MemberExecutionContextBuilder | null = null;
-export const getMemberExecutionContextBuilder = (): MemberExecutionContextBuilder =>
-  cached ??= new MemberExecutionContextBuilder();

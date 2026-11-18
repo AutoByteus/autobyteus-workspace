@@ -54,7 +54,7 @@ const running = (
   kind: AgentBackgroundTask["kind"] = "shell",
   command: string | null = null,
 ): AgentBackgroundTask => ({
-  taskId, kind, description, command, status: "running", summary: null, startedAt: STARTED_AT,
+  taskId, kind, description, command, status: "running", summary: null, endReason: null, exitCode: null, startedAt: STARTED_AT,
 });
 
 describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
@@ -71,21 +71,39 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
     ]);
   });
 
-  it("reports a running background task until its last task ends, for the idle-shutdown quiet check", () => {
+  // autobyteus-473: a viewer that opens the run later starts from the view as it is now.
+  it("lists the view now: running and ended tasks with their latest snapshot, none after the process ends", () => {
     const { registry, feed } = createRegistry();
-    expect(registry.hasRunningTasks()).toBe(false);
-    feed(taskStarted("fg", false, { task_type: "local_agent" }));
-    expect(registry.hasRunningTasks()).toBe(false);
-    feed(bgChanged([["bg1", "one"], ["bg2", "two"]]), taskStarted("bg1", true), taskStarted("bg2", true));
-    expect(registry.hasRunningTasks()).toBe(true);
-    feed(taskUpdated("bg1", { status: "completed", end_time: 1 }), taskNotification("bg1"));
-    expect(registry.hasRunningTasks()).toBe(true);
-    feed(taskUpdated("bg2", { status: "failed", end_time: 2 }), taskNotification("bg2", "failed", "exit 1"));
-    expect(registry.hasRunningTasks()).toBe(false);
-    feed(bgChanged([["bg3", "three"]]), taskStarted("bg3", true));
-    expect(registry.hasRunningTasks()).toBe(true);
+    expect(registry.list()).toEqual([]);
+    feed(bgChanged([["bg1", "first"], ["bg2", "second"]]), taskStarted("bg1", true), taskStarted("bg2", true));
+    expect(registry.list()).toEqual([running("bg1", "first"), running("bg2", "second")]);
+
+    feed(taskNotification("bg1", "failed", "Background command failed (exit code 1)"));
+    expect(registry.list()).toEqual([
+      { ...running("bg1", "first"), status: "failed", summary: "Background command failed (exit code 1)" },
+      running("bg2", "second"),
+    ]);
+
     registry.clear();
-    expect(registry.hasRunningTasks()).toBe(false);
+    expect(registry.list()).toEqual([]);
+  });
+
+  it("lists a running background task until its last task ends (the view the running count derives from)", () => {
+    const running = (registry: { list(): readonly { status: string }[] }) => registry.list().some((task) => task.status === "running");
+    const { registry, feed } = createRegistry();
+    expect(running(registry)).toBe(false);
+    feed(taskStarted("fg", false, { task_type: "local_agent" }));
+    expect(running(registry)).toBe(false);
+    feed(bgChanged([["bg1", "one"], ["bg2", "two"]]), taskStarted("bg1", true), taskStarted("bg2", true));
+    expect(running(registry)).toBe(true);
+    feed(taskUpdated("bg1", { status: "completed", end_time: 1 }), taskNotification("bg1"));
+    expect(running(registry)).toBe(true);
+    feed(taskUpdated("bg2", { status: "failed", end_time: 2 }), taskNotification("bg2", "failed", "exit 1"));
+    expect(running(registry)).toBe(false);
+    feed(bgChanged([["bg3", "three"]]), taskStarted("bg3", true));
+    expect(running(registry)).toBe(true);
+    registry.clear();
+    expect(running(registry)).toBe(false);
   });
 
   it("never lists foreground tasks, even though they emit the same task frames (REQ-008, AC-010)", () => {
@@ -166,6 +184,43 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
     expect(emitted.at(-1)).toEqual({ ...running("bg1", "one"), status, summary: "summary text" });
   });
 
+  describe("end reason and exit code from the notification (autobyteus-483, REQ-003)", () => {
+    const TIME_LIMIT = 'Background command "Run the suite" was stopped after reaching its background time limit';
+
+    it.each([
+      ["completed", 'Background command "Run the suite" completed (exit code 0)', "completed", null, 0],
+      ["failed", 'Background command "Run the suite" failed with exit code 1', "failed", null, 1],
+      ["stopped", TIME_LIMIT, "stopped", "time_limit", null],
+      ["stopped", 'Background command "Run the suite" was stopped because the system is running low on memory', "stopped", "low_memory", null],
+      ["stopped", 'Background command "Run the suite" was stopped', "stopped", null, null],
+    ] as const)("finishes a task from a %s notification %j", (notificationStatus, summary, status, endReason, exitCode) => {
+      const { emitted, feed } = createRegistry();
+
+      feed(bgChanged([["bg1", "Run the suite"]]), taskNotification("bg1", notificationStatus, summary));
+
+      expect(emitted.at(-1)).toEqual({ ...running("bg1", "Run the suite"), status, summary, endReason, exitCode });
+    });
+
+    it("fills the end reason of a task a killed task_updated ended first (probe J/O frame order)", () => {
+      const { emitted, feed } = createRegistry();
+
+      feed(bgChanged([["bg1", "Run the suite"]]), taskUpdated("bg1", { status: "killed" }), taskNotification("bg1", "stopped", TIME_LIMIT));
+
+      expect(emitted.slice(1)).toEqual([
+        { ...running("bg1", "Run the suite"), status: "stopped" },
+        { ...running("bg1", "Run the suite"), status: "stopped", summary: TIME_LIMIT, endReason: "time_limit" },
+      ]);
+    });
+
+    it("ends a task whose worker restarted as run_ended", () => {
+      const { emitted, feed } = createRegistry();
+
+      feed(bgChanged([["bg1", "Run the suite"]]), { ...taskNotification("bg1", "stopped", ""), reason: "worker_restart" });
+
+      expect(emitted.at(-1)).toEqual({ ...running("bg1", "Run the suite"), status: "stopped", endReason: "run_ended" });
+    });
+  });
+
   it("emits a terminal task only once when its summary is already known", () => {
     const { emitted, feed } = createRegistry();
 
@@ -201,7 +256,7 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
     registry.clear();
     feed(taskNotification("b"));
 
-    expect(emitted).toEqual([{ ...running("b", "second"), status: "stopped" }]);
+    expect(emitted).toEqual([{ ...running("b", "second"), status: "stopped", endReason: "run_ended" }]);
   });
 
   it("keeps the completion notice queue working alongside the view (BEH-006)", () => {

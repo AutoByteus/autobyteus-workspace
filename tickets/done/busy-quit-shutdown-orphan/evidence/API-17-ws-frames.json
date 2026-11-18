@@ -1,0 +1,86 @@
+[
+ {
+  "at": "4.6",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "CONNECTED",
+  "payload": "{\"agent_id\":\"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426\",\"session_id\":\"c7461382-2f20-4c42-90fb-2aba07d4b7d1\"}"
+ },
+ {
+  "at": "4.6",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426\"}"
+ },
+ {
+  "at": "4.6",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"b0d96787-8711-4e41-aaee-67b438a68110\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426\"}"
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"b0d96787-8711-4e41-aaee-67b438a68110\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2c625d8-a5b1-4b72-9e0c-c1ad99b7fb8a\",\"dedupe_key\":\"agent_run_input:e2c625d8-a5b1-4b72-9e0c-c1ad99b7fb8a\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Run exactly this shell command in the for"
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_COMMAND_ACK",
+  "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426\",\"message_id\":\"e2c625d8-a5b1-4b72-9e0c-c1ad99b7fb8a\",\"dedupe_key\":\"agent_run_input:e2c625d8-a5b1-4b72-9e0c-c1ad99b7fb8a\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initi"
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "payload": "{\"trace_id\":\"rt_1793366202700_a597d6bf-aee3-4e5d-a492-f6207254ba5b\",\"content\":\"## Agent Identity\\n\\n- Name: Probe Agent BQ284Lmvuzxims\\n- Description: busy quit live probe\\n\\n### Responsibilities and Boundaries\\n\\nFollow the user instructions exactly. Use your shell tool to run commands.\\n\\n## Worki"
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"b0d96787-8711-4e41-aaee-67b438a68110\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"e2c625d8-a5b1-4b72-9e0c-c1ad99b7fb8a\",\"dedupe_key\":\"agent_run_input:e2c625d8-a5b1-4b72-9e0c-c1ad99b7fb8a\",\"turn_id\":\"01a18cf4-9af7-7870-a8fe-89dadda4289c\",\"state\":\"forwarded\",\"content\":\"Run "
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426\"}"
+ },
+ {
+  "at": "5.0",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "TURN_STARTED",
+  "payload": "{\"turnId\":\"01a18cf4-9af7-7870-a8fe-89dadda4289c\",\"turn_id\":\"01a18cf4-9af7-7870-a8fe-89dadda4289c\"}"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "SEGMENT_START",
+  "payload": "{\"id\":\"exec-83e6999a-f0df-4dfd-a5c1-6d7a9f0de551\",\"turn_id\":\"01a18cf4-9af7-7870-a8fe-89dadda4289c\",\"segment_type\":\"run_bash\",\"metadata\":{\"tool_name\":\"run_bash\",\"command\":\"/bin/bash -lc 'python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuzxims_wedged'\"}}"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+  "type": "TOOL_EXECUTION_STARTED",
+  "payload": "{\"item\":{\"type\":\"commandExecution\",\"id\":\"exec-83e6999a-f0df-4dfd-a5c1-6d7a9f0de551\",\"pluginId\":null,\"scriptPath\":null,\"command\":\"/bin/bash -lc 'python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuzxims_wedged'\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-wedged-runtim"
+ }
+]

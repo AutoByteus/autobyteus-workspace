@@ -1,0 +1,7 @@
+# IMP-29 server integration suite
+# command: (autobyteus-server-ts) pnpm test:integration:prepare && pnpm test:integration
+# commit: d188941869; macOS, Node v22.23.1; 2026-11-12T03:05Z
+
+Integration test prerequisites are present.
+ Test Files  86 passed | 20 skipped (106)
+      Tests  483 passed | 69 skipped (552)

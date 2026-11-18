@@ -289,6 +289,10 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath });
   context = await browser.newContext({ viewport: { width: 1280, height: 800 }, locale: 'en-US', colorScheme: 'light' });
+  // Baseline fix (autobyteus-385 API/E2E): the probe's API server has no app-wide change feeds (agent-package-definitions,
+  // update-notifications), which the window opens since autobyteus-210 and the definitions feed; answer them here.
+  await context.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
+  await context.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
   page = await context.newPage();
   page.setDefaultTimeout(timeoutMs);
   page.on('console', (message) => evidence.browserEvents.push({

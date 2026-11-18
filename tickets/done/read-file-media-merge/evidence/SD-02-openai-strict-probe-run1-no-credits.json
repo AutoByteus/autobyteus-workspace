@@ -1,0 +1,98 @@
+[
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-omitted",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.4-mini",
+  "variant": "strict-false",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-omitted",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "trial": 0,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ },
+ {
+  "model": "gpt-5.5",
+  "variant": "strict-false",
+  "trial": 1,
+  "error": "429 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+ }
+]

@@ -1,5 +1,6 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { ProviderCompactionBoundaryPayload } from "../domain/memory-recording-models.js";
+import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
 import {
   asBoolean,
@@ -115,7 +116,7 @@ export class ProviderCompactionBoundaryRecorder {
       return null;
     }
     const boundaryKey = asString(payload.boundary_key);
-    const runtimeKind = asString(payload.runtime_kind);
+    const runtimeKind = runtimeKindFromString(payload.runtime_kind);
     const provider = asString(payload.provider);
     const sourceSurface = asString(payload.source_surface);
     const rotationEligible = asBoolean(payload.rotation_eligible);

@@ -1,0 +1,86 @@
+# IMP-17 packaged app from the clean clone (commit 29aeb5d721): AUTOBYTEUS_UPDATER_REPOSITORY=AutoByteus/autobyteus-workspace npm_config_store_dir=/tmp/ab-clean/store pnpm --silent isolated-app start --build; then probes/instance-server-smoke.mjs against the instance backend
+# macOS 26.5.2, node v22.23.1; date 2026-10-24T20:24:42Z
+
+## isolated-app start result
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-54347-30ff",
+    "pid": 87375,
+    "executablePath": "/private/tmp/ab-clean/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:54348",
+    "graphqlUrl": "http://127.0.0.1:54348/graphql",
+    "controlEndpoint": "http://127.0.0.1:54347",
+    "controlPort": 54347,
+    "serverPort": 54348,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biCSAf",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biCSAf/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-54347-30ff.log"
+  }
+}
+## versions bundled in the packaged server
+fastify: fastify@5.12.7 
+mercurius: mercurius@16.12.1_graphql@16.12.0 
+@fastify/cors: @fastify+cors@11.3.1 
+@fastify/multipart: @fastify+multipart@10.1.6 
+@fastify/websocket: @fastify+websocket@11.3.4 
+@fastify/static: @fastify+static@10.1.7 
+## xlsx bundled in the renderer (SheetJS version string in the built JS)
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+## server smoke
+{
+ "health": {
+  "status": 200,
+  "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+ },
+ "graphqlPost": {
+  "status": 200,
+  "body": "{\"data\":{\"__typename\":\"Query\"}}"
+ },
+ "GET /graphiql": 404,
+ "GET /graphiql/main.js": 404,
+ "GET /graphiql/config.js": 404,
+ "graphqlWs": {
+  "protocol": "graphql-transport-ws",
+  "firstMessage": "connection_ack"
+ }
+}
+SMOKE PASS
+
+## packaged renderer (dist/renderer, listed inside app.asar)
+/dist/renderer/_nuxt/useWorkspaceFileExplorer.BxiW1RUq.js
+sanitize(o,{ALLOWED_TAGS:["table","thead","tbody","tr","th","td","br"],ALLOWED_ATTR:["colspan","rowspan"],ALLOW_DATA_ATTR:!1})
+clean-clone autobyteus-web/node_modules/xlsx version: 0.20.3
+
+## real-UI spreadsheet open: NOT exercised
+Fixture workspace /tmp/ab-impl/ws-fixture (generated-sample.xlsx/.xls, made by probes/make-fixtures.cjs) was created over GraphQL (createWorkspace) and shows in the sidebar, but the Files panel reads 'No workspaces available. Add a workspace to see files.' until an agent run is active in it; starting a run needs a runtime, beyond this implementation check. AC-014 journey left to API/E2E.
+
+## stop
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-54347-30ff",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-biCSAf",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": []
+  }
+}

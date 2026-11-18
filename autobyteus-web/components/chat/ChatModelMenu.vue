@@ -10,12 +10,12 @@
       :class="['hover:bg-gray-100', popover.open.value ? 'bg-gray-100' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"
-      :aria-label="$t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel })"
-      :title="popover.open.value ? undefined : `${modelLabel} · ${runtimeLabel}`"
+      :aria-label="runtimeKind ? $t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel }) : $t('chat.model.chooseModel')"
+      :title="popover.open.value || !runtimeKind ? undefined : `${modelLabel} · ${runtimeLabel}`"
       @click="onToggle"
     >
       <span class="truncate whitespace-nowrap font-medium" :class="modelLabel ? 'text-gray-800' : 'text-amber-700'">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
-      <span class="truncate whitespace-nowrap text-gray-400 max-sm:hidden">{{ runtimeShortLabel }}</span>
+      <span class="truncate whitespace-nowrap text-gray-400 max-sm:hidden">{{ runtimeLabel }}</span>
       <Icon icon="heroicons:chevron-down" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
     </button>
 
@@ -84,8 +84,11 @@
             :state="lockedState"
             :groups="lockedGroups"
             :current-model-identifier="llmModelIdentifier"
+            :refreshing="lockedRefreshing"
+            :refresh-failed="lockedRefreshFailed"
             @choose="choose"
             @retry="catalog.ensureCatalog(runtimeKind)"
+            @refresh="refreshLockedModels"
           />
         </div>
       </template>
@@ -124,8 +127,11 @@
           :state="catalog.catalogState(drilledRuntime)"
           :groups="catalog.modelGroups(drilledRuntime)"
           :current-model-identifier="drilledRuntime === runtimeKind ? llmModelIdentifier : null"
+          :refreshing="catalog.catalogRefreshing(drilledRuntime)"
+          :refresh-failed="catalog.catalogRefreshFailed(drilledRuntime)"
           @choose="choose"
           @retry="catalog.ensureCatalog(drilledRuntime)"
+          @refresh="catalog.refreshModelList(drilledRuntime)"
         />
 
         <!-- Search -->
@@ -145,7 +151,7 @@
             @click="choose(model)"
           >
             <ChatModelOptionLabel :option="model" />
-            <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ runtimeShortLabelFor(model.runtimeKind) }}</span>
+            <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ runtimeLabelFor(model.runtimeKind) }}</span>
             <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center">
               <Icon v-if="isCurrent(model)" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
             </span>
@@ -211,8 +217,11 @@
                   :state="catalog.catalogState(runtime.runtimeKind)"
                   :groups="catalog.modelGroups(runtime.runtimeKind)"
                   :current-model-identifier="runtime.runtimeKind === runtimeKind ? llmModelIdentifier : null"
+                  :refreshing="catalog.catalogRefreshing(runtime.runtimeKind)"
+                  :refresh-failed="catalog.catalogRefreshFailed(runtime.runtimeKind)"
                   @choose="choose"
                   @retry="catalog.ensureCatalog(runtime.runtimeKind)"
+                  @refresh="catalog.refreshModelList(runtime.runtimeKind)"
                 />
               </div>
             </div>
@@ -231,6 +240,7 @@ import ChatModelList from '~/components/chat/ChatModelList.vue'
 import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
 import { chatModelOptionFullText as optionFullText } from '~/components/chat/chatModelOptionText'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
+import { injectLockedModelOptionsRefresh } from '~/composables/useLockedModelOptionsRefresh'
 import { useMenuInBoundary } from '~/composables/popover/useMenuInBoundary'
 import {
   matchesModelQuery,
@@ -240,8 +250,7 @@ import {
   type ChatModelOption,
 } from '~/composables/chat/useChatModelCatalog'
 import type { ChatModelSelection } from '~/stores/chatDraftStore'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import { runtimeShortLabel as toRuntimeShortLabel } from '~/utils/chat/chatDefaults'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 
 const props = withDefaults(defineProps<{
   runtimeKind: string
@@ -298,24 +307,43 @@ const lockedGroups = computed<ChatModelGroup[]>(() => {
   return [...groups.entries()].map(([providerName, models]) => ({ providerName, models }))
 })
 const lockedState = computed<ChatCatalogState>(() => (props.lockedModels ? props.lockedModelsState : catalog.catalogState(props.runtimeKind)))
+// A saved run's menu lists the options its editor read; the editor re-reads them. Without one the runtime's catalog is the list.
+const lockedOptionsRefresh = injectLockedModelOptionsRefresh()
+const optionsBacked = computed(() => props.runtimeLocked && props.lockedModels !== null && lockedOptionsRefresh !== null)
+const lockedRefreshing = computed(() => optionsBacked.value ? lockedOptionsRefresh!.refreshing.value : catalog.catalogRefreshing(props.runtimeKind))
+const lockedRefreshFailed = computed(() => optionsBacked.value ? lockedOptionsRefresh!.failed.value : catalog.catalogRefreshFailed(props.runtimeKind))
+const refreshLockedModels = () => {
+  if (optionsBacked.value) void lockedOptionsRefresh!.refresh()
+  else catalog.refreshModelList(props.runtimeKind)
+}
 const lockedSearchResults = computed<ChatModelOption[]>(() => {
   const terms = query.value.trim().toLowerCase().split(/\s+/).filter(Boolean)
   return lockedGroups.value.flatMap((group) => group.models).filter((model) => matchesModelQuery(model, terms))
 })
 
-const runtimeLabelFor = (runtimeKind: string) => runtimeKindToLabel(runtimeKind)
-const runtimeShortLabelFor = (runtimeKind: string) => toRuntimeShortLabel(runtimeKind)
-const runtimeLabel = computed(() => runtimeLabelFor(props.runtimeKind))
-const runtimeShortLabel = computed(() => runtimeShortLabelFor(props.runtimeKind))
+const runtimeLabelFor = (runtimeKind: string) => agentRuntimeName(runtimeKind)
+/** No runtime chosen yet (e.g. the Model Router before it is set): no runtime name, only "Choose a model". */
+const runtimeLabel = computed(() => (props.runtimeKind ? runtimeLabelFor(props.runtimeKind) : ''))
 const isCurrent = (model: ChatModelOption) =>
   model.runtimeKind === props.runtimeKind && model.llmModelIdentifier === props.llmModelIdentifier
+
+// A runtime's list is re-read once per opening of the menu: opening the chosen runtime's models in the same opening shows what
+// that read gives (a Claude read starts the CLI, so it is not repeated for every hover or click).
+const refreshedThisOpening = new Set<string>()
+const refreshOnOpening = (runtimeKind: string) => {
+  if (refreshedThisOpening.has(runtimeKind)) return
+  refreshedThisOpening.add(runtimeKind)
+  catalog.refreshCatalog(runtimeKind)
+}
 
 const onToggle = async () => {
   if (!popover.open.value) {
     query.value = ''
     submenuRuntime.value = null
+    refreshedThisOpening.clear()
     void catalog.ensureAvailability()
-    if (props.runtimeKind) catalog.ensureCatalog(props.runtimeKind)
+    if (optionsBacked.value) void lockedOptionsRefresh!.refresh()
+    else if (props.runtimeKind) refreshOnOpening(props.runtimeKind)
   }
   await popover.toggle()
   if (popover.open.value) {
@@ -352,7 +380,7 @@ const openSubmenu = (runtimeKind: string, immediate: boolean) => {
       flyoutListMaxHeight.value = Math.max(0, Math.min(FLYOUT_LIST_MAX_PX, Math.floor(spaceAbove)))
     }
     submenuRuntime.value = runtimeKind
-    catalog.ensureCatalog(runtimeKind)
+    refreshOnOpening(runtimeKind)
     if (immediate) {
       await nextTick()
       focusFirstInSubmenu()

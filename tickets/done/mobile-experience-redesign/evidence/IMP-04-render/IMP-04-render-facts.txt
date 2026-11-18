@@ -1,0 +1,325 @@
+# IMP-04 rendered self-check (implementation engineer, autobyteus-277)
+# Command: node /tmp/ie277-render/render.mjs <port> <dir> <views...> (headless Chrome, viewports 390x844 and 360x800, deviceScaleFactor 2)
+# Code: commit e0788fe987 plus a temporary, uncommitted preview page (pages/ie277-mobile-preview.vue) that renders each phone surface with seeded data
+# Environment: Nuxt dev server on 127.0.0.1 with BACKEND_NODE_BASE_URL=http://127.0.0.1:9 (no backend); /rest/health fulfilled ok, /graphql answered with an error; date 2026-11-06T08:29Z
+# Per view: scrollWidth vs clientWidth (no horizontal scroll when equal), buttons/menuitems/links under 44x44 CSS px, page errors
+[
+ {
+  "spec": "list",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "list+expanded=1&open=1",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "list+offline=1&notice=1",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "empty",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "opening",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "run",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [
+   {
+    "label": "Upload files",
+    "w": 28,
+    "h": 28
+   },
+   {
+    "label": "Send message",
+    "w": 36,
+    "h": 36
+   }
+  ],
+  "errors": []
+ },
+ {
+  "spec": "menu",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [
+   {
+    "label": "Upload files",
+    "w": 28,
+    "h": 28
+   },
+   {
+    "label": "Send message",
+    "w": 36,
+    "h": 36
+   }
+  ],
+  "errors": []
+ },
+ {
+  "spec": "artifacts",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "activity",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "messages",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "files",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "new",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "new+sheet",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "connection",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "list",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "list+expanded=1&open=1",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "list+offline=1&notice=1",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "empty",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "opening",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "run",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [
+   {
+    "label": "Upload files",
+    "w": 28,
+    "h": 28
+   },
+   {
+    "label": "Send message",
+    "w": 36,
+    "h": 36
+   }
+  ],
+  "errors": []
+ },
+ {
+  "spec": "menu",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [
+   {
+    "label": "Upload files",
+    "w": 28,
+    "h": 28
+   },
+   {
+    "label": "Send message",
+    "w": 36,
+    "h": 36
+   }
+  ],
+  "errors": []
+ },
+ {
+  "spec": "artifacts",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "activity",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "messages",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "files",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "new",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "new+sheet",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "connection",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ }
+]
+
+# Re-render of the empty state after the preview page stopped seeding runs for it (same commit):
+[
+ {
+  "spec": "empty",
+  "width": 390,
+  "height": 844,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "smallTargets": [],
+  "errors": []
+ },
+ {
+  "spec": "empty",
+  "width": 360,
+  "height": 800,
+  "scrollWidth": 360,
+  "clientWidth": 360,
+  "smallTargets": [],
+  "errors": []
+ }
+]

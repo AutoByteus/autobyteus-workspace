@@ -1,0 +1,18 @@
+# IMP4-02 web guards, localization checks and typecheck
+# Command: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals; typecheck
+# Commit: deead7bf05
+# Environment: macOS arm64, v22.23.1
+# Date: 2026-10-30T22:29Z
+
+> autobyteus@1.5.11-beta.6 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+[guard:web-boundary] Passed.
+> autobyteus@1.5.11-beta.6 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 30.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS

@@ -1,0 +1,22 @@
+# Case: API-05 — AC-S3-1 / REQ-S3-2 on the emulator with Gboard's own keys (real taps), including Gboard suggestions and a correction
+# Steps: node: xfce4-terminal "abx407-capture" running 'cat > /tmp/abx407-typed.txt' (cat's line editing applies Backspace before Enter, so the file holds what the user ends up with), activated; app: VNC Viewer in Control, Keyboard tapped (Gboard opens: mInputShown=true); keys tapped on Gboard's on-screen keyboard with adb input tap at measured key centres (API-05-gboard.sh) so Gboard composes and suggests as for a user; suggestions tapped on Gboard's strip
+# Commit: 165de82af4; emulator autobyteus277_api35, Gboard (com.google.android.inputmethod.latin) — the only text keyboard installed (ime list -a: Gboard + Google voice typing)
+# Date: 2026-11-06T23:23:22Z
+
+1. AC-S3-1: keys a b c Backspace Enter                  -> node line: "ab"
+2. t e h Space Enter (autocorrect)                       -> node line: "teh " — Gboard does not auto-correct here: the bridge's textarea sets autocorrect="off" spellcheck="false" (MobileNodeDesktop.vue), so this is the designed input, not a loss; the strip showed next-word suggestions "I / and / is" (API-05-1)
+3. h e l, then Gboard's suggestion "hello" (API-05-strip-hel.png), Enter      -> node line: "hello " (once)
+4. w r o l d, then Gboard's correction "world" (API-05-strip-wrold.png), Enter -> node line: "world " (once; the composing word was replaced letter-accurately)
+
+node file (od -c):
+0000000   a   b  \n   t   e   h      \n   h   e   l   l   o      \n   w
+0000020   o   r   l   d      \n
+0000026
+
+node file (text):
+ab
+teh 
+hello 
+world 
+
+Not covered: Tab (Gboard has no Tab key; the bridge's '\t' path is unit-tested); other keyboards (none installed); CJK (not guaranteed, approved).

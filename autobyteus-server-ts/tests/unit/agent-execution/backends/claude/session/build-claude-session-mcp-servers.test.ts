@@ -25,8 +25,7 @@ describe("buildClaudeSessionMcpServers", () => {
     expect(Object.keys(result ?? {})).toEqual(["autobyteus_agent_tools"]);
   });
 
-  it("returns null when no Agent Tools MCP descriptor has enabled tools", async () => {
-    await expect(buildClaudeSessionMcpServers({})).resolves.toBeNull();
+  it("configures the Agent Tools MCP server even when its tool list is empty", async () => {
     await expect(
       buildClaudeSessionMcpServers({
         agentToolsMcpDescriptor: {
@@ -34,6 +33,12 @@ describe("buildClaudeSessionMcpServers", () => {
           enabledTools: [],
         },
       }),
-    ).resolves.toBeNull();
+    ).resolves.toEqual({
+      autobyteus_agent_tools: {
+        type: "http",
+        url: "http://127.0.0.1:3000/mcp/agent-tools/session-1",
+        alwaysLoad: true,
+      },
+    });
   });
 });

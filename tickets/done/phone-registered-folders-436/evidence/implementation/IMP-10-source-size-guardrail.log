@@ -1,0 +1,12 @@
+# IMP-10 source-size-guardrail
+# Command: python3 IMP-10-source-size-guardrail.py (changed source files vs 97ed263074) and effective line counts
+# Commit: 271656acc0 (branch codex/phone-registered-folders-436)
+# Date: 2026-11-09T04:27:54Z
+
+file | base lines | now lines | changed lines (+/-) | flag
+150 autobyteus-web/composables/useEventMonitorFilePreview.ts
+155 autobyteus-web/components/mobile/views/MobileFiles.vue
+100 autobyteus-web/composables/mobile/useMobileNavigation.ts
+85 autobyteus-web/composables/mobile/useMobileNodeFile.ts
+78 autobyteus-server-ts/src/node-files/node-file-reader.ts
+17 autobyteus-server-ts/src/api/rest/node-files.ts

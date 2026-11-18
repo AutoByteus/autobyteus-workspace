@@ -93,6 +93,8 @@ export const readApplicationOwnedAgentDefinitionFromSource = async (
       ownerPackageId: sourcePaths.packageId,
       ownerLocalApplicationId: sourcePaths.localApplicationId,
       defaultLaunchConfig: normalizedConfig.defaultLaunchConfig,
+      internal: normalizedConfig.internal,
+      semanticMemoryEnabled: normalizedConfig.semanticMemoryEnabled,
       sourceInfo: {
         agentDirPath: sourcePaths.agentDir,
       },

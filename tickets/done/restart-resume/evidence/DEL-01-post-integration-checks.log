@@ -1,0 +1,25 @@
+# DEL-01 post-integration checks (integrated state 1459807ff9; pnpm install --frozen-lockfile first, the base changed pnpm-lock.yaml)
+
+## server typecheck
+exit 0
+
+## full server unit suite
+ Test Files  911 passed | 5 skipped (916)
+      Tests  7713 passed | 9 skipped (7722)
+   Duration  663.38s (transform 15.98s, setup 10.09s, import 286.02s, tests 285.69s, environment 682ms)
+exit 0
+
+## server build (build:full)
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit 0
+
+## release stamp
+dist/release-identity.json: {"version":"1.5.11-beta.9"}; autobyteus-web version 1.5.11-beta.9
+npm pack --dry-run includes dist/release-identity.json: true
+
+## server-package-contents (built dist)
+      Tests  5 passed (5)
+
+## 284 gated E2E (busy-run-stop-now + native-standalone-host-shutdown)
+ Test Files  2 passed (2)
+      Tests  3 passed (3)

@@ -54,7 +54,7 @@
               </template>
               <div v-else-if="displayState(p) === 'WAITING'" class="flex items-center gap-2 text-gray-500">
                 <span class="h-2 w-2 flex-shrink-0 rounded-full border border-gray-400"></span>
-                <span>{{ modelReady ? t('settings.search.projects.state.waiting') : t('settings.search.projects.state.waitingModel') }}</span>
+                <span>{{ t('settings.search.projects.state.waiting') }}</span>
               </div>
               <div v-else-if="displayState(p) === 'READY'" class="flex items-center gap-2 text-green-700">
                 <span class="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-600"></span>
@@ -119,7 +119,6 @@ const working = ref<string | null>(null)
 const indexingAll = ref(false)
 
 const unavailable = computed(() => props.modelState === 'UNAVAILABLE')
-const modelReady = computed(() => props.modelState === 'READY')
 const displayState = (p: ProjectTaskIndex): ProjectTaskIndexState => (unavailable.value ? 'UNAVAILABLE' : p.state)
 const needsIndexing = (p: ProjectTaskIndex) => p.state === 'NOT_INDEXED' || p.state === 'NEEDS_UPDATE'
 const canIndex = (p: ProjectTaskIndex) => !unavailable.value && needsIndexing(p)

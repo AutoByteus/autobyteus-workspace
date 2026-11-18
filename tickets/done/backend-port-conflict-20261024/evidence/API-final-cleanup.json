@@ -1,0 +1,267 @@
+{
+  "case": "API-cleanup",
+  "date": "2026-10-26T09:14:33.131089+00:00",
+  "sourceResultFiles": [
+    "API-07-result.json",
+    "API-07-attempt1-result.json",
+    "API-06B-result.json",
+    "API-09B-attempt1-result.json",
+    "API-03-attempt1-result.json",
+    "API-03-pre-safety-result.json",
+    "API-05-attempt1-result.json",
+    "API-03-result.json",
+    "API-09-result.json",
+    "API-09B-result.json",
+    "API-05-result.json",
+    "API-10-result.json"
+  ],
+  "method": "read-only kill(pid,0) on exact recorded test PIDs, no process signal or port scan",
+  "pids": [
+    {
+      "pid": 83241,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 83359,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 83640,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 83769,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 83815,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84001,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84121,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84179,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84246,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84354,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84360,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84566,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84574,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84580,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84747,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84810,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84828,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84829,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84835,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84899,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84904,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84905,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 84911,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85247,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85265,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85266,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85285,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85361,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85379,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85380,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85399,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85621,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85657,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85664,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85672,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85679,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85752,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85758,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85803,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 85882,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86022,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86030,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86048,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86049,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86068,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86142,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86160,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86161,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 86180,
+      "currentlyPresent": false
+    }
+  ],
+  "roots": [
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-DSXhvr",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-FKQktb",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-s3r5T3",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-QvrHzc",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-dcpQpX",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09-aC1uLk",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-RK1Kjs",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-vqhzyH",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api10-NJA3vQ",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-RDDH2g",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-nQqjpR",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-nf2kOU",
+      "exists": false
+    }
+  ]
+}

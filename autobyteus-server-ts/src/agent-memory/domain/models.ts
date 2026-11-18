@@ -1,14 +1,6 @@
 import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
-export type MemoryMessage = {
-  role: string;
-  content?: string | null;
-  reasoning?: string | null;
-  toolPayload?: Record<string, unknown> | null;
-  ts?: number | null;
-};
-
 type MemoryTraceEventBase = {
   id?: string | null;
   traceType: string;
@@ -56,9 +48,6 @@ export type RawTraceFileSummary = {
 
 export type AgentMemoryView = {
   runId: string;
-  workingContext?: MemoryMessage[] | null;
-  episodic?: Array<Record<string, unknown>> | null;
-  semantic?: Array<Record<string, unknown>> | null;
   rawTraces?: MemoryTraceEvent[] | null;
   rawTraceFiles?: RawTraceFileSummary[] | null;
   selectedRawTraceFileName?: string | null;
@@ -66,11 +55,10 @@ export type AgentMemoryView = {
 
 export type AgentMemoryAttribution = "DEFINITION" | "UNATTRIBUTED";
 
+/** What a run's memory holds, for the Memory page: its Work Journal and its raw traces (active, archived). */
 export type MemoryAvailabilitySummary = {
   latestMemoryAt?: string | null;
-  hasWorkingContext: boolean;
-  hasEpisodic: boolean;
-  hasSemantic: boolean;
+  hasWorkJournal: boolean;
   hasRawTraces: boolean;
   hasRawArchive: boolean;
 };
@@ -78,6 +66,8 @@ export type MemoryAvailabilitySummary = {
 export type MemoryAvailabilityBuildResult = {
   availability: MemoryAvailabilitySummary;
   latestMemoryMtime: number;
+  /** A working-context snapshot exists (not shown on the page; it still keeps the run listed). */
+  hasWorkingContextSnapshot: boolean;
 };
 
 export type AgentWithMemorySelector = {
@@ -115,7 +105,7 @@ export type AgentTeamWithMemorySummary = {
   memory: MemoryAvailabilitySummary;
 };
 
-export type CollaborationMemberExecutionKind = "CONFIGURED" | "TASK_AGENT" | "TASK_TEAM_MEMBER";
+export type CollaborationMemberExecutionKind = "CONFIGURED";
 
 export type CollaborationMemoryGroupKind = "CONFIGURED_TEAM" | "TASK_TEAM";
 

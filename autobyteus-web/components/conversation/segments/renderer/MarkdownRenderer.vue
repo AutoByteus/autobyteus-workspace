@@ -6,7 +6,7 @@
     @keydown="handleKeydown"
   >
     <template v-for="segment in segments" :key="segment.key">
-      <div v-if="segment.type === 'html'" v-html="segment.content" class="markdown-body prose dark:prose-invert prose-gray max-w-none"></div>
+      <div v-if="segment.type === 'html'" v-html="segment.content" class="markdown-body prose dark:prose-invert prose-gray max-w-none" :class="{ 'long-unbroken-text': hasLongUnbrokenRun(segment.content) }"></div>
       <MermaidDiagram
         v-else-if="segment.type === 'mermaid'"
         :content="segment.content"
@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
+import { openExternalLink } from '~/utils/externalLink';
 import { computed, ref, watch, onMounted, nextTick } from 'vue';
 import { useMarkdownSegments } from '~/composables/useMarkdownSegments';
 import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
@@ -25,7 +27,8 @@ import { useLocalization } from '~/composables/useLocalization';
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import MermaidDiagram from './MermaidDiagram.vue'; 
-import { resolveExternalHttpUrl } from './externalHttpLink';
+import { readAnchorHref, resolveExternalHttpUrl } from './externalHttpLink';
+import { HEADING_ANCHOR_ID_PREFIX } from '~/utils/markdownHeadingAnchors';
 import 'prismjs/themes/prism.css'; 
 // Import KaTeX CSS for math rendering
 import 'katex/dist/katex.min.css';
@@ -120,12 +123,40 @@ const handleFileAction = (event: Event, target: Element) => {
   return true;
 };
 
+const URL_SCHEME = /^[a-z][a-z\d+.-]*:/i;
+
+/** Scrolls to the heading with this anchor in this renderer only, so two messages never cross; nothing if none. */
+const scrollToHeading = (encodedAnchor: string) => {
+  let anchorName = encodedAnchor;
+  try {
+    anchorName = decodeURIComponent(encodedAnchor);
+  } catch {
+    // A malformed escape is looked up as written.
+  }
+  const headingId = `${HEADING_ANCHOR_ID_PREFIX}${anchorName}`;
+  const headings = markdownRendererContainer.value?.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5, h6') ?? [];
+  [...headings].find((heading) => heading.id === headingId)?.scrollIntoView({ block: 'start' });
+};
+
 const handleLinkClick = (event: MouseEvent) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
   if (handleFileAction(event, target)) return;
   const anchor = target.closest('a');
   if (!anchor) return;
+
+  // Same-document and scheme-less links are decided here, before the external rule would resolve them
+  // against the page's own http(s) address; the browser default would hand them to the router (a 404).
+  const href = readAnchorHref(anchor)?.trim() ?? '';
+  if (href.startsWith('#')) {
+    event.preventDefault();
+    scrollToHeading(href.slice(1));
+    return;
+  }
+  if (href && !URL_SCHEME.test(href) && !href.startsWith('//')) {
+    event.preventDefault();
+    return;
+  }
 
   const externalUrl = resolveExternalHttpUrl(anchor, window.location.href);
   if (!externalUrl) return;
@@ -140,19 +171,6 @@ const handleKeydown = (event: KeyboardEvent) => {
   handleFileAction(event, target);
 };
 
-const openExternalLink = (url: string) => {
-  if (window.electronAPI?.openExternalLink) {
-    try {
-      window.electronAPI.openExternalLink(url);
-      return;
-    } catch (e) {
-      console.error('Failed to open link using electronAPI.openExternalLink. Falling back to window.open.', e);
-    }
-  }
-  
-  window.open(url, '_blank', 'noopener,noreferrer');
-};
-
 onMounted(applyPostRenderEffects);
 watch(segments, applyPostRenderEffects, { deep: true });
 watch(
@@ -164,18 +182,36 @@ watch(
 </script>
 
 <style>
+/* A run with no break point that is longer than the line (a path, URL, long word) breaks inside to fit it.
+   Inherited by inline code, links, prose and headings; table cells keep their min-content width. */
+.markdown-renderer-segments .markdown-body {
+  overflow-wrap: break-word;
+}
+
 .markdown-renderer-segments .markdown-body pre[class*="language-"] {
   margin: 1em 0;
   padding: 1em;
   overflow: auto;
 }
 
-.markdown-renderer-segments .markdown-body code[class*="language-"] {
+/* Every fenced code block, with or without a language, wraps long lines to its box.
+   A soft wrap adds no character, so selection copy gives the original text. */
+.markdown-renderer-segments .markdown-body pre,
+.markdown-renderer-segments .markdown-body pre > code {
   white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.markdown-renderer-segments .markdown-body code[class*="language-"] {
   font-family: 'Fira Code', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+/* Content that cannot wrap scrolls sideways inside its own box. */
+.markdown-renderer-segments .markdown-body .markdown-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .markdown-renderer-segments .markdown-body p.katex-block {
@@ -186,6 +222,11 @@ watch(
 .markdown-renderer-segments .markdown-body .katex-display {
   /* Tighten KaTeX block spacing inside lists */
   margin: 0.25em 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Tall glyphs (big delimiters, matrices, limits) reach past KaTeX's line box; this keeps them inside the clip. */
+  padding: 0.5em 0;
 }
 
 .markdown-renderer-segments .markdown-body li > p {

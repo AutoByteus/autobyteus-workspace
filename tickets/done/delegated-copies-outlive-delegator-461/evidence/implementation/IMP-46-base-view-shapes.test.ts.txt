@@ -1,0 +1,45 @@
+import fs from "node:fs/promises";
+import { afterEach, describe, it, vi } from "vitest";
+import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
+import { HOST, buildManager, cleanupDirectories } from "../standalone-agent-run-root/helpers/standalone-root-harness.js";
+
+// autobyteus-461 rule 3: base 827f1e68dc characterization of what the web receives for an agent run's view when it
+// delegates an agent and a team (story 5.1, S1 / S6) and closes one Task (S10): the view snapshot, the row events, the
+// run list's poll. Values are normalized to their shape (kinds kept), so the branch can be compared by structure.
+afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
+
+const KEEP = new Set(["kind", "host_kind", "root_subject_kind", "status", "subjectKind"]);
+export const shapeOf = (value: unknown, key = ""): unknown => {
+  if (Array.isArray(value)) return value.map((item) => shapeOf(item));
+  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((k) => [k, shapeOf((value as Record<string, unknown>)[k], k)]));
+  if (KEEP.has(key)) return value;
+  return value === null ? null : typeof value;
+};
+
+describe("base 827f1e68dc: an agent run's view of its delegated runs", () => {
+  it("records the shapes", async () => {
+    const resources = new InMemoryTaskExecutionResources();
+    resources.addTask("A"); resources.addTask("B");
+    const f = await buildManager(resources);
+    const root = (await f.manager.resolveRoot(HOST))!;
+    const events: unknown[] = [];
+    root.subscribeToEvents((sequenced) => { events.push(sequenced); });
+    await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" } as never);
+    await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/product_team", task_id: "B" } as never);
+    await flushMicrotasks();
+    const inspection = (await f.manager.getInspection(HOST))!;
+    const snapshot = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: [] } as never);
+    const started = events.map((event) => projectAgentCollaborationEvent(HOST, root.getExecutionTreeSnapshot(), event as never)).filter(Boolean)
+      .map((message) => (message as { event: unknown }).event).filter((event) => (event as { kind: string }).kind === "task_execution_started");
+    const before = events.length;
+    void root.releaseTaskExecutions(resources.close("A"));
+    await vi.waitFor(() => { if (!events.slice(before).some((event) => (event as { event: { kind: string } }).event.kind === "task_executions_closed")) throw new Error("waiting"); });
+    const closed = events.slice(before).map((event) => projectAgentCollaborationEvent(HOST, root.getExecutionTreeSnapshot(), event as never)).filter(Boolean)
+      .map((message) => (message as { event: unknown }).event).filter((event) => (event as { kind: string }).kind === "task_executions_closed");
+    const poll = f.manager.getAgentStatuses([HOST]);
+    const out = { snapshot: shapeOf(snapshot), started: shapeOf(started), closed: shapeOf(closed), poll: shapeOf(JSON.parse(JSON.stringify(poll))) };
+    await fs.writeFile(process.env.CHAR_OUT ?? "/tmp/char-461-base.json", JSON.stringify(out, null, 2));
+  });
+});

@@ -86,11 +86,16 @@ export class StandalonePairedAgentAccess implements PairedAgentAccess {
     if (!root) return notPairedRefusal(agentRunId);
     // A message makes the host ready (restoring it after idle shutdown), as any input does.
     const result = await root.postHostUserMessage({ message: remoteOwnerUserMessage(command, owner), postOptions: {} });
-    return result.kind === "posted" ? result.post : { accepted: false, code: "AGENT_INPUT_REJECTED", message: "message" in result ? result.message : result.admission.message };
+    if (result.kind === "posted") return result.post;
+    // DS-15: a run whose Task is closed refuses its delegator's owner too, as base fenced it.
+    if (result.kind === "refused") return result.refusal;
+    return { accepted: false, code: "AGENT_INPUT_REJECTED", message: "message" in result ? result.message : result.admission.message };
   }
 
   pairedAgentStatuses(hostRunId: string): readonly PairedAgentStatus[] {
     const run = this.roots.getActive(hostRunId)?.activeHostRun();
-    return run?.isActive() ? [{ agentRunId: hostRunId, status: normalizeAgentApiStatus(run.getStatusSnapshot().status) }] : [];
+    if (!run?.isActive()) return [];
+    const snapshot = run.getStatusSnapshot();
+    return [{ agentRunId: hostRunId, status: normalizeAgentApiStatus(snapshot.status), backgroundTasksRunning: snapshot.background_tasks_running }];
   }
 }

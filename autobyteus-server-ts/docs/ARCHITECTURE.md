@@ -95,7 +95,8 @@ Persistence is subsystem-owned rather than selected through a global mode.
 - Memory Sync hub/source config, source-state fingerprints, and hub credential
   metadata are file-backed under `<appDataDir>/memory-sync/`; imported memory
   corpus files are kept under the configured memory root at
-  `memory/imports/<sourceNodeId>/`.
+  `memory/imports/<memorySyncSourceId>/`; large files being uploaded wait in
+  `memory/memory-sync-staging/<memorySyncSourceId>/` until they are verified.
 - SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
 - Required app-data migrations run after Prisma schema migrations so data repair
   can rely on the expanded current shape before runtime/API reads begin. Token
@@ -198,8 +199,10 @@ for the authoritative ownership and limitations.
 The Work Journal subsystem lives under `src/agent-work-journal`. It renders a run's raw traces
 into deterministic, runtime-neutral Markdown under `<memoryDir>/work_journal/`: one journal file
 per raw-trace file (closed segments are written once, the open file is rendered again at each
-turn end) plus `work_journal_manifest.json`. Built-in tools of each runtime read as plain actions
-(`Command:`, `Write file:`, `Edit file:`, `Search web:`), every other tool as `Tool: <name>`.
+turn end) plus `work_journal_manifest.json`. Every tool call reads as a neutral action that says what
+was done (`Command:`, `Write file:`, `Message to …`, `Browser: …`, `Load skill: …`): through the runtime's
+own table, then the platform converters, then the generic `Tool: <name>` line for any other tool (see
+`docs/modules/agent_work_journal.md`).
 `WorkJournalRunUpdater`, attached to every AgentRun after the memory recorder, keeps live runs
 current; consumers call `getWorkJournalService().ensureCurrent({ runId, memoryDir, runtimeKind })`
 and receive the file paths and an evidence hash. Raw traces stay the only authority: the journal

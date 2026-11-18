@@ -7,6 +7,17 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import WebSocket from "ws";
 import { appConfigProvider } from "../../dist/config/app-config-provider.js";
+import { attachOwnerCredentialToLoopback } from "../../../test-support/node-access/owner-credential-attachment.mjs";
+// This child is the node's client: it attaches the launch owner credential the parent handed it (NA-5) to its own
+// loopback requests. Read before the server composition is imported, whose launch credential intake removes it.
+const launchCredential = process.env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL;
+if (!launchCredential) {
+  const error = "AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL is missing from the fixture's environment: the suite adds builtServerLaunchEnvironment().";
+  console.error(error);
+  process.send?.({ receipt: { result: "Fail", error, phase: "launch credential" } });
+  process.exit(1);
+}
+attachOwnerCredentialToLoopback(launchCredential);
 const root = process.argv[2], model = process.argv[3];
 const config = appConfigProvider.initialize({ appDataDir: root }); config.initialize();
 // Execute configured-server prerequisites on the private database, not a forced readiness stub.
@@ -165,8 +176,8 @@ try {
   let closedFirst = false; firstClient.onClose(error => { closedFirst = error === null; });
   await stopTeam(); assert(closedFirst); assert.equal(getCodexThreadManager().getThread(binding.agent_run_id), null);
   await assert.rejects(firstClient.request("config/read", {}), /not started/); checkpoint("ordinary Stop physically closed first Codex generation");
-  const restored = (await gql("mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message teamRunId}}", { id: teamId })).restoreAgentTeamRun;
-  assert.equal(restored.success, true, restored.message); assert.equal(restored.teamRunId, teamId);
+  // The product restores a stopped team as the app does (autobyteus-461 CR-461-008): the user's message to one of its members on
+  // its view stream. inventory() below opens the view (stored mode) and sends that message, which restores the run.
   const resumedBinding = managerBinding(await publicTree()); assert.equal(resumedBinding.agent_run_id, binding.agent_run_id);
   const second = await inventory(binding.agent_run_id, "restored"); secondClient = second.client;
   assert.notEqual(secondClient, firstClient); assert.equal(second.threadId, first.threadId);

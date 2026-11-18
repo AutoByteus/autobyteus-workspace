@@ -1,8 +1,4 @@
-import type {
-  AgentTeamRunMemorySummary,
-  AgentTeamWithMemorySummary,
-  MemoryExplorerPage,
-} from "../domain/models.js";
+import type { AgentTeamRunMemorySummary, AgentTeamWithMemorySummary, MemoryExplorerPage } from "../domain/models.js";
 import { toCollaborationMemberMemoryTargetSummary } from "./collaboration-member-memory-targets.js";
 import {
   CollaborationRootMemoryCatalog,
@@ -10,14 +6,24 @@ import {
   type CollaborationRootMemorySource,
   type CollaborationRootRunMemory,
 } from "./collaboration-root-memory-catalog.js";
+import { normalizeMemoryExplorerSearch, pageMemoryExplorerEntries } from "./memory-explorer-page.js";
 import { TeamRootMemorySource } from "./team-root-memory-source.js";
 
-/** Team-typed memory explorer boundary over the shared collaboration root catalog. */
-export class TeamMemoryExplorerService {
-  private readonly catalog: CollaborationRootMemoryCatalog;
+/** Every entry of a catalog listing, for merging two families before paging. */
+const ALL_PAGE_SIZE = Number.MAX_SAFE_INTEGER;
 
-  constructor(memoryDir: string, dependencies: { source?: CollaborationRootMemorySource } = {}) {
-    this.catalog = new CollaborationRootMemoryCatalog(dependencies.source ?? new TeamRootMemorySource(memoryDir));
+
+/**
+ * Team-typed memory explorer boundary: every team run, a delegated one included (autobyteus-461: it is an ordinary
+ * team run with its own file).
+ */
+export class TeamMemoryExplorerService {
+  private readonly configured: CollaborationRootMemoryCatalog;
+
+  constructor(memoryDir: string, dependencies: {
+    source?: CollaborationRootMemorySource;
+  } = {}) {
+    this.configured = new CollaborationRootMemoryCatalog(dependencies.source ?? new TeamRootMemorySource(memoryDir));
   }
 
   async listAgentTeamsWithMemory(
@@ -25,8 +31,11 @@ export class TeamMemoryExplorerService {
     page = 1,
     pageSize = 25,
   ): Promise<MemoryExplorerPage<AgentTeamWithMemorySummary>> {
-    const result = await this.catalog.listDefinitions(search, page, pageSize);
-    return { ...result, entries: result.entries.map(toTeamSummary) };
+    const query = normalizeMemoryExplorerSearch(search);
+    const configured = (await this.configured.listDefinitions(query, 1, ALL_PAGE_SIZE)).entries;
+    const entries = configured.map(toTeamSummary).sort((a, b) =>
+      (b.latestMemoryAt ?? "").localeCompare(a.latestMemoryAt ?? "") || a.teamDefinitionName.localeCompare(b.teamDefinitionName));
+    return pageMemoryExplorerEntries(entries, page, pageSize);
   }
 
   async listAgentTeamRunsWithMemory(
@@ -39,11 +48,14 @@ export class TeamMemoryExplorerService {
     if (!normalizedTeamDefinitionId) {
       throw new Error("teamDefinitionId is required.");
     }
-    const result = await this.catalog.listRuns(normalizedTeamDefinitionId, search, page, pageSize);
-    return { ...result, entries: result.entries.map(toTeamRunSummary) };
+    const configured = (await this.configured.listRuns(normalizedTeamDefinitionId, search, 1, ALL_PAGE_SIZE)).entries;
+    const runs = [...configured].sort((a, b) => b.memory.latestMemoryMtime - a.memory.latestMemoryMtime
+      || (b.createdAt ?? "").localeCompare(a.createdAt ?? "") || b.rootRunId.localeCompare(a.rootRunId));
+    return pageMemoryExplorerEntries(runs.map(toTeamRunSummary), page, pageSize);
   }
 }
 
+/** No team run is tagged as delegated: a delegated team is an ordinary team run (the fields stay in the API, empty). */
 const toTeamSummary = (definition: CollaborationDefinitionMemory): AgentTeamWithMemorySummary => ({
   teamDefinitionId: definition.definitionId,
   teamDefinitionName: definition.definitionName,

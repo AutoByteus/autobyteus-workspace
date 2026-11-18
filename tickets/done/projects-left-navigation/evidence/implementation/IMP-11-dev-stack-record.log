@@ -1,0 +1,19 @@
+# IMP-11 dev-stack check of project_runs.json (IR-002)
+# Steps: rm -rf .autobyteus/development; pnpm dev; IMP-11-dev-stack-record.sh create <data>; stop; node scripts/development/run-dev.mjs; IMP-11-dev-stack-record.sh after-restart <data>
+# Commit: 467cff24c0; macOS, Node v22.23.1; Date: 2026-10-31T11:42Z
+# Phase 'create' output (copied from the run before the restart):
+## createProject
+projectId=project_9f959ce2-6a10-497b-962e-ec38d6b97cdc
+## prepareAgentRun under the Project
+{"data":{"prepareAgentRun":{"success":true,"message":"Agent run prepared successfully.","runId":"project_task_manager_c1c87d07a3074f6ebc98d18cd952700b"}}}
+## prepareAgentRun with an unknown Project
+{"data":{"prepareAgentRun":{"success":false,"message":"ProjectError: Project 'project_missing' was not found.","runId":null}}}
+## projectRunHistory (create)
+{"data":{"projectRunHistory":{"agentDefinitions":[{"agentName":"Project Task Manager","runs":[{"runId":"project_task_manager_c1c87d07a3074f6ebc98d18cd952700b","summary":"started under AutoByteus"}]}],"scopes":[{"rootKind":"AGENT","rootRunId":"project_task_manager_c1c87d07a3074f6ebc98d18cd952700b"}]}}}
+# Phase 'after-restart' (live):
+## projectRunHistory (after-restart)
+{"data":{"projectRunHistory":{"agentDefinitions":[{"agentName":"Project Task Manager","runs":[{"runId":"project_task_manager_c1c87d07a3074f6ebc98d18cd952700b","summary":"started under AutoByteus"}]}],"scopes":[{"rootKind":"AGENT","rootRunId":"project_task_manager_c1c87d07a3074f6ebc98d18cd952700b"}]}}}
+## stored files
+project_runs.json: {"projectId": "project_9f959ce2-6a10-497b-962e-ec38d6b97cdc", "runs": [{"root": {"kind": "agent", "runId": "project_task_manager_c1c87d07a3074f6ebc98d18cd952700b"}, "linkedAt": "2026-10-31T11:42:30.586Z"}]}
+index row keys: ['agentDefinitionId', 'agentName', 'archivedAt', 'createdAt', 'runId', 'summary', 'terminatedAt', 'workspaceRootPath']
+metadata keys: ['agentDefinitionId', 'applicationExecutionContext', 'autoExecuteTools', 'llmConfig', 'llmModelIdentifier', 'memoryDir', 'platformAgentRunId', 'preparedAt', 'preparedExpiresAt', 'runId', 'runtimeKind', 'startedAt', 'workspaceRootPath']

@@ -65,6 +65,9 @@ Notes:
 - Encrypted secret tables live in the same SQLite application database selected by canonical `DATABASE_URL`; the 32-byte root key is the database sibling `<database-path>.secret.key`. Treat the database and key as one backup/restore/reset pair. There is no second Store database or backend configuration hook. See `docs/modules/secret_management.md`.
 - Claude Agent SDK authentication keeps the existing `CLAUDE_AGENT_SDK_AUTH_MODE=auto|cli|api-key` selector and defaults to `cli`. Only explicit `api-key` resolves the Anthropic vault credential and replaces `ANTHROPIC_API_KEY` immediately before launch; `auto`/`cli`, external Codex, and inherited child environments retain their established continuity behavior and are not process-isolation evidence.
 - Optional `AUTOBYTEUS_MCP_GATEWAY_TOKEN` protects the general `/mcp/gateway` Streamable HTTP MCP endpoint. When unset, that endpoint is restricted to local loopback requests only.
+- Every request (HTTP and WebSocket upgrades) must be addressed to one of the node's names (DNS rebinding defence): an IP address, `localhost`/`*.localhost`, a dotless, `.local`, `.lan`, `.home.arpa`, `.internal` or `*.ts.net` name, the host of `AUTOBYTEUS_SERVER_HOST` or of an `AUTOBYTEUS_ALLOWED_ORIGINS` entry, a paired phone's host, or a name in the optional `AUTOBYTEUS_ALLOWED_HOSTS` (comma-separated, read at start; `.example.com` also covers every name under it). Others get 403 `REMOTE_ACCESS_HOST_REFUSED`, and the log names the host and the setting. A node reached through a public DNS name (a reverse proxy with a domain, a peer or desktop entry by DNS name, a Docker service name) needs that name in `AUTOBYTEUS_ALLOWED_HOSTS`. See `docs/features/remote_access.md` (Allowed Hosts).
+- Browser requests are then accepted only from allowed origins: no `Origin`, the node's own origin, `file://` (the desktop app), or one listed in the optional `AUTOBYTEUS_ALLOWED_ORIGINS` (comma-separated exact origins, read at start). A page served from another localhost port is refused unless its exact origin is listed: a developer's own tool needs one line, for example `AUTOBYTEUS_ALLOWED_ORIGINS=http://localhost:5173`. Others get 403 `REMOTE_ACCESS_ORIGIN_REFUSED`. `/mcp/gateway` and the internal agent-tools and credential-proxy listeners accept no `Origin` or a listed one. See `docs/features/remote_access.md` (Allowed Origins).
+- Every route that returns a user file's content answers with `Content-Security-Policy: sandbox allow-scripts` and `X-Content-Type-Options: nosniff`: the file displays, and an HTML or SVG file's scripts run walled off from the node.
 - SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
 - `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.
 - Persistence is subsystem-owned. Token usage is stored in SQL, while file-backed subsystems such as agent definitions, team definitions, and MCP config keep using their native file storage.
@@ -101,6 +104,18 @@ Optional custom data directory:
 ```bash
 node autobyteus-server-ts/dist/app.js --data-dir /path/to/data --host 0.0.0.0 --port 8000
 ```
+
+Every request to a node needs a credential ([Node Access Model](docs/design/node_access_model.md)). To connect the
+desktop app to a server you started yourself, get a one-time setup code on the server's computer and enter it on the
+desktop's **Nodes** page:
+
+```bash
+node autobyteus-server-ts/dist/node-access-cli.js setup-code --data-dir /path/to/data
+```
+
+The node accepts connections from this computer, its Tailscale address and local networks its owner allowed; list
+other networks (a company VPN) in `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` (comma-separated CIDR, e.g.
+`10.20.0.0/16`).
 
 Android run helpers (from workspace root):
 
@@ -306,10 +321,10 @@ Runtime memory stays in the existing local roots:
 
 Hub imports are stored separately as read-only corpus data:
 
-- `memory/imports/<sourceNodeId>/agents/`
-- `memory/imports/<sourceNodeId>/agent_teams/`
-- `memory/imports/<sourceNodeId>/source-node.json`
-- `memory/imports/<sourceNodeId>/sync-manifest.json`
+- `memory/imports/<memorySyncSourceId>/agents/`
+- `memory/imports/<memorySyncSourceId>/agent_teams/`
+- `memory/imports/<memorySyncSourceId>/memory-sync-source.json`
+- `memory/imports/<memorySyncSourceId>/sync-manifest.json`
 
 Hub setup uses a user-confirmed advertised hub base URL. Candidate URLs are
 suggestions only; Docker, Kubernetes, LAN, VPN, and tailnet deployments must use
@@ -358,20 +373,22 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
-Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then
-open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
-private-network path. The default product model does not add a separate owner
-credential for desktop/Electron access to that node; do not expose the full
-backend directly to the public internet. Paired phones receive only separate
-`mra_...` mobile credentials, and those credentials do not authorize
-owner-management routes. Current server Docker images package the `/mobile` web
-shell into the runtime image for QR/mobile startup.
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node** and
+connect it with the setup code `new-container` printed (`autobyteus-docker
+setup-code` prints another). The node is published on this computer and its
+Tailscale address (`--allow-local-network` for every address); do not expose
+the backend directly to the public internet. Paired phones receive separate
+`mra_...` phone credentials, which do not open owner actions. Current server
+Docker images package the `/mobile` web shell into the runtime image for
+QR/mobile startup.
 
 The launcher keeps private Docker named volumes outside the container writable
 layer:
 `/home/autobyteus/data` is private app/server data, `/root` stores in-container
 root home/auth settings, `/home/vncuser/.config/chromium` stores private
-Chromium browser profile state in `<node>-chromium-profile`, and
+Chromium browser profile state in `<node>-chromium-profile`,
+`/home/autobyteus/server-packages` keeps server packages and their state in
+`<node>-server-packages`, and
 `/app/autobyteus-server-ts/workspace` keeps the existing workspace volume. It
 also creates host-visible user folders under a shared workspace root
 (`$HOME/.autobyteus/docker-server/shared-workspace` on macOS/Linux,
@@ -410,9 +427,19 @@ Backend: printed by the launcher, usually http://localhost:8001
 GraphQL: <Backend>/graphql
 REST:    <Backend>/rest/*
 WS:      ws://localhost:<Backend port>/ws/...
-noVNC:   printed by the launcher, usually http://localhost:6080
-VNC:     printed by the launcher, usually localhost:5908
 ```
+
+Each node publishes one host port: its Backend port, on every network
+interface (other devices add the node with it). The desktop app's VNC Viewer
+shows the node's desktop through that same Backend address
+(`/ws/node-desktop`), so it works for a node on this computer, another machine
+or a cloud VM; View only is the default and the node enforces it. The node's
+VNC (container port 5900), websockify (6080) and Chrome DevTools (9223) ports
+are not published, so a VNC app or `chrome://inspect` does not reach a node
+from outside it. Nodes created by an earlier launcher keep their old port
+publishing until you run `autobyteus-docker upgrade --all` (or
+`autobyteus-docker workspace apply`); the launcher then recreates each node
+once, keeping its Backend port and its named volumes.
 
 Upgrade every managed Docker node while keeping named volumes. A plain upgrade
 uses each node's saved image ref, so mixed fleets stay on their current image
@@ -542,6 +569,11 @@ template, atomically materializes the ignored runtime environment under
 
 - backend: `http://127.0.0.1:8000`;
 - frontend: `http://127.0.0.1:3000`.
+
+The launcher sets the backend's `AUTOBYTEUS_ALLOWED_ORIGINS` to the frontend's
+origins (`http://127.0.0.1:3000` and `http://localhost:3000`) and replaces any
+other value; a page from another local port is refused
+([Remote Access](docs/features/remote_access.md#allowed-origins)).
 
 The launcher proves both endpoints are ready before reporting success, owns
 only the two child processes it started, and stops them on `Ctrl+C`. The

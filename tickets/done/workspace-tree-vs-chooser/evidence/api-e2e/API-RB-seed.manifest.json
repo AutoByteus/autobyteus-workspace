@@ -1,0 +1,1363 @@
+{
+  "folders": {
+    "agents-main": "/tmp/wtvc-385/seed/folders/agents-main",
+    "agents-side": "/tmp/wtvc-385/seed/folders/agents-side",
+    "agents-third": "/tmp/wtvc-385/seed/folders/agents-third",
+    "teams": "/tmp/wtvc-385/seed/folders/teams",
+    "orgs": "/tmp/wtvc-385/seed/folders/orgs"
+  },
+  "agents": {
+    "main": "budget-main-agent",
+    "side": "budget-side-agent",
+    "third": "budget-third-agent"
+  },
+  "teamDefinitionId": "budget-team",
+  "orgDefinitionId": "budget-org",
+  "agentRuns": [
+    {
+      "runId": "budget_main_agent_9e85f6117c54416bbec2ed2b35c81453",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_bd6f95ef409140109a15313f1aabc212",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_8c1e126798b04687aeb0d28c1827b6ac",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_bcaf58334cc344b58e3effcda747540c",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_da6b87d642c44c9187deb9985ede8e54",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_ed143745fb314da7bceec37770674baa",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_1bc7b4b938b145129f429c6c521bf31d",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_d4e4bb04e1c0417fbec993e6a7ea5613",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_91fd152196a4405496ecaffea9a490ae",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_fec6c1961a1b4b33abef03a516b1e164",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_9e527819a8194b30ad8af1f920cefde8",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_66f716f2080b4c93b897a1815d519586",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_6f68343be70b407bbdeb5a4f358054ce",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_777adb7d56954f5cb73e68ef87640bab",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_5f03c2301c1144fdbdc42b8346077bc7",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_b914ad7feda74722adcb72a14ff76bab",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_a292a789c2874911b6ae49c4df3a7679",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_c7339d93c11342fdbac238ea81e41b09",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-main",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_318428fc9a4440078ae33319233653d6",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_50e4d82ceb684f45befe4a33c0bd850e",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_main_agent_e9ec7fbbb68a4c22be68662720062850",
+      "agent": "main",
+      "agentDefinitionId": "budget-main-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_a02c04a69b924d42baa52811f208c1ca",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_f0cbe57b615a43adb194327978801421",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_1904c4ab637e4f3eaeb6728a52f5da23",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_0a601c805b984f1a936019711d35a078",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_7135f40f5351440784710b3c41521446",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_1122d1bec8e64be1959bad724c360cb3",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_1a81639157f24b77a4872d910cac8432",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_d8d9cc7d32dc439e86f555ad53ba2aee",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_2dbdc8fb508849a9b3894abf1d63bc48",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_2d9d34dedcd34b209ac9342f44f18afd",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_side_agent_3348c3d4a481440cb0c4919e048c9a57",
+      "agent": "side",
+      "agentDefinitionId": "budget-side-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-side",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_2960dd7199224892b5d4fd98d92f648a",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_52225325abb1471f8c26c59daebb6ea9",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_469c784356374be5bf06b431b1de37d3",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_191f97f738874460abee5a05ebe8d7bb",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_1f525075236644c6ba6bab9604b68aa4",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_555c5cfac9dd47e29a4d136cad06143c",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_5644922bc1fd4baab0f99a22e91c24c4",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    },
+    {
+      "runId": "budget_third_agent_59b221570ab3475ca44d6528c5596e3f",
+      "agent": "third",
+      "agentDefinitionId": "budget-third-agent",
+      "folder": "/tmp/wtvc-385/seed/folders/agents-third",
+      "turn": true
+    }
+  ],
+  "teamRuns": [
+    {
+      "teamRunId": "budget_team_b72195e1ee594965a1f8291189119913",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_83539e4a621e4feda1a3392474d0cbe0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_f93e0ed8b2db4892bd8cda3cf7bd49a4",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_86e8fa59c8e4487fa535e5bb881e1f35",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d19c60ae94844d96b3b6223ef8ce35c8",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_99419dec4451428f9f85e4b1a81a00bc",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_c567bf8903ac4dd4bb5f558577031e93",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_cce941cfc21e4e3fb09f79126938aec0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ba1ff065e0dc4f1fa3b06a2309afe658",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ad7253b8d0514a158ff48740d620257f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_16b6e8d531444e52a31bfc4caba89e7f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_938c0681959c420391ab611eaee8ba96",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_5eebec7e526b4509a7308ef241c33040",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b1bec709ad9a4e5d8571a4131eed904c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_460a2ba5f9134db28b157dd2a9e4b687",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_2ade9aa908f84cb59195394051e48816",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_163223be11684f589d4cb05c39e1f5ab",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e4b40a5f16df47e7a7f840855036c9f2",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_a84478611f164cb4af8356070f4a1a0a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_951e5ecd18a747f0ad5ae34e0e985446",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_50df3a22aef544eface3251e92d4d035",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_cc7590bbe4d34c86b8a2e6bde4a2d796",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_99b4fe4053d6412fb9c75e2987bf127d",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_171ed3af5be0466d926509b63a6f249b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_2eb1b329e6734e3ab580449cae784af8",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_67ebcd59bf3c407b82f982ae6464f0cb",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_0c0183b604c14db09ab42120a13b37c9",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_24b8f0392c6741a2a85d30b5d96012c5",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_2dbdc762a207417a9cdf013fd764a1bf",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_310f6cc9fa014526b9797f762d40b44b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b49d636350d54a08b4b0dac41c969369",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6e691bb884224a03a06cd97c5255bb3e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b7f19067247f4e819734ded27a9f8e9e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ce1e6f8fba3a4b04835462f9e92c8866",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_541b999be7fd47348dba55b513fb0b6f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_a92aa0e08f3240b7bdbbb05c1f290523",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_28ab2b834de4497c86f2bc22cc728fac",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_33ccf16d6b314714be15703dc5ef32c5",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9570865dbe63421192ec35c668a1ed5b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6f89e512269f4628a06ea0f6f0734ef0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_c39d737b039c4a5dbbf3a04366f1bc60",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_c6289277d894481e877334bcb7c54866",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_4f13faba8e434a58b8e53b7d8681e2d5",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_afa3b65923694cf392d2363870f740e6",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_bd8c01dcb1f1441693e289eb5c00d658",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3f0a4ccee4384e5da71e728d7023ace4",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_cc8878cbe42148088c3e6fa929d04f42",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_597506d88ca14d6f914a5d3fb6efd1a5",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_45a43ffc8c71445eae15577941337337",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_96309827d66145a0b149574d48014345",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8a0cf1b447b14fc799e4b1c41513a51e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fda01cc9897e46a99f420675ab8785e2",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_20623ae3fca247eda2c964e4e3cb0288",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_67ec14a9953e46e68cc6817937d47e62",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_66f421d190d14b6ab24ce2e984c78abf",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_34be3594e4b44e57aa32fea0f35e4c0c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b054a055e377462bb920192f8e3992c4",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e41e8e6a7b9e41aca3de1b803443c688",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_f7e9d16528ba4350a46aa9076cc70630",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6b3e09188a0b4938b7fade3ba9a69065",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_55b971b9cb2b4a8085f93a9fb0f96f5b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_57658169c3f941a7ba1a11292b6166e7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9404499f8a804f50ac31ace3f305a281",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_c27ba8bf0a8b47579c3bb4fde16c0ae1",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_f745ef372eb84c2b88ecebfe5dfe0b3e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_7b4acb1afbc44f10bbb6a66b412f4856",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d786b6c1565344f5bc315bcca5ea9a99",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_923b2e02e387461192b2f11b47779747",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_aff17a51960c41be9ae58a768819eb9b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_5831f15bdb4b43ddbd2a419c8f7ebe42",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3f1283ce04974afdb618f30e34d6bd43",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6e444daf8d6a4def9378c1bf44ad3bf6",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_67160c4be9364c4ba013fda20ebc1ce4",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fb5a46efd6c94badadee47019c84d4a8",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_934143333db7431c8c29b09b68e24b33",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9d0c91dad68e4bdbb08aaac32272fcd9",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_37f3e3bb07574d3a8bd931027942f297",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_456222a321ef41b38dafc7229125ffc7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_eabbdfeb30dc4650ae47067bb18e0e6c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_bd0e033032eb4040b65540d432f5c95b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_c3826a82a64c44d1ac49cfe96fcea1bf",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_164089ba62574ae292277442059b8b2f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3d55d57a13bc49cb91eec3ea2efe092c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9b074f25e66647c6890117bd5d7c02fb",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_500522554aa64b4faa169d3cc11ae53a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ad1a78d32f354c5cb820232ef4d6b01a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_49d5203cf6044202b120bd5f718b9c3d",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8400fe8539914dfa866035a45e1150b7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d1ef1e3f33f348c6a6c3f44d86e94f76",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_c472af097d2540958c0e1f9685992a51",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6d3ca466e519477f8d105a60786b6f26",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_be157dbafe594386ad3e74991ff21be7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d4e026ee2e9e49688c313a25c58e4568",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_15a62416fa3443bdb989814662c51d3f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d2c6d85a0d0f40bb86659a6f1cc0a927",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_76c64c789013457f838ab88bbfac9d19",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_0f7dbaca146b43b8b69f822efecb25d9",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_bb929d1149474768b3f3fd90bc8f8b0c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_0306e787ac7047798139883a36423698",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fe72808d3834438bbd5474414bd43b7b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_990ff374fb234e87af3178fc30157441",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8ebe4ef6e4f04eb49ffe97340f5c8ffe",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_a141f7d824d242c6be37c7bc71c10062",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_98a92dd665b24e37b82b2452e7092beb",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b0acba4add4d4eef9a1e7c34da96f5dd",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_aa53f3856b474dbeacac4123b0982a8c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ad6d97d46fcc4bc68d61a68e578a8e2b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8e6c37f78b3f42f6b717fdabb3b54c2e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_711a411efa324e27adc08f24826cdfde",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_7b9f59161daa4d6b984dbe244042b513",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_04fd272797164695a6992112c97ec6cd",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_273ffd89a42b4b9ba9d7f820001c7ca5",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_24a049fc1ff040b79a70e9d33bf082bb",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_5d30fd9090254e4e93370d10a480ae84",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_844eaafd675f4bafb914abd56bdcb80a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_bc41e413798d47bdbeceabe8711fbf27",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_cd054fdb44164ef5adb1360d7e4833ae",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_4cf5258a5ca0414d92f0adefb01a647d",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_f43b346ccdbd463db81671bce55df074",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8996ba52f1634e4892b3b71cec8021f0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_f157c82d807645a8a507b62367670013",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_02ea9bc96cb44d8381b27ab1d022598a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8fa4b2f443c14cb8a8b3b192d72a2ec7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8918a68e96c6478782c73626600c5b71",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9d926a3f25ca46348825220016b9d3b9",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fac2b1fa6e014809bc1e3a594f31a6ba",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3b209ab04175412eb62a2290c0d5dcd3",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d4530dfdf8694e2799c17cad7eb310d3",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_1bb586bd3db34ca99136cbf6b6b117e7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_452c90c5666c4009b436210994fd5dde",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_7f8f0daf591a4f61a9da4f62f09f6229",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_2d5b50a62a294bd0a712fee2f83df94f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6b80dab4c1be49bab100e13915d9c032",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e932f01cc65b49f1806bfdc8ad8e58e9",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_1004d5d3bddd4b47b781851f40950dc3",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3a35417ae8b14ba1bbda4c19e2f9efd0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_86a0b2ced2f9452c98503afadc95c144",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6ff97424225f4bc7a0c8b2ecdcac69cc",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_99782a74761a4ad389635928b7921784",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_69fa8881af62435badfe67ea1b899f37",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_dad2ec0eff9c444da44a157c1d6ee5c1",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ccc415f0b99e49519a5245cbbfd2b605",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_169272cfe0ef4d5a88a343cb64ad16f3",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_8d030136ff714538af6c09b47b52bcef",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_048f6592e2644795ae9fd89d93c91be0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d524986562ed4f47a59d1d5e17f2dab1",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_680d7fa605a649038c7ee35dec8ceb0b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9ab24567977d40bda5469ca519230c1a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_78fb43efd9b94b07b586b195a8674dd7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_67106b6b82a14427a11766289dd19d13",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ffdf044db972435eb71f7436ed0070b1",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_622f68b7010b4f829a82dc74cb0a18ab",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_72141570efb745589e057aa36ad62429",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_1b07ec789dfc4fb4a15584f507ddca8c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_999c8a8b3faf4f8e9888436dbf6affc1",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b2757fb6ee014d369fe0d3ffcfad85d6",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_181f32152bc44165abb35d6419a00d8c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fc87d7b079d44c00a3cfcfb9072c323b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_50453da5eb354bf8b69f0997aede5d45",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9f25f8ac050b458c959b6391ee84213e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d11ef3526b264b70bc22cb10e6d80552",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_64fca38855f341548184f5430a03c4f2",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_9e5340f64cfd4d289e09004d839511ce",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_6a155f74fc9e487bb28ff32eb5256a1c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_82cad98ac0314d448d2b2a3a7bb0ae40",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_bba34b2bc7bf4a63b8bb6643189ff81a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_a9383891622044ac92cf1d54af0c98c0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_87af20589cb5473ebd7f7dcade6be020",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fa6959ae109b4e13be8a56b174fd7e87",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_91f1ca15054d4eafadda0ae3366f666a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_333cc0dfd6d74a90a67a9e1a297ae717",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ad1d7b29d08445158682133953a9985f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_a7c58a50d6cd40499f85ff8e9a2712db",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_de7deb8870f240b79e891ea2e719326d",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_54814e9ce61a40c4bf56da857d8486a2",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_78bc6f25f95c4aee8aa5ce5918c5dd77",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_b6e7f9fc484b454a9980a795623df568",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3c4d0779304c48fa90cdfeb97c5af220",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_7fe3589832e7484bbe3dc54b92e75783",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_3294ebd1fb1941caa2c57d6eff3cf12c",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_d50969c6cf354a828fb231731608cd05",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fd12f940158a490ebcb81c6d518b931b",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_7ca54847e55a487a85e4453101d0c48d",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_bf6c86aaf3034c3b994b981201a5d6fd",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_446a4dfd8cb644d5bba8a3b6ba80a695",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e1b5db6a07f4493a87ad3bceef8bf28f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_48c55fbe101e45c48228dba8aeaa67b0",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_fdfd6f0ddd604e8ba428f7e8e1aa1b3e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e3187427071d4eb18f40d49bf843d680",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_86e142ff635846ed81a55b4f54ec720e",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_611c4634533b42eba36a51c7d215cabc",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e7e8788574d64bacb30e3d2fa3725278",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e2dd94cf394642a184e5910c2b34eab4",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_ab7acb28fbd140e894646a2294ad5543",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e230d7d7729440338fd4ea9b1df30ce8",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_e6a7b724ecd84847847e1b0928f5f5e2",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_1b818b622e064ff0b84056418ca1dbf7",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_5fc1a43ab2db45f8a55e618b89cdd90f",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_eed1852993804c46a8d38a517c813e0a",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    },
+    {
+      "teamRunId": "budget_team_01464e695f6c42d18b5cc11b681dd692",
+      "folder": "/tmp/wtvc-385/seed/folders/teams",
+      "turn": true
+    }
+  ],
+  "orgRuns": [
+    {
+      "orgRunId": "budget_org_c433f3d2872a44bcb3bc4116bff5b257",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_d5d8338d2bef4d7ca795a38dfca61d81",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_feb042194fe34c2d91e891e6e7340f62",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_4ac6f433aa3c4c60814fa72565d4316a",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_dab89eb2ded54881872a114f6063501d",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_deaeefa822d64c368c1cc1bd7fa36b73",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_2603e8aa633a4dc29b519371ffe09846",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_3c2562a2db6a4171bd32e8073226cd36",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_df6509e8d25647f58ac27dc27d81143b",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    },
+    {
+      "orgRunId": "budget_org_2d6524d21e574eac96bc83aeea3eb60a",
+      "folder": "/tmp/wtvc-385/seed/folders/orgs",
+      "turn": true
+    }
+  ],
+  "shape": {
+    "agentRuns": 40,
+    "teamRuns": 200,
+    "orgRuns": 10,
+    "teamMembers": 5,
+    "perAgent": {
+      "main": 20,
+      "side": 12,
+      "third": 8
+    }
+  }
+}

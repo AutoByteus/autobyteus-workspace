@@ -1,0 +1,65 @@
+# API-09 Local Docker node: AC-004, REQ-006
+# surface: isolated desktop instance iso-49410-016d = packaged build of this worktree (pnpm --silent isolated-app start --build;
+#   renderer file://…/app.asar/dist/renderer/index.html)
+# commit: 27b24037dd (code 55fdae0a34); macOS arm64 with Wi-Fi and Tailscale (facts read-only); driven over the instance's CDP control port with
+#   playwright-core (/tmp/ospp-e2e/scripts/run.mjs + steps/*.mjs: DOM state by data-testid, the renderer's /rest/remote-access requests and answers);
+#   phone exchanges by POST <serverBaseUrl>/rest/remote-access/pairing-exchanges (phone-exchange.sh)
+# test-owned containers ospp-e2e-docker-a (published 0.0.0.0:49816 and [::]:49816) and ospp-e2e-docker-b (published 127.0.0.1:49817 only), image autobyteus/autobyteus-server:beta (real entrypoint and starter) with this worktree's server package mounted read-only over /opt/autobyteus/server-package, fresh test volumes; added in Nodes › Manage at http://127.0.0.1:<port> and opened in their own windows
+# date: 2026-11-07. Real computer name, addresses, tailnet name and network ID replaced by placeholders; pairing codes replaced by their length.
+
+container a GET /rest/remote-access/network: {"computerName":"<container id>","runsInContainer":true,"configuredBaseUrl":null,"tailscale":null,"vpnAddresses":[],"localNetwork":{"networkId":"this-computer","addresses":[],"allowed":false}}
+container a nodeId srv_CUsV…; container b nodeId srv_TbfT…
+
+## 1. Docker Test Node window › Phone Setup (published on the network)
+subtitle: "Show a code, then scan it with the AutoByteus app to connect a phone to Docker Test Node."   blocked: None
+Same Wi-Fi or LAN: ready=True selected=false
+Tailscale Recommended: ready=True selected=true
+Your VPN: ready=False selected=false
+Company address: ready=False selected=false
+status: "Ready: Tailscale is on, on this computer."  button: {'text': 'Turn on and show QR code', 'disabled': False}
+  GET http://127.0.0.1:49816/rest/remote-access/status 200
+  GET http://127.0.0.1:49411/rest/remote-access/status 200
+  GET http://127.0.0.1:49816/rest/remote-access/devices/revoked 200
+  GET http://127.0.0.1:49816/rest/remote-access/devices 200
+  GET http://127.0.0.1:49816/rest/remote-access/status 200
+  GET http://127.0.0.1:49816/rest/remote-access/settings 200
+  GET http://127.0.0.1:49816/rest/remote-access/network 200
+  GET http://127.0.0.1:49411/rest/remote-access/network 200
+  GET http://<lan address>:49816/rest/remote-access/status 200
+  GET http://<tailnet address>:49816/rest/remote-access/status 200
+-> the Docker node's own facts are empty; the window reads the embedded node's /network (host facts) and checks host address + published port 49816 against the Docker node's ID
+
+## 2. "Turn on and show QR code" on Tailscale
+ms click → QR: 195   access On   line "Works anywhere through Tailscale"
+  → PUT http://127.0.0.1:49816/rest/remote-access/settings
+  ← PUT http://127.0.0.1:49816/rest/remote-access/settings 200
+  → POST http://127.0.0.1:49816/rest/remote-access/pairing-sessions
+  ← POST http://127.0.0.1:49816/rest/remote-access/pairing-sessions 201 {"requestBody":{"serverBaseUrl":"http://<tailnet address>:49816","serverName":"Docker Test Node","connectionWay":"tailscale","trustedPrivateHttpAcknowledged":true},"sessionId":"pss_fc87eebcf76d45d4e785314717dfc990","payload":{"version":1,"serverBaseUrl":"http://<tailnet address>:49816","pairingCode":"<code 24 chars>","expiresAt":"2026-11-07T09:47:03.526Z","serverName":"Docker Test Node"},"mobileUrlBase":"http://<tailnet address>:49816/mobile"}
+
+## 3. Same Wi-Fi or LAN: "Allow and show QR code"
+(tab change: → DELETE …:49816/rest/remote-access/pairing-sessions/pss_fc87… 204)
+ms click → QR: 193   line "Works on this network"
+  → PUT http://127.0.0.1:49411/rest/remote-access/network/local-networks/gw_<16 hex, this Wi-Fi>
+  ← PUT http://127.0.0.1:49411/rest/remote-access/network/local-networks/gw_<16 hex, this Wi-Fi> 200
+  → POST http://127.0.0.1:49816/rest/remote-access/pairing-sessions
+  ← POST http://127.0.0.1:49816/rest/remote-access/pairing-sessions 201 {"requestBody":{"serverBaseUrl":"http://<lan address>:49816","serverName":"Docker Test Node","connectionWay":"local_network","trustedPrivateHttpAcknowledged":true},"sessionId":"pss_70c76f0cd9881585bc8b4f883787325c","payload":{"version":1,"serverBaseUrl":"http://<lan address>:49816","pairingCode":"<code 24 chars>","expiresAt":"2026-11-07T09:47:06.566Z","serverName":"Docker Test Node"},"mobileUrlBase":"http://<lan address>:49816/mobile"}
+-> the allow answer is written to the embedded node (127.0.0.1:49411), shared by every node on this computer; the container has no allowed-local-networks.json
+
+## 4. Loopback Docker Node window (published on 127.0.0.1 only): AC-004 alternate
+subtitle: "Show a code, then scan it with the AutoByteus app to connect a phone to Loopback Docker Node."
+blocked: "Loopback Docker Node isn’t reachable from other devices. Publish its port on this computer’s network, then try again."
+Same Wi-Fi or LAN: ready=False selected=false
+Tailscale: ready=False selected=true
+Your VPN: ready=False selected=false
+Company address: ready=False selected=false
+status: "Not set up yet."  button: {'text': 'Turn on and show QR code', 'disabled': True}
+  GET http://127.0.0.1:49817/rest/remote-access/status 200
+  GET http://127.0.0.1:49411/rest/remote-access/status 200
+  GET http://127.0.0.1:49816/rest/remote-access/status 200
+  GET http://127.0.0.1:49817/rest/remote-access/settings 200
+  GET http://127.0.0.1:49817/rest/remote-access/devices/revoked 200
+  GET http://127.0.0.1:49817/rest/remote-access/status 200
+  GET http://127.0.0.1:49817/rest/remote-access/devices 200
+  GET http://127.0.0.1:49817/rest/remote-access/network 200
+  GET http://127.0.0.1:49411/rest/remote-access/network 200
+(host-address checks to :49817 were refused: no answer recorded) -> no Recommended tab, every Show QR code disabled; screenshot API-09-loopback-docker-node-blocked.png (VIS-015)

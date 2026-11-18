@@ -29,12 +29,15 @@ BASH_LAUNCHER_SOURCES = [
     BASH_MODULE_DIR / "core.sh",
     BASH_MODULE_DIR / "container-config.sh",
     BASH_MODULE_DIR / "docker-runtime.sh",
+    BASH_MODULE_DIR / "node-update.sh",
     BASH_MODULE_DIR / "commands.sh",
 ]
 POWERSHELL_LAUNCHER_SOURCES = [
     POWERSHELL_LAUNCHER,
     POWERSHELL_MODULE_DIR / "Core.ps1",
+    POWERSHELL_MODULE_DIR / "ContainerConfig.ps1",
     POWERSHELL_MODULE_DIR / "DockerRuntime.ps1",
+    POWERSHELL_MODULE_DIR / "NodeUpdate.ps1",
     POWERSHELL_MODULE_DIR / "Commands.ps1",
 ]
 PUBLIC_LAUNCHER_SOURCES = BASH_LAUNCHER_SOURCES + POWERSHELL_LAUNCHER_SOURCES
@@ -233,17 +236,14 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("autobyteus-server-0-data:/home/autobyteus/data", run_args)
             self.assertIn("autobyteus-server-0-root-home:/root", run_args)
             self.assertIn("autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium", run_args)
+            self.assertIn("autobyteus-server-0-server-packages:/home/autobyteus/server-packages", run_args)
             self.assertIn("AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace", run_args)
             self.assertIn("--cap-add", run_args)
             self.assertIn("SYS_ADMIN", run_args)
             self.assertIn("--security-opt", run_args)
             self.assertIn("seccomp=unconfined", run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "8000"), run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "5900"), run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "6080"), run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "9223"), run_args)
+            assert_publishes_only_backend(self, run_args)
             self.assertFalse(any(arg.startswith(f"{REMOVED_NODE_PROFILE_ENV}=") for arg in run_args), run_args)
-            self.assertFalse(any(arg.startswith("127.0.0.1:") for arg in run_args), run_args)
             self.assertFalse(any(arg.startswith(f"{REMOVED_PROFILE_LABEL}=") for arg in run_args), run_args)
             self.assertIn(
                 f"type=bind,source={shared_root / 'nodes' / 'autobyteus-server-0'},target=/home/autobyteus/workspace",
@@ -261,6 +261,109 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("IMAGE_REF=autobyteus/test:v1", state_text)
             self.assertRegex(state_text, r"CONFIG_HASH=[0-9a-f]{64}")
             self.assertNotIn(REMOVED_STATE_FIELD, state_text)
+            assert_state_has_only_backend_port(self, state_text)
+            assert_no_removed_port_output(self, result.stdout)
+
+    def test_nas_27_publishes_the_node_on_this_computer_and_its_tailscale_address_only(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            self.assertEqual(["127.0.0.1:8001:8000"], published_ports(read_last_run_args(env)))
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            env["FAKE_TAILSCALE_IP"] = "100.88.1.2"
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            self.assertEqual(["127.0.0.1:8001:8000", "100.88.1.2:8001:8000"], published_ports(read_last_run_args(env)))
+
+    def test_allow_local_network_publishes_on_every_address_and_is_kept_for_recreates(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            result = run_launcher(env, "new-container", "--allow-local-network", "--image", "autobyteus/test", "--tag", "v1")
+            self.assertEqual(["8001:8000"], published_ports(read_last_run_args(env)))
+            self.assertIn("Setup code for autobyteus-server-0: fake-setup-code-autobyteus-server-0", result.stdout)
+            state = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            self.assertEqual("1", read_state_value(state, "ALLOW_LOCAL_NETWORK"))
+            refused = run_launcher_unchecked(env, "upgrade", "--all", "--allow-local-network")
+            self.assertNotEqual(0, refused.returncode)
+            self.assertIn("--allow-local-network applies only to new-container", refused.stderr)
+
+    def test_allow_local_network_is_kept_when_upgrade_all_recreates_the_node(self) -> None:
+        # autobyteus-437 API/E2E: a node created with --allow-local-network keeps publishing on every address when a plain
+        # `upgrade --all` recreates it for a new image; a node created without it keeps this computer and Tailscale only.
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            env["FAKE_TAILSCALE_IP"] = "100.88.1.2"
+            run_launcher(env, "new-container", "--allow-local-network", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            created = len(read_run_arg_records(env))
+            run_launcher(env, "upgrade", "--all", "--image", "autobyteus/test", "--tag", "v2")
+            recreated = read_run_arg_records(env)[created:]
+            published = {record[record.index("--name") + 1]: published_ports(record) for record in recreated}
+            self.assertEqual(["8001:8000"], published["autobyteus-server-0"])
+            self.assertEqual(["127.0.0.1:8002:8000", "100.88.1.2:8002:8000"], published["autobyteus-server-1"])
+            state = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            self.assertEqual("1", read_state_value(state, "ALLOW_LOCAL_NETWORK"))
+
+    def test_nas_03_nas_32_setup_code_prints_a_code_from_the_node_and_writes_it_nowhere(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            created = run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            self.assertIn("Setup code for autobyteus-server-0: fake-setup-code-autobyteus-server-0", created.stdout)
+            self.assertIn("Valid once, until 2026-11-08T10:30:00.000Z", created.stdout)
+            again = run_launcher(env, "setup-code", "--name", "autobyteus-server-0")
+            self.assertIn("Setup code for autobyteus-server-0: fake-setup-code-autobyteus-server-0", again.stdout)
+            self.assertEqual(1, len(read_run_arg_records(env)))  # nothing changed: no recreate
+            for path in Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]).rglob("*"):
+                if path.is_file():
+                    self.assertNotIn("fake-setup-code", path.read_text(encoding="utf-8", errors="ignore"))
+
+    def test_nas_34_setup_code_first_recreates_a_node_published_by_an_older_launcher(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            write_v8_node(env, "autobyteus-server-0", backend_port=8001)
+            result = run_launcher(env, "setup-code", "--name", "autobyteus-server-0")
+            self.assertIn("Setup code for autobyteus-server-0", result.stdout)
+            records = read_run_arg_records(env)
+            self.assertEqual(1, len(records))
+            self.assertEqual(["127.0.0.1:8001:8000"], published_ports(records[0]))
+            assert_no_volume_or_prune_calls(self, env)
+
+    def test_urls_and_help_name_backend_and_graphql_only(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            state_text = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            backend_port = read_state_value(state_text, "BACKEND_PORT")
+
+            urls = run_launcher(env, "urls").stdout
+            help_text = run_launcher(env, "help").stdout
+
+            self.assertIn(f"Backend: http://localhost:{backend_port}", urls)
+            self.assertIn(f"GraphQL: http://localhost:{backend_port}/graphql", urls)
+            assert_no_removed_port_output(self, urls)
+            self.assertIn("Show Backend and GraphQL URLs", help_text)
+            assert_no_removed_port_output(self, help_text)
+
+    def test_upgrade_recreates_a_v8_node_once_with_its_backend_port_and_volumes(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            write_v8_node(env, "autobyteus-server-0", backend_port=8001)
+
+            first = run_launcher(env, "upgrade", "--all")
+
+            self.assertIn("Recreating the container of autobyteus-server-0: the launcher configuration changed. Its named volumes are kept.", first.stdout)
+            records = read_run_arg_records(env)
+            self.assertEqual(1, len(records))
+            run_args = records[0]
+            self.assertEqual(["127.0.0.1:8001:8000"], published_ports(run_args))
+            self.assertFalse(any(arg.startswith("AUTOBYTEUS_VNC_SERVER_HOSTS=") for arg in run_args), run_args)
+            for volume in ("workspace:/app/autobyteus-server-ts/workspace", "data:/home/autobyteus/data",
+                           "root-home:/root", "chromium-profile:/home/vncuser/.config/chromium",
+                           "server-packages:/home/autobyteus/server-packages"):
+                self.assertIn(f"autobyteus-server-0-{volume}", run_args)
+            assert_no_volume_or_prune_calls(self, env)
+            self.assertEqual([], read_port_probe_receipts(env))
+            state_text = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            self.assertEqual("8001", read_state_value(state_text, "BACKEND_PORT"))
+            assert_state_has_only_backend_port(self, state_text)
+            assert_no_removed_port_output(self, first.stdout)
+
+            second = run_launcher(env, "upgrade", "--all")
+
+            self.assertIn("autobyteus-server-0 is already running with the current image and launcher config.", second.stdout)
+            self.assertEqual(1, len(read_run_arg_records(env)))
 
     def test_profile_option_is_rejected_as_unknown(self) -> None:
         with fake_docker_environment() as env:
@@ -301,6 +404,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("my-node-data -> /home/autobyteus/data", storage)
             self.assertIn("my-node-root-home -> /root", storage)
             self.assertIn("my-node-chromium-profile -> /home/vncuser/.config/chromium", storage)
+            self.assertIn("my-node-server-packages -> /home/autobyteus/server-packages", storage)
             self.assertIn("my-node-workspace -> /app/autobyteus-server-ts/workspace", storage)
             self.assertIn(f"{shared_root / 'nodes' / 'my-node'} -> /home/autobyteus/workspace", storage)
             self.assertIn(f"{shared_root / 'shared'} -> /home/autobyteus/shared", storage)
@@ -316,7 +420,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             result = run_launcher(env, "workspace", "apply", "--all")
 
             self.assertIn("Applying shared workspace bind mounts to autobyteus-server-0", result.stdout)
-            self.assertIn("Launcher config changed for autobyteus-server-0", result.stdout)
+            self.assertIn("Recreating the container of autobyteus-server-0: the launcher configuration changed. Its named volumes are kept.", result.stdout)
             run_args = read_last_run_args(env)
             self.assertIn("autobyteus-server-0-data:/home/autobyteus/data", run_args)
             self.assertIn("autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium", run_args)
@@ -547,20 +651,12 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
 
             records = read_run_arg_records(env)
             self.assertEqual(3, len(records))
-            expected_mappings = [
-                ("8001:8000", "5908:5900", "6080:6080", "9228:9223"),
-                ("8002:8000", "5909:5900", "6081:6080", "9229:9223"),
-                ("8003:8000", "5910:5900", "6082:6080", "9230:9223"),
-            ]
-            self.assertEqual(len(records), len(expected_mappings))
+            expected_mappings = [["127.0.0.1:8001:8000"], ["127.0.0.1:8002:8000"], ["127.0.0.1:8003:8000"]]
             self.assertEqual([r[r.index("--name") + 1] for r in records],
                              [f"autobyteus-server-{i}" for i in range(3)])
-            for record, mappings in zip(records, expected_mappings):
-                for mapping in mappings:
-                    self.assertIn(mapping, record)
+            self.assertEqual(expected_mappings, [published_ports(record) for record in records])
             queries = assert_port_probe_receipts(self, env)
-            self.assertEqual([int(mapping.split(":")[0]) for mappings in expected_mappings for mapping in mappings],
-                             [query["port"] for query in queries])
+            self.assertEqual([8001, 8002, 8003], [query["port"] for query in queries])
             self.assertTrue(all(query["available"] for query in queries))
 
     def test_preferred_port_collision_falls_back_for_that_service(self) -> None:
@@ -576,11 +672,9 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
 
             run_args = read_last_run_args(env)
             state_text = (Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / "autobyteus-server-0.env").read_text(encoding="utf-8")
-            self.assertNotIn("8001:8000", run_args)
+            self.assertNotIn("127.0.0.1:8001:8000", run_args)
             self.assertNotEqual("8001", read_state_value(state_text, "BACKEND_PORT"))
-            self.assertIn("5908:5900", run_args)
-            self.assertIn("6080:6080", run_args)
-            self.assertIn("9228:9223", run_args)
+            assert_publishes_only_backend(self, run_args)
 
     def test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt(self) -> None:
         with fake_docker_environment(controlled_busy_ports=()) as env:
@@ -591,16 +685,16 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             records = read_run_arg_records(env)
             self.assertEqual(2, len(records))
             self.assertIn("Port bind failed; retrying with fresh ports", result.stdout)
-            for mapping in ("8001:8000", "5908:5900", "6080:6080", "9228:9223"):
-                self.assertIn(mapping, records[0])
-                self.assertNotIn(mapping, records[1])
+            self.assertEqual(["127.0.0.1:8001:8000"], published_ports(records[0]))
+            self.assertNotIn("127.0.0.1:8001:8000", records[1])
+            assert_publishes_only_backend(self, records[1])
             self.assertEqual([r[r.index("--name") + 1] for r in records], ["autobyteus-server-0"] * 2)
             queries = assert_port_probe_receipts(self, env)
-            self.assertEqual(8, len(queries))
-            self.assertEqual([8001, 5908, 6080, 9228], [query["port"] for query in queries[:4]])
-            retry_ports = [int(records[1][i + 1].split(":")[0]) for i, arg in enumerate(records[1]) if arg == "-p"]
-            self.assertEqual(retry_ports, [query["port"] for query in queries[4:]])
-            self.assertEqual(4, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
+            self.assertEqual(2, len(queries))
+            self.assertEqual([8001], [query["port"] for query in queries[:1]])
+            retry_ports = [int(mapping.split(":")[-2]) for mapping in published_ports(records[1])]
+            self.assertEqual(retry_ports, [query["port"] for query in queries[1:]])
+            self.assertEqual(1, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
 
     def test_controlled_busy_preferred_port_uses_real_random_fallback(self) -> None:
         with fake_docker_environment(controlled_busy_ports=(8001,)) as env:
@@ -611,12 +705,11 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             state = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
             backend_port = int(read_state_value(state, "BACKEND_PORT"))
             self.assertNotEqual(8001, backend_port)
-            self.assertIn(f"{backend_port}:8000", records[0])
-            for mapping in ("5908:5900", "6080:6080", "9228:9223"):
-                self.assertIn(mapping, records[0])
+            self.assertIn(f"127.0.0.1:{backend_port}:8000", records[0])
+            self.assertEqual([f"127.0.0.1:{backend_port}:8000"], published_ports(records[0]))
             queries = assert_port_probe_receipts(self, env)
-            self.assertEqual([8001, backend_port, 5908, 6080, 9228], [q["port"] for q in queries])
-            self.assertEqual([False, True, True, True, True], [q["available"] for q in queries])
+            self.assertEqual([8001, backend_port], [q["port"] for q in queries])
+            self.assertEqual([False, True], [q["available"] for q in queries])
             self.assertEqual(1, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
 
     def test_port_probe_double_delegates_python_and_rejects_probe_drift(self) -> None:
@@ -711,7 +804,19 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
         powershell_text = read_combined_text(POWERSHELL_LAUNCHER_SOURCES)
 
         for text in (bash_text, powershell_text):
-            self.assertIn("v6", text)
+            self.assertIn("v10", text)
+            self.assertNotIn('"v9"', text)
+            self.assertNotIn("v8", text)
+            self.assertIn(":8000", text)
+            self.assertIn("Show Backend and GraphQL URLs", text)
+            for removed in (":5900", ":6080", ":9223", "5908", "9228", "noVNC", "Chrome debug", "VNC Viewer",
+                            "AUTOBYTEUS_VNC_SERVER_HOSTS"):
+                self.assertNotIn(removed, text)
+            self.assertNotRegex(text, r"\b(VNC_PORT|NOVNC_PORT|DEBUG_PORT|vncPort|noVncPort|debugPort)\b")
+            self.assertIn("server_packages_volume", text)
+            self.assertIn("server_packages_target", text)
+            self.assertIn("-server-packages", text)
+            self.assertIn("/home/autobyteus/server-packages", text)
             self.assertNotIn(REMOVED_NODE_PROFILE_ENV, text)
             self.assertNotIn(REMOVED_PROFILE_LABEL, text)
             self.assertIn("saved image refs", text)
@@ -735,6 +840,8 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("No rollback", text)
         self.assertIn("image_ref_override_explicit", bash_text)
         self.assertIn("upgrade_image_ref_for_node", bash_text)
+        self.assertIn('-p "${BACKEND_PORT}:8000"', bash_text)
+        self.assertIn("'-p', \"$($State.backendPort):8000\"", powershell_text)
         self.assertIn("imageRefOverrideExplicit", powershell_text)
         self.assertIn("Get-UpgradeImageRefForNode", powershell_text)
         self.assertIn("exact_managed_container_names", bash_text)
@@ -799,9 +906,6 @@ def write_node_state(
                 f"NODE_NAME={node_name_field or node_name}",
                 f"CONTAINER_NAME={container_name}",
                 "BACKEND_PORT=8001",
-                "VNC_PORT=5908",
-                "NOVNC_PORT=6080",
-                "DEBUG_PORT=9228",
                 "IMAGE_REF=autobyteus/test:v1",
                 "CREATED_AT=2026-07-13T00:00:00Z",
                 "CONFIG_HASH=fake-config-hash",
@@ -817,6 +921,7 @@ def write_fake_container(
     container_name: str,
     node_name: str,
     launcher_label: str = "server-docker",
+    config_hash: str = "fake-config-hash",
 ) -> None:
     path = Path(env["FAKE_DOCKER_ROOT"]) / "containers" / container_name
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -826,7 +931,7 @@ def write_fake_container(
                 f"node_name={node_name}",
                 f"launcher_label={launcher_label}",
                 "image_id=sha256:fake-image",
-                "config_hash=fake-config-hash",
+                f"config_hash={config_hash}",
             )
         )
         + "\n",
@@ -848,9 +953,48 @@ def read_combined_text(paths: list[Path]) -> str:
     return "\n".join(path.read_text(encoding="utf-8") for path in paths)
 
 
-def has_unqualified_port_mapping(args: list[str], container_port: str) -> bool:
-    suffix = f":{container_port}"
-    return any(arg.endswith(suffix) and not arg.startswith("127.0.0.1:") for arg in args)
+def published_ports(args: list[str]) -> list[str]:
+    return [args[i + 1] for i, arg in enumerate(args) if arg == "-p"]
+
+
+def assert_publishes_only_backend(test: unittest.TestCase, args: list[str]) -> None:
+    ports = published_ports(args)
+    test.assertEqual(1, len(ports), ports)
+    test.assertRegex(ports[0], r"^127\.0\.0\.1:[0-9]+:8000$")
+    test.assertFalse(any(arg.startswith("AUTOBYTEUS_VNC_SERVER_HOSTS=") for arg in args), args)
+
+
+def assert_state_has_only_backend_port(test: unittest.TestCase, state_text: str) -> None:
+    keys = [line.split("=", 1)[0] for line in state_text.splitlines()]
+    test.assertEqual(["BACKEND_PORT"], [key for key in keys if key.endswith("PORT")])
+
+
+def assert_no_removed_port_output(test: unittest.TestCase, text: str) -> None:
+    for removed in ("noVNC", "VNC:", "VNC Viewer", "Chrome debug", "debug URLs"):
+        test.assertNotIn(removed, text)
+
+
+def write_v8_node(env: dict[str, str], node_name: str, backend_port: int) -> None:
+    """A node as the v8 launcher left it: backend and VNC Viewer ports saved, a v8 config-hash label."""
+    path = state_path(env, node_name)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "\n".join(
+            (
+                f"NODE_NAME={node_name}",
+                f"CONTAINER_NAME={node_name}",
+                f"BACKEND_PORT={backend_port}",
+                "NOVNC_PORT=6080",
+                "IMAGE_REF=autobyteus/test:v1",
+                "CREATED_AT=2026-07-13T00:00:00Z",
+                "CONFIG_HASH=v8-config-hash",
+                "UPDATED_AT=2026-07-13T00:00:00Z",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    write_fake_container(env, node_name, node_name, config_hash="v8-config-hash")
 
 
 def entry_shell_quote(value: str) -> str:
@@ -988,6 +1132,7 @@ class fake_docker_environment:
         fake_bin.mkdir()
         home.mkdir()
         write_fake_docker(fake_bin / "docker")
+        write_fake_tailscale(fake_bin / "tailscale")
         if self.controlled_busy_ports is not None:
             write_port_probe_double(fake_bin / "python3", root / "port-probe.jsonl", self.controlled_busy_ports)
         env = os.environ.copy()
@@ -1005,6 +1150,12 @@ class fake_docker_environment:
 
     def __exit__(self, exc_type, exc, tb) -> None:
         self._tmp.cleanup()
+
+
+def write_fake_tailscale(path: Path) -> None:
+    """A Tailscale CLI double: `tailscale ip -4` prints FAKE_TAILSCALE_IP (nothing when unset: Tailscale not running)."""
+    path.write_text('#!/usr/bin/env bash\n[[ "$1 $2" == "ip -4" && -n "${FAKE_TAILSCALE_IP:-}" ]] && printf "%s\\n" "$FAKE_TAILSCALE_IP"\nexit 0\n', encoding="utf-8")
+    path.chmod(0o755)
 
 
 def write_fake_docker(path: Path) -> None:
@@ -1161,6 +1312,26 @@ case "${1:-}" in
   logs)
     printf 'fake logs\n'
     exit 0
+    ;;
+  exec)
+    # `exec <container> node -e <client> <socket>`: the node's local control socket answering `setup-code`
+    # (autobyteus-437); FAKE_SETUP_CODE_FAIL makes the node not answer.
+    if [[ "$3" == "node" && "$4" == "-e" ]]; then
+      name="$2"
+      read_meta "$name" || exit 1
+      [[ "$6" == "/home/autobyteus/data/node-access/local-control.sock" ]] || exit 1
+      [[ -z "${FAKE_SETUP_CODE_FAIL:-}" ]] || exit 1
+      printf '%s\n' "$name" >> "$root/setup-code-requests"
+      printf 'fake-setup-code-%s 2026-11-08T10:30:00.000Z\n' "$name"
+      exit 0
+    fi
+    # `exec <container> sh -c <script> <arg0> <starter cli> <args...>`: runs the launcher's own
+    # script on the host, with FAKE_STARTER_CLI (a test double of cli.mjs) as the starter command.
+    name="$2"
+    read_meta "$name" || exit 1
+    [[ -n "${FAKE_STARTER_CLI:-}" && "$3" == "sh" && "$4" == "-c" ]] || exit 1
+    script="$5"; arg0="$6"; shift 7
+    exec sh -c "$script" "$arg0" "$FAKE_STARTER_CLI" "$@"
     ;;
 esac
 

@@ -20,6 +20,7 @@ const { appUpdateStoreMock } = vi.hoisted(() => {
     checkedAt: null as string | null,
     availableVersion: null as string | null,
     errorKind: null as string | null,
+    automaticInstallPreparing: false,
     initialize: vi.fn().mockResolvedValue(undefined),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
@@ -48,6 +49,7 @@ describe('AboutSettingsManager', () => {
     appUpdateStoreMock.updateStaged = false;
     appUpdateStoreMock.checkedAt = null;
     appUpdateStoreMock.availableVersion = null;
+    appUpdateStoreMock.automaticInstallPreparing = false;
     appUpdateStoreMock.errorKind = null;
     appUpdateStoreMock.initialize.mockClear();
     appUpdateStoreMock.checkForUpdates.mockClear();
@@ -254,6 +256,36 @@ describe('AboutSettingsManager', () => {
       expect(wrapper.text()).toContain('关闭后，将保持当前版本，直到有更新的稳定版可用。');
       expect(wrapper.get('[data-testid="settings-updates-beta-channel-downloaded-hint"]').text()).toContain('再更改更新渠道');
       expect(translate('settings.updates.store.channelSaveFailed')).toBe('无法保存更新渠道。该设置将在 AutoByteus 重启前生效。');
+    });
+  });
+
+  describe('the automatic install wait (autobyteus-356)', () => {
+    const mountPage = () => mount(AboutSettingsManager, {
+      global: { mocks: { $t: translate }, stubs: { AutoUpdateSwitch: true, UpdateIntervalField: true } },
+    });
+
+    it('disables the check button and says it is preparing, with Install still offered', () => {
+      appUpdateStoreMock.status = 'downloaded';
+      appUpdateStoreMock.automaticInstallPreparing = true;
+      const wrapper = mountPage();
+      expect(wrapper.get('[data-testid="settings-updates-check-updates"]').attributes('disabled')).toBeDefined();
+      expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toContain('Preparing to install.');
+      expect(wrapper.find('[data-testid="settings-updates-install-update"]').exists()).toBe(true);
+    });
+
+    it('shows the downloaded text and an enabled check button without a wait', () => {
+      appUpdateStoreMock.status = 'downloaded';
+      const wrapper = mountPage();
+      expect(wrapper.get('[data-testid="settings-updates-check-updates"]').attributes('disabled')).toBeUndefined();
+      expect(wrapper.get('[data-testid="settings-updates-message"]').text()).not.toContain('Preparing');
+    });
+
+    it('a refused preparation has its own text, not "could not restart"', () => {
+      appUpdateStoreMock.status = 'error';
+      appUpdateStoreMock.errorKind = 'install-preparation';
+      const text = mountPage().get('[data-testid="settings-updates-message"]').text();
+      expect(text).toContain('could not prepare this update');
+      expect(text).not.toContain('restart');
     });
   });
 });

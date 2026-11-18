@@ -15,6 +15,7 @@ export const projectAgentOrgConfiguredAgentNode = (
   role: agent.role,
   description: agent.description,
   ...agent.launchConfiguration,
+  ...(agent.pendingRuntimeSwitch ? { pendingRuntimeSwitch: agent.pendingRuntimeSwitch } : {}),
 });
 
 export const projectAgentOrgConfiguredTeamNode = (

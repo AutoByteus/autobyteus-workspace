@@ -1,0 +1,53 @@
+# API-04-r2 2026-11-02T05:17:32Z
+{
+  "before": {
+    "status": "available",
+    "availableVersion": "1.5.11-beta.11",
+    "automaticUpdate": false
+  },
+  "at": "2026-11-02T05:17:39.234Z",
+  "seen": [
+    "downloading||||Downloading update...",
+    "error|download|AUTO_FAILED|Update information is incomplete right now. Try again in a few minutes.|Update information is incomplete right now. Try again in a few minutes."
+  ]
+}
+{
+  "entryText": "1 update",
+  "entryLabel": "1 update available: 1 software update",
+  "autoFailed": "Automatic update failed. Nothing was changed. | Update information is incomplete right now. Try again in a few minutes.",
+  "centerText": "Notifications | Software update | Update automatically | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | New: | AutoByteus | 1.5.11-beta.10 | 1.5.11-beta.11 | · | this minute | Download | Automatic update failed. Nothing was changed. | Update information is incomplete right now. Try again in a few minutes."
+}
+{
+  "seen": [
+    "error|download|AUTO_FAILED"
+  ]
+}
+## record
+{
+  "version": "1.5.11-beta.11",
+  "fromVersion": "1.5.11-beta.10",
+  "foundAt": "2026-11-02T05:17:25.162Z",
+  "read": true,
+  "handledVersion": null,
+  "handledAt": null,
+  "automatic": null,
+  "automaticFailure": {
+    "version": "1.5.11-beta.11",
+    "step": "download",
+    "reason": "Update information is incomplete right now. Try again in a few minutes."
+  },
+  "outcome": null
+}
+
+## feed
+{"marker":"API-04-r2 start 2026-11-02T05:17:07Z"}
+{"at":"2026-11-02T05:17:25.159Z","method":"GET","url":"/latest-mac.yml?noCache=1k6db1np4","status":200,"mode":"badsha","
+{"at":"2026-11-02T05:17:34.280Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"
+{"at":"2026-11-02T05:17:34.282Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"ba
+{"marker":"API-04-r2 retry 2026-11-02T05:17:44Z"}
+{"at":"2026-11-02T05:17:46.496Z","method":"GET","url":"/latest-mac.yml?noCache=1k6db2cjs","status":200,"mode":"badsha","
+{"at":"2026-11-02T05:17:46.511Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap","status":404,"
+{"at":"2026-11-02T05:17:46.512Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"ba
+## download-failure and install lines
+[2026-11-02T05:17:34.889Z] [ERROR] [electron] [updater] Auto-update failed. (kind=metadata, operation=download, code=ERR_CHECKSUM_MISMATCH)
+[2026-11-02T05:17:46.987Z] [ERROR] [electron] [updater] Auto-update failed. (kind=metadata, operation=download, code=ERR_CHECKSUM_MISMATCH)

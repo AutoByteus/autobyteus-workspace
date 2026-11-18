@@ -1,0 +1,10 @@
+# Check: IMP-02-server-unit-full
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s exec vitest run tests/unit
+# Commit: 32f14bfd4d (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:12:57Z
+# Excerpt of IMP-02-server-unit-full.log (the full log is next to this file): summary, failing tests and their first error lines.
+
+      Tests  6690 passed | 7 skipped (6697)
+ Test Files  799 passed | 4 skipped (803)
+# Exit code: 0

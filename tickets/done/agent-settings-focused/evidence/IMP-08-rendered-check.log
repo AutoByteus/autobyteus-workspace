@@ -1,0 +1,39 @@
+# IMP-08: rendered check of autobyteus-366 in a browser, on isolated test data.
+# Stack: this worktree's server (dist/app.js, port 18366) and Nuxt dev (port 13366), temp HOME, data root /tmp/ab366-seed/server-data, seeded by
+#   pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --seed-to /tmp/ab366-seed --teams 12 --unrelated 2 (scripted AGY, no inference).
+# Date 2026-11-02. Stack stopped and seed removed afterwards. Driven through the page: real clicks on the left tree and Settings controls; values read from the DOM.
+# Look for: "list":0 on every focused agent; "save":"Unsaved changes: code reviewer"; after Save "m":"gpt-5.5 AutoByteus".
+
+## Stopped hub focused (AC-001)
+{"open":true,"text":"LH | Large Hub Manager Probe | Stopped | Workspace | workspace | Model | gemini-3.8-flash-low | Antigravity CLI | Thinking | Not available for this model | Tool approval | Auto-approve | Select a copy on the left to change its settings.","sw":0,"list":0,"save":null}
+
+## A Team copy's member, then another (AC-001, AC-002; Settings stay open)
+{"open":true,"text":"CR | code reviewer | Stopped | In large hub engineering team | This agent | Team settings | Model | gemini-3.8-flash-low | Antigravity CLI | Thinking | Not available for this model | Tool approval | Auto-approve | Inherited from the run","sw":1,"list":0,"save":null}
+{"open":true,"text":"IE | implementation engineer | Stopped | In large hub engineering team | This agent | Team settings | Model | ... | Inherited from the run","sw":1,"list":0,"save":null}
+
+## Edit A, focus B, switch to the group, refocus, back (AC-003, AC-005)
+edited : {"name":"code reviewer","model":"claude-opus-5-5 AutoByteus","save":"Unsaved changes: code reviewer · they apply when this run resumes","canSave":true,"hint":1,"root":0,"list":0,"rows":0,"sw":"false"}
+moved  : {"name":"implementation engineer","model":"gemini-3.8-flash-low Antigravity CLI","save":"Unsaved changes: code reviewer · they apply when this run resumes","canSave":true,"hint":1,"root":0,"list":0,"rows":0,"sw":"false"}
+group  : {"name":"large hub engineering team","model":"gemini-3.8-flash-low Antigravity CLI","save":"Unsaved changes: code reviewer · they apply when this run resumes","canSave":true,"hint":1,"root":0,"list":1,"rows":6,"sw":"true"}
+refocus: {"name":"solution designer","model":"gemini-3.8-flash-low Antigravity CLI","save":"Unsaved changes: code reviewer · ...","list":0,"rows":0,"sw":"false"}
+back   : {"name":"code reviewer","model":"claude-opus-5-5 AutoByteus","save":"Unsaved changes: code reviewer · ...","list":0,"rows":0,"sw":"false"}
+
+## Save. First run, before the fix: stored correctly, card showed the old model
+stored (agentRunCollaboration): /large_hub_engineering_team/code_reviewer userLaunchSelection {"runtimeKind":"autobyteus","llmModelIdentifier":"claude-opus-5-5",...}
+card  : {"save":"Saved. Changes apply when this run resumes.","model":"gemini-3.8-flash-low Antigravity CLI"}   <- stale published hub view (viewFor)
+
+## Save after the fix, and a page reload
+reopened : "claude-opus-5-5 AutoByteus" (the first save, read after a reload)
+beforeSave: {"m":"gpt-5.5 AutoByteus","save":"Unsaved changes: implementation engineer · they apply when this run resumes"}
+afterSave : {"open":true,"name":"implementation engineer","m":"gpt-5.5 AutoByteus","save":"Saved. Changes apply when this run resumes.","note":null}
+other     : "claude-opus-5-5 AutoByteus" (code reviewer unchanged)
+
+## Stopped Team root (AC-002): coordinator's card; switch to the group view
+member: {"title":"Team Configuration","name":"solution_designer","details":"In Large Hub Engineering Team Coordinator","sw":"This agent Team settings","subject":1,"root":0,"rows":[],"status":"Stopped"}
+group : {"title":"Team Configuration","name":"Large Hub Engineering Team","sw":"This agent Team settings","subject":0,"root":1,"rows":["run-member-/solution_designer","run-member-/architecture_reviewer","run-member-/implementation_engineer","run-member-/code_reviewer","run-member-/api_e2e_engineer","run-member-/delivery_engineer"],"status":"Stopped"}
+
+## A member's edit on the Team; Cancel (AC-005)
+edited: {"m":"gpt-5.5 AutoByteus","save":"Unsaved changes: solution_designer · they apply when this run resumes","canSave":false}
+inGroup: {"row":"Customized · gpt-5.5 · AutoByteus · Auto-approve","other":"gemini-3.8-flash-low · Antigravity CLI · Auto-approve"}
+cancelled: {"m":"gemini-3.8-flash-low Antigravity CLI","save":null}
+# canSave false: existingRunConfigStore.canSave needs every scope's model schema ready; the seed's runtime (Antigravity CLI) is not signed in here, so a Team Save cannot be driven in this environment. Unchanged code.

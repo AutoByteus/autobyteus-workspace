@@ -1,0 +1,20 @@
+# IMP-03-typecheck-suites
+# command: (in autobyteus-server-ts) pnpm exec tsc -p <temp tsconfig extending tsconfig.build.json, rootDir '..', typeRoots node_modules/@types, files = the three changed suites>
+# commit: 8f37ab5eb8bfaa835fc2ad178cdd91db21d38797
+# environment: macOS (Darwin 25.5.0), Python 3.9.6, node v22.23.1
+# date: 2026-10-19T03:45Z
+# note: both errors are in lines that predate this ticket (processedSystemPrompt is typed nullable); no error in new or changed lines
+
+{
+  "extends": "<server>/tsconfig.build.json",
+  "compilerOptions": { "rootDir": "<server>/..", "noEmit": true, "typeRoots": ["<server>/node_modules/@types"] },
+  "files": [
+    "<server>/tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts",
+    "<server>/tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts",
+    "<server>/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts"
+  ]
+}
+
+tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts(287,12): error TS18047: 'noReaderContext.processedSystemPrompt' is possibly 'null'.
+tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts(478,32): error TS18047: 'prompt' is possibly 'null'.
+error count: 2

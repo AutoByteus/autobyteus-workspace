@@ -39,8 +39,8 @@ export interface AppDataMigrationExecutionResult {
  * A piece of production functionality that a pending migration holds back. Production code asks the runner
  * whether a capability is ready (`AppDataMigrationRunner.capabilityReadiness()`), never about a migration id.
  */
-export type AppDataCapability = "token_usage_history" | "custom_llm_providers";
-export const APP_DATA_CAPABILITIES: readonly AppDataCapability[] = ["token_usage_history", "custom_llm_providers"];
+export type AppDataCapability = "token_usage_history" | "custom_llm_providers" | "node_identity" | "memory_sync";
+export const APP_DATA_CAPABILITIES: readonly AppDataCapability[] = ["token_usage_history", "custom_llm_providers", "node_identity", "memory_sync"];
 export type AppDataCapabilityReadiness = Readonly<Record<AppDataCapability, boolean>>;
 
 export interface AppDataMigrationDefinition {

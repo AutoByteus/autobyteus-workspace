@@ -1,0 +1,1201 @@
+diff --git a/autobyteus-server-ts/src/agent-collaboration/delegation/child-rows-feed.ts b/autobyteus-server-ts/src/agent-collaboration/delegation/child-rows-feed.ts
+index da7ed2567e..fc6656f624 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/delegation/child-rows-feed.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/delegation/child-rows-feed.ts
+@@ -3,7 +3,8 @@ import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-st
+ import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+ import type { ChildRowsStreams } from "./child-rows-streams.js";
+ import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
+-import type { ChildRowsChange, DelegatedChild, DelegationTree } from "./delegation-tree.js";
++import type { ChildRowsChange, DelegationTree } from "./delegation-tree.js";
++import type { SubtreeRow } from "./run-collaboration-map.js";
+ 
+ /** One child row as a view projects it: a run on this node (from its own file), or a peer's run. */
+ export type ChildRowRecord =
+@@ -17,9 +18,9 @@ export type ChildRowsEvent = Readonly<{
+   removed: readonly TaskExecutionReference[];
+ }>;
+ 
+-/** The views' own projection of one child row; `null` when its record cannot be read. Bound by the composition. */
++/** The views' own projection of one row (at any depth, under its `parent`); `null` when its record cannot be read. Bound by the composition. */
+ export type ChildRowProjection = Readonly<{
+-  rowOf(parent: RootExecutionIdentity, child: DelegatedChild): Promise<ChildRowRecord | null>;
++  rowOf(row: SubtreeRow): Promise<ChildRowRecord | null>;
+ }>;
+ 
+ /**
+@@ -54,7 +55,7 @@ export class ChildRowsFeed {
+   private async publish(change: ChildRowsChange): Promise<void> {
+     const added: ChildRowRecord[] = [];
+     for (const child of change.added) {
+-      const record = await this.projection.rowOf(change.run, child).catch((error: unknown) => {
++      const record = await this.projection.rowOf(child).catch((error: unknown) => {
+         console.warn(`A child row of ${change.run.rootSubjectKind} run '${change.run.rootRunId}' could not be read:`, error);
+         return null;
+       });
+diff --git a/autobyteus-server-ts/src/agent-collaboration/delegation/delegation-tree.ts b/autobyteus-server-ts/src/agent-collaboration/delegation/delegation-tree.ts
+index 3183d912ec..c233ef6666 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/delegation/delegation-tree.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/delegation/delegation-tree.ts
+@@ -4,7 +4,7 @@ import {
+   type PeerRunMember, type RunDelegatedFrom, type TaskEntriesListener, type TaskExecutionResourcePort, type TaskRunEntry,
+ } from "../execution/task/task-execution-resource-port.js";
+ import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
+-import { RunCollaborationMap, type RunFilesReader } from "./run-collaboration-map.js";
++import { RunCollaborationMap, type RunFilesReader, type SubtreeRow } from "./run-collaboration-map.js";
+ 
+ /**
+  * An agent of a run: its run, its address in the run's own space (`null`: an agent run not yet collaborating), and its
+@@ -50,10 +50,10 @@ export type DelegatedChild = Readonly<{
+   members?: readonly PeerRunMember[];
+ }>;
+ 
+-/** A run's open children changed (DS-8, SR-042): the rows that came and the runs that left its view. */
++/** A run's rows changed (DS-8, SR-042; at every depth, CR-461-033): the rows that came and the runs that left its view. */
+ export type ChildRowsChange = Readonly<{
+   run: RootExecutionIdentity;
+-  added: readonly DelegatedChild[];
++  added: readonly SubtreeRow[];
+   removed: readonly TaskExecutionReference[];
+ }>;
+ 
+@@ -118,15 +118,7 @@ export class DelegationTree implements TaskEntriesListener {
+    * A run whose parent is not a node (its own entries were deleted with their Task) is the top of a tree of its own.
+    */
+   topOf(run: RootExecutionIdentity): RootExecutionIdentity {
+-    const seen = new Set<string>();
+-    let current = run;
+-    for (;;) {
+-      seen.add(keyOf(current));
+-      const reference = runReferenceOf(current);
+-      const parent = reference ? this.parentOf(reference)?.delegatingRun : undefined;
+-      if (!parent || seen.has(keyOf(parent))) return current;
+-      current = parent;
+-    }
++    return this.chainOf(run).at(-1)!;
+   }
+ 
+   /** `byAgentRunId` (contract §4): the run an agent run is in, its address in that run's own space, and its tree's top. */
+@@ -152,8 +144,8 @@ export class DelegationTree implements TaskEntriesListener {
+   }
+ 
+   /**
+-   * Told, inside a Task's change and after the tree is updated, of each run whose open children changed (DS-8, SR-042):
+-   * one report per run per change. A listener must not wait.
++   * Told, inside a Task's change and after the tree is updated, of each run whose rows changed (DS-8, SR-042; its open
++   * subtree, so a run and every ancestor, CR-461-033): one report per run per change. A listener must not wait.
+    */
+   subscribeChildRows(listener: (change: ChildRowsChange) => void): () => void {
+     this.childRowsListeners.add(listener);
+@@ -162,20 +154,36 @@ export class DelegationTree implements TaskEntriesListener {
+ 
+   /** The Task side's change notice: that Task's entries are read again from its memory (no file read). */
+   entriesChanged(taskId: string): void {
+-    // The runs whose children this change can move: the delegating runs of the Task's entries before and after it.
+-    const parents = new Map([...this.byTask.get(taskId) ?? [], ...this.source().entriesOf(taskId)]
+-      .map((entry) => [keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun] as const));
+-    const before = new Map([...parents].map(([key, run]) => [key, this.openChildrenOf(run)]));
++    // The runs whose rows this change can move (CR-461-033): the delegating runs of the Task's entries before and after
++    // it, and every ancestor of each, before and after (a row is under every run above it).
++    const delegating = [...this.byTask.get(taskId) ?? [], ...this.source().entriesOf(taskId)].map((entry) => entry.delegatedFrom.delegatingRun);
++    const affected = new Map<string, RootExecutionIdentity>();
++    const withAncestors = () => { for (const run of delegating) for (const above of this.chainOf(run)) affected.set(keyOf(above), above); };
++    withAncestors();
++    const before = new Map([...affected].map(([key, run]) => [key, this.mapOf(run).rows()]));
+     this.forgetTask(taskId);
+     this.indexTask(taskId);
+     this.rebuildEntryAgents();
+     this.notify();
+-    for (const [key, run] of parents) this.reportChildRows(run, before.get(key)!);
++    withAncestors();
++    for (const [key, run] of affected) this.reportChildRows(run, before.get(key) ?? []);
++  }
++
++  /** A run and each run above it, up to its tree's top. */
++  private chainOf(run: RootExecutionIdentity): RootExecutionIdentity[] {
++    const chain = [run];
++    for (let current = run; ;) {
++      const reference = runReferenceOf(current);
++      const parent = reference ? this.parentOf(reference)?.delegatingRun : undefined;
++      if (!parent || chain.some((seen) => keyOf(seen) === keyOf(parent))) return chain;
++      chain.push(parent);
++      current = parent;
++    }
+   }
+ 
+-  private reportChildRows(run: RootExecutionIdentity, before: readonly DelegatedChild[]): void {
++  private reportChildRows(run: RootExecutionIdentity, before: readonly SubtreeRow[]): void {
+     const childKey = (child: DelegatedChild): string => keyOf(runIdentityOf(child.run));
+-    const after = this.openChildrenOf(run);
++    const after = this.mapOf(run).rows();
+     const held = new Set(before.map(childKey));
+     const kept = new Set(after.map(childKey));
+     const change: ChildRowsChange = { run, added: after.filter((child) => !held.has(childKey(child))),
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/delegation/delegated-run-commands.ts b/autobyteus-server-ts/src/agent-collaboration/execution/delegation/delegated-run-commands.ts
+index 76089951cb..c8c43fb682 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/delegation/delegated-run-commands.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/delegation/delegated-run-commands.ts
+@@ -4,7 +4,7 @@ import type { StandaloneRunCommandPort } from "../../../agent-execution/services
+ import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
+ import type { DelegationTree } from "../../delegation/delegation-tree.js";
+ import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
+-import { runReferenceOf } from "../task/task-execution-resource-port.js";
++import { runIdentityOf, runReferenceOf } from "../task/task-execution-resource-port.js";
+ import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import type { RootCollaboratorAdmissionResult } from "../../collaborators/collaborator-admission.js";
+@@ -31,11 +31,11 @@ const notLive = (agentRunId: string): AgentOperationResult =>
+  * A view's commands to a local child row (design DS-8, AR-011): a message, interrupt, tool approval or Stop on a run
+  * this run delegated to goes to that run's own root by its identity, never through the delegating run. A message
+  * restores a stopped run (as any message does); an interrupt or a tool approval needs it live. A target that is not an
+- * agent of a run this run delegated to (one hop) is not this route's: `null`.
++ * agent of a row of this run's view (its open subtree, CR-461-033) is not this route's: `null`.
+  */
+ export class DelegatedRunCommands {
+   constructor(private readonly dependencies: Readonly<{
+-    tree: Pick<DelegationTree, "runOfAgent" | "parentOf" | "tasksOf">;
++    tree: Pick<DelegationTree, "runOfAgent" | "tasksOf" | "mapOf">;
+     standaloneRuns: Pick<StandaloneRunCommandPort, "postUserMessage">;
+     activeAgentRun(agentRunId: string): AgentRun | null;
+     /** A team run's root, restored when stopped (`restore`), else only when live. */
+@@ -93,8 +93,9 @@ export class DelegatedRunCommands {
+     const run = await tree.runOfAgent(agentRunId);
+     const reference = run ? runReferenceOf(run) : null;
+     // A run on a peer node is reached through the delegating run (its node keeps it), never as a local child.
+-    if (!reference || tree.tasksOf(reference).some((entry) => entry.nodeId !== undefined)) return null;
+-    const delegatedFrom = tree.parentOf(reference);
+-    return run && delegatedFrom && rootExecutionIdentityKey(delegatedFrom.delegatingRun) === rootExecutionIdentityKey(parent) ? run : null;
++    if (!run || !reference || tree.tasksOf(reference).some((entry) => entry.nodeId !== undefined)) return null;
++    // A row of the view at any depth (CR-461-033): the run is in the view run's open subtree.
++    const key = rootExecutionIdentityKey(run);
++    return tree.mapOf(parent).rows().some((row) => rootExecutionIdentityKey(runIdentityOf(row.run)) === key) ? run : null;
+   }
+ }
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/delegation/local-child-observation.ts b/autobyteus-server-ts/src/agent-collaboration/execution/delegation/local-child-observation.ts
+index 24915c24f6..82c118de3a 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/delegation/local-child-observation.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/delegation/local-child-observation.ts
+@@ -14,7 +14,7 @@ export type LocalChildRootEvent =
+ 
+ /** What a view needs of its local children; created by the composition root (SR-047 step 7). */
+ export type LocalChildPorts = Readonly<{
+-  tree: Pick<DelegationTree, "openChildrenOf" | "subscribe" | "agentsOf">;
++  tree: Pick<DelegationTree, "mapOf" | "subscribe" | "agentsOf">;
+   /** A run's own agents' output and live statuses (an agent run's agent; a team run's members). */
+   agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
+ }>;
+@@ -23,14 +23,15 @@ export type LocalChildPorts = Readonly<{
+ export type LocalChildAgentStatus = Readonly<{ agentRunId: string; memberAddress: string; status: string }>;
+ 
+ /**
+- * Every agent of a run's open local children with its live status, `offline` when not running (SR-040: the history
++ * Every agent of a run's open local rows (its open subtree, CR-461-033) with its live status, `offline` when not running (SR-040: the history
+  * poll's answer, the same projection as the view's rows). Addresses come from the `DelegationTree`'s per-run agents
+  * (read once from each run's own file), statuses from each child's own root; nothing is started or restored.
+  */
+ export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts): Promise<LocalChildAgentStatus[]> => {
+   const tree = ports.tree;
+   const statuses: LocalChildAgentStatus[] = [];
+-  for (const child of tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
++  // Every local row under the run, at every depth (CR-461-033).
++  for (const child of tree.mapOf(run).rows().filter((candidate) => candidate.nodeId === undefined)) {
+     const kind = "agentRunId" in child.run ? "agent" : "agent_team";
+     const childRun = "agentRunId" in child.run ? { rootSubjectKind: "agent" as const, rootRunId: child.run.agentRunId }
+       : { rootSubjectKind: "agent_team" as const, rootRunId: child.run.teamRunId };
+@@ -91,7 +92,7 @@ export class LocalChildObservation {
+     const ports = this.options.ports;
+     const tree = ports.tree;
+     if (this.disposed || this.viewers === 0) return;
+-    const current = tree.openChildrenOf(this.options.run).filter((child) => child.nodeId === undefined);
++    const current = tree.mapOf(this.options.run).rows().filter((child) => child.nodeId === undefined);
+     const keys = new Set(current.map((child) => keyOf(child.run)));
+     for (const [key, entry] of [...this.followed.entries()].filter(([candidate]) => !keys.has(candidate))) { this.close(entry); this.followed.delete(key); }
+     for (const child of current) {
+diff --git a/autobyteus-server-ts/src/compositions/collaboration-composition.ts b/autobyteus-server-ts/src/compositions/collaboration-composition.ts
+index 557dc3b0bb..9555c652ee 100644
+--- a/autobyteus-server-ts/src/compositions/collaboration-composition.ts
++++ b/autobyteus-server-ts/src/compositions/collaboration-composition.ts
+@@ -190,13 +190,13 @@ export const composeCollaboration = async (input: Readonly<{
+       teamRun: (teamRunId, restore) => restore ? runs.teamRunService.resolveManagedTeamRun(teamRunId) : Promise.resolve(runs.teamRunService.getActiveTeamRun(teamRunId)),
+     });
+     const streams = new ChildRowsStreams();
+-    const projection: ChildRowProjection = { rowOf: async (parent, child) => {
++    const projection: ChildRowProjection = { rowOf: async (child) => {
+       if (child.nodeId === undefined) {
+         const row = await delegatedChildDto(child, memoryDir, tree);
+         return row ? { kind: "local", row } : null;
+       }
+       const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
+-      const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(parent, tree).filter((link) => peerRunIdOf(link) === runId), input.remoteChannel());
++      const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(child.parent, tree).filter((link) => peerRunIdOf(link) === runId), input.remoteChannel());
+       return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer) } : null;
+     } };
+     const feed = new ChildRowsFeed(projection, streams);
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/run-view-children.ts b/autobyteus-server-ts/src/services/agent-streaming/run-view-children.ts
+index 4a71b52cb1..da208be4bf 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/run-view-children.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/run-view-children.ts
+@@ -1,6 +1,8 @@
+ import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
+ import type { CollaborationTaskExecutionDto, ListedRunChildDto } from "@autobyteus/collaboration-stream-contracts";
+-import type { DelegatedChild, DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
++import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
++import type { SubtreeRow } from "../../agent-collaboration/delegation/run-collaboration-map.js";
++import { rootExecutionIdentityKey } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+ import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
+ import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
+ import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+@@ -12,16 +14,17 @@ import { delegatedChildDto } from "./delegated-children-dtos.js";
+ import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projection.js";
+ 
+ /**
+- * A run view's children (design DS-8), as every view kind and the history poll read them: the runs on this node it
+- * delegated to that hold an open Task (`DelegationTree.openChildrenOf`, one hop, each read from its own file), its open
+- * peer runs (their Task entries, with this owner's node names; the view never waits for a peer), and its local
+- * children's agents with their live statuses. Opening a view starts nothing. Created by the composition root (SR-047
++ * A run view's rows (design DS-8), as every view kind and the history poll read them: its open subtree, from its
++ * collaboration map (`mapOf(run).rows()`, CR-461-033, SR-060), each row under the run that delegated it: the runs on
++ * this node (each read from its own file), the peer runs (their Task entries, with this owner's node names; the view
++ * never waits for a peer, and a peer run's own delegations live on its node), and the local rows' agents with their
++ * live statuses. Opening a view starts nothing. Created by the composition root (SR-047
+  * step 7) and passed to the view sessions and the GraphQL reads.
+  */
+ export class RunViewChildren {
+   constructor(private readonly input: Readonly<{
+     memoryDir: string;
+-    tree: Pick<DelegationTree, "openChildrenOf" | "peerChildrenOf" | "agentsOf">;
++    tree: Pick<DelegationTree, "mapOf" | "peerChildrenOf" | "agentsOf">;
+     followers: Pick<LocalChildFollowers, "statuses">;
+     /** This node's channel to its peers; `null` where the node has none. */
+     channel: () => RemoteRunChannel | null;
+@@ -30,7 +33,7 @@ export class RunViewChildren {
+   /** Its local child rows; a run whose own file cannot be read is left out with a warning naming it (DESIGN.md rule 7). */
+   async rows(run: RootExecutionIdentity): Promise<CollaborationTaskExecutionDto[]> {
+     const rows: CollaborationTaskExecutionDto[] = [];
+-    for (const child of this.input.tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
++    for (const child of this.input.tree.mapOf(run).rows().filter((candidate) => candidate.nodeId === undefined)) {
+       try {
+         const row = await delegatedChildDto(child, this.input.memoryDir, this.input.tree);
+         if (row) rows.push(row);
+@@ -50,12 +53,17 @@ export class RunViewChildren {
+   async listed(run: RootExecutionIdentity): Promise<ListedRunChildDto[]> {
+     const statuses = await this.statuses(run);
+     const children: ListedRunChildDto[] = [];
+-    const open = this.input.tree.openChildrenOf(run);
+-    const local = open.filter((candidate) => candidate.nodeId === undefined);
+-    const peers = this.input.tree.peerChildrenOf(run).filter((child) => child.open);
+-    // The delegators are agents of this run: their addresses from its per-run data, read once per run.
+-    const own = local.length || peers.length ? new Map((await this.input.tree.agentsOf(run)).map((agent) => [agent.agentRunId, agent.address])) : new Map();
+-    const delegatorAddressOf = (child: DelegatedChild) => (own.get(child.delegatorAgentRunId) ?? null) as ListedRunChildDto["delegatorAddress"];
++    const rows = this.input.tree.mapOf(run).rows();
++    const local = rows.filter((candidate) => candidate.nodeId === undefined);
++    const peers = rows.filter((candidate): candidate is SubtreeRow & { nodeId: string } => candidate.nodeId !== undefined);
++    // Each delegator is an agent of the row's parent run: its address from that run's per-run data, read once per run.
++    const addressesOf = new Map<string, Map<string, string | null>>();
++    for (const row of rows) {
++      const key = rootExecutionIdentityKey(row.parent);
++      if (!addressesOf.has(key)) addressesOf.set(key, new Map((await this.input.tree.agentsOf(row.parent)).map((agent) => [agent.agentRunId, agent.address])));
++    }
++    const delegatorAddressOf = (child: SubtreeRow) =>
++      (addressesOf.get(rootExecutionIdentityKey(child.parent))?.get(child.delegatorAgentRunId) ?? null) as ListedRunChildDto["delegatorAddress"];
+     for (const child of local) {
+       try {
+         const row = await childRunIdentity(child, this.input.tree);
+@@ -76,10 +84,12 @@ export class RunViewChildren {
+     return children;
+   }
+ 
+-  /** Its open peer runs. */
++  /** Its open peer runs, at every depth: each local row's (and the run's own) open peer runs. */
+   async remote(run: RootExecutionIdentity): Promise<readonly RemoteTaskExecutionDto[]> {
+-    return (await describeRemoteTaskExecutions(peerRunLinksOf(run, this.input.tree).filter((link) => link.open), this.input.channel()))
+-      .map(projectRemoteTaskExecution);
++    const rows = this.input.tree.mapOf(run).rows();
++    const parents = new Map(rows.filter((row) => row.nodeId !== undefined).map((row) => [rootExecutionIdentityKey(row.parent), row.parent]));
++    const links = [...parents.values()].flatMap((parent) => peerRunLinksOf(parent, this.input.tree).filter((link) => link.open));
++    return (await describeRemoteTaskExecutions(links, this.input.channel())).map(projectRemoteTaskExecution);
+   }
+ 
+   /** Every agent of its open local children with its live status. */
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts b/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
+index d6feaa0551..b265a4af44 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
+@@ -162,7 +162,7 @@ const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutio
+   const source = child.source;
+   return { kind: "task_team", address: child.address, team_run_id: child.teamRunId,
+     members: child.members.map((member) => ({ kind: "task_team_agent", address: member.address, agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId })),
+-    task_executions: [], delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
++    delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
+     source: { kind: "agent_team", team_definition_id: source.teamDefinitionId, coordinator_address: source.coordinatorAddress,
+       members: source.members.map((member) => {
+         const memberSource = sourceOf(member.launchSource);
+diff --git a/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts b/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
+index e3ae56c521..9b1fa07a1e 100644
+--- a/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
++++ b/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
+@@ -17,7 +17,8 @@ export type E2eStudioApplicationApiServiceOverrides = Partial<
+  * from a run), over a tree with no delegation: the production composition builds them over its `DelegationTree`; an
+  * in-process suite that starts no delegated run reads none. A suite that does passes its own.
+  */
+-const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [], agentsOf: async () => [] });
++const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [], agentsOf: async () => [],
++  mapOf: () => ({ rows: () => [] }) as never });
+ const NO_DELEGATIONS_VIEW_CHILDREN = new RunViewChildren({ memoryDir: "", tree: NO_DELEGATIONS, followers: { statuses: async () => [] }, channel: () => null });
+ const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader(NO_DELEGATIONS);
+ 
+diff --git a/autobyteus-server-ts/tests/helpers/child-rows-feed.ts b/autobyteus-server-ts/tests/helpers/child-rows-feed.ts
+index 40907dd402..a8cafdff49 100644
+--- a/autobyteus-server-ts/tests/helpers/child-rows-feed.ts
++++ b/autobyteus-server-ts/tests/helpers/child-rows-feed.ts
+@@ -1,7 +1,8 @@
+ import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
+ import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
+ import { ChildRowsStreams } from "../../src/agent-collaboration/delegation/child-rows-streams.js";
+-import type { ChildRowsChange, DelegatedChild } from "../../src/agent-collaboration/delegation/delegation-tree.js";
++import type { ChildRowsChange } from "../../src/agent-collaboration/delegation/delegation-tree.js";
++import type { SubtreeRow } from "../../src/agent-collaboration/delegation/run-collaboration-map.js";
+ import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+ 
+ /** A local child's row as the views project it (`delegatedChildDto`). */
+@@ -11,8 +12,10 @@ export const agentChildRow = (agentRunId: string, address = `/${agentRunId}`): C
+     launchConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null } },
+ }) as CollaborationTaskExecutionDto;
+ 
+-export const delegatedChild = (agentRunId: string): DelegatedChild => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "delegator",
+-  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}` });
++/** A row under `parent` (default: a run `delegating`, the view's own run in most tests). */
++export const delegatedChild = (agentRunId: string, parent: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "delegating" }): SubtreeRow => ({
++  run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "delegator",
++  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent });
+ 
+ /**
+  * A `ChildRowsFeed` following a test's own tree reports (autobyteus-461 SR-042), with local rows projected by
+@@ -21,8 +24,8 @@ export const delegatedChild = (agentRunId: string): DelegatedChild => ({ run: {
+ export const followTestChildRows = () => {
+   let report: ((change: ChildRowsChange) => void) | null = null;
+   const streams = new ChildRowsStreams();
+-  const feed = new ChildRowsFeed({ rowOf: async (_parent, child) => "agentRunId" in child.run
+-    ? { kind: "local", row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null }, streams);
++  const feed = new ChildRowsFeed({ rowOf: async (child) => "agentRunId" in child.run
++    ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null }, streams);
+   feed.follow({ subscribeChildRows: (listener: (change: ChildRowsChange) => void) => { report = listener; return () => { report = null; }; } });
+   return {
+     feed,
+diff --git a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/child-rows-feed.test.ts b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/child-rows-feed.test.ts
+index 8c29644969..2b9b8ef95b 100644
+--- a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/child-rows-feed.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/child-rows-feed.test.ts
+@@ -1,18 +1,19 @@
+ import { ChildRowsStreams } from "../../../../src/agent-collaboration/delegation/child-rows-streams.js";
+ import { describe, expect, it, vi } from "vitest";
+ import { ChildRowsFeed, type ChildRowsEvent } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
+-import type { ChildRowsChange, DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
++import type { ChildRowsChange,  } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
++import type { SubtreeRow } from "../../../../src/agent-collaboration/delegation/run-collaboration-map.js";
+ import { ChildRowsStreamSession } from "../../../../src/services/agent-streaming/child-rows-stream-session.js";
+ 
+ /** autobyteus-461 DS-8, SR-042 … SR-044 (ARCH-REV-019 residual): the feed to open views and each stream's order. */
+ const M = { rootSubjectKind: "agent" as const, rootRunId: "manager" };
+ const OTHER = { rootSubjectKind: "agent_team" as const, rootRunId: "eng" };
+-const child = (agentRunId: string, nodeId?: string): DelegatedChild => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "manager",
+-  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, ...(nodeId ? { nodeId } : {}) });
++const child = (agentRunId: string, nodeId?: string): SubtreeRow => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "manager",
++  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent: M, ...(nodeId ? { nodeId } : {}) });
+ const row = (agentRunId: string) => ({ kind: "local" as const, row: { agentRunId } as never });
+ 
+-type RowOf = (parent: unknown, child: DelegatedChild) => Promise<ReturnType<typeof row> | null>;
+-const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (_parent, c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
++type RowOf = (child: SubtreeRow) => Promise<ReturnType<typeof row> | null>;
++const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
+   let report: (change: ChildRowsChange) => void = () => undefined;
+   const streams = new ChildRowsStreams();
+   const feed = new ChildRowsFeed({ rowOf }, streams);
+@@ -51,7 +52,7 @@ describe("ChildRowsFeed", () => {
+   it("publishes in reported order even when an earlier row is slower to read; an unreadable row is left out", async () => {
+     let release!: () => void;
+     const slow = new Promise<void>((resolve) => { release = resolve; });
+-    const h = harness(vi.fn<RowOf>(async (_parent, c) => {
++    const h = harness(vi.fn<RowOf>(async (c) => {
+       if ("agentRunId" in c.run && c.run.agentRunId === "slow") { await slow; return row("slow"); }
+       return "agentRunId" in c.run && c.run.agentRunId === "missing" ? null : row("x");
+     }));
+diff --git a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-child-rows.test.ts b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-child-rows.test.ts
+index acfd8a843d..599a83560a 100644
+--- a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-child-rows.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-child-rows.test.ts
+@@ -76,7 +76,8 @@ describe("DelegationTree child rows", () => {
+     h.changes.length = 0;
+     h.tasks.close("T1");
+     expect(h.changes).toEqual([
+-      { run: M, added: [], removed: [{ teamRunId: "eng" }] },
++      // M's rows are its open subtree (CR-461-033): the team's own rows leave M's view with it.
++      { run: M, added: [], removed: [{ teamRunId: "eng" }, { agentRunId: "helper" }, { agentRunId: "aide" }] },
+       { run: lead, added: [], removed: [{ agentRunId: "helper" }, { agentRunId: "aide" }] },
+     ]);
+     h.changes.length = 0;
+diff --git a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-forest.test.ts b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-forest.test.ts
+index d14a577dc3..9f93af365a 100644
+--- a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-forest.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/delegation-tree-forest.test.ts
+@@ -50,4 +50,22 @@ describe("the DelegationTree as a forest", () => {
+     expect(tree.mapOf(M).rows()).toEqual([]);
+     expect(tree.mapOf(C).rows().map((row) => "agentRunId" in row.run ? row.run.agentRunId : null)).toEqual(["helper"]);
+   });
++
++  it("a row under a row is reported live to every run above it: when delegated, and when its Task closes (CR-461-033)", async () => {
++    const tasks = new InMemoryTaskExecutionResources();
++    const tree = new DelegationTree(() => tasks, readerOfAgents(async (run) => [{ agentRunId: run.rootRunId, address: `/${run.rootRunId}`, agentDefinitionId: null }]));
++    tree.build(); tasks.setEntriesListener(tree);
++    const reports: Array<[string, string[], string[]]> = [];
++    tree.subscribeChildRows((change) => reports.push([change.run.rootRunId,
++      change.added.map((row) => `${row.parent.rootRunId}>${"agentRunId" in row.run ? row.run.agentRunId : ""}`),
++      change.removed.map((run) => "agentRunId" in run ? run.agentRunId : "")]));
++    tasks.addTask("T1"); tasks.addTask("T2");
++    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/worker", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
++    reports.length = 0;
++    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/helper", delegatedFrom: { delegatingRun: C, delegatorAgentRunId: "worker" }, execution: { agentRunId: "helper" } });
++    expect(reports.sort()).toEqual([["manager", ["worker>helper"], []], ["worker", ["worker>helper"], []]]);
++    reports.length = 0;
++    tasks.close("T2");
++    expect(reports.sort()).toEqual([["manager", [], ["helper"]], ["worker", [], ["helper"]]]);
++  });
+ });
+diff --git a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/local-child-observation.test.ts b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/local-child-observation.test.ts
+index e4d4f5cb2f..f50d752e40 100644
+--- a/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/local-child-observation.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-collaboration/delegation/local-child-observation.test.ts
+@@ -32,7 +32,7 @@ const harness = () => {
+     }),
+   };
+   const ports: LocalChildPorts = {
+-    tree: ({ openChildrenOf: () => children, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
++    tree: ({ mapOf: () => ({ rows: () => children }) as never, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
+       agentsOf: async (run) => (agents[run.rootRunId] ?? []).map((agent) => ({ ...agent, agentDefinitionId: null })) }),
+     agents: () => access as never,
+   };
+diff --git a/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts b/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
+index 01f0eaf178..cb5ff12d91 100644
+--- a/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
++++ b/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
+@@ -117,7 +117,6 @@ export type TaskTeamExecutionDto = Readonly<{
+   address: string;
+   team_run_id: string;
+   members: readonly TaskTeamAgentExecutionDto[];
+-  task_executions: readonly TaskExecutionDto[];
+   delegator_agent_run_id: string | null;
+   started_at: string;
+   source: TaskTeamExecutionSourceDto;
+@@ -188,13 +187,13 @@ const taskTeamAgentSchema: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
+   agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
+ }).strict();
+ 
+-export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
++/** A delegated child Team's row; the rows under it are rows of their own, nested by their delegator (CR-461-033). */
++export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.object({
+   kind: z.literal("task_team"), address: agentTeamAddressDtoSchema, team_run_id: nonEmptyStringSchema,
+   members: z.array(taskTeamAgentSchema),
+-  task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
+   delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
+   source: taskTeamSourceSchema,
+-}).strict());
++}).strict();
+ 
+ export type TeamRunExecutionTreeDto = Readonly<{
+   created_at: string;
+diff --git a/autobyteus-team-stream-contracts/tests/team-child-row-launch.test.mjs b/autobyteus-team-stream-contracts/tests/team-child-row-launch.test.mjs
+index f27fc0d885..b532af1d2d 100644
+--- a/autobyteus-team-stream-contracts/tests/team-child-row-launch.test.mjs
++++ b/autobyteus-team-stream-contracts/tests/team-child-row-launch.test.mjs
+@@ -13,7 +13,7 @@ test("a child row has its run's launch; a recorded copy choice is refused", () =
+   const agent = { kind: "task_agent", address: "/ie", agent_run_id: "ie", platform_agent_run_id: null, delegator_agent_run_id: "pm", started_at: "t", source: agentSource };
+   assert.deepEqual(taskAgentExecutionDtoSchema.parse(agent), agent);
+   assert.throws(() => taskAgentExecutionDtoSchema.parse({ ...agent, user_launch_selection: choice }));
+-  const team = { kind: "task_team", address: "/se", team_run_id: "copy", task_executions: [], delegator_agent_run_id: "pm", started_at: "t",
++  const team = { kind: "task_team", address: "/se", team_run_id: "copy", delegator_agent_run_id: "pm", started_at: "t",
+     members: [{ kind: "task_team_agent", address: "/se/lead", agent_run_id: "l", platform_agent_run_id: null }], source: teamSource };
+   assert.deepEqual(taskTeamExecutionDtoSchema.parse(team), team);
+   assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...team, user_team_launch_selection: choice }));
+@@ -26,3 +26,9 @@ test("a child's accepted message is acknowledged by its identity (autobyteus-461
+   assert.throws(() => parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: { ...ack, state: "rejected" } }));
+   assert.throws(() => parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: { ...ack, message_id: undefined } }));
+ });
++
++test("a team row has no nested rows of its own: rows under it are rows of their own (autobyteus-461 CR-461-033)", () => {
++  const team = { kind: "task_team", address: "/se", team_run_id: "copy", delegator_agent_run_id: "pm", started_at: "t", members: [], source: teamSource };
++  assert.equal(taskTeamExecutionDtoSchema.parse(team).team_run_id, "copy");
++  assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...team, task_executions: [] }));
++});
+diff --git a/autobyteus-team-stream-contracts/tests/team-member-launch.test.mjs b/autobyteus-team-stream-contracts/tests/team-member-launch.test.mjs
+index cdc4a838a2..95710b4904 100644
+--- a/autobyteus-team-stream-contracts/tests/team-member-launch.test.mjs
++++ b/autobyteus-team-stream-contracts/tests/team-member-launch.test.mjs
+@@ -19,7 +19,7 @@ const source = {
+   default_launch_configuration: claude, default_launch_source: { origin: "inherited", fallbacks: [] },
+ };
+ const copy = {
+-  kind: "task_team", address: "/se", team_run_id: "copy", task_executions: [], delegator_agent_run_id: "pm", started_at: "t",
++  kind: "task_team", address: "/se", team_run_id: "copy", delegator_agent_run_id: "pm", started_at: "t",
+   members: members.map((member, index) => ({ kind: "task_team_agent", address: member.address, agent_run_id: `run-${index}`, platform_agent_run_id: null })),
+   source,
+ };
+diff --git a/autobyteus-web/components/run-settings/__tests__/ExistingRunSettings.copies.spec.ts b/autobyteus-web/components/run-settings/__tests__/ExistingRunSettings.copies.spec.ts
+index 4620b903de..a0ed3638dd 100644
+--- a/autobyteus-web/components/run-settings/__tests__/ExistingRunSettings.copies.spec.ts
++++ b/autobyteus-web/components/run-settings/__tests__/ExistingRunSettings.copies.spec.ts
+@@ -27,7 +27,7 @@ const tree: TeamRunExecutionTreeDto = {
+       kind: 'task_agent', address: '/writer', agent_run_id: 'writer-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
+       source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: codex, launch_source: { origin: 'agent_default', fallbacks: [] } },
+     }, {
+-      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, task_executions: [],
++      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, 
+       members: [
+         { kind: 'task_team_agent', address: '/se/lead', agent_run_id: 'lead-run', platform_agent_run_id: null },
+         { kind: 'task_team_agent', address: '/se/cr', agent_run_id: 'cr-run', platform_agent_run_id: null },
+diff --git a/autobyteus-web/services/agentCollaboration/agentRunTaskRows.ts b/autobyteus-web/services/agentCollaboration/agentRunTaskRows.ts
+index ef6ba709f0..2165fe4065 100644
+--- a/autobyteus-web/services/agentCollaboration/agentRunTaskRows.ts
++++ b/autobyteus-web/services/agentCollaboration/agentRunTaskRows.ts
+@@ -1,4 +1,4 @@
+-import type { DelegatedChildRun } from '~/services/delegatedChildren/delegatedChildRuns'
++import { nestedRows, type DelegatedChildRun } from '~/services/delegatedChildren/delegatedChildRuns'
+ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+ import { AgentStatus } from '~/types/agent/AgentStatus'
+ import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+@@ -17,8 +17,9 @@ const nameAt = memberDisplayName
+ 
+ /**
+  * The task rows under an agent run's row (autobyteus-461 CR-461-025): the one builder of them, whether the run is open
+- * (its view's children and their contexts' statuses) or only listed (the history poll's answer). Each child in the
+- * order it was delegated: an agent row, or a team row with its members below it while expanded; a child on a peer node
++ * (its view's children and their contexts' statuses) or only listed (the history poll's answer). Its rows at every
++ * depth (CR-461-033): a row under the row whose agent delegated it (`nestedRows`). Each child in the order it was
++ * delegated: an agent row, or a team row with its members below it while expanded; a child on a peer node
+  * carries its node. A row names who started it (its delegator's address, else its run ID). A child team's status is
+  * its own agents', counted collapsed too: it runs on its own; a peer team's follows the run's own activity (its
+  * statuses come from the run's live observation, autobyteus-278).
+@@ -33,31 +34,39 @@ export const agentRunTaskRows = (input: Readonly<{
+ }>): AgentRunTaskTreeRow[] => {
+   const flat: { row: RunHistoryTransientExecutionRow; teamStatus: TeamStatus | null }[] = []
+   const status = (agentRunId: string) => input.statusOf(agentRunId) ?? AgentStatus.Offline
++  const nest = nestedRows(input.children)
+   const delegatedBy = (child: DelegatedChildRun): string | null => {
+     if (!child.delegatorAgentRunId) return null
+-    const address = input.delegatorAddressOf(child.delegatorAgentRunId)
++    const address = nest.delegatorAddressOf(child.delegatorAgentRunId) ?? input.delegatorAddressOf(child.delegatorAgentRunId)
+     return address ? nameAt(address) : child.delegatorAgentRunId
+   }
+-  for (const child of input.children) {
++  const emit = (child: DelegatedChildRun, depth: number): void => {
+     const remote = child.node ? { remote: Object.freeze({ runId: child.runId, nodeName: child.node.nodeName }) } : {}
+-    const agentRow = (agent: Readonly<{ address: string; agentRunId: string }>, depth: number, member: boolean): RunHistoryTransientExecutionRow => ({
++    const agentRow = (agent: Readonly<{ address: string; agentRunId: string }>, rowDepth: number, member: boolean): RunHistoryTransientExecutionRow => ({
+       kind: 'transient_execution', transientKind: member ? 'task_team_child' : 'task_agent', rowKey: `agent:${agent.agentRunId}`,
+       teamRunId: input.hostRunId, memberAddress: agent.address, agentRunId: agent.agentRunId, teamRunIdForNode: null, memberKind: 'agent',
+-      displayName: nameAt(agent.address), currentStatus: status(agent.agentRunId), delegatedBy: member ? null : delegatedBy(child), depth,
+-      hasChildren: false, ...remote,
++      displayName: nameAt(agent.address), currentStatus: status(agent.agentRunId), delegatedBy: member ? null : delegatedBy(child), depth: rowDepth,
++      hasChildren: !member && nest.delegatedBy(agent.agentRunId).length > 0, ...remote,
+     })
+     if (child.kind === 'agent') {
+-      flat.push({ row: agentRow({ address: child.address, agentRunId: child.runId }, 0, false), teamStatus: null })
+-      continue
++      flat.push({ row: agentRow({ address: child.address, agentRunId: child.runId }, depth, false), teamStatus: null })
++      // A row's own rows: what its agent delegated, under it (CR-461-033).
++      nest.delegatedBy(child.runId).forEach((nested) => emit(nested, depth + 1))
++      return
+     }
+     flat.push({ row: {
+       kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${child.runId}`, teamRunId: input.hostRunId,
+       memberAddress: child.address, agentRunId: null, teamRunIdForNode: child.runId, memberKind: 'agent_team',
+-      displayName: nameAt(child.address), currentStatus: null, delegatedBy: delegatedBy(child), depth: 0,
++      displayName: nameAt(child.address), currentStatus: null, delegatedBy: delegatedBy(child), depth,
+       hasChildren: child.members.length > 0, ...remote,
+     }, teamStatus: resolveTeamStatus(child.members.map((member) => status(member.agentRunId)), child.node ? input.isActive : true) })
+-    if (input.isTeamExpanded(child.runId)) child.members.forEach((member) => flat.push({ row: agentRow(member, 1, true), teamStatus: null }))
++    if (!input.isTeamExpanded(child.runId)) return
++    for (const member of child.members) {
++      flat.push({ row: agentRow(member, depth + 1, true), teamStatus: null })
++      nest.delegatedBy(member.agentRunId).forEach((nested) => emit(nested, depth + 2))
++    }
+   }
++  nest.top.forEach((child) => emit(child, 0))
+   const lines = treeLinesOf(flat.map(({ row }) => row.depth))
+   return flat.map(({ row, teamStatus }, index) => Object.freeze({ row, teamStatus, ...lines[index]! }))
+ }
+diff --git a/autobyteus-web/services/collaborators/__tests__/agentSourceSelectors.spec.ts b/autobyteus-web/services/collaborators/__tests__/agentSourceSelectors.spec.ts
+index 903f3b95ff..a682ec6465 100644
+--- a/autobyteus-web/services/collaborators/__tests__/agentSourceSelectors.spec.ts
++++ b/autobyteus-web/services/collaborators/__tests__/agentSourceSelectors.spec.ts
+@@ -165,7 +165,7 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
+ 
+   it('Team root: copy members show the launch they actually ran on', () => {
+     const tree = withRootTeam(teamTree(), { task_executions: [mixedTeam, {
+-      kind: 'task_team', address: '/se_team', team_run_id: 'copy-run', task_executions: [],
++      kind: 'task_team', address: '/se_team', team_run_id: 'copy-run', 
+       delegator_agent_run_id: 'researcher-run', started_at: created,
+       members: [
+         { kind: 'task_team_agent', address: '/se_team/lead', agent_run_id: 'se-lead', platform_agent_run_id: null },
+diff --git a/autobyteus-web/services/collaborators/agentSourceSelectors.ts b/autobyteus-web/services/collaborators/agentSourceSelectors.ts
+index 8cdaec1bb0..a7968cc2a7 100644
+--- a/autobyteus-web/services/collaborators/agentSourceSelectors.ts
++++ b/autobyteus-web/services/collaborators/agentSourceSelectors.ts
+@@ -48,8 +48,6 @@ const teamCopyAgent = (
+     if (member && recorded) {
+       return { address: member.address, agentDefinitionId: recorded.agent_definition_id, launch: recorded.launch_configuration }
+     }
+-    const nested = teamCopyAgent(task.task_executions, agentRunId)
+-    if (nested) return nested
+   }
+   return null
+ }
+diff --git a/autobyteus-web/services/delegatedChildren/__tests__/nestedRows.spec.ts b/autobyteus-web/services/delegatedChildren/__tests__/nestedRows.spec.ts
+new file mode 100644
+index 0000000000..148ebf6f37
+--- /dev/null
++++ b/autobyteus-web/services/delegatedChildren/__tests__/nestedRows.spec.ts
+@@ -0,0 +1,68 @@
++import { describe, expect, it } from 'vitest'
++import { agentRunTaskRows } from '~/services/agentCollaboration/agentRunTaskRows'
++import { teamRunHistoryRows } from '~/stores/runHistoryTeamChildRows'
++import { agentOrgChildRows } from '~/utils/agentOrgChildRows'
++import { listedRunChildren, nestedRows, type DelegatedChildRun } from '../delegatedChildRuns'
++
++/**
++ * autobyteus-461 CR-461-033: a view's rows are its open subtree. A row whose delegator is an agent of another row (an
++ * agent row's run, a team row's member) is under that row, at every depth and in every view kind, open or listed.
++ */
++const at = '2026-11-12T00:00:00.000Z'
++const agent = (runId: string, address: string, delegatorAgentRunId: string): DelegatedChildRun =>
++  Object.freeze({ kind: 'agent', runId, address, delegatorAgentRunId, startedAt: at, node: null, members: [] as const, coordinatorAgentRunId: null })
++const team = (runId: string, address: string, delegatorAgentRunId: string, members: { address: string; agentRunId: string }[]): DelegatedChildRun =>
++  Object.freeze({ kind: 'agent_team', runId, address, delegatorAgentRunId, startedAt: at, node: null, members, coordinatorAgentRunId: members[0]!.agentRunId })
++// The view's run (host) delegated a worker and a team; the worker delegated a helper; the team's lead delegated a checker.
++const children = [
++  agent('worker', '/worker', 'host'),
++  team('squad', '/squad', 'host', [{ address: '/lead', agentRunId: 'lead' }]),
++  agent('helper', '/helper', 'worker'),
++  agent('checker', '/checker', 'lead'),
++]
++
++describe('rows at every depth', () => {
++  it('nests each row under the row whose agent delegated it', () => {
++    const nest = nestedRows(children)
++    expect(nest.top.map((child) => child.runId)).toEqual(['worker', 'squad'])
++    expect(nest.delegatedBy('worker').map((child) => child.runId)).toEqual(['helper'])
++    expect(nest.delegatedBy('lead').map((child) => child.runId)).toEqual(['checker'])
++    expect(nest.delegatorAddressOf('lead')).toBe('/lead')
++  })
++
++  it('the agent run view: a helper of the worker under the worker; a team member\'s own row under the member', () => {
++    const rows = agentRunTaskRows({ hostRunId: 'host', children, statusOf: () => 'idle', delegatorAddressOf: (id) => id === 'host' ? '/host' : null,
++      isActive: true, isTeamExpanded: () => true })
++    expect(rows.map(({ row }) => [row.rowKey, row.depth, row.delegatedBy])).toEqual([
++      ['agent:worker', 0, 'host'], ['agent:helper', 1, 'worker'],
++      ['team:squad', 0, 'host'], ['agent:lead', 1, null], ['agent:checker', 2, 'lead'],
++    ])
++    expect(rows[0]!.row.hasChildren).toBe(true)
++  })
++
++  it('the team run view and the org run view nest the same rows', () => {
++    const team = teamRunHistoryRows({ teamRunId: 'host-team', members: [], children, statusOf: () => 'idle', delegatorAddressOf: () => null })
++    expect(team.map((row) => row.kind === 'transient_execution' ? [row.rowKey, row.depth] : null)).toEqual([
++      ['agent:worker', 0], ['agent:helper', 1], ['team:squad', 0], ['agent:lead', 1], ['agent:checker', 2]])
++    const org = agentOrgChildRows({ rootRunId: 'org', children, statusOf: () => 'idle', authority: 'live' as never,
++      teamsAlive: { local: true, peer: true }, delegatorAddressOf: () => null, isTaskTeamExpanded: () => true })
++    expect(org.map((row) => [row.key, row.depth])).toEqual([
++      ['task-agent:worker', 0], ['task-agent:helper', 1], ['task-team:squad', 0], ['task-team-agent:lead', 1], ['task-agent:checker', 2]])
++  })
++
++  it('a listed, not-open delegator shows the helper nested from one poll\'s answer', () => {
++    const row = (agentRunId: string, address: string, delegatorAgentRunId: string) => ({ row: { kind: 'agent' as const, address, agentRunId,
++      agentDefinitionId: null, delegatorAgentRunId, startedAt: at }, delegatorAddress: null, statuses: [], node: null })
++    const listed = listedRunChildren({ kind: 'agent', runId: 'host', isActive: false,
++      children: [row('worker', '/worker', 'host'), row('helper', '/helper', 'worker')] } as never)
++    const rows = agentRunTaskRows({ hostRunId: 'host', children: listed.children, statusOf: () => 'offline', delegatorAddressOf: listed.delegatorAddressOf,
++      isActive: false, isTeamExpanded: () => false })
++    expect(rows.map(({ row }) => [row.rowKey, row.depth])).toEqual([['agent:worker', 0], ['agent:helper', 1]])
++  })
++
++  it('a collapsed team hides the rows under its members', () => {
++    const rows = agentRunTaskRows({ hostRunId: 'host', children, statusOf: () => 'idle', delegatorAddressOf: () => null,
++      isActive: true, isTeamExpanded: () => false })
++    expect(rows.map(({ row }) => row.rowKey)).toEqual(['agent:worker', 'agent:helper', 'team:squad'])
++  })
++})
+diff --git a/autobyteus-web/services/delegatedChildren/delegatedChildRuns.ts b/autobyteus-web/services/delegatedChildren/delegatedChildRuns.ts
+index 6df2d2414a..036e3e155d 100644
+--- a/autobyteus-web/services/delegatedChildren/delegatedChildRuns.ts
++++ b/autobyteus-web/services/delegatedChildren/delegatedChildRuns.ts
+@@ -73,6 +73,33 @@ export const childOfListedRun = (child: ListedRunAnswer['children'][number]): De
+   return Object.freeze({ kind: 'agent_team', runId: row.teamRunId, members, coordinatorAgentRunId: requireMember(row.teamRunId, members, row.coordinatorAgentRunId), ...common })
+ }
+ 
++/**
++ * How a view's rows nest (autobyteus-461 CR-461-033): its rows are its open subtree, and a row whose delegator is an
++ * agent of another row (an agent row's run, a team row's member) is under that row; the others are at the top. Each
++ * level keeps the order the rows were delegated in. A nested row's delegator address is its owner's agent address.
++ */
++export const nestedRows = (children: readonly DelegatedChildRun[]) => {
++  const owners = new Map<string, Readonly<{ row: DelegatedChildRun; address: string }>>()
++  for (const child of children) {
++    if (child.kind === 'agent') owners.set(child.runId, { row: child, address: child.address })
++    else child.members.forEach((member) => owners.set(member.agentRunId, { row: child, address: member.address }))
++  }
++  const under = new Map<string, DelegatedChildRun[]>()
++  const top: DelegatedChildRun[] = []
++  for (const child of children) {
++    const owner = child.delegatorAgentRunId ? owners.get(child.delegatorAgentRunId) : undefined
++    if (!owner || owner.row === child) { top.push(child); continue }
++    under.set(child.delegatorAgentRunId!, [...under.get(child.delegatorAgentRunId!) ?? [], child])
++  }
++  return Object.freeze({
++    top,
++    /** The rows an agent of a row delegated, under it. */
++    delegatedBy: (agentRunId: string): readonly DelegatedChildRun[] => under.get(agentRunId) ?? [],
++    /** A nested row's delegator address (its owner's agent); `null` for a row at the top. */
++    delegatorAddressOf: (agentRunId: string): string | null => owners.get(agentRunId)?.address ?? null,
++  })
++}
++
+ /**
+  * The children a delegator's rows show, in the order they were delegated: its children on this node in their order,
+  * with its children on peer nodes merged in by start time (autobyteus-278's one list).
+diff --git a/autobyteus-web/services/runConfigEditing/delegatedCopyLiveness.ts b/autobyteus-web/services/runConfigEditing/delegatedCopyLiveness.ts
+index ac04beb90f..0182221eb9 100644
+--- a/autobyteus-web/services/runConfigEditing/delegatedCopyLiveness.ts
++++ b/autobyteus-web/services/runConfigEditing/delegatedCopyLiveness.ts
+@@ -15,8 +15,6 @@ const teamRootTeamAgents = (tree: TeamRunExecutionTreeDto, teamRunId: string): s
+     for (const task of tasks) {
+       if (task.kind !== 'task_team') continue
+       if (task.team_run_id === teamRunId) return task.members.map((member) => member.agent_run_id)
+-      const nested = visit(task.task_executions)
+-      if (nested) return nested
+     }
+     return null
+   }
+diff --git a/autobyteus-web/services/runHydration/agentReads.ts b/autobyteus-web/services/runHydration/agentReads.ts
+index c4ec0e37e1..38a8a7c743 100644
+--- a/autobyteus-web/services/runHydration/agentReads.ts
++++ b/autobyteus-web/services/runHydration/agentReads.ts
+@@ -34,8 +34,6 @@ const teamChildSubject = (tasks: readonly TeamTaskExecutionDto[], agentRunId: st
+     // A child team's members come in the team run's own space (its own file's addresses).
+     const member = task.members.find((candidate) => candidate.agent_run_id === agentRunId);
+     if (member) return Object.freeze({ kind: 'teamMember', teamRunId: task.team_run_id, memberAddress: member.address, agentRunId });
+-    const nested = teamChildSubject(task.task_executions, agentRunId);
+-    if (nested) return nested;
+   }
+   return null;
+ };
+diff --git a/autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts b/autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+index 1c39a3f793..7a49503aa8 100644
+--- a/autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
++++ b/autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+@@ -63,7 +63,7 @@ const tree = (): EditableExecutionTree => ({
+     ],
+     task_executions: [{
+       kind: 'task_team', address: '/StudentStudyGroup', team_run_id: 'study-team-persistent',
+-      delegator_agent_run_id: 'teacher-run', started_at: createdAt, task_executions: [], source: studyGroupSource,
++      delegator_agent_run_id: 'teacher-run', started_at: createdAt, source: studyGroupSource,
+       members: [
+         { kind: 'task_team_agent', address: '/StudentStudyGroup/Coordinator', agent_run_id: 'coordinator-run', platform_agent_run_id: null },
+         { kind: 'task_team_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'student-run', platform_agent_run_id: null },
+@@ -218,7 +218,7 @@ describe('TeamExecutionViewState', () => {
+     const state = createState();
+     const taskTeamExecution: TaskExecutionDto = {
+       kind: 'task_team', address: '/StudentStudyGroup', team_run_id: 'study-team-task-1',
+-      delegator_agent_run_id: 'teacher-run', started_at: createdAt, task_executions: [], source: studyGroupSource,
++      delegator_agent_run_id: 'teacher-run', started_at: createdAt, source: studyGroupSource,
+       members: [
+         { kind: 'task_team_agent', address: '/StudentStudyGroup/Coordinator', agent_run_id: 'task-coordinator-run', platform_agent_run_id: null },
+         { kind: 'task_team_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'task-student-run', platform_agent_run_id: null },
+diff --git a/autobyteus-web/services/teamExecution/teamChildRunsChange.ts b/autobyteus-web/services/teamExecution/teamChildRunsChange.ts
+index f77d275816..a8b63a544d 100644
+--- a/autobyteus-web/services/teamExecution/teamChildRunsChange.ts
++++ b/autobyteus-web/services/teamExecution/teamChildRunsChange.ts
+@@ -23,7 +23,7 @@ const runIdOf = (reference: TeamTaskExecutionReferenceDto): string => 'agent_run
+ const taskRunIdOf = (task: TaskExecutionDto): string => task.kind === 'task_agent' ? task.agent_run_id : task.team_run_id
+ const remoteRunIdOf = (remote: RemoteTaskExecutionDto): string => remote.kind === 'agent' ? remote.agent_run_id : remote.team_run_id
+ const agentsOf = (task: TaskExecutionDto): string[] => task.kind === 'task_agent' ? [task.agent_run_id]
+-  : [...task.members.map((member) => member.agent_run_id), ...task.task_executions.flatMap(agentsOf)]
++  : task.members.map((member) => member.agent_run_id)
+ 
+ /** Every run ID the tree holds: Teams, members and child rows at any depth. */
+ const heldRunIds = (team: MutableTeam, ids = new Set<string>()): Set<string> => {
+diff --git a/autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts b/autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts
+index ea49b2fa4a..87d1235985 100644
+--- a/autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts
++++ b/autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts
+@@ -41,7 +41,6 @@ const containedExecutionIds = (execution: TaskExecutionDto): readonly string[] =
+     ids.push(task.kind === 'task_agent' ? task.agent_run_id : task.team_run_id);
+     if (task.kind !== 'task_team') return;
+     task.members.forEach((member) => ids.push(member.agent_run_id));
+-    task.task_executions.forEach(visitTask);
+   };
+   visitTask(execution);
+   return ids;
+diff --git a/autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts b/autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+index f8cfa860fb..50721c4682 100644
+--- a/autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
++++ b/autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts
+@@ -57,7 +57,6 @@ export const collectAgentExecutionLocations = (
+       if (task.kind === 'task_agent') addLocation(task.agent_run_id, task.address, containingTeamRunId);
+       else {
+         task.members.forEach((member) => addLocation(member.agent_run_id, member.address, task.team_run_id));
+-        visitTasks(task.task_executions, task.team_run_id);
+       }
+     }
+   };
+@@ -81,7 +80,7 @@ export const findContainingTaskExecutionRunId = (
+         if (task.agent_run_id === agentRunId) return task.agent_run_id;
+         continue;
+       }
+-      const found = search(task.task_executions, task.members, task.team_run_id);
++      const found = search([], task.members, task.team_run_id);
+       if (found) return found;
+     }
+     return members.some((member) => member.agent_run_id === agentRunId) ? owningTaskRunId : null;
+@@ -112,6 +111,12 @@ export const projectNavigationRows = (inputTree: {
+   };
+   const status = (agentRunId: string): AgentStatus =>
+     input.contexts.get(agentRunId)?.state.currentStatus ?? AgentStatus.Offline;
++  // The team's rows are its open subtree (CR-461-033): a row delegated by an agent of another row is under that agent.
++  const tasks = input.tree.root_team.task_executions;
++  const rowAgents = new Set(tasks.flatMap((task) => task.kind === 'task_agent' ? [task.agent_run_id] : task.members.map((member) => member.agent_run_id)));
++  const nestedOf = (agentRunId: string): readonly TaskExecutionDto[] => rowAgents.has(agentRunId)
++    ? tasks.filter((task) => task.delegator_agent_run_id === agentRunId) : [];
++  const topTasks = tasks.filter((task) => !task.delegator_agent_run_id || !rowAgents.has(task.delegator_agent_run_id));
+   const addAgent = (inputAgent: {
+     kind: 'configured_agent' | 'task_agent' | 'task_team_agent';
+     address: AgentTeamAddress;
+@@ -136,6 +141,7 @@ export const projectNavigationRows = (inputTree: {
+         kind: 'task_agent', address: task.address, agentRunId: task.agent_run_id,
+         depth, parentKey, delegatedBy: delegatorName(task.delegator_agent_run_id),
+       });
++      nestedOf(task.agent_run_id).forEach((nested) => addTask(nested, depth + 1, agentRowKey(task.agent_run_id)));
+       return;
+     }
+     addTaskTeam(task, depth, parentKey);
+@@ -151,11 +157,8 @@ export const projectNavigationRows = (inputTree: {
+         kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id,
+         depth, parentKey, coordinatorAddress,
+       });
+-      team.task_executions.filter((task) => task.address === member.address)
+-        .forEach((task) => addTask(task, depth + 1, agentRowKey(member.agent_run_id)));
++      nestedOf(member.agent_run_id).forEach((task) => addTask(task, depth + 1, agentRowKey(member.agent_run_id)));
+     }
+-    team.task_executions.filter((task) => !team.members.some((member) => member.address === task.address))
+-      .forEach((task) => addTask(task, depth, parentKey));
+   };
+   const addTaskTeam = (
+     team: TaskTeamExecutionDto,
+@@ -171,7 +174,7 @@ export const projectNavigationRows = (inputTree: {
+       depth, parentKey, agentRunId: null, teamRunId: team.team_run_id,
+       delegatedBy: delegatorName(team.delegator_agent_run_id),
+       currentStatus: null, focusable: false,
+-      expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
++      expandable: team.members.length > 0, coordinator: false,
+     }));
+     addTaskMembers(team, depth + 1, key, coordinatorAddress);
+   };
+@@ -186,11 +189,11 @@ export const projectNavigationRows = (inputTree: {
+   }));
+   for (const member of root.members) {
+     addAgent({ kind: 'configured_agent', address: member.address, agentRunId: member.agent_run_id, depth: 1, parentKey: rootKey, coordinatorAddress: root.coordinator_address });
+-    root.task_executions
++    topTasks
+       .filter((task) => task.address === member.address)
+       .forEach((task) => addTask(task, 2, agentRowKey(member.agent_run_id)));
+   }
+-  root.task_executions
++  topTasks
+     .filter((task) => !root.members.some((member) => member.address === task.address))
+     .forEach((task) => addTask(task, 1, rootKey));
+   return Object.freeze(rows);
+diff --git a/autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts b/autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+index 18d059b8c3..d3c3cb3567 100644
+--- a/autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
++++ b/autobyteus-web/stores/__tests__/runHistoryTeamExecutionRows.spec.ts
+@@ -163,7 +163,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
+           kind: 'task_team_agent', address: reviewLead,
+           agent_run_id: 'settled-review-lead-run', platform_agent_run_id: null,
+         }],
+-        task_executions: [],
++        
+       }],
+     });
+     const stableChildren = [stableRow(solution.address, [], { agentRunId: solution.agentRunId })];
+diff --git a/autobyteus-web/stores/runHistoryTeamChildRows.ts b/autobyteus-web/stores/runHistoryTeamChildRows.ts
+index 90939d6673..516854e47c 100644
+--- a/autobyteus-web/stores/runHistoryTeamChildRows.ts
++++ b/autobyteus-web/stores/runHistoryTeamChildRows.ts
+@@ -1,4 +1,4 @@
+-import type { DelegatedChildRun } from '~/services/delegatedChildren/delegatedChildRuns';
++import { nestedRows, type DelegatedChildRun } from '~/services/delegatedChildren/delegatedChildRuns';
+ import { teamMemberNameAmong } from '~/services/teamExecution/teamExecutionTreeSelectors';
+ import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
+ import { AgentStatus } from '~/types/agent/AgentStatus';
+@@ -14,7 +14,8 @@ import type {
+  * whether the run is open (its view's children and their contexts' statuses) or only listed (the history poll's
+  * answer). A child on this node delegated to a member's address follows that member: an agent child at the member's
+  * level, a team child under it with its members below; any other child, and every child on a peer node (marked with
+- * its node), follows the members, in the order they were delegated. A row names who started it (its delegator's address
++ * its node), follows the members, in the order they were delegated. A row's own rows (what its agent delegated, at
++ * every depth, CR-461-033) are under it. A row names who started it (its delegator's address
+  * basename, else its run ID); a child on this node is named as the team names an address, one on a peer node by its
+  * address.
+  */
+@@ -26,10 +27,11 @@ export const teamRunHistoryRows = (input: Readonly<{
+   delegatorAddressOf(agentRunId: string): string | null;
+ }>): RunHistoryTeamExecutionRow[] => {
+   const memberAddresses = input.members.map((member) => member.memberAddress);
++  const nest = nestedRows(input.children);
+   const nameOf = (child: DelegatedChildRun, address: string) => child.node ? memberDisplayName(address) : teamMemberNameAmong(memberAddresses, address);
+   const delegatedBy = (child: DelegatedChildRun): string | null => {
+     if (!child.delegatorAgentRunId) return null;
+-    const address = input.delegatorAddressOf(child.delegatorAgentRunId);
++    const address = nest.delegatorAddressOf(child.delegatorAgentRunId) ?? input.delegatorAddressOf(child.delegatorAgentRunId);
+     return address ? memberAddressBasename(address) : child.delegatorAgentRunId;
+   };
+   const rowsOf = (child: DelegatedChildRun, depth: number): RunHistoryTransientExecutionRow[] => {
+@@ -38,25 +40,27 @@ export const teamRunHistoryRows = (input: Readonly<{
+       kind: 'transient_execution', transientKind: member ? 'task_team_child' : 'task_agent', rowKey: `agent:${agent.agentRunId}`,
+       teamRunId: input.teamRunId, memberAddress: agent.address, agentRunId: agent.agentRunId, teamRunIdForNode: null, memberKind: 'agent',
+       displayName: nameOf(child, agent.address), currentStatus: input.statusOf(agent.agentRunId) ?? AgentStatus.Offline,
+-      delegatedBy: member ? null : delegatedBy(child), depth: agentDepth, hasChildren: false, remote,
++      delegatedBy: member ? null : delegatedBy(child), depth: agentDepth, hasChildren: !member && nest.delegatedBy(agent.agentRunId).length > 0, remote,
+     });
+-    if (child.kind === 'agent') return [agentRow({ address: child.address, agentRunId: child.runId }, depth, false)];
++    // A row's own rows: what its agent (or a team row's member) delegated, under it (CR-461-033).
++    const nestedOf = (agentRunId: string, nestedDepth: number) => nest.delegatedBy(agentRunId).flatMap((nested) => rowsOf(nested, nestedDepth));
++    if (child.kind === 'agent') return [agentRow({ address: child.address, agentRunId: child.runId }, depth, false), ...nestedOf(child.runId, depth + 1)];
+     return [{
+       kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${child.runId}`, teamRunId: input.teamRunId,
+       memberAddress: child.address, agentRunId: null, teamRunIdForNode: child.runId, memberKind: 'agent_team',
+       displayName: nameOf(child, child.address), currentStatus: null, delegatedBy: delegatedBy(child), depth,
+       hasChildren: child.members.length > 0, remote,
+-    }, ...child.members.map((member) => agentRow(member, depth + 1, true))];
++    }, ...child.members.flatMap((member) => [agentRow(member, depth + 1, true), ...nestedOf(member.agentRunId, depth + 2)])];
+   };
+   const rows: RunHistoryTeamExecutionRow[] = [];
+   const placed = new Set<DelegatedChildRun>();
+   for (const member of input.members) {
+-    const under = input.children.filter((child) => !child.node && child.address === member.memberAddress);
++    const under = nest.top.filter((child) => !child.node && child.address === member.memberAddress);
+     under.forEach((child) => placed.add(child));
+     rows.push(under.some((child) => child.kind === 'agent_team') ? { ...member, hasChildren: true } : member);
+     // An agent child is lifted to its member's level, as its sibling; a team child is contained by its member.
+     for (const child of under) rows.push(...rowsOf(child, child.kind === 'agent' ? member.depth : member.depth + 1));
+   }
+-  for (const child of input.children) if (!placed.has(child)) rows.push(...rowsOf(child, 0));
++  for (const child of nest.top) if (!placed.has(child)) rows.push(...rowsOf(child, 0));
+   return rows;
+ };
+diff --git a/autobyteus-web/test-support/currentTeamTestFixtures.ts b/autobyteus-web/test-support/currentTeamTestFixtures.ts
+index c273bd9110..5f52aeb5ce 100644
+--- a/autobyteus-web/test-support/currentTeamTestFixtures.ts
++++ b/autobyteus-web/test-support/currentTeamTestFixtures.ts
+@@ -201,7 +201,7 @@ const executionForDelegation = (
+       kind: 'task_team_agent' as const, address: child.address,
+       agent_run_id: `${teamRunId}:${child.agentRunId}`, platform_agent_run_id: null,
+     })),
+-    task_executions: [], delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
++    delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
+     source: {
+       kind: 'agent_team', team_definition_id: team.teamDefinitionId, coordinator_address: team.coordinatorAddress,
+       members: team.children.map((child) => ({ address: child.address, agent_definition_id: child.agentDefinitionId,
+diff --git a/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue b/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
+index c739fe896b..eab88afdd3 100644
+--- a/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/background-agent-renderer-contention.page.vue
+@@ -193,7 +193,7 @@ const richTeam = buildTestTeamContext({
+         kind: 'task_team_agent', address: '/ReviewTeam/reviewer',
+         agent_run_id: richTaskTeamChildContext.state.runId, platform_agent_run_id: null,
+       }],
+-      task_executions: [], delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
++      delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
+     },
+   ],
+   contexts: [
+diff --git a/autobyteus-web/tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue b/autobyteus-web/tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue
+index 9a043b1f88..a96ca95e6a 100644
+--- a/autobyteus-web/tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue
++++ b/autobyteus-web/tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue
+@@ -57,10 +57,11 @@ const context = buildTestTeamContext({
+         members: [{ address: '/Research/Analyst', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null }, follows_team: true }], handoffs: [],
+         default_launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
+           auto_execute_tools: true, workspace_root_path: null } },
+-      members: [{ kind: 'task_team_agent', address: '/Research/Analyst', agent_run_id: MEMBER, platform_agent_run_id: null }],
+-      task_executions: [{ kind: 'task_agent', address: '/Research/Analyst', agent_run_id: NESTED,
+-        platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started,
+-        source: { kind: 'agent', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } } }] },
++      members: [{ kind: 'task_team_agent', address: '/Research/Analyst', agent_run_id: MEMBER, platform_agent_run_id: null }] },
++    // A row of its own (autobyteus-461 CR-461-033), delegated by the team's member: nested under it by its delegator.
++    { kind: 'task_agent', address: '/Research/Analyst', agent_run_id: NESTED,
++      platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started,
++      source: { kind: 'agent', agent_definition_id: 'analyst-definition', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: true, workspace_root_path: null } } },
+   ],
+ });
+ const teamStore = useAgentTeamContextsStore();
+diff --git a/autobyteus-web/utils/agentOrgChildRows.ts b/autobyteus-web/utils/agentOrgChildRows.ts
+index 121e1aa4eb..6742f45ce0 100644
+--- a/autobyteus-web/utils/agentOrgChildRows.ts
++++ b/autobyteus-web/utils/agentOrgChildRows.ts
+@@ -1,4 +1,4 @@
+-import type { DelegatedChildRun } from '~/services/delegatedChildren/delegatedChildRuns'
++import { nestedRows, type DelegatedChildRun } from '~/services/delegatedChildren/delegatedChildRuns'
+ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+ import type { AgentStatus } from '~/types/agent/AgentStatus'
+ import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+@@ -8,7 +8,7 @@ import type { AgentOrgHistoryDelegator, AgentOrgHistoryRow } from '~/utils/agent
+ /**
+  * An Org run's delegated rows (autobyteus-461 CR-461-025): the one builder of them, whether the run is open (its view's
+  * children and statuses) or only listed (the history poll's answer). Each child at the Org's top level, in the order it
+- * was delegated:
++ * was delegated, and a row's own rows (what its agent delegated, at every depth, CR-461-033) under it:
+  * - on this node: an agent row, or a team row (opening its coordinator) with its members below it while expanded;
+  * - on a peer node: the shared delegated row with its node (autobyteus-278), a team row with its members while expanded.
+  * A row names who started it (its delegator, with its address when known). Statuses are the given ones, folded by the
+@@ -25,36 +25,43 @@ export const agentOrgChildRows = (input: Readonly<{
+   isTaskTeamExpanded(teamRunId: string): boolean
+ }>): AgentOrgHistoryRow[] => {
+   const status = (agentRunId: string): AgentStatus => foldTeamAggregateStatus([input.statusOf(agentRunId)], input.authority)
++  const nest = nestedRows(input.children)
+   const delegatorOf = (child: DelegatedChildRun): AgentOrgHistoryDelegator | null => child.delegatorAgentRunId === null ? null
+-    : Object.freeze({ agentRunId: child.delegatorAgentRunId, address: input.delegatorAddressOf(child.delegatorAgentRunId) })
++    : Object.freeze({ agentRunId: child.delegatorAgentRunId,
++      address: nest.delegatorAddressOf(child.delegatorAgentRunId) ?? input.delegatorAddressOf(child.delegatorAgentRunId) })
+   const coordinatorOf = (child: DelegatedChildRun) => {
+     const coordinator = child.members.find((member) => member.agentRunId === child.coordinatorAgentRunId)
+     if (!coordinator) throw new Error(`Missing exact task coordinator '${child.runId}'.`)
+     return coordinator
+   }
+   const rows: AgentOrgHistoryRow[] = []
+-  for (const child of input.children) {
++  const emit = (child: DelegatedChildRun, depth: number): void => {
+     if (child.node) {
+-      rows.push(...peerRows(child, input, status, delegatorOf(child)))
+-      continue
++      rows.push(...peerRows(child, input, status, delegatorOf(child), depth))
++      return
+     }
+     if (child.kind === 'agent') {
+       rows.push({ key: `task-agent:${child.runId}`, kind: 'task_agent', taskKind: 'direct', address: child.address, agentRunId: child.runId,
+-        status: status(child.runId), depth: 0, delegatedBy: delegatorOf(child) })
+-      continue
++        status: status(child.runId), depth, delegatedBy: delegatorOf(child) })
++      // A row's own rows: what its agent delegated, under it (CR-461-033).
++      nest.delegatedBy(child.runId).forEach((nested) => emit(nested, depth + 1))
++      return
+     }
+     const coordinator = coordinatorOf(child)
+     const hasChildren = child.members.length > 0
+     const expanded = input.isTaskTeamExpanded(child.runId)
+     rows.push({ key: `task-team:${child.runId}`, kind: 'task_team', address: child.address, teamRunId: child.runId,
+       status: resolveTeamStatus(child.members.map((member) => input.statusOf(member.agentRunId)), input.teamsAlive.local),
+-      coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address, depth: 0, delegatedBy: delegatorOf(child),
++      coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address, depth, delegatedBy: delegatorOf(child),
+       hasChildren, expanded })
+-    if (hasChildren && !expanded) continue
+-    rows.push(...child.members.map((member): AgentOrgHistoryRow => ({ key: `task-team-agent:${member.agentRunId}`, kind: 'task_agent',
+-      taskKind: 'team_member', address: member.address, agentRunId: member.agentRunId, status: status(member.agentRunId), depth: 1,
+-      delegatedBy: null })))
++    if (hasChildren && !expanded) return
++    for (const member of child.members) {
++      rows.push({ key: `task-team-agent:${member.agentRunId}`, kind: 'task_agent', taskKind: 'team_member', address: member.address,
++        agentRunId: member.agentRunId, status: status(member.agentRunId), depth: depth + 1, delegatedBy: null })
++      nest.delegatedBy(member.agentRunId).forEach((nested) => emit(nested, depth + 2))
++    }
+   }
++  nest.top.forEach((child) => emit(child, 0))
+   return rows
+ }
+ 
+@@ -64,6 +71,7 @@ const peerRows = (
+   input: Parameters<typeof agentOrgChildRows>[0],
+   status: (agentRunId: string) => AgentStatus,
+   delegator: AgentOrgHistoryDelegator | null,
++  depth: number,
+ ): AgentOrgHistoryRow[] => {
+   const remote = Object.freeze({ runId: child.runId, nodeName: child.node!.nodeName })
+   const delegatedBy = delegator ? (delegator.address ? memberDisplayName(delegator.address) : delegator.agentRunId) : null
+@@ -78,16 +86,16 @@ const peerRows = (
+     key: transient.rowKey, kind: 'remote', depth: transient.depth, transient, teamStatus, openAgentRunId: open.agentRunId, openAddress: open.address })
+   if (child.kind === 'agent') {
+     const agent = { address: child.address, agentRunId: child.runId }
+-    return [asRow(agentRow(agent, 0, false), null, agent)]
++    return [asRow(agentRow(agent, depth, false), null, agent)]
+   }
+   const coordinator = child.members.find((member) => member.agentRunId === child.coordinatorAgentRunId)
+   if (!coordinator) throw new Error(`Missing exact task coordinator '${child.runId}'.`)
+   const team: RunHistoryTransientExecutionRow = {
+     kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${child.runId}`, teamRunId: input.rootRunId,
+     memberAddress: child.address, agentRunId: null, teamRunIdForNode: child.runId, memberKind: 'agent_team',
+-    displayName: memberDisplayName(child.address), currentStatus: null, delegatedBy, depth: 0, hasChildren: child.members.length > 0, remote,
++    displayName: memberDisplayName(child.address), currentStatus: null, delegatedBy, depth, hasChildren: child.members.length > 0, remote,
+   }
+   const teamStatus = resolveTeamStatus(child.members.map((member) => status(member.agentRunId)), input.teamsAlive.peer)
+   return [asRow(team, teamStatus, coordinator),
+-    ...(input.isTaskTeamExpanded(child.runId) ? child.members.map((member) => asRow(agentRow(member, 1, true), null, member)) : [])]
++    ...(input.isTaskTeamExpanded(child.runId) ? child.members.map((member) => asRow(agentRow(member, depth + 1, true), null, member)) : [])]
+ }
+diff --git a/autobyteus-web/utils/runSettings/__tests__/delegatedCopyChoices.spec.ts b/autobyteus-web/utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
+index 047d43de3e..059576c151 100644
+--- a/autobyteus-web/utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
++++ b/autobyteus-web/utils/runSettings/__tests__/delegatedCopyChoices.spec.ts
+@@ -27,7 +27,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
+       kind: 'task_agent', address: '/writer', agent_run_id: 'writer-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: at,
+       source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: claude, launch_source: { origin: 'agent_default', fallbacks: [] } },
+     }, {
+-      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: at, task_executions: [],
++      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: at, 
+       members: [
+         { kind: 'task_team_agent', address: '/se/lead', agent_run_id: 'lead-run', platform_agent_run_id: null },
+         { kind: 'task_team_agent', address: '/se/ie', agent_run_id: 'ie-run', platform_agent_run_id: null },
+diff --git a/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRows.spec.ts b/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
+index 2cb11a0bfe..f321da5e0c 100644
+--- a/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
++++ b/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRows.spec.ts
+@@ -26,7 +26,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
+         source: { kind: 'agent', agent_definition_id: 'writer', launch_configuration: claude },
+       },
+       {
+-        kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, task_executions: [],
++        kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, 
+         members: [
+           { kind: 'task_team_agent', address: '/se/lead', agent_run_id: 'lead-run', platform_agent_run_id: null },
+           { kind: 'task_team_agent', address: '/se/ie', agent_run_id: 'ie-run', platform_agent_run_id: null },
+@@ -121,7 +121,7 @@ describe('delegated row names follow the root\'s naming rule (autobyteus-208)',
+         { kind: 'task_agent', address: '/scribe_5083', agent_run_id: 'scribe-run', platform_agent_run_id: null, delegator_agent_run_id: 'cr-run', started_at: created,
+           source: { kind: 'agent', agent_definition_id: 'scribe', launch_configuration: claude } },
+         // A catalog Team copy and its members read by display name too.
+-        { kind: 'task_team', address: '/product_team', team_run_id: 'pt-run', delegator_agent_run_id: 'cr-run', started_at: created, task_executions: [],
++        { kind: 'task_team', address: '/product_team', team_run_id: 'pt-run', delegator_agent_run_id: 'cr-run', started_at: created, 
+           members: [{ kind: 'task_team_agent', address: '/product_team/tech_lead', agent_run_id: 'tl-run', platform_agent_run_id: null }],
+           source: { kind: 'agent_team', team_definition_id: 'pt', coordinator_address: '/product_team/tech_lead', handoffs: [],
+             default_launch_configuration: claude,
+diff --git a/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRowsModelRouting.spec.ts b/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRowsModelRouting.spec.ts
+index ca912ab04e..33d6e61c05 100644
+--- a/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRowsModelRouting.spec.ts
++++ b/autobyteus-web/utils/runSettings/__tests__/delegatedLaunchRowsModelRouting.spec.ts
+@@ -24,7 +24,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
+     default_launch_configuration: claude,
+     members: [{ kind: 'configured_agent', address: '/pm', agent_definition_id: 'pm', role: null, description: null, agent_run_id: 'pm-run', platform_agent_run_id: null, launch_configuration: claude }],
+     task_executions: [{
+-      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, task_executions: [],
++      kind: 'task_team', address: '/se', team_run_id: 'se-copy', delegator_agent_run_id: 'pm-run', started_at: created, 
+       members: [
+         { kind: 'task_team_agent', address: '/se/sd', agent_run_id: 'sd-run', platform_agent_run_id: null },
+         { kind: 'task_team_agent', address: '/se/ie', agent_run_id: 'ie-run', platform_agent_run_id: null },
+diff --git a/autobyteus-web/utils/runSettings/delegatedLaunchRows.ts b/autobyteus-web/utils/runSettings/delegatedLaunchRows.ts
+index 476d0ec0cb..4cb619d71a 100644
+--- a/autobyteus-web/utils/runSettings/delegatedLaunchRows.ts
++++ b/autobyteus-web/utils/runSettings/delegatedLaunchRows.ts
+@@ -220,7 +220,6 @@ export const teamDelegatedLaunchNodes = (
+       result.push(build.team({ key: `${task.address}@${task.team_run_id}`, address: task.address, started: teamStarted,
+         target: teamTarget, stop: { teamRunId: task.team_run_id }, running,
+         facts: factsOf(snakeSource(source.default_launch_source), true, 'delegated_copy') }, members))
+-      visit(task.task_executions)
+     }
+   }
+   visit(tree.root_team.task_executions)

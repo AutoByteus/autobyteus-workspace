@@ -5,12 +5,12 @@ import ExistingRunConfigEditor from '../ExistingRunConfigEditor.vue'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
 
 /**
- * AR-004 / DS-001 (SR-007): one Save bar. With copies' choices on a stopped run, Save sends them with
- * the run's own changed settings in one request and then re-reads the run; without them, the run's
- * own Save runs as before. A copy row's stop icon stops that copy of this run.
+ * One Save bar (SR-007; autobyteus-461 SR-064): with delegated runs' choices, Save saves the run's own changed settings by
+ * its own save, then each delegated run's by its own, then re-reads the run; without them, the run's own Save runs as
+ * before. A delegated row's stop icon stops that run as itself (SR-066).
  */
 const mocks = vi.hoisted(() => ({
-  client: { loadDelegatedLaunchModelOptions: vi.fn(), updateDelegatedLaunchSelections: vi.fn(), stopDelegatedExecution: vi.fn() },
+  client: { loadDelegatedRunOptions: vi.fn(), loadDelegatedRunLaunches: vi.fn(async () => ({})), saveDelegatedRuns: vi.fn(), terminateDelegatedRun: vi.fn() },
   store: null as null | Record<string, any>,
 }))
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async (original) => ({ ...await original<object>(), ...mocks.client }))
@@ -23,7 +23,7 @@ vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => (
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resumeConfigByRunId: {}, teamResumeConfigByTeamRunId: {}, agentOrgHistory: [] }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Writer' }) }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => null }) }))
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => null, selectedChild: () => null }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => null }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {
   const { ref } = await import('vue')
@@ -35,48 +35,68 @@ vi.mock('~/stores/existingRunConfigStore', async () => {
     draft: {
       kind: 'agent', runId: 'run-1', isActive: false, editability: { editable: true, reason: null },
       metadata: { agentDefinitionId: 'writer', runtimeKind: 'codex_app_server', autoExecuteTools: true, llmModelIdentifier: 'gpt-5.5', workspaceRootPath: null },
-      draftSelection: { llmModelIdentifier: 'gpt-6', llmConfig: null }, delegatedSnapshot: null,
+      draftSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-6', llmConfig: null }, delegatedSnapshot: null,
     },
     loadingCanonical: false, saving: false, reconciling: false, reconciliationRequired: false,
     feedback: null, fieldErrors: [], modelOptionsByAddress: {}, dirty: true, canSave: true,
     loadAgentCanonical: vi.fn(), clear: vi.fn(), applyCachedAgentLifecycle: vi.fn(),
-    save: vi.fn(async () => true), discardChanges: vi.fn(), reloadCanonical: vi.fn(async () => true),
+    // A committed own save leaves nothing of the run's own unsaved.
+    save: vi.fn(async () => { mocks.store!.dirty = false; return true }), discardChanges: vi.fn(), reloadCanonical: vi.fn(async () => true),
   })
   return { useExistingRunConfigStore: () => mocks.store }
 })
 
 const mountEditor = () => mount(ExistingRunConfigEditor, {
-  global: { stubs: { ExistingRunSettings: { name: 'ExistingRunSettings', props: ['dirty', 'canSave'], template: '<div />' } }, mocks: { $t: (key: string) => key } },
+  global: { stubs: { ExistingRunSettings: { name: 'ExistingRunSettings', props: ['dirty', 'canSave', 'runtimeChangePending'], template: '<div />' } }, mocks: { $t: (key: string) => key } },
 })
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 beforeEach(() => {
   setActivePinia(createPinia())
   Object.values(mocks.client).forEach((mock) => mock.mockReset())
-  mocks.client.loadDelegatedLaunchModelOptions.mockResolvedValue({ 'agent:copy': { status: 'ready', options: {
+  mocks.client.loadDelegatedRunLaunches.mockResolvedValue({})
+  mocks.client.loadDelegatedRunOptions.mockResolvedValue({ complete: true, options: { 'agent:copy': { status: 'ready', options: {
     currentModelIdentifier: 'opus', currentModel: null, unavailableReason: null,
     replacements: [{ llmModelIdentifier: 'sonnet', providerName: 'p', displayName: 'sonnet', canonicalName: 'sonnet', description: null, configSchema: null, recommended: false }],
-  } } })
-  mocks.store!.save.mockClear(); mocks.store!.discardChanges.mockClear(); mocks.store!.reloadCanonical.mockClear()
+  } } } })
+  mocks.store!.save.mockClear(); mocks.store!.discardChanges.mockClear(); mocks.store!.reloadCanonical.mockClear(); mocks.store!.dirty = true
 })
 
 describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () => {
-  it('saves the copies\' choices with the stopped run\'s own model in one request, then re-reads the run', async () => {
+  it('saves the stopped run\'s own model by its own save, then each delegated run\'s by its own, then re-reads the run (SR-064)', async () => {
     const view = mountEditor().getComponent({ name: 'ExistingRunSettings' })
     await flush()
     const delegated = useDelegatedLaunchDraftStore()
-    delegated.edit('agent:copy', { llmModelIdentifier: 'opus', llmConfig: null }, { llmModelIdentifier: 'sonnet', llmConfig: null })
-    mocks.client.updateDelegatedLaunchSelections.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] })
+    // The row's options, as its own run's query answers them (SR-065).
+    delegated.optionsByKey = (await mocks.client.loadDelegatedRunOptions()).options
+    delegated.edit('agent:copy', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'opus', llmConfig: null }, { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null })
+    mocks.client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [], saved: {} })
     await flush()
     expect(view.props('dirty')).toBe(true)
     expect(view.props('canSave')).toBe(true)
     view.vm.$emit('save')
     await flush()
-    expect(mocks.client.updateDelegatedLaunchSelections).toHaveBeenCalledWith({ rootKind: 'AGENT', rootRunId: 'run-1',
-      changes: [{ key: 'agent:copy', selection: { llmModelIdentifier: 'sonnet', llmConfig: null } }],
-      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/', llmModelIdentifier: 'gpt-6', llmConfig: null }] })
-    expect(mocks.store!.save).not.toHaveBeenCalled()
-    expect(mocks.store!.reloadCanonical).toHaveBeenCalled()
+    expect(mocks.store!.save).toHaveBeenCalledOnce()
+    expect(mocks.client.saveDelegatedRuns).toHaveBeenCalledWith(expect.objectContaining({
+      changes: [{ key: 'agent:copy', selection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null } }] }))
+    expect(mocks.store!.save.mock.invocationCallOrder[0]).toBeLessThan(mocks.client.saveDelegatedRuns.mock.invocationCallOrder[0]!)
+    // A committed Save re-reads the run, its hub view included (autobyteus-366, CR-003).
+    expect(mocks.store!.reloadCanonical).toHaveBeenCalledWith(true)
+  })
+
+  it('saves a copy\'s other agent runtime with its model, though the old runtime offers no such model (autobyteus-348)', async () => {
+    const view = mountEditor().getComponent({ name: 'ExistingRunSettings' })
+    await flush()
+    const delegated = useDelegatedLaunchDraftStore()
+    delegated.edit('agent:copy', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'opus', llmConfig: null }, { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-opus', llmConfig: null })
+    mocks.client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [], saved: {} })
+    await flush()
+    expect(view.props('canSave')).toBe(true)
+    expect(view.props('runtimeChangePending')).toBe(true)
+    view.vm.$emit('save')
+    await flush()
+    expect(mocks.client.saveDelegatedRuns).toHaveBeenCalledWith(expect.objectContaining({
+      changes: [{ key: 'agent:copy', selection: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-opus', llmConfig: null } }] }))
   })
 
   it('without copies\' choices, Save is the run\'s own Save', async () => {
@@ -84,14 +104,14 @@ describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () 
     view.vm.$emit('save')
     await flush()
     expect(mocks.store!.save).toHaveBeenCalled()
-    expect(mocks.client.updateDelegatedLaunchSelections).not.toHaveBeenCalled()
+    expect(mocks.client.saveDelegatedRuns).not.toHaveBeenCalled()
   })
 
-  it('a copy row\'s stop icon stops that copy of this run', async () => {
+  it('a delegated row\'s stop icon stops that run as itself (SR-066)', async () => {
     const view = mountEditor().getComponent({ name: 'ExistingRunSettings' })
-    mocks.client.stopDelegatedExecution.mockResolvedValue({ success: true, outcome: 'STOPPED', message: 'Stopped.', notStoppedUnattributed: 0 })
+    mocks.client.terminateDelegatedRun.mockResolvedValue({ success: true, message: 'Stopped.' })
     view.vm.$emit('stop-delegated', { agentRunId: 'copy' })
     await flush()
-    expect(mocks.client.stopDelegatedExecution).toHaveBeenCalledWith({ rootKind: 'AGENT', rootRunId: 'run-1' }, { agentRunId: 'copy' })
+    expect(mocks.client.terminateDelegatedRun).toHaveBeenCalledWith({ agentRunId: 'copy' })
   })
 })

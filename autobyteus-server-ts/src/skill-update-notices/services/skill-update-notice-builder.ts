@@ -10,16 +10,49 @@ export const SKILL_UPDATE_NOTICE_HEADER = "[Platform notice — skill updated]";
 export const SKILL_UPDATE_NOTICE_METADATA_KEY = "skill_update_notice";
 const MAX_FILES_PER_SKILL = 10;
 
+/**
+ * `text` as a Markdown inline code span, so a path shows literally (`__init__.py` is not bold, `*draft*` not
+ * emphasis). CommonMark: the fence is one backtick longer than the longest backtick run inside, and a text that
+ * starts or ends with a backtick or a space is padded with one space on each side (the renderer strips exactly those).
+ */
+export const inlineCode = (text: string): string => {
+  const longestRun = Math.max(0, ...[...text.matchAll(/`+/g)].map((run) => run[0].length));
+  const fence = "`".repeat(longestRun + 1);
+  const pad = /^[` ]|[` ]$/.test(text) ? " " : "";
+  return `${fence}${pad}${text}${pad}${fence}`;
+};
+
+/** "GitHub", "GitHub and Slack", "GitHub, Slack and Jira". */
+const joinNames = (names: readonly string[]): string =>
+  names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+
+/**
+ * An added skill: its name and description, the absolute path of its `SKILL.md` to read before work it governs,
+ * and, for an integration whose access the run does not hold yet, that the access starts when the run is restarted.
+ */
+const describeAddedSkill = (change: Extract<SkillChange, { kind: "added" }>): string[] => {
+  const description = change.description.replace(/\s+/g, " ").trim();
+  return [
+    `Your skill package \`${change.skillName}\` is now available${description ? `: ${description}` : "."}`,
+    `Read its instructions before work it governs: ${inlineCode(change.skillMdPath)}. Resolve relative paths in it from its folder.`,
+    ...(change.integrationNames.length > 0
+      ? [`Its ${joinNames(change.integrationNames)} access starts when this run is restarted (stop the run, then send a message).`]
+      : []),
+    "",
+  ];
+};
+
 /** One Markdown block per skill; each ends with a blank line, so blocks and lists render apart. */
 const describeChange = (change: SkillChange): string[] => {
+  if (change.kind === "added") return describeAddedSkill(change);
   if (change.kind === "removed") return [`Your skill package \`${change.skillName}\` is no longer available.`, ""];
   const shown = change.files.slice(0, MAX_FILES_PER_SKILL);
   const more = change.files.length - shown.length;
   return [
-    `Your skill package \`${change.skillName}\` has been updated (${change.skillDir}).`,
+    `Your skill package \`${change.skillName}\` has been updated (${inlineCode(change.skillDir)}).`,
     "",
     "Changed files:",
-    ...shown.map((file) => `- ${file.path} (${file.status})`),
+    ...shown.map((file) => `- ${inlineCode(file.path)} (${file.status})`),
     ...(more > 0 ? [`- …and ${more} more files`] : []),
     "",
   ];
@@ -27,8 +60,8 @@ const describeChange = (change: SkillChange): string[] => {
 
 /**
  * The notice the agent and the web see: the header (the web labels the card by it), then one
- * block per skill naming its folder and listing exactly the files that differ, each with its
- * status, then what to do.
+ * block per skill: an added skill with its `SKILL.md`, an updated one naming its folder and listing
+ * exactly the files that differ, each with its status, or one no longer available; then what to do.
  */
 export const buildSkillUpdateNoticeText = (changes: readonly SkillChange[]): string => {
   const updated = changes.filter((change) => change.kind === "updated");
@@ -51,21 +84,23 @@ export const buildSkillUpdateNoticeText = (changes: readonly SkillChange[]): str
  * system notice. The native runtime does not emit its own notification for it; the service
  * publishes the run's system notice once it is forwarded.
  */
-export const buildSkillUpdateNoticeMessage = (text: string): AgentInputUserMessage =>
+export const buildSkillUpdateNoticeMessage = (text: string, noticeId: string): AgentInputUserMessage =>
   new AgentInputUserMessage(text, SenderType.SYSTEM, null, {
     [SKILL_UPDATE_NOTICE_METADATA_KEY]: true,
     sender_id: SKILL_UPDATE_NOTICE_SENDER_ID,
     [SYSTEM_TASK_NOTIFICATION_SUPPRESSION_METADATA_KEY]: true,
-    ...platformInputPrefaceMetadata({ content: text, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: null }),
+    ...platformInputPrefaceMetadata({ content: text, senderId: SKILL_UPDATE_NOTICE_SENDER_ID, originalContent: null, noticeId }),
   });
 
 /** The run's system notice event (web presentation and external-runtime history). */
-export const buildSkillUpdateNoticeEvent = (runId: string, text: string, turnId: string | null): AgentRunEvent => ({
+/** `noticeId`: the notice's one id, the same as on its message (autobyteus-526). */
+export const buildSkillUpdateNoticeEvent = (runId: string, text: string, turnId: string | null, noticeId: string): AgentRunEvent => ({
   eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
   runId,
   payload: {
     sender_id: SKILL_UPDATE_NOTICE_SENDER_ID,
     content: text,
+    message_id: noticeId,
     ...(turnId ? { turn_id: turnId } : {}),
   },
   statusHint: null,

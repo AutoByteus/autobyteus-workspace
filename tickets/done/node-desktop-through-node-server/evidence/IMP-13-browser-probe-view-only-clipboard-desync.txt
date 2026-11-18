@@ -1,0 +1,31 @@
+# Check: IMP-13
+# Command: BACKEND_NODE_BASE_URL=http://127.0.0.1:56039 nuxt dev --port 56319 (warmed up), then node tests/e2e/vnc-live-probe.mjs --base-url http://127.0.0.1:56319 --vnc-container abx405-node-desktop-check --vnc-display :99 --expected-container-label abx405-impl --output-dir <dir> --timeout-ms 90000
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:56039:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter (AUTOBYTEUS_STARTER_SOCKET set), Xvnc :99.
+# Commit: 6407bfc15f
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+## probe stdout
+{
+  "result": "Fail",
+  "failures": [
+    {
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.vnc-viewer').locator('[data-testid=\"node-desktop-tile\"]').first().getByRole('button', { name: 'View only', exact: true })\n",
+      "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.vnc-viewer').locator('[data-testid=\"node-desktop-tile\"]').first().getByRole('button', { name: 'View only', exact: true })\n\n    at switchMode (/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/tests/e2e/vnc-live-probe.mjs:206:63)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/tests/e2e/vnc-live-probe.mjs:287:11"
+    }
+  ]
+}
+
+## browser events (vncSession, node-desktop sockets, RFB errors) from vnc-live-results.json
+console:info [vncSession] connecting {url: ws://127.0.0.1:56039/ws/node-desktop?mode=view, mode: view} closed= framesReceived=
+websocket ws://127.0.0.1:56039/ws/node-desktop?mode=view closed=True framesReceived=21
+console:info [vncSession] connecting {url: ws://127.0.0.1:56039/ws/node-desktop?mode=view, mode: view} closed= framesReceived=
+websocket ws://127.0.0.1:56039/ws/node-desktop?mode=view closed=True framesReceived=73
+console:error Failed while connected: Unexpected server message (type 120) closed= framesReceived=
+console:info [vncSession] stream ended {code: null, state: disconnected} closed= framesReceived=
+console:error RFB failure: Unexpected server message (type 156) closed= framesReceived=
+console:error Tried changing state of a disconnected RFB object closed= framesReceived=
+console:error RFB failure: Unexpected server message (type 98) closed= framesReceived=
+console:error Tried changing state of a disconnected RFB object closed= framesReceived=
+console:error RFB failure: Unexpected server message (type 96) closed= framesReceived=
+console:error Tried changing state of a disconnected RFB object closed= framesReceived=

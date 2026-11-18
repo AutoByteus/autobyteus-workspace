@@ -1,0 +1,190 @@
+{
+  "case": "busy-application-terminate",
+  "serverDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-background/autobyteus-server-ts",
+  "date": "2026-11-10T11:15:40.700Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-application-terminate-kYGynw",
+  "tag": "BQ284_APP_57574_1794309340700",
+  "steps": [
+    {
+      "step": "host IPC",
+      "value": {
+        "kind": "ready",
+        "url": "http://127.0.0.1:62793",
+        "model": "busy-app-fixture:lmstudio@127.0.0.1:62790"
+      },
+      "at": "2026-11-10T11:15:42.644Z"
+    },
+    {
+      "step": "application start",
+      "value": {
+        "result": {
+          "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "busy-1",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-11-10T11:15:42.825Z",
+          "updatedAt": "2026-11-10T11:15:42.825Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_f21300d0cb5042eabb35d3250077fcbc",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        }
+      },
+      "at": "2026-11-10T11:15:42.900Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 1,
+        "invoke": true
+      },
+      "at": "2026-11-10T11:15:42.907Z"
+    },
+    {
+      "step": "busy",
+      "value": {
+        "binding": {
+          "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+          "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+          "launchRequestId": "busy-1",
+          "status": "ATTACHED",
+          "executionResourceRef": {
+            "source": "bundle",
+            "kind": "AGENT",
+            "localId": "worker"
+          },
+          "createdAt": "2026-11-10T11:15:42.825Z",
+          "updatedAt": "2026-11-10T11:15:42.825Z",
+          "terminatedAt": null,
+          "lastErrorMessage": null,
+          "runtime": {
+            "subject": "AGENT_RUN",
+            "agentRunId": "worker_f21300d0cb5042eabb35d3250077fcbc",
+            "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+            "members": []
+          }
+        },
+        "pid": 59584
+      },
+      "at": "2026-11-10T11:15:43.355Z"
+    },
+    {
+      "step": "application end",
+      "value": {
+        "result": {
+          "binding": {
+            "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "launchRequestId": "busy-1",
+            "status": "TERMINATED",
+            "executionResourceRef": {
+              "source": "bundle",
+              "kind": "AGENT",
+              "localId": "worker"
+            },
+            "createdAt": "2026-11-10T11:15:42.825Z",
+            "updatedAt": "2026-11-10T11:15:43.429Z",
+            "terminatedAt": "2026-11-10T11:15:43.429Z",
+            "lastErrorMessage": null,
+            "runtime": {
+              "subject": "AGENT_RUN",
+              "agentRunId": "worker_f21300d0cb5042eabb35d3250077fcbc",
+              "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+              "members": []
+            }
+          },
+          "elapsedMs": 75
+        }
+      },
+      "at": "2026-11-10T11:15:43.442Z"
+    },
+    {
+      "step": "application terminate",
+      "value": {
+        "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+        "result": {
+          "binding": {
+            "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+            "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+            "launchRequestId": "busy-1",
+            "status": "TERMINATED",
+            "executionResourceRef": {
+              "source": "bundle",
+              "kind": "AGENT",
+              "localId": "worker"
+            },
+            "createdAt": "2026-11-10T11:15:42.825Z",
+            "updatedAt": "2026-11-10T11:15:43.429Z",
+            "terminatedAt": "2026-11-10T11:15:43.429Z",
+            "lastErrorMessage": null,
+            "runtime": {
+              "subject": "AGENT_RUN",
+              "agentRunId": "worker_f21300d0cb5042eabb35d3250077fcbc",
+              "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+              "members": []
+            }
+          },
+          "elapsedMs": 75
+        },
+        "roundTripMs": 87,
+        "foregroundGone": true
+      },
+      "at": "2026-11-10T11:15:43.494Z"
+    },
+    {
+      "step": "host IPC",
+      "value": {
+        "kind": "closed"
+      },
+      "at": "2026-11-10T11:15:44.056Z"
+    }
+  ],
+  "hostPid": 57575,
+  "applicationTerminate": {
+    "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+    "result": {
+      "binding": {
+        "bindingId": "00806b95-d460-4631-a407-8cb7141c20c7",
+        "applicationId": "bundle-app__7374616e64616c6f6e65__66697874757265",
+        "launchRequestId": "busy-1",
+        "status": "TERMINATED",
+        "executionResourceRef": {
+          "source": "bundle",
+          "kind": "AGENT",
+          "localId": "worker"
+        },
+        "createdAt": "2026-11-10T11:15:42.825Z",
+        "updatedAt": "2026-11-10T11:15:43.429Z",
+        "terminatedAt": "2026-11-10T11:15:43.429Z",
+        "lastErrorMessage": null,
+        "runtime": {
+          "subject": "AGENT_RUN",
+          "agentRunId": "worker_f21300d0cb5042eabb35d3250077fcbc",
+          "definitionId": "bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572",
+          "members": []
+        }
+      },
+      "elapsedMs": 75
+    },
+    "roundTripMs": 87,
+    "foregroundGone": true
+  },
+  "close": {
+    "exitCode": 0,
+    "closed": true,
+    "elapsedMs": 611
+  },
+  "result": "Pass",
+  "calls": 1,
+  "hostLogTail": "AgentRuntime initialized for agent_id 'worker_f21300d0cb5042eabb35d3250077fcbc'. Context registered.\nAgent facade initialized for agent_id 'worker_f21300d0cb5042eabb35d3250077fcbc'.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc' created and stored successfully.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc' requesting runtime to start.\nAgentRuntime for 'worker_f21300d0cb5042eabb35d3250077fcbc': Starting worker.\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc': Starting...\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc' asyncRun(): Starting.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Runtime init completed (event store initialized).\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Runtime init completed (status deriver initialized).\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Runtime init completed (AgentEventInbox initialized).\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Runtime init completed (AgentEventScheduler initialized).\nWaiting for agent 'worker_f21300d0cb5042eabb35d3250077fcbc' to become idle (timeout: 30s)...\nAgentEventStream (ID: 8d90423e-5116-4b41-b055-1d3216ad1df9) initialized for agent_id 'worker_f21300d0cb5042eabb35d3250077fcbc'. Subscribed to notifier.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Starting direct runtime bootstrap lifecycle.\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Bootstrapper starting direct lifecycle execution.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Running bootstrap step 0 (McpServerPrewarmingStep).\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Executing McpServerPrewarmingStep.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Running bootstrap step 1 (SystemPromptProcessingStep).\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Executing SystemPromptProcessingStep.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': No configured skills. Skipping skill catalog.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Final processed system prompt configured and captured. Trace ID: rt_1794309342801_20447375-a3dd-43ff-a31b-76c819a0d4b0. Final length: 2606.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc' initialized successfully. Entering main event scheduler loop.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc' has become idle.\nAgentEventStream (ID: 8d90423e-5116-4b41-b055-1d3216ad1df9) for 'worker_f21300d0cb5042eabb35d3250077fcbc': close() called. Unsubscribing all listeners and signaling.\nAgentEventStream (ID: 6b408fb9-109d-4bf7-9f69-051174193a82) initialized for agent_id 'worker_f21300d0cb5042eabb35d3250077fcbc'. Subscribed to notifier.\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgent run 'worker_f21300d0cb5042eabb35d3250077fcbc': UserInputContextBuildingProcessor completed. Final content length: 22\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nLlmStreamingResponseHandler finalized 1 tool invocations.\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc' requesting runtime interrupt.\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_tool_execution_interrupted. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nRemoving agent 'worker_f21300d0cb5042eabb35d3250077fcbc'. Attempting graceful shutdown.\nAgent 'worker_f21300d0cb5042eabb35d3250077fcbc' requesting runtime to stop (timeout: 10s).\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc': Stop requested.\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: ec1708b0-657b-4500-8c54-b062df3f67dd, AgentID: worker_f21300d0cb5042eabb35d3250077fcbc) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc' asyncRun() loop has finished.\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc': Running shutdown sequence on worker loop.\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc': Shutdown resource cleanup completed successfully.\nAgentWorker 'worker_f21300d0cb5042eabb35d3250077fcbc': Shutdown sequence completed.\nUnregistered AgentContext for agent_id 'worker_f21300d0cb5042eabb35d3250077fcbc'.\nAgentRuntime for 'worker_f21300d0cb5042eabb35d3250077fcbc': Context unregistered.\nAgentRuntime for 'worker_f21300d0cb5042eabb35d3250077fcbc' stop() method completed.\nAgentEventStream (ID: 6b408fb9-109d-4bf7-9f69-051174193a82) for 'worker_f21300d0cb5042eabb35d3250077fcbc': close() called. Unsubscribing all listeners and signaling.\nAgentEventStream (ID: 6b408fb9-109d-4bf7-9f69-051174193a82) for 'worker_f21300d0cb5042eabb35d3250077fcbc': close() called. Unsubscribing all listeners and signaling.\n",
+  "rootRemoved": true
+}

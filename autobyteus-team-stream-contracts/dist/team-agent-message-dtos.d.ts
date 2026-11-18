@@ -103,6 +103,7 @@ export declare const teamAgentPayloadSchemas: {
             idle: "idle";
             running: "running";
         }>;
+        background_tasks_running: z.ZodNumber;
         trigger: z.ZodNullable<z.ZodString>;
         tool_name: z.ZodNullable<z.ZodString>;
         error_message: z.ZodNullable<z.ZodString>;
@@ -555,6 +556,12 @@ export declare const teamAgentPayloadSchemas: {
             stopped: "stopped";
         }>;
         summary: z.ZodNullable<z.ZodString>;
+        end_reason: z.ZodNullable<z.ZodEnum<{
+            time_limit: "time_limit";
+            low_memory: "low_memory";
+            run_ended: "run_ended";
+        }>>;
+        exit_code: z.ZodNullable<z.ZodNumber>;
         started_at: z.ZodString;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
@@ -570,6 +577,7 @@ export declare const teamAgentPayloadSchemas: {
             }, z.core.$strict>;
         }, z.core.$strict>]>;
         content: z.ZodString;
+        message_id: z.ZodNullable<z.ZodString>;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;

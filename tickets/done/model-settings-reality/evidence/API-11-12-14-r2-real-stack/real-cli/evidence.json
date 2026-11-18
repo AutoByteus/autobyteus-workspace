@@ -1,0 +1,505 @@
+{
+  "startedAt": "2026-11-10T16:53:18.330Z",
+  "steps": [
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "the backend was restarted",
+      "details": null
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.280 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.322 (Claude Code)"
+      }
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 90101
+    },
+    {
+      "label": "frontend",
+      "pid": 90178
+    },
+    {
+      "label": "backend",
+      "pid": 92318
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 92318,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 90178,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 90101,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/tmp/runtime-switch-members-probe-bbPn64"
+    }
+  ],
+  "browserErrors": [],
+  "ownedRoot": "/tmp/runtime-switch-members-probe-bbPn64",
+  "backendUrl": "http://127.0.0.1:34809",
+  "frontUrl": "http://127.0.0.1:36487",
+  "definitions": {
+    "agent": {
+      "id": "switch-probe-agent",
+      "name": "Switch Probe Agent"
+    },
+    "host": {
+      "id": "switch-probe-host",
+      "name": "Switch Probe Host"
+    },
+    "writer": {
+      "id": "switch-probe-writer",
+      "name": "Switch Probe Writer"
+    },
+    "writerAgy": {
+      "id": "switch-probe-writer-agy",
+      "name": "Switch Probe Writer Agy"
+    },
+    "team": {
+      "id": "switch-probe-team",
+      "name": "Switch Probe Team"
+    },
+    "org": {
+      "id": "switch-probe-org",
+      "name": "Switch Probe Org"
+    }
+  },
+  "cli": {
+    "mode": "real",
+    "bundled": "2.1.280 (Claude Code)",
+    "system": "2.1.322 (Claude Code)"
+  },
+  "API-11": {
+    "title": "New-run picker: the Claude CLI is updated while the app runs; the next open lists the new models, Refresh models and a failing CLI behave, a new model launches (AC-010, AC-011, QR-001, QR-002)",
+    "result": "Pass",
+    "details": {
+      "steps": [],
+      "l0": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus[1m]",
+        "sonnet"
+      ],
+      "firstOpen": {
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus[1m]",
+          "sonnet"
+        ],
+        "reads": 1
+      },
+      "versionAfterUpdate": "2.1.322 (Claude Code)",
+      "l1": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "added": [
+        "opus"
+      ],
+      "removed": [
+        "opus[1m]"
+      ],
+      "immediateRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus[1m]",
+        "sonnet"
+      ],
+      "busySeen": true,
+      "opening2": {
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ],
+        "reads": 1
+      },
+      "failed": {
+        "error": "Couldn’t refresh models",
+        "button": "Retry",
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ]
+      },
+      "afterRetry": {
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ],
+        "button": "Refresh models"
+      },
+      "picked": "opus",
+      "runId": "daily_assistant_986b576bad594ff28824bac0840d5bb6",
+      "launched": {
+        "llmModelIdentifier": "opus",
+        "llmConfig": null,
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "replied": true
+    },
+    "ms": 22278
+  },
+  "API-12": {
+    "title": "Stopped Team member switched to the Claude Agent SDK runtime after a CLI update: new model listed, stale selection and unreadable list refuse with the right texts and save nothing, Save succeeds, switch back (AC-012, AC-013, Rule 10)",
+    "result": "Pass",
+    "details": {
+      "steps": [],
+      "teamRunId": "switch_probe_team_570a5c45e0044c0fb24ea27e8311524b",
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli",
+        "deepseek_harness",
+        "reason",
+        "unavailable"
+      ],
+      "bundledRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus[1m]",
+        "sonnet"
+      ],
+      "l1": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "added": [
+        "opus"
+      ],
+      "immediateRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "updatedRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "picked": "opus",
+      "refusedNotOffered": "'opus' is not offered by Claude Agent SDK now (for '/worker'). Refresh the model list and choose again. Saved settings were not changed.",
+      "refusedUnreadable": "The model list of Claude Agent SDK could not be read. Try again. Saved settings were not changed.",
+      "saveNote": null,
+      "saved": {
+        "runtimeKind": "claude_agent_sdk",
+        "model": "opus"
+      },
+      "shotPrefix": "API-12-back",
+      "firstRuntimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli",
+        "deepseek_harness",
+        "reason",
+        "unavailable"
+      ],
+      "lockedRuntimeBanner": 0,
+      "backNote": null,
+      "back": {
+        "runtimeKind": "autobyteus",
+        "model": "rsw-native:lmstudio@127.0.0.1:38569"
+      },
+      "returnChat": "W worker Idle You NATIVE-TEAM-ONE please answer W worker NATIVE-REPLY-1 You NATIVE-TEAM-TWO please answer W worker NATIVE-REPLY-2 Context Files (0) (drag, paste, or upload) Projects Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages No team messages yet Accepted inter-agent messages will appear here with their reference files.",
+      "afterMessage": {
+        "runtimeKind": "autobyteus",
+        "model": "rsw-native:lmstudio@127.0.0.1:38569",
+        "pending": false
+      }
+    },
+    "ms": 79447
+  },
+  "API-14": {
+    "title": "Stopped Team run on the Claude Agent SDK runtime: the Team-level (runtime-locked) model menu re-reads the run's options when it opens and on Refresh models, shows busy, and keeps its options with an error when the CLI fails (REQ-010, REQ-011, QR-001)",
+    "result": "Pass",
+    "details": {
+      "firstModel": "haiku",
+      "teamRunId": "switch_probe_team_d4208fb3537a4d938da35416ae265451",
+      "runtimeLocked": 1,
+      "firstRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus[1m]",
+        "sonnet"
+      ],
+      "l1": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "added": [
+        "opus"
+      ],
+      "refreshControl": 1,
+      "openedRows": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "busySeen": true,
+      "rowsWhileBusy": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "failedSeen": true,
+      "afterFailure": {
+        "error": "Couldn’t refresh models",
+        "button": "Retry",
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ],
+        "menuText": "Claude Agent SDK claude-haiku-5-5 Haiku · Haiku 5.5 · Fastest for quick answers · $0.10/$0.50 per Mtok ($0.50/$2.50 for prompts over 100k) claude-opus-5-5 Recommended Opus · Opus 5.5 · Best for everyday, complex tasks · $4/$20 per Mtok claude-fable-5-1 Fable · Fable 5.1 · Most capable for your hardest and longest-running tasks · $10/$50 per Mtok claude-sonnet-5-5 Sonnet · Sonnet 5.5 · Efficient fo"
+      },
+      "cardAfterFailure": "Workspace workspace Model claude-haiku-4-5-20251001 Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "noteAfterFailure": [],
+      "afterRecovery": {
+        "rows": [
+          "claude-fable-5-1[1m]",
+          "haiku",
+          "opus",
+          "sonnet"
+        ],
+        "button": "Refresh models"
+      },
+      "findings": []
+    },
+    "ms": 18860
+  },
+  "API-19": {
+    "title": "AutoByteus runtime: a model a local server (LM Studio) starts offering while the app runs appears after \"Refresh models\", which re-discovers discovered providers (AC-011, REQ-011, REQ-014)",
+    "result": "Pass",
+    "details": {
+      "before": [
+        "rsw-native-b:lmstudio@127.0.0.1:38569",
+        "rsw-native:lmstudio@127.0.0.1:38569"
+      ],
+      "after": [
+        "rsw-native-b:lmstudio@127.0.0.1:38569",
+        "rsw-native-c:lmstudio@127.0.0.1:38569",
+        "rsw-native:lmstudio@127.0.0.1:38569"
+      ]
+    },
+    "ms": 3989
+  },
+  "API-14b": {
+    "title": "Saved-run (locked) menu opened for the first time while the CLI is already failing: the card never says \"No longer offered\", the menu shows the error with Retry, the run's own model stays editable, Refresh models recovers (AC-012 failure alternate, SR-004)",
+    "result": "Pass",
+    "details": {
+      "firstModel": "haiku",
+      "teamRunId": "switch_probe_team_fbcbb7b84ac8493b969cf1376235aa12",
+      "cardText": "Workspace workspace Model haiku Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "notes": [],
+      "viewText": "Switch Probe Team Stopped This agent Team settings Workspace workspace Model haiku Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve Members L lead Coordinator haiku · Claude Agent SDK · Auto-approve W worker haiku · Claude Agent SDK · Auto-approve",
+      "triggerEnabled": true,
+      "menuText": "Claude Agent SDK No models available Couldn’t refresh models Retry",
+      "menuRows": [],
+      "menuError": "Couldn’t refresh models",
+      "menuButton": "Retry",
+      "recovered": true,
+      "rowsAfterRecovery": [
+        "claude-fable-5-1[1m]",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "cardAfterRecovery": "Workspace workspace Model haiku Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "findings": []
+    },
+    "ms": 22861
+  },
+  "completedAt": "2026-11-10T16:56:17.896Z"
+}

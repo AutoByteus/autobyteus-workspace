@@ -1,0 +1,10 @@
+# IMP-00 reproduction (evidence/repro-agy-revoked-mcp-tool.e2e.test.ts, temporarily at tests/e2e/runtime/zz-probe-agy-revoked-mcp-tool.e2e.test.ts) run with the adapter fix stashed, then with the fix; probe file removed afterwards
+# cmd: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-probe-agy-revoked-mcp-tool.e2e.test.ts --no-watch
+# base adapter 1138e8fbef / fixed adapter (as committed in the next commit)  env: macOS (darwin)  date: 2026-10-24  (output excerpt)
+
+== BASE
+     × the agent reads the HTTP reason of the failed tool call 682ms
+      Tests  1 failed (1)
+== FIX
+      Tests  1 passed (1)
+(Base failure detail matches the Solution Designer's SD-01-repro-base.log: ERROR AGY_TURN_ERROR "Internal error".)

@@ -50,7 +50,6 @@
           @click="emit('probe')"
         >
           <span v-if="probing" class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 mr-2"></span>
-          <span v-else class="i-heroicons-signal-20-solid w-4 h-4 mr-2"></span>
           {{ $t('settings.components.settings.ProviderAPIKeyManager.load_models') }}
         </button>
 
@@ -61,7 +60,6 @@
           @click="emit('save')"
         >
           <span v-if="saving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-700 mr-2"></span>
-          <span v-else class="i-heroicons-check-20-solid w-4 h-4 mr-2"></span>
           {{ $t('settings.components.settings.ProviderAPIKeyManager.save_custom_provider') }}
         </button>
       </div>

@@ -1,0 +1,16 @@
+# API-01-r2 (AC-001 app part) 2026-11-02T05:10:56Z: fresh profile, feed good, 70 s after start
+{
+  "aria": "false",
+  "download": true,
+  "status": "available",
+  "availableVersion": "1.5.11-beta.11",
+  "automaticUpdate": false,
+  "currentVersion": "1.5.11-beta.10",
+  "message": "Version 1.5.11-beta.11 is available.",
+  "errorOperation": null,
+  "outcome": null,
+  "outcomeReason": null
+}
+## files
+app-update-notification.json
+## zip requests: 0

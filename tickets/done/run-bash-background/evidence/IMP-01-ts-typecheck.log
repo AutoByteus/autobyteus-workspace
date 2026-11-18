@@ -1,0 +1,4 @@
+# IMP-01 autobyteus-ts production typecheck
+# Command: pnpm -C autobyteus-ts exec tsc --noEmit -p tsconfig.build.json
+# Commit: e26460bf57; macOS Darwin 25.5.0 arm64, bash 3.2.57, node v22.23.1; 2026-11-10T10:37Z
+exit=0

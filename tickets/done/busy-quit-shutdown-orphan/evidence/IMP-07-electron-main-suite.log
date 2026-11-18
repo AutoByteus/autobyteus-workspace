@@ -1,0 +1,90 @@
+# IMP-07
+# Command: pnpm -C autobyteus-web test:electron run
+# Commit: bf2857ca29
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+
+> autobyteus@1.5.11-beta.4 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-web
+> vitest --config ./electron/vitest.config.ts run
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-web/electron
+
+ ✓ server/__tests__/serverProcessTree.spec.ts (5 tests) 106ms
+ ✓ __tests__/logger.spec.ts (4 tests) 104ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (12 tests) 74ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 139ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (16 tests) 246ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (3 tests) 323ms
+   ✓ reports real loopback conflict without killing listener; fresh retry succeeds  321ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 67ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 88ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 77ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 68ms
+ ✓ __tests__/preload.spec.ts (5 tests) 29ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 21ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 13ms
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 25ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 28ms
+ ✓ launch-profile/__tests__/electronLaunchProfile.spec.ts (5 tests) 16ms
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (12 tests) 12ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 9ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (3 tests) 5ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 13ms
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 14ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (6 tests) 8ms
+stdout | server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+AC002 actual deadline receipt {"elapsedMs":1007,"pid":78986,"absent":true}
+
+ ✓ launch-profile/__tests__/e2eLaunchPreflight.spec.ts (1 test) 9ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 8ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 7ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 6ms
+ ✓ server/__tests__/BackendPortBindFaults.spec.ts (5 tests) 7ms
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 7ms
+ ✓ launch-profile/__tests__/e2eDataRootSafety.spec.ts (3 tests) 7ms
+ ✓ __tests__/nodeRegistryStore.spec.ts (7 tests) 10ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (13 tests) 5ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 5ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ browser/__tests__/register-browser-shell-ipc-handlers.spec.ts (2 tests) 4ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (2 tests) 4ms
+ ✓ browser/__tests__/browser-view-factory.spec.ts (3 tests) 4ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 3ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 3ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 3ms
+ ✓ browser/__tests__/browser-session-profile.spec.ts (2 tests) 4ms
+ ✓ browser/__tests__/browser-runtime.spec.ts (1 test) 4ms
+ ✓ browser/__tests__/browser-tab-observers.spec.ts (1 test) 5ms
+ ✓ extensions/__tests__/extensionCatalog.spec.ts (2 tests) 2ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+ ✓ extensions/__tests__/voiceInputRuntimeService.spec.ts (3 tests) 2ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ server/__tests__/ServerForceStopTree.spec.ts (1 test) 1987ms
+   ✓ force-stops a wedged server and its whole tree, leaving no process behind  1986ms
+ ✓ __tests__/appDataPaths.spec.ts (1 test) 1ms
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+ ✓ extensions/__tests__/managedExtensionService.spec.ts (3 tests) 3767ms
+   ✓ ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker  2654ms
+   ✓ ManagedExtensionService > preserves enabled state and language mode across reinstall  725ms
+   ✓ ManagedExtensionService > marks a broken installation as requiring attention  387ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts (11 tests) 4120ms
+   ✓ actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child  1014ms
+   ✓ actual advisory inspector faults > rejects over-32KiB output rather than publishing a truncated owner  326ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "" does not fabricate an owner  338ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "unstructured text" does not fabricate an owner  306ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "pNaN\ncnode\n" does not fabricate an owner  576ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p9007199254740992\ncnode\n" does not fabricate an owner  396ms
+   ✓ actual advisory inspector faults > empty or malformed evidence "p12\ncnode\npbad\n" does not fabricate an owner  408ms
+   ✓ actual advisory inspector faults > discards racing/nonzero partial evidence, recovers fresh, then forgets vanished owners  443ms
+
+ Test Files  50 passed | 1 skipped (51)
+      Tests  285 passed | 1 skipped (286)
+   Start at  12:35:36
+   Duration  4.50s (transform 1.20s, setup 0ms, collect 2.76s, tests 11.48s, environment 7ms, prepare 3.52s)
+

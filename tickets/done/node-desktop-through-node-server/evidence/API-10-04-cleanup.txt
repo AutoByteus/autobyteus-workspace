@@ -1,0 +1,23 @@
+# Case: API-10 step 04 — cleanup
+# Command: autobyteus-docker.sh destroy --name abx405-launcher-node; docker volume rm abx405-launcher-node-*; docker rm -f -v abx405-api-registry; docker rmi the S1 image tags and registry:2
+# Date: 2026-11-06T18:05:05Z
+
+[AutoByteus Docker] Removed managed container abx405-launcher-node for abx405-launcher-node. Named volumes and host workspaces were kept.
+[AutoByteus Docker] Removed launcher state for abx405-launcher-node.
+exit=0
+abx405-launcher-node-workspace
+abx405-launcher-node-data
+abx405-launcher-node-root-home
+abx405-launcher-node-chromium-profile
+abx405-launcher-node-server-packages
+abx405-api-registry
+Untagged: localhost:64429/abx405/autobyteus-server:s1
+Untagged: abx405-api/autobyteus-server:s1
+Untagged: registry:2
+containers abx405*: []
+volumes abx405*: []
+image dd05ec966af3 present: no
+user nodes:
+autobyteus-server-2	autobyteus/autobyteus-server:beta	Up 2 hours
+autobyteus-server-1	autobyteus/autobyteus-server:beta	Up 2 hours
+autobyteus-server-0	autobyteus/autobyteus-server:beta	Up 2 hours

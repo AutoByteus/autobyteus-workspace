@@ -1,0 +1,88 @@
+# Round 2 browser journeys and probes: API-05 (rerun), API-06 (rerun, old-run edit), API-09, API-10, API-11, API-12
+# stack: backend `node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 18080 --data-dir <owned temp root>` (server + autobyteus-ts dist
+#        rebuilt from this worktree at 7daf47430 = source 47f44c3df; env -i PATH, throwaway HOME, own SQLite DB in the temp root,
+#        AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault read-only, ANTIGRAVITY_CLI_COMMAND=autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs)
+#        + `BACKEND_NODE_BASE_URL=http://127.0.0.1:18080 nuxt dev --port 13000`; headless Chromium (agent browser tool); DOM assertions by script.
+# seed: GraphQL create + terminate (agent runs, 2-member team run, two AgentOrg runs: root/director Opus 5.5 {reasoning_effort:max},
+#       /team/lead customized Sonnet 5.5 {thinking_enabled:true, reasoning_effort:high}); then thinking_display:"omitted" added to every stored
+#       llmConfig of those runs and to definition apie2e-stale-launch-def's defaultLaunchConfig (test-owned JSON only).
+# commit: 7daf47430; env: Linux, Node v22.23.3; date: 2026-10-29. Provider calls: 1 (API-11).
+
+## API-10 (AC-012: opening the settings alone writes nothing)
+run apie2e_assistant_cc60…14a7, stored {"reasoning_effort":"max","thinking_display":"omitted"}: Edit Config opened ->
+  card "Model claude-opus-5-5 | Thinking Max | Tool approval Auto-approve"; buttons: model trigger, "Max" only (no Save / Cancel);
+  run_metadata.json sha256 prefix before seeding-edit 8aa7a0a2b59e539c, after opening 8aa7a0a2b59e539c (unchanged)
+
+## API-06 rerun (AC-012 (a), agent + team)
+agent run apie2e_assistant_1f2f…a8ba, stored {"reasoning_effort":"max","thinking_display":"omitted"}: menu Low | Medium | High | Xhigh | Max ✓ ->
+  High -> Save -> "Saved. Changes apply when this run resumes." (no alert) (screenshot API-06-r2-old-run-edit-saved.png)
+  stored llmConfig after: {'reasoning_effort': 'high'}
+team run apie2e_team_234f…9029 (root default + /lead + /helper hold the key): team Thinking Max -> High -> Save ->
+  "Saved. Changes apply when this run resumes." (screenshot API-06-r2-old-team-run-edit-saved.png)
+  stored: root {'reasoning_effort': 'high'}, /lead {'reasoning_effort': 'high'}, /helper {'reasoning_effort': 'high'}
+
+## API-09 (AC-012 (a)/(b), AgentOrg)
+model edit, org apie2e_org_454d…9e04: open /director -> Edit Config -> root Thinking Max -> High -> Save ->
+  "Saved. Changes apply when this run resumes." (screenshot API-09-org-model-edit-saved.png). Stored tree after:
+  root {'reasoning_effort': 'high'}; /director {'reasoning_effort': 'high'}; /team (team default) {'reasoning_effort': 'high'};
+  /team/helper {'reasoning_effort': 'high'}; /team/lead (customized, not edited) {'thinking_enabled': True, 'reasoning_effort': 'high', 'thinking_display': 'omitted'}
+  (untouched scope left as stored, design caller #4)
+workspace-only edit, org apie2e_org_c24f…6955: /team Workspace ws -> Temp workspace, nothing else -> Save ->
+  "Saved. Changes apply when this run resumes." (screenshot API-09-org-workspace-only-edit-saved.png). Stored tree after:
+  /team, /team/lead, /team/helper workspaceRootPath .../data/temp_workspace; root and /director keep .../ws;
+  every llmConfig unchanged, still holding 'thinking_display': 'omitted' (not rewritten by the validation)
+
+## API-10 (AC-012 alternate: invalid declared value still refused)
+GraphQL updateStoppedAgentRunModelConfig on apie2e_assistant_cc60…14a7 with {"reasoning_effort":"ultra","thinking_display":"omitted"}:
+{"data":{"updateStoppedAgentRunModelConfig":{"success":false,"outcome":"VALIDATION_FAILED","message":"Model settings are invalid.","fieldErrors":[{"path":"llmConfig.reasoning_effort","message":"Value is not one of the supported options."}],"canonicalSelection":{"llmModelIdentifier":"claude-opus-5-5","llmConfig":{"reasoning_effort":"max","thinking_display":"omitted"}}}}}
+  run_metadata.json sha256 prefix after: 8aa7a0a2b59e539c (unchanged)
+
+## API-11 (AC-013 launch surface in the app; observation)
+definition apie2e-stale-launch-def, defaultLaunchConfig {'llmModelIdentifier': 'claude-opus-5-5', 'llmConfig': {'reasoning_effort': 'low', 'thinking_display': 'omitted'}}:
+  Agents -> View Details -> Run Agent -> composer "claude-opus-5-5 AutoByteus | Thinking: Low" -> send "Reply with exactly the word: LYCHEE" ->
+  reply "LYCHEE", status Idle, no error (screenshot API-11-stale-launch-def-run-reply.png); backend log: no Anthropic error / 400.
+  new run apie2e_stale_launch_def_42c5…7e8f stored llmConfig: {'reasoning_effort': 'low', 'thinking_display': 'omitted'}
+  -> launch succeeds; the new standalone run stores the inert key (standalone launch does not pass the server validator: design-spec SR-005
+     "Paths that do not go through the validator"); recorded as FU-005.
+
+## API-12 (RISK-6, schema-less model, scripted AGY fixture)
+{
+ "models": [
+  {
+   "id": "gemini-3.8-flash-low",
+   "schema": null
+  }
+ ],
+ "create": {
+  "success": true,
+  "message": "Agent run created successfully.",
+  "runId": "apie2e_assistant_4e2348a26e65472fa98789507e215355"
+ },
+ "stop": {
+  "success": true,
+  "message": "Agent run terminated successfully."
+ },
+ "save": {
+  "success": true,
+  "outcome": "UNCHANGED",
+  "message": "Model settings are already up to date.",
+  "fieldErrors": [],
+  "canonicalSelection": {
+   "llmModelIdentifier": "gemini-3.8-flash-low",
+   "llmConfig": null
+  }
+ },
+ "resume": {
+  "metadataConfig": {
+   "llmModelIdentifier": "gemini-3.8-flash-low",
+   "llmConfig": null
+  }
+ }
+}
+
+## API-05 rerun (AC-007 alternate)
+run apie2e_assistant_460b…eab (stored model rewritten to claude-opus-4-7): restoreAgentRun -> {"success":false,"message":"Error: MODEL_IDENTIFIER_NOT_AVAILABLE","runId":null};
+  Edit Config: "Model claude-opus-4-7 AutoByteus | No longer offered by AutoByteus. Choose another model before this run resumes. | Thinking Not available for this model"
+  (screenshot API-05-r2-removed-model-run-settings.png)
+  note: a first fixture for this case was emptied by my own seeding script (opened the file for writing before reading it, run 12bb…8c7b); that run
+  was discarded and the case redone on a fresh run. Not a product issue.

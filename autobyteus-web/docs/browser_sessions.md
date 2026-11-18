@@ -59,6 +59,11 @@ Main-process owners:
   - URL normalization
   - load/readiness waits
   - reuse eligibility
+  - native Back/Forward dispatch (without load-completion waiting)
+- `browser-tab-observers.ts`
+  - shared native event adapter for ordinary and popup-created sessions
+  - main-frame navigation and stop-loading capability reconciliation
+  - title/destruction notifications; popup adoption policy stays in the manager
 - `BrowserTabPageOperations`
   - page reads
   - screenshot capture
@@ -81,6 +86,24 @@ The current settlement rules are:
 - main-frame navigation failure rejects on Electron `did-fail-load`, `did-fail-provisional-load`, or an immediate `loadURL()` rejection
 
 This keeps navigation lifecycle policy in one place and prevents Browser session calls from hanging when the URL changes without a full reload or when Electron reports a provisional failure path.
+
+### Desktop Back / Forward
+
+The Browser toolbar has localized, keyboard-focusable Back and Forward buttons.
+Each is enabled only when the active tab's native history can traverse in that direction.
+Chromium owns document, hash and History API entries (including same-URL entries),
+forward-branch truncation after new navigation, and page/unload restrictions.
+Histories remain independent per live tab; switching or maximizing does not recreate them.
+No history restoration or new agent-facing tool is provided.
+
+The shell-only `navigateBrowserHistory({ tabId, direction: 'back' | 'forward' })`
+bridge uses `browser-shell:navigate-history`. Main checks the actual IPC sender,
+attachment, lease and active tab synchronously before dispatch. An inactive request
+is inert; malformed/unattached/foreign requests reject. Unavailable directions do nothing.
+The response is a current snapshot, **not load completion**. Native navigation and
+stop-loading events publish updated `canGoBack` / `canGoForward` flags even if the
+URL does not change. Capability-only updates preserve unfinished address edits.
+Existing address/reload readiness semantics and persistent Browser partition are unchanged.
 
 ### Server browser boundary
 
@@ -115,12 +138,38 @@ The renderer does not own:
 
 `BrowserTabPageOperations` owns screenshot capture and
 `BrowserScreenshotArtifactWriter` owns artifact persistence. A screenshot is
-successful only when Electron returns a non-empty PNG buffer. Empty capture
-buffers fail with the typed `browser_screenshot_failed` browser error before an
-artifact path is returned; the writer independently rejects empty buffers
-before creating a directory or file. Non-empty captures retain the existing
+successful only when Electron returns a non-empty PNG buffer. The writer
+independently rejects empty buffers before creating a directory or file.
+Non-empty captures retain the existing
 `{ tab_id, artifact_path, mime_type: 'image/png' }` result shape. This boundary
 prevents a false-success zero-byte artifact from becoming invalid LLM media.
+
+Capturing a tab that is not shown on screen: Chromium copies only a frame the
+tab has drawn, and a tab not shown (never focused in the Browser panel, not the
+active tab, or in a minimized or hidden window) stops drawing, so the first
+capture after its page loaded or navigated is rejected (`UnknownVizError`, or
+`Current display surface not available for capture` for a tab never drawn).
+`BrowserTabPageOperations` therefore treats a rejected or empty capture as one
+failed attempt: it resizes the view 1 px wider and back to its current
+`viewportBounds` (which makes Chromium draw a frame; moving the view does not),
+waits 100 ms and captures again. A capture that succeeds at once is not touched.
+After 2 s of failed attempts the screenshot fails with the typed
+`browser_screenshot_failed` browser error, whose message names the last reason,
+and no artifact is written. Full-page capture runs the same attempts on its
+temporarily enlarged bounds. A view in a minimized or hidden window cannot draw
+even after the resize, so `WorkspaceShellWindow` holds its Browser view only
+while the window is visible and not minimized (see below). The 2 s limit is
+checked after each attempt answers: a `capturePage()` that Chromium never
+answers is not cut off. That was seen only for an app hidden while the macOS
+screen was already locked, where no window `hide` event fires and the view
+stays attached; the capture then answers when the screen unlocks. The
+real-Electron regression is
+`electron/browser/__tests__/browser-screenshot-capture.electron.spec.ts`; it has
+no app-hidden case, because that outcome depends on the screen lock state.
+
+Tab errors use the tool contract's codes: an unknown `tab_id` fails with
+`browser_tab_not_found`, a closed one with `browser_tab_closed`, and the server
+passes these and `browser_screenshot_failed` through to the agent unchanged.
 
 ## Shell Lease Model
 
@@ -155,6 +204,17 @@ Rules:
 - unsupported protocols are still denied; `about:blank` is allowed because some popup flows bootstrap from it
 
 This keeps Browser browser-like without turning the shell into an uncontrolled multi-window surface.
+
+## Local `file://` pages
+
+Browser tabs open `http:`, `https:` and `file:` URLs. A local HTML file opened in a tab (by the user or an agent's browser tool) loads and runs, but it must not reach a node with the desktop app's rights: Electron sends what the packaged desktop renderer sends (no `Origin` on fetch, `Origin: file://` on WebSockets), so a node could not tell the two apart.
+
+The Browser session's request policy (`BrowserSessionProfile.applySessionPolicy`, rule `isFileDocumentRequest` in `electron/browser/browser-file-document-request.ts`) therefore sets `Origin: null` on every request made by a `file://` document, and by anything it creates (`about:blank`, `srcdoc` and `blob:` iframes, `about:blank` popups, workers, `sendBeacon` and `keepalive` requests on unload). Nodes refuse `Origin: null` as a foreign page's (autobyteus-416). The rule leaves alone:
+
+- GET/HEAD navigations (address bar, links, an agent's `navigate`, iframe `src`): a node URL opened from a tab that showed a local file displays normally;
+- every request of an `http(s)` page, an agent-started local server included: it keeps its own `Origin`.
+
+A tab's page can still load and use any web server; only its requests to nodes lose the app's rights. The policy is the only place that changes Browser request headers.
 
 ## Runtime Flow
 
@@ -217,7 +277,7 @@ Its device metrics are separate from native presentation bounds:
 - In desktop mode, the native `WebContentsView` uses the full Browser host rectangle.
 - In mobile mode, Electron main computes a centered finite device presentation rectangle from the host rectangle and profile size. If the host is smaller than the profile, the presentation is fit-scaled while the emulated CSS/device metrics remain unchanged.
 - `hostBounds` records the available Browser host rectangle; `viewportBounds` records the actual native `WebContentsView` presentation bounds.
-- `WorkspaceShellWindow` attaches or detaches the selected Browser view, but must not overwrite the Browser session manager's computed presentation bounds.
+- `WorkspaceShellWindow` attaches or detaches the selected Browser view, but must not overwrite the Browser session manager's computed presentation bounds. It holds the view only while its window is visible and not minimized: on `minimize`/`hide` it detaches the view and on `restore`/`show` it attaches the selected view again, so tabs of a minimized or hidden window stay capturable.
 
 Resizing the Browser panel or switching tabs must not overwrite a tab's `deviceEmulation` state.
 
@@ -253,6 +313,7 @@ The Browser shell UI owns:
 
 - the internal browser tab strip
 - manual URL entry
+- active-tab native Back / Forward with availability-driven disabled states
 - manual new-tab creation
 - mobile/desktop toggle for the active tab
 - refresh
@@ -389,6 +450,14 @@ results. Reopen saved history and verify exact results without replayed focus.
 Backend success or assignment while the tools panel is collapsed is not, by
 itself, evidence that the page was visible. Follow the workspace
 [testing guideline](../../TESTING.md) and clean up only test-owned instances.
+
+The credential-free `pnpm -C autobyteus-web test:e2e:embedded-browser-history`
+probe exercises toolbar history through a packaged worktree app and loopback
+fixtures. It covers committed documents and SPA entries, per-tab isolation,
+pending traversal, error-document recovery, popup lifecycle and keyboard/layout.
+Its file header lists prerequisites and case/output options. A native command
+response or network failure alone is not settlement: assert committed content
+(or the native error document) and reconciled controls.
 
 Electron browser lifecycle regression coverage should explicitly protect:
 

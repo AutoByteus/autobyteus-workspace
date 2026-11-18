@@ -1,0 +1,22 @@
+# IMP-R2-05 full suites and typechecks after round 2
+# Commit: 736b51f87a; macOS, Node v22.23.1; 2026-11-08
+## pnpm -C autobyteus-web test:nuxt --run
+ Test Files  721 passed (721)
+      Tests  5383 passed | 2 skipped (5385)
+exit=0
+## pnpm -C autobyteus-server-ts test:unit
+ Test Files  952 passed | 5 skipped (957)
+      Tests  8162 passed | 9 skipped (8171)
+exit=0
+## pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.3s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 26.0s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
+## pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 35.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.1s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS

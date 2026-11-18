@@ -1,0 +1,37 @@
+# IMP-08-smoke-negative
+# command: B=<temp dir with links to claude, codex, node only>; env -i PATH="$B:/usr/bin:/bin:/usr/sbin:/sbin" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" CODEX_E2E_MODEL=bogus-model-for-smoke python3 scripts/release_smoke.py
+# commit: e8d28886958380ed215de685ada5b8017e7d2f2a + a temporary broken assertion in configured-skill-on-demand-loading (expected description + ' TEMPORARILY-BROKEN'), reverted afterwards, not committed
+# environment: macOS (Darwin 25.5.0), Python 3.9.6
+# date: 2026-10-19T03:43Z
+# shows: AC-004 grok not on PATH named; AC-006 bogus model fails with the available list; AC-005 a broken assertion is named; exit 1; no live turn spent (the model check fails before any turn)
+
+preflight: grok not available: grok not on PATH
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+claude      brand-new team member                    FAIL    skipped: Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+claude      different same-named skill               FAIL    skipped: Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+codex       new run + restore, linked workspace      FAIL    skipped: Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+codex       brand-new team member                    FAIL    skipped: Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+codex       different same-named skill               FAIL    skipped: Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+grok        new run + restore, linked workspace      FAIL    not available: grok not on PATH
+grok        brand-new team member                    FAIL    not available: grok not on PATH
+grok        different same-named skill               FAIL    not available: grok not on PATH
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          FAIL    failed: AssertionError: expected '## Agent Identity\n\n- Name: linked_a…' to contain '- **linked_skill_new_run_179238141855…'
+autobyteus  brand-new team member, linked workspace  FAIL    failed: AssertionError: expected '## Agent Identity\n\n- Name: linked_a…' to contain '- **linked_skill_team_member_17923814…'
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-6-astra, gpt-6-luna, gpt-6-sol, gpt-6.1-sol
+
+commit    e8d28886958380ed215de685ada5b8017e7d2f2a
+models    not reported
+duration  live 12s, antigravity 18s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-tvwwpfk7
+exit=1
+
+## git status --porcelain before == after: yes

@@ -1,0 +1,32 @@
+{
+  "startedAt": "2026-11-08T07:00:54.393Z",
+  "scenarios": {},
+  "timeline": [
+    {
+      "t": 3168,
+      "event": "team",
+      "teamRunId": "delivery_team_28abf84b238b4f0b98990f4434d4a73b",
+      "leadRun": "solution_designer_d959c76275bb4b7d8aa4682bd88e62c0"
+    },
+    {
+      "t": 7784,
+      "event": "phone paired"
+    },
+    {
+      "t": 38153,
+      "event": "warm-up failure",
+      "conversation": "You\nStart. Marker WARMUP.\nL\nlead\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)",
+      "screen": "lead\nIdle · in Delivery Team\nYou\nStart. Marker WARMUP.\nL\nlead\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)",
+      "desk": []
+    }
+  ],
+  "proxy": {
+    "connections": 8
+  },
+  "error": "Error: Timed out waiting for the warm-up reply on the phone\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/repro/phone-live-repro.mjs:68:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/repro/phone-live-repro.mjs:214:9",
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T07:01:37.112Z"
+}

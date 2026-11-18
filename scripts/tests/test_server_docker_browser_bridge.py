@@ -242,8 +242,8 @@ class ServerDockerBrowserBridgeTest(unittest.TestCase):
     def test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants(self) -> None:
         dockerfile = DOCKERFILE.read_text(encoding="utf-8")
 
-        self.assertRegex(dockerfile, r"(?m)^ARG BASE_IMAGE_TAG=latest$")
-        self.assertRegex(dockerfile, r"(?m)^FROM autobyteus/chrome-vnc:\$\{BASE_IMAGE_TAG\} AS runtime$")
+        self.assertRegex(dockerfile, r"(?m)^ARG BASE_IMAGE_DIGEST=sha256:[0-9a-f]{64}$")
+        self.assertRegex(dockerfile, r"(?m)^FROM autobyteus/chrome-vnc@\$\{BASE_IMAGE_DIGEST\} AS runtime$")
         self.assertIn("COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh", dockerfile)
         self.assertIn("COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open", dockerfile)
         self.assertIn("COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open", dockerfile)

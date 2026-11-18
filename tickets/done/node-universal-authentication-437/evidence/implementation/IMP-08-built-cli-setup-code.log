@@ -1,0 +1,24 @@
+# IMP-08 built-cli-setup-code
+# Command: bash /tmp/nac-check.sh
+# Environment mode: shell
+# Commit: 4d6a3382d5 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T14:53:25Z
+
+health: 200
+graphql without credential: 401
+total 0
+drwx------@  3 normy  wheel   96 Nov  8 15:53 .
+drwx------@ 17 normy  wheel  544 Nov  8 15:53 ..
+srw-------@  1 normy  wheel    0 Nov  8 15:53 local-control.sock
+cli exit: 0
+Setup code: <code>
+Valid once, until 2026-11-08T15:23:28.043Z. Enter it on the Nodes page of the AutoByteus desktop app.
+exchange: {"credentialId":"owncred_f77c55dd92056b5c62bbbfdf9fa3f9a1","credential":"own_<credential>"}
+replay: {"error":"NODE_SETUP_CODE_INVALID","code":"NODE_SETUP_CODE_INVALID","message":"This setup code is not valid. Create a new one on the node's computer."}
+code in server output or logs: 0 files
+after the node stopped:
+The node is not reachable at /private/tmp/nac.qpMN/node-access/local-control.sock: connect ENOENT /private/tmp/nac.qpMN/node-access/local-control.sock
+long data folder:
+The node's local control socket path is 126 bytes, longer than the 103 bytes a Unix socket path may have: /tmp/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/node-access/local-control.sock. Use a shorter data folder path.
+# Exit status: 0

@@ -1,0 +1,7 @@
+prepared <R>/copies/v2/AutoByteus.app version=1.5.11-beta.11 id=com.autobyteus.app.an356 dr=identifier-com.autobyteus.app.an356 data=<R>/data-app port=47921 feed=http://127.0.0.1:47911 stamp={"version
+prepared <R>/copies/v3/AutoByteus.app version=1.5.11-beta.12 id=com.autobyteus.app.an356 dr=identifier-com.autobyteus.app.an356 data=<R>/data-app port=47921 feed=http://127.0.0.1:47911 stamp={"version
+prepared <R>/copies/app/AutoByteus.app version=1.5.11-beta.10 id=com.autobyteus.app.an356 dr=identifier-com.autobyteus.app.an356 data=<R>/data-app port=47921 feed=http://127.0.0.1:47911 stamp={"versio
+-rw-r--r--@ 1 normy  staff  492200670 Nov  2 08:11 AutoByteus-1.5.11-beta.11-arm64-mac.zip
+-rw-r--r--@ 1 normy  staff  492200735 Nov  2 08:12 AutoByteus-1.5.11-beta.12-arm64-mac.zip
+V2 satisfies V1 DR
+V3 satisfies V1 DR

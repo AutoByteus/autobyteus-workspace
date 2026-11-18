@@ -1,48 +1,50 @@
-# API/E2E coverage investigation — nfs-guide-install-commands
-## API-REV-002 plan (before current execution)
-Task autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3. Trigger IR002 reopened presentation request; R2/SR003 Approved, SR004 Ready, **Small/Low Direct**. Architecture and source review N/A—not selected. Current source/tests/docs **3d95a5c4a16759060983489735e77820661cff53**, intake **4e308b716cf70ed5bc914ab780984e59df30af7f**, branch codex/nfs-guide-install-commands-r2. Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2; finalization origin/personal, **NO release**.
+# API/E2E coverage investigation — R3 compact guide
+## API-REV-003 plan (before execution)
+Task **autobyteus-254 / project_task_647690a1-0e1b-4564-9aed-a5b5bf0875e3**. Trigger IR003 reopening, **R3/SR005 Approved; SR006 Ready; Small/Low Direct Low-Risk**. Architecture/source review N/A—not selected. Worktree **/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3**, branch codex/nfs-guide-install-commands-r3; source/tests/docs **1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708**, input **ccc0c56d2d4fdf48815a19d73870798dcd8fadb9**, finalization origin/personal, **NO RELEASE**.
 
-Read implementation-handoff Checks Run FIRST; full current requirements, design, investigation, solution history/handoff and implementation history are the upstream basis. API001 plan/report/Cases/history/progress read before replacing current plan/report; their original results remain historical in Git/history/evidence. Supplied removal screenshots are inventoried in investigation-notes (not separate Product authority). No delivery re-entry or review report applies to this round.
+## Upstream authority / history
+Read implementation-handoff.md Checks Run first (IMP14–19), implementation-revision-record.md IR003; current requirements-doc.md, design-spec.md DS001/002, investigation-notes.md INV11–17 and screenshot supplement inventory, solution-revision-record.md SR005/006, solution-design-handoff.md. No independent review applies. Historical API002 investigation/Cases/95.71% report, API revision history and append-only progress read before updating current plan/report. No prior product failure requires reopening; this is approved presentation rework. No Delivery re-entry. User screenshots are factual scope context, not a separate design authority.
 
-## Behavior, scenarios and boundaries
-- BEH005/REQ007/AC006: remove only two standalone install links/labels in en/zh, retain advanced README and review reminder pointing to URL in the copied command; no reserved gap. DS001 is actual /nodes → NodeManager → NfsGuideCard with current catalogs.
-- BEH001/AC001/004: preserve exact command data, helper validation and any-valid-installer version notice, including partial/null/invalid states.
-- BEH002/003/004 and AC002/003/005: nine Copy cards, safety/host/deferred prose, clipboard lifecycle, responsive/accessibility behavior and adjacent Docker preserved. DS002 clipboard owner unchanged.
-- SCN001–005 all supported and planned. No new scenario needed. SCNX01 app executing installers/probes/mounts is unsupported/out of scope; never run a copied command.
-- Affected: frontend template/localized content/availability projection and web-equivalent desktop renderer. Browser clipboard/tab lifecycle preserved, not a new API. Not affected: backend/API transport/authentication, Electron shell/IPC, persistence, workers/queues/distributed/storage/provider integration. External link identity is static, not refreshed release availability.
-- Implementation removal/data checks are clean: no hidden compatibility alias or anchor; descriptor downloadUrl remains used by validation; **Not Affected** persistence, no migration.
+## Changed behavior / scenarios / surfaces
+- BEH006/REQ008/AC007: advanced README anchor and long footer removed. One unboxed folder tip plus compact amber trusted-private-network/unencrypted/no-internet/outage note; ≤60 English words, equivalent concise Chinese; no trailing/internal validation prose or empty gap.
+- BEH001/002/003/004/005; AC001–006: preserve pinned v0.1.0 helper/validation, nine displayed/copied commands/order, actual Copy lifecycle, intended-host and admin/drain guidance, version/partial/null/invalid states and prior R2-link absence. Detailed removed facts retained in docs/nfs_guide.md. Adjacent Docker unchanged.
+- SCN001–006 supported, all mapped below. No added contrived scenario. SCNX01 installer/CLI/mount/host execution explicitly unsupported for this copy-only task and will not run.
+- Affected boundaries: frontend template/localized content, actual Nodes renderer/tab integration and responsive presentation. Preserved browser clipboard promise and component lifetime. Unaffected: backend/API/authentication, Electron shell/IPC, host lifecycle, persistence, workers/distributed/provider/NFS integration.
+- Design health/removal checks clean: literal obsolete locale consumers deleted, no compatibility wrapper/hidden full disclaimer. Helper downloadUrl is live validation, not dead UI. Persisted data **Not Affected**, no migration or reset.
 
-## Impact and existing durable coverage
-Current root TESTING.md rerun-by-impact applies. API001 source2c6b414 → current includes integrated core/contracts/shared foundation; old API001 evidence cannot be carried as current. All old cases marked Rerun/current replacement. IR002 already reran its scoped checks on3d95a5c4; only ticket artifacts differ to4e308b7, so reuse those **current** results after log/diff inspection, not repeat for independence. Old R02 expectation of three links is stale under REQ007; new probe expects exactly advanced README. Historical raw evidence stays immutable.
+## Impact and durable coverage decisions
+Prior API002 last tested 4e308b716cf70ed5bc914ab780984e59df30af7f; changed shared foundation/lockfile requires current replacement proof, not old passes. Exact current IMP16/17 tested 1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708; diff to intake has no product changes. Reuse those checks after raw-log/identity inspection; do not rerun for independent credit. Current repository/browser harness compiles worktree source, no old backend/dist.
 
-| Coverage | Validity / action | Criteria |
+| Path/coverage | Decision and action | ACs |
 |---|---|---|
-| utils/__tests__/nfsLauncherCommands.spec.ts | Still Valid: 24 helper checks, independent literals and six inert success/download/checksum shell controls. Reuse IMP10, helper unchanged |AC001/004|
-| components/settings/__tests__/NfsGuideCard.spec.ts | Still Valid after IR002 update:13 cases, both-locales×valid/partial/null/unsafe anchor/version states; exactcopy/pending/denial/missing/timer/unmount. Reuse IMP10; IMP09 red on old3anchor shape is sensitivity evidence |AC001–006|
-| components/settings/__tests__/NodeManager.spec.ts | Still Valid current10 parent routing cases, not old11; reuse IMP10 |AC002/004|
-| DockerNodeStartGuideCard.spec.ts + dockerNodeLauncherCommands.spec.ts | Still Valid current7 controls, source unchanged; reuse IMP10 |AC004|
-| IMP11-verified component renderer | Still Valid exact source for partial/null actual availability, localized content and lifecycle samples. Reuse these limits only; not /nodes composition |AC004/006|
-| API001 actual-page R02/R03 | Rerun current page/fixtures: shared foundation changed and old link assertion is intentionally obsolete. Do not edit old artifacts |AC001–006|
+|web/utils/__tests__/nfsLauncherCommands.spec.ts|Still Valid;24 independent literal/validation tests including6 inert shell controls. Reuse current IMP16, never execute public installer|001/004|
+|web/components/settings/__tests__/NfsGuideCard.spec.ts|Still Valid after IR003 update;15 tests covering noanchors/concise bothlocales, all descriptor states, Copy lifecycle. IMP15 expected4red proves oldshape sensitivity. Reuse IMP16|001–007|
+|NodeManager.spec.ts; DockerNodeStartGuideCard.spec.ts; dockerNodeLauncherCommands.spec.ts|Still Valid;10 parent+7 Docker controls on current integrated foundation, reuse IMP16|002/004|
+|IMP17 current component preview|Still Valid exact current source for partial/null/invalid version and controlled lifecycle; component-only limits retained. Inspect split original/final results, not full Nodes proof|003/004/007|
+|Prior API002 R02/R03|Rerun current Nodes; prior advanced-anchor/deferred-text expectations are Stale under AC007. Create new owned driver, never rewrite historical evidence|001–007|
 
-No durable test change required: IR002 already supplies narrow regression; repeated local assertions would add no coverage. Use a ticket-owned reproducible actual-page probe to prove composition/rendered gap/real clipboard, as this is scoped acceptance evidence rather than a new test framework.
+No API durable coverage addition/update/removal needed: current focused regression is adequate. Temporary journey needed for current composition/layout/native clipboard, not new framework. Source path shorthand web=autobyteus-web.
 
-## Execution discovery / environment
-Authorities: root AGENTS.md/TESTING.md/DESIGN.md; web AGENTS.md/ARCHITECTURE.md (Testing Strategy)/README.md (Testing); web package.json, vitest.config.mts, nuxt.config.ts; existing tests/e2e probe conventions. No closer TESTING; initial guessed vitest.config.ts lookup absent, actual .mts read. No conflicting guideline.
-- Test: pnpm -C autobyteus-web test:nuxt <five files> --run --maxWorkers=2; helper tsc; guard:web-boundary / guard:localization-boundary / audit:localization-literals, already current in IMP10. Nuxt/HappyDOM proves component semantics, not browser navigation.
-- IMP08 frozen filtered install and nuxt prepare succeeded for current lock/config; reuse ignored deps, Nuxt recompiles current source. No server/dist used or server prebuild needed in the explicit browser-fixture layer.
-- Fresh resolved private HOME/TMPDIR, ephemeral localhost port, fresh headless Chrome/context. Environment only PATH, owned HOME/TMPDIR, NUXT_TELEMETRY_DISABLED, BACKEND_NODE_BASE_URL=http://127.0.0.1:1. No secrets needed. Serialize one dev server, no parallel heavy run.
-- Start pnpm exec nuxt dev --host 127.0.0.1 --port <free>; wait /nodes HTTP200 and actual DOM, warm cold dev page. Actual language settings select → /nodes Manage/Docker/NFS. Current read-only app query/feed/health fixtures include GetUpdateAutomationSettings matching actual current schema. Unknown operations/browser errors fail; no suppression. No product page rewrite or live backend.
-- Close only owned Chrome/process group; remove own HOME/TMP root; retain ignored worktree node_modules/.nuxt. Preserve canonical/old detached worktree/PM/live app and other-owner evidence.
+## Execution discovery / isolation
+Applicable authorities: root AGENTS/DESIGN/TESTING, web AGENTS/ARCHITECTURE Testing Strategy/README Testing, package.json/vitest.config.mts/nuxt.config.ts, current tests/e2e conventions and prior owned page probe. No closer TESTING, no conflicting instruction. Project permits renderer-only browser probe with explicit read fixtures; full Electron product/storage claims are not in scope.
+- IMP14/15 current frozen filtered install + Nuxt prepare; reuse task-owned node_modules/.nuxt only, current source livecompiled. No server build/prebuild needed when backend is explicitly emulated. No secrets needed.
+- One owned `pnpm exec nuxt dev --host 127.0.0.1 --port <free>` in web, private resolved HOME/TMP and minimal env (PATH, HOME, TMPDIR, NUXT_TELEMETRY_DISABLED, owned BACKEND_NODE_BASE_URL). Wait HTTP200/DOM and warm before assertions. No inherited live roots or provider keys.
+- Fresh sandbox-enabled headless Chrome; actual /settings language selector then /nodes Manage→Docker→NFS. Synthetic empty read-only initialization/health/identity and invalidation feeds; unknown queries or browser errors fail. Fixture shapes inspected against current operations. Never touch live application/data, OS clipboard of user's browser, NFS/PM/old detached checkout.
+- Save semantic DOM/exact native clipboard assertions plus screenshots and computed style/width/gap evidence; inspect retained actual images. Unsupported partial descriptor naturally not selectable in real Nodes; prove via current component fixtures rather than modifying production descriptor.
+- Finally close only owned Chrome/Nuxt groups, verify ports/groups absent, remove only owned HOME/TMP/profile; keep current ignored worktree dependencies/generated cache and durable evidence.
 
-## Planned cases (same IDs across rounds)
-| ID | Criteria/scenario | Kind | Command / evidence and reason |
+## Planned cases
+|ID|Criteria/scenarios|Kind|Command/steps and rationale|
 |---|---|---|---|
-|R01|AC001–006/SCN001–005|Reused|Audit diff/log headers/results for IMP10 current54/5files, helper tsc/3guards and IMP11-verified negative states; source identity and valid assertions. Old case replaced by current attributed proof, no duplicate suite|
-|R02|AC001/002/003/005/006;SCN001/002/005|Journey / Temporary Probe|node tickets/in-progress/nfs-guide-install-commands/evidence/R02-02-browser.mjs R02-02-attempt-1; actual /nodes tab journey and language settings, en/zh×1280/390, nine independently expected strings copied, exactly1safeREADME, oldlabels absent/reviewreminder/no reservedgap, semantics/code-scroll/nooverflow; Dockerbeforeafter|
-|R03|AC003;SCN003|Journey / Temporary Probe|Same owned browser: Enter realcopy/reset; controlledpending→secondexcluded→leave/late settle/reenter; denial/missing/manualselection. Current parent lifetime gap not component fixture alone|
-|C01|AC005/safety|Temporary Probe|Own browser/processgroup/port/temp removal and current source/history preservation; no installer/CLI/realnode operation|
+|R01|AC001–007;SCN001–006|Reused|Read/diff current IMP16 56tests/5files, scopedtsc/3guards; IMP15 red and IMP17 actual component state controls. Audit exact source and headers before acceptance; no repeat suite|
+|R02|AC001/002/003/005/006/007;SCN001/002/005/006|Journey|Fresh `node evidence/R02-03-browser.mjs R02-03-attempt-1`; actual language/Nodes tabs, en/zh×1280/390, nine independently expected commands and actualclipboard, noanchors/43-word concise footer/spacing/overflow/safety, Docker before/after. Temporary acceptance probe complements durable unitcoverage|
+|R03|AC003;SCN003|Journey|Same owned actual page: Enter/nativeclipboard/reset and controlled pending/second exclusion/tabunmount/late resolution/denied/missing/manual selection. Current foundation needs fresh real tab-lifetime proof; boundary doubles explicit|
+|C01|AC005/scope|Temporary Probe|Own processes/ports/roots removed and input/history/other-owner unchanged; retained docs contain detailed limits. No source/diagnostic edits|
 
-Progress append-only required. Investigation permits execution; no reroute or durable source/test addition/removal. Broad browser layer expected because actual Nodes composition/layout not covered by current components. Full product/backend/Electron/field/NFS qualification excluded, not Passed; autobyteus-nfs-4 custody unchanged. No user-only prerequisite or host questionnaire. On success test review **Not Required — direct low-risk route**, fresh rules choose Delivery.
+Progress log required Yes. Plan precedes execution. Broader decision/confidence after R01 goes in execution report. No ambiguities/reroute/precondition; proceed Yes. No user-only gate or new field campaign. Direct test review **Not Required — direct low-risk route** after green, fresh rules determine recipient.
 
-## Diagnosed fixture refinement before R02 rerun
-R02-02-attempt-1 reached four guide views but failed on missing current Manage tab empty-peer/capability/identity responses (details R02-02-attempt-note.json). Add only those read fixtures from current stores/schema; backend URL becomes owned frontend origin instead of port1. Unknown operations/errors still fail. No product edit, R01 suite not repeated. New attempt explicitly enables Chromium sandbox and verifies launch argv; preserve failed attempt and cleanup assistance. R03 has not yet executed.
+## R02 harness refinement before rerun
+Attempt1 stopped before first viewport completion because inherited R2 needle demanded Windows on-page. R3 explicitly removed detailed platform paragraph; exclusion stays in docs (AC005/007). Renderer was correct. Remove only stale required Windows text in new driver; preserve failure/result/original driver. No product fix, no suite repeat; R01 valid, R03 not reached. Evidence R02-03-attempt-note.json.
+
+## Cleanup / evidence gap correction
+Attempts1/2 old probe removed temp before descendant compile-cache shutdown, fs.rm ENOTEMPTY aborted final save. R02 has four exact current receipts/completed progress and is not rerun. R03 assertions completed but its raw detailed receipt was not persisted; rerun only R03 using --lifecycle-only after saving before cleanup and waiting owned group absence/bounded rm retry. R01 unchanged. Diagnose probe, not product. Evidence C01-03-harness-note.json.

@@ -26,12 +26,12 @@ import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tool
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { resetEmbeddingIndexForTests, shutdownEmbeddingIndex } from "../../../src/embeddings/embedding-index.js";
 import { DEFAULT_EMBEDDING_MODEL_ID } from "../../../src/embeddings/catalog/embedding-model-catalog.js";
-import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 
-const reset = () => { resetProjectTaskServiceForTests(); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const SEARCH = "query($p:String!,$q:String!){searchProjectTasks(projectId:$p,query:$q){matches{taskId match} meaningSearch{state phase done total reason}}}";
 type MeaningSearch = { state: string; phase: string | null; done: number | null; total: number | null; reason: string | null };
 type SearchResult = { matches: Array<{ taskId: string; match: string }>; meaningSearch: MeaningSearch };
@@ -62,9 +62,9 @@ describe("Project Task search with the real embedding layer when the model host 
     throw new Error("meaning search stayed in preparation");
   };
   const createTask = async (projectId: string, description: string) => (await gql<{ createProjectTask: { taskId: string; taskKey: string } }>(
-    "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, description } })).createProjectTask;
+    "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, title: description, description } })).createProjectTask;
   const updateTask = async (projectId: string, taskId: string, description: string) => (await gql<{ updateProjectTask: { description: string } }>(
-    "mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){description}}", { i: { projectId, taskId, description } })).updateProjectTask;
+    "mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){description}}", { i: { projectId, taskId, title: description, description } })).updateProjectTask;
   const deleteTask = async (projectId: string, taskId: string) => (await gql<{ deleteProjectTask: boolean }>(
     "mutation($i:DeleteProjectTaskInput!){deleteProjectTask(input:$i)}", { i: { projectId, taskId } })).deleteProjectTask;
   const createProject = async (name: string) => (await gql<{ createProject: { projectId: string } }>(

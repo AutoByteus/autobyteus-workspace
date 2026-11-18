@@ -1,0 +1,32 @@
+# IMP-12 negative controls: each new test fails without the change it guards
+# Commit: da207045a5 working tree; each control temporarily restored the named base file(s), ran the test, and restored the change (git stash / git show HEAD:<file>); nothing of it is committed
+# Environment: macOS (Darwin 25.5.0), node v22.23.1; Electron 42.11.16 for C4
+# Date: 2026-11-07
+
+C1. Architecture test on the base route files (git stash -- autobyteus-server-ts/src/api/rest/)
+    Command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture/user-file-replies.test.ts --no-watch
+    Observed: 3 failed of 3; bypasses listed:
+      "context-files.ts:82 fs.createReadStream(filePath)"
+      "files.ts:40 fs.createReadStream(resolvedPath)"
+      "workspaces.ts:43 fs.createReadStream(absolutePath)"
+      "workspaces.ts:90 fs.createReadStream(absolutePath)"
+      header write: "workspaces.ts:88 reply.header(\"Content-Security-Policy\", PREVIEW_DOCUMENT_SANDBOX)"
+    With the change: 3 passed.
+
+C2. User-file route tests on the base route files (same stash)
+    Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/api/rest/user-file-routes.test.ts tests/unit/api/rest/workspaces.test.ts --no-watch
+    Observed: "Tests  9 failed | 6 passed (15)". With the change: all pass.
+
+C3. Server e2e with the WebSocket plugin registered after the Host gate (the design's literal order)
+    Command: env -i PATH HOME=<tmp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts --no-watch -t "416 AC-001"
+    Observed: "AssertionError: expected 8 to be +0" (8 server sockets left open by 8 Host-refused upgrades) and
+              "Error: Hook timed out in 10000ms" (afterAll fastify.close() waits on those sockets).
+    With the plugin registered first: passes, 0 open connections.
+
+C4. Real-Electron D6 spec with the session policy removed (browser-session-profile.ts restored from the base commit 6225a734a3)
+    Command: pnpm -C autobyteus-web exec vitest run --config ./electron/vitest.config.ts electron/browser/__tests__/browser-file-document-request.electron.spec.ts
+    Observed: "× ... sends every request a file:// document makes, in every form, with Origin: null"; the
+              GET-navigation and http-control cases pass (they hold with or without the policy).
+    With the policy: 4 passed.
+
+C5. reproduce-416.sh before the change: IMP-01 (R1a/R1b/R2a-c status=200, R3a-c csp=none nosniff=none).

@@ -1,0 +1,10 @@
+IMP-05 — web boundary and localization guards
+Commands: pnpm -C autobyteus-web guard:web-boundary ; pnpm -C autobyteus-web guard:localization-boundary
+Commit: c8ec06b5132870931b6833990e20db07642ccf45
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, pnpm 10.28.2 (via npx)
+Date: 2026-11-06
+
+Output:
+
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.

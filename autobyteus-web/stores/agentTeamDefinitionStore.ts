@@ -5,6 +5,7 @@ import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQu
 import {
   CreateAgentTeamDefinition,
   DeleteAgentTeamDefinition,
+  ResetAgentTeamPersonalSetting,
   UpdateAgentTeamDefinition,
 } from '~/graphql/mutations/agentTeamDefinitionMutations'
 import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations'
@@ -13,6 +14,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
 import type { DefinitionLoadIssueEntry } from '~/types/agentPackageDefinitions'
+import type { PersonalSetting, PersonalSettingsFields } from '~/types/personalSettings'
 
 export type AgentTeamDefinitionOwnershipScope = 'SHARED' | 'APPLICATION_OWNED' | 'AGENT_ORG_OWNED'
 export type AgentMemberRefScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED' | null
@@ -24,7 +26,7 @@ export interface TeamMemberInput {
   refScope?: AgentMemberRefScope
 }
 
-export interface AgentTeamDefinition {
+export interface AgentTeamDefinition extends PersonalSettingsFields {
   __typename?: 'AgentTeamDefinition'
   id: string
   name: string
@@ -262,6 +264,22 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     }
   }
 
+  /** "Reset to the package's setting": the Team's base value applies again; returns the refreshed catalog entry. */
+  const resetAgentTeamPersonalSetting = async (definitionId: string, setting: PersonalSetting): Promise<AgentTeamDefinition | null> => {
+    const client = getApolloClient()
+    const { data, errors } = await client.mutate({
+      mutation: ResetAgentTeamPersonalSetting,
+      variables: { definitionId, setting },
+    })
+    if (errors && errors.length > 0) {
+      throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    }
+    if (!data?.resetAgentTeamPersonalSetting) throw new Error(`The personal setting of Team ${definitionId} was not reset.`)
+    const result = await client.query({ query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' })
+    agentTeamDefinitions.value = (result.data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+    return getCatalogAgentTeamDefinitionById.value(definitionId)
+  }
+
   const deleteAgentTeamDefinition = async (id: string): Promise<boolean> => {
     try {
       const client = getApolloClient()
@@ -351,6 +369,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     refreshAndReloadAllAgentTeamDefinitions,
     createAgentTeamDefinition,
     updateAgentTeamDefinition,
+    resetAgentTeamPersonalSetting,
     deleteAgentTeamDefinition,
     invalidateAgentTeamDefinitions,
     reloadIfLoaded,

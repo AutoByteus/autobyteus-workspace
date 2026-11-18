@@ -55,7 +55,7 @@ class WebFileChooserCoordinator(
             true
         } catch (_: ActivityNotFoundException) {
             completePending(null)
-            onDiagnostic(ConnectionDiagnosticMapper.webViewLoadFailed("No Android file picker is available."))
+            onDiagnostic(ConnectionDiagnosticMapper.noFilePicker())
             true
         }
     }

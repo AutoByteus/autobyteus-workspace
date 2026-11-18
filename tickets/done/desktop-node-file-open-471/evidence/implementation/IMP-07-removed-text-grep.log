@@ -1,0 +1,25 @@
+# IMP-07 removed-text grep (AC-003, AC-004)
+# Command: git grep -n -i -E 'host workspace|file_available_on_host|MOBILE_FILE_VIEW_MAX_CHARS|isTooLarge|mobile-file-preview-large|too large' -- autobyteus-web ':!autobyteus-web/docs'; then the same over autobyteus-web/docs
+# Commit: 2e2b9ed436 (branch codex/desktop-node-file-open-471)
+# Environment: macOS 26.5.2, git 2.50.1
+# Date: 2026-11-11T13:15:03Z
+
+## autobyteus-web (code, tests, probes)
+autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts:571:      contextFileUploadStoreMock.uploadAttachment.mockRejectedValue({ response: { data: { detail: 'File too large.' } } });
+autobyteus-web/components/agentInput/__tests__/ContextFilePathInputArea.spec.ts:577:      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't attach huge.png. File too large.");
+autobyteus-web/components/layout/__tests__/WorkspaceToolShell.spec.ts:188:    expect(shell.wrapper.get('#contentViewer [role="alert"]').text()).not.toContain('host workspace');
+autobyteus-web/components/mobile/views/__tests__/MobileFileViewer.spec.ts:83:  it('shows a text file of any size in full: no limit, no "too large" state (autobyteus-471 REQ-004)', () => {
+autobyteus-web/components/mobile/views/__tests__/MobileFileViewer.spec.ts:89:    expect(wrapper.text()).not.toMatch(/too large/i);
+autobyteus-web/localization/messages/en/settings.ts:423:  'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.description': 'Run autobyteus-docker status first, then replace <node-name> with the exact managed node name. This removes only that node\'s container and launcher state while keeping named volumes and host workspaces; the freed indexed slot can be reused by the next new-container invocation.',
+autobyteus-web/services/highlightService.ts:67:    // Prevent cache from growing too large
+autobyteus-web/services/highlightService.ts:184:    // Remove oldest entries when cache gets too large
+autobyteus-web/tests/e2e/mobile-file-open-cases.mjs:37://                  folder, not a file."; no "host workspace" text; the files are unchanged.
+autobyteus-web/tests/e2e/mobile-file-open-cases.mjs:490:          hostWorkspaceText: (await page.locator('body').innerText()).includes('host workspace'),
+autobyteus-web/tests/e2e/mobile-file-open-cases.mjs:499:        assert(!details.hostWorkspaceText && details.unchanged, 'no "host workspace" text; the file is unchanged', details);
+autobyteus-web/tests/e2e/mobile-shell-probe.mjs:68://                  more than 130,000 characters outside the workspace opens in full: its last line is shown, no "too large".
+autobyteus-web/tests/e2e/mobile-shell-probe.mjs:1643:          facts.tooLarge = /too large/i.test(full);
+autobyteus-web/tests/e2e/mobile-shell-probe.mjs:1680:      assert(openedReadOnly(big, bigPath) && big.lastLineVisible && !big.tooLarge && big.error === '', 'autobyteus-471 AC-004 a Markdown file over 130,000 characters opens in full: its last line is shown, no "too large"', { ...big, fileChars: bigMarkdown.length });
+autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts:90:    expect(enDescription).toContain('host workspaces');
+
+## autobyteus-web/docs
+# Exit status: 0

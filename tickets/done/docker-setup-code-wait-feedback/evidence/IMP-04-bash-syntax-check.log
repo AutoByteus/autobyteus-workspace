@@ -1,0 +1,5 @@
+# IMP-04 — bash syntax check (commit 2de5fa0873053f5044b2119cbd48c14ad8463087)
+Command: bash -n scripts/public/docker/autobyteus-docker.d/bash/commands.sh && bash -n scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh
+Date: 2026-11-09T15:51:31Z
+
+OK: no syntax errors

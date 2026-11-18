@@ -1,0 +1,5 @@
+[mobile-shell] MSP-33 …
+[mobile-shell] MSP-33 Fail: locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="mobile-run-row-agent:project_task_manager_306d188aa08b48c69b8de8e852790199/agent:release_notes_writer_75d8780b07284fc596810ec517f8460d"] [data-testid="mobile-run-open"]')
+

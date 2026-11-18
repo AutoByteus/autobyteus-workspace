@@ -1,0 +1,9 @@
+# API-01-r2 desktop bundle stamp, clean build of 8fd49bd25a (2026-11-01T08:00:15Z)
+$ cat AutoByteus.app/Contents/Resources/server/dist/release-identity.json
+{
+  "version": "1.5.11-beta.9"
+}
+$ cat autobyteus-server-ts/dist/release-identity.json
+{
+  "version": "1.5.11-beta.9"
+}

@@ -418,7 +418,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentTeamRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
     kind: "new",
-    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "taskExecutionIdentity", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
+    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 0,
       path,
@@ -2113,10 +2113,12 @@ describe("application framework architecture boundaries", () => {
     expect(collectSpecs(readinessPath)).toEqual([
       { key: "core", name: undefined, modulePath: "autobyteus-ts/tools/register-tools.js", exportName: "registerTools" },
       { key: "project_tasks", name: undefined, modulePath: "../agent-tools/project-tasks/project-task-native-tools.js", exportName: "registerProjectTaskTools" },
+      { key: "memory", name: undefined, modulePath: "../agent-tools/memory/memory-native-tools.js", exportName: "registerMemoryTools" },
       { key: "browser", name: undefined, modulePath: "../agent-tools/browser/register-browser-tools.js", exportName: "registerBrowserTools" },
       { key: "task_delegation", name: undefined, modulePath: "../agent-tools/task-delegation/register-task-delegation-tools.js", exportName: "registerTaskDelegationTools" },
       { key: "agent_communication", name: undefined, modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js", exportName: "registerAgentCommunicationTools" },
       { key: "agent_discovery", name: undefined, modulePath: "../agent-tools/agent-discovery/register-agent-discovery-tools.js", exportName: "registerAgentDiscoveryTools" },
+      { key: "agent_runtimes", name: undefined, modulePath: "../agent-tools/agent-runtimes/register-agent-runtimes-tools.js", exportName: "registerAgentRuntimesTools" },
       { key: "published_artifact", name: undefined, modulePath: "../agent-tools/published-artifacts/register-published-artifact-tools.js", exportName: "registerPublishedArtifactTools" },
       { key: "media", name: undefined, modulePath: "../agent-tools/media/register-media-tools.js", exportName: "registerMediaTools" },
       { key: "search", name: undefined, modulePath: "../agent-tools/search/register-search-tool.js", exportName: "registerProvisionedSearchTool" },
@@ -2128,6 +2130,8 @@ describe("application framework architecture boundaries", () => {
       { key: undefined, name: "Cache Pre-loading", modulePath: "./cache-preloader.js", exportName: "runCachePreloading" },
       { key: undefined, name: "MCP Tool Registration", modulePath: "./mcp-loader.js", exportName: "runMcpToolRegistration" },
       { key: undefined, name: "Memory Sync Worker", modulePath: "./memory-sync-worker-loader.js", exportName: "loadMemorySyncWorker" },
+      { key: undefined, name: "Memory Hub Staging Sweep", modulePath: "./memory-hub-staging-sweep-loader.js", exportName: "loadMemoryHubStagingSweep" },
+      { key: undefined, name: "Memory Search", modulePath: "./memory-search-loader.js", exportName: "startMemorySearch" },
     ]);
 
     const serverRuntimePath = join(
@@ -2934,7 +2938,6 @@ describe("application framework architecture boundaries", () => {
       "agentToolMcpRunSessionDeactivator:",
       "flatTeamExecutionFactory,",
       "bindProcessAgentRunService(agentRunService)",
-      "bindProcessTeamRunService(teamRunService)",
     ]) {
       expect(generalSupervisor).toContain(requiredConstruction);
     }
@@ -2947,7 +2950,6 @@ describe("application framework architecture boundaries", () => {
     expect(publicAgentRun).not.toContain("AgentRunManager");
     expect(publicTeamRun).toContain("getStudioTeamRunService");
     expect(publicTeamRun).toContain("getStudioRunModelConfigService");
-    expect(publicTeamRun).not.toMatch(/\bgetTeamRunService\b/);
 
     const publicAgentHistory = readServerSource("api/graphql/types/run-history.ts");
     const publicTeamHistory = readServerSource("api/graphql/types/team-run-history.ts");
@@ -2995,26 +2997,19 @@ describe("application framework architecture boundaries", () => {
       );
     }).sort();
     expect(definitionGetterOccurrences).toEqual([
+      // Default factory of the internal-agent rule over the process definitions (autobyteus-308); the class takes an injected source.
+      "autobyteus-server-ts/src/agent-definition/services/internal-agent-visibility.ts",
       "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
       "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+      // Default factory of the injectable agent-definition lookup port (3e3a7b08cc); the service itself takes the port.
+      "autobyteus-server-ts/src/agent-memory/services/agent-memory-explorer-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
-      "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
       "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/create-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/delete-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/get-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/list-agent-definitions.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/update-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/create-agent-team-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/delete-agent-team-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/get-agent-team-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/list-agent-team-definitions.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts",
       "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
       "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
     ].sort());
@@ -3036,7 +3031,7 @@ describe("application framework architecture boundaries", () => {
         if (!bindings || !ts.isNamedImports(bindings)) continue;
         for (const binding of bindings.elements) {
           const exported = binding.propertyName?.text ?? binding.name.text;
-          if (exported === "getAgentRunService" || exported === "getTeamRunService") {
+          if (exported === "getAgentRunService") {
             imported.push(`${normalizePath(relative(REPOSITORY_ROOT, file))}:${exported}`);
           }
         }
@@ -3045,8 +3040,12 @@ describe("application framework architecture boundaries", () => {
     }).sort();
     expect(ambientRunServiceImports).toEqual([
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
+      // Composition root of Model Routing (autobyteus-32): binds the Model Router agent's injected run port to the process's run service.
+      "autobyteus-server-ts/src/compositions/model-routing-composition.ts:getAgentRunService",
+      // Process startup root (autobyteus-349): one stage removes empty never-started runs through the run service bound in buildStudioServer.
+      "autobyteus-server-ts/src/server-runtime.ts:getAgentRunService",
+      // The standalone agent stream handler's default run service: the process's, bound at startup.
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
-      "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
     ].sort());
   });
 
@@ -3085,7 +3084,7 @@ describe("application framework architecture boundaries", () => {
     expect(controller.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
     expect(launcher.match(/runApplicationEngineControlRequest(?:<[^>]+>)?\s*\(/g)).toHaveLength(1);
     const stopController = controller.slice(
-      controller.indexOf("  async stopAttachedEngine("),
+      controller.indexOf("  async stopEngine("),
       controller.indexOf("  clearListeners(): void"),
     );
     expect(stopController).toContain("APPLICATION_ENGINE_METHOD_STOP");

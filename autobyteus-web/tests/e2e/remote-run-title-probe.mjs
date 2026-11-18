@@ -3,7 +3,7 @@
 // stored title wins whenever it has a value; the live first user message only fills in while it is empty.
 //
 // Servers (`autobyteus-server-ts/dist/app.js`, own temp data roots and HOMEs, the scripted AGY CLI): alpha and beta,
-// switched on and registered both ways. Alpha's standalone Delegator delegates to beta's shared Agent Publisher and to
+// switched on and paired by invite; each starts with the probe's launch owner credential (fixtures/probe-node-access.mjs). Alpha's standalone Delegator delegates to beta's shared Agent Publisher and to
 // beta's shared Agent Team Studio Team (peer-started runs). On beta, the owner also starts two runs of Writer
 // (user-started): one plain message, one skill-tagged message (the window's "Use the X skill for this request." form).
 // The web app runs with `nuxt dev` against beta; the browser is Chrome through playwright-core.
@@ -26,6 +26,7 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -62,6 +63,10 @@ const exited = child => child.exitCode !== null || child.signalCode !== null;
 const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'remote-run-title-')));
 const children = new Set();
 
+// The probe's frontend origin, chosen before any node starts: every node accepts it (autobyteus-416).
+const frontendPort = await freePort();
+const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+
 const startServer = async (name, port) => {
   const dataDir = path.join(root, name, 'data');
   const home = path.join(root, name, 'home');
@@ -73,7 +78,7 @@ const startServer = async (name, port) => {
   const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
     cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
     env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off',
-      AUTOBYTEUS_SERVER_HOST: baseUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills' } });
+      AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...probeNodeEnvironment() } });
   child.stdout.pipe(log); child.stderr.pipe(log);
   child.once('close', () => log.end());
   children.add(child);
@@ -81,9 +86,9 @@ const startServer = async (name, port) => {
     if (exited(child)) throw new Error(`${name} exited ${child.exitCode}`);
     return fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false);
   }, 120_000);
-  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).serverInstanceId;
+  const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   const gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
   };
@@ -92,7 +97,7 @@ const startServer = async (name, port) => {
 };
 /** The owner's composer message to a standalone run, as the window sends it (WebSocket SEND_MESSAGE). */
 const sendToRun = async (server, runId, content) => {
-  const socket = new WebSocket(`${server.baseUrl.replace('http', 'ws')}/ws/agent/${runId}`);
+  const socket = new WebSocket(ownerSocketUrl(`${server.baseUrl.replace('http', 'ws')}/ws/agent/${runId}`));
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
   await sleep(500);
   const id = `rrt-${randomUUID()}`;
@@ -108,8 +113,8 @@ try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
   const [alpha, beta] = await Promise.all([startServer('alpha', await freePort()), startServer('beta', await freePort())]);
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-  await alpha.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { baseUrl: beta.baseUrl, name: 'beta-node' } });
-  await beta.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { baseUrl: alpha.baseUrl, name: 'alpha-node' } });
+  // The nodes pair by invite (autobyteus-437 DS-004): alpha names beta 'beta-node', beta names alpha 'alpha-node'.
+  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: 'beta-node', accepterName: 'alpha-node' });
   const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
   const def = async (node, name, defaultLaunchConfig) => (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
     { i: { name, role: 'assistant', description: `${name} (title probe)`, instructions: 'Help.', toolNames: [], ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}) } })).createAgentDefinition.id;
@@ -175,8 +180,6 @@ try {
   evidence.cases['RRT-01'] = { result: 'Pass', stored: Object.fromEntries(Object.keys(expectedStored).map(id => [id, stored[id]])) };
 
   // The web app against beta.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   const frontendLog = createWriteStream(path.join(outputDir, 'frontend.log'));
   frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], { cwd: webDir, detached: true,
     stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: beta.baseUrl } });
@@ -187,6 +190,9 @@ try {
   }, 240_000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The desktop window carries the probe's credential (fixtures/probe-node-access.mjs), as the desktop's main process
+  // attaches it.
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   const page = await context.newPage();
   page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));
@@ -309,7 +315,9 @@ try {
   assert(stoppedRow === skillText && stoppedAfterReload === skillText, `the stopped skill run: ${stoppedRow} / ${stoppedAfterReload}`);
   evidence.cases['RRT-06'] = { result: 'Pass', terminateStatus, stoppedRow, stoppedAfterReload, liveContexts: await liveContexts() };
   await page.screenshot({ path: path.join(outputDir, 'RRT-06-after-reload.png'), fullPage: true });
-  assert(evidence.browserErrors.filter(line => !/favicon|DevTools/.test(line)).length === 0, `browser errors: ${evidence.browserErrors.join(' | ')}`);
+  // A cold `nuxt dev` re-optimizes its dependencies and reloads (TESTING.md § Browser probes): its 504 and the failed
+  // module load are the harness, not the product (baseline fix, autobyteus-290 API/E2E).
+  assert(evidence.browserErrors.filter(line => !/favicon|DevTools|504 \(Outdated Optimize Dep\)|Failed to fetch dynamically imported module|error caught during app initialization/.test(line)).length === 0, `browser errors: ${evidence.browserErrors.join(' | ')}`);
   evidence.result = Object.values(evidence.cases).every(entry => entry.result === 'Pass') ? 'Pass' : 'Fail';
   if (evidence.result !== 'Pass') process.exitCode = 1;
 } catch (error) {

@@ -1,0 +1,21 @@
+# Case: DR-03 gated live GitHub check and the scripted runtime-shell cells (AGY x3, Grok)
+# Command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 RUN_GITHUB_PROXY_E2E=1 vitest run tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts; the same gates + RUN_AGY_FAILURE_E2E=1 RUN_GROK_SCRIPTED_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-shell-env-probe-cli.mjs GITHUB_PROXY_SHELLS_E2E_EVIDENCE_DIR=<temp> vitest run tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts
+# Commit: 8b53331099 (codex/integration-credential-proxy merged with origin/personal f13dec395f)
+# Environment: macOS 26.5.2 arm64, node v22.23.1; env -i PATH HOME=<resolved temp> TMPDIR (+ gates where named)
+# Date: 2026-10-30 (delivery, integrated state)
+
+## live
+ ✓ tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts (2 tests) 6011ms
+     ✓ connects through GraphQL on a built server with its own vault, and never shows the token  2481ms
+     ✓ gives a run's shell GitHub through the proxy: curl, gh api, git ls-remote and git clone  3519ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+
+## runtime shells (scripted)
+ ✓ tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts (10 tests | 6 skipped) 6734ms
+     ✓ agy (scripted CLI): the AGY process's shell reaches GitHub; untick, re-tick, stop  2421ms
+     ✓ agy (scripted CLI): a run of an agent that is not ticked gets no variables  476ms
+     ✓ agy (scripted CLI) team: only the member whose agent is ticked gets the variables  1537ms
+     ✓ grok (recorded fake CLI): the Grok process's shell reaches GitHub; untick, re-tick, stop  1932ms
+ Test Files  1 passed (1)
+      Tests  4 passed | 6 skipped (10)

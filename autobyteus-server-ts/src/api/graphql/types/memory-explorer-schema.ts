@@ -20,8 +20,6 @@ registerEnumType(MemoryExplorerSourceType, {
 
 export enum CollaborationMemberExecutionKind {
   CONFIGURED = "CONFIGURED",
-  TASK_AGENT = "TASK_AGENT",
-  TASK_TEAM_MEMBER = "TASK_TEAM_MEMBER",
 }
 
 registerEnumType(CollaborationMemberExecutionKind, {
@@ -43,7 +41,7 @@ export class MemoryExplorerSourceInput {
   type!: MemoryExplorerSourceType;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 }
 
 @ObjectType()
@@ -58,7 +56,7 @@ export class MemoryExplorerSourceOption {
   label!: string;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -79,13 +77,7 @@ export class MemoryAvailabilitySummary {
   latestMemoryAt?: string | null;
 
   @Field(() => Boolean)
-  hasWorkingContext!: boolean;
-
-  @Field(() => Boolean)
-  hasEpisodic!: boolean;
-
-  @Field(() => Boolean)
-  hasSemantic!: boolean;
+  hasWorkJournal!: boolean;
 
   @Field(() => Boolean)
   hasRawTraces!: boolean;

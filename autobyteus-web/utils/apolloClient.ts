@@ -1,22 +1,12 @@
-import { useApolloClient } from '@vue/apollo-composable'
+import type { ApolloClient, NormalizedCacheObject } from '@apollo/client/core'
 import { useNuxtApp } from '#app'
 import { BOUND_APOLLO_CLIENT_KEY } from '~/plugins/30.apollo.client'
 
-export const getApolloClient = (clientId = 'default') => {
-  const nuxtApp = useNuxtApp()
-  const boundClient = (nuxtApp as any)[BOUND_APOLLO_CLIENT_KEY]
-  if (boundClient) {
-    return boundClient
+/** The Apollo client the Apollo plugin bound to the Nuxt app (plugins/30.apollo.client.ts). */
+export const getApolloClient = (): ApolloClient<NormalizedCacheObject> => {
+  const boundClient = useNuxtApp()[BOUND_APOLLO_CLIENT_KEY]
+  if (!boundClient) {
+    throw new Error('No Apollo client is bound: the Apollo plugin has not bound a client to this Nuxt app.')
   }
-
-  const clients = nuxtApp._apolloClients || nuxtApp.$apollo?.clients
-  const directClient =
-    (clientId && clients?.[clientId]) ||
-    clients?.default ||
-    nuxtApp.$apollo?.defaultClient
-  if (directClient) {
-    return directClient
-  }
-
-  return nuxtApp.runWithContext(() => useApolloClient().client)
+  return boundClient
 }

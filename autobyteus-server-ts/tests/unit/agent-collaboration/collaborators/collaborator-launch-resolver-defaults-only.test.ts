@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import { CollaboratorLaunchResolver } from "../../../../src/agent-collaboration/collaborators/collaborator-launch-resolver.js";
+import { LaunchUsabilityCheck } from "../../../../src/launch-preferences/launch-usability-check.js";
+import { NO_MODEL_ROUTING } from "../../../../src/model-routing/domain/model-routing-types.js";
+
+/** Model Routing off (these tests are today's order): the work is not read, so any stands in. */
+const WORK = { text: "Do it", task: { taskId: "task-1", taskKey: null, projectId: null, title: "Do it" } };
+const plansOnly = (resolver: CollaboratorLaunchResolver) => ({
+  resolve: async (plans: readonly CollaboratorDefinitionPlan[], base: Parameters<CollaboratorLaunchResolver["resolve"]>[1]) =>
+    (await resolver.resolve(plans, base, WORK)).plans,
+});
 import { CollaboratorAddError, CollaboratorNoDefaultLaunchError } from "../../../../src/agent-collaboration/collaborators/collaborator-errors.js";
 import type { CollaboratorDefinitionPlan } from "../../../../src/agent-collaboration/collaborators/collaborator-entry-builder.js";
 import type { DefaultLaunchConfig } from "../../../../src/launch-preferences/default-launch-config.js";
@@ -36,15 +45,15 @@ const setup = (options: { unavailable?: Partial<Record<string, string>>; verdict
       return { runtimeKind, enabled: !reason, reason: reason ?? null };
     }),
   };
-  const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string; workspaceRootPath: string }; selection: { llmModelIdentifier: string } }[]) =>
+  const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string; workspaceRootPath: string }; selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>
     inputs.map(({ context, selection }) => {
       const kind = options.verdict?.(context.runtimeKind, selection.llmModelIdentifier) ?? "valid";
-      return kind === "valid" ? { kind, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } }
+      return kind === "valid" ? { kind, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }
         : kind === "invalid" ? { kind, errors: [{ path: "effort", message: "effort must be one of low, high" }] }
           : { kind };
     }));
   const validator = { validate: vi.fn(), validateMany } as unknown as RunModelSelectionValidator;
-  return { availability, validateMany, resolver: new CollaboratorLaunchResolver({ availability, validator }) };
+  return { availability, validateMany, resolver: plansOnly(new CollaboratorLaunchResolver({ usability: new LaunchUsabilityCheck({ availability, validator }), router: NO_MODEL_ROUTING })) };
 };
 
 describe("CollaboratorLaunchResolver with the defaults_only base", () => {
@@ -82,7 +91,7 @@ describe("CollaboratorLaunchResolver with the defaults_only base", () => {
     await expect(offRuntime).rejects.not.toBeInstanceOf(CollaboratorNoDefaultLaunchError);
     await expect(offRuntime).rejects.toMatchObject({ collaboratorName: "Publisher", reason: "Codex is not installed." });
     await expect(setup({ verdict: () => "model_unavailable" }).resolver.resolve([agentPlan(sol())], base))
-      .rejects.toMatchObject({ reason: `The model 'sol-6.1' is not available on ${RuntimeKind.CODEX_APP_SERVER}.` });
+      .rejects.toMatchObject({ reason: "'sol-6.1' is not offered by Codex App Server now. Refresh the model list and choose again." });
     await expect(setup({ verdict: () => "invalid" }).resolver.resolve([agentPlan(sol())], base))
       .rejects.toMatchObject({ reason: "Its model settings are invalid: effort must be one of low, high" });
   });

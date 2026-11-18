@@ -1,0 +1,11 @@
+import { createRequire } from 'node:module'
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web/package.json')
+const { chromium } = require('playwright-core')
+const [port, value] = process.argv.slice(2)
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
+const page = browser.contexts().flatMap((c) => c.pages()).find((p) => p.url().includes('/renderer/index.html'))
+const sel = page.locator('select').filter({ has: page.locator('option[value="auto"]') }).first()
+await sel.selectOption(value)
+await page.waitForTimeout(1500)
+console.log('language', await sel.inputValue())
+process.exit(0)

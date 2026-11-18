@@ -5,7 +5,10 @@ import { TextDecoder } from 'node:util';
 import type { Stats } from 'node:fs';
 import type { FileHandle } from 'node:fs/promises';
 import type { SecretId } from 'autobyteus-ts/secrets/vault/secret-id.js';
-import { localImportSecretIdForAlias } from './local-import-credential-alias-registry.js';
+import {
+  localImportSecretIdForAlias,
+  testVaultOnlySecretIdForAlias,
+} from './local-import-credential-alias-registry.js';
 import { LocalEnvironmentSecretImportError } from './local-environment-secret-import.js';
 import {
   assertWindowsExclusiveAcl,
@@ -13,6 +16,12 @@ import {
 } from 'autobyteus-ts/secrets/vault/windows-exclusive-acl.js';
 
 const MAX_SOURCE_BYTES = 1024 * 1024;
+
+/**
+ * Which aliases an import maps: `application` (`secrets:import`) maps provider aliases and refuses a test-only
+ * alias (`IMPORT_MAPPING_INVALID`); `testVault` (`test-vault setup`) maps the test-only aliases too.
+ */
+export type LocalImportAliasScope = 'application' | 'testVault';
 
 export type LocalEnvironmentMappedCredential = {
   secretId: SecretId;
@@ -96,14 +105,22 @@ const parseAssignment = (line: string): { name: string; value: string } => {
 const recognizeAssignmentName = (line: string): string | null =>
   /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)/.exec(line)?.[1] ?? null;
 
-const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => {
+const secretIdForAlias = (name: string, scope: LocalImportAliasScope): SecretId | null => {
+  const providerId = localImportSecretIdForAlias(name);
+  if (providerId) return providerId;
+  const testOnlyId = testVaultOnlySecretIdForAlias(name);
+  if (testOnlyId && scope !== 'testVault') fail('IMPORT_MAPPING_INVALID');
+  return testOnlyId;
+};
+
+const parseSource = (sourceText: string, scope: LocalImportAliasScope): LocalEnvironmentMappedCredential[] => {
   const credentials: LocalEnvironmentMappedCredential[] = [];
   const seenNames = new Set<string>();
   try {
     for (const line of sourceText.split(/\r?\n/)) {
       const recognizedName = recognizeAssignmentName(line);
       const secretId = recognizedName
-        ? localImportSecretIdForAlias(recognizedName)
+        ? secretIdForAlias(recognizedName, scope)
         : null;
       if (!secretId) continue;
       if (line.includes('\r')) fail('IMPORT_SOURCE_SYNTAX_INVALID');
@@ -148,6 +165,7 @@ export class LocalEnvironmentSourceReader {
   constructor(
     private readonly ownerVerifier: LocalEnvironmentSourceOwnerVerifier = verifyPrivateOwner,
     private readonly handleReader: LocalEnvironmentSourceHandleReader = readBounded,
+    private readonly aliasScope: LocalImportAliasScope = 'application',
   ) {}
 
   async read(sourceAbsolutePath: string): Promise<LocalEnvironmentSourceReadResult> {
@@ -183,7 +201,7 @@ export class LocalEnvironmentSourceReader {
       } catch {
         sourceText = fail('IMPORT_SOURCE_ENCODING_INVALID');
       }
-      const credentials = parseSource(sourceText);
+      const credentials = parseSource(sourceText, this.aliasScope);
       let released = false;
       return {
         credentials,

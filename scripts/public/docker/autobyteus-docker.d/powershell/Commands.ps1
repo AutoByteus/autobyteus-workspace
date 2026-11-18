@@ -79,6 +79,7 @@ function Show-Status([string]$FilterName) {
         $status = & docker inspect --format '{{.State.Status}}' $state.containerName 2>$null
       }
       '{0,-24} {1,-24} {2,-14} http://localhost:{3} ({4})' -f $state.nodeName, $state.containerName, $status, $state.backendPort, $state.imageRef | Write-Host
+      Write-StarterLine $state.containerName ([string]$status)
       $any = $true
     }
   }
@@ -99,6 +100,70 @@ function Stop-Nodes([string]$FilterName, [bool]$StopAll) {
     }
   }
   if (-not $any) { Fail-Launcher 'No matching managed Docker node was found.' }
+}
+
+# The node's local control socket answers "setup-code" with a fresh one-time code (node access model NA-5). The
+# client runs inside the container (docker exec); the code is printed here only, never written to a file or a log.
+$Script:SetupCodeSocket = '/home/autobyteus/data/node-access/local-control.sock'
+# Single quotes only: Windows PowerShell drops double quotes inside native command arguments.
+$Script:SetupCodeClientJs = 'const s=require(''net'').createConnection(process.argv[1],()=>s.write(''setup-code\n''));s.setTimeout(5000,()=>{console.error(''the node did not answer within 5 seconds'');process.exit(1)});let d='''';s.setEncoding(''utf8'');s.on(''data'',(c)=>{d+=c});s.on(''end'',()=>{let r={};try{r=JSON.parse(d)}catch{}if(!r.setupCode){console.error(r.error||''no setup code'');process.exit(1)}console.log(r.setupCode+'' ''+r.expiresAt)});s.on(''error'',(e)=>{console.error(e.message);process.exit(1)})'
+$Script:SetupCodeWaitSeconds = 90
+
+# One attempt is bound by the client's own 5 s socket timeout; the wait itself is bound by wall-clock time, not
+# attempt count (one attempt in progress may finish past the deadline). A waiting message prints as soon as the
+# first attempt fails, then at least every 10 s with the elapsed time; nothing prints when the first attempt answers.
+function Show-SetupCodeOfRunningNode([string]$NodeName) {
+  $state = Read-NodeState $NodeName
+  $container = if ($state -and $state.containerName) { $state.containerName } else { $NodeName }
+  $stopwatch = [Diagnostics.Stopwatch]::StartNew()
+  $lastMessageAt = -1
+  while ($true) {
+    # Windows PowerShell 5.1 wraps a native command's `2>&1` stderr lines as ErrorRecords, and this launcher's
+    # $ErrorActionPreference = 'Stop' then turns a failed attempt's own stderr (the client's or docker exec's)
+    # into a terminating error instead of the failure this loop is meant to handle. Turn Stop off only around
+    # the call, so a failed attempt's text still reaches $line (the record's [string] is its message) without
+    # aborting the wait. PowerShell 7 already tolerates this; the guard is harmless there.
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+      $answer = & docker exec $container node -e $Script:SetupCodeClientJs $Script:SetupCodeSocket 2>&1
+    } finally {
+      $ErrorActionPreference = $previousErrorActionPreference
+    }
+    $line = ([string](@($answer)[0])).Trim()
+    if ($LASTEXITCODE -eq 0 -and $line) {
+      $parts = $line.Split(' ', 2)
+      $expiresAt = if ($parts.Count -gt 1) { $parts[1] } else { '' }
+      Write-Host ''
+      Write-Host "Setup code for ${NodeName}: $($parts[0])"
+      Write-Host "Valid once, until $expiresAt. In the AutoByteus desktop app, open Nodes, and enter it at $NodeName (http://localhost:$($state.backendPort))."
+      return
+    }
+    $elapsed = [int]$stopwatch.Elapsed.TotalSeconds
+    if ($lastMessageAt -eq -1) {
+      Write-LauncherInfo "Waiting for $NodeName to start (up to $Script:SetupCodeWaitSeconds seconds)..."
+      $lastMessageAt = $elapsed
+    } elseif (($elapsed - $lastMessageAt) -ge 10) {
+      Write-LauncherInfo "Still waiting for $NodeName to start ($elapsed s)..."
+      $lastMessageAt = $elapsed
+    }
+    if ($stopwatch.Elapsed.TotalSeconds -ge $Script:SetupCodeWaitSeconds) {
+      Fail-Launcher "$NodeName did not answer with a setup code within $Script:SetupCodeWaitSeconds seconds (last attempt: $line). Check: autobyteus-docker logs --name $NodeName"
+    }
+    Start-Sleep -Seconds 1
+  }
+}
+
+# setup-code: applies the current launcher configuration first (a node created by an older launcher is recreated
+# once with its named volumes and port, design M-8a), then asks the running node for a code. Start-Node's own
+# progress (image check/pull, recreate/start) goes to host output here, and its URL block is skipped (the setup
+# code message below already names the node's backend URL); setup-code's own output holds only the code.
+function Show-SetupCode([string]$NodeName) {
+  $state = Read-NodeState $NodeName
+  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
+  $imageRef = if ($state.imageRef) { $state.imageRef } else { Get-ImageRef $Script:DefaultImage $Script:DefaultTag }
+  Start-Node $NodeName $imageRef ($NodeName -eq $Script:DefaultNodeName) -NoUrls
+  Show-SetupCodeOfRunningNode $NodeName
 }
 
 function Show-Logs([string]$NodeName, [string[]]$ExtraArgs) {
@@ -127,25 +192,29 @@ function Invoke-AutoByteusDocker {
   $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
   if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
 
-  $stopAll = $false; $nameArg = ''; $nameSeen = $false; $nameOptionCount = 0; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @(); $destroyNodeName = ''
+  $stopAll = $false; $nameArg = ''; $nameSeen = $false; $nameOptionCount = 0; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @(); $destroyNodeName = ''; $version = ''; $allowLocalNetwork = $false
   for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
     switch ($CommandArgs[$i]) {
       '--all' { $stopAll = $true }
       '--name' { $i += 1; if ($i -ge $CommandArgs.Count -or $CommandArgs[$i].StartsWith('-')) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i]; $nameSeen = $true; $nameOptionCount += 1 }
       '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
       '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
+      '--version' { $i += 1; if ($i -ge $CommandArgs.Count -or $CommandArgs[$i].StartsWith('-')) { Fail-Launcher '--version requires a value' }; $version = $CommandArgs[$i] }
+      '--allow-local-network' { $allowLocalNetwork = $true }
       { $_ -in @('-h', '--help') } { Show-AutoByteusDockerHelp; return }
       default {
-        if (-not $nameArg -and $cmd -in @('urls', 'ports', 'status', 'ps', 'stop', 'logs')) { $nameArg = $CommandArgs[$i] }
+        if (-not $nameArg -and $cmd -in @('urls', 'ports', 'status', 'ps', 'stop', 'logs', 'setup-code')) { $nameArg = $CommandArgs[$i] }
         else { $extra += $CommandArgs[$i] }
       }
     }
   }
 
-  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
+  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs', 'update', 'setup-code')) {
     Show-AutoByteusDockerHelp
     exit 1
   }
+  if ($version -and $cmd -ne 'update') { Fail-Launcher '--version applies only to update.' }
+  if ($allowLocalNetwork -and $cmd -ne 'new-container') { Fail-Launcher '--allow-local-network applies only to new-container.' }
 
   if ($cmd -in @('new-container', 'upgrade', 'destroy', 'reset', 'storage') -and $extra.Count -gt 0) {
     Fail-Launcher "Unknown $cmd option(s): $($extra -join ' ')"
@@ -171,6 +240,7 @@ function Invoke-AutoByteusDocker {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown new-container option(s): $($extra -join ' ')" }
       if ($stopAll) { Fail-Launcher 'new-container creates one node and does not accept --all.' }
       if ($nameArg) { Fail-Launcher 'new-container always chooses the next indexed name; do not pass --name.' }
+      $Script:RequestedAllowLocalNetwork = $allowLocalNetwork
       New-Container $imageRef
     }
     'upgrade' {
@@ -207,7 +277,18 @@ function Invoke-AutoByteusDocker {
     { $_ -in @('urls', 'ports') } { Show-Urls $nodeName }
     { $_ -in @('status', 'ps') } { Show-Status $(if ($nameArg) { $nodeName } else { '' }) }
     'stop' { Stop-Nodes $nodeName $stopAll }
+    'update' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown update option(s): $($extra -join ' ')" }
+      if ($stopAll -and $nameArg) { Fail-Launcher 'update accepts --all or --name <node>, not both.' }
+      if ($imageRefOverrideExplicit) { Fail-Launcher 'update keeps each node''s image; use --version to choose the server version.' }
+      Update-Nodes $nodeName $stopAll $version
+    }
     'logs' { Show-Logs $nodeName $extra }
+    'setup-code' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown setup-code option(s): $($extra -join ' ')" }
+      if ($stopAll) { Fail-Launcher 'setup-code is for one node; use --name <node>.' }
+      Show-SetupCode $nodeName
+    }
     default { Show-AutoByteusDockerHelp; exit 1 }
   }
 }

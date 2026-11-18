@@ -1,0 +1,46 @@
+{
+  "startResult": {
+    "pid": 35272,
+    "status": "running",
+    "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-VXazdV",
+    "outputFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_48378b0ac6f543488cebc70a3abf7558/call-1794312281158-35195.log"
+  },
+  "pgid": 35195,
+  "goneAfterTerminateMs": 904,
+  "requests": [
+    {
+      "at": 1794312281028,
+      "repliedAt": 1794312281028,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [],
+      "lastUser": "CASE:BGT-06 Start the server in the background."
+    },
+    {
+      "at": 1794312281179,
+      "repliedAt": 1794312281179,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [
+        "{\"pid\":35272,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-VXazdV\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_48378b0ac6f543488cebc70a3abf7558/call-1794312281158-35195.log\"}"
+      ],
+      "lastUser": "CASE:BGT-06 Start the server in the background."
+    }
+  ]
+}

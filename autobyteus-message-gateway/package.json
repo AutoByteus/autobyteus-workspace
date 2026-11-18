@@ -2,12 +2,12 @@
   "name": "autobyteus-message-gateway",
   "version": "1.4.79",
   "private": true,
+  "packageManager": "pnpm@10.28.2",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "build:runtime-package": "node ./scripts/build-runtime-package.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests"
   },
@@ -17,9 +17,9 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
-    "@fastify/cors": "^9.0.1",
-    "@whiskeysockets/baileys": "6.7.21",
-    "fastify": "^4.29.1"
+    "@fastify/cors": "^11.3.1",
+    "@whiskeysockets/baileys": "6.7.24",
+    "fastify": "^5.12.7"
   },
   "license": "AGPL-3.0-only"
 }

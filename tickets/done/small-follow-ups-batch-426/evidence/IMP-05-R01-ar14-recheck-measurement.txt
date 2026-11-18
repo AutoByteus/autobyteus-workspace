@@ -1,0 +1,21 @@
+# IMP-05 — R-01: does AR-14's automatic re-check finish? (reproduce first, then measure)
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts -t "AR-14" --no-watch
+# Commit: work tree on base 6225a734a3 with D-14's AR-14 edit (later committed as 85d26ed1e8)
+# Environment: macOS, Node v22.23.1, scripted runtime CLIs (tests/fixtures/agent-runtimes-fake-cli.mjs); 2026-11-07
+#
+# Temporary diagnostic (removed before commit, never committed): a console.log in AR-14 printing the time between
+# reading the update's result and the row's checkedAt moving (the automatic re-check's finishCheck).
+#
+# 1. Base (IMP-01): AR-14 fails "Timed out waiting for codex_app_server newer prerelease checked (last: undefined)"
+#    — the label is built before the wait, so it always prints `undefined`.
+# 2. With the label built after the wait fails, the base failure reads:
+#    Timed out waiting for codex_app_server newer prerelease checked (last: {..."installedVersion":"0.170.0",
+#    "updates":{"state":"UP_TO_DATE","latestVersion":"0.170.0"},..."operation":null,"checkedAt":"2026-11-07T19:50:04.087Z"})
+#    — the check after `codex-version` was set to 0.171.0-rc.1 never read it: checkAll skips a row that is still checking.
+# 3. Waiting for the re-check to end (checkedAt different from the row read at "updated") before the next check:
+#    [IE426-R01] automatic re-check finished 108 ms after the update result was read
+#    ✓ AR-14 ... 2459ms   Tests 1 passed | 13 skipped
+#
+# Result: the re-check ends (about 0.1 s). R-01's product-bug branch does not hold; no Design Impact.
+# Design premise corrected: the row does expose a "check finished" field, `checkedAt` (api/graphql/types/agent-runtimes.ts:67,
+# set in finishCheck); AR-02 already waits on it. AR-14 now waits for it instead of repeating checkAgentRuntimes.

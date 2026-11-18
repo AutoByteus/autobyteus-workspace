@@ -1,0 +1,19 @@
+# API-06 cause: TEMPORARY stack diagnostic (console.error in ApplicationAvailabilityService.requireApplicationActive before the throw; removed right after, never committed) during the draft E2E on the fix, commit 8ab3a2129a; 2026-10-24
+[AB238-DIAG] requireApplicationActive refused QUARANTINED Error: 
+    at ApplicationAvailabilityService.requireApplicationActive (autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts:214:88)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ApplicationOrchestrationHostService.requireApplicationActive (autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:130:5)
+    at ApplicationOrchestrationHostService.getApplicationLaunchConfigurationView (autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:153:5)
+    at Object.<anonymous> (autobyteus-server-ts/src/api/rest/application-execution-resources.ts:16:31)
+[AB238-DIAG] requireApplicationActive refused QUARANTINED Error: 
+    at ApplicationAvailabilityService.requireApplicationActive (autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts:214:88)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ApplicationOrchestrationHostService.requireApplicationActive (autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:130:5)
+    at ApplicationOrchestrationHostService.getApplicationLaunchConfigurationView (autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:153:5)
+    at Object.<anonymous> (autobyteus-server-ts/src/api/rest/application-execution-resources.ts:16:31)
+[AB238-DIAG] requireApplicationActive refused REENTERING Error: 
+    at ApplicationAvailabilityService.requireApplicationActive (autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts:214:88)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at ApplicationOrchestrationHostService.requireApplicationActive (autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:130:5)
+    at ApplicationOrchestrationHostService.listRunBindings (autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts:269:5)
+    at ApplicationEngineClient.handleWorkerRequest (autobyteus-server-ts/src/application-engine/runtime/application-engine-client.ts:255:23)

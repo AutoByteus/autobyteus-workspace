@@ -1,0 +1,47 @@
+# API-29 same fresh clone (API-27): pnpm -C autobyteus-web test:nuxt --run; then test:electron --run
+# 2026-10-28T07:01:02Z; commit 4f27c2514d
+$ pnpm -C autobyteus-web test:nuxt --run
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-director Send, preserves real input/identity through readiness and sends once
+stderr | services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts > observational Org history, exact deliberate continuation and retained stop > restores only on deliberate agent-team-worker-configured Send, preserves real input/identity through readiness and sends once
+stderr | components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts > cold Org-owned authoring through real stores and Apollo > uses endpoint roles on detail and exact owned references for editing without catalog insertion
+stderr | components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts > cold Org-owned authoring through real stores and Apollo > uses endpoint roles on detail and exact owned references for editing without catalog insertion
+stderr | components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts > cold Org-owned authoring through real stores and Apollo > uses endpoint roles on detail and exact owned references for editing without catalog insertion
+stderr | components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts > cold Org-owned authoring through real stores and Apollo > uses endpoint roles on detail and exact owned references for editing without catalog insertion
+stderr | components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts > cold Org-owned authoring through real stores and Apollo > uses endpoint roles on detail and exact owned references for editing without catalog insertion
+stderr | components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts > cold Org-owned authoring through real stores and Apollo > uses endpoint roles on detail and exact owned references for editing without catalog insertion
+exit: 1
+$ pnpm -C autobyteus-web test:electron --run
+ ↓ extensions/__tests__/managedExtensionService.realRelease.spec.ts (1 test | 1 skipped)
+stdout | server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+   ✓ reports real loopback conflict without killing listener; fresh retry succeeds  309ms
+   ✓ actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child  1009ms
+ FAIL  browser/__tests__/browser-shell-controller.spec.ts [ browser/__tests__/browser-shell-controller.spec.ts ]
+Error: Electron failed to install correctly. Please delete `node_modules/electron` and run "npx install-electron --no" manually.
+ Test Files  1 failed | 47 passed | 1 skipped (49)
+      Tests  267 passed | 1 skipped (268)
+exit: 1
+
+## run 1 causes: the two failed test:nuxt files are the FU-003 cross-package specs; they import server code that needs autobyteus-ts/dist, which TESTING.md's install order builds (pnpm -C autobyteus-server-ts prebuild) and the CI-order clone skipped: 'Failed to resolve import "autobyteus-ts/agent/message/context-file.js"', 'Failed to resolve import "autobyteus-ts/agent/sender-type.js"'. test:electron: FU-011 (lazy Electron binary download raced).
+## run 2 in TESTING.md order, 2026-10-28T07:05:18Z
+$ pnpm -C autobyteus-server-ts prebuild
+exit: 0
+$ pnpm -C autobyteus-web test:nuxt --run
+ Test Files  666 passed (666)
+      Tests  4836 passed | 2 skipped (4838)
+real	3m29.669s
+exit: 0
+$ pnpm -C autobyteus-web test:electron --run
+ Test Files  48 passed | 1 skipped (49)
+      Tests  279 passed | 1 skipped (280)
+real	0m4.140s
+exit: 0
+
+## round 3 rerun (nuxt.config.ts changed): same fresh clone of 1f5a4a19df, TESTING.md order, 2026-10-28T07:27:39Z
+$ pnpm -C autobyteus-server-ts prebuild
+exit: 0
+$ pnpm -C autobyteus-web test:nuxt --run
+ Test Files  666 passed (666)
+      Tests  4836 passed | 2 skipped (4838)
+real	5m29.829s
+exit: 0
+test:electron not rerun: electron/vitest.config.ts does not read nuxt.config.ts; round 2 run 2 stays valid

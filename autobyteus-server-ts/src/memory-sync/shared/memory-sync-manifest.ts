@@ -1,8 +1,20 @@
+import path from "node:path";
 import type { MemorySyncManifest } from "./memory-sync-types.js";
+import { normalizeMemorySyncSourceId } from "./memory-sync-source-id.js";
+import { resolveUnderRoot } from "./memory-sync-path-policy.js";
 
-export const createEmptyMemorySyncManifest = (sourceNodeId: string): MemorySyncManifest => ({
+/** `<memoryDir>/imports/<sourceId>`: the imported tree of one source. */
+export const resolveMemorySyncImportRootDir = (memoryDir: string, memorySyncSourceId: string): string =>
+  resolveUnderRoot(path.join(memoryDir, "imports"), normalizeMemorySyncSourceId(memorySyncSourceId));
+
+/** The manifest file of one source; its lock orders every commit and staging sweep of that source. */
+export const resolveMemorySyncManifestPath = (importRootDir: string): string =>
+  path.join(importRootDir, "sync-manifest.json");
+
+
+export const createEmptyMemorySyncManifest = (memorySyncSourceId: string): MemorySyncManifest => ({
   schemaVersion: 1,
-  sourceNodeId,
+  memorySyncSourceId,
   lastCommittedBatchId: null,
   lastCommittedAt: null,
   batchDigests: {},
@@ -12,10 +24,10 @@ export const createEmptyMemorySyncManifest = (sourceNodeId: string): MemorySyncM
 });
 
 export const normalizeMemorySyncManifest = (
-  sourceNodeId: string,
+  memorySyncSourceId: string,
   value: Partial<MemorySyncManifest> | null | undefined,
 ): MemorySyncManifest => {
-  const fallback = createEmptyMemorySyncManifest(sourceNodeId);
+  const fallback = createEmptyMemorySyncManifest(memorySyncSourceId);
   if (!value || typeof value !== "object") {
     return fallback;
   }
@@ -37,7 +49,7 @@ export const normalizeMemorySyncManifest = (
   }
   return {
     schemaVersion: 1,
-    sourceNodeId,
+    memorySyncSourceId,
     lastCommittedBatchId: typeof value.lastCommittedBatchId === "string" ? value.lastCommittedBatchId : null,
     lastCommittedAt: typeof value.lastCommittedAt === "string" ? value.lastCommittedAt : null,
     batchDigests: normalizedBatchDigests,

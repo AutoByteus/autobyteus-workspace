@@ -99,17 +99,16 @@ vi.mock('~/stores/teamRunConfigStore', () => ({
   useTeamRunConfigStore: () => teamRunConfigStoreMock,
 }));
 
-vi.mock('~/services/agentStreaming', () => ({
-  ConnectionState: {
-    CONNECTED: 'connected',
-    DISCONNECTED: 'disconnected',
-  },
+// The agent run store builds each stream through `createAgentRunStream`, which constructs the service from its own module.
+vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
   AgentStreamingService: vi.fn().mockImplementation(() => ({
     connect: vi.fn(),
     disconnect: vi.fn(),
+    attachContext: vi.fn(),
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     sendMessage: vi.fn(),
+    onConnectionChange: vi.fn(() => () => undefined),
     connectionState: 'connected',
   })),
 }));

@@ -12,13 +12,13 @@
         </header>
         <p v-if="notice" class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status" data-testid="task-page-save-notice">{{ notice }}</p>
         <section v-if="confirmingDelete" class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4" aria-labelledby="task-delete-heading" data-testid="task-page-delete-confirmation" @keydown.esc.prevent="cancelDelete">
-          <h2 id="task-delete-heading" class="font-semibold text-red-900">{{ t('projects.components.projects.ProjectTaskEditor.deleteTitle') }}</h2><p class="mt-2 break-words text-sm leading-6 text-red-800">{{ t('projects.components.projects.ProjectTaskEditor.deleteMessage', {summary: taskSummaryLabel(task.description)}) }}</p>
+          <h2 id="task-delete-heading" class="font-semibold text-red-900">{{ t('projects.components.projects.ProjectTaskEditor.deleteTitle') }}</h2><p class="mt-2 break-words text-sm leading-6 text-red-800">{{ t('projects.components.projects.ProjectTaskEditor.deleteMessage', {title: taskTitleLabel(task.title)}) }}</p>
           <p v-if="partCount" class="mt-1 break-words text-sm leading-6 text-red-800" data-testid="task-page-delete-parts-note">{{ t(partCount === 1 ? 'projects.parts.deleteNoteOne' : 'projects.parts.deleteNote', {count: partCount}) }}</p>
           <p v-if="deleteError" role="alert" class="mt-3 text-sm text-red-700">{{ deleteError }}</p>
           <div class="mt-4 flex flex-wrap justify-end gap-3"><button ref="deleteCancel" type="button" :disabled="busy" :class="secondaryButton" data-testid="task-page-delete-cancel" @click="cancelDelete">{{ t('projects.common.cancel') }}</button><button type="button" :disabled="busy" class="inline-flex min-h-11 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60" data-testid="task-page-delete-confirm" @click="remove">{{ t(busy ? 'projects.components.projects.ProjectTaskEditor.deleting' : 'projects.ui.deleteTask') }}</button></div>
         </section>
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white" aria-labelledby="task-description-heading" data-testid="task-page-reading-surface">
-          <div class="p-5 sm:p-6"><h2 id="task-description-heading" class="text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h2><p class="mt-3 max-w-[80ch] whitespace-pre-wrap break-words text-base leading-7 text-slate-800" data-testid="task-page-description">{{ task.description }}</p><section v-if="task.contextFiles?.length" class="mt-6 border-t border-slate-100 pt-5" aria-labelledby="task-context-files-heading" data-testid="task-page-context-files"><h2 id="task-context-files-heading" class="mb-3 text-sm font-medium text-slate-600">{{ t('projects.ui.contextFiles') }} ({{ task.contextFiles.length }})</h2><TaskContextFiles :files="task.contextFiles" :client="client!" :saved-filenames="task.contextFiles.map((f) => f.storedFilename)" /></section></div>
+          <div class="p-5 sm:p-6"><h2 id="task-title-heading" class="text-xs font-medium text-slate-500">{{ t('projects.ui.title') }}</h2><p class="mt-2 max-w-[80ch] break-words text-lg font-semibold leading-7 text-slate-900" data-testid="task-page-title">{{ task.title }}</p><h2 id="task-description-heading" class="mt-5 text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h2><p class="mt-3 max-w-[80ch] whitespace-pre-wrap break-words text-base leading-7 text-slate-800" data-testid="task-page-description">{{ task.description }}</p><section v-if="task.contextFiles?.length" class="mt-6 border-t border-slate-100 pt-5" aria-labelledby="task-context-files-heading" data-testid="task-page-context-files"><h2 id="task-context-files-heading" class="mb-3 text-sm font-medium text-slate-600">{{ t('projects.ui.contextFiles') }} ({{ task.contextFiles.length }})</h2><TaskContextFiles :files="task.contextFiles" :client="client!" :saved-filenames="task.contextFiles.map((f) => f.storedFilename)" /></section></div>
         </section>
         <TaskCommentsSection :task="task" />
         <TaskPartsSection :task="task" :tasks="projectTasks" />
@@ -39,7 +39,7 @@ import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
 import { TASK_STATUS_LABEL_KEYS, taskStatusPillClass } from '~/utils/projects/taskStatusPresentation'
-import { taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { taskTitleLabel } from '~/utils/projects/taskText'
 import TaskContextFiles from './TaskContextFiles.vue'
 import TaskRootSection from './TaskRootSection.vue'
 import TaskDependenciesSection from './TaskDependenciesSection.vue'

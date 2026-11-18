@@ -94,12 +94,9 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   as the user message, without tools or caching (every adapter, Gemini included, takes
   the system prompt from the request's leading SYSTEM messages): up to **three** attempts with
   abortable 1s/2s backoffs. Provider capacity is checked before dispatch.
-- Every attempt is exactly one provider call (`single_attempt` transport) on its own
-  provider conversation `compaction_<operationId>_<attempt>`, never the agent's id.
-  The port releases it afterwards through `BaseLLM.releaseConversation` (default
-  no-op; a provider that keeps server-side sessions ends that session), on its own 10 s-bounded
-  controller, whatever the attempt outcome (including abort). The agent's LLM is
-  never cleaned up by compaction.
+- Every attempt is exactly one provider call (`single_attempt` transport); its
+  execution metadata names it `compaction_<operationId>_<attempt>` (`invocationId`).
+  The agent's LLM is never cleaned up by compaction.
 - Each attempt's usage is reported to the agent run as a token-usage event
   (`ingestion_kind: 'autobyteus_compaction'`, `llm_call_id:
   <executionTurnId>:compaction:<operationId>:<attempt>`, latest prompt null), so the
@@ -289,6 +286,24 @@ safe message. Repeated repair converges; an abandoned tool is not assumed to
 have succeeded. Archived raw history is not replayed as new conversation work.
 New-run initialization remains a separate path.
 
+Turn ids are `turn_NNNN`, numbered by the run's `TurnTracker`. A `MemoryManager`
+built over a run's stored memory (a restore) continues after the highest stored
+`turn_NNNN` in its complete raw-trace corpus, archived segments included
+(`TurnTracker.continuingAfter`); a new run starts at `turn_0001`. So a turn id
+names one turn of a run across any number of restores, which replay turn
+groups, stream buffers and the web's segment identity rely on (autobyteus-526).
+Runs restored before this keep the duplicate ids already stored.
+
+A tool called through tool search (`call_tool`; see
+`tool_schema_and_configuration.md` §4.8) has two records. The raw `tool_call`
+trace holds the real tool: `tool_name`, `tool_args` and `called_through`
+(`"call_tool"`). The working context keeps the call as the model made it, a
+`call_tool` call with `{name, arguments}` and a result named `call_tool`, which
+providers replay. Repair answers the working-context call under its own name and
+writes its raw recovery trace under the real tool. A raw trace without
+`called_through` (a direct call, or any run written before tool search) is read
+as it always was.
+
 Every memory JSONL file (active raw traces, episodic, semantic, archive
 segments) is read with one line rule, `src/memory/store/jsonl-log-file.ts`,
 working on byte offsets, never on decoded strings:
@@ -469,13 +484,14 @@ keep the user presentation (see the server `run_history.md`).
 A **platform input preface** combines a platform notice with the next input in
 one dispatch. The server uses it for skill update notices. Such an input carries
 the generic metadata tag
-`platform_input_preface { content, sender_id, original_content }`
+`platform_input_preface { content, sender_id, original_content, notice_id }`
 (`agent/message/platform-input-preface-metadata.ts`; `readPlatformInputPreface`
-validates it). The core holds no feature knowledge about it.
+validates it; a message stored before `notice_id` reads `noticeId: null`). The core holds no feature knowledge about it.
 
 - **Traces.** `MemoryIngestInputProcessor` writes two traces through
   `MemoryManager.appendRawTrace`: a `system_task_notification` raw trace with
-  the preface `content` and `sender_id`, then the `user` trace with
+  the preface `content`, `sender_id` and `notice_id` as its `message_id` (the
+  notice's one id, the same as on its published notice; autobyteus-526), then the `user` trace with
   `original_content` (attachments unchanged). A notice-only input
   (`original_content: null`) writes only the system trace.
 - **Turn linkage.** Both trace IDs are recorded on the `AgentTurn`

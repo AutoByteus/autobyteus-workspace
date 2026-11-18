@@ -1,0 +1,3 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 192 bytes, trimmed to summaries, skips and failures.
+[guard:localization-boundary] Passed.
+exit=0

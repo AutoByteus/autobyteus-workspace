@@ -1,0 +1,9 @@
+# IMP-13 server E2E: AutoByteus Anthropic stored-config edit and launch (fake Anthropic; its scripted delegate_task now goes through call_tool)
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts --no-watch
+# Commit: 49867e8dc4
+# Environment: macOS (darwin 25.5), Node v22.23.1; machine load average 85-116 from other processes during the full-suite runs
+# Date: 2026-11-17
+
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 13359ms
+     ✓ AC-013 (b): a delegated catalog Agent whose default launch config holds the stale key runs on that default, without the key  535ms
+ Test Files  1 passed (1)

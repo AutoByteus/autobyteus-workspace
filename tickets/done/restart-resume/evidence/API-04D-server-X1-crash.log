@@ -1,0 +1,130 @@
+# API-04D server X1-crash pid 71727; temp data root; 2026-11-01T06:56:53.398Z
+[19.73] Platform detection: Windows=false
+[19.73] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts
+[19.73] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data
+[19.73] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/.env
+[19.73] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/.env
+[19.73] ◇ injected env (0) from ../../../rr285-crash-resume-nwVBdI/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+[19.73] Environment variables loaded successfully
+[19.73] Server public base URL configured to: http://127.0.0.1:62796
+[19.73] === Starting logging configuration ===
+[19.73] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts/logging_config.ini
+[19.73] ============================================================
+[19.73] SERVER PUBLIC URL: http://127.0.0.1:62796
+[19.73] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts
+[19.73] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data
+[19.73] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/db
+[19.73] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/logs
+[19.73] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/download
+[19.73] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/memory
+[19.73] ============================================================
+[21.06] AgentFactory (Singleton) initialized.
+[21.26] Running Prisma migrations...
+[21.26] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[21.45] Prisma schema loaded from prisma/schema.prisma
+[21.45] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/db/test.db"
+[21.48] 27 migrations found in prisma/migrations
+
+
+[21.48] No pending migrations to apply.
+[21.49] Database migrations completed successfully.
+[21.50] (node:71727) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[21.50] (Use `node --trace-warnings ...` to show where the warning was created)
+[21.50] prisma:info Starting a sqlite pool with 21 connections.
+[21.51] [2026-11-01T06:57:14.905Z] [INFO] [secret-management.vault] Secret vault: application database
+[21.52] Initialized server settings service with 33 predefined settings
+[21.55] AgentRunManager initialized.
+[21.55] AgentRunManager initialized.
+[21.63] Loading workspace packages to trigger registration...
+[21.63] Successfully loaded workspace packages.
+[21.63] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/temp_workspace
+[21.63] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/temp_workspace.
+[21.63] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/data/temp_workspace with fixed ID 'temp_ws_default'
+[21.63] Temp workspace created and cached with ID: temp_ws_default
+[21.63] Registering agent customization processors...
+[21.63] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[21.63] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[21.63] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[21.63] Registered input processor 'UserInputContextBuildingProcessor'.
+[21.63] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[21.63] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[21.63] Agent customization processor registration complete.
+[21.63] Successfully registered tool definition: 'read_file'
+[21.63] Successfully registered tool definition: 'write_file'
+[21.63] Successfully registered tool definition: 'edit_file'
+[21.63] Successfully registered tool definition: 'run_bash'
+[21.63] Successfully registered tool definition: 'start_background_process'
+[21.63] Successfully registered tool definition: 'get_background_processes'
+[21.63] Successfully registered tool definition: 'get_process_output'
+[21.63] Successfully registered tool definition: 'stop_background_process'
+[21.63] Successfully registered tool definition: 'search_web'
+[21.63] Successfully registered tool definition: 'download_media'
+[21.63] Successfully registered tool definition: 'read_url'
+[21.63] Registered required tool unit: Core Tools
+[21.64] Successfully registered tool definition: 'get_project_task'
+[21.64] Successfully registered tool definition: 'list_projects'
+[21.64] Successfully registered tool definition: 'list_project_tasks'
+[21.64] Successfully registered tool definition: 'search_project_tasks'
+[21.64] Successfully registered tool definition: 'create_project'
+[21.64] Successfully registered tool definition: 'update_project'
+[21.64] Successfully registered tool definition: 'create_task'
+[21.64] Successfully registered tool definition: 'update_task'
+[21.64] Successfully registered tool definition: 'delegate_task'
+[21.64] Successfully registered tool definition: 'generate_image'
+[21.64] Successfully registered tool definition: 'edit_image'
+[21.64] Successfully registered tool definition: 'generate_speech'
+[21.64] Successfully registered tool definition: 'generate_video'
+[21.64] Registered required tool unit: Project Task Tools
+[21.64] Registered required tool unit: Task Delegation Tools
+[21.64] Registered required tool unit: Media Tools
+[21.64] Successfully registered tool definition: 'list_available_agents'
+[21.64] Successfully registered tool definition: 'list_peer_nodes'
+[21.64] Registered required tool unit: Agent Discovery Tools
+[21.64] Successfully registered tool definition: 'list_available_agent_runtimes'
+[21.64] Successfully registered tool definition: 'submit_launch_choices'
+[21.64] Registered required tool unit: Agent Runtime Tools
+[21.65] Registered required tool unit: Browser Tools
+[21.65] Successfully registered tool definition: 'publish_artifacts'
+[21.65] Registered required tool unit: Published Artifact Tools
+[21.65] Successfully registered tool definition: 'search_memory'
+[21.65] Registered required tool unit: Memory Tools
+[21.65] Successfully registered tool definition: 'send_message_to'
+[21.65] Successfully registered tool definition: 'get_handoff_rules'
+[21.65] Registered required tool unit: Agent Communication Tools
+[21.65] Overwriting existing tool definition for name: 'search_web'
+[21.65] Successfully registered tool definition: 'search_web'
+[21.65] Registered required tool unit: Search Tools
+[21.66] {"level":30,"time":1793516235056,"pid":71727,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62798"}
+[21.68] {"level":30,"time":1793516235081,"pid":71727,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62796"}
+[21.68] {"level":30,"time":1793516235081,"pid":71727,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:62796"}
+[21.68] {"level":30,"time":1793516235081,"pid":71727,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:62796"}
+[21.68] [2026-11-01T06:57:15.081Z] [INFO] [server.runtime] Server listening on 0.0.0.0:62796
+[21.68] Scheduling Studio-only non-critical startup tasks...
+[21.69] Background cache pre-loading process has started.
+[21.69] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[21.69] Populating MCP server config cache for the first time...
+[21.69] Running MCP tool registration background task...
+[21.69] Loading and registering all MCP server configurations from file...
+[21.69] Background task 'Memory Sync Worker' completed successfully.
+[21.69] Background task 'Memory Search' completed successfully.
+[21.69] MCP server config cache populated with 0 items.
+[21.69] Found 0 total MCP server configs.
+[21.69] Synchronized cached configurations with the core MCP config service.
+[21.69] Pre-loaded 0 MCP server configs into cache.
+[21.69] Finished loading and registering all MCP server configurations.
+[21.69] Background task 'MCP Tool Registration' completed successfully.
+[21.69] Pre-loaded 33 LLM models into cache.
+[21.69] Pre-loaded 7 image models into cache.
+[21.69] Pre-loaded 3 audio models into cache.
+[21.69] Background application cache pre-loading completed.
+[21.69] Background task 'Cache Pre-loading' completed successfully.
+[21.70] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/workspace
+[21.70] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/workspace.
+[21.70] Created and registered workspace ID: agent_ws_3b9ad8e511814c3326d22866e8b04f4b5c284b813e2ca729fc1ec6177631d2ba
+[21.70] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/workspace
+[21.70] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/workspace.
+[21.70] Reusing registered workspace ID: agent_ws_3b9ad8e511814c3326d22866e8b04f4b5c284b813e2ca729fc1ec6177631d2ba
+[21.70] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/workspace
+[21.70] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI/workspace.
+[21.70] Reusing registered workspace ID: agent_ws_3b9ad8e511814c3326d22866e8b04f4b5c284b813e2ca729fc1ec6177631d2ba
+[21.77] Restart resume resumed host run 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63' of agent 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63'

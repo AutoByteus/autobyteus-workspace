@@ -1,0 +1,15 @@
+# Case: API-06 — token scan of the ticket folder and the changed test file (temporary probe; paths and counts only)
+# Command: node /tmp/s337/scan/token-scan.mjs tickets/in-progress/integrations-page autobyteus-server-ts/tests/e2e/credential-proxy; grep -rlE 'rp_[A-Za-z0-9_-]{20,}' evidence/API-*
+# Commit: 22f17adf30 + this round's uncommitted files; date 2026-11-01T08:37:22Z
+
+{
+  "tickets/in-progress/integrations-page": {
+    "files": 105,
+    "filesWithToken": []
+  },
+  "autobyteus-server-ts/tests/e2e/credential-proxy": {
+    "files": 3,
+    "filesWithToken": []
+  }
+}
+unmasked-pass-files: 0

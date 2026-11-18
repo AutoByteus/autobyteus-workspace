@@ -1,0 +1,9 @@
+# API-13 run 1 (before the release-file change): Anthropic Pass; OpenAI failed the test's 'exactly one notice' assumption
+# gpt-5.4-mini started the builds 4.6 s apart, so they ended 4.7 s apart: two notices, each end reported once (REQ-004/005 behavior)
+
+     ✓ 'BGT-LIVE-ANTHROPIC': two background builds, one progress read, one notice, both results reported  19310ms
+     × 'BGT-LIVE-OPENAI': two background builds, one progress read, one notice, both results reported 23925ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: each end is reported once, in one notice: expected [ { …(3) }, { …(3) } ] to have a length of 1 but got 2
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)

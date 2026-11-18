@@ -1,0 +1,63 @@
+# Case: API-06 (b) step 08
+# Command: ps-run.sh <v8 launcher> help
+# Setup: as API-06b-02 (test node abx402-ps-node; native arm64 PowerShell 7.4.6; real Docker engine; temp state/shared under /private/tmp/abx402-api/ps)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Date: 2026-11-06T15:38:29Z
+
+AutoByteus Docker node launcher
+
+Usage:
+  autobyteus-docker <command> [options]
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker install"
+
+Commands:
+  install            Install or replace the local autobyteus-docker CLI
+  new-container      Create a new Docker node with automatic indexed name and ports
+  upgrade --all      Upgrade all managed Docker nodes using their saved image refs
+  destroy --all      Remove all managed Docker nodes, keeping named volumes
+  destroy --name <node>
+                     Remove one managed Docker node and keep named volumes
+  reset              Destroy all managed Docker nodes, then create autobyteus-server-0
+  workspace paths    Show host/container paths for node and shared workspaces
+  workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
+  storage            Show named volumes and host bind mounts for node(s)
+  urls | ports       Show Backend, GraphQL and VNC Viewer (this computer only) URLs
+  status | ps        Show managed Docker nodes and the server version each runs
+  update [--name <node> | --all] [--version <X.Y.Z[-beta.N]>]
+                     Update the server inside running node(s), keeping the container and image
+  logs               Show Docker logs for a managed node
+  stop [--all]       Stop one or all managed Docker nodes
+  help               Show this help
+
+Advanced temporary use: powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker <command> [options]"
+
+Options:
+  --name <name>      Friendly node name for status/logs/urls/stop (default: autobyteus-server-0); destroy requires it explicitly
+  --tag <tag>        Docker image tag (default: latest; explicit upgrade --all retargets all nodes)
+  --image <image>    Docker image repository or full image ref (default: autobyteus/autobyteus-server; explicit upgrade --all retargets all nodes)
+  --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
+  --version <ver>    For update: the server version to update to (default: the newest on the node's track)
+  -h, --help         Show this help
+
+In-place update (update):
+  Without --version a node follows its saved image tag: latest or latest-zh -> the newest stable
+  release, beta -> the newest release, beta or stable. A node pinned to a version tag or using another
+  image needs --version. Only newer, signed server packages are accepted; a failed update leaves the
+  old version running. A server that needs a newer system than the image has needs upgrade --all.
+
+Release tracks:
+  latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.
+  beta               Newest build, beta or stable. Switch once with: upgrade --all --tag beta
+                     Later plain upgrade --all runs then follow each newer build.
+  Back to stable:    upgrade --all --tag latest
+                     Caution: only switch back once a stable release at least as new as your beta
+                     is available. Otherwise an older server runs on data a newer version may have migrated.
+
+State:
+  AUTOBYTEUS_DOCKER_INSTALL_DIR overrides the install directory.
+  Default install directory: %LOCALAPPDATA%\AutoByteus\bin
+  AUTOBYTEUS_DOCKER_STATE_DIR overrides the state directory.
+  Default state directory: %LOCALAPPDATA%\AutoByteus\docker-server
+  AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR overrides the shared workspace root.
+  Default shared workspace: %LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace
+exit=0

@@ -3,12 +3,13 @@ import { computed, ref, shallowRef, watch, type Ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useAppUpdateStore } from '~/stores/appUpdateStore'
+import type { AppUpdateAutomaticOutcome } from '~/shared/appUpdateTypes'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
 import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
 import { useSkillNamesStore } from '~/stores/skillNamesStore'
 import { useUpdateAutomationStore } from '~/stores/updateAutomationStore'
-import { runtimeName } from '~/components/settings/agent-runtimes/agentRuntimesPresentation'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { showsAgentRuntimeUpdates } from '~/utils/ownNodeWindow'
 import type { AgentRuntime } from '~/types/agentRuntimes'
 import {
@@ -64,6 +65,11 @@ export interface AppNotificationRow {
   handledVersion: string | null
   releasePageUrl: string | null
   error: string | null
+  /** What the app's automatic update did (autobyteus-356): AUTO_UPDATED when handled, AUTO_FAILED while waiting. */
+  outcome: AppUpdateAutomaticOutcome | null
+  outcomeReason: string | null
+  /** `install`: the version is not tried again automatically. */
+  outcomeStep: 'download' | 'install' | null
 }
 
 export type NotificationRow = SourceNotificationRow | AppNotificationRow
@@ -134,7 +140,7 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
       const waiting = entry.state === 'WAITING'
       const runtime = kind === 'agent_runtime'
       return {
-        id, kind, sourceId: entry.sourceId, name: runtime ? runtimeName(entry.name) : entry.name,
+        id, kind, sourceId: entry.sourceId, name: runtime ? agentRuntimeName(entry.name) : entry.name,
         repositoryUrl: entry.repositoryUrl, branch: entry.defaultBranch,
         installedRevision: entry.installedRevision, latestRevision: entry.latestRevision, foundAt: entry.foundAt,
         unread: !entry.read && (waiting || entry.outcome === 'AUTO_UPDATED'),
@@ -156,9 +162,10 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
       : busy ? app.status as 'downloading' | 'downloaded' | 'installing' : failed ? 'failed' : 'waiting'
     return {
       id: 'app', kind: 'app', fromVersion: record?.fromVersion ?? app.currentVersion, version: record?.version ?? app.availableVersion ?? '',
-      foundAt: record?.foundAt ?? null, unread: record?.state === 'waiting' && !record.read, state,
+      foundAt: record?.foundAt ?? null, unread: !!record && !record.read && (record.state === 'waiting' || record.outcome === 'AUTO_UPDATED'), state,
       handledVersion: record?.handledVersion ?? null, releasePageUrl: record?.releasePageUrl ?? null,
       error: failed ? rowActions.value.app?.error ?? null : null,
+      outcome: record?.outcome ?? null, outcomeReason: record?.outcomeReason ?? null, outcomeStep: record?.outcomeStep ?? null,
     }
   })
 
@@ -177,8 +184,10 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
   const rows = computed<NotificationRow[]>(() => sections.value.flatMap((section) => section.rows))
   const waitingRows = computed(() => rows.value.filter((row) => row.state !== 'handled'))
   const waitingCount = computed(() => waitingRows.value.length)
-  /** Rows an automatic update has already applied and the user has not seen: they keep the entry visible (REQ-008). */
-  const unreadOutcomeRows = computed(() => rows.value.filter((row) => row.state === 'handled' && row.kind !== 'app' && row.outcome === 'AUTO_UPDATED' && row.unread))
+  /** Rows an automatic update has already applied, of every kind (REQ-008; the app: autobyteus-356). */
+  const automaticOutcomeRows = computed(() => rows.value.filter((row) => row.state === 'handled' && row.outcome === 'AUTO_UPDATED'))
+  /** Those the user has not seen: they keep the entry visible. */
+  const unreadOutcomeRows = computed(() => automaticOutcomeRows.value.filter((row) => row.unread))
   const hasUnread = computed(() => waitingRows.value.some((row) => row.unread) || unreadOutcomeRows.value.length > 0)
   /** The entry shows while updates wait or an automatic outcome is unread, even when nothing waits (DEC-007). */
   const hasEntry = computed(() => waitingCount.value > 0 || unreadOutcomeRows.value.length > 0)
@@ -301,7 +310,7 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
   }
 
   return {
-    sections, rows, waitingCount, hasUnread, hasEntry, unreadOutcomeRows, waitingByKind, isEmpty,
+    sections, rows, waitingCount, hasUnread, hasEntry, automaticOutcomeRows, unreadOutcomeRows, waitingByKind, isEmpty,
     reload, markAllRead, updateSource, updateRuntime, attachRuntimeStatuses, downloadApp,
     installApp: () => app.installUpdateAndRestart(), clear,
   }

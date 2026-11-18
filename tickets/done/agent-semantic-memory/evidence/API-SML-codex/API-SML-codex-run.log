@@ -1,0 +1,427 @@
+# API-11..API-14 live suite, Codex cells (gpt-6.1-terra, low)
+# Command: env -i PATH HOME USER LOGNAME TMPDIR RUN_CODEX_E2E=1 SEMANTIC_MEMORY_LIVE_E2E_EVIDENCE_DIR=<this folder> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts --no-watch --reporter=verbose
+# Commit: 578ac778b (+ uncommitted API/E2E test files)
+# Environment: Linux 6.12 container (root), Node v22.23.3, codex-cli 0.167.0, claude 2.1.322, grok 1.0.77, agy 1.5.4
+# Date: 2026-11-10T12:37:38Z
+
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:86856) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+Custom app data directory set to: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data
+Updated config file path to /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/.env
+Loading environment from: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/.env
+◇ injected env (2) from ../../../../../../../root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+APP DATA DIRECTORY: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data
+DB DIRECTORY: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/db
+LOGS DIRECTORY: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/logs
+DOWNLOAD DIRECTORY: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/download
+MEMORY DIRECTORY: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Creating temp workspace at: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/temp_workspace.
+Initialized TempWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex
+SEMANTIC_MEMORY_LIVE_MODEL {"runtime":"codex","model":"gpt-6.1-terra"}
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex
+Agent Definition created successfully with ID: sm-live-keeper-codex-eb866eb2
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Created and registered workspace ID: agent_ws_d54326683411138242642992a42bd25176a966f6ad7fc0cac2a2e9f72299fd05
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Reusing registered workspace ID: agent_ws_d54326683411138242642992a42bd25176a966f6ad7fc0cac2a2e9f72299fd05
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Agent websocket attached for run sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b
+Created agent session 800172ff-60bf-4f9c-b44b-9d8a66176db4 for run sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b
+Agent WebSocket connected: session=800172ff-60bf-4f9c-b44b-9d8a66176db4, run=sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+SEMANTIC_MEMORY_LIVE_WRITE codex {"runId":"sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b","model":"gpt-6.1-terra","reply":"SAVED","tools":["run_bash {\"command\":\"/bin/bash -lc \\\"printf '%s\\\\\\\\n' '# Deploy codeword' '' 'The deploy codeword is \\\"'`SMCODE-CODEX-eb866eb2`.'\\\"' > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2/deploy-codeword.md\\\"\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-li"],"failures":[],"approvals":[],"errors":[],"folder":"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2","files":{"deploy-codeword.md":"# Deploy codeword\n\nThe deploy codeword is `SMCODE-CODEX-eb866eb2`.\n"},"workspaceFiles":{},"instructionsHaveSection":[true],"wire":[{"method":"thread/start","sandbox":"workspace-write","approvalPolicy":"on-request","cwd":"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a","configKeys":["mcp_servers","sandbox_workspace_write"],"sandbox_workspace_write":{"writable_roots":["/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2"]},"semanticSection":"## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."}]}
+
+stderr | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+[CodexAppServerClient] stderr: 2026-11-10T12:36:38.878664Z ERROR codex_core::tools::router: error=exec_command failed: CreateProcess { message: "Rejected(\"rejected by user\")" }
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+SEMANTIC_MEMORY_LIVE_CODEX_CONTROL {"approvals":[{"tool":"run_bash","args":"{\"command\":\"/bin/bash -lc 'echo control > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a\"}","decision":"denied"}],"tools":["run_bash {\"command\":\"/bin/bash -lc 'echo control > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a\"}"],"failures":["{\"item\":{\"type\":\"commandExecution\",\"id\":\"exec-7ace4489-41ce-413d-be19-361a60733c05\",\"pluginId\":null,\"scriptPath\":null,\"command\":\"/bin/bash -lc 'echo control > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/not-semantic-eb866eb2.txt'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a\",\"processId\":null,\"source\":\"agent\",\"status\":\"declined\",\"commandActions\":[{\"type"]}
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Closed agent session 800172ff-60bf-4f9c-b44b-9d8a66176db4
+Agent WebSocket disconnected: 800172ff-60bf-4f9c-b44b-9d8a66176db4
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Reusing registered workspace ID: agent_ws_d54326683411138242642992a42bd25176a966f6ad7fc0cac2a2e9f72299fd05
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions
+Agent websocket attached for run sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b
+Created agent session c279a596-ac34-415c-9f7c-5787bbf5793f for run sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b
+Agent WebSocket connected: session=c279a596-ac34-415c-9f7c-5787bbf5793f, run=sm_live_keeper_codex_eb866eb2_a7b74837060a4a699404f4b50f98e51b
+
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-WRITE (AC-001, AC-002): a run under Project A writes its codeword into its semantic memory, told only by its instructions 18650ms
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-b
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-b.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+Closed agent session c279a596-ac34-415c-9f7c-5787bbf5793f
+Agent WebSocket disconnected: c279a596-ac34-415c-9f7c-5787bbf5793f
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+Created and registered workspace ID: agent_ws_93e9972f12b1442698352be7cd571e10d9a5c13b45037f5005135363fd8df267
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-b
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-b.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+Reusing registered workspace ID: agent_ws_93e9972f12b1442698352be7cd571e10d9a5c13b45037f5005135363fd8df267
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+Agent websocket attached for run sm_live_keeper_codex_eb866eb2_899999cbb0b64235b1818986dee5679d
+Created agent session b86e97cd-7eff-4d1c-83f2-ec9991bdeb05 for run sm_live_keeper_codex_eb866eb2_899999cbb0b64235b1818986dee5679d
+Agent WebSocket connected: session=b86e97cd-7eff-4d1c-83f2-ec9991bdeb05, run=sm_live_keeper_codex_eb866eb2_899999cbb0b64235b1818986dee5679d
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory
+SEMANTIC_MEMORY_LIVE_READ codex {"runId":"sm_live_keeper_codex_eb866eb2_899999cbb0b64235b1818986dee5679d","reply":"SMCODE-CODEX-eb866eb2","tools":["run_bash {\"command\":\"/bin/bash -lc \\\"ls -la /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2 && grep -Rin 'codeword\\\\\\\\|deploy' /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2\\\"\",\"cwd\":\"/root/.aut"],"approvals":[],"errors":[]}
+
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-READ (AC-003): a new run under Project B reads the codeword from its semantic memory 6274ms
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Closed agent session b86e97cd-7eff-4d1c-83f2-ec9991bdeb05
+Agent WebSocket disconnected: b86e97cd-7eff-4d1c-83f2-ec9991bdeb05
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Agent Definition created successfully with ID: sm-live-lead-codex-eb866eb2
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Agent Team Definition created successfully with ID: sm-live-team-eb866eb2
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-team
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-team.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Created and registered workspace ID: agent_ws_f7d66b28df8c72f100db4d2b51a292273c0b090b73a97788395bea76360afd35
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Agent team websocket attached for team run sm_live_team_eb866eb2_0efee90a8fee4621bc73be7cf3f656d1
+Created agent session a95b9443-3c0e-498b-b015-0a06a4a47847 for run sm_live_team_eb866eb2_0efee90a8fee4621bc73be7cf3f656d1
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Agent Team WebSocket connected: session=a95b9443-3c0e-498b-b015-0a06a4a47847, run=sm_live_team_eb866eb2_0efee90a8fee4621bc73be7cf3f656d1
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-team
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-team.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+Reusing registered workspace ID: agent_ws_f7d66b28df8c72f100db4d2b51a292273c0b090b73a97788395bea76360afd35
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword
+SEMANTIC_MEMORY_LIVE_CODEX_TEAM {"teamRunId":"sm_live_team_eb866eb2_0efee90a8fee4621bc73be7cf3f656d1","keeperRunId":"sm_live_keeper_codex_eb866eb2_ffda6208fdaf4e638ad84195e3942f5b","reply":"SMCODE-CODEX-eb866eb2","tools":["run_bash {\"command\":\"/bin/bash -lc \\\"ls -la /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2 && grep -Rin 'codeword\\\\\\\\|deploy' /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2\\\"\",\"cwd\":\"/root/.aut"],"approvals":[],"wire":[{"method":"thread/start","sandbox":"workspace-write","approvalPolicy":"on-request","cwd":"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a","configKeys":["mcp_servers","sandbox_workspace_write"],"sandbox_workspace_write":{"writable_roots":["/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2"]},"semanticSection":"## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."},{"method":"thread/resume","sandbox":"workspace-write","approvalPolicy":"on-request","cwd":"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a","configKeys":["mcp_servers","sandbox_workspace_write"],"sandbox_workspa
+
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-TEAM (AC-004): the agent as a shared team member reads the codeword 7340ms
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Closed agent session a95b9443-3c0e-498b-b015-0a06a4a47847
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Added new custom server setting: AUTOBYTEUS_SKILLS_PATHS
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Agent Definition created successfully with ID: sm-live-integrated-codex-eb866eb2
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Created and registered workspace ID: agent_ws_29782118521fd510601cb8f79e995d2b5de5324b638a17ab713c3b55843275aa
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Reusing registered workspace ID: agent_ws_29782118521fd510601cb8f79e995d2b5de5324b638a17ab713c3b55843275aa
+
+stderr | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+[CodexAppServerClient] stderr: 2026-11-10T12:37:00.738704Z ERROR codex_app_server: Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration/.codex
+       To load project-local config, hooks, and exec policies, add /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration as a trusted project in /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/codex-home/config.toml.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+Agent websocket attached for run sm_live_integrated_codex_eb866eb2_624c1f88359b4bcfbd5fb33f6b369a30
+Created agent session 49130cda-9e1f-4468-bec3-4e56174c94c5 for run sm_live_integrated_codex_eb866eb2_624c1f88359b4bcfbd5fb33f6b369a30
+Agent WebSocket connected: session=49130cda-9e1f-4468-bec3-4e56174c94c5, run=sm_live_integrated_codex_eb866eb2_624c1f88359b4bcfbd5fb33f6b369a30
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run
+SEMANTIC_MEMORY_LIVE_CODEX_INTEGRATION {"runId":"sm_live_integrated_codex_eb866eb2_624c1f88359b4bcfbd5fb33f6b369a30","reply":"403","tools":["run_bash {\"command\":\"/bin/bash -lc \\\"curl -s -o /dev/null -w '%{http_code}' \\\\\\\"\\\"'$AUTOBYTEUS_GITHUB_API_URL/repos/octocat/hello-world\\\"'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration\"}","run_bash {\"command\":\"/bin/bash -lc \\\"printf '%s\\\\\\\\n' 'proxy probe SMNET-eb866eb2 returned 403' > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-integrated-codex-eb866eb2/proxy-probe.md\\\"\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration\"}"],"failures":[],"approvals":[],"files":{"proxy-probe.md":"proxy probe SMNET-eb866eb2 returned 403\n"},"wire":{"method":"thread/start","sandbox":"workspace-write","approvalPolicy":"on-request","cwd":"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration","configKeys":["mcp_servers","sandbox_workspace_write","shell_environment_policy"],"sandbox_workspace_write":{"network_access":true,"writable_roots":["/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-integrated-codex-eb866eb2"]},"semanticSection":"## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-integrated-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."}}
+
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-INTEGRATION (AC-002): with integration variables the shell reaches the proxy and the memory is written in one run 17364ms
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Closed agent session 49130cda-9e1f-4468-bec3-4e56174c94c5
+Agent WebSocket disconnected: 49130cda-9e1f-4468-bec3-4e56174c94c5
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Agent Definition created successfully with ID: sm-live-plain-codex-eb866eb2
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-plain
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-plain.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Created and registered workspace ID: agent_ws_2297a73bdb25af10cf6410d553801aa26fe28bea7000d2f429b95d703897bf69
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Creating new workspace for rootPath: /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-plain
+Created metadata-only FileSystemWorkspace at /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-plain.
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Reusing registered workspace ID: agent_ws_2297a73bdb25af10cf6410d553801aa26fe28bea7000d2f429b95d703897bf69
+
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder
+Agent websocket attached for run sm_live_plain_codex_eb866eb2_4c3d419d13b34900b85f4f815baa5089
+Created agent session 8d6814bb-e6f8-4d05-9b2b-8b9b1a3a73df for run sm_live_plain_codex_eb866eb2_4c3d419d13b34900b85f4f815baa5089
+Agent WebSocket connected: session=8d6814bb-e6f8-4d05-9b2b-8b9b1a3a73df, run=sm_live_plain_codex_eb866eb2_4c3d419d13b34900b85f4f815baa5089
+
+ ✓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CODEX-OFF (AC-005): an agent without the setting gets an unchanged thread config, no section and no folder 3553ms
+stdout | tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes
+Closed agent session 8d6814bb-e6f8-4d05-9b2b-8b9b1a3a73df
+Agent WebSocket disconnected: 8d6814bb-e6f8-4d05-9b2b-8b9b1a3a73df
+
+ ↓ tests/e2e/runtime/agent-semantic-memory-live.e2e.test.ts > agent semantic memory with real runtimes > codex > SML-CLAUDE-APPROVALS (AC-002, REQ-006): with auto-execute off the memory asks no approval the workspace does not ask
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 1 skipped (6)
+   Start at  12:36:06
+   Duration  77.35s (transform 11.68s, setup 126ms, import 17.49s, tests 57.76s, environment 0ms)
+

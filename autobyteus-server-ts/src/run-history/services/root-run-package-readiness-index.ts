@@ -44,12 +44,22 @@ export class RootRunPackageReadinessIndex {
   listDiagnostics(family?: RootRunPackageFamily): readonly RootRunPackageReadinessDiagnostic[] {
     return Object.freeze(this.state.diagnostics.filter((item) => family === undefined || item.rootSubjectKind === family).map((item) => Object.freeze({...item})));
   }
-  /** Publish only structurally valid packages; attachments are checked at requested access. */
+  /**
+   * Admits one new package by its structure; the history is not rescanned (autobyteus-358). Its message log is
+   * validated where it is read.
+   */
   async admitCurrent(family: RootRunPackageFamily, id: string): Promise<void> {
-    if (!id.trim()) throw new Error("rootRunId is required.");
-    this.state.mutationRevision += 1;
-    await this.rebuild();
-    if (!this.isAdmitted(family, id)) throw new Error(`Current run package '${family}:${id}' could not be admitted.`);
+    const rootRunId = id.trim();
+    if (!rootRunId) throw new Error("rootRunId is required.");
+    await this.awaitReady();
+    const result = await this.validator.scanOne(family, rootRunId);
+    // The Team and Org families share one id space, so their verdicts for this id are replaced together.
+    const judged: readonly RootRunPackageFamily[] = family === "agent" ? ["agent"] : ["agent_team", "agent_org"];
+    judged.forEach((candidate) => this.state.admitted.delete(packageKey(candidate, rootRunId)));
+    this.state.diagnostics = this.state.diagnostics.filter((item) => !judged.includes(item.rootSubjectKind) || item.rootRunId !== rootRunId);
+    result.groups.forEach((group) => this.state.admitted.add(group.key));
+    this.state.diagnostics.push(...result.diagnostics);
+    if (!this.isAdmitted(family, rootRunId)) throw new Error(`Current run package '${family}:${rootRunId}' could not be admitted.`);
   }
   excludeCurrent(family: RootRunPackageFamily, id: string, reason: string): void {
     this.state.admitted.delete(packageKey(family, id.trim()));

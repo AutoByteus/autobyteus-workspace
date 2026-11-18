@@ -5,6 +5,7 @@ import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-
 import type { AgentToolMcpToolAdapter } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { createAgentToolMcpSessionAuthorityFactory } from "../../../../src/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.js";
+import { AgentToolsMcpSessionStreams } from "../../../../src/agent-tools/mcp/agent-tools-mcp-session-streams.js";
 
 const TOOL_NAME = "test_tool";
 const publisher = { publishManyForRun: vi.fn().mockResolvedValue([]) };
@@ -32,13 +33,16 @@ const activationInput = (runId: string, exposed = true) => ({
 
 const createFixture = () => {
   const registry = new AgentToolMcpSessionRegistry();
+  const streams = new AgentToolsMcpSessionStreams();
   const assertHostOpen = vi.fn();
   return {
     registry,
+    streams,
     assertHostOpen,
     factory: createAgentToolMcpSessionAuthorityFactory({
       registry,
       catalog: new AgentToolMcpCatalog({ adapters: [adapter] }),
+      streams,
       getLocalBaseUrl: () => "http://127.0.0.1:43124",
       assertHostOpen,
     }),
@@ -125,7 +129,7 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
     deactivate.mockRestore(); authority.close();
   });
 
-  it("does not ledger or register a run with zero exposed tools", () => {
+  it("ledgers and registers a run with zero exposed tools", () => {
     const { factory, registry } = createFixture();
     const authority = factory.begin({ scopeIdentity: "application:test" }).complete({
       executionCapabilities: {
@@ -134,10 +138,49 @@ describe("ScopedAgentToolMcpSessionAuthority", () => {
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    expect(authority.runSessions.activateForRun(activationInput("hidden", false)))
-      .toEqual({ kind: "not_exposed" });
-    expect(authority.runSessions.deactivateForRun("hidden")).toBe(0);
+    const result = authority.runSessions.activateForRun(activationInput("empty", false));
+    expect(result).toMatchObject({ kind: "active", descriptor: { enabledTools: [] } });
+    expect(registry.listSessions()).toHaveLength(1);
+    expect(authority.runSessions.deactivateForRun("empty")).toBe(1);
     expect(registry.listSessions()).toEqual([]);
+  });
+
+  it("replaces and describes only the runs it owns, and closes their streams on deactivation", () => {
+    const { factory, registry, streams } = createFixture();
+    const complete = (scopeIdentity: string) => factory.begin({ scopeIdentity }).complete({
+      executionCapabilities: {
+        publishedArtifactPublisher: publisher,
+        applicationAgentTools: null,
+      },
+      assertExecutionCapabilitiesReady: () => undefined,
+    });
+    const owner = complete("application:owner");
+    const other = complete("application:other");
+    const activated = owner.runSessions.activateForRun(activationInput("owned", false));
+
+    const replaced = owner.runSessions.replaceForRun({
+      runId: "owned",
+      runtimeExposure: buildRuntimeAgentToolExposure([TOOL_NAME]),
+    });
+    expect(replaced.enabledTools).toEqual([TOOL_NAME]);
+    expect(owner.runSessions.describeForRun("owned")).toEqual(replaced);
+    expect(registry.getSession(activated.sessionId)?.enabledTools).toEqual([TOOL_NAME]);
+    expect(() => other.runSessions.describeForRun("owned")).toThrow("has no session");
+    expect(() => other.runSessions.replaceForRun({
+      runId: "owned",
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    })).toThrow("has no session");
+
+    owner.blockNewSessions();
+    expect(owner.runSessions.describeForRun("owned")).toEqual(replaced);
+
+    const closeSession = vi.spyOn(streams, "closeSession");
+    expect(owner.runSessions.deactivateForRun("owned")).toBe(1);
+    expect(closeSession).toHaveBeenCalledWith(activated.sessionId);
+    expect(() => owner.runSessions.describeForRun("owned")).toThrow("has no session");
+    owner.close();
+    expect(() => owner.runSessions.describeForRun("owned")).toThrow("is closed");
+    other.close();
   });
 
   it("compensates an activated record when ledger admission fails", () => {

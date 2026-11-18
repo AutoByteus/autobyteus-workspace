@@ -84,6 +84,70 @@ how to apply them; they do not replace user-approved product requirements.
    not saved data: data written by an older version must still be read, as rule 7
    and the Data Migration Guideline require.
 
+   **The one exception: the node-update contracts.** A Docker node's in-place
+   update has a newer desktop or release meet an older node, so these four
+   contracts are frozen across versions (the user's decision for
+   autobyteus-305):
+   - **C1**, the node's `/rest/node-update` REST surface (status and update
+     request);
+   - **C2**, the starter's socket API and its host command
+     `node /opt/autobyteus/starter/cli.mjs` (arguments, one-line JSON output,
+     exit codes);
+   - **C3**, the server package description, its signature and the package's
+     own `server-package.json`;
+   - **C4**, how the starter starts a server package:
+     `node dist/app.js --host --port --data-dir`, `AUTOBYTEUS_STARTER_SOCKET`
+     in its environment, SIGTERM to stop it, `GET /rest/health` when it
+     listens.
+
+   They grow only by optional fields and new codes; nothing is renamed or
+   removed. A client shows the `message` of a code it does not know. Every other
+   contract stays a clean cut.
+11. **Tests follow the code; they never hold it back.** Production code keeps no
+   method, field, parameter, branch or value that only tests read, such as a request
+   label that only a fake LLM inspects. When cleaning up production code breaks old
+   tests, change the tests: make them observe what the product really does (the
+   requests a provider really receives, the results a caller really gets), or
+   delete tests of behavior that no longer exists. "A test depends on it" is never
+   a reason to keep code. Example (autobyteus-357): `logicalConversationId` was
+   attached to every LLM request and stripped before any provider saw it; only
+   test doubles read it to tell compaction requests from agent turns. It was
+   removed, and the test doubles now recognise a compaction request by the
+   compaction prompt the model actually receives.
+
+12. **A release build starts from `pnpm install` alone.** A release runner has no
+   built `*/dist/`, no generated Prisma client and no codegen output. A developer
+   machine, and a clone that followed TESTING.md's install order, has them, so
+   a gate that passes there can fail on the runner.
+
+   **When it applies: any task that touches what a gate reads, whatever the
+   task is about.** That is: a `package.json` script, a `tsconfig` (`include`,
+   `paths`, `references`), a codegen or workflow file, a test added to a
+   project that a type check or build compiles, or an import from one
+   workspace package into code another package's gate compiles. Autobyteus-318
+   only wanted three tests type-checked, yet it made the web gate compile the
+   server's source. If the touched gate reads another workspace package's
+   build output (a `dist/` that an `exports` entry points to, the Prisma
+   client, generated types), the design:
+   - names each package or generated output the gate reads;
+   - names the prepare step that builds each one, and that step is the gate's
+     own (its prepare script), not an earlier step of one build chain and not a
+     developer machine;
+   - uses the one owner that already builds those packages (for the server's
+     source: `autobyteus-server-ts` `prepare:source`) instead of a second list
+     that drifts when the first one grows;
+   - proves it on a fresh start: a clean clone with `pnpm install
+     --frozen-lockfile` only, running the gate; and, for a change to a build
+     step or gate, the build-only release run on the ticket branch before it
+     is merged (`pnpm release:test --ref <branch>` for the desktop build, the
+     Server Docker Release's own `build_only` run for the server image;
+     RELEASE.md). Local runs and clean clones that built the packages first
+     do not count.
+
+   Two releases failed this way: `v1.5.9-beta.14` and `v1.5.11-beta.11`
+   (records: `tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md`,
+   `tickets/done/release-beta-20261102/release-deployment-report.md`).
+
 ## Work in two phases: clean functionality, then evidence-led refinement
 
 **Phase 1 — clean architecture and working functionality.** Start from the
@@ -331,6 +395,26 @@ installed 1.4.92 backend; packaged post-Run tests used version 1.4.93 and
 test-owned history. These are examples, not latency guarantees or proof of the
 user's exact dataset.
 
+### A gate that reads a package's build output does not build it
+
+**Anti-pattern:** a type check, codegen or test gate is added or widened so it
+reads another workspace package's `dist/` (or the Prisma client), and passes on
+every developer machine because the output is already built there. Its prepare
+step builds only what the first version of the gate needed.
+
+**Why it is wrong:** a release runner starts from `pnpm install` alone. The gate
+fails there, on all five desktop builds, and the failure is seen only at the
+build-only release run or, worse, after the tag.
+
+**Incidents:** `v1.5.9-beta.14` (`application-sdk-contracts`, fixed by adding
+`prepare:shared-types`) and `v1.5.11-beta.11` (autobyteus-318 added the
+cross-package tests project, which compiles the server's source, without
+extending that step to `autobyteus-ts` and the Prisma client).
+
+**Lesson:** a gate that reads a package's output must build it, in its own
+prepare script, from one owner (rule 12). Ask the question when the gate is
+designed, not when the release fails.
+
 ## Project-specific design documents
 
 Some kinds of change have their own design policy or canonical contract. When a
@@ -345,6 +429,10 @@ update it in the same change.
   schema version fields; never reuse a field name with a new meaning; stored
   names follow renames that remove a wrong or second meaning (rule 10); old
   shapes live only inside registered migrations.
+- **Domain vocabulary:** [`GLOSSARY.md`](GLOSSARY.md) is the authority for
+  domain words, with
+  [`collaboration_model.md` § 1](autobyteus-server-ts/docs/design/collaboration_model.md)
+  for collaboration words (Principle 15).
 - **Agent collaboration and orchestration:** the
   [Collaboration Model](autobyteus-server-ts/docs/design/collaboration_model.md)
   is the canonical contract for runs, membership versus delegation,
@@ -352,6 +440,14 @@ update it in the same change.
   coordination, and where each run's memory and messages are stored. Changes to
   Teams, Orgs, standalone collaboration, Tasks, messaging or run storage follow
   it or update it in the same change.
+- **Node access and security:** the
+  [Node Access Model](autobyteus-server-ts/docs/design/node_access_model.md)
+  is the canonical contract for who may reach a node: network admission, the
+  credential of each client kind (desktop, phone, peer, memory sync source),
+  route permissions, refusals, and its scenario table, which tests name by ID.
+  A change to routes, WebSockets, the request gate, pairing, the desktop's
+  connection to nodes, the Docker launcher's published ports or a new client
+  of a node follows it or updates it (rules and scenarios) in the same change.
 - **Server startup and configuration-dependent services:**
   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
 - **Mandatory agent processors:**
@@ -382,6 +478,9 @@ standalone document or a new layer of bureaucracy:
 - [ ] Payload, renderer cost, and publication freshness are considered together.
 - [ ] Unnecessary work was considered for removal before caching or abstraction.
 - [ ] Obsolete paths/dependencies and affected tests have an explicit disposition.
+- [ ] If the task touches a script, `tsconfig`, codegen or workflow file, or a test or
+      import that a gate compiles, every workspace package output that gate reads is built
+      by the gate's own prepare script on a fresh runner (rule 12).
 - [ ] Verification proves user-visible outcomes and work reduction without
       weakening correctness; uncertainty is stated rather than hidden.
 

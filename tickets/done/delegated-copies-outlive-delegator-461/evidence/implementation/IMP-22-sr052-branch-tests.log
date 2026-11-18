@@ -1,0 +1,29 @@
+# IMP-22 SR-052 branch tests
+# command: (autobyteus-server-ts) npx vitest run --no-watch tests/unit/agent-team-execution/application-owned-member-delegation.test.ts tests/unit/standalone-application-host/
+# commit: 4a3f221c72; macOS, Node v22.23.1; 2026-11-11T22:42Z
+
+PROJECT_CHANGE_BUILD_FAILED {
+PROJECT_CHANGE_BUILD_FAILED {
+PROJECT_CHANGE_BUILD_FAILED {
+PROJECT_CHANGE_BUILD_FAILED {
+ ✓ tests/unit/standalone-application-host/standalone-application-host-delegation.test.ts > the standalone application host composes delegation (autobyteus-461 SR-052) > a run that is not application-bound delegates, and its Task's closure stops the new run 67ms
+ ✓ tests/unit/agent-team-execution/application-owned-member-delegation.test.ts > delegate_task by a member of an application-owned team (autobyteus-461 SR-052) > answers with base's exact texts and starts nothing 37ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > runs phases 5-10 in order before event-pipeline and application construction 7ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > marks current-schema failure critical and unwinds Prisma before later phases 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > treats vault initialization failure as fatal and unwinds the started vault and Prisma owners 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > treats migration runner failure as fatal before catalog rebuild and unwinds repository owners 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > keeps token history held back and strict TeamRun admission without blocking a current-schema run 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is missing (AC-004) 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is running (AC-004) 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > starts with only custom providers held back while readable-provider identity is failed (AC-004) 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > treats catalog rebuild failure as fatal and still unwinds repository resources 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > unwinds the bound definition and Agent Tools owners when general run assembly fails 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > unwinds general, Agent Tools, and definition owners when application assembly fails 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status MISSING 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status NOT_RUN 1ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status RUNNING 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status FAILED 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status SUCCEEDED_WITH_WARNINGS 0ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts > standalone application host latest-Personal prerequisite lifecycle > uses independent package admission for attachment status SUCCEEDED 0ms
+ Test Files  3 passed (3)
+      Tests  19 passed (19)

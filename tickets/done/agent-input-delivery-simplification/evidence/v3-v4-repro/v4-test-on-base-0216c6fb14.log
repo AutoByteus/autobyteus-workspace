@@ -1,0 +1,273 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification-v3/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification-v3/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:69462) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the standalone Agent root > REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification-v3/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-input-delivery-simplification-v3/autobyteus-server-ts
+
+stdout | tests/unit/agent-collaboration/root-communication-task-closure.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-collaboration/root-communication-task-closure.test.ts (12 tests | 10 failed) 1059ms
+     × REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working 118ms
+     × REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop 79ms
+     × DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing 84ms
+     × REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working 91ms
+     × REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop 83ms
+     × DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing 86ms
+     × REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working 94ms
+     × REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop 83ms
+     × DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing 88ms
+     × REQ-012 counterpart: a genuine failure after the write (the recipient presentation throws) still fail-stops the root 84ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the standalone Agent root > REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the AgentOrg root > REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the Team root > REQ-012: a Task closed during the log write gives the Task-closed refusal, keeps and shows the record, never delivers it, and the root keeps working
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-collaboration/root-communication-task-closure.test.ts:209:26
+    207|     write.finish();
+    208|
+    209|     await expect(delivery).resolves.toEqual(taskClosed);
+       |                          ^
+    210|     expect(s.failStopped()).toBe(false);
+    211|     expect(s.isActive()).toBe(true);
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: Agent root 'communication_messages' is durable but local publication failed: Your Task is DONE or CANCELLED, so you can't start new work.
+ ❯ StandaloneRootPersistenceCoordinator.finalize src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts:179:13
+ ❯ src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts:141:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent', fileRole: 'communication_messages', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the standalone Agent root > REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the AgentOrg root > REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the Team root > REQ-012: a recipient that stopped accepting input during the write gets AGENT_RUN_NOT_ACCEPTING_INPUT, not a fail-stop
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-collaboration/root-communication-task-closure.test.ts:226:41
+    224|     const s = await build();
+    225|     const slot = s.holdSlot({ commitError: new Error("AgentRun input r…
+    226|     await expect(s.send("Final report.")).resolves.toEqual({
+       |                                         ^
+    227|       accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message:…
+    228|     });
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: Agent root 'communication_messages' is durable but local publication failed: AgentRun input reservation '1' cannot be committed.
+ ❯ StandaloneRootPersistenceCoordinator.finalize src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts:179:13
+ ❯ src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts:141:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent', fileRole: 'communication_messages', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the standalone Agent root > DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the AgentOrg root > DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the Team root > DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing
+AssertionError: promise rejected "RootTaskPersistenceFinalizationIndeterminateError: … { …(3) }" instead of resolving
+ ❯ tests/unit/agent-collaboration/root-communication-task-closure.test.ts:248:23
+    246|     write.finish();
+    247|
+    248|     await expect(first).resolves.toEqual(taskClosed);
+       |                       ^
+    249|     await expect(queued).resolves.toEqual(taskClosed);
+    250|     expect(queuedSlot.commit).not.toHaveBeenCalled();
+
+Caused by: RootTaskPersistenceFinalizationIndeterminateError: Agent root 'communication_messages' is durable but local publication failed: Your Task is DONE or CANCELLED, so you can't start new work.
+ ❯ StandaloneRootPersistenceCoordinator.finalize src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts:179:13
+ ❯ src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts:141:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { rootSubjectKind: 'agent', fileRole: 'communication_messages', stage: 'post_durability_publication' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/unit/agent-collaboration/root-communication-task-closure.test.ts > message delivery through the Team root > REQ-012 counterpart: a genuine failure after the write (the recipient presentation throws) still fail-stops the root
+AssertionError: expected "vi.fn()" to be called once, but got 0 times
+ ❯ tests/unit/agent-collaboration/root-communication-task-closure.test.ts:263:26
+    261|     expect(s.failStopped()).toBe(true);
+    262|     expect(slot.commit).toHaveBeenCalledOnce();
+    263|     expect(slot.release).toHaveBeenCalledOnce();
+       |                          ^
+    264|     expect(await s.persistedContents()).toContain("Shown words.");
+    265|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 3 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: AgentRun input reservation '2' cannot be cancelled.
+ ❯ Object.<anonymous> tests/unit/agent-collaboration/root-communication-task-closure.test.ts:67:54
+     65|   const slot = {
+     66|     release,
+     67|     cancel: vi.fn(() => { if (options.dropped) throw new Error("AgentR…
+       |                                                      ^
+     68|     commit: vi.fn(() => { if (options.commitError) throw options.commi…
+     69|   };
+ ❯ Object.Mock [as cancel] ../node_modules/.pnpm/@vitest+spy@4.1.12/node_modules/@vitest/spy/dist/index.js:332:34
+ ❯ Object.cancel src/agent-collaboration/execution/communication/root-communication-engine.ts:197:27
+ ❯ StandaloneRootCommunicationAdapter.commitAppend src/standalone-agent-run-root/services/standalone-root-communication-adapter.ts:101:52
+ ❯ RootCommunicationEngine.reserveAndCommit src/agent-collaboration/execution/communication/root-communication-engine.ts:201:20
+ ❯ RootTaskExecutionLifecycle.withLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:271:14
+ ❯ RootTaskExecutionLifecycle.withLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:271:14
+ ❯ RootTaskExecutionLifecycle.deliverToExactTarget src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:290:20
+ ❯ RootOperationGate.run src/agent-collaboration/execution/services/root-operation-gate.ts:18:14
+
+This error originated in "tests/unit/agent-collaboration/root-communication-task-closure.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: AgentRun input reservation '2' cannot be cancelled.
+ ❯ Object.<anonymous> tests/unit/agent-collaboration/root-communication-task-closure.test.ts:67:54
+     65|   const slot = {
+     66|     release,
+     67|     cancel: vi.fn(() => { if (options.dropped) throw new Error("AgentR…
+       |                                                      ^
+     68|     commit: vi.fn(() => { if (options.commitError) throw options.commi…
+     69|   };
+ ❯ Object.Mock [as cancel] ../node_modules/.pnpm/@vitest+spy@4.1.12/node_modules/@vitest/spy/dist/index.js:332:34
+ ❯ Object.cancel src/agent-collaboration/execution/communication/root-communication-engine.ts:197:27
+ ❯ AgentOrgCommunicationAdapter.commitAppend src/agent-org-execution/services/agent-org-communication-adapter.ts:98:52
+ ❯ RootCommunicationEngine.reserveAndCommit src/agent-collaboration/execution/communication/root-communication-engine.ts:201:20
+ ❯ RootTaskExecutionLifecycle.withLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:271:14
+ ❯ RootTaskExecutionLifecycle.withLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:271:14
+ ❯ RootTaskExecutionLifecycle.deliverToExactTarget src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:290:20
+ ❯ RootOperationGate.run src/agent-collaboration/execution/services/root-operation-gate.ts:18:14
+
+This error originated in "tests/unit/agent-collaboration/root-communication-task-closure.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: AgentRun input reservation '2' cannot be cancelled.
+ ❯ Object.<anonymous> tests/unit/agent-collaboration/root-communication-task-closure.test.ts:67:54
+     65|   const slot = {
+     66|     release,
+     67|     cancel: vi.fn(() => { if (options.dropped) throw new Error("AgentR…
+       |                                                      ^
+     68|     commit: vi.fn(() => { if (options.commitError) throw options.commi…
+     69|   };
+ ❯ Object.Mock [as cancel] ../node_modules/.pnpm/@vitest+spy@4.1.12/node_modules/@vitest/spy/dist/index.js:332:34
+ ❯ Object.cancel src/agent-collaboration/execution/communication/root-communication-engine.ts:197:27
+ ❯ Object.disposeAfterRootFailStop src/services/team-communication/team-communication-message-append-plan.ts:47:35
+ ❯ TeamCommunicationAdapter.commitPlan src/services/team-communication/team-communication-adapter.ts:109:69
+ ❯ RootCommunicationEngine.reserveAndCommit src/agent-collaboration/execution/communication/root-communication-engine.ts:201:20
+ ❯ RootTaskExecutionLifecycle.withLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:271:14
+ ❯ RootTaskExecutionLifecycle.withLiveLease src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:271:14
+ ❯ RootTaskExecutionLifecycle.deliverToExactTarget src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts:290:20
+ ❯ RootTeamRunMaterializationGate.run src/agent-team-execution/domain/root-team-run-materialization-gate.ts:15:14
+
+This error originated in "tests/unit/agent-collaboration/root-communication-task-closure.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "DEC-005: a Task closed (and its copy released, dropping the held slot) while a message waits for the lock gives the same refusal and writes nothing". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 2 passed (12)
+     Errors  3 errors
+   Start at  19:19:05
+   Duration  8.56s (transform 5.08s, setup 42ms, import 7.00s, tests 1.06s, environment 0ms)
+

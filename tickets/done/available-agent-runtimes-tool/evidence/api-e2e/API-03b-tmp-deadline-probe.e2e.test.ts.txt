@@ -1,0 +1,30 @@
+// TEMPORARY diagnosis probe for autobyteus-303 API-03 (not committed): why a hung agy step reports "could not be read".
+import fs from "node:fs";
+import path from "node:path";
+import { describe, it, vi } from "vitest";
+import { createReadDeadline, timeLeft } from "../../../src/runtime-management/read-deadline.js";
+import { runRuntimeCommand } from "../../../src/runtime-management/agent-runtimes/runtime-command-runner.js";
+
+const fake = await vi.hoisted(async () => {
+  const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
+  return prepareFakeRuntimes({ label: "api03-probe", grokInstalled: true });
+});
+
+describe("probe", () => {
+  it("measures", async () => {
+    fs.writeFileSync(path.join(fake.stateDir, "agy-usage"), "hang");
+    const { createAntigravityAgentRuntimeStrategy } = await import("../../../src/runtime-management/agent-runtimes/strategies/antigravity-agent-runtime-strategy.js");
+    const strategy = createAntigravityAgentRuntimeStrategy();
+    const outcomes: Record<string, number> = {};
+    const early: number[] = [];
+    for (let i = 0; i < 400; i += 1) {
+      const deadline = createReadDeadline(25 + (i % 11));
+      const reading = await strategy.readUsageLimits(path.join(fake.binDir, "agy"), process.cwd(), { deadline });
+      const key = reading.state === "unknown" ? reading.reason : reading.state;
+      outcomes[key] = (outcomes[key] ?? 0) + 1;
+      if (key.endsWith("could not be read")) early.push({ i, deadlineMs: 25 + (i % 11), wallMsLeftAfterReturn: deadline.endsAt - Date.now() } as never);
+    }
+    console.log("PROBE loop", JSON.stringify({ runs: 400, outcomes, earlyIterations: early }));
+    fake.dispose();
+  }, 60_000);
+});

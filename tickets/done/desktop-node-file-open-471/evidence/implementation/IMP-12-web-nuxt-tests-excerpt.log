@@ -1,0 +1,19 @@
+# IMP-12 web-nuxt-tests
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run
+# Environment mode: shell
+# Commit: b0f3d1c42b (branch codex/desktop-node-file-open-471)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T14:57:47Z
+# Excerpt of IMP-12-web-nuxt-tests.log (full log kept out of git): the specs IR-002 touches and the totals
+ ✓ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests) 1695ms
+ ✓ components/layout/__tests__/WorkspaceToolShell.spec.ts (15 tests) 2217ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.remoteRunFiles.spec.ts (4 tests) 244ms
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (12 tests) 130ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (13 tests) 98ms
+ ✓ components/conversation/__tests__/UserMessage.spec.ts (7 tests) 42ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (25 tests) 40ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts (9 tests) 9ms
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts (5 tests) 11ms
+ Test Files  751 passed (751)
+      Tests  5680 passed (5680)
+# Exit status: 0

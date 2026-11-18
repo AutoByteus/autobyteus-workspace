@@ -19,7 +19,7 @@
       data-testid="project-task-row-link"
       @click="activation === 'select' && emit('select', task.taskId)"
     >
-      <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
+      <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ mainLine }}</span>
       <span v-if="preview" class="mt-1 line-clamp-2 break-words text-xs leading-5 text-slate-500" data-testid="project-task-row-preview">{{ preview }}</span>
       <!-- "Blocked by <key>" / "Dependency cancelled: <key>" (open Project Tasks only). -->
       <!-- Beside it, on one wrapping line: a parent's progress ("2 of 4 done") and a part's quiet "Part of <key>" (part-of). -->
@@ -47,10 +47,10 @@ import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
 import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
-import { taskCardPreview, taskCardSummary, taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { descriptionFirstLine, descriptionFirstLineLabel, taskCardPreview, taskCardTitle, taskTitleLabel } from '~/utils/projects/taskText'
 
-// The first line is the summary; remaining lines are a quieter context preview. Each is bounded
-// before rendering and clamped to 2 lines by CSS; the Task page shows the full description.
+// The main line is a Project Task's title (a Temp task's first description line); the description's start is a quieter
+// context preview. Each is bounded before rendering and clamped to 2 lines by CSS; the Task page shows the full description.
 /**
  * `route` (the Projects pages): the row links to the Task page. `select` (the right panel's Projects
  * tab): it emits `select` so the Task opens inside the tab; same visuals.
@@ -61,9 +61,11 @@ const emit = defineEmits<{ (event: 'select', taskId: string): void }>()
 
 const {t} = useLocalization()
 const store = useProjectTaskStore()
-const summary = computed(() => taskCardSummary(props.task.description))
-const preview = computed(() => taskCardPreview(props.task.description))
-const label = computed(() => taskSummaryLabel(props.task.description))
+const isProjectTask = computed(() => 'projectId' in props.task)
+const line = computed(() => 'projectId' in props.task ? props.task.title : descriptionFirstLine(props.task.description))
+const mainLine = computed(() => taskCardTitle(line.value))
+const preview = computed(() => taskCardPreview({title: line.value, description: props.task.description}))
+const label = computed(() => isProjectTask.value ? taskTitleLabel(line.value) : descriptionFirstLineLabel(props.task.description))
 const taskRoute = computed(() => 'projectId' in props.task
   ? taskPagePath(props.task.projectId, props.task)
   : `/projects/temp-tasks/tasks/${props.task.taskId}`)

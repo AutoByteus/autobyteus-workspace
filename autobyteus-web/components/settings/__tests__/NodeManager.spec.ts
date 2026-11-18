@@ -13,7 +13,6 @@ const {
       name: 'Embedded Node',
       baseUrl: 'http://127.0.0.1:29695',
       nodeType: 'embedded',
-      isSystem: true,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
     },
@@ -22,7 +21,6 @@ const {
       name: 'Remote One',
       baseUrl: 'http://node-a:8000',
       nodeType: 'remote',
-      isSystem: false,
       createdAt: '2026-02-08T00:00:00.000Z',
       updatedAt: '2026-02-08T00:00:00.000Z',
     },
@@ -32,12 +30,11 @@ const {
     nodeStoreMock: {
       nodes: initialNodes,
       initializeRegistry: vi.fn().mockResolvedValue(undefined),
-      getNodeById: vi.fn((id: string) => initialNodes.find((node) => node.id === id) || null),
+      getEntryById: vi.fn((id: string) => initialNodes.find((node) => node.id === id) || null),
       addRemoteNode: vi.fn().mockImplementation(async (input: any) => ({
         ...input,
         id: 'remote-added',
         nodeType: 'remote',
-        isSystem: false,
         createdAt: '2026-02-08T00:00:00.000Z',
         updatedAt: '2026-02-08T00:00:00.000Z',
       })),
@@ -48,7 +45,7 @@ const {
       query: {},
     },
     windowNodeContextStoreMock: {
-      nodeId: 'embedded-local',
+      entryId: 'embedded-local',
       isEmbeddedWindow: true,
     },
   };
@@ -87,15 +84,9 @@ vi.mock('~/components/settings/DockerNodeStartGuideCard.vue', () => ({
   },
 }));
 
-vi.mock('~/components/settings/PhoneAccessCard.vue', () => ({
+vi.mock('~/components/settings/phone/PhonesPanel.vue', () => ({
   default: {
-    template: '<div data-testid="phone-access-card" />',
-  },
-}));
-
-vi.mock('~/components/settings/PhoneSetupGuideCard.vue', () => ({
-  default: {
-    template: '<div data-testid="phone-setup-guide-card" />',
+    template: '<div data-testid="phones-panel" />',
   },
 }));
 
@@ -110,7 +101,7 @@ describe('NodeManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     routeMock.query = {};
-    windowNodeContextStoreMock.nodeId = 'embedded-local';
+    windowNodeContextStoreMock.entryId = 'embedded-local';
     windowNodeContextStoreMock.isEmbeddedWindow = true;
     Object.defineProperty(window, 'electronAPI', {
       configurable: true,
@@ -168,7 +159,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="full-sync-run-button"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="phones-panel"]').exists()).toBe(false);
   });
 
   it('opens the Memory Sync tab from the route query for the current bound node', async () => {
@@ -187,7 +178,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
-  it('renders the Phone Setup guide and Phone Access controls in the Phone Setup tab for embedded windows', async () => {
+  it('renders the Phones panel in the Phone Setup tab for embedded windows', async () => {
     const wrapper = mount(NodeManager);
     await wrapper.vm.$nextTick();
 
@@ -198,8 +189,7 @@ describe('NodeManager', () => {
     expect(wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').attributes('aria-selected')).toBe('true');
     expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.find('[data-testid="node-manager-panel-phoneSetup"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phones-panel"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
@@ -213,22 +203,19 @@ describe('NodeManager', () => {
     expect(wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').attributes('aria-selected')).toBe('true');
     expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
     expect(wrapper.find('[data-testid="node-manager-panel-phoneSetup"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phones-panel"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="node-list-card"]').exists()).toBe(false);
   });
 
-  it('shows Phone Access controls in remote windows so paired-phone access can be configured', async () => {
-    windowNodeContextStoreMock.nodeId = 'remote-1';
+  it('shows the Phones panel in remote windows', async () => {
+    windowNodeContextStoreMock.entryId = 'remote-1';
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     const wrapper = mount(NodeManager);
     await wrapper.vm.$nextTick();
 
     await wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').trigger('click');
 
-    expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-setup-remote-unavailable"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="phones-panel"]').exists()).toBe(true);
   });
 
   it('renders the Docker node start guide only in the Docker guide tab', async () => {

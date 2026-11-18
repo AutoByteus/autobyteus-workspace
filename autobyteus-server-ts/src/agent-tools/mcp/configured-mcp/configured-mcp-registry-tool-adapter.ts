@@ -34,17 +34,21 @@ export class ConfiguredMcpRegistryToolAdapter implements AgentToolMcpToolAdapter
     return Boolean(this.resolveCurrentValidDefinition());
   }
 
+  /** A failed call is the tool's result (`isError`) with its failure message, as the native runtime shows it. */
   async execute(input: AgentToolMcpToolAdapterExecuteInput) {
-    const currentDefinition = this.resolveCurrentValidDefinition();
-    if (!currentDefinition) {
-      throw new Error(`Configured MCP tool '${this.source.registeredToolName}' is no longer available for this session.`);
+    if (!this.resolveCurrentValidDefinition()) {
+      return toolFailure(`Configured MCP tool '${this.source.registeredToolName}' is no longer available for this session.`);
     }
-    const tool = this.registry.createTool(this.source.registeredToolName);
-    const result = await tool.execute(
-      { agentId: resolveExecutionAgentId(input.session) },
-      input.rawArguments,
-    );
-    return toAgentToolMcpToolResult(normalizeConfiguredMcpToolResult(result));
+    try {
+      const tool = this.registry.createTool(this.source.registeredToolName);
+      const result = await tool.execute(
+        { agentId: resolveExecutionAgentId(input.session) },
+        input.rawArguments,
+      );
+      return toAgentToolMcpToolResult(normalizeConfiguredMcpToolResult(result));
+    } catch (error) {
+      return toolFailure(error instanceof Error ? error.message : String(error));
+    }
   }
 
   private resolveCurrentValidDefinition() {
@@ -58,5 +62,8 @@ export class ConfiguredMcpRegistryToolAdapter implements AgentToolMcpToolAdapter
   }
 }
 
-export const resolveExecutionAgentId = (session: AgentToolMcpSession): string =>
+const toolFailure = (message: string) =>
+  toAgentToolMcpToolResult({ content: [{ type: "text", text: message }], isError: true });
+
+export const resolveExecutionAgentId =(session: AgentToolMcpSession): string =>
   session.owner.collaborationIdentity?.agentRunId.trim() || session.owner.runId;

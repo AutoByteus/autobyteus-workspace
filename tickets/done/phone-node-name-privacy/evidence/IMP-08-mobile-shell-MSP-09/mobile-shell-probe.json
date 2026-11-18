@@ -1,0 +1,282 @@
+{
+  "startedAt": "2026-11-08T06:46:00.718Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 51461,
+      "nodeId": "srv_rlIpiJuLtscNsTQt-d_o-SL0xBOqWmly",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 51462,
+      "nodeId": "srv_JsyUT4CpSYoSdwUWWdHzxYcOZNWnHtfW",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_46e81055a4104cb8a62d4a82fcdd82dd",
+    "writerRun": "release_notes_writer_8d53e64d28d448dfb4e7f345a89429ea",
+    "squadRun": "docs_review_team_f96427a9f8a6454abb30ef5a09b5d7a3",
+    "reviewer": "release_notes_writer_71bf90494034468f8a70dc2bb063ec0f",
+    "memberDelegated": "fact_checker_b020352e845941ca9b564f6cdaa47a83",
+    "remoteAgentRun": "publisher_fbaa6bb4974a4be7a9817db748d29532",
+    "remoteTeamRun": "studio_team_00eb3b49af6146ba994d7f3132157af7",
+    "plain": [
+      "fact_checker_a5a2e18a3dec4244b627e44bc2b4d434",
+      "fact_checker_4cad955076254ae19a5c470282bdc457",
+      "fact_checker_dce7f40383cf4aa99ad89b4a0d2c2b9b"
+    ],
+    "org": "delivery_org_20b04377f0eb47d6b1a4018f9fe1bef3",
+    "orgPlanner": "release_notes_writer_32c9e31b53d94f4fadfc97ef4c86fb31",
+    "reviewOrg": "review_org_319e326ea178422994afcbbc139bb8ee",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_0941db583e014e12b716fa70510e60fa",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_b03ff286052b4ed38c0f6083712e307f",
+    "deliveryLead": "fact_checker_6b99929222cd42fc842028bee1807a4b",
+    "deliveryMate": "release_notes_writer_a23678bd8d0242ff8199d860e3df3955",
+    "leadDelegated": "changelog_helper_3a0151e8a4f54ab398a1110a5d9bce82",
+    "approver": "approver_9f8e331317dc4e0fa4667a1ae9ef8fb9",
+    "taskA": "launch-557e56-1",
+    "taskB": "launch-557e56-2"
+  },
+  "cases": {
+    "MSP-09": {
+      "result": "Pass",
+      "seconds": 21.8,
+      "dialogName": "Alpha Test Node",
+      "info": {
+        "name": "Alpha Test Node",
+        "urlLines": 0,
+        "addressShown": [],
+        "status": "Connected",
+        "peerRows": 0,
+        "mentionsPeer": false,
+        "check": {
+          "label": "Check connection",
+          "text": ""
+        },
+        "switchNode": 0,
+        "unpair": "Unpair from Alpha Test Node"
+      },
+      "afterCheck": "Connected",
+      "sheetDown": "Not reachable",
+      "addressShownDown": [],
+      "checkDown": {
+        "label": null,
+        "text": "Retry"
+      },
+      "barDown": "Not reachable",
+      "bannerDown": "Can’t reach Alpha Test Node. Check",
+      "rowsWhileDown": 15,
+      "c06": {
+        "bar": "Not reachable",
+        "banner": 1,
+        "rows": 15,
+        "pollsAfterBack": 5
+      },
+      "sheetBack": "Connected",
+      "checkBack": {
+        "label": "Check connection",
+        "text": ""
+      },
+      "barBack": "Connected",
+      "bannerBack": 0,
+      "pairingPage": {
+        "name": "Alpha Test Node",
+        "button": "Connect to Alpha Test Node",
+        "getApp": "https://github.com/AutoByteus/autobyteus-workspace/releases/latest",
+        "visibleInputs": 0
+      },
+      "pairedSession": {
+        "nodeName": "Alpha Test Node",
+        "hasCredential": true
+      },
+      "otherUnpair": "Unpair from Alpha Test Node",
+      "confirmText": "Unpair this phone? This removes only the local phone session. Use desktop Phone Access to revoke credentials for all devices. Cancel Unpair",
+      "confirmOnTop": {
+        "onTop": true,
+        "hit": "Unpair"
+      },
+      "sessionLeft": null,
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/graphql",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/remote-access/status",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-09",
+      "label": "phone",
+      "url": "http://192.168.77.10:51461/rest/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-09": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-08T06:47:22.756Z"
+}

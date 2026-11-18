@@ -1,0 +1,20 @@
+# IMP-02 web-nuxt-tests
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run
+# Environment mode: shell
+# Commit: 7917df2a15 (branch codex/desktop-node-file-open-471)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T12:46:36Z
+
+# Excerpt of IMP-02-web-nuxt-tests.log (full log 2.3 MB, kept out of git: the 471 specs and the totals)
+ ✓ components/layout/__tests__/WorkspaceToolShell.spec.ts (15 tests) 779ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (25 tests) 48ms
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (9 tests) 185ms
+ ✓ composables/mobile/__tests__/useMobileNodeFile.spec.ts (7 tests) 90ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (3 tests) 34ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts (12 tests) 109ms
+ ✓ composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts (5 tests) 5ms
+ ✓ utils/fileExplorer/__tests__/nodeFileContent.spec.ts (4 tests) 10ms
+ ✓ composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts (9 tests) 11ms
+ Test Files  750 passed (750)
+      Tests  5671 passed | 2 skipped (5673)
+# Exit status: 0

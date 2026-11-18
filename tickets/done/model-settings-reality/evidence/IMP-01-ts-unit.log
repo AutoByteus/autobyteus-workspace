@@ -1,0 +1,10 @@
+# IMP-01 autobyteus-ts unit suite and build typecheck
+command: cd autobyteus-ts && corepack pnpm exec vitest run tests/unit --no-watch; corepack pnpm exec tsc -p tsconfig.build.json --noEmit
+commit tested: f31fa1821 (autobyteus-ts source unchanged since d741d4340)
+env: Linux arm64 container, uid 0, node v22.23.3, 2026-11-10
+
+Test Files  1 failed | 311 passed (312)
+Tests  2 failed | 2129 passed (2131)
+tsc -p tsconfig.build.json --noEmit: exit 0
+
+Failures: tests/unit/tools/terminal/run-bash.test.ts (2 tests, 'rejects an existing inaccessible absolute cwd ...'). Environmental: the test chmods a folder to 0o600 and expects the cwd to be inaccessible; uid 0 ignores file modes. Same 2 failures with the base sources (stashed run, 2026-11-10). No file of this change is involved.

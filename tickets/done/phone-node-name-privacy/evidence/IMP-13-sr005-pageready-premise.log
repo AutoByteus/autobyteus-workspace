@@ -1,0 +1,318 @@
+# IMP-13 SR-005 premise measurement: the node page's pageReady vs failed and successful main-frame loads (design-spec DS-006)
+# code: working tree after ea45dc1643 with the SR-005 implementation (web: ShellBridge.pageReady(), MobileRemoteAccessShell
+#   onMounted; Android: ShellBridgeAction.PageReady, OpenPageState, MainActivity) + TEMPORARY Log.i("ABX433TMP", …) in
+#   ShellBridge (every bridge message read), MainActivity (onPageReady, showWebDiagnostic, showPage) and AutoByteusWebView
+#   (temporary onPageStarted/onPageFinished overrides, both error callbacks). The logs were removed before the commit.
+# env: own read-only emulator codex_api35_arm64 (port 5570), API 35, Android System WebView 124.0.6367.219.
+#   Fake test node on the host 127.0.0.1:8437 (10.0.2.2 in the emulator): serves the REAL /mobile bundle built from this
+#   working tree (pnpm -C autobyteus-web build:mobile-web; the bundle contains "pageReady"); status always
+#   {"phoneAccessEnabled":true}; /mobile documents per a mode file (ok | 502 | drop); "refused" = the process stopped;
+#   POST answers 404 (the in-app pairing fails; the shell still mounts). Script: IMP-13-sr005-fake-node.py.txt.
+#   Steps driven with adb (system Back = keyevent 4, Retry = tap on the overlay's RETRY found in a uiautomator dump) and
+#   WebView DevTools (location.reload(), location.href = …, window markers). Test names only.
+# date: 2026-11-08
+# "screen:" lines (driver output) list the uiautomator texts and any of 10.0.2.2 / 8437 / http / webpage / ERR_ found.
+
+## seqA
+09:51:16.903 === A1 fresh WebView, first load 502
+09:51:22.570 onReceivedHttpError main=true http://10.0.2.2:8437/mobile?pairing=… 502
+09:51:22.570 showWebDiagnostic AutoByteus returned HTTP 502
+09:51:22.570 showPage overlay=AutoByteus returned HTTP 502
+09:51:22.876 onPageStarted http://10.0.2.2:8437/mobile?pairing=…
+09:51:23.058 onPageFinished http://10.0.2.2:8437/mobile?pairing=…
+09:51:23.116 onReceivedHttpError main=false http://10.0.2.2:8437/favicon.ico 404
+09:51:27.375 === A2 Retry, drop
+09:51:31.658 onPageStarted http://10.0.2.2:8437/mobile
+09:51:31.682 onReceivedError main=true http://10.0.2.2:8437/mobile -1
+09:51:31.706 showWebDiagnostic Can’t reach Test Desktop
+09:51:31.707 showPage overlay=Can’t reach Test Desktop
+09:51:31.767 onPageFinished http://10.0.2.2:8437/mobile
+09:51:39.001 === A3 Retry, refused (node stopped)
+09:51:42.742 onPageStarted http://10.0.2.2:8437/mobile
+09:51:42.748 onReceivedError main=true http://10.0.2.2:8437/mobile -6
+09:51:42.749 showWebDiagnostic Can’t reach Test Desktop
+09:51:42.749 showPage overlay=Can’t reach Test Desktop
+09:51:42.810 onPageFinished http://10.0.2.2:8437/mobile
+09:51:51.129 === A4 Retry, node back ok
+09:51:54.457 onPageStarted http://10.0.2.2:8437/mobile
+09:51:55.534 onPageFinished http://10.0.2.2:8437/mobile/
+09:51:56.292 onPageFinished http://10.0.2.2:8437/mobile/
+09:51:56.311 onPageFinished http://10.0.2.2:8437/mobile/
+09:51:56.337 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:51:56.338 onPageReady screen=Web overlay=Can’t reach Test Desktop firstShown=false
+09:51:56.338 showPage overlay=null
+09:51:58.334 onReceivedError main=false http://localhost:8000/health -6
+
+## seqB
+09:52:18.114 === B-502 reload of a LOADED page, 502
+09:52:18.282 onReceivedHttpError main=true http://10.0.2.2:8437/mobile/ 502
+09:52:18.282 showWebDiagnostic AutoByteus returned HTTP 502
+09:52:18.282 showPage overlay=AutoByteus returned HTTP 502
+09:52:18.294 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:18.296 onPageStarted http://10.0.2.2:8437/mobile/
+09:52:18.296 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:31.307 === B-502 recovery: node ok, Retry
+09:52:33.461 onPageStarted http://10.0.2.2:8437/mobile
+09:52:34.511 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:35.195 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:35.199 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:35.202 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:52:35.202 onPageReady screen=Web overlay=AutoByteus returned HTTP 502 firstShown=true
+09:52:35.202 showPage overlay=null
+09:52:37.217 onReceivedError main=false http://localhost:8000/health -6
+09:52:43.484 === B-drop reload of a LOADED page, drop
+09:52:43.623 onPageStarted http://10.0.2.2:8437/mobile/
+09:52:43.624 onReceivedError main=true http://10.0.2.2:8437/mobile/ -1
+09:52:43.624 showWebDiagnostic Can’t reach Test Desktop
+09:52:43.624 showPage overlay=Can’t reach Test Desktop
+09:52:43.634 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:43.638 onPageFinished http://10.0.2.2:8437/mobile/
+09:52:56.683 === B-drop recovery: node ok, Retry
+09:52:58.827 onPageStarted http://10.0.2.2:8437/mobile
+09:52:59.929 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:00.593 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:00.597 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:00.601 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:53:00.602 onPageReady screen=Web overlay=Can’t reach Test Desktop firstShown=true
+09:53:00.602 showPage overlay=null
+09:53:02.606 onReceivedError main=false http://localhost:8000/health -6
+09:53:08.792 === B-refused reload of a LOADED page, refused
+09:53:09.949 onPageStarted http://10.0.2.2:8437/mobile/
+09:53:09.949 onReceivedError main=true http://10.0.2.2:8437/mobile/ -6
+09:53:09.949 showWebDiagnostic Can’t reach Test Desktop
+09:53:09.949 showPage overlay=Can’t reach Test Desktop
+09:53:09.959 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:09.959 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:22.966 === B-refused recovery: node ok, Retry
+09:53:26.040 onPageStarted http://10.0.2.2:8437/mobile
+09:53:26.981 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:27.658 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:27.665 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:27.670 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:53:27.670 onPageReady screen=Web overlay=Can’t reach Test Desktop firstShown=true
+09:53:27.670 showPage overlay=null
+09:53:29.674 onReceivedError main=false http://localhost:8000/health -6
+09:53:36.037 === B-link loaded page: a same-origin link outside /mobile -> blocked-link overlay over the loaded page
+09:53:36.184 onReceivedHttpError main=true http://10.0.2.2:8437/rest/not-a-page 404
+09:53:36.184 showWebDiagnostic AutoByteus returned HTTP 404
+09:53:36.184 showPage overlay=AutoByteus returned HTTP 404
+09:53:36.226 onPageFinished http://10.0.2.2:8437/mobile/
+09:53:36.227 onPageStarted http://10.0.2.2:8437/rest/not-a-page
+09:53:36.238 onPageFinished http://10.0.2.2:8437/rest/not-a-page
+09:53:46.205 === B-link Retry with the node stopped (refused)
+09:53:49.292 onPageStarted http://10.0.2.2:8437/mobile
+09:53:49.292 onReceivedError main=true http://10.0.2.2:8437/mobile -6
+09:53:49.292 showWebDiagnostic Can’t reach Test Desktop
+09:53:49.292 showPage overlay=Can’t reach Test Desktop
+09:53:49.317 onPageFinished http://10.0.2.2:8437/mobile
+09:53:58.297 === B-link Retry again with 502
+09:54:01.398 onReceivedHttpError main=true http://10.0.2.2:8437/mobile 502
+09:54:01.398 showWebDiagnostic AutoByteus returned HTTP 502
+09:54:01.398 showPage overlay=AutoByteus returned HTTP 502
+09:54:01.452 onPageStarted http://10.0.2.2:8437/mobile
+09:54:01.452 onPageFinished http://10.0.2.2:8437/mobile
+09:54:10.389 === B-link recovery: ok, Retry
+09:54:12.495 onPageStarted http://10.0.2.2:8437/mobile
+09:54:13.520 onPageFinished http://10.0.2.2:8437/mobile/
+09:54:14.141 onPageFinished http://10.0.2.2:8437/mobile/
+09:54:14.147 onPageFinished http://10.0.2.2:8437/mobile/
+09:54:14.150 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:54:14.151 onPageReady screen=Web overlay=AutoByteus returned HTTP 502 firstShown=true
+09:54:14.151 showPage overlay=null
+09:54:16.160 onReceivedError main=false http://localhost:8000/health -6
+
+## seqCD
+09:54:40.177 === D1 node ok: mark this document, go to a second document /mobile?n=2
+09:54:40.333 onPageFinished http://10.0.2.2:8437/mobile/
+09:54:40.333 onPageStarted http://10.0.2.2:8437/mobile?n=2
+09:54:40.890 onPageFinished http://10.0.2.2:8437/mobile/?n=2
+09:54:41.548 onPageFinished http://10.0.2.2:8437/mobile/?n=2
+09:54:41.553 onPageFinished http://10.0.2.2:8437/mobile/?n=2
+09:54:41.557 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:54:41.557 onPageReady screen=Web overlay=null firstShown=true
+09:54:41.557 showPage overlay=null
+09:54:43.561 onReceivedError main=false http://localhost:8000/health -6
+09:54:55.466 === D2 system Back (node ok) -> doc1: restored from bfcache or loaded again?
+09:54:55.519 onReceivedHttpError main=true http://10.0.2.2:8437/rest/not-a-page 404
+09:54:55.519 showWebDiagnostic AutoByteus returned HTTP 404
+09:54:55.519 showPage overlay=AutoByteus returned HTTP 404
+09:54:55.534 onPageFinished http://10.0.2.2:8437/mobile/?n=2
+09:54:55.534 onPageStarted http://10.0.2.2:8437/rest/not-a-page
+09:54:55.534 onPageFinished http://10.0.2.2:8437/rest/not-a-page
+09:55:08.719 === C-502 node ok: forward to a new document /mobile?n=502
+09:55:08.868 onPageStarted http://10.0.2.2:8437/mobile?n=502
+09:55:09.374 onPageFinished http://10.0.2.2:8437/mobile/?n=502
+09:55:10.234 onPageFinished http://10.0.2.2:8437/mobile/?n=502
+09:55:10.245 onPageFinished http://10.0.2.2:8437/mobile/?n=502
+09:55:10.249 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:55:10.249 onPageReady screen=Web overlay=AutoByteus returned HTTP 404 firstShown=true
+09:55:10.249 showPage overlay=null
+09:55:12.273 onReceivedError main=false http://localhost:8000/health -6
+09:55:19.873 === C-502 node 502, system Back into history
+09:55:19.912 onReceivedHttpError main=true http://10.0.2.2:8437/mobile/ 502
+09:55:19.912 showWebDiagnostic AutoByteus returned HTTP 502
+09:55:19.912 showPage overlay=AutoByteus returned HTTP 502
+09:55:19.924 onPageFinished http://10.0.2.2:8437/mobile/?n=502
+09:55:19.924 onPageStarted http://10.0.2.2:8437/mobile/
+09:55:19.933 onPageFinished http://10.0.2.2:8437/mobile/
+09:55:33.064 === C-502 recovery: node ok, Retry
+09:55:35.182 onPageStarted http://10.0.2.2:8437/mobile
+09:55:36.349 onPageFinished http://10.0.2.2:8437/mobile/
+09:55:37.062 onPageFinished http://10.0.2.2:8437/mobile/
+09:55:37.068 onPageFinished http://10.0.2.2:8437/mobile/
+09:55:37.072 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:55:37.072 onPageReady screen=Web overlay=AutoByteus returned HTTP 502 firstShown=true
+09:55:37.072 showPage overlay=null
+09:55:39.077 onReceivedError main=false http://localhost:8000/health -6
+09:55:45.159 === C-drop node ok: forward to a new document /mobile?n=drop
+09:55:45.307 onPageFinished http://10.0.2.2:8437/mobile/
+09:55:45.307 onPageStarted http://10.0.2.2:8437/mobile?n=drop
+09:55:45.857 onPageFinished http://10.0.2.2:8437/mobile/?n=drop
+09:55:46.496 onPageFinished http://10.0.2.2:8437/mobile/?n=drop
+09:55:46.500 onPageFinished http://10.0.2.2:8437/mobile/?n=drop
+09:55:46.504 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:55:46.504 onPageReady screen=Web overlay=null firstShown=true
+09:55:46.504 showPage overlay=null
+09:55:48.509 onReceivedError main=false http://localhost:8000/health -6
+09:55:56.308 === C-drop node drop, system Back into history
+09:55:56.350 onPageStarted http://10.0.2.2:8437/mobile/
+09:55:56.350 onReceivedError main=true http://10.0.2.2:8437/mobile/ -1
+09:55:56.350 showWebDiagnostic Can’t reach Test Desktop
+09:55:56.350 showPage overlay=Can’t reach Test Desktop
+09:55:56.364 onPageFinished http://10.0.2.2:8437/mobile/
+09:55:56.367 onPageFinished http://10.0.2.2:8437/mobile/?n=drop
+09:56:09.568 === C-drop recovery: node ok, Retry
+09:56:11.633 onPageStarted http://10.0.2.2:8437/mobile
+09:56:12.804 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:13.529 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:13.534 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:13.538 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:56:13.538 onPageReady screen=Web overlay=Can’t reach Test Desktop firstShown=true
+09:56:13.538 showPage overlay=null
+09:56:15.542 onReceivedError main=false http://localhost:8000/health -6
+09:56:21.650 === C-refused node ok: forward to a new document /mobile?n=refused
+09:56:21.807 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:21.807 onPageStarted http://10.0.2.2:8437/mobile?n=refused
+09:56:22.359 onPageFinished http://10.0.2.2:8437/mobile/?n=refused
+09:56:22.988 onPageFinished http://10.0.2.2:8437/mobile/?n=refused
+09:56:22.992 onPageFinished http://10.0.2.2:8437/mobile/?n=refused
+09:56:22.995 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:56:22.996 onPageReady screen=Web overlay=null firstShown=true
+09:56:22.996 showPage overlay=null
+09:56:25.004 onReceivedError main=false http://localhost:8000/health -6
+09:56:32.811 === C-refused node refused, system Back into history
+09:56:33.885 onPageStarted http://10.0.2.2:8437/mobile/
+09:56:33.885 onReceivedError main=true http://10.0.2.2:8437/mobile/ -6
+09:56:33.886 showWebDiagnostic Can’t reach Test Desktop
+09:56:33.886 showPage overlay=Can’t reach Test Desktop
+09:56:33.895 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:33.899 onPageFinished http://10.0.2.2:8437/mobile/?n=refused
+09:56:47.053 === C-refused recovery: node ok, Retry
+09:56:50.186 onPageStarted http://10.0.2.2:8437/mobile
+09:56:51.182 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:51.815 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:51.821 onPageFinished http://10.0.2.2:8437/mobile/
+09:56:51.826 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:56:51.827 onPageReady screen=Web overlay=Can’t reach Test Desktop firstShown=true
+09:56:51.827 showPage overlay=null
+09:56:53.829 onReceivedError main=false http://localhost:8000/health -6
+
+## seqD
+09:57:13.135 === D3 node ok: document a
+09:57:13.290 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:13.292 onPageStarted http://10.0.2.2:8437/mobile?doc=a
+09:57:13.857 onPageFinished http://10.0.2.2:8437/mobile/?doc=a
+09:57:14.556 onPageFinished http://10.0.2.2:8437/mobile/?doc=a
+09:57:14.560 onPageFinished http://10.0.2.2:8437/mobile/?doc=a
+09:57:14.564 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:57:14.565 onPageReady screen=Web overlay=null firstShown=true
+09:57:14.565 showPage overlay=null
+09:57:16.572 onReceivedError main=false http://localhost:8000/health -6
+09:57:28.440 === D3 node ok: document b
+09:57:28.658 onPageFinished http://10.0.2.2:8437/mobile/?doc=a
+09:57:28.660 onPageStarted http://10.0.2.2:8437/mobile?doc=b
+09:57:29.589 onPageFinished http://10.0.2.2:8437/mobile/?doc=b
+09:57:30.544 onPageFinished http://10.0.2.2:8437/mobile/?doc=b
+09:57:30.554 onPageFinished http://10.0.2.2:8437/mobile/?doc=b
+09:57:30.562 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:57:30.562 onPageReady screen=Web overlay=null firstShown=true
+09:57:30.562 showPage overlay=null
+09:57:32.576 onReceivedError main=false http://localhost:8000/health -6
+09:57:39.673 === D3 system Back b -> a (node ok)
+09:57:39.731 onPageFinished http://10.0.2.2:8437/mobile/?doc=b
+09:57:39.732 onPageStarted http://10.0.2.2:8437/mobile/
+09:57:40.329 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:41.134 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:41.138 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:41.142 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:57:41.142 onPageReady screen=Web overlay=null firstShown=true
+09:57:41.142 showPage overlay=null
+09:57:43.149 onReceivedError main=false http://localhost:8000/health -6
+09:57:52.900 === D4 history.forward() a -> b, then history.back() b -> a (node ok)
+09:57:53.048 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:53.049 onPageStarted http://10.0.2.2:8437/mobile/
+09:57:53.611 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:54.319 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:54.324 onPageFinished http://10.0.2.2:8437/mobile/
+09:57:54.327 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:57:54.327 onPageReady screen=Web overlay=null firstShown=true
+09:57:54.327 showPage overlay=null
+09:57:56.333 onReceivedError main=false http://localhost:8000/health -6
+09:58:03.188 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:03.190 onPageStarted http://10.0.2.2:8437/mobile/
+09:58:03.755 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:04.487 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:04.492 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:04.495 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:58:04.495 onPageReady screen=Web overlay=null firstShown=true
+09:58:04.495 showPage overlay=null
+09:58:06.501 onReceivedError main=false http://localhost:8000/health -6
+
+## seqD5
+09:58:32.093 === D5 (no Cache-Control) document a
+09:58:32.239 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:32.244 onPageStarted http://10.0.2.2:8437/mobile?doc=a5
+09:58:32.906 onPageFinished http://10.0.2.2:8437/mobile/?doc=a5
+09:58:33.641 onPageFinished http://10.0.2.2:8437/mobile/?doc=a5
+09:58:33.649 onPageFinished http://10.0.2.2:8437/mobile/?doc=a5
+09:58:33.652 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:58:33.652 onPageReady screen=Web overlay=null firstShown=true
+09:58:33.652 showPage overlay=null
+09:58:35.660 onReceivedError main=false http://localhost:8000/health -6
+09:58:47.372 === D5 document b
+09:58:47.516 onPageFinished http://10.0.2.2:8437/mobile/?doc=a5
+09:58:47.519 onPageStarted http://10.0.2.2:8437/mobile?doc=b5
+09:58:48.127 onPageFinished http://10.0.2.2:8437/mobile/?doc=b5
+09:58:49.038 onPageFinished http://10.0.2.2:8437/mobile/?doc=b5
+09:58:49.044 onPageFinished http://10.0.2.2:8437/mobile/?doc=b5
+09:58:49.049 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:58:49.049 onPageReady screen=Web overlay=null firstShown=true
+09:58:49.049 showPage overlay=null
+09:58:51.054 onReceivedError main=false http://localhost:8000/health -6
+09:58:58.528 === D5 system Back b -> a
+09:58:58.579 onPageFinished http://10.0.2.2:8437/mobile/?doc=b5
+09:58:58.579 onPageStarted http://10.0.2.2:8437/mobile/
+09:58:58.703 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:58.820 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:58.826 onPageFinished http://10.0.2.2:8437/mobile/
+09:58:58.830 bridge {"type":"pageReady"} from=http://10.0.2.2:8437 main=true -> PageReady
+09:58:58.830 onPageReady screen=Web overlay=null firstShown=true
+09:58:58.830 showPage overlay=null
+09:59:00.837 onReceivedError main=false http://localhost:8000/health -6
+
+# Result (Measured)
+# 1. No pageReady for a failed main-frame load, in every case:
+#    - fresh WebView (A1–A3): first load 502; Retry with drop (-1); Retry with the node stopped (-6);
+#    - over a page that had loaded (B, CRR-002 state with TWO onPageFinished calls per failed load): reload with 502, drop,
+#      refused; Retry from an overlay over a loaded page with refused, then 502;
+#    - Back into history (C) with 502, drop, refused: WebView loads the entry from the network and it fails.
+#    Each time the overlay stayed (showWebDiagnostic, no showPage(overlay=null) until a pageReady).
+# 2. pageReady exactly once per document for every successful load: Retry after recovery (A4, B, C), a new document
+#    (location.href), reload, Back and history.forward()/back() (D3–D5).
+# 3. Back-forward cache: not observed. Back b -> a re-loads document a (onPageStarted; the window marker set on a is gone;
+#    navigation type back_forward) and the shell re-mounts and sends pageReady — with and without Cache-Control: no-store
+#    on the documents (D3/D4 with no-store, D5 without).
+# 4. The SPA rewrites /mobile?doc=x to /mobile/ after mount (router), so Back targets the rewritten entry; not relevant to the rule.
+# 5. Not a "link blocked" case: the same-origin /rest/not-a-page link in B-link was allowed into the WebView and failed with
+#    HTTP 404; it is a failed main-frame load over a loaded page all the same.
+# Conclusion: the DS-006 premise holds on WebView 124; no Design Impact.

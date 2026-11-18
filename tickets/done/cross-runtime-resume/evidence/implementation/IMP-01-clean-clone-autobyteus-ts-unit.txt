@@ -1,0 +1,10 @@
+# IMP-01
+# Command: pnpm exec vitest run tests/unit (autobyteus-ts)
+# Commit: 1bc6f85506 (clean clone of codex/cross-runtime-resume in /tmp)
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-31
+# Full log: not committed (see excerpt)
+
+ Test Files  311 passed (311)
+      Tests  2108 passed (2108)
+TS_EXIT=0

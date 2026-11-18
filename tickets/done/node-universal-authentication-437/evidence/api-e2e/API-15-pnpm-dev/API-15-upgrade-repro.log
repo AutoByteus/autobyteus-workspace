@@ -1,0 +1,22 @@
+# API-15 pnpm dev window WebSockets (RU-02): node scripts/development/run-dev.mjs (pnpm dev's runner; dist already built), clean env
+# Commit: b6a57ab154; macOS arm64; Date: 2026-11-08T16:27:17Z
+
+## raw upgrade to the dev frontend (what the window does) vs the backend
+--- curl upgrade ws://127.0.0.1:3000/ws/projects
+HTTP/1.1 200 OK
+content-type: text/html;charset=utf-8
+x-powered-by: Nuxt
+date: Sun, 08 Nov 2026 16:27:17 GMT
+connection: keep-alive
+keep-alive: timeout=5
+curl exit 0
+--- curl upgrade ws://127.0.0.1:3000/graphql
+HTTP/1.1 200 OK
+content-type: text/html;charset=utf-8
+x-powered-by: Nuxt
+date: Sun, 08 Nov 2026 16:27:17 GMT
+connection: keep-alive
+keep-alive: timeout=5
+curl exit 0
+--- HTTP GraphQL through the dev proxy (no credential from the client)
+{"data":{"__typename":"Query"}} 200

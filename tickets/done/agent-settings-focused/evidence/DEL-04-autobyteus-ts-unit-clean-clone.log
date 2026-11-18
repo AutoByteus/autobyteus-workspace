@@ -1,0 +1,6 @@
+# Clean-clone run of codex/agent-settings-focused @ f1f2d137db (/tmp/ab366-clone); full log 146660 bytes, trimmed to summaries, skips and failures.
+ Test Files  311 passed (311)
+      Tests  2104 passed (2104)
+   Start at  10:57:18
+   Duration  12.70s (transform 9.69s, setup 4.20s, import 32.38s, tests 41.29s, environment 20ms)
+exit=0

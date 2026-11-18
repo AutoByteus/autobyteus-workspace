@@ -1,0 +1,22 @@
+# API-05 desktop journey (isolated instance of the worktree build)
+# node API-05-desktop-journey.mjs 53238 http://127.0.0.1:53239 /tmp/pln-del-iso <out>
+2026-10-31T14:54:18.564Z seed: {"ids":{"manager":"project-task-manager-fc60","writer":"release-notes-writer-fc60","checker":"fact-checker-fc60","squad":"docs-review-team-fc60"},"project":{"projectId":"project_a72c8758-d4e8-407b-b5ef-cc9e5a0f656e","name":"Prototype Launch fc60"},"taskId":"project_task_badd15fc-1db9-4aba-bfc6-f52f3149bcb5"}
+2026-10-31T14:54:18.569Z runtimes (AGY must be the scripted CLI): {"error":"Error: [{\"message\":\"Field \\\"availableAgentRuntimes\\\" must not have a selection since type \\\"JSON!\\\" has no subfields.\",\"locations\":[{\"line\":1,\"column\":29}]}]"}
+2026-10-31T14:54:18.606Z window: {"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat","title":""}
+2026-10-31T14:54:19.194Z shot: "01-workspaces-mode"
+2026-10-31T14:54:19.654Z shot: "02-projects-mode"
+2026-10-31T14:54:20.768Z start surface chip: "Prototype Launch fc60"
+2026-10-31T14:54:21.137Z shot: "03-start-under-project"
+2026-10-31T14:54:21.352Z started under the Project: {"kind":"agent","runId":"project_task_manager_fc60_7081600fa150422b81e38272df922839"}
+2026-10-31T14:54:21.374Z run folder and runtime: {"workspaceRootPath":"/tmp/pln-del-iso/launch-repo","runtimeKind":"antigravity_cli"}
+2026-10-31T14:54:21.527Z ## Project section: "## Project\n\nYou work in the Project Prototype Launch fc60 (Project ID project_a72c8758-d4e8-407b-b5ef-cc9e5a0f656e). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environme"
+2026-10-31T14:54:21.899Z shot: "04-run-listed-under-project"
+2026-10-31T14:54:22.718Z Team row with Task line: "Review the launch checklist"
+2026-10-31T14:54:23.150Z shot: "05-team-dispatched"
+2026-10-31T14:54:23.196Z opened worker: "release_notes_writer_fc60_b94361764a8b45c0bb645da0509132a3"
+2026-10-31T14:54:23.588Z shot: "06-worker-open"
+2026-10-31T14:54:25.148Z shot: "07-after-done"
+2026-10-31T14:54:25.979Z Workspaces mode: run marked open: "true"
+2026-10-31T14:54:26.410Z shot: "08-back-to-workspaces"
+2026-10-31T14:54:26.410Z page errors: []
+2026-10-31T14:54:26.410Z result: "Pass"

@@ -1,0 +1,17 @@
+
+> autobyteus@1.5.12-beta.1 test:e2e:projects-left-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/autobyteus-web
+> node tests/e2e/projects-left-navigation-probe.mjs --output-dir /tmp/wtvc-385/pln
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Fail — Timed out: Project created after the restart listed live
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Fail. Evidence: /tmp/wtvc-385/pln/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

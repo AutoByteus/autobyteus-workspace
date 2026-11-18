@@ -1,0 +1,8 @@
+# IMP-03
+# Command: vitest run tests/unit/agent-execution/backends/shared tests/unit/agent-execution/backends/mid-run-workspace-skills.test.ts tests/unit/agent-execution/backends/acp tests/unit/agent-execution/agent-run-apply-definition-skills.test.ts tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts tests/architecture tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts --no-watch
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-13 12:42
+
+ Test Files  28 passed (28)
+      Tests  195 passed (195)

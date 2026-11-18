@@ -1,6 +1,8 @@
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import { platformInputPrefaceMetadata } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
+import { buildRestartNotice } from "../../../src/restart-resume/restart-notice.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "../../../src/agent-collaboration/execution/events/task-system-input-presentation.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../../src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
 import { describe, expect, it, vi } from "vitest";
@@ -18,10 +20,10 @@ import {
   MemberExecutionContext,
 } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 
-const taskCommands = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
+const taskCapability = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
   root,
-  delegateToNewCopy: vi.fn(),
-  assignToExistingCopy: vi.fn(),
+  delegationSource: vi.fn(),
+  ownedTaskOf: () => null,
   submitTaskResult: vi.fn(),
   reviewTaskResult: vi.fn(),
 });
@@ -43,13 +45,13 @@ const build = (
     ancestorTeamRunIds: kind === "agent_team" ? [] : ["mounted-team-run"],
   });
   const memberExecutionContext = new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity,
     authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({
       deliverLogicalMessage: async () => ({ accepted: true }),
     }),
-    tasks: taskCommands(root),
+    tasks: taskCapability(root),
   });
   const activity = { kind: "none" as "none" | "present" };
   const fakeRun = {
@@ -200,6 +202,49 @@ describe("accepted task-system input presentation", () => {
 });
 
 
+describe("restart resume input through the handle (autobyteus-285 SR-005)", () => {
+  const notice = () => buildRestartNotice({
+    agentRunId: "agent-run",
+    facts: { cause: "update", version: "1.1.0", restartedAt: "2026-11-01T10:00:30.000Z", interruptedTurn: true },
+    resumedDelegated: [],
+  });
+
+  it("N-12: a restored member starts on the notice and reserves nothing before it; the options pass through", async () => {
+    const f = build("agent_team", RuntimeKind.CODEX_APP_SERVER, "restore");
+    f.fakeRun.postUserMessage.mockResolvedValueOnce({ accepted: true });
+    const caller = vi.fn();
+    const message = notice();
+    expect(await f.handle.postMessage(message, { lifecycleObserver: caller, onlyAsFirstInput: true })).toMatchObject({ accepted: true });
+
+    expect(f.fakeRun.reserveUserMessage).not.toHaveBeenCalled();
+    expect(f.fakeRun.postUserMessage).toHaveBeenCalledOnce();
+    const [posted, options] = f.fakeRun.postUserMessage.mock.calls[0]!;
+    expect(posted).toBe(message);
+    expect(options).toMatchObject({ onlyAsFirstInput: true });
+    options.lifecycleObserver({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" });
+    expect(caller).toHaveBeenCalledWith({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" });
+  });
+
+  it("publishes no member_input for a platform notice: the run's own system notice shows it", async () => {
+    const f = build("agent_team");
+    f.fakeRun.postUserMessage.mockResolvedValueOnce({ accepted: true });
+    await f.handle.postMessage(notice(), { onlyAsFirstInput: true });
+    expect(f.publishAgentEvent.mock.calls.filter(([, event]) => event.kind === "member_input")).toHaveLength(0);
+  });
+
+  it("N-14: a normal member input that gains a platform preface inside the run still shows as member_input", async () => {
+    const f = build("agent_team");
+    const input = new AgentInputUserMessage("Please continue the page.");
+    f.fakeRun.postUserMessage.mockImplementationOnce(async (message: AgentInputUserMessage) => {
+      // A skill-update or tool-list notice is combined into the input inside AgentRun.
+      Object.assign(message.metadata, platformInputPrefaceMetadata({ content: "[notice]", senderId: "system.skill_update_notifier", originalContent: message.content, noticeId: "notice-1" }));
+      return { accepted: true };
+    });
+    await f.handle.postMessage(input);
+    expect(f.publishAgentEvent.mock.calls.filter(([, event]) => event.kind === "member_input")).toHaveLength(1);
+  });
+});
+
 describe("member start failure: one step for both input entry points", () => {
   type Fixture = ReturnType<typeof build>;
   type Outcome = Readonly<{ ok: boolean; code?: string; message?: string }>;
@@ -302,6 +347,19 @@ describe("on-demand binding readiness", () => {
     expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
     expect(f.abort).not.toHaveBeenCalled();
     expect(f.releaseExactRun).toHaveBeenCalledWith(f.fakeRun);
+  });
+
+  it("CR-461-061: a kept failed start whose cleanup was confirmed is quiet, so the member's team can idle-shut-down; a quarantined cleanup is not", async () => {
+    const failed = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    failed.fakeRun.subscribeToEvents.mockImplementation(() => { throw new Error("publication failed"); });
+    await expect(failed.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
+    // The failure is kept (the next input sees it, no retry) but is no longer work in flight.
+    await expect(failed.handle.tryPrepareTerminationIfQuiescent()).resolves.not.toBeNull();
+    const quarantined = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    quarantined.commitPlatformBindingChange.mockRejectedValue(new Error("rejected"));
+    quarantined.abort.mockResolvedValue({ kind: "quarantined", error: new Error("cleanup unavailable") } as never);
+    await expect(quarantined.handle.getOrCreateAgentRun()).rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
+    await expect(quarantined.handle.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
   });
 
   it("retains cleanup quarantine as nonretryable even on a definite root rejection", async () => {
@@ -441,19 +499,19 @@ describe("re-activation after the member's runtime died", () => {
   });
 });
 
-describe("ConfiguredAgentExecutionHandle user Stop and model choice (DS-001, DS-002, AR-001)", () => {
-  it("interrupts and releases with input open; the next activation restores on the replaced model", async () => {
+describe("ConfiguredAgentExecutionHandle user Stop and selection (DS-001, DS-002, AR-001)", () => {
+  it("interrupts and releases with input open; the next activation restores on the replaced selection", async () => {
     const fixture = build("agent_team", RuntimeKind.AUTOBYTEUS);
     await fixture.handle.getOrCreateAgentRun();
     expect(fixture.handle.isStopped()).toBe(false);
-    expect(() => fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: null })).toThrow(/running/);
+    expect(() => fixture.handle.replaceSelection({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "bigger", llmConfig: null, platformAgentRunId: null })).toThrow(/running/);
 
     await expect(fixture.handle.releaseRuntimeForUserStop()).resolves.toMatchObject({ accepted: true });
     expect(fixture.fakeRun.interrupt).toHaveBeenCalledOnce();
     expect(fixture.releaseExactRun).toHaveBeenCalledOnce();
     expect(fixture.handle.isStopped()).toBe(true);
 
-    fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: { effort: "high" } });
+    fixture.handle.replaceSelection({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "bigger", llmConfig: { effort: "high" }, platformAgentRunId: null });
     fixture.activity.kind = "present";
     await fixture.handle.getOrCreateAgentRun();
     const restored = JSON.stringify(fixture.prepareRestoreAgentRun.mock.calls.at(-1) ?? fixture.prepareRestoreAgentRunFromPlatformState.mock.calls.at(-1));
@@ -468,7 +526,7 @@ describe("ConfiguredAgentExecutionHandle user Stop and model choice (DS-001, DS-
     const fenced = fixture.handle.withActivationFence(async () => {
       order.push("fence");
       await new Promise<void>((resolve) => { release = resolve; });
-      fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: null });
+      fixture.handle.replaceSelection({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "bigger", llmConfig: null, platformAgentRunId: null });
       order.push("swap");
     });
     await Promise.resolve();

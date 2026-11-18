@@ -1,0 +1,7 @@
+# API-16 search-pdf-preview: node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/search-pdf-preview
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:19:39Z
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":50718,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":49911,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

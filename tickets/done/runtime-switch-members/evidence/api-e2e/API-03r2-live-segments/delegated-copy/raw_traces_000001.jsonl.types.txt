@@ -1,0 +1,7 @@
+system_instruction  ## Agent Identity  - Name: live-copy-writer 486aec - Description: live
+user  You have a new task from the agent with sender address "/live_host_d8e
+tool_call  
+tool_result  
+tool_call  
+tool_result  
+assistant  Task complete. I ran `ls` and replied to the sender with "DONE".

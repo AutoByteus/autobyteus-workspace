@@ -1,0 +1,10 @@
+# The gateway is its own pnpm workspace, outside the repository's root
+# workspace: pnpm commands run in this folder use this package's
+# pnpm-lock.yaml only (the Dockerfile installs from it too).
+packages:
+  - "."
+
+# Dependencies allowed to run install scripts (pnpm v10 blocks the others).
+onlyBuiltDependencies:
+  - "@whiskeysockets/baileys"
+  - protobufjs

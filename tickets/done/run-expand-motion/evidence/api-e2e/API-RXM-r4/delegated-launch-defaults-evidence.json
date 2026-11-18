@@ -1,0 +1,460 @@
+{
+  "startedAt": "2026-11-06T07:07:15.712Z",
+  "cases": {
+    "RXM-001": {
+      "title": "AC-001/AC-002: a live run's delegated rows: collapse hides them from the first frame; expand shows each at its final place with no transform from the first frame",
+      "result": "Pass",
+      "ms": 16925,
+      "details": {
+        "runId": "rxm_manager_mw4mu5vv_2ed120c433674e63a365d5ea24949aae",
+        "tasks": [
+          "project_task_af37e210-dfae-4196-8cb8-e05b30f70f60",
+          "project_task_1492410a-7ec6-4d38-92ad-63510b752d36",
+          "project_task_f719e361-97de-40df-9cf6-858fe30299ee",
+          "project_task_d11576c3-c8bb-4cc5-be1f-60de1ee68ad3"
+        ],
+        "before": [
+          503,
+          551,
+          599,
+          647
+        ],
+        "collapse": {
+          "perFrame": [
+            [],
+            [],
+            [],
+            []
+          ],
+          "settled": [],
+          "treeShown": false
+        },
+        "expand": {
+          "perFrame": [
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 599,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 647,
+                "transform": "none",
+                "taskLine": true
+              }
+            ],
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 599,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 647,
+                "transform": "none",
+                "taskLine": true
+              }
+            ],
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 599,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 647,
+                "transform": "none",
+                "taskLine": true
+              }
+            ],
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 599,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 647,
+                "transform": "none",
+                "taskLine": true
+              }
+            ]
+          ],
+          "settled": [
+            {
+              "top": 503,
+              "transform": "none",
+              "taskLine": true
+            },
+            {
+              "top": 551,
+              "transform": "none",
+              "taskLine": true
+            },
+            {
+              "top": 599,
+              "transform": "none",
+              "taskLine": true
+            },
+            {
+              "top": 647,
+              "transform": "none",
+              "taskLine": true
+            }
+          ],
+          "treeShown": true
+        },
+        "offending": [],
+        "teamExpand": {
+          "perFrame": [
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 581,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 611,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 659,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 707,
+                "transform": "none",
+                "taskLine": true
+              }
+            ],
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 581,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 611,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 659,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 707,
+                "transform": "none",
+                "taskLine": true
+              }
+            ],
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 581,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 611,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 659,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 707,
+                "transform": "none",
+                "taskLine": true
+              }
+            ],
+            [
+              {
+                "top": 503,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 551,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 581,
+                "transform": "none",
+                "taskLine": false
+              },
+              {
+                "top": 611,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 659,
+                "transform": "none",
+                "taskLine": true
+              },
+              {
+                "top": 707,
+                "transform": "none",
+                "taskLine": true
+              }
+            ]
+          ],
+          "settled": [
+            {
+              "top": 503,
+              "transform": "none",
+              "taskLine": true
+            },
+            {
+              "top": 551,
+              "transform": "none",
+              "taskLine": false
+            },
+            {
+              "top": 581,
+              "transform": "none",
+              "taskLine": false
+            },
+            {
+              "top": 611,
+              "transform": "none",
+              "taskLine": true
+            },
+            {
+              "top": 659,
+              "transform": "none",
+              "taskLine": true
+            },
+            {
+              "top": 707,
+              "transform": "none",
+              "taskLine": true
+            }
+          ],
+          "treeShown": true
+        },
+        "teamExpandRows": [
+          6,
+          6,
+          6,
+          6
+        ],
+        "teamOffending": []
+      }
+    },
+    "RXM-002": {
+      "title": "AC-003: while the run is expanded, the agent closes a Task (DONE): its row leaves with the designed fade, then the other rows are at rest",
+      "result": "Pass",
+      "ms": 1937,
+      "details": {
+        "called": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"task\":{\"projectId\":\"project_d2eead41-73b1-4200-993d-4c390553c901\",\"taskId\":\"rxm-project-mw4mu5wj-1\",\"title\":\"RXM Task 1\",\"status\":\"DONE\"}}\"}],\"structuredContent\":{",
+        "leavingFrameCount": 14,
+        "fadeOpacities": [
+          1,
+          1,
+          0.864984,
+          0.739232,
+          0.621917,
+          0.511489,
+          0.408955,
+          0.3154,
+          0.230494,
+          0.156335,
+          0.0934916,
+          0.0444356,
+          0.0120745,
+          3.0233e-9
+        ],
+        "leaveMs": 216,
+        "movedByTransform": 0,
+        "nextRowTops": [
+          551,
+          545,
+          539,
+          534,
+          529,
+          524,
+          520,
+          516,
+          512,
+          509,
+          507,
+          506,
+          505
+        ]
+      }
+    },
+    "RXM-003": {
+      "title": "AC-003/R-01: a stopped run reopened: stored rows show; fold, Runs → Workspaces → Runs, unfold: same rows, no read for the unfold; a delegated row is selected from the list",
+      "result": "Pass",
+      "ms": 9539,
+      "details": {
+        "storedRows": [
+          "home team accaRXM Task 2Temporary task team · home team acca · /home_team_acca",
+          "home team accaRXM Task 3Temporary task team · home team acca · /home_team_acca",
+          "home team accaRXM Task 4Temporary task team · home team acca · /home_team_acca"
+        ],
+        "readsOnOpen": 1,
+        "foldKeptAcrossSwitch": false,
+        "readsBeforeUnfold": 1,
+        "readsAfterUnfold": 1,
+        "rowsAfterUnfold": [
+          "home team accaRXM Task 2Temporary task team · home team acca · /home_team_acca",
+          "home team accaRXM Task 3Temporary task team · home team acca · /home_team_acca",
+          "home team accaRXM Task 4Temporary task team · home team acca · /home_team_acca"
+        ],
+        "selectedRow": "MmanagerTemporary task agent · manager · /home_team_acca/manager"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 20093
+    },
+    {
+      "label": "frontend",
+      "pid": 20774
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 20774,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 20093,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-ixnfMF"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-ixnfMF",
+  "backendUrl": "http://127.0.0.1:62438",
+  "frontUrl": "http://127.0.0.1:62439",
+  "definitions": {
+    "ids": {
+      "manager": "manager-8876",
+      "lead": "lead-81f7",
+      "worker": "worker-0759",
+      "plain": "plain-4231",
+      "engineer": "engineer-e1ba",
+      "reviewer": "reviewer-8e5b",
+      "writer": "writer-ecb3",
+      "offline": "offline-9276",
+      "unoffered": "unoffered-dd51",
+      "badsettings": "badsettings-94b1",
+      "incomplete": "incomplete-1830",
+      "build": "build-team-b061",
+      "pair": "pair-team-9b6b",
+      "squad": "squad-team-21d3",
+      "home": "home-team-acca",
+      "launchOrg": "launchorg-org-1886",
+      "hostOrg": "hostorg-org-ea0f"
+    },
+    "names": {
+      "manager": "Manager 8876",
+      "lead": "Lead 81f7",
+      "worker": "Worker 0759",
+      "plain": "Plain 4231",
+      "engineer": "Engineer e1ba",
+      "reviewer": "Reviewer 8e5b",
+      "writer": "Writer ecb3",
+      "offline": "Offline 9276",
+      "unoffered": "Unoffered dd51",
+      "badsettings": "Badsettings 94b1",
+      "incomplete": "Incomplete 1830",
+      "build": "Build Team b061",
+      "pair": "Pair Team 9b6b",
+      "squad": "Squad Team 21d3",
+      "home": "Home Team acca",
+      "launchOrg": "LaunchOrg Org 1886",
+      "hostOrg": "HostOrg Org ea0f"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 3,
+    "fail": 0
+  },
+  "completedAt": "2026-11-06T07:08:18.033Z"
+}

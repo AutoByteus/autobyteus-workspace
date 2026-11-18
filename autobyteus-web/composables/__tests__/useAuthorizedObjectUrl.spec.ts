@@ -7,8 +7,7 @@ import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore'
 import type { MobileNodeSession } from '~/types/remoteAccess'
 
 const sessionWithCredential = (credential: string): MobileNodeSession => ({
-  version: 1,
-  nodeId: 'mobile-paired-node',
+  entryId: 'mobile-paired-node',
   serverBaseUrl: 'http://node.example',
   credential,
   pairedAt: '2026-07-12T00:00:00.000Z',
@@ -16,6 +15,7 @@ const sessionWithCredential = (credential: string): MobileNodeSession => ({
     deviceId: 'device-1',
     displayName: 'Phone',
     clientFacingBaseUrl: 'http://node.example',
+    connectionWay: null,
     createdAt: '2026-07-12T00:00:00.000Z',
     lastSeenAt: null,
     revokedAt: null,

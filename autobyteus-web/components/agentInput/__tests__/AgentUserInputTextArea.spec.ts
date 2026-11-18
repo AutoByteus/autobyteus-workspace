@@ -31,7 +31,7 @@ const activeContextStoreMock: any = reactive({
   activeAgentContext: null as MockAgentContext | null,
   get activeWorkspaceTarget() {
     const context = this.activeAgentContext
-    return context ? { kind: 'standalone_agent', context, access: 'live' } : null
+    return context ? { kind: 'standalone_agent', context, access: 'live', browse: { kind: 'run', runId: context.state.runId } } : null
   },
   submissionPending: false,
   currentStatus: AgentStatus.Idle,
@@ -161,6 +161,13 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(true);
   });
 
+  // autobyteus-506 REQ-004 / VIS-019: the text area's white background follows the composer box's lower corners.
+  it('rounds its lower corners so the composer box border stays continuous', async () => {
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
+    await nextTick()
+    expect(wrapper.find('div.flex.flex-col.bg-white').classes()).toContain('rounded-b-[11px]')
+  })
+
   it('hides the voice button when voice input is not installed', async () => {
     const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
@@ -251,6 +258,22 @@ describe('AgentUserInputTextArea', () => {
 
     expect(activeContextStoreMock.interruptGeneration).toHaveBeenCalledTimes(1)
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+  })
+
+  it('autobyteus-448 DEC-004: an idle agent with background tasks running offers Send, never Stop (the run screen on desktop and phone)', async () => {
+    activeContextStoreMock.currentStatus = AgentStatus.Idle
+    activeContextStoreMock.submissionPending = false
+    const context = createContext('ctx-background', 'is the build done?')
+    ;(context.state as { backgroundTasksRunning?: number }).backgroundTasksRunning = 2
+    selectContext(context)
+
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
+    await nextTick()
+
+    expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(false)
+    const sendButton = wrapper.find('button[title="Send message"]')
+    expect(sendButton.exists()).toBe(true)
+    expect(sendButton.attributes('disabled')).toBeUndefined()
   })
 
   it('keeps send disabled while a submission is pending without presenting stop', async () => {

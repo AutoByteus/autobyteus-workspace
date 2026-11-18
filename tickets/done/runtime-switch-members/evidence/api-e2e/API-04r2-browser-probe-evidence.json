@@ -1,0 +1,419 @@
+{
+  "startedAt": "2026-11-02T07:20:04.232Z",
+  "steps": [
+    {
+      "text": "Team: saved, the server holds the pending switch on the worker only",
+      "details": {
+        "runtimeKind": "antigravity_cli",
+        "model": "gemini-3.8-flash-low",
+        "platformAgentRunId": null,
+        "pendingFrom": "autobyteus"
+      }
+    },
+    {
+      "text": "Team: the first message switched the worker (one segment, committed); the lead never started",
+      "details": null
+    },
+    {
+      "text": "Team: after the reload the chat shows the earlier turns and one marker; the settings show the worker on Antigravity",
+      "details": null
+    },
+    {
+      "text": "Org /direct: the server holds the pending switch on that member only",
+      "details": {
+        "runtime": "antigravity_cli",
+        "pendingFrom": "autobyteus"
+      }
+    },
+    {
+      "text": "Org /direct: the first message switched it (one segment, committed)",
+      "details": null
+    },
+    {
+      "text": "Org /crew/worker: the server holds the pending switch on that member only",
+      "details": {
+        "runtime": "antigravity_cli",
+        "pendingFrom": "autobyteus"
+      }
+    },
+    {
+      "text": "Org /crew/worker: the first message switched it (one segment, committed)",
+      "details": null
+    },
+    {
+      "text": "Delegated copy: saved in the host's Settings; the first message switched it (one segment)",
+      "details": null
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 21189
+    },
+    {
+      "label": "frontend",
+      "pid": 21349
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 21349,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 21189,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-members-probe-oEpLe2"
+    }
+  ],
+  "browserErrors": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-members-probe-oEpLe2",
+  "backendUrl": "http://127.0.0.1:55893",
+  "frontUrl": "http://127.0.0.1:55894",
+  "definitions": {
+    "agent": {
+      "id": "switch-probe-agent",
+      "name": "Switch Probe Agent"
+    },
+    "host": {
+      "id": "switch-probe-host",
+      "name": "Switch Probe Host"
+    },
+    "writer": {
+      "id": "switch-probe-writer",
+      "name": "Switch Probe Writer"
+    },
+    "writerAgy": {
+      "id": "switch-probe-writer-agy",
+      "name": "Switch Probe Writer Agy"
+    },
+    "team": {
+      "id": "switch-probe-team",
+      "name": "Switch Probe Team"
+    },
+    "org": {
+      "id": "switch-probe-org",
+      "name": "Switch Probe Org"
+    }
+  },
+  "RSM-01": {
+    "title": "Team: switch one member in the stopped Team's Settings, message it, reopen the chat",
+    "result": "Pass",
+    "details": {
+      "teamRunId": "switch_probe_team_3328dd442470487fa5689459d26bb5ba",
+      "rootRuntimeInSettings": 1,
+      "shotPrefix": "RSM-01",
+      "firstRuntimeRows": [],
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ],
+      "lockedRuntimeBanner": 0,
+      "tests": [
+        "app-left-panel-shell",
+        "app-left-panel-sections",
+        "app-left-panel-primary-nav",
+        "app-left-panel-chat",
+        "app-left-panel-new-chat",
+        "app-left-panel-collapse",
+        "chat-draft-rows",
+        "app-left-panel-section-resize-handle",
+        "app-left-panel-run-history",
+        "run-section-switch",
+        "run-section-tab-workspaces",
+        "run-section-tab-projects",
+        "run-section-add-workspace",
+        "workspace-history-tree-scroll",
+        "workspace-row",
+        "workspace-team-definition-row-switch-probe-team",
+        "team-aggregate-status-dot",
+        "workspace-team-group-archive-switch-probe-team",
+        "workspace-team-row-switch_probe_team_3328dd442470487fa5689459d26bb5ba",
+        "workspace-team-run-disclosure",
+        "workspace-team-execution-tree",
+        "workspace-team-member-switch_probe_team_3328dd442470487fa5689459d26bb5ba-/lead",
+        "workspace-hierarchy-branches",
+        "workspace-team-member-avatar",
+        "workspace-team-member-switch_probe_team_3328dd442470487fa5689459d26bb5ba-/worker",
+        "workspace-adaptive-layout",
+        "workspace-center-right-flow",
+        "workspace-center-pane",
+        "workspace-center-content-shell",
+        "run-config-back-to-events",
+        "existing-run-settings",
+        "run-subject-header",
+        "run-subject-name",
+        "run-subject-status",
+        "existing-run-root-card",
+        "run-settings-card-root",
+        "run-setting-workspace",
+        "run-setting-locked",
+        "run-setting-model",
+        "chat-model-trigger",
+        "run-setting-thinking",
+        "run-setting-thinking-unavailable",
+        "run-setting-approval",
+        "existing-run-runtime-change-hint",
+        "run-members",
+        "run-member-/lead",
+        "run-member-toggle",
+        "run-member-summary",
+        "run-member-/worker",
+        "run-member-detail",
+        "run-settings-card-/worker",
+        "chat-approval-toggle",
+        "chat-approval-lock",
+        "existing-run-save-bar",
+        "existing-run-cancel",
+        "save-existing-model-config",
+        "workspace-right-resize-handle",
+        "workspace-right-panel",
+        "right-side-tab-list",
+        "right-side-panel-toggle",
+        "right-side-tab-content-shell",
+        "collaboration-messages-section",
+        "collaboration-messages-header",
+        "right-side-terminal-panel",
+        "terminal-panel",
+        "terminal-panel-entry"
+      ],
+      "hint": [
+        "An agent that changes its agent runtime keeps its run and chat. The new agent runtime takes over when that agent next receives a message."
+      ],
+      "saveNote": null,
+      "pending": {
+        "runtimeKind": "antigravity_cli",
+        "model": "gemini-3.8-flash-low",
+        "platformAgentRunId": null,
+        "pendingFrom": "autobyteus"
+      },
+      "liveChat": "W worker Idle You NATIVE-TEAM-ONE please answer W worker NATIVE-REPLY-1 You ECHO_INPUT W worker Agent runtime changed from AutoByteus (rsw-native:lmstudio@127.0.0.1:55900) to Antigravity CLI (gemini-3.8-flash-low). ECHO:“[System: runtime hand-over]\\nAnother agent worked on this run before you and kept a work journal as it went. You are taking over.\\n\\nThe journals are in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-members-probe-oEpLe2/server-data/memory/agent_teams/switch_probe_team_3328dd442470487fa5689459d26bb5ba/switch_probe_agent_b42d4a4bd0f04f37a6db61ffd2282cec/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:\\n work_journal_000001.md | 2026-11-02 | 528 B, 6 lines\\n work_journal_active.md | 2026-11-02 | 527 B, 5 lines\\n\\nEach entry is one line, such as \"[HH:MM:SS] User: …\", \"Agent: …\" or \"Command: … → ok\", and ends with a\\nlink to the full record. Long output is shortened.\\n\\nECHO_INPUT” Context Files (0) (drag, paste, or upload) Projects Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Mes",
+      "segments": [
+        {
+          "runtime": "autobyteus",
+          "type": "runtime_switch",
+          "status": "complete"
+        }
+      ],
+      "leadFolder": null,
+      "markerCount": 1,
+      "reloadedChat": "W worker Idle You NATIVE-TEAM-ONE please answer W worker NATIVE-REPLY-1 AGENT RUNTIME CHANGED Agent runtime changed from AutoByteus (rsw-native:lmstudio@127.0.0.1:55900) to Antigravity CLI (gemini-3.8-flash-low). You ECHO_INPUT W worker ECHO:“[System: runtime hand-over]\\nAnother agent worked on this run before you and kept a work journal as it went. You are taking over.\\n\\nThe journals are in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-members-probe-oEpLe2/server-data/memory/agent_teams/switch_probe_team_3328dd442470487fa5689459d26bb5ba/switch_probe_agent_b42d4a4bd0f04f37a6db61ffd2282cec/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:\\n work_journal_000001.md | 2026-11-02 | 528 B, 6 lines\\n work_journal_active.md | 2026-11-02 | 527 B, 5 lines\\n\\nEach entry is one line, such as \"[HH:MM:SS] User: …\", \"Agent: …\" or \"Command: … → ok\", and ends with a\\nlink to the full record. Long output is shortened.\\n\\nECHO_INPUT” Context Files (0) (drag, paste, or upload) Projects Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages No team messages yet Accepted inter-agent messages will appear here with their reference files.",
+      "hintAfter": 0,
+      "workerAfter": "W worker Customized · gemini-3.8-flash-low · Antigravity CLI · Auto-approve"
+    },
+    "ms": 29074
+  },
+  "RSM-02": {
+    "title": "Org: switch a direct Agent in the stopped Org's Settings, message it, reopen the chat",
+    "result": "Pass",
+    "details": {
+      "address": "/direct",
+      "shotPrefix": "rsm02-direct",
+      "orgRunId": "switch_probe_org_bf8a0ea8d75a49f9af34a60305e3a6cc",
+      "rootModelEditable": 1,
+      "firstRuntimeRows": [
+        "autobyteus"
+      ],
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ],
+      "lockedRuntimeBanner": 0,
+      "hint": [
+        "An agent that changes its agent runtime keeps its run and chat. The new agent runtime takes over when that agent next receives a message."
+      ],
+      "saveNote": null,
+      "pending": {
+        "runtime": "antigravity_cli",
+        "pendingFrom": "autobyteus"
+      },
+      "segments": [
+        {
+          "runtime": "autobyteus",
+          "type": "runtime_switch",
+          "status": "complete"
+        }
+      ],
+      "markerCount": 1,
+      "rowAfter": "D direct Customized · gemini-3.8-flash-low · Antigravity CLI · Auto-approve",
+      "hintAfter": 0,
+      "noteAfter": 0,
+      "findings": []
+    },
+    "ms": 65942
+  },
+  "RSM-03": {
+    "title": "Org: switch an Agent of a mounted Team (a nested row) in the stopped Org's Settings, message it, reopen the chat",
+    "result": "Pass",
+    "details": {
+      "address": "/crew/worker",
+      "shotPrefix": "rsm03-nested",
+      "orgRunId": "switch_probe_org_90a8454b36054bf1919ae845246a1dbf",
+      "rootModelEditable": 1,
+      "firstRuntimeRows": [
+        "autobyteus"
+      ],
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ],
+      "lockedRuntimeBanner": 0,
+      "hint": [
+        "An agent that changes its agent runtime keeps its run and chat. The new agent runtime takes over when that agent next receives a message."
+      ],
+      "saveNote": null,
+      "pending": {
+        "runtime": "antigravity_cli",
+        "pendingFrom": "autobyteus"
+      },
+      "segments": [
+        {
+          "runtime": "autobyteus",
+          "type": "runtime_switch",
+          "status": "complete"
+        }
+      ],
+      "markerCount": 1,
+      "rowAfter": "W worker Customized · gemini-3.8-flash-low · Antigravity CLI · Auto-approve",
+      "hintAfter": 0,
+      "noteAfter": 0,
+      "findings": []
+    },
+    "ms": 68860
+  },
+  "RSM-04": {
+    "title": "Delegated copy: switch a stopped copy in its host's Settings, wake it, reopen the chat",
+    "result": "Pass",
+    "details": {
+      "shotPrefix": "rsm04-copy",
+      "hostId": "switch_probe_host_950a7171bd9d420e922d15d6ebe998cd",
+      "copyId": "switch_probe_writer_823d69c7991e4855bda5c21797391e1f",
+      "beforeSummary": "rsw-native:lmstudio@127.0.0.1:55900 · AutoByteus · Auto-approve · Agent default",
+      "firstRuntimeRows": [
+        "autobyteus"
+      ],
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "antigravity_cli",
+        "grok_build"
+      ],
+      "lockedRuntimeBanner": 0,
+      "hint": [
+        "An agent that changes its agent runtime keeps its run and chat. The new agent runtime takes over when that agent next receives a message."
+      ],
+      "saveNote": null,
+      "savedSummary": "Gemini test · Antigravity CLI · Auto-approve",
+      "reopenedSummary": "Gemini test · Antigravity CLI · Auto-approve",
+      "beforeFiles": [
+        "raw_traces_active.jsonl",
+        "run_metadata.json",
+        "seen_skill_versions.json",
+        "seen_tool_names.json",
+        "work_journal",
+        "working_context_snapshot.json"
+      ],
+      "segments": [
+        {
+          "runtime": "autobyteus",
+          "type": "runtime_switch",
+          "status": "complete"
+        }
+      ],
+      "markerCount": 1,
+      "findings": []
+    },
+    "ms": 36188
+  },
+  "RSM-05": {
+    "title": "Team default: the root runtime menu of a stopped Team and of a stopped Org, and what a Team-default edit does to its linked members",
+    "result": "Pass",
+    "details": {
+      "shotPrefix": "rsm05",
+      "teamRunId": "switch_probe_team_3b91472a20f84642b44b6307c3222119",
+      "rootTrigger": 1,
+      "rootRuntimeRows": [],
+      "rootLockedBanner": 1,
+      "rootBannerText": "AutoByteus"
+    },
+    "ms": 12541
+  },
+  "RSM-06": {
+    "title": "Delegated copy, comparison: a model-only Save of a stopped copy (same runtime) shows at once and records no pending switch",
+    "result": "Pass",
+    "details": {
+      "shotPrefix": "rsm06-copy-model",
+      "before": "Gemini test · Antigravity CLI · Auto-approve · Agent default",
+      "firstRuntimeRows": [
+        "autobyteus"
+      ],
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ],
+      "lockedRuntimeBanner": 0,
+      "hint": 0,
+      "saveNote": null,
+      "saved": "Retiring test model · Antigravity CLI · Auto-approve",
+      "findings": []
+    },
+    "ms": 17687
+  },
+  "RSM-07": {
+    "title": "Org undo: an Org member that ran on Antigravity (original session set) is switched to native and saved, then switched back and saved: the original binding and session return, no pending, no marker",
+    "result": "Pass",
+    "details": {
+      "shotPrefix": "rsm07-undo",
+      "orgRunId": "switch_probe_org_9d13953bbdee4fa3878c2acd8b619444",
+      "originalSession": "f236ae78-9626-458d-93cb-343cf262ba3e",
+      "firstRuntimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ],
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ],
+      "lockedRuntimeBanner": 0,
+      "saveNote1": null,
+      "pending": {
+        "runtime": "autobyteus",
+        "session": null,
+        "from": "antigravity_cli"
+      },
+      "saveNote2": null,
+      "undone": {
+        "runtime": "antigravity_cli",
+        "model": "gemini-3.8-flash-low",
+        "session": "f236ae78-9626-458d-93cb-343cf262ba3e",
+        "hasPending": false
+      },
+      "rowAfter": "Gemini test · Antigravity CLI · Auto-approve",
+      "hintAfter": 0,
+      "findings": []
+    },
+    "ms": 61458
+  },
+  "completedAt": "2026-11-02T07:25:51.846Z"
+}

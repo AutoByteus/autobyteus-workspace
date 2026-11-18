@@ -1,0 +1,335 @@
+{
+  "startedAt": "2026-11-12T05:33:01.900Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 49330,
+      "nodeId": "srv_Uj8Qz6UzsfNiqM5vd1_aZRHc9cUBWlEM",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 49329,
+      "nodeId": "srv_3-nkU1eEopb8Znvncdu1Cfa2zNaFDixE",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_307b49c7c5184f3186170a8878d24dbe",
+    "writerRun": "release_notes_writer_7a25217ed48947af825e58cf1955cefc",
+    "squadRun": "docs_review_team_963fd626e735422d9261ef2aca18e074",
+    "reviewer": "release_notes_writer_febe900e08534889bcd94d6eea902f56",
+    "memberDelegated": "fact_checker_d04d46bc38c34d3dadca117bebb36ce8",
+    "remoteAgentRun": "publisher_a0aa825be0f64985b09288c36e9fe22e",
+    "remoteTeamRun": "studio_team_2e05c869ba0e42df9da05d02734fb2fb",
+    "plain": [
+      "fact_checker_3ee17930dd70453eb10d888bb151e654",
+      "fact_checker_c4ba201fe0714ba4b95e4c0c66f78608",
+      "fact_checker_44f7dab95d3447218cb658e61ba6c46d"
+    ],
+    "org": "delivery_org_5b11f11aaee7433ba4f29f7c0f96d092",
+    "orgPlanner": "release_notes_writer_67e0d950e87f408eb24d6e09d70a91bd",
+    "reviewOrg": "review_org_d71d672d45cf4d1587f42b3ac38cd9d9",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_a65b5fd66c7040d9bd4e049fda335fcc",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_e0cf723b220645209c3993f69714c656",
+    "deliveryLead": "fact_checker_0b1a04a827954e44b914c428e8572c3a",
+    "deliveryMate": "release_notes_writer_dcb5e66452254ef08484dfdbec0ad5a6",
+    "leadDelegated": "changelog_helper_1c69e5c76eb148dbb815b6ab04ad1f5a",
+    "approver": "approver_5efbce55c8f1486aa431c67f35fecf18",
+    "taskA": "launch-521940-1",
+    "taskB": "launch-521940-2"
+  },
+  "cases": {
+    "MSP-45": {
+      "result": "Fail",
+      "seconds": 27.1,
+      "error": "every Contents entry brings its heading into view in the Skills page preview, URL unchanged (AC-002)",
+      "details": {
+        "url": "http://127.0.0.1:49326/skills",
+        "contents": {
+          "entries": 25,
+          "reached": 0,
+          "urlUnchanged": 25,
+          "newTabs": 25
+        },
+        "notReached": [
+          {
+            "anchor": "the-approach-spine-first-practices-in-context",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "project-specific-design-principles",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "terminology",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "core-principles",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "1-approved-behavior-and-production-reality",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "2-data-flow-spine-inventory-and-clarity",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "3-ownership-clarity-and-boundary-encapsulation",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "4-off-spine-concerns-around-the-spine",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "5-current-schema-runtime-and-proportionate-persisted-data-transitions",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "6-supported-product-scenario-and-reachability-gate",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "7-no-dead-code",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "8-clean-cut-replacement-and-explicit-removal",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "9-dependency-direction",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "10-interfaces-follow-ownership",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "11-reusable-owned-structures-stay-tight",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "12-file-responsibility-and-placement",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "13-one-owner-for-coordination-policy-no-empty-layers",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "14-a-spine-first-concrete-design-document",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "15-one-vocabulary-one-word-one-meaning-one-meaning-one-word",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "16-visible-dependencies-one-composition-root",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "practical-application-guide",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "structural-triggers",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "task-design-health-assessment",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "task-size-and-architectural-risk",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "common-local-patterns",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          }
+        ],
+        "sample": [
+          {
+            "anchor": "the-approach-spine-first-practices-in-context",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "project-specific-design-principles",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          },
+          {
+            "anchor": "terminology",
+            "headings": 0,
+            "reached": false,
+            "urlUnchanged": true,
+            "newTabs": 1
+          }
+        ],
+        "nothing": [
+          {
+            "href": "#no-such-heading-480",
+            "urlUnchanged": true,
+            "newTabs": 1,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "other.md",
+            "urlUnchanged": true,
+            "newTabs": 1,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "other.md#x",
+            "urlUnchanged": true,
+            "newTabs": 1,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "/x.md",
+            "urlUnchanged": true,
+            "newTabs": 1,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          },
+          {
+            "href": "./x.md",
+            "urlUnchanged": true,
+            "newTabs": 1,
+            "stillShown": true,
+            "notFoundShown": false,
+            "scrollUnchanged": true
+          }
+        ]
+      }
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "headingLinks": {
+    "filesRun": "fact_checker_e577c2f4f79647f5988762249b2a7914",
+    "host": "project_task_manager_18c82ca4e48448509e26f6272902e5cb",
+    "talkRun": "release_notes_writer_85203e53735b42d0b12ef97bf1fd996e",
+    "skill": "heading-links-480",
+    "contentsEntries": 25
+  },
+  "summary": {
+    "cases": {
+      "MSP-45": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-12T05:34:44.037Z"
+}

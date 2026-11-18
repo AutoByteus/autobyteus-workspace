@@ -1,0 +1,261 @@
+{
+  "case": "API-04D",
+  "mode": "crash-resume",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T06:56:53.398Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-crash-resume-nwVBdI",
+  "tag": "RR285mvxh8v4m",
+  "steps": [
+    {
+      "at": "0.01",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "1.85",
+      "step": "server started",
+      "value": {
+        "label": "X",
+        "pid": 68791,
+        "port": 62681
+      }
+    },
+    {
+      "at": "2.97",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:62680",
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "6.40",
+      "step": "busy",
+      "value": {
+        "label": "slow-1",
+        "pid": 69815
+      }
+    },
+    {
+      "at": "15.42",
+      "step": "busy",
+      "value": {
+        "label": "slow-2",
+        "pid": 71441
+      }
+    },
+    {
+      "at": "15.46",
+      "step": "busy",
+      "value": {
+        "label": "slow-3",
+        "pid": 70286
+      }
+    },
+    {
+      "at": "15.51",
+      "step": "busy",
+      "value": {
+        "label": "t-1",
+        "pid": 68927
+      }
+    },
+    {
+      "at": "15.55",
+      "step": "busy",
+      "value": {
+        "label": "t-2",
+        "pid": 69007
+      }
+    },
+    {
+      "at": "19.67",
+      "step": "server stopped",
+      "value": {
+        "label": "X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793516232945
+        },
+        "ms": 2495
+      }
+    },
+    {
+      "at": "19.67",
+      "step": "record",
+      "value": [
+        {
+          "place": "host",
+          "run": "0e6cef4a63"
+        },
+        {
+          "place": "host",
+          "run": "220b35f2f8"
+        },
+        {
+          "place": "host",
+          "run": "718ae43fa1"
+        },
+        {
+          "place": "host",
+          "run": "80f1a0db4c"
+        },
+        {
+          "place": "host",
+          "run": "e7f12f23a8"
+        }
+      ]
+    },
+    {
+      "at": "19.67",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "23.89",
+      "step": "crash during resume",
+      "value": {
+        "killed": true,
+        "exit": {
+          "code": null,
+          "signal": "SIGKILL",
+          "at": 1793516235211
+        },
+        "recordAfterCrash": null,
+        "lines": [
+          "[21.77] Restart resume resumed host run 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63' of agent 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63'"
+        ]
+      }
+    },
+    {
+      "at": "25.52",
+      "step": "server started",
+      "value": {
+        "label": "X1-after-crash",
+        "pid": 71787,
+        "port": 62800
+      }
+    },
+    {
+      "at": "33.54",
+      "step": "after crash, next start",
+      "value": {
+        "lines": [],
+        "notices": {
+          "slow-1": 0,
+          "slow-2": 0,
+          "slow-3": 0,
+          "t-1": 0,
+          "t-2": 0
+        }
+      }
+    },
+    {
+      "at": "33.74",
+      "step": "server stopped",
+      "value": {
+        "label": "X1-after-crash",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793516246995
+        },
+        "ms": 56
+      }
+    }
+  ],
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63"
+        },
+        "agentRunId": "probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:57:10.453Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh8v4m_bc268ec6cba44fa4ae227f220b35f2f8"
+        },
+        "agentRunId": "probe_agent_rr285mvxh8v4m_bc268ec6cba44fa4ae227f220b35f2f8",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:57:10.453Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxh8v4m_3a64cf2258e946a786dd2b718ae43fa1"
+        },
+        "agentRunId": "probe_agent_rr285mvxh8v4m_3a64cf2258e946a786dd2b718ae43fa1",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:57:10.453Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxh8v4m_5f7c2ec0f0f64d2c82583b80f1a0db4c"
+        },
+        "agentRunId": "native_agent_rr285mvxh8v4m_5f7c2ec0f0f64d2c82583b80f1a0db4c",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:57:10.453Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "native_agent_rr285mvxh8v4m_9620283730a540368f4b88e7f12f23a8"
+        },
+        "agentRunId": "native_agent_rr285mvxh8v4m_9620283730a540368f4b88e7f12f23a8",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:57:10.453Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "killTree": [],
+  "crash": {
+    "killed": true,
+    "exit": {
+      "code": null,
+      "signal": "SIGKILL",
+      "at": 1793516235211
+    },
+    "recordAfterCrash": null,
+    "lines": [
+      "[21.77] Restart resume resumed host run 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63' of agent 'probe_agent_rr285mvxh8v4m_ffe40c971941485a9265ee0e6cef4a63'"
+    ]
+  },
+  "after": {
+    "lines": [],
+    "notices": {
+      "slow-1": 0,
+      "slow-2": 0,
+      "slow-3": 0,
+      "t-1": 0,
+      "t-2": 0
+    }
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "stampRestored": true,
+  "modelCalls": 4,
+  "scriptedNotices": [],
+  "rootRemoved": true
+}

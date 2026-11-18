@@ -1,0 +1,178 @@
+{
+  "case": "API-final-cleanup",
+  "round": "API-REV-003",
+  "date": "2026-10-26T10:27:58.689315+00:00",
+  "method": "Read-only kill(pid,0) of exact recorded test-owned PIDs; no cleanup by PID/port scan",
+  "pids": [
+    {
+      "pid": 7979,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 7987,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8005,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8006,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8025,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8099,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8117,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8118,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8137,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8345,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8353,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8359,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8471,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8541,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8546,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8547,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8558,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8620,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8625,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8626,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8632,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8692,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8699,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8707,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8715,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8731,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8858,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 8903,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9016,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9081,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9151,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9168,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9174,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9253,
+      "currentlyPresent": false
+    },
+    {
+      "pid": 9296,
+      "currentlyPresent": false
+    }
+  ],
+  "roots": [
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api05-smsEjg",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api06b-3amDHG",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api07-r0DMnU",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09-N38voR",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api09b-VFvZx9",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-api10-6ewjLt",
+      "exists": false
+    },
+    {
+      "path": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/native-standalone-shutdown-jufC9f",
+      "exists": false
+    }
+  ]
+}

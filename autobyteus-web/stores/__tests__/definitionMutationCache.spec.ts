@@ -42,13 +42,14 @@ const agent = {
   toolNames: [], inputProcessorNames: [], llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [],
   toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [], skillScope: 'CONFIGURED',
   ownershipScope: 'SHARED', ownerTeamId: null, ownerTeamName: null, ownerApplicationId: null,
-  ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null, defaultLaunchConfig: null, loadIssue: null,
+  ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null, internal: false, defaultLaunchConfig: null, loadIssue: null,
+  semanticMemoryEnabled: false, semanticMemoryPath: null, personalSettings: [], personalSettingsBase: null,
 }
 const org = {
   __typename: 'AgentOrgDefinition', id: 'existing-org', name: 'Existing Org', description: 'Healthy definition',
   instructions: '', category: null, avatarUrl: null, revision: 'revision-1', handoffs: [],
-  members: [{ __typename: 'AgentOrgMember', memberName: 'worker', ref: agent.id, refType: 'AGENT', refScope: 'SHARED' }],
-  defaultLaunchConfig: null, loadIssues: [],
+  members: [{ __typename: 'AgentOrgMember' as const, memberName: 'worker', ref: agent.id, refType: 'AGENT' as const, refScope: 'SHARED' as const }],
+  defaultLaunchConfig: null, loadIssues: [], personalSettings: [], personalSettingsBase: null,
 }
 
 const missingCacheFields = (calls: unknown[][]): string[] => calls.flatMap(([message]) => {

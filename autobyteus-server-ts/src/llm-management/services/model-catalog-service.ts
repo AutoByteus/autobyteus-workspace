@@ -5,6 +5,7 @@ import {
   type OpenAICompatibleEndpointDiscoveredModel,
   type OpenAICompatibleEndpointModel,
 } from 'autobyteus-ts';
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import { LMStudioModelProvider } from 'autobyteus-ts/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
@@ -19,6 +20,7 @@ import {
   RuntimeKind,
   runtimeKindFromString,
 } from '../../runtime-management/runtime-kind-enum.js';
+import type { ReadDeadline } from '../../runtime-management/read-deadline.js';
 import {
   getBuiltInLlmProviderCatalog,
   type BuiltInLlmProviderCatalog,
@@ -41,6 +43,7 @@ import { getClaudeModelCatalog, type ClaudeModelCatalog } from './claude-model-c
 import { getCodexModelCatalog, type CodexModelCatalog } from './codex-model-catalog.js';
 import { AntigravityModelCatalog } from './antigravity-model-catalog.js';
 import { GrokBuildModelCatalog } from './grok-build-model-catalog.js';
+import { DeepSeekHarnessModelCatalog } from './deepseek-harness-model-catalog.js';
 import {
   DynamicModelSourceLifecycle,
   type DynamicSourceSpec,
@@ -62,6 +65,17 @@ export type RuntimeModelSelectionCatalog = Readonly<{
   findExactCurrent: (identifier: string) => ModelInfo | null;
 }>;
 
+/**
+ * An external runtime answered a model-list read with no models. An available runtime always offers a
+ * model, so an empty list is a failed read, never "no models" (the catalog owns this rule).
+ */
+export class ModelListUnavailableError extends Error {
+  constructor(runtimeKind: RuntimeKind) {
+    super(`${agentRuntimeName(runtimeKind)} returned no models.`);
+    this.name = 'ModelListUnavailableError';
+  }
+}
+
 export class ModelCatalogService {
   private readonly lifecycle = new DynamicModelSourceLifecycle();
 
@@ -74,6 +88,7 @@ export class ModelCatalogService {
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
     private readonly antigravityModelCatalog = new AntigravityModelCatalog(),
     private readonly grokBuildModelCatalog = new GrokBuildModelCatalog(),
+    private readonly deepSeekHarnessModelCatalog = new DeepSeekHarnessModelCatalog(),
   ) {}
 
   async listProviderModelCatalogSnapshots(
@@ -156,15 +171,38 @@ export class ModelCatalogService {
     return (await this.runtimeModelSelectionCatalog(runtimeKind, workspaceRootPath)).findExactCurrent(identifier);
   }
 
-  async runtimeModelSelectionCatalog(runtimeKind?: string | null, workspaceRootPath?: string): Promise<RuntimeModelSelectionCatalog> {
+  /**
+   * The runtime's offered models. `deadline`: the end time of the read step (the available-agent-runtimes read), passed
+   * to the external runtime's catalog; without it, each catalog's usual time-outs. An external runtime's empty list
+   * throws `ModelListUnavailableError`.
+   */
+  async runtimeModelSelectionCatalog(
+    runtimeKind?: string | null,
+    workspaceRootPath?: string,
+    options: Readonly<{ deadline?: ReadDeadline }> = {},
+  ): Promise<RuntimeModelSelectionCatalog> {
     const runtime = normalizeRuntime(runtimeKind);
-    if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.selectionCatalog();
+    const catalog = await this.readRuntimeCatalog(runtime, workspaceRootPath, options);
+    if (runtime !== RuntimeKind.AUTOBYTEUS && catalog.offeredModels.length === 0) {
+      throw new ModelListUnavailableError(runtime);
+    }
+    return catalog;
+  }
+
+  private async readRuntimeCatalog(
+    runtime: RuntimeKind,
+    workspaceRootPath: string | undefined,
+    options: Readonly<{ deadline?: ReadDeadline }>,
+  ): Promise<RuntimeModelSelectionCatalog> {
+    if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.selectionCatalog(options);
     const models = runtime === RuntimeKind.CODEX_APP_SERVER
-      ? await this.codexModelCatalog.listModels(workspaceRootPath)
+      ? await this.codexModelCatalog.listModels(workspaceRootPath, options)
       : runtime === RuntimeKind.ANTIGRAVITY_CLI
-        ? await this.antigravityModelCatalog.listModels()
+        ? await this.antigravityModelCatalog.listModels(options)
         : runtime === RuntimeKind.GROK_BUILD
-          ? await this.grokBuildModelCatalog.listModels()
+          ? await this.grokBuildModelCatalog.listModels(options)
+          : runtime === RuntimeKind.DEEPSEEK_HARNESS
+          ? await this.deepSeekHarnessModelCatalog.listModels(options)
           : runtime === RuntimeKind.AUTOBYTEUS
             ? await LLMFactory.listAvailableModels()
             : (() => { throw new Error(`Unsupported runtime: ${runtime}`); })();
@@ -206,7 +244,6 @@ export class ModelCatalogService {
     if (provider.id === LLMProvider.OLLAMA) {
       return this.lifecycle.ensure({
         key,
-        modelKind: 'LLM',
         fingerprint: `ollama|${OllamaModelProvider.getHosts().join(',')}`,
         currentModelCount: () => this.llmSourceCount(key),
         prepare: async () => {
@@ -227,7 +264,6 @@ export class ModelCatalogService {
     if (provider.id === LLMProvider.LMSTUDIO) {
       return this.lifecycle.ensure({
         key,
-        modelKind: 'LLM',
         fingerprint: `lmstudio|${LMStudioModelProvider.getHosts().join(',')}`,
         currentModelCount: () => this.llmSourceCount(key),
         prepare: async () => {
@@ -254,7 +290,6 @@ export class ModelCatalogService {
     const key = sourceKey(endpoint.id, 'LLM');
     return {
       key,
-      modelKind: 'LLM',
       fingerprint: `${endpoint.id}|${endpoint.baseUrl}`,
       currentModelCount: () => this.llmSourceCount(key),
       prepare: async () => {
@@ -283,7 +318,7 @@ export class ModelCatalogService {
     const videoModels = VideoClientFactory.listModels()
       .filter((model) => String(model.provider) === provider.id);
     const sourceStatuses = dynamic
-      ? [this.lifecycle.status(llmKey, 'LLM', llmModels.length)]
+      ? [this.lifecycle.status(llmKey, llmModels.length)]
       : [];
     return {
       runtimeKind: runtime,

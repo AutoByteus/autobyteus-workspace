@@ -1,0 +1,45 @@
+# Memory search quality check (R-016)
+
+Runs a known-answer question file against the memory index built from an **isolated copy** of a memory
+folder, and reports:
+
+- **gate 1**: the right run in the top 10 within at most 3 searches (the question, then up to two
+  `rephrasings`); `oneSearchTop10` is the one-search proxy;
+- **gate 2** (questions that pass gate 1): #1, top 3 (and its share), MRR, p90 and max latency of the first
+  search;
+- **meaning pointers**: how many meaning matches each pointer rule resolved (same file's text chunk, best card
+  part, first request), and how many had an empty snippet (should be 0);
+- **unmasked secrets**: snippets in which a secret pattern is still visible (should be 0);
+- **text matches**: shown text matches over every search, and those naming no query word (`withoutWords`, should
+  be 0: a text match names the words the index matched, by the index's own rule);
+- **words not found** (AC-007): every question's `wordsNotFound` against an independent census of the
+  journals (read from the journal files, tokenized as the text index's `unicode61` does; a term of several
+  tokens counts only as those tokens in a row): `mismatches` lists named words that occur and absent words that
+  are not named; `offTopicUnnamed` lists off-topic questions (`kind: offTopic`) that name no word. With no mismatch,
+  such a question's words all occur somewhere in memory (the asking run's journal counts, as in a search), so the
+  question needs a key word that occurs nowhere. Off-topic questions' key words should be single tokens.
+
+A transformation is added or changed only if gate 1 stays at 100% and gate 2 does not get worse.
+
+```sh
+pnpm -C autobyteus-server-ts build
+cp -R ~/.autobyteus/memory /tmp/memory-copy        # never point the command at ~/.autobyteus itself
+node autobyteus-server-ts/scripts/evaluate-memory-search.mjs \
+  --memory-dir /tmp/memory-copy --index-dir /tmp/memory-index \
+  --questions /path/to/questions.json --build --out /tmp/memory-eval.json
+```
+
+- `--build` runs a full indexing pass first (it writes Work Journals into the copy and the index into
+  `--index-dir`); without it, an index built before is reused.
+- `--model` chooses the embedding model (catalog id; default: the default model). The model downloads into
+  `--index-dir/embeddings` the first time.
+- The question file is a JSON array: `{"id": "Q01", "q": "…", "kind": "…", "accept": ["<run id>", …], "rephrasings": ["…"]}`.
+  Any accepted run answers the question; an accepted entry may be a prefix of the run ID. `kind` is
+  `answerable`, `offTopic` (`accept: []`; verify by count that its key words occur in no run) or `partial`;
+  without it, a question with accepted runs is answerable and one without is off-topic.
+- Before measuring, the command waits until a search answers by meaning too (after a start the first search
+  loads the Meaning index's job).
+- `--asking-run <run id>` searches as that run, which leaves its own results out, as for an agent searching.
+  Use it for the run that wrote the question file: its journal quotes every question, so it would otherwise be
+  the top text match for all of them.
+- A user's own question file stays private; the repository keeps only this format.

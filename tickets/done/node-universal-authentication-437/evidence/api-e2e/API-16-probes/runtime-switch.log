@@ -1,0 +1,5 @@
+# API-16 runtime-switch: node tests/e2e/runtime-switch-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/runtime-switch
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:12:55Z
+  · the native agent answered in the chat
+  · the runtime menu of the stopped run offers the other agent runtimes
+RSW-01 Fail — no runtime-change hint after choosing another runtime

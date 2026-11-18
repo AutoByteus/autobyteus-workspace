@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import { CollaboratorLaunchResolver } from "../../../../src/agent-collaboration/collaborators/collaborator-launch-resolver.js";
+import { LaunchUsabilityCheck } from "../../../../src/launch-preferences/launch-usability-check.js";
+import { NO_MODEL_ROUTING } from "../../../../src/model-routing/domain/model-routing-types.js";
+
+/** Model Routing off (these tests are today's order): the work is not read, so any stands in. */
+const WORK = { text: "Do it", task: { taskId: "task-1", taskKey: null, projectId: null, title: "Do it" } };
+const plansOnly = (resolver: CollaboratorLaunchResolver) => ({
+  resolve: async (plans: readonly CollaboratorDefinitionPlan[], base: Parameters<CollaboratorLaunchResolver["resolve"]>[1]) =>
+    (await resolver.resolve(plans, base, WORK)).plans,
+});
 import type { CollaboratorDefinitionPlan } from "../../../../src/agent-collaboration/collaborators/collaborator-entry-builder.js";
 import type { DefaultLaunchConfig } from "../../../../src/launch-preferences/default-launch-config.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
@@ -39,7 +48,7 @@ const teamPlan = (
   teamDefault, ...identity,
 });
 
-type Verdict = "valid" | "model_unavailable" | "invalid" | "schema_unavailable";
+type Verdict = "valid" | "model_unavailable" | "model_list_unavailable" | "invalid" | "schema_unavailable";
 const setup = (options: {
   unavailable?: Partial<Record<string, string>>;
   verdict?: (runtimeKind: string, model: string) => Verdict;
@@ -50,15 +59,15 @@ const setup = (options: {
       return { runtimeKind, enabled: !reason, reason: reason ?? null };
     }),
   };
-  const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string }; selection: { llmModelIdentifier: string } }[]) =>
+  const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string }; selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>
     inputs.map(({ context, selection }) => {
       const kind = options.verdict?.(context.runtimeKind, selection.llmModelIdentifier) ?? "valid";
-      return kind === "valid" ? { kind, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } }
+      return kind === "valid" ? { kind, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }
         : kind === "invalid" ? { kind, errors: [{ path: "effort", message: "effort must be one of low, high" }] }
           : { kind };
     }));
   const validator = { validate: vi.fn(), validateMany } as unknown as RunModelSelectionValidator;
-  return { availability, validateMany, resolver: new CollaboratorLaunchResolver({ availability, validator }) };
+  return { availability, validateMany, resolver: plansOnly(new CollaboratorLaunchResolver({ usability: new LaunchUsabilityCheck({ availability, validator }), router: NO_MODEL_ROUTING })) };
 };
 
 describe("CollaboratorLaunchResolver", () => {
@@ -123,11 +132,30 @@ describe("CollaboratorLaunchResolver", () => {
     });
     expect(fallbacks).toEqual([
       [{ layer: "agent_default", runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "runtime_unavailable", detail: "Grok Build CLI 'grok' is not available." }],
-      [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "missing", reason: "model_unavailable", detail: "The model 'missing' is not available on codex_app_server." }],
+      [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "missing", reason: "model_unavailable", detail: "'missing' is not offered by Codex App Server now. Refresh the model list and choose again." }],
       [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "bad-settings", reason: "model_settings_invalid", detail: "Its model settings are invalid: effort must be one of low, high" }],
       [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: null, reason: "incomplete", detail: "It names no model." }],
       [{ layer: "agent_default", runtimeKind: null, llmModelIdentifier: "sol-6.1", reason: "incomplete", detail: "It names no runtime." }],
     ]);
+  });
+
+  it("DEC-D1: an unreadable model list is recorded with the stored reason model_unavailable and a detail that says the list could not be read, with the runtime's diagnostic", async () => {
+    const availability = { getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({ runtimeKind, enabled: true, reason: null })) };
+    const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string }; selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>
+      inputs.map(({ context, selection }) => context.runtimeKind === RuntimeKind.GROK_BUILD
+        ? { kind: "model_list_unavailable" as const,
+          catalogDiagnostic: { code: "GROK_MODEL_DISCOVERY_TIMEOUT", message: "Grok Build model discovery timed out; check the CLI and retry." } }
+        : { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }));
+    const validator = { validate: vi.fn(), validateMany } as unknown as RunModelSelectionValidator;
+    const resolver = plansOnly(new CollaboratorLaunchResolver({ usability: new LaunchUsabilityCheck({ availability, validator }), router: NO_MODEL_ROUTING }));
+    const [plan] = await resolver.resolve([teamPlan({
+      reviewer: { runtimeKind: RuntimeKind.GROK_BUILD, llmModelIdentifier: "grok-4", llmConfig: null },
+    })], inheritedBase);
+    if (plan!.kind !== "agent_team") throw new Error("team plan expected");
+    expect(plan!.members[0]!.launchSource!.fallbacks).toEqual([{
+      layer: "agent_default", runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "model_unavailable",
+      detail: "The model list of Grok Build could not be read: Grok Build model discovery timed out; check the CLI and retry. Try again.",
+    }]);
   });
 
   it("AC-005: an unusable Team default falls back to the root for the Team and its members, recorded on the Team", async () => {
@@ -151,9 +179,9 @@ describe("CollaboratorLaunchResolver", () => {
   it("AC-006: when an agent has no usable layer, the plan fails with today's message and names the definition", async () => {
     const { resolver } = setup({ verdict: (runtimeKind) => runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "model_unavailable" : "valid" });
     await expect(resolver.resolve([agentPlan(null, "Code Reviewer")], inheritedBase))
-      .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer", reason: "The model 'opus' is not available on claude_agent_sdk." });
+      .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer", reason: "'opus' is not offered by Claude Agent SDK now. Refresh the model list and choose again." });
     await expect(resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null })], inheritedBase))
-      .rejects.toMatchObject({ collaboratorName: "Software Engineering Team", reason: "The model 'opus' is not available on claude_agent_sdk." });
+      .rejects.toMatchObject({ collaboratorName: "Software Engineering Team", reason: "'opus' is not offered by Claude Agent SDK now. Refresh the model list and choose again." });
     const schema = setup({ verdict: () => "schema_unavailable" });
     await expect(schema.resolver.resolve([agentPlan(null)], inheritedBase)).rejects.toMatchObject({ reason: "The settings of model 'opus' could not be checked." });
     const invalid = setup({ verdict: () => "invalid" });
@@ -198,7 +226,7 @@ describe("CollaboratorLaunchResolver", () => {
     availability.getRuntimeAvailability.mockRejectedValueOnce(new Error("probe crashed"));
     const [plan] = await resolver.resolve([agentPlan(sol())], inheritedBase);
     expect(plan).toMatchObject({ launchConfiguration: root, launchSource: { origin: "inherited", fallbacks: [
-      { reason: "runtime_unavailable", detail: "Runtime 'codex_app_server' could not be checked: probe crashed" },
+      { reason: "runtime_unavailable", detail: "Codex App Server could not be checked: probe crashed" },
     ] } });
   });
 });

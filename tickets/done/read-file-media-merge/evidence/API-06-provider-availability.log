@@ -1,0 +1,7 @@
+# API-06/08/09/10 provider availability probes (one strict small call each through the autobyteus-ts live tests; test vault), 2026-10-29T21:30:01Z
+## Anthropic (tests/integration/llm/api/anthropic-llm.test.ts -t 'should successfully make a simple completion call', AUTOBYTEUS_LIVE_STRICT=1)
+     × should successfully make a simple completion call 342ms
+Error: Error in Anthropic API: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"You have reached your specified API usage limits. You will regain access on 2026-11-01 at 00:00 UTC."},"request_id":"req_011CgXEG52ix96MkstVQF93x"}
+    344|       throw new Error(`Error in Anthropic API: ${e}`);
+## Kimi (from the API-09 receipt): the run's ERROR frame
+{"code":"LLM_PROVIDER_ERROR","message":"429 Your account org-74d1d929c9544732b71d85bafbbffa20 <ak-f9duodcpffni11frduhi> is suspended due to insufficient balance, please recharge your account or check your plan and billing details","provider_status":429,"error_scope":"turn","error_effect":"diagnostic

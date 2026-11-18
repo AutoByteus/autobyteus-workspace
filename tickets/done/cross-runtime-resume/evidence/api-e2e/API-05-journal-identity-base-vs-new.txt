@@ -1,0 +1,34 @@
+# API-05 never-switched runs with archived segments: journal files rendered by the BASE commit a8d7c8756494 and by this branch (60c3ac4ec8), same probe, same synthetic runs
+# probe: /tmp/crr-probe/journal-identity-dump.probe.test.ts copied into tests/agent-work-journal/services of a detached base worktree (node_modules linked) and of this worktree; env -i, DUMP_DIR; date 2026-10-31T08:30:53Z
+# five runtimes x manifest runtime recorded as: value (the RuntimeKind value), null, oldlabel (an unconverted CODEX/CLAUDE/... label); three journal files each (two archived segments + open file)
+# columns: scenario, files compared, verdict, sha256 of file 1 (base)
+
+antigravity-null  1/3 byte-identical  5c437d258ad470d7
+antigravity-oldlabel  1/3 byte-identical  5c437d258ad470d7
+antigravity-value  3/3 byte-identical  5c437d258ad470d7
+autobyteus-null  1/3 byte-identical  d215a81d0cc8d365
+autobyteus-oldlabel  1/3 byte-identical  d215a81d0cc8d365
+autobyteus-value  3/3 byte-identical  d215a81d0cc8d365
+claude-null  1/3 byte-identical  bc2f968b52ff7525
+claude-oldlabel  1/3 byte-identical  bc2f968b52ff7525
+claude-value  3/3 byte-identical  bc2f968b52ff7525
+codex-null  1/3 byte-identical  57a27fbaab96331e
+codex-oldlabel  1/3 byte-identical  57a27fbaab96331e
+codex-value  3/3 byte-identical  57a27fbaab96331e
+grok-null  1/3 byte-identical  c003cf99f4cacb5a
+grok-oldlabel  1/3 byte-identical  c003cf99f4cacb5a
+grok-value  3/3 byte-identical  c003cf99f4cacb5a
+
+## what changes when a segment records no runtime (claude, null): archived file 000001, base vs this branch
+2c2
+< Runtime Claude Agent SDK · file 000001 (closed) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_000001.jsonl
+---
+> Runtime unknown · file 000001 (closed) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_000001.jsonl
+10c10
+< [06:00:09] Command: pytest -q → no result in this file [↗](../raw_traces_000001.jsonl#rt_0009)
+---
+> [06:00:09] Tool: Bash command="pytest -q" → no result in this file [↗](../raw_traces_000001.jsonl#rt_0009)
+13c13
+< [06:00:11] Command: cat -n /work/shipping/fees.py → ok
+---
+> [06:00:11] Tool: Read file_path="/work/shipping/fees.py" → ok

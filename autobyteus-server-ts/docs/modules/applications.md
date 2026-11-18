@@ -108,7 +108,7 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - The standard application-agent target is logical and binding-owned: `{ bindingId, memberAddress: null }` selects the bound Agent or Team root, while a canonical rooted member address selects one configured Team member. Packages and SDKs never use a physical run ID as the public selector; orchestration authorization performs the sole translation to exact runtime identities.
 - Bundles may expose zero or more bundled execution resources. Application backends can also choose shared agents/teams later through `context.agentResources`.
 - Discovery now produces a diagnostic-aware catalog snapshot: valid bundles remain visible while invalid bundles are quarantined with per-application diagnostics instead of aborting the whole catalog refresh.
-- App-scoped reload/reentry can repair one quarantined application and return it to service without restarting unrelated applications. Re-entry preserves `REENTERING` until recovery/dispatch resume finish, then returns the app to `ACTIVE` with the worker still stopped so the next `ensure-ready` path boots a fresh worker.
+- App-scoped reload/reentry can repair one quarantined application and return it to service without restarting unrelated applications. Re-entry preserves `REENTERING` until binding recovery finishes, then returns the app to `ACTIVE` with the worker still stopped (a crashed worker is reset to stopped too), then resumes pending-event dispatch; the next `ensure-ready`, application tool call or pending event boots a fresh worker. An application that is not ready after a catalog change is quarantined with its readiness diagnostics (`Application setup is required: …`), as at startup. See [`application_orchestration.md`](./application_orchestration.md).
 - When a package is removed or temporarily undiscoverable but platform state still exists, persisted-known reconciliation keeps the real canonical `applicationId` under `QUARANTINED` ownership instead of dropping admission ownership or falling back to the hashed storage-key identity.
 
 ## Package Source Presentation
@@ -119,8 +119,14 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
   catalog commit owner. It serializes import, reload, removal, and exact-app
   re-entry; closes and drains affected application-tool calls; stops affected
   workers; stages the target bundle slice and matching application-tool delta;
-  commits those validated in-memory assignments together; and then reconciles,
-  recovers, or quarantines only the affected applications.
+  commits those validated in-memory assignments together; prepares each
+  current application's runtime folder
+  (`<data>/applications/<storageKey>/runtime`, through
+  `ApplicationStorageLifecycleService.ensureRuntimeDirectoryPrepared`), as
+  startup does, before launch readiness runs, so a readiness probe that starts
+  a runtime in that folder (Codex) works for an application imported or
+  reloaded while the server runs; and then reconciles, recovers, or quarantines
+  only the affected applications.
 - Default list rows hide empty platform-owned built-in packages, show non-empty built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
 - Linked local package rows may show the user-chosen root path directly.
 - GitHub-installed package rows use repository identity by default; managed install paths stay in details/debug-only surfaces.

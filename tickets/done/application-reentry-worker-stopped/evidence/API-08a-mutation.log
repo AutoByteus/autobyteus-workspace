@@ -1,0 +1,10 @@
+# API-08 (a) TEMPORARY MUTATION: resumePendingEventsForApplication removed from ApplicationReentryService.recoverParticipants; commit 1103e38619 + uncommitted e2e; 2026-10-25T04:03:52Z
+  RE-01 an ACTIVE application stays usable after a package reload (AC-001) 1365ms
+  RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002) 666ms
+  RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004) 964ms
+  RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001) 1110ms
+  RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002) 31135ms
+   → the dispatch drain started the worker: last value {"applicationId":"<id>","sta
+      Tests  1 failed | 4 passed (5)
+exit=1
+(source restored with git checkout right after the run; git diff of src empty)

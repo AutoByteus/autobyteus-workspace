@@ -1,0 +1,31 @@
+# Case: API-09 step 01
+# Command: cd autobyteus-server-ts/docker && ./docker-start.sh up -p abx402-compose -v abx402 --no-build
+# Setup: compose project abx402-compose; local image tag autobyteus-server:latest-abx402 created by this run from autobyteus/autobyteus-server:1.5.11-beta.7 (variant 'abx402' -> tag latest-abx402); worktree autobyteus-server-ts/docker/{docker-start.sh,docker-compose.yml}
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, Docker Desktop 29.0.1, Docker Compose 2.40.3-desktop.1, LAN IP 192.168.2.158
+# Date: 2026-11-06T15:40:39Z
+
+[2026-11-06 16:40:40] Picking unique ports for new project: abx402-compose
+[2026-11-06 16:40:40] Starting instance: abx402-compose (variant=abx402)
+ Network abx402-compose_default  Creating
+ Network abx402-compose_default  Created
+ Volume abx402-compose_autobyteus-server-chromium-profile  Creating
+ Volume abx402-compose_autobyteus-server-chromium-profile  Created
+ Volume abx402-compose_autobyteus-server-server-packages  Creating
+ Volume abx402-compose_autobyteus-server-server-packages  Created
+ Volume abx402-compose_autobyteus-server-workspace  Creating
+ Volume abx402-compose_autobyteus-server-workspace  Created
+ Volume abx402-compose_autobyteus-server-data  Creating
+ Volume abx402-compose_autobyteus-server-data  Created
+ Volume abx402-compose_autobyteus-server-root-home  Creating
+ Volume abx402-compose_autobyteus-server-root-home  Created
+ Container abx402-compose-autobyteus-server-1  Creating
+ Container abx402-compose-autobyteus-server-1  Created
+ Container abx402-compose-autobyteus-server-1  Starting
+ Container abx402-compose-autobyteus-server-1  Started
+[2026-11-06 16:40:41] Instance abx402-compose is up.
+Endpoints:
+  Backend: http://localhost:59111
+  GraphQL: http://localhost:59111/graphql
+  VNC Viewer: localhost:59112 (this computer only)
+exit=0

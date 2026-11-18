@@ -1,0 +1,17 @@
+# API-02 cause of MSP-12's unexpected errors: temporary logging in the probe's route handler (removed, never committed)
+# command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/pnnp-e2e/msp-diag1 --cases=MSP-12 (probe with [DIAG-433] console.log in the route catch and around timing.context.close())
+# commit: 8f87b1ef49 + temporary diagnostic
+# env: macOS 26.5.2, Node v22.23.1, headless Chrome (probe-owned stack)
+# date: 2026-11-08T07:09:53Z
+
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/pnnp-e2e/msp-diag1 --cases=MSP-12
+[mobile-shell] MSP-12 …
+[DIAG-433] timing context close at 1794121897710
+[DIAG-433] fetch failed label=phone-timing case=MSP-12 op=GetTaskWorkerTasks url=http://192.168.77.10:59749/graphql started=1794121897682 failed=1794121897713 error=route.fetch: Target page, context or browser has been closed
+[DIAG-433] fetch failed label=phone-timing case=MSP-12 op=GetRunProjection url=http://192.168.77.10:59749/graphql started=1794121897697 failed=1794121897713 error=route.fetch: Target page, context or browser has been closed
+[DIAG-433] fetch failed label=phone-timing case=MSP-12 op=GetAgentRunResumeConfig url=http://192.168.77.10:59749/graphql started=1794121897697 failed=1794121897713 error=route.fetch: Target page, context or browser has been closed
+[DIAG-433] fetch failed label=phone-timing case=MSP-12 op=GetRunFileChanges url=http://192.168.77.10:59749/graphql started=1794121897698 failed=1794121897713 error=route.fetch: Target page, context or browser has been closed
+[DIAG-433] fetch failed label=phone-timing case=MSP-12 op=GetTaskWorkerTasks url=http://192.168.77.10:59749/graphql started=1794121897709 failed=1794121897718 error=route.fetch: Target page, context or browser has been closed
+[DIAG-433] timing context closed at 1794121897727
+[mobile-shell] MSP-12 Pass
+mobile-shell probe: Pass

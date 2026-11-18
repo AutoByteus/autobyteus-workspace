@@ -77,8 +77,8 @@ export class ProjectTaskSearchService implements ProjectTaskSearchCleanup, Proje
     if (!text) throw new ProjectError("TASK_SEARCH_QUERY_REQUIRED", "Search text is required.");
     const tasks = await this.deps.listTasks(projectId);
     const needle = text.toLocaleLowerCase();
-    // Exact: the description or one of the comments contains the query (meaning items stay descriptions).
-    const exact = tasks.filter((task) => [task.description, ...task.comments.map((comment) => comment.text)].some((text) => text.toLocaleLowerCase().includes(needle)));
+    // Exact: the title, the description or one of the comments contains the query (meaning items stay descriptions).
+    const exact = tasks.filter((task) => [task.title, task.description, ...task.comments.map((comment) => comment.text)].some((text) => text.toLocaleLowerCase().includes(needle)));
     const meaning = await this.meaningSearch(projectId, tasks, text, exact, options.waitForReadyMs ?? 0);
     const byId = new Map(tasks.map((task) => [task.taskId, task]));
     const exactIds = new Set(exact.map((task) => task.taskId));

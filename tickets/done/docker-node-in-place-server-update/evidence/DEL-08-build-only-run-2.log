@@ -1,0 +1,9 @@
+# DEL-08 build-only desktop release run 41124044082 on personal f6a5c85175 (macos-15), 2026-10-30T20:59:23Z
+conclusion: success
+Resolve Release Metadata | success | 2026-10-30T20:32:38Z -> 2026-10-30T20:33:37Z
+Build Linux x64 | success | 2026-10-30T20:33:39Z -> 2026-10-30T20:40:21Z
+Build macOS Intel x64 | success | 2026-10-30T20:33:39Z -> 2026-10-30T20:57:09Z
+Build macOS ARM64 | success | 2026-10-30T20:33:39Z -> 2026-10-30T20:58:35Z
+Build Linux ARM64 | success | 2026-10-30T20:33:41Z -> 2026-10-30T20:39:13Z
+Build Windows x64 | success | 2026-10-30T20:33:39Z -> 2026-10-30T20:49:15Z
+Publish GitHub Release | skipped | 2026-10-30T20:58:35Z -> 2026-10-30T20:58:35Z

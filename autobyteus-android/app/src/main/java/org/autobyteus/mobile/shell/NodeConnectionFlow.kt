@@ -1,0 +1,163 @@
+package org.autobyteus.mobile.shell
+
+import org.autobyteus.mobile.connection.CantReachReason
+import org.autobyteus.mobile.connection.ConnectionDiagnosticMapper
+import org.autobyteus.mobile.connection.ConnectionValidationResult
+import org.autobyteus.mobile.connection.NodeEntries
+import org.autobyteus.mobile.connection.NodeStatusCheck
+import org.autobyteus.mobile.connection.SavedNodeEntry
+import java.util.concurrent.Executor
+
+/** How a connection started (the design's Android entry-form table). */
+enum class EntryForm { Scan, Paste, Shared }
+
+/**
+ * The connect sequence (DS-004): parse → check the address answers → open the node's page; the entry is saved under
+ * its QR name only when the page reports a successful pairing, so a failed code leaves nothing behind. Saved entries
+ * (app start, a row, a Switch node pick) skip parsing and saving. If nothing answers, it says why in plain words.
+ */
+class NodeConnectionFlow(
+    private val entries: NodeEntries,
+    private val statusCheck: NodeStatusCheck,
+    private val resolver: ConnectionInputResolver,
+    private val background: Executor,
+    private val mainThread: Executor,
+    private val screens: Screens,
+    private val clock: () -> Long = System::currentTimeMillis,
+) {
+    /** The activity's screens, as the flow drives them. */
+    interface Screens {
+        fun showConnecting(nodeName: String)
+        fun showCantReach(nodeName: String, reason: CantReachReason)
+        fun showTypeAddress(prefill: String)
+        fun openPage(entry: SavedNodeEntry, url: String, pairing: Boolean)
+    }
+
+    private data class Attempt(val entry: SavedNodeEntry, val url: String, val save: Save)
+
+    private enum class Save { OnPaired, OnReachable, AlreadySaved }
+
+    private var attempt: Attempt? = null
+    /** The pairing link whose page is open (its entry and the link's URL); its entry is saved when the page reports paired. */
+    private var pendingPairing: Attempt? = null
+    /** The saved entry whose page is open (a saved node, or a typed address that answered); `null` for a pairing link. */
+    private var openEntry: SavedNodeEntry? = null
+    private var generation = 0
+
+    /** A scanned, pasted or shared text: a pairing link connects at once (REQ-010, DEC-023). */
+    fun connect(text: String, form: EntryForm) {
+        val resolution = resolver.resolvePairingLink(text)
+        if (resolution == null) {
+            if (form == EntryForm.Scan) {
+                screens.showCantReach(nodeName = "", reason = CantReachReason.NotAnAutoByteusCode)
+            } else {
+                screens.showTypeAddress(prefill = text.trim())
+            }
+            return
+        }
+        run(Attempt(resolution.entry, resolution.webViewUrl, Save.OnPaired))
+    }
+
+    /** "Type an address": a plain address, saved when it answers; plain `http://` needs the sheet's tick. */
+    fun connectTyped(address: String, httpAcknowledged: Boolean) {
+        when (val resolution = resolver.resolveTypedAddress(address, httpAcknowledged)) {
+            is ConnectionInputResolution.Success -> run(Attempt(resolution.entry, resolution.webViewUrl, Save.OnReachable))
+            // "Can't connect": the typed text is not repeated (autobyteus-433 REQ-004); the sheet still holds it.
+            is ConnectionInputResolution.Failure -> screens.showCantReach(
+                nodeName = "",
+                reason = ConnectionDiagnosticMapper.cantReachReasonFor(resolution.diagnostic),
+            )
+        }
+    }
+
+    /**
+     * A saved node: the last used one at app start, a row tap, or a Switch node pick; [pageUrl] is the page that was
+     * open before Android ended the process (its start page otherwise).
+     */
+    fun open(entry: SavedNodeEntry, pageUrl: String = entry.mobileUrl) {
+        run(Attempt(entry, pageUrl, Save.AlreadySaved))
+    }
+
+    fun retry() {
+        attempt?.let(::run)
+    }
+
+    /**
+     * What the open page's overlay Retry loads (autobyteus-435 REQ-008): while [entry]'s pairing link has not reported
+     * "paired", the pairing link again (its one-time code is exchanged by the page's script, so a page that never loaded
+     * did not use it); after pairing, or for a saved node, the node's page. The pairing link is held here only, never saved.
+     */
+    fun retryUrlFor(entry: SavedNodeEntry): String =
+        pendingPairing?.takeIf { it.entry.id == entry.id }?.url ?: entry.mobileUrl
+
+    /** Cancel on the Connecting screen: a late answer is dropped. */
+    fun cancel() {
+        generation += 1
+        attempt = null
+    }
+
+    /**
+     * The page reports the code was exchanged (bridge `paired`): a pairing link's node is saved under its QR name
+     * (REQ-011); an open saved node with no name takes the page's QR name (autobyteus-433 REQ-005). The page's name is
+     * used only for an entry with no known name: a named node is never renamed by its page.
+     */
+    fun onPaired(pageNodeName: String) {
+        val pending = pendingPairing?.entry
+        pendingPairing = null
+        val entry = pending ?: openEntry?.takeIf { it.knownName == null } ?: return
+        val pageName = pageNodeName.trim()
+        val takesPageName = entry.knownName == null && pageName.isNotEmpty()
+        if (pending == null && !takesPageName) return
+        val saved = entry.copy(
+            displayName = if (takesPageName) pageName else entry.displayName,
+            updatedAtEpochMillis = clock(),
+        )
+        entries.saveEntry(saved)
+        openEntry = saved
+    }
+
+    /** The page with a pairing link was left without pairing (back to the list, Scan again). */
+    fun abandonPendingPairing() {
+        pendingPairing = null
+    }
+
+    private fun run(next: Attempt) {
+        attempt = next
+        val current = ++generation
+        screens.showConnecting(next.entry.shownName)
+        background.execute {
+            val result = statusCheck.validate(next.entry)
+            mainThread.execute {
+                if (current != generation) return@execute
+                when (result) {
+                    is ConnectionValidationResult.Reachable -> opened(next)
+                    is ConnectionValidationResult.Failed -> screens.showCantReach(
+                        nodeName = next.entry.shownName,
+                        reason = ConnectionDiagnosticMapper.cantReachReasonFor(result.diagnostic),
+                    )
+                }
+            }
+        }
+    }
+
+    private fun opened(reached: Attempt) {
+        val now = clock()
+        when (reached.save) {
+            Save.OnPaired -> {
+                pendingPairing = reached
+                openEntry = null
+            }
+            Save.OnReachable -> {
+                val saved = reached.entry.copy(updatedAtEpochMillis = now)
+                entries.saveEntry(saved)
+                openEntry = saved
+            }
+            Save.AlreadySaved -> {
+                pendingPairing = null
+                entries.selectEntry(reached.entry.id)
+                openEntry = reached.entry
+            }
+        }
+        screens.openPage(reached.entry, reached.url, pairing = reached.save == Save.OnPaired)
+    }
+}

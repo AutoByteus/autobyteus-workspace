@@ -1,0 +1,205 @@
+# API-03B server stuck-relaunch-new (new build) pid 88831; data root <temp>/stuck-new; 2026-10-31T20:34:08.243Z
+[12.59] Platform detection: Windows=false
+[12.59] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts
+[12.59] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new
+[12.59] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/.env
+[12.59] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/.env
+[12.59] ◇ injected env (0) from ../../../ar349-ac004-csu0sj/stuck-new/.env // tip: ⌘ suppress logs { quiet: true }
+[12.59] Environment variables loaded successfully
+[12.59] Server public base URL configured to: http://127.0.0.1:52855
+[12.59] === Starting logging configuration ===
+[12.59] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts/logging_config.ini
+[12.59] ============================================================
+[12.59] SERVER PUBLIC URL: http://127.0.0.1:52855
+[12.59] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts
+[12.59] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new
+[12.59] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/db
+[12.59] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/logs
+[12.59] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/download
+[12.59] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/memory
+[12.59] ============================================================
+[13.53] AgentFactory (Singleton) initialized.
+[13.68] Running Prisma migrations...
+[13.69] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[13.88] Prisma schema loaded from prisma/schema.prisma
+[13.88] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/db/test.db"
+[13.91] SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/db/test.db
+[13.92] 27 migrations found in prisma/migrations
+
+[13.92] Applying migration `20260203074245_init`
+[13.93] Applying migration `20260208094000_add_external_channel_tables`
+[13.93] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[13.93] Applying migration `20260209213000_remove_agent_conversation_tables`
+[13.93] Applying migration `20260210101500_add_agent_avatar`
+[13.94] Applying migration `20260210192000_add_agent_team_avatar`
+[13.94] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[13.94] Applying migration `20260212070000_remove_workflow_definition`
+[13.94] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[13.95] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[13.95] Applying migration `20260331102000_remove_channel_bindings_table`
+[13.95] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[13.95] Applying migration `20260517090000_add_app_data_migration_records`
+[13.95] Applying migration `20260624090000_add_token_usage_ledger_events`
+[13.96] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[13.96] Applying migration `20260629120000_add_token_usage_display_fields`
+[13.96] Applying migration `20260702093000_token_usage_execution_address`
+[13.96] Applying migration `20260726090000_add_secret_vault`
+[13.97] Applying migration `20260730090000_add_token_usage_provider_name`
+[13.97] Applying migration `20260801090000_token_usage_member_display_name`
+[13.97] Applying migration `20260814090000_team_run_execution_tree_v1`
+[13.97] Applying migration `20260819090000_add_token_usage_run_records`
+[13.97] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[13.97] Applying migration `20260822090000_add_token_usage_analytics`
+[13.98] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[13.98] Applying migration `20260924120000_remove_external_channel_tables`
+[13.98] Applying migration `20261009120000_token_meter_context_readings`
+
+[13.98] The following migration(s) have been applied:
+[13.98] migrations/
+[13.98]   └─ 20260203074245_init/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260208094000_add_external_channel_tables/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260209213000_remove_agent_conversation_tables/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260210101500_add_agent_avatar/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260210192000_add_agent_team_avatar/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260212070000_remove_workflow_definition/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260309103000_add_channel_binding_launch_preset/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260331102000_remove_channel_bindings_table/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260517090000_add_app_data_migration_records/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260624090000_add_token_usage_ledger_events/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260629120000_add_token_usage_display_fields/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260702093000_token_usage_execution_address/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260726090000_add_secret_vault/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260730090000_add_token_usage_provider_name/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260801090000_token_usage_member_display_name/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260814090000_team_run_execution_tree_v1/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260819090000_add_token_usage_run_records/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260820090000_redesign_app_data_migration_summary/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260822090000_add_token_usage_analytics/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260923130000_add_claude_sdk_usage_state/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20260924120000_remove_external_channel_tables/
+[13.98]     └─ migration.sql
+[13.98]   └─ 20261009120000_token_meter_context_readings/
+[13.98]     └─ migration.sql
+[13.98]       
+[13.98] All migrations have been successfully applied.
+[14.00] Database migrations completed successfully.
+[14.00] (node:88831) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[14.00] (Use `node --trace-warnings ...` to show where the warning was created)
+[14.01] prisma:info Starting a sqlite pool with 21 connections.
+[14.03] [2026-10-31T20:34:22.270Z] [INFO] [secret-management.vault] Secret vault: application database
+[14.18] Initialized server settings service with 33 predefined settings
+[14.21] AgentRunManager initialized.
+[14.21] AgentRunManager initialized.
+[14.29] Loading workspace packages to trigger registration...
+[14.29] Successfully loaded workspace packages.
+[14.29] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/temp_workspace
+[14.29] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/temp_workspace.
+[14.29] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj/stuck-new/temp_workspace with fixed ID 'temp_ws_default'
+[14.29] Temp workspace created and cached with ID: temp_ws_default
+[14.29] Registering agent customization processors...
+[14.29] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[14.29] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[14.29] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[14.29] Registered input processor 'UserInputContextBuildingProcessor'.
+[14.29] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[14.29] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[14.29] Agent customization processor registration complete.
+[14.29] Successfully registered tool definition: 'read_file'
+[14.29] Successfully registered tool definition: 'write_file'
+[14.29] Successfully registered tool definition: 'edit_file'
+[14.29] Successfully registered tool definition: 'run_bash'
+[14.29] Successfully registered tool definition: 'start_background_process'
+[14.29] Successfully registered tool definition: 'get_background_processes'
+[14.29] Successfully registered tool definition: 'get_process_output'
+[14.29] Successfully registered tool definition: 'stop_background_process'
+[14.29] Successfully registered tool definition: 'search_web'
+[14.29] Successfully registered tool definition: 'download_media'
+[14.29] Successfully registered tool definition: 'read_url'
+[14.29] Registered required tool unit: Core Tools
+[14.30] Successfully registered tool definition: 'get_project_task'
+[14.30] Successfully registered tool definition: 'list_projects'
+[14.30] Successfully registered tool definition: 'list_project_tasks'
+[14.30] Successfully registered tool definition: 'search_project_tasks'
+[14.30] Successfully registered tool definition: 'create_project'
+[14.30] Successfully registered tool definition: 'update_project'
+[14.30] Successfully registered tool definition: 'create_task'
+[14.30] Successfully registered tool definition: 'update_task'
+[14.30] Successfully registered tool definition: 'delegate_task'
+[14.30] Successfully registered tool definition: 'generate_image'
+[14.30] Successfully registered tool definition: 'edit_image'
+[14.30] Successfully registered tool definition: 'generate_speech'
+[14.30] Successfully registered tool definition: 'generate_video'
+[14.30] Registered required tool unit: Project Task Tools
+[14.30] Registered required tool unit: Task Delegation Tools
+[14.30] Registered required tool unit: Media Tools
+[14.30] Successfully registered tool definition: 'list_available_agents'
+[14.30] Successfully registered tool definition: 'list_peer_nodes'
+[14.30] Registered required tool unit: Agent Discovery Tools
+[14.31] Successfully registered tool definition: 'list_available_agent_runtimes'
+[14.31] Successfully registered tool definition: 'submit_launch_choices'
+[14.31] Registered required tool unit: Agent Runtime Tools
+[14.31] Registered required tool unit: Browser Tools
+[14.31] Successfully registered tool definition: 'publish_artifacts'
+[14.31] Registered required tool unit: Published Artifact Tools
+[14.31] Successfully registered tool definition: 'search_memory'
+[14.31] Registered required tool unit: Memory Tools
+[14.31] Successfully registered tool definition: 'send_message_to'
+[14.31] Successfully registered tool definition: 'get_handoff_rules'
+[14.31] Registered required tool unit: Agent Communication Tools
+[14.31] Overwriting existing tool definition for name: 'search_web'
+[14.31] Successfully registered tool definition: 'search_web'
+[14.31] Registered required tool unit: Search Tools
+[14.32] {"level":30,"time":1793478862564,"pid":88831,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52876"}
+[14.35] {"level":30,"time":1793478862589,"pid":88831,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52855"}
+[14.35] {"level":30,"time":1793478862589,"pid":88831,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:52855"}
+[14.35] {"level":30,"time":1793478862589,"pid":88831,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:52855"}
+[14.35] [2026-10-31T20:34:22.589Z] [INFO] [server.runtime] Server listening on 0.0.0.0:52855
+[14.35] Scheduling Studio-only non-critical startup tasks...
+[14.35] Background cache pre-loading process has started.
+[14.35] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[14.35] Populating MCP server config cache for the first time...
+[14.35] Running MCP tool registration background task...
+[14.35] Loading and registering all MCP server configurations from file...
+[14.36] Background task 'Memory Sync Worker' completed successfully.
+[14.36] Background task 'Memory Search' completed successfully.
+[14.36] MCP server config cache populated with 0 items.
+[14.36] Found 0 total MCP server configs.
+[14.36] Synchronized cached configurations with the core MCP config service.
+[14.36] Pre-loaded 0 MCP server configs into cache.
+[14.36] Finished loading and registering all MCP server configurations.
+[14.36] Background task 'MCP Tool Registration' completed successfully.
+[14.36] Pre-loaded 33 LLM models into cache.
+[14.36] Pre-loaded 7 image models into cache.
+[14.36] Pre-loaded 3 audio models into cache.
+[14.36] Background application cache pre-loading completed.
+[14.36] Background task 'Cache Pre-loading' completed successfully.

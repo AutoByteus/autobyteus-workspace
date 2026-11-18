@@ -1,0 +1,25 @@
+# DEL-05 integrated-state container start and real-GitHub-source check (step 3), 2026-10-30T20:11:07Z, HEAD f0b2b43dbc
+#46 28.80 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 62 migrations
+build exit 0
+image: sha256:fd2092ec601783b622a7df8100620ba6d674236f3f34943871fefe6d3c24b10f arm64
+health after 4x2s: {"status":"ok","message":"Server is running"}
+public key in image equals committed pem: yes
+sh: 1: Syntax error: "(" unexpected
+release source override in env: 
+dataMigrations includes the base's new migration: 1
+cli status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":103,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+C1: {"inPlaceUpdate":"available","version":"1.5.11-beta.5","target":{"version":"1.5.11-beta.6","relation":"newer"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+## update --track beta (reads the real GitHub releases; newest beta is 1.5.11-beta.5 = built-in, so NOT_NEWER expected)
+{"refused":"NOT_NEWER","message":"This node runs 1.5.11-beta.5; 1.5.11-beta.5 is not newer."}
+exit 2
+## update --version 1.5.11-beta.5 (equal to the running version)
+{"refused":"NOT_NEWER","message":"This node runs 1.5.11-beta.5; 1.5.11-beta.5 is not newer."}
+exit 2
+## update --version 1.5.11-beta.99 (no such GitHub release: NO_PACKAGE_FOR_VERSION expected, nothing changes)
+{"accepted":true,"version":"1.5.11-beta.99"}
+exit 0
+status after: {"version":"1.5.11-beta.5","state":"running","server":{"pid":103,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"refused","targetVersion":"1.5.11-beta.99","step":"checking","code":"NO_PACKAGE_FOR_VERSION","message":"No server package was published for 1.5.11-beta.99 (linux-arm64): autobyteus-server-1.5.11-beta.99-linux-arm64.json is missing from the release.","startedAt":"2026-10-30T20:11:15.270Z","finishedAt":"2026-10-30T20:11:15.495Z","requestedFrom":"host command"}}
+server pid unchanged check: autobyteus_server                RUNNING   pid 47, uptime 0:00:14
+cleanup: container and volume removed
+# note: the 'release source override' line hit a quoting error in my sh -c (the parentheses); its value printed empty, i.e. AUTOBYTEUS_SERVER_PACKAGE_SOURCE is unset and the starter used its production GitHub source, as the --track beta answer (newest GitHub beta 1.5.11-beta.5) and the NO_PACKAGE_FOR_VERSION message for 1.5.11-beta.99 show.
+# note: server pid 103 (cli status) before and after the three update requests: unchanged.

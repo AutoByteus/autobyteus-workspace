@@ -1,0 +1,17 @@
+# Case: API-E01 rerun: ad-hoc-task-delegation (temporary Tasks, closure, stored reads)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  3 passed (3)'
+
+## adhoc-run2.log
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 11019ms
+     ✓ standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete  3860ms
+     ✓ Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)  3354ms
+     ✓ Agent Org root: same journey through the Org stream  3422ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:04:32
+   Duration  19.18s (transform 5.83s, setup 51ms, import 7.73s, tests 11.02s, environment 0ms)
+

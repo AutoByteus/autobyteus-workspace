@@ -1,0 +1,14 @@
+# IMP-00 new regression tests run against the base sources (fix files stashed), 2026-10-28, macOS. Output excerpts.
+# (a) Settings sidebar (AC-001): NUXT_TEST=true pnpm -C autobyteus-web exec vitest run pages/__tests__/settings.spec.ts -t "text only" --run   [pages/settings.vue at base]
+   × settings page > shows the Settings menu items as text only and keeps the Back to Workspace arrow (autobyteus-320, AC-001)
+AssertionError: expected [ VueWrapper{ …(7) }, …(13) ] to have a length of 1 but got 14
+# (b) Tool card and MCP card (AC-002): vitest run components/tools/__tests__/ToolCard.spec.ts components/tools/__tests__/McpServerCard.spec.ts   [ToolCard.vue, McpServerCard.vue at base]
+      Tests  3 failed | 3 passed (6)
+# (c) Notice builder (AC-009): vitest run tests/unit/skill-update-notices/skill-update-notice-parts.test.ts -t "literal"   [skill-update-notice-builder.ts at base]
+     × puts the skill folder and each changed path in inline code, also a path with a backtick
+      Tests  1 failed | 20 skipped (21)
+# (d) Depends-on picker (AC-010): vitest run components/projects/__tests__/TaskKeysAndDependencies.spec.ts -t "Enter choose"   [TaskDependencyPicker.vue at base]
+   × ... with the options already loaded and the newest a loop, Enter chooses the first choosable Task (autobyteus-320, AC-010)
+AssertionError: expected 'task-dependency-option-awg0p4-0' to be 'task-dependency-option-awg0p4-2'
+   ✓ ... with only loop options, Enter chooses nothing
+# (e) Chat footer name (AC-003): base footer showed runtimeShortLabel ('Claude SDK', 'Codex', 'Antigravity'); the new assertions expect the full names (not separately run on base).

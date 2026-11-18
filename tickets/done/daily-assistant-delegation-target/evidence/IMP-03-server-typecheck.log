@@ -1,0 +1,7 @@
+# IMP-03 server typecheck (after baseline shrink 1182 -> 1181: removed dead MEMORY_COMPACTOR import)
+# cmd: pnpm -C autobyteus-server-ts typecheck; base 3a6330c3ad + implementation working tree; date: 2026-11-10T05:14:20Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.2s
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 28.3s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS
+exit=0

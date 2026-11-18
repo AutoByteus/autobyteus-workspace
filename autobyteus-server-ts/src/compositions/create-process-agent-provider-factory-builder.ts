@@ -1,3 +1,4 @@
+import type { NativeCommandProcessScope } from "autobyteus-ts";
 import {
   defaultAgentFactory,
   defaultInputProcessorRegistry,
@@ -14,7 +15,6 @@ import { getCodexWorkspaceSkillMaterializer } from "../agent-execution/backends/
 import { getCodexWorkspaceResolver } from "../agent-execution/backends/codex/codex-workspace-resolver.js";
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { getCodexThreadManager } from "../agent-execution/backends/codex/thread/codex-thread-manager.js";
-import { getCodexThreadCleanup } from "../agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { getClaudeWorkspaceResolver } from "../agent-execution/backends/claude/claude-workspace-resolver.js";
 import { getClaudeWorkspaceSkillMaterializer } from "../agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { getClaudeSdkClient } from "../runtime-management/claude/client/claude-sdk-client.js";
@@ -25,6 +25,7 @@ import {
 
 export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
   workspaceManager: WorkspaceManager;
+  nativeCommandProcessScope: NativeCommandProcessScope;
 }>): AgentProviderFactoryBuilder => {
   if (!input?.workspaceManager) {
     throw new Error("Process Agent provider workspace manager is required.");
@@ -33,6 +34,7 @@ export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
     workspaceManager: input.workspaceManager,
     skillService: SkillService.getInstance(),
     autoByteus: {
+      nativeCommandProcessScope: input.nativeCommandProcessScope,
       agentFactory: defaultAgentFactory,
       createLlm: createAvailableLlm,
       processorRegistries: {
@@ -49,7 +51,6 @@ export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
       workspaceResolver: getCodexWorkspaceResolver(),
       clientManager: getCodexAppServerClientManager(),
       threadManager: getCodexThreadManager(),
-      threadCleanup: getCodexThreadCleanup(),
     },
     claude: {
       workspaceResolver: getClaudeWorkspaceResolver(),

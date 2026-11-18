@@ -1,5 +1,9 @@
 <template>
   <form @submit.prevent="handleSubmit" :class="formClass">
+    <div v-if="personalBase">
+      <PersonalSettingsNote :base="personalBase" kind="agent" />
+      <p v-if="resetError" class="mt-1 text-sm text-red-600">{{ resetError }}</p>
+    </div>
     <fieldset class="space-y-6">
       <div>
         <label for="name" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.name') }}</label>
@@ -60,7 +64,10 @@
       </div>
 
       <div>
-        <label class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.avatar') }}</label>
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.avatar') }}</label>
+          <PersonalSettingMark :base="personalBase" :active="isPersonal('AVATAR')" :busy="resetting !== null" @reset="resetPersonal('AVATAR')" />
+        </div>
         <p class="mt-1 text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.upload_an_image_to_represent_this') }}</p>
         <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div class="h-24 w-24 rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 p-0.5">
@@ -106,6 +113,9 @@
           @change="handleAvatarFileSelected"
         />
       </div>
+
+      <AgentSemanticMemoryField v-model="semanticMemoryEnabled" :personal-base="personalBase" :personal="isPersonal('SEMANTIC_MEMORY')"
+        :busy="resetting !== null" @reset-personal="resetPersonal('SEMANTIC_MEMORY')" />
     </fieldset>
 
 
@@ -127,7 +137,10 @@
           </label>
         </div>
         <div :class="{ 'pointer-events-none opacity-50': useAllInstalledSkills }" :aria-disabled="useAllInstalledSkills ? 'true' : undefined">
-          <label for="skill_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.skillsLabel') }}</label>
+          <div class="flex flex-wrap items-center gap-3">
+            <label for="skill_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.skillsLabel') }}</label>
+            <PersonalSettingMark class="pointer-events-auto" :base="personalBase" :active="isPersonal('SKILLS')" :busy="resetting !== null" @reset="resetPersonal('SKILLS')" />
+          </div>
           <p class="text-sm text-gray-500 mb-2">{{ $t('agents.components.agents.AgentDefinitionForm.select_skills_to_equip_the_agent') }}</p>
           <GroupableTagInput
             :model-value="formData['skill_names']"
@@ -144,7 +157,10 @@
       <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefinitionForm.tool_configuration') }}</legend>
       <div class="mt-4 grid grid-cols-1 gap-x-8 gap-y-8">
         <div>
-          <label for="tool_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.toolsLabel') }}</label>
+          <div class="flex flex-wrap items-center gap-3">
+            <label for="tool_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.toolsLabel') }}</label>
+            <PersonalSettingMark :base="personalBase" :active="isPersonal('TOOLS')" :busy="resetting !== null" @reset="resetPersonal('TOOLS')" />
+          </div>
           <p class="text-sm text-gray-500 mb-2">{{ $t('agents.components.agents.AgentDefinitionForm.select_available_tools_for_the_agent') }}</p>
           <GroupableTagInput
             :model-value="formData['tool_names']"
@@ -164,6 +180,10 @@
       :seed-model-identifier="initialData?.defaultLaunchConfig?.llmModelIdentifier"
       :llm-config="launchPreferences.llmConfig"
       id-prefix="agent-definition"
+      :personal-settings-base="personalBase"
+      :personal="isPersonal('DEFAULT_LAUNCH_CONFIG')"
+      :resetting-personal="resetting !== null"
+      @reset-personal="resetPersonal('DEFAULT_LAUNCH_CONFIG')"
       @update:runtime-kind="launchPreferences.runtimeKind = $event"
       @update:llm-model-identifier="launchPreferences.llmModelIdentifier = $event"
       @update:llm-config="launchPreferences.llmConfig = $event"
@@ -210,7 +230,7 @@
         :disabled="isSubmitting || fileUploadStore.isUploading"
         class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
       >
-        <span v-if="isSubmitting" class="animate-spin h-5 w-5 mr-3 i-heroicons-arrow-path-20-solid" viewBox="0 0 24 24"></span>
+        <Icon v-if="isSubmitting" icon="heroicons:arrow-path-20-solid" class="animate-spin h-5 w-5 mr-3" />
         {{ submitButtonText }}
       </button>
     </div>
@@ -218,6 +238,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { reactive, watch, toRefs, computed, onMounted, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionOptionsStore } from '~/stores/agentDefinitionOptionsStore';
@@ -225,7 +246,13 @@ import { useToolManagementStore } from '~/stores/toolManagementStore';
 import { useSkillStore } from '~/stores/skillStore';
 import { useFileUploadStore } from '~/stores/fileUploadStore';
 import DefinitionLaunchPreferencesSection from '~/components/launch-config/DefinitionLaunchPreferencesSection.vue';
+import PersonalSettingMark from '~/components/definitions/PersonalSettingMark.vue';
+import PersonalSettingsNote from '~/components/definitions/PersonalSettingsNote.vue';
+import { usePersonalSettingReset } from '~/composables/usePersonalSettingReset';
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
+import type { PersonalSetting } from '~/types/personalSettings';
 import GroupableTagInput from '~/components/agents/GroupableTagInput.vue';
+import AgentSemanticMemoryField from '~/components/agents/AgentSemanticMemoryField.vue';
 import type { GroupedSource, FlatSource } from '~/components/agents/GroupableTagInput.vue';
 import {
   normalizeDefaultLaunchConfig,
@@ -354,11 +381,25 @@ const getInitialValue = (): { [key: string]: any } => ({
   ...Object.fromEntries(componentFields.value.map(f => [f.name, [] as string[]]))
 });
 
+const { resetting, resetError, isApplyingReset, runReset } = usePersonalSettingReset();
 const formData = reactive(getInitialValue());
 const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
 const useAllInstalledSkills = ref(false);
+const semanticMemoryEnabled = ref(false);
+
+/** What the form fills from a loaded definition; a re-delivery with the same values keeps the user's unsaved edits. */
+const filledValuesOf = (data: any): string => JSON.stringify(data ? [
+  data.name, data.role, data.category, data.description, data.instructions, data.avatarUrl || data.avatar_url || '',
+  data.defaultLaunchConfig ?? null, data.skillScope, data.semanticMemoryEnabled === true, ...componentFields.value.map(f => data[f.camelCase] || data[f.name] || []),
+] : null);
+let filledFrom: string | null = null;
 
 watch(initialData, (newData) => {
+  // The same definition again (a list reload after any announced change), or this editor's own reset arriving.
+  const values = filledValuesOf(newData);
+  const keep = values === filledFrom || isApplyingReset();
+  filledFrom = values;
+  if (keep) return;
   if (newData && !isCreateMode.value) {
     formData.name = newData.name || '';
     formData.role = newData.role || '';
@@ -368,6 +409,7 @@ watch(initialData, (newData) => {
     formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
     useAllInstalledSkills.value = newData.skillScope === 'ALL_INSTALLED';
+    semanticMemoryEnabled.value = newData.semanticMemoryEnabled === true;
     componentFields.value.forEach(field => {
       const key = field.name as keyof typeof formData;
       formData[key] = newData[field.camelCase] || newData[key] || [];
@@ -376,8 +418,25 @@ watch(initialData, (newData) => {
     Object.assign(formData, getInitialValue());
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(null));
     useAllInstalledSkills.value = false;
+    semanticMemoryEnabled.value = false;
   }
 }, { immediate: true, deep: true });
+
+// Personal settings (package and built-in agents): marks and reset.
+const personalBase = computed(() => (isCreateMode.value ? null : initialData.value?.personalSettingsBase ?? null));
+const isPersonal = (setting: PersonalSetting): boolean => Boolean(initialData.value?.personalSettings?.includes(setting));
+const resetPersonal = (setting: PersonalSetting) => runReset(
+  setting,
+  () => useAgentDefinitionStore().resetAgentPersonalSetting(initialData.value.id, setting),
+  (reset) => {
+    filledFrom = filledValuesOf(reset);
+    if (setting === 'TOOLS') formData.tool_names = [...reset.toolNames];
+    else if (setting === 'SKILLS') formData.skill_names = [...reset.skillNames];
+    else if (setting === 'AVATAR') formData.avatar_url = reset.avatarUrl || '';
+    else if (setting === 'SEMANTIC_MEMORY') semanticMemoryEnabled.value = reset.semanticMemoryEnabled === true;
+    else Object.assign(launchPreferences, toEditableDefaultLaunchConfig(reset.defaultLaunchConfig));
+  },
+);
 
 watch(() => formData.avatar_url, () => {
   avatarPreviewBroken.value = false;
@@ -469,6 +528,7 @@ const handleSubmit = () => {
     toolInvocationPreprocessorNames: formData.tool_invocation_preprocessor_names,
     lifecycleProcessorNames: formData.lifecycle_processor_names,
     defaultLaunchConfig: normalizeDefaultLaunchConfig(launchPreferences),
+    semanticMemoryEnabled: semanticMemoryEnabled.value,
   };
   emit('submit', submissionData);
 };

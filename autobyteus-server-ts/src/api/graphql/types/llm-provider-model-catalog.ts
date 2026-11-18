@@ -63,7 +63,6 @@ export class ModelDetail {
 
 @ObjectType()
 export class ModelSourceStatusObject {
-  @Field(() => String) modelKind!: string;
   @Field(() => String) state!: string;
   @Field(() => Int) modelCount!: number;
   @Field(() => Int) successfulUnitCount!: number;

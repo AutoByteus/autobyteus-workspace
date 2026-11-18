@@ -1,0 +1,27 @@
+# DEL-01 post-integration rerun on 8ffbcd361c (merge of origin/personal 9331633 into the ticket branch)
+## electron/nodeAutoUpdate
+ ✓ nodeAutoUpdate/__tests__/nodeUpdateClient.spec.ts (6 tests) 416ms
+   ✓ nodeUpdateClient (C1) > gives up on a node that does not answer within the timeout (real fetch)  413ms
+
+ Test Files  5 passed (5)
+      Tests  88 passed (88)
+   Start at  21:34:25
+   Duration  961ms (transform 246ms, setup 0ms, collect 418ms, tests 491ms, environment 1ms, prepare 508ms)
+
+EXIT 0
+## components/settings/nodes
+ ✓ components/settings/nodes/__tests__/NodeAutoUpdate.spec.ts (18 tests) 107ms
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (17 tests) 138ms
+
+ Test Files  6 passed (6)
+      Tests  67 passed (67)
+   Start at  21:34:29
+   Duration  9.87s (transform 4.55s, setup 51.54s, collect 1.48s, tests 423ms, environment 1.81s, prepare 1.03s)
+
+EXIT 0
+## release step test
+----------------------------------------------------------------------
+Ran 11 tests in 8.752s
+
+OK
+EXIT 0

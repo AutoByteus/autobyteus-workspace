@@ -1,30 +1,36 @@
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AgentOrgRunIndexRowRecord } from "../store/agent-org-run-history-index-record-types.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
-import type { AgentOrgExecutionTreeDto, TaskExecutionReferenceDto } from "@autobyteus/collaboration-stream-contracts";
+import type { AgentOrgExecutionTreeDto } from "@autobyteus/collaboration-stream-contracts";
 import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import type { AgentOrgRunHistoryCatalogService } from "./agent-org-run-history-catalog-service.js";
 import type { TeamRunHistoryService } from "./team-run-history-service.js";
+import { RunLastActivityReader } from "./run-last-activity-reader.js";
 
 export type CollaborationRootHistoryItem =
-  | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
-  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto;
-    /** Task executions of `org` whose Task is DONE or CANCELLED; the Workspaces rows leave them out before the Org context hydrates. */
-    closed_task_executions: readonly TaskExecutionReferenceDto[] }>;
+  | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
+  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto }>;
 
 /** Read-only mixed facade. Family selection remains explicit and subject readers stay authoritative. */
 export class CollaborationRootHistoryService {
   private readonly layout: AgentMemoryLayout;
   private readonly orgTrees: AgentOrgRunExecutionTreeStore;
+  private readonly lastActivity: Pick<RunLastActivityReader, "forOrgRun">;
   constructor(private readonly dependencies: Readonly<{
     memoryDir: string;
+    /** The relationships between runs, from the Task entries (SR-047). */
+    tree: Pick<DelegationIndex, "subtreeOf">;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
     orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows" | "getCatalogRow">;
-    orgRuns: Pick<AgentOrgRunManager, "getActive" | "closedTaskExecutionsFor">;
+    orgRuns: Pick<AgentOrgRunManager, "getActive">;
     orgTrees?: AgentOrgRunExecutionTreeStore;
+    /** An Org run's last activity over its agents. */
+    lastActivity?: Pick<RunLastActivityReader, "forOrgRun">;
   }>) {
+    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir: dependencies.memoryDir, tree: dependencies.tree });
     this.layout = new AgentMemoryLayout(dependencies.memoryDir);
     this.orgTrees = dependencies.orgTrees ?? new AgentOrgRunExecutionTreeStore();
   }
@@ -37,6 +43,7 @@ export class CollaborationRootHistoryService {
       root_subject_kind: "agent_team" as const,
       root_run_id: team.teamRunId,
       created_at: team.createdAt,
+      last_activity_at: team.lastActivityAt,
       archived_at: team.archivedAt,
       is_active: team.isActive,
       summary: team.summary,
@@ -66,11 +73,11 @@ export class CollaborationRootHistoryService {
       root_subject_kind: "agent_org",
       root_run_id: row.orgRunId,
       created_at: row.createdAt,
+      last_activity_at: await this.lastActivity.forOrgRun({ orgRunId: row.orgRunId, createdAt: row.createdAt }),
       archived_at: row.archivedAt,
       is_active: Boolean(active),
       summary: row.summary,
       org: projectAgentOrgExecutionTree(tree),
-      closed_task_executions: this.dependencies.orgRuns.closedTaskExecutionsFor(row.orgRunId, tree),
     });
   }
 }

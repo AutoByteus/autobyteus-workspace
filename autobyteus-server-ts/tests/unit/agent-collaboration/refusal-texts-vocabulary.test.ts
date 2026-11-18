@@ -5,6 +5,7 @@ import {
   delegationTargetUnavailableMessage,
   messageTargetNotFoundMessage,
   ownTeamDelegationRefusedMessage,
+  selfDelegationRefusedMessage,
 } from "../../../src/agent-collaboration/collaborators/collaborator-errors.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
@@ -26,15 +27,14 @@ const REFUSAL_SITES = [
   "src/agent-collaboration/domain/agent-team-address.ts",
   "src/agent-collaboration/collaborators/collaborator-errors.ts",
   "src/agent-collaboration/collaborators/message-recipient-resolution.ts",
-  "src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts",
-  "src/agent-collaboration/execution/task/root-task-execution-resource-scope.ts",
-  "src/agent-collaboration/execution/task/task-execution-live-holds.ts",
-  "src/agent-collaboration/execution/task/existing-copy-target.ts",
   "src/agent-collaboration/execution/task/task-execution-input.ts",
   "src/agent-collaboration/collaborators/catalog-delegation.ts",
   "src/agent-collaboration/execution/task/task-execution-resource-port.ts",
   "src/agent-collaboration/execution/task/task-delegation-command.ts",
   "src/projects/domain/task-execution-resources.ts",
+  "src/agent-collaboration/execution/task/task-delegation.ts",
+  "src/agent-collaboration/communication/cross-run-message-delivery.ts",
+  "src/agent-collaboration/delegation/collaboration-tree.ts",
   "src/projects/services/project-task-service.ts",
   "src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts",
 ];
@@ -63,6 +63,9 @@ describe("refusal and result texts use the agent-facing vocabulary (REQ-008, AC-
     expect(messageTargetNotFoundMessage("/x")).toBe(
       "No agent or agent team you can talk with has the address /x. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.");
     expect(ownTeamDelegationRefusedMessage("/x")).toBe("/x is in your own team; you can't delegate to it. Talk with it using send_message_to.");
+    // autobyteus-435 REQ-013: the sender's own address is not "in your own team" and is not told to message itself.
+    expect(selfDelegationRefusedMessage("/x")).toBe(
+      "/x is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.");
     expect(delegationTargetUnavailableMessage("/x")).toBe(
       "'/x' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.");
     expect(ROOT_NOT_ACTIVE_MESSAGE).toBe("This work is stopping or has stopped, so the message or delegation was not sent.");

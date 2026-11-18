@@ -11,6 +11,8 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { chooseLiveModel } from "../helpers/live-model-choice.js";
+import { agentStreamFramesOf, waitConnected } from "../helpers/agent-stream-frames.js";
 
 /**
  * Workspace skill links with the real Claude, Codex and Grok CLIs (workspace-skill-collision-fix, REQ-101/102/105).
@@ -22,8 +24,14 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  * Package, workspace and app data are test-owned temp folders (QR-101); the CLIs use the host sign-in.
  *
  * Gates (one per runtime; paid inference, one short turn per step): RUN_CLAUDE_E2E=1, RUN_CODEX_E2E=1,
- * RUN_GROK_E2E=1. Optional models: CLAUDE_E2E_MODEL (default haiku), CODEX_E2E_MODEL, GROK_E2E_MODEL.
+ * RUN_GROK_E2E=1. Models: each runtime's cheapest, pinned below (Claude haiku, Codex gpt-5.6-luna, Grok grok-4.7,
+ * at low reasoning effort where the runtime has one). CLAUDE_E2E_MODEL, CODEX_E2E_MODEL and GROK_E2E_MODEL override
+ * the pin. Each runtime checks its model in its own group: an override or a Claude/Codex pin the runtime does not offer
+ * fails that runtime's cases with the available list; a Grok pin its CLI does not offer falls back to the first model
+ * it offers. Each runtime prints `SKILL_LINKS_LIVE_MODEL {"runtime":…,"model":…}`, with `"pinned"` after a fallback.
  * Codex runs under a throwaway CODEX_HOME holding only a link to the host `auth.json`.
+ * The release smoke check (`python3 scripts/release_smoke.py`, RELEASE.md) runs this suite and names its test titles:
+ * keep them stable, or update the runner's required-case list with them.
  * Command (clean environment, real HOME for the CLI logins):
  *   env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 \
  *     RUN_GROK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts --no-watch
@@ -38,15 +46,15 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  */
 type RuntimeName = "claude" | "codex" | "grok";
 const commandReady = (command: string) => spawnSync(command, ["--version"], { stdio: "ignore" }).status === 0;
-const RUNTIMES: Record<RuntimeName, { kind: string; enabled: boolean; preferredModels: Array<string | undefined>;
+const RUNTIMES: Record<RuntimeName, { kind: string; enabled: boolean; pin: string; override: string | undefined;
   llmConfig: Record<string, unknown> | null }> = {
   claude: { kind: "claude_agent_sdk", enabled: process.env.RUN_CLAUDE_E2E === "1" && commandReady("claude"),
-    preferredModels: [process.env.CLAUDE_E2E_MODEL?.trim(), "haiku", "sonnet"], llmConfig: null },
+    pin: "haiku", override: process.env.CLAUDE_E2E_MODEL?.trim() || undefined, llmConfig: null },
   codex: { kind: "codex_app_server", enabled: process.env.RUN_CODEX_E2E === "1" && commandReady("codex"),
-    preferredModels: [process.env.CODEX_E2E_MODEL?.trim(), "gpt-5.4-mini", "gpt-5.5-mini"], llmConfig: { reasoning_effort: "low" } },
+    pin: "gpt-5.6-luna", override: process.env.CODEX_E2E_MODEL?.trim() || undefined, llmConfig: { reasoning_effort: "low" } },
   grok: { kind: "grok_build", enabled: process.env.RUN_GROK_E2E === "1"
       && commandReady(process.env.GROK_BUILD_COMMAND?.trim() || "grok"),
-    preferredModels: [process.env.GROK_E2E_MODEL?.trim(), "grok-4.7"], llmConfig: { reasoning_effort: "low" } },
+    pin: "grok-4.7", override: process.env.GROK_E2E_MODEL?.trim() || undefined, llmConfig: { reasoning_effort: "low" } },
 };
 const enabledRuntimes = (Object.keys(RUNTIMES) as RuntimeName[]).filter((name) => RUNTIMES[name].enabled);
 const describeLive = enabledRuntimes.length > 0 ? describe : describe.skip;
@@ -124,20 +132,6 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       "{ agentDefinitions { id skillNames } }");
     expect(definitions.agentDefinitions.find((definition) => definition.id === configuredAgentId)?.skillNames)
       .toEqual([skillName]);
-
-    for (const name of enabledRuntimes) {
-      const availability = await graphql<{ runtimeAvailability: { enabled: boolean; reason: string | null } }>(
-        "query($r: String!) { runtimeAvailability(runtimeKind: $r) { enabled reason } }", { r: RUNTIMES[name].kind });
-      expect(availability.runtimeAvailability, name).toMatchObject({ enabled: true });
-      const catalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
-        "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",
-        { r: RUNTIMES[name].kind });
-      const available = catalog.providerModelCatalogSnapshots.flatMap((snapshot) => snapshot.llmModels.map((m) => m.modelIdentifier));
-      const model = RUNTIMES[name].preferredModels.find((candidate) => candidate && available.includes(candidate)) ?? available[0];
-      expect(model, `${name} model`).toBeTruthy();
-      models.set(name, model!);
-    }
-    console.info("SKILL_LINKS_LIVE_MODELS", JSON.stringify(Object.fromEntries(models)));
   }, 300_000);
 
   afterAll(async () => {
@@ -155,11 +149,13 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload
-          === "object" && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
       } catch { /* diagnostic rows only */ }
     });
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    // The stream takes commands from its CONNECTED message, not from the socket's open (autobyteus-461 release smoke).
+    await waitConnected(messages);
     return { socket, messages };
   };
 
@@ -178,12 +174,19 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
     }
     await wait(500);
     const turn = stream.messages.slice(from).filter(ofRun);
+    // The Team socket coalesces text into SEGMENT_CONTENT_BATCH frames whose items carry their agent_run_id.
+    const textParts = turn.flatMap((m) => m.type === "SEGMENT_CONTENT" ? [m.payload]
+      : m.type === "SEGMENT_CONTENT_BATCH" ? (m.payload.items as Array<Record<string, unknown>> | undefined ?? [])
+        .filter((item) => item.agent_run_id === runId) : []);
     return {
-      text: turn.filter((m) => m.type === "SEGMENT_CONTENT").map((m) => String(m.payload.delta ?? "")).join(""),
+      text: textParts.map((part) => String(part.delta ?? "")).join(""),
       errors: turn.filter((m) => m.type === "ERROR").map((m) => JSON.stringify(m.payload)),
       tools: turn.filter((m) => m.type === "TOOL_EXECUTION_STARTED").map((m) => String(m.payload.tool_name)),
     };
   };
+
+  /** The turn's errors as one line, so a failure (for example a provider rate limit) names its cause. */
+  const turnErrors = (errors: string[]) => `turn errors: ${errors.join(" | ").slice(0, 400)}`;
 
   const linkedWorkspace = async (label: string) => {
     const workspace = await fs.mkdtemp(path.join(root, `${label}-ws-`));
@@ -209,7 +212,25 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
 
   const runtimeLink = (name: RuntimeName, workspace: string) => path.join(workspace, `.${name}`, "skills", skillName);
 
+  // The runner reads each runtime's results under this per-runtime title (claude, codex, grok).
   describe.each(enabledRuntimes)("%s", (name) => {
+    // A runtime that cannot run, or lacks its model, skips only its own cases; vitest names the error per group.
+    beforeAll(async () => {
+      const runtime = RUNTIMES[name];
+      const availability = await graphql<{ runtimeAvailability: { enabled: boolean; reason: string | null } }>(
+        "query($r: String!) { runtimeAvailability(runtimeKind: $r) { enabled reason } }", { r: runtime.kind });
+      expect(availability.runtimeAvailability, name).toMatchObject({ enabled: true });
+      const catalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
+        "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",
+        { r: runtime.kind });
+      const available = catalog.providerModelCatalogSnapshots.flatMap((snapshot) => snapshot.llmModels.map((m) => m.modelIdentifier));
+      const choice = chooseLiveModel(name, runtime.pin, available, runtime.override);
+      models.set(name, choice.model);
+      console.info("SKILL_LINKS_LIVE_MODEL", JSON.stringify({ runtime: name, model: choice.model,
+        ...(choice.fallbackFrom ? { pinned: choice.fallbackFrom } : {}) }));
+    }, 300_000);
+
+    // Named by scripts/release_smoke.py
     it("starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)", async () => {
       const workspace = await linkedWorkspace(`${name}-run`);
       const created = await createRun(configuredAgentId, name, workspace);
@@ -223,7 +244,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       let stream = await openSocket(`/ws/agent/${runId}`);
       const first = await ask(stream, runId, `What is the new-run link probe code? Use your ${skillName} skill. Reply with only the code.`);
       console.info(`SKILL_LINKS_LIVE_NEW_RUN ${name}`, JSON.stringify({ runId, text: first.text.slice(0, 200), tools: first.tools }));
-      expect(first.errors).toEqual([]);
+      expect(first.errors, turnErrors(first.errors)).toEqual([]);
       expect(first.text).toContain(newRunCode);
 
       stream.socket.close();
@@ -239,11 +260,12 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       const second = await ask(stream, runId,
         `We continue after a restart. What is the restore link probe code? Use your ${skillName} skill. Reply with only the code.`);
       console.info(`SKILL_LINKS_LIVE_RESTORED_RUN ${name}`, JSON.stringify({ runId, text: second.text.slice(0, 200), tools: second.tools }));
-      expect(second.errors).toEqual([]);
+      expect(second.errors, turnErrors(second.errors)).toEqual([]);
       expect(second.text).toContain(restoreCode);
       stream.socket.close();
     }, 900_000);
 
+    // Named by scripts/release_smoke.py
     it("starts a brand-new team member with configured skills on its first message (AC-105)", async () => {
       const workspace = await linkedWorkspace(`${name}-team`);
       const team = await graphql<{ createAgentTeamDefinition: { id: string } }>(
@@ -281,11 +303,12 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       const memberFoldersAfter = await fs.readdir(teamMemoryDir).catch(() => [] as string[]);
       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.stringify({ designerRunId, text: reply.text.slice(0, 200),
         tools: reply.tools, memberFoldersAfter }));
-      expect(reply.errors).toEqual([]);
+      expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(newRunCode);
       stream.socket.close();
     }, 900_000);
 
+    // Named by scripts/release_smoke.py
     it("refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)", async () => {
       const workspace = await fs.mkdtemp(path.join(root, `${name}-collision-ws-`));
       const ownSkill = runtimeLink(name, workspace);
@@ -314,7 +337,7 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       const reply = await ask(stream, allInstalled.runId!,
         `What is the new-run link probe code? Use your ${skillName} skill. Reply with only the code.`);
       console.info(`SKILL_LINKS_LIVE_ALL_INSTALLED ${name}`, JSON.stringify({ text: reply.text.slice(0, 200), tools: reply.tools }));
-      expect(reply.errors).toEqual([]);
+      expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
       expect(reply.text).toContain(workspaceOwnCode);
       expect(reply.text).not.toContain(newRunCode);
       stream.socket.close();

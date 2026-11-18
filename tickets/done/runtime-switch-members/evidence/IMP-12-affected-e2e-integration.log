@@ -1,0 +1,13 @@
+Check: IMP-12
+Command: vitest run tests/e2e/agent-org-runs/stopped-org-workspace-graphql, tests/e2e/run-history/stopped-run-model-config-graphql, tests/e2e/app-data-migrations/task-agent-own-run-startup, tests/integration/agent-team-execution/agent-team-run-manager, tests/integration/run-history/application-owned-studio-run-model-config
+Commit: a199e9d543
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+     × TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows) 4087ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 22 passed (23)
+(task-agent-own-run-startup TAU-2 failed first for a missing runtimeKind in the test input; fixed and rerun:)
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

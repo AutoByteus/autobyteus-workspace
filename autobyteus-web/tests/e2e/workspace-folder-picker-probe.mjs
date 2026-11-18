@@ -183,13 +183,15 @@ try {
     const read = async () => (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){orgRunId executionTree isActive editability{editable reason}}}', { id: orgRunId })).getAgentOrgRunConfig;
     const active = await read(); assert.equal(active.isActive, true);
     await test('workspace-header-edit-config').click(); await test('existing-run-settings').waitFor();
+    // autobyteus-366: with a member focused, the placed team's workspace is in the Org's group view.
+    if (await test('run-settings-switch-group').isVisible().catch(() => false)) await test('run-settings-switch-group').click();
     assert.equal(await test('existing-run-root-card').locator('[data-test="chat-workspace-trigger"]').count(), 0);
-    const member = test('run-member-/product'); await member.locator('[data-test="run-member-toggle"]').click();
+    const member = test('run-member-/product'); const memberToggle = member.locator('[data-test="run-member-toggle"]').first(); await memberToggle.click();
     assert.equal(await member.locator('[data-test="chat-workspace-trigger"]').count(), 0);
     await shot('saved-active-locked');
     await test('existing-run-stop').click();
     await page.waitForFunction(() => document.querySelector('[data-test="existing-run-settings"]')?.getAttribute('data-state') === 'stopped');
-    if (await member.locator('[data-test="run-member-toggle"]').getAttribute('aria-expanded') === 'false') await member.locator('[data-test="run-member-toggle"]').click();
+    if (await memberToggle.getAttribute('aria-expanded') === 'false') await memberToggle.click();
     await member.locator('[data-test="chat-workspace-trigger"]').waitFor({ timeout: 60000 });
     const before = await read(); assert.equal(before.isActive, false);
     assert.equal(await test('existing-run-root-card').locator('[data-test="chat-workspace-trigger"]').count(), 0);
@@ -207,7 +209,7 @@ try {
     assert.equal(otherTeam.defaultLaunchConfiguration.workspaceRootPath, path.join(fixture, 'org'));
     const saves = evidence.requests.slice(requestStart).filter(r => r.operationName === 'UpdateStoppedAgentOrgRunConfig');
     assert.equal(saves.length, 1); assert.deepEqual(saves[0].variables.input.teamWorkspacePatches, [{ teamAddress: '/product', workspaceRootPath: path.join(fixture, 'saved-member') }]);
-    assert.deepEqual(saves[0].variables.input.modelPatches, []); await shot('saved-member-committed');
+    assert.deepEqual(saves[0].variables.input.selectionPatches, []); await shot('saved-member-committed');
     return { before, changed, after, saves };
   });
   await run('FP-P08', 'actual Settings locale -> Chat Chinese input at desktop and narrow widths', async () => {

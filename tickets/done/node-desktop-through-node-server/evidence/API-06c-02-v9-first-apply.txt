@@ -1,0 +1,41 @@
+# Case: API-06 (c) step 02
+# Command: ps-run.sh <v9 launcher> workspace apply --name abx405-ps-node (first S1 run) + inspect + data marker
+# Setup: as API-06b but the node's image is pinned by digest (autobyteus/autobyteus-server@sha256:69e9c09535fa…), so pulls cannot change it and only the launcher config differs between v8 and v9; native arm64 PowerShell 7.4.6; real Docker Desktop engine; temp state/shared under /private/tmp/abx405-api/ps
+# Commit: 952bc1fcd0 (launcher source identical to ce13fa9727)
+# Date: 2026-11-06T17:45:26Z
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx405-ps-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+docker.io/autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356: Pulling from autobyteus/autobyteus-server
+Digest: sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+Status: Image is up to date for autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+docker.io/autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+[AutoByteus Docker] Launcher config changed for abx405-ps-node; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started abx405-ps-node.
+AutoByteus Docker node: abx405-ps-node
+Container: abx405-ps-node
+Image: autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+Backend: http://localhost:61616
+GraphQL: http://localhost:61616/graphql
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx405-api/ps/shared/nodes/abx405-ps-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx405-api/ps/shared/shared
+Private app data: /home/autobyteus/data -> abx405-ps-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0
+
+abx405-ps-node	Up Less than a second	0.0.0.0:61616->8000/tcp, [::]:61616->8000/tcp
+{"8000/tcp":[{"HostIp":"","HostPort":"61616"}]}
+id=70583a15aef0d21ef195dcd7ab1f95644653e2de066dfba1aa57b260d5187658 image=sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356 configHash=99b7c513cedbb96e2b76f48a143365d64d832a2468d964fe7c7ff8244d99a54c
+container env AUTOBYTEUS_VNC*: []
+
+{
+  "nodeName": "abx405-ps-node",
+  "containerName": "abx405-ps-node",
+  "backendPort": 61616,
+  "imageRef": "autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356",
+  "configHash": "99b7c513cedbb96e2b76f48a143365d64d832a2468d964fe7c7ff8244d99a54c",
+  "createdAt": "2026-11-06T00:00:00Z",
+  "updatedAt": "2026-11-06T17:45:29Z"
+}
+
+marker: abx405-ps-volume-marker

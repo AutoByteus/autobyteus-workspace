@@ -1,0 +1,30 @@
+{"t":"2026-10-29T08:51:17.858Z","kind":"turn","n":1,"prompt":"Call the tool probe_alpha (no arguments). Then reply with exactly the text it returned, nothing else."}
+{"t":"2026-10-29T08:51:21.801Z","kind":"init","tools":["mcp__probe__probe_alpha"],"mcp":[{"name":"probe","status":"connected","source":"dynamic"}]}
+{"t":"2026-10-29T08:51:23.078Z","kind":"system","subtype":"thinking_tokens","text":"{\"type\":\"system\",\"subtype\":\"thinking_tokens\",\"estimated_tokens\":50,\"estimated_tokens_delta\":50,\"session_id\":\"902c19b1-18c6-44ba-b85b-937283b8f5c9\",\"uuid\":\"70842992-9c17-42df-bf6a-2c6e8cb160c4\"}"}
+{"t":"2026-10-29T08:51:23.449Z","kind":"system","subtype":"thinking_tokens","text":"{\"type\":\"system\",\"subtype\":\"thinking_tokens\",\"estimated_tokens\":149,\"estimated_tokens_delta\":99,\"session_id\":\"902c19b1-18c6-44ba-b85b-937283b8f5c9\",\"uuid\":\"ac4ce399-18f0-4fb1-abe3-34360ccb3ad8\"}"}
+{"t":"2026-10-29T08:51:23.779Z","kind":"tool_use","name":"ToolSearch"}
+{"t":"2026-10-29T08:51:23.792Z","kind":"tool_result","text":"[{\"type\":\"tool_reference\",\"tool_name\":\"mcp__probe__probe_alpha\"}]"}
+{"t":"2026-10-29T08:51:24.952Z","kind":"tool_use","name":"mcp__probe__probe_alpha"}
+{"t":"2026-10-29T08:51:24.967Z","kind":"tool_result","text":"[{\"type\":\"text\",\"text\":\"PROBE_ALPHA_OK_7319\"}]"}
+{"t":"2026-10-29T08:51:26.228Z","kind":"text","text":"PROBE_ALPHA_OK_7319"}
+{"t":"2026-10-29T08:51:26.235Z","kind":"result","subtype":"success","result":"PROBE_ALPHA_OK_7319"}
+{"t":"2026-10-29T08:51:26.246Z","kind":"control","action":"add-beta","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T08:51:29.249Z","kind":"turn","n":2,"prompt":"Do you now have a tool named probe_beta? If yes, call it (no arguments) and reply with exactly the text it returned. If you do not have it, reply exactly NO_BETA_TOOL."}
+{"t":"2026-10-29T08:51:29.261Z","kind":"init","tools":["mcp__claude_ai_Claude_Docs__batch","mcp__claude_ai_Claude_Docs__create","mcp__claude_ai_Claude_Docs__delete","mcp__claude_ai_Claude_Docs__export","mcp__claude_ai_Claude_Docs__guide","mcp__claude_ai_Claude_Docs__query","mcp__claude_ai_Claude_Docs__read","mcp__claude_ai_Claude_Docs__update","mcp__probe__probe_alpha","mcp__probe__probe_beta"],"mcp":[{"name":"probe","status":"connected","source":"dynamic"},{"name":"claude.ai Claude Docs","status":"connected","source":"claudeai"}]}
+{"t":"2026-10-29T08:51:30.401Z","kind":"system","subtype":"thinking_tokens","text":"{\"type\":\"system\",\"subtype\":\"thinking_tokens\",\"estimated_tokens\":50,\"estimated_tokens_delta\":50,\"session_id\":\"902c19b1-18c6-44ba-b85b-937283b8f5c9\",\"uuid\":\"8f8b0275-460d-464f-ace1-de7d6f81ad52\"}"}
+{"t":"2026-10-29T08:51:30.909Z","kind":"system","subtype":"thinking_tokens","text":"{\"type\":\"system\",\"subtype\":\"thinking_tokens\",\"estimated_tokens\":168,\"estimated_tokens_delta\":118,\"session_id\":\"902c19b1-18c6-44ba-b85b-937283b8f5c9\",\"uuid\":\"df84809b-b41e-473d-9640-9c4345e14b67\"}"}
+{"t":"2026-10-29T08:51:31.235Z","kind":"tool_use","name":"ToolSearch"}
+{"t":"2026-10-29T08:51:31.240Z","kind":"tool_result","text":"[{\"type\":\"tool_reference\",\"tool_name\":\"mcp__probe__probe_beta\"}]"}
+{"t":"2026-10-29T08:51:32.261Z","kind":"tool_use","name":"mcp__probe__probe_beta"}
+{"t":"2026-10-29T08:51:32.263Z","kind":"canUseTool","toolName":"mcp__probe__probe_beta"}
+{"t":"2026-10-29T08:51:32.268Z","kind":"tool_result","text":"[{\"type\":\"text\",\"text\":\"PROBE_BETA_OK_7319\"}]"}
+{"t":"2026-10-29T08:51:33.245Z","kind":"text","text":"PROBE_BETA_OK_7319"}
+{"t":"2026-10-29T08:51:33.256Z","kind":"result","subtype":"success","result":"PROBE_BETA_OK_7319"}
+{"t":"2026-10-29T08:51:33.260Z","kind":"control","action":"remove-alpha","state":{"tools":["probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T08:51:36.264Z","kind":"turn","n":3,"prompt":"Call the tool probe_alpha again (no arguments) and reply with exactly the text it returned. If you do not have that tool, reply exactly NO_ALPHA_TOOL."}
+{"t":"2026-10-29T08:51:36.281Z","kind":"init","tools":["mcp__claude_ai_Claude_Docs__batch","mcp__claude_ai_Claude_Docs__create","mcp__claude_ai_Claude_Docs__delete","mcp__claude_ai_Claude_Docs__export","mcp__claude_ai_Claude_Docs__guide","mcp__claude_ai_Claude_Docs__query","mcp__claude_ai_Claude_Docs__read","mcp__claude_ai_Claude_Docs__update","mcp__probe__probe_beta"],"mcp":[{"name":"probe","status":"connected","source":"dynamic"},{"name":"claude.ai Claude Docs","status":"connected","source":"claudeai"}]}
+{"t":"2026-10-29T08:51:37.273Z","kind":"system","subtype":"thinking_tokens","text":"{\"type\":\"system\",\"subtype\":\"thinking_tokens\",\"estimated_tokens\":50,\"estimated_tokens_delta\":50,\"session_id\":\"902c19b1-18c6-44ba-b85b-937283b8f5c9\",\"uuid\":\"c926d972-d879-409f-954f-bb65ebf4edf8\"}"}
+{"t":"2026-10-29T08:51:37.584Z","kind":"system","subtype":"thinking_tokens","text":"{\"type\":\"system\",\"subtype\":\"thinking_tokens\",\"estimated_tokens\":166,\"estimated_tokens_delta\":116,\"session_id\":\"902c19b1-18c6-44ba-b85b-937283b8f5c9\",\"uuid\":\"05523093-de36-4528-870b-5612fe9052fa\"}"}
+{"t":"2026-10-29T08:51:37.597Z","kind":"text","text":"NO_ALPHA_TOOL"}
+{"t":"2026-10-29T08:51:37.611Z","kind":"result","subtype":"success","result":"NO_ALPHA_TOOL"}
+{"t":"2026-10-29T08:51:38.101Z","kind":"end"}

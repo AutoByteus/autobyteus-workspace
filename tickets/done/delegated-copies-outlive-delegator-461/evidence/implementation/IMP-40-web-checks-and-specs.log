@@ -1,0 +1,16 @@
+# IMP-40 web checks and full spec suite, on the merged state (CR-461-028, CR-461-029, the merge)
+# commands: (autobyteus-web) pnpm typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals; codegen:check; node --check and a unique-ID scan of the phone probe; npx vitest run --no-watch
+# commit: 8a47481617 (merge of origin/personal at 3228eff74b); macOS, Node v22.23.1; 2026-11-12T12:09Z
+
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[codegen:check] generated/graphql.ts matches the server schema (exit 0)
+[probe] syntax ok
+[probe] case IDs: 52, duplicates: []
+
+## npx vitest run --no-watch
+ Test Files  762 passed (762)
+      Tests  5734 passed | 2 skipped (5736)

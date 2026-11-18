@@ -1,0 +1,22 @@
+# Case: API-06 (b) step 03
+# Command: docker ps --filter name=abx402-ps-node; docker inspect HostConfig.PortBindings + config-hash label + id; cat state JSON
+# Setup: test node abx402-ps-node; real Docker Desktop 29.0.1 engine via /var/run/docker.sock; native arm64 PowerShell 7.4.6 (official linux-arm64 tarball) in mcr.microsoft.com/dotnet/runtime-deps:8.0; static arm64 docker CLI from docker:cli; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx402-api/ps/state, AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx402-api/ps/shared (same absolute path inside and outside the pwsh container); v7 PS launcher = git archive 6324fb056d; v8 PS launcher = worktree scripts/public/docker; runner API-06-ps-run.sh
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Date: 2026-11-06T15:37:50Z
+
+abx402-ps-node	Up Less than a second	0.0.0.0:56185->5900/tcp, [::]:56185->5900/tcp, 0.0.0.0:56186->6080/tcp, [::]:56186->6080/tcp, 0.0.0.0:56184->8000/tcp, [::]:56184->8000/tcp, 0.0.0.0:56187->9223/tcp, [::]:56187->9223/tcp
+{"5900/tcp":[{"HostIp":"","HostPort":"56185"}],"6080/tcp":[{"HostIp":"","HostPort":"56186"}],"8000/tcp":[{"HostIp":"","HostPort":"56184"}],"9223/tcp":[{"HostIp":"","HostPort":"56187"}]}
+id=2562c280083645a85539311e601b95840952fb1352e13b94575c3a614e88f2af configHash=64e55c3f00edea769a106f3f48e78da9e3a21c4fd9f6ea4b4a287fb6f772eb82
+
+{
+  "nodeName": "abx402-ps-node",
+  "containerName": "abx402-ps-node",
+  "backendPort": 56184,
+  "vncPort": 56185,
+  "noVncPort": 56186,
+  "debugPort": 56187,
+  "imageRef": "autobyteus/autobyteus-server:1.5.11-beta.7",
+  "configHash": "64e55c3f00edea769a106f3f48e78da9e3a21c4fd9f6ea4b4a287fb6f772eb82",
+  "createdAt": "2026-11-06T00:00:00Z",
+  "updatedAt": "2026-11-06T15:37:49Z"
+}

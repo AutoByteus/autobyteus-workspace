@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import { RemoteMessageReceiver, type RemoteRootDirectory } from "../../../src/remote-collaboration/inbound/remote-message-receiver.js";
 import type { DeliverRemoteMessageRequest } from "../../../src/remote-collaboration/domain/remote-requests.js";
 import type { StoredRemoteLinkCheck } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
@@ -9,7 +10,7 @@ import type { StoredRemoteLinkCheck } from "../../../src/agent-collaboration/exe
  * links (this module reads no root files).
  */
 
-const PEER = { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z" };
+const PEER = { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z", paired: true };
 const request = (overrides: Partial<DeliverRemoteMessageRequest> = {}): DeliverRemoteMessageRequest => ({
   fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", kind: "message", messageId: "collabmsg_1",
   sender: { agentRunId: "assistant_a1" }, targetRoot: { kind: "agent_team", runId: "team_b" }, target: { agentRunId: "writer_b" },
@@ -26,7 +27,7 @@ const setup = (stored: StoredRemoteLinkCheck = "proceed") => {
     org: vi.fn(async () => roots.org),
   } satisfies RemoteRootDirectory;
   const titles = { recordFirstMessage: vi.fn(async () => undefined) }
-  return { receiver: new RemoteMessageReceiver(directory, titles), directory, roots, titles };
+  return { receiver: new RemoteMessageReceiver(directory, titles, new PeerStartedRunDecisions()), directory, roots, titles };
 };
 
 describe("RemoteMessageReceiver resolves targetRoot by kind (G-2)", () => {

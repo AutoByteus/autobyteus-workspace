@@ -1,0 +1,7 @@
+project task.json files 376
+  shape 123 ['contextFiles', 'createdAt', 'description', 'projectId', 'status', 'taskId', 'taskKey', 'updatedAt']
+  shape 122 ['contextFiles', 'createdAt', 'dependsOnTaskIds', 'description', 'partOfTaskId', 'projectId', 'status', 'taskId', 'taskKey', 'updatedAt']
+  shape 74 ['contextFiles', 'createdAt', 'dependsOnTaskIds', 'description', 'projectId', 'status', 'taskId', 'taskKey', 'updatedAt']
+  shape 57 ['comments', 'contextFiles', 'createdAt', 'dependsOnTaskIds', 'description', 'partOfTaskId', 'projectId', 'status', 'taskId', 'taskKey', 'updatedAt']
+ad-hoc task.json files 15
+  shape 15 ['createdAt', 'description', 'referenceFiles', 'status', 'taskId', 'updatedAt']

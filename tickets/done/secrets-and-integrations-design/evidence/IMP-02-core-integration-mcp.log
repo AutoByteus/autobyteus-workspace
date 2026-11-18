@@ -1,0 +1,96 @@
+# IMP-02
+# Command: pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp
+# Commit: c100661947 (core unchanged since 3ed397318d)
+# Environment: macOS Darwin 25.5.0, Node v22.23.1, pnpm; clean env (env -i PATH HOME=<temp> TMPDIR) unless noted
+# Date: 2026-10-26
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts
+
+ ↓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts (1 test | 1 skipped)
+stdout | tests/integration/tools/mcp/secret-reference-resolution.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/http-managed-mcp-server.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts
+[mcp-test-server] python: used: python via uv (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-mcp-test-server-venv-c0cbb4480f4e)
+[mcp-test-server] node: used: node v22.23.1
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (python) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Overwriting existing MCP config with server_id 'test-server'.
+
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > registers the server tools with prefix and argument schema
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Overwriting existing MCP config with server_id 'test-server-exec'.
+
+ ✓ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (6 tests) 3523ms
+     ✓ lists and calls tools with the token, which the server saw on every request  1268ms
+     ✓ fails to connect without a token  857ms
+     ✓ fails to connect with a wrong token  868ms
+mcp test server: exiting at start (mode exit-at-start)
+stdout | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar with the real MCP test server (node) > executes a registered tool through the registry
+Successfully registered tool definition: 'ts_echo'
+Successfully registered tool definition: 'ts_add'
+Successfully registered tool definition: 'ts_fail'
+Successfully registered tool definition: 'ts_slow'
+Successfully registered tool definition: 'ts_report_env_and_cwd'
+
+ ✓ tests/integration/tools/mcp/tool-registrar.test.ts (6 tests) 3935ms
+     ✓ registers the server tools with prefix and argument schema  1034ms
+     ✓ executes a registered tool through the registry  1463ms
+     ✓ previews tools without registering them  838ms
+ ✓ tests/integration/tools/mcp/secret-reference-resolution.test.ts (10 tests) 4415ms
+     ✓ delivers a stdio env value stored as a reference to the server process  1060ms
+     ✓ sends an Authorization header stored as a reference on every request  887ms
+     ✓ sends the token stored as a reference on every request  866ms
+     ✓ refuses a reference without a resolver, and never falls back to a plain value  1000ms
+mcp test server: exiting at start (mode exit-at-start)
+ ✓ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (10 tests) 15355ms
+     ✓ lists the tools and calls echo, add, fail and slow  1352ms
+     ✓ delivers the configured env and cwd to the server  712ms
+     ✓ ends the server process when a connected server is closed  728ms
+     ✓ fails to connect, with an error, when the server exits at start  831ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5672ms
+     ✓ lists the tools and calls echo, add, fail and slow  496ms
+     ✓ does not connect to a server that hangs at start, and closing it ends its process  5160ms
+
+ Test Files  4 passed | 1 skipped (5)
+      Tests  32 passed | 1 skipped (33)
+   Start at  07:26:22
+   Duration  15.67s (transform 391ms, setup 202ms, import 759ms, tests 27.23s, environment 0ms)
+

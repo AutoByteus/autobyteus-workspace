@@ -1,0 +1,6 @@
+# API-05 round 3 2026-10-29T20:50:40Z head 1c454e1ec1
+ACP_REOPEN_FAILED: run=reopen_failure_7f3016_7d033eb8dbe24bb0bacea0bdfaa4cd15: Error: ACP connection closed
+ ✓ tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts (1 test) 8325ms
+     ✓ fails the message with the plain message, touches no other run, and retries at the next message  7799ms
+      Tests  1 passed (1)
+exit=0

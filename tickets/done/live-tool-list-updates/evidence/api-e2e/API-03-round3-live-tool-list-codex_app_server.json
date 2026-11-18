@@ -1,0 +1,146 @@
+{
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.6-luna",
+  "codeword": "OKAPI-4865",
+  "turns": [
+    {
+      "label": "1 call alpha",
+      "content": "Remember this codeword: OKAPI-4865. Call the list_projects tool once, then reply with exactly: DONE-1",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember this codeword: OKAPI-4865. Call the list_projects tool once, then reply with exactly: DONE-1",
+          "media": null,
+          "ts": 1793307292.287
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Inspecting available tools for project listing**\n\n**Confirming single function call**",
+          "media": null,
+          "ts": 1793307302.493
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-a836de7d-e408-40f1-8cb8-e475e5b5f59e",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": {
+            "projects": [
+              {
+                "projectId": "project_0e099d43-bec6-4738-8e5a-eefdda6e20ac",
+                "name": "Tool List Live 3bb4e6"
+              }
+            ]
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793307302.502
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-1",
+          "media": null,
+          "ts": 1793307303.827
+        }
+      ]
+    },
+    {
+      "label": "2 add beta, call beta",
+      "content": "Call the list_project_tasks tool once with project_id \"project_0e099d43-bec6-4738-8e5a-eefdda6e20ac\". Then reply with DONE-2 followed by the codeword from my first message.",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Call the list_project_tasks tool once with project_id \"project_0e099d43-bec6-4738-8e5a-eefdda6e20ac\". Then reply with DONE-2 followed by the codeword from my first message.",
+          "media": null,
+          "ts": 1793307309.437
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+          "ts": 1793307309.438
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Discovering available tools**",
+          "media": null,
+          "ts": 1793307313.684
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "exec-6c96622c-9a46-42bc-be58-f7be54efbbb5",
+          "role": null,
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {
+            "project_id": "project_0e099d43-bec6-4738-8e5a-eefdda6e20ac"
+          },
+          "toolResult": {
+            "projectId": "project_0e099d43-bec6-4738-8e5a-eefdda6e20ac"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1793307313.692
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-2 OKAPI-4865",
+          "media": null,
+          "ts": 1793307314.666
+        }
+      ]
+    },
+    {
+      "label": "3 remove alpha, try alpha",
+      "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+          "media": null,
+          "ts": 1793307320.577
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+          "ts": 1793307320.578
+        },
+        {
+          "kind": "reasoning",
+          "role": null,
+          "content": "**Verifying tool availability**\n\n**Planning single list_projects call attempt**",
+          "media": null,
+          "ts": 1793307325.783
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-3",
+          "media": null,
+          "ts": 1793307325.862
+        }
+      ]
+    }
+  ],
+  "seenToolNames": [
+    "{\n  \"version\": 1,\n  \"toolNames\": [\n    \"delegate_task\",\n    \"list_project_tasks\",\n    \"send_message_to\"\n  ]\n}\n"
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

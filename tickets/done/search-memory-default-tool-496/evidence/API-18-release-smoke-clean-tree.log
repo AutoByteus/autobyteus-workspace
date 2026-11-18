@@ -1,0 +1,44 @@
+# API-18 release smoke on a clean tree, commit 40acfb7174 (code = 8af6082a52)
+# Command: python3 scripts/release_smoke.py (worktree untouched during the run)
+# Env: macOS Darwin 25.5.0 arm64, Node v22.23.1; load average during the run up to 175 (5 min); date 2026-11-17 09:07
+
+exit 1
+Release smoke check
+runtime     scenario                                                      result  reason
+claude      new run + restore, linked workspace                           PASS
+claude      brand-new team member                                         PASS
+claude      different same-named skill                                    PASS
+codex       new run + restore, linked workspace                           PASS
+codex       brand-new team member                                         PASS
+codex       different same-named skill                                    PASS
+grok        new run + restore, linked workspace                           FAIL    failed: AssertionError: AgentCreationError: ACP_REQUEST_TIMEOUT: initialize did not respond in time.: expected { success: false, …(2) } to match object { success: true }
+grok        brand-new team member                                         FAIL    failed: AssertionError: turn errors: {"code":"COLLABORATION_AGENT_ACTIVATION_FAILED","message":"ACP_REQUEST_TIMEOUT: initialize did not respond in time.","error_scope":"runtime","error_effect":"terminal","turn_id":null,"change_sequence":2,"agent_run_id":"link_probe_agent_a74cb225_b7588c109a604f7bbf33850a8a5
+grok        different same-named skill                                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60970
+antigravity brand-new run, linked workspace                               PASS
+antigravity brand-new team member, linked workspace                       PASS
+autobyteus  brand-new run, linked workspace                               PASS
+autobyteus  brand-new team member, linked workspace                       PASS
+other       E06: a child started by an AGY agent's delegate_task call, c  FAIL    failed: Error: Timed out waiting for delegation result: r","openTarget":{"runKind":"agent_team","runId":"agy_delegation_team_b3feedc9_f80ed7f916fc4cac8f6f15f3b36276ac","agentRunId":"helper_68045794_424dce076ea544c7911cfd926f92a5de"},"statusIds":["helper_68045794_424dce076ea544c7911cfd926f92a5de"]}]}},{"type
+other       E07: a linked run resumes after its skill folder was deleted  FAIL    failed: Error: Timed out waiting for TURN_COMPLETED: [{"type":"CONNECTED","payload":{"agent_id":"resume_deleted_d3c6ec95_51593b54bac54fdfb2df51553ead592b","session_id":"7bab3792-4cf3-461e-922f-930cfca240af"}},{"type":"AGENT_STATUS","payload":{"status":"offline","recoverableBlock":null,"agent_id":"resume_del
+
+commit    40acfb71745f8ccccce169a475268be1c91d5577
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 298s, antigravity 248s, autobyteus 10s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-gkpl7d65
+
+
+## AGY step: case timings (alone at 08:55 on the same code: E01 3.6 s, E06 2.6 s, E07 3.4 s, E08 2.1 s, 10/10 passed)
+     ✓ E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it through the link (AC-001, AC-002, AC-006)  10521ms
+     ✓ E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-004)  749ms
+     ✓ E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, REQ-006)  934ms
+     ✓ E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and the other member runs with skip-permissions (REQ-006, AC-006)  1426ms
+     ✓ E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)  838ms
+     × E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-permissions (AC-006) 45644ms
+     × E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, AC-006) 44199ms
+     ✓ E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as before (AC-009, AC-006)  24785ms
+     ✓ E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)  569ms
+     ✓ E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)  645ms
+
+## E07 frames at the timeout: the restored run never left initializing
+"type":"CONNECTED" "type":"AGENT_STATUS" "status":"offline "type":"AGENT_STREAM_SNAPSHOT" "type":"AGENT_STATUS" "status":"initializing 

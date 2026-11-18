@@ -1,0 +1,101 @@
+API/E2E round 19 (API-REV-019), on CRR-058. Code under test 2b20fd0898 (HEAD 63edb246c4: docs only since). Server dist/ and the
+phone bundle rebuilt at the start (10:40/10:41, exit 0); web from source. Clean env for every scripted run (env -i PATH
+HOME=<resolved temp> TMPDIR USER); never the user's app or ~/.autobyteus. Raw logs: /tmp/api461/r19.
+
+1. Rechecks (CRR-058 item 1)
+  F-87 (CR-461-111): AFS-001 Pass in the full DLD run; desktop journey 1 (below): after Save, a stopped copy's card shows the
+    saved model                                                                                            Resolved
+  F-88 (CR-461-112): MSP-24 Pass (phone 53/55; MSP-50/51 not 461)                                           Resolved
+  F-89 (SR-091, CR-461-113): DCR-001/002 Pass (dld5). Each copy reads its slot name in its row, own context, header,
+    Settings and run list; a copy with its own Task reads it on its Task card and Task view ("writer"). DCR-001's copies are
+    delegated by W, which works on a Task, so they are sub-work of W's Task and have no Task of their own: the same rule as
+    origin/personal (new-copy-work.ts: "a description from a task agent → sub-work of its Task"). Desktop: the Task cards
+    read "pair" and "worker"                                                                                Resolved
+    Observation (not a finding): an opened copy's header reads "worker" in a Team-root tree (TeamWorkspaceSurface) and
+    "writer - E997" in an Org tree (AgentWorkspaceSurface): the two surfaces render headers differently.
+
+2. Full server E2E (RUN_AGY_FAILURE_E2E=1, scripted AGY), e01: 266 files: 188 passed, 3 failed, 75 skipped; 862 passed, 6 failed:
+    project-change-feed ×5: stale test (its query did not select the Task root's new displayName, so feed ≠ snapshot);
+      fixed (selects it, asserts the slot name on three Task roots): 7/7 alone
+    delegated-copy-project-folder: AGY model discovery timeout (environmental): 8/8 alone
+    remote-delegation-two-server RC-10 ("beta-node could not be reached"): 46/46 alone
+  Typecheck: production 0, tests 1012 in 316 files (baseline): PASS.
+
+3. Web and phone probes
+  SDV 7/7, TS 7/7, PMU 25/25, CFR 10/10, osfr 8/8, remote-runs-in-tree ×2 Pass, title Pass, RSM 7/7, PLN 10/11 (PLN-04 not
+  461), team-group-icon B01 … B04, agent-org-task-team-disclosure Pass.
+  task-closure-tree: 14/16 in the batch (BR-008 setup timeout, BR-011 depends on it); BR-008 … 011 alone 4/4; full probe alone
+    16/16 (timing under load)
+  DLD 24/29 then DCR reruns: DCR-001/002 Pass; SIR-001/002 not 461 (round 13); DLP-006 retired.
+  mobile-shell 53/55: MSP-24 Pass; MSP-50/51 not 461 (round 11).
+
+4. Live runs (keys from the test vault only; the CLI runtimes on the user's own logins, approved by the user 2026-11-16;
+   each server keeps its own temporary data root)
+  The suite (agent-initiated-collaborators) was stale since SR-084 (it read copies from the delegator's view, the retired
+  collaboration package, member conversations through the delegator, TASK_EXECUTION_STARTED frames, and view placement);
+  reworked to the run tree, each copy's own file, own conversation, own team stream and own message log; placement as the
+  row's parent; Stop per REQ-001. Test-side fixes from the runs: the poll's timeout message; refusals selected by their
+  arguments (a runtime may store an earlier result late); refusal steps after the agent's copies have reported and it is
+  quiet; the AutoByteus runtime's tool-exception ERROR frame accepted as the refusal on Team/Org streams (as at base).
+  DeepSeek (AutoByteus): LE-A1, A2, A3 Pass; LE-T1: refusal Pass, then F-90; LE-O1: the model declined to make the call
+    ("delegating to a teammate isn't permitted"), so nothing to refuse (model behaviour)
+  Codex: LE-A1, A2, A3, O1 Pass; LE-T1 F-90
+  Claude: LE-A1, A2, A3, O1 Pass; LE-T1 F-90; LE-F1 precondition gone (claude-haiku-4-5-20251001 is back in the catalog)
+  Antigravity: LE-A1, A2, A3 (rerun: test flaw fixed), T1, O1 Pass
+  Grok: all 5 fail ("Tool execution failed." on every Agent Tools call); base fails LE-A1 the same way: not 461
+  Base 827f1e68dc comparison (its own suite): Claude LE-T1 Pass (the catalog Agent copy calls get_handoff_rules and gets no
+    rules); DeepSeek LE-T1 fails at the same refusal step as the branch did before the ERROR-frame fix.
+
+  F-90 (new): a catalog Agent copy delegated in a Team root has no get_handoff_rules. Branch, three runtimes: Claude "no tool by
+    that name is available in this session", Codex "get_handoff_rules was unavailable", AutoByteus/DeepSeek "there's no
+    get_handoff_rules tool available to me"; each reported the blocker to /coord instead. Base: the same copy has the tool
+    (Claude LE-T1 Pass). The tool's gate (claude-session-tooling-options.ts getHandoffRulesToolingEnabled) is unchanged from
+    base; the run's tool exposure differs (base hosted the copy as a Team member; 461 makes it a run of its own).
+    requirements-doc Scope: "No change to what an agent reads: tool names, parameters, results and collaboration texts."
+
+5. Desktop: an isolated Electron instance of this worktree (pnpm isolated-app start --build; instance iso-54643-8fe0, its
+   own ports and temporary data root; AUTOBYTEUS_TEST_VAULT for DeepSeek; the user's HOME for the CLI logins), driven like a
+   user (browser-automation launcher, attach-only, __abDemo). Agents created in the UI: Worker (Claude Haiku 5.5), Hub
+   (Codex GPT-5.6-Sol), Team Pair (Worker coordinator + Daily Assistant, Antigravity Gemini 3.8 Flash Low).
+  J1 Agent: Hub → delegate_task(/worker): the copy's row and header read "worker"; it opens as its own run (own conversation,
+    Claude replied and reported READY to /hub). Hub stopped: Hub row gray, no Stop; the copy stays green with its own Stop
+    (REQ-001). The copy stopped by its own Stop; its Settings: "worker · Stopped · Delegated copy"; model changed Claude →
+    AutoByteus deepseek-v4-flash; Save: "Saved. Changes apply when this run resumes." and the card shows deepseek-v4-flash
+    (F-87). A message resumed it on AutoByteus ("Agent runtime changed from Claude Agent SDK (haiku) to AutoByteus
+    (deepseek-v4-flash)"; replied RESUMED).                                                                 Pass
+    Observation (not classified): the runtime-change notice is shown twice in the copy's conversation (before and after
+    the user's message); not compared with base.
+  J2 Team: a new Hub run → delegate_task(/pair): the Team copy's row "pair", folded; a click expands it and selects its
+    coordinator "worker" (header "worker"); a second click keeps it expanded; only the chevron folds it (CR-461-108). The
+    coordinator (Antigravity) replied PAIR-OK to /hub. Statuses: pair and worker green, the unused daily assistant gray;
+    the first Hub run gray with its copy still green.                                                       Pass
+  J3 Closure: the Task card reads "pair"; the Task page says "Only agents change this Task". My setup gave Hub no
+    update_task (it answered "update_task is unavailable"); after adding the tool in Hub's Edit page, the running Hub
+    reported "TOOLS UPDATED · Now available: update_task", marked the Task DONE, and the pair rows left the tree 9 s later.
+    The open Task's worker copy stayed.                                                                     Pass
+  J4 Restart (isolated-app restart, same data root): both Hub runs listed (gray), the worker copy listed under the first run
+    with its name; opened, it showed its whole earlier conversation; a message resumed it (BACK; green) while its Hub
+    stayed stopped.                                                                                         Pass
+  Cleanup: isolated-app stop: wasRunning true, not forced, data root removed; list shows no instance of mine.
+  Recordings (kept outside the repo): /tmp/api461/r19/electron/rec/j1-agent.mp4, j2-team.mp4, j3-closure.mp4, j4-restart.mp4;
+  screenshots /tmp/api461/r19/electron/shots/.
+
+6. No new wording-only refusal difference (FU-030 unchanged).
+
+7. Addendum on CRR-059 (observation 2: the "Agent runtime changed" notice after a cross-runtime switch)
+  Branch desktop (isolated instance iso-56835-b816, from this round's build): a user-started run on Claude (Haiku 5.5), one
+    reply, stopped; in its Settings switched to AutoByteus deepseek-v4-flash and saved; one message: 2 notices in the live
+    chat (one after the earlier reply, one at the reply turn); answered SECOND. Instance stopped, data root removed.
+  Base desktop: not available. Two clean `isolated-app start --build` runs of 827f1e68dc exit before ready: the packaged server
+    lacks @autobyteus/application-sdk-contracts/dist/manifests.js (only index.js is copied; the package's dist is rewritten
+    after the copy). The packaging scripts and the package manifest are identical on the branch, whose build starts. Base build
+    issue, not a 461 difference.
+  Same check on the web stack, the identical runtime-switch-probe RSW-01 on both trees (a stopped standalone run, AutoByteus →
+    Antigravity, scripted models). Its runtime-change hint assertion is stale on both trees (the hint element is gone); it was
+    relaxed identically in both copies for this comparison and reverted afterwards (not committed).
+    Live chat after the switch:  base 827f1e68dc 1 notice;  branch 2 notices (an extra one after the previous reply)
+    After a reload:              base 1;                   branch 1
+    Screenshots: /tmp/api461/r19/obs2/rsw2-base/RSW-01-after-switch-live.png, /tmp/api461/r19/obs2/rsw2-branch/RSW-01-after-switch-live.png
+  F-91 (new, low): after a cross-runtime switch, the live chat shows the runtime-change notice twice (an extra copy after the
+    previous reply); base shows one; after a reload both show one. Seen on a user-started run and on a delegated copy.
+

@@ -10,5 +10,7 @@ export default defineConfig({
     root: fileURLToPath(new URL('./', import.meta.url)),
     // Tell this runner to ONLY look for tests inside the /electron directory.
     include: ['**/*.{test,spec}.{js,ts}'],
+    // Download the Electron binary once, before the workers start (a fresh clone has none).
+    globalSetup: ['./vitest.global-setup.ts'],
   },
 })

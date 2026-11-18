@@ -1,0 +1,11 @@
+# Check: IMP-03
+# Steps: pm clear, launch from the launcher (connection screen), adb shell input text into the node URL field, rotate (uiautomator reads the EditText text)
+# Build: before: 3bf9240d42 (unchanged base); after: worktree with the manifest change (committed as the implementation commit)
+# Environment: Emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, 136 px top cutout, Android 15 / API 35, google_apis arm64), started -no-window -wipe-data; debug APK built in this worktree; isolated test node abx415-rotation-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:62261:8000, fresh volumes, test data only) reached from the emulator at http://10.0.2.2:62261, paired through its own REST routes
+# Date: 2026-11-06
+
+## before fix: portrait typed 'http://abx415-typed-input.example:8000/mobile'; after rotation the EditText shows its hint 'https://desktop.tailnet-name.ts.net/mobile' (input lost) — screenshots IMP-03-before-*
+## after fix:
+portrait: http://abx415-typed-input.example:8000/mobile
+landscape: http://abx415-typed-input.example:8000/mobile cur=2400x1080
+back to portrait: http://abx415-typed-input.example:8000/mobile cur=1080x2400

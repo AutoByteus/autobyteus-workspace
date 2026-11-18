@@ -1,0 +1,86 @@
+# Check: IMP-01 the updated catalog unit test, before the catalog change (reproduction)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-ts && env -i … pnpm exec vitest run tests/unit/llm/supported-model-definitions.test.ts)
+# Commit: base 8df659441f source with the updated test only (branch codex/openai-gpt-6-1-terra)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-30 local
+# Result: expected failures: 2 of 23 (the ordered list lacks gpt-6.1-terra; the terra definition test finds no row). After 11fc06b3be the file passes (IMP-03).
+
+     × keeps one ordered aggregate and one contiguous Anthropic provider sublist 6ms
+     ✓ registers exact GPT-6 Sol/Luna and Opus 5.5 identities, schemas and Standard prices 2ms
+     ✓ prices Claude Sonnet 5 at the official Standard rates 0ms
+     ✓ registers Claude Sonnet 5.5 and Haiku 5.5 with limits, thinking schemas and Standard prices 1ms
+     ✓ gives every Claude row Anthropic effort with all five levels and the API default 0ms
+     ✓ exposes no thinking display setting on any Claude row (AC-010) 1ms
+     ✓ removes Claude rows below generation 5 without aliasing them 1ms
+     ✓ contains current named rows and removes the replaced curated identifiers 0ms
+     ✓ uses current provider values and request schemas 0ms
+     ✓ exposes the latest DeepSeek schedule and explicitly unprices unverified GLM deployment pricing 1ms
+     ✓ exposes exact DeepSeek Pro prior flat rates in history 0ms
+     ✓ requires exact current AutoByteus identifiers without aliasing removed rows 0ms
+     ✓ defines exact Gemini 3.8 identity, metadata, and fixed pricing history 0ms
+     ✓ prices Gemini 3.1 Pro Preview at the official per-prompt-size tiers 0ms
+     × defines exact GPT-6.1 Terra metadata, reasoning schema, media capabilities and both pricing tiers 1ms
+     ✓ defines exact GPT-6 Astra metadata, direct schema, and complete Standard pricing tiers 0ms
+     ✓ preserves gpt-5.6-sol pricing while reusing the generalized long-context constructor 0ms
+     ✓ preserves gpt-5.6-terra pricing while reusing the generalized long-context constructor 0ms
+     ✓ preserves gpt-5.6-luna pricing while reusing the generalized long-context constructor 0ms
+     ✓ defines exact Claude Fable 5.1 metadata and cache-aware Standard pricing with an effort-only schema 0ms
+     ✓ does not alias OPENAI model identifier gpt-6 0ms
+     ✓ does not alias OPENAI model identifier astra 0ms
+     ✓ does not alias ANTHROPIC model identifier claude-fable-5.1 0ms
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 passed (23)
+   Start at  12:35:52
+   Duration  1.03s (transform 258ms, setup 38ms, import 873ms, tests 15ms, environment 0ms)
+
+Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/llm/supported-model-definitions.test.ts > current supported model definitions > keeps one ordered aggregate and one contiguous Anthropic provider sublist
+AssertionError: expected [ 'gpt-6-astra', 'gpt-6-sol', …(30) ] to deeply equal [ 'gpt-6.1-terra', …(32) ]
+
+- Expected
++ Received
+
+@@ -1,7 +1,6 @@
+  [
+-   "gpt-6.1-terra",
+    "gpt-6-astra",
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+
+ ❯ tests/unit/llm/supported-model-definitions.test.ts:19:63
+     17|
+     18|   it('keeps one ordered aggregate and one contiguous Anthropic provide…
+     19|     expect(supportedModelDefinitions.map(({ name }) => name)).toEqual([
+       |                                                               ^
+     20|       'gpt-6.1-terra', 'gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna',
+     21|       'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/llm/supported-model-definitions.test.ts > current supported model definitions > defines exact GPT-6.1 Terra metadata, reasoning schema, media capabilities and both pricing tiers
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/llm/supported-model-definitions.test.ts:303:25
+    301|   it('defines exact GPT-6.1 Terra metadata, reasoning schema, media ca…
+    302|     const definitions = supportedModelDefinitions.filter((candidate) =…
+    303|     expect(definitions).toHaveLength(1);
+       |                         ^
+    304|     const [definition] = definitions;
+    305|     expect(definition).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 passed (23)
+   Start at  12:35:52
+   Duration  1.03s (transform 258ms, setup 38ms, import 873ms, tests 15ms, environment 0ms)

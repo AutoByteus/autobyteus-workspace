@@ -1,0 +1,7 @@
+# API-07 (round 2): full web unit/component suite
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Code: c9972a1581 (HEAD fce0d2dee6, docs only after it); macOS arm64, Node v22.23.1; Date: 2026-10-31T14:03:38Z
+
+ Test Files  679 passed (679)
+      Tests  4921 passed (4921)
+   Duration  218.94s (transform 26.77s, setup 1427.68s, collect 140.33s, tests 73.13s, environment 129.23s, prepare 80.11s)

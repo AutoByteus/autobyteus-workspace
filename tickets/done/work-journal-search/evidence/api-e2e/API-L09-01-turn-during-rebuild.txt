@@ -1,0 +1,14 @@
+# API-L09: CR-001 / SCN-E, an agent's journal change made while a full pass (Rebuild) runs is queued and becomes findable after the pass
+# Desktop iso-50688-fbfc (same build and data root); 2026-10-26 UTC
+# Rebuild clicked on the Index tab at 19:48:55.6 (confirmation row "Rebuild starts every step again. Search covers less of your memory while it runs. Rebuild Cancel" → Rebuild); sampler /private/tmp/wjs-api/L10-status.jsonl every 2 s
+# Turn: new Codex chat (Project Task Manager, GPT-6.1-Sol low) sent 19:49:35.4, reply "OK" (turn end ≈ 19:49:40): "Please reply OK and remember the word wombatcitrine6614 for the shed inventory; no tools." → run project_task_manager_3dbedfe7b3c642b1bb95e9d1eb2b2c67, created after Find runs had listed 3693 runs
+
+## Rebuild timeline (first sample of each state)
+19:48:48 MODEL_CHANGED  FIND_RUNS DONE 3693 · JOURNALS DONE · TEXT DONE 7439 · MEANING DONE 7439 (built with Granite; active LEAF-IR)
+19:48:56 BUILDING       FIND_RUNS DONE 3693/3693 · JOURNALS RUNNING 0/3693
+19:49:58 BUILDING       JOURNALS DONE 3693/3693 · TEXT_INDEX RUNNING            ← the turn happened between these two samples' neighbours (during the Journals step)
+19:51:39 READY          TEXT_INDEX DONE 7439/7439 · MEANING_INDEX DONE 0/7439 (embedding with LEAF-IR in the background)
+
+## Findability (probes/API-PROBE-freshness.mjs … wombatcitrine6614 2026-10-26T19:49:40.000Z 900000)
+{"samples": 74, "lastMiss": 119740, "foundAtMs": 120779, "hit": "project_task_manager_3dbedfe7b3c642b1bb95e9d1eb2b2c67 work_journal_active.md:5-6 TEXT/STRONG"}
+→ not findable while the index was being rebuilt (text step running); findable 1.6 s after the pass ended, by the queued live change (the run was not in the pass's Find runs list).

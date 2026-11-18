@@ -1,11 +1,14 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.tools.BrowserPanel.back": "后退",
+  "workspace.components.workspace.tools.BrowserPanel.forward": "前进",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged": "智能体运行时已更换",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated": "工具已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
-  "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
   "workspace.runModelConfig.orgOwnershipUnavailable": "此组织运行由应用管理，无法在此编辑模型设置。",
   "workspace.agentOrg.inspectionUnavailable": "无法读取已保存的智能体组织数据。未启动任何运行。",
   "workspace.runModelConfig.loading": "正在加载运行配置…",
@@ -14,15 +17,10 @@ const messages = {
   "workspace.runModelConfig.selectedModelUnavailable": "所选模型在当前运行时中不可用。",
   "workspace.runModelConfig.retry": "重试",
   "workspace.runModelConfig.noAdjustableSettings": "此模型没有可调整的设置。",
-  "workspace.runModelConfig.schemaUnavailable": "当前架构无法表示已保存的模型设置。",
   "workspace.runModelConfig.nativeModelHelp": "请选择已验证且上下文容量不小于已保存模型的模型。",
   "workspace.runModelConfig.externalModelHelp": "可选择此运行时提供的任意模型。恢复运行时由该运行时处理上下文限制。",
   "workspace.runModelConfig.unknownModelHelp": "此运行时的替换模型不可用。",
-  "workspace.runModelConfig.loadingOptions": "正在加载替换模型…",
   "workspace.runModelConfig.optionsUnavailable": "运行时模型选项暂不可用。请刷新此运行后重试；已保存的模型标识仍可查看。",
-  "workspace.runModelConfig.replacementInvalid": "此替换模型已不再提供或不符合条件。保存前请刷新选项。",
-  "workspace.runModelConfig.noNativeReplacements": "没有已验证的上下文容量相等或更大的替换模型。",
-  "workspace.runModelConfig.noCatalogReplacements": "此运行时目前未提供其他模型。",
   "workspace.runModelConfig.validation.required": "此项为必填项。",
   "workspace.runModelConfig.validation.type": "请输入 {expected} 类型的值。",
   "workspace.runModelConfig.validation.enum": "请选择支持的选项。",
@@ -33,9 +31,9 @@ const messages = {
   "workspace.runModelConfig.thinkingAdvancedOnly": "请使用下方的模型设置来控制思考。",
   "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
     "团队实时更新已不同步。请等待团队完成当前工作，然后再次选择此团队成员以重新加载完整对话。",
-  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
+  "workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait":
     "该团队仍在工作。请等待其完成，然后再次选择此团队成员。",
-  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry":
+  "workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry":
     "重新加载对话时团队活动发生了变化。请再次选择此团队成员以重试。",
   "workspace.agentOrg.recovery.exhausted":
     "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
@@ -82,7 +80,6 @@ const messages = {
   "workspace.agentOrg.history.collapseRun": "折叠 {{name}} 下的成员",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} 执行层级",
   "workspace.agentOrg.history.empty": "暂无智能体组织运行历史记录。",
-  "workspace.agentOrg.history.noWorkspace": "无工作区",
   "workspace.agentOrg.history.relativeNow": "刚刚",
   "workspace.agentOrg.history.relativeMinutes": "{{count}} 分钟",
   "workspace.agentOrg.history.relativeHours": "{{count}} 小时",
@@ -102,10 +99,14 @@ const messages = {
     "关闭图表查看器",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
     "在文件中打开 {{file}}",
-  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
-    "此文件仅在主机工作区中可用。",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node":
+    "此文件在 {{node}} 上，该运行在那里运行。",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "无法打开文件预览。",
+  "workspace.components.mobile.views.MobileFiles.node_file_not_found":
+    "在这台计算机上找不到此文件。",
+  "workspace.components.mobile.views.MobileFiles.node_file_is_folder":
+    "此路径是文件夹，不是文件。",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "智能体配置",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":
@@ -118,6 +119,21 @@ const messages = {
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "已继承",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
+  "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "跟踪在所属轮次结束后继续运行的命令。仅显示最近的运行时观测，并非所有系统进程。",
+  "workspace.components.progress.BackgroundTaskPanel.lastKnown": "以下为已记录／上次已知状态；运行数量尚未确认。",
+  "workspace.components.progress.BackgroundTaskPanel.loading": "正在检查此智能体的后台任务…",
+  "workspace.components.progress.BackgroundTaskPanel.unavailable": "当前无法检查后台任务。",
+  "workspace.components.progress.BackgroundTaskPanel.recordedCounts": "上次运行 {{running}} · 已记录 {{total}}",
+  "workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts": "当前数量不可用",
+  "workspace.components.progress.BackgroundTaskPanel.trackedEmpty": "没有跟踪到的后台命令",
+  "workspace.components.progress.BackgroundTaskPanel.shellCommand": "Shell 命令",
+  "workspace.components.progress.BackgroundTaskPanel.status.unknown": "未知",
+  "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · 观测于 {{time}}",
+  "workspace.components.progress.BackgroundTaskPanel.exitCode": "退出码 {{code}}",
+  "workspace.components.progress.BackgroundTaskPanel.end.timeLimit": "已停止：达到了时间限制，并非命令本身失败",
+  "workspace.components.progress.BackgroundTaskPanel.end.lowMemory": "已停止：计算机内存不足",
+  "workspace.components.progress.BackgroundTaskPanel.end.runEnded": "已停止：运行已结束",
+  "workspace.components.progress.BackgroundTaskPanel.noRun": "选择一个智能体以查看其后台任务。",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "后台任务",
   "workspace.components.progress.BackgroundTaskPanel.counts":
@@ -155,13 +171,15 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}。{{source}}。{{availability}}。捕获于 {{time}}。{{count}} 个字符。",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "由 AutoByteus 提供 · Native 已配置系统提示词",
+    "由 AutoByteus 提供 · AutoByteus 已配置系统提示词",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "由 AutoByteus 提供 · Claude SDK systemPrompt",
+    "由 AutoByteus 提供 · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "由 AutoByteus 提供 · Codex baseInstructions",
+    "由 AutoByteus 提供 · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "由 AutoByteus 提供 · Grok Build rules",
+  "workspace.components.progress.SystemInstructionActivityItem.source.deepseekHarness":
+    "由 AutoByteus 提供 · DeepSeek Harness 指令插件",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "由 AutoByteus 提供的系统指令",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",
@@ -179,6 +197,10 @@ const messages = {
     "未知队友",
   "workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member":
     "请选择团队成员以查看沟通记录。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_messages":
+    "正在加载消息…",
+  "workspace.components.workspace.team.TeamCommunicationPanel.messages_unavailable":
+    "无法显示这些消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_title":
     "暂无团队消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":
@@ -240,6 +262,13 @@ const messages = {
   "workspace.history.hierarchy.status.error": "错误",
   "workspace.history.hierarchy.status.idle": "空闲",
   "workspace.history.hierarchy.status.offline": "离线",
+  "workspace.agentActivity.initializing": "正在初始化",
+  "workspace.agentActivity.running": "运行中",
+  "workspace.agentActivity.backgroundOne": "后台任务运行中",
+  "workspace.agentActivity.backgroundOther": "{{count}} 个后台任务运行中",
+  "workspace.agentActivity.idle": "空闲",
+  "workspace.agentActivity.error": "错误",
+  "workspace.agentActivity.offline": "离线",
   "workspace.members.started_by": "由 {{name}} 启动",
   "workspace.task_monitor.loading": "正在加载活动…",
   "workspace.task_monitor.load_error": "无法加载活动。",
@@ -281,6 +310,36 @@ const messages = {
     "模型",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "选择模型",
+  "workspace.components.workspace.tools.NodeDesktopTile.title": "节点桌面",
+  "workspace.components.workspace.tools.NodeDesktopTile.connecting": "正在连接…",
+  "workspace.components.workspace.tools.NodeDesktopTile.connected_view_only": "已连接 · 仅查看",
+  "workspace.components.workspace.tools.NodeDesktopTile.connected_control": "已连接 · 控制",
+  "workspace.components.workspace.tools.NodeDesktopTile.disconnected": "已断开",
+  "workspace.components.workspace.tools.NodeDesktopTile.desktop_disconnected": "节点桌面已断开",
+  "workspace.components.workspace.tools.NodeDesktopTile.connection_refused": "连接被拒绝",
+  "workspace.components.workspace.tools.NodeDesktopTile.cannot_reach_node": "无法连接到该节点",
+  "workspace.components.workspace.tools.NodeDesktopTile.not_allowed": "此查看器无权访问该节点",
+  "workspace.components.workspace.tools.NodeDesktopTile.needs_connecting": "此桌面尚未连接该节点。请在“节点”页面连接。",
+  "workspace.components.workspace.tools.NodeDesktopTile.no_shared_desktop": "该节点没有共享桌面",
+  "workspace.components.workspace.tools.NodeDesktopTile.connect": "连接",
+  "workspace.components.workspace.tools.NodeDesktopTile.reconnect": "重新连接",
+  "workspace.components.workspace.tools.NodeDesktopTile.disconnect": "断开",
+  "workspace.components.workspace.tools.NodeDesktopTile.view_only": "仅查看",
+  "workspace.components.workspace.tools.NodeDesktopTile.control": "控制",
+  "workspace.components.workspace.tools.NodeDesktopTile.switch_to_control": "切换到控制：你的键盘和鼠标将操作智能体的桌面",
+  "workspace.components.workspace.tools.NodeDesktopTile.switch_to_view_only": "切换到仅查看",
+  "workspace.components.workspace.tools.NodeDesktopTile.maximize_view": "最大化视图",
+  "workspace.components.workspace.tools.NodeDesktopTile.restore_view": "还原视图（Esc）",
+  "workspace.components.workspace.tools.VncViewer.checking_node_desktop": "正在检查该节点的桌面…",
+  "workspace.components.workspace.tools.VncViewer.no_shared_desktop": "该节点没有共享桌面。",
+  "workspace.components.workspace.tools.VncViewer.cannot_reach_node": "无法连接到该节点。",
+  "workspace.components.workspace.tools.VncViewer.retry": "重试",
+  "workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers": "该节点当前的查看者过多",
+  "workspace.components.workspace.tools.NodeDesktopTile.retry": "重试",
+  "workspace.pathRefusal.notAbsolute": "请输入完整路径，以 / 开头。",
+  "workspace.pathRefusal.notAbsoluteWindows": "请输入完整路径，以盘符开头，例如 C:\\。",
+  "workspace.pathRefusal.missing": "此路径下没有文件夹。",
+  "workspace.pathRefusal.notAFolder": "此路径是文件，不是文件夹。",
 } satisfies TranslationCatalog;
 
 export default messages;

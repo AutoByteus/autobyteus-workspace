@@ -12,6 +12,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { agentStreamFramesOf } from "../helpers/agent-stream-frames.js";
 
 // Live Work Journal through the real Studio server and each real runtime (REQ-W1, W4, W6, W7; SCN-W1).
 // Every runtime gets the same small task (a command, a read, a write, an edit). After its turn ends,
@@ -36,12 +37,14 @@ const AUTOBYTEUS_MODEL = AUTOBYTEUS_PROVIDER === "DEEPSEEK" ? process.env.DEEPSE
   : process.env.LMSTUDIO_TARGET_TEXT_MODEL?.trim() || "qwen3.6-35b-a3b";
 const STEP_TIMEOUT_MS = Number(process.env.WORK_JOURNAL_E2E_STEP_TIMEOUT_MS || 300_000);
 const EVIDENCE_DIR = process.env.WORK_JOURNAL_E2E_EVIDENCE_DIR?.trim() || "";
-const TASK = [
+// The files are named by absolute path: AutoByteus file tools refuse a relative path without an
+// absolute base_dir, and a refused call is a runtime ERROR here.
+const task = (workspace: string) => [
   "Use your tools for each step below, one tool call per step, in this order:",
   "1) run the shell command `ls`;",
-  "2) read the file notes.txt;",
-  "3) create a new file out.txt whose content is exactly the word alpha;",
-  "4) edit out.txt to replace alpha with beta.",
+  `2) read the file ${path.join(workspace, "notes.txt")};`,
+  `3) create a new file ${path.join(workspace, "out.txt")} whose content is exactly the word alpha;`,
+  `4) edit ${path.join(workspace, "out.txt")} to replace alpha with beta.`,
   "Then reply with exactly: DONE",
 ].join("\n");
 const BUILT_INS: Record<string, string[]> = JSON.parse(readFileSync(
@@ -153,9 +156,8 @@ describe("Work Journal on each live runtime", () => {
     socket.on("message", (raw: unknown) => {
       try {
         const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type !== "string") return;
-        messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object"
-          && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
+        // autobyteus-461 SR-087: a SEGMENT_CONTENT_BATCH is its items (each a SEGMENT_CONTENT), as the web applies it.
+        messages.push(...agentStreamFramesOf(parsed));
         if (parsed.type === "TURN_COMPLETED" && memoryDir) input.onTurnCompleted?.(memoryDir);
       } catch { /* Ignore malformed diagnostic rows only. */ }
     });
@@ -184,7 +186,7 @@ describe("Work Journal on each live runtime", () => {
       await until(async () => (await journal(journalFile)).includes(journalMarker), `${journalFile} includes the turn`, 30_000);
     };
 
-    await send(TASK, "DONE");
+    await send(task(workspace), "DONE");
     const text = await journal();
     const raw = readRaw(path.join(memoryDir, "raw_traces_active.jsonl"));
     const calls = raw.filter((record) => record.trace_type === "tool_call");

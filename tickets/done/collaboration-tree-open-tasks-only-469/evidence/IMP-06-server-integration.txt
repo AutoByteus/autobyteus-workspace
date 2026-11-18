@@ -1,0 +1,6 @@
+# IMP-06 server integration suite
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare; then vitest run tests/integration .integration.test.ts (the test:integration set)
+# Code: commit 42652879b3 (the working tree it ran on equals that commit's content)
+# Environment: macOS (darwin 25.5); 2026-11-10; gated suites stay skipped without their gates
+
+files: 110  tests: 593  passed: 524  failed: 0  skipped: 69

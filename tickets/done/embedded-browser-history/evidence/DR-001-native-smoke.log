@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.9-beta.10 test:e2e:embedded-browser-history /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web
+> node tests/e2e/embedded-browser-history-probe.mjs --cases API-03 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/done/embedded-browser-history/evidence/DR-native
+
+{"time":"2026-10-26T17:39:11.931Z","caseId":"API-03","event":"Started"}
+{"time":"2026-10-26T17:39:12.365Z","caseId":"API-03","event":"Completed","result":"Pass"}
+{"time":"2026-10-26T17:39:12.365Z","caseId":"API-08","event":"Started"}
+{"time":"2026-10-26T17:39:22.583Z","caseId":"API-08","event":"Completed","result":"Pass"}

@@ -1,0 +1,70 @@
+# Check: IMP-13-size-guardrails
+# Command: for each changed source file (server src, web components/stores/graphql/composables/pages/utils, no tests or generated): effective lines = lines not blank or comment-only (grep -cvE '^\s*$|^\s*//|^\s*\*|^\s*/\*|^\s*<!--'), at HEAD and at base 0295553657; added = git diff --numstat 0295553657 (new files: total lines)
+# Commit: 858e493786 (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64
+# Date: 2026-11-01T07:10:56Z
+
+effective_now effective_base +added file
+479 476 +5 autobyteus-web/components/skills/SkillsList.vue
+478 478 +1 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+456 456 +1 autobyteus-server-ts/src/compositions/build-studio-server.ts
+398 397 +3 autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+371 364 +14 autobyteus-server-ts/src/skills/services/skill-service.ts
+303 281 +40 autobyteus-server-ts/src/skills/services/skill-source-service.ts
+297 282 +31 autobyteus-server-ts/src/api/graphql/types/skills.ts
+225 186 +47 autobyteus-web/components/skills/SkillCard.vue
+224 0 +248 autobyteus-web/components/integrations/IntegrationDetail.vue
+216 0 +278 autobyteus-server-ts/src/credential-proxy/integration-catalog.ts
+190 200 +1 autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue
+171 0 +205 autobyteus-server-ts/src/api/graphql/types/integrations.ts
+170 0 +208 autobyteus-web/stores/integrationsStore.ts
+168 0 +188 autobyteus-web/components/integrations/IntegrationSourcesDialog.vue
+156 0 +171 autobyteus-web/components/integrations/IntegrationImportDialog.vue
+146 146 +5 autobyteus-server-ts/src/credential-proxy/credential-proxy-forwarder.ts
+146 0 +176 autobyteus-server-ts/src/credential-proxy/integration-manifest.ts
+142 142 +2 autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+136 130 +8 autobyteus-web/composables/useShellPrimaryNavigation.ts
+121 134 +46 autobyteus-server-ts/src/credential-proxy/integration-connection-service.ts
+120 105 +18 autobyteus-web/composables/useAppLeftPanelSectionResize.ts
+117 109 +35 autobyteus-server-ts/src/credential-proxy/credential-proxy-routes.ts
+115 116 +5 autobyteus-server-ts/src/agent-execution/backends/acp/session/acp-session-launcher.ts
+108 0 +120 autobyteus-web/pages/integrations.vue
+107 107 +2 autobyteus-server-ts/src/api/graphql/schema.ts
+105 103 +2 autobyteus-web/graphql/skills.ts
+105 0 +143 autobyteus-server-ts/src/credential-proxy/delivery-definitions.ts
+90 0 +109 autobyteus-server-ts/src/credential-proxy/integration-import-outcomes.ts
+80 92 +15 autobyteus-server-ts/src/credential-proxy/integration-connection-store.ts
+74 0 +81 autobyteus-web/components/integrations/IntegrationSourceRow.vue
+69 0 +76 autobyteus-web/components/integrations/IntegrationTile.vue
+66 46 +29 autobyteus-server-ts/src/credential-proxy/credential-proxy-host.ts
+57 0 +62 autobyteus-web/graphql/queries/integrationsQueries.ts
+54 54 +2 autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-query-options.ts
+52 0 +56 autobyteus-web/components/integrations/IntegrationToolsRow.vue
+50 0 +54 autobyteus-web/components/integrations/IntegrationDialog.vue
+49 0 +55 autobyteus-web/graphql/mutations/integrationsMutations.ts
+48 50 +0 autobyteus-web/components/settings/ServerSettingsBasicsPanel.vue
+48 0 +70 autobyteus-server-ts/src/credential-proxy/integration-access-rule.ts
+45 0 +58 autobyteus-web/composables/useModalDialog.ts
+40 32 +17 autobyteus-server-ts/src/skills/domain/skill-source.ts
+37 34 +20 autobyteus-server-ts/src/credential-proxy/integration-run-access.ts
+35 23 +27 autobyteus-server-ts/src/credential-proxy/run-pass-registry.ts
+33 0 +46 autobyteus-server-ts/src/skills/domain/integration-folder-requirement.ts
+29 0 +32 autobyteus-web/components/integrations/IntegrationStatusChip.vue
+27 0 +34 autobyteus-server-ts/src/credential-proxy/tool-presence.ts
+20 0 +32 autobyteus-web/utils/integrations/integrationText.ts
+18 0 +20 autobyteus-web/components/integrations/IntegrationStepMarker.vue
+13 0 +16 autobyteus-web/components/integrations/IntegrationIcon.vue
+11 0 +13 autobyteus-web/utils/externalLink.ts
+10 10 +3 autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.ts
+
+# Files over 500 effective lines: none, if no first column above exceeds 500.
+# Deltas over 220 added lines: see the rows with +added > 220.
+# Assessment of the two rows with more than 220 added lines (after the split in 858e493786):
+# - IntegrationDetail.vue: 224 effective (248 total). One owner: the integration dialog's body (header, state,
+#   token step with Connect/Test/Replace/Remove, the access hint). The tools row moved to IntegrationToolsRow.vue
+#   (+282 added lines at cf51bf0c55, before the split). Further splitting would cut the connect step's single state machine. Kept.
+# - integration-catalog.ts: 216 effective (278 total, with doc comments). One owner: the catalog's list, import,
+#   update, remove, sources view and the source-change observer (DS-001, DS-002, DS-005). Input classification and
+#   importer-outcome mapping moved to integration-import-outcomes.ts (+367 added lines at cf51bf0c55, before the split). Kept.
+# IntegrationSourcesDialog.vue went from +244 to +188 (the row moved to IntegrationSourceRow.vue).
+# No changed file is over 500 effective lines, and no file already over 500 grew.

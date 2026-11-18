@@ -1,0 +1,25 @@
+# Evidence: IMP-16-nodes-docker-address-probe.log
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional) pnpm -C autobyteus-web test:e2e:nodes-docker-address --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-16-nodes-docker-address-probe --docker-image=mnp-363-test:merged-35e5853a22
+# Commit: 35e5853a22 (Merge origin/personal (84ea944ac5) into codex/manage-nodes-professional (autobyt)
+# Working tree: 0 changed tracked/untracked paths under autobyteus-web, autobyteus-server-ts
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 10:56:17 CET
+# Run by: implementation_engineer (autobyteus-363)
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:nodes-docker-address /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web
+> node tests/e2e/nodes-docker-address-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-16-nodes-docker-address-probe --docker-image=mnp-363-test:merged-35e5853a22
+
+[probe] ND-01 started
+[probe] ND-01 Pass
+[probe] ND-04 started
+[probe] ND-04 Pass
+[probe] ND-05 started
+[probe] ND-05 Pass
+[probe] ND-02 started
+[probe] ND-02 Pass
+[probe] ND-03 started
+[probe] ND-03 Pass
+nodes-docker-address probe: Pass
+
+# Exit code: 0

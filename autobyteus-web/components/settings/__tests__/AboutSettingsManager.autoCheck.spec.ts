@@ -32,7 +32,7 @@ describe('Settings → Updates automatic check', () => {
     expect(wrapper.get('[data-testid="settings-updates-auto-check-toggle"]').attributes('aria-checked')).toBe('true');
     expect(wrapper.get('[data-testid="settings-updates-auto-state"]').text()).toBe('Automatic checks: every 1 hour');
     expect(wrapper.get('[data-testid="settings-updates-auto-check-description"]').text())
-      .toContain('A newer version is only announced; you decide to download and install it.');
+      .toContain('A newer version is only announced, unless Update automatically below is on.');
     expect((wrapper.get('[data-testid="update-interval-app-value"]').element as HTMLInputElement).value).toBe('1');
     expect(wrapper.get('[data-testid="settings-updates-status"]').text()).toContain('Up to date');
   });

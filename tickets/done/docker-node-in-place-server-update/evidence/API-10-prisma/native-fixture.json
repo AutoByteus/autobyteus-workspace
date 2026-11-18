@@ -1,0 +1,22 @@
+{
+  "revision": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
+  "target": "linux-arm64-openssl-3.0.x",
+  "receipts": [
+    {
+      "url": "https://binaries.prisma.sh/all_commits/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine.gz",
+      "checksumUrl": "https://binaries.prisma.sh/all_commits/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine.gz.sha256",
+      "compressedSha256": "2f1b52de49aa6d63a6fae488be18a05ee14305c024d7de52bc19b2285bcafd26",
+      "sha256": "95ebf7a1c1b2378d66c9e0974e929736344381f82e0a1fb1b9a7e7fef91cef22",
+      "bytes": 19151512,
+      "local": "schema-engine"
+    },
+    {
+      "url": "https://binaries.prisma.sh/all_commits/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery_engine.so.node.gz",
+      "checksumUrl": "https://binaries.prisma.sh/all_commits/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/libquery_engine.so.node.gz.sha256",
+      "compressedSha256": "f46c5c49fad7402fd3cec5bc7cd827e5872895729430aa0715b84a548b2a77ae",
+      "sha256": "3de76598179b95c6910e28547ee3af9236d978cd3e0917b63a3b531f84bfb8d0",
+      "bytes": 15606128,
+      "local": "libquery-engine"
+    }
+  ]
+}

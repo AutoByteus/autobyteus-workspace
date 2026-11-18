@@ -1,0 +1,60 @@
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/remoteAccess/__tests__/websocketAuth.spec.ts (2 tests) 25ms
+stdout | services/__tests__/mermaidService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/__tests__/mermaidService.spec.ts (1 test) 4ms
+stderr | layouts/__tests__/settings.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaboration/__tests__/memberRoleLabel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/nodes.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/projects/__tests__/pathBreakSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/projects/__tests__/pathBreakSegments.spec.ts (2 tests) 2ms
+ ✓ scripts/__tests__/typecheckGate.spec.ts (19 tests) 6ms
+stderr | localization/messages/__tests__/shellCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts > ExcelViewer.vue (real SheetJS parser) > shows the fetch error with Retry, and Retry loads the file
+[ExcelViewer] Error loading Excel file: Error: Failed to fetch file: 500 Server Error
+    at loadExcel [90m(/private/tmp/crr-clean/autobyteus-web/[39mcomponents/fileExplorer/viewers/ExcelViewer.vue:87:15[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 30ms
+ ✓ components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts (10 tests) 148ms
+stdout | layouts/__tests__/settings.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaboration/__tests__/memberRoleLabel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ layouts/__tests__/settings.spec.ts (1 test) 1ms
+ ✓ utils/collaboration/__tests__/memberRoleLabel.spec.ts (5 tests) 2ms
+stdout | pages/__tests__/nodes.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/shellCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ pages/__tests__/nodes.spec.ts (1 test) 8ms
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 2ms
+
+ Test Files  670 passed (670)
+      Tests  4871 passed | 2 skipped (4873)
+   Start at  09:08:44
+   Duration  210.72s (transform 26.67s, setup 1369.76s, collect 142.05s, tests 74.85s, environment 115.86s, prepare 75.35s)
+
+WEBFULL_EXIT=0

@@ -1,0 +1,20 @@
+# API-03 (round 2) — full server unit/arch/migrations/work-journal suite at code dfa0faa76
+# Command: env -i PATH=$PATH HOME=/root TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts test:unit --no-watch   (cwd: worktree root; pnpm via /tmp/pnpm-shim)
+# Commit: dfa0faa76 (tests of be161036e only add e2e/probe files outside this suite) · ENV-1 (uid 0) · 2026-11-10 · Case API-03
+# Full log (ANSI stripped): API-03-r2-server-unit.full.log.gz next to this file
+# ---- summary ----
+   Duration  979.64s (transform 27.61s, setup 29.54s, import 537.64s, tests 271.79s, environment 1.88s)
+ Test Files  3 failed | 968 passed | 5 skipped (976)
+      Tests  8 failed | 8292 passed | 12 skipped (8312)
+# ---- failing tests ----
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then re
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every ca
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then 
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+# ---- causes (Rule 9; same files and causes as round 1) ----
+# agent-package-folder-watcher.test.ts (5), unreadable-package-root.test.ts (2), app-config.test.ts (1): each chmod()s a folder/file to 000/read-only and expects EACCES; uid 0 ignores permissions (id=0). Environmental.
+# round 1's pairing-auth-service.test.ts teardown race (FU-008) did not recur in this run (968 files pass). No file in the list is touched by this change; none touches run-model-selection.

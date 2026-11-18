@@ -7,7 +7,6 @@ import type { FastifyInstance } from "fastify";
 import { extension as mimeExtension } from "mime-types";
 import { getMediaStorageService } from "../../services/media-storage-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
 import {
   buildDefaultClientFacingUrlContext,
   getClientFacingUrlResolver,
@@ -17,6 +16,9 @@ const logger = {
   info: (...args: unknown[]) => console.info(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
+
+/** The avatar/media upload limit; its own rule, independent of the context-file limits. */
+const UPLOAD_FILE_MAX_BYTES = 25 * 1024 * 1024;
 
 const allowedMimeTypes = new Set([
   "application/pdf",
@@ -83,7 +85,7 @@ function getCategoryFromMimetype(mimeType: string): string {
 
 export async function registerUploadRoutes(app: FastifyInstance): Promise<void> {
   app.post("/upload-file", async (request, reply) => {
-    const file = await request.file();
+    const file = await request.file({ limits: { fileSize: UPLOAD_FILE_MAX_BYTES } });
     if (!file) {
       return reply.code(400).send({ detail: "No file uploaded." });
     }
@@ -126,7 +128,6 @@ export async function registerUploadRoutes(app: FastifyInstance): Promise<void> 
     const fileUrl = getClientFacingUrlResolver().resolveRestResourceUrl({
       context: buildDefaultClientFacingUrlContext({
         request,
-        authContext: getRemoteAccessAuthContext(request),
         localFallbackBaseUrl: appConfigProvider.config.getBaseUrl(),
       }),
       restPath: `/rest/files/${relativePath}`,

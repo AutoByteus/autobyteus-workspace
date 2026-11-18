@@ -21,7 +21,7 @@ const productTeamRun = {
   address: "/product_team", teamRunId: "product-team-run", delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:00.000Z",
   members: [{ address: "/product_team/lead", agentRunId: "lead-run", platformAgentRunId: null }], taskExecutions: [],
   source: { kind: "agent_team", teamDefinitionId: "product-team-def", coordinatorAddress: "/product_team/lead", handoffs: [],
-    members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def", launchConfiguration, followsTeam: true }], defaultLaunchConfiguration: launchConfiguration },
+    members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def", launchConfiguration }], defaultLaunchConfiguration: launchConfiguration },
 };
 
 const agentView = (overrides = {}) => ({
@@ -29,56 +29,57 @@ const agentView = (overrides = {}) => ({
   root_run_id: "host-run",
   root_agent: {
     base_change_sequence: 3,
+    live_sequence_id: "live-1", last_message_change_sequence: 0,
     is_active: true,
     execution_tree: {
       subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
       host: { address: "/research_assistant", agentRunId: "host-run", agentDefinitionId: "research-def" },
-      taskExecutions: [
-        reviewerRun, productTeamRun,
-        { address: "/code_reviewer", agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z", source: agentSource },
-      ],
     },
-    closed_task_executions: [],
-    communication_messages: {
-      schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run",
-      messages: [{
-        messageId: "m1", senderAgentRunId: "reviewer-run", receiverAgentRunId: "host-run", content: "done",
-        messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-30T00:00:02.000Z",
-      }],
-    },
-    agent_input_states: [],
-    remote_task_executions: [],
-    agent_statuses: [
-      { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-      { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-      { member_address: "/code_reviewer", agent_run_id: "reviewer-copy-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    ],
     ...overrides,
   },
 });
 
-test("an Agent root tree has no collaborators; delegated runs carry their run identities", () => {
+test("an Agent root view is its host's: the runs it delegated, their statuses and input are not in it (autobyteus-461 SR-083, SR-084)", () => {
   const view = agentView();
   assert.equal(RootExecutionViewDtoSchema.parse(view).root_subject_kind, "agent");
-  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, collaborators: [] } })));
-  const { agentRunId: _omit, ...withoutRun } = reviewerRun;
-  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, taskExecutions: [withoutRun] } })));
+  for (const field of [
+    { taskExecutions: [reviewerRun] }, { collaborators: [] },
+  ]) assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, ...field } })));
+  for (const field of [
+    { closed_task_executions: [] }, { remote_task_executions: [] }, { agent_statuses: [] }, { agent_input_states: [] },
+  ]) assert.throws(() => RootExecutionViewDtoSchema.parse(agentView(field)));
 });
 
-test("an Agent root view correlates host, children, messages and statuses", () => {
+test("an Agent root view correlates its host, and carries no message log (autobyteus-358)", () => {
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ communication_messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run", messages: [] } })));
   assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_subject_kind, "agent");
-  assert.throws(() => RootExecutionViewDtoSchema.parse({ ...agentView(), root_run_id: "other" }));
-  const unknownStatus = agentView();
-  unknownStatus.root_agent.agent_statuses[0].agent_run_id = "host-run";
-  unknownStatus.root_agent.agent_statuses[0].member_address = "/research_assistant";
-  assert.throws(() => RootExecutionViewDtoSchema.parse(unknownStatus), /status identity/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse({ ...agentView(), root_run_id: "other" }), /host correlation/);
+});
+
+test("an Agent root view names its live sequence, or null for a stored view; the field is required (autobyteus-358)", () => {
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_agent.live_sequence_id, "live-1");
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, last_message_change_sequence: null, is_active: false })).root_agent.live_sequence_id, null);
+  const missing = agentView();
+  delete missing.root_agent.live_sequence_id;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: "", last_message_change_sequence: 0 })));
+  // The latest message sequence (SR-007) comes with the live sequence, and is never past the base.
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: 3 })).root_agent.last_message_change_sequence, 3);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: 4 })), /past its base/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: null })), /together/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, is_active: false })), /together/);
 });
 
 test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions", () => {
-  assert.equal(RootExecutionEventDtoSchema.parse({
-    root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 4,
-    event: { kind: "task_execution_started", host_kind: "root", host_run_id: "host-run", execution: reviewerRun },
-  }).event.kind, "task_execution_started");
+  // A run it delegated is a row of its tree (`run_tree_changed`), not a row event (SR-084).
+  for (const kind of ["task_execution_started", "task_executions_closed", "task_executions_reopened"]) {
+    assert.throws(() => RootExecutionEventDtoSchema.parse({
+      root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 4,
+      event: { kind, host_kind: "root", host_run_id: "host-run", execution: reviewerRun, task_executions: [{ agentRunId: "reviewer-run" }] },
+    }));
+  }
+  assert.equal(RootExecutionEventDtoSchema.parse({ root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 4,
+    event: { kind: "run_tree_changed", added: [], removed: [], updated: [] } }).event.kind, "run_tree_changed");
   assert.throws(() => RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 5,
     event: { kind: "collaborator_added", collaborator: productTeamRun },
@@ -101,26 +102,15 @@ test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESS
   }));
 });
 
-test("Org trees have no collaborators list", () => {
+test("Org trees have their own parts only: no collaborators list, no delegated runs (SR-084)", () => {
   const tree = {
     subjectKind: "agent_org", createdAt: "2026-09-01T00:00:00.000Z", archivedAt: null, applicationBinding: null, handoffs: [],
     rootOrg: {
       address: "/", orgDefinitionId: "org-def", orgDefinitionName: "Org", orgRunId: "org-run",
-      defaultLaunchConfiguration: launchConfiguration, members: [], taskExecutions: [productTeamRun],
+      defaultLaunchConfiguration: launchConfiguration, members: [],
     },
   };
-  assert.equal(agentOrgExecutionTreeDtoSchema.parse(tree).rootOrg.taskExecutions.length, 1);
+  assert.equal(agentOrgExecutionTreeDtoSchema.parse(tree).rootOrg.members.length, 0);
   assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: { ...tree.rootOrg, collaborators: [] } }));
-});
-
-test("Agent-root live input projection is required and carries held/queued recovery facts", () => {
-  const view = agentView();
-  const state = { run_instance_id: "native-instance", revision: 2, entries: [], recoverableBlock: {
-    operationId: "op", failureEpoch: 1, position: { kind: "next_turn", failedTurnId: "A" },
-    state: "awaiting_user", code: "failed", message: "retry required",
-  } };
-  view.root_agent.agent_input_states.push({ agent_run_id: "reviewer-run", state });
-  assert.deepEqual(RootExecutionViewDtoSchema.parse(view).root_agent.agent_input_states[0].state, state);
-  delete view.root_agent.agent_input_states;
-  assert.throws(() => RootExecutionViewDtoSchema.parse(view));
+  assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: { ...tree.rootOrg, taskExecutions: [productTeamRun] } }));
 });

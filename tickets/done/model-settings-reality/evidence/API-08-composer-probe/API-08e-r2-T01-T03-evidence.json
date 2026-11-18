@@ -1,0 +1,172 @@
+{
+  "startedAt": "2026-11-10T16:11:50.371Z",
+  "cases": {
+    "T01": {
+      "title": "AutoByteus-runtime Claude row with a thinking switch: merged menu at desktop width; untouched = On at the default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)",
+      "result": "Pass",
+      "ms": 7165,
+      "details": {
+        "model": "claude-sonnet-5-5",
+        "effortLevels": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultEffort": "high",
+        "initial": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(128, 128, 128)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "openFocus": "chat-thinking-option-primary-off",
+        "onMenu": {
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 1040.5,
+            "y": 370,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 591.5,
+            "right": 1216.5
+          },
+          "position": "absolute"
+        },
+        "off": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "high": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(77, 77, 77)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "offAgain": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "medium": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        },
+        "storedOffMedium": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "repick": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    },
+    "T03": {
+      "title": "Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)",
+      "result": "Pass",
+      "ms": 5801,
+      "details": {
+        "runId": "daily_assistant_4ae2a85cd1674bb39f87e01570e6bf6e",
+        "recordedOff": {
+          "thinking_enabled": false,
+          "reasoning_effort": "high"
+        },
+        "offRendered": {
+          "trigger": "Off"
+        },
+        "before": "high",
+        "target": "high",
+        "after": {
+          "trigger": "High",
+          "saveEnabled": true
+        },
+        "saved": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 69151
+    },
+    {
+      "label": "frontend",
+      "pid": 69313
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 69313,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 69151,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/chat-composer-polish-u0jwEv"
+    }
+  ],
+  "ownedRoot": "/tmp/chat-composer-polish-u0jwEv",
+  "backendUrl": "http://127.0.0.1:43873",
+  "frontUrl": "http://127.0.0.1:39279",
+  "workspaces": {
+    "alpha-notes": "agent_ws_b29268c23d6fdebe8525fbd1c1e157602996494661209f943cf7fdbe5c56c766",
+    "autobyteus_mcps": "agent_ws_6cf3d41df6058bf115ef98c0c0319ae90d1dd84ed8141df73f5af8b4d4b6c34a",
+    "MCPS-tools": "agent_ws_dc531ba5d1fa7a719b0d8f88c9205ff14e8ec7cdf8aac358f697bd831f3feea2",
+    "beta-site": "agent_ws_11d81b48813b544b503646c21b00bf582a74aa43343af8cc2d4f7b4e0b1e1686",
+    "gamma-api": "agent_ws_4a48e9e02002bb534df6d3aff89e87de4591c064f7ec899bf77cd350b0f6f3b9",
+    "delta-infra": "agent_ws_f825b3dc7d967df9b2146ecbaa60b4efef670700cbf67930c961a4537b9e257c",
+    "epsilon-docs": "agent_ws_cdd2f5759cfa520d3159dd296c713475627c4834a54cf782149efddf14772dbd",
+    "zeta-mobile": "agent_ws_42762520e8887f0c808d5865628d5873603dd3073ccb542a587f197e39fdd18b",
+    "eta-data": "agent_ws_5a315218a59b3e79503638d39dca3f9cee781028d40bb77cc97dc7080cf91967",
+    "theta-ml": "agent_ws_633a1a973f62fa5db4fdb1e07531f8157febb0fb2c30b4c13b8aa0586bcf46c2",
+    "iota-web": "agent_ws_1fa8a5ba9754a33a5b7e2f8be1e4345034f909576d18da1ff230ff374495f450",
+    "kappa-cli": "agent_ws_ac4a01905cd33d866be0a1df58f1fb10cb59fe9c0859a7dc379c5340645a24c0",
+    "lambda-sdk": "agent_ws_3fde75e2289d0ac5ed2a245d77b0e5fcf64934643c54666820682b2a8abc268a",
+    "notes": "agent_ws_e9920f6191911147db49274bc77068f3ce03f6b240bace1f0eb4051b07fe0602"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-11-10T16:12:21.772Z"
+}

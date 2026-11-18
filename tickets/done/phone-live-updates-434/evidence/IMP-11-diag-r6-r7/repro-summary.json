@@ -1,0 +1,415 @@
+{
+  "startedAt": "2026-11-08T08:37:44.736Z",
+  "scenarios": {
+    "R6": {
+      "liveView": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "freshDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "afterTurnSameView": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedAfterTurn": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "stored": [
+        {
+          "entry": "assistant:REPLY:Start. Marker WARMUP.",
+          "hasMessageId": false
+        },
+        {
+          "entry": "user:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": true
+        },
+        {
+          "entry": "tool_call:",
+          "hasMessageId": false
+        },
+        {
+          "entry": "assistant:REPLY:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        }
+      ]
+    },
+    "R7": {
+      "hiddenMs": 35000,
+      "shownWhileHidden": false,
+      "socketsOpenedWhileHidden": 0,
+      "shownAfterVisibleMs": null,
+      "nextMarkerMs": 47,
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_8ccf670bc14c4ec3821dc2ddfd7158a6?access_token=…",
+          "openedAt": 80985,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "t": 3781,
+      "event": "team",
+      "teamRunId": "delivery_team_8ccf670bc14c4ec3821dc2ddfd7158a6",
+      "leadRun": "solution_designer_52fa25679da44ac3a41690f15af8ce5b"
+    },
+    {
+      "t": 8353,
+      "event": "phone paired"
+    },
+    {
+      "t": 8527,
+      "event": "phone opened the lead"
+    },
+    {
+      "t": 45915,
+      "event": "R6",
+      "liveView": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "freshDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "afterTurnSameView": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedAfterTurn": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "stored": [
+        {
+          "entry": "assistant:REPLY:Start. Marker WARMUP.",
+          "hasMessageId": false
+        },
+        {
+          "entry": "user:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": true
+        },
+        {
+          "entry": "tool_call:",
+          "hasMessageId": false
+        },
+        {
+          "entry": "assistant:REPLY:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        }
+      ]
+    },
+    {
+      "t": 45924,
+      "event": "proxy",
+      "mode": "blackhole",
+      "open": 8
+    },
+    {
+      "t": 47927,
+      "event": "proxy",
+      "mode": "pass for new connections; old connections stay dead"
+    },
+    {
+      "t": 96114,
+      "event": "R7",
+      "hiddenMs": 35000,
+      "shownWhileHidden": false,
+      "socketsOpenedWhileHidden": 0,
+      "shownAfterVisibleMs": null,
+      "nextMarkerMs": 47,
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_8ccf670bc14c4ec3821dc2ddfd7158a6?access_token=…",
+          "openedAt": 80985,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    }
+  ],
+  "proxy": {
+    "connections": 11
+  },
+  "error": null,
+  "diag": {
+    "pageErrors": [],
+    "graphql": [
+      {
+        "t": 8196,
+        "op": "PhoneCredentialCheck",
+        "done": 8265,
+        "failed": null
+      },
+      {
+        "t": 8202,
+        "op": "ListWorkspaceRunHistory",
+        "done": 8224,
+        "failed": null
+      },
+      {
+        "t": 8202,
+        "op": "ListCollaborationRootHistory",
+        "done": 8233,
+        "failed": null
+      },
+      {
+        "t": 8203,
+        "op": "GetAllWorkspaces",
+        "done": 8242,
+        "failed": null
+      },
+      {
+        "t": 8204,
+        "op": "GetAgentDefinitions",
+        "done": 8249,
+        "failed": null
+      },
+      {
+        "t": 8204,
+        "op": "GetAgentTeamDefinitions",
+        "done": 8257,
+        "failed": null
+      },
+      {
+        "t": 8205,
+        "op": "GetAgentOrgDefinitions",
+        "done": 8265,
+        "failed": null
+      },
+      {
+        "t": 8252,
+        "op": "GetTeamRunResumeConfig",
+        "done": 8274,
+        "failed": null
+      },
+      {
+        "t": 8277,
+        "op": "GetTeamMemberRunProjection",
+        "done": 8288,
+        "failed": null
+      },
+      {
+        "t": 8278,
+        "op": "GetTeamMemberFileChanges",
+        "done": 8320,
+        "failed": null
+      },
+      {
+        "t": 8337,
+        "op": "GetTeamMemberRunProjection",
+        "done": 8346,
+        "failed": null
+      },
+      {
+        "t": 8337,
+        "op": "GetTeamMemberFileChanges",
+        "done": 8354,
+        "failed": null
+      },
+      {
+        "t": 8589,
+        "op": "ListWorkspaceRunHistory",
+        "done": 8601,
+        "failed": null
+      },
+      {
+        "t": 8589,
+        "op": "ListCollaborationRootHistory",
+        "done": 8605,
+        "failed": null
+      },
+      {
+        "t": 11696,
+        "op": "ListWorkspaceRunHistory",
+        "done": 11723,
+        "failed": null
+      },
+      {
+        "t": 11696,
+        "op": "ListCollaborationRootHistory",
+        "done": 11733,
+        "failed": null
+      },
+      {
+        "t": 40664,
+        "op": "ListWorkspaceRunHistory",
+        "done": 40683,
+        "failed": null
+      },
+      {
+        "t": 40664,
+        "op": "ListCollaborationRootHistory",
+        "done": 40691,
+        "failed": null
+      },
+      {
+        "t": 80996,
+        "op": "GetTeamMemberRunProjection",
+        "done": null,
+        "failed": null
+      },
+      {
+        "t": 80996,
+        "op": "GetTeamMemberFileChanges",
+        "done": null,
+        "failed": null
+      }
+    ],
+    "freshScreen": {
+      "state": "open",
+      "url": "http://192.168.77.10:50901/mobile/?screen=run"
+    },
+    "r7VisibleAt": 80983
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T08:39:22.237Z"
+}

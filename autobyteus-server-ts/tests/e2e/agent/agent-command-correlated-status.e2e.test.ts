@@ -27,6 +27,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentStreamBroadcaster } from "../../../src/services/agent-streaming/agent-stream-broadcaster.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+import { AgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 type WsMessage = {
   type: string;
@@ -120,9 +121,7 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return this.lifecycleSnapshot;
   }
 
-  hasRunningBackgroundTasks(): boolean {
-    return false;
-  }
+  readonly backgroundTaskInspection = { kind: "unsupported" } as const;
 
   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
     this.listeners.add(listener);
@@ -224,7 +223,10 @@ const waitForOpen = (socket: WebSocket, timeoutMs = 2_000): Promise<void> =>
 const captureMessages = (socket: WebSocket): WsMessage[] => {
   const messages: WsMessage[] = [];
   socket.on("message", (data) => {
-    messages.push(JSON.parse(data.toString()) as WsMessage);
+    // autobyteus-461 SR-087: frames carry their place in the run's sequence (`sequence`, for the client's ordering);
+    // this test reads what each frame says, so the number is set aside.
+    const { sequence: _sequence, ...frame } = JSON.parse(data.toString()) as WsMessage & { sequence?: number };
+    messages.push(frame as WsMessage);
   });
   return messages;
 };
@@ -291,7 +293,12 @@ const startHarness = async (input: {
   initialRun: AgentRun;
   restoreRun: () => Promise<AgentRun>;
 }) => {
-  const activeRuns = new Map<string, AgentRun>([[input.runId, input.initialRun]]);
+  // Production attaches a stream sequence to every AgentRun as it activates (autobyteus-461 SR-089); these hand-built
+  // runs get theirs when they become active here.
+  const sequences = new AgentStreamSequences();
+  const detachers: Array<() => void> = [];
+  const activate = (run: AgentRun) => { detachers.push(sequences.attachToRun(run, { whenPersisted: async () => undefined })); return run; };
+  const activeRuns = new Map<string, AgentRun>([[input.runId, activate(input.initialRun)]]);
   const metadataByRunId = new Map<string, AgentRunMetadata>([[input.runId, buildMetadata(input.runId)]]);
 
   const getActiveRun = (runId: string): AgentRun | null => {
@@ -310,14 +317,14 @@ const startHarness = async (input: {
     getAgentRun: vi.fn((runId: string) => getActiveRun(runId)),
     getRunMetadata: vi.fn(async (runId: string) => metadataByRunId.get(runId) ?? null),
     restoreAgentRun: vi.fn(async (runId: string) => {
-      const run = await input.restoreRun();
+      const run = activate(await input.restoreRun());
       activeRuns.set(runId, run);
       return { run, metadata: metadataByRunId.get(runId)! };
     }),
     resolveCommandReadyAgentRun: vi.fn(async (runId: string) => {
       const active = getActiveRun(runId);
       if (active) return active;
-      const run = await input.restoreRun();
+      const run = activate(await input.restoreRun());
       activeRuns.set(runId, run);
       return run;
     }),
@@ -357,10 +364,12 @@ const startHarness = async (input: {
   const handler = new AgentStreamHandler(
     new AgentSessionManager(),
     agentRunService as any,
-    undefined,
     broadcaster,
     commandCoordinator,
     projectionService,
+    null,
+    sequences,
+    async (runId) => ({ runId, conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false }),
   );
 
   const app = fastify();
@@ -428,7 +437,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(firstMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "idle", agent_id: runId, recoverableBlock: null },
+        payload: { status: "idle", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
 
       const firstSendStart = firstMessages.length;
@@ -442,7 +451,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
+        payload: { status: "initializing", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
       await firstBackend.emitTurnStarted("turn-first");
       await waitForMessageAfter(
@@ -480,7 +489,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(secondMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", agent_id: runId, recoverableBlock: null },
+        payload: { status: "offline", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
 
@@ -495,7 +504,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", agent_id: runId, recoverableBlock: null },
+        payload: { status: "initializing", agent_id: runId, recoverableBlock: null, background_tasks_running: 0 },
       });
       expect(harness.agentRunService.resolveCommandReadyAgentRun).toHaveBeenCalledWith(runId);
 

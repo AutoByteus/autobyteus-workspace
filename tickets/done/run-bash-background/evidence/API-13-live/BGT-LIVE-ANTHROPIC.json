@@ -1,0 +1,269 @@
+{
+  "model": "claude-sonnet-5-5",
+  "toolNames": [
+    "run_bash",
+    "read_file",
+    "edit_file",
+    "write_file",
+    "send_message_to",
+    "delegate_task"
+  ],
+  "backgroundCalls": [
+    {
+      "args": {
+        "command": "bash build-a.sh",
+        "run_in_background": true
+      },
+      "startMs": 135
+    },
+    {
+      "args": {
+        "command": "bash build-b.sh",
+        "run_in_background": true
+      },
+      "startMs": 102
+    }
+  ],
+  "startResults": [
+    {
+      "pid": 52943,
+      "status": "running",
+      "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-live-ws-jioVPm",
+      "outputFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log"
+    },
+    {
+      "pid": 52980,
+      "status": "running",
+      "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-live-ws-jioVPm",
+      "outputFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600348-52947.log"
+    }
+  ],
+  "reads": [
+    {
+      "command": "tail -n 3 /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log"
+    }
+  ],
+  "progressReadUsesTail": true,
+  "endsReportedInRunBashResults": [],
+  "notices": [
+    "[Platform notice — background tasks finished]\n\n- pid 52943 `bash build-a.sh`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log. Last lines:\n    compiling module 1\n    compiling module 2\n    compiling module 3\n    compiling module 4\n    compiling module 5\n    compiling module 6\n    BUILD A OK: 8 modules\n- pid 52980 `bash build-b.sh`: exit code 1 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600348-52947.log. Last lines:\n    running test suite 1\n    running test suite 2\n    running test suite 3\n    running test suite 4\n    running test suite 5\n    running test suite 6\n    TESTS B FAILED: 2 of 8 suites failed"
+  ],
+  "reply": "Build A: passed, exit code 0\nBuild B: failed, exit code 1",
+  "timeline": [
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310598738,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "at": 1794310598738,
+      "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"message_id\":\"e2e-79577601-0112-4448-b20d-5c2d1c1d3f8f\",\"dedupe_key\":\"agent_run_input:e2e:e2e-79577601-0112-4448-b20d-5c2d1c1d3f8f\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}}"
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "at": 1794310598738,
+      "payload": "{\"trace_id\":\"rt_1794310598659_75cfbf90-f293-4738-8489-feb1e1facd31\",\"content\":\"## Agent Identity\\n\\n- Name: native-bgt-live-ff1dd193\\n- Description: Live native-runtime validation agent.\\n\\n### Responsibilities and Boundaries\\n\\nYou are a build assistant. Use run_bash for shell work. Keep replies short.\\n\\n## Working With Other Agents\\n\\nYou can delegate tasks to other agents and agent teams.\\n\\n- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a "
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310598738,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794310598738,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794310599433,
+      "payload": "{\"id\":\"toolu_019zMUd4krBMJXZNfLgSosMf\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\",\"native_tool_call_context\":{\"provider\":\"anthropic\",\"toolUseBlock\":{\"type\":\"tool_use\",\"id\":\"toolu_019zMUd4krBMJXZNfLgSosMf\",\"name\":\"run_bash\",\"input\":{},\"caller\":{\"type\":\"direct\"}}}}}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794310599771,
+      "payload": "{\"id\":\"toolu_01A87d2cQ7sm6y9qNYpWeK85\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\",\"native_tool_call_context\":{\"provider\":\"anthropic\",\"toolUseBlock\":{\"type\":\"tool_use\",\"id\":\"toolu_01A87d2cQ7sm6y9qNYpWeK85\",\"name\":\"run_bash\",\"input\":{},\"caller\":{\"type\":\"direct\"}}}}}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794310600188,
+      "payload": "{\"id\":\"toolu_019zMUd4krBMJXZNfLgSosMf\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"bash build-a.sh\",\"run_in_background\":true},\"native_tool_call_context\":{\"provider\":\"anthropic\",\"toolUseBlock\":{\"type\":\"tool_use\",\"id\":\"toolu_019zMUd4krBMJXZNfLgSosMf\",\"name\":\"run_bash\",\"input\":{},\"caller\":{\"type\":\"direct\"}}}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794310600188,
+      "payload": "{\"id\":\"toolu_01A87d2cQ7sm6y9qNYpWeK85\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"bash build-b.sh\",\"run_in_background\":true},\"native_tool_call_context\":{\"provider\":\"anthropic\",\"toolUseBlock\":{\"type\":\"tool_use\",\"id\":\"toolu_01A87d2cQ7sm6y9qNYpWeK85\",\"name\":\"run_bash\",\"input\":{},\"caller\":{\"type\":\"direct\"}}}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "at": 1794310600241,
+      "payload": "{\"usage_event_id\":\"eb130d1a-29a3-45a5-a78c-d552f038294e\",\"idempotency_key\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2:turn_0001:llm:1\",\"observed_at\":\"2026-11-10T11:36:40.152Z\",\"run_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"root_team_run_id\":null,\"turn_id\":\"turn_0001\",\"llm_call_id\":\"turn_0001:llm:1\",\"call_sequence\":1,\"agent_definition_id\":\"native-bgt-live-ff1dd193\",\"workspace_id\":\"agent_ws_716c2164edd3a3e0b42e92307271c8f8cc2f26627f17d7a80878dd19ba46e201\",\"ta"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794310600241,
+      "payload": "{\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"tool_name\":\"run_bash\",\"invocation_id\":\"toolu_019zMUd4krBMJXZNfLgSosMf\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"bash build-a.sh\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794310600270,
+      "payload": "{\"task_id\":\"52943\",\"kind\":\"shell\",\"description\":\"bash build-a.sh\",\"command\":\"bash build-a.sh\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T11:36:40.268Z\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794310600275,
+      "payload": "{\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"tool_name\":\"run_bash\",\"invocation_id\":\"toolu_01A87d2cQ7sm6y9qNYpWeK85\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"bash build-b.sh\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794310600376,
+      "payload": "{\"task_id\":\"52980\",\"kind\":\"shell\",\"description\":\"bash build-b.sh\",\"command\":\"bash build-b.sh\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T11:36:40.348Z\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794310600376,
+      "payload": "{\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"tool_name\":\"run_bash\",\"invocation_id\":\"toolu_019zMUd4krBMJXZNfLgSosMf\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":52943,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-live-ws-jioVPm\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log\"}}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794310600377,
+      "payload": "{\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"tool_name\":\"run_bash\",\"invocation_id\":\"toolu_01A87d2cQ7sm6y9qNYpWeK85\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":52980,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-live-ws-jioVPm\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600348-52947.log\"}}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794310600999,
+      "payload": "{\"id\":\"toolu_01XWsyVACGiWFAWJoNrkqcQf\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\",\"native_tool_call_context\":{\"provider\":\"anthropic\",\"toolUseBlock\":{\"type\":\"tool_use\",\"id\":\"toolu_01XWsyVACGiWFAWJoNrkqcQf\",\"name\":\"run_bash\",\"input\":{},\"caller\":{\"type\":\"direct\"}}}}}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794310601770,
+      "payload": "{\"id\":\"toolu_01XWsyVACGiWFAWJoNrkqcQf\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"tail -n 3 /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log\"},\"native_tool_call_context\":{\"provider\":\"anthropic\",\"toolUseBlock\":{\"type\":\"tool_use\",\"id\":\"toolu_01XWsyVACGiWFAWJoNrkqcQf\",\"name\":\"run_bash\",\"input\":{},\"caller\":{\"type\":\"direct\"}}}},\"interrupted\":false,\"r"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "at": 1794310601777,
+      "payload": "{\"usage_event_id\":\"0250f415-046f-412f-81b4-ad03fc7bbd1a\",\"idempotency_key\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2:turn_0001:llm:2\",\"observed_at\":\"2026-11-10T11:36:41.727Z\",\"run_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"root_team_run_id\":null,\"turn_id\":\"turn_0001\",\"llm_call_id\":\"turn_0001:llm:2\",\"call_sequence\":2,\"agent_definition_id\":\"native-bgt-live-ff1dd193\",\"workspace_id\":\"agent_ws_716c2164edd3a3e0b42e92307271c8f8cc2f26627f17d7a80878dd19ba46e201\",\"ta"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794310601777,
+      "payload": "{\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"tool_name\":\"run_bash\",\"invocation_id\":\"toolu_01XWsyVACGiWFAWJoNrkqcQf\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"tail -n 3 /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log\"}}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794310601871,
+      "payload": "{\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"tool_name\":\"run_bash\",\"invocation_id\":\"toolu_01XWsyVACGiWFAWJoNrkqcQf\",\"turn_id\":\"turn_0001\",\"result\":{\"exitCode\":0,\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-live-ws-jioVPm\",\"stdout\":\"compiling module 2\\ncompiling module 3\\ncompiling module 4\\n\"}}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794310602887,
+      "payload": "{\"id\":\"turn_0e590fd62a9d448b81a3951082812579:99d41acd28bc4f5492cf969c84749a61\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794310602887,
+      "payload": "{\"id\":\"turn_0e590fd62a9d448b81a3951082812579:99d41acd28bc4f5492cf969c84749a61\",\"turn_id\":\"turn_0001\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "at": 1794310602894,
+      "payload": "{\"usage_event_id\":\"f472f59d-baf5-434a-97be-862c6f11c743\",\"idempotency_key\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2:turn_0001:llm:3\",\"observed_at\":\"2026-11-10T11:36:42.870Z\",\"run_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"root_team_run_id\":null,\"turn_id\":\"turn_0001\",\"llm_call_id\":\"turn_0001:llm:3\",\"call_sequence\":3,\"agent_definition_id\":\"native-bgt-live-ff1dd193\",\"workspace_id\":\"agent_ws_716c2164edd3a3e0b42e92307271c8f8cc2f26627f17d7a80878dd19ba46e201\",\"ta"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794310602894,
+      "payload": "{\"content\":\"Both builds are running in the background. Build A's last output lines were \\\"compiling module 2\\\", \\\"compiling module 3\\\" and \\\"compiling module 4\\\". I'll report results when I'm told they've finished.\",\"usage\":{\"input_tokens\":2,\"output_tokens\":61,\"total_tokens\":63,\"usage_scope\":\"per_call\",\"model_provider\":\"ANTHROPIC\",\"provider_name\":\"Anthropic\",\"model_identifier\":\"claude-sonnet-5-5\",\"model_value\":\"claude-sonnet-5-5\",\"input_token_semantic\":\"base_excludes_cache\",\"cache_state\":\"positi"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794310602894,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310602894,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310602894,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310602894,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794310603347,
+      "payload": "{\"task_id\":\"52943\",\"kind\":\"shell\",\"description\":\"bash build-a.sh\",\"command\":\"bash build-a.sh\",\"status\":\"completed\",\"summary\":\"exit code 0\",\"started_at\":\"2026-11-10T11:36:40.268Z\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794310603401,
+      "payload": "{\"task_id\":\"52980\",\"kind\":\"shell\",\"description\":\"bash build-b.sh\",\"command\":\"bash build-b.sh\",\"status\":\"failed\",\"summary\":\"exit code 1\",\"started_at\":\"2026-11-10T11:36:40.348Z\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310605380,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310605380,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "SYSTEM_TASK_NOTIFICATION",
+      "at": 1794310605380,
+      "payload": "{\"sender_id\":\"system.background_task_notifier\",\"content\":\"[Platform notice — background tasks finished]\\n\\n- pid 52943 `bash build-a.sh`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2/call-1794310600268-52860.log. Last lines:\\n    compiling module 1\\n    compiling module 2\\n    compiling module 3\\n    compiling module 4\\n    compiling module 5\\n    compiling module 6\\n    BUILD "
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794310605380,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794310606055,
+      "payload": "{\"id\":\"turn_323dd81147ae4b46ab8089d500881ee2:095a1c52d2124e7fa6e874d4ae832416\",\"turn_id\":\"turn_0002\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794310606439,
+      "payload": "{\"id\":\"turn_323dd81147ae4b46ab8089d500881ee2:095a1c52d2124e7fa6e874d4ae832416\",\"turn_id\":\"turn_0002\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "at": 1794310606448,
+      "payload": "{\"usage_event_id\":\"deac2509-2869-409d-8c0c-c53bfac96576\",\"idempotency_key\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2:turn_0002:llm:1\",\"observed_at\":\"2026-11-10T11:36:46.408Z\",\"run_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\",\"root_team_run_id\":null,\"turn_id\":\"turn_0002\",\"llm_call_id\":\"turn_0002:llm:1\",\"call_sequence\":1,\"agent_definition_id\":\"native-bgt-live-ff1dd193\",\"workspace_id\":\"agent_ws_716c2164edd3a3e0b42e92307271c8f8cc2f26627f17d7a80878dd19ba46e201\",\"ta"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794310606448,
+      "payload": "{\"content\":\"Build A: passed, exit code 0\\nBuild B: failed, exit code 1\",\"usage\":{\"input_tokens\":4,\"output_tokens\":27,\"total_tokens\":31,\"usage_scope\":\"per_call\",\"model_provider\":\"ANTHROPIC\",\"provider_name\":\"Anthropic\",\"model_identifier\":\"claude-sonnet-5-5\",\"model_value\":\"claude-sonnet-5-5\",\"input_token_semantic\":\"base_excludes_cache\",\"cache_state\":\"positive\",\"standard_input_tokens\":4,\"cache_miss_input_tokens\":null,\"cache_read_input_tokens\":7433,\"cache_creation_input_tokens\":491,\"cache_creation_5m"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794310606448,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310606448,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310606448,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794310606448,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_live_ff1dd193_7d10cb5b0228462aa1894c7d3a9b53e2\"}"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:embedding-settings /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/embedding-settings-probe.mjs --skip-server-build --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/embedding-settings
+
+Pass EMB-001 Fresh data root: Active · Not downloaded, Projects Not indexed, opening starts nothing (AC-011, REQ-005)
+Pass EMB-002 Download ahead with progress, Cancel deletes it, Download again completes (AC-002)
+Pass EMB-003 Switch dialog for a not-downloaded model; Cancel changes nothing (REQ-004)
+Pass EMB-004 Use a downloaded model: setting written, Active Ready, Projects Not indexed (AC-004)
+Pass EMB-005 Index all Projects: progress, then Ready with Task counts (REQ-006)
+Pass EMB-006 A new Task is indexed with no search within 10 s (REQ-011, AC-015); Rebuild with inline confirmation (REQ-006)
+Pass EMB-007 Leave and return: current state shown; restart: Active · Ready with files on disk (REQ-007, AC-013)
+Pass EMB-008 zh-CN copy and narrow layout render
+Result: Pass (/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/embedding-settings/result.json)

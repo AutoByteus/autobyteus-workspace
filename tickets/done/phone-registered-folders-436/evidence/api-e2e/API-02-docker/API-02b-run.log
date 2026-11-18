@@ -1,0 +1,15 @@
+# API-02b; image abtest436/autobyteus-server:test (this branch's server package, commit ea51d4fddd); 2026-11-09T05:07:02.472Z
+container abtest436-scripted published: 100.127.30.107:54744 127.0.0.1:54744
+owner GraphQL with the launch credential: Query
+agent run reporter_be3824998c3f4a789e5a3f4891165319 in /home/autobyteus/workspace
+PASS the agent's own message names the files (scripted AGY in the container)
+phone paired at http://100.127.30.107:54744; the run is listed
+PASS tap /home/autobyteus/shared/ac005-notes.md: opens read-only ("ac005-notes.md\nAC-005 shared note\n\nSHARED-MARKER-436: this file lives in the node’s shared folder."), nodeFile=/home/autobyteus/shared/ac005-notes.md, 284 ms, Back → conversation true, viewer buttons [""]
+PASS tap /home/autobyteus/shared/ac005-picture.png: image naturalWidth [120], 114 ms
+PASS tap /home/autobyteus/shared/ac005-large.pdf (18 MB): {"canvases":1,"drawn":true,"error":null}, 721 ms
+PASS tap /tmp/abtest436/sample/ac005-notes.md (on the host, not mounted into the container): "This file was not found on the computer."
+PASS tap /home/autobyteus/shared/reports-436.md: "This path is a folder, not a file."
+phone console errors 16, not explained by the refusals above: 1 ["Failed to load resource: net::ERR_CONNECTION_REFUSED"]
+PASS the container log names none of the opened paths (QR-001)
+container abtest436-scripted removed
+result Pass

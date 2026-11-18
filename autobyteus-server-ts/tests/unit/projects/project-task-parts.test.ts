@@ -2,13 +2,13 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
@@ -16,6 +16,7 @@ import type { ProjectChangeMessage } from "../../../src/projects/changes/project
 import type { ProjectTaskStatus } from "../../../src/projects/domain/models.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -23,20 +24,21 @@ const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRun
 describe("Project Task parts (services)", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, publisher: ProjectChangePublisher;
   let projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[], projectId: string;
+  let releases: ReleaseTracker;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tick = 0;
   const now = () => new Date(Date.UTC(2026, 9, 19, 0, 0, tick++));
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   const taskFile = (taskId: string) => layout.taskFile(projectId, taskId);
   const create = (description: string, extra: { partOfTaskId?: string | null; dependsOnTaskIds?: string[] } = {}, project = projectId) =>
-    tasks.createTask({ projectId: project, description, ...extra });
+    tasks.createTask({ projectId: project, title: description, description, ...extra });
   const setParent = (taskId: string, partOfTaskId: string | null | undefined, description = "edited") =>
     tasks.updateTask({ projectId, taskId, description, ...(partOfTaskId !== undefined ? { partOfTaskId } : {}) });
   const setStatus = (taskId: string, status: ProjectTaskStatus) => tasks.updateTaskById({ taskId, status });
   const stored = async (taskId: string) => (await store.readTask(projectId, taskId))!;
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
   const assign = (taskId: string, agentRunId: string) =>
-    tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot, execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
 
   beforeEach(async () => {
     appData = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-parts-"));
@@ -45,10 +47,10 @@ describe("Project Task parts (services)", () => {
     store = new ProjectStore(layout);
     publisher = new ProjectChangePublisher();
     emitted = [];
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
-      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),
@@ -57,7 +59,7 @@ describe("Project Task parts (services)", () => {
     await tasks.load();
     projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
   });
-  afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await publisher.idle(); await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   describe("storing the parent", () => {
     it("a new Task stores its parent on itself only; the parent's file is unchanged (AC-001)", async () => {
@@ -160,11 +162,11 @@ describe("Project Task parts (services)", () => {
 
     it("a Temp task has no parent: part_of on it, or naming it, is refused (AC-003)", async () => {
       const a = await create("A");
-      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot,
+      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" },
         execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
       await expect(tasks.updateTaskById({ taskId: temp, partOf: "autobyteus-1" })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
       await expect(tasks.updateTaskById({ taskId: a.taskId, partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
-      await expect(tasks.createTaskWithLocalContextFiles({ projectId, description: "B", localContextFiles: [], partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
+      await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "B", description: "B", localContextFiles: [], partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
       expect((await stored(a.taskId)).partOfTaskId).toBeNull();
     });
   });
@@ -181,7 +183,7 @@ describe("Project Task parts (services)", () => {
       await setStatus(done.taskId, "DONE");
       await setStatus(cancelled.taskId, "CANCELLED");
       await assign(running.taskId, "running-worker");
-      await tasks.drainRuntimeReleases();
+      await releases.settled();
       release.mockClear();
       return { parent, todo, running, done, cancelled, outsider };
     };
@@ -193,7 +195,7 @@ describe("Project Task parts (services)", () => {
         await publisher.idle();
         emitted.length = 0;
         const ack = await setStatus(parent.taskId, status);
-        expect(ack).toEqual({ projectId, taskId: parent.taskId, taskReference: parent.taskKey, status, dependsOnTaskIds: [], partOfTaskId: null,
+        expect(ack).toEqual({ projectId, taskId: parent.taskId, taskReference: parent.taskKey, title: parent.title, status, dependsOnTaskIds: [], partOfTaskId: null,
           closedPartReferences: [todo.taskKey, running.taskKey] });
         expect((await stored(todo.taskId)).status).toBe(status);
         expect((await stored(running.taskId)).status).toBe(status);
@@ -202,8 +204,8 @@ describe("Project Task parts (services)", () => {
         expect((await stored(cancelled.taskId)).status).toBe("CANCELLED");
         expect((await stored(outsider.taskId)).status).toBe("TODO");
         expect(tasks.isOpen({ agentRunId: "running-worker" })).toBe(false);
-        await tasks.drainRuntimeReleases();
-        expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "running-worker" }]);
+        await releases.settled();
+        expect(release).toHaveBeenCalledWith({ agentRunId: "running-worker" });
         await publisher.idle();
         expect(upserts().map((t) => [t.taskId, t.status])).toEqual(expect.arrayContaining([[parent.taskId, status], [todo.taskId, status], [running.taskId, status]]));
       });

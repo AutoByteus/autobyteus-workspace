@@ -1,0 +1,94 @@
+{
+  "startedAt": "2026-11-07T22:24:15.340Z",
+  "result": "Pass",
+  "windows": {
+    "http://127.0.0.1:3000": {
+      "responses": {
+        "GET /rest/health 200": 16,
+        "POST /graphql 200": 21
+      },
+      "sockets": [
+        {
+          "url": "ws://127.0.0.1:8000/ws/agent-package-definitions",
+          "origin": "http://127.0.0.1:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/update-notifications",
+          "origin": "http://127.0.0.1:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/agent-package-definitions",
+          "origin": "http://127.0.0.1:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/update-notifications",
+          "origin": "http://127.0.0.1:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/agent-package-definitions",
+          "origin": "http://127.0.0.1:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/update-notifications",
+          "origin": "http://127.0.0.1:3000",
+          "status": 101
+        }
+      ],
+      "errors": [],
+      "title": ""
+    },
+    "http://localhost:3000": {
+      "responses": {
+        "GET /rest/health 200": 16,
+        "POST /graphql 200": 21
+      },
+      "sockets": [
+        {
+          "url": "ws://127.0.0.1:8000/ws/agent-package-definitions",
+          "origin": "http://localhost:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/update-notifications",
+          "origin": "http://localhost:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/agent-package-definitions",
+          "origin": "http://localhost:3000",
+          "status": 101
+        },
+        {
+          "url": "ws://127.0.0.1:8000/ws/update-notifications",
+          "origin": "http://localhost:3000",
+          "status": 101
+        }
+      ],
+      "errors": [],
+      "title": ""
+    }
+  },
+  "control": {
+    "origin": "http://localhost:5173",
+    "status": 403,
+    "body": "{\"error\":\"REMOTE_ACCESS_ORIGIN_REFUSED\",\"code\":\"REMOTE_ACCESS_ORIGIN_REFUSED\",\"message\":\"Requests from this origin are not accepted by this node.\"}"
+  },
+  "cleanup": {
+    "port8000Free": true,
+    "port3000Free": true
+  },
+  "error": null,
+  "backendEnvLine": [
+    "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000",
+    "AUTOBYTEUS_ALLOWED_ORIGINS=http://127.0.0.1:3000,http://localhost:3000"
+  ],
+  "refusalLines": [
+    "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin http://localhost:5173"
+  ],
+  "finishedAt": "2026-11-07T22:25:30.193Z"
+}

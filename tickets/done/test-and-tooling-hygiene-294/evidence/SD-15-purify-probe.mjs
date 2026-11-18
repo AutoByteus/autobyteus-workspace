@@ -1,0 +1,10 @@
+import { createRequire } from "node:module";
+const root = process.argv[2];
+const require = createRequire(root + "/package.json");
+const { Window } = require("happy-dom");
+const createDOMPurify = require("dompurify");
+const window = new Window();
+const purify = createDOMPurify(window);
+const input = '<table><tr><td data-t="s" id="sjs-A1"><a href="https://example.com/">site</a></td><td data-t="s" id="sjs-B1"><a href="javascript:window.__pwned=1">evil</a></td></tr></table><p><img src=x onerror="alert(1)"><script>alert(2)</script><a href="javascript:alert(3)">x</a></p>';
+console.log(require("happy-dom/package.json").version, "OUT", purify.sanitize(input, { ALLOWED_TAGS: ["table","tbody","tr","td","p","img"], ALLOWED_ATTR: ["src"] }));
+console.log(require("happy-dom/package.json").version, "DEFAULT", purify.sanitize('<p>a<img src=x onerror="alert(1)">b<a href="javascript:alert(3)">c</a><script>x</script><iframe src="//e"></iframe></p>'));

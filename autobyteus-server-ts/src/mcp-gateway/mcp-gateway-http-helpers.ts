@@ -2,12 +2,9 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 const ALLOWED_METHODS = "GET, POST, DELETE, OPTIONS";
 
+/** Answers a preflight whose Origin the tool-endpoint origin rule has already allowed. */
 export const handleGatewayOptions = (request: FastifyRequest, reply: FastifyReply) => {
-  const origin = readSingleHeader(request.headers.origin);
-  if (!isOriginAllowed(origin)) {
-    return sendGatewayHttpError(reply, 403, "forbidden", "Forbidden");
-  }
-  applyCorsHeaders(reply, origin);
+  applyCorsHeaders(reply, readSingleHeader(request.headers.origin));
   return reply.code(204).send();
 };
 
@@ -48,16 +45,6 @@ export const accepts = (request: FastifyRequest, allowedTypes: string[]): boolea
     .some((entry) => entry === "*/*" || (entry ? allowedTypes.includes(entry) : false));
 };
 
-export const isOriginAllowed = (origin: string | null): boolean => {
-  if (!origin) return true;
-  try {
-    const parsed = new URL(origin);
-    return ["http:", "https:"].includes(parsed.protocol) && isLoopbackHost(parsed.hostname);
-  } catch {
-    return false;
-  }
-};
-
 const applyCorsHeaders = (reply: FastifyReply, origin: string | null): void => {
   if (origin) {
     reply.header("access-control-allow-origin", origin);
@@ -65,9 +52,4 @@ const applyCorsHeaders = (reply: FastifyReply, origin: string | null): void => {
   }
   reply.header("access-control-allow-methods", ALLOWED_METHODS);
   reply.header("access-control-allow-headers", "authorization, content-type, accept, mcp-protocol-version, mcp-session-id");
-};
-
-const isLoopbackHost = (hostname: string): boolean => {
-  const normalized = hostname.replace(/^\[|\]$/g, "").toLowerCase();
-  return normalized === "localhost" || normalized === "127.0.0.1" || normalized === "::1";
 };

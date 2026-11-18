@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "step": "api416-diag2",
+  "at": "2026-11-07T22:04:06.854Z",
+  "result": {
+    "r": "error Failed to fetch",
+    "failed": [
+      "http://normys-macbook-pro.local:58236/rest/health net::ERR_NAME_NOT_RESOLVED"
+    ]
+  }
+}

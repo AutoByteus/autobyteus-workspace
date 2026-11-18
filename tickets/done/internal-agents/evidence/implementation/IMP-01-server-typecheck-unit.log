@@ -1,0 +1,28 @@
+# IMP-01 server typecheck + full test:unit — autobyteus-308 IR-001, worktree codex/internal-agents (IR-001 tree, committed as 813f7208d2), macOS darwin 25.5, v22.23.1, 2026-10-25T21:05:17Z
+## typecheck
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/internal-agents/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/internal-agents/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/internal-agents/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+typecheck exit 0
+## test:unit (summary)
+ Test Files  836 passed | 4 skipped (840)
+      Tests  6967 passed | 7 skipped (6974)
+   Duration  579.52s (transform 14.07s, setup 8.33s, import 242.56s, tests 255.54s, environment 692ms)
+unit exit 0

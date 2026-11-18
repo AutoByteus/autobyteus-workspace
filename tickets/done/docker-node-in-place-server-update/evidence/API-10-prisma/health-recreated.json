@@ -1,0 +1,49 @@
+{
+  "url": "http://127.0.0.1:54725",
+  "attempts": [
+    {
+      "time": "2026-10-30T16:15:48.961Z",
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "time": "2026-10-30T16:15:49.965Z",
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "time": "2026-10-30T16:15:50.969Z",
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "time": "2026-10-30T16:15:51.973Z",
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "time": "2026-10-30T16:15:52.977Z",
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "time": "2026-10-30T16:15:53.992Z",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "time": "2026-10-30T16:15:55.009Z",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "time": "2026-10-30T16:15:56.025Z",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    }
+  ]
+}

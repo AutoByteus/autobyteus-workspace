@@ -15,7 +15,9 @@ import {
 } from "../../../../src/services/run-file-changes/run-file-change-service.js";
 import type { RunFileChangeEntry } from "../../../../src/services/run-file-changes/run-file-change-types.js";
 
-describe("RunFileChangeService", () => {
+// The eventual-condition waits below poll every 10 ms up to 10 s, which fits a full parallel suite on a busy host;
+// they assert that the projection is reached, not how fast. The cases get a longer timeout than the waits.
+describe("RunFileChangeService", { timeout: 30_000 }, () => {
   const tempDirs: string[] = [];
 
   const createTempDir = async (): Promise<string> => {
@@ -32,7 +34,7 @@ describe("RunFileChangeService", () => {
   const waitForCondition = async (
     predicate: () => boolean | Promise<boolean>,
     failureMessage: string,
-    timeoutMs = 2000,
+    timeoutMs = 10_000,
   ): Promise<void> => {
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {

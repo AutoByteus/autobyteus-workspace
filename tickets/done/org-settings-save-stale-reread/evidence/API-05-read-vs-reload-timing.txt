@@ -1,0 +1,31 @@
+# API-05 read-vs-reload timing per Save: python3 -I API-05-07-race-timing.py <observer.log>; commit a4e1a89993, ENV-1
+Save 1:
+      +109ms gql-res UpdateDelegatedLaunchSelections
+      +140ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 2:
+       +80ms gql-res UpdateDelegatedLaunchSelections
+      +139ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 3:
+      +159ms gql-req AgentOrgRunConfig
+      +161ms ws CONNECTED
+      +164ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +166ms gql-res UpdateDelegatedLaunchSelections
+      +177ms gql-req AgentOrgRunConfig
+      +179ms gql-res AgentOrgRunConfig
+      +183ms gql-res AgentOrgRunConfig
+      +257ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 4:
+       +55ms gql-res UpdateDelegatedLaunchSelections
+Save 5:
+       +84ms gql-res UpdateDelegatedLaunchSelections
+       +91ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 6:
+       +80ms gql-res UpdateDelegatedLaunchSelections
+      +135ms [OBS] savebar "Saved. Changes apply when this run resumes."
+Save 7:
+      +156ms gql-req AgentOrgRunConfig
+      +156ms gql-res UpdateDelegatedLaunchSelections
+      +160ms ws CONNECTED
+      +166ms ws ROOT_EXECUTION_VIEW_SNAPSHOT
+      +187ms gql-res AgentOrgRunConfig
+      +267ms [OBS] savebar "Saved. Changes apply when this run resumes."

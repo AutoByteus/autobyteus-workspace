@@ -1,0 +1,130 @@
+# Case: API-10 — Android 14 (API 34): pairing, AC-001 (landscape + bars hidden), AC-003 (Fill/Fit), AC-002 exits (handle, Back key, back gesture, View only tap)
+# Steps: emulator-5554 = autobyteus277_api34 (-wipe-data, gesture navigation), fresh-clone APK; pairing link shared by the SEND intent; run list -> run -> VNC Viewer; probes api34*.sh (state.sh after each step; no uiautomator while in landscape except where noted)
+# Commit: d76be54fb0 (reviewed d76be54fb0); node abx432-api-node 127.0.0.1:52316 (10.0.2.2 from the emulator)
+# Date: 2026-11-08T08:24:12Z
+
+## Pairing (bridge regression on API 34)
+The first open right after boot showed "Can't reach abx432-api-node" (the emulator's Wi-Fi was not yet validated). After the network validated (HTTP 200 from 10.0.2.2:52316 inside the emulator), one real tap on Retry paired: 'abx432-api-node, Connected', run list shown.
+
+## API-10a — first pass (probes/api34.sh; the AVD came up with auto-rotate ON)
+device: SDK 34, release 14, avd autobyteus277_api34; auto-rotate=1 user_rotation=0 navigation_mode=2
+1 viewer, portrait | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+tapped mobile-node-desktop-full-screen at device 1008 189 (webview origin 0,128)
+2 full screen (real tap) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+2b after a double tap (Fill) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[0,-38,866,487],\"picture\":\"translate(-78.9542px, -37.5625px) scale(1.18234)\"}"
+2c after a second double tap (Fit) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+3 after the handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+4 full screen again | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+5 after the Back key | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+TypeError: 'NoneType' object is not subscriptable
+
+Exception occurred while executing 'tap':
+java.lang.IllegalArgumentException: Argument expected after "tap"
+	at com.android.modules.utils.BasicShellCommandHandler.getNextArgRequired(BasicShellCommandHandler.java:295)
+	at com.android.server.input.InputShellCommand.runTap(InputShellCommand.java:377)
+	at com.android.server.input.InputShellCommand.onCommand(InputShellCommand.java:236)
+	at com.android.modules.utils.BasicShellCommandHandler.exec(BasicShellCommandHandler.java:97)
+	at android.os.ShellCommand.exec(ShellCommand.java:38)
+	at com.android.server.input.InputManagerService.onShellCommand(InputManagerService.java:3297)
+	at android.os.Binder.shellCommand(Binder.java:1068)
+	at android.os.Binder.onTransact(Binder.java:888)
+	at android.hardware.input.IInputManager$Stub.onTransact(IInputManager.java:1339)
+	at android.os.Binder.execTransactInternal(Binder.java:1344)
+	at android.os.Binder.execTransact(Binder.java:1275)
+6 full screen again | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+7 after back-gesture swipes from the left edge | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+user_rotation at the end: 0
+
+Note: step 5 (Back key did not leave full screen) and the traceback at step 6 are explained by API-10b..e: Android's one-time
+"Viewing full screen" hint was showing (API-10-2-full-screen.png), a system window that takes focus. Step 6's tapsel found no
+button (still full screen); step 7's back-gesture swipes left full screen (and confirmed the hint: immersive_mode_confirmations=confirmed afterwards).
+
+## API-10b — Back key x3 once the hint is confirmed (probes/api34-back.sh)
+0 start | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+1.a full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+1.b after one Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   logcat: 11-08 09:19:27.962   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:19:32.261  1626  1626 I GoogleInputMethodService: GoogleInputMethodService.onKeyDown():2444 Received KEYCODE_BACK. isAllViewsInvisible=true|
+2.a full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+2.b after one Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   logcat: 11-08 09:19:37.919   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:19:42.170  1626  1626 I GoogleInputMethodService: GoogleInputMethodService.onKeyDown():2444 Received KEYCODE_BACK. isAllViewsInvisible=true|
+3.a full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+3.b after one Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   logcat: 11-08 09:19:47.724   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:19:52.084  1626  1626 I GoogleInputMethodService: GoogleInputMethodService.onKeyDown():2444 Received KEYCODE_BACK. isAllViewsInvisible=true|
+
+## API-10c — the API-10a order (full -> Fill/Fit -> handle -> full -> Back) x3 (probes/api34-back2.sh)
+1.a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+1.a2 Fill then Fit (double taps) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+1.b handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   ime: mInputShown=false; focus: "BODY/"
+1.c full again | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   ime: mInputShown=false; focus: "BODY/"
+1.d after one Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   logcat: 11-08 09:20:08.921   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:20:23.968   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:20:28.508  1626  1626 I GoogleInputMethodService: GoogleInputMethodService.onKeyDown():2444 Received KEYCODE_BACK. isAllViewsInvisible=true|
+2.a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+2.b handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   ime: mInputShown=false; focus: "BODY/"
+2.c full again | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   ime: mInputShown=false; focus: "BODY/"
+2.d after one Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   logcat: 11-08 09:20:34.092   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:20:44.095   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:20:48.531  1626  1626 I GoogleInputMethodService: GoogleInputMethodService.onKeyDown():2444 Received KEYCODE_BACK. isAllViewsInvisible=true|
+3.a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+3.b handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   ime: mInputShown=false; focus: "BODY/"
+3.c full again | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   ime: mInputShown=false; focus: "BODY/"
+3.d after one Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   logcat: 11-08 09:20:54.320   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:21:04.626   885   931 D ShellBackPreview: BackAnimationController: finishBackNavigation()|11-08 09:21:09.082  1626  1626 I GoogleInputMethodService: GoogleInputMethodService.onKeyDown():2444 Received KEYCODE_BACK. isAllViewsInvisible=true|
+
+## API-10d — cause: hint flag reset (settings delete secure immersive_mode_confirmations, test emulator only) (probes/api34-hint.sh)
+   hint window: 0 immersive_mode_confirmations=null
+1 full (hint reset) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   hint window: 6 immersive_mode_confirmations=null
+2 first Back key (closes the system hint) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   hint window: 6 immersive_mode_confirmations=null
+3 second Back key | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   hint window: 6 immersive_mode_confirmations=null
+   focus after the two Back keys: mCurrentFocus=Window{… ImmersiveModeConfirmation} (API-10-5-after-two-backs.png)
+
+## API-10e — with the hint up: real tap on the handle's spot (under the hint), real tap on Got it, Back; then real handle tap and back gesture (probes/api34-gotit.sh)
+   focus: ImmersiveModeConfirmation; immersive_mode_confirmations=null
+tapped mobile-node-desktop-handle at device 1137 37
+1 real tap on the handle's spot while the hint shows | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: ImmersiveModeConfirmation; immersive_mode_confirmations=null
+2 real tap on Got it | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: org.autobyteus.mobile/org.autobyteus.mobile.MainActivity; immersive_mode_confirmations=confirmed
+3 Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: org.autobyteus.mobile/org.autobyteus.mobile.MainActivity; immersive_mode_confirmations=confirmed
+4 full (hint confirmed: none shown) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: org.autobyteus.mobile/org.autobyteus.mobile.MainActivity; immersive_mode_confirmations=confirmed
+tapped mobile-node-desktop-handle at device 1137 37
+5 real tap on the handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+6 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+7 one back-gesture swipe (shows the bars) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+8 second back-gesture swipe | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+
+## API-10f — auto-rotate OFF (as the reviewer asked): full, real handle tap, Back key, back gesture, View only tap (probes/api34-rotoff.sh)
+auto-rotate=0 user_rotation=0
+0 viewer, portrait | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+1 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+2 real tap on the handle | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+3 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+4 Back key | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+5 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+6 two back-gesture swipes | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+7 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+8 one real tap on the picture (View only) | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+end: auto-rotate=0 user_rotation=0
+
+## API-10g — with the hint showing (flag reset again), the back gesture (probes/api34-hint-gesture.sh)
+1 full (hint showing) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: ImmersiveModeConfirmation; immersive_mode_confirmations=null
+2 one back-gesture swipe | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[866,412],\"canvas\":[67,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: org.autobyteus.mobile/org.autobyteus.mobile.MainActivity; immersive_mode_confirmations=confirmed
+3 second back-gesture swipe | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,842],\"canvas\":[0,349,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+   focus: org.autobyteus.mobile/org.autobyteus.mobile.MainActivity; immersive_mode_confirmations=confirmed
+
+## Result
+Pass. On Android 14, full screen turns the screen to ROTATION_90 with SENSOR_LANDSCAPE and both bars hidden, Fill/Fit work, and the handle, the Back key, the back gesture (two swipes, immersive) and a View only tap each return to ROTATION_0 / UNSPECIFIED / bars visible, with auto-rotate on and off; user_rotation stays 0.
+Observation (OBS-03, Android's own, also API 35 — API-04b tapped Got it): the first time ever, Android's "Viewing full screen" hint covers the top middle (including the handle) and holds focus; until the user taps Got it (or uses the back gesture: its first swipe dismisses the hint and shows the bars, the second leaves full screen — API-10g), the Back key and taps on the handle go to the hint. After that it never shows again.

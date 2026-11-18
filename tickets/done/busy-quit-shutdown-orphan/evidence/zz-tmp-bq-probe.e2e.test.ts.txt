@@ -1,0 +1,152 @@
+import "reflect-metadata";
+import os from "node:os";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import WebSocket from "ws";
+import { describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+
+/**
+ * TEMPORARY investigation probe (busy-quit-shutdown-orphan). NOT for commit.
+ * Env: RUN_BQ_PROBE=1, BQ_RUNTIME (codex_app_server | claude_agent_sdk), BQ_MODEL,
+ * BQ_ACTION (shutdown | interrupt). Busy = the agent runs `sleep 300` in a shell.
+ */
+const enabled = process.env.RUN_BQ_PROBE === "1";
+const RUNTIME = process.env.BQ_RUNTIME ?? "codex_app_server";
+const MODEL = process.env.BQ_MODEL ?? (RUNTIME === "codex_app_server" ? "gpt-6-astra" : "haiku");
+const ACTION = process.env.BQ_ACTION ?? "shutdown";
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const T0 = Date.now();
+const log = (...a: unknown[]) => console.log("[BQ-PROBE]", `+${((Date.now() - T0) / 1000).toFixed(1)}s`, ...a);
+
+type Proc = { pid: number; ppid: number; pgid: number; cmd: string };
+const procs = (): Proc[] => execFileSync("ps", ["-A", "-o", "pid=,ppid=,pgid=,command="], { encoding: "utf-8" })
+  .split("\n").map((l) => l.trim()).filter(Boolean).map((l) => {
+    const [pid, ppid, pgid, ...rest] = l.split(/\s+/);
+    return { pid: Number(pid), ppid: Number(ppid), pgid: Number(pgid), cmd: rest.join(" ") };
+  });
+const descendants = (root: number): Proc[] => {
+  const all = procs(); const out: Proc[] = []; let frontier = [root];
+  while (frontier.length) {
+    const kids = all.filter((p) => frontier.includes(p.ppid)); out.push(...kids); frontier = kids.map((k) => k.pid);
+  }
+  return out;
+};
+const BUSY_CMD = process.env.BQ_CMD ?? "sleep 300";
+const BUSY_RE = new RegExp(process.env.BQ_RE ?? "(^|\\s|/)sleep 300\\b");
+const sleeps = () => procs().filter((p) => BUSY_RE.test(p.cmd) && !/grep|zsh -c|bash -c|-lc|claude|node /.test(p.cmd));
+const tree = (label: string) => {
+  const d = descendants(process.pid).map((p) => `${p.pid}/${p.ppid}/pg${p.pgid} ${p.cmd.slice(0, 110)}`);
+  log(`TREE ${label} (self pid ${process.pid} pgid ${procs().find((p) => p.pid === process.pid)?.pgid})`, JSON.stringify(d, null, 1));
+  log(`SLEEPS ${label}`, JSON.stringify(sleeps()));
+};
+
+(enabled ? describe : describe.skip)("TMP busy-quit probe", () => {
+  it(`${RUNTIME} ${ACTION}`, async () => {
+    const dataDir = await mkdtemp(path.join(os.tmpdir(), "bq-appdata-"));
+    await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    const started = await startStudioE2eRuntimeServer();
+    const base = started.mainUrl;
+    const gql = async (query: string, variables: Record<string, unknown> = {}) => {
+      const r = await fetch(new URL("/graphql", base), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+      const b = await r.json() as { data?: any; errors?: Array<{ message: string }> };
+      if (b.errors?.length) throw new Error(b.errors.map((e) => e.message).join("; "));
+      return b.data;
+    };
+    const defId = (await gql("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `BQ Probe ${Date.now()}`, description: "probe", instructions: "Follow the user's instructions exactly.", category: "probe", toolNames: [] } })).createAgentDefinition.id;
+    const ws = await mkdtemp(path.join(os.tmpdir(), "bq-ws-"));
+    const run = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: defId, workspaceRootPath: ws, llmModelIdentifier: MODEL, autoExecuteTools: true, runtimeKind: RUNTIME } })).createAgentRun;
+    expect(run.success, run.message).toBe(true);
+    const socket = new WebSocket(`ws://${base.hostname}:${base.port}/ws/agent/${run.runId}`);
+    const msgs: Array<{ type: string; payload: any }> = [];
+    socket.on("message", (raw) => {
+      try {
+        const m = JSON.parse(raw.toString());
+        if (!m.type) return;
+        msgs.push(m);
+        if (m.type === "AGENT_STATUS" || m.type === "AGENT_COMMAND_ACK" || /TURN|ERROR/.test(m.type)) log("WS", m.type, JSON.stringify(m.payload).slice(0, 200));
+        else if (/sleep|background|TOOL/i.test(raw.toString())) log("WS-TOOL", m.type, JSON.stringify(m.payload).slice(0, 400));
+      } catch { /* */ }
+    });
+    await new Promise<void>((res) => socket.once("open", () => res()));
+    await wait(1500);
+    sendE2eSendMessageCommand(socket, { content: `Run this shell command in the foreground (not in the background) and wait for it to finish: ${BUSY_CMD} ; then reply with the single word SLEPT.` });
+    const tb = Date.now();
+    while (Date.now() - tb < 180_000 && sleeps().length === 0) await wait(1000);
+    tree("busy");
+    expect(sleeps().length, "the run is busy in sleep 300").toBeGreaterThan(0);
+
+    if (ACTION === "interrupt") {
+      log("ACTION interrupt: sending INTERRUPT_GENERATION");
+      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: `bq-int-${Date.now()}` } }));
+      for (let i = 0; i < 30; i++) {
+        await wait(1000);
+        if (i === 4 || i === 14 || i === 29) tree(`interrupt+${i + 1}s`);
+      }
+    }
+
+    if (ACTION === "codex-sigterm" || ACTION === "codex-sigkill" || ACTION === "codex-stdin-eof") {
+      const codex = descendants(process.pid).find((p) => p.cmd === "codex app-server");
+      log("ACTION", ACTION, "codex pid", codex?.pid);
+      if (codex && ACTION !== "codex-stdin-eof") process.kill(codex.pid, ACTION === "codex-sigterm" ? "SIGTERM" : "SIGKILL");
+      if (codex && ACTION === "codex-stdin-eof") {
+        // close the server-side stdin pipe of the codex child (what happens when the server process dies)
+        const { getCodexAppServerClientManager } = await import("../../../src/runtime-management/codex/client/codex-app-server-client-manager.js");
+        const mgr = getCodexAppServerClientManager() as unknown as { entries: Map<string, { client: { process: { stdin: { end(): void } } | null } | null }> };
+        for (const e of mgr.entries.values()) e.client?.process?.stdin.end();
+      }
+      for (let i = 0; i < 10; i++) { await wait(1000); if (i === 1 || i === 9) tree(`${ACTION}+${i + 1}s`); }
+    }
+
+    if (ACTION === "hold") {
+      // E9: the outer harness SIGKILLs this worker (= the server process) while busy.
+      require("node:fs").writeFileSync(process.env.BQ_HOLD_FILE!, JSON.stringify({ worker: process.pid, sleeps: sleeps().map((p) => p.pid) }));
+      log("HOLD: waiting to be killed", process.pid);
+      await wait(600_000);
+    }
+    if (ACTION === "terminate") {
+      log("ACTION terminate: terminateAgentRun mutation");
+      const m0 = Date.now();
+      const res = await Promise.race([
+        gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success message } }", { id: run.runId }).then((d) => JSON.stringify(d), (e) => `error: ${String(e)}`),
+        wait(60_000).then(() => "MUTATION-PENDING-60s"),
+      ]);
+      log("terminate result:", res, `${((Date.now() - m0) / 1000).toFixed(1)}s`);
+      tree("after-terminate");
+    }
+
+    socket.close();
+    log("CLOSE start (fastify.close)");
+    const c0 = Date.now();
+    let closedAt: number | null = null;
+    const closing = started.fastify.close().then(() => { closedAt = Date.now(); return "closed"; }, (e) => `close-error: ${e instanceof Error ? e.message : String(e)}`);
+    await wait(5000);
+    const net = await import("node:net");
+    const listening = await new Promise<string>((res) => {
+      const sock = net.connect({ host: base.hostname, port: Number(base.port) });
+      sock.once("connect", () => { sock.destroy(); res("port still accepting connections"); });
+      sock.once("error", (e) => res(`port refused: ${(e as NodeJS.ErrnoException).code}`));
+    });
+    log("PORT during hanging close (+5s):", listening);
+    const first = await Promise.race([closing, wait(55_000).then(() => "PENDING-60s")]);
+    log("CLOSE after 60s window:", first, closedAt ? `${(closedAt - c0) / 1000}s` : "");
+    tree("after-close-window");
+    if (first === "PENDING-60s") {
+      const left = sleeps();
+      log("killing leftover sleeps to see what unblocks", JSON.stringify(left.map((p) => p.pid)));
+      for (const p of left) { try { process.kill(p.pid, "SIGTERM"); } catch { /* */ } }
+      const k0 = Date.now();
+      const second = await Promise.race([closing, wait(60_000).then(() => "STILL-PENDING-60s")]);
+      log("CLOSE after killing sleep:", second, `${((Date.now() - k0) / 1000).toFixed(1)}s after kill`);
+      tree("after-sleep-kill");
+    }
+    for (const p of sleeps()) { try { process.kill(p.pid, "SIGKILL"); } catch { /* */ } }
+    await rm(ws, { recursive: true, force: true }); await rm(dataDir, { recursive: true, force: true });
+  }, 900_000);
+});

@@ -1,0 +1,101 @@
+{
+  "api10a": {
+    "baselineRun": "pps_worker_74fd69dbe9894ba0b4deedc26b15324f",
+    "run": "pps_worker_a73e9d5dfaf048cb9da4756ebd71f099",
+    "tools": [
+      "create_task",
+      "delegate_task",
+      "list_projects",
+      "send_message_to"
+    ]
+  },
+  "api10b": {
+    "run": "pps_worker_a73e9d5dfaf048cb9da4756ebd71f099",
+    "tools": [
+      "create_task",
+      "delegate_task",
+      "list_projects",
+      "send_message_to",
+      "update_task"
+    ]
+  },
+  "api10c": {
+    "copy": "pps_worker_1225bbe2af6043fd84bd7c26e05e8b4b",
+    "tools": [
+      "create_task",
+      "delegate_task",
+      "list_projects",
+      "send_message_to",
+      "update_task"
+    ]
+  },
+  "api10d": {
+    "team": "pps_crew_574d9e267288477bbecdc58591bb48d9",
+    "coordinator": "pps_lead_79a0c4681e7c4a1ba3b7074741068ffe",
+    "tools": [
+      "create_project",
+      "delegate_task",
+      "get_handoff_rules",
+      "list_projects",
+      "send_message_to"
+    ]
+  },
+  "api10f": {
+    "teamRunId": "pps_crew_80ebaf9a974f4a2184d0e70b800d6492",
+    "tools": {
+      "/lead": [
+        "create_project",
+        "delegate_task",
+        "get_handoff_rules",
+        "list_projects",
+        "send_message_to"
+      ],
+      "/worker": [
+        "create_task",
+        "delegate_task",
+        "get_handoff_rules",
+        "list_projects",
+        "send_message_to",
+        "update_task"
+      ]
+    }
+  },
+  "api10g": {
+    "orgRunId": "pps_org_6a815cc3230846e99c14b2a4791b4063",
+    "tools": {
+      "/worker": [
+        "create_task",
+        "delegate_task",
+        "get_handoff_rules",
+        "list_projects",
+        "send_message_to",
+        "update_task"
+      ],
+      "/crew/lead": [
+        "create_project",
+        "delegate_task",
+        "get_handoff_rules",
+        "list_projects",
+        "send_message_to"
+      ]
+    }
+  },
+  "api10e": {
+    "settings": {
+      "agent:pps-worker": {
+        "toolsAdded": [
+          "create_task",
+          "update_task"
+        ],
+        "toolsRemoved": [
+          "list_project_tasks"
+        ]
+      },
+      "agent:team-local-agent:pps-crew:lead": {
+        "toolsAdded": [
+          "create_project"
+        ]
+      }
+    }
+  }
+}

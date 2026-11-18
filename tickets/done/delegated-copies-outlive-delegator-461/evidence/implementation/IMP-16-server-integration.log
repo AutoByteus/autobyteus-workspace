@@ -1,0 +1,10 @@
+# IMP-16 pnpm test:integration on 7a32bb8832
+      Tests  6 failed | 477 passed | 69 skipped (552)
+ FAIL  tests/integration/agent/chat-socket-content-cadence.integration.test.ts
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+EXIT 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+# cause: the delegated-agents fake root had no rootIdentity (ChildRowsStreamSession opens on it); fixture fixed
+# rerun of the file after the fix
+ Test Files  1 passed (1)
+      Tests  18 passed (18)

@@ -1,0 +1,33 @@
+# IR-005 (DR-001 Local Fix): SystemTaskNotificationSegment.spec.ts reads messages via getCatalog
+# date: 2026-10-29T20:49:00Z; branch codex/live-tool-list-updates fast-forwarded to origin/personal @ 4fb1c1640d; autobyteus-web
+
+## Guards, each run on its own (pnpm -s <guard>; own exit code)
+### guard:web-boundary
+[guard:web-boundary] Passed.
+exit=0
+### guard:localization-boundary
+[guard:localization-boundary] Passed.
+exit=0
+### audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+exit=0
+
+## guard:localization-boundary against the old spec (git stash): exit=1 (the DR-001 failure reproduced)
+
+## Spec: SystemTaskNotificationSegment.spec.ts: 1 file, 8 tests passed
+
+## Web suite (isolated HOME)
+### nuxt
+ Test Files  668 passed (668)
+      Tests  4860 passed | 2 skipped (4862)
+exit=0
+### electron, first run: 1 failed | 278 passed
+ FAIL  server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/port-owner-fault-2cxgSw/child-pid'
+ ❯ server/__tests__/PortOwnerInspectorFaults.spec.ts:78:24
+cause: timing under load (collect 61.5s). The fixture child writes its pid file first, but the inspector kills it at 1000ms, so it was killed before writing. This ticket changes nothing under electron/ (git diff 9f7c9c10a6..HEAD -- electron/ is empty).
+### that file alone: 11/11 passed (AC002 deadline receipt elapsedMs 1011)
+### electron, re-run
+ Test Files  48 passed | 1 skipped (49)
+      Tests  279 passed | 1 skipped (280)
+exit=0

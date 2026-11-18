@@ -1,0 +1,148 @@
+{
+  "check": "IMP-09 implementation self-inspection, not API/E2E",
+  "commit": "7e2704199",
+  "date": "2026-10-26T17:08:03.383Z",
+  "environment": "macOS arm64 changed-build isolated Electron 42.11.16",
+  "instanceId": "iso-65117-0fae",
+  "steps": "Show tools; Browser; address local /A; click page link B; toolbar Back; toolbar Forward, await committed URLs",
+  "back": {
+    "activeTabId": "92cb0a",
+    "sessions": [
+      {
+        "canGoBack": false,
+        "canGoForward": true,
+        "tab_id": "92cb0a",
+        "title": "History preview A",
+        "url": "http://127.0.0.1:65010/A",
+        "deviceEmulation": {
+          "mode": "desktop",
+          "profile": null
+        }
+      }
+    ]
+  },
+  "forward": {
+    "activeTabId": "92cb0a",
+    "sessions": [
+      {
+        "canGoBack": true,
+        "canGoForward": false,
+        "tab_id": "92cb0a",
+        "title": "History preview B",
+        "url": "http://127.0.0.1:65010/B",
+        "deviceEmulation": {
+          "mode": "desktop",
+          "profile": null
+        }
+      }
+    ]
+  },
+  "toolbar": {
+    "width": 434,
+    "scrollWidth": 434,
+    "controls": [
+      {
+        "tag": "BUTTON",
+        "label": "Open new tab",
+        "width": 38,
+        "height": 30,
+        "disabled": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Back",
+        "width": 34,
+        "height": 30,
+        "disabled": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Forward",
+        "width": 34,
+        "height": 30,
+        "disabled": true
+      },
+      {
+        "tag": "INPUT",
+        "label": "Enter URL and press Enter",
+        "width": 166,
+        "height": 34,
+        "disabled": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Refresh active tab",
+        "width": 38,
+        "height": 30,
+        "disabled": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Switch active tab to mobile view",
+        "width": 38,
+        "height": 30,
+        "disabled": false
+      },
+      {
+        "tag": "BUTTON",
+        "label": "Close active tab",
+        "width": 38,
+        "height": 30,
+        "disabled": false
+      }
+    ]
+  },
+  "sameUrlEdit": {
+    "focusedByShiftTab": "Back",
+    "valueAfterBack": "unfinished.example/path",
+    "url": "http://127.0.0.1:65010/B",
+    "snapshot": {
+      "activeTabId": "92cb0a",
+      "sessions": [
+        {
+          "canGoBack": true,
+          "canGoForward": true,
+          "tab_id": "92cb0a",
+          "title": "History preview B",
+          "url": "http://127.0.0.1:65010/B",
+          "deviceEmulation": {
+            "mode": "desktop",
+            "profile": null
+          }
+        }
+      ]
+    }
+  },
+  "fullView": {
+    "width": 1184,
+    "scrollWidth": 1184
+  },
+  "mobileSnapshot": {
+    "activeTabId": "92cb0a",
+    "sessions": [
+      {
+        "canGoBack": true,
+        "canGoForward": true,
+        "tab_id": "92cb0a",
+        "title": "History preview B",
+        "url": "http://127.0.0.1:65010/B",
+        "deviceEmulation": {
+          "mode": "mobile",
+          "profile": {
+            "width": 390,
+            "height": 844,
+            "deviceScaleFactor": 3
+          }
+        }
+      }
+    ]
+  },
+  "restoredAndClosed": {
+    "snapshot": {
+      "activeTabId": null,
+      "sessions": []
+    },
+    "backDisabled": true,
+    "forwardDisabled": true
+  }
+}

@@ -3,6 +3,7 @@ import type { ContextFileReference } from '../agent/message/context-file-referen
 import { randomUUID } from 'node:crypto';
 import type { ToolResultEvent } from '../agent/events/agent-events.js';
 import type { ToolInvocation } from '../agent/tool-invocation.js';
+import { toModelToolCall } from '../agent/tool-search/call-tool.js';
 import type { ToolCallSpec } from '../llm/utils/messages.js';
 import type { CompleteResponse } from '../llm/utils/response-types.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
@@ -33,10 +34,16 @@ export const buildNativeAssistantResponseTraces = (
   return traces;
 };
 
+/**
+ * One tool call's two records (DS-003): the raw `tool_call` trace holds the real tool (`toolName`,
+ * `toolArgs`, `calledThrough`); the working-context `toolCall` holds the call as the model made it
+ * (`call_tool` with `{name, arguments}` when it was called through it), which providers replay.
+ */
 export type NativeToolCallRegistration = {
   identity: ToolCallIdentity;
   toolName: string;
   toolArgs: Record<string, unknown>;
+  calledThrough: string | null;
   toolCall: ToolCallSpec;
 };
 
@@ -63,10 +70,10 @@ export const normalizeNativeToolCallBatch = (
       identity,
       toolName,
       toolArgs,
+      calledThrough: invocation.calledThrough,
       toolCall: {
         id: identity.toolCallId,
-        name: toolName,
-        arguments: structuredClone(toolArgs),
+        ...toModelToolCall(toolName, structuredClone(toolArgs), invocation.calledThrough),
         nativeToolCallContext: invocation.nativeToolCallContext,
       },
     };
@@ -87,6 +94,7 @@ export const buildNativeToolCallTrace = (
   toolName: registration.toolName,
   toolCallId: registration.identity.toolCallId,
   toolArgs: registration.toolArgs,
+  calledThrough: registration.calledThrough,
 });
 
 export type NativeToolResultRegistration = {

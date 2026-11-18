@@ -1,0 +1,39 @@
+# IMP-03 web specs this change touched or added, on commit e5ca0e1da7: pnpm -C autobyteus-web test:nuxt <files> --run
+# macOS, Node v22.23.1; 2026-11-10. Files: __tests__/app.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/views/__tests__/MobileNodeDesktop.spec.ts composables/mobile/__tests__/useMobileNavigation.spec.ts composables/mobile/__tests__/useMobileRunOpening.spec.ts composables/mobile/__tests__/useMobileRunTreeRevealRow.spec.ts composables/mobile/__tests__/useMobileSubjectRestore.spec.ts composables/runHistory/__tests__/useRunHistorySectionLoad.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.reconnect.spec.ts services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentStreaming/transport/__tests__/WebSocketClient.spec.ts services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts services/liveStreamLifecycle/__tests__/closeAllLiveStreams.spec.ts services/liveStreamLifecycle/__tests__/credentialRefusalClose.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/agentOrgRetainedRecovery.spec.ts stores/__tests__/agentRunCollaborationListedStatuses.spec.ts stores/__tests__/agentRunCollaborationStore.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/runHistoryListedRuns.spec.ts utils/__tests__/nodeConnectionErrorText.spec.ts utils/__tests__/nodeIdentityProbe.spec.ts utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts 
+
+ ✓ __tests__/app.spec.ts (9 tests) 43ms
+ ✓ stores/__tests__/agentRunStore.spec.ts (27 tests) 77ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts (29 tests) 127ms
+ ✓ composables/mobile/__tests__/useMobileSubjectRestore.spec.ts (13 tests) 54ms
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts (20 tests) 297ms
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 485ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (27 tests) 965ms
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts (19 tests) 49ms
+ ✓ utils/__tests__/nodeIdentityProbe.spec.ts (8 tests) 47ms
+ ✓ composables/mobile/__tests__/useMobileRunOpening.spec.ts (13 tests) 43ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.reconnect.spec.ts (9 tests) 36ms
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (10 tests) 20ms
+ ✓ composables/runHistory/__tests__/useRunHistorySectionLoad.spec.ts (7 tests) 19ms
+ ✓ stores/__tests__/agentRunCollaborationListedStatuses.spec.ts (16 tests) 33ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (25 tests) 4016ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves the exact newer draft and focus through existing verified recovery after a pending disconnect  1141ms
+   ✓ Org shared composer -> exact interaction -> correlated stream > preserves actual textarea edits while a verified same-Agent replacement is held  1192ms
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (3 tests) 20ms
+ ✓ services/agentStreaming/transport/__tests__/WebSocketClient.spec.ts (6 tests) 6ms
+ ✓ services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts (25 tests) 13ms
+ ✓ utils/__tests__/nodeConnectionErrorText.spec.ts (6 tests) 6ms
+ ✓ composables/mobile/__tests__/useMobileRunTreeRevealRow.spec.ts (3 tests) 16ms
+ ✓ services/liveStreamLifecycle/__tests__/closeAllLiveStreams.spec.ts (1 test) 9ms
+ ✓ services/liveStreamLifecycle/__tests__/credentialRefusalClose.spec.ts (15 tests) 3ms
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts (1 test) 2ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (23 tests) 8575ms
+   ✓ AgentOrgStreamingService > keeps the committed context until a checkpointed candidate is complete, then restores focus atomically  1201ms
+   ✓ AgentOrgStreamingService > recovers transparently when a strict snapshot arrives before CONNECTED  1024ms
+   ✓ AgentOrgStreamingService > uses checkpointed transparent recovery after an established stream closes and preserves focus  1134ms
+   ✓ AgentOrgStreamingService > recovers after a close for Phone Access off: it can be turned on again (autobyteus-435 DEC-008)  1072ms
+   ✓ AgentOrgStreamingService > retires a valid server ERROR with a browser-permitted close and publishes recovered context  1082ms
+   ✓ AgentOrgStreamingService > fails closed and rejects the pending command for a miscorrelated ACK command type  1084ms
+   ✓ AgentOrgStreamingService > fails closed and rejects the pending command for a miscorrelated ACK target AgentRun  1067ms
+ ✓ stores/__tests__/runHistoryListedRuns.spec.ts (1 test) 3ms
+ Test Files  25 passed (25)
+      Tests  336 passed (336)

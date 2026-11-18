@@ -322,7 +322,7 @@ describe('TokenUsageMeterPanel', () => {
         usage_event_id: `report-${revision}`, idempotency_key: `report-${revision}`, run_id: 'run-1',
         turn_id: 'turn', model_identifier: 'exact-reported-model', reports_model_call: true,
         observed_at: '2026-10-13T10:00:00.000Z', output_throughput: outputThroughput,
-        run_summary_after_event: buildSummaryDto(buildSummary({ revision, usageReportCount: revision })),
+        run_summary_after_event: { ...buildSummaryDto(buildSummary({ revision, usageReportCount: revision })), run_id: 'run-1' },
       });
     call(1, { method: 'generation', output_tokens: 1200, duration_ms: 10_000 });
     await nextTick();
@@ -459,7 +459,8 @@ describe('TokenUsageMeterPanel', () => {
     const primary = wrapper.get('[data-test="token-usage-primary"]').text();
     expect(primary).toContain('25M');
     expect(primary).toContain('$22.60');
-    expect(primary).toContain('codex_app_server');
+    expect(primary).toContain('Codex App Server');
+    expect(primary).not.toContain('codex_app_server');
     expect(primary).toContain('199 reports');
     expect(primary).not.toContain('2 reports');
   });
@@ -961,7 +962,8 @@ describe('TokenUsageMeterPanel', () => {
     const primary = wrapper.get('[data-test="token-usage-primary"]').text();
     expect(primary).toContain('25M');
     expect(primary).toContain('$22.60');
-    expect(primary).toContain('codex_app_server');
+    expect(primary).toContain('Codex App Server');
+    expect(primary).not.toContain('codex_app_server');
     expect(primary).toContain('199 reports');
     expect(wrapper.get('[data-test="team-token-total-row"]').text()).toContain('30M');
   });

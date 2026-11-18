@@ -1,0 +1,843 @@
+# IMP-03
+# Command: pnpm -C autobyteus-server-ts exec vitest run --reporter=verbose tests/unit/model-routing tests/unit/agent-collaboration/collaborators tests/unit/remote-collaboration tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts tests/unit/workspaces
+# Commit: 4979559f7f
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-26T15:04:49Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-JHzbXl/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-JHzbXl/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator
+Created and registered workspace ID: agent_ws_05805482dde6cbda3185f4761f2f2e3118eebaf8aeffd8b23f1ad07c5c47fd97
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ssH9ZM/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ssH9ZM/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Created and registered workspace ID: agent_ws_7734f37678acf74883f26472204a2b7f0782613ab033260294861a56024c7c37
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ssH9ZM/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-ssH9ZM/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused
+Reusing registered workspace ID: agent_ws_7734f37678acf74883f26472204a2b7f0782613ab033260294861a56024c7c37
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-301: B creates the Team run with the back-link; A records the Team link; the work packet starts only the coordinator 126ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-v0HYlY/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-v0HYlY/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused
+Created and registered workspace ID: agent_ws_ef33cf270d191791e3d3a9948f0c6d722f2f73c84d497e1183a6d58fe1e4dfe7
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-303: the delegator and any member message each other by run ID; a never-started member starts; others are refused 128ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-305: closing the Task on A fences the remote Team both ways (fenced_remote); a saved Task for it is refused 69ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-mWLiMB/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-mWLiMB/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Created and registered workspace ID: agent_ws_556c402130156fb5e312c7bc1e4a58510d9f079c139c8ec02cbb40cb3605fe00
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-mWLiMB/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-mWLiMB/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator
+Reusing registered workspace ID: agent_ws_556c402130156fb5e312c7bc1e4a58510d9f079c139c8ec02cbb40cb3605fe00
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-VkVajN/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-VkVajN/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing
+Created and registered workspace ID: agent_ws_bc7c5250ecf60be583d6e4d8297e24fcc21287fe35f8868423370a732e0640f0
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > AC-304: the idle Team shuts down quietly; after B and A restart, a follow-up restores it and the reply wakes the delegator 96ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-pwxMOt/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-pwxMOt/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address
+Created and registered workspace ID: agent_ws_99a0377fb947aea76bab8f5847dc91460b5824b915cfc1becd9c60c0c48f7f88
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > remote delegation to a shared Agent Team, in process (autobyteus-247) > N-303: an inactive Team root is checked against its stored links before a restore; an unlinked sender restores nothing 72ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > discovery, then delegation, in process (autobyteus-261 AC-402, AC-408) > A lists its peers, lists B's offer and delegates to the listed Team without being told its address 67ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-7oQlSB/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-7oQlSB/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted)
+Created and registered workspace ID: agent_ws_3d7fe11b47f1ef939f8240d5f9b9640f404da0935f35bbcafab8e9cf2b62454b
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-WmOlgV/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-WmOlgV/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms
+Created and registered workspace ID: agent_ws_0fc8f68ace224761665215f88cb21fd5698e6b8c591cc33ed3ffa388b70649d0
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > all members quiet for the grace period: the root ends, keeping its package (no member interrupted) 72ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-kutVMU/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-kutVMU/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle
+Created and registered workspace ID: agent_ws_022fc18c11905eab6b42f98d4a1ba0a3c0dca90847ef1dff9d85e751e292761c
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a member that is not quiet (waiting for tool approval, or a running background task) keeps the whole Team; its end re-arms 72ms
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > a message during the grace period cancels it: the member runs, and the grace starts again when it is idle 73ms
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > open child work skips the fire; a local Team run (no back-link) has no idle shutdown at all
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-e3Tuqy/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-team-b-e3Tuqy/temp_workspace.
+
+stdout | tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > open child work skips the fire; a local Team run (no back-link) has no idle shutdown at all
+Created and registered workspace ID: agent_ws_7189ab9e0564b3d446c3fa0532c8b23b1e38fef6f24b8b07252c9c8383cd0794
+
+ ✓ tests/unit/remote-collaboration/team-remote-delegation.test.ts > DS-004: a peer-started Team root's quiet idle shutdown (AR-301) > open child work skips the fire; a local Team run (no back-link) has no idle shutdown at all 92ms
+stdout | tests/unit/remote-collaboration/standalone-remote-delegation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > A delegates to B's shared Agent by its catalog address; B prepares a standalone run with the back-link, A links it, then sends the work packet 50ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > the two runs message each other both ways by run ID; each message is in both logs once, with one ID, and the headers name the node 78ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108) 87ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > refuses before anything is sent: files, a saved Task, an unknown node; and B's refusals leave nothing on A (AC-104, AC-108) 5ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > refuses files on a follow-up, a saved Task for the remote run, and messages from a run that is not linked (AC-107, AC-108, AR-003) 30ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > closing the Task on A fences the remote run: messages to and from it are refused with the closed-Task reason (AC-109, DEC-107) 29ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > writes nothing when the peer refuses a message, and admits a message ID once (N-5) 92ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > autobyteus-278: A's root follows its remote child: summary, live output, an owner message and Stop, through B's link check 35ms
+stdout | tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'standalone Agent root' (AR-001 guard) > walkers of local copies see only the local copy
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'standalone Agent root' (AR-001 guard) > walkers of local copies see only the local copy 15ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'standalone Agent root' (AR-001 guard) > run-ID membership, Task ownership and the stored message view include the remote run 102ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'Team root' (AR-001 guard) > walkers of local copies see only the local copy 8ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'Team root' (AR-001 guard) > run-ID membership, Task ownership and the stored message view include the remote run 40ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'Org root' (AR-001 guard) > walkers of local copies see only the local copy 2ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > remote links in a 'Org root' (AR-001 guard) > run-ID membership, Task ownership and the stored message view include the remote run 47ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > 'Team root' package state with remote message endpoints (SR-017, F-002) > a stored delegator ↔ remote message passes the admission scan and a restore 40ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > 'Team root' package state with remote message endpoints (SR-017, F-002) > keeps refusing an endpoint outside the run, equal endpoints, and a message with no local endpoint 1ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > 'Team root' package state with remote message endpoints (SR-017, F-002) > N-15: without remote links the endpoint set is the index's agent set (configured members, a task Agent, a task Team) 1ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > 'Org root' package state with remote message endpoints (SR-017, F-002) > a stored delegator ↔ remote message passes the admission scan and a restore 42ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > 'Org root' package state with remote message endpoints (SR-017, F-002) > keeps refusing an endpoint outside the run, equal endpoints, and a message with no local endpoint 1ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts > 'Org root' package state with remote message endpoints (SR-017, F-002) > N-15: without remote links the endpoint set is the index's agent set (configured members, a task Agent, a task Team) 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listPeerNodes (DS-001) > AC-401: each registered peer, in registration order, with its status now; only an accepted answer is available 54ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listPeerNodes (DS-001) > an empty list when no peer is registered; the 'turned off' refusal, with nothing sent, when this node's switch is off 1ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listAvailableAgents (DS-002) > an available peer's offer, entries as sent (no empty description) 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listAvailableAgents (DS-002) > an unavailable peer gives the specific reason, worded as for delegate_task (SCN-402) 51ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listAvailableAgents (DS-002) > AC-404: an unregistered node and the switch off are refused here, with nothing sent 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes page) > a peer's offer by node ID, with the same answers and refusals as by name 1ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes page) > the name-based method (the agent tools) goes through it: one path 1ms
+ ✓ tests/unit/remote-collaboration/peer-node-discovery.test.ts > PeerNodeDiscovery.listAvailableAgentsOf (autobyteus-267: the Nodes page) > one-nodes-tab DS-004: checkAvailabilityOf asks one peer whether it admits this node now; an unreachable one says why 50ms
+stdout | tests/unit/remote-collaboration/peer-run-views-client.test.ts > PeerClient run views (autobyteus-278) > N-401: an observation accepts frames only after the first frame names the pinned node; close() ends it silently
+An observation frame from node 'docker' was not readable; it was dropped.
+
+ ✓ tests/unit/remote-collaboration/peer-run-views-client.test.ts > PeerClient run views (autobyteus-278) > asks one node for its runs' summaries and reads the answer strictly 4ms
+ ✓ tests/unit/remote-collaboration/peer-run-views-client.test.ts > PeerClient run views (autobyteus-278) > reads one agent's projection and passes an owner command; refusals stay refusals 1ms
+ ✓ tests/unit/remote-collaboration/peer-run-views-client.test.ts > PeerClient run views (autobyteus-278) > N-401: an observation accepts frames only after the first frame names the pinned node; close() ends it silently 12ms
+ ✓ tests/unit/remote-collaboration/peer-run-views-client.test.ts > PeerClient run views (autobyteus-278) > a refusal, another node's first frame, no first frame in time or the peer closing ends the stream once 82ms
+ ✓ tests/unit/model-routing/routing-decision-log.test.ts > RoutingDecisionLog (REQ-012, D1, D2) > appends records and reads them back; an unreadable line is skipped with a warning (DESIGN.md rule 7) 35ms
+ ✓ tests/unit/model-routing/routing-decision-log.test.ts > RoutingDecisionLog (REQ-012, D1, D2) > groups by Task, newest delegation first; the source filter is applied before paging; `before` continues 21ms
+ ✓ tests/unit/model-routing/routing-decision-log.test.ts > RoutingDecisionLog (REQ-012, D1, D2) > a copy started for a peer whose Task did not exist yet is its own group 13ms
+ ✓ tests/unit/model-routing/routing-decision-log.test.ts > RoutingDecisionLog (REQ-012, D1, D2) > seals the active file at the rotation limit; sealed files read first 14ms
+ ✓ tests/unit/model-routing/routing-decision-log.test.ts > RoutingStatistics (D4: agents, not Tasks; this node's records only) > counts sources, per task kind (ignoring letter case) runtimes and models, not routed, and router failures for a period 1ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > RemoteCollaborationCapability (the switch) > is off unless ENABLE_REMOTE_COLLABORATION is true, and is written through the settings mechanism 1ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > registers the named node by URL and name, checking that the URL answers with it, in peers.json with exact keys 15ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > one-nodes-tab: refuses a URL that answers with a different node than the one named (PEER_IDENTITY_MISMATCH) 1ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > refuses to contact a URL while the switch is off, a URL that is this node, a node registered twice and a taken name 12ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > renames (the name only) and removes a peer 22ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > one-nodes-tab TR-711: changes a peer's address only when the pinned node answers there, with the switch on 17ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts > PeerDirectory > one-nodes-tab REQ-708: an unreachable loopback address says loopbackInContainer only when this node runs in a container 18ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > sends the envelope and the request to the peer's pinned URL, with no credential, and returns the peer's run ID 3ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > autobyteus-247 G-7: reads a started Team (its coordinator and members); an answer without the run it started is unreachable 1ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > G-2: a message names the root that receives it on the peer 0ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > autobyteus-261: availability and available agents send only the envelope to their routes 0ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > autobyteus-261 N-401: reads a peer's list strictly; any entry with another field, or a bad one, makes the answer malformed 1ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > refuses an answer from a server that is not the pinned peer (identity mismatch) 0ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > words a peer's refusal for the agent, naming the peer by this owner's label 0ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > maps a transport failure, an HTTP error and a timeout to PEER_UNREACHABLE within the bound (QR-102) 22ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > sends nothing while the switch is off, or to a peer that is not registered 1ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > reads a URL's server identity from its public status route, and refuses what is not an AutoByteus node 1ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > one-nodes-tab REQ-707: an identity probe that gets no answer names its cause, never 'fetch failed' 22ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > one-nodes-tab REQ-707: an unreachable peer's refusal carries the reason; the agent's text is unchanged 0ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts > PeerClient > calls a server that answered with a page, or with another status, not an AutoByteus node, never unreachable (CR-002) 0ms
+stdout | tests/unit/model-routing/model-router-confinement.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > the shipped template is internal and lists exactly its tools: no shell, no collaboration tools 3ms
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > AR-001: a system-owned run is never a collaboration member (no member context), and the marker survives a restore 34ms
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > all runtimes: without a member context the requested tools are exactly the template list (no send_message_to, delegate_task, get_handoff_rules) 1ms
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > Codex: a confined run starts its thread with the workspace-write sandbox even with auto-approve; others keep today's 0ms
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > Claude: our tools are the template's MCP tools (no collaboration tools); a confined session has no shell tool and only user settings 1ms
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > Claude AR-002: the PreToolUse hook denies a write outside the workspace (also through a symlink), allows one inside, ignores other tools 3ms
+ ✓ tests/unit/model-routing/model-router-confinement.test.ts > The Model Router agent's tools and confinement per runtime (AC-011) > AutoByteus: the run gets only the listed tools, with no shell tool 0ms
+stdout | tests/unit/remote-collaboration/node-identity-hold-back.test.ts > this node's identity held back > the status route answers 503 with NODE_IDENTITY_NOT_MIGRATED and writes no identity
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > this node's identity held back > the status route answers 503 with NODE_IDENTITY_NOT_MIGRATED and writes no identity 107ms
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > this node's identity held back > the gateway answers inbound requests 503 with the code and dispatches nothing 1ms
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > this node's identity held back > the client refuses outbound requests with the code and sends nothing 1ms
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > this node's identity held back > adding a peer is refused with the code (settings error) 2ms
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > another node's identity held back (it answers 503 with the code) > a request to it is refused with the code and its name, not as unreachable 1ms
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > another node's identity held back (it answers 503 with the code) > its identity probe says so, not 'not an AutoByteus node'; any other 503 keeps today's meaning 1ms
+ ✓ tests/unit/remote-collaboration/node-identity-hold-back.test.ts > another node's identity held back (it answers 503 with the code) > address resolution reports the attempt as identity_pending 0ms
+ ✓ tests/unit/remote-collaboration/peer-address-resolver.test.ts > PeerAddressResolver > keeps the first address, in order, that answers with the expected node; a wrong node is skipped 8ms
+ ✓ tests/unit/remote-collaboration/peer-address-resolver.test.ts > PeerAddressResolver > answers as soon as every address before the match has settled; a black-holed address after it adds no wait 2ms
+ ✓ tests/unit/remote-collaboration/peer-address-resolver.test.ts > PeerAddressResolver > waits for an earlier address that is still being asked, and dedupes repeated addresses 31ms
+ ✓ tests/unit/remote-collaboration/peer-address-resolver.test.ts > PeerAddressResolver > refuses with every attempt's classified outcome when no address answers as that node 3ms
+ ✓ tests/unit/remote-collaboration/peer-address-resolver.test.ts > PeerAddressResolver > says loopbackInContainer when this node runs in a container and the first address tried is loopback 1ms
+ ✓ tests/unit/remote-collaboration/peer-address-resolver.test.ts > PeerAddressResolver > asks nothing while the switch is off (DEC-709 b), for this node itself, or without a valid address 1ms
+stdout | tests/unit/workspaces/workspace-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reads registered roots without activation, temp cleanup, existence checks or registry writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-XvCxPm
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-XvCxPm.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Created and registered workspace ID: agent_ws_80610f1faea5458e285537cfe27b10acd44a5a01f69c76467eb7744b41db1f06
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Closing FileSystemWorkspace agent_ws_80610f1faea5458e285537cfe27b10acd44a5a01f69c76467eb7744b41db1f06
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CS33Ga
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CS33Ga.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Created and registered workspace ID: agent_ws_4293b6e2ded7cadb8cf530e78da8c7fe3f2f8b1e5fb0aff0e27f27a5672d80db
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CS33Ga
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CS33Ga.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Reusing registered workspace ID: agent_ws_4293b6e2ded7cadb8cf530e78da8c7fe3f2f8b1e5fb0aff0e27f27a5672d80db
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Closing FileSystemWorkspace agent_ws_4293b6e2ded7cadb8cf530e78da8c7fe3f2f8b1e5fb0aff0e27f27a5672d80db
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rbIR7J
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rbIR7J.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Created and registered workspace ID: agent_ws_d46c2785f41216d405a5dc22e6c3f6d00c5372f45d127ae52e1925d67f4084f2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rbIR7J/.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rbIR7J.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Reusing registered workspace ID: agent_ws_d46c2785f41216d405a5dc22e6c3f6d00c5372f45d127ae52e1925d67f4084f2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Closing FileSystemWorkspace agent_ws_d46c2785f41216d405a5dc22e6c3f6d00c5372f45d127ae52e1925d67f4084f2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-IpEauk/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-IpEauk
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-IpEauk.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-IpEauk with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-TdhBfX.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+Closing FileSystemWorkspace agent_ws_5d65f69c57475c445d0d07319e492b53eaa07baef9c076d31b371a4efe607bcb
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-TdhBfX
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-TdhBfX.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-TdhBfX with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-65MF6i.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-ZVWogq
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-ZVWogq.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Created and registered workspace ID: agent_ws_107c2c8ebb66ab1849bb343a724c1e641cf1c905056350563af0d26aa7eff2d9
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-0pRqXv/internal-workspaces/autobyteus-model-router
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-0pRqXv/internal-workspaces/autobyteus-model-router.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Created and registered workspace ID: agent_ws_9647a0b04454b577729a9b58a52c9cc326f3f23fc912c37ab72befeb8cb0fb9b
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Closing FileSystemWorkspace agent_ws_107c2c8ebb66ab1849bb343a724c1e641cf1c905056350563af0d26aa7eff2d9
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works
+Closing FileSystemWorkspace agent_ws_9647a0b04454b577729a9b58a52c9cc326f3f23fc912c37ab72befeb8cb0fb9b
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-m4aC0e
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-m4aC0e.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_94c107c0f4a82b89df93cbd8ab782f87e8c931edcf802a796886d17945c1bb72
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Tun4qx
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Tun4qx.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_6903b946a9b2054f99e3c447d2e2f26b22a5a78367d01173b56cc70e0006901f
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_94c107c0f4a82b89df93cbd8ab782f87e8c931edcf802a796886d17945c1bb72
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_6903b946a9b2054f99e3c447d2e2f26b22a5a78367d01173b56cc70e0006901f
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3Zwg7W
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3Zwg7W.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-3Zwg7W with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-J7EEXM
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-J7EEXM.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-J7EEXM with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-BoBodT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-BoBodT.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_7a5dfbcd06cef881b2371f525a6eb16fc054b13d64e5981dc3c7f46f0700302e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_7a5dfbcd06cef881b2371f525a6eb16fc054b13d64e5981dc3c7f46f0700302e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-BoBodT
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-BoBodT.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_7a5dfbcd06cef881b2371f525a6eb16fc054b13d64e5981dc3c7f46f0700302e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_7a5dfbcd06cef881b2371f525a6eb16fc054b13d64e5981dc3c7f46f0700302e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-bCVwm2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-bCVwm2.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Created and registered workspace ID: agent_ws_3759e35d396091968d5f5f82b98ae120bdf915537889cb314b710af9ce1ad522
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Closing FileSystemWorkspace agent_ws_3759e35d396091968d5f5f82b98ae120bdf915537889cb314b710af9ce1ad522
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-O5Prnc
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-O5Prnc.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-O5Prnc with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-j78kuH/g1.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-j78kuH/g1
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Closing FileSystemWorkspace skill_ws_writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-j78kuH/g2.
+Initialized SkillWorkspace for skill 'writer' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-j78kuH/g2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Closing FileSystemWorkspace skill_ws_writer
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Creating on-demand SkillWorkspace for: writer
+
+stderr | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill
+Failed to create skill workspace skill_ws_writer: Error: SkillWorkspace creation failed for 'writer': Error: Skill 'writer' not found
+
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reads registered roots without activation, temp cleanup, existence checks or registry writes 5ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace 4ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config 2ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID 2ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace 2ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root 3ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works 5ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns undefined for unknown workspace IDs 1ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces 4ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call 1ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls 1ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart 3ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files 4ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID 1ms
+ ✓ tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > rebinds a cached skill workspace after generation publication and rejects a removed skill 2ms
+stdout | tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > preserves existing registry entries when load and upsert overlap
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > preserves existing registry entries when load and upsert overlap 19ms
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > serializes concurrent upserts so all roots remain registered 4ms
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > allows explicit delete of only the requested registry entry 3ms
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > rejects an unexpected shrink and preserves the persisted registry 4ms
+ ✓ tests/unit/workspaces/workspace-registry-store.test.ts > WorkspaceRegistryStore > allows explicit cleanup by root path without creating persistent backup files 3ms
+ ✓ tests/unit/remote-collaboration/delegated-run-metadata-across-migrations.test.ts > a run started by a peer node across the Skill Improvement data removal > keeps the run, its run_metadata.json byte for byte, its history row and its delegatedFrom 38ms
+ ✓ tests/unit/model-routing/model-router-agent.test.ts > ModelRouterAgent (REQ-004, SR-012 point 3, AR-001) > creates one run of the internal agent in its internal workspace: auto-approved, confined, system-owned; reuses it while the launch is the same 12ms
+ ✓ tests/unit/model-routing/model-router-agent.test.ts > ModelRouterAgent (REQ-004, SR-012 point 3, AR-001) > a changed runtime or model starts a new run (the old one stays in history); a run that does not restore too 4ms
+ ✓ tests/unit/model-routing/model-router-agent.test.ts > ModelRouterAgent (REQ-004, SR-012 point 3, AR-001) > REQ-007, RSK-008: reads knowledge.md from its workspace, the first 16 KB, marking a longer file as cut 3ms
+ ✓ tests/unit/model-routing/model-router-agent.test.ts > ModelRouterAgent (REQ-004, SR-012 point 3, AR-001) > SR-016: idle only while its run is idle with no input waiting; listeners hear every change 2ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > AC-201 / AC-205: prepares a run of the Agent at its catalog address with its default, the temp workspace and auto-approve on 5ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > AC-204: refuses an address with no delegable Agent (unknown, built-in, team-local, application-owned) and prepares nothing 1ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > autobyteus-247 BEH-301: hands a shared Agent Team's resolved source to the Team starter, with the back-link; prepares no Agent run 2ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > REQ-302 / AC-302: refuses a Team with an agent covered by no default, naming the Team, before anything starts 0ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > AC-202: refuses an Agent with no default, or an incomplete one, as NO_DEFAULT_RUNTIME, and prepares nothing 1ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > AC-203: refuses a default that can't run here with its reason, and a run that could not be prepared 1ms
+ ✓ tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > peerRefusalText words B's refusals on A (design § Contract Between Nodes) > names the node, the address or the target, with the target's kind (autobyteus-261 DEC-407) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > returns the spawned ingress run ID and the task_id of the Task with no Project it created (REQ-003/004) 5ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > rejects description-only delegation before any planning when no Task side is bound 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > returns delegated: false with a message when nothing started, aborting the preparation 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > builds the first message with the delegator's sender run id only when its address does not reach it (wording §7.1, SR-015) 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle delegation result > gives the delegator's sender address with its run id when that address reaches it run-wide (design T-5) 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle saved-Task work text (task-comments REQ-012, AC-010) > a new copy of a saved Task gets its comment texts after the description, oldest first; no block without comments 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > shuts a quiet child down after the grace period, not before (AC-004) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > cancels on running work and restarts the countdown at the next quiet moment (AC-005) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > arms on error status so an errored child is still released (AR-001) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > never shuts down work that the fire-time quiescence check rejects (approval pending, running turn) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > arms every live execution in the chain and ignores executions that are already shut down 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > reads the grace period at arm time 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > disposes every timer on root termination and on fail-stop 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle idle shutdown > logs and survives a teardown-indeterminate shutdown failure raised by the adapter 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle background-task waits (hybrid idle shutdown) > does not shut a quiet copy down while its background task runs, however long; the task's end re-arms one grace period (AC-001/002/004) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle background-task waits (hybrid idle shutdown) > re-arms through the idle that follows a completion turn, which replaces the end's timer (AC-005) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle background-task waits (hybrid idle shutdown) > keeps a Team copy live while one member's task runs; that member's task end re-arms the whole chain (AC-003) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle background-task waits (hybrid idle shutdown) > ignores a task end for an agent outside every copy, for a copy that is not live, and after the root stops admitting 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > restores a shut-down chain, holds it against shutdown, and arms it on release (AR-001b) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > restores a child whose wake arrives while its shutdown is in flight, after the shutdown completes (QR-002) 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > rejects with TASK_EXECUTION_CONTEXT_UNAVAILABLE before any restore (AC-011) 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > converts restore errors to TASK_EXECUTION_RESTORE_FAILED and arms executions restored before the failure 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle wake leases > returns a no-op lease for agents outside any delegated child 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008) > dispatch attaches the placement's notes to the delegated outcome, and only non-empty ones 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle launch notes (DS-003, DS-004 b; REQ-008) > autobyteus-32 REQ-012: a copy resolved with Model Routing on records its decisions once started, with the Task it created 1ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle user Stop (SR-006, DS-002) > stops live copies innermost first through the queue, reports offline ones, and the next message resumes 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle user Stop (SR-006, DS-002) > AR-006: drains a held lease outside the queue while the holder's inner wakes still run, then stops 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle user Stop (SR-006, DS-002) > refuses new leases on a stopping chain before any queue step, and at the head for wakes queued earlier 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle user Stop (SR-006, DS-002) > refuses at the queue head a wake queued before the copy was marked 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle user Stop (SR-006, DS-002) > idle shutdown skips a copy being stopped; a second overlapping Stop joins and finds it offline 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle model-change step (AR-001) > runs only while every listed copy is stopped; a wake queued behind it restores after the change 0ms
+ ✓ tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts > RootTaskExecutionLifecycle model-change step (AR-001) > refuses while a live lease holds the copy 0ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > StandalonePairedAgentAccess (a remote Agent) > presents the host's events and follows a restored host through the root's host-ready hook 7ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > StandalonePairedAgentAccess (a remote Agent) > ends when the run ends by any path (not on idle shutdown): onEnded once, and every subscription released (F-004) 1ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > StandalonePairedAgentAccess (a remote Agent) > posts the owner's message as user input under the owner heading, interrupts the host and stops the root 5ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > TeamPairedAgentAccess (a remote Team) > sends its members' output only, and follows the root across a quiet shutdown and a restore 3ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > TeamPairedAgentAccess (a remote Team) > ends when the Team run is stopped by any path (lifecycle ending 'stopped'), but not on idle shutdown (F-004) 0ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > TeamPairedAgentAccess (a remote Team) > posts and interrupts through the member command path and terminates the Team run 1ms
+ ✓ tests/unit/remote-collaboration/paired-agent-access.test.ts > TeamPairedAgentAccess (a remote Team) > a member input becomes the presentation MEMBER_INPUT_MESSAGE of its recipient 7ms
+ ✓ tests/unit/model-routing/routing-request-queue.test.ts > RoutingRequestQueue (SR-016: one routing request at a time, sent when the agent is idle) > AC-006: three delegations at once are sent one per turn, in arrival order 4ms
+ ✓ tests/unit/model-routing/routing-request-queue.test.ts > RoutingRequestQueue (SR-016: one routing request at a time, sent when the agent is idle) > a request that runs out of time while waiting is never sent, and the next one still is 1ms
+ ✓ tests/unit/model-routing/routing-request-queue.test.ts > RoutingRequestQueue (SR-016: one routing request at a time, sent when the agent is idle) > a slow turn running past the budget keeps the run busy: the next request waits for the turn's end, not the budget 1ms
+ ✓ tests/unit/model-routing/routing-request-queue.test.ts > RoutingRequestQueue (SR-016: one routing request at a time, sent when the agent is idle) > a user message to the router during a routing keeps the run busy: the next request waits until the run is idle 1ms
+ ✓ tests/unit/model-routing/routing-request-queue.test.ts > RoutingRequestQueue (SR-016: one routing request at a time, sent when the agent is idle) > a request that could not be sent frees the queue for the next one 0ms
+stdout | tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > REQ-002: Model Routing off: no delegation routing and nothing read; the status says OFF
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > REQ-002: Model Routing off: no delegation routing and nothing read; the status says OFF 3ms
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > supplement § 4: on but not set, signed out, not offered or blocked: not active, with the reason code and text 3ms
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > routes one request through the agent's run: a system notice with the Task, agents, task kinds and knowledge, answered by the tool 3ms
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > QR-001: no valid answer within 40 s is a router failure 2ms
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > SR-012: the turn carrying the request fails, so the routing fails at once with that reason 0ms
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > AC-006: three delegations at once each get their choices, one routing request per turn, in arrival order 1ms
+ ✓ tests/unit/model-routing/model-router.test.ts > ModelRouter (DS-003) > SR-016: a request that waits past its budget behind a busy run is never sent: 'the Model Router was busy' 1ms
+stdout | tests/unit/remote-collaboration/remote-team-run-starter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/remote-collaboration/remote-team-run-starter.test.ts > RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9) > creates the Team run with every member's resolved launch, the Team default, the temp workspace, auto-approve and the back-link 8ms
+ ✓ tests/unit/remote-collaboration/remote-team-run-starter.test.ts > RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9) > N-302: a member added to the definition between resolution and creation is refused; nothing is created 1ms
+ ✓ tests/unit/remote-collaboration/remote-team-run-starter.test.ts > RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9) > N-302: a member removed, or of another Agent, is refused the same way 1ms
+ ✓ tests/unit/remote-collaboration/remote-team-run-starter.test.ts > RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9) > N-302: a created Team whose coordinator is not the resolved one is terminated, then refused 2ms
+ ✓ tests/unit/remote-collaboration/remote-team-run-starter.test.ts > RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9) > any other creation failure is AGENT_CANNOT_RUN with its reason 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts > messages with a remote endpoint keep the root view stream consecutive (CR-001) > Team root: no COMMUNICATION event for them; the member-input of the reply follows without a gap 9ms
+ ✓ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts > messages with a remote endpoint keep the root view stream consecutive (CR-001) > 'Agent root (standalone)': only the local messages are published, with consecutive sequences 2ms
+ ✓ tests/unit/remote-collaboration/remote-message-view-sequence.test.ts > messages with a remote endpoint keep the root view stream consecutive (CR-001) > 'Org root': only the local messages are published, with consecutive sequences 1ms
+stdout | tests/unit/remote-collaboration/remote-run-observation.test.ts > RemoteRunObservation > AR-402: maps a frame to the stored link's address by agent run ID and drops an agent the link does not have
+A frame for agent run 'b-local-copy-run' is not of remote run 'marketing-run'; it was dropped.
+
+ ✓ tests/unit/remote-collaboration/remote-run-observation.test.ts > RemoteRunObservation > opens one stream per remote link on the first viewer and closes them when the last viewer leaves 2ms
+ ✓ tests/unit/remote-collaboration/remote-run-observation.test.ts > RemoteRunObservation > asks each node once for its runs' summaries per viewer; a node that does not answer makes its runs unreachable 1ms
+ ✓ tests/unit/remote-collaboration/remote-run-observation.test.ts > RemoteRunObservation > AR-402: maps a frame to the stored link's address by agent run ID and drops an agent the link does not have 1ms
+ ✓ tests/unit/remote-collaboration/remote-run-observation.test.ts > RemoteRunObservation > AR-403: an end this root did not ask for runs one summary fetch for that run; Retry observes it again 1ms
+ ✓ tests/unit/remote-collaboration/remote-run-observation.test.ts > RemoteRunObservation > a recorded link is announced with its node's name and observed while the root is viewed; nothing is published after dispose 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/internal-agent-eligibility.test.ts > internal agents and collaboration eligibility (autobyteus-308) > while hidden: not listed, not an `@` candidate, `@` by ID fails, no catalog address to delegate to, not offered to peers (AC-003) 4ms
+ ✓ tests/unit/agent-collaboration/collaborators/internal-agent-eligibility.test.ts > internal agents and collaboration eligibility (autobyteus-308) > once shown (no restart): listed, an `@` candidate, delegable and offered to peers like other agents (AC-005) 1ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > remote endpoint kinds (AR-006) > a delegated run (on the delegating node): only its delegator, the link's Task, a plain message request 2ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > remote endpoint kinds (AR-006) > autobyteus-247 G-1: a delegated Team is one endpoint per member; only its delegator, the Team's Task, the Team as the root there 1ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > remote endpoint kinds (AR-006) > a delegator (on the node that runs the delegated run): only the host, no Task here, the coordinating run echoed, the work packet 0ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > remote endpoint kinds (AR-006) > G-8: a Team root's delegator pairs with every member; the work packet is for a member, from the delegator on its node 0ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > remote endpoint kinds (AR-006) > RemoteRunLinks holds membership only: both kinds by run ID, and the inbound link check by node, sender and target 1ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-008) > prepares, delivers, then commits; the result names the node 2ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-008) > refuses by the kind's pair rule before anything else 0ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-008) > returns the engine's refusal and sends nothing 0ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-008) > returns the peer's refusal and writes nothing 1ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > the existing-copy refusal, once in the shared lifecycle (AR-003, AR-008) > refuses a run on a peer node after the named Task resolves, before the copy is resolved or any Task change 2ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > the existing-copy refusal, once in the shared lifecycle (AR-003, AR-008) > lets the named Task's own refusal come first 0ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > the existing-copy refusal, once in the shared lifecycle (AR-003, AR-008) > leaves a local copy to today's path 1ms
+ ✓ tests/unit/remote-collaboration/remote-messaging-owners.test.ts > Task closure of a remote run (AR-007) > fences it with an explicit result and invokes no release; a hosted run is still released 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > AC-001: members with a usable agent default run on it; the others and the Team inherit the root launch 4ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > AC-002: a usable Team default beats the root; an agent default beats the Team default (DEC-001) 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > AC-003: an Agent copy runs on its own usable default, else on the root's, with root workspace and auto-approve 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > AC-005: every unusable reason falls back to the next layer and records what was skipped and why 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > AC-005: an unusable Team default falls back to the root for the Team and its members, recorded on the Team 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > AC-006: when an agent has no usable layer, the plan fails with today's message and names the definition 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > REQ-004 scope: an unusable root launch fails only an agent that needs it 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > QR-001: one availability check per distinct configured runtime and one validateMany per batch 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > no configured defaults: no availability check, only today's root check 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts > CollaboratorLaunchResolver > an availability check that throws counts as an unavailable runtime 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > offers shared Agents then shared Teams, in the run or not, minus built-ins, non-shared and the run's own definition (REQ-001) 3ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > `@` resolves addresses without validating, allocating or adding; the caller composes the delegate_task note (REQ-001/002) 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > `@` decides each in-run mention for the agent the user is talking to: itself, its own team, or another unit (AC-006) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > `@` checks the focused agent's own team first, by definition: a member of a task agent team is "in your team", not a catalog agent (SR-011, AC-006) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > `@` of the run's own definition fails, like an ineligible one 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > `@` of an ineligible definition fails with its name and adds nothing 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > `@` addresses an in-run configured member; delegation never admits a second instance of it (REQ-002, AC-006) 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > derives address segments from names 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > lists every eligible definition once at its in-run or catalog address, with the `@` exclusions (Q-2, AR-002) 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts > catalog policy and mention resolution > a catalog task source snapshots the definition and root settings without identities (Q-1) 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > AC-001: the member with a usable default runs on it; the router is asked once for the others; notes name its choices 5ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > AC-003 / U3, U4b: a default on a signed-out runtime or a blocked model is skipped with a note; the router chooses instead 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > AC-002 / DEC-022: with Model Routing off a blocked default is used as today; nothing is routed 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > § 3.2: a runtime-only default is routed on its runtime while the router is active; otherwise skipped as incomplete 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > E8 / SCN-002: the router fails here: the asked agents run on the delegating run's launch with a router-failed note 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > § 6, SCN-004: on a peer, no default and no active router refuses with the router state; a failed router refuses as MODEL_ROUTER_FAILED 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts > CollaboratorLaunchResolver with Model Routing on (autobyteus-32) > E5: on a peer with an active router, every member is routed from that node's facts; the Team's recorded default is the coordinator's 0ms
+ ✓ tests/unit/remote-collaboration/remote-child-output-projection.test.ts > remote children in the root streams > the Agent and Org projectors present a remote frame as the stream's agent_presentation at the stored address 6ms
+ ✓ tests/unit/remote-collaboration/remote-child-output-projection.test.ts > remote children in the root streams > the Team projector presents it as the Team stream's agent message; a member input names its recipient; usage is not this Team's 2ms
+ ✓ tests/unit/remote-collaboration/remote-child-output-projection.test.ts > remote children in the root streams > the Team root's own consumers do not take a remote frame for a local agent's status 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > RemoteMessageReceiver resolves targetRoot by kind (G-2) > a message for a Team member goes to that Team root, with the message as sent 4ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > RemoteMessageReceiver resolves targetRoot by kind (G-2) > each root kind, both directions: a run on this node for a peer (agent, agent_team) or a coordinating run (any kind) 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > RemoteMessageReceiver resolves targetRoot by kind (G-2) > a work packet starts the Agent run or the Team's coordinator; an Org is never started for a peer 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > RemoteMessageReceiver resolves targetRoot by kind (G-2) > a root that is gone, or that cannot be restored, is not found 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > the stored-link check before a restore (N-303, N-304) > asks the directory first, with who sends it from which node to which agent 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > the stored-link check before a restore (N-303, N-304) > an unlinked sender is refused without restoring anything; a root with no stored package is not found 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > an accepted work packet's content is the run's title (autobyteus-269) > records the packet's description for its root, Agent or Team, once the root accepted it 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > an accepted work packet's content is the run's title (autobyteus-269) > records nothing for a refused packet, for a refused link, or for a message 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-receiver.test.ts > an accepted work packet's content is the run's title (autobyteus-269) > a failure to record the title still answers accepted, and is logged 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > MessageRecipientResolution (DS-002, CM-4) > resolves inside the sender's own instance first, so parallel copies never cross (REQ-007) 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > MessageRecipientResolution (DS-002, CM-4) > never falls through inside the instance prefix (AR-003) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > MessageRecipientResolution (DS-002, CM-4) > resolves addresses outside every instance run-wide 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > MessageRecipientResolution (DS-002, CM-4) > an address that is not a standing instance is not found with delegate_task guidance; nothing is created (AC-005) 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > reachingAddressOf (design T-5, SR-015) > gives a configured agent's address when it reaches exactly that agent, run-wide (task message) and from a viewer (header) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > reachingAddressOf (design T-5, SR-015) > gives no address for a task agent at a configured address: the address reaches the configured agent, not it 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > reachingAddressOf (design T-5, SR-015) > gives a team member's address to a teammate, but not run-wide or from outside its team 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > own-Team membership test (CM-1, DEC-008) > is the sender's own address, the instance's own address, and every address inside it at any depth 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > own-Team membership test (CM-1, DEC-008) > is not a sibling unit or a similarly named prefix 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > mention viewer relation (REQ-008) > is self by the viewer's own placement identity, own_team for its own team, and other otherwise 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > mention viewer relation (REQ-008) > does not treat a task agent running at a configured address as that agent (identity, not address) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > mention viewer facts (SR-011) > carries the focused agent's own team instance by definition 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > mention viewer facts (SR-011) > has no own team for an agent outside any team instance, or an instance that recorded no definitions 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > catalog delegation placement (DS-001) > in-run placements win; a catalog address gets a sourced placement; no source means not found 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > catalog delegation placement (DS-001) > refuses the sender's own Team before any placement or catalog lookup (CM-1, AC-001..003) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > catalog delegation placement (DS-001) > a catalog definition that cannot run is a not-found delegation with its reason 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/message-recipient-resolution.test.ts > catalog delegation placement (DS-001) > a catalog copy's placement carries its admission's launch notes; empty notes add no key (REQ-008, AR-002) 0ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts > PeerGateway > dispatches an admitted request to the one handler of its kind, with the calling peer; every answer names this node 5ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts > PeerGateway > checks the target node first, then the switch, then the peer registration, before any dispatch 1ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts > PeerGateway > answers 400 for a malformed body and dispatches nothing 1ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts > PeerGateway > passes a handler's refusal through with this node's ID 0ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts > PeerGateway > autobyteus-261: availability is the admission itself; available agents dispatch to the one lister; both name this node 0ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts > PeerGateway > autobyteus-261: both kinds keep the admission order (target node, switch, registration) and refuse a malformed body 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > member launch of Team copies (server records) > a member's launch source is its own, else the Team's; null when not recorded 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > member launch of Team copies (server records) > a Team copy restores and reports each member on its own recorded launch 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > member launch of Team copies (server records) > restore never borrows the Team's launch: a follower's own recorded launch is used even if the Team's differs 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > configured placement snapshot (D-1, D-4, D-5, D-6) > an agent placement becomes its definition and launch with the configured origin 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > configured placement snapshot (D-1, D-4, D-5, D-6) > a Team placement records every member's complete launch, followers by the configured rule, and its members' handoffs 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > recorded per-member launch (schema) > reads and writes the member facts exactly 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > recorded per-member launch (schema) > requires every member's launch and follower fact, and the copy's source 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > recorded per-member launch (schema) > accepts handoffs that start at a member (also to the coordinating run) and rejects others 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-member-launch.test.ts > recorded per-member launch (schema) > rejects a malformed recorded source 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts > 'standalone Agent root': run-ID routing (AR-008) > sends to a remote endpoint through the shared RemoteMessageSend, under the sender's lease 4ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts > 'standalone Agent root': run-ID routing (AR-008) > takes today's path for a run ID that is not a remote endpoint 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts > 'Team root': run-ID routing (AR-008) > sends to a remote endpoint through the shared RemoteMessageSend, under the sender's lease 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts > 'Team root': run-ID routing (AR-008) > takes today's path for a run ID that is not a remote endpoint 0ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts > 'Org root': run-ID routing (AR-008) > sends to a remote endpoint through the shared RemoteMessageSend, under the sender's lease 1ms
+ ✓ tests/unit/remote-collaboration/remote-message-routing.test.ts > 'Org root': run-ID routing (AR-008) > takes today's path for a run ID that is not a remote endpoint 0ms
+ ✓ tests/unit/remote-collaboration/remote-catalog-lister.test.ts > RemoteCatalogLister (autobyteus-261) > AC-402: shared Agents then shared Teams, with only name, kind, address and a description when there is one 3ms
+ ✓ tests/unit/remote-collaboration/remote-catalog-lister.test.ts > RemoteCatalogLister (autobyteus-261) > REQ-402: every listed address is one a delegation from a peer accepts, at the same definition 1ms
+ ✓ tests/unit/remote-collaboration/remote-catalog-lister.test.ts > RemoteCatalogLister (autobyteus-261) > reads the catalog on every call: a Team added between two calls is in the second (AC-405, REQ-407) 1ms
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and caches a SkillWorkspace for skill_ws_ IDs
+Creating on-demand SkillWorkspace for: MySkill
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > throws for unknown workspace IDs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+ ✓ tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > returns existing workspace from cache 2ms
+ ✓ tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and caches a SkillWorkspace for skill_ws_ IDs 1ms
+ ✓ tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > throws for unknown workspace IDs 3ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission-launch-defaults.test.ts > admission honors definition launch defaults > AC-001 / AC-015: a catalog Team copy runs its configured members on their defaults and the rest on the root's 5ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission-launch-defaults.test.ts > admission honors definition launch defaults > AC-005: when the configured runtime is unavailable, the copy starts on the root's launch and returns one note per skipped agent 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission-launch-defaults.test.ts > admission honors definition launch defaults > AC-008: a recorded copy keeps its values after the definition changes; a new copy uses the new default 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-defaults-only.test.ts > CollaboratorLaunchResolver with the defaults_only base > runs an Agent on its own default, with the base's workspace and auto-approve, validated in that workspace; nothing is inherited 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-defaults-only.test.ts > CollaboratorLaunchResolver with the defaults_only base > refuses an Agent with no default, or only an incomplete one, as 'no default runtime' 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-defaults-only.test.ts > CollaboratorLaunchResolver with the defaults_only base > refuses a default that cannot run here with its reason: runtime unavailable, model unavailable, settings invalid 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-defaults-only.test.ts > CollaboratorLaunchResolver with the defaults_only base > covers a Team member by the Team default; a member neither covers fails the Team 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > effectiveCopyAgentLaunch > is the agent's selection, else the followed team's selection, else the started launch; runtime and approval stay 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > effectiveCopyAgentLaunch > does not share the selection's settings object with the launch 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > copies start on the snapshot's started values (AR-005) > starts copies on each member's recorded launch; followers are the members recorded as following 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > restore of a stopped copy (DS-003) > restores an agent copy on its selection 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > restore of a stopped copy (DS-003) > restores a team copy: followers on the team selection, own selections first, identities from the record 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > restore of a stopped copy (DS-003) > AC-005: a record without selections restores exactly on its started values 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > tolerant readers > read selections exactly when present and add no key when absent (AC-005) 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-launch-selection.test.ts > tolerant readers > reject a malformed selection 1ms
+ ✓ tests/unit/model-routing/submit-launch-choices-and-records.test.ts > submit_launch_choices (DS-004) > accepts only the node's Model Router agent's run; validates and settles through the sessions 2ms
+ ✓ tests/unit/model-routing/submit-launch-choices-and-records.test.ts > decision records (REQ-012, DS-002) > a routed Team copy's draft lists every member with its source, task kind, reason, router failure and notes 1ms
+ ✓ tests/unit/model-routing/submit-launch-choices-and-records.test.ts > decision records (REQ-012, DS-002) > B keeps a peer-started copy's records until the work packet for that run arrives; an abandoned start writes none 1ms
+ ✓ tests/unit/model-routing/submit-launch-choices-and-records.test.ts > decision records (REQ-012, DS-002) > A words a peer's refusals with the peer's Model Routing state (supplement § 6) and a router failure (§ 5) 0ms
+ ✓ tests/unit/remote-collaboration/remote-child-commands.test.ts > remote child commands > a message keeps its text and window identity; an interrupt stays one; a tool approval has no remote form 1ms
+ ✓ tests/unit/remote-collaboration/remote-child-commands.test.ts > remote child commands > passes a command to the node with the run that names it there; a Team member's goes to the Team run 3ms
+ ✓ tests/unit/remote-collaboration/remote-child-commands.test.ts > remote child commands > Stop of a remote copy terminates its run on its node (a Team through its coordinator); a refusal throws; a local copy is not one 1ms
+ ✓ tests/unit/remote-collaboration/remote-child-commands.test.ts > remote child commands > N-403: a remote child's stored conversation is read from its node at its address under the root, without earlier pages 1ms
+ ✓ tests/unit/remote-collaboration/remote-child-commands.test.ts > RemoteRunLinks.admitsOwner (the running node's link rule for a peer's owner) > admits only the node whose delegation started the run, about its paired agents or the whole run 0ms
+ ✓ tests/unit/remote-collaboration/remote-run-view-provider.test.ts > RemoteRunViewProvider behind the gateway > answers summaries only for runs the calling node's delegation started, with the stored title and live statuses 3ms
+ ✓ tests/unit/remote-collaboration/remote-run-view-provider.test.ts > RemoteRunViewProvider behind the gateway > a projection and a command are checked for the paired agent; the run's end, by any path, closes its observation 2ms
+ ✓ tests/unit/remote-collaboration/remote-run-view-provider.test.ts > RemoteRunViewProvider behind the gateway > an observation of a run another node started is refused before anything is observed 0ms
+stdout | tests/unit/workspaces/workspace-removal-guard.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/workspaces/workspace-removal-guard.test.ts > WorkspaceRemovalGuard > blocks standalone agent runs by canonical active workspace root 2ms
+ ✓ tests/unit/workspaces/workspace-removal-guard.test.ts > WorkspaceRemovalGuard > blocks nested team members by canonical workspace root 2ms
+ ✓ tests/unit/workspaces/workspace-removal-guard.test.ts > WorkspaceRemovalGuard > allows removal when active runs use other workspaces 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts > peerNodeOffer > maps an accepted offer to entries: name, kind, description or null; no address 2ms
+ ✓ tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts > peerNodeOffer > maps a refusal to its code only (the window words the reason), and an empty offer to no entries 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts > peerNodeOffer > one-nodes-tab REQ-707: an unreachable peer's offer carries the classified reason 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts > one-nodes-tab settings operations > peerNodeAvailability answers whether a peer admits this node now, or its refusal and reason 0ms
+ ✓ tests/unit/remote-collaboration/peer-node-offer-resolver.test.ts > one-nodes-tab settings operations > resolvePeerAddress and changePeerAddress go through their owners; a refusal carries its details as extensions 1ms
+ ✓ tests/unit/model-routing/model-routing-sessions.test.ts > ModelRoutingSessions validates the router's decision against the session's report (DS-004, REQ-006) > AC-004: an unusable model is returned to the router with the reason; a valid answer then settles the session 3ms
+ ✓ tests/unit/model-routing/model-routing-sessions.test.ts > ModelRoutingSessions validates the router's decision against the session's report (DS-004, REQ-006) > refuses a blocked model, a signed-out runtime, the wrong runtime for a required one, a missing agent, a long task kind and no reason 2ms
+ ✓ tests/unit/model-routing/model-routing-sessions.test.ts > ModelRoutingSessions validates the router's decision against the session's report (DS-004, REQ-006) > SR-012: an unknown, answered or failed request changes nothing and says so 0ms
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > uses the fixed TEMP_WORKSPACE_ID
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-MxFK6l.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-MxFK6l with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > returns a friendly name
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-1KKU5I.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-1KKU5I with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > inherits from FileSystemWorkspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-qNu6Wf.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-qNu6Wf with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > stores rootPath in config
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-Fizv4X.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-Fizv4X with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-710ZBC.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-710ZBC with fixed ID 'temp_ws_default'
+
+stderr | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+FileSystemWorkspace.initialize() is metadata-only for temp_ws_default; file explorer acquisition is explicit.
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created WorkspaceFileExplorer for temp_ws_default (unit-test).
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > uses the fixed TEMP_WORKSPACE_ID 2ms
+ ✓ tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > returns a friendly name 0ms
+ ✓ tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > inherits from FileSystemWorkspace 0ms
+ ✓ tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > stores rootPath in config 1ms
+ ✓ tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly 3ms
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > derives a deterministic workspaceId from the normalized root path
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > canonicalizes the root path before deriving the workspaceId
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+stdout | tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > accepts an explicit workspaceId when provided
+Created metadata-only FileSystemWorkspace at /tmp/autobyteus-workspace.
+
+ ✓ tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > derives a deterministic workspaceId from the normalized root path 2ms
+ ✓ tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > canonicalizes the root path before deriving the workspaceId 0ms
+ ✓ tests/unit/workspaces/filesystem-workspace-id.test.ts > FileSystemWorkspace ID > accepts an explicit workspaceId when provided 0ms
+stdout | tests/unit/workspaces/skill-workspace.test.ts > SkillWorkspace > creates a workspace for an existing skill
+Created metadata-only FileSystemWorkspace at /opt/skills/TestSkill.
+Initialized SkillWorkspace for skill 'TestSkill' at /opt/skills/TestSkill
+
+ ✓ tests/unit/workspaces/skill-workspace.test.ts > SkillWorkspace > creates a workspace for an existing skill 3ms
+ ✓ tests/unit/workspaces/skill-workspace.test.ts > SkillWorkspace > throws when the skill is not found 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts > CatalogAddressMap (REQ-003) > gives a unique name its plain segment 2ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts > CatalogAddressMap (REQ-003) > suffixes every colliding definition, across kinds, with its definition ID's hash 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts > CatalogAddressMap (REQ-003) > suffixes a name whose segment the run already uses (configured, host or collaborator) 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts > CatalogAddressMap (REQ-003) > is deterministic: the same catalog gives the same addresses, whatever the order 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts > CatalogAddressMap (REQ-003) > keeps the in-run address of a definition already in the run; only catalog addresses map back 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/catalog-address-map.test.ts > CatalogAddressMap (REQ-003) > maps an unknown address to nothing (the normal not found) 0ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts > resolveWorkspaceRelativePath > resolves contained relative paths 1ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts > resolveWorkspaceRelativePath > rejects traversal into a sibling sharing the workspace prefix 0ms
+ ✓ tests/unit/workspaces/workspace-path-utils.test.ts > resolveWorkspaceRelativePath > rejects absolute candidates 0ms
+ ✓ tests/unit/remote-collaboration/transport-failure-reason.test.ts > transportFailureReason > classifies the measured shapes: refused, refused on localhost (AggregateError), unknown host, timeout 1ms
+ ✓ tests/unit/remote-collaboration/transport-failure-reason.test.ts > transportFailureReason > reads a temporary name failure as not found, a connect timeout as timeout, and anything else as unreachable 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/launch-configuration-notes.test.ts > launch configuration notes (REQ-003, REQ-008) > names the agent, the skipped configuration, the reason and what it runs on instead 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/launch-configuration-notes.test.ts > launch configuration notes (REQ-003, REQ-008) > renders nothing when no configured layer was skipped 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/launch-configuration-notes.test.ts > launch configuration notes (REQ-003, REQ-008) > a Team plan's notes: the Team's own fallback, then each member whose agent default was skipped 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/launch-configuration-notes.test.ts > launch configuration notes (REQ-003, REQ-008) > appends notes to an accepted send result only 0ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-execution-source.test.ts > copyExecutionSource (REQ-001, REQ-004 read side) > finds a copied Agent, a Team copy's member with its own complete launch, and a copy nested in a copy 1ms
+ ✓ tests/unit/agent-collaboration/collaborators/copy-execution-source.test.ts > copyExecutionSource (REQ-001, REQ-004 read side) > reads a copy of a configured placement from its own source; unknown runs are null 0ms
+
+ Test Files  53 passed (53)
+      Tests  346 passed (346)
+   Start at  16:04:50
+   Duration  24.05s (transform 4.93s, setup 703ms, import 14.89s, tests 2.71s, environment 3ms)
+

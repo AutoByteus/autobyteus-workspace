@@ -1,0 +1,23 @@
+[+3.2s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root"],"exit":0,"ok":true,"error":null}
+[+3.3s] instance started {"label":"first","instanceId":"iso-57114-8831","electronPid":87324,"serverPid":88230,"serverPort":57115,"servers":1}
+[+4.3s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+4.6s] standalone sent {"label":"sa-codex","runtime":"codex","kind":"agent","runId":"desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec","rootId":"desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec"}
+[+4.8s] standalone sent {"label":"sa-claude","runtime":"claude","kind":"agent","runId":"desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8","rootId":"desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8"}
+[+5.9s] team sent {"label":"team-codex","runtime":"codex","kind":"team","runId":"desk_team_coordinator_bq284dmvuyhrxo_7f56367749fb4ccdbaba47d2f795fd6f","rootId":"desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9"}
+[+7.4s] org sent {"label":"org-claude","runtime":"claude","kind":"org","runId":"desk_org_manager_bq284dmvuyhrxo_447d44813597460aa7dd3e3215233fb7","rootId":"desk_org_bq284dmvuyhrxo_535775e1ff424c87895fb64c54a577eb"}
+[+9.9s] busy {"label":"sa-codex","pid":90541,"ppid":88398,"pgid":90541}
+[+22.6s] busy {"label":"sa-claude","pid":92406,"ppid":88702,"pgid":92406}
+[+22.7s] busy {"label":"team-codex","pid":90488,"ppid":88398,"pgid":90488}
+[+22.7s] busy {"label":"org-claude","pid":91050,"ppid":90346,"pgid":91050}
+[+26.4s] busy user quit observed {"label":"busy user quit","electronPid":87324,"serverPid":88230,"serverGoneMs":988,"electronGoneMs":1039,"before":16,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[{"label":"sa-codex","kind":"agent","runtime":"codex","pid":90541,"ppid":88398,"pgid":90541,"aliveAfter":false},{"label":"sa-claude","kind":"agent","runtime":"claude","pid":92406,"ppid":88702,"pgid":92406,"aliveAfter":false},{"label":"team-codex","kind":"team","runtime":"codex","pid":90488,"ppid":88398,"pgid":90488,"a
+[+26.5s] isolated-app {"args":["stop","iso-57114-8831"],"exit":0,"ok":true,"error":null}
+[+29.4s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root"],"exit":0,"ok":true,"error":null}
+[+29.5s] instance started {"label":"second","instanceId":"iso-57293-04ab","electronPid":92602,"serverPid":93514,"serverPort":57294,"servers":1}
+[+29.6s] relaunch check {"label":"second","serversForData":[{"pid":93514,"ppid":92602,"pgid":92602,"command":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … ata-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-plain-QAtbo8/data-root/server-data"}],"exactlyOne":true,"previousSessionLeft":[]}
+[+32.6s] continued {"label":"sa-codex","kind":"agent","runtime":"codex","rootId":"desk_agent_bq284dmvuyhrxo_a15439b7baaa4473b77114e4bdffc6ec","replied":"CONTINUED_sacodex","afterMs":2771}
+[+35.8s] continued {"label":"sa-claude","kind":"agent","runtime":"claude","rootId":"desk_agent_bq284dmvuyhrxo_d1986bb0ffb7449c823ea17c7ee44bb8","replied":"CONTINUED_saclaude","afterMs":3023}
+[+39.8s] continued {"label":"team-codex","kind":"team","runtime":"codex","rootId":"desk_team_bq284dmvuyhrxo_6b24d65ed3334717a57576135f8769a9","replied":"CONTINUED_teamcodex","afterMs":3024}
+[+42.6s] continued {"label":"org-claude","kind":"org","runtime":"claude","rootId":"desk_org_bq284dmvuyhrxo_535775e1ff424c87895fb64c54a577eb","replied":"CONTINUED_orgclaude","afterMs":1763}
+[+45.5s] final quit observed {"label":"final quit","electronPid":92602,"serverPid":93514,"serverGoneMs":1515,"electronGoneMs":1568,"before":9,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+45.5s] isolated-app {"args":["stop","iso-57293-04ab"],"exit":0,"ok":true,"error":null}
+{"result":"Completed","error":null,"fallbackCleanup":0}

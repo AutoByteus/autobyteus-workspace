@@ -1,0 +1,4 @@
+# Summary of the clean-clone run (/tmp/ab324-clone at 6fae6761d3); full log 1466 bytes, trimmed to summaries, skips and failures.
+[guard:web-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+exit=0

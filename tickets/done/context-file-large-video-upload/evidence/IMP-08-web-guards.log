@@ -1,0 +1,10 @@
+check: IMP-08
+command: (cd autobyteus-web && bash -c node scripts/guard-web-boundary.mjs; node scripts/guard-localization-boundary.mjs; node scripts/audit-localization-literals.mjs 2>/dev/null)
+commit: 80f958bc5
+environment: macOS Darwin 25.6, Node v26.12.0
+date: 2026-11-15T13:21:15Z
+----
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+exit: 0

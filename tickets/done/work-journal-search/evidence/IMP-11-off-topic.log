@@ -1,0 +1,47 @@
+# IMP-11 off-topic questions (AC-007) on the isolated copy
+# Command: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node <local script> <server dir> /tmp/wjs-copy/memory /tmp/wjs-eval/index <private off-topic file N01-N03> solution_designer_80624588913d473bac3ef7d8c3d4d305
+#   (MemorySearch.search with limit 10, as the question file's authoring run, after the meaning index answered; prints only IDs, notes and strengths)
+# Commit: 9dcb4910f8 (dist)
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1; the index of IMP-06
+# Date: 2026-10-26
+
+[
+  {
+    "id": "N01",
+    "results": 10,
+    "note": null,
+    "coverage": null,
+    "strengths": [
+      "meaning:fair",
+      "text:fair",
+      "text:strong",
+      "text:weak"
+    ],
+    "saysNothingInMemory": false
+  },
+  {
+    "id": "N02",
+    "results": 10,
+    "note": null,
+    "coverage": null,
+    "strengths": [
+      "meaning:weak",
+      "text:fair",
+      "text:weak"
+    ],
+    "saysNothingInMemory": false
+  },
+  {
+    "id": "N03",
+    "results": 10,
+    "note": null,
+    "coverage": null,
+    "strengths": [
+      "text:fair",
+      "text:weak"
+    ],
+    "saysNothingInMemory": false
+  }
+]
+
+Reading: no answer says "nothing in memory" (R-009). The weak-only note did not appear: each off-topic cue has words that occur in unrelated runs, and the approved text-strength rule (share of the cue's words in the chunk: >= 2/3 strong, >= 1/3 fair) rates such chunks fair or strong; N03 is a single word, so any chunk holding it is strong. Weak matches are labelled weak.

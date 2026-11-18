@@ -10,8 +10,9 @@ import type { GitHubSourceStateListener, GitHubSourceUpdateState } from "../../i
 import { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { GitHubSkillSourceStore } from "../stores/github-skill-source-store.js";
 import { GitHubSkillRepository } from "../installers/github-skill-repository.js";
-import { repositoryKey, repositoryUrl, type GitHubSkillSourceRecord, type SkillSourceInfo,
+import { repositoryKey, repositoryUrl, type GitHubSkillSourceRecord, type SkillSourceChangeObserver, type SkillSourceInfo,
   type SkillSourceOperationResult } from "../domain/skill-source.js";
+import { assertIntegrationFolderRequirement, type SkillSourceImportOptions } from "../domain/integration-folder-requirement.js";
 import { SkillService } from "./skill-service.js";
 
 type Options = {
@@ -36,6 +37,7 @@ export class SkillSourceService {
   private storageWarnings: string[] = [];
   private readonly operations = new Map<string, Promise<unknown>>();
   private githubSourceStateListener: GitHubSourceStateListener | null = null;
+  private sourceChangeObserver: SkillSourceChangeObserver | null = null;
 
   constructor(private readonly options: Options = {}) {
     this.config = options.config ?? appConfigProvider.config;
@@ -50,7 +52,7 @@ export class SkillSourceService {
   getSkillSources(): SkillSourceInfo[] {
     const sources = [this.config.getSkillsDir(), ...this.config.getAdditionalSkillsDirs()]
       .map((directory, index): SkillSourceInfo => ({
-        sourceId: `local:${path.resolve(directory)}`, sourceKind: index === 0 ? "DEFAULT" : "LOCAL_PATH",
+        sourceId: localSourceId(directory), sourceKind: index === 0 ? "DEFAULT" : "LOCAL_PATH",
         path: directory, skillCount: this.catalog.countSkillsInSource(directory, "skill_path"),
         isDefault: index === 0, github: null,
       }));
@@ -88,12 +90,32 @@ export class SkillSourceService {
     }));
   }
 
+  /**
+   * Whether a source is still registered: a local folder in the skill paths, or an ACTIVE GitHub record. Cheap (no
+   * scan), for a check on every proxied call.
+   */
+  isSourceRegistered(sourceId: string): boolean {
+    if (sourceId.startsWith("local:")) {
+      return this.config.getAdditionalSkillsDirs().some((directory) => localSourceId(directory) === sourceId);
+    }
+    try {
+      return this.store.read().some((record) => record.id === sourceId && record.state === "ACTIVE");
+    } catch {
+      return false;
+    }
+  }
+
+  /** The one observer told before a source is removed or a GitHub source's update is published; set at composition. */
+  setSourceChangeObserver(observer: SkillSourceChangeObserver | null): void {
+    this.sourceChangeObserver = observer;
+  }
+
   /** One listener, told after an import, removal, check or update settled (success or failure). */
   setGitHubSourceStateListener(listener: GitHubSourceStateListener | null): void {
     this.githubSourceStateListener = listener;
   }
 
-  addSkillSource(pathStr: string): SkillSourceInfo[] {
+  async addSkillSource(pathStr: string, options: SkillSourceImportOptions = {}): Promise<SkillSourceInfo[]> {
     const resolved = this.localPath(pathStr);
     if (!fs.existsSync(resolved)) throw new Error(`Directory not found: ${resolved}`);
     if (!fs.statSync(resolved).isDirectory()) throw new Error(`Path is not a directory: ${resolved}`);
@@ -101,23 +123,27 @@ export class SkillSourceService {
     if (this.config.getAdditionalSkillsDirs().some((entry) => path.resolve(entry) === resolved)) {
       throw new Error("Skill source already exists");
     }
+    if (options.requireIntegrationFolder) assertIntegrationFolderRequirement(resolved, options.requireIntegrationFolder);
     this.catalog.assertNoIncomingSkillNameConflicts({ path: resolved, layout: "skill_path" });
     const raw = this.config.get("AUTOBYTEUS_SKILLS_PATHS", "");
     this.updateLocalPaths(raw ? `${raw},${resolved}` : resolved);
     return this.getSkillSources();
   }
 
-  removeSkillSource(pathStr: string): SkillSourceInfo[] {
+  /** Unlinks a local folder (its files stay). The observer is told first; its refusal refuses the removal. */
+  async removeSkillSource(pathStr: string): Promise<SkillSourceInfo[]> {
     const resolved = this.localPath(pathStr);
     if (path.resolve(this.config.getSkillsDir()) === resolved) throw new Error("Cannot remove default skill directory");
     const current = this.config.getAdditionalSkillsDirs();
-    const remaining = current.filter((entry) => path.resolve(entry) !== resolved);
-    if (remaining.length === current.length) throw new Error(`Skill source not found: ${resolved}`);
+    const removed = current.find((entry) => path.resolve(entry) === resolved);
+    if (removed === undefined) throw new Error(`Skill source not found: ${resolved}`);
+    await this.sourceChangeObserver?.sourceRemoving(removed);
+    const remaining = this.config.getAdditionalSkillsDirs().filter((entry) => path.resolve(entry) !== resolved);
     this.updateLocalPaths(remaining.join(","));
     return this.getSkillSources();
   }
 
-  importGitHubSkillSource(url: string): Promise<SkillSourceOperationResult> {
+  importGitHubSkillSource(url: string, options: SkillSourceImportOptions = {}): Promise<SkillSourceOperationResult> {
     const source = parseGitHubSkillRepository(url);
     return this.announcing(this.serialize(repositoryKey(source), async () => {
       await this.prepareStorage();
@@ -132,6 +158,7 @@ export class SkillSourceService {
       const prepared = await this.repository.prepare(id, metadata);
       let committed = false;
       try {
+        if (options.requireIntegrationFolder) assertIntegrationFolderRequirement(prepared.rootPath, options.requireIntegrationFolder);
         const inspection = this.catalog.inspectSkillSource({ path: prepared.rootPath, layout: "github_repository" });
         if (!inspection.records.length) throw new Error("No valid skills found. Provide a root SKILL.md or a collection of skill folders.");
         // No await: current name check, current registry reread and atomic publication are one turn.
@@ -191,6 +218,7 @@ export class SkillSourceService {
         const inspection = this.catalog.inspectSkillSource({ path: prepared.rootPath, layout: "github_repository",
           excludedSourcePath: this.store.repositoryPath(current) });
         if (!inspection.records.length) throw new Error("Update contains no valid skills; previous source retained.");
+        await this.sourceChangeObserver?.sourceChanging(this.store.repositoryPath(current), prepared.rootPath);
         this.replaceRecord(id, (record) => ({ ...record,
           installed: { generation: prepared.generation, revision: metadata.latestRevision, defaultBranch: metadata.defaultBranch },
           lastCheck: this.observation(metadata), lastUpdateError: null }));
@@ -211,6 +239,7 @@ export class SkillSourceService {
   removeGitHubSkillSource(id: string): Promise<SkillSourceOperationResult> {
     return this.announcing(this.serialize(repositoryKey(this.requireSource(id).repository), async () => {
       await this.prepareStorage();
+      await this.sourceChangeObserver?.sourceRemoving(this.store.repositoryPath(this.requireSource(id)));
       this.replaceRecord(id, (record) => ({ ...record, state: "REMOVING" }));
       await this.invalidateWorkspaces();
       await this.repository.cleanup(id);
@@ -244,7 +273,7 @@ export class SkillSourceService {
   }
   private duplicate(record: GitHubSkillSourceRecord): SkillSourceOperationResult {
     if (record.state === "REMOVING") throw new Error("Removal incomplete. Use Retry removal on the existing source.");
-    return this.result([`Already imported: ${repositoryUrl(record.repository)}. Use its existing source row.`]);
+    return { ...this.result([`Already imported: ${repositoryUrl(record.repository)}. Use its existing source row.`]), alreadyImported: true };
   }
   private result(warnings: string[] = []): SkillSourceOperationResult { return { sources: this.getSkillSources(), warnings: [...this.storageWarnings, ...warnings] }; }
   private requireSource(id: string): GitHubSkillSourceRecord {
@@ -304,3 +333,6 @@ export class SkillSourceService {
     if (!success) throw new Error(`Failed to update configuration: ${message}`);
   }
 }
+
+/** A local folder source's ID, as `getSkillSources` reports it. */
+const localSourceId = (directory: string): string => `local:${path.resolve(directory)}`;

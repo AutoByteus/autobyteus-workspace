@@ -17,7 +17,7 @@ describe("Codex workspace skill materializer composition", () => {
 
   it("provides the Codex profile through one shared singleton", () => {
     expect(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE).toEqual({
-      runtimeLabel: "Codex",
+      runtimeLabel: "Codex App Server",
       workspaceSkillsRootSegments: [".codex", "skills"],
     });
     expect(getCodexWorkspaceSkillMaterializer()).toBe(getCodexWorkspaceSkillMaterializer());

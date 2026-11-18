@@ -1,0 +1,2 @@
+# REL-02b an unintended second release smoke run on 2e8fd1a6cf, 2026-11-01T09:24:44Z: started by 'release_smoke.py --help' (the script takes no --help and ran in full). Claude 3/3, Codex 3/3, Antigravity 2/2, AutoByteus 2/2 PASS; Grok 3/3 refused: 429 free-usage-exhausted, tokens (actual/limit) 612927/600000, rolling 24 h. Logs: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-p3r9nxf7
+result FAIL (Grok quota only)

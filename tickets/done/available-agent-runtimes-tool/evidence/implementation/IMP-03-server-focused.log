@@ -1,0 +1,248 @@
+# IMP-03
+# command: pnpm -C autobyteus-server-ts exec vitest run <the feature's focused files> --no-watch
+# commit: 5135bb73dc (code identical to the run)
+# environment: macOS darwin 25.5, Node v22.23.1, pnpm; worktree available-agent-runtimes-tool
+# date: 2026-10-25
+
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > classifies a missing CLI without exposing its configured path 13ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > accepts a compatible CLI and returns dynamic model slugs 516ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > ignores release text "1.2.10" and never requests --version 73ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > ignores release text "1.2.11" and never requests --version 71ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > ignores release text "1.2.12" and never requests --version 69ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > ignores release text "99.0.0" and never requests --version 72ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > ignores release text "unparseable release" and never requests --version 70ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > ignores release text "" and never requests --version 81ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > accepts required help flags on stderr 106ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > enables AGY availability using capabilities rather than release text 2418ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > makes AGY runtime availability await discovery and report only a safe failure 108ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > reports a signed-out CLI as not signed in with the recovery step and no CLI output 110ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > keeps a successful listing usable even when its output mentions signing in 73ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > names the update step for a CLI missing required options 35ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for bad-flags 34ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for invalid-models 67ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for failed-models 67ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for signin-models 70ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for signin-models-stdout 71ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for network-models 69ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for empty-models 67ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for failed-help 36ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for oversized-help 32ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for oversized-help-stderr 32ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for oversized-models 67ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > returns a safe typed diagnostic for oversized-models-stderr 70ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-help and returns a sanitized timeout rather than hanging 3002ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > bounds hang-models and returns a sanitized timeout rather than hanging 15036ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > shares one step deadline across --help and models: a hanging second command ends by it and is killed (AR-002) 1560ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > starts no command once the step deadline has passed 2ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > bounded AGY CLI discovery > keeps a concurrent health request responsive while model discovery waits 591ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "1.2.16" as supported=true 6ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "1.2.17" as supported=true 2ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "1.3.0" as supported=true 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "1.10.0" as supported=true 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "2.0.0" as supported=true 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "agy version 1.2.16\n" as supported=true 2ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "1.2.15" as supported=false 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "1.1.99" as supported=false 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "0.9.30" as supported=false 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "" as supported=false 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version "garbage" as supported=false 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > treats CLI version null as supported=false 1ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > reads the trimmed `agy --version` output once per process 44ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > returns null for an unreadable version without caching the failure 69ms
+ ✓ tests/unit/runtime-management/antigravity-cli-capability.test.ts > AGY compaction detection version gate > returns null when the CLI is missing 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-real-child-retry.test.ts > actual pinned SDK public hook / retained real-child release > reports failed stop while the same test-owned child stays alive, then proves same-child exit/IO on retry 14068ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts > RuntimeProcessOperation > collects the output without ANSI codes and tracks the latest line, including `\r` progress 34ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts > RuntimeProcessOperation > keeps only the last 4 KB of output 32ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts > RuntimeProcessOperation > ends a running process on cancel, with SIGKILL when it ignores SIGTERM 3306ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts > RuntimeProcessOperation > ends a process that waits forever at its time-out 203ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts > RuntimeProcessOperation > reports a missing command as a failed exit 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/runtime-process-operation.test.ts > RuntimeProcessOperation > strips colour and control codes but keeps line breaks 0ms
+ ✓ tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts > Grok usage limits over ACP > sends initialize then _x.ai/billing, opens no session, and maps the answer (AC-006) 363ms
+ ✓ tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts > Grok usage limits over ACP > ends a request that never answers at the step deadline 2511ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > the four strategies > are Codex, Claude, Antigravity and Grok in page order, with routes and official install links 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > installed version (fresh --version through the existing resolver) > reads the version from vendor wording and reports a missing or broken command as not installed 390ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > installed version (fresh --version through the existing resolver) > uses the Codex launch command override 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > maps { account: { type: 'chatgpt' }, requiresOpenaiAuth: true } 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > maps { account: null, requiresOpenaiAuth: false } 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > maps { account: null } 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > maps { account: null, requiresOpenaiAuth: 'yes' } 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > maps { account: null, requiresOpenaiAuth: true } 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > reports a protocol failure as unknown and still releases the client 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Codex sign-in (account/read, the rule application readiness has always used) > reads the newest version from the tag of the latest-release redirect (no REST quota, REQ-002) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > json-in 36ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > json-out 38ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > json-no-field 34ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > text-in-exit-1 35ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > text-in 37ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > text-other 33ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > fail 36ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Claude sign-in (claude auth status --json) > reads the newest version from the user's update channel (latest by default) 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Grok (grok models, grok update --check --json) > sign-in grok-out 35ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Grok (grok models, grok update --check --json) > sign-in grok-in 32ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Grok (grok models, grok update --check --json) > sign-in grok-fail 33ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Grok (grok models, grok update --check --json) > reads the newest version from Grok's own check, and fails when it reports an error 67ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Antigravity > maps the OS and CPU to the updater manifest agy reads 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > Antigravity > classifies sign-in from model discovery and reads the manifest version 718ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Codex: account/rateLimits/read on the home-folder app-server, lease released 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Codex: a request that never answers ends at the deadline and releases the lease (AR-002) 302ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Claude: the SDK usage answer through the client; a failure is classified, its text dropped 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > Antigravity: agy -p /usage --output-format json; a failed or hanging command ends as unknown 387ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-strategies.test.ts > usage limits (readUsageLimits, 0 tokens, within the step deadline) > a sign-in or version command under a passed deadline does not start 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > lists the four runtimes and AutoByteus with its keyed providers, each with models (AC-001) 4ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > leaves out a runtime that is not installed or signed out (AC-001) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > Codex used up without credits: limit Weekly 0% and every model blocked until its reset (AC-003) 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > Codex used up with credits: no model blocked and the limits note says so (AC-003, DEC-007) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > Antigravity: Claude and GPT models blocked by their group, Gemini models not (AC-004) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > Claude: 5-hour and weekly limits, nothing blocked; Grok: billing period with its note (AC-005, AC-006) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a scoped Claude limit used up blocks only its model 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > AutoByteus: balances, provider blocks on every model, not reported, and no keyless providers (AC-007) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a failing or slow step gives its REQ-007 entry and the rest still arrives (AC-008) > install throws → not installed, left out 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a failing or slow step gives its REQ-007 entry and the rest still arrives (AC-008) > sign-in throws or is unknown → listed with signIn: not checked 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a failing or slow step gives its REQ-007 entry and the rest still arrives (AC-008) > models throw or are empty → models unknown, never an empty list 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a failing or slow step gives its REQ-007 entry and the rest still arrives (AC-008) > limits unknown or not reported → their texts; models stay unblocked 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > a failing or slow step gives its REQ-007 entry and the rest still arrives (AC-008) > a provider reader that fails → limits unknown for that provider only 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > slow steps end at their caps, each step getting its own cap as a deadline; the answer still arrives (AC-011) 1703ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > the default caps keep the whole answer within 20 s (REQ-010) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > the answer carries no keys, emails or account identities (AC-009) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/available-agent-runtimes-service.test.ts > AvailableAgentRuntimesService > starts nothing else for a runtime it leaves out 1ms
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > ends a hanging CLI in the unsupported diagnostic once the bound passes 106ms
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > is available for a supported CLI with ACP agent mode (AC-001) 669ms
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > reports a missing command safely 1ms
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > rejects versions below the minimum and CLIs without agent-mode flags 398ms
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > discovers models through an initialize-only handshake (no session, no prompt) 464ms
+ ✓ tests/unit/runtime-management/grok/grok-build-capability.test.ts > Grok Build capability > classifies an empty catalog and a failed handshake without provider output 502ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > opens the CLI with an input that never yields a message, and closes it after use (AR-001) 19ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > never yields while the control request runs 52ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > closes the CLI at the deadline when the control request does not answer (AC-011) 102ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > withClaudeControlQuery > closes a query that opens only after the deadline 183ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > ClaudeSdkClient.readUsage > asks the SDK's usage control request with behaviors skipped, on a query that sends no message 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-control-query.test.ts > ClaudeSdkClient.readUsage > throws when the SDK has no usage request 0ms
+ ✓ tests/unit/runtime-management/acp/acp-client-connection.test.ts > AcpClientConnection > initializes against the agent and drops responses to requests it never sent 154ms
+ ✓ tests/unit/runtime-management/acp/acp-client-connection.test.ts > AcpClientConnection > buffers frames for a session until it registers, then delivers them in order 48ms
+ ✓ tests/unit/runtime-management/acp/acp-client-connection.test.ts > AcpClientConnection > reports closure when the agent process exits 39ms
+ ✓ tests/unit/llm-management/codex-model-catalog-deadline.test.ts > CodexModelCatalog with a step deadline > abandons a model/list request that never answers at the deadline and releases the lease (AR-002) 153ms
+ ✓ tests/unit/llm-management/codex-model-catalog-deadline.test.ts > CodexModelCatalog with a step deadline > reads every page as before when the requests answer in time 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > preserves EOF 2s, TERM 5s, then KILL grace; no signal is a release certificate 14ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > requires IO proof after actual exit, retains failures, and retries only those same streams 11ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > does not confuse spawn error or throwing diagnostic observers with closed/exit proof 10ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > never certifies a post-spawn setup fault as never-started 11ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > real pinned Query/public hook failure retains same child and retry resends, without reopen 17ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > preserves public spawn args/environment/forwarded signal and drains split UTF8 before SDK exit 42ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-process-owner.test.ts > concrete SDK child release proof > keeps child acquired before a query throw and closes late hook, without declaring missing Query release 9ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > owns an actual test CLI and proves EOF exit/IO; retry is terminal with no new spawn 83ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > registers before options resolution and rejects a late options result without Query acquisition 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > keeps malformed public initialization as failed, not imaginary settled acquisition 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-session-opening.test.ts > retained SDK opening — actual pinned SDK / public hook > preserves SDK launch options and uses a distinct explicit debug log under test config root 23ms
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts > provider usage readers (AC-007, AC-009) > DeepSeek: the balance, or no balance left when not available 3ms
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts > provider usage readers (AC-007, AC-009) > Kimi: available balance 0 → no balance left 0ms
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts > provider usage readers (AC-007, AC-009) > Anthropic: only the free count_tokens call; 400 credit balance → credit balance too low; 200 → no block 1ms
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts > provider usage readers (AC-007, AC-009) > xAI: a blocked or disabled key blocks; a clean key does not 1ms
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts > provider usage readers (AC-007, AC-009) > failures and time-outs are short classified reasons without the key or the error text 101ms
+ ✓ tests/unit/llm-management/provider-usage/provider-usage-readers.test.ts > provider usage readers (AC-007, AC-009) > has readers only for DeepSeek, Kimi, Anthropic and xAI; other providers are not reported (REQ-005) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService checks > lists the four runtimes in order and never starts work when read 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService checks > settles once installed versions are read; newest versions and sign-in arrive per runtime, independently 6ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService checks > maps a Codex provider without OpenAI sign-in to not applicable (DEC-008) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService checks > keeps the last account reading while a re-check runs 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService checks > counts running agents per runtime when read 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService sign-in browser > reports the node fact it was given, without starting work 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService sign-in browser > by default decides it once from this process's platform and environment 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > runs the vendor's update, shows its latest line, then 'Updated from X to Y' and re-checks to Up to date 5ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > fails with the vendor's output when the update exits 0 without a newer version (e.g. Homebrew) 4ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > names the exit code when a failed update printed nothing 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > refuses while that runtime's agents run, when not installed, and while busy 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > never starts an update when the running-agent count cannot be read (CR-002) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService update > does not re-check a runtime whose update is running 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService sign-in > runs the vendor login; Signed in when the runtime then reports it 4ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService sign-in > returns to Sign in on Cancel without reading the account 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService sign-in > says it didn't finish after the time-out or an exit without a sign-in 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService sign-in > offers no in-app sign-in for command-line runtimes (Claude, Antigravity) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-status-service.test.ts > AgentRuntimeStatusService close > stops every running vendor process and refuses new work 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > resolves the selected value only from the open session's supported-model metadata and fails closed 21ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > preserves the auto, cli, and api-key selector with cli as the default 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > does not resolve a vault key for auto and preserves caller-supplied launch environment 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > does not resolve a vault key for cli and preserves caller-supplied launch environment 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > sets neither v1.4.78 policy variable, so Claude CLI background-task and Bash timeout defaults apply (AC-010) 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2) 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > fails value-free before SDK launch when explicit api-key resolution fails 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > keeps original cli process-environment filtering separate from vault resolution 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > passes stable query options for project skills, exact resume, MCP, and send_message_to tooling 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > passes only SDK sessionId for a caller-reserved first conversation 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > loads user, project, and local Claude Code settings for normal turns 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > forwards typed thinking and effort options to the pinned Claude SDK 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > forwards stderr diagnostics callback to Claude SDK query options when provided 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > uses user settings-source policy for model discovery 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > lists every SDK row with its canonical model ID and picker presentation hint 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > passes the session's canUseTool callback through and injects no approval of its own 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts > ClaudeSdkClient > returns null when getSessionMessages is unavailable or session id is empty 0ms
+ ✓ tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > contains no xAI/Grok names, `_x.ai` handling or Grok imports 11ms
+ ✓ tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > is not imported by other runtimes 18ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService background check (DS-001, REQ-021) > reads installed and newest versions only, never the sign-in, and announces when done 3ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService background check (DS-001, REQ-021) > keeps a finished update result and the account state the page showed 5ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService background check (DS-001, REQ-021) > is skipped while the runtime is checking or has a running operation 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService background check (DS-001, REQ-021) > records a failed newest-version read as checkFailed, and not installed as not checked 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService runUpdate (REQ-022) > returns the refusals as results, without starting a process 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService runUpdate (REQ-022) > settles with the vendor update's result: updated with the versions, or failed with the vendor output 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > AgentRuntimeStatusService runUpdate (REQ-022) > startUpdate still throws the existing refusal codes 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/agent-runtime-update-automation.test.ts > runtime update source for the notifications (AR-005) > maps each runtime's facts: not checked keeps the record, not installed drops it, a failed check keeps the known latest unknown 2ms
+ ✓ tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts > list_available_agent_runtimes > is opt-in: never added automatically, exposed only to definitions that list it (AC-012) 3ms
+ ✓ tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts > list_available_agent_runtimes > on the AutoByteus runtime: registered in the tool picker, answers the node's report as JSON (AC-001) 1ms
+ ✓ tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts > list_available_agent_runtimes > over Agent Tools MCP (Claude, Codex, Antigravity, Grok): the same report, when the definition lists it (AC-002) 1ms
+ ✓ tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts > list_available_agent_runtimes > on a server that does not compose it: the not-available text, as the tool's error 1ms
+ ✓ tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts > GraphQL availableAgentRuntimes (AC-010) > returns the same report object the tool returns 0ms
+ ✓ tests/unit/agent-tools/agent-runtimes/list-available-agent-runtimes-tool.test.ts > GraphQL availableAgentRuntimes (AC-010) > refuses with a code where the service is not composed 0ms
+ ✓ tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, eight server units next, and Search last with ordered results 3ms
+ ✓ tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result 0ms
+ ✓ tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries 4ms
+ ✓ tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search 1ms
+ ✓ tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a module-load failure and retains the rejected memoized promise 0ms
+ ✓ tests/unit/api/graphql/agent-runtimes-resolver.test.ts > AgentRuntimesResolver > maps the rows, never carrying sign-in detail, and turns refusals into coded GraphQL errors 5ms
+ ✓ tests/unit/api/graphql/agent-runtimes-resolver.test.ts > AgentRuntimesResolver > answers whether the node's runtimes can open a browser on its own desktop, from the status service 0ms
+ ✓ tests/unit/api/graphql/agent-runtimes-resolver.test.ts > composeAgentRuntimeStatus > counts process agents and Application agents together, per runtime 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Codex: a used-up weekly window without credits is exhausted for the whole runtime, with no note (AC-003) 2ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Codex: with credits a used-up window does not block (DEC-007) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Codex: 5-hour and weekly windows, and a model-specific entry named and scoped by its model 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Codex: an answer without windows is not reported; an unrecognised answer is unknown 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Claude: session and weekly limits with reset times, the scoped weekly limit on its model; none blocks (AC-005) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Claude: API-key auth has no plan limits → not reported 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Antigravity: a limit per enabled bucket, named by group and window, scoped to the group's families (AC-004) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Antigravity: output that is not the usage JSON is unknown 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > Grok: one billing-period limit with the period end; without creditUsagePercent, remaining null and a note (AC-006) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-parsers.test.ts > usage-limit parsers (recorded answers) > drops plans, credits, spend and vendor texts: only names, percentages, times and scopes remain (REQ-004) 1ms
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > launches one non-leader ACP stdio agent with the selected model and effort 1ms
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > disables task subagents, workflows and ask_user_question per process without touching the base env (AC-013) 0ms
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > offers the agent-reported models with context capacity and the reasoning-effort schema (AC-002) 1ms
+ ✓ tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts > grokBuildLaunchProfile > returns no models for a malformed catalog 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts > claude-sdk-model-normalizer > normalizes live Claude model descriptions and preserves supported effort levels 2ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts > claude-sdk-model-normalizer > exposes thinking_enabled and reasoning_effort when Claude thinking is supported 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts > claude-sdk-model-normalizer > uses the SDK resolved model as canonical name and falls back to the SDK value 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts > claude-sdk-model-normalizer > keeps adaptive-thinking and effort capabilities independent 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts > claude-sdk-model-normalizer > treats empty descriptions as absent 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts > Claude SDK resolved-model binding > retains exact SDK alias-to-wire mapping and marks conflicting duplicate rows ambiguous 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts > ClaudeSdkInputChannel > yields pushed messages in order, waits while empty, and ends after end() 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts > ClaudeSdkStreamingSession > passes frames through and snapshots capabilities from the first system/init 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts > ClaudeSdkStreamingSession > interrupts with cancelQueued through the single adapter and normalizes the response (RSK-006) 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts > ClaudeSdkStreamingSession > writes sends into the input channel and close ends the channel and closes the query 0ms
+ ✓ tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts > AcpAgentCapabilities > reads standard capabilities of the recorded Grok handshake 3ms
+ ✓ tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts > AcpAgentCapabilities > reports every missing capability explicitly for a DSH-like agent (AC-016) 0ms
+ ✓ tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts > AcpAgentCapabilities > rejects an unsupported protocol version 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-model-matching.test.ts > usage-limit model matching > matches a family's words in order from the display name's first word 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-model-matching.test.ts > usage-limit model matching > gives each model to its most specific group and a group without models to the whole runtime (DEC-003) 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/usage-limits/usage-limit-model-matching.test.ts > usage-limit model matching > covers listed model ids, falling back to every model when none is offered 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts > deriveClaudeModelSelectionPresentation > folds default into the first sibling with the same canonical ID and recommends that sibling 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts > deriveClaudeModelSelectionPresentation > keeps default as its own recommended option when no sibling shares its canonical ID 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts > deriveClaudeModelSelectionPresentation > never folds when default has no or an ambiguous canonical ID 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts > deriveClaudeModelSelectionPresentation > does not fold into a sibling whose canonical ID is ambiguous 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts > deriveClaudeModelSelectionPresentation > marks nothing recommended when the SDK reports no default row 0ms
+ ✓ tests/unit/llm-management/claude-model-catalog.test.ts > ClaudeModelCatalog normalized selection view > filters only a proven redundant default while preserving exact current resolution 2ms
+ ✓ tests/unit/llm-management/claude-model-catalog.test.ts > ClaudeModelCatalog normalized selection view > keeps default when no distinct listed sibling is proven 0ms
+ ✓ tests/unit/llm-management/claude-model-catalog.test.ts > ClaudeModelCatalog normalized selection view > does not fold a separate long-context ID by canonical display similarity 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts > claude-sdk-setting-sources > uses user, project, and local settings for runtime turns 1ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts > claude-sdk-setting-sources > uses user settings only for global model catalog discovery 0ms
+ ✓ tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts > claude-sdk-setting-sources > returns defensive copies so callers cannot mutate shared source policy 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/sign-in-browser-availability.test.ts > isSignInBrowserAvailable > is always true on macOS and Windows desktops 1ms
+ ✓ tests/unit/runtime-management/agent-runtimes/sign-in-browser-availability.test.ts > isSignInBrowserAvailable > is true on a Docker node (BROWSER bridge to its VNC Chromium and DISPLAY=:99) 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/sign-in-browser-availability.test.ts > isSignInBrowserAvailable > is true on Linux with any one of BROWSER, DISPLAY or WAYLAND_DISPLAY 0ms
+ ✓ tests/unit/runtime-management/agent-runtimes/sign-in-browser-availability.test.ts > isSignInBrowserAvailable > is false on a headless Linux node: none set, or set but empty 0ms
+ Test Files  30 passed (30)
+      Tests  240 passed (240)

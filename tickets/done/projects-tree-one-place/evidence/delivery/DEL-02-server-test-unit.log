@@ -1,0 +1,6 @@
+# DEL-02 server unit on merged personal 6b58f3f5af, 2026-10-31T21:44:30Z
+ Test Files  902 passed | 5 skipped (907)
+      Tests  7660 passed | 9 skipped (7669)
+   Duration  771.23s (transform 20.14s, setup 12.51s, import 364.74s, tests 290.05s, environment 1.09s)
+exit=0
+# full log: DEL-02-server-test-unit.full.log.gz

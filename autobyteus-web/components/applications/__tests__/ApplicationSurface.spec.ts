@@ -215,7 +215,7 @@ describe('ApplicationSurface', () => {
     await nextTick()
 
     expect(wrapper.find('[data-testid="application-surface-failure-overlay"]').exists()).toBe(false)
-    expect(wrapper.get('[data-testid="application-surface-loading-overlay"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-surface-loading-overlay"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-0')
 
     wrapper.unmount()

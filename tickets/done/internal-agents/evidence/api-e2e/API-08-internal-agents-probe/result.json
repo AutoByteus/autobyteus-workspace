@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-10-25T21:42:53.182Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "IP-01-store": {
+      "count": 2,
+      "internal": []
+    },
+    "IP-01-featured": [
+      "Select an agent",
+      "Daily Assistant",
+      "Probe Normal f6d0"
+    ],
+    "IP-01": {
+      "title": "While hidden: Agents page, the agent store (every picker), the featured-items picker and run history leave the internal agent out; normal agents unchanged (AC-001, REQ-003, REQ-004)",
+      "result": "Pass",
+      "ms": 4265
+    },
+    "IP-02-text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nPN\nProbe Normal f6d0\n(1)\nSettings\nA\nInternal helper run. Reply OK.\nIdle\nYou\nInternal helper run. Reply OK.\nA\nAgent\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n0 Events\nNo activity history yet.",
+    "IP-02": {
+      "title": "While hidden, its run opens by URL and shows the agent's reply (REQ-008, SCN-A1)",
+      "result": "Pass",
+      "ms": 873
+    },
+    "IP-03-badge": [
+      {
+        "text": "Internal",
+        "title": "The system's own helper agent, shown because \"Show internal agents\" is on."
+      }
+    ],
+    "IP-03": {
+      "title": "Basics \"Internal agents\" toggled on: saved; without a reload the Agents page shows it with the \"Internal\" badge, the store and featured picker have it, run history lists its run (AC-005, REQ-007)",
+      "result": "Pass",
+      "ms": 4471
+    },
+    "IP-04": {
+      "title": "Toggled off again: gone from the Agents page, store, featured picker and run history, without a reload",
+      "result": "Pass",
+      "ms": 4962
+    },
+    "IP-05-card": "内部智能体\n\n内部智能体是系统自身的辅助智能体，例如模型路由器。\n\n显示内部智能体\n在智能体列表、选择器和历史记录中显示它们，便于调试。关闭时，它们也不会提供给其他智能体或对等节点。\n显示内部智能体",
+    "IP-05": {
+      "title": "zh-CN: the card in Chinese",
+      "result": "Pass",
+      "ms": 3181
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:63209",
+    "backend": "terminated:63177",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-internal-agents-e2e-z600Xs",
+    "backend": "http://127.0.0.1:49970",
+    "internalRunId": "probe_internal_helper_5d4425145e0c4d59b7248e7b4eb4c7cc",
+    "normalRunId": "probe_normal_f6d0_4d665135e91a484fa7570a5457d665fb"
+  },
+  "browserVersion": "156.0.8078.47",
+  "finishedAt": "2026-10-25T21:43:53.596Z"
+}

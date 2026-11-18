@@ -1,0 +1,84 @@
+{
+  "startedAt": "2026-11-08T18:55:55.393Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "INT-001": {
+      "title": "Empty page invites Import; Integrations is last in the menu, after Nodes",
+      "result": "Pass",
+      "ms": 2369
+    },
+    "INT-002": {
+      "title": "Import dialog: field focused, hint follows the input (repository trust text, folder text)",
+      "result": "Pass",
+      "ms": 1433
+    },
+    "INT-003": {
+      "title": "Import refusals: not a link or path, folder not found, no integrations in the folder",
+      "result": "Pass",
+      "ms": 1571
+    },
+    "INT-004": {
+      "title": "Import a folder: the dialog closes, the notice names it, the card needs a token, icon and missing tool shown",
+      "result": "Pass",
+      "ms": 525
+    },
+    "INT-005": {
+      "title": "Re-importing the folder says it is already imported",
+      "result": "Pass",
+      "ms": 544
+    },
+    "INT-006": {
+      "title": "Connect step: imported from the folder, help link, tools; a token GitHub rejects says so",
+      "result": "Pass",
+      "ms": 1342
+    },
+    "INT-007": {
+      "title": "Connected card and dialog render login, access line, Test / Replace token / Remove (intercepted)",
+      "result": "Pass",
+      "ms": 2076
+    },
+    "INT-008": {
+      "title": "The Skills page labels the integration skill; the label opens its card, focused",
+      "result": "Pass",
+      "ms": 3006
+    },
+    "INT-009": {
+      "title": "Manage sources: the folder row has no Update; Remove says the files stay; the last removal leaves the notice",
+      "result": "Pass",
+      "ms": 1547
+    },
+    "INT-010": {
+      "title": "Skills → Manage Skill Sources lists an imported source; removing it there removes its card",
+      "result": "Pass",
+      "ms": 2453
+    },
+    "INT-011": {
+      "title": "Server Settings → Basics has no GitHub card",
+      "result": "Pass",
+      "ms": 2339
+    },
+    "INT-012": {
+      "title": "Narrow 390 px and zh-CN render (empty and with a card)",
+      "result": "Pass",
+      "ms": 3636
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:42868",
+    "backend": "terminated:40813",
+    "tempRoot": "removed:true"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-integrations-page-e2e-fQGvXf",
+    "backend": "http://127.0.0.1:58737",
+    "frontend": "http://127.0.0.1:58736"
+  },
+  "browserVersion": "156.0.8078.80",
+  "finishedAt": "2026-11-08T18:57:13.047Z"
+}

@@ -9,9 +9,9 @@ import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
 export interface NodeRow {
   /** The node ID (`srv_…`) when known; `d:<desktop entry ID>` for a node this desktop has never reached. */
   key: string
-  serverInstanceId: string | null
+  nodeId: string | null
   /** The desktop entries of this node, the first-created first (`[]` for a node only this node knows). */
-  desktopIds: string[]
+  entryIds: string[]
   /** Where this desktop opens the node (its first desktop entry). */
   windowAddress: string | null
   /** This node's registration of it, when it has one; `peer.baseUrl` is the address this node uses. */
@@ -33,11 +33,12 @@ export interface RowFacts {
 }
 
 export type DirState =
-  | { state: 'working' | 'offHere' | 'offThere' | 'notRegisteredHere' | 'notRegisteredThere' | 'different' | 'checking' }
+  | { state: 'working' | 'offHere' | 'offThere' | 'notRegisteredHere' | 'notRegisteredThere' | 'notPaired' | 'different' | 'checking' }
   | { state: 'unreachable'; cause?: NodeProbeCause; host?: string; fromOther?: boolean }
 
-export type RowLineKind = 'unreachable' | 'different' | 'partial' | 'offThere' | 'notRegisteredThere' | 'notRegisteredHereInfo' | 'agentsOff'
-export type RowFix = 'turnOnThere' | 'registerThere' | 'changeAddress' | 'checkAgain' | 'tryAgain' | 'turnOn'
+export type RowLineKind = 'unreachable' | 'different' | 'partial' | 'offThere' | 'notRegisteredThere' | 'notPaired' | 'notRegisteredHereInfo' | 'agentsOff'
+/** `pairAgain`: pair the two nodes (again): one step registers both and gives them their shared secret (autobyteus-437). */
+export type RowFix = 'turnOnThere' | 'pairAgain' | 'changeAddress' | 'checkAgain' | 'tryAgain' | 'turnOn'
 export interface RowLine {
   kind: RowLineKind
   tone: 'warn' | 'error' | 'info'
@@ -70,11 +71,15 @@ const hostOfAddress = (address: string | null | undefined): string => {
 const outOf = (row: RowRow, switchOn: boolean, offer: PeerOffer | undefined): DirState => {
   if (!switchOn) return { state: 'offHere' }
   if (!row.peer) return { state: 'notRegisteredHere' }
+  // A peer registered before peers paired: this node holds no secret for it and sends nothing (NAS-23).
+  if (!row.peer.paired) return { state: 'notPaired' }
   if (!offer || offer.phase === 'checking') return { state: 'checking' }
   if (offer.phase === 'available') return { state: 'working' }
   switch (offer.code) {
     case 'REMOTE_COLLABORATION_OFF': return { state: 'offThere' }
     case 'PEER_NOT_REGISTERED': return { state: 'notRegisteredThere' }
+    // The other node holds no secret for this one (it removed this node, or registered it before peers paired).
+    case 'PEER_NOT_PAIRED': return { state: 'notPaired' }
     case 'PEER_IDENTITY_MISMATCH': return { state: 'different' }
     default: return { state: 'unreachable', cause: offer.reason ?? 'unreachable', host: hostOfAddress(row.peer.baseUrl) }
   }
@@ -92,6 +97,7 @@ const inOf = (row: RowRow, switchOn: boolean, facts: RowFacts, thisNodeId: strin
   if (!facts.remote.peers.some((peer) => peer.nodeId === thisNodeId)) return { state: 'notRegisteredThere' }
   if (!switchOn) return { state: 'offHere' }
   if (!row.peer) return { state: 'notRegisteredHere' }
+  if (out.state === 'notPaired') return out
   if (out.state !== 'working') return out.state === 'checking' ? { state: 'checking' } : { state: 'unreachable', cause: 'unreachable' }
   const answer = facts.availability
   if (answer === undefined) return { state: 'checking' }
@@ -99,12 +105,13 @@ const inOf = (row: RowRow, switchOn: boolean, facts: RowFacts, thisNodeId: strin
   if (answer.available) return { state: 'working' }
   if (answer.code === 'REMOTE_COLLABORATION_OFF') return { state: 'offHere' }
   if (answer.code === 'PEER_NOT_REGISTERED') return { state: 'notRegisteredHere' }
+  if (answer.code === 'PEER_NOT_PAIRED') return { state: 'notPaired' }
   if (answer.code === 'PEER_IDENTITY_MISMATCH') return { state: 'different' }
   const viaIt = facts.remote.peers.find((peer) => peer.nodeId === thisNodeId)?.baseUrl
   return { state: 'unreachable', cause: answer.reason ?? 'unreachable', host: hostOfAddress(viaIt), fromOther: true }
 }
 
-type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'desktopIds' | 'serverInstanceId'>
+type RowRow = Pick<NodeRow, 'peer' | 'windowAddress' | 'entryIds' | 'nodeId'>
 
 /**
  * A row's dot, directions and its one line (UI/UX spec § State Behavior, by priority): a step not finished; not
@@ -121,7 +128,7 @@ export const rowViewOf = (input: {
   unfinishedStep: NodeChangeStep | null
 }): RowView => {
   const { row, switchOn, facts, offer } = input
-  const peerOnly = !row.desktopIds.length
+  const peerOnly = !row.entryIds.length
   const out = outOf(row, switchOn, offer)
   const factsOf: RowFacts = facts ?? { probe: null, remote: undefined, availability: undefined, checkedAt: null }
   const inState = inOf(row, switchOn, factsOf, input.thisNodeId, out)
@@ -147,14 +154,14 @@ const lineOf = (
     return { kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error, ...(unfinished.name ? { stepName: unfinished.name } : {}) }
   }
   if (reachable === false) {
-    const cause = row.desktopIds.length && facts.probe && !facts.probe.ok
+    const cause = row.entryIds.length && facts.probe && !facts.probe.ok
       ? { cause: facts.probe.cause, host: hostOfAddress(row.windowAddress) }
       : out.state === 'unreachable' ? { cause: out.cause, host: out.host } : {}
     return { kind: 'unreachable', tone: 'info', fix: 'checkAgain', ...cause }
   }
   if (out.state === 'different') return { kind: 'different', tone: 'error', fix: 'changeAddress' }
   if (!row.peer) {
-    if (!row.serverInstanceId) return null
+    if (!row.nodeId) return null
     // The other node has registered this node, but this node has not registered it.
     if (facts.remote?.switchOn && facts.remote.peers.some((peer) => peer.nodeId === thisNodeId)) return { kind: 'notRegisteredHereInfo', tone: 'info', fix: 'turnOn' }
     return { kind: 'agentsOff', tone: 'info', fix: 'turnOn' }
@@ -162,6 +169,7 @@ const lineOf = (
   if (!switchOn) return null
   if (out.state === 'unreachable') return { kind: 'unreachable', tone: 'info', fix: 'checkAgain', cause: out.cause, host: out.host }
   if (out.state === 'offThere') return { kind: 'offThere', tone: 'warn', fix: 'turnOnThere' }
-  if (out.state === 'notRegisteredThere') return { kind: 'notRegisteredThere', tone: 'warn', fix: 'registerThere' }
+  if (out.state === 'notRegisteredThere') return { kind: 'notRegisteredThere', tone: 'warn', fix: 'pairAgain' }
+  if (out.state === 'notPaired') return { kind: 'notPaired', tone: 'warn', fix: 'pairAgain' }
   return null
 }

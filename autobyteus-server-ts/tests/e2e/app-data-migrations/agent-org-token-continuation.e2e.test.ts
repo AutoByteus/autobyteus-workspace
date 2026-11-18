@@ -12,6 +12,7 @@ import { TokenUsageRunStore } from "../../../src/token-usage/providers/token-usa
 import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost-calculator.js";
 import { resetDefaultAgentRunEventPipelineForTests } from "../../../src/agent-execution/events/default-agent-run-event-pipeline.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { getAgentStreamSequences } from "../../../src/services/agent-streaming/agent-stream-sequence.js";
 
 const fixtures: Awaited<ReturnType<typeof createOrgMigrationFixture>>[] = [];
 const runtimes: ReturnType<typeof createMigrationContinuationRuntime>[] = [];
@@ -95,6 +96,13 @@ describe("isolated migrated Org continuation through current server lifecycle", 
     org.subscribeToEvents(({ event }) => events.push(event));
     for (const ordinal of [1, 2]) {
       expect(await org.executeAgentCommand("org-lead", { kind: "post_message", message: new AgentInputUserMessage(`Continue ${ordinal}`) })).toMatchObject({ accepted: true });
+      if (ordinal === 1) {
+        // SR-089: an org agent started lazily by its first message has its own stream sequence from activation, which
+        // counts the turn already stored as predating it (its snapshot keeps that turn from the stored read).
+        const sequence = getAgentStreamSequences().of("org-lead");
+        expect(sequence).not.toBeNull();
+        expect(sequence!.keepsStored(sequence!.base())("historical-turn")).toBe(true);
+      }
       await vi.waitFor(() => expect(events.some((event) => event.kind === "agent_presentation" && event.message.type === "ASSISTANT_COMPLETE"
         && event.message.payload.content === `Continued response ${ordinal}`)).toBe(true), { timeout: 5000 });
       await vi.waitFor(() => expect(events.filter((event) => event.kind === "agent_presentation" && event.message.type === "TURN_COMPLETED")).toHaveLength(ordinal));

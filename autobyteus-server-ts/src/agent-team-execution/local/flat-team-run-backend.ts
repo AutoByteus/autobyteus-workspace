@@ -1,9 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunInputOptions } from "../../agent-execution/input/agent-run-input-contract.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
-import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/task-agent-execution.js";
-import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
 import type { FlatTeamExecutionManager } from "./flat-team-execution-manager.js";
@@ -32,19 +29,6 @@ export class FlatTeamRunBackend implements TeamRunBackend {
   }
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand) {
     return this.manager.executeDirectAgentCommand(agentRunId, command);
-  }
-  beginTaskAgent(input: PrepareTaskAgentInput) { return this.manager.beginTaskAgent(input); }
-  beginTaskTeam(input: PrepareTaskTeamInput) { return this.manager.beginTaskTeam(input); }
-  restoreTaskAgent(input: RestoreTaskAgentInput) { return this.manager.restoreTaskAgent(input); }
-  restoreTaskTeam(input: RestoreTaskTeamInput) { return this.manager.restoreTaskTeam(input); }
-  cancelDirectTaskExecution(reference: TaskExecutionReference) { this.manager.cancelDirectTaskExecution(reference); }
-  releaseDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.releaseDirectTaskExecution(reference); }
-  discardReleasedDirectTaskExecution(reference: TaskExecutionReference) { this.manager.discardReleasedDirectTaskExecution(reference); }
-  hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.hasLiveDirectTaskExecution(reference); }
-  shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference) { return this.manager.shutDownDirectTaskExecutionForUser(reference); }
-  getRetainedAgentControl(agentRunId: string) { return this.manager.getRetainedAgentControl(agentRunId); }
-  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
-    return this.manager.tryShutDownDirectTaskExecutionIfQuiet(reference);
   }
   cancelRuntimeActivation() { this.manager.cancelRuntimeActivation(); }
   releaseOwnedRuntime() { return this.manager.releaseOwnedRuntime(); }

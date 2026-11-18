@@ -1,0 +1,28 @@
+
+> autobyteus@1.5.11-beta.2 dev /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 59090
+
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+  ➜ Local:    http://127.0.0.1:59090/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 112ms
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 634ms
+[nitro] ✔ Nuxt Nitro server built in 2479ms
+ℹ Vite client warmed up in 4ms

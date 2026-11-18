@@ -1,0 +1,159 @@
+# IMP-19 — T-33, T-34, T-35 (REQ-012): projects-feature, project-manager-ux and task-agent-monitor probes in full runs
+# Command: cd autobyteus-web && env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR node tests/e2e/<projects-feature|project-manager-ux|task-agent-monitor-visibility>-probe.mjs --output-dir <fresh /tmp/h318/probes/...> (project-manager-ux re-run with --cases PMU-021,PMU-022,PMU-023,PMU-024,PMU-025)
+# Commit: projects-feature and project-manager-ux: the working tree committed as 975527ec0c; task-agent-monitor: 21233a66db (final run at the merged HEAD in IMP-24)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: projects-feature re-run: PT-E2E-001..017 all Pass (first run: "PT-E2E-017: Fail" — "Enter on a loop option adds nothing"); project-manager-ux: PMU-001..020 Pass in the full run and PMU-021..025 Pass in the re-run; task-agent-monitor first run: "Rejected invalid Team WebSocket message" (recoverableBlock, agent_input_states, remote_task_executions), re-run: both scenarios Pass, harness Fail on Apollo error 13 for getTeamMemberFileChanges
+
+===== probe-results.txt =====
+## projects-feature, first run (before the PT-E2E-017 fix)
+/tmp/h318/probes/projects-feature-20261101T103607Z/result.json
+result: Fail
+  PT-E2E-001: Pass
+  PT-E2E-002: Pass
+  PT-E2E-003: Pass
+  PT-E2E-004: Pass
+  PT-E2E-005: Pass
+  PT-E2E-006: Pass
+  PT-E2E-007: Pass
+  PT-E2E-008: Pass
+  PT-E2E-009: Pass
+  PT-E2E-010: Pass
+  PT-E2E-011: Pass
+  PT-E2E-012: Pass
+  PT-E2E-013: Pass
+  PT-E2E-014: Pass
+  PT-E2E-015: Pass
+  PT-E2E-016: Pass
+  PT-E2E-017: Fail
+
+## projects-feature, re-run after the fix
+/tmp/h318/probes/pf-rerun/result.json
+result: Pass
+  PT-E2E-001: Pass
+  PT-E2E-002: Pass
+  PT-E2E-003: Pass
+  PT-E2E-004: Pass
+  PT-E2E-005: Pass
+  PT-E2E-006: Pass
+  PT-E2E-007: Pass
+  PT-E2E-008: Pass
+  PT-E2E-009: Pass
+  PT-E2E-010: Pass
+  PT-E2E-011: Pass
+  PT-E2E-012: Pass
+  PT-E2E-013: Pass
+  PT-E2E-014: Pass
+  PT-E2E-015: Pass
+  PT-E2E-016: Pass
+  PT-E2E-017: Pass
+
+## project-manager-ux, full run (browser closed at 11:41 by the ending session during PMU-021)
+/tmp/h318/probes/project-manager-ux-20261101T103746Z/evidence.json
+result: Fail
+  PMU-001: Pass
+  PMU-002: Pass
+  PMU-003: Pass
+  PMU-004: Pass
+  PMU-005: Pass
+  PMU-006: Pass
+  PMU-007: Pass
+  PMU-008: Pass
+  PMU-009: Pass
+  PMU-010: Pass
+  PMU-011: Pass
+  PMU-012: Pass
+  PMU-013: Pass
+  PMU-014: Pass
+  PMU-015: Pass
+  PMU-016: Pass
+  PMU-017: Pass
+  PMU-018: Pass
+  PMU-019: Pass
+  PMU-020: Pass
+  PMU-021: Fail
+  PMU-022: Fail
+  PMU-023: Fail
+  PMU-024: Fail
+  PMU-025: Fail
+  failure: {"id": "PMU-021", "message": "locator.fill: Target page, context or browser has been closed\nCall log:\n  - waiting for locator('[data-test=\"right-side-projects-panel\"] [data-testid=\"project-tasks-search-input\"]')\n"}
+  failure: {"id": "PMU-022", "message": "browser.newContext: Target page, context or browser has been closed"}
+  failure: {"id": "PMU-023", "message": "browser.newContext: Target page, context or browser has been closed"}
+
+## project-manager-ux, PMU-021..025 re-run
+/tmp/h318/probes/pmu-021-025/evidence.json
+result: Pass
+  PMU-021: Pass
+  PMU-022: Pass
+  PMU-023: Pass
+  PMU-024: Pass
+  PMU-025: Pass
+
+## task-agent-monitor-visibility, first run (stale fixture snapshot)
+/tmp/h318/probes/tamv/evidence.json
+result: Fail
+  API-E2E-TMV-001: Pass
+  API-E2E-TMV-002: Fail
+  failure: {"id": "API-E2E-TMV-002", "description": "Snapshot invalidation reconciles the focused delegated Agent; idle shutdown keeps it visible and offline", "message": "Timed out waiting for snapshot task reconciliation loading", "stack": "Error: Timed out waiting for snapshot task reconciliation loading\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/tests/e2e/task-agent-monitor-visibility-probe.mjs:158:9)\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processTimers (node:internal/timers:518:9)\n    at
+  browser: Rejected invalid Team WebSocket message: ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": 
+
+## task-agent-monitor-visibility, re-run after the fixture fix (unmocked getTeamMemberFileChanges)
+/tmp/h318/probes/tamv-rerun/evidence.json
+result: Fail
+  API-E2E-TMV-001: Pass
+  API-E2E-TMV-002: Pass
+  failure: {"id": "HARNESS", "description": "Run task Agent monitor visibility browser probe", "message": "Browser page/console errors were observed", "details": [{"type": "console:error", "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22getTeamMemberFileChanges%22%2C%22%7B%7D%22%5D%7D"}, {"type": "console:error", "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A
+
+===== projects-feature-rerun-20261101T105211Z.log =====
+[PT-E2E-001] Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001)
+[PT-E2E-001] Pass
+[PT-E2E-002] Ordinary New Project validation/focus/Cancel and zero-link save to Tasks
+[PT-E2E-002] Pass
+[PT-E2E-003] Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing
+[PT-E2E-003] Pass
+[PT-E2E-004] Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders
+[PT-E2E-004] Pass
+[PT-E2E-005] Task ordinary composer validation, search-preserving Cancel, typed/file save clears search
+[PT-E2E-005] Pass
+[PT-E2E-006] Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape
+[PT-E2E-006] Pass
+[PT-E2E-007] External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status
+[PT-E2E-007] Pass
+[PT-E2E-008] Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct
+[PT-E2E-008] Pass
+[PT-E2E-009] Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping
+[PT-E2E-009] Pass
+[PT-E2E-010] Real backend process restart preserves Tasks, context HTTP bytes and links
+[PT-E2E-010] Pass
+[PT-E2E-011] All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project
+[PT-E2E-011] Pass
+[PT-E2E-012] Ordinary route read/Refresh ordering: late old Project response cannot populate another Project
+[PT-E2E-012] Pass
+[PT-E2E-013] 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation
+[PT-E2E-013] Pass
+[PT-E2E-014] Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery
+[PT-E2E-014] Pass
+[PT-E2E-015] Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003)
+[PT-E2E-015] Pass
+[PT-E2E-016] zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys
+[PT-E2E-016] Pass
+[PT-E2E-017] Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies card links, picker (newest first, loop greyed, keyboard), new Task with a dependency, live clear, delete drops dependents, key URLs (task-keys AC-011–015, 017, 018, 026)
+[PT-E2E-017] Pass
+{"result":"Pass","error":null,"cases":{"PT-E2E-001":"Pass","PT-E2E-002":"Pass","PT-E2E-003":"Pass","PT-E2E-004":"Pass","PT-E2E-005":"Pass","PT-E2E-006":"Pass","PT-E2E-007":"Pass","PT-E2E-008":"Pass","PT-E2E-009":"Pass","PT-E2E-010":"Pass","PT-E2E-011":"Pass","PT-E2E-012":"Pass","PT-E2E-013":"Pass","PT-E2E-014":"Pass","PT-E2E-015":"Pass","PT-E2E-016":"Pass","PT-E2E-017":"Pass"},"cleanup":{"browser":"closed","frontend":"terminated:50405","nodeA":"terminated:58835","nodeB":"terminated:50361","frontendPortReleased":true,"nodeAPortReleased":true,"nodeBPortReleased":true,"tempRootRemoved":true}}
+
+===== project-manager-ux-021-025-20261101T104400Z.log =====
+Project manager UX probe: Pass. Evidence: /tmp/h318/probes/pmu-021-025/evidence.json
+

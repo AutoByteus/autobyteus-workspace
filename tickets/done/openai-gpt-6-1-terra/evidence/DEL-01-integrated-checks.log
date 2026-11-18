@@ -1,0 +1,85 @@
+# DEL-01: post-integration checks on c18fe0eedb (ticket 467b2f4d27 + origin/personal d31c92adfc, version bump only), 2026-10-30T11:58:14Z, macOS, node v22.23.1
+
+===== STEP: pnpm install --frozen-lockfile
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.7s using pnpm v10.28.2
+===== exit: 0 (1s) :: pnpm install --frozen-lockfile
+
+===== STEP: pnpm -C autobyteus-server-ts prebuild
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 127ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+===== exit: 0 (8s) :: pnpm -C autobyteus-server-ts prebuild
+
+===== STEP: pnpm -C autobyteus-ts exec vitest run tests/unit/llm --no-watch
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-ts
+
+
+ Test Files  70 passed (70)
+      Tests  541 passed (541)
+   Start at  12:58:25
+   Duration  3.60s (transform 3.91s, setup 1.42s, import 18.67s, tests 1.49s, environment 4ms)
+
+===== exit: 0 (5s) :: pnpm -C autobyteus-ts exec vitest run tests/unit/llm --no-watch
+
+===== STEP: pnpm -C autobyteus-server-ts typecheck
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+===== exit: 0 (14s) :: pnpm -C autobyteus-server-ts typecheck
+
+===== STEP: pnpm -C autobyteus-server-ts exec vitest run tests/unit/llm-management --no-watch
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42607) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42919) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42925) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  12 passed (12)
+      Tests  83 passed (83)
+   Start at  12:58:43
+   Duration  10.42s (transform 1.53s, setup 172ms, import 8.17s, tests 424ms, environment 1ms)
+
+===== exit: 0 (11s) :: pnpm -C autobyteus-server-ts exec vitest run tests/unit/llm-management --no-watch

@@ -1,0 +1,26 @@
+# id: IMP-522-repro-before
+# command: pnpm -C autobyteus-web build:mobile-web (product sources at the base 3722dbb1d8, the new probe cases only); pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/522-probe-before2 --cases=MSP-67,MSP-68,MSP-69,MSP-70,MSP-71,MSP-72
+# commit: 3722dbb1d8 phone bundle (no product change) + the uncommitted probe cases
+# env: clean env -i PATH HOME=<fresh temp> TMPDIR; probe-owned alpha/beta nodes, scripted Antigravity and Grok Build; no provider keys
+# date: 2026-11-17T20:11Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.9 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-settings-every-run-522/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/522-probe-before2 --cases=MSP-67,MSP-68,MSP-69,MSP-70,MSP-71,MSP-72
+
+[mobile-shell] MSP-67 …
+[mobile-shell] MSP-67 Fail: no Settings in the ⋮ menu of this run
+[mobile-shell] MSP-68 …
+[mobile-shell] MSP-68 Fail: no Settings in the ⋮ menu of this run
+[mobile-shell] MSP-69 …
+[mobile-shell] MSP-69 Fail: REQ-005 Save changes the task agent run
+[mobile-shell] MSP-70 …
+[mobile-shell] MSP-70 Fail: the Org's planner delegated a task agent and a Team
+[mobile-shell] MSP-71 …
+[mobile-shell] MSP-71 Pass
+[mobile-shell] MSP-72 …
+[mobile-shell] MSP-72 Fail: no Settings in the ⋮ menu of this run
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.
+# exit: 1

@@ -1,0 +1,682 @@
+{
+  "case": "API-02B",
+  "mode": "ac003",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts",
+  "baseDir": null,
+  "date": "2026-10-31T20:32:32.428Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-CnO8DM",
+  "steps": [
+    {
+      "at": "2.47",
+      "step": "server started",
+      "value": {
+        "label": "seed",
+        "pid": 74625,
+        "port": 52300,
+        "readyMs": 2463,
+        "data": "<own>/data"
+      }
+    },
+    {
+      "at": "2.92",
+      "step": "may turn",
+      "value": [
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "TURN_COMPLETED",
+        "AGENT_STATUS",
+        "AGENT_STATUS",
+        "AGENT_STATUS"
+      ]
+    },
+    {
+      "at": "3.08",
+      "step": "server stopped",
+      "value": {
+        "label": "seed",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478755480
+        },
+        "ms": 77
+      }
+    },
+    {
+      "at": "3.11",
+      "step": "seeded",
+      "value": {
+        "seed": {
+          "E1-empty": "probe_agent_mvwuxzyq_1d39249becbf47399bc338b695254865",
+          "E2-empty-subfolders": "probe_agent_mvwuxzyq_249c95161ca444b9a47bb07ea8fd2000",
+          "CTX-context-file-only": "probe_agent_mvwuxzyq_af968fcc8b0e4720a45cdabdec0c7427",
+          "UNREADABLE-record": "probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399",
+          "COLLAB-never-started-root": "probe_agent_mvwuxzyq_f5def0b6a3ce4ced82da471ecf52127e",
+          "MAY-conversation-no-startedAt": "probe_agent_mvwuxzyq_ab90e23ca9004216aecbb443fdbf26d4",
+          "STARTED": "probe_agent_mvwuxzyq_0ed44d9f03b14ac297588b0df2d692c4",
+          "TASK-agent-folder": "task_seed_mvwuy0fn"
+        },
+        "bulk": {
+          "empty": 0,
+          "started": 0
+        },
+        "historyRows": 7,
+        "diskRuns": 8
+      }
+    },
+    {
+      "at": "4.74",
+      "step": "server started",
+      "value": {
+        "label": "restart-1",
+        "pid": 74872,
+        "port": 52334,
+        "readyMs": 1629,
+        "data": "<own>/data"
+      }
+    },
+    {
+      "at": "4.76",
+      "step": "after restart-1",
+      "value": {
+        "readyMs": 1629,
+        "historyRows": 4,
+        "diskRuns": 6,
+        "seed": {
+          "E1-empty": {
+            "listed": false,
+            "onDisk": false,
+            "disk": null
+          },
+          "E2-empty-subfolders": {
+            "listed": false,
+            "onDisk": false,
+            "disk": null
+          },
+          "CTX-context-file-only": {
+            "listed": true,
+            "onDisk": true,
+            "disk": {
+              "meta": {
+                "preparedAt": true,
+                "startedAtKey": true,
+                "startedAt": false,
+                "activationState": null,
+                "taskAgent": false
+              },
+              "entries": [
+                "/",
+                "/context_files",
+                "/context_files/note.txt",
+                "/run_metadata.json"
+              ]
+            }
+          },
+          "UNREADABLE-record": {
+            "listed": false,
+            "onDisk": true,
+            "disk": {
+              "meta": {
+                "unreadable": "SyntaxError: Expected property name or '}' in JSON at position 2 (line 1 column "
+              },
+              "entries": [
+                "/",
+                "/run_metadata.json"
+              ]
+            }
+          },
+          "COLLAB-never-started-root": {
+            "listed": true,
+            "onDisk": true,
+            "disk": {
+              "meta": {
+                "preparedAt": true,
+                "startedAtKey": true,
+                "startedAt": false,
+                "activationState": null,
+                "taskAgent": false
+              },
+              "entries": [
+                "/",
+                "/collaboration",
+                "/collaboration/collaboration_tree.json",
+                "/run_metadata.json"
+              ]
+            }
+          },
+          "MAY-conversation-no-startedAt": {
+            "listed": true,
+            "onDisk": true,
+            "disk": {
+              "meta": {
+                "preparedAt": true,
+                "startedAtKey": false,
+                "startedAt": false,
+                "activationState": "ACTIVATED",
+                "taskAgent": false
+              },
+              "entries": [
+                "/",
+                "/raw_traces_active.jsonl",
+                "/run_metadata.json",
+                "/working_context_snapshot.json",
+                "/seen_tool_names.json",
+                "/seen_skill_versions.json",
+                "/work_journal",
+                "/work_journal/work_journal_active.md",
+                "/work_journal/work_journal_manifest.json"
+              ]
+            }
+          },
+          "STARTED": {
+            "listed": true,
+            "onDisk": true,
+            "disk": {
+              "meta": {
+                "preparedAt": true,
+                "startedAtKey": true,
+                "startedAt": true,
+                "activationState": null,
+                "taskAgent": false
+              },
+              "entries": [
+                "/",
+                "/raw_traces_active.jsonl",
+                "/run_metadata.json",
+                "/seen_tool_names.json",
+                "/seen_skill_versions.json"
+              ]
+            }
+          },
+          "TASK-agent-folder": {
+            "listed": false,
+            "onDisk": true,
+            "disk": {
+              "meta": {
+                "preparedAt": true,
+                "startedAtKey": false,
+                "startedAt": false,
+                "activationState": null,
+                "taskAgent": true
+              },
+              "entries": [
+                "/",
+                "/run_metadata.json"
+              ]
+            }
+          }
+        },
+        "bulkEmptyLeft": 0,
+        "bulkStartedKept": 0,
+        "removedLines": 2,
+        "logLines": [
+          "[4.60] [349-DIAG] 1793478757028 stage start",
+          "[4.62] Removed empty never-started run 'probe_agent_mvwuxzyq_1d39249becbf47399bc338b695254865' ('Seed E1-empty')",
+          "[4.63] Removed empty never-started run 'probe_agent_mvwuxzyq_249c95161ca444b9a47bb07ea8fd2000' ('Seed E2-empty-subfolders')",
+          "[4.63] Kept run 'probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399': its record could not be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+          "[4.63] Empty never-started run removal skipped 1 folder(s) without a standalone run record",
+          "[4.63] [349-DIAG] 1793478757062 stage end"
+        ],
+        "index": {
+          "E1-empty": false,
+          "E2-empty-subfolders": false,
+          "CTX-context-file-only": true,
+          "UNREADABLE-record": true,
+          "COLLAB-never-started-root": true,
+          "MAY-conversation-no-startedAt": true,
+          "STARTED": true,
+          "TASK-agent-folder": false
+        }
+      }
+    },
+    {
+      "at": "4.87",
+      "step": "server stopped",
+      "value": {
+        "label": "restart-1",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478757243
+        },
+        "ms": 50
+      }
+    },
+    {
+      "at": "7.54",
+      "step": "server started",
+      "value": {
+        "label": "base-listing",
+        "pid": 75080,
+        "port": 52356,
+        "readyMs": 2640,
+        "data": "<own>/base-copy"
+      }
+    },
+    {
+      "at": "7.54",
+      "step": "base listing of the same data",
+      "value": {
+        "E1-empty": false,
+        "E2-empty-subfolders": false,
+        "CTX-context-file-only": true,
+        "UNREADABLE-record": false,
+        "COLLAB-never-started-root": true,
+        "MAY-conversation-no-startedAt": true,
+        "STARTED": true,
+        "TASK-agent-folder": false
+      }
+    },
+    {
+      "at": "7.65",
+      "step": "server stopped",
+      "value": {
+        "label": "base-listing",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478760030
+        },
+        "ms": 57
+      }
+    },
+    {
+      "at": "9.98",
+      "step": "server started",
+      "value": {
+        "label": "restart-2",
+        "pid": 75445,
+        "port": 52388,
+        "readyMs": 2334,
+        "data": "<own>/data"
+      }
+    },
+    {
+      "at": "9.99",
+      "step": "after restart-2",
+      "value": {
+        "readyMs": 2334,
+        "logLines": [
+          "[9.90] [349-DIAG] 1793478762327 stage start",
+          "[9.90] Kept run 'probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399': its record could not be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+          "[9.90] Empty never-started run removal skipped 1 folder(s) without a standalone run record",
+          "[9.90] [349-DIAG] 1793478762330 stage end"
+        ],
+        "historyRows": 4
+      }
+    },
+    {
+      "at": "10.09",
+      "step": "server stopped",
+      "value": {
+        "label": "restart-2",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478762473
+        },
+        "ms": 58
+      }
+    }
+  ],
+  "seed": {
+    "E1-empty": "probe_agent_mvwuxzyq_1d39249becbf47399bc338b695254865",
+    "E2-empty-subfolders": "probe_agent_mvwuxzyq_249c95161ca444b9a47bb07ea8fd2000",
+    "CTX-context-file-only": "probe_agent_mvwuxzyq_af968fcc8b0e4720a45cdabdec0c7427",
+    "UNREADABLE-record": "probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399",
+    "COLLAB-never-started-root": "probe_agent_mvwuxzyq_f5def0b6a3ce4ced82da471ecf52127e",
+    "MAY-conversation-no-startedAt": "probe_agent_mvwuxzyq_ab90e23ca9004216aecbb443fdbf26d4",
+    "STARTED": "probe_agent_mvwuxzyq_0ed44d9f03b14ac297588b0df2d692c4",
+    "TASK-agent-folder": "task_seed_mvwuy0fn"
+  },
+  "bulk": {
+    "empty": 0,
+    "started": 0
+  },
+  "before": {
+    "historyRows": 7,
+    "seedHistory": {
+      "E1-empty": {
+        "runId": "probe_agent_mvwuxzyq_1d39249becbf47399bc338b695254865",
+        "summary": "Seed E1-empty",
+        "status": "offline",
+        "isActive": false
+      },
+      "E2-empty-subfolders": {
+        "runId": "probe_agent_mvwuxzyq_249c95161ca444b9a47bb07ea8fd2000",
+        "summary": "Seed E2-empty-subfolders",
+        "status": "offline",
+        "isActive": false
+      },
+      "CTX-context-file-only": {
+        "runId": "probe_agent_mvwuxzyq_af968fcc8b0e4720a45cdabdec0c7427",
+        "summary": "Seed CTX-context-file-only",
+        "status": "offline",
+        "isActive": false
+      },
+      "UNREADABLE-record": {
+        "runId": "probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399",
+        "summary": "Seed UNREADABLE-record",
+        "status": "offline",
+        "isActive": false
+      },
+      "COLLAB-never-started-root": {
+        "runId": "probe_agent_mvwuxzyq_f5def0b6a3ce4ced82da471ecf52127e",
+        "summary": "Seed COLLAB-never-started-root",
+        "status": "offline",
+        "isActive": false
+      },
+      "MAY-conversation-no-startedAt": {
+        "runId": "probe_agent_mvwuxzyq_ab90e23ca9004216aecbb443fdbf26d4",
+        "summary": "hello, how are you doing",
+        "status": "idle",
+        "isActive": true
+      },
+      "STARTED": {
+        "runId": "probe_agent_mvwuxzyq_0ed44d9f03b14ac297588b0df2d692c4",
+        "summary": "",
+        "status": "idle",
+        "isActive": true
+      },
+      "TASK-agent-folder": null
+    },
+    "seedDisk": {
+      "E1-empty": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": true,
+          "startedAt": false,
+          "activationState": null,
+          "taskAgent": false
+        },
+        "entries": [
+          "/",
+          "/run_metadata.json"
+        ]
+      },
+      "E2-empty-subfolders": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": true,
+          "startedAt": false,
+          "activationState": null,
+          "taskAgent": false
+        },
+        "entries": [
+          "/",
+          "/context_files",
+          "/run_metadata.json",
+          "/work_journal"
+        ]
+      },
+      "CTX-context-file-only": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": true,
+          "startedAt": false,
+          "activationState": null,
+          "taskAgent": false
+        },
+        "entries": [
+          "/",
+          "/context_files",
+          "/context_files/note.txt",
+          "/run_metadata.json"
+        ]
+      },
+      "UNREADABLE-record": {
+        "meta": {
+          "unreadable": "SyntaxError: Expected property name or '}' in JSON at position 2 (line 1 column "
+        },
+        "entries": [
+          "/",
+          "/run_metadata.json"
+        ]
+      },
+      "COLLAB-never-started-root": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": true,
+          "startedAt": false,
+          "activationState": null,
+          "taskAgent": false
+        },
+        "entries": [
+          "/",
+          "/collaboration",
+          "/collaboration/collaboration_tree.json",
+          "/run_metadata.json"
+        ]
+      },
+      "MAY-conversation-no-startedAt": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": false,
+          "startedAt": false,
+          "activationState": "ACTIVATED",
+          "taskAgent": false
+        },
+        "entries": [
+          "/",
+          "/raw_traces_active.jsonl",
+          "/run_metadata.json",
+          "/working_context_snapshot.json",
+          "/seen_tool_names.json",
+          "/seen_skill_versions.json",
+          "/work_journal",
+          "/work_journal/work_journal_active.md",
+          "/work_journal/work_journal_manifest.json"
+        ]
+      },
+      "STARTED": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": true,
+          "startedAt": true,
+          "activationState": null,
+          "taskAgent": false
+        },
+        "entries": [
+          "/",
+          "/raw_traces_active.jsonl",
+          "/run_metadata.json",
+          "/seen_tool_names.json",
+          "/seen_skill_versions.json"
+        ]
+      },
+      "TASK-agent-folder": {
+        "meta": {
+          "preparedAt": true,
+          "startedAtKey": false,
+          "startedAt": false,
+          "activationState": null,
+          "taskAgent": true
+        },
+        "entries": [
+          "/",
+          "/run_metadata.json"
+        ]
+      }
+    },
+    "diskRuns": 8
+  },
+  "after": {
+    "readyMs": 1629,
+    "historyRows": 4,
+    "diskRuns": 6,
+    "seed": {
+      "E1-empty": {
+        "listed": false,
+        "onDisk": false,
+        "disk": null
+      },
+      "E2-empty-subfolders": {
+        "listed": false,
+        "onDisk": false,
+        "disk": null
+      },
+      "CTX-context-file-only": {
+        "listed": true,
+        "onDisk": true,
+        "disk": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": true,
+            "startedAt": false,
+            "activationState": null,
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/context_files",
+            "/context_files/note.txt",
+            "/run_metadata.json"
+          ]
+        }
+      },
+      "UNREADABLE-record": {
+        "listed": false,
+        "onDisk": true,
+        "disk": {
+          "meta": {
+            "unreadable": "SyntaxError: Expected property name or '}' in JSON at position 2 (line 1 column "
+          },
+          "entries": [
+            "/",
+            "/run_metadata.json"
+          ]
+        }
+      },
+      "COLLAB-never-started-root": {
+        "listed": true,
+        "onDisk": true,
+        "disk": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": true,
+            "startedAt": false,
+            "activationState": null,
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/collaboration",
+            "/collaboration/collaboration_tree.json",
+            "/run_metadata.json"
+          ]
+        }
+      },
+      "MAY-conversation-no-startedAt": {
+        "listed": true,
+        "onDisk": true,
+        "disk": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": false,
+            "startedAt": false,
+            "activationState": "ACTIVATED",
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/raw_traces_active.jsonl",
+            "/run_metadata.json",
+            "/working_context_snapshot.json",
+            "/seen_tool_names.json",
+            "/seen_skill_versions.json",
+            "/work_journal",
+            "/work_journal/work_journal_active.md",
+            "/work_journal/work_journal_manifest.json"
+          ]
+        }
+      },
+      "STARTED": {
+        "listed": true,
+        "onDisk": true,
+        "disk": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": true,
+            "startedAt": true,
+            "activationState": null,
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/raw_traces_active.jsonl",
+            "/run_metadata.json",
+            "/seen_tool_names.json",
+            "/seen_skill_versions.json"
+          ]
+        }
+      },
+      "TASK-agent-folder": {
+        "listed": false,
+        "onDisk": true,
+        "disk": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": false,
+            "startedAt": false,
+            "activationState": null,
+            "taskAgent": true
+          },
+          "entries": [
+            "/",
+            "/run_metadata.json"
+          ]
+        }
+      }
+    },
+    "bulkEmptyLeft": 0,
+    "bulkStartedKept": 0,
+    "removedLines": 2,
+    "logLines": [
+      "[4.60] [349-DIAG] 1793478757028 stage start",
+      "[4.62] Removed empty never-started run 'probe_agent_mvwuxzyq_1d39249becbf47399bc338b695254865' ('Seed E1-empty')",
+      "[4.63] Removed empty never-started run 'probe_agent_mvwuxzyq_249c95161ca444b9a47bb07ea8fd2000' ('Seed E2-empty-subfolders')",
+      "[4.63] Kept run 'probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399': its record could not be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+      "[4.63] Empty never-started run removal skipped 1 folder(s) without a standalone run record",
+      "[4.63] [349-DIAG] 1793478757062 stage end"
+    ],
+    "index": {
+      "E1-empty": false,
+      "E2-empty-subfolders": false,
+      "CTX-context-file-only": true,
+      "UNREADABLE-record": true,
+      "COLLAB-never-started-root": true,
+      "MAY-conversation-no-startedAt": true,
+      "STARTED": true,
+      "TASK-agent-folder": false
+    }
+  },
+  "baseListing": {
+    "E1-empty": false,
+    "E2-empty-subfolders": false,
+    "CTX-context-file-only": true,
+    "UNREADABLE-record": false,
+    "COLLAB-never-started-root": true,
+    "MAY-conversation-no-startedAt": true,
+    "STARTED": true,
+    "TASK-agent-folder": false
+  },
+  "second": {
+    "readyMs": 2334,
+    "logLines": [
+      "[9.90] [349-DIAG] 1793478762327 stage start",
+      "[9.90] Kept run 'probe_agent_mvwuxzyq_5c2e2b277a9a4a43bbedf259a4ff4399': its record could not be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)",
+      "[9.90] Empty never-started run removal skipped 1 folder(s) without a standalone run record",
+      "[9.90] [349-DIAG] 1793478762330 stage end"
+    ],
+    "historyRows": 4
+  },
+  "result": "Completed",
+  "modelCalls": 1,
+  "rootRemoved": true
+}

@@ -1,0 +1,7 @@
+[+2.56s] server started {"label":"two-step","pid":8766,"port":53582,"readyMs":2552,"data":"<own>/data"}
+[+2.94s] two-step {"prepared":{"success":true,"message":"Agent run prepared successfully.","runId":"probe_agent_mvwv3arn_b44381f970354ef08b72a35e7f36a805"},"before":{"meta":{"preparedAt":true,"startedAtKey":true,"startedAt":false,"activationState":null,"taskAgent":false},"entries":["/","/run_metadata.json"],"sizes":{"/run_metadata.json":728}},"frames":["AGENT_STATUS","AGENT_STATUS","AGENT_STATUS","TURN_STARTED","TURN_COMPLETED","AGENT_STATUS","AGENT_STATUS","AGENT_STATUS"],"afterSend":{"meta":{"preparedAt":true,"startedAtKey":true,"startedAt":true,"activationState":null,"taskAgent":false},"entries":["/","/raw_t
+[+3.04s] server stopped {"label":"two-step","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793479002651},"ms":87}
+[+4.67s] server started {"label":"restart","pid":9170,"port":53618,"readyMs":1628,"data":"<own>/data"}
+[+4.69s] after restart {"listed":{"runId":"probe_agent_mvwv3arn_b44381f970354ef08b72a35e7f36a805","summary":"Two-step first message","status":"offline","isActive":false},"onDisk":true,"logLines":[]}
+[+4.79s] server stopped {"label":"restart","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793479004357},"ms":51}
+{"result":"Completed","error":null}

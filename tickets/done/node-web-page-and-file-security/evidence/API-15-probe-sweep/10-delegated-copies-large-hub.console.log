@@ -1,0 +1,15 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:delegated-copies-large-hub /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/delegated-copies-large-hub-probe.mjs --from-seed /tmp/api416-15-seed-GozQ/hub --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/delegated-copies-large-hub
+
+[2026-11-07T22:33:09.691Z] S-API start: Server timings over HTTP: hub view, hub conversation, a copy projection, a copy artifact list (generic and scoped)
+[2026-11-07T22:33:09.798Z] S-API Pass
+[2026-11-07T22:33:09.798Z] S-001 start: Stopped hub cold sample 1: T-1, T-2, T-3 with request counts; reopen without refetch
+[2026-11-07T22:33:16.836Z] S-001 Pass
+[2026-11-07T22:33:16.836Z] S-002 start: Stopped hub cold sample 2: T-1, T-2, T-3 with request counts; reopen without refetch
+[2026-11-07T22:33:23.504Z] S-002 Pass
+[2026-11-07T22:33:23.505Z] S-003 start: Stopped hub cold sample 3: T-1, T-2, T-3 with request counts; reopen without refetch
+[2026-11-07T22:33:30.147Z] S-003 Pass
+[2026-11-07T22:33:30.147Z] S-ROWS start: Every Team row and every member row with statuses and Task summaries (AC-005)
+[2026-11-07T22:33:35.869Z] S-ROWS Pass
+{"result":"Pass","label":"current","cases":{"S-API":"Pass","S-001":"Pass","S-002":"Pass","S-003":"Pass","S-ROWS":"Pass"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":95999,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":94636,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/delegated-copies-large-hub/evidence.json"}

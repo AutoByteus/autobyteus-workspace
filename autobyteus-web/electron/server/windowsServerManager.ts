@@ -1,4 +1,6 @@
-import { spawn } from 'child_process'
+import { ManagedBackendShutdownClient } from './managedBackendShutdownClient'
+import { childExited } from './managedBackendStop'
+import { spawn, execFile } from 'child_process'
 import type { ChildProcess, StdioOptions } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -7,28 +9,7 @@ import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
 
 export class WindowsServerManager extends BaseServerManager {
-  private async waitForProcessExit(proc: ChildProcess, timeoutMs: number): Promise<boolean> {
-    if (proc.exitCode !== null) {
-      return true
-    }
-
-    return new Promise((resolve) => {
-      let timeoutId: NodeJS.Timeout | undefined
-      const onClose = () => {
-        if (timeoutId) {
-          clearTimeout(timeoutId)
-        }
-        resolve(true)
-      }
-
-      proc.once('close', onClose)
-
-      timeoutId = setTimeout(() => {
-        proc.removeListener('close', onClose)
-        resolve(false)
-      }, timeoutMs)
-    })
-  }
+  private readonly controls = new WeakMap<ChildProcess, ManagedBackendShutdownClient>()
 
   /**
    * Get path to the server executable for Windows.
@@ -54,7 +35,7 @@ export class WindowsServerManager extends BaseServerManager {
     const options = {
       cwd: this.serverDir,
       env,
-      stdio: ['ignore', 'pipe', 'pipe'] as StdioOptions
+      stdio: ['ignore', 'pipe', 'pipe', 'ipc'] as StdioOptions
     }
 
     logger.info(`Starting server with port: ${this.serverPort}`)
@@ -72,106 +53,21 @@ export class WindowsServerManager extends BaseServerManager {
     logger.info(`Executing: ${formattedPath} ${args.join(' ')}`)
 
     this.serverProcess = spawn(process.execPath, args, options)
+    this.controls.set(this.serverProcess, new ManagedBackendShutdownClient(this.serverProcess))
     this.setupProcessHandlers()
   }
 
-  /**
-   * Stop the backend server on Windows with graceful-to-forceful fallback.
-   * First tries graceful taskkill (without /f), then escalates to forceful kill after timeout.
-   */
-  public override stopServer(): Promise<void> {
-    this.cancelPendingStartup()
-    if (!this.serverProcess) {
-      logger.info('Server is not running');
-      return Promise.resolve();
-    }
-
-    logger.info('Stopping server on Windows...');
-
-    return new Promise((resolve) => {
-      const proc = this.serverProcess
-      const pid = proc?.pid;
-      
-      const cleanup = () => {
-        if (this.serverProcess !== proc) return
-        this.isServerRunning = false;
-        this.ready = false;
-        this.serverProcess = null;
-        this.emit('stopped');
-      };
-
-      if (!pid || !proc) {
-        logger.warn('Server process exists but has no PID. Cannot kill.');
-        cleanup();
-        resolve();
-        return;
-      }
-
-      let forceKillTimeout: NodeJS.Timeout;
-      let hardTimeout: NodeJS.Timeout;
-      let isResolved = false;
-      
-      const resolveOnce = () => {
-        if (!isResolved) {
-          isResolved = true;
-          clearTimeout(forceKillTimeout);
-          clearTimeout(hardTimeout);
-          cleanup();
-          resolve();
-        }
-      };
-
-      // Wait for actual process exit, not just taskkill completion.
-      this.waitForProcessExit(proc, this.gracefulShutdownTimeoutMs).then((exited) => {
-        if (exited) {
-          logger.info(`Server process ${pid} exited after graceful shutdown`);
-          resolveOnce();
-        }
-      });
-      
-      // Step 1: Try graceful kill first (without /f flag)
-      logger.info(`Sending graceful taskkill for PID ${pid}`);
-      const gracefulKill = spawn('taskkill', ['/pid', pid.toString(), '/t']);
-      
-      gracefulKill.on('close', (code) => {
-        if (code === 0) {
-          logger.info(`Graceful taskkill for PID ${pid} completed successfully`);
-        }
-        // If code !== 0, the timeout will handle force kill
-      });
-
-      gracefulKill.on('error', (err) => {
-        logger.error(`Graceful taskkill failed for PID ${pid}:`, err);
-        // Let the force kill timeout handle it
-      });
-      
-      // Step 2: Force kill after timeout
-      forceKillTimeout = setTimeout(() => {
-        if (!isResolved) {
-          logger.warn(`Graceful shutdown timed out after ${this.gracefulShutdownTimeoutMs}ms, forcing kill for PID ${pid}`);
-          const forceKill = spawn('taskkill', ['/pid', pid.toString(), '/f', '/t']);
-          
-          forceKill.on('close', () => {
-            logger.info(`Force taskkill for PID ${pid} completed`);
-            this.waitForProcessExit(proc, 2000).then(() => resolveOnce());
-          });
-          
-          forceKill.on('error', (err) => {
-            logger.error(`Force taskkill failed for PID ${pid}:`, err);
-            resolveOnce(); // Resolve anyway to not hang
-          });
-        }
-      }, this.gracefulShutdownTimeoutMs);
-
-      // Hard timeout to avoid hanging if the process never exits.
-      hardTimeout = setTimeout(() => {
-        if (!isResolved) {
-          logger.warn(`Server process ${pid} did not exit in time; continuing with cleanup`);
-          resolveOnce();
-        }
-      }, this.gracefulShutdownTimeoutMs + 7000);
-    });
+  protected override async requestGracefulStop(proc: ChildProcess): Promise<void> {
+    const control = this.controls.get(proc)
+    if (!control) throw new Error('Managed backend IPC capability missing')
+    try { await control.stop(this.gracefulShutdownTimeoutMs) }
+    finally { control.dispose() }
   }
-
-  // No cache directory needed for Node-based server runtime.
+  protected override async forceStop(proc: ChildProcess): Promise<void> {
+    if (childExited(proc) || !proc.pid) return
+    await new Promise<void>((resolve, reject) => {
+      execFile('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { timeout: 1000, maxBuffer: 32768 },
+        error => error ? reject(error) : resolve())
+    })
+  }
 }

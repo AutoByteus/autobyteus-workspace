@@ -1,0 +1,34 @@
+# API-04 round 2: mobile-shell probe (phone production bundle), summary of API-04-r2/mobile-shell-probe.json
+# command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/API-04-r2 (worktree root)
+# commit: product d115f1601d (last code commit c8b4b659cd); probe = working tree at run time (committed with this round's report);
+#   phone bundle rebuilt on d115f1601d (build:mobile-web 01:01); server dist of the unchanged server source
+# env: macOS arm64, Node v22.23.1, headless Chrome; phone 390x844 on http://192.168.77.10:<port>
+# date: 2026-11-08T00:06:31.404Z .. 2026-11-08T00:15:10.592Z
+
+result: Pass
+summary: {"cases": {"MSP-01": "Pass", "MSP-15": "Pass", "MSP-02": "Pass", "MSP-03": "Pass", "MSP-04": "Pass", "MSP-05": "Pass", "MSP-06": "Pass", "MSP-07": "Pass", "MSP-08": "Pass", "MSP-16": "Pass", "MSP-14": "Pass", "MSP-10": "Pass", "MSP-11": "Pass", "MSP-12": "Pass", "MSP-09": "Pass", "MSP-19": "Pass", "MSP-17": "Pass", "MSP-18": "Pass", "MSP-13": "Pass"}, "unknownBrowserErrors": 0}
+cleanup: {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}
+
+## MSP-13 Pass
+  reads: [{"at": 1794096897201, "label": "phone-unknown-credential", "case": "MSP-13", "op": "ListWorkspaceRunHistory", "window": null, "status": 401, "bytes": 123}]
+  onPairing: 1
+  sessionLeft: null
+  revokedAll: 200
+  openPhoneAfterCheck: {"pairing": 1, "sessionLeft": null}
+  revokedShows: {"pairing": true, "list": "other", "bar": null, "sessionLeft": null}
+  revokedReads: ["PhoneCredentialCheck 403", "ListWorkspaceRunHistory 403", "ListCollaborationRootHistory 403", "GetAllWorkspaces 403", "GetAgentDefinitions 403", "GetAgentTeamDefinitions 403", "GetAgentOrgDefinitions 403"]
+  credentialChecks: ["phone-unknown-credential 401", "phone 403", "phone-revoked 403"]
+
+## MSP-18 Pass
+  reopened: false
+  openCheck: {"bar": "Phone access off", "banner": "Alpha Test Node is reachable, but Phone access is off. Check", "bannerConnection": "phone_access_off", "bannerCheck": 1, "rows": 27, "listError": 0, "pairing": 0, "sheet": "Not reachable", "credentialKept": true}
+  offStart: {"bar": "Phone access off", "banner": "Alpha Test Node is reachable, but Phone access is off. Check", "bannerConnection": "phone_access_off", "bannerCheck": 1, "rows": 0, "listError": 1, "pairing": 0, "credentialKept": true}
+  on: {"bar": "Connected", "banner": "", "bannerConnection": null, "bannerCheck": 0, "rows": 13, "listError": 0, "pairing": 0, "sheet": "Connected", "credentialKept": true}
+  offBeforeDown: {"bar": "Phone access off", "banner": "Alpha Test Node is reachable, but Phone access is off. Check", "bannerConnection": "phone_access_off", "bannerCheck": 1, "rows": 0, "listError": 1, "pairing": 0}
+  offThenDown: {"bar": "Not reachable", "banner": "Can’t reach Alpha Test Node. Check", "bannerConnection": "unreachable", "bannerCheck": 1, "rows": 0, "listError": 0, "pairing": 0, "sheet": "Not reachable"}
+  back: {"bar": "Connected", "banner": "", "bannerConnection": null, "bannerCheck": 0, "rows": 13, "listError": 0, "pairing": 0, "sheet": "Connected", "credentialKept": true}
+  credentialChecks: ["phone 403", "phone-off-start 403", "phone-off-start 200", "phone-off-then-down 403", "phone-off-then-down 200", "phone 200"]
+
+## MSP-12 checksDuringPoll: 0 (list polls in 16 s: 3)
+## MSP-19 Pass, MSP-17 Pass, MSP-07 Pass, MSP-09 Pass
+## browser lines known by cause: 3 (FU-003); unknown: 0

@@ -1,0 +1,14 @@
+{
+  "source": "9bd72c208",
+  "scope": "implementation rendered-fixture instance cleanup, not active provider cleanup acceptance",
+  "appPid": 80505,
+  "appExited": true,
+  "portsClosed": {
+    "53420": true,
+    "53421": true
+  },
+  "sentinelPreservedBeforeFixtureDisposal": "implementation-visibility-sentinel",
+  "ownedRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp45-6aG24H",
+  "ownedRootRemoved": true,
+  "forced": false
+}

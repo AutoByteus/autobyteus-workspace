@@ -4,6 +4,7 @@ import {
   AgentOrgReferenceContentService,
   getAgentOrgReferenceContentService,
 } from "../../agent-org-execution/services/agent-org-reference-content-service.js";
+import { sendUserFile } from "./user-file-reply.js";
 
 const status = (error: AgentOrgReferenceContentError): number => {
   if (error.code === "INVALID_REFERENCE_PATH") return 400;
@@ -18,8 +19,7 @@ const send = async (
   try {
     const content = await resolve();
     reply.header("cache-control", "no-store");
-    reply.type(content.mimeType);
-    return reply.send(content.stream);
+    return sendUserFile(reply, { mimeType: content.mimeType, body: content.stream });
   } catch (error) {
     if (error instanceof AgentOrgReferenceContentError) {
       return reply.code(status(error)).send({ detail: error.message, code: error.code });

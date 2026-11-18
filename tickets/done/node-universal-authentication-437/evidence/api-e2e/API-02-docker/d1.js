@@ -1,0 +1,18 @@
+const fs = await import('node:fs');
+const code = fs.readFileSync('/tmp/abtest437/setup-code-2.txt', 'utf8').match(/Setup code for [^:]+: (\S+)/)[1];
+const main = pages.find(p => p.url().includes('renderer/index.html'));
+await main.waitForTimeout(3000);
+await main.evaluate(() => { location.hash = '#/nodes'; });
+await main.waitForTimeout(3000);
+await main.getByTestId('add-node-address').fill('http://127.0.0.1:8004');
+await main.getByTestId('add-node-name').fill('docker-3');
+await main.getByTestId('add-node-submit').click();
+await main.waitForTimeout(6000);
+const before = await main.getByTestId('node-list-card').innerText();
+await main.screenshot({ path: '/tmp/abtest437/d1a.png' });
+await main.getByLabel('Setup code for docker-3').fill(code);
+await main.locator('[data-testid^="node-access-connect-"]').first().click();
+await main.waitForTimeout(6000);
+const after = await main.getByTestId('node-list-card').innerText();
+await main.screenshot({ path: '/tmp/abtest437/d1b.png' });
+return { before: before.slice(before.indexOf('docker-3')), after: after.slice(after.indexOf('docker-3')) };

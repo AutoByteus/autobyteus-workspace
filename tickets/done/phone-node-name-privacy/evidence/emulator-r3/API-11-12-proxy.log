@@ -1,0 +1,47 @@
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+10:24:13 pass GET /rest/health HTTP/1.1
+10:29:07 mode pass -> 502; open connections closed
+10:29:08 pass GET /rest/remote-access/status HTTP/1.1
+10:29:08 502 GET /mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovL2hvc3Rib3gtOWYzLmhvbWUuYXJwYTo0NzMzMyIsInBhaXJpbmdDb2RlIjoiZERneXR6SXkwdjhXUzJXNDdGVWN6VWxoIiwiZXhwaXJlc0F0IjoiMjAyNi0xMS0wOFQwOTozNDowNy40MTlaIiwic2VydmVyTmFtZSI6IlRlc3QgU2VydmVyIn0 HTTP/1.1
+10:29:09 pass GET /favicon.ico HTTP/1.1
+10:29:13 mode 502 -> drop; open connections closed
+10:29:16 drop GET /mobile HTTP/1.1
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+10:29:37 pass GET /mobile HTTP/1.1
+10:29:37 pass GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1
+10:29:37 pass GET /mobile/_nuxt/Bmmstvw_.js HTTP/1.1
+10:29:37 pass GET /mobile/_nuxt/DxfFyxED.js HTTP/1.1
+10:29:37 pass GET /mobile/_nuxt/C0peU2YB.js HTTP/1.1
+10:29:37 pass GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1
+10:29:51 mode pass -> drop; open connections closed
+10:29:52 drop GET /mobile/ HTTP/1.1
+10:30:01 mode drop -> pass; open connections closed
+10:30:04 pass GET /mobile HTTP/1.1
+10:30:04 pass GET /mobile/_nuxt/Bmmstvw_.js HTTP/1.1
+10:30:04 pass GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1
+10:30:04 pass GET /mobile/_nuxt/C0peU2YB.js HTTP/1.1
+10:30:04 pass GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1
+10:30:04 pass GET /mobile/_nuxt/DxfFyxED.js HTTP/1.1
+10:35:11 mode pass -> stale; open connections closed
+10:35:12 pass GET /rest/remote-access/status HTTP/1.1
+10:35:12 stale GET /mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovL2hvc3Rib3gtOWYzLmhvbWUuYXJwYTo0NzMzMyIsInBhaXJpbmdDb2RlIjoiRFN4OHQ1VXlmLXp1M1VWTzJ2VHJFWUJjIiwiZXhwaXJlc0F0IjoiMjAyNi0xMS0wOFQwOTo0MDoxMi4xMDZaIiwic2VydmVyTmFtZSI6IlRlc3QgU2VydmVyIn0 HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/dam8y6j6.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/entry.DVhB4uAD.css HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/DxfFyxED.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/C0peU2YB.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/DN8rrJ5d.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/Dwx8dj2o.js HTTP/1.1 -> index.html
+10:35:12 pass GET /favicon.ico HTTP/1.1
+10:35:12 stale GET /mobile/_nuxt/NPNSoVXm.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/B7limNs-.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/BZTN-_70.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/Dd-lJ6r4.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/Npp_8T3S.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/BlfolYzR.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/dG_oiszB.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/Dm1tkTGa.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/CUl1R01E.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/BvfnnkjF.js HTTP/1.1 -> index.html
+10:35:12 stale GET /mobile/_nuxt/CWbtxD3E.js HTTP/1.1 -> index.html

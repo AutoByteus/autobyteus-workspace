@@ -1,7 +1,9 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { GraphQLError } from "graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { WorkspaceConverter } from "../converters/workspace-converter.js";
+import { WorkspacePathRefusedError } from "../../../workspaces/workspace-folder-check.js";
 import { buildFilesystemWorkspaceId } from "../../../workspaces/workspace-registry-store.js";
 import {
   canonicalizeWorkspaceRootPath,
@@ -117,6 +119,12 @@ export class WorkspaceResolver {
       const workspace = await this.workspaceManager.createWorkspace({ rootPath: input.rootPath });
       return WorkspaceConverter.toGraphql(workspace);
     } catch (error) {
+      if (error instanceof WorkspacePathRefusedError) {
+        logger.info(`Workspace path refused (${error.reason}): ${error.message}`);
+        throw new GraphQLError(error.message, {
+          extensions: { code: "WORKSPACE_PATH_REFUSED", reason: error.reason },
+        });
+      }
       logger.error(`Unexpected error creating workspace metadata: ${String(error)}`);
       throw new Error(String(error));
     }

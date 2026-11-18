@@ -1,0 +1,10 @@
+# API-16 delegated-team-default-collapse: node tests/e2e/delegated-team-default-collapse-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/delegated-team-default-collapse
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T18:52:29Z
+Seeding representative Task 1/7
+Seeding representative Task 2/7
+Seeding representative Task 3/7
+Seeding representative Task 4/7
+Seeding representative Task 5/7
+Seeding representative Task 6/7
+Seeding representative Task 7/7
+{"result":"Pass","cases":["B-001","P-001","B-002","B-003","B-004","B-006","B-005"],"errors":[],"cleanup":{"browserClosed":true,"frontend":{"pid":61391,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":58951,"status":"terminated","exit":0},"dataRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/delegated-team-default-collapse/evidence.json"}

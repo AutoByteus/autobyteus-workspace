@@ -1,3 +1,6 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
@@ -24,6 +27,8 @@ import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
+import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 
 export type ApplicationExecutionScopeIdentity = `application:${string}`;
 
@@ -39,7 +44,17 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   bindingReader: ApplicationPublishedArtifactBindingReader;
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
   modelSelectionValidator: RunModelSelectionValidator;
+  /** The relationships between runs (the Task entries); an application's team roots read their own (SR-047). */
+  delegationIndex: DelegationIndex;
+  /** Each run's view stream, from the composition root (SR-062). */
+  viewStreams: RunViewStreams;
+  /** The run side's Task records (SR-053). */
+  taskRecords: RunTaskRecords;
   applicationAgentTools: ApplicationAgentToolCapability;
+  /** The host's provider relays for the scope's runs (`null`: the host runs no credential proxy). */
+  providerRelayAccess: ProviderRelayAccess | null;
+  /** Ends the scope's run passes; from the same host, non-null whenever `providerRelayAccess` is. */
+  runPasses: RunPassRevocation | null;
 }>;
 
 export type ApplicationAgentLaunchResult = Readonly<{

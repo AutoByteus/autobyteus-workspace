@@ -174,11 +174,12 @@ export const writeJsonArrayFile = async <T>(filePath: string, rows: T[]): Promis
   });
 };
 
-export const writeJsonFile = async <T>(filePath: string, value: T): Promise<void> => {
+/** `mode` sets the file's permission bits (for example `0o600` for a file that holds a secret). */
+export const writeJsonFile = async <T>(filePath: string, value: T, options: { mode?: number } = {}): Promise<void> => {
   await withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const tempPath = getTempPath(filePath);
-    await fs.writeFile(tempPath, encodeJson(value), "utf-8");
+    await fs.writeFile(tempPath, encodeJson(value), { encoding: "utf-8", mode: options.mode });
     await fs.rename(tempPath, filePath);
   });
 };

@@ -1,0 +1,424 @@
+# API-20 run 2: every tracked server E2E file alone: env -i PATH HOME=<resolved temp> TMPDIR node run-e2e-per-file.mjs (each file: pnpm exec vitest run <file> --no-watch --reporter=verbose), no RUN_* gates
+# worktree, commit a001e645c7, HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.y1wGQpquoj, per-file logs in /tmp/ab294-e2e-logs
+# files: 207; deadline per file: 900000 ms; start index: 0; 2026-10-28T02:32:26.209Z
+START 0 tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts 2026-10-28T02:32:26.210Z
+END 0 PASS 12s tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts | files: 1 passed (1) | tests: 7 passed (7) | exit 0
+START 1 tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts 2026-10-28T02:32:37.758Z
+END 1 FAIL 1062s tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts | files: 1 failed (1) | tests: 1 failed | 7 passed | 2 skipped (10) | exit 1
+START 2 tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts 2026-10-28T02:50:19.887Z
+END 2 PASS 2052s tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 3 tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts 2026-10-28T03:24:31.827Z
+END 3 PASS 528s tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts | files: 1 passed (1) | tests: 8 passed (8) | exit 0
+START 4 tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts 2026-10-28T03:33:20.122Z
+END 4 PASS 11s tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 5 tests/e2e/agent-definitions/internal-agents.e2e.test.ts 2026-10-28T03:33:30.775Z
+END 5 PASS 13s tests/e2e/agent-definitions/internal-agents.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 6 tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts 2026-10-28T03:33:43.942Z
+END 6 PASS 10s tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 7 tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts 2026-10-28T03:33:54.347Z
+END 7 PASS 1934s tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 8 tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts 2026-10-28T04:06:08.325Z
+END 8 FAIL 602s tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts | files: 1 failed (1) | tests: 1 failed (1) | exit 1
+START 9 tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts 2026-10-28T04:16:10.724Z
+END 9 PASS 7s tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 10 tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts 2026-10-28T04:16:17.475Z
+END 10 PASS 8s tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 11 tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts 2026-10-28T04:16:25.628Z
+END 11 PASS 10s tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts | files: 1 skipped (1) | tests: 8 skipped (8) | exit 0
+START 12 tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts 2026-10-28T04:16:35.350Z
+END 12 PASS 9s tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 13 tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts 2026-10-28T04:16:44.696Z
+END 13 PASS 17s tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts | files: 1 passed (1) | tests: 7 passed (7) | exit 0
+START 14 tests/e2e/agent/agent-command-correlated-status.e2e.test.ts 2026-10-28T04:17:02.174Z
+END 14 PASS 5s tests/e2e/agent/agent-command-correlated-status.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 15 tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts 2026-10-28T04:17:06.853Z
+END 15 PASS 7s tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 16 tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts 2026-10-28T04:17:14.167Z
+END 16 PASS 7s tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 17 tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts 2026-10-28T04:17:21.649Z
+END 17 PASS 19s tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 18 tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts 2026-10-28T04:17:40.164Z
+END 18 PASS 5s tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 19 tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts 2026-10-28T04:17:45.434Z
+END 19 PASS 17s tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 20 tests/e2e/app-data-migrations/project-task-titles-startup.e2e.test.ts 2026-10-28T04:18:02.199Z
+END 20 PASS 6s tests/e2e/app-data-migrations/project-task-titles-startup.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 21 tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts 2026-10-28T04:18:08.109Z
+END 21 FAIL 16s tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts | files: 1 failed (1) | tests: 1 failed | 3 passed (4) | exit 1
+START 22 tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts 2026-10-28T04:18:23.917Z
+END 22 PASS 12s tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 23 tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts 2026-10-28T04:18:35.668Z
+END 23 PASS 5s tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 24 tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts 2026-10-28T04:18:40.543Z
+END 24 PASS 22s tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 25 tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts 2026-10-28T04:19:02.455Z
+END 25 PASS 23s tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 26 tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts 2026-10-28T04:19:25.790Z
+END 26 PASS 10s tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 27 tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts 2026-10-28T04:19:35.619Z
+END 27 PASS 9s tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 28 tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts 2026-10-28T04:19:44.764Z
+END 28 PASS 8s tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 29 tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts 2026-10-28T04:19:52.984Z
+END 29 PASS 8s tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 30 tests/e2e/file-explorer/search-content-http.e2e.test.ts 2026-10-28T04:20:01.375Z
+END 30 PASS 10s tests/e2e/file-explorer/search-content-http.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 31 tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts 2026-10-28T04:20:11.586Z
+END 31 PASS 14s tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 32 tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts 2026-10-28T04:20:25.463Z
+END 32 PASS 22s tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 33 tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts 2026-10-28T04:20:47.175Z
+END 33 PASS 5s tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 34 tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts 2026-10-28T04:20:51.906Z
+END 34 PASS 13s tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 35 tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts 2026-10-28T04:21:04.473Z
+END 35 PASS 16s tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 36 tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts 2026-10-28T04:21:20.745Z
+END 36 PASS 1s tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 37 tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts 2026-10-28T04:21:21.929Z
+END 37 PASS 4s tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts | files: 1 passed (1) | tests: 13 passed (13) | exit 0
+START 38 tests/e2e/media/server-owned-media-tools.e2e.test.ts 2026-10-28T04:21:25.622Z
+END 38 PASS 9s tests/e2e/media/server-owned-media-tools.e2e.test.ts | files: 1 passed (1) | tests: 7 passed (7) | exit 0
+START 39 tests/e2e/memory-sync/memory-sync-api.e2e.test.ts 2026-10-28T04:21:34.313Z
+END 39 PASS 9s tests/e2e/memory-sync/memory-sync-api.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 40 tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts 2026-10-28T04:21:43.516Z
+END 40 PASS 19s tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 41 tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts 2026-10-28T04:22:02.799Z
+END 41 PASS 5s tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 42 tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts 2026-10-28T04:22:07.771Z
+END 42 PASS 7s tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 43 tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts 2026-10-28T04:22:14.999Z
+END 43 PASS 7s tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts | files: 1 passed (1) | tests: 8 passed (8) | exit 0
+START 44 tests/e2e/memory/memory-explorer-graphql.e2e.test.ts 2026-10-28T04:22:22.416Z
+END 44 PASS 7s tests/e2e/memory/memory-explorer-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 45 tests/e2e/memory/memory-search-graphql.e2e.test.ts 2026-10-28T04:22:29.062Z
+END 45 PASS 7s tests/e2e/memory/memory-search-graphql.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 46 tests/e2e/memory/memory-view-graphql.e2e.test.ts 2026-10-28T04:22:36.450Z
+END 46 PASS 8s tests/e2e/memory/memory-view-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 47 tests/e2e/model-routing/model-routing-delegation.e2e.test.ts 2026-10-28T04:22:44.527Z
+END 47 PASS 11s tests/e2e/model-routing/model-routing-delegation.e2e.test.ts | files: 1 skipped (1) | tests: 9 skipped (9) | exit 0
+START 48 tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts 2026-10-28T04:22:55.459Z
+END 48 PASS 10s tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 49 tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts 2026-10-28T04:23:05.373Z
+END 49 PASS 10s tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 50 tests/e2e/projects/collaboration-model-contract.e2e.test.ts 2026-10-28T04:23:15.311Z
+END 50 PASS 9s tests/e2e/projects/collaboration-model-contract.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 51 tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts 2026-10-28T04:23:24.599Z
+END 51 PASS 10s tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts | files: 1 skipped (1) | tests: 11 skipped (11) | exit 0
+START 52 tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts 2026-10-28T04:23:34.899Z
+END 52 PASS 11s tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 53 tests/e2e/projects/delegated-copy-model-change.e2e.test.ts 2026-10-28T04:23:45.619Z
+END 53 PASS 11s tests/e2e/projects/delegated-copy-model-change.e2e.test.ts | files: 1 skipped (1) | tests: 6 skipped (6) | exit 0
+START 54 tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts 2026-10-28T04:23:56.693Z
+END 54 PASS 11s tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 55 tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts 2026-10-28T04:24:07.281Z
+END 55 PASS 11s tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 56 tests/e2e/projects/delegation-forest-restore.e2e.test.ts 2026-10-28T04:24:18.483Z
+END 56 PASS 11s tests/e2e/projects/delegation-forest-restore.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 57 tests/e2e/projects/embedding-settings.e2e.test.ts 2026-10-28T04:24:29.032Z
+END 57 PASS 13s tests/e2e/projects/embedding-settings.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 58 tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts 2026-10-28T04:24:42.138Z
+END 58 PASS 10s tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts | files: 1 skipped (1) | tests: 6 skipped (6) | exit 0
+START 59 tests/e2e/projects/hand-started-run-refusal.e2e.test.ts 2026-10-28T04:24:51.880Z
+END 59 PASS 10s tests/e2e/projects/hand-started-run-refusal.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 60 tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts 2026-10-28T04:25:01.675Z
+END 60 PASS 9s tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 61 tests/e2e/projects/project-change-feed.e2e.test.ts 2026-10-28T04:25:10.920Z
+END 61 PASS 10s tests/e2e/projects/project-change-feed.e2e.test.ts | files: 1 skipped (1) | tests: 7 skipped (7) | exit 0
+START 62 tests/e2e/projects/project-mutation-node-locality.e2e.test.ts 2026-10-28T04:25:21.186Z
+END 62 PASS 8s tests/e2e/projects/project-mutation-node-locality.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 63 tests/e2e/projects/project-task-boundaries.e2e.test.ts 2026-10-28T04:25:29.194Z
+END 63 PASS 20s tests/e2e/projects/project-task-boundaries.e2e.test.ts | files: 1 passed (1) | tests: 18 passed (18) | exit 0
+START 64 tests/e2e/projects/project-task-comments-live.e2e.test.ts 2026-10-28T04:25:49.252Z
+END 64 PASS 10s tests/e2e/projects/project-task-comments-live.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 65 tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts 2026-10-28T04:25:59.022Z
+END 65 PASS 10s tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 66 tests/e2e/projects/project-task-parts-live.e2e.test.ts 2026-10-28T04:26:09.121Z
+END 66 PASS 11s tests/e2e/projects/project-task-parts-live.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 67 tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts 2026-10-28T04:26:19.810Z
+END 67 PASS 11s tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 68 tests/e2e/projects/project-task-search.e2e.test.ts 2026-10-28T04:26:30.397Z
+END 68 PASS 10s tests/e2e/projects/project-task-search.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 69 tests/e2e/projects/projects-graphql.e2e.test.ts 2026-10-28T04:26:40.847Z
+END 69 PASS 9s tests/e2e/projects/projects-graphql.e2e.test.ts | files: 1 passed (1) | tests: 13 passed (13) | exit 0
+START 70 tests/e2e/projects/projects-startup-migration.e2e.test.ts 2026-10-28T04:26:50.081Z
+END 70 PASS 32s tests/e2e/projects/projects-startup-migration.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 71 tests/e2e/projects/task-agent-several-tasks.e2e.test.ts 2026-10-28T04:27:22.007Z
+END 71 PASS 11s tests/e2e/projects/task-agent-several-tasks.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 72 tests/e2e/projects/task-closure-root-visibility.e2e.test.ts 2026-10-28T04:27:32.603Z
+END 72 PASS 10s tests/e2e/projects/task-closure-root-visibility.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 73 tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts 2026-10-28T04:27:42.761Z
+END 73 PASS 11s tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 74 tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts 2026-10-28T04:27:53.271Z
+END 74 PASS 12s tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts | files: 1 skipped (1) | tests: 9 skipped (9) | exit 0
+START 75 tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts 2026-10-28T04:28:05.033Z
+END 75 PASS 11s tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts | files: 1 skipped (1) | tests: 7 skipped (7) | exit 0
+START 76 tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts 2026-10-28T04:28:15.903Z
+END 76 PASS 11s tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 77 tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts 2026-10-28T04:28:26.677Z
+END 77 PASS 11s tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 78 tests/e2e/prompts/prompts-graphql.e2e.test.ts 2026-10-28T04:28:37.473Z
+END 78 PASS 8s tests/e2e/prompts/prompts-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 79 tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts 2026-10-28T04:28:45.034Z
+END 79 PASS 2s tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 80 tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts 2026-10-28T04:28:46.575Z
+END 80 PASS 1s tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts | files: 1 skipped (1) | tests: 41 skipped (41) | exit 0
+START 81 tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts 2026-10-28T04:28:47.685Z
+END 81 PASS 8s tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts | files: 1 passed (1) | tests: 9 passed (9) | exit 0
+START 82 tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts 2026-10-28T04:28:55.271Z
+END 82 PASS 10s tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 83 tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts 2026-10-28T04:29:04.976Z
+END 83 PASS 4s tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 84 tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts 2026-10-28T04:29:08.951Z
+END 84 PASS 8s tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 85 tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts 2026-10-28T04:29:17.397Z
+END 85 PASS 11s tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 86 tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts 2026-10-28T04:29:27.984Z
+END 86 PASS 10s tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 87 tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts 2026-10-28T04:29:37.527Z
+END 87 PASS 11s tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts | files: 1 skipped (1) | tests: 36 skipped (36) | exit 0
+START 88 tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts 2026-10-28T04:29:48.528Z
+END 88 PASS 9s tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts | files: 1 skipped (1) | tests: 21 skipped (21) | exit 0
+START 89 tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts 2026-10-28T04:29:57.519Z
+END 89 PASS 28s tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts | files: 1 passed (1) | tests: 13 passed (13) | exit 0
+START 90 tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts 2026-10-28T04:30:25.595Z
+END 90 PASS 21s tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 91 tests/e2e/runtime/agy-background-task-live.e2e.test.ts 2026-10-28T04:30:46.514Z
+END 91 PASS 12s tests/e2e/runtime/agy-background-task-live.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 92 tests/e2e/runtime/agy-background-task-transport.e2e.test.ts 2026-10-28T04:30:58.216Z
+END 92 PASS 11s tests/e2e/runtime/agy-background-task-transport.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 93 tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts 2026-10-28T04:31:09.301Z
+END 93 PASS 11s tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 94 tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts 2026-10-28T04:31:19.909Z
+END 94 PASS 11s tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 95 tests/e2e/runtime/agy-compaction-rotation-live.e2e.test.ts 2026-10-28T04:31:31.279Z
+END 95 PASS 13s tests/e2e/runtime/agy-compaction-rotation-live.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 96 tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts 2026-10-28T04:31:44.311Z
+END 96 PASS 12s tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 97 tests/e2e/runtime/agy-context-files-live.e2e.test.ts 2026-10-28T04:31:56.429Z
+END 97 PASS 11s tests/e2e/runtime/agy-context-files-live.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 98 tests/e2e/runtime/agy-context-files-transport.e2e.test.ts 2026-10-28T04:32:07.462Z
+END 98 PASS 12s tests/e2e/runtime/agy-context-files-transport.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 99 tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts 2026-10-28T04:32:19.075Z
+# resumed at index 99 under caffeinate -is after the Mac slept 03:32-05:16 (pmset log); commit bce2f8b4e3; HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.LBcg4IIy2Y
+# files: 207; deadline per file: 900000 ms; start index: 99; 2026-10-28T04:34:16.709Z
+START 99 tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts 2026-10-28T04:34:16.710Z
+END 99 PASS 14s tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 100 tests/e2e/runtime/agy-failure-transport.e2e.test.ts 2026-10-28T04:34:30.933Z
+END 100 PASS 14s tests/e2e/runtime/agy-failure-transport.e2e.test.ts | files: 1 skipped (1) | tests: 25 skipped (25) | exit 0
+START 101 tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts 2026-10-28T04:34:45.263Z
+END 101 PASS 12s tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 102 tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts 2026-10-28T04:34:57.741Z
+END 102 PASS 12s tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts | files: 1 skipped (1) | tests: 8 skipped (8) | exit 0
+START 103 tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts 2026-10-28T04:35:09.669Z
+END 103 PASS 12s tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 104 tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts 2026-10-28T04:35:21.755Z
+END 104 PASS 11s tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 105 tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts 2026-10-28T04:35:32.989Z
+END 105 PASS 3s tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 106 tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts 2026-10-28T04:35:36.452Z
+END 106 PASS 10s tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 107 tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts 2026-10-28T04:35:46.781Z
+END 107 PASS 12s tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 108 tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts 2026-10-28T04:35:58.618Z
+END 108 PASS 12s tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 109 tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts 2026-10-28T04:36:10.957Z
+END 109 PASS 9s tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 110 tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts 2026-10-28T04:36:20.137Z
+END 110 PASS 10s tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts | files: 1 skipped (1) | tests: 7 skipped (7) | exit 0
+START 111 tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts 2026-10-28T04:36:30.409Z
+END 111 PASS 10s tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 112 tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts 2026-10-28T04:36:40.385Z
+END 112 PASS 10s tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 113 tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts 2026-10-28T04:36:50.678Z
+END 113 PASS 11s tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 114 tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts 2026-10-28T04:37:01.228Z
+END 114 PASS 10s tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 115 tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts 2026-10-28T04:37:10.989Z
+END 115 PASS 10s tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 116 tests/e2e/runtime/application-import-codex-launch.e2e.test.ts 2026-10-28T04:37:20.616Z
+END 116 PASS 12s tests/e2e/runtime/application-import-codex-launch.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 117 tests/e2e/runtime/application-reload-repair.e2e.test.ts 2026-10-28T04:37:32.912Z
+END 117 PASS 16s tests/e2e/runtime/application-reload-repair.e2e.test.ts | files: 1 passed (1) | tests: 5 passed (5) | exit 0
+START 118 tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts 2026-10-28T04:37:49.259Z
+END 118 PASS 11s tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts | files: 1 skipped (1) | tests: 7 skipped (7) | exit 0
+START 119 tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts 2026-10-28T04:38:00.398Z
+END 119 PASS 11s tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts | files: 1 skipped (1) | tests: 6 skipped (6) | exit 0
+START 120 tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts 2026-10-28T04:38:11.079Z
+END 120 PASS 10s tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 121 tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts 2026-10-28T04:38:21.113Z
+END 121 PASS 11s tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 122 tests/e2e/runtime/autobyteus-native-output-limit-live.e2e.test.ts 2026-10-28T04:38:32.111Z
+END 122 PASS 10s tests/e2e/runtime/autobyteus-native-output-limit-live.e2e.test.ts | files: 1 skipped (1) | tests: 11 skipped (11) | exit 0
+START 123 tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts 2026-10-28T04:38:41.713Z
+END 123 PASS 11s tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts | files: 1 skipped (1) | tests: 15 skipped (15) | exit 0
+START 124 tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts 2026-10-28T04:38:52.416Z
+END 124 PASS 10s tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 125 tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts 2026-10-28T04:39:02.784Z
+END 125 PASS 33s tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 126 tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts 2026-10-28T04:39:35.476Z
+END 126 PASS 10s tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts | files: 1 skipped (1) | tests: 12 skipped (12) | exit 0
+START 127 tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts 2026-10-28T04:39:45.418Z
+END 127 PASS 7s tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 128 tests/e2e/runtime/claude-agent-background-task.e2e.test.ts 2026-10-28T04:39:52.009Z
+END 128 PASS 6s tests/e2e/runtime/claude-agent-background-task.e2e.test.ts | files: 1 skipped (1) | tests: 12 skipped (12) | exit 0
+START 129 tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts 2026-10-28T04:39:58.067Z
+END 129 PASS 6s tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts | files: 1 skipped (1) | tests: 7 skipped (7) | exit 0
+START 130 tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts 2026-10-28T04:40:03.804Z
+END 130 PASS 6s tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts | files: 1 skipped (1) | tests: 16 skipped (16) | exit 0
+START 131 tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts 2026-10-28T04:40:09.822Z
+END 131 PASS 7s tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts | files: 1 passed (1) | tests: 8 passed | 1 skipped (9) | exit 0
+START 132 tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts 2026-10-28T04:40:16.581Z
+END 132 PASS 10s tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 133 tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts 2026-10-28T04:40:26.370Z
+END 133 PASS 10s tests/e2e/runtime/claude-prompt-cache-ttl-live.e2e.test.ts | files: 1 skipped (1) | tests: 6 skipped (6) | exit 0
+START 134 tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts 2026-10-28T04:40:36.238Z
+END 134 PASS 6s tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 135 tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts 2026-10-28T04:40:42.309Z
+END 135 PASS 11s tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 136 tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts 2026-10-28T04:40:53.065Z
+END 136 PASS 10s tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 137 tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts 2026-10-28T04:41:02.570Z
+END 137 PASS 11s tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 138 tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts 2026-10-28T04:41:13.800Z
+END 138 PASS 6s tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 139 tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts 2026-10-28T04:41:19.913Z
+END 139 PASS 1s tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 140 tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts 2026-10-28T04:41:20.855Z
+END 140 PASS 10s tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 141 tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts 2026-10-28T04:41:31.134Z
+END 141 PASS 9s tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 142 tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts 2026-10-28T04:41:40.447Z
+END 142 PASS 12s tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 143 tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts 2026-10-28T04:41:52.057Z
+END 143 PASS 11s tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 144 tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts 2026-10-28T04:42:03.355Z
+END 144 PASS 9s tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 145 tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts 2026-10-28T04:42:12.780Z
+END 145 PASS 2s tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 146 tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts 2026-10-28T04:42:14.707Z
+END 146 PASS 1s tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts | files: 1 skipped (1) | tests: 6 skipped (6) | exit 0
+START 147 tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts 2026-10-28T04:42:15.842Z
+END 147 PASS 10s tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 148 tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts 2026-10-28T04:42:26.091Z
+END 148 PASS 14s tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 149 tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts 2026-10-28T04:42:39.770Z
+END 149 PASS 10s tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts | files: 1 skipped (1) | tests: 3 skipped (3) | exit 0
+START 150 tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts 2026-10-28T04:42:50.169Z
+END 150 PASS 13s tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 151 tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts 2026-10-28T04:43:03.054Z
+END 151 PASS 11s tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts | files: 1 skipped (1) | tests: 8 skipped (8) | exit 0
+START 152 tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts 2026-10-28T04:43:13.657Z
+END 152 PASS 12s tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts | files: 1 skipped (1) | tests: 5 skipped (5) | exit 0
+START 153 tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts 2026-10-28T04:43:25.599Z
+END 153 PASS 12s tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts | files: 1 skipped (1) | tests: 6 skipped (6) | exit 0
+START 154 tests/e2e/runtime/mixed-task-delegation.e2e.test.ts 2026-10-28T04:43:37.140Z
+END 154 PASS 11s tests/e2e/runtime/mixed-task-delegation.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 155 tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts 2026-10-28T04:43:48.156Z
+END 155 PASS 11s tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 156 tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts 2026-10-28T04:43:58.802Z
+END 156 PASS 11s tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 157 tests/e2e/runtime/skill-update-notice-live.e2e.test.ts 2026-10-28T04:44:10.155Z
+END 157 PASS 12s tests/e2e/runtime/skill-update-notice-live.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 158 tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts 2026-10-28T04:44:22.171Z
+END 158 PASS 11s tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts | files: 1 skipped (1) | tests: 2 skipped (2) | exit 0
+START 159 tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts 2026-10-28T04:44:32.779Z
+END 159 PASS 9s tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 160 tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts 2026-10-28T04:44:41.571Z
+END 160 PASS 1s tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 161 tests/e2e/runtime/token-meter-tps-live.e2e.test.ts 2026-10-28T04:44:42.765Z
+END 161 PASS 10s tests/e2e/runtime/token-meter-tps-live.e2e.test.ts | files: 1 skipped (1) | tests: 9 skipped (9) | exit 0
+START 162 tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts 2026-10-28T04:44:53.209Z
+END 162 PASS 10s tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 163 tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts 2026-10-28T04:45:03.025Z
+END 163 PASS 11s tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 164 tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts 2026-10-28T04:45:13.638Z
+END 164 PASS 11s tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts | files: 1 skipped (1) | tests: 4 skipped (4) | exit 0
+START 165 tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts 2026-10-28T04:45:24.468Z
+END 165 PASS 10s tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 166 tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts 2026-10-28T04:45:34.851Z
+END 166 PASS 10s tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts | files: 1 skipped (1) | tests: no tests | exit 0
+START 167 tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts 2026-10-28T04:45:44.980Z
+END 167 PASS 4s tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 168 tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts 2026-10-28T04:45:49.097Z
+END 168 PASS 20s tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts | files: 1 passed (1) | tests: 5 passed (5) | exit 0
+START 169 tests/e2e/secret-management/environment-key-source.e2e.test.ts 2026-10-28T04:46:09.363Z
+END 169 PASS 3s tests/e2e/secret-management/environment-key-source.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 170 tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts 2026-10-28T04:46:12.684Z
+END 170 PASS 4s tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 171 tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts 2026-10-28T04:46:16.542Z
+END 171 PASS 5s tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts | files: 1 skipped (1) | tests: no tests | exit 0
+START 172 tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts 2026-10-28T04:46:21.888Z
+END 172 PASS 6s tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts | files: 1 skipped (1) | tests: no tests | exit 0
+START 173 tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts 2026-10-28T04:46:27.455Z
+END 173 PASS 7s tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 174 tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts 2026-10-28T04:46:34.706Z
+END 174 PASS 2s tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 175 tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts 2026-10-28T04:46:36.286Z
+END 175 PASS 5s tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 176 tests/e2e/secret-management/test-vault-selection.e2e.test.ts 2026-10-28T04:46:40.956Z
+END 176 PASS 15s tests/e2e/secret-management/test-vault-selection.e2e.test.ts | files: 1 passed (1) | tests: 5 passed (5) | exit 0
+START 177 tests/e2e/server-settings/server-settings-graphql.e2e.test.ts 2026-10-28T04:46:55.942Z
+END 177 PASS 9s tests/e2e/server-settings/server-settings-graphql.e2e.test.ts | files: 1 passed (1) | tests: 12 passed (12) | exit 0
+START 178 tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts 2026-10-28T04:47:04.789Z
+END 178 PASS 1s tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts | files: 1 skipped (1) | tests: 1 skipped (1) | exit 0
+START 179 tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts 2026-10-28T04:47:05.813Z
+END 179 PASS 12s tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts | files: 1 passed (1) | tests: 29 passed (29) | exit 0
+START 180 tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts 2026-10-28T04:47:17.710Z
+END 180 PASS 8s tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts | files: 1 passed (1) | tests: 9 passed (9) | exit 0
+START 181 tests/e2e/skills/skills-graphql.e2e.test.ts 2026-10-28T04:47:25.869Z
+END 181 PASS 8s tests/e2e/skills/skills-graphql.e2e.test.ts | files: 1 passed (1) | tests: 5 passed (5) | exit 0
+START 182 tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts 2026-10-28T04:47:33.598Z
+END 182 PASS 4s tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 183 tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts 2026-10-28T04:47:37.351Z
+END 183 PASS 8s tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 184 tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts 2026-10-28T04:47:45.781Z
+END 184 PASS 8s tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 185 tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts 2026-10-28T04:47:53.496Z
+END 185 PASS 8s tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 186 tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts 2026-10-28T04:48:01.497Z
+END 186 PASS 8s tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts | files: 1 passed (1) | tests: 5 passed (5) | exit 0
+START 187 tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts 2026-10-28T04:48:09.885Z
+END 187 PASS 8s tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 188 tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts 2026-10-28T04:48:18.172Z
+END 188 PASS 9s tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts | files: 1 passed (1) | tests: 5 passed (5) | exit 0
+START 189 tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts 2026-10-28T04:48:26.819Z
+END 189 PASS 3s tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 190 tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts 2026-10-28T04:48:29.572Z
+END 190 PASS 8s tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 191 tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts 2026-10-28T04:48:37.565Z
+END 191 PASS 7s tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 192 tests/e2e/token-usage/token-usage-model-list.e2e.test.ts 2026-10-28T04:48:44.968Z
+END 192 PASS 8s tests/e2e/token-usage/token-usage-model-list.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 193 tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts 2026-10-28T04:48:53.387Z
+END 193 PASS 3s tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 194 tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts 2026-10-28T04:48:56.089Z
+END 194 PASS 8s tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 195 tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts 2026-10-28T04:49:04.370Z
+END 195 PASS 8s tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 196 tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts 2026-10-28T04:49:11.979Z
+END 196 PASS 3s tests/e2e/tool-management/mcp-bulk-import.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 197 tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts 2026-10-28T04:49:15.093Z
+END 197 PASS 6s tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 198 tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts 2026-10-28T04:49:20.969Z
+END 198 PASS 3s tests/e2e/tool-management/mcp-http-error-status.e2e.test.ts | files: 1 passed (1) | tests: 4 passed (4) | exit 0
+START 199 tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts 2026-10-28T04:49:24.166Z
+END 199 PASS 6s tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts | files: 1 passed (1) | tests: 2 passed (2) | exit 0
+START 200 tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts 2026-10-28T04:49:29.710Z
+END 200 PASS 7s tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 201 tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts 2026-10-28T04:49:36.836Z
+END 201 PASS 9s tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts | files: 1 passed (1) | tests: 1 passed (1) | exit 0
+START 202 tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts 2026-10-28T04:49:45.380Z
+END 202 PASS 23s tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts | files: 1 passed (1) | tests: 3 passed (3) | exit 0
+START 203 tests/e2e/update-notifications/update-notifications-live.e2e.test.ts 2026-10-28T04:50:08.523Z
+END 203 PASS 27s tests/e2e/update-notifications/update-notifications-live.e2e.test.ts | files: 1 passed (1) | tests: 12 passed (12) | exit 0
+START 204 tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts 2026-10-28T04:50:35.233Z
+END 204 PASS 9s tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 205 tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts 2026-10-28T04:50:44.394Z
+END 205 PASS 8s tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts | files: 1 passed (1) | tests: 6 passed (6) | exit 0
+START 206 tests/e2e/workspaces/workspaces-graphql.e2e.test.ts 2026-10-28T04:50:52.709Z
+END 206 PASS 7s tests/e2e/workspaces/workspaces-graphql.e2e.test.ts | files: 1 passed (1) | tests: 11 passed (11) | exit 0
+# done 2026-10-28T04:50:59.998Z
+# rerun of the two files that started at sleep boundaries (index 1 at 03:32:38, sleep 03:32:57; index 8 at 05:06:09, inside a 2 s dark wake), awake, caffeinate -is, commit bce2f8b4e3, 2026-10-28T04:51:15Z
+RERUN PASS 21s tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts | tests: 8 passed | 2 skipped (10) | exit 0
+RERUN PASS 6s tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts | tests: 1 passed (1) | exit 0

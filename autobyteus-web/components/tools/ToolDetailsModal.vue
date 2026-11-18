@@ -9,7 +9,7 @@
             <p class="text-sm text-gray-500 mt-1">{{ tool.description }}</p>
           </div>
           <button @click="close" class="p-2 text-gray-500 hover:text-gray-800 rounded-full">
-            <span class="i-heroicons-x-mark-20-solid w-6 h-6"></span>
+            <Icon icon="heroicons:x-mark-20-solid" class="w-6 h-6" />
           </button>
         </div>
       </div>
@@ -71,8 +71,7 @@
             :disabled="isReloading"
             class="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 text-base font-medium inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span v-if="isReloading" class="i-heroicons-arrow-path-20-solid w-5 h-5 animate-spin mr-2"></span>
-          <span v-else class="i-heroicons-arrow-path-20-solid w-5 h-5 mr-2"></span>
+          <Icon v-if="isReloading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
           {{ isReloading ? 'Reloading...' : 'Reload Schema' }}
         </button>
         <button @click="close" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
@@ -84,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { computed, ref } from 'vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
 import { useToasts } from '~/composables/useToasts';

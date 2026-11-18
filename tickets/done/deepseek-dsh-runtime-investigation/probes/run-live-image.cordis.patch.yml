@@ -1,0 +1,16 @@
+- id: system-prompt
+  config:
+    personaPrefix: "You are an AutoByteus agent running on {{model}}. House rule: end every final answer with the word BANANA."
+- id: session-log-deepseek
+  config:
+    enabled: false
+- id: tool-subagent
+  disabled: true
+- id: tool-subagent-fork
+  disabled: true
+- id: tool-plugin-manager
+  disabled: true
+- id: acp
+  config:
+    provider: deepseek-official
+    model: deepseek-flash

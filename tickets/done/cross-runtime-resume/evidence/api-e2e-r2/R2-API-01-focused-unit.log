@@ -1,0 +1,11 @@
+# R2-API-01 server command: env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/agent-work-journal tests/unit/runtime-handover-notices tests/unit/agent-memory tests/unit/standalone-agent-run-root tests/unit/run-history tests/unit/agent-execution tests/unit/memory-search tests/unit/api/graphql/types/agent-run.test.ts tests/architecture --no-watch
+# commit 870b075fb4; date 2026-10-31T10:26:04Z
+
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+ Test Files  256 passed | 5 skipped (261)
+      Tests  2406 passed | 8 skipped (2414)
+   Duration  270.03s (transform 8.67s, setup 3.57s, import 108.36s, tests 127.35s, environment 18ms)
+
+# library: (cwd autobyteus-ts) env -i … pnpm exec vitest run tests/unit/memory --no-watch
+ Test Files  43 passed (43)
+      Tests  330 passed (330)

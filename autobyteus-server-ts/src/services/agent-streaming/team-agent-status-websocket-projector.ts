@@ -8,6 +8,7 @@ import type { TeamAgentStatusSnapshot } from "../../agent-team-execution/domain/
 
 const projectStatusDetails = (snapshot: TeamAgentStatusSnapshot) => ({
   status: snapshot.details.status,
+  background_tasks_running: snapshot.details.backgroundTasksRunning,
   trigger: snapshot.details.trigger,
   tool_name: snapshot.details.toolName,
   error_message: snapshot.details.errorMessage,

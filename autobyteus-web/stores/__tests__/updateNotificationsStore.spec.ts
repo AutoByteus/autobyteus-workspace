@@ -28,7 +28,8 @@ const node = (overrides: Partial<NodeUpdateNotification> = {}): NodeUpdateNotifi
 })
 const appRecord = (overrides: Record<string, unknown> = {}) => ({
   version: '1.5.7', fromVersion: '1.5.6', foundAt: '2026-10-20T10:00:00.000Z', read: false, state: 'waiting' as const,
-  handledVersion: null, releasePageUrl: 'https://github.com/AutoByteus/x/releases/tag/v1.5.7', ...overrides,
+  handledVersion: null, releasePageUrl: 'https://github.com/AutoByteus/x/releases/tag/v1.5.7',
+  outcome: null, outcomeReason: null, outcomeStep: null, ...overrides,
 })
 
 const apollo = (notifications: NodeUpdateNotification[], mutate = vi.fn()) => {

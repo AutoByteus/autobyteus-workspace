@@ -1,0 +1,22 @@
+# DEL-01 delivery checks, 2026-11-01T05:25:55Z, base origin/personal efd28d5c4a (already current), HEAD 864c43c401 + delivery edits to RELEASE.md (uncommitted at run time)
+## python3 -m unittest scripts/tests/test_release_smoke.py
+Ran 23 tests in 0.005s
+
+OK
+## python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+Ran 186 tests in 70.939s
+
+OK (skipped=2)
+exit 0
+## vitest tests/unit/e2e-helpers/live-model-choice.test.ts
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+## server typecheck
+typecheck exit 0
+## RELEASE.md anchors used by the new text
+heading 'Beta notes with a user action' present
+heading 'Watching The Rollout' present
+## gates
+Licensing is consistent.
+Repository artifact hygiene check passed.
+secret gate: PASS (no secrets found)

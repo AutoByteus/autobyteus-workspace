@@ -1,0 +1,30 @@
+{
+  "run_id": "runtime_switch_3f6e5ee2_84eb_4dc1_b6db_89d28da88_47bd546dd1e849b185c4800e269cf657",
+  "renderer_revision": 2,
+  "files": [
+    {
+      "journal_file": "work_journal_000001.md",
+      "source_file": "raw_traces_000001.jsonl",
+      "source_record_count": 11,
+      "state": "closed",
+      "content_sha256": "04a1e78372385241fc06be77204422723c16f9835b4325a3a5fda3e8bfa7cbb4",
+      "runtime_kind": "claude_agent_sdk"
+    },
+    {
+      "journal_file": "work_journal_000002.md",
+      "source_file": "raw_traces_000002.jsonl",
+      "source_record_count": 9,
+      "state": "closed",
+      "content_sha256": "068e52d410b0275f149d080dc5669782cb194cc1e077c18f5ab8d00296ed0cc6",
+      "runtime_kind": "codex_app_server"
+    },
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 3,
+      "state": "open",
+      "content_sha256": "7e9a49fa32ccca8b607d1406aa49370260959af9e76f9cbb8b2117a67053cab4",
+      "runtime_kind": "antigravity_cli"
+    }
+  ]
+}

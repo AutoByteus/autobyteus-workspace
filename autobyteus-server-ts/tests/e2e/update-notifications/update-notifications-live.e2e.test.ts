@@ -29,9 +29,8 @@ import { headReadRepository, headReadResponse } from "../helpers/github-head-rea
 // Time moves with Vitest's fake clock (`setTimeout`/`Date`, advancing with real time): the first tick (60 s plus up to
 // 60 s), the one-minute tick, and each kind's interval plus this process's spreading delay (at most 5 min).
 // A "restart" closes the server, drops every process singleton and the settings read from the data root (as a new
-// process would) and starts a new server on the same data root. The GraphQL schema is built once per test process:
-// type-graphql 2.0.0-rc.3 appends every `@Arg` to its params cache again on each `buildSchema()`
-// (`MetadataStorage.initCache`), so a second build in one process shifts multi-argument resolvers' arguments.
+// process would) and starts a new server on the same data root; each start builds the GraphQL schema again (type-graphql
+// 2.0.0-rc.4 rebuilds its params cache on every build; rc.3 shifted multi-argument resolvers' arguments from the second).
 // This node is not the desktop's embedded node, so it has no agent-runtime kind (AR-005); the runtime kind is
 // covered by `agent-runtime-update-notifications.e2e.test.ts`.
 // Cases (API/E2E ticket IDs of update-checks-and-auto-updates): API-02 due pass, API-03 restart, API-04 newer revision
@@ -41,12 +40,6 @@ import { headReadRepository, headReadResponse } from "../helpers/github-head-rea
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" \
 //     pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications/update-notifications-live.e2e.test.ts --no-watch
 // UPDATE_NOTIFICATIONS_E2E_EVIDENCE_DIR keeps a JSON receipt of the GitHub requests and feed frames.
-
-vi.mock("../../../src/api/graphql/schema.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../../../src/api/graphql/schema.js")>();
-  let built: ReturnType<typeof actual.buildGraphqlSchema> | null = null;
-  return { ...actual, buildGraphqlSchema: () => (built ??= actual.buildGraphqlSchema()) };
-});
 
 type Frame = { type: string };
 type Feed = { socket: WebSocket; frames: Frame[] };
@@ -223,7 +216,13 @@ describe("Update notifications and automatic updates at the real server boundary
         return Response.json({ commit: { sha: upstream[repo]!.revision } });
       }
       if (target.startsWith(`https://codeload.github.com/${repo}/tar.gz/`)) {
-        expect(target).toContain(upstream[repo]!.revision);
+        const requested = target.slice(target.lastIndexOf("/") + 1);
+        if (requested !== upstream[repo]!.revision) {
+          // An earlier revision (a package update first downloads the installed one to keep the user's edits):
+          // served from the archive written when that revision was current.
+          entry.answered = `archive ${requested.slice(0, 7)}`;
+          return new Response(await fs.readFile(path.join(base, `${name}-${requested.slice(0, 7)}.tar.gz`)));
+        }
         entry.answered = `archive ${upstream[repo]!.revision.slice(0, 7)}`;
         const archive = path.join(base, `${name}-${upstream[repo]!.revision.slice(0, 7)}.tar.gz`);
         await create({ gzip: true, file: archive, cwd: path.dirname(upstream[repo]!.dir), portable: true }, ["wrapper"]);
@@ -366,9 +365,9 @@ describe("Update notifications and automatic updates at the real server boundary
       expect.objectContaining({ kind: "AGENT_PACKAGE", handledRevision: rev("c"), outcome: null }),
       expect.objectContaining({ kind: "SKILL_SOURCE", handledRevision: rev("b"), outcome: null }),
     ]));
-    // Archives only for the imports and the two Update presses.
+    // Archives only for the imports and the two Update presses; the package update also downloads its installed revision.
     expect(requests.filter((entry) => entry.host === "codeload.github.com").map((entry) => entry.phase))
-      .toEqual(["import", "import", "user-update-package", "user-update-skill"]);
+      .toEqual(["import", "import", "user-update-package", "user-update-package", "user-update-skill"]);
 
     const cleared = (await gql(docs.CLEAR_UPDATE_NOTIFICATION!, { kind: "AGENT_PACKAGE", sourceId: packageId })).clearUpdateNotification as Notification[];
     expect(cleared.map((row) => row.kind)).toEqual(["SKILL_SOURCE"]);
@@ -429,9 +428,10 @@ describe("Update notifications and automatic updates at the real server boundary
     await until(async () => (await record("AGENT_PACKAGE"))?.outcome === "AUTO_UPDATED", "updated automatically");
     const row = (await record("AGENT_PACKAGE"))!;
     expect(row).toMatchObject({ state: "HANDLED", handledRevision: rev("d"), read: false, outcome: "AUTO_UPDATED", outcomeReason: null });
-    // The owner's own update: a head read, then the archive.
+    // The owner's own update: a head read, the installed revision's archive (to keep the user's edits), then the new archive.
     expect(describeRequests(since(mark).filter((entry) => entry.url.includes(PACKAGE_REPO)))).toEqual([
-      headReadUrl(PACKAGE_REPO), `GET https://codeload.github.com/${PACKAGE_REPO}/tar.gz/${rev("d")}`,
+      headReadUrl(PACKAGE_REPO), `GET https://codeload.github.com/${PACKAGE_REPO}/tar.gz/${rev("c")}`,
+      `GET https://codeload.github.com/${PACKAGE_REPO}/tar.gz/${rev("d")}`,
     ]);
     expect(await fs.readFile(path.join((await packageRow()).path, "agents", "un-e2e-agent", "agent.md"), "utf8")).toContain("Revision ddddddd");
     // Seen in the panel: read; the outcome stays.
@@ -466,7 +466,7 @@ describe("Update notifications and automatic updates at the real server boundary
     expect(failed).toMatchObject({ state: "WAITING", latestRevision: rev("e"), read: false, outcome: "AUTO_FAILED" });
     expect(failed.outcomeReason).toMatch(/at least one directory/);
     expect(await fs.readFile(path.join((await packageRow()).path, "agents", "un-e2e-agent", "agent.md"), "utf8")).toContain("Revision ddddddd");
-    expect(since(mark).filter((entry) => entry.host === "codeload.github.com")).toHaveLength(1);
+    expect(since(mark).filter((entry) => entry.host === "codeload.github.com")).toHaveLength(2); // the installed revision, then the new one
     await gql(docs.MARK_UPDATE_NOTIFICATIONS_READ!);
 
     // Next ticks within the interval: no retry, nothing unread again.
@@ -484,7 +484,7 @@ describe("Update notifications and automatic updates at the real server boundary
     await nextTick(DUE_AFTER_DEFAULT);
     await until(async () => (await record("AGENT_PACKAGE"))?.outcomeAt !== failed.outcomeAt, "retried once");
     await settle();
-    expect(since(mark).filter((entry) => entry.host === "codeload.github.com")).toHaveLength(1);
+    expect(since(mark).filter((entry) => entry.host === "codeload.github.com")).toHaveLength(2); // the installed revision, then the new one
     expect(await record("AGENT_PACKAGE")).toMatchObject({ outcome: "AUTO_FAILED", read: true, latestRevision: rev("e") });
     evidence.api10 = { failed, retried: await record("AGENT_PACKAGE") };
   }, 60_000);

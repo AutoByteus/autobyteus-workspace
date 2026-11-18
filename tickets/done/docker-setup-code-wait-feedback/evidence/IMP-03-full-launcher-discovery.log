@@ -1,0 +1,10 @@
+# IMP-03 — full offline Docker launcher test discovery, regression check (commit 2de5fa0873053f5044b2119cbd48c14ad8463087)
+Command: python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'
+Environment: macOS (Darwin 25.6.0), Python Python 3.9.6, no pwsh installed (pwsh cases skipped)
+Date: 2026-11-09T15:49:56Z
+
+........s....................ss.............................
+----------------------------------------------------------------------
+Ran 60 tests in 89.237s
+
+OK (skipped=3)

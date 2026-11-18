@@ -1,3 +1,4 @@
+import { noDelegations, noWorkGuard, noEpisodicCatalog } from "../../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import {
   AgentRunStatusProjectionService,
@@ -29,6 +30,7 @@ const buildProjection = (
   statusSource: "HISTORICAL_METADATA",
   statusPayload: {
     status: "offline",
+    background_tasks_running: 0,
     agent_id: overrides.runId ?? "run-1",
   },
   command: null,
@@ -40,6 +42,10 @@ const buildService = (options: {
   projectionByRunId?: Record<string, Partial<AgentRunStatusProjection>>;
   archiveResult?: { success: boolean; message: string };
   deleteResult?: { success: boolean; message: string };
+  /** Definition IDs the internal-agent rule hides now (autobyteus-308). */
+  hidden?: string[];
+  /** The node's Task entries (SR-091: a delegated run's name). */
+  tree?: ReturnType<typeof noDelegations>;
 } = {}) => {
   const rows = options.rows ?? [];
   const projectionByRunId = options.projectionByRunId ?? {};
@@ -59,16 +65,47 @@ const buildService = (options: {
       buildProjection({ runId, ...(projectionByRunId[runId] ?? {}) }),
     ),
   };
-  const service = new AgentRunHistoryService("/tmp/memory", {
+  const service = new AgentRunHistoryService("/tmp/memory", { tree: options.tree ?? noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
     catalogService: catalogService as never,
     statusProjectionService: statusProjectionService as never,
     agentRunManager: {} as never,
     metadataStore: {} as never,
+    visibility: { hiddenDefinitionIds: async () => new Set(options.hidden ?? []) },
   });
   return { service, catalogService, statusProjectionService };
 };
 
 describe("AgentRunHistoryService", () => {
+  // autobyteus-461 SR-091: a delegated run standing on its own in the list (DS-11) is named after its slot, as its row is.
+  it("names each run a Task delegated after its slot; a run nobody delegated has no name of its own", async () => {
+    const tree = { ...noDelegations(),
+      currentTaskOf: (run: { agentRunId?: string }) => (run.agentRunId === "run-copy" ? { recipientAddress: "/release_writer" } as never : null),
+      agentsOf: async () => [] };
+    const { service } = buildService({ tree: tree as never, rows: [
+      buildRow({ runId: "run-copy", agentDefinitionId: "writer", agentName: "Slot Writer 0528" }),
+      buildRow({ runId: "run-mine", agentDefinitionId: "writer", agentName: "Slot Writer 0528" }),
+    ] });
+    const runs = (await service.listRunHistory(null)).flatMap((group) => group.agents.flatMap((agent) => agent.runs));
+    expect(Object.fromEntries(runs.map((run) => [run.runId, run.displayName]))).toEqual({ "run-copy": "release writer", "run-mine": null });
+  });
+
+  it("leaves out runs of internal agents while they are hidden; shows them once shown (autobyteus-308 AC-002, AC-005)", async () => {
+    const rows = [
+      buildRow({ runId: "run-reviewer", agentDefinitionId: "reviewer", agentName: "Code Reviewer" }),
+      buildRow({ runId: "run-router", agentDefinitionId: "router", agentName: "Model Router" }),
+    ];
+    const hidden = await buildService({ rows, hidden: ["router"] }).service.listRunHistory();
+    expect(hidden.flatMap((group) => group.agents.map((agent) => agent.agentDefinitionId))).toEqual(["reviewer"]);
+    const shown = await buildService({ rows, hidden: [] }).service.listRunHistory();
+    expect(shown.flatMap((group) => group.agents.map((agent) => agent.agentDefinitionId)).sort()).toEqual(["reviewer", "router"]);
+  });
+
+  it("SR-068: a run's hasCollaboration is its row's stored flag, set at its first delegation", async () => {
+    const rows = [buildRow({ runId: "delegator", hasCollaboration: true } as never), buildRow({ runId: "plain", createdAt: "2026-03-25T10:00:00.000Z" })];
+    const runs = (await buildService({ rows }).service.listRunHistory()).flatMap((group) => group.agents.flatMap((agent) => agent.runs));
+    expect(Object.fromEntries(runs.map((run) => [run.runId, run.hasCollaboration]))).toEqual({ delegator: true, plain: false });
+  });
+
   it("lists grouped standalone history from V2 catalog rows and overlays live status", async () => {
     const rows = [
       buildRow({
@@ -126,12 +163,15 @@ describe("AgentRunHistoryService", () => {
             runs: [
               {
                 runId: "run-idle-newer",
+                displayName: null,
                 summary: "newer idle row",
                 status: "offline",
                 isActive: false,
                 shouldConnectStream: false,
                 statusSource: "HISTORICAL_METADATA",
                 createdAt: "2026-03-26T08:00:00.000Z",
+                // No memory file yet: the run's last activity is its creation (DS-005).
+                lastActivityAt: "2026-03-26T08:00:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
                 hasCollaboration: false,
@@ -150,12 +190,15 @@ describe("AgentRunHistoryService", () => {
             runs: [
               {
                 runId: "run-terminated",
+                displayName: null,
                 summary: "terminated row",
                 status: "offline",
                 isActive: false,
                 shouldConnectStream: false,
                 statusSource: "TERMINATED_METADATA",
                 createdAt: "2026-03-24T08:00:00.000Z",
+                // No memory file yet: the run's last activity is its creation (DS-005).
+                lastActivityAt: "2026-03-24T08:00:00.000Z",
                 archivedAt: null,
                 terminatedAt: "2026-03-24T09:00:00.000Z",
                 hasCollaboration: false,
@@ -206,7 +249,7 @@ describe("AgentRunHistoryService", () => {
       metadataService: { readMetadata } as never,
     });
     const projectionSpy = vi.spyOn(statusProjectionService, "getCatalogListStatusProjection");
-    const service = new AgentRunHistoryService("/tmp/memory", {
+    const service = new AgentRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
       catalogService: {
         listCatalogRows: vi.fn().mockResolvedValue(rows),
         archiveRun: vi.fn(),
@@ -223,6 +266,24 @@ describe("AgentRunHistoryService", () => {
     expect(projectionSpy).toHaveBeenCalledTimes(1);
     expect(projectionSpy).toHaveBeenCalledWith("run-newest");
     expect(readMetadata).not.toHaveBeenCalled();
+  });
+
+  it("keeps every run of each agent when the limit is null (workspace-tree-vs-chooser DS-002: the Runs view)", async () => {
+    const rows = ["2026-03-25", "2026-03-27", "2026-03-26", "2026-03-24", "2026-03-23", "2026-03-22", "2026-03-21", "2026-03-20"]
+      .map((day, index) => buildRow({ runId: `run-${index}`, createdAt: `${day}T08:00:00.000Z` }));
+    const service = new AgentRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(), episodicCatalog: noEpisodicCatalog(),
+      catalogService: { listCatalogRows: vi.fn().mockResolvedValue(rows), archiveRun: vi.fn(), deleteRun: vi.fn() } as never,
+      statusProjectionService: new AgentRunStatusProjectionService({
+        agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
+        metadataService: { readMetadata: vi.fn().mockResolvedValue(null) } as never,
+      }),
+      agentRunManager: {} as never,
+      metadataStore: {} as never,
+    });
+
+    const all = await service.listRunHistory(null);
+    expect(all[0]?.agents[0]?.runs.map((run) => run.runId)).toEqual(["run-1", "run-2", "run-0", "run-3", "run-4", "run-5", "run-6", "run-7"]);
+    expect((await service.listRunHistory())[0]?.agents[0]?.runs).toHaveLength(6);
   });
 
   it("uses catalog-list live overlays without metadata reads", async () => {

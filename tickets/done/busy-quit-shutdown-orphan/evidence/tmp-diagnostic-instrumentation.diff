@@ -1,0 +1,218 @@
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts b/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+index a572ac03f..6e49fea64 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts
+@@ -15,6 +15,7 @@ import type {
+   AgentRunBackendInputDispatchResult,
+ } from "../../../input/agent-run-input-contract.js";
+ import { PendingSystemInstructionEvent } from "../../../events/pending-system-instruction-event.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => {
+   if (error instanceof CodexInputSubmissionError) {
+@@ -201,6 +202,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
+   }
+ 
+   private async handleAppServerMessage(event: CodexThreadEventMessage): Promise<void> {
++    { const __m = (event as { method?: string }).method ?? ""; if (/^turn\/|item\/(started|completed)/.test(__m)) __bq("codex event", __m, JSON.stringify((event as { params?: unknown }).params ?? null).slice(0, 220)); }
+     const convertedEvents = this.eventConverter.convert(event);
+     const tokenUsageEvents = this.consumeReadyTokenUsageEvents();
+     const events = [...convertedEvents, ...tokenUsageEvents];
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts b/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+index 9773370b1..885f92a67 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+@@ -35,6 +35,7 @@ import {
+   type CodexPendingMcpToolCall,
+ } from "./codex-pending-mcp-tool-call-registry.js";
+ import type { SystemInstructionTraceRecord } from "autobyteus-ts";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ export type { CodexPendingMcpToolCall } from "./codex-pending-mcp-tool-call-registry.js";
+ 
+@@ -307,10 +308,12 @@ export class CodexThread {
+         `Codex active turn is '${this.activeTurnId ?? "none"}', not '${turnId}'.`,
+       );
+     }
+-    await this.client.request("turn/interrupt", {
++    __bq("codex turn/interrupt request", this.threadId, turnId);
++    const __r = await this.client.request("turn/interrupt", {
+       threadId: this.threadId,
+       turnId,
+     });
++    __bq("codex turn/interrupt response", JSON.stringify(__r));
+   }
+ 
+   async approveTool(invocationId: string, approved: boolean): Promise<void> {
+diff --git a/autobyteus-server-ts/src/agent-execution/domain/agent-run-termination.ts b/autobyteus-server-ts/src/agent-execution/domain/agent-run-termination.ts
+index 2106d550d..7a4cf8085 100644
+--- a/autobyteus-server-ts/src/agent-execution/domain/agent-run-termination.ts
++++ b/autobyteus-server-ts/src/agent-execution/domain/agent-run-termination.ts
+@@ -11,6 +11,7 @@ import type { AgentOperationResult } from "./agent-operation-result.js";
+ import type { AgentRunInterruptState } from "./agent-run-interrupt-state.js";
+ import { AgentRunRootShutdownFence } from "./agent-run-root-shutdown-fence.js";
+ import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ type AgentRunTerminationOptions = Readonly<{
+   runId: string;
+@@ -137,6 +138,7 @@ export class AgentRunTermination {
+       else this.options.inputAdmissionState.quiesce();
+       this.options.publishInputState(); return this.options.lifecycleState.recoverableBlock !== null;
+     });
++    __bq("termination.prepare", this.options.runId, "recoveryBlocked=", blocked, "activeTurn=", JSON.stringify(this.options.lifecycleState.activeTurn), "quiescentNow=", this.options.inputAdmissionState.isQuiescentNow);
+     if (blocked) {
+       await this.options.interrupt();
+       await this.waitForActiveInputDispatch();
+@@ -144,7 +146,9 @@ export class AgentRunTermination {
+       if (this.options.inputDispatch.uncertainClaim() && this.isFencedRecoveryWithoutTurn()) return this.createTerminationPreparation();
+     }
+     await this.options.drainInput();
++    __bq("termination.prepare: drained; waitForQuiescence", this.options.runId);
+     await this.options.inputAdmissionState.waitForQuiescence();
++    __bq("termination.prepare: quiescent", this.options.runId);
+     await this.waitForActiveInputDispatch();
+ 
+     return this.prepared ?? this.createTerminationPreparation();
+diff --git a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+index a702b8447..9c123fc17 100644
+--- a/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
++++ b/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts
+@@ -34,6 +34,7 @@ import {
+   type AgentApiStatus,
+   type AgentStatusPayload,
+ } from "./agent-status-payload.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ type AgentRunEventListener = (event: AgentRunEvent) => void;
+ type ClaimedInputDispatch = { claim: AgentRunInputDispatchClaim; commandToken: number | null; recovery: CompactionRetryRequest | null };
+@@ -226,6 +227,7 @@ export class AgentRun {
+   }
+ 
+   async interrupt(turnId: string | null = null): Promise<AgentOperationResult> {
++    __bq("AgentRun.interrupt called", this.runId, "turn=", turnId);
+     const snapshot = this.backend.getLifecycleSnapshot();
+     if (snapshot.recoverableBlock && snapshot.currentTurn.kind === "NONE") return this.backend.interrupt(turnId);
+     return this.interruptState.interrupt(turnId);
+diff --git a/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts b/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+index 1c3d5d943..938fbcaf8 100644
+--- a/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
++++ b/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+@@ -70,6 +70,7 @@ import {
+   createCollaboratorDefinitionCatalog,
+   releaseProcessCollaboratorAdmission,
+ } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ export type GeneralProcessRunSupervisorInput = Readonly<{
+   memoryDir: string;
+@@ -407,24 +408,29 @@ export class GeneralProcessRunSupervisor {
+     this.agentOrgRunManager.closeRootAdmission();
+     this.agentTeamRunManager.closeRootAdmission();
+     this.agentRunManager.closeActivationAdmission();
++    __bq("supervisor.closeInternal start");
+     try {
+       await this.agentOrgRunManager.stopAllAgentOrgRuns();
++      __bq("supervisor: org stopAll done");
+     } catch (error) {
+       errors.push(error);
+     }
+     try {
+       await this.agentTeamRunManager.stopAllTeamRuns();
++      __bq("supervisor: team stopAll done");
+     } catch (error) {
+       errors.push(error);
+     }
+     try {
+       // Standalone roots end (and stop their children) before their host runs stop.
+       await this.standaloneRootManager.stopAll();
++      __bq("supervisor: standalone roots stopAll done");
+     } catch (error) {
+       errors.push(error);
+     }
+     try {
+       await this.agentRunManager.stopAllAgentRuns();
++      __bq("supervisor: agent runs stopAll done");
+     } catch (error) {
+       errors.push(error);
+     }
+diff --git a/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts b/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+index 7d18927f9..c5837a1b2 100644
+--- a/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
++++ b/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts
+@@ -28,6 +28,7 @@ import { AgentRunActivationCandidate, type AgentRunCandidateAbortResult } from "
+ import type { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
+ import { createManagedAgentRunTermination } from "./managed-agent-run-termination.js";
+ import { buildAgentRunRestoreRuntimeContext } from "./agent-run-restore-context-factory.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ const logger = console;
+ 
+@@ -303,8 +304,11 @@ export class AgentRunManager {
+ 
+     for (const run of snapshot.activeRuns) {
+       try {
++        __bq("agentRuns.stopAll: prepare", run.runId, run.runtimeKind);
+         const prepared = await this.prepareAgentRunTermination(run);
++        __bq("agentRuns.stopAll: prepared; finishing", run.runId);
+         const termination = await prepared.commit().finish();
++        __bq("agentRuns.stopAll: finished", run.runId, JSON.stringify(termination));
+         if (!termination.accepted) {
+           errors.push(new Error(`Agent run '${run.runId}' did not become inactive during stop.`));
+         }
+diff --git a/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts b/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+index e70e5fd3d..f70f84cf7 100644
+--- a/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
++++ b/autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts
+@@ -51,6 +51,7 @@ import { StandaloneRootRecipientResolver } from "../services/standalone-root-rec
+ import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from "../services/standalone-root-task-execution-adapter.js";
+ import { StandaloneRootMessageDelivery } from "../services/standalone-root-message-delivery.js";
+ import { adoptStandaloneRootPlatformBinding, replaceStandaloneRootPlatformBindingWithoutConversation } from "../services/standalone-root-tree-mutator.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ export type StandaloneRootPackageSnapshot = Readonly<{
+   tree: StandaloneRootTreeSnapshot;
+@@ -340,16 +341,21 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
+   }
+ 
+   private async terminateOnce(): Promise<AgentOperationResult> {
++    __bq("standaloneRoot.terminateOnce: closeAndDrain start");
+     await this.operationGate.closeAndDrain();
++    __bq("standaloneRoot.terminateOnce: closeAndDrain done");
+     this.frozenTerminationScope ??= createFrozenRootTerminationScope({
+       agentHandles: this.options.rootAgents.freezeForRootTermination(),
+       teamScopes: this.options.teams.freezeForRootTermination(),
+     });
+     const fenced = await this.frozenTerminationScope.fenceAgentRunsForRootShutdown();
++    __bq("standaloneRoot.terminateOnce: fence result", JSON.stringify(fenced));
+     if (!fenced.accepted) return fenced;
+     await this.taskExecutions.drain();
+     await this.options.persistence.drain();
++    __bq("standaloneRoot.terminateOnce: drains done");
+     const local = await this.frozenTerminationScope.finish();
++    __bq("standaloneRoot.terminateOnce: finish", JSON.stringify(local));
+     this.lifecycle = "terminated";
+     this.options.publisher.publish({ kind: "lifecycle", isActive: false });
+     this.options.publisher.clear();
+diff --git a/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts b/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts
+index 16d6c6d20..fccebc232 100644
+--- a/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts
++++ b/autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts
+@@ -28,6 +28,7 @@ import {
+   StandaloneRootBuilder,
+   type StandaloneRootBuilderDependencies,
+ } from "./standalone-root-builder.js";
++const __bq = (...a: unknown[]) => console.log("[BQ-DIAG]", new Date().toISOString().slice(11, 23), ...a); // TMP-BQ
+ 
+ /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
+ export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
+@@ -189,7 +190,9 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort,
+       const root = this.active.get(hostRunId);
+       if (!root) continue;
+       try {
++        __bq("standaloneRoots.stopAll: terminate root", hostRunId);
+         const result = await root.terminate();
++        __bq("standaloneRoots.stopAll: root terminated", hostRunId, JSON.stringify(result));
+         if (!result.accepted) throw new Error(result.message ?? `Agent root '${hostRunId}' did not finish stopping.`);
+         this.unregister(root);
+       } catch (error) { errors.push(error); }

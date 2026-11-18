@@ -66,7 +66,7 @@ const openLiveSession = async (
   client: ClaudeSdkClient,
   options: ClaudeSdkStreamingSessionOptions,
 ): Promise<LiveSession> => {
-  const session = await client.openStreamingSession(options);
+  const session = await client.beginStreamingSession({ resolveOptions: () => options }).open();
   const frames: Array<Record<string, unknown>> = [];
   const results: Array<Record<string, unknown>> = [];
   let waiter: (() => void) | null = null;
@@ -100,7 +100,7 @@ const openLiveSession = async (
       }
       return results[consumed++]!;
     },
-    close: () => session.close(),
+    close: () => session.requestClose(),
   };
 };
 
@@ -251,10 +251,18 @@ const cliCandidates = resolveClaudeCliExecutableCandidates();
 const describeCancelQueued = liveClaudeTestsEnabled && cliCandidates.length > 0 ? describe : describe.skip;
 
 describeCancelQueued("Claude CLI Stop contract (interrupt with cancelQueued)", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it.each(cliCandidates.map((candidate) => [candidate.label, candidate] as const))(
     "%s cancels a queued message atomically with the interrupt and keeps the process usable",
     async (_label, candidate) => {
       vi.stubEnv("CLAUDE_CODE_EXECUTABLE_PATH", candidate.executablePath);
+      // Launch like a standalone server (no inherited Claude Code session variables), with CLI sign-in.
+      const standaloneEnv = buildStandaloneClaudeProcessEnv();
+      for (const key of Object.keys(process.env)) if (!(key in standaloneEnv)) vi.stubEnv(key, undefined);
+      vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "cli");
       const workspaceRoot = await createWorkspace("claude-cancel-queued");
       const client = new ClaudeSdkClient();
       const live = await openLiveSession(client, {
@@ -264,7 +272,6 @@ describeCancelQueued("Claude CLI Stop contract (interrupt with cancelQueued)", (
         workingDirectory: workspaceRoot,
         permissionMode: "default",
         canUseTool: allowAllTools,
-        env: { ...buildStandaloneClaudeProcessEnv(), CLAUDE_AGENT_SDK_AUTH_MODE: "cli" },
       });
       try {
         live.send("Reply only READY.");

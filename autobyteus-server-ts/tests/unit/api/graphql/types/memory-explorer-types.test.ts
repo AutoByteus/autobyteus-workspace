@@ -22,9 +22,7 @@ describe("memory explorer graphql types", () => {
   const memory = () => {
     const summary = new MemoryAvailabilitySummary();
     summary.latestMemoryAt = "2026-01-01T00:00:00Z";
-    summary.hasWorkingContext = true;
-    summary.hasEpisodic = false;
-    summary.hasSemantic = true;
+    summary.hasWorkJournal = true;
     summary.hasRawTraces = true;
     summary.hasRawArchive = false;
     return summary;

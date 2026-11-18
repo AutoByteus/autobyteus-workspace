@@ -1,0 +1,15 @@
+# IMP-06 mobile-shell-probe
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.tX82otI7us/mobile-shell --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37
+# Environment mode: clean
+# Commit: 7917df2a15 (branch codex/desktop-node-file-open-471)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T12:56:24Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.tX82otI7us/mobile-shell --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37
+
+mobile-shell probe: duplicate case IDs MSP-32 (mobile-shell-probe.mjs, mobile-shell-probe.mjs)
+ ELIFECYCLE  Command failed with exit code 1.
+# Exit status: 1

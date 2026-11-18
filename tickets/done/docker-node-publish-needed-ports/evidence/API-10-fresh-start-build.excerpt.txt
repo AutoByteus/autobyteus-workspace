@@ -1,0 +1,33 @@
+# Case: API-10 — fresh-start desktop release build (excerpt)
+# Commands: git clone --no-local <worktree> /tmp/abx402-api/fresh-clone && git checkout 71dc90b1f1; python3 scripts/check_repository_artifact_hygiene.py; python3 scripts/check_licensing.py; pnpm install --frozen-lockfile; cd autobyteus-web && NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64; then the job's Prisma and terminal-runtime verify steps
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm 10.28.2; no signing/notarization (runner secrets)
+# Date: 2026-11-06
+
+2:== HEAD: 71dc90b1f12067bd508d2761e0dbd7cd7719ec13
+3:== step: python3 scripts/check_repository_artifact_hygiene.py
+8:exit=0
+9:== step: python3 scripts/check_licensing.py
+12:exit=0
+13:== step: pnpm install --frozen-lockfile
+44:exit=0
+45:== step: pnpm build:electron:mac -- --arm64
+54:[guard:web-boundary] Passed.
+59:[guard:localization-boundary] Passed.
+111:[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 34.0s
+112:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+113:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+114:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.8s
+115:[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+116:[typecheck] PASS
+930:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.3.dmg
+941:exit=0
+942:== step: Verify bundled Prisma ARM64 engine target
+943:prisma engine ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+944:prisma client ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+945:== DONE 2026-11-06T15:26:10Z
+946:== step: Verify packaged terminal runtime ARM64
+950:exit=0
+954:exit=0
+959:exit=0
+960:== ALL DONE 2026-11-06T15:26:16Z

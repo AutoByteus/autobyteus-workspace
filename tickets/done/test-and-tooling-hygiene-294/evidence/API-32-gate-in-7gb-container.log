@@ -1,0 +1,30 @@
+# API-32 docker run --rm --name ab294-gate --memory=7g --memory-swap=7g -v ab294-work:/work -v <branch.bundle>:/in/branch.bundle:ro node:22-bookworm bash in-container.sh
+# host: macOS 26.5.2 arm64, Docker Desktop VM 16 GB; bundle of codex/test-and-tooling-hygiene-294 at 1f5a4a19df; /work is a docker volume on the VM disk (not tmpfs, which would count against the memory limit); 2026-10-28T07:35:45Z
+# container: Linux 6.12.54-linuxkit aarch64, node v22.23.4, memory.max 7516192768 bytes, cpus 10
+# pnpm 10.28.2
+# commit 1f5a4a19d
+$ pnpm install --no-frozen-lockfile
+exit: 0
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 50.3s using pnpm v10.28.2
+# default V8 heap_size_limit in this container: 2096 MB
+
+## (a) control: the unflagged Nuxt compiler (what the gate ran before CR-002), default heap
+$ pnpm prepare:shared-types && pnpm exec nuxt prepare
+exit: 0
+$ node node_modules/vue-tsc/bin/vue-tsc.js -p tsconfig.json --noEmit --pretty false
+/in/in-container.sh: line 17:   359 Aborted                 node node_modules/vue-tsc/bin/vue-tsc.js -p tsconfig.json --noEmit --pretty false > /work/control.out 2> /work/control.err
+exit: 134 (44s), error TS lines: 0
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+peak anon (process) memory: 2.14 GB; peak memory.current incl. page cache: 3.96 GB; oom_kill 0
+
+## (b) the gate as committed: pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 61.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+exit: 0 (69s)
+peak anon (process) memory: 3.12 GB; peak memory.current incl. page cache: 4.20 GB; oom_kill 0
+docker exit: 0

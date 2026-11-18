@@ -1,0 +1,17 @@
+# Check: IMP-05
+# Command: pnpm -C autobyteus-web exec vitest run components/settings/__tests__/DockerNodeStartGuideCard.spec.ts utils/__tests__/dockerNodeLauncherCommands.spec.ts; pnpm -C autobyteus-web guard:localization-boundary; pnpm -C autobyteus-web audit:localization-literals
+# Commit: 2575d870e8
+# Environment: macOS 26.5.2 arm64, Docker 29.0.1, Node v22.23.1
+# Date: 2026-11-06
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (4 tests) 3ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 25ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  16:13:12
+   Duration  7.14s (transform 3.59s, setup 12.69s, collect 52ms, tests 28ms, environment 559ms, prepare 375ms)
+
+[guard:localization-boundary] Passed.
+guard:localization-boundary exit=0
+audit:localization-literals exit=0

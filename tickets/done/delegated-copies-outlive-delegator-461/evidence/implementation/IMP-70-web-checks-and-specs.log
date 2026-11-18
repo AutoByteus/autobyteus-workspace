@@ -1,0 +1,18 @@
+# dbc26d1466 (run on its working tree before the commit; the web has not changed since)
+$ pnpm codegen:check
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
+$ pnpm typecheck
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+$ pnpm guard:web-boundary
+
+[guard:web-boundary] Passed.
+$ pnpm guard:localization-boundary
+
+[guard:localization-boundary] Passed.
+$ npx vitest run --no-watch
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ Test Files  765 passed (765)
+      Tests  5749 passed | 2 skipped (5751)

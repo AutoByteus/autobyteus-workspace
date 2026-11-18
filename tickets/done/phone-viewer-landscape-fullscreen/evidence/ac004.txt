@@ -1,0 +1,8 @@
+13a full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+13b home screen (app in the background) | mDisplayRotation=ROTATION_0 bars: visible=true visible=true 
+13c back in the app (same task brought forward) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+14a full, before Home | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+14b pid before kill: 6122
+14c pid after kill: 
+14d new pid: 6331
+14e reopened after process death | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"\",\"status\":null,\"bar\":false,\"handle\":false,\"viewport\":[412,839],\"canvas\":null,\"picture\":null}"

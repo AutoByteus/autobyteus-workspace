@@ -2,19 +2,19 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import type { ProjectChangeMessage } from "../../../src/projects/changes/project-change-messages.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -22,12 +22,13 @@ const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRun
 describe("Project Task keys and dependencies (services)", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, publisher: ProjectChangePublisher;
   let projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[], projectId: string;
+  let releases: ReleaseTracker;
   let tick = 0;
   const now = () => new Date(Date.UTC(2026, 9, 17, 0, 0, tick++));
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   const taskFile = (taskId: string, project = projectId) => layout.taskFile(project, taskId);
   const create = async (description: string, dependsOnTaskIds?: string[], project = projectId) =>
-    tasks.createTask({ projectId: project, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) });
+    tasks.createTask({ projectId: project, title: description, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) });
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
 
   beforeEach(async () => {
@@ -39,8 +40,8 @@ describe("Project Task keys and dependencies (services)", () => {
     emitted = [];
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
-      requestRelease: vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true }))),
-      taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      requestRelease: (releases = trackReleases()).request,
+      taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),
@@ -49,12 +50,12 @@ describe("Project Task keys and dependencies (services)", () => {
     await tasks.load();
     projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
   });
-  afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await publisher.idle(); await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   describe("keys", () => {
     it("UI and agent-tool creates get the next key, which survives edits and status changes (AC-001, REQ-017)", async () => {
       const ui = await create("From the UI");
-      const tool = await tasks.createTaskWithLocalContextFiles({ projectId, description: "From an agent", localContextFiles: [] });
+      const tool = await tasks.createTaskWithLocalContextFiles({ projectId, title: "From an agent", description: "From an agent", localContextFiles: [] });
       expect([ui.taskKey, tool.taskKey]).toEqual(["autobyteus-1", "autobyteus-2"]);
       await tasks.updateTask({ projectId, taskId: ui.taskId, description: "Edited" });
       await tasks.updateTaskById({ taskId: ui.taskId, status: "IN_PROGRESS" });
@@ -102,7 +103,7 @@ describe("Project Task keys and dependencies (services)", () => {
 
     it("a Task worker's answer carries no key (task-keys-declutter REQ-004)", async () => {
       const execution = { agentRunId: "temp-worker" };
-      await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
+      await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
       const answer = (await tasks.currentTasksOfTaskWorkers([execution]))[0]?.task;
       expect(answer).toMatchObject({ projectId: null, description: "Temp" });
       expect(answer).not.toHaveProperty("taskKey");
@@ -213,7 +214,7 @@ describe("Project Task keys and dependencies (services)", () => {
       const a = await create("A");
       const b = await create("B", [a.taskId]);
       const execution = { agentRunId: "worker" };
-      await expect(tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot, execution })).resolves.toEqual({ taskId: b.taskId });
+      await expect(tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: b.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution })).resolves.toEqual({ taskId: b.taskId });
       await expect(tasks.updateTaskById({ taskId: b.taskId, status: "IN_PROGRESS" })).resolves.toMatchObject({ status: "IN_PROGRESS" });
       await expect(tasks.updateTaskById({ taskId: b.taskId, status: "DONE" })).resolves.toMatchObject({ status: "DONE" });
       expect((await tasks.listTasks(projectId)).find((t) => t.taskId === a.taskId)?.status).toBe("TODO");

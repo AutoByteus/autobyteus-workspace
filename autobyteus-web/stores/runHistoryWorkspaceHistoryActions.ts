@@ -12,6 +12,7 @@ import { buildNextAgentAvatarIndex } from '~/stores/runHistoryStoreSupport';
 
 interface WorkspaceHistoryStoreLike {
   workspaceGroups: RunHistoryWorkspaceGroup[];
+  historyWindow: number | null;
   workspaceHistoryLoadingById: Record<string, boolean>;
   workspaceHistoryErrorById: Record<string, string | null>;
   agentAvatarByDefinitionId: Record<string, string>;
@@ -25,10 +26,11 @@ interface WorkspaceHistoryStoreLike {
 export const fetchWorkspaceHistoryForStore = async (
   store: WorkspaceHistoryStoreLike,
   workspaceId: string,
-  limitPerAgent = 6,
   options: { quiet?: boolean } = {},
 ): Promise<void> => {
   const quiet = options.quiet === true;
+  // The folder's read uses the store's one read window, as the full read does.
+  const limitPerAgent = store.historyWindow;
   if (!quiet) {
     store.workspaceHistoryLoadingById = { ...store.workspaceHistoryLoadingById, [workspaceId]: true };
     store.workspaceHistoryErrorById = { ...store.workspaceHistoryErrorById, [workspaceId]: null };

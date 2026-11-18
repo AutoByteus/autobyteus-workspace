@@ -1,0 +1,23 @@
+# Case: API-07 step 02
+# Command: docker ps; PortBindings; state file; lsof listeners for the two ports
+# Setup: test node abx402-api-node; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx402-api/bash/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx402-api/bash/shared; seed state (no ports): NODE_NAME, CONTAINER_NAME, IMAGE_REF=autobyteus/autobyteus-server:1.5.11-beta.7, CREATED_AT; v8 bash launcher = worktree scripts/public/docker/autobyteus-docker.sh
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, /bin/bash 3.2, Docker Desktop 29.0.1, LAN IP 192.168.2.158
+# Date: 2026-11-06T15:38:49Z
+
+abx402-api-node	Up Less than a second	127.0.0.1:58396->6080/tcp, 0.0.0.0:58395->8000/tcp, [::]:58395->8000/tcp
+{"6080/tcp":[{"HostIp":"127.0.0.1","HostPort":"58396"}],"8000/tcp":[{"HostIp":"","HostPort":"58395"}]}
+
+NODE_NAME=abx402-api-node
+CONTAINER_NAME=abx402-api-node
+BACKEND_PORT=58395
+NOVNC_PORT=58396
+IMAGE_REF=autobyteus/autobyteus-server:1.5.11-beta.7
+CREATED_AT=2026-11-06T00:00:00Z
+CONFIG_HASH=6ebde18257e9dbd528e53bde4d278cab2bbbdbf7a12d289963ba7cb27448bb62
+UPDATED_AT=2026-11-06T15:38:49Z
+
+lsof (host listeners):
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+com.docke 11834 normy  263u  IPv4 0x2c835dfdc776e839      0t0  TCP 127.0.0.1:58396 (LISTEN)
+com.docke 11834 normy  264u  IPv6 0xee7c2ddbfc689bd9      0t0  TCP *:58395 (LISTEN)

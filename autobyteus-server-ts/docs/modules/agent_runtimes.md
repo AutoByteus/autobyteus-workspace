@@ -3,10 +3,17 @@
 ## Scope
 
 Reports, for the node it runs on, each external agent runtime's installed
-version, update state and sign-in state: Codex, Claude, Antigravity and Grok.
+version, update state and sign-in state: Codex, Claude, Antigravity, Grok and
+DeepSeek Harness.
 It also starts the vendor's own update and login commands. This is the server
 side of Settings -> Agent Runtimes (see
 [Settings](../../../autobyteus-web/docs/settings.md#settings-agent-runtimes)).
+
+It also answers "what can run on this node now": every available agent
+runtime with its offered models and its live usage limits, read with 0 tokens
+(see [Available Agent Runtimes](#available-agent-runtimes)). That is the server
+side of the opt-in tool `list_available_agent_runtimes` and of Settings ->
+Model Routing -> "Agent runtimes now".
 
 Out of scope:
 
@@ -21,7 +28,7 @@ Out of scope:
 ## TS Source
 
 - `src/runtime-management/agent-runtimes/agent-runtime-status-service.ts` —
-  `AgentRuntimeStatusService`, the only public boundary. It owns the four rows
+  `AgentRuntimeStatusService`, the only public boundary. It owns the five rows
   (last results, current operation, `checkedAt`), runs the checks for each
   runtime on their own, allows one operation per runtime, enforces the
   agents-running rule, and stops its processes on `close()`. It also reports
@@ -48,7 +55,7 @@ Out of scope:
   Cancel sends SIGTERM, then SIGKILL after 3 s. It times out after 10 minutes.
 - `runtime-command-runner.ts` (short commands, 10 s time-out),
   `runtime-source-fetch.ts` (HTTP, 10 s time-out), `runtime-version.ts`
-  (`x.y.z` extract and compare), `agent-runtime-types.ts`.
+  (the full version, `x.y.z` and any prerelease such as `0.2.2-rc.1`, read from version text without build metadata, and SemVer 2.0.0 precedence: a prerelease is older than its release; the Grok and Antigravity minimum-version gates use the same rule), `agent-runtime-types.ts`.
 - `src/api/graphql/types/agent-runtimes.ts` — thin GraphQL resolver (studio
   server only).
 - `src/compositions/agent-runtime-status-composition.ts` — builds the service
@@ -63,13 +70,16 @@ Out of scope:
 | Claude | `claude auth status --json`, JSON read whatever the exit code (signed out exits 1); without JSON, exit 0 + "logged in" text → signed in | `downloads.claude.ai/claude-code-releases/<channel>`, channel = `autoUpdatesChannel` in the user's Claude `settings.json` (`CLAUDE_CONFIG_DIR` or `~/.claude`), default `latest` | `claude update` | No: command-line hint |
 | Antigravity | `agy models` through `listAntigravityModels`; `AGY_SIGN_IN_REQUIRED` → signed out | the vendor updater manifest for the OS and CPU | `agy update` | No: command-line hint |
 | Grok | `grok models`: "You are not authenticated." → signed out; other exit 0 → signed in | `grok update --check --json` | `grok update` | `grok login --oauth` |
+| DeepSeek Harness | the vault's value-free status of `provider.deepseek.api-key` (the key the credential proxy adds to its model calls): configured → signed in ("API key set"), missing → signed out ("API key not set") | `npm view @deepseek-ai/dsh version` | `npm install -g @deepseek-ai/dsh@latest` | No: route `API_KEY_SETTING`, a pointer to Settings → API Keys |
 
 A failed version source marks only that row `CHECK_FAILED` and keeps the
 installed version. A failed sign-in read gives `UNKNOWN`.
 
 ## GraphQL API
 
-- `agentRuntimes: [AgentRuntime!]!` — the four rows. It only reads, and never
+- `agentRuntimes: [AgentRuntime!]!` — the five rows. `signInRoute` is
+  `BROWSER`, `COMMAND_LINE` or `API_KEY_SETTING` (a provider key in the vault,
+  DeepSeek Harness). It only reads, and never
   starts work.
 - `agentRuntimeSignInBrowserAvailable: Boolean!` — whether this node's
   runtimes' own logins can open a browser on this node's desktop. Read only;
@@ -89,7 +99,7 @@ installed version. A failed sign-in read gives `UNKNOWN`.
   and no output of a login process is kept, returned or logged.
 - Refusals carry `extensions.code`: `AGENT_RUNTIME_AGENTS_RUNNING`,
   `AGENT_RUNTIME_BUSY`, `AGENT_RUNTIME_NOT_INSTALLED`,
-  `AGENT_RUNTIME_SIGN_IN_UNSUPPORTED`, `AGENT_RUNTIME_UNKNOWN` (only the four
+  `AGENT_RUNTIME_SIGN_IN_UNSUPPORTED`, `AGENT_RUNTIME_UNKNOWN` (only the five
   external runtime kinds are accepted).
 
 Remote and Docker node windows read the same query and run the same
@@ -129,9 +139,109 @@ status read that times out now takes 10 s and gives the reason "Command timed
 out after 10000ms.". Grok and Antigravity application readiness are still
 `unsupported` (see [Grok Build Runtime](./grok_build_runtime.md#known-limits)).
 
+## Available Agent Runtimes
+
+`src/available-agent-runtimes/available-agent-runtimes-service.ts` —
+`AvailableAgentRuntimesService.read()`, the one boundary for the tool `list_available_agent_runtimes`
+(`src/agent-tools/agent-runtimes/`, AutoByteus local tool and Agent Tools MCP
+adapter) and the GraphQL query `availableAgentRuntimes: JSON!`
+(`src/api/graphql/types/available-agent-runtimes.ts`; one JSON value, the
+same report the tool returns, which the tool gives by the one tool result rule:
+its null values are left out). The composition builds it from the same
+strategies and sign-in reader as the status service and binds it until
+`close()`. The folder `src/available-agent-runtimes/` (service, report,
+`usage-limit-model-matching.ts`) sits above `runtime-management` and
+`llm-management`, which it reads; neither imports it. Every call reads the runtimes again; nothing is cached, polled or
+stored. Reads are single-flight: callers that arrive while a read is in
+progress (several agents, the page) share it, so their runtime processes never
+overlap. The answer resolves as soon as it is complete; the read stays the one
+in progress until its client holds are released.
+
+**Available** means installed (`strategy.readVersion(...) !== null`, the
+Agent Runtimes page's rule) and not known to be signed out. A runtime whose
+sign-in could not be read is listed with `signIn: "not checked"`. For
+AutoByteus, per provider kind:
+
+| Provider kind | Listed when | Models |
+| --- | --- | --- |
+| Static, keyed (OpenAI, Anthropic, DeepSeek, …) | its key is configured | the AutoByteus catalog's models of that provider |
+| Discovered, local (Ollama, LM Studio) | it answers with at least one model now | the reload's models; not answering, an error or a time-out → left out |
+| Discovered, keyed (custom endpoint) | its key is configured | the reload's models; a failed reload (`ERROR` / `STALE_ERROR`) → `"unknown: <name> model list could not be read: <source's safe message>"`, a time-out → `"unknown: <name> model list timed out"`, no model → `"unknown: <name> model list could not be read: the endpoint listed no models"` |
+
+Discovered providers are reloaded on every read through
+`ModelCatalogService.reloadProviderModelCatalog(id, "autobyteus")` (the
+settings' own reload; it refreshes the shared catalog, and a failed reload
+keeps the previous rows for launch lists).
+
+**Steps and caps.** All runtimes are read in parallel. Per runtime: install
+(4 s) → sign-in (6 s) → models ‖ limits (8 s each), at most 18 s; AutoByteus:
+provider list (4 s) → per provider its discovered models ‖ its usage (8 s
+each), all providers in parallel. Each cap is a `ReadDeadline`
+(`src/runtime-management/read-deadline.ts`, an end time) that every command,
+probe, handshake and request inside the step shares: each gets its usual
+time-out cut to the time left, and nothing starts once it has passed, so the
+step's own processes stop. Codex requests race the deadline and release their
+lease in `finally`. Callers without a deadline (this page, launch paths) keep
+their usual time-outs.
+
+**Failures.** Strategies' `readUsageLimits`, catalogs and provider readers
+return their answer or throw; the service alone words a failed step (REQ-007):
+"<subject> timed out" when `isDeadlineExceeded(error)` (or a provider reader's
+time-out signal); "<subject> could not be read: <reason>" for an answer a
+parser or reader classified as unusable (`UsageLimitsUnreadableError`,
+`ProviderUsageUnreadableError`); otherwise "<subject> could not be read". The
+error's own text is never shown. Subjects: "<Runtime> usage limits",
+"<Runtime> model list", "<Provider> usage", "<Provider> model list".
+
+**Time-outs.** A step stopped by its own deadline surfaces a
+`DeadlineExceededError` (from `raceDeadline`, the command runner, or as the
+`cause` of a helper's own time-out diagnostic). A command's bound is
+`commandBound(deadline, usualMs)`: its usual time-out cut to the time left,
+`byDeadline` when the time left set it. Only then is its time-out the step's;
+an ordinary per-command time-out (e.g. Antigravity's 3 s `--help` probe) is an
+ordinary failure ("could not be read"). The rule is never decided by reading
+the clock afterwards (timers and `Date.now()` can disagree by a millisecond).
+
+**Codex client hold.** After the install step the service holds the runtime's
+shared client for the rest of the read (`AgentRuntimeStrategy.holdClient`, Codex
+only: a home-folder lease taken without `acquire()`), so sign-in, models and
+limits start the app-server once and no step meets another's close; the hold
+is released when the read is done. Another Codex user of the same folder
+closing it meanwhile still gives that step's reason (follow-up FU-003). A failed or timed-out step
+gives: install → left out; sign-in → `signIn: "not checked"`; models →
+`"unknown: …"` (an empty model list is never "no models"); limits →
+`"unknown: …"`.
+
+**Limits** (`AgentRuntimeStrategy.readUsageLimits`, parsers in
+`usage-limits/`; plans, tiers, credits, account data and vendor texts are
+dropped):
+
+| Runtime | Source (0 tokens) | Limits | A model is blocked when |
+| --- | --- | --- | --- |
+| Codex | app-server `account/rateLimits/read` (home-folder app-server) | each window: "5-hour", "Weekly" (a model-specific entry adds " · <model>"); remaining = 100 − used % | its window is used up and the account has no credits; with credits, `limitsNote` says Codex runs on paid credits |
+| Claude | Agent SDK `get_usage` control request on a query opened with an input that never yields (`claude/client/claude-sdk-control-query.ts`; model discovery uses the same query) | `rate_limits.limits[]`: "5-hour", "Weekly", "Weekly · <model>"; no plan limits (API key) → `not reported` | a covering limit is at 100 % |
+| Antigravity | `agy -p "/usage" --output-format json` | each enabled bucket: "<group> · weekly" / "<group> · 5-hour" | its group (by the model families the group lists, or the group name; most specific wins) has 0 % left |
+| Grok | ACP extension `_x.ai/billing` after `initialize` on a short process (`runAcpExtensionRequest`) | "Billing period", resets at the period end; remaining only when Grok reports `creditUsagePercent`, else null with a `limitsNote` | its remaining is 0 % |
+
+Remaining percentages are whole numbers rounded down (99.7 → 99); a limit's
+exhaustion is decided on the unrounded value. A limit that maps to no offered
+model covers the whole runtime. A limit names what it covers in its source's
+terms (`appliesTo`): the whole runtime, model ids (Codex), or display-name
+families (Claude, Antigravity; a family covers a model when its words appear in
+the display name in order from the first word, and an id is never matched as
+a family). Each model is given to its most specific family across all of the
+runtime's limits; only then do the used-up limits block it. The service
+derives each model's `blocked: {until, by}` (until the latest reset of the
+used-up limits covering it). AutoByteus providers are read by
+`src/llm-management/provider-usage/` (see
+[LLM Management](llm_management.md#provider-usage)).
+
 ## Tests
 
-- Unit: `tests/unit/runtime-management/agent-runtimes/`,
+- Unit: `tests/unit/runtime-management/agent-runtimes/` (including
+  `usage-limits/`, from the recorded answers in
+  `tests/fixtures/usage-limits/`), `tests/unit/available-agent-runtimes/`
+  (service, concurrency, matching, dependency direction),
   `tests/unit/api/graphql/agent-runtimes-resolver.test.ts`,
   `tests/unit/application-platform/`.
 - E2E on a real studio server with scripted CLIs
@@ -140,5 +250,18 @@ out after 10000ms.". Grok and Antigravity application readiness are still
   `ANTIGRAVITY_CLI_COMMAND`, `GROK_BUILD_COMMAND`):
   `tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts` and
   `tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts` (the latter
-  needs `pnpm test:integration:prepare` for Brief Studio). Run them with a
+  needs `pnpm test:integration:prepare` for Brief Studio), and
+  `tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts` (AAR-01…06:
+  the `availableAgentRuntimes` answer with 0 tokens, sign-in and install rules,
+  step time-outs, the tool over Agent Tools MCP and shared reads, no secrets
+  in any output, discovered providers; provider endpoints, LM Studio and a
+  custom endpoint are answered by an in-process stub). Run them with a
   clean environment and a temporary `HOME`, so no real account is read.
+- Live (gated, real signed-in CLIs, spends model tokens):
+  `tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts`: per
+  enabled runtime (`RUN_CODEX_E2E`, `RUN_CLAUDE_E2E`, `RUN_AGY_E2E`,
+  `RUN_GROK_E2E`; AutoByteus with `RUN_LMSTUDIO_E2E` or `RUN_DEEPSEEK_E2E`, the
+  key from `AUTOBYTEUS_TEST_VAULT`), LR-1 an agent without the
+  tool cannot call it, LR-2 an agent with it gets the node's report, the same as
+  the GraphQL read; LR-3 (`RUN_ROUTED_DELEGATION_E2E=1`) is Model Routing's busy-router
+  fallback (see [Model Routing](model_routing.md)).

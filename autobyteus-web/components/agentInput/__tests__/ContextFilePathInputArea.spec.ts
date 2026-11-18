@@ -1,8 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { flushPromises, mount } from '@vue/test-utils';
 import { nextTick, reactive } from 'vue';
 import ContextFilePathInputArea from '../ContextFilePathInputArea.vue';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { ContextFileUploadError } from '~/utils/contextFiles/contextFileUploadFailure';
 import type { ContextAttachment } from '~/types/conversation';
 import {
   createUploadedContextAttachment,
@@ -23,6 +25,9 @@ const createContext = (runId: string): MockAgentContext => ({
   state: { runId },
 });
 
+/** A delegated child's own team run and member address (a team-copy member), CR-461-106. */
+const CHILD_TEAM = 'child-team'
+const CHILD_MEMBER = '/software_engineering_team/implementation_engineer'
 const activeContextStoreMock = reactive({
   activeAgentContext: createContext('temp-agent-1') as MockAgentContext | null,
   /** A delegated child of a standalone run (Agent copy or Team-copy member), when set. */
@@ -35,23 +40,27 @@ const activeContextStoreMock = reactive({
     const context = this.activeAgentContext;
     if (!context) return null;
     if (this.delegatedChild) {
+      // Its own run (rule 2): an agent run, or a member of its own team run (CR-461-106).
       return {
         kind: this.delegatedChild.kind,
         context,
         access: this.delegatedChild.access,
         host: { hostRunId: this.delegatedChild.hostRunId },
-        address: '/software_engineering_team/implementation_engineer',
+        address: CHILD_MEMBER,
         agentRunId: context.state.runId,
+        browse: this.delegatedChild.kind === 'agent_run_task_agent' ? { kind: 'run', runId: context.state.runId }
+          : { kind: 'teamMember', teamRunId: CHILD_TEAM, memberAddress: CHILD_MEMBER, agentRunId: context.state.runId },
       };
     }
     if (agentSelectionStoreMock.selectedType === 'agent' && agentContextsStoreMock.activeRun === context) {
-      return { kind: 'standalone_agent', context, access: 'live' };
+      return { kind: 'standalone_agent', context, access: 'live', browse: { kind: 'run', runId: context.state.runId } };
     }
     const team = agentTeamContextsStoreMock.activeTeamContext;
     return agentSelectionStoreMock.selectedType === 'team' && team && agentTeamContextsStoreMock.activeExecutionFocusedMemberContext === context
       ? { kind: 'standalone_team_member', context, access: 'live', team: {
         rootRunId: team.view.getRootTeamRunId(), focusedMemberAddress: team.view.getFocusedMemberAddress(),
-      } } : null;
+      }, browse: { kind: 'teamMember', teamRunId: team.view.getRootTeamRunId(), memberAddress: team.view.getFocusedMemberAddress(),
+        agentRunId: context.state.runId } } : null;
   },
   currentContextPaths: [] as ContextAttachment[],
   addContextFilePathForContext: vi.fn(),
@@ -71,8 +80,15 @@ const agentTeamContextsStoreMock = reactive({
   activeExecutionFocusedMemberContext: null as MockAgentContext | null,
 });
 
+const MB = 1024 * 1024;
+const nodeLimits = {
+  otherFileMaxBytes: 25 * MB,
+  audioVideoMaxBytes: 2048 * MB,
+  audioVideoMimeTypes: ['video/mp4', 'video/quicktime', 'audio/mpeg'],
+};
 const contextFileUploadStoreMock = reactive({
   isUploading: false,
+  readSizeLimits: vi.fn(),
   uploadAttachment: vi.fn(),
   deleteDraftAttachment: vi.fn(),
 });
@@ -124,6 +140,20 @@ vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => workspaceStoreMock,
 }));
 
+// autobyteus-450: the phone (off by default) and the authorized object URL (the URL itself unless a test sets one).
+const phone = vi.hoisted(() => ({ isPhone: false, open: vi.fn(), authorized: new Map<string, string>() }));
+vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({ isMobileRemoteAccessRuntime: () => phone.isPhone }));
+vi.mock('~/composables/mobile/useMobileAttachmentOpening', () => ({ useMobileAttachmentOpening: () => ({ open: phone.open }) }));
+vi.mock('~/composables/useAuthorizedObjectUrl', async () => {
+  const { computed, ref } = await import('vue');
+  return {
+    useAuthorizedObjectUrl: (source: () => string | null) => ({
+      resolvedUrl: computed(() => { const url = source(); return url ? (phone.authorized.get(url) ?? url) : null; }),
+      error: ref(null), refresh: vi.fn(),
+    }),
+  };
+});
+
 describe('ContextFilePathInputArea', () => {
   const selectContext = (context: MockAgentContext | null) => {
     activeContextStoreMock.activeAgentContext = context;
@@ -163,6 +193,7 @@ describe('ContextFilePathInputArea', () => {
     activeContextStoreMock.delegatedChild = null;
     contextFileUploadStoreMock.deleteDraftAttachment.mockReset();
     contextFileUploadStoreMock.uploadAttachment.mockReset();
+    contextFileUploadStoreMock.readSizeLimits.mockReset().mockResolvedValue(nodeLimits);
     agentSelectionStoreMock.selectedType = 'agent';
     agentTeamContextsStoreMock.activeTeamContext = null;
     agentTeamContextsStoreMock.activeExecutionFocusedMemberContext = null;
@@ -248,6 +279,8 @@ describe('ContextFilePathInputArea', () => {
     expect(contextFileUploadStoreMock.uploadAttachment).toHaveBeenCalledWith({
       owner: { kind: 'agent_draft', draftRunId: 'temp-architecture' },
       file,
+      signal: expect.any(AbortSignal),
+      onProgress: expect.any(Function),
     });
   });
 
@@ -316,7 +349,7 @@ describe('ContextFilePathInputArea', () => {
     await wrapper.findAll('button[aria-label="Remove file"]')[0]?.trigger('click');
     await flushPromises();
     expect(solutionContext.contextFilePaths).toEqual([retainedAfterFailure, removable]);
-    expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove retained.txt. draft delete unavailable");
+    expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove retained.txt.");
 
     const clearAll = wrapper.findAll('button').find((button) => button.text().includes('Clear all'));
     expect(clearAll).toBeTruthy();
@@ -416,10 +449,13 @@ describe('ContextFilePathInputArea', () => {
     const mountComposer = () => mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: { stubs: { FullScreenImageModal: true } },
     });
+    /** A draft under the delegated child's own run (CR-461-106): its agent run's, or its team run member's. */
     const collaborationDraft = (storedFilename: string, displayName: string, agentRunId = 'child-run') =>
       createUploadedContextAttachment({
         storedFilename,
-        locator: `/rest/drafts/agent-collaborations/host-run/agent-runs/${agentRunId}/context-files/${storedFilename}`,
+        locator: activeContextStoreMock.delegatedChild?.kind === 'agent_run_task_team_member'
+          ? `/rest/drafts/team-runs/${agentRunId === 'child-run' ? CHILD_TEAM : 'sibling-team'}/members/${encodeURIComponent(CHILD_MEMBER)}/context-files/${storedFilename}`
+          : `/rest/drafts/agent-runs/${agentRunId}/context-files/${storedFilename}`,
         displayName,
         phase: 'draft',
         type: displayName.endsWith('.png') ? 'Image' : 'Text',
@@ -480,8 +516,10 @@ describe('ContextFilePathInputArea', () => {
       await input.trigger('change');
       await flushPromises();
       expect(contextFileUploadStoreMock.uploadAttachment).toHaveBeenCalledWith({
-        owner: { kind: 'agent_collaboration_member_draft', hostRunId: 'host-run', agentRunId: 'child-run' },
+        owner: { kind: 'team_member_draft', teamDraftId: CHILD_TEAM, memberAddress: CHILD_MEMBER },
         file,
+        signal: expect.any(AbortSignal),
+        onProgress: expect.any(Function),
       });
       expect(context.contextFilePaths).toHaveLength(3);
 
@@ -542,7 +580,7 @@ describe('ContextFilePathInputArea', () => {
       await wrapper.findAll('button[aria-label="Remove file"]')[0]!.trigger('click');
       await flushPromises();
       expect(context.contextFilePaths).toEqual([first, second]);
-      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove first.txt. Failed to fetch");
+      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove first.txt.");
 
       contextFileUploadStoreMock.deleteDraftAttachment.mockResolvedValue(undefined);
       await wrapper.findAll('button[aria-label="Remove file"]')[0]!.trigger('click');
@@ -554,13 +592,15 @@ describe('ContextFilePathInputArea', () => {
 
     it('shows a failed upload by file name instead of silently dropping it', async () => {
       selectDelegatedChild('agent_run_task_agent');
-      contextFileUploadStoreMock.uploadAttachment.mockRejectedValue({ response: { data: { detail: 'File too large.' } } });
+      // The server's own text must never reach the screen (AC-009 regression of the reported message).
+      contextFileUploadStoreMock.uploadAttachment.mockRejectedValue({ response: { data: { detail: 'Uploaded file is too large.' } } });
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       const wrapper = mountComposer();
 
       await pasteFiles(wrapper, [new File(['x'], 'huge.png', { type: 'image/png' })]);
 
-      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't attach huge.png. File too large.");
+      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't attach huge.png.");
+      expect(wrapper.text()).not.toContain('Uploaded file is too large.');
       expect(wrapper.text()).not.toContain('Uploading');
       consoleError.mockRestore();
     });
@@ -653,6 +693,135 @@ describe('ContextFilePathInputArea', () => {
       consoleError.mockRestore();
     });
 
+    describe('size limits, progress and cancel (AC-005 … AC-009)', () => {
+      const fileOfSize = (name: string, type: string, bytes: number) => {
+        const file = new File(['x'], name, { type });
+        Object.defineProperty(file, 'size', { value: bytes });
+        return file;
+      };
+      const errorLines = (wrapper: ReturnType<typeof mountComposer>) =>
+        wrapper.findAll('[data-testid="context-file-error-line"]').map((line) => line.text());
+      afterEach(async () => { await localizationRuntime.setPreference('en'); });
+
+      it('zh-CN: three over-limit videos give one message with the names and the limit, and no request is made', async () => {
+        await localizationRuntime.setPreference('zh-CN');
+        selectDelegatedChild('agent_run_task_agent');
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, ['VID_1.mp4', 'VID_2.mp4', 'VID_3.mp4'].map((name) => fileOfSize(name, 'video/mp4', 3 * 1024 * MB)));
+
+        expect(errorLines(wrapper)).toEqual(['无法附加 VID_1.mp4, VID_2.mp4, VID_3.mp4：文件超过 2 GB 大小限制。']);
+        expect(contextFileUploadStoreMock.uploadAttachment).not.toHaveBeenCalled();
+        expect(wrapper.text()).not.toContain('Uploaded file is too large');
+      });
+
+      it('English: files over different limits get one message per limit, each with its own limit', async () => {
+        selectDelegatedChild('agent_run_task_agent');
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, [fileOfSize('a.mp4', 'video/mp4', 3 * 1024 * MB), fileOfSize('b.pdf', 'application/pdf', 30 * MB)]);
+
+        expect(errorLines(wrapper)).toEqual([
+          "Couldn't attach a.mp4: over the 2 GB size limit.",
+          "Couldn't attach b.pdf: over the 25 MB size limit.",
+        ]);
+        expect(contextFileUploadStoreMock.uploadAttachment).not.toHaveBeenCalled();
+      });
+
+      it('a server refusal after the pre-check shows the same message with the server\'s limit (AC-006)', async () => {
+        selectDelegatedChild('agent_run_task_agent');
+        contextFileUploadStoreMock.uploadAttachment.mockRejectedValue(new ContextFileUploadError({ reason: 'too_large', maxBytes: 1572864000 }));
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, [fileOfSize('a.mp4', 'video/mp4', 100 * MB)]);
+
+        expect(errorLines(wrapper)).toEqual(["Couldn't attach a.mp4: over the 1.5 GB size limit."]);
+      });
+
+      it.each([
+        [{ reason: 'unsupported_type' }, "Couldn't attach a.exe: this file type isn't supported."],
+        [{ reason: 'interrupted' }, "Couldn't attach a.exe: the upload was interrupted. Check your connection and try again."],
+        [{ reason: 'other' }, "Couldn't attach a.exe."],
+      ] as const)('shows the %j failure as a localized line without any server text (AC-009)', async (failure, expected) => {
+        selectDelegatedChild('agent_run_task_agent');
+        const error = Object.assign(new ContextFileUploadError(failure), { response: { data: { detail: 'Unsupported file type: x' } } });
+        contextFileUploadStoreMock.uploadAttachment.mockRejectedValue(error);
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, [fileOfSize('a.exe', 'application/octet-stream', 5)]);
+
+        expect(errorLines(wrapper)).toEqual([expected]);
+      });
+
+      it('regression: the reported mixed text (localized sentence plus raw server text) never renders', async () => {
+        await localizationRuntime.setPreference('zh-CN');
+        selectDelegatedChild('agent_run_task_agent');
+        contextFileUploadStoreMock.uploadAttachment.mockRejectedValue({ response: { status: 400, data: { detail: 'Uploaded file is too large.' } } });
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, [fileOfSize('VID_20260116.mp4', 'video/mp4', 30 * MB)]);
+
+        expect(wrapper.find('[role="alert"]').text()).toBe('无法附加 VID_20260116.mp4。');
+      });
+
+      it('a failed removal says so by name and nothing else', async () => {
+        const context = selectDelegatedChild('agent_run_task_agent');
+        context.contextFilePaths.push(collaborationDraft('ctx_keep__notes.png', 'notes.png'));
+        contextFileUploadStoreMock.deleteDraftAttachment.mockRejectedValue(new Error('Server says: forbidden'));
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const wrapper = mountComposer();
+
+        await wrapper.find('button[aria-label="Remove file"]').trigger('click');
+        await flushPromises();
+
+        expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove notes.png.");
+      });
+
+      it('shows progress and a cancel control on an uploading item; cancel stops it with no message', async () => {
+        const context = selectDelegatedChild('agent_run_task_agent');
+        let report!: (percent: number) => void;
+        let signal!: AbortSignal;
+        contextFileUploadStoreMock.uploadAttachment.mockImplementation(({ signal: given, onProgress }: { signal: AbortSignal; onProgress: (p: number) => void }) => {
+          signal = given;
+          report = onProgress;
+          return new Promise((_, reject) => given.addEventListener('abort', () => reject(new Error('canceled'))));
+        });
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, [fileOfSize('clip.mp4', 'video/mp4', 200 * MB)]);
+        expect(wrapper.find('[data-testid="context-file-upload-progress"]').text()).toBe('0%');
+        report(42);
+        await flushPromises();
+        expect(wrapper.find('[data-testid="context-file-upload-progress"]').text()).toBe('42%');
+        const cancel = wrapper.find('button[aria-label="Cancel upload of clip.mp4"]');
+        expect(cancel.exists()).toBe(true);
+        expect(wrapper.find('button[aria-label="Remove file"]').exists()).toBe(false);
+
+        await cancel.trigger('click');
+        await flushPromises();
+
+        expect(signal.aborted).toBe(true);
+        expect(wrapper.find('[data-testid="context-file-upload-progress"]').exists()).toBe(false);
+        expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+        expect(context.contextFilePaths).toEqual([]);
+      });
+
+      it('zh-CN: the cancel control has a localized accessible name', async () => {
+        await localizationRuntime.setPreference('zh-CN');
+        selectDelegatedChild('agent_run_task_agent');
+        contextFileUploadStoreMock.uploadAttachment.mockImplementation(() => new Promise(() => undefined));
+        const wrapper = mountComposer();
+
+        await pasteFiles(wrapper, [fileOfSize('clip.mp4', 'video/mp4', 200 * MB)]);
+
+        expect(wrapper.find('button[aria-label="取消上传 clip.mp4"]').exists()).toBe(true);
+      });
+    });
+
     it('clears a shown error when the composer target changes', async () => {
       selectDelegatedChild('agent_run_task_agent', 'read_only');
       const wrapper = mountComposer();
@@ -663,6 +832,54 @@ describe('ContextFilePathInputArea', () => {
       selectContext(createContext('temp-other-agent'));
       await flushPromises();
       expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+    });
+  });
+
+  describe('draft attachments on the phone (autobyteus-450 DEC-005)', () => {
+    const draftImage = createUploadedContextAttachment({
+      storedFilename: 'ctx_ab__photo.png', locator: '/rest/drafts/agent-runs/temp-agent-1/context-files/ctx_ab__photo.png',
+      displayName: 'photo.png', phase: 'draft', type: 'Image',
+    });
+    const draftPdf = createUploadedContextAttachment({
+      storedFilename: 'ctx_cd__spec.pdf', locator: '/rest/drafts/agent-runs/temp-agent-1/context-files/ctx_cd__spec.pdf',
+      displayName: 'spec.pdf', phase: 'draft', type: 'Pdf',
+    });
+    const mountPhone = () => {
+      const context = createContext('temp-agent-1');
+      context.contextFilePaths.push(draftImage, draftPdf);
+      selectContext(context);
+      return mount(withActiveComposerTarget(ContextFilePathInputArea), {
+        global: { stubs: { FullScreenImageModal: { props: ['imageUrl', 'visible'], template: '<div data-test="modal" :data-url="imageUrl" />' } } },
+      });
+    };
+
+    beforeEach(() => {
+      phone.isPhone = true;
+      phone.open.mockReset();
+      phone.authorized.clear();
+      windowNodeContextStoreMock.isEmbeddedWindow = false;
+      (window as any).electronAPI = undefined;
+      phone.authorized.set(`http://127.0.0.1:31000${draftImage.locator}`, 'blob:phone/draft-1');
+    });
+    afterEach(() => { phone.isPhone = false; });
+
+    it('shows a draft image\'s thumbnail and its full-screen view with the phone key (object URLs)', async () => {
+      const wrapper = mountPhone();
+      expect(wrapper.get('img.context-image-thumbnail').attributes('src')).toBe('blob:phone/draft-1');
+      await wrapper.get('button[title="photo.png"]').trigger('click');
+      expect(wrapper.get('[data-test="modal"]').attributes('data-url')).toBe('blob:phone/draft-1');
+      expect(phone.open).not.toHaveBeenCalled();
+    });
+
+    it('opens any other draft in the phone viewer, never a new window', async () => {
+      const windowOpen = vi.fn();
+      vi.stubGlobal('open', windowOpen);
+      const wrapper = mountPhone();
+      const chip = wrapper.findAll('button').find((button) => button.text().includes('spec.pdf') || button.attributes('title') === 'spec.pdf');
+      expect(chip).toBeTruthy();
+      await chip!.trigger('click');
+      expect(phone.open).toHaveBeenCalledWith(expect.objectContaining({ displayName: 'spec.pdf', phase: 'draft' }));
+      expect(windowOpen).not.toHaveBeenCalled();
     });
   });
 });

@@ -8,10 +8,12 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { delegatedConversation } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // Delegated Team copies start only the member that work reaches (delegated-team-member-lazy-activation SR-002:
 // REQ-001..REQ-006, AC-001..AC-005, QR-001) through the real Studio HTTP/WebSocket server, scoped MCP agent tools,
@@ -102,19 +104,26 @@ const liveAgyCwds = (): string[] => spawnSync("pgrep", ["-f", "agy-failure-cli"]
   .filter(Boolean).map((pid) => (spawnSync("lsof", ["-a", "-d", "cwd", "-p", pid, "-Fn"], { encoding: "utf8" }).stdout
     .split("\n").find((line) => line.startsWith("n")) ?? "").slice(1));
 const processLive = (agentRunId: string) => liveAgyCwds().some((cwd) => cwd.includes(agentRunId));
-/** Status changes on a root view: Team `AGENT_STATUS` frames, or Agent/Org `agent_presentation` status messages. */
+/**
+ * Status changes: a delegated run's agents by run ID on `/ws/run-status` (autobyteus-461 SR-082: the views no longer
+ * carry their children's statuses), and a root's own agents on its views (Team `AGENT_STATUS` frames, or Agent/Org
+ * `agent_presentation` status messages).
+ */
 const signalsIn = (frames: readonly Frame[]): Signal[] => frames.flatMap((frame) => {
+  if (frame.type === "RUN_STATUS_CHANGED") return [{ agentRunId: frame.payload.agentRunId, status: frame.payload.status, at: frame.at }];
+  if (frame.type === "RUN_STATUS_SNAPSHOT") return (frame.payload.runs as any[]).flatMap((run) => (run.agents as any[])
+    .map((agent) => ({ agentRunId: agent.agentRunId, status: agent.status, at: frame.at })));
   if (frame.type === "AGENT_STATUS") return typeof frame.payload.agent_run_id === "string"
     ? [{ agentRunId: frame.payload.agent_run_id, status: frame.payload.status, at: frame.at }] : [];
   return objectsIn(frame.payload).flatMap((record) => record.message?.type === "AGENT_STATUS" && typeof record.agent_run_id === "string"
     && typeof record.message?.payload?.status === "string"
     ? [{ agentRunId: record.agent_run_id, status: record.message.payload.status, at: frame.at }] : []);
 });
-/** `agent_statuses` of a root view snapshot (what the sidebar and member header render), by run ID. */
+/** A run's agents' statuses from a fresh `/ws/run-status` snapshot (what a newly opened window renders), by run ID. */
 const snapshotStatuses = (frames: readonly Frame[]): Record<string, string> => Object.fromEntries(frames
-  .filter((frame) => frame.type.endsWith("_VIEW_SNAPSHOT"))
-  .flatMap((frame) => objectsIn(frame.payload).flatMap((record) => Array.isArray(record.agent_statuses) ? record.agent_statuses : []))
-  .map((status: any) => [status.agent_run_id, status.status]));
+  .filter((frame) => frame.type === "RUN_STATUS_SNAPSHOT")
+  .flatMap((frame) => (frame.payload.runs as any[]).flatMap((run) => run.agents as any[]))
+  .map((agent: any) => [agent.agentRunId, agent.status]));
 
 suite("Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor)", () => {
   let dataDir = "", workspace = "", argvLog = "", app: FastifyInstance | undefined, url!: URL;
@@ -145,6 +154,15 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     socket.on("message", (raw: unknown) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
     await until(() => ready(frames), `${route} stream ready`);
+    return { socket, frames };
+  };
+  /** A `/ws/run-status` connection (autobyteus-461 SR-082): statuses by run ID from each run itself. */
+  const connectRunStatus = async () => {
+    const socket = new WebSocket(`ws://${url.host}/ws/run-status`);
+    sockets.push(socket);
+    const frames: Frame[] = [];
+    socket.on("message", (raw: unknown) => frames.push({ ...JSON.parse(String(raw)), at: Date.now() }));
+    await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
     return { socket, frames };
   };
   /** Every AGY launch so far: the run it belongs to and whether it resumed a conversation. */
@@ -302,24 +320,28 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       input: kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null,
       view: await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot)),
     };
-    /** Every status change seen on this root's views (across reconnects). */
-    const seen: Frame[][] = [channels.view.frames];
+    /** Every status change seen on this root's views (across reconnects) and on its run-status subscriptions. */
+    const statusChannel = await connectRunStatus();
+    const seen: Frame[][] = [channels.view.frames, statusChannel.frames];
+    /** Follows a delegated run's statuses by its run ID (SR-082), as a window showing it does. */
+    const watchRun = (runKind: "agent" | "agent_team", runId: string) =>
+      statusChannel.socket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind: runKind, runId }] } }));
     const reconnect = async () => {
-      if (kind === "org") {
-        const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
-        expect(restored.success, restored.message).toBe(true);
-      }
+      // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
+      // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
       if (kind === "agent") channels.input = await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED"));
       channels.view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
       seen.push(channels.view.frames);
       active.push({ kind, rootId });
     };
     const closeChannels = () => { channels.view.socket.close(); channels.input?.socket.close(); };
-    /** A fresh view's snapshot `agent_statuses` (what a newly opened sidebar renders). */
-    const freshStatuses = async () => {
-      const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-      const statuses = snapshotStatuses(view.frames);
-      view.socket.close();
+    /** A delegated Team run's statuses as a newly opened window reads them: a fresh `/ws/run-status` snapshot (SR-082). */
+    const freshStatuses = async (teamRunId: string) => {
+      const fresh = await connectRunStatus();
+      fresh.socket.send(JSON.stringify({ type: "SUBSCRIBE", payload: { runs: [{ kind: "agent_team", runId: teamRunId }] } }));
+      await until(() => fresh.frames.some((frame) => frame.type === "RUN_STATUS_SNAPSHOT"), `${kind}: run-status snapshot of ${teamRunId}`);
+      const statuses = snapshotStatuses(fresh.frames);
+      fresh.socket.close();
       return statuses;
     };
     const sendToManager = (content: string) => {
@@ -328,12 +350,12 @@ suite("Delegated Team copies start only the members that work reaches, in every 
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
       else sendE2eSendMessageCommand(kind === "agent" ? channels.input!.socket : channels.view.socket, { agent_run_id: managerRunId, content });
     };
-    const liveTree = async () => {
-      if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-      if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;
-      return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
-    };
+    // autobyteus-461 SR-084: the root's delegated runs at every depth, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, kind, rootId);
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
@@ -367,8 +389,11 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const text = JSON.stringify(await conversationOf(agentRunId, address));
       return text.includes(marker) && text.lastIndexOf("OK") > text.indexOf(marker);
     }, `${kind}: ${address} answered ${marker}`, 60_000);
-    return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered, errorCards,
-      freshStatuses, reconnect, closeChannels };
+    /** The frames of this root's views that name an agent run (a failure's details). */
+    const framesNaming = (agentRunId: string) => seen.flat().filter((frame) => JSON.stringify(frame).includes(agentRunId))
+      .map((frame) => ({ type: frame.type, payload: JSON.stringify(frame.payload).slice(0, 400) }));
+    return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered, errorCards, framesNaming,
+      freshStatuses, reconnect, closeChannels, watchRun };
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
 
@@ -388,6 +413,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       Record<Member, { address: string; agentRunId: string }>;
     expect(Object.keys(members).sort()).toEqual([...MEMBERS].sort());
     expect(members.lead.agentRunId).toBe(lead);
+    root.watchRun("agent_team", copy!.teamRunId);
     return { teamRunId: copy!.teamRunId, members };
   };
   type Copy = Awaited<ReturnType<typeof copyOf>>;
@@ -406,7 +432,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
    * it was started and went idle, and its shutdown is the designed lifecycle. Every other expectation is exact.
    */
   const expectStatuses = async (root: Root, copy: Copy, expected: Record<Member, string>) => {
-    const statuses = statusesOf(await root.freshStatuses(), copy);
+    const statuses = statusesOf(await root.freshStatuses(copy.teamRunId), copy);
     const now = Date.now();
     for (const name of MEMBERS) {
       if (expected[name] !== "idle" || statuses[name] !== "offline") continue;
@@ -434,7 +460,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
         { input: { name: `DTL ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
       taskId = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-        { input: { projectId, description: "Team work. Marker LEAD-FIRST." } })).createProjectTask.taskId as string;
+        { input: { projectId, title: "Team work. Marker LEAD-FIRST.", description: "Team work. Marker LEAD-FIRST." } })).createProjectTask.taskId as string;
       work = { task_id: taskId };
     } else work = { description: "Team work. Marker LEAD-FIRST." };
 
@@ -466,7 +492,11 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-FIRST");
     const reviewerIdle = await root.signal("reviewer idle", (e) => e.agentRunId === copy.members.reviewer.agentRunId && e.status === "idle");
     const reviewerStatuses = root.signals().filter((e) => e.agentRunId === copy.members.reviewer.agentRunId && e.at <= reviewerIdle.at).map((e) => e.status);
-    expect(reviewerStatuses[0], `${kind} reviewer first status ${reviewerStatuses}`).toBe("initializing");
+    // The view projects a never-started member as offline (autobyteus-461 DS-8: "offline" when its run is not active); the
+    // message starts it: its first status after offline is initializing, and nothing ran before.
+    const firstStarted = reviewerStatuses.findIndex((status) => status !== "offline");
+    expect(reviewerStatuses.slice(0, Math.max(firstStarted, 0)).every((status) => status === "offline"), `${kind} reviewer statuses ${reviewerStatuses}`).toBe(true);
+    expect(reviewerStatuses[firstStarted], `${kind} reviewer first status after offline ${reviewerStatuses}`).toBe("initializing");
     expect(reviewerStatuses.at(-1)).toBe("idle");
     expect((await launchesFor(runIdsOf(copy), handoffFrom)).map((entry) => [entry.runId, entry.resumed]))
       .toEqual([[copy.members.reviewer.agentRunId, false]]);
@@ -478,17 +508,25 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     if (brokenWriter) {
       // DTL-003 (AC-004): a member that cannot start fails the sender's delivery and shows error; the rest are unaffected.
       const failedFrom = (await launches()).length;
+      // SR-075 F-41 (rule 2): the member's error card is part of its own run's conversation, on the delegated team's own
+      // stream (what the view shows when its row is selected); the delegator's view carries its status only.
+      const own = await connect("agent-team", copy.teamRunId, (frames) => frames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
+      const ownCards = () => own.frames.flatMap((frame) => frame.type === "ERROR" && frame.payload?.agent_run_id === copy.members.writer.agentRunId ? [frame.payload]
+        : objectsIn(frame.payload).filter((record) => record.agent_run_id === copy.members.writer.agentRunId && record.message?.type === "ERROR").map((record) => record.message.payload));
       const failed = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.writer.address,
         content: "Please write. Marker WRITE-FIRST." }));
       expect(failed, `${kind} lead → writer ${JSON.stringify(failed)}`).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED" });
       expect(failed.message).toMatch(/AGY_MODEL_UNAVAILABLE/);
       await root.signal("writer error", (e) => e.agentRunId === copy.members.writer.agentRunId && e.status === "error");
       // The writer's conversation shows the failure once (SR-004: one error card per failed start).
-      await until(() => root.errorCards(copy.members.writer.agentRunId).length > 0, `${kind}: writer error card`, 15_000);
+      // The writer's conversation shows the failure once (SR-004: one error card per failed start), on its own team's stream.
+      await until(() => ownCards().length > 0, `${kind}: writer error card on the team's own stream`, 15_000)
+        .catch((error) => { throw Object.assign(error, { message: `${error.message}; own-stream frames naming the writer: `
+          + JSON.stringify(own.frames.filter((f) => JSON.stringify(f).includes(copy.members.writer.agentRunId)).map((f) => f.type)).slice(0, 1_500) }); });
       await wait(1_000);
-      const cards = root.errorCards(copy.members.writer.agentRunId);
-      expect(cards, JSON.stringify(cards)).toHaveLength(1);
-      expect(JSON.stringify(cards[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      expect(ownCards(), JSON.stringify(ownCards())).toHaveLength(1);
+      expect(JSON.stringify(ownCards()[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      own.socket.close();
       expect(await launchesFor(runIdsOf(copy), failedFrom)).toEqual([]);
       await expectStatuses(root, copy, { lead: "idle", reviewer: "idle", writer: "error", tester: "offline" });
       expect((await savedBindings(copy.teamRunId)).writer).toBeNull();
@@ -496,7 +534,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
         content: "Second review. Marker REVIEW-SECOND." }));
       expect(stillWorks, JSON.stringify(stillWorks)).toMatchObject({ accepted: true });
       await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-SECOND");
-      record.memberStartFailure = { result: failed, errorCard: cards[0] };
+      record.memberStartFailure = { result: failed, errorCard: ownCards()[0] ?? null };
     } else {
       // DTL-004 (AC-003, REQ-004): a copy member delegating its own Team is refused (collaboration-model-contract); it delegates
       // another catalog Team instead, and only that copy's coordinator starts.
@@ -550,7 +588,10 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     // no conversation); root restore and the Manager's message resume only the lead; the tester's first work starts fresh.
     root.closeChannels();
     await terminate(kind, root.rootId);
-    await until(() => offline(copy, MEMBERS) && !processLive(root.managerRunId), `${kind}: root stopped`, 30_000);
+    // REQ-001: the root's Stop stops its own parts only; the delegated team is a run of its own, stopped by its own Stop
+    // (rule 2). Both are stopped before the saved file is given the pre-fix shape.
+    await terminate("team", copy.teamRunId);
+    await until(() => offline(copy, MEMBERS) && !processLive(root.managerRunId), `${kind}: root and copy stopped`, 30_000);
     const legacyBinding = `legacy-unused-${randomUUID()}`;
     const records = await savedCopyRecords(copy.teamRunId);
     for (const file of new Set(records.map((entry) => entry.file))) {

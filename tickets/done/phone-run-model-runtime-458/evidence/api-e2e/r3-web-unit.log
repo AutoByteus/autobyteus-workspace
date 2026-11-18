@@ -1,0 +1,27 @@
+# NUXT_TEST=true vitest run (full web suite) on 66908768eb (+ MSP-66 renumber, tests/e2e only); 2026-11-17T14:56:09Z
+       |   ^
+    148|     const { wrapper, org } = await mountOrgMessages()
+    149|     org().select('/designer')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts:169:3
+    167|   })
+    168| 
+    169|   it('applies a live communication message with one projection and ide…
+       |   ^
+    170|     const { wrapper, org } = await mountOrgMessages()
+    171|     org().select('/designer')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 760 passed (761)
+      Tests  2 failed | 5723 passed | 2 skipped (5727)
+   Start at  15:56:16
+   Duration  754.60s (transform 82.03s, setup 5053.72s, collect 571.45s, tests 239.88s, environment 380.28s, prepare 227.07s)
+
+# exit: 1

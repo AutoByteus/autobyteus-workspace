@@ -1,0 +1,441 @@
+{
+  "agent": {
+    "copies": {
+      "copyA": {
+        "teamRunId": "tdr_squad_ce554b_850ae00aca854964ae3bdd27f5f76999",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ce554b/lead",
+            "agentRunId": "tdr_worker_ce554b_f814ed22e9604660bfbffd15c43e72a5"
+          },
+          "mate": {
+            "address": "/tdr_squad_ce554b/mate",
+            "agentRunId": "tdr_worker_ce554b_fd14df5cf3a74252a851139566e2645f"
+          }
+        }
+      },
+      "copyB": {
+        "teamRunId": "tdr_squad_ce554b_bc6e0fd922ec4a14aa756a863fd7ddeb",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ce554b/lead",
+            "agentRunId": "tdr_worker_ce554b_d315e84111854350a5a49c85964591c4"
+          },
+          "mate": {
+            "address": "/tdr_squad_ce554b/mate",
+            "agentRunId": "tdr_worker_ce554b_fa440b960ba94ccabe3db331805278a4"
+          }
+        }
+      },
+      "copyC": {
+        "teamRunId": "tdr_squad_ce554b_0ac0c8aaf3fb42c3ac300114e765fb71",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ce554b/lead",
+            "agentRunId": "tdr_worker_ce554b_b128adf73dc04e759bb4b7ea32fee280"
+          },
+          "mate": {
+            "address": "/tdr_squad_ce554b/mate",
+            "agentRunId": "tdr_worker_ce554b_5ed8067c99954be5819e626c99095d33"
+          }
+        }
+      }
+    },
+    "timeline": [
+      [
+        "tdr001 write held",
+        15
+      ],
+      [
+        "tdr001 task closed",
+        118
+      ],
+      [
+        "tdr001 write released",
+        1619
+      ],
+      [
+        "tdr001 sender result",
+        1671
+      ],
+      [
+        "tdr002 blocking write held; B message waiting",
+        7009
+      ],
+      [
+        "tdr002 task closed",
+        7096
+      ],
+      [
+        "tdr002 write released",
+        8597
+      ],
+      [
+        "tdr002 sender result",
+        8651
+      ]
+    ],
+    "tdr001": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "TaskDelegationError",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (its Task is DONE or CANCELLED)."
+        }
+      }
+    },
+    "tdr002": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "TaskDelegationError",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (its Task is DONE or CANCELLED)."
+        }
+      },
+      "blockerAgentSaw": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_f814ed22e9604660bfbffd15c43e72a5",
+        "isError": false
+      },
+      "blockerDelivery": {
+        "resolved": {
+          "accepted": true,
+          "agentRunId": "tdr_worker_ce554b_fd14df5cf3a74252a851139566e2645f",
+          "displayName": "mate"
+        }
+      }
+    },
+    "tdr003": {
+      "afterOutcome": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_f814ed22e9604660bfbffd15c43e72a5",
+        "isError": false
+      },
+      "postOutcome": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_f814ed22e9604660bfbffd15c43e72a5",
+        "isError": false
+      },
+      "history": [
+        "RACE1-agent-ffd534",
+        "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/tdr_squad_ce554b/mate\",\"content\":\"BLOCKER-agent-762ec9\"}}",
+        "BLOCKER-agent-762ec9",
+        "AFTER-agent-7e0b8b",
+        "POST-RESTORE-agent-803fa0"
+      ]
+    }
+  },
+  "team": {
+    "copies": {
+      "copyA": {
+        "teamRunId": "tdr_squad_ce554b_02c1c5b604fa4e30a17b00101823315e",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ce554b/lead",
+            "agentRunId": "tdr_worker_ce554b_4e2687fdb84d4abab4c9650c009a304f"
+          },
+          "mate": {
+            "address": "/tdr_squad_ce554b/mate",
+            "agentRunId": "tdr_worker_ce554b_719256c2d19e41ffa31758c8fc6ad705"
+          }
+        }
+      },
+      "copyB": {
+        "teamRunId": "tdr_squad_ce554b_30ff06b91cc44bb1b0076c3a3c632ff7",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ce554b/lead",
+            "agentRunId": "tdr_worker_ce554b_d5e7dc08f88845cab4ec8c1e062f392d"
+          },
+          "mate": {
+            "address": "/tdr_squad_ce554b/mate",
+            "agentRunId": "tdr_worker_ce554b_6cfbadebee454237a48c0fa50e767b3f"
+          }
+        }
+      },
+      "copyC": {
+        "teamRunId": "tdr_squad_ce554b_47d924e8c5294491b38dbe9f51eb43a5",
+        "members": {
+          "lead": {
+            "address": "/tdr_squad_ce554b/lead",
+            "agentRunId": "tdr_worker_ce554b_02573ae673d84180a5b3a5a202835cd2"
+          },
+          "mate": {
+            "address": "/tdr_squad_ce554b/mate",
+            "agentRunId": "tdr_worker_ce554b_387eb5fc986740128823a8a8ac01fec0"
+          }
+        }
+      }
+    },
+    "timeline": [
+      [
+        "tdr001 write held",
+        11
+      ],
+      [
+        "tdr001 task closed",
+        77
+      ],
+      [
+        "tdr001 write released",
+        1578
+      ],
+      [
+        "tdr001 sender result",
+        1630
+      ],
+      [
+        "tdr002 blocking write held; B message waiting",
+        6980
+      ],
+      [
+        "tdr002 task closed",
+        7063
+      ],
+      [
+        "tdr002 write released",
+        8564
+      ],
+      [
+        "tdr002 sender result",
+        8631
+      ]
+    ],
+    "tdr001": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "TaskDelegationError",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (its Task is DONE or CANCELLED)."
+        }
+      }
+    },
+    "tdr002": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "TaskDelegationError",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (its Task is DONE or CANCELLED)."
+        }
+      },
+      "blockerAgentSaw": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_4e2687fdb84d4abab4c9650c009a304f",
+        "isError": false
+      },
+      "blockerDelivery": {
+        "resolved": {
+          "accepted": true,
+          "agentRunId": "tdr_worker_ce554b_719256c2d19e41ffa31758c8fc6ad705",
+          "displayName": "mate"
+        }
+      }
+    },
+    "tdr003": {
+      "afterOutcome": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_4e2687fdb84d4abab4c9650c009a304f",
+        "isError": false
+      },
+      "postOutcome": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_4e2687fdb84d4abab4c9650c009a304f",
+        "isError": false
+      },
+      "history": [
+        "RACE1-team-3f1f86",
+        "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/tdr_squad_ce554b/mate\",\"content\":\"BLOCKER-team-816745\"}}",
+        "BLOCKER-team-816745",
+        "AFTER-team-d9cabe",
+        "POST-RESTORE-team-3a405b"
+      ]
+    }
+  },
+  "org": {
+    "copies": {
+      "copyA": {
+        "teamRunId": "tdr_squad_ce554b_384e057c0be249cbb4715d0604fef80b",
+        "members": {
+          "lead": {
+            "address": "/squad/lead",
+            "agentRunId": "tdr_worker_ce554b_266abbf8faa64347a401c625cbcaecbd"
+          },
+          "mate": {
+            "address": "/squad/mate",
+            "agentRunId": "tdr_worker_ce554b_8eb036aadd84417d801fae735c827137"
+          }
+        }
+      },
+      "copyB": {
+        "teamRunId": "tdr_squad_ce554b_2d4cec4e04f54e33ad1a502f93f12ff0",
+        "members": {
+          "lead": {
+            "address": "/squad/lead",
+            "agentRunId": "tdr_worker_ce554b_9aa678842a24411abfbfd09d1ebae8a7"
+          },
+          "mate": {
+            "address": "/squad/mate",
+            "agentRunId": "tdr_worker_ce554b_56e3cee0f4c04e31a11e7729853b1d3f"
+          }
+        }
+      },
+      "copyC": {
+        "teamRunId": "tdr_squad_ce554b_2ec2ad7da03b4b14a3a18df7898693f2",
+        "members": {
+          "lead": {
+            "address": "/squad/lead",
+            "agentRunId": "tdr_worker_ce554b_a6a65714297e4e038cbe764343147a18"
+          },
+          "mate": {
+            "address": "/squad/mate",
+            "agentRunId": "tdr_worker_ce554b_6b9646f5f29d4949be25a5d571c3745a"
+          }
+        }
+      }
+    },
+    "timeline": [
+      [
+        "tdr001 write held",
+        25
+      ],
+      [
+        "tdr001 task closed",
+        304
+      ],
+      [
+        "tdr001 write released",
+        1805
+      ],
+      [
+        "tdr001 sender result",
+        1868
+      ],
+      [
+        "tdr002 blocking write held; B message waiting",
+        7915
+      ],
+      [
+        "tdr002 task closed",
+        8036
+      ],
+      [
+        "tdr002 write released",
+        9538
+      ],
+      [
+        "tdr002 sender result",
+        9596
+      ]
+    ],
+    "tdr001": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "TaskDelegationError",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (its Task is DONE or CANCELLED)."
+        }
+      }
+    },
+    "tdr002": {
+      "agentSaw": {
+        "protocolError": {
+          "message": "MCP error -32603: Internal error",
+          "code": -32603
+        }
+      },
+      "delivery": {
+        "thrown": {
+          "name": "TaskDelegationError",
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task work for this agent run is closed (its Task is DONE or CANCELLED)."
+        }
+      },
+      "blockerAgentSaw": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_266abbf8faa64347a401c625cbcaecbd",
+        "isError": false
+      },
+      "blockerDelivery": {
+        "resolved": {
+          "accepted": true,
+          "agentRunId": "tdr_worker_ce554b_8eb036aadd84417d801fae735c827137",
+          "displayName": "mate"
+        }
+      }
+    },
+    "tdr003": {
+      "afterOutcome": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_266abbf8faa64347a401c625cbcaecbd",
+        "isError": false
+      },
+      "postOutcome": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "tdr_worker_ce554b_266abbf8faa64347a401c625cbcaecbd",
+        "isError": false
+      },
+      "history": [
+        "RACE1-org-d786bc",
+        "CALL_TOOL:{\"name\":\"send_message_to\",\"arguments\":{\"recipient_address\":\"/squad/mate\",\"content\":\"BLOCKER-org-48e8de\"}}",
+        "BLOCKER-org-48e8de",
+        "AFTER-org-1b921b",
+        "POST-RESTORE-org-bb6520"
+      ]
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "leftoverProcesses": [],
+    "errors": []
+  }
+}

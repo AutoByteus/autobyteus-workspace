@@ -1,0 +1,16 @@
+
+> autobyteus@1.5.12-beta.1 test:e2e:node-vocabulary /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/autobyteus-web
+> node tests/e2e/node-vocabulary-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/UPD-NVP
+
+[probe] NVP-01 started
+[probe] NVP-01 Pass
+[probe] NVP-02 started
+[probe] NVP-02 Pass
+[probe] NVP-03 started
+[probe] NVP-03 Pass
+[probe] NVP-04 started
+[probe] NVP-04 Pass
+[probe] NVP-05 started
+[probe] result Fail; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/UPD-NVP
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

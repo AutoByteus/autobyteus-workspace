@@ -134,7 +134,7 @@ describe('HandoffManager', () => {
   it('supports inline add/apply without an overlay and rejects self-resolving Team delivery', async () => {
     const wrapper = mountManager([])
     await wrapper.get('[data-test="add-handoff"]').trigger('click')
-    expect(wrapper.get('[data-test="handoff-editor"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="handoff-editor"]').exists()).toBe(true)
     expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
 
     await wrapper.get('[data-test="handoff-from"]').setValue('/software/architect')

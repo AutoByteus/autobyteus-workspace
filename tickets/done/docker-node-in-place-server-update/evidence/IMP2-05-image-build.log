@@ -1,0 +1,11 @@
+# IMP2-05 image build, linux/arm64
+# Command: docker buildx build --builder desktop-linux --load --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server-305-test:step2 .
+# Commit: b1029fc1b0 (the build ran on the working tree whose image inputs were then committed unchanged). Date: 2026-10-30
+
+#46 [builder 30/30] RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy   && cd /out/server-package   && rm node_modules/.pnpm/node_modules/autobyteus-server-ts   && node_modules/.bin/prisma generate --schema prisma/schema.prisma   && node /app/autobyteus-web/scripts/onnxruntime-web-packaging.mjs /out/server-package   && cp -r /app/autobyteus-web/dist-mobile/public /out/server-package/mobile-web   && node /app/scripts/server-package/describe-server-package.mjs package-json     --package-dir /out/server-package     --version "$(node -p "require('/app/autobyteus-web/package.json').version")"     --system-level-file /app/autobyteus-server-ts/docker/system-level.json   && node -p "require('/app/autobyteus-server-ts/docker/system-level.json').level" > /out/system-level
+#46 24.06 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 61 migrations
+#49 [runtime  8/15] COPY --from=builder /out/system-level /opt/autobyteus/system-level
+#50 [runtime  9/15] COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/
+#57 naming to docker.io/library/autobyteus-server-305-test:step2 done
+exit 0
+image id sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9

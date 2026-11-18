@@ -93,8 +93,9 @@ const createOrgView = (
   members: readonly { address: string; agentRunId: string }[],
 ): AgentOrgExecutionViewDto => ({
   base_change_sequence: 0,
+  live_sequence_id: null, last_message_change_sequence: null,
   is_active: false,
-  closed_task_executions: [], execution_tree: {
+  execution_tree: {
     subjectKind: 'agent_org',
     createdAt: NOW,
     archivedAt: null,
@@ -115,10 +116,8 @@ const createOrgView = (
         platformAgentRunId: null,
         launchConfiguration: launch,
       })),
-      taskExecutions: [],
     },
   },
-  communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId, messages: [] },
   agent_statuses: members.map((member) => ({
     member_address: member.address,
     agent_run_id: member.agentRunId,
@@ -126,7 +125,7 @@ const createOrgView = (
     trigger: null,
     tool_name: null,
     error_message: null,
-    error_details: null,
+    error_details: null, background_tasks_running: 0,
   })),
 });
 

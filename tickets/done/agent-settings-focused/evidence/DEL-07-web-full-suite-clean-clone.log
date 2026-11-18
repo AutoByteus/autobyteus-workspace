@@ -1,0 +1,7 @@
+# Clean-clone run of codex/agent-settings-focused @ f1f2d137db (/tmp/ab366-clone); full log 1819675 bytes, trimmed to summaries, skips and failures.
+Error sending user input: Error: Timed out waiting for agent stream connection for run 'perm-agent-id'.
+ Test Files  688 passed (688)
+      Tests  5052 passed | 2 skipped (5054)
+   Start at  10:58:32
+   Duration  241.44s (transform 26.11s, setup 1603.64s, collect 160.80s, tests 78.67s, environment 125.91s, prepare 79.41s)
+exit=0

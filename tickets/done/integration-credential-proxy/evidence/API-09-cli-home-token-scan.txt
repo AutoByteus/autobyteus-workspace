@@ -1,0 +1,66 @@
+# Case: API-09 — token scan of the CLI homes' transcripts of the live cells (temporary probe, read-only)
+# Command: SCAN_MARKER=GITHUB_PROXY_PROBE_DONE node /tmp/s311/scan/token-scan.mjs <Claude project dir of workspace-claude> <AGY live conversation dir> <Grok session dir of workspace-grok> <temp CODEX_HOME>
+# Script source: below the result. It prints paths and counts only, never the token.
+# Commit: b95bad702f (code 2529eaaec1); environment: macOS 26.5.2 arm64, node v22.23.1; date: 2026-10-30T09:06:18Z
+# Home paths are shown as ~; the temp CODEX_HOME as <temp CODEX_HOME>.
+
+(node:34469) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "~/.claude/projects/-private-var-folders-7w-9r4-s1-s42z3f7c136bpjf0r0000gn-T-github-proxy-shells-e2e-S4YkXY-workspace-claude": {
+    "files": 1,
+    "filesWithToken": [],
+    "filesWithMarker": 1
+  },
+  "~/.gemini/antigravity-cli/brain/92ba3b29-f64b-4810-9bc1-3d70722203e9": {
+    "files": 5,
+    "filesWithToken": [],
+    "filesWithMarker": 5
+  },
+  "~/.grok/sessions/%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fgithub-proxy-shells-e2e-S4YkXY%2Fworkspace-grok": {
+    "files": 18,
+    "filesWithToken": [],
+    "filesWithMarker": 0
+  },
+  "<temp CODEX_HOME>": {
+    "files": 477,
+    "filesWithToken": [],
+    "filesWithMarker": 4
+  }
+}
+
+## Scan script (temporary, /tmp/s311/scan/token-scan.mjs)
+```js
+// Temporary token scan (autobyteus-311 API/E2E, AC-007): reads test.github.token from the test vault and reports,
+// for each given file or folder, the files whose bytes contain it, and the files containing an optional marker
+// (to show the scanned files really hold the runs' tool output). Prints paths and counts only, never the token.
+import fs from "node:fs";
+import path from "node:path";
+const WT = "/Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy";
+const { openVerifiedTestVault } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/open-test-vault.js`);
+const { readSecretEntry } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/read-secret-entry.js`);
+const { secretId } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/secret-id.js`);
+const vault = await openVerifiedTestVault(process.env.HOME + "/.autobyteus-test/vault");
+const token = (await readSecretEntry(vault.store, vault.rootKey, vault.metadata, secretId("test.github.token"))).revealToTrustedConsumer();
+vault.close();
+const marker = process.env.SCAN_MARKER || null;
+const files = (p) => { if (!fs.existsSync(p)) return []; const st = fs.lstatSync(p); if (st.isFile()) return [p];
+  if (!st.isDirectory()) return []; return fs.readdirSync(p).flatMap((n) => files(path.join(p, n))); };
+const report = {};
+for (const target of process.argv.slice(2)) {
+  const list = files(target);
+  const withToken = [], withMarker = [];
+  for (const f of list) { const b = fs.readFileSync(f); if (b.includes(token)) withToken.push(f); if (marker && b.includes(marker)) withMarker.push(f); }
+  report[target] = { files: list.length, filesWithToken: withToken, ...(marker ? { filesWithMarker: withMarker.length } : {}) };
+}
+console.log(JSON.stringify(report, null, 2));
+```
+
+## Grok live retry session (API-06, 2026-10-30T09:37:40Z)
+{
+  "~/.grok/sessions/%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fgithub-proxy-shells-e2e-aCJRgI%2Fworkspace-grok": {
+    "files": 20,
+    "filesWithToken": [],
+    "filesWithMarker": 3
+  }
+}

@@ -28,14 +28,16 @@ import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
 
 const props = defineProps<{
   url: string | null;
+  /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
+  contentRevision?: number;
 }>();
 
 const mediaAttemptKey = ref(0);
 const nativeMediaFailed = ref(false);
-const { resolvedUrl, error: resourceError, refresh } = useAuthorizedObjectUrl(() => props.url);
+const { resolvedUrl, error: resourceError, refresh } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 });
 const hasMediaFailure = computed(() => nativeMediaFailed.value || Boolean(resourceError.value));
 
-watch(() => props.url, () => {
+watch([() => props.url, () => props.contentRevision], () => {
   nativeMediaFailed.value = false;
   mediaAttemptKey.value += 1;
 });

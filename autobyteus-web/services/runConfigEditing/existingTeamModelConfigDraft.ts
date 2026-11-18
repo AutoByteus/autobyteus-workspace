@@ -1,9 +1,9 @@
-import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
+import type { ExistingAgentRunSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 import type {
   AgentLaunchConfigurationDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
-import { existingRunModelConfigsEqual, cloneExistingRunSelection } from './existingAgentModelConfigDraft'
+import { existingRunModelConfigsEqual, cloneExistingAgentRunSelection } from './existingAgentModelConfigDraft'
 import {
   createExistingHierarchicalModelConfigDraft,
   planExistingHierarchicalModelConfigPatches,
@@ -41,8 +41,7 @@ export const createExistingTeamModelConfigDraft = (
       scopeKind: kind,
       address,
       parentAddress,
-      runtimeKind: launch.runtime_kind,
-      originalSelection: cloneExistingRunSelection({ llmModelIdentifier: launch.llm_model_identifier, llmConfig: launch.llm_config }),
+      originalSelection: cloneExistingAgentRunSelection({ runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: launch.llm_config }),
       linkedToParentAtDraftStart: Boolean(parentLaunch && fixedAndConfigEqual(launch, parentLaunch)),
     })
   }
@@ -57,7 +56,7 @@ export const createExistingTeamModelConfigDraft = (
 export const updateExistingTeamScopeModelConfig = (
   draft: ExistingTeamModelConfigDraft,
   address: string,
-  selection: ExistingRunModelSelection,
+  selection: ExistingAgentRunSelection,
   directlyEdited = true,
 ): ExistingTeamModelConfigDraft => updateExistingHierarchicalScopeModelConfig(draft, address, selection, directlyEdited)
 

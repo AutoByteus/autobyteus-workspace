@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { configureRunProjects } from "../../../src/agent-execution/domain/run-project-context.js";
 import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
@@ -151,6 +152,44 @@ describe("AgentRunProvisioningService", () => {
     expect(recorded).not.toHaveProperty("activationState");
   });
 
+  it.each([
+    [RuntimeKind.CLAUDE_AGENT_SDK, "opus", { thinking_enabled: false, thinking_display: "x", reasoning_effort: "xhigh" }, { reasoning_effort: "xhigh" }],
+    [RuntimeKind.CODEX_APP_SERVER, "model-1", { reasoning_effort: "low", service_tier: "fast", other: 1 }, { reasoning_effort: "low", service_tier: "fast" }],
+    [RuntimeKind.AUTOBYTEUS, "claude-fable-5", { thinking_enabled: false, reasoning_effort: "max" }, { reasoning_effort: "max" }],
+    [RuntimeKind.AUTOBYTEUS, "claude-fable-5", { thinking_display: "omitted" }, null],
+  ])("stores only declared settings of a new %s run (AC-008)", async (runtimeKind, llmModelIdentifier, llmConfig, expected) => {
+    await buildService().prepareAgentRun({
+      agentDefinitionId: "agent-def-1",
+      workspaceRootPath: "/tmp/workspace-one",
+      llmModelIdentifier,
+      autoExecuteTools: false,
+      llmConfig,
+      runtimeKind,
+    });
+
+    expect(historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata.llmConfig).toEqual(expected);
+  });
+
+  it("records a start under the chosen Project with the allocated id before any run record; the run record gains no key (SR-009)", async () => {
+    const order: string[] = [];
+    historyCatalogService.recordPreparedRun.mockImplementation(async () => { order.push("records"); });
+    const recordStart = vi.fn(async () => { order.push("start"); });
+    const binding = configureRunProjects({ recordStart, contextOfRun: async () => null });
+    try {
+      const input = { agentDefinitionId: "agent-def-1", workspaceRootPath: "/tmp/workspace-one", llmModelIdentifier: "model-1",
+        autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER };
+      const result = await buildService().prepareAgentRun({ ...input, projectId: " project_a1 " });
+      expect(recordStart).toHaveBeenCalledWith("project_a1", { kind: "agent", runId: result.runId });
+      expect(order).toEqual(["start", "records"]);
+      expect(historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata).not.toHaveProperty("projectId");
+
+      recordStart.mockImplementationOnce(async () => { throw Object.assign(new Error("not found"), { code: "PROJECT_NOT_FOUND" }); });
+      historyCatalogService.recordPreparedRun.mockClear();
+      await expect(buildService().prepareAgentRun({ ...input, projectId: "missing" })).rejects.toMatchObject({ code: "PROJECT_NOT_FOUND" });
+      expect(historyCatalogService.recordPreparedRun).not.toHaveBeenCalled();
+    } finally { binding.close(); }
+  });
+
   // Activating a prepared run (and retrying after a failed activation) moved to the standalone run
   // lifecycle in 9c3080a20; see standalone-agent-run-lifecycle-service.test.ts ("aborts a prepared candidate").
 
@@ -163,30 +202,5 @@ describe("AgentRunProvisioningService", () => {
 
     expect(result).toEqual({ success: true, message: "Run 'run-cancel-prepared' cancelled." });
     expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledWith(runId);
-  });
-
-  it("cleans up only expired prepared identities", async () => {
-    const now = new Date("2026-05-18T12:00:00.000Z");
-    const stale = buildMetadata(memoryDir, "run-stale", {
-      preparedExpiresAt: "2026-05-18T11:59:00.000Z",
-    });
-    const fresh = buildMetadata(memoryDir, "run-fresh", {
-      preparedExpiresAt: "2026-05-18T12:01:00.000Z",
-    });
-    const started = buildMetadata(memoryDir, "run-started", {
-      preparedExpiresAt: "2026-05-18T11:00:00.000Z",
-      startedAt: "2026-05-17T00:05:00.000Z",
-    });
-    for (const metadata of [stale, fresh, started]) {
-      metadataByRunId.set(metadata.runId, metadata);
-      await fs.mkdir(metadata.memoryDir, { recursive: true });
-    }
-    const service = buildService();
-
-    const removed = await service.cleanupStalePreparedRuns(now);
-
-    expect(removed).toBe(1);
-    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledTimes(1);
-    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledWith("run-stale");
   });
 });

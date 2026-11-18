@@ -1,0 +1,1587 @@
+# IMP-05 gated deterministic suites (scripted AGY CLI, no provider); commit 9721caf187; macOS, Node v22.23.1; 2026-11-10T06:18:07Z
+# Command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch <3 files>
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:24501) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Node access: local control socket not opened. The node's local control socket path is 136 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+AgentRunManager initialized.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+AgentRunManager initialized.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Registered required tool unit: Search Tools
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+Node request refused NODE_CREDENTIAL_INVALID /ws/agent-package-definitions?access_token=%5BREDACTED%5D from 127.0.0.1
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+Node request refused NODE_CREDENTIAL_INVALID /ws/projects?access_token=%5BREDACTED%5D from 127.0.0.1
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /ws/agent-package-definitions?access_token=%5BREDACTED%5D from 127.0.0.1
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-004 (AC-013, REQ-017): every manual Reload notifies another connected client of every list
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Attempting to download file from: https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+URL has no extension. Defaulting to .bin for https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/agent-packages/.staging/apar-e2e__agents-267cbbc8-dbac-44ad-b844-662f8fea043e-Rd9Nt1/download/apar-e2e__agents/0edc3bcb-2c98-4c60-b7f1-9d5bcdf8d81f.bin
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Attempting to download file from: https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+URL has no extension. Defaulting to .bin for https://codeload.github.com/apar-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/agent-packages/.staging/capture-apar-e2e__agents-SW9DRo/download/apar-e2e__agents/621d9121-c408-474c-bd5b-f4b5136ce7d2.bin
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Attempting to download file from: https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+URL has no extension. Defaulting to .bin for https://codeload.github.com/apar-e2e/agents/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/agent-packages/.staging/apar-e2e__agents-62f890b3-eaf9-4a3a-94f5-c730a853fb0e-WnjomL/download/apar-e2e__agents/eeb6ce6d-e8e1-4511-a9d2-4cbdfb6726d0.bin
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-006 (DSN-002): a Team present in two packages is unavailable everywhere with DEFINITION_IDENTITY_DUPLICATED
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-009 (REQ-007, REQ-009, DSN-003, DSN-004): broken org-owned nodes keep their last good version and are listed on the owning Org
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Agent Definition created successfully with ID: apar-manager-556274
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Created and registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+AGY compaction detection off for run apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Agent websocket attached for run apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e
+Created agent session 9fb2b9d8-66c6-43b1-adbf-6a0f836f6cfb for run apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e
+Agent WebSocket connected: session=9fb2b9d8-66c6-43b1-adbf-6a0f836f6cfb, run=apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+AGY compaction detection off for run apar_fresh_scout_ae569a1fbb994169b1cbd8f0c81f91fc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_fresh_scout_ae569a1fbb994169b1cbd8f0c81f91fc/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+AGY compaction detection off for run apar_fresh_scout_2f8db27f48244f5aa962149c4d474c71: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agent_teams/apar_fresh_squad_fef53ce4ec96418595371576fbcbd236/apar_fresh_scout_2f8db27f48244f5aa962149c4d474c71/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+AGY compaction detection off for run apar_editor_28c555c72efe431c8459705a6361da86: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agent_teams/apar_fresh_squad_989c8a2cad8f443e99b1338f4b80f13b/apar_editor_28c555c72efe431c8459705a6361da86/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+AGY compaction detection off for run apar_editor_ce5f3b5fc4e4401c9b13f41f81b4aa3f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_editor_ce5f3b5fc4e4401c9b13f41f81b4aa3f/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agent_teams/apar_fresh_squad_fef53ce4ec96418595371576fbcbd236/apar_fresh_scout_2f8db27f48244f5aa962149c4d474c71/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_manager_556274_4729a8bdc48c4da48af2b8153ed2a66e/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+AGY compaction detection off for run apar_steady_9b0141253f5849c8b4469ebe6f90d4ab: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Agent websocket attached for run apar_steady_9b0141253f5849c8b4469ebe6f90d4ab
+Created agent session 7d97928d-f26b-4fa0-bc62-1621ad841931 for run apar_steady_9b0141253f5849c8b4469ebe6f90d4ab
+Agent WebSocket connected: session=7d97928d-f26b-4fa0-bc62-1621ad841931, run=apar_steady_9b0141253f5849c8b4469ebe6f90d4ab
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+AGY compaction detection off for run apar_steady_fb3103ed3b7e4b16b81db12294e62893: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Agent websocket attached for run apar_steady_fb3103ed3b7e4b16b81db12294e62893
+Created agent session 2189dc64-6418-43a1-b2e9-e09956b562bc for run apar_steady_fb3103ed3b7e4b16b81db12294e62893
+Agent WebSocket connected: session=2189dc64-6418-43a1-b2e9-e09956b562bc, run=apar_steady_fb3103ed3b7e4b16b81db12294e62893
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_fb3103ed3b7e4b16b81db12294e62893/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_fb3103ed3b7e4b16b81db12294e62893/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_fb3103ed3b7e4b16b81db12294e62893/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/server-data/memory/agents/apar_steady_9b0141253f5849c8b4469ebe6f90d4ab/raw_traces_manifest.json
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-definitions-e2e-Ks1VGG/workspace.
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Reusing registered workspace ID: agent_ws_955d17ec0bda5510556041d840754868f984f4ceaeea0cd95c38ca31f5ef4de0
+
+stderr | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found
+Error restoring agent run with ID apar_steady_9b0141253f5849c8b4469ebe6f90d4ab: Error: AGY_AGENT_DEFINITION_MISSING: apar-steady
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Closed agent session 2189dc64-6418-43a1-b2e9-e09956b562bc
+Agent WebSocket disconnected: 2189dc64-6418-43a1-b2e9-e09956b562bc
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Closed agent session 7d97928d-f26b-4fa0-bc62-1621ad841931
+Agent WebSocket disconnected: 7d97928d-f26b-4fa0-bc62-1621ad841931
+
+stdout | tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary
+Closed agent session 9fb2b9d8-66c6-43b1-adbf-6a0f836f6cfb
+Agent WebSocket disconnected: 9fb2b9d8-66c6-43b1-adbf-6a0f836f6cfb
+
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests) 14261ms
+     ✓ DCF-E2E-001 (QR-006, REQ-005): `connected` first, no replay, broadcast; remote-access auth like the sibling sockets  615ms
+     ✓ DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload  2264ms
+     ✓ DCF-E2E-003 (AC-011, AC-012, REQ-015): a package folder moved away keeps its definitions and reports it; restore resumes; removal releases it  4416ms
+     ✓ DCF-E2E-005 (AC-009, REQ-013, DSN-001): a GitHub package updates only on Update, and the result reaches another client  1808ms
+     ✓ DCF-E2E-007 (SCN-012, AC-015, AC-016): the next delegation uses current definitions, through the real tools  3391ms
+     ✓ DCF-E2E-008 (AC-008, REQ-012, DEC-003): an active run keeps its definition across an edit and a removal; restore after stop reports not found  813ms
+(node:33445) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/.env
+◇ injected env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Node access: local control socket not opened. The node's local control socket path is 117 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Definition created successfully with ID: sun-manager-eb44b3
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Definition created successfully with ID: sun-user-eb44b3
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Definition created successfully with ID: sun-plain-eb44b3
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Agent Team Definition created successfully with ID: sun-team-eb44b3
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Created and registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Agent team websocket attached for team run sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc
+Created agent session 71909488-b29b-4448-899f-3f0dcf411fb2 for run sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Agent Team WebSocket connected: session=71909488-b29b-4448-899f-3f0dcf411fb2, run=sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Agent websocket attached for run sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1
+Created agent session 8d3014c4-b7c4-400c-a7c3-a99adaa68ad2 for run sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1
+Agent WebSocket connected: session=8d3014c4-b7c4-400c-a7c3-a99adaa68ad2, run=sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_user_eb44b3_29a92f7dd3e34aa68f75e5d0b9c633ff: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_29a92f7dd3e34aa68f75e5d0b9c633ff/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+AGY compaction detection off for run sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_29a92f7dd3e34aa68f75e5d0b9c633ff/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_plain_eb44b3_59c2d827e64e4b139f5f20186f0920ad/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_orgs/sun_org_eb44b3_8cd4778991904fa491b81ce653ff4a06/sun_user_eb44b3_6ca928a0c1684ebf9668d9d8fdb89050/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_29a92f7dd3e34aa68f75e5d0b9c633ff/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_d237aae5d83b48c99dbc31c0822889f1/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_29a92f7dd3e34aa68f75e5d0b9c633ff/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agent_teams/sun_team_eb44b3_a606aa7204564a0aa274d56d6b70bfdc/sun_user_eb44b3_de7c9cdc46fc410195d85d07749ab397/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+AGY compaction detection off for run sun_manager_eb44b3_4582abd61a464977b431ca26d4248691: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Agent websocket attached for run sun_manager_eb44b3_4582abd61a464977b431ca26d4248691
+Created agent session f2bafcdd-7669-47ce-8f92-0e5e3278f656 for run sun_manager_eb44b3_4582abd61a464977b431ca26d4248691
+Agent WebSocket connected: session=f2bafcdd-7669-47ce-8f92-0e5e3278f656, run=sun_manager_eb44b3_4582abd61a464977b431ca26d4248691
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+AGY compaction detection off for run sun_user_eb44b3_182c30fa208c41558251ec8b79a73b35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_182c30fa208c41558251ec8b79a73b35/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_182c30fa208c41558251ec8b79a73b35/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+AGY compaction detection off for run sun_user_eb44b3_182c30fa208c41558251ec8b79a73b35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_manager_eb44b3_4582abd61a464977b431ca26d4248691/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_user_eb44b3_182c30fa208c41558251ec8b79a73b35/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Agent Definition created successfully with ID: sun-github-user-989878
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/workspace.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Reusing registered workspace ID: agent_ws_01b36360fc75392ff538f9ab1fb6baf95c95cb38844323617ee5fd708bfef46a
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+AGY compaction detection off for run sun_github_user_989878_c18e8778978946aeb5e675da363e6561: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Agent websocket attached for run sun_github_user_989878_c18e8778978946aeb5e675da363e6561
+Created agent session 23184522-2c97-4b42-96ea-6ec1e70dda47 for run sun_github_user_989878_c18e8778978946aeb5e675da363e6561
+Agent WebSocket connected: session=23184522-2c97-4b42-96ea-6ec1e70dda47, run=sun_github_user_989878_c18e8778978946aeb5e675da363e6561
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY) > SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-notice-roots-e2e-hdLW57/memory/agents/sun_github_user_989878_c18e8778978946aeb5e675da363e6561/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session 23184522-2c97-4b42-96ea-6ec1e70dda47
+Agent WebSocket disconnected: 23184522-2c97-4b42-96ea-6ec1e70dda47
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session f2bafcdd-7669-47ce-8f92-0e5e3278f656
+Agent WebSocket disconnected: f2bafcdd-7669-47ce-8f92-0e5e3278f656
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session 8d3014c4-b7c4-400c-a7c3-a99adaa68ad2
+Agent WebSocket disconnected: 8d3014c4-b7c4-400c-a7c3-a99adaa68ad2
+
+stdout | tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts > Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shutdown, GitHub sources; scripted AGY)
+Closed agent session 71909488-b29b-4448-899f-3f0dcf411fb2
+
+ ✓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests) 76973ms
+     ✓ SUN-E2E-001 (AC-007, REQ-002, REQ-011): a Team member, an Org member and a delegated copy that use the skill each get one notice with their next input; a member that does not use it gets none  4808ms
+     ✓ SUN-E2E-002 (AC-003, REQ-006, QR-003): a delegated copy shut down after idle is not restored by a skill change; the Manager's message restores it with one combined notice  64861ms
+     ✓ SUN-E2E-003 (AC-005b, REQ-009): a GitHub skill-source Update publishes a new generation; the run is told the skill was updated, with the new path, and the new folder is watched  6463ms
+(node:63749) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/.env
+◇ injected env (3) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Node access: local control socket not opened. The node's local control socket path is 122 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: cleanup_stdio
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+In-memory cache: Added new MCP config cleanup_stdio.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Attempting to discover and register tools for server ID: cleanup_stdio
+
+stderr | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Overwriting existing MCP config with server_id 'cleanup_stdio'.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully registered tool definition: 'cleanup_stdio_echo'
+Successfully registered tool definition: 'cleanup_stdio_add'
+Successfully registered tool definition: 'cleanup_stdio_fail'
+Successfully registered tool definition: 'cleanup_stdio_slow'
+Successfully registered tool definition: 'cleanup_stdio_report_env_and_cwd'
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Successfully discovered and registered 5 tools for server ID: cleanup_stdio
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Agent Definition created successfully with ID: cleanup-terminate-588683
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Created and registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+AGY compaction detection off for run cleanup_terminate_588683_623c8e31147146e2b8fed4aa11ad91c8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends the run's stdio server process when the run is terminated
+Agent websocket attached for run cleanup_terminate_588683_623c8e31147146e2b8fed4aa11ad91c8
+Created agent session fa1d2372-6fbf-4fc3-9e86-12e8d320d6d3 for run cleanup_terminate_588683_623c8e31147146e2b8fed4aa11ad91c8
+Agent WebSocket connected: session=fa1d2372-6fbf-4fc3-9e86-12e8d320d6d3, run=cleanup_terminate_588683_623c8e31147146e2b8fed4aa11ad91c8
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Agent Definition created successfully with ID: cleanup-delete-db1019
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+AGY compaction detection off for run cleanup_delete_db1019_a6020b68747943a1991de88946f6a838: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves no stdio server process once a terminated run is deleted
+Agent websocket attached for run cleanup_delete_db1019_a6020b68747943a1991de88946f6a838
+Created agent session f28ea302-d76d-4a19-b1b4-487d46f233ee for run cleanup_delete_db1019_a6020b68747943a1991de88946f6a838
+Agent WebSocket connected: session=f28ea302-d76d-4a19-b1b4-487d46f233ee, run=cleanup_delete_db1019_a6020b68747943a1991de88946f6a838
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Agent Definition created successfully with ID: cleanup-wake-d2f025
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+AGY compaction detection off for run cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Agent websocket attached for run cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f
+Created agent session fd4a8a18-0e8d-4703-8727-8ed433ff8354 for run cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f
+Agent WebSocket connected: session=fd4a8a18-0e8d-4703-8727-8ed433ff8354, run=cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+AGY compaction detection off for run cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > gives a run woken right after termination a new, working stdio server process
+Agent websocket attached for run cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f
+Created agent session 4b930742-64a6-405b-9125-358d2eec3986 for run cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f
+Agent WebSocket connected: session=4b930742-64a6-405b-9125-358d2eec3986, run=cleanup_wake_d2f025_ea21ee8feb2b4335a271adfe6a67189f
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Agent Definition created successfully with ID: cleanup-pair-0f6559
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+AGY compaction detection off for run cleanup_pair_0f6559_6b9ef845886648f4a1b2aa7d91bd85f2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Agent websocket attached for run cleanup_pair_0f6559_6b9ef845886648f4a1b2aa7d91bd85f2
+Created agent session 8a1b9ed5-55fd-4d13-93ae-499b6cc2c523 for run cleanup_pair_0f6559_6b9ef845886648f4a1b2aa7d91bd85f2
+Agent WebSocket connected: session=8a1b9ed5-55fd-4d13-93ae-499b6cc2c523, run=cleanup_pair_0f6559_6b9ef845886648f4a1b2aa7d91bd85f2
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+AGY compaction detection off for run cleanup_pair_0f6559_3caea48bbc4a4dad9d5e2b4e278e0621: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > leaves another run's stdio server process and the gateway working when one run ends
+Agent websocket attached for run cleanup_pair_0f6559_3caea48bbc4a4dad9d5e2b4e278e0621
+Created agent session 2f7512d1-9a94-4427-a6a5-8be023121401 for run cleanup_pair_0f6559_3caea48bbc4a4dad9d5e2b4e278e0621
+Agent WebSocket connected: session=2f7512d1-9a94-4427-a6a5-8be023121401, run=cleanup_pair_0f6559_3caea48bbc4a4dad9d5e2b4e278e0621
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Agent Definition created successfully with ID: cleanup-manager-3cdcec
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+AGY compaction detection off for run cleanup_manager_3cdcec_26d3bd88f33a40d88745f9330fabc1e4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Agent Definition created successfully with ID: cleanup-worker-0bbf1a
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Agent websocket attached for run cleanup_manager_3cdcec_26d3bd88f33a40d88745f9330fabc1e4
+Created agent session 9a8a0ad1-55ad-432b-addd-a71d1cb0c62d for run cleanup_manager_3cdcec_26d3bd88f33a40d88745f9330fabc1e4
+Agent WebSocket connected: session=9a8a0ad1-55ad-432b-addd-a71d1cb0c62d, run=cleanup_manager_3cdcec_26d3bd88f33a40d88745f9330fabc1e4
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-run-session-cleanup-e2e-1SVvk9/workspace.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+Reusing registered workspace ID: agent_ws_5c3ba54f3d55869ae16362afe08d790ba970f473c25b65a74ea6179ef8921183
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY) > ends a delegated copy's stdio server process when the copy is shut down after the idle grace period
+AGY compaction detection off for run cleanup_worker_0bbf1a_293f05f537ff440a91803daf27bfcbf9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 9a8a0ad1-55ad-432b-addd-a71d1cb0c62d
+Agent WebSocket disconnected: 9a8a0ad1-55ad-432b-addd-a71d1cb0c62d
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 2f7512d1-9a94-4427-a6a5-8be023121401
+Agent WebSocket disconnected: 2f7512d1-9a94-4427-a6a5-8be023121401
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 8a1b9ed5-55fd-4d13-93ae-499b6cc2c523
+Agent WebSocket disconnected: 8a1b9ed5-55fd-4d13-93ae-499b6cc2c523
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session 4b930742-64a6-405b-9125-358d2eec3986
+Agent WebSocket disconnected: 4b930742-64a6-405b-9125-358d2eec3986
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session fd4a8a18-0e8d-4703-8727-8ed433ff8354
+Agent WebSocket disconnected: fd4a8a18-0e8d-4703-8727-8ed433ff8354
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session f28ea302-d76d-4a19-b1b4-487d46f233ee
+Agent WebSocket disconnected: f28ea302-d76d-4a19-b1b4-487d46f233ee
+
+stdout | tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts > A run's MCP server processes end when the run ends (real server, Agent Tools MCP, scripted AGY)
+Closed agent session fa1d2372-6fbf-4fc3-9e86-12e8d320d6d3
+Agent WebSocket disconnected: fa1d2372-6fbf-4fc3-9e86-12e8d320d6d3
+
+ ✓ tests/e2e/runtime/mcp-run-session-cleanup.e2e.test.ts (5 tests) 65834ms
+     ✓ ends the run's stdio server process when the run is terminated  854ms
+     ✓ leaves no stdio server process once a terminated run is deleted  771ms
+     ✓ gives a run woken right after termination a new, working stdio server process  905ms
+     ✓ leaves another run's stdio server process and the gateway working when one run ends  1599ms
+     ✓ ends a delegated copy's stdio server process when the copy is shut down after the idle grace period  61022ms
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  07:18:09
+   Duration  175.54s (transform 8.32s, setup 130ms, import 17.49s, tests 157.07s, environment 0ms)
+

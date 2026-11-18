@@ -1,0 +1,13 @@
+check: IMP-12
+command: temporary mutation of src (not committed): (a) remove `await discardUploadedFile(file)` from the route's catch in src/api/rest/context-files.ts, (b) make the writer's limiting Transform error instead of draining; then
+  (cd autobyteus-server-ts && vitest run tests/integration/api/rest/context-file-size-limits.integration.test.ts)
+commit: 62bda32c4 sources with the two mutations applied, then restored (git diff clean)
+environment: macOS Darwin 25.6, Node v26.12.0
+date: 2026-11-15
+----
+Result with the mutations: 15 tests, 9 failed (88 s), among them
+  x a 26 MiB document is refused with 413 ... closes promptly (AC-003, P4/P5)             10073ms   (close-timeout)
+  x an unaccepted type is refused with 415 ..., the rest of the file is read ... (AR-008)  14017ms
+  x a missing owner field / an owner that is not JSON / not a draft owner answers 400 ...  14013ms each
+  x Project Task upload route ... closing promptly                                          10086ms
+Result without the mutations (IMP-02): 15 passed. The prompt-close checks therefore fail when a refusal leaves the request undrained (P4, AR-007/AR-008).

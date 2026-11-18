@@ -1,0 +1,11 @@
+# SD-01 base ddd6fdcdf6 (origin/personal): env -i … vitest run tests/e2e/runtime/zz-probe-application-reentry.e2e.test.ts (temporary probe; real studio server, scripted CLIs)
+[AB296] reload errors null
+[AB296] after package reload: launch settings (soft) 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+[AB296] repair 200 {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>' is currently reentering. Please retry after repair/reload completes.","updatedAt":"2026-10-24T18:24:27.324Z"}
+[AB296] signed-out import: launch settings 503 {"detail":"Application '<id>' is currently quarantined: Application setup is required after catalog transition.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+     × RR: an ACTIVE application stays usable after a package reload and after a repair 1418ms
+     × SO: imported while Codex is signed out, it says why; after sign-in, the repair returns it to ACTIVE 294ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: package reload keeps it usable: expected 503 to be 200 // Object.is equality
+AssertionError: expected 'Application \'bundle-app__6170706c696…' to contain 'Codex authentication is unavailable'
+      Tests  2 failed (2)

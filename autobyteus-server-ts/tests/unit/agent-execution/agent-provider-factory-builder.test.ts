@@ -9,6 +9,7 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
   workspaceManager: { marker: "workspace" } as never,
   skillService: { marker: "skills" } as never,
   autoByteus: {
+    nativeCommandProcessScope: {} as never,
     agentFactory: { marker: "agent-factory" } as never,
     createLlm: vi.fn() as never,
     processorRegistries: {
@@ -25,7 +26,6 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
     workspaceResolver: { marker: "codex-resolver" } as never,
     clientManager: { marker: "codex-client" } as never,
     threadManager: { marker: "codex-thread-manager" } as never,
-    threadCleanup: { marker: "codex-thread-cleanup" } as never,
   },
   claude: {
     workspaceResolver: { marker: "claude-resolver" } as never,
@@ -37,6 +37,7 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
 const PROCESS_LEAVES = [
   "workspaceManager",
   "skillService",
+  "autoByteus.nativeCommandProcessScope",
   "autoByteus.agentFactory",
   "autoByteus.createLlm",
   "autoByteus.processorRegistries.input",
@@ -49,7 +50,6 @@ const PROCESS_LEAVES = [
   "codex.workspaceResolver",
   "codex.clientManager",
   "codex.threadManager",
-  "codex.threadCleanup",
   "claude.workspaceResolver",
   "claude.workspaceSkillMaterializer",
   "claude.sdkClient",
@@ -115,6 +115,8 @@ describe("AgentProviderFactoryBuilder", () => {
           agentDefinitionService: {},
           agentToolMcpRunSessions: {},
           applicationAgentTools: null,
+          integrationRunAccess: null,
+          providerRelayAccess: null,
         };
         if (omit) delete input[field];
         else input[field] = value;
@@ -124,15 +126,31 @@ describe("AgentProviderFactoryBuilder", () => {
     }
 
     for (const input of [
-      { agentDefinitionService: {}, agentToolMcpRunSessions: {} },
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, integrationRunAccess: null, providerRelayAccess: null },
       {
         agentDefinitionService: {},
         agentToolMcpRunSessions: {},
         applicationAgentTools: undefined,
+        integrationRunAccess: null,
+        providerRelayAccess: null,
       },
     ]) {
       expect(() => builder.createForExecution(input as never))
         .toThrow("applicationAgentTools disposition is required");
+    }
+    for (const input of [
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, applicationAgentTools: null, providerRelayAccess: null },
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, applicationAgentTools: null, integrationRunAccess: undefined, providerRelayAccess: null },
+    ]) {
+      expect(() => builder.createForExecution(input as never))
+        .toThrow("integrationRunAccess disposition is required");
+    }
+    for (const input of [
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, applicationAgentTools: null, integrationRunAccess: null },
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, applicationAgentTools: null, integrationRunAccess: null, providerRelayAccess: undefined },
+    ]) {
+      expect(() => builder.createForExecution(input as never))
+        .toThrow("providerRelayAccess disposition is required");
     }
   });
 
@@ -145,16 +163,31 @@ describe("AgentProviderFactoryBuilder", () => {
     const runSessionsB = { activateForRun: vi.fn() };
     const capabilityA = { marker: "application-capability-a" };
     const capabilityB = { marker: "application-capability-b" };
+    const integrationRunAccess = { environmentForRun: vi.fn(async () => ({})), integrationsStartingOnRestart: vi.fn(async () => []) };
+    const providerRelayAccess = { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() };
     const first = builder.createForExecution({
       agentDefinitionService: definitionA as never,
       agentToolMcpRunSessions: runSessionsA as never,
       applicationAgentTools: capabilityA as never,
+      integrationRunAccess,
+      providerRelayAccess,
     });
     const second = builder.createForExecution({
       agentDefinitionService: definitionB as never,
       agentToolMcpRunSessions: runSessionsB as never,
       applicationAgentTools: capabilityB as never,
+      integrationRunAccess: null,
+      providerRelayAccess: null,
     });
+    // Each runtime's factory applies the run access it was given (the same one for every runtime).
+    expect((first.autoByteus as unknown as { options: Record<string, unknown> }).options.integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.codex as unknown as Record<string, Record<string, unknown>>).threadBootstrapper!.integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.claude as unknown as Record<string, Record<string, unknown>>).sessionManager!.integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.antigravity as unknown as Record<string, unknown>).integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.grok as unknown as { deps: Record<string, unknown> }).deps.integrationRunAccess).toBe(integrationRunAccess);
+    expect((second.antigravity as unknown as Record<string, unknown>).integrationRunAccess).toBeNull();
+    // Grok calls its provider itself, whatever the composition gives.
+    expect((first.grok as unknown as { deps: Record<string, unknown> }).deps.providerRelayAccess).toBeNull();
 
     expect(Object.isFrozen(builder)).toBe(true);
     expect(Object.isFrozen(first)).toBe(true);
@@ -176,13 +209,13 @@ describe("AgentProviderFactoryBuilder", () => {
     const codex = first.codex as unknown as Record<string, unknown>;
     const codexBootstrapper = codex.threadBootstrapper as Record<string, unknown>;
     expect(codex.threadManager).toBe(process.codex.threadManager);
-    expect(codex.threadCleanup).toBe(process.codex.threadCleanup);
     expect(codexBootstrapper.workspaceSkillMaterializer)
       .toBe(process.codex.workspaceSkillMaterializer);
     expect(codexBootstrapper.workspaceResolver).toBe(process.codex.workspaceResolver);
     expect(codexBootstrapper.agentDefinitionService).toBe(definitionA);
     expect(codexBootstrapper.skillService).toBe(process.skillService);
-    expect(codexBootstrapper.clientManager).toBe(process.codex.clientManager);
+    expect((codexBootstrapper.skillRequestPlanner as Record<string, unknown>).clientManager)
+      .toBe(process.codex.clientManager);
     expect(codexBootstrapper.agentToolMcpRunSessions).toBe(runSessionsA);
 
     const claude = first.claude as unknown as Record<string, unknown>;
@@ -191,8 +224,6 @@ describe("AgentProviderFactoryBuilder", () => {
     expect(claudeManager.workspaceManager).toBe(process.workspaceManager);
     expect(claudeManager.sdkClient).toBe(process.claude.sdkClient);
     expect(claudeManager.agentToolMcpRunSessions).toBe(runSessionsA);
-    expect((claudeManager.sessionCleanup as Record<string, unknown>)
-      .workspaceSkillMaterializer).toBe(process.claude.workspaceSkillMaterializer);
     expect(claudeBootstrapper.workspaceResolver).toBe(process.claude.workspaceResolver);
     expect(claudeBootstrapper.workspaceSkillMaterializer)
       .toBe(process.claude.workspaceSkillMaterializer);
@@ -218,6 +249,8 @@ describe("AgentProviderFactoryBuilder", () => {
         agentDefinitionService: {} as never,
         agentToolMcpRunSessions: { activateForRun: vi.fn() } as never,
         applicationAgentTools: null,
+        integrationRunAccess: null,
+        providerRelayAccess: null,
       });
 
     expect((factory.autoByteus as unknown as Record<string, unknown>).applicationAgentTools)

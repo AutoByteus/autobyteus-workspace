@@ -15,8 +15,8 @@ class PairingLinkParserTest {
 
         assertTrue(parsed.hasPairingPayload)
         assertEquals("https://desktop.tailnet.ts.net/mobile?pairing=$payload", parsed.webViewUrl)
-        assertEquals("https://desktop.tailnet.ts.net/mobile", parsed.profile.mobileUrl)
-        assertEquals("Desk", parsed.profile.displayName)
+        assertEquals("https://desktop.tailnet.ts.net/mobile", parsed.entry.mobileUrl)
+        assertEquals("Desk", parsed.entry.displayName)
     }
 
     @Test
@@ -26,8 +26,8 @@ class PairingLinkParserTest {
 
         assertTrue(parsed.hasPairingPayload)
         assertEquals("https://docker.tailnet.ts.net/mobile?pairing=$payload", parsed.webViewUrl)
-        assertEquals("https://docker.tailnet.ts.net/mobile", parsed.profile.mobileUrl)
-        assertEquals("AutoByteus Docker Node", parsed.profile.displayName)
+        assertEquals("https://docker.tailnet.ts.net/mobile", parsed.entry.mobileUrl)
+        assertEquals("AutoByteus Docker Node", parsed.entry.displayName)
     }
 
     @Test
@@ -37,11 +37,11 @@ class PairingLinkParserTest {
 
         assertTrue(parsed.hasPairingPayload)
         assertEquals("http://192.168.1.25:29695/mobile?pairing=$payload", parsed.webViewUrl)
-        assertEquals("http://192.168.1.25:29695", parsed.profile.baseUrl)
-        assertEquals("http://192.168.1.25:29695/mobile", parsed.profile.mobileUrl)
-        assertTrue(parsed.profile.isHttp)
-        assertFalse(parsed.profile.httpAcknowledged)
-        assertEquals("Home Desktop", parsed.profile.displayName)
+        assertEquals("http://192.168.1.25:29695", parsed.entry.baseUrl)
+        assertEquals("http://192.168.1.25:29695/mobile", parsed.entry.mobileUrl)
+        assertTrue(parsed.entry.isHttp)
+        assertFalse(parsed.entry.httpAcknowledged)
+        assertEquals("Home Desktop", parsed.entry.displayName)
     }
 
     @Test
@@ -50,9 +50,9 @@ class PairingLinkParserTest {
         val parsed = PairingLinkParser.parse(json)
 
         assertTrue(parsed.hasPairingPayload)
-        assertEquals("http://desktop.local:29695/mobile", parsed.profile.mobileUrl)
+        assertEquals("http://desktop.local:29695/mobile", parsed.entry.mobileUrl)
         assertTrue(parsed.webViewUrl.startsWith("http://desktop.local:29695/mobile?pairing="))
-        assertEquals("Home Desktop", parsed.profile.displayName)
+        assertEquals("Home Desktop", parsed.entry.displayName)
     }
 
     @Test

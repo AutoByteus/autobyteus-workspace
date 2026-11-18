@@ -1,0 +1,52 @@
+Case: API-05 (new-container against a real Docker daemon, test-owned node)
+Commit: e9cc21bf28e7c9435aef0ce447f35aeba5be87f8 (branch codex/docker-setup-code-wait-feedback)
+Environment: macOS (Darwin 25.6.0), Docker Desktop (Engine 29.7.1, context desktop-linux), real docker on PATH
+Date: 2026-11-09 (~16:36 UTC)
+Isolation: HOME, AUTOBYTEUS_DOCKER_STATE_DIR, AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR all pointed at a fresh
+/tmp/autobyteus-apie2e-real-docker.<random> directory, created and removed by this run only. DOCKER_HOST set
+explicitly to the real Docker Desktop socket (unix:///Users/normy/.docker/run/docker.sock) so the real daemon
+is reached without reading the real $HOME/.docker/config.json. The real node's own state
+($HOME/.autobyteus/docker-server/nodes/autobyteus-server-0.env) and container (autobyteus-server-0) were never
+read or touched by this run: next_node_name()/container_exists() query the real Docker daemon directly and
+picked the next free index, autobyteus-server-1, and the next free port, 8002 (the real node already holds
+autobyteus-server-0 on port 8001).
+
+Command:
+  env HOME="$BASE/home" SHELL=/bin/bash \
+    DOCKER_HOST="unix:///Users/normy/.docker/run/docker.sock" \
+    AUTOBYTEUS_DOCKER_STATE_DIR="$BASE/state" \
+    AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR="$BASE/shared" \
+    bash scripts/public/docker/autobyteus-docker.sh new-container --image autobyteus/autobyteus-server --tag beta
+
+Exit code: 0
+
+--- STDOUT ---
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:beta
+beta: Pulling from autobyteus/autobyteus-server
+Digest: sha256:3250182e7413af7343f77afecb91627440a152c7fbebaf05ba8a602e94dc241f
+Status: Image is up to date for autobyteus/autobyteus-server:beta
+docker.io/autobyteus/autobyteus-server:beta
+[AutoByteus Docker] Started autobyteus-server-1.
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: autobyteus/autobyteus-server:beta
+Backend: http://localhost:8002
+GraphQL: http://localhost:8002/graphql
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-apie2e-real-docker.GeH358/shared/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-apie2e-real-docker.GeH358/shared/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
+
+Setup code for autobyteus-server-1: yGSAipmiV4YM-9yBJPVm8WEe
+Valid once, until 2026-11-09T16:36:50.398Z. In the AutoByteus desktop app, open Nodes, and enter it at autobyteus-server-1 (http://localhost:8002).
+
+--- STDERR ---
+[AutoByteus Docker] Waiting for autobyteus-server-1 to start (up to 90 seconds)...
+
+What to look for: a real `docker pull` of the real cached autobyteus/autobyteus-server:beta image runs and
+its own progress ("Pulling from ...", "Status: Image is up to date...") shows (BEH-001); the real node needed
+one failed attempt before its control socket answered, so the real wait loop printed exactly one real
+"Waiting for autobyteus-server-1 to start (up to 90 seconds)..." line on stderr before the real code (BEH-003,
+REQ-002), proving the new wait-loop code against an actual docker exec / real node process, not the offline
+fake. new-container keeps its own existing stdout output (URL block, "Started ..."): unaffected by the
+no-URL-block switch, which only applies to setup-code (BEH-001, print_urls_flag).

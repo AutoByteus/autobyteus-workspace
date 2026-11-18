@@ -1,0 +1,11 @@
+# API-07 — node autobyteus-web/tests/e2e/model-routing-settings-probe.mjs --skip-server-build --output-dir=/tmp/mrp-run2
+# Server dist built from 683b036be9 (pnpm -C autobyteus-server-ts build, exit 0); Nuxt dev; headless Chrome; macOS darwin 25.5; 2026-10-25T07:48Z
+# Console summary:
+Pass MRP-01 Open from the Settings menu: every runtime row, limits and reset times, blocked models, the limits note, provider sub-rows; the same data as the node's answer; no polling (AC-010, REQ-009)
+Pass MRP-02 Check again: rows kept and the button busy while reading, then sign-in not checked, limits unknown, models unknown, a provider's limits unknown, and the checked announcement (AC-010, REQ-007 UI states)
+Pass MRP-03 Narrow window (420 px): limits above models, nothing overflows
+Pass MRP-04 zh-CN: section texts, limits, models and providers in Chinese
+Pass MRP-05 A remote node window shows that node: all CLIs signed out or missing and no key → AutoByteus without providers; rebinding back re-reads (AC-010 remote)
+Pass MRP-06 A node that can't be read: the load error with Check again
+Pass MRP-07 No key, e-mail or account value in the page, its GraphQL responses, the nodes' output, logs or data files; providers asked only at their usage endpoints (REQ-008)
+Result: Pass browserErrors: [] cleanup: {'browser': 'closed', 'frontend': 'terminated:43925', 'backend': 'terminated:43568', 'remoteBackend': 'terminated:43902', 'tempRoot': 'removed'}

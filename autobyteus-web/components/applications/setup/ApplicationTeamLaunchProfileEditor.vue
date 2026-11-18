@@ -43,7 +43,12 @@
             ? $t('applications.components.applications.ApplicationLaunchSetupPanel.mixedInheritedRuntime')
             : $t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
           search-placeholder="Search models..."
+          refreshable
+          :refreshing="modelListRefreshing"
+          :refresh-failed="modelListRefreshFailed"
           @update:model-value="updateDefaults({ llmModelIdentifier: $event }, true)"
+          @open="refreshModelsOnOpen"
+          @refresh="refreshModels"
         />
         <p class="mt-1 text-xs text-slate-500">
           {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') }}
@@ -194,7 +199,11 @@ const canSelectTeamModel = computed(() => Boolean(
 const {
   availableProviderGroups,
   groupedModelOptions,
+  modelListRefreshFailed,
+  modelListRefreshing,
   normalizedStoredRuntimeKind,
+  refreshModels,
+  refreshModelsOnOpen,
   runtimeOptions,
 } = useRuntimeScopedModelSelection({
   runtimeKind: computed(() => props.draft.defaults.runtimeKind),

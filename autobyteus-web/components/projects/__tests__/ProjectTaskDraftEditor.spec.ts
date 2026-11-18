@@ -12,8 +12,9 @@ vi.mock('~/composables/projects/useProjectTaskDraft', () => ({useProjectTaskDraf
 vi.mock('~/stores/voiceInputStore', () => ({useVoiceInputStore: () => ({transcriptTarget: null, latestResult: null, isRecording: false})}))
 vi.mock('~/stores/projectTaskStore', () => ({useProjectTaskStore: () => ({setSearch, getList: () => undefined, fetchTasks: vi.fn(async () => undefined), releaseRead: vi.fn()})}))
 
-const task = {taskId: 't1', taskKey: 'p1-1', description: 'Saved text', status: 'IN_PROGRESS', contextFiles: []} as unknown as ProjectTask
-function editor(saved?: ProjectTask) {
+const task = {taskId: 't1', taskKey: 'p1-1', title: 'Saved title', description: 'Saved text', status: 'IN_PROGRESS', contextFiles: []} as unknown as ProjectTask
+function editor(saved?: ProjectTask, title = saved?.title ?? 'New title') {
+  draft.title.value = title
   draft.text.value = saved?.description ?? ''
   const host = document.createElement('div')
   document.body.appendChild(host)
@@ -29,7 +30,7 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     vi.clearAllMocks()
     route.query = {}
     draft = {
-      text: ref(''), files: ref([]), dependsOn: ref([]), partOf: ref(null), client: {}, draftId: ref(), pending: ref(false),
+      title: ref(''), text: ref(''), files: ref([]), dependsOn: ref([]), partOf: ref(null), client: {}, draftId: ref(), pending: ref(false),
       saving: ref(false), error: ref(''), blocked: ref(false),
       target: {key: 'draft', isCurrent: () => true, appendTranscript: vi.fn()},
       current: vi.fn(() => true), addFiles: vi.fn(), removeFile: vi.fn(),
@@ -47,6 +48,12 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     expect(wrapper.find('[aria-labelledby]').exists()).toBe(false)
     expect(wrapper.get('header').findAll('p')).toHaveLength(1)
     expect(wrapper.get('form > div').classes()).not.toContain('mt-5')
+    // A required one-line Title input above the description, in the Project name input's style (DEC-013).
+    expect(wrapper.get('label[for="task-page-title"]').text()).toBe('Title (required)')
+    expect(wrapper.get('#task-page-title').attributes()).toMatchObject({ type: 'text', placeholder: 'Name the task in one line' })
+    expect(wrapper.get('#task-page-title').attributes('maxlength')).toBeUndefined()
+    expect((wrapper.get('#task-page-title').element as HTMLInputElement).value).toBe(saved ? 'Saved title' : 'New title')
+    expect(wrapper.get('#task-page-title').element.compareDocumentPosition(wrapper.get('textarea').element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(wrapper.get('label[for="task-page-description"]').text()).toBe('Description (required)')
     expect(wrapper.get('textarea').attributes('placeholder')).toBe('Describe the task…')
     expect(wrapper.get('textarea').attributes('aria-describedby')).toBeUndefined()
@@ -74,6 +81,22 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     await wrapper.get('textarea').setValue('Corrected')
     expect(wrapper.find('#task-page-error').exists()).toBe(false)
     expect(wrapper.get('textarea').attributes('aria-describedby')).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it.each([undefined, task])('focuses a blank title first, refusing to save, and clears the error once it is typed (%s) (REQ-004)', async (saved) => {
+    const wrapper = editor(saved, '  ')
+    await wrapper.get('textarea').setValue('A description')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(draft.save).not.toHaveBeenCalled()
+    expect(wrapper.get('#task-page-title-error').text()).toBe('Give the task a title.')
+    expect(wrapper.get('#task-page-title-error').attributes('role')).toBe('alert')
+    expect(wrapper.get('#task-page-title').attributes()).toMatchObject({ 'aria-invalid': 'true', 'aria-describedby': 'task-page-title-error' })
+    expect(document.activeElement).toBe(wrapper.get('#task-page-title').element)
+    await wrapper.get('#task-page-title').setValue('Named')
+    expect(wrapper.find('#task-page-title-error').exists()).toBe(false)
+    expect(wrapper.get('#task-page-title').attributes('aria-describedby')).toBeUndefined()
     wrapper.unmount()
   })
 

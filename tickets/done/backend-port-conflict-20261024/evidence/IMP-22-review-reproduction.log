@@ -1,0 +1,69 @@
+IMP-22-review-reproduction — IR-003
+Command (worktree root): autobyteus-ts/node_modules/.bin/vitest run --config tickets/in-progress/backend-port-conflict-20261024/evidence/probe.config.mjs tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts
+Invocation: clean env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR"; pnpm through npm exec --yes --package=pnpm@10.28.2 --; direct tsc exceptions
+Commit: ffac4611d
+Environment: macOS arm64 Node26.12.0 pnpm10.28.2; no provider gate
+Finished: 2026-10-24T19:09:48.524135+00:00
+Log ANSI/trailing whitespace normalized; empty successful tsc means exit0.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor
+{"candidate":"CR-C01","outcome":{"outcome":"unconfirmed","reason":"Group still active"},"survivors":[85421],"retainedLeases":1}
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor
+{"candidate":"CR-C01","cleanup":{"outcomes":[{"outcome":"stopped"}]},"retainedLeases":0}
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-02 ordinary foreground-only commands release output captures with no background record
+{"candidate":"CR-C02","liveLeases":0,"backgroundRecords":0,"retainedCaptures":3,"retainedOutputBytes":51}
+
+stdout | tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-02 ordinary foreground-only commands release output captures with no background record
+{"candidate":"CR-C02","cleanup":{"outcomes":[]},"retainedLeases":0}
+
+ ❯ tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts (2 tests | 2 failed) 1628ms
+   × CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor 953ms
+   × CR-02 ordinary foreground-only commands release output captures with no background record 675ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-01 explicit stop overlapping the automatic completed-group inspection drains the survivor
+AssertionError: expected 'unconfirmed' to be 'stopped' // Object.is equality
+
+Expected: "stopped"
+Received: "unconfirmed"
+
+ ❯ tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts:40:29
+     38|     const survivors = await scope.members(handle);
+     39|     console.log(JSON.stringify({ candidate: 'CR-C01', outcome, survivo…
+     40|     expect(outcome.outcome).toBe('stopped');
+       |                             ^
+     41|     expect(survivors).toEqual([]);
+     42|   } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts > CR-02 ordinary foreground-only commands release output captures with no background record
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ tickets/in-progress/backend-port-conflict-20261024/evidence/CR-01-native-review.probe.test.ts:67:27
+     65|       retainedCaptures: captures.size, retainedOutputBytes: [...captur…
+     66|     console.log(JSON.stringify(receipt));
+     67|     expect(captures.size).toBe(0);
+       |                           ^
+     68|   } finally {
+     69|     const cleanup = await scope.close();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  21:09:46
+   Duration  1.83s (transform 63ms, setup 0ms, import 81ms, tests 1.63s, environment 0ms)

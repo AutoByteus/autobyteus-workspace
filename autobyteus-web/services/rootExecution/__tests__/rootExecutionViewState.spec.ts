@@ -1,5 +1,6 @@
 import { computed, shallowReactive } from 'vue'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 import { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
@@ -7,6 +8,18 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
 import type { AgentOrgExecutionEventDto } from '@autobyteus/collaboration-stream-contracts'
+import { clearStoredParticipantMessages, storeParticipantMessages } from '~/test-support/participantMessagesStub'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  fake.ownRuns.openAll = true
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub)
+const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
+beforeEach(() => { setActivePinia(createPinia()); clearStoredParticipantMessages() })
 
 const launch = {
   runtimeKind: 'codex_app_server' as const,
@@ -15,21 +28,10 @@ const launch = {
   autoExecuteTools: false,
   workspaceRootPath: null,
 }
-const configured = { origin: 'configured' as const, fallbacks: [] }
-/** Copies of the configured `/team/member` and `/team` record their placement's snapshot (REQ-001). */
-const memberCopySource = { kind: 'agent' as const, agentDefinitionId: 'member-def', launchConfiguration: launch, launchSource: configured }
-const teamCopySource = {
-  kind: 'agent_team' as const, teamDefinitionId: 'team-def', coordinatorAddress: '/team/coordinator',
-  members: [
-    { address: '/team/coordinator', agentDefinitionId: 'coordinator-def', launchConfiguration: launch, followsTeam: true },
-    { address: '/team/member', agentDefinitionId: 'member-def', launchConfiguration: launch, followsTeam: true },
-  ],
-  handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configured,
-}
 const view = (): AgentOrgExecutionViewDto => ({
-  base_change_sequence: 4,
+  base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
-  closed_task_executions: [], execution_tree: {
+  execution_tree: {
     subjectKind: 'agent_org',
     createdAt: '2026-09-01T00:00:00.000Z',
     archivedAt: null,
@@ -41,7 +43,6 @@ const view = (): AgentOrgExecutionViewDto => ({
       orgDefinitionName: 'Org',
       orgRunId: 'org-run',
       defaultLaunchConfiguration: launch,
-      taskExecutions: [],
       members: [
         {
           address: '/direct', agentDefinitionId: 'direct-def', role: null, description: null,
@@ -50,7 +51,7 @@ const view = (): AgentOrgExecutionViewDto => ({
         {
           address: '/team', teamDefinitionId: 'team-def', role: null, description: null,
           teamRunId: 'team-run', coordinatorAddress: '/team/coordinator',
-          defaultLaunchConfiguration: launch, taskExecutions: [],
+          defaultLaunchConfiguration: launch,
           members: [
             {
               address: '/team/coordinator', agentDefinitionId: 'coordinator-def', role: null,
@@ -67,7 +68,7 @@ const view = (): AgentOrgExecutionViewDto => ({
         {
           address: '/other', teamDefinitionId: 'other-team-def', role: null, description: null,
           teamRunId: 'other-team-run', coordinatorAddress: '/other/member',
-          defaultLaunchConfiguration: launch, taskExecutions: [],
+          defaultLaunchConfiguration: launch,
           members: [
             {
               address: '/other/member', agentDefinitionId: 'other-member-def', role: null,
@@ -79,13 +80,11 @@ const view = (): AgentOrgExecutionViewDto => ({
       ],
     },
   },
-  communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
-  agent_input_states: [], remote_task_executions: [],
-  agent_statuses: [
-    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
-    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+  agent_input_states: [], agent_statuses: [
+    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', background_tasks_running: 0, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
   ],
 })
 const agentContext = (runId: string, name: string) => new AgentContext({
@@ -111,16 +110,6 @@ const build = (snapshot = view(), taskEntries: ConstructorParameters<typeof Agen
   })
   return { context }
 }
-
-type StartedExecution = Extract<AgentOrgExecutionEventDto, { kind: 'task_execution_started' }>['execution']
-const started = (execution: Partial<Record<string, unknown>> = {}): AgentOrgExecutionEventDto => ({
-  kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
-  execution: {
-    address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-    delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
-    ...execution,
-  } as StartedExecution,
-})
 
 const communication = (senderAgentRunId = 'agent-direct', receiverAgentRunId = 'agent-member') => ({
   kind: 'communication' as const,
@@ -155,7 +144,7 @@ describe('AgentOrgExecutionContext', () => {
     context.applyEvent(5, {
       kind: 'agent_presentation', member_address: '/direct', agent_run_id: 'agent-direct',
       message: { type: 'AGENT_STATUS', payload: {
-        status: 'running', trigger: 'user', tool_name: null,
+        status: 'running', background_tasks_running: 0, trigger: 'user', tool_name: null,
         error_message: null, error_details: null, recoverableBlock: null,
       } },
     })
@@ -178,9 +167,10 @@ describe('AgentOrgExecutionContext', () => {
     })
   })
 
-  it('projects one complete-Org configured-member Messages facet for direct and mounted Agents', () => {
+  it('projects one complete-Org configured-member Messages facet for direct and mounted Agents', async () => {
     const snapshot = view()
-    snapshot.communication_messages.messages.push({
+    // autobyteus-358: the view carries no messages; each Team tab loads its participant's stored messages.
+    storeParticipantMessages('agent_org', 'org-run', [{
       messageId: 'message-cross-scope',
       senderAgentRunId: 'agent-direct',
       receiverAgentRunId: 'agent-member',
@@ -204,7 +194,7 @@ describe('AgentOrgExecutionContext', () => {
       messageType: 'agent_message',
       referenceFiles: [],
       createdAt: '2026-09-01T00:00:04.000Z',
-    })
+    }])
     const { context } = build(snapshot)
 
     context.select('/direct')
@@ -220,6 +210,7 @@ describe('AgentOrgExecutionContext', () => {
       'agent-member': { address: '/team/member', label: 'member' },
       'agent-other-member': { address: '/other/member', label: 'member' },
     })
+    directMessages.loadMessages(); await settle()
     expect(directMessages?.listMessages()).toEqual([
       expect.objectContaining({
         messageId: 'message-cross-scope',
@@ -235,6 +226,7 @@ describe('AgentOrgExecutionContext', () => {
     if (!mountedTarget || !('collaborationMessages' in mountedTarget)) {
       throw new Error('Expected a mounted AgentOrg target.')
     }
+    mountedTarget.collaborationMessages.loadMessages(); await settle()
     expect(mountedTarget.collaborationMessages.listMessages()).toEqual([
       expect.objectContaining({
         messageId: 'message-cross-team', direction: 'sent',
@@ -255,6 +247,7 @@ describe('AgentOrgExecutionContext', () => {
     if (!otherTarget || !('collaborationMessages' in otherTarget)) {
       throw new Error('Expected the other mounted AgentOrg target.')
     }
+    otherTarget.collaborationMessages.loadMessages(); await settle()
     expect(otherTarget.collaborationMessages.listMessages()).toEqual([
       expect.objectContaining({
         messageId: 'message-cross-team', direction: 'received',
@@ -263,7 +256,7 @@ describe('AgentOrgExecutionContext', () => {
     ])
   })
 
-  it('keeps one observable Messages facet current across live communication without refocus', () => {
+  it('keeps one observable Messages facet current across live communication without refocus', async () => {
     const { context: rawContext } = build()
     const context = shallowReactive(rawContext)
     context.select('/team/member')
@@ -274,6 +267,9 @@ describe('AgentOrgExecutionContext', () => {
     const messages = target.collaborationMessages
     const rows = computed(() => messages.listMessages())
     expect(rows.value).toEqual([])
+    // The Team tab is shown: its (empty) stored list loads, then live messages join it (autobyteus-358).
+    messages.loadMessages(); await settle()
+    expect(messages.messagesStatus().state).toBe('loaded')
 
     context.applyEvent(5, communication())
 
@@ -298,110 +294,6 @@ describe('AgentOrgExecutionContext', () => {
     expect(context.changeSequence).toBe(6)
   })
 
-  it('includes exact task participants without leaking to their configured source and rejects uncorrelated identities', () => {
-    const snapshot = view()
-    snapshot.execution_tree.rootOrg.taskExecutions.push({
-      address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource }, {
-      address: '/team', teamRunId: 'task-team-fresh',
-      members: [{
-        address: '/team/member', agentRunId: 'agent-task-team-member', platformAgentRunId: null,
-      }, {
-        address: '/team/coordinator', agentRunId: 'agent-task-team-coordinator', platformAgentRunId: null,
-      }],
-      taskExecutions: [], delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.500Z', source: teamCopySource,
-    })
-    snapshot.agent_statuses.push({
-      member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-    }, {
-      member_address: '/team/member', agent_run_id: 'agent-task-team-member', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-    }, {
-      member_address: '/team/coordinator', agent_run_id: 'agent-task-team-coordinator', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-    })
-    snapshot.communication_messages.messages.push({
-      messageId: 'message-to-task', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-fresh',
-      content: 'Task update', messageType: 'agent_message', referenceFiles: [],
-      createdAt: '2026-09-01T00:00:02.000Z',
-    }, {
-      messageId: 'message-from-task', senderAgentRunId: 'agent-task-fresh', receiverAgentRunId: 'agent-direct',
-      content: 'Task response', messageType: 'agent_message', referenceFiles: [],
-      createdAt: '2026-09-01T00:00:03.000Z',
-    }, {
-      messageId: 'message-to-task-team-member', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-team-member',
-      content: 'Task Team update', messageType: 'agent_message', referenceFiles: [],
-      createdAt: '2026-09-01T00:00:03.500Z',
-    }, {
-      messageId: 'message-from-task-team-member', senderAgentRunId: 'agent-task-team-member', receiverAgentRunId: 'agent-direct',
-      content: 'Task Team response', messageType: 'agent_message', referenceFiles: [],
-      createdAt: '2026-09-01T00:00:03.750Z',
-    })
-    const taskEntry = {
-      agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),
-      context: agentContext('agent-task-fresh', 'Task Member'),
-    }
-    const taskTeamEntry = {
-      agentRunId: 'agent-task-team-member', memberAddress: parseAgentTeamAddress('/team/member'),
-      context: agentContext('agent-task-team-member', 'Task Team Member'),
-    }
-    const entries = [taskEntry, taskTeamEntry, {
-      agentRunId: 'agent-task-team-coordinator', memberAddress: parseAgentTeamAddress('/team/coordinator'),
-      context: agentContext('agent-task-team-coordinator', 'Task Team Coordinator'),
-    }]
-    const { context } = build(snapshot, entries)
-    context.select('/direct')
-    const target = context.selectedTarget()
-    if (!target || !('collaborationMessages' in target)) {
-      throw new Error('Expected a configured AgentOrg target.')
-    }
-    const taskIdentity = {
-      kind: 'delegated', address: '/team/member', label: 'member',
-      hostRunId: 'org-run', executionRunId: 'agent-task-fresh',
-    }
-    const taskTeamIdentity = {
-      kind: 'delegated', address: '/team/member', label: 'member',
-      hostRunId: 'task-team-fresh', executionRunId: 'task-team-fresh',
-    }
-    expect(target.collaborationMessages.listMessages()).toEqual([
-      expect.objectContaining({ messageId: 'message-from-task-team-member', direction: 'received',
-        counterpartAgentRunId: 'agent-task-team-member', counterpart: taskTeamIdentity }),
-      expect.objectContaining({ messageId: 'message-to-task-team-member', direction: 'sent',
-        counterpartAgentRunId: 'agent-task-team-member', counterpart: taskTeamIdentity }),
-      expect.objectContaining({ messageId: 'message-from-task', direction: 'received',
-        counterpartAgentRunId: 'agent-task-fresh', counterpart: taskIdentity }),
-      expect.objectContaining({ messageId: 'message-to-task', direction: 'sent',
-        counterpartAgentRunId: 'agent-task-fresh', counterpart: taskIdentity }),
-    ])
-    context.select({ kind: 'agent_execution', agentRunId: 'agent-task-fresh' })
-    const taskTarget = context.selectedTarget()
-    if (!taskTarget || !('collaborationMessages' in taskTarget)) throw new Error('Expected exact task target.')
-    expect(taskTarget.context.state.runId).toBe('agent-task-fresh')
-    expect(taskTarget.collaborationMessages.listMessages()).toEqual([
-      expect.objectContaining({ messageId: 'message-from-task', direction: 'sent', counterpartAgentRunId: 'agent-direct' }),
-      expect.objectContaining({ messageId: 'message-to-task', direction: 'received', counterpartAgentRunId: 'agent-direct' }),
-    ])
-    context.select('/team/member')
-    const configuredSource = context.selectedTarget()
-    if (!configuredSource || !('collaborationMessages' in configuredSource)) throw new Error('Expected configured source.')
-    expect(configuredSource.context.state.runId).toBe('agent-member')
-    expect(configuredSource.collaborationMessages.listMessages()).toEqual([])
-
-    const corrupt = structuredClone(snapshot)
-    corrupt.communication_messages.messages.push({
-      messageId: 'message-unknown', senderAgentRunId: 'missing-run', receiverAgentRunId: 'agent-direct',
-      content: 'Unknown', messageType: 'agent_message', referenceFiles: [],
-      createdAt: '2026-09-01T00:00:04.000Z',
-    })
-    expect(() => build(corrupt, entries)).toThrow("AgentRun 'missing-run' is not a retained Org execution.")
-    const unknownDelegator = structuredClone(snapshot)
-    unknownDelegator.execution_tree.rootOrg.taskExecutions[0] = {
-      ...unknownDelegator.execution_tree.rootOrg.taskExecutions[0]!, delegatorAgentRunId: 'missing-delegator',
-    }
-    expect(() => build(unknownDelegator, entries)).toThrow("Delegated execution 'agent-task-fresh' delegator is not in this AgentOrg.")
-  })
-
   it('rejects a Team coordinator that is not that Team\'s direct Agent', () => {
     const snapshot = view()
     const team = snapshot.execution_tree.rootOrg.members[1]!
@@ -411,68 +303,14 @@ describe('AgentOrgExecutionContext', () => {
     expect(() => build(snapshot)).toThrow("Team 'team-run' has no unique exact coordinator.")
   })
 
-  it('accepts correlated communication events for a delegated execution without changing their valid path', () => {
-    const snapshot = view()
-    snapshot.execution_tree.rootOrg.taskExecutions.push({
-      address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource })
-    snapshot.agent_statuses.push({
-      member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-    })
-    const { context } = build(snapshot, [{
-      agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),
-      context: agentContext('agent-task-fresh', 'Task Member'),
-    }])
-    context.applyEvent(5, communication())
-    context.applyEvent(6, { ...communication('agent-task-fresh', 'agent-coordinator'),
-      message: { ...communication('agent-task-fresh', 'agent-coordinator').message, messageId: 'message-2' } })
-
-    expect(context.changeSequence).toBe(6)
-    expect(context.view.communication_messages.messages).toHaveLength(2)
-  })
-
-  it('routes a fresh task Agent or Team activation to checkpoint hydration without partial mutation', () => {
+  // A message may name a run the Org delegated (its own run, autobyteus-461 rule 2); only a message to itself is refused.
+  it('fails closed before mutating a message an agent sent to itself', () => {
     const { context } = build()
     const committed = structuredClone(context.view)
 
-    expect(context.applyEvent(5, started())).toBe('checkpoint_required')
-    expect(context.applyEvent(5, {
-      kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
-      execution: {
-        address: '/team', teamRunId: 'team-task-fresh', members: [], taskExecutions: [],
-        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: teamCopySource,
-      },
-    } as AgentOrgExecutionEventDto)).toBe('checkpoint_required')
-
-    expect(context.phase).toBe('live')
+    expect(() => context.applyEvent(5, communication('agent-direct', 'agent-direct'))).toThrow(/identity mismatch/)
+    expect(context.phase).toBe('reopen_required')
     expect(context.changeSequence).toBe(4)
     expect(context.view).toEqual(committed)
   })
-
-  it.each([
-    ['communication sender', communication('unknown-agent', 'agent-member')],
-    ['communication receiver', communication('agent-direct', 'unknown-agent')],
-    ['task delegator', started({ delegatorAgentRunId: 'unknown-agent' })],
-    ['task execution kind', {
-      kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
-      execution: {
-        // A Team execution whose recorded source is an Agent's.
-        address: '/team/member', teamRunId: 'fresh-team', members: [], taskExecutions: [],
-        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
-      },
-    } as AgentOrgExecutionEventDto],
-    ['reused configured execution', started({ agentRunId: 'agent-member' })],
-    ['task host', { ...started(), host_run_id: 'other-org' } as AgentOrgExecutionEventDto],
-  ] satisfies readonly (readonly [string, AgentOrgExecutionEventDto])[])(
-    'fails closed before mutating a miscorrelated %s event', (_label, event) => {
-      const { context } = build()
-      const committed = structuredClone(context.view)
-
-      expect(() => context.applyEvent(5, event)).toThrow(/identity mismatch/)
-      expect(context.phase).toBe('reopen_required')
-      expect(context.changeSequence).toBe(4)
-      expect(context.view).toEqual(committed)
-    },
-  )
 })

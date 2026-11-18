@@ -1,0 +1,15 @@
+# IMP-11
+# Mutation: in RunWorkspaceSkills.addOne the guard was 'assertAccepting: () => undefined' and release() did not await the add in flight; reverted after the run.
+# Command: vitest run tests/unit/agent-execution/backends/shared/run-workspace-skills.test.ts --no-watch
+# Commit: base 7b8bcf932f + uncommitted implementation, plus the temporary mutation
+# Date: 2026-11-13 12:43
+
+## Mutated
+     × AR-001: a managed (GitHub source) skill whose holder is published after the release began is never left linked 60ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+
+## Real code (reverted)
+ Test Files  1 passed (1)
+      Tests  9 passed (9)

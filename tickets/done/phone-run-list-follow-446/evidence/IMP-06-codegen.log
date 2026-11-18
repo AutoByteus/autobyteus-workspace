@@ -1,0 +1,13 @@
+# Check: IMP-06
+# Command: pnpm -C autobyteus-web codegen:local (regenerates generated/graphql.ts from the built server schema)
+# Commit: 8e686b7f36 (the regenerated file is in it)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+[SUCCESS] Generate
+[SUCCESS] Generate to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-run-list-follow-446/autobyteus-web/generated/graphql.ts
+[SUCCESS] Generate outputs
+
+## The regenerated diff (git show 8e686b7f36 -- autobyteus-web/generated/graphql.ts)
++  closedTaskExecutionsDigest?: Maybe<Scalars['String']['output']>;
++    closedTaskExecutionsDigest

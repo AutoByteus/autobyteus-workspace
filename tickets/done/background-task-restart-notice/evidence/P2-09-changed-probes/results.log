@@ -1,0 +1,11 @@
+# P2-09 the probes this ticket changed, at head 4c93deaa8f and at the part-2 base 895cf3992d (temporary worktree)
+# Commands: pnpm -C autobyteus-web test:e2e:<interrupt-result-presentation|background-contention|agent-org-draft-retention> --output-dir <fresh>
+
+interrupt-result-presentation head: scenarios {'SR008-BR-001': 'Pass', 'SR008-BR-002': 'Pass', 'SR008-BR-003': 'Pass', 'SR008-BR-004': 'Pass'} | failures [('browser-console:error', "12 console:error event(s): WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notific"), ('graphql-harness', "Unexpected GraphQL operation 'GetTeamMemberFileChanges'"), ('graphql-harness', "Unexpected GraphQL operation 'GetUpdateChecksCapability'")]
+interrupt-result-presentation base-895cf3992d: scenarios {'SR008-BR-001': 'Pass', 'SR008-BR-002': 'Pass', 'SR008-BR-003': 'Pass', 'SR008-BR-004': 'Pass'} | failures [('browser-console:error', "12 console:error event(s): WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notific"), ('graphql-harness', "Unexpected GraphQL operation 'GetTeamMemberFileChanges'"), ('graphql-harness', "Unexpected GraphQL operation 'GetUpdateChecksCapability'")]
+background-contention head: scenarios {'BG-BROWSER-000': 'Pass', 'BG-BROWSER-001A': 'Pass', 'BG-BROWSER-001B': 'Pass', 'BG-BROWSER-001C': 'Pass', 'BG-BROWSER-002': 'Pass', 'BG-BROWSER-003': 'Pass', 'BG-BROWSER-004': 'Fail'} | failures [('BG-BROWSER-004', 'locator.click: Timeout 30000ms exceeded. Call log:   - waiting for locator(\'[data-test="wo')]
+background-contention base-895cf3992d: scenarios {'BG-BROWSER-000': 'Pass', 'BG-BROWSER-001A': 'Pass', 'BG-BROWSER-001B': 'Pass', 'BG-BROWSER-001C': 'Pass', 'BG-BROWSER-002': 'Pass', 'BG-BROWSER-003': 'Pass', 'BG-BROWSER-004': 'Fail'} | failures [('BG-BROWSER-004', 'locator.click: Timeout 30000ms exceeded. Call log:   - waiting for locator(\'[data-test="wo')]
+agent-org-draft-retention head: scenarios {} | failures [('HARNESS', 'locator.waitFor: Timeout 90000ms exceeded. Call log:   - waiting for locator(\'[data-test="')]
+agent-org-draft-retention base-895cf3992d: scenarios {} | failures [('HARNESS', 'locator.waitFor: Timeout 90000ms exceeded. Call log:   - waiting for locator(\'[data-test="')]
+
+Same failures on both commits: pre-existing fixture/harness drift (FU-008).

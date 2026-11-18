@@ -1,0 +1,16 @@
+# IMP-14
+# command: pnpm -C autobyteus-web test:nuxt components/settings/model-routing --run; guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# date: 2026-10-25
+
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > reads the node on open, behind a loading state, with one GraphQL query for the tool's answer 38ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > shows the same runtimes, limits, reset times, notes and models as the tool (AC-010) 14ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > shows AutoByteus providers with balance, block and limit texts 16ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > keeps models collapsed until opened 36ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > Check again reads the node again and shows the new answer 21ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > a failed first read shows the error with Check again; a failed later read keeps the rows 27ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > says when no runtime is available 5ms
+ ✓ components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts > ModelRoutingManager → Agent runtimes now > a remote-node window names that node 7ms
+      Tests  8 passed (8)
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

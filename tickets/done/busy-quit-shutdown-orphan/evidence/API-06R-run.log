@@ -1,0 +1,62 @@
+[+4.1s] server started {"label":"first","pid":11329,"port":57909}
+[+5.2s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+5.6s] standalone sent {"label":"pre1","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_937fccb11c644a6e814790797c7a59ff"}
+[+11.0s] busy {"label":"pre1","marker":"BQ284Lmvuyn35w_pre1","pid":12763,"ppid":11387,"pgid":12763,"afterMs":5417}
+[+13.9s] shutdown {"case":"API-06R-1-restart","serverPid":11329,"exit":{"code":0,"signal":null,"at":1793364044636},"elapsedMs":116,"runs":[{"label":"pre1","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_937fccb11c644a6e814790797c7a59ff","toolCommand":{"pid":12763,"ppid":11387,"pgid":12763,"aliveAfter":false}}],"before":3,"survivors":[],"markedLeft":[],"shutdownLog":["[12.68] Server process-tree
+[+15.7s] server started {"label":"iter1","pid":12868,"port":57979}
+[+16.0s] standalone sent {"label":"sa-codex-1","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_e241f04848b04d6da416ddd75af95308"}
+[+16.3s] standalone sent {"label":"sa-claude-1","runtime":"claude","runId":"probe_agent_bq284lmvuyn35w_8a17bf20f79d4a58bf3e0d3cfd70677e"}
+[+17.5s] team sent {"label":"team-codex-1","runtime":"codex","teamRunId":"probe_team_bq284lmvuyn35w_team_codex_1_02a91300e277462bacf30f966fadd13e","memberRunId":"probe_team_coordinator_team_codex_1_bq284lmvuyn3_9c92a42683b14b39bc476245f442b1d1"}
+[+19.0s] org sent {"label":"org-claude-1","runtime":"claude","orgRunId":"probe_org_bq284lmvuyn35w_org_claude_1_28b1ac99bd6e4755832ecca6fc299c9c","memberRunId":"probe_org_manager_org_claude_1_bq284lmvuyn35w_61987264847b463f8396d09ed2cab3dc"}
+[+21.5s] busy {"label":"sa-codex-1","marker":"BQ284Lmvuyn35w_sa-codex-1","pid":15391,"ppid":12878,"pgid":15391,"afterMs":2502}
+[+21.6s] busy {"label":"sa-claude-1","marker":"BQ284Lmvuyn35w_sa-claude-1","pid":15258,"ppid":13566,"pgid":15258,"afterMs":44}
+[+21.6s] busy {"label":"team-codex-1","marker":"BQ284Lmvuyn35w_team-codex-1","pid":15392,"ppid":12878,"pgid":15392,"afterMs":43}
+[+22.6s] busy {"label":"org-claude-1","marker":"BQ284Lmvuyn35w_org-claude-1","pid":15929,"ppid":14817,"pgid":15929,"afterMs":941}
+[+26.7s] shutdown {"case":"API-06R-1","serverPid":12868,"exit":{"code":0,"signal":null,"at":1793364057533},"elapsedMs":1463,"runs":[{"label":"sa-codex-1","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_e241f04848b04d6da416ddd75af95308","toolCommand":{"pid":15391,"ppid":12878,"pgid":15391,"aliveAfter":false}},{"label":"sa-claude-1","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvu
+[+26.7s] iteration {"i":1,"restartMs":116,"restartExit":{"code":0,"signal":null,"at":1793364044636},"shutdownMs":1463,"exit":{"code":0,"signal":null,"at":1793364057533},"survivors":0,"marked":0,"shutdownLog":["[25.58] Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."]}
+[+28.2s] server started {"label":"next1","pid":16039,"port":58077}
+[+28.6s] standalone sent {"label":"pre2","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_d45d591804004ba7bbd3490b2798adeb"}
+[+34.2s] busy {"label":"pre2","marker":"BQ284Lmvuyn35w_pre2","pid":17456,"ppid":16046,"pgid":17456,"afterMs":5577}
+[+37.0s] shutdown {"case":"API-06R-2-restart","serverPid":16039,"exit":{"code":0,"signal":null,"at":1793364067771},"elapsedMs":100,"runs":[{"label":"pre2","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_d45d591804004ba7bbd3490b2798adeb","toolCommand":{"pid":17456,"ppid":16046,"pgid":17456,"aliveAfter":false}}],"before":3,"survivors":[],"markedLeft":[],"shutdownLog":["[35.82] Server process-tree
+[+38.8s] server started {"label":"iter2","pid":17563,"port":58112}
+[+39.2s] standalone sent {"label":"sa-codex-2","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_8cda7a1e8d2440e397860134dbd40ff5"}
+[+39.6s] standalone sent {"label":"sa-claude-2","runtime":"claude","runId":"probe_agent_bq284lmvuyn35w_7461f7a8d859481eac677bca18040aad"}
+[+40.8s] team sent {"label":"team-codex-2","runtime":"codex","teamRunId":"probe_team_bq284lmvuyn35w_team_codex_2_9fadec87c09145c0909b27d55eac2af6","memberRunId":"probe_team_coordinator_team_codex_2_bq284lmvuyn3_8c88a4ede0ec47c08991c113bd89503b"}
+[+42.3s] org sent {"label":"org-claude-2","runtime":"claude","orgRunId":"probe_org_bq284lmvuyn35w_org_claude_2_9226d8a193ef4bf287761c2374f0e616","memberRunId":"probe_org_manager_org_claude_2_bq284lmvuyn35w_8fa165d481e2464d8386f4708265442a"}
+[+44.2s] busy {"label":"sa-codex-2","marker":"BQ284Lmvuyn35w_sa-codex-2","pid":20032,"ppid":17570,"pgid":20032,"afterMs":1857}
+[+44.2s] busy {"label":"sa-claude-2","marker":"BQ284Lmvuyn35w_sa-claude-2","pid":20002,"ppid":18095,"pgid":20002,"afterMs":48}
+[+44.3s] busy {"label":"team-codex-2","marker":"BQ284Lmvuyn35w_team-codex-2","pid":20031,"ppid":17570,"pgid":20031,"afterMs":45}
+[+45.8s] busy {"label":"org-claude-2","marker":"BQ284Lmvuyn35w_org-claude-2","pid":20624,"ppid":19502,"pgid":20624,"afterMs":1550}
+[+49.9s] shutdown {"case":"API-06R-2","serverPid":17563,"exit":{"code":0,"signal":null,"at":1793364080766},"elapsedMs":1463,"runs":[{"label":"sa-codex-2","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_8cda7a1e8d2440e397860134dbd40ff5","toolCommand":{"pid":20032,"ppid":17570,"pgid":20032,"aliveAfter":false}},{"label":"sa-claude-2","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvu
+[+49.9s] iteration {"i":2,"restartMs":100,"restartExit":{"code":0,"signal":null,"at":1793364067771},"shutdownMs":1463,"exit":{"code":0,"signal":null,"at":1793364080766},"survivors":0,"marked":0,"shutdownLog":["[48.82] Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."]}
+[+51.7s] server started {"label":"next2","pid":20750,"port":58207}
+[+52.2s] standalone sent {"label":"pre3","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_67e964e29ae7430fbb9c58171d818450"}
+[+56.6s] busy {"label":"pre3","marker":"BQ284Lmvuyn35w_pre3","pid":22100,"ppid":20759,"pgid":22100,"afterMs":4469}
+[+59.5s] shutdown {"case":"API-06R-3-restart","serverPid":20750,"exit":{"code":0,"signal":null,"at":1793364090249},"elapsedMs":105,"runs":[{"label":"pre3","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_67e964e29ae7430fbb9c58171d818450","toolCommand":{"pid":22100,"ppid":20759,"pgid":22100,"aliveAfter":false}}],"before":3,"survivors":[],"markedLeft":[],"shutdownLog":["[58.30] Server process-tree
+[+61.8s] server started {"label":"iter3","pid":22209,"port":58251}
+[+62.2s] standalone sent {"label":"sa-codex-3","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_7f1046d02a544009ac41c2277e90f6b1"}
+[+62.5s] standalone sent {"label":"sa-claude-3","runtime":"claude","runId":"probe_agent_bq284lmvuyn35w_3ce82ff1818141f49bffdf68f18c8bdc"}
+[+63.7s] team sent {"label":"team-codex-3","runtime":"codex","teamRunId":"probe_team_bq284lmvuyn35w_team_codex_3_098355a70699426a88a77e7bbdb0102c","memberRunId":"probe_team_coordinator_team_codex_3_bq284lmvuyn3_4054a127d7794bffb0e84421d4e34a69"}
+[+65.4s] org sent {"label":"org-claude-3","runtime":"claude","orgRunId":"probe_org_bq284lmvuyn35w_org_claude_3_6a38bb0d97304363a12062d6fb91ffa3","memberRunId":"probe_org_manager_org_claude_3_bq284lmvuyn35w_129fec69564d4e69a6e146cb45c00d54"}
+[+66.1s] busy {"label":"sa-codex-3","marker":"BQ284Lmvuyn35w_sa-codex-3","pid":25723,"ppid":22216,"pgid":25723,"afterMs":681}
+[+70.9s] busy {"label":"sa-claude-3","marker":"BQ284Lmvuyn35w_sa-claude-3","pid":27300,"ppid":22871,"pgid":27300,"afterMs":4785}
+[+70.9s] busy {"label":"team-codex-3","marker":"BQ284Lmvuyn35w_team-codex-3","pid":25929,"ppid":22216,"pgid":25929,"afterMs":49}
+[+71.0s] busy {"label":"org-claude-3","marker":"BQ284Lmvuyn35w_org-claude-3","pid":26530,"ppid":25380,"pgid":26530,"afterMs":47}
+[+74.9s] shutdown {"case":"API-06R-3","serverPid":22209,"exit":{"code":0,"signal":null,"at":1793364105724},"elapsedMs":1228,"runs":[{"label":"sa-codex-3","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_7f1046d02a544009ac41c2277e90f6b1","toolCommand":{"pid":25723,"ppid":22216,"pgid":25723,"aliveAfter":false}},{"label":"sa-claude-3","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvu
+[+74.9s] iteration {"i":3,"restartMs":105,"restartExit":{"code":0,"signal":null,"at":1793364090249},"shutdownMs":1228,"exit":{"code":0,"signal":null,"at":1793364105724},"survivors":0,"marked":0,"shutdownLog":["[73.77] Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."]}
+[+77.4s] server started {"label":"next3","pid":27529,"port":58348}
+[+77.8s] standalone sent {"label":"pre4","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_21feaca881544e2f9c46e9038591ab52"}
+[+82.0s] busy {"label":"pre4","marker":"BQ284Lmvuyn35w_pre4","pid":28823,"ppid":27540,"pgid":28823,"afterMs":4136}
+[+84.9s] shutdown {"case":"API-06R-4-restart","serverPid":27529,"exit":{"code":0,"signal":null,"at":1793364115586},"elapsedMs":121,"runs":[{"label":"pre4","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_21feaca881544e2f9c46e9038591ab52","toolCommand":{"pid":28823,"ppid":27540,"pgid":28823,"aliveAfter":false}}],"before":3,"survivors":[],"markedLeft":[],"shutdownLog":["[83.64] Server process-tree
+[+86.6s] server started {"label":"iter4","pid":28929,"port":58384}
+[+87.0s] standalone sent {"label":"sa-codex-4","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_d831508134cc4c14babe2be14752d5f7"}
+[+87.3s] standalone sent {"label":"sa-claude-4","runtime":"claude","runId":"probe_agent_bq284lmvuyn35w_b708928769024e409b451380c6a447f4"}
+[+88.6s] team sent {"label":"team-codex-4","runtime":"codex","teamRunId":"probe_team_bq284lmvuyn35w_team_codex_4_0be0d939115843f19e439249413a3f61","memberRunId":"probe_team_coordinator_team_codex_4_bq284lmvuyn3_44060ab077034ec58b09a518448b7f6c"}
+[+90.0s] org sent {"label":"org-claude-4","runtime":"claude","orgRunId":"probe_org_bq284lmvuyn35w_org_claude_4_e72c0692e6404029aafba1d9d316e77c","memberRunId":"probe_org_manager_org_claude_4_bq284lmvuyn35w_3ffdba12f9ef4e3893f3c504e73a116e"}
+[+91.0s] busy {"label":"sa-codex-4","marker":"BQ284Lmvuyn35w_sa-codex-4","pid":30937,"ppid":28936,"pgid":30937,"afterMs":976}
+[+100.7s] busy {"label":"sa-claude-4","marker":"BQ284Lmvuyn35w_sa-claude-4","pid":32538,"ppid":29681,"pgid":32538,"afterMs":9699}
+[+100.8s] busy {"label":"team-codex-4","marker":"BQ284Lmvuyn35w_team-codex-4","pid":31069,"ppid":28936,"pgid":31069,"afterMs":44}
+[+100.8s] busy {"label":"org-claude-4","marker":"BQ284Lmvuyn35w_org-claude-4","pid":31606,"ppid":30873,"pgid":31606,"afterMs":51}
+[+104.7s] shutdown {"case":"API-06R-4","serverPid":28929,"exit":{"code":0,"signal":null,"at":1793364135558},"elapsedMs":1242,"runs":[{"label":"sa-codex-4","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuyn35w_d831508134cc4c14babe2be14752d5f7","toolCommand":{"pid":30937,"ppid":28936,"pgid":30937,"aliveAfter":false}},{"label":"sa-claude-4","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvu
+[+104.7s] iteration {"i":4,"restartMs":121,"restartExit":{"code":0,"signal":null,"at":1793364115586},"shutdownMs":1242,"exit":{"code":0,"signal":null,"at":1793364135558},"survivors":0,"marked":0,"shutdownLog":["[103.61] Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."]}
+{"result":"Completed","error":null,"fallbackCleanup":0}

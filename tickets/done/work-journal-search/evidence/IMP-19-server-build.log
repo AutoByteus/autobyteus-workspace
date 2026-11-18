@@ -1,0 +1,10 @@
+# IMP-19 server build (dist used by the evaluations IMP-20 and IMP-21)
+# Command: pnpm -C autobyteus-server-ts build
+# Commit: 0f3c2a2d87
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1
+# Date: 2026-10-26
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

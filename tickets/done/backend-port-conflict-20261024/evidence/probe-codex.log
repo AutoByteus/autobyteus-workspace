@@ -1,0 +1,21 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+[90mstderr[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts[2m > [22m[2mactual Codex command child lifetime after production client close
+[22m[39m[CodexAppServerClient] stderr: WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-stop-L2fpv0" (codex_home: AbsolutePathBuf("/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-stop-L2fpv0"))
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts[2m > [22m[2mactual Codex command child lifetime after production client close
+[22m[39m{"case":"codex-command-close","version":"0.164.0","child":{"pid":80388,"port":50011},"ancestryBefore":"80388 80386 80388 /opt/homebrew/Cellar/node/26.12.0/bin/node -e const fs=require('fs'),http=require('http');const s=http.createServer((q,r)=>{r.writeHead(426);r.end('owned probe');});s.listen(0,'::',()=>fs.writeFileSync(\"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-stop-L2fpv0/listener.json\",JSON.stringify({pid:process.pid,port:s.address().port})));","afterCloseHttpStatus":null,"limitation":"standalone command/exec; not model-driven exec_command or historical Nuxt"}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts[2m > [22m[2mactual Codex command child lifetime after production client close
+[22m[39m{"case":"codex-command-close","cleanup":"owned child and client stopped; private home removed"}
+
+ [32m✓[39m tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 587[2mms[22m[39m
+   [33m[2m✓[22m[39m actual Codex command child lifetime after production client close [33m 586[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (2)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m2 skipped[39m[90m (3)[39m
+[2m   Start at [22m 14:59:47
+[2m   Duration [22m 1.00s[2m (transform 118ms, setup 0ms, import 192ms, tests 587ms, environment 0ms)[22m
+

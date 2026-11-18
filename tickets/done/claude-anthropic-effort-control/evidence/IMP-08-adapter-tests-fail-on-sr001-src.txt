@@ -1,0 +1,10 @@
+# IMP-08 the SR-002 adapter unit tests fail on the SR-001 implementation (failing-first)
+# steps: `git stash push -- src` in autobyteus-ts (leaving src at the SR-001 WIP commit 781823e77), ran the updated
+#        tests/unit/llm/api/anthropic-llm.test.ts, `git stash pop`.
+# command: corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/api/anthropic-llm.test.ts
+# date: 2026-10-29
+     × maps claude-opus-5 / claude-sonnet-5 / claude-fable-5 / claude-fable-5-1 schema thinking to provider-valid adaptive thinking  (display sent)
+     × sends only what the owned config keys decide; other stored config keys never reach the request (AC-011)
+     × sends <5 switch rows> thinking off as its off shape and no effort, whatever effort is stored (AC-003, AC-004)
+      Tests  10 failed | 30 passed (40)
+With SR-002 src: Tests 40 passed (40).

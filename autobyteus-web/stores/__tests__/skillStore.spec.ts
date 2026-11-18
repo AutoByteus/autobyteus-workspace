@@ -112,25 +112,23 @@ describe('skillStore', () => {
         isDisabled: true,
       },
     ]
-    skillSourcesStore.skillSources = [
+    const sources = [
       {
+        sourceId: 'default',
+        sourceKind: 'DEFAULT' as const,
+        github: null,
         path: '/skills',
         skillCount: 1,
         isDefault: true,
       },
     ]
+    skillSourcesStore.skillSources = structuredClone(sources)
 
     await expect(skillStore.reloadSkillCatalog()).rejects.toThrow('Reload failed')
 
     expect(skillStore.skills.map((skill) => skill.name)).toEqual(['existing-skill'])
     expect(skillStore.skills[0]?.isDisabled).toBe(true)
-    expect(skillSourcesStore.skillSources).toEqual([
-      {
-        path: '/skills',
-        skillCount: 1,
-        isDefault: true,
-      },
-    ])
+    expect(skillSourcesStore.skillSources).toEqual(sources)
     expect(skillStore.error).toBe('Reload failed')
     expect(skillStore.reloading).toBe(false)
   })

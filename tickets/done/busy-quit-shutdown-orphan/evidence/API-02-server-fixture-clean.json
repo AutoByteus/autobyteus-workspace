@@ -1,0 +1,236 @@
+{
+  "case": "busy-run-stop-now",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts",
+  "date": "2026-10-30T12:52:32.618Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-rvM0g2",
+  "tag": "BQ284_94271_1793364752618",
+  "steps": [
+    {
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 94272,
+        "port": 60272
+      },
+      "at": "2026-10-30T12:52:35.851Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 1,
+        "label": "A",
+        "invoke": true
+      },
+      "at": "2026-10-30T12:52:36.065Z"
+    },
+    {
+      "step": "busy",
+      "value": {
+        "label": "A",
+        "runId": "busy_stop_bq284_94271_1793364752618_8f418ff07e8c493ab406587072f2893e",
+        "pids": {
+          "terminate-fg": 94926
+        }
+      },
+      "at": "2026-10-30T12:52:36.571Z"
+    },
+    {
+      "step": "terminate",
+      "value": {
+        "runId": "busy_stop_bq284_94271_1793364752618_8f418ff07e8c493ab406587072f2893e",
+        "result": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "elapsedMs": 75,
+        "foregroundGone": true
+      },
+      "at": "2026-10-30T12:52:36.696Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 2,
+        "label": "B",
+        "invoke": true
+      },
+      "at": "2026-10-30T12:52:36.835Z"
+    },
+    {
+      "step": "busy",
+      "value": {
+        "label": "B",
+        "runId": "busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39",
+        "pids": {
+          "shutdown-bg": 95012,
+          "shutdown-fg": 95042
+        }
+      },
+      "at": "2026-10-30T12:52:37.416Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 3,
+        "label": "B",
+        "invoke": false
+      },
+      "at": "2026-10-30T12:52:37.601Z"
+    },
+    {
+      "step": "shutdown",
+      "value": {
+        "runId": "busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39",
+        "serverPid": 94272,
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793364758229
+        },
+        "elapsedMs": 761,
+        "before": [
+          {
+            "pid": 94983,
+            "ppid": 94272,
+            "pgid": 94983,
+            "command": "/Users/normy/.hermes/node/bin/node -e \\012const { spawn } = require('node:child_process');\\012let launched = false;\\012function send(message) {\\012  if (!proces"
+          },
+          {
+            "pid": 95013,
+            "ppid": 94272,
+            "pgid": 95013,
+            "command": "/Users/normy/.hermes/node/bin/node -e \\012const { spawn } = require('node:child_process');\\012let launched = false;\\012function send(message) {\\012  if (!proces"
+          },
+          {
+            "pid": 95012,
+            "ppid": 94983,
+            "pgid": 94983,
+            "command": "/Users/normy/.hermes/node/bin/node -e /*BQ284_94271_1793364752618_shutdown-bg*/require('fs').writeFileSync(\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000"
+          },
+          {
+            "pid": 95042,
+            "ppid": 95013,
+            "pgid": 95013,
+            "command": "/Users/normy/.hermes/node/bin/node -e /*BQ284_94271_1793364752618_shutdown-fg*/require('fs').writeFileSync(\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000"
+          }
+        ],
+        "survivors": [],
+        "markedLeft": [],
+        "sweepLines": [
+          "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+        ]
+      },
+      "at": "2026-10-30T12:52:38.305Z"
+    },
+    {
+      "step": "server started",
+      "value": {
+        "label": "second",
+        "pid": 95297,
+        "port": 60345
+      },
+      "at": "2026-10-30T12:52:40.064Z"
+    },
+    {
+      "step": "history",
+      "value": {
+        "terminatedRun": {
+          "runId": "busy_stop_bq284_94271_1793364752618_8f418ff07e8c493ab406587072f2893e",
+          "terminatedAt": "2026-10-30T12:52:36.634Z",
+          "isActive": false
+        },
+        "shutdownRun": {
+          "runId": "busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39",
+          "terminatedAt": null,
+          "isActive": false
+        }
+      },
+      "at": "2026-10-30T12:52:40.073Z"
+    }
+  ],
+  "terminate": {
+    "runId": "busy_stop_bq284_94271_1793364752618_8f418ff07e8c493ab406587072f2893e",
+    "result": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "elapsedMs": 75,
+    "foregroundGone": true
+  },
+  "shutdown": {
+    "runId": "busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39",
+    "serverPid": 94272,
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793364758229
+    },
+    "elapsedMs": 761,
+    "before": [
+      {
+        "pid": 94983,
+        "ppid": 94272,
+        "pgid": 94983,
+        "command": "/Users/normy/.hermes/node/bin/node -e \\012const { spawn } = require('node:child_process');\\012let launched = false;\\012function send(message) {\\012  if (!proces"
+      },
+      {
+        "pid": 95013,
+        "ppid": 94272,
+        "pgid": 95013,
+        "command": "/Users/normy/.hermes/node/bin/node -e \\012const { spawn } = require('node:child_process');\\012let launched = false;\\012function send(message) {\\012  if (!proces"
+      },
+      {
+        "pid": 95012,
+        "ppid": 94983,
+        "pgid": 94983,
+        "command": "/Users/normy/.hermes/node/bin/node -e /*BQ284_94271_1793364752618_shutdown-bg*/require('fs').writeFileSync(\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000"
+      },
+      {
+        "pid": 95042,
+        "ppid": 95013,
+        "pgid": 95013,
+        "command": "/Users/normy/.hermes/node/bin/node -e /*BQ284_94271_1793364752618_shutdown-fg*/require('fs').writeFileSync(\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "sweepLines": [
+      "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+    ]
+  },
+  "history": {
+    "terminatedRun": {
+      "runId": "busy_stop_bq284_94271_1793364752618_8f418ff07e8c493ab406587072f2893e",
+      "terminatedAt": "2026-10-30T12:52:36.634Z",
+      "isActive": false
+    },
+    "shutdownRun": {
+      "runId": "busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39",
+      "terminatedAt": null,
+      "isActive": false
+    }
+  },
+  "idleShutdown": {
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793364760126
+    },
+    "elapsedMs": 53
+  },
+  "result": "Pass",
+  "calls": 3,
+  "serverLogs": [
+    {
+      "label": "first",
+      "pid": 94272,
+      "tail": "Agent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Running bootstrap step 1 (SystemPromptProcessingStep).\nAgent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Executing SystemPromptProcessingStep.\nAgent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': No configured skills. Skipping skill catalog.\nAgent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Final processed system prompt configured and captured. Trace ID: rt_1793364756728_cf8f9b60-cf67-4861-9d70-2e21d99e4a9b. Final length: 4340.\nAgent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39' initialized successfully. Entering main event scheduler loop.\nAgent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39' has become idle.\nAgentEventStream (ID: 49df4404-8af1-4a8c-9f63-ba560f7599a3) for 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': close() called. Unsubscribing all listeners and signaling.\nAgentEventStream (ID: ca4c043c-8f53-45d6-afc4-bab0f47b14fc) initialized for agent_id 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39'. Subscribed to notifier.\nAgent websocket attached for run busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39\nCreated agent session 75e3a16e-b1ba-4660-855c-c31f5f8ccedb for run busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39\nAgent WebSocket connected: session=75e3a16e-b1ba-4660-855c-c31f5f8ccedb, run=busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgent run 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': UserInputContextBuildingProcessor completed. Final content length: 30\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nLlmStreamingResponseHandler finalized 2 tool invocations.\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\nAgent run 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': UserInputContextBuildingProcessor completed. Final content length: 84\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgent run 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nClosed agent session 8c15ebac-7248-4dd5-a422-3e6615b05e72\nAgent WebSocket disconnected: 8c15ebac-7248-4dd5-a422-3e6615b05e72\nRemoving agent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39'. Attempting graceful shutdown.\nAgent 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39' requesting runtime to stop (timeout: 10s).\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Stop requested.\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nClosed agent session 75e3a16e-b1ba-4660-855c-c31f5f8ccedb\nAgent WebSocket disconnected: 75e3a16e-b1ba-4660-855c-c31f5f8ccedb\nAgentExternalEventNotifier (NotifierID: 4328caa7-9816-4262-917e-1aebbe326dd7, AgentID: busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39' asyncRun() loop has finished.\nAgentWorker 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Running shutdown sequence on worker loop.\nAgentWorker 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Shutdown resource cleanup completed successfully.\nAgentWorker 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Shutdown sequence completed.\nUnregistered AgentContext for agent_id 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39'.\nAgentRuntime for 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': Context unregistered.\nAgentRuntime for 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39' stop() method completed.\nAgentEventStream (ID: ca4c043c-8f53-45d6-afc4-bab0f47b14fc) for 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': close() called. Unsubscribing all listeners and signaling.\nAgentEventStream (ID: ca4c043c-8f53-45d6-afc4-bab0f47b14fc) for 'busy_stop_bq284_94271_1793364752618_ae8bedfdff264f8c91d144cd1e488c39': close() called. Unsubscribing all listeners and signaling.\nServer process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.\n"
+    },
+    {
+      "label": "second",
+      "pid": 95297,
+      "tail": "Registered required tool unit: Core Tools\nSuccessfully registered tool definition: 'get_project_task'\nSuccessfully registered tool definition: 'list_projects'\nSuccessfully registered tool definition: 'list_project_tasks'\nSuccessfully registered tool definition: 'search_project_tasks'\nSuccessfully registered tool definition: 'create_project'\nSuccessfully registered tool definition: 'update_project'\nSuccessfully registered tool definition: 'create_task'\nSuccessfully registered tool definition: 'update_task'\nSuccessfully registered tool definition: 'delegate_task'\nSuccessfully registered tool definition: 'generate_image'\nSuccessfully registered tool definition: 'edit_image'\nSuccessfully registered tool definition: 'generate_speech'\nSuccessfully registered tool definition: 'generate_video'\nRegistered required tool unit: Project Task Tools\nRegistered required tool unit: Task Delegation Tools\nRegistered required tool unit: Media Tools\nSuccessfully registered tool definition: 'list_available_agents'\nSuccessfully registered tool definition: 'list_peer_nodes'\nRegistered required tool unit: Agent Discovery Tools\nSuccessfully registered tool definition: 'list_available_agent_runtimes'\nSuccessfully registered tool definition: 'submit_launch_choices'\nRegistered required tool unit: Agent Runtime Tools\nRegistered required tool unit: Browser Tools\nSuccessfully registered tool definition: 'publish_artifacts'\nRegistered required tool unit: Published Artifact Tools\nSuccessfully registered tool definition: 'search_memory'\nRegistered required tool unit: Memory Tools\nSuccessfully registered tool definition: 'send_message_to'\nSuccessfully registered tool definition: 'get_handoff_rules'\nRegistered required tool unit: Agent Communication Tools\nOverwriting existing tool definition for name: 'search_web'\nSuccessfully registered tool definition: 'search_web'\nRegistered required tool unit: Search Tools\n{\"level\":30,\"time\":1793364759988,\"pid\":95297,\"hostname\":\"MacBookPro\",\"msg\":\"Server listening at http://127.0.0.1:60380\"}\n{\"level\":30,\"time\":1793364760017,\"pid\":95297,\"hostname\":\"MacBookPro\",\"msg\":\"Server listening at http://127.0.0.1:60345\"}\n{\"level\":30,\"time\":1793364760017,\"pid\":95297,\"hostname\":\"MacBookPro\",\"msg\":\"Server listening at http://192.168.2.158:60345\"}\n{\"level\":30,\"time\":1793364760017,\"pid\":95297,\"hostname\":\"MacBookPro\",\"msg\":\"Server listening at http://100.127.30.107:60345\"}\n[2026-10-30T12:52:40.017Z] [INFO] [server.runtime] Server listening on 0.0.0.0:60345\nScheduling Studio-only non-critical startup tasks...\nBackground cache pre-loading process has started.\nCachedMcpServerConfigProvider initialized with a full in-memory cache strategy.\nPopulating MCP server config cache for the first time...\nRunning MCP tool registration background task...\nLoading and registering all MCP server configurations from file...\nBackground task 'Memory Sync Worker' completed successfully.\nBackground task 'Memory Search' completed successfully.\nMCP server config cache populated with 0 items.\nFound 0 total MCP server configs.\nSynchronized cached configurations with the core MCP config service.\nPre-loaded 0 MCP server configs into cache.\nFinished loading and registering all MCP server configurations.\nBackground task 'MCP Tool Registration' completed successfully.\nPre-loaded 32 LLM models into cache.\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\nServer process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.\n"
+    }
+  ],
+  "rootRemoved": true
+}

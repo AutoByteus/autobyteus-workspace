@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag'
 const Fields = gql`
   fragment AgentOrgDefinitionFields on AgentOrgDefinition {
-    id name description instructions category avatarUrl revision
+    id name description instructions category avatarUrl revision personalSettings personalSettingsBase
     handoffs { from to rules }
     members { memberName ref refType refScope }
     defaultLaunchConfig { llmModelIdentifier runtimeKind llmConfig }
@@ -17,6 +17,12 @@ export const CreateAgentOrgDefinition = gql`
 export const UpdateAgentOrgDefinition = gql`
   mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {
     updateAgentOrgDefinition(input: $input) { ...AgentOrgDefinitionFields }
+  }
+  ${Fields}
+`
+export const ResetAgentOrgPersonalSetting = gql`
+  mutation ResetAgentOrgPersonalSetting($definitionId: String!, $setting: PersonalSetting!) {
+    resetAgentOrgPersonalSetting(definitionId: $definitionId, setting: $setting) { ...AgentOrgDefinitionFields }
   }
   ${Fields}
 `

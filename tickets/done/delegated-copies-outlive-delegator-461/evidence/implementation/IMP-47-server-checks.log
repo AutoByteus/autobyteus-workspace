@@ -1,0 +1,18 @@
+# commit c46e5c330b
+$ node scripts/typecheck.mjs
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.7s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 26.7s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ pnpm test:unit
+     × guards the exact SR-011 host definition and public/general run authority 158ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > guards the exact SR-011 host definition and public/general run authority
+ Test Files  1 failed | 966 passed | 5 skipped (972)
+      Tests  1 failed | 7940 passed | 9 skipped (7950)
+
+# The one failure: the guard's expected list still named member-team-context-builder.ts, whose AgentTeamDefinitionService.getInstance() default 305f2a8987 removed (the service is a required parameter). List updated in 16815d43a9.
+$ npx vitest run --no-watch tests/architecture/application-framework-boundaries.test.ts
+ Test Files  1 passed (1)
+      Tests  20 passed (20)

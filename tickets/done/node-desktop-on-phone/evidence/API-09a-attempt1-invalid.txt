@@ -1,0 +1,86 @@
+# NOTE: attempt 1, not a result. Part (1)-(2) showed a fully unreachable node cannot be reached from a freshly loaded page (the New run form needs the node). In (2b) the injected 502 hit the availability request (23:27:26Z) but the menu read came back empty (the ⋮ menu had not opened), and a system Back then left the WebView for the native connection screen, so step (3) ran without a page. Repeated in API-09-cr001-availability-error-then-back.txt.
+# Case: API-09 — CR-001 on the emulator: the node is unreachable when the user opens a run, then comes back; the ⋮ VNC Viewer entry appears on the next run screen without restarting the app
+# Steps: (0) note: with an answer already cached, an outage does not hide the entry (API-09-0-cached-answer-menu.png); (1) restart the app with the node reachable (page loads at Home, no availability asked yet); (2) stop the access proxy (the phone's only way to the node); New run (cached model options) -> launch -> ⋮; (3) start the proxy; Back to runs -> New run -> launch -> ⋮; GET /rest/node-desktop counts from the proxy log
+# Commit: 165de82af4 (CR-001 fix 0baf15a981); emulator autobyteus277_api35
+# Date: 2026-11-06T23:26:30Z
+
+proxy up: 200
+(1) app restarted, page:  AutoByteus Desktop / Connected / No runs yet / Start with New ru GET /rest/node-desktop so far=1
+(2) proxy stopped: 000
+    run screen offline: ?screen=new menu=[]
+    reading: after a fresh app start a run cannot be opened while the whole node is unreachable (the New run form needs the node's model options; the page stayed on ?screen=new), so the outage is narrowed to the availability request itself:
+## (2b) the proxy fails only GET /rest/node-desktop with 502 (fault switch on; everything else forwarded) — a dropped availability request while the node otherwise answers
+proxy up: 200; /rest/node-desktop via proxy: 502
+page before: 
+    run screen:  menu=[] injected 502s so far=1
+## (3) the node answers again (fault switch off)
+/rest/node-desktop via proxy: {"available":true}
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+file:///private/tmp/abx407-api/probes/cdp407.mjs:10
+if (!page) throw new Error(`no /mobile page in ${JSON.stringify(pages.map((p) => p.url.replace(/(pairing|access_token)=[^&#]+/g, '$1=<r>')))}`);
+                 ^
+
+Error: no /mobile page in []
+    at file:///private/tmp/abx407-api/probes/cdp407.mjs:10:18
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+    next run screen:  menu= pid unchanged=5384
+node-desktop requests of this case (proxy log):
+{"t":"2026-11-06T23:24:49.525Z","kind":"upgrade","method":"GET","path":"/ws/node-desktop"}
+{"t":"2026-11-06T23:27:26.459Z","kind":"http","method":"GET","path":"/rest/node-desktop"}
+{"t":"2026-11-06T23:27:26.460Z","kind":"injected-502","path":"/rest/node-desktop"}
+{"t":"2026-11-06T23:27:38.382Z","kind":"http","method":"GET","path":"/rest/node-desktop"}

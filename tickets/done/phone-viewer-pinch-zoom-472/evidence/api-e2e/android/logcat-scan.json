@@ -1,0 +1,140 @@
+{
+ "lines_scanned": 27127,
+ "checks": {
+  "phone credential (mra_ + 20 chars)": 0,
+  "owner credential (own_ + 20 chars)": 0,
+  "the probe's owner credential itself": 0,
+  "pairing one-time code": 0,
+  "access_token=": 14,
+  "authorization / bearer": 0,
+  "base64 of %PDF- (JVBERi0)": 0,
+  "base64 of the PNG signature (iVBORw0)": 0,
+  "first 24 base64 chars of resume": 0,
+  "first 24 base64 chars of photo": 0,
+  "first 24 base64 chars of big": 0,
+  "first 24 base64 chars of notes": 0
+ },
+ "saved file names": {
+  "photo-472.png": 12,
+  "resume-472.pdf": 6,
+  "big-472.pdf": 6,
+  "control-472.pdf": 6
+ },
+ "lines naming a saved file (who logged them)": [
+  "1486  1510 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023493-photo-472.png. Uid: 10207",
+  "1486  1510 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023493-photo-472.png to /storage/emulated/0/Download/photo-472.png",
+  "1486  1519 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023573-photo-472.png. Uid: 10207",
+  "1486  1519 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023573-photo-472.png to /storage/emulated/0/Download/photo-472.png",
+  "1486  1519 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023592-resume-472.pdf. Uid: 10207",
+  "1486  1519 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023592-resume-472.pdf to /storage/emulated/0/Download/resume-472.pdf",
+  "1486  1519 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023616-big-472.pdf. Uid: 10207",
+  "1486  1519 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023616-big-472.pdf to /storage/emulated/0/Download/big-472.pdf",
+  "1486  1508 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023675-control-472.pdf. Uid: 10207",
+  "1486  1508 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023675-control-472.pdf to /storage/emulated/0/Download/control-472.pdf",
+  "1486  1510 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023493-photo-472.png. Uid: 10207",
+  "1486  1510 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023493-photo-472.png to /storage/emulated/0/Download/photo-472.png"
+ ],
+ "app pid": "4003",
+ "app process log tags": [
+  [
+   "D EGL_emulation",
+   189
+  ],
+  [
+   "I chromium",
+   128
+  ],
+  [
+   "I tobyteus.mobile",
+   20
+  ],
+  [
+   "D nativeloader",
+   12
+  ],
+  [
+   "V GraphicsEnvironment",
+   10
+  ],
+  [
+   "W ziparchive",
+   8
+  ],
+  [
+   "D CompatChangeReporter",
+   8
+  ],
+  [
+   "I cr_CombinedPProvider",
+   8
+  ],
+  [
+   "W HWUI",
+   6
+  ],
+  [
+   "I cr_VariationsUtils",
+   6
+  ],
+  [
+   "I cr_A11yState",
+   6
+  ],
+  [
+   "I EGL_emulation",
+   4
+  ],
+  [
+   "W tobyteus.mobile",
+   4
+  ],
+  [
+   "I cr_PolicyProvider",
+   4
+  ],
+  [
+   "W cr_media",
+   4
+  ],
+  [
+   "D TrafficStats",
+   2
+  ],
+  [
+   "I Gralloc4",
+   2
+  ],
+  [
+   "I WebViewFactory",
+   2
+  ],
+  [
+   "V ResourcesManager",
+   2
+  ],
+  [
+   "D ApplicationLoaders",
+   2
+  ],
+  [
+   "I cr_WVCFactoryProvider",
+   2
+  ],
+  [
+   "I cr_LibraryLoader",
+   2
+  ],
+  [
+   "I cr_CachingUmaRecorder",
+   2
+  ],
+  [
+   "I cr_AppResProvider",
+   2
+  ],
+  [
+   "I Choreographer",
+   2
+  ]
+ ]
+}

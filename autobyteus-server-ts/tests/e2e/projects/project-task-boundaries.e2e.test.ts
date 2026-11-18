@@ -12,11 +12,11 @@ import type { FastifyInstance } from "fastify";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
-import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
+import { buildRuntimeAgentToolExposure, PLATFORM_GIVEN_TOOL_NAMES } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
-import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
-import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -26,12 +26,15 @@ import { resetProjectTaskContextStoreForTests } from "../../../src/projects/cont
 // capability is supplied because a real run scope requires it; it must never be called here.
 // No model request, Manager package or interactive same-window node switching is represented.
 // A Project mutation call goes to update_project when project_id is present, otherwise to create_project.
-const names = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
+const names = ["list_projects", "list_project_tasks", "get_project_task", "create_project", "update_project", "create_task", "update_task"];
+// Every session also has the tools the platform gives every run (autobyteus-496: search_memory), after the selected ones.
+const platform = [...PLATFORM_GIVEN_TOOL_NAMES];
+const sessionTools = [...names, ...platform];
 const projectTool = (args: unknown) => typeof args === "object" && args !== null && Object.hasOwn(args, "project_id") ? "update_project" : "create_project";
 const FILES = "storedFilename displayName mimeType sizeBytes locator";
-const TASK = `taskId projectId description status createdAt updatedAt contextFiles { ${FILES} }`;
+const TASK = `taskId projectId title description status createdAt updatedAt contextFiles { ${FILES} }`;
 type FileRef = { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator: string };
-type Task = { taskId: string; projectId: string; description: string; status: string; createdAt: string; updatedAt: string; contextFiles: FileRef[] };
+type Task = { taskId: string; projectId: string; title: string; description: string; status: string; createdAt: string; updatedAt: string; contextFiles: FileRef[] };
 const PROJECT = "projectId name description createdAt updatedAt taskCount openTaskCount workspaces { workspaceRootPath description availability }";
 type Link = { workspaceRootPath: string; description: string; availability: string };
 type Project = { projectId: string; name: string; description: string; createdAt: string; updatedAt: string; workspaces: Link[]; taskCount: number; openTaskCount: number };
@@ -49,7 +52,19 @@ const snapshot = async (directory: string): Promise<Record<string, string>> => {
   };
   await walk(directory); return entries;
 };
-const reset = () => { resetProjectTaskServiceForTests(); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+// autobyteus-260: a Project Task has a title (REQ-003/004). A writer here names a new Task by its description's first line;
+// the title's own rules (required, trimmed, not blank, no limit) are TTL-API-001's.
+const firstLine = (description: string) => description.split("\n").map((line) => line.trim()).find(Boolean);
+const titled = (args: Record<string, unknown>): Record<string, unknown> => "project_id" in args && !("task_id" in args) && !("title" in args)
+  ? { ...args, title: (typeof args.description === "string" && firstLine(args.description)) || "A titled Task" } : args;
+/** A saved context file as agents read it (REQ-013): `{name, path}`; `path` is the saved copy, named by its stored file name. */
+const storedNameOf = (file: { path: string }) => path.basename(file.path);
+// Reader reconstruction: fresh Project readers and stores. The Project Task service is the composition's (autobyteus-461: it
+// carries the delegation tree as its entries listener, set by the composition root); it is released only with the server.
+const reset = (releaseTaskService = false) => {
+  if (releaseTaskService) releaseProjectTaskServiceProcessInstance(getProjectTaskService());
+  resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+};
 
 describe("Project Task production HTTP boundaries", () => {
   let root: string, origin: string, mcpUrl: string, app: FastifyInstance;
@@ -87,7 +102,8 @@ describe("Project Task production HTTP boundaries", () => {
     const result = await call(projectTool(args), args);
     expect(result.isError).not.toBe(true);
     expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
-    return result.structuredContent.project as Pick<Project, "projectId" | "name" | "description"> & { workspaces: Array<Pick<Link, "workspaceRootPath" | "description">> };
+    // REQ-001: an empty description or workspace list (and a link's empty description) is left out of the acknowledgement.
+    return result.structuredContent.project as Pick<Project, "projectId" | "name"> & { description?: string; workspaces?: Array<{ workspaceRootPath: string; description?: string }> };
   };
   /** The tool the args belong to rejects them natively and over MCP with the same error. */
   const expectProjectError = async (args: Record<string, unknown>, code: string) => {
@@ -116,7 +132,7 @@ describe("Project Task production HTTP boundaries", () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-http-e2e-"));
     process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = path.join(root, "temp_workspace");
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
-    appConfigProvider.resetForTests(); appConfigProvider.config.setCustomAppDataDir(root); reset();
+    appConfigProvider.resetForTests(); appConfigProvider.config.setCustomAppDataDir(root); reset(true);
     registerProjectTaskTools();
     const started = await startStudioE2eRuntimeServer(); app = started.fastify; origin = started.mainUrl.origin;
     authority = started.agentToolsMcpHost.sessionAuthorities.begin({ scopeIdentity: "project-task-http-test" }).complete({
@@ -124,16 +140,17 @@ describe("Project Task production HTTP boundaries", () => {
       assertExecutionCapabilitiesReady: () => undefined,
     });
     const activate = (runId: string, selected: string[]) => authority.runSessions.activateForRun({ owner: { runId }, sender: buildAgentRunMessageSenderContext({ senderRunId: runId, senderName: runId }), runtimeExposure: buildRuntimeAgentToolExposure(selected) });
-    expect(activate("unselected", []).kind).toBe("not_exposed");
+    // Every run gets a session; an unselected run's list holds only the platform-given tools.
+    expect(activate("unselected", []).descriptor.enabledTools).toEqual(platform);
     // task-tool-split AC-007: a configuration that still lists the removed name gets no task tool and no launch error.
-    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).kind).toBe("not_exposed");
+    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).descriptor.enabledTools).toEqual(platform);
     const selected = activate("selected", names); expect(selected.kind).toBe("active");
     if (selected.kind !== "active") throw new Error("Selected session absent"); mcpUrl = selected.descriptor.serverUrl;
-    expect(selected.descriptor.enabledTools).toEqual(names);
+    expect(selected.descriptor.enabledTools).toEqual(sessionTools);
     const one = activate("read-only", ["list_projects"]);
     if (one.kind !== "active") throw new Error("Read-only session absent");
     const listed = await rpc(one.descriptor.serverUrl, "tools/list");
-    expect(listed.body.result.tools.map((t: { name: string }) => t.name)).toEqual(["list_projects"]);
+    expect(listed.body.result.tools.map((t: { name: string }) => t.name)).toEqual(["list_projects", ...platform]);
     for (const name of ["create_task", "update_task"]) {
       expect((await rpc(one.descriptor.serverUrl, "tools/call", { name, arguments: {} })).body.error).toBeDefined();
     }
@@ -150,7 +167,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect((await rpc(one.descriptor.serverUrl, "ping")).status).toBe(404);
   }, 120000);
   afterAll(async () => {
-    authority?.close(); if (app) await app.close(); reset(); appConfigProvider.resetForTests();
+    authority?.close(); if (app) await app.close(); reset(true); appConfigProvider.resetForTests();
     if (originalTemp === undefined) delete process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR; else process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = originalTemp;
     for (const key of Object.keys(process.env)) if (key.startsWith("ENABLE_") || key.startsWith("AUTOBYTEUS_")) delete process.env[key]; Object.assign(process.env, flags);
     if (origin) await expect(fetch(origin, {signal: AbortSignal.timeout(1500)})).rejects.toThrow();
@@ -160,29 +177,33 @@ describe("Project Task production HTTP boundaries", () => {
   }, 30000);
 
   it("API-MCP: selected default host executes equivalent compact mutations and detailed native reads", async () => {
-    expect((await call("list_projects", {})).structuredContent).toEqual({ projects: [] });
+    // REQ-001: an empty list is left out; an absent field means none.
+    expect((await call("list_projects", {})).structuredContent).toEqual({});
     const projectId = await createProject("HTTP parity");
     const catalog = await call("list_projects", {});
     expect(catalog.structuredContent).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
     expect((await rpc(mcpUrl, "initialize")).body.result.serverInfo.name).toBe("autobyteus_agent_tools");
-    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(names);
+    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.map((t: { name: string }) => t.name)).toEqual(sessionTools);
     expect((await rpc(mcpUrl, "tools/call", { name: "create_or_update_task", arguments: { project_id: projectId, description: "old name" } })).body.error).toBeDefined();
     expect(await list(projectId)).toEqual([]);
-    const created = (await call("create_task", { project_id: projectId, description: "  hello HTTP  " })).structuredContent.task;
-    // A Project Task's agent-facing taskId is its key.
-    expect(created).toEqual({ projectId, taskId: "http-parity-1", status: "TODO", dependsOn: [], partOf: null });
+    const createdResult = await call("create_task", { project_id: projectId, title: "  Hello HTTP  ", description: "  hello HTTP  " });
+    // REQ-001/002: compact JSON, one value for both MCP copies, no empty field.
+    expect(createdResult.content[0].text).toBe(JSON.stringify(createdResult.structuredContent));
+    const created = createdResult.structuredContent.task;
+    // A Project Task's agent-facing taskId is its key; the acknowledgement names its title (REQ-009).
+    expect(created).toEqual({ projectId, taskId: "http-parity-1", title: "Hello HTTP", status: "TODO" });
     expect(await list(projectId)).toEqual([expect.objectContaining({
-      projectId, taskId: await idOf(projectId, created.taskId), description: "hello HTTP", status: "TODO", contextFiles: [],
+      projectId, taskId: await idOf(projectId, created.taskId), title: "Hello HTTP", description: "hello HTTP", status: "TODO", contextFiles: [],
     })]);
     for (const status of ["IN_PROGRESS", "DONE", "TODO"]) {
       const input = { task_id: created.taskId, status };
       const patched = (await call("update_task", input)).structuredContent;
-      expect(patched).toEqual({ task: { projectId, taskId: created.taskId, status, dependsOn: [], partOf: null } });
+      expect(patched).toEqual({ task: { projectId, taskId: created.taskId, title: "Hello HTTP", status } });
       expect(JSON.parse(await new UpdateTaskTool().execute(null, input))).toEqual(patched);
     }
     const nativeList = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
     expect((await call("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(nativeList);
-    expect((await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks).toEqual([]);
+    expect((await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent).toEqual({ projectId });
     const cases: Array<[string, Record<string, unknown>, string]> = [
       ["list_projects", { extra: true }, "PROJECT_TOOL_ARGUMENT_INVALID"],
       ["list_project_tasks", { project_id: 12 }, "PROJECT_TOOL_ARGUMENT_INVALID"],
@@ -191,9 +212,14 @@ describe("Project Task production HTTP boundaries", () => {
       ["update_task", { task_id: null, description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
       ["update_task", { task_id: "", description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
       ["update_task", { project_id: projectId, task_id: created.taskId, status: "DONE" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
-      ["create_task", { project_id: projectId, task_id: created.taskId, description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
-      ["create_task", { project_id: projectId, description: " " }, "TASK_DESCRIPTION_REQUIRED"],
-      ["create_task", { project_id: projectId, description: "x", status: "TODO" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
+      ["create_task", { project_id: projectId, task_id: created.taskId, title: "x", description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      ["create_task", { project_id: projectId, title: "x", description: " " }, "TASK_DESCRIPTION_REQUIRED"],
+      ["create_task", { project_id: projectId, title: "x", description: "x", status: "TODO" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
+      // autobyteus-260 REQ-004: a missing or blank title is refused.
+      ["create_task", { project_id: projectId, description: "x" }, "TASK_TITLE_REQUIRED"],
+      ["create_task", { project_id: projectId, title: " \n ", description: "x" }, "TASK_TITLE_REQUIRED"],
+      ["create_task", { project_id: projectId, title: 7, description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      ["update_task", { task_id: created.taskId, title: "  " }, "TASK_TITLE_REQUIRED"],
       ["update_task", { task_id: created.taskId }, "TASK_PATCH_REQUIRED"],
       ["update_task", { task_id: "unknown", description: "no upsert" }, "TASK_NOT_FOUND"],
     ];
@@ -221,30 +247,37 @@ describe("Project Task production HTTP boundaries", () => {
     expect(added.status).toBe(200); const file = await added.json() as FileRef;
     expect(file).toMatchObject({ displayName: "note.txt", mimeType: "text/plain", sizeBytes: 24 });
     expect(await (await fetch(`${origin}/rest/projects/${projectId}/task-context-drafts/${d.draftId}/context-files/${file.storedFilename}`)).text()).toBe("original workspace bytes");
-    const task = (await gql<{ createProjectTask: Task }>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, { i: { projectId, description: "Durable HTTP", contextDraft: { draftId: d.draftId, storedFilenames: [file.storedFilename] } } })).createProjectTask;
+    const task = (await gql<{ createProjectTask: Task }>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, { i: { projectId, title: "Durable HTTP", description: "Durable HTTP", contextDraft: { draftId: d.draftId, storedFilenames: [file.storedFilename] } } })).createProjectTask;
     const saved = task.contextFiles[0]!; expect(saved.storedFilename).not.toBe(file.storedFilename);
     const read = await fetch(`${origin}${saved.locator}`); expect(read.status).toBe(200);
     expect(read.headers.get("x-content-type-options")).toBe("nosniff"); expect(read.headers.get("content-disposition")).toContain("attachment"); expect(await read.text()).toBe("original workspace bytes");
     expect((await fetch(`${origin}${saved.locator}`, { headers: { authorization: "Bearer mra_invalid" } })).status).toBe(401);
     expect((await fetch(`${origin}${saved.locator.replace(projectId, otherId)}`)).status).toBe(404);
-    const sibling = (await call("create_task", { project_id: projectId, description: "sibling" })).structuredContent.task as Task;
+    const sibling = (await call("create_task", { project_id: projectId, title: "sibling", description: "sibling" })).structuredContent.task as Task;
     expect((await fetch(`${origin}${saved.locator.replace(task.taskId, sibling.taskId)}`)).status).toBe(404);
     await call("update_task", { task_id: task.taskId, status: "DONE" });
     reset(); expect((await list(projectId)).find(t => t.taskId === task.taskId)).toMatchObject({ status: "DONE", contextFiles: [saved] });
-    const projected = (await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks[0];
-    expect(await fs.readFile(projected.contextFiles[0].localPath, "utf8")).toBe("original workspace bytes");
+    // A Task's context files reach agents through get_project_task as {name, path} (REQ-014, DEC-004); lists are short.
+    expect((await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks[0]).not.toHaveProperty("contextFiles");
+    const projected = (await call("get_project_task", { project_id: projectId, task_id: task.taskId })).structuredContent;
+    expect(projected.contextFiles).toEqual([{ name: "note.txt", path: expect.stringContaining(saved.storedFilename) }]);
+    expect(await fs.readFile(projected.contextFiles[0].path, "utf8")).toBe("original workspace bytes");
     const cancel = await draft(projectId, task.taskId); await upload(projectId, cancel.draftId, "cancelled");
     expect((await fetch(`${origin}/rest/projects/${projectId}/task-context-drafts/${cancel.draftId}`, { method: "DELETE" })).status).toBe(204);
     expect(await (await fetch(`${origin}${saved.locator}`)).text()).toBe("original workspace bytes");
     const edit = await draft(projectId, task.taskId); const newFile = await (await upload(projectId, edit.draftId, "replacement")).json() as FileRef;
-    const updated = (await gql<{ updateProjectTask: Task }>(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){${TASK}}}`, { i: { projectId, taskId: task.taskId, description: "edited", contextChanges: { draftId: edit.draftId, addStoredFilenames: [newFile.storedFilename], removeStoredFilenames: [saved.storedFilename] } } })).updateProjectTask;
+    const updated = (await gql<{ updateProjectTask: Task }>(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){${TASK}}}`, { i: { projectId, taskId: task.taskId, title: "Durable HTTP", description: "edited", contextChanges: { draftId: edit.draftId, addStoredFilenames: [newFile.storedFilename], removeStoredFilenames: [saved.storedFilename] } } })).updateProjectTask;
     expect(updated).toMatchObject({ taskId: task.taskId, status: "DONE", createdAt: task.createdAt });
     expect((await fetch(`${origin}${saved.locator}`)).status).toBe(404);
-    await expect(fs.stat(projected.contextFiles[0].localPath)).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(fs.stat(projected.contextFiles[0].path)).rejects.toMatchObject({ code: "ENOENT" });
     expect(await (await fetch(`${origin}${updated.contextFiles[0]!.locator}`)).text()).toBe("replacement");
-    const replacementPath = (await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks[0].contextFiles[0].localPath;
-    const rejected = await draft(projectId); expect((await upload(projectId, rejected.draftId, "bad", "application/x-executable", "bad.exe")).status).toBe(400);
-    const oversized = await upload(projectId, rejected.draftId, "x".repeat(25 * 1024 * 1024 + 1)); expect(oversized.ok).toBe(false);
+    const replacementPath = (await call("get_project_task", { project_id: projectId, task_id: task.taskId })).structuredContent.contextFiles[0].path;
+    const rejected = await draft(projectId); const unsupported = await upload(projectId, rejected.draftId, "bad", "application/x-executable", "bad.exe");
+    expect(unsupported.status).toBe(415);
+    expect(await unsupported.json()).toMatchObject({ error: { code: "CONTEXT_FILE_TYPE_UNSUPPORTED" } });
+    const oversized = await upload(projectId, rejected.draftId, "x".repeat(25 * 1024 * 1024 + 1));
+    expect(oversized.status).toBe(413);
+    expect(await oversized.json()).toMatchObject({ error: { code: "CONTEXT_FILE_TOO_LARGE", maxBytes: 25 * 1024 * 1024 } });
     expect(await list(projectId)).toHaveLength(2);
     await gql("mutation($i:DeleteProjectTaskInput!){deleteProjectTask(input:$i)}", { i: { projectId, taskId: task.taskId } });
     expect((await fetch(`${origin}${updated.contextFiles[0]!.locator}`)).status).toBe(404);
@@ -263,9 +296,9 @@ describe("Project Task production HTTP boundaries", () => {
         sender: buildAgentRunMessageSenderContext({ senderRunId: "collision", senderName: "collision" }),
         runtimeExposure: buildRuntimeAgentToolExposure([name]) });
       expect(selected.kind).toBe("active"); if (selected.kind !== "active") throw new Error("Missing collision session");
-      expect(selected.descriptor.enabledTools).toEqual([name]);
+      expect(selected.descriptor.enabledTools).toEqual([name, ...platform]);
       const listed = await rpc(selected.descriptor.serverUrl, "tools/list");
-      expect(listed.body.result.tools.map((t: {name: string}) => t.name)).toEqual([name]);
+      expect(listed.body.result.tools.map((t: {name: string}) => t.name)).toEqual([name, ...platform]);
       const args = name === "list_projects" ? {} : {...(target ? {project_id: target} : {}), name: `Protected mutation ${name}`};
       const result = await rpc(selected.descriptor.serverUrl, "tools/call", { name, arguments: args });
       expect(result.body.error).toBeUndefined(); expect(result.body.result.isError).not.toBe(true);
@@ -276,12 +309,19 @@ describe("Project Task production HTTP boundaries", () => {
   });
 
   it("API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records", async () => {
+    // autobyteus-426 D-08: a path not yet registered must be an existing folder; refusing it creates nothing.
     const missingPath = path.join(root, "not-created-folder");
+    const refused = await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({
+      query: "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId}}", variables: { i: { rootPath: `${missingPath}/../not-created-folder` } } }) });
+    expect((await refused.json()).errors[0].extensions).toMatchObject({ code: "WORKSPACE_PATH_REFUSED", reason: "missing" });
+    await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
+    const folderPath = path.join(root, "registered-folder");
+    await fs.mkdir(folderPath);
     const registered = (await gql<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
-      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath: `${missingPath}/../not-created-folder` } })).createWorkspace;
-    expect(registered.workspaceRootPath).toBe(missingPath); await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
+      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath: `${folderPath}/../registered-folder` } })).createWorkspace;
+    expect(registered.workspaceRootPath).toBe(folderPath);
     const projectId = await createProject("Aggregate existing");
-    const task = (await call("create_task", { project_id: projectId, description: "Done still counts" })).structuredContent.task as Task;
+    const task = (await call("create_task", { project_id: projectId, title: "Done still counts", description: "Done still counts" })).structuredContent.task as Task;
     await call("update_task", { task_id: task.taskId, status: "DONE" });
     const fields = "projectId name taskCount openTaskCount workspaces { workspaceRootPath description availability }";
     const updated = await gql<{ updateProject: { taskCount: number; openTaskCount: number; workspaces: Link[] } }>(
@@ -298,7 +338,7 @@ describe("Project Task production HTTP boundaries", () => {
     await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", { i: { workspaceId: registered.workspaceId } });
     const reread = await gql<{ updateProject: { workspaces: Link[] } }>(
       `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate renamed", description: "saved", workspaces: [{ workspaceRootPath: registered.workspaceRootPath, description: "retained unregistered" }] } });
-    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: missingPath, availability: "UNREGISTERED" });
+    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: folderPath, availability: "UNREGISTERED" });
     expect(await list(projectId)).toHaveLength(1);
     await gql("mutation($id:String!){deleteProject(projectId:$id)}", { id: projectId });
     await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
@@ -306,15 +346,16 @@ describe("Project Task production HTTP boundaries", () => {
 
   it("E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically", async () => {
     const created = await projectCall({name: "  Agent authored  ", description: "  Saved goal  "});
-    expect(created).toEqual({projectId: expect.stringMatching(/^project_/), name: "Agent authored", description: "Saved goal", workspaces: []});
+    expect(created).toEqual({projectId: expect.stringMatching(/^project_/), name: "Agent authored", description: "Saved goal"});
     const initial = await readProject(created.projectId);
-    expect(initial).toMatchObject({...created, taskCount: 0, openTaskCount: 0});
+    expect(initial).toMatchObject({...created, workspaces: [], taskCount: 0, openTaskCount: 0});
     expect(Number.isFinite(Date.parse(initial.createdAt))).toBe(true);
     const nativeCreated = JSON.parse(await new CreateProjectTool().execute(null, {name: " Native authored "})).project;
-    expect(nativeCreated).toEqual({projectId: expect.stringMatching(/^project_/), name: "Native authored", description: "", workspaces: []});
-    expect(await readProject(nativeCreated.projectId)).toMatchObject(nativeCreated);
+    expect(nativeCreated).toEqual({projectId: expect.stringMatching(/^project_/), name: "Native authored"});
+    expect(await readProject(nativeCreated.projectId)).toMatchObject({...nativeCreated, description: "", workspaces: []});
     const defaults = await projectCall({name: "HTTP defaults"});
-    expect(defaults).toMatchObject({description: "", workspaces: []});
+    expect(defaults).toEqual({projectId: expect.stringMatching(/^project_/), name: "HTTP defaults"});
+    expect(await readProject(defaults.projectId)).toMatchObject({description: "", workspaces: []});
     const summary = (await call("list_projects", {})).structuredContent;
     expect(summary).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
     expect(summary.projects).toContainEqual({projectId: created.projectId, name: created.name, description: created.description});
@@ -324,6 +365,7 @@ describe("Project Task production HTTP boundaries", () => {
       expect(JSON.parse(await new UpdateProjectTool().execute(null, args))).toEqual({project: ack});
       const read = await readProject(created.projectId);
       expect(read).toMatchObject({...ack, createdAt: initial.createdAt, workspaces: []});
+      expect(ack).not.toHaveProperty("workspaces");
       expect(Date.parse(read.updatedAt)).toBeGreaterThanOrEqual(Date.parse(initial.updatedAt));
       if (!Object.hasOwn(patch, "description")) expect(read.description).toBe("Saved goal");
       if (!Object.hasOwn(patch, "name")) expect(read.name).toBe("Renamed authored");
@@ -352,14 +394,24 @@ describe("Project Task production HTTP boundaries", () => {
     const created = await projectCall({name: "Linked authored", description: "Project goal", workspaces: [
       {workspace_path: ` ${a.workspaceRootPath} `, description: " Frontend "}, {workspace_path: b.workspaceRootPath},
     ]});
-    expect(created.workspaces).toEqual([{workspaceRootPath: a.workspaceRootPath, description: "Frontend"}, {workspaceRootPath: b.workspaceRootPath, description: ""}]);
+    expect(created.workspaces).toEqual([{workspaceRootPath: a.workspaceRootPath, description: "Frontend"}, {workspaceRootPath: b.workspaceRootPath}]);
     const missingPath = path.join(root, "unregistered missing #?雪");
     const direct = await projectCall({name: "Direct path", workspaces: [{workspace_path: missingPath}]});
-    expect(direct.workspaces).toEqual([{workspaceRootPath: missingPath, description: ""}]);
-    expect(JSON.parse(await fs.readFile(path.join(root, "projects", direct.projectId, "project.json"), "utf8")).workspaces).toEqual(direct.workspaces);
+    expect(direct.workspaces).toEqual([{workspaceRootPath: missingPath}]);
+    // autobyteus-384: list_projects shows each Project's linked folders in the shape create_project returned; a field
+    // with no value is left out (AC-001, AC-002); over MCP it equals the native tool (AC-004).
+    const listed = (await call("list_projects", {})).structuredContent;
+    expect(listed).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
+    expect(listed.projects).toContainEqual({projectId: created.projectId, name: "Linked authored", description: "Project goal",
+      workspaces: [{workspaceRootPath: a.workspaceRootPath, description: "Frontend"}, {workspaceRootPath: b.workspaceRootPath}]});
+    expect(listed.projects).toContainEqual(created);
+    expect(listed.projects).toContainEqual({projectId: direct.projectId, name: "Direct path", workspaces: [{workspaceRootPath: missingPath}]});
+    // Stored as before: the rule shapes results, not saved data.
+    const savedLinks = [{workspaceRootPath: missingPath, description: ""}];
+    expect(JSON.parse(await fs.readFile(path.join(root, "projects", direct.projectId, "project.json"), "utf8")).workspaces).toEqual(savedLinks);
     const nativeDirect = JSON.parse(await new CreateProjectTool().execute(null, {name: "Native direct path", workspaces: [{workspace_path: missingPath}]})).project;
     expect(nativeDirect.workspaces).toEqual(direct.workspaces);
-    expect(JSON.parse(await fs.readFile(path.join(root, "projects", nativeDirect.projectId, "project.json"), "utf8")).workspaces).toEqual(direct.workspaces);
+    expect(JSON.parse(await fs.readFile(path.join(root, "projects", nativeDirect.projectId, "project.json"), "utf8")).workspaces).toEqual(savedLinks);
     expect((await readProject(direct.projectId)).workspaces[0]).toMatchObject({workspaceRootPath: missingPath, availability: "UNREGISTERED"});
     await expect(fs.stat(missingPath)).rejects.toMatchObject({code: "ENOENT"});
     expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
@@ -395,7 +447,7 @@ describe("Project Task production HTTP boundaries", () => {
       await expectProjectError({project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_path}]}, "WORKSPACE_PATH_INVALID");
     }
     const cleared = await projectCall({project_id: created.projectId, workspaces: []});
-    expect(cleared.workspaces).toEqual([]);
+    expect(cleared).not.toHaveProperty("workspaces");
     expect(await readProject(created.projectId)).toMatchObject({projectId: created.projectId, createdAt: initial.createdAt, name: initial.name, description: "Edited goal", workspaces: []});
     expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
     expect(await Promise.all(roots.map(snapshot))).toEqual(beforeFolders);
@@ -409,70 +461,32 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await Promise.all(roots.map(snapshot))).toEqual(beforeFolders);
   });
 
-  it("E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction", async () => {
-    const workspace = await registerWorkspace("protected-source");
-    // Existing supported full-form creation, NOT a tool-created-only fixture.
-    const old = (await gql<{createProject: Project}>(`mutation($i:CreateProjectInput!){createProject(input:$i){${PROJECT}}}`, {
-      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceRootPath: workspace.workspaceRootPath, description: "Saved link"}]},
-    })).createProject;
-    const otherId = await createProject("Unrelated preserved");
-    const d = await draft(old.projectId);
-    const file = await (await upload(old.projectId, d.draftId, "existing task context bytes")).json() as FileRef;
-    const task = (await gql<{createProjectTask: Task}>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, {
-      i: {projectId: old.projectId, description: "Existing assigned task", contextDraft: {draftId: d.draftId, storedFilenames: [file.storedFilename]}},
-    })).createProjectTask;
-    // Minimum current-format persisted assignment; no model/run launch needed for preservation.
-    const resources = path.join(root, "projects", old.projectId, "tasks", task.taskId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: {kind: "agent", runId: "fixture-root"}, agentRun: {kind: "agent", agentRunId: "fixture-worker"},
-      linkedAt: task.createdAt, start: "started", closedAt: null}]}, null, 2));
-    // Opaque preservation sentinel: not inference/history replay certification.
-    const historyDir = path.join(root, "memory", "agents", "fixture-worker");
-    await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
-    reset();
-    const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
-    expect(businessBefore.tasks[0].assignments).toEqual([{kind: "agent", agentRunId: "fixture-worker", assignedBy: "fixture-manager", outcome: "accepted"}]);
-    expect(businessBefore.tasks[0].closedAssignments).toEqual([]);
-    const protectedDirs = [path.join(root, "projects", old.projectId, "tasks"), path.join(root, "projects", otherId), historyDir, workspace.workspaceRootPath];
-    const before = await Promise.all(protectedDirs.map(snapshot));
-    const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
-    const originalRecord = await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8");
-    expect(await readProject(old.projectId)).toEqual({...old, taskCount: 1, openTaskCount: 1});
-    expect(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8")).toBe(originalRecord); // no migration/read rewrite
-    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_path: workspace.workspaceRootPath}]}, {workspaces: []}]) {
-      await projectCall({project_id: old.projectId, ...patch}); reset();
-      const project = await readProject(old.projectId);
-      expect(project).toMatchObject({projectId: old.projectId, createdAt: old.createdAt, taskCount: 1, openTaskCount: 1});
-      expect(await list(old.projectId)).toEqual([task]);
-      expect((await call("list_project_tasks", {project_id: old.projectId})).structuredContent).toEqual(businessBefore);
-      expect(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).text()).toBe("existing task context bytes");
-      expect(await Promise.all(protectedDirs.map(snapshot))).toEqual(before);
-      expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
-    }
-    expect(Object.keys(JSON.parse(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8"))).sort()).toEqual(
-      ["projectId", "name", "description", "createdAt", "updatedAt", "workspaces", "taskKeys"].sort());
-  });
-
   // project-task-tool-context-files: agent-named node-local files copied into a Project Task's saved context
   // through create_task / update_task context_files, over the selected MCP session and the native tool.
   const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+  /** Each Task's title by its key, as its acknowledgement named it. */
+  const titles: Record<string, string> = {};
   const taskCall = async (args: Record<string, unknown>) => {
-    const result = await call("task_id" in args ? "update_task" : "create_task", args);
+    const result = await call("task_id" in args ? "update_task" : "create_task", titled(args));
     expect(result.isError, JSON.stringify(result.structuredContent)).not.toBe(true);
     expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
-    return result.structuredContent.task as { projectId: string; taskId: string; status: string; attachedContextFiles?: Array<{ storedFilename: string; displayName: string }> };
+    const task = result.structuredContent.task as { projectId: string; taskId: string; title: string; status: string; attachedContextFiles?: Array<{ name: string; path: string }> };
+    if (task.title) titles[task.taskId] = task.title;
+    return task;
   };
-  const nativeTaskCall = async (args: Record<string, unknown>) => JSON.parse(await ("task_id" in args ? new UpdateTaskTool() : new CreateTaskTool()).execute(null, args)).task;
+  const nativeTaskCall = async (args: Record<string, unknown>) => JSON.parse(await ("task_id" in args ? new UpdateTaskTool() : new CreateTaskTool()).execute(null, titled(args))).task;
+  /** A Project Task's acknowledgement: identity, title and status; relations and lists only when they have a value. */
+  const taskAck = (projectId: string, taskId: string, status: string, extra: Record<string, unknown> = {}) => ({ projectId, taskId, title: titles[taskId], status, ...extra });
   const taskJson = async (projectId: string, reference: string) => JSON.parse(await fs.readFile(path.join(root, "projects", projectId, "tasks", await idOf(projectId, reference), "task.json"), "utf8"));
   const readOne = async (projectId: string, reference: string) => { const taskId = await idOf(projectId, reference); return (await list(projectId)).find(t => t.taskId === taskId)!; };
   const ownedSources = async (name: string) => { const dir = path.join(root, "sources", name); await fs.mkdir(dir, { recursive: true }); return dir; };
-  const attached = (displayName: string) => ({ storedFilename: expect.stringMatching(/\S/), displayName });
+  const attached = (name: string) => ({ name, path: expect.stringMatching(/\/context\/ctx_[^/]+$/) });
 
   it("CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)", async () => {
     // AC-011: one optional additive string array on each task tool.
     const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
-    expect(tools.map(t => t.name)).toEqual(names);
-    for (const [name, keys] of [["create_task", ["context_files", "depends_on", "description", "part_of", "project_id"]], ["update_task", ["add_comment", "context_files", "depends_on", "description", "part_of", "status", "task_id"]]] as const) {
+    expect(tools.map(t => t.name)).toEqual(sessionTools);
+    for (const [name, keys] of [["create_task", ["context_files", "depends_on", "description", "part_of", "project_id", "title"]], ["update_task", ["add_comment", "context_files", "depends_on", "description", "part_of", "status", "task_id", "title"]]] as const) {
       const taskTool = tools.find(t => t.name === name)!;
       expect(taskTool.inputSchema.properties.context_files).toMatchObject({ type: "array", items: { type: "string" } });
       expect(taskTool.inputSchema.properties.context_files.description).toMatch(/Absolute local file paths/);
@@ -495,14 +509,17 @@ describe("Project Task production HTTP boundaries", () => {
 
       // AC-001: create with [png, md] through the selected MCP session.
       const created = await taskCall({ project_id: projectId, description: " Fix the green status ", context_files: [shot, notes] });
-      expect(created).toEqual({ projectId, taskId: expect.stringMatching(/^context-files-\d+$/), status: "TODO", dependsOn: [], partOf: null,
+      expect(created).toEqual({ projectId, taskId: expect.stringMatching(/^context-files-\d+$/), title: "Fix the green status", status: "TODO",
         attachedContextFiles: [attached(path.basename(shot)), attached("notes.md")] });
+      // AC-011: each acknowledged path reads the saved copy.
+      expect(await fs.readFile(created.attachedContextFiles![0]!.path)).toEqual(PNG);
+      expect(await fs.readFile(created.attachedContextFiles![1]!.path, "utf8")).toBe("# Notes\nGreen status is wrong.\n");
       const taskId = created.taskId;
       let task = await readOne(projectId, taskId);
       expect(task).toMatchObject({ description: "Fix the green status", status: "TODO" });
       expect(task.contextFiles).toEqual([
-        { storedFilename: created.attachedContextFiles![0]!.storedFilename, displayName: path.basename(shot), mimeType: "image/png", sizeBytes: PNG.length, locator: expect.any(String) },
-        { storedFilename: created.attachedContextFiles![1]!.storedFilename, displayName: "notes.md", mimeType: "text/markdown", sizeBytes: 31, locator: expect.any(String) },
+        { storedFilename: storedNameOf(created.attachedContextFiles![0]!), displayName: path.basename(shot), mimeType: "image/png", sizeBytes: PNG.length, locator: expect.any(String) },
+        { storedFilename: storedNameOf(created.attachedContextFiles![1]!), displayName: "notes.md", mimeType: "text/markdown", sizeBytes: 31, locator: expect.any(String) },
       ]);
       // Persisted in the existing record shape (Persisted data: Not Affected).
       expect((await taskJson(projectId, taskId)).contextFiles).toEqual(task.contextFiles.map(({ locator: _locator, ...file }) => file));
@@ -520,32 +537,32 @@ describe("Project Task production HTTP boundaries", () => {
       await fs.rm(pasted, { recursive: true, force: true }); await fs.rm(notes);
       reset();
       expect(Buffer.from(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).arrayBuffer())).toEqual(PNG);
-      const business = (await call("list_project_tasks", { project_id: projectId })).structuredContent.tasks[0];
-      expect(business.contextFiles.map((f: { displayName: string }) => f.displayName)).toEqual([path.basename(shot), "notes.md"]);
-      expect(await fs.readFile(business.contextFiles[0].localPath)).toEqual(PNG);
-      expect(await fs.readFile(business.contextFiles[1].localPath, "utf8")).toBe("# Notes\nGreen status is wrong.\n");
+      const business = (await call("get_project_task", { project_id: projectId, task_id: taskId })).structuredContent;
+      expect(business.contextFiles).toEqual(created.attachedContextFiles);
+      expect(await fs.readFile(business.contextFiles[0].path)).toEqual(PNG);
+      expect(await fs.readFile(business.contextFiles[1].path, "utf8")).toBe("# Notes\nGreen status is wrong.\n");
 
       // AC-002: files-only patch appends, keeps text/status/earlier files, returns only this call's file.
       const before = task;
       const appended = await taskCall({ task_id: taskId, context_files: [log] });
-      expect(appended).toEqual({ projectId, taskId, status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [attached("run log.txt")] });
+      expect(appended).toEqual(taskAck(projectId, taskId, "TODO", { attachedContextFiles: [attached("run log.txt")] }));
       task = await readOne(projectId, taskId);
       expect(task).toMatchObject({ description: before.description, status: "TODO", createdAt: before.createdAt });
       expect(task.contextFiles.slice(0, 2)).toEqual(before.contextFiles);
-      expect(task.contextFiles[2]).toMatchObject({ storedFilename: appended.attachedContextFiles![0]!.storedFilename, displayName: "run log.txt", mimeType: "text/plain", sizeBytes: 10 });
+      expect(task.contextFiles[2]).toMatchObject({ storedFilename: storedNameOf(appended.attachedContextFiles![0]!), displayName: "run log.txt", mimeType: "text/plain", sizeBytes: 10 });
       expect(Date.parse(task.updatedAt)).toBeGreaterThanOrEqual(Date.parse(before.updatedAt));
       // AC-002 alternate, native surface: the same source again is another saved copy.
       const again = await nativeTaskCall({ task_id: taskId, context_files: [log] });
-      expect(again).toEqual({ projectId, taskId, status: "TODO", dependsOn: [], partOf: null, attachedContextFiles: [attached("run log.txt")] });
-      expect(again.attachedContextFiles[0].storedFilename).not.toBe(appended.attachedContextFiles![0]!.storedFilename);
+      expect(again).toEqual(taskAck(projectId, taskId, "TODO", { attachedContextFiles: [attached("run log.txt")] }));
+      expect(again.attachedContextFiles[0].path).not.toBe(appended.attachedContextFiles![0]!.path);
       expect((await readOne(projectId, taskId)).contextFiles).toHaveLength(4);
 
       // AC-003: description + status + files in one call; then DONE + files.
       const combined = await taskCall({ task_id: taskId, description: "Edited by agent", status: "IN_PROGRESS", context_files: [more] });
-      expect(combined).toEqual({ projectId, taskId, status: "IN_PROGRESS", dependsOn: [], partOf: null, attachedContextFiles: [attached("more.md")] });
+      expect(combined).toEqual(taskAck(projectId, taskId, "IN_PROGRESS", { attachedContextFiles: [attached("more.md")] }));
       expect(await readOne(projectId, taskId)).toMatchObject({ description: "Edited by agent", status: "IN_PROGRESS" });
       const closed = await taskCall({ task_id: taskId, status: "DONE", context_files: [done] });
-      expect(closed).toEqual({ projectId, taskId, status: "DONE", dependsOn: [], partOf: null, attachedContextFiles: [attached("final.png")] });
+      expect(closed).toEqual(taskAck(projectId, taskId, "DONE", { attachedContextFiles: [attached("final.png")] }));
       task = await readOne(projectId, taskId);
       expect(task.status).toBe("DONE");
       expect(task.contextFiles.map(f => f.displayName)).toEqual([path.basename(shot), "notes.md", "run log.txt", "run log.txt", "more.md", "final.png"]);
@@ -553,23 +570,23 @@ describe("Project Task production HTTP boundaries", () => {
 
       // AC-004 / AC-009: an empty list on create is a plain create; plain patches keep the plain return.
       const plain = await nativeTaskCall({ project_id: projectId, description: "No files", context_files: [] });
-      expect(plain).toEqual({ projectId, taskId: expect.any(String), status: "TODO", dependsOn: [], partOf: null });
+      expect(plain).toEqual({ projectId, taskId: expect.any(String), title: "No files", status: "TODO" });
       expect((await readOne(projectId, plain.taskId)).contextFiles).toEqual([]);
       await expect(fs.stat(path.join(root, "projects", projectId, "tasks", await idOf(projectId, plain.taskId), "context"))).rejects.toMatchObject({ code: "ENOENT" });
-      expect(await taskCall({ task_id: plain.taskId, description: "Still no files" })).toEqual({ projectId, taskId: plain.taskId, status: "TODO", dependsOn: [], partOf: null });
+      expect(await taskCall({ task_id: plain.taskId, description: "Still no files" })).toEqual({ projectId, taskId: plain.taskId, title: "No files", status: "TODO" });
 
       // RU-002: a Task with an app-uploaded file; the agent appends; the user removes the agent's file in the app.
       const d = await draft(projectId);
       const uiFile = await (await upload(projectId, d.draftId, "ui uploaded bytes", "text/plain", "ui.txt")).json() as FileRef;
       const uiTask = (await gql<{ createProjectTask: Task }>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`,
-        { i: { projectId, description: "UI task", contextDraft: { draftId: d.draftId, storedFilenames: [uiFile.storedFilename] } } })).createProjectTask;
+        { i: { projectId, title: "UI task", description: "UI task", contextDraft: { draftId: d.draftId, storedFilenames: [uiFile.storedFilename] } } })).createProjectTask;
       const uiRecord = (await taskJson(projectId, uiTask.taskId)).contextFiles[0];
       const agentAdd = await taskCall({ task_id: uiTask.taskId, context_files: [more] });
       expect(agentAdd.attachedContextFiles).toEqual([attached("more.md")]);
       expect((await taskJson(projectId, uiTask.taskId)).contextFiles).toEqual([uiRecord, expect.objectContaining({ displayName: "more.md" })]);
       const removed = (await gql<{ updateProjectTask: Task }>(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){${TASK}}}`,
         // As the app's Save sends it (useProjectTaskDraft): the current text plus the removal, no draft.
-        { i: { projectId, taskId: uiTask.taskId, description: "UI task", contextChanges: { addStoredFilenames: [], removeStoredFilenames: [agentAdd.attachedContextFiles![0]!.storedFilename] } } })).updateProjectTask;
+        { i: { projectId, taskId: uiTask.taskId, title: "UI task", description: "UI task", contextChanges: { addStoredFilenames: [], removeStoredFilenames: [storedNameOf(agentAdd.attachedContextFiles![0]!)] } } })).updateProjectTask;
       expect(removed.contextFiles).toEqual([uiTask.contextFiles[0]]);
       expect((await fetch(`${origin}${uiTask.contextFiles[0]!.locator}`)).status).toBe(200);
       expect(await fs.readdir(path.join(root, "projects", projectId, "tasks", uiTask.taskId, "context"))).toEqual([uiRecord.storedFilename]);
@@ -595,12 +612,13 @@ describe("Project Task production HTTP boundaries", () => {
     // A current-format open run resource: DONE + an invalid file must not close it.
     const existingId = await idOf(projectId, existing.taskId);
     const resources = path.join(root, "projects", projectId, "tasks", existingId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: existingId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+    await fs.writeFile(resources, JSON.stringify({ taskId: existingId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     const expectTaskError = async (args: Record<string, unknown>, code: string, named?: string) => {
       const before = await snapshot(path.join(root, "projects"));
       const mode = "task_id" in args ? "update_task" : "create_task";
+      args = titled(args);
       const native = await (mode === "update_task" ? new UpdateTaskTool() : new CreateTaskTool()).execute(null, args).then(
         (value) => { throw new Error(`Expected native rejection, got ${value}`); }, (error: Error) => JSON.parse(error.message));
       expect(native.error.code, JSON.stringify({ args, native })).toBe(code);
@@ -679,8 +697,8 @@ describe("Project Task production HTTP boundaries", () => {
     // A current-format open run resource on the Task to be cancelled: CANCELLED must close it exactly like DONE.
     const cancelledId = await idOf(projectId, ids.cancelled!);
     const resources = path.join(root, "projects", projectId, "tasks", cancelledId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: cancelledId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+    await fs.writeFile(resources, JSON.stringify({ taskId: cancelledId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     // An invalid context file with CANCELLED fails first and closes nothing (inputs are checked before closure).
     const missing = path.join(root, "sources", "cancelled-missing.png");
@@ -689,9 +707,9 @@ describe("Project Task production HTTP boundaries", () => {
     expect(JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0].closedAt).toBeNull();
 
     // AC-004: CANCELLED by task_id over MCP, IN_PROGRESS and DONE for the others.
-    expect(await taskCall({ task_id: ids.progress, status: "IN_PROGRESS" })).toEqual({ projectId, taskId: ids.progress, status: "IN_PROGRESS", dependsOn: [], partOf: null });
-    expect(await taskCall({ task_id: ids.done, status: "DONE" })).toEqual({ projectId, taskId: ids.done, status: "DONE", dependsOn: [], partOf: null });
-    expect(await taskCall({ task_id: ids.cancelled, status: "CANCELLED" })).toEqual({ projectId, taskId: ids.cancelled, status: "CANCELLED", dependsOn: [], partOf: null });
+    expect(await taskCall({ task_id: ids.progress, status: "IN_PROGRESS" })).toEqual(taskAck(projectId, ids.progress!, "IN_PROGRESS"));
+    expect(await taskCall({ task_id: ids.done, status: "DONE" })).toEqual(taskAck(projectId, ids.done!, "DONE"));
+    expect(await taskCall({ task_id: ids.cancelled, status: "CANCELLED" })).toEqual(taskAck(projectId, ids.cancelled!, "CANCELLED"));
     const closedEntry = JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0];
     expect(closedEntry.closedAt).toEqual(expect.any(String));
     // Repeating CANCELLED (retry) and DONE<->CANCELLED change the status only; the closed entry is not rewritten.
@@ -717,7 +735,7 @@ describe("Project Task production HTTP boundaries", () => {
 
     // AC-004 errors: create with CANCELLED is refused; an invalid status names all four values (MCP equals native).
     const errors: Array<[string, Record<string, unknown>, string]> = [
-      ["create_task", { project_id: projectId, description: "x", status: "CANCELLED" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
+      ["create_task", { project_id: projectId, title: "x", description: "x", status: "CANCELLED" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
       ["update_task", { task_id: ids.todo, status: "cancelled" }, "TASK_STATUS_INVALID"],
       ["update_task", { task_id: ids.todo, status: "CANCELED" }, "TASK_STATUS_INVALID"],
       ["update_task", { task_id: ids.todo, status: "CLOSED" }, "TASK_STATUS_INVALID"],
@@ -734,7 +752,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await list(projectId)).toHaveLength(4);
 
     // AC-003 (status side): reopening a Cancelled Task writes only the status; the closed entry stays closed (nothing starts).
-    expect(await taskCall({ task_id: ids.cancelled, status: "TODO" })).toEqual({ projectId, taskId: ids.cancelled, status: "TODO", dependsOn: [], partOf: null });
+    expect(await taskCall({ task_id: ids.cancelled, status: "TODO" })).toEqual(taskAck(projectId, ids.cancelled!, "TODO"));
     expect(await fs.readFile(resources, "utf8")).toBe(resourceBytes);
     expect(await readProject(projectId)).toMatchObject({ taskCount: 4, openTaskCount: 3 });
   }, 120000);
@@ -746,6 +764,7 @@ describe("Project Task production HTTP boundaries", () => {
     const projectsDir = path.join(root, "projects");
     const toolError = async (name: "create_task" | "update_task", args: Record<string, unknown>, code: string) => {
       const before = await snapshot(projectsDir);
+      args = titled(args);
       const native = await (name === "create_task" ? new CreateTaskTool() : new UpdateTaskTool()).execute(null, args)
         .then(() => null, (e: Error) => JSON.parse(e.message));
       expect(native?.error.code, JSON.stringify(args)).toBe(code);
@@ -759,11 +778,11 @@ describe("Project Task production HTTP boundaries", () => {
 
     // AC-020: create_task returns the key as taskId; depends_on takes a key in any letter case and stores the long ID.
     const a = await taskCall({ project_id: projectId, description: "A: schema" });
-    expect(a).toEqual({ projectId, taskId: "keys-tools-1", status: "TODO", dependsOn: [], partOf: null });
+    expect(a).toEqual(taskAck(projectId, "keys-tools-1", "TODO"));
     const longA = await idOf(projectId, a.taskId);
     expect(longA).toMatch(/^project_task_/);
     const b = await taskCall({ project_id: projectId, description: "B: API", depends_on: ["KEYS-TOOLS-1"] });
-    expect(b).toEqual({ projectId, taskId: "keys-tools-2", status: "TODO", dependsOn: ["keys-tools-1"], partOf: null });
+    expect(b).toEqual(taskAck(projectId, "keys-tools-2", "TODO", { dependsOn: ["keys-tools-1"] }));
     expect(await stored(b.taskId)).toEqual([longA]);
     // References naming the same Task twice (long ID, key, other case) collapse to one stored ID (REQ-007, CR-001).
     const c = await taskCall({ project_id: projectId, description: "C: UI", depends_on: [longA, "keys-tools-2", "Keys-Tools-2", " keys-tools-1 "] });
@@ -777,17 +796,19 @@ describe("Project Task production HTTP boundaries", () => {
     // AC-020: list_project_tasks names every Task and dependency by key; no long Task ID in any Task-ID field.
     const listed = (await call("list_project_tasks", { project_id: projectId })).structuredContent;
     expect(listed).toEqual(JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId })));
-    const byKey = Object.fromEntries((listed.tasks as Array<{ taskId: string; dependsOn: string[] }>).map(t => [t.taskId, [...t.dependsOn].sort()]));
+    // A Task with no dependency has no dependsOn (REQ-001).
+    expect(listed.tasks.find((t: { taskId: string }) => t.taskId === "keys-tools-1")).not.toHaveProperty("dependsOn");
+    const byKey = Object.fromEntries((listed.tasks as Array<{ taskId: string; dependsOn?: string[] }>).map(t => [t.taskId, [...t.dependsOn ?? []].sort()]));
     expect(byKey).toEqual({ "keys-tools-1": [], "keys-tools-2": ["keys-tools-1"], "keys-tools-3": ["keys-tools-1", "keys-tools-2"] });
     expect(JSON.stringify(listed)).not.toContain("project_task_");
 
     // AC-022 (update_task part): by key in another letter case and by long ID, acting on the same Task; results show the key.
-    expect(await taskCall({ task_id: "Keys-Tools-1", status: "IN_PROGRESS" })).toEqual({ projectId, taskId: "keys-tools-1", status: "IN_PROGRESS", dependsOn: [], partOf: null });
-    expect(await taskCall({ task_id: longA, description: "A: schema (edited by long ID)" })).toEqual({ projectId, taskId: "keys-tools-1", status: "IN_PROGRESS", dependsOn: [], partOf: null });
+    expect(await taskCall({ task_id: "Keys-Tools-1", status: "IN_PROGRESS" })).toEqual(taskAck(projectId, "keys-tools-1", "IN_PROGRESS"));
+    expect(await taskCall({ task_id: longA, description: "A: schema (edited by long ID)" })).toEqual(taskAck(projectId, "keys-tools-1", "IN_PROGRESS"));
     expect((await readOne(projectId, "keys-tools-1")).description).toBe("A: schema (edited by long ID)");
 
     // AC-027 / AC-019: B is blocked by open A and C by A and B; both can still be started and finished.
-    expect(await taskCall({ task_id: "keys-tools-2", status: "IN_PROGRESS" })).toEqual({ projectId, taskId: "keys-tools-2", status: "IN_PROGRESS", dependsOn: ["keys-tools-1"], partOf: null });
+    expect(await taskCall({ task_id: "keys-tools-2", status: "IN_PROGRESS" })).toEqual(taskAck(projectId, "keys-tools-2", "IN_PROGRESS", { dependsOn: ["keys-tools-1"] }));
     expect(await taskCall({ task_id: "KEYS-TOOLS-3", status: "DONE" })).toMatchObject({ taskId: "keys-tools-3", status: "DONE" });
 
     // AC-024: invalid depends_on → TASK_DEPENDENCY_INVALID with nothing written (MCP equals native).
@@ -809,7 +830,7 @@ describe("Project Task production HTTP boundaries", () => {
     // AC-010 via tools: omitted depends_on keeps; a depends_on-only patch is valid; [] clears.
     expect(await taskCall({ task_id: "keys-tools-2", description: "B: API v2" })).toMatchObject({ dependsOn: ["keys-tools-1"] });
     expect(await stored("keys-tools-2")).toEqual([longA]);
-    expect(await taskCall({ task_id: "keys-tools-2", depends_on: [] })).toEqual({ projectId, taskId: "keys-tools-2", status: "IN_PROGRESS", dependsOn: [], partOf: null });
+    expect(await taskCall({ task_id: "keys-tools-2", depends_on: [] })).toEqual(taskAck(projectId, "keys-tools-2", "IN_PROGRESS"));
     expect(await stored("keys-tools-2")).toEqual([]);
     expect(await taskCall({ task_id: longB, depends_on: [longA] })).toMatchObject({ taskId: "keys-tools-2", dependsOn: ["keys-tools-1"] });
     // Rejected creates spent no number: the next Task continues at 4.
@@ -846,12 +867,14 @@ describe("Project Task production HTTP boundaries", () => {
     }
     expect(tool("update_task").inputSchema.properties.part_of.description).toContain("\"\" clears it; omit to keep.");
     expect(tool("update_task").description).toContain("Setting a Task that has parts to DONE or CANCELLED also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them.");
-    expect(tool("list_project_tasks").description).toContain("the bigger Task it is part of (partOf, a taskId or null) and its parts (parts, by taskId)");
+    expect(tool("list_project_tasks").description).toContain("the bigger Task it is part of (partOf, a taskId), its parts (parts, by taskId)");
+    expect(tool("list_project_tasks").description).toContain("A field with no value is left out (for example partOf when the Task is part of no bigger Task).");
 
     const projectId = await createProject("Parts Tools"), otherId = await createProject("Parts Elsewhere");
     const projectsDir = path.join(root, "projects");
     const toolError = async (name: "create_task" | "update_task", args: Record<string, unknown>, code: string) => {
       const before = await snapshot(projectsDir);
+      args = titled(args);
       const native = await (name === "create_task" ? new CreateTaskTool() : new UpdateTaskTool()).execute(null, args)
         .then(() => null, (e: Error) => JSON.parse(e.message));
       expect(native?.error.code, JSON.stringify(args)).toBe(code);
@@ -865,10 +888,12 @@ describe("Project Task production HTTP boundaries", () => {
       const result = (await call("list_project_tasks", { project_id: projectId })).structuredContent;
       expect(result).toEqual(JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId })));
       expect(JSON.stringify(result)).not.toContain("project_task_");
-      return Object.fromEntries((result.tasks as Array<{ taskId: string; status: string; partOf: string | null; parts: string[] }>)
-        .map(t => [t.taskId, { status: t.status, partOf: t.partOf, parts: t.parts }]));
+      // No partOf without a parent and no parts without parts (REQ-001): absent reads as none.
+      for (const t of result.tasks as Array<Record<string, unknown>>) { expect(t.partOf).not.toBeNull(); expect(t.parts).not.toEqual([]); }
+      return Object.fromEntries((result.tasks as Array<{ taskId: string; status: string; partOf?: string; parts?: string[] }>)
+        .map(t => [t.taskId, { status: t.status, partOf: t.partOf ?? null, parts: t.parts ?? [] }]));
     };
-    const ack = (taskId: string, status: string, partOf: string | null, extra: Record<string, unknown> = {}) => ({ projectId, taskId, status, dependsOn: [], partOf, ...extra });
+    const ack = (taskId: string, status: string, partOf: string | null, extra: Record<string, unknown> = {}) => taskAck(projectId, taskId, status, { ...(partOf ? { partOf } : {}), ...extra });
 
     // AC-014: create_task part_of by key in upper case, by long ID, and trimmed in mixed case; the result names the parent by key.
     const parent = await taskCall({ project_id: projectId, description: "P: cross-node collaboration" });
@@ -928,8 +953,8 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await taskCall({ task_id: "parts-tools-14", status: "CANCELLED" })).toMatchObject({ status: "CANCELLED" });
     const runningId = await idOf(projectId, "parts-tools-3");
     const resources = path.join(projectsDir, projectId, "tasks", runningId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: runningId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-part-worker" },
+    await fs.writeFile(resources, JSON.stringify({ taskId: runningId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId: "fixture-part-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     const closedBytes = async () => Promise.all(["parts-tools-13", "parts-tools-14"].map(async key => fs.readFile(path.join(projectsDir, projectId, "tasks", await idOf(projectId, key), "task.json"), "utf8")));
     const terminalBefore = await closedBytes();
@@ -973,8 +998,8 @@ describe("Project Task production HTTP boundaries", () => {
   const openRunFixture = async (projectId: string, reference: string, agentRunId: string) => {
     const taskId = await idOf(projectId, reference);
     const file = path.join(root, "projects", projectId, "tasks", taskId, "agent_run_resources.json");
-    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
-      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId },
+    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: { kind: "agent", agentRunId },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     return file;
   };
@@ -982,7 +1007,7 @@ describe("Project Task production HTTP boundaries", () => {
   it("CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)", async () => {
     // REQ-005 / REQ-010: one optional string on update_task only; no new tool in the selected session.
     const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
-    expect(tools.map(t => t.name)).toEqual(names);
+    expect(tools.map(t => t.name)).toEqual(sessionTools);
     const update = tools.find(t => t.name === "update_task")!;
     expect(update.inputSchema.properties.add_comment).toMatchObject({ type: "string" });
     expect(update.inputSchema.required ?? []).not.toContain("add_comment");
@@ -991,9 +1016,10 @@ describe("Project Task production HTTP boundaries", () => {
 
     const projectId = await createProject("Comments Tools");
     const projectsDir = path.join(root, "projects");
-    const ack = (taskId: string, status: string, extra: Record<string, unknown> = {}) => ({ projectId, taskId, status, dependsOn: [], partOf: null, ...extra });
+    const ack = (taskId: string, status: string, extra: Record<string, unknown> = {}) => taskAck(projectId, taskId, status, extra);
     const toolError = async (name: "create_task" | "update_task", args: Record<string, unknown>, code: string) => {
       const before = await snapshot(projectsDir);
+      args = titled(args);
       const native = await (name === "create_task" ? new CreateTaskTool() : new UpdateTaskTool()).execute(null, args)
         .then(() => null, (e: Error) => JSON.parse(e.message));
       expect(native?.error.code, JSON.stringify(args)).toBe(code);
@@ -1051,17 +1077,22 @@ describe("Project Task production HTTP boundaries", () => {
     for (const attempt of ["first read", "after reader reconstruction"]) {
       const listed = (await call("list_project_tasks", { project_id: projectId })).structuredContent;
       expect(listed, attempt).toEqual(JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId })));
+      // A short entry counts the comments (REQ-007); get_project_task reads their texts, oldest first (REQ-014).
       const byKey = Object.fromEntries((listed.tasks as Array<Record<string, unknown> & { taskId: string }>).map(t => [t.taskId, t]));
-      expect(byKey["comments-tools-1"]!.comments, attempt).toEqual(["Decision: use X", "Second comment\nwith a second line", "Third, by the native tool", "Merged and released."]);
-      expect(byKey["comments-tools-2"]!.comments, attempt).toEqual(["Only a comment"]);
-      expect(Object.hasOwn(byKey[c.taskId]!, "comments"), attempt).toBe(false);
+      expect([byKey["comments-tools-1"]!.commentCount, byKey["comments-tools-2"]!.commentCount], attempt).toEqual([4, 1]);
+      for (const entry of Object.values(byKey)) expect(entry, attempt).not.toHaveProperty("comments");
+      expect(Object.hasOwn(byKey[c.taskId]!, "commentCount"), attempt).toBe(false);
+      const full = async (taskId: string) => (await call("get_project_task", { project_id: projectId, task_id: taskId })).structuredContent;
+      expect((await full("comments-tools-1")).comments, attempt).toEqual(["Decision: use X", "Second comment\nwith a second line", "Third, by the native tool", "Merged and released."]);
+      expect((await full("COMMENTS-TOOLS-2")).comments, attempt).toEqual(["Only a comment"]);
+      expect(await full(c.taskId), attempt).not.toHaveProperty("comments");
       reset();
     }
   }, 120000);
 
   it("CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)", async () => {
     const projectId = await createProject("Parts Not Closed");
-    const ack = (taskId: string, status: string, extra: Record<string, unknown> = {}) => ({ projectId, taskId, status, dependsOn: [], partOf: null, ...extra });
+    const ack = (taskId: string, status: string, extra: Record<string, unknown> = {}) => taskAck(projectId, taskId, status, extra);
     const parent = await taskCall({ project_id: projectId, description: "P: bigger Task" });
     const ok = await taskCall({ project_id: projectId, description: "Closes", part_of: parent.taskId });
     const damaged = await taskCall({ project_id: projectId, description: "Its run data is damaged", part_of: parent.taskId });
@@ -1086,4 +1117,139 @@ describe("Project Task production HTTP boundaries", () => {
     await gql("mutation($id:String!){deleteProject(projectId:$id)}", { id: projectId });
   }, 120000);
 
+
+  // autobyteus-260 REQ-003, REQ-004, REQ-009, AC-003 over the selected MCP session, the native tools and GraphQL.
+  it("TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the same)", async () => {
+    const projectId = await createProject("Titles Tools");
+    const projectsDir = path.join(root, "projects");
+    const refused = async (name: "create_task" | "update_task", args: Record<string, unknown>, code: string) => {
+      const before = await snapshot(projectsDir);
+      const native = await (name === "create_task" ? new CreateTaskTool() : new UpdateTaskTool()).execute(null, args).then(() => null, (e: Error) => JSON.parse(e.message));
+      expect(native, JSON.stringify(args)).toEqual({ error: { code, message: expect.any(String) } });
+      const result = await call(name, args);
+      expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
+      expect(await snapshot(projectsDir), JSON.stringify(args)).toEqual(before);
+    };
+    for (const title of [undefined, "", "   ", "\n\t"]) {
+      await refused("create_task", { project_id: projectId, ...(title === undefined ? {} : { title }), description: "Needs a title" }, "TASK_TITLE_REQUIRED");
+    }
+    for (const title of [null, 12, ["x"], { text: "x" }]) await refused("create_task", { project_id: projectId, title, description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    // No length or line limit: a 5,000-character title with a line break is kept whole (trimmed only).
+    const long = `${"Ship the release notes ".repeat(220)}\nsecond line`.slice(0, 5_000);
+    const created = await taskCall({ project_id: projectId, title: `  ${long}  `, description: "The release notes." });
+    expect(created).toEqual({ projectId, taskId: "titles-tools-1", title: long.trim(), status: "TODO" });
+    expect((await taskJson(projectId, created.taskId)).title).toBe(long.trim());
+    expect((await list(projectId))[0]!.title).toBe(long.trim());
+    // update_task title: alone, and with other fields; by key in another case and natively; the description stays.
+    expect(await taskCall({ task_id: "TITLES-TOOLS-1", title: "  Release notes 1.6  " })).toEqual({ projectId, taskId: "titles-tools-1", title: "Release notes 1.6", status: "TODO" });
+    expect(await nativeTaskCall({ task_id: "titles-tools-1", title: "Release notes 1.6.1", status: "IN_PROGRESS" })).toEqual({ projectId, taskId: "titles-tools-1", title: "Release notes 1.6.1", status: "IN_PROGRESS" });
+    expect(await taskJson(projectId, "titles-tools-1")).toMatchObject({ title: "Release notes 1.6.1", description: "The release notes.", status: "IN_PROGRESS" });
+    for (const title of ["", "  "]) await refused("update_task", { task_id: "titles-tools-1", title, status: "DONE" }, "TASK_TITLE_REQUIRED");
+    await refused("update_task", { task_id: "titles-tools-1", title: 3 }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    expect((await call("list_project_tasks", { project_id: projectId })).structuredContent.tasks).toEqual([{ taskId: "titles-tools-1", title: "Release notes 1.6.1", status: "IN_PROGRESS" }]);
+    // GraphQL (the app's forms): title is required on create and on the full-form update; blank is refused with its code.
+    const raw = async (query: string, variables: Record<string, unknown>) => (await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) })).json() as Promise<{ data?: any; errors?: Array<{ message: string; extensions?: { code?: string } }> }>;
+    const before = await snapshot(projectsDir);
+    const blank = await raw("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId, title: "  ", description: "x" } });
+    expect(blank.errors?.[0]?.extensions?.code).toBe("TASK_TITLE_REQUIRED");
+    const missing = await raw("mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId}}", { i: { projectId, description: "x" } });
+    expect(missing.errors?.[0]?.message).toContain("title");
+    const longId = await idOf(projectId, "titles-tools-1");
+    const blankEdit = await raw("mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){taskId}}", { i: { projectId, taskId: longId, title: "", description: "x" } });
+    expect(blankEdit.errors?.[0]?.extensions?.code).toBe("TASK_TITLE_REQUIRED");
+    expect(await snapshot(projectsDir)).toEqual(before);
+    const edited = (await gql<{ updateProjectTask: Task }>(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){${TASK}}}`,
+      { i: { projectId, taskId: longId, title: " Edited in the app ", description: "The release notes." } })).updateProjectTask;
+    expect(edited).toMatchObject({ title: "Edited in the app", description: "The release notes." });
+  }, 60000);
+
+  // autobyteus-260 REQ-014, AC-012 over the selected MCP session (a caller on no Task) and the native tool bound to no member.
+  // The worker scope (REQ-015) through real roots and runtimes is the gated get-project-task-worker-scope suite.
+  it("GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOUND; arguments are checked (MCP equals native)", async () => {
+    const projectId = await createProject("Get Tools"), otherId = await createProject("Get Elsewhere");
+    const sources = await ownedSources("get"); const brief = path.join(sources, "brief.md"); await fs.writeFile(brief, "# Brief\n");
+    const parent = await taskCall({ project_id: projectId, description: "Parent: launch" });
+    const dep = await taskCall({ project_id: projectId, description: "Dependency: schema" });
+    const one = await taskCall({ project_id: projectId, title: "The launch page", description: "Build the launch page.\nWith a hero.", depends_on: [dep.taskId], part_of: parent.taskId, context_files: [brief] });
+    await taskCall({ task_id: one.taskId, add_comment: "First note" }); await taskCall({ task_id: one.taskId, add_comment: "Second note" });
+    const elsewhere = await taskCall({ project_id: otherId, description: "Not in this Project" });
+    const native = createBoundGetProjectTaskTool(null);
+    const get = async (args: Record<string, unknown>) => {
+      const result = await call("get_project_task", args);
+      expect(result.content[0].text).toBe(JSON.stringify(result.structuredContent));
+      const nativeResult = await native.execute(null, args).then((text: string) => JSON.parse(text), (error: Error) => JSON.parse(error.message));
+      expect(result.structuredContent, JSON.stringify(args)).toEqual(nativeResult);
+      return { isError: result.isError === true, value: result.structuredContent };
+    };
+    const full = await get({ project_id: projectId, task_id: one.taskId });
+    expect(full).toEqual({ isError: false, value: { projectId, taskId: "get-tools-3", title: "The launch page", status: "TODO", description: "Build the launch page.\nWith a hero.",
+      dependsOn: ["get-tools-2"], partOf: "get-tools-1", comments: ["First note", "Second note"], contextFiles: [{ name: "brief.md", path: expect.stringMatching(/\/context\/ctx_[^/]+$/) }] } });
+    expect(await fs.readFile(full.value.contextFiles[0].path, "utf8")).toBe("# Brief\n");
+    expect(await get({ project_id: projectId, task_id: "GET-TOOLS-3" })).toEqual(full);
+    expect(await get({ project_id: projectId, task_id: await idOf(projectId, one.taskId) })).toEqual(full);
+    expect((await get({ project_id: projectId, task_id: parent.taskId })).value).toEqual({ projectId, taskId: "get-tools-1", title: "Parent: launch", status: "TODO", description: "Parent: launch", parts: ["get-tools-3"] });
+    for (const task_id of [elsewhere.taskId, await idOf(otherId, elsewhere.taskId), "get-tools-99"]) {
+      const missing = await get({ project_id: projectId, task_id });
+      expect(missing, task_id).toEqual({ isError: true, value: { error: { code: "TASK_NOT_FOUND", message: expect.any(String) } } });
+    }
+    expect((await get({ project_id: "project_missing", task_id: one.taskId })).value.error.code).toMatch(/NOT_FOUND/);
+    for (const args of [{ project_id: projectId }, { task_id: one.taskId }, { project_id: projectId, task_id: one.taskId, extra: true }, { project_id: projectId, task_id: 3 }]) {
+      const invalid = await get(args);
+      expect(invalid.isError, JSON.stringify(args)).toBe(true); expect(invalid.value.error.code, JSON.stringify(args)).toBe("PROJECT_TOOL_ARGUMENT_INVALID");
+    }
+    // Read-only: nothing under the Projects root changed.
+    const before = await snapshot(path.join(root, "projects"));
+    await get({ project_id: projectId, task_id: one.taskId });
+    expect(await snapshot(path.join(root, "projects"))).toEqual(before);
+  }, 60000);
+
+  // E-007 runs last: it reads entries written to disk as a restart reads them, by releasing the composed Task service's
+  // process instance, which the server's composition does not rebuild for the cases after it.
+  it("E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction", async () => {
+    const workspace = await registerWorkspace("protected-source");
+    // Existing supported full-form creation, NOT a tool-created-only fixture.
+    const old = (await gql<{createProject: Project}>(`mutation($i:CreateProjectInput!){createProject(input:$i){${PROJECT}}}`, {
+      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceRootPath: workspace.workspaceRootPath, description: "Saved link"}]},
+    })).createProject;
+    const otherId = await createProject("Unrelated preserved");
+    const d = await draft(old.projectId);
+    const file = await (await upload(old.projectId, d.draftId, "existing task context bytes")).json() as FileRef;
+    const task = (await gql<{createProjectTask: Task}>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, {
+      i: {projectId: old.projectId, title: "Existing assigned task", description: "Existing assigned task", contextDraft: {draftId: d.draftId, storedFilenames: [file.storedFilename]}},
+    })).createProjectTask;
+    // Minimum current-format persisted assignment (autobyteus-461 contract §3.1: `delegatedFrom`); no model/run launch needed for preservation.
+    const resources = path.join(root, "projects", old.projectId, "tasks", task.taskId, "agent_run_resources.json");
+    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", recipientAddress: "/worker", 
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "fixture-root" }, delegatorAgentRunId: "fixture-manager" }, agentRun: {kind: "agent", agentRunId: "fixture-worker"},
+      linkedAt: task.createdAt, start: "started", closedAt: null}]}, null, 2));
+    // Opaque preservation sentinel: not inference/history replay certification.
+    const historyDir = path.join(root, "memory", "agents", "fixture-worker");
+    await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
+    // The composed Task service reads Task entries once, at start (as production does); entries written to disk here are read
+    // as a restart reads them: the process instance is released and built again (autobyteus-461).
+    reset(true);
+    const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
+    expect(businessBefore.tasks[0].assignments).toEqual([{kind: "agent", agentRunId: "fixture-worker", assignedBy: "fixture-manager", outcome: "accepted"}]);
+    // A short entry carries no closed assignments (REQ-007); get_project_task has none here, so it leaves the field out.
+    expect(businessBefore.tasks[0]).not.toHaveProperty("closedAssignments");
+    expect((await call("get_project_task", {project_id: old.projectId, task_id: task.taskId})).structuredContent).not.toHaveProperty("closedAssignments");
+    const protectedDirs = [path.join(root, "projects", old.projectId, "tasks"), path.join(root, "projects", otherId), historyDir, workspace.workspaceRootPath];
+    const before = await Promise.all(protectedDirs.map(snapshot));
+    const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
+    const originalRecord = await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8");
+    expect(await readProject(old.projectId)).toEqual({...old, taskCount: 1, openTaskCount: 1});
+    expect(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8")).toBe(originalRecord); // no migration/read rewrite
+    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_path: workspace.workspaceRootPath}]}, {workspaces: []}]) {
+      await projectCall({project_id: old.projectId, ...patch}); reset();
+      const project = await readProject(old.projectId);
+      expect(project).toMatchObject({projectId: old.projectId, createdAt: old.createdAt, taskCount: 1, openTaskCount: 1});
+      expect(await list(old.projectId)).toEqual([task]);
+      expect((await call("list_project_tasks", {project_id: old.projectId})).structuredContent).toEqual(businessBefore);
+      expect(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).text()).toBe("existing task context bytes");
+      expect(await Promise.all(protectedDirs.map(snapshot))).toEqual(before);
+      expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
+    }
+    expect(Object.keys(JSON.parse(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8"))).sort()).toEqual(
+      ["projectId", "name", "description", "createdAt", "updatedAt", "workspaces", "taskKeys"].sort());
+  });
 });

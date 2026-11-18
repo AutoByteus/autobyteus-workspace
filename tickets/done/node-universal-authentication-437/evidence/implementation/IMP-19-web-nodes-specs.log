@@ -1,0 +1,71 @@
+# IMP-19 web-nodes-specs
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run components/settings/nodes
+# Environment mode: shell
+# Commit: d8fbe5082a (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T15:22:09Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/nodes/__tests__/NodeRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/AddNodePanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/NodeAutoUpdate.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/NodeChangeDialog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/nodes/__tests__/NodeServerUpdate.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/nodes/__tests__/NodeChangeDialog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/NodeAutoUpdate.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/NodeServerUpdate.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/NodeRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/nodes/__tests__/AddNodePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/nodes/__tests__/AddNodePanel.spec.ts (3 tests) 28ms
+ ✓ components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts (9 tests) 27ms
+ ✓ components/settings/nodes/__tests__/NodeChangeDialog.spec.ts (7 tests) 34ms
+ ✓ components/settings/nodes/__tests__/NodeServerUpdate.spec.ts (13 tests) 59ms
+ ✓ components/settings/nodes/__tests__/NodeAutoUpdate.spec.ts (18 tests) 75ms
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (18 tests) 129ms
+
+ Test Files  6 passed (6)
+      Tests  68 passed (68)
+   Start at  16:22:12
+   Duration  7.00s (transform 3.85s, setup 35.64s, collect 1.30s, tests 352ms, environment 1.56s, prepare 1.07s)
+
+# Exit status: 0

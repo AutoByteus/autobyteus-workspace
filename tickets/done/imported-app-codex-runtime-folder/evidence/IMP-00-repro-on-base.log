@@ -1,0 +1,9 @@
+# IMP-00 reproduction copied to tests/e2e/runtime/application-import-codex-launch.e2e.test.ts, run BEFORE the fix
+# cmd: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/application-import-codex-launch.e2e.test.ts --no-watch
+# commit: 88272b822e (base code 1138e8fbef + ticket docs)  env: macOS (darwin)  date: 2026-10-24
+# Output excerpt (test-result lines; the app id is shortened to <id>). Same failure as the Solution Designer's SD-01-repro-base.log.
+
+     × imports Brief Studio, reads it as runnable and launches its Codex drafting team 304ms
+ Failed Tests 1
+AssertionError: {"detail":"Application '<id>' is currently quarantined: Application setup is required after catalog transition.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}: expected 503 to be 200 // Object.is equality
+      Tests  1 failed (1)

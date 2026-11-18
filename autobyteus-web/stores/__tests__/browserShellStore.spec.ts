@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBrowserShellStore } from '../browserShellStore'
+import type { BrowserShellTabSummary } from '~/types/browserShell'
 
 describe('browserShellStore', () => {
   beforeEach(() => {
@@ -23,6 +24,8 @@ describe('browserShellStore', () => {
           sessions: [
             {
               tab_id: 'browser-session-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Demo',
               url: 'http://localhost:3000/demo',
             },
@@ -85,6 +88,8 @@ describe('browserShellStore', () => {
           sessions: [
             {
               tab_id: 'browser-session-2',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Other',
               url: 'http://localhost:3000/other',
             },
@@ -110,6 +115,8 @@ describe('browserShellStore', () => {
           sessions: [
             {
               tab_id: 'browser-session-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Demo',
               url: 'http://localhost:3000/demo',
             },
@@ -121,6 +128,8 @@ describe('browserShellStore', () => {
           sessions: [
             {
               tab_id: 'browser-session-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Demo Reloaded',
               url: 'http://localhost:3000/demo',
             },
@@ -142,6 +151,8 @@ describe('browserShellStore', () => {
       sessions: [
         {
           tab_id: 'browser-session-1',
+          canGoBack: false,
+          canGoForward: false,
           title: 'Demo',
           url: 'http://localhost:3000/demo',
           deviceEmulation: {
@@ -163,6 +174,8 @@ describe('browserShellStore', () => {
           sessions: [
             {
               tab_id: 'browser-session-1',
+              canGoBack: false,
+              canGoForward: false,
               title: 'Demo',
               url: 'http://localhost:3000/demo',
             },
@@ -197,14 +210,16 @@ describe('browserShellStore', () => {
   it('ignores identical snapshot updates from Electron', async () => {
     let snapshotListener: ((snapshot: {
       activeTabId: string | null;
-      sessions: Array<{ tab_id: string; title: string | null; url: string }>;
-    }) => void) | null = null
+      sessions: BrowserShellTabSummary[];
+    }) => void) | undefined
 
     const initialSnapshot = {
       activeTabId: 'browser-session-1',
       sessions: [
         {
           tab_id: 'browser-session-1',
+          canGoBack: false,
+          canGoForward: false,
           title: 'Demo',
           url: 'http://localhost:3000/demo',
         },
@@ -232,6 +247,8 @@ describe('browserShellStore', () => {
       sessions: [
         {
           tab_id: 'browser-session-1',
+          canGoBack: false,
+          canGoForward: false,
           title: 'Demo',
           url: 'http://localhost:3000/demo',
         },
@@ -242,4 +259,29 @@ describe('browserShellStore', () => {
     expect(store.activeTabId).toBe('browser-session-1')
     expect(store.browserAvailable).toBe(true)
   })
+  it('applies flag-only updates and sends history intent, surfacing dispatch errors', async () => {
+    let listener: (snapshot: any) => void = () => {}
+    const snapshot = { activeTabId: 't1', sessions: [{ tab_id: 't1', title: 'Same', url: 'http://localhost/same', canGoBack: true, canGoForward: false }] }
+    const navigateBrowserHistory = vi.fn().mockResolvedValue(snapshot)
+    window.electronAPI = {
+      getBrowserShellSnapshot: vi.fn().mockResolvedValue(snapshot),
+      onBrowserShellSnapshotUpdated: vi.fn((callback) => { listener = callback; return vi.fn() }),
+      navigateBrowserHistory,
+    } as any
+    const store = useBrowserShellStore()
+    await store.initialize()
+    const previous = store.sessions
+    listener({ ...snapshot, sessions: [{ ...snapshot.sessions[0], canGoForward: true }] })
+    expect(store.sessions).not.toBe(previous)
+    expect(store.activeSession?.canGoForward).toBe(true)
+    await store.navigateHistory({ tabId: 't1', direction: 'back' })
+    expect(navigateBrowserHistory).toHaveBeenCalledWith({ tabId: 't1', direction: 'back' })
+    navigateBrowserHistory.mockRejectedValueOnce(new Error('history failed'))
+    await store.navigateHistory({ tabId: 't1', direction: 'forward' })
+    expect(store.lastError).toBe('history failed')
+    expect(store.activeTabId).toBe('t1')
+    listener(snapshot)
+    expect(store.lastError).toBeNull()
+  })
+
 })

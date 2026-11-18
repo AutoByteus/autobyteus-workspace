@@ -24,6 +24,8 @@ import { CodexClientThreadRouter } from "../../../../../src/agent-execution/back
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { CodexModelCatalog } from "../../../../../src/llm-management/services/codex-model-catalog.js";
 import type { CodexAppServerMessage } from "../../../../../src/agent-execution/backends/codex/thread/codex-app-server-message.js";
+import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -52,7 +54,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: input.model,
         workingDirectory: input.workingDirectory,
@@ -256,7 +258,6 @@ describeLiveProbe("Codex raw-vs-backend cadence probe", () => {
       });
       threadManager = new CodexThreadManager(
         clientManager,
-        undefined,
         new CodexClientThreadRouter(),
       );
 
@@ -290,7 +291,8 @@ describeLiveProbe("Codex raw-vs-backend cadence probe", () => {
         }
       });
 
-      const backend = new CodexAgentRunBackend(runContext as never, thread as never, threadManager as never);
+      const backend = new CodexAgentRunBackend(runContext as never, thread as never, threadManager as never,
+        activatedAgentToolMcpRunSessionsStub((runContext as { runId: string }).runId) as never);
 
       const backendEventCounts: Record<string, number> = {};
       const backendTextDeltaTimes: number[] = [];

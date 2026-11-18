@@ -1,0 +1,82 @@
+# API-16 fresh-start build; commit da207045a5; 2026-11-07T22:39:16Z; macOS 26.5.2 arm64; node v22.23.1; pnpm 10.28.2
+
+== [2026-11-07T22:39:16Z] git clone --no-local /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security /private/tmp/api416-16-TBOc/repo && checkout da207045a5
+da207045a fix(security): refuse rebinding hosts, localhost pages, sandbox user files, mark file:// pages (autobyteus-416)
+
+== [2026-11-07T22:40:31Z] untracked build outputs in the clone (must be none)
+(none)
+
+== [2026-11-07T22:40:32Z] pnpm install --frozen-lockfile
+ WARN  Failed to create bin at /private/tmp/api416-16-TBOc/repo/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/api416-16-TBOc/repo/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/tmp/api416-16-TBOc/repo/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/tmp/api416-16-TBOc/repo/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/api416-16-TBOc/repo/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/api416-16-TBOc/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/api416-16-TBOc/repo/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.9s using pnpm v10.28.2
+install exit 0
+
+== [2026-11-07T22:40:41Z] cd autobyteus-web && pnpm build:electron:mac -- --arm64 (job env)
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=42.11.16 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=42.11.16 appOutDir=electron-dist/mac-arm64
+
+Normalizing packaged terminal native resources...
+  Normalized execute bits on 3 node-pty spawn-helper file(s)
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip.blockmap
+Build completed: [
+  '/private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg.blockmap',
+  '/private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg',
+  '/private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip.blockmap',
+  '/private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip'
+]
+build exit 0
+
+== [2026-11-07T22:46:46Z] Verify bundled Prisma ARM64 engine target
+engines ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+client ok: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+
+== [2026-11-07T22:46:46Z] Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: /private/tmp/api416-16-TBOc/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/api416-16-TBOc/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api416-16-TBOc/repo/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+verify resources exit 0
+[terminal-runtime] node-pty root: /private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+verify app exit 0
+[terminal-runtime] node-pty root: /private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api416-16-TBOc/repo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+spawn probe exit 0
+
+== [2026-11-07T22:46:52Z] artifacts
+AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg
+AutoByteus_personal_macos-arm64-1.5.12-beta.7.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip
+AutoByteus_personal_macos-arm64-1.5.12-beta.7.zip.blockmap
+builder-debug.yml
+latest-mac.yml
+mac-arm64
+clone removed: /private/tmp/api416-16-TBOc

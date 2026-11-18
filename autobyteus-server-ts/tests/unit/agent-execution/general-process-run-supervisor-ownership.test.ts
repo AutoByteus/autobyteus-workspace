@@ -1,10 +1,13 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { openTaskRecords } from "../../helpers/no-delegations.js";
+import { noDelegations, noEpisodicCatalog } from "../../helpers/no-delegations.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { GeneralProcessRunSupervisor } from "../../../src/agent-execution/runtime/general-process-run-supervisor.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentOrgRunManager } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
@@ -15,11 +18,9 @@ import {
   getAgentRunService,
   releaseProcessAgentRunService,
 } from "../../../src/agent-execution/services/agent-run-service.js";
-import { getTeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
-import type { TaskExecutionResourcePort } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
   RunFileChangeService,
   bindProcessRunFileChangeService,
@@ -43,7 +44,7 @@ const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
 });
 
 const createProviderBuilder = (): AgentProviderFactoryBuilder => ({
-  createForExecution: vi.fn(() => ({ autoByteus: {} as never, codex: {} as never, claude: {} as never, antigravity: {} as never, grok: {} as never })),
+  createForExecution: vi.fn(() => ({ autoByteus: {} as never, codex: {} as never, claude: {} as never, antigravity: {} as never, grok: {} as never, deepSeekHarness: {} as never })),
 });
 
 const createSupervisorInput = () => {
@@ -66,8 +67,12 @@ const createSupervisorInput = () => {
     workspaceManager: WorkspaceManager.getInstance(),
     agentProviderFactoryBuilder: createProviderBuilder(),
     agentToolMcpSessionAuthority: createAuthority(),
+    integrationRunAccess: null,
+    providerRelayAccess: null,
+    runPasses: null,
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
-    taskExecutionResources: { ownerOf: vi.fn(() => null) } as unknown as TaskExecutionResourcePort,
+    taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
+    delegationIndex: noDelegations(), viewStreams: testViewStreams(), episodicCatalog: noEpisodicCatalog(),
   };
 };
 
@@ -84,10 +89,9 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const supervisor = new GeneralProcessRunSupervisor(input);
     expect(initializeAgent).toHaveBeenCalledOnce();
     expect(initializeTeam).toHaveBeenCalledOnce();
-    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskExecutionResources: input.taskExecutionResources }));
+    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskRecords: input.taskRecords, delegationIndex: input.delegationIndex }));
     expect(initializeOrg).toHaveBeenCalledOnce();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
-    expect(getTeamRunService()).toBe(supervisor.teamRunService);
     expect(getRunFileChangeService()).toBeInstanceOf(RunFileChangeService);
     expect(getRunFileChangeService()).toBe(wiredRunFileChangeService(supervisor));
 
@@ -139,11 +143,10 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("releases AgentRunManager when exclusive Team manager initialization fails", async () => {
     const input = createSupervisorInput();
-    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({
+    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
-      memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService),
-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "task-agent-run" }),
+      memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService, NOT_DELEGATED),
       modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     });
     try {
@@ -197,11 +200,20 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     for (const property of [
       "memoryDir", "contextFilePathEnvironment", "agentDefinitionService", "agentTeamDefinitionService",
       "agentOrgDefinitionService", "definitionAdmissionService", "workspaceManager", "agentProviderFactoryBuilder",
-      "agentToolMcpSessionAuthority", "modelSelectionValidator",
+      "agentToolMcpSessionAuthority", "integrationRunAccess", "providerRelayAccess", "runPasses", "modelSelectionValidator",
+      "episodicCatalog",
     ] as const) {
       const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
       delete invalid[property];
       expect(() => new GeneralProcessRunSupervisor(invalid as never)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
     }
+  });
+
+  it("rejects an access without the pass revocation of the same host before manager mutation (AR-008)", () => {
+    const withRelayOnly = { ...createSupervisorInput(), providerRelayAccess: { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() } };
+    expect(() => new GeneralProcessRunSupervisor(withRelayOnly as never)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
+    const withIntegrationsOnly = { ...createSupervisorInput(), integrationRunAccess: { environmentForRun: vi.fn() } };
+    expect(() => new GeneralProcessRunSupervisor(withIntegrationsOnly as never)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
+    expect(() => AgentOrgRunManager.getInstance()).toThrow();
   });
 });

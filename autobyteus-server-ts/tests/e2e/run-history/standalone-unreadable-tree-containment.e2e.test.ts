@@ -6,16 +6,19 @@ import { createHash } from "node:crypto";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { callTool, segment, startCollaborationHarness, type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
-// remove-nested-task-team AC-002 (REQ-003, DESIGN.md rule 7) through the real Studio server and GraphQL, on data made by real
-// Agent roots (scripted AGY actor; no inference): three standalone runs each delegate a task agent and are stopped; then one
-// run's collaboration tree is truncated (a tree that cannot be read). The other runs keep working — file changes and the member
-// conversation of their task agents (both read through the named hub), and the Token Meter summary of their runs; every scan that
-// reaches the bad run warns naming it and continues; opening the bad run reports its error; no file changes; a server restart
-// starts with the bad tree present and the same holds.
-// The scan that reaches the bad run: a team-member context-file read, whose owner lookup still searches every saved team, org
-// and hub tree (follow-up FU-A of run-file-change-owner-scoped-reads). File-change reads name their owner since that ticket and
-// no longer scan; when FU-A scopes context-file reads too, this trigger must move to a surface that still scans.
+// DESIGN.md rule 7 (contain bad data to its own run) for autobyteus-461's per-run data, through the real Studio server and
+// GraphQL, on data made by real Agent roots (scripted AGY actor; no inference). Three standalone runs each delegate a run and
+// are stopped; then one delegated run's own file (`agents/<run>/run_metadata.json`) is truncated: a run file that cannot be read.
+// - UC-1 (running server): the other runs work: each delegator's view opens with its delegated run, the delegated runs are read
+//   by their own path (rule 2), the Token Meter summary of every delegator works; the bad run's own delegator opens without the
+//   bad run's row (CR-461-071, F-52); a warning names it; no file changes.
+// - UC-2: a new server process starts with the unreadable file present (461's startup index reads every run's own file) and the
+//   same holds.
+// Replaces the round-1 suite of the same name: its premise, a standalone run's `collaboration_tree.json`, and its trigger, the
+// context-file owner scan through the hub trees, are removed by 461 (contract §6; rule 2: a delegated run's file is read by its
+// own path, so no scan crosses runs).
 // Prerequisites: `pnpm -C autobyteus-server-ts build` for the current worktree (UC-2 starts dist/app.js).
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -34,27 +37,29 @@ const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1" && spawnSync(cli, ["--version"], { stdio: "ignore" }).status === 0;
 const suite = enabled ? describe : describe.skip;
 
-type Run = { host: string; child: string; childAddress: string };
+type Run = { host: string; child: string };
 
+/** Every run's own files (run files and logs, not runtime scratch), by relative path → hash. */
 const fingerprint = async (root: string): Promise<Record<string, string>> => {
   const out: Record<string, string> = {};
   const walk = async (dir: string): Promise<void> => {
     for (const entry of await fsp.readdir(dir, { withFileTypes: true })) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) await walk(full);
-      else if (full.includes(`${path.sep}collaboration${path.sep}`)) out[path.relative(root, full)] = createHash("sha256").update(await fsp.readFile(full)).digest("hex");
+      else if (/run_metadata\.json$|communication_messages/.test(entry.name)) out[path.relative(root, full)] = createHash("sha256").update(await fsp.readFile(full)).digest("hex");
     }
   };
   await walk(root);
   return out;
 };
 
-suite("An unreadable standalone tree is contained to its own run (real HTTP/GraphQL, runs made by real Agent roots)", () => {
+suite("An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots)", () => {
   let h: CollaborationHarness;
   const ids: Rec = {};
   const runs: Run[] = [];
   let bad!: Run;
   const warnings: string[] = [];
+  const evidence: Rec = {};
 
   /** Where GraphQL goes: the in-process server first, then (UC-2) a separately started server process. */
   let processUrl: string | null = null;
@@ -67,18 +72,11 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     const body = await response.json() as { data?: Rec; errors?: unknown[] };
     return body.errors?.length || !body.data ? { data: null, error: JSON.stringify(body.errors ?? body) } : { data: body.data, error: null as string | null };
   };
-  const fileChanges = (run: Run) => query(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id runId}}`,
-    { h: run.host, a: run.childAddress, r: run.child });
-  /** A read whose owner lookup scans every saved hub (see the header): answers 404 after passing the bad run. */
-  const hubScanningRead = async (run: Run) => {
-    const base = processUrl ?? h.url.origin;
-    const response = await fetch(`${base}/rest/team-runs/${encodeURIComponent(run.host)}/agent-runs/${encodeURIComponent(run.child)}/context-files/missing.txt`);
-    return response.status;
-  };
-  const member = (run: Run) => query(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){agentRunId conversation}}`,
-    { h: run.host, a: run.childAddress, r: run.child });
+  /** A delegated run read by its own path (rule 2). */
+  const ownRead = (runId: string) => query(`query($r:String!){getRunProjection(runId:$r){runId conversation}}`, { r: runId });
   const tokenSummary = (runId: string) => query(`query($r:String!){getStandaloneRunTokenUsageSummary(runId:$r){runId}}`, { r: runId });
-  const collaboration = (runId: string) => query(`query($r:String!){agentRunCollaboration(runId:$r)}`, { r: runId });
+  // A delegator's view and its tree (autobyteus-461 SR-084: its delegated rows are the tree's; the view carries its own parts).
+  const collaboration = (runId: string) => query(`query($r:String!){agentRunCollaboration(runId:$r) runTree(kind:"agent",runId:$r)}`, { r: runId });
 
   beforeAll(async () => {
     h = await startCollaborationHarness("uc-e2e");
@@ -91,21 +89,24 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
       const delegated = await root.calls(root.managerRunId, "/", callTool("delegate_task", { recipient_address: `/${segment(helperName)}`, description: `Reply OK ${index}.` }));
       expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true });
       await root.waitForTaskAgent(delegated.target_agent_run_id as string);
-      runs.push({ host: root.managerRunId, child: delegated.target_agent_run_id as string, childAddress: `/${segment(helperName)}` });
+      runs.push({ host: root.managerRunId, child: delegated.target_agent_run_id as string });
       root.close();
       await h.terminate("agent", root.rootId);
+      await h.graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}`, { id: delegated.target_agent_run_id }).catch(() => undefined);
     }
-    // The run scanned first (hosts are scanned in sorted order) becomes unreadable (truncated JSON), so every
-    // cross-run lookup for the other runs has to pass it.
-    runs.sort((a, b) => a.host.localeCompare(b.host));
+    // One delegated run's own file becomes unreadable (truncated JSON).
+    runs.sort((a, b) => a.child.localeCompare(b.child));
     bad = runs[0]!;
-    const treePath = path.join(h.dataDir, "memory", "agents", bad.host, "collaboration", "collaboration_tree.json");
-    const text = await fsp.readFile(treePath, "utf8");
-    await fsp.writeFile(treePath, text.slice(0, Math.floor(text.length / 2)));
+    const filePath = path.join(h.dataDir, "memory", "agents", bad.child, "run_metadata.json");
+    const text = await fsp.readFile(filePath, "utf8");
+    await fsp.writeFile(filePath, text.slice(0, Math.floor(text.length / 2)));
     vi.spyOn(console, "warn").mockImplementation((...args: unknown[]) => { warnings.push(args.map(String).join(" ")); });
+    vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => { warnings.push(args.map(String).join(" ")); });
   }, 300_000);
 
   afterAll(async () => {
+    const out = process.env["UC_E2E_EVIDENCE"];
+    if (out) fs.writeFileSync(out, `${JSON.stringify(evidence, null, 2)}\n`);
     vi.restoreAllMocks();
     if (h) await h.close();
     if (home) {
@@ -114,57 +115,58 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     }
   }, 180_000);
 
-  /** Server log lines of the separately started process (UC-2): its output length now, and its lines after a mark. */
   type ProcessLog = { size: () => number; linesFrom: (mark: number) => string[] };
-  const skipsBad = (line: string) => line.includes(`Skipping standalone run '${bad.host}'`) && line.includes("cannot be read");
   const expectContained = async (label: string, log?: ProcessLog) => {
-    const before = await fingerprint(path.join(h.dataDir, "memory", "agents"));
-    warnings.length = 0;
+    const memory = path.join(h.dataDir, "memory", "agents");
+    const before = await fingerprint(memory);
     const logStart = log?.size() ?? 0;
-    // The warnings the scanning context-file read itself produced (not the other reads of this check), so the moved
-    // trigger is proven to still reach the bad run (R-003 of run-file-change-owner-scoped-reads).
-    const scanWarnings: string[] = [];
-    for (const run of [runs[1]!, runs[2]!]) {
-      const changes = await fileChanges(run);
-      expect(changes.error, `${label}: file changes of ${run.child}: ${changes.error}`).toBeNull();
-      const warningMark = warnings.length;
-      const logMark = log?.size() ?? 0;
-      expect(await hubScanningRead(run), `${label}: scanning context-file read for ${run.child}`).toBe(404);
-      if (log) {
-        // The process writes its log asynchronously; wait briefly for the read's warning to arrive.
-        const deadline = Date.now() + 3_000;
-        while (!log.linesFrom(logMark).some(skipsBad) && Date.now() < deadline) await new Promise((resolve) => setTimeout(resolve, 100));
-        scanWarnings.push(...log.linesFrom(logMark).filter((line) => line.includes("Skipping standalone run")));
-      } else scanWarnings.push(...warnings.slice(warningMark));
-      const projection = await member(run);
-      expect(projection.error, `${label}: member projection of ${run.child}: ${projection.error}`).toBeNull();
-      expect((projection.data as Rec).agentRunCollaborationMemberProjection.agentRunId, label).toBe(run.child);
-      const summary = await tokenSummary(run.host);
-      expect(summary.error, `${label}: Token Meter summary of ${run.host}`).toBeNull();
-      expect(((await collaboration(run.host)).data as Rec).agentRunCollaboration, `${label}: ${run.host} opens`).toBeTruthy();
+    const record: Rec = {};
+    evidence[label] = record;
+    // The other runs work: their delegated runs by their own path; every delegator opens with its delegated run and its
+    // Token Meter summary works (the bad run's delegator is another run: it is unaffected too).
+    for (const run of runs.slice(1)) {
+      const read = await ownRead(run.child);
+      expect(read.error, `${label}: ${run.child} read by its own path: ${read.error}`).toBeNull();
+      expect((read.data as Rec).getRunProjection.runId, label).toBe(run.child);
     }
-    if (log) warnings.push(...log.linesFrom(logStart).filter((line) => line.includes("Skipping standalone run")));
-    expect(warnings.some(skipsBad), `${label}: a warning names the skipped run; got ${JSON.stringify(warnings).slice(0, 600)}`).toBe(true);
-    expect(scanWarnings.some(skipsBad),
-      `${label}: the scanning context-file read itself warns naming the bad run; got ${JSON.stringify(scanWarnings).slice(0, 600)}`).toBe(true);
-    expect(warnings.every((w) => !w.includes(runs[1]!.host) && !w.includes(runs[2]!.host)), `${label}: no warning about readable runs`).toBe(true);
-    // Opening the unreadable run reports its error.
-    expect((await collaboration(bad.host)).error, `${label}: opening the bad run`).toBeTruthy();
-    expect((await member(bad)).error, `${label}: the bad run's member`).toBeTruthy();
-    expect(await fingerprint(path.join(h.dataDir, "memory", "agents")), `${label}: no collaboration file changed`).toEqual(before);
+    // The bad run's own delegator last, so every other delegator is checked first.
+    for (const run of [...runs.slice(1), bad]) {
+      const view = await collaboration(run.host);
+      record[`view:${run === bad ? "bad run's delegator" : run.host}`] = view.error ? view.error.slice(0, 400) : "opens";
+      expect(view.error, `${label}: ${run === bad ? "the bad run's own delegator" : "another delegator"} ${run.host} opens: ${view.error}`).toBeNull();
+      expect((view.data as Rec).agentRunCollaboration, `${label}: ${run.host} opens`).toBeTruthy();
+      if (run !== bad) expect(JSON.stringify(view.data), `${label}: ${run.host} shows its delegated run`).toContain(run.child);
+      // CR-461-071 (F-52): the bad run's delegator opens without the unreadable run's row.
+      else expect(JSON.stringify(view.data), `${label}: the unreadable run's row is left out`).not.toContain(bad.child);
+      const summary = await tokenSummary(run.host);
+      expect(summary.error, `${label}: Token Meter summary of ${run.host}: ${summary.error}`).toBeNull();
+    }
+    // The bad run's own read is recorded: rule 7 lets it be left out or report that its data cannot be read; its conversation
+    // (memory traces, intact) may still be served.
+    const badRead = await ownRead(bad.child);
+    record.badRead = { error: badRead.error?.slice(0, 600) ?? null, served: Boolean((badRead.data as Rec | null)?.getRunProjection) };
+    const lines = log ? log.linesFrom(logStart) : warnings;
+    const naming = lines.filter((line) => line.includes(bad.child));
+    record.warnings = naming.slice(0, 5).map((line) => line.slice(0, 400));
+    // Rule 7: the run left out is named in a logged warning, on the running server (its delegator's view read it, CR-461-071)
+    // and at a start (461's index reads every run's own file).
+    expect(naming.length, `${label}: a warning names the unreadable run; got ${JSON.stringify(lines.filter((l) => /warn|error/i.test(l)).slice(-20)).slice(0, 1500)}`).toBeGreaterThan(0);
+    expect(lines.filter((line) => runs.slice(1).some((run) => line.includes(run.child)) && /warn|error|cannot be read|unreadable/i.test(line)),
+      `${label}: no warning about the readable runs`).toEqual([]);
+    expect(await fingerprint(memory), `${label}: no run file changed`).toEqual(before);
   };
 
-  it("UC-1 the other runs work, the scan warns naming the bad run and continues, the bad run reports its error, no file changes", async () => {
+  it("UC-1 the other runs work, the bad run reports that its data cannot be read, a warning names it, no file changes", async () => {
     await expectContained("running server");
   }, 300_000);
 
-  it("UC-2 a new server process starts with the unreadable tree present and the same holds", async () => {
+  it("UC-2 a new server process starts with the unreadable run file present and the same holds", async () => {
     await h.stopServer();
     // An app restart is a new process: start the built server (dist/app.js) on the same data dir and database.
     const serverDir = path.resolve(__dirname, "../../..");
     const child: ChildProcess = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "--data-dir", h.dataDir, "--host", "127.0.0.1", "--port", "0"],
       { cwd: serverDir, env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "", TMPDIR: process.env.TMPDIR ?? "/tmp", USER: process.env.USER ?? "tester",
-        DATABASE_URL: process.env.DATABASE_URL ?? "", ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills" }, stdio: ["ignore", "pipe", "pipe"] });
+        DATABASE_URL: process.env.DATABASE_URL ?? "", ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
     child.stdout!.on("data", (chunk) => { output += String(chunk); });
     child.stderr!.on("data", (chunk) => { output += String(chunk); });
@@ -181,8 +183,8 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
         if (probe.ok) { processUrl = candidate!; break; }
       }
       if (!processUrl) throw new Error(`no listener serves GraphQL: ${output.slice(-1500)}`);
-      // The new process logs to its own output; collect its warnings there.
-      await expectContained("new server process", { size: () => output.length, linesFrom: (mark) => output.slice(mark).split("\n") });
+      // The new process logs to its own output, the startup's lines included.
+      await expectContained("new server process", { size: () => 0, linesFrom: (mark) => output.slice(mark).split("\n") });
     } finally {
       child.kill("SIGTERM");
       await new Promise((resolve) => { if (child.exitCode !== null) resolve(null); else child.once("exit", resolve); });

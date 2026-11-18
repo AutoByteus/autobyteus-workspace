@@ -1,4 +1,3 @@
-import type { TaskExecutionLink } from "./task-agent-own-records.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
@@ -6,19 +5,8 @@ import {
   getParentAgentTeamAddress,
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
-import {
-  remoteTaskExecutionRunId,
-  type ConfiguredAgentExecutionNode,
-  type ConfiguredExecutionNode,
-  type ConfiguredTeamExecutionNode,
-  type RemoteTaskExecution,
-  type RemoteTeamMember,
-  type TaskExecution,
-  type TaskTeamAgentExecution,
-  type TeamRunApplicationBinding,
-} from "../domain/run-execution-tree-shared-records.js";
-import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
-import { parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
+import { type ConfiguredAgentExecutionNode, type ConfiguredExecutionNode, type ConfiguredTeamExecutionNode, type TeamRunApplicationBinding } from "../domain/run-execution-tree-shared-records.js";
+import { parseLaunchConfigurationSource, parseOptionalPendingRuntimeSwitch } from "./launch-configuration-source-schema.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -122,6 +110,9 @@ export const parseConfiguredAgent = (value: unknown, label: string): ConfiguredA
     agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
     launchConfiguration: parseLaunchConfiguration(member.launchConfiguration, `${label}.launchConfiguration`),
+    // How its launch was resolved, when recorded (a delegated team's member, TC-12).
+    ...(member.launchSource === undefined ? {} : { launchSource: parseLaunchConfigurationSource(member.launchSource, `${label}.launchSource`) }),
+    ...parseOptionalPendingRuntimeSwitch(member, label),
   };
 };
 
@@ -136,7 +127,6 @@ export const parseConfiguredTeam = (value: unknown, label: string): ConfiguredTe
     "coordinatorAddress",
     "defaultLaunchConfiguration",
     "members",
-    "taskExecutions",
   ], label);
   const teamAddress = canonicalNonRootAddress(team.address, `${label}.address`);
   const coordinatorAddress = canonicalNonRootAddress(team.coordinatorAddress, `${label}.coordinatorAddress`);
@@ -159,197 +149,7 @@ export const parseConfiguredTeam = (value: unknown, label: string): ConfiguredTe
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(team.defaultLaunchConfiguration, `${label}.defaultLaunchConfiguration`),
     members,
-    taskExecutions: parseTaskExecutions(team.taskExecutions, `${label}.taskExecutions`),
   };
-};
-
-/** A task Team's member: an agent (teams are flat; a team member that is a team is not a supported shape). */
-const parseTaskTeamMember = (value: unknown, label: string): TaskTeamAgentExecution => {
-  const member = objectRecord(value, label);
-  requireKeys(member, ["address", "agentRunId", "platformAgentRunId"], label);
-  return {
-    address: canonicalNonRootAddress(member.address, `${label}.address`),
-    agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
-    platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
-    ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
-  };
-};
-
-/** `delegatorAgentRunId` is optional: children recorded before it existed carry none. */
-const parseDelegator = (execution: Record<string, unknown>, label: string): { delegatorAgentRunId?: string } =>
-  execution.delegatorAgentRunId === undefined
-    ? {}
-    : { delegatorAgentRunId: requiredString(execution.delegatorAgentRunId, `${label}.delegatorAgentRunId`) };
-
-export const parseTaskExecution = (value: unknown, label: string): TaskExecution => {
-  const execution = objectRecord(value, label);
-  if ("agentRunId" in execution) {
-    requireKeys(execution, ["address", "agentRunId", "platformAgentRunId", "startedAt", "source"], label);
-    return {
-      address: canonicalNonRootAddress(execution.address, `${label}.address`),
-      agentRunId: requiredString(execution.agentRunId, `${label}.agentRunId`),
-      platformAgentRunId: nullableString(execution.platformAgentRunId, `${label}.platformAgentRunId`),
-      ...parseDelegator(execution, label),
-      startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
-      ...parseTaskAgentExecutionSource(execution, label),
-      ...parseOptionalUserLaunchSelection(execution, "userLaunchSelection", label),
-    };
-  }
-  requireKeys(execution, ["address", "teamRunId", "members", "taskExecutions", "startedAt", "source"], label);
-  const address = canonicalNonRootAddress(execution.address, `${label}.address`);
-  return {
-    address,
-    teamRunId: requiredString(execution.teamRunId, `${label}.teamRunId`),
-    members: requiredArray(execution.members, `${label}.members`).map((member, index) =>
-      parseTaskTeamMember(member, `${label}.members[${index}]`)),
-    taskExecutions: parseTaskExecutions(execution.taskExecutions, `${label}.taskExecutions`),
-    ...parseDelegator(execution, label),
-    startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
-    ...parseTaskTeamExecutionSource(execution, address, label),
-    ...parseOptionalUserLaunchSelection(execution, "userTeamLaunchSelection", label),
-  };
-};
-
-/**
- * The link a coordinating tree keeps on disk for a task agent (contract §3.3); its facts are in the task
- * agent's own file. Read tolerantly: other fields are ignored.
- */
-export const parseTaskExecutionLink = (value: unknown, label: string): TaskExecutionLink => {
-  const link = objectRecord(value, label);
-  const isAgent = "agentRunId" in link;
-  requireKeys(link, ["address", isAgent ? "agentRunId" : "teamRunId", "startedAt"], label);
-  const address = canonicalNonRootAddress(link.address, `${label}.address`);
-  const tail = { ...parseDelegator(link, label), startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`) };
-  return isAgent
-    ? { address, agentRunId: requiredString(link.agentRunId, `${label}.agentRunId`), ...tail }
-    : { address, teamRunId: requiredString(link.teamRunId, `${label}.teamRunId`), ...tail };
-};
-
-export const parseTaskExecutions = (value: unknown, label: string): TaskExecution[] =>
-  requiredArray(value, label).map((task, index) => parseTaskExecution(task, `${label}[${index}]`));
-
-/** A stored link names a run on a peer node when it carries `nodeId` (absent means this node). */
-export const isRemoteTaskExecutionEntry = (entry: Record<string, unknown>): boolean => entry.nodeId !== undefined;
-
-const parseRemoteTeamMembers = (value: unknown, label: string): RemoteTeamMember[] => {
-  const members = requiredArray(value, label).map((entry, index) => {
-    const member = objectRecord(entry, `${label}[${index}]`);
-    requireKeys(member, ["address", "agentRunId"], `${label}[${index}]`);
-    return Object.freeze({
-      address: canonicalNonRootAddress(member.address, `${label}[${index}].address`),
-      agentRunId: requiredString(member.agentRunId, `${label}[${index}].agentRunId`),
-    });
-  });
-  if (members.length === 0) throw new Error(`${label} must name at least one member.`);
-  return members;
-};
-
-/**
- * A remote link as stored: a `taskExecutions` entry with `nodeId` and exact keys, without `kind`. An entry with
- * `teamRunId` is a Team link (its coordinator must be one of its members); otherwise an Agent link.
- */
-export const parseStoredRemoteTaskExecution = (value: unknown, label: string): RemoteTaskExecution => {
-  const link = objectRecord(value, label);
-  if (link.teamRunId === undefined) {
-    requireKeys(link, ["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"], label);
-    return Object.freeze({
-      kind: "agent",
-      address: canonicalNonRootAddress(link.address, `${label}.address`),
-      agentRunId: requiredString(link.agentRunId, `${label}.agentRunId`),
-      nodeId: requiredString(link.nodeId, `${label}.nodeId`),
-      delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
-      startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
-    });
-  }
-  requireKeys(link, ["address", "teamRunId", "nodeId", "coordinatorAddress", "members", "delegatorAgentRunId", "startedAt"], label);
-  const members = parseRemoteTeamMembers(link.members, `${label}.members`);
-  const coordinatorAddress = canonicalNonRootAddress(link.coordinatorAddress, `${label}.coordinatorAddress`);
-  if (!members.some((member) => member.address === coordinatorAddress)) {
-    throw new Error(`${label}.coordinatorAddress '${coordinatorAddress}' is not one of its members.`);
-  }
-  return Object.freeze({
-    kind: "agent_team",
-    address: canonicalNonRootAddress(link.address, `${label}.address`),
-    teamRunId: requiredString(link.teamRunId, `${label}.teamRunId`),
-    nodeId: requiredString(link.nodeId, `${label}.nodeId`),
-    coordinatorAddress,
-    members: Object.freeze(members),
-    delegatorAgentRunId: requiredString(link.delegatorAgentRunId, `${label}.delegatorAgentRunId`),
-    startedAt: isoTimestamp(link.startedAt, `${label}.startedAt`),
-  });
-};
-
-/** The stored form of a remote link: its exact in-memory keys without `kind`. */
-export const storedRemoteTaskExecution = (link: RemoteTaskExecution): Record<string, unknown> => {
-  const { kind: _kind, ...stored } = link;
-  return stored;
-};
-
-/** A remote link in memory: the stored form plus its `kind`, which must agree with the stored shape. */
-const parseRemoteTaskExecution = (value: unknown, label: string): RemoteTaskExecution => {
-  const { kind, ...stored } = objectRecord(value, label);
-  const link = parseStoredRemoteTaskExecution(stored, label);
-  if (kind !== link.kind) throw new Error(`${label}.kind must be '${link.kind}'.`);
-  return link;
-};
-
-/**
- * The in-memory remote links of a composed tree, as the field to spread into the parsed holder: present only
- * when there are any, so a tree without remote links keeps exactly its stored shape.
- */
-export const parseRemoteTaskExecutions = (value: unknown, label: string): { remoteTaskExecutions?: RemoteTaskExecution[] } => {
-  const links = value === undefined ? [] : requiredArray(value, label).map((link, index) => parseRemoteTaskExecution(link, `${label}[${index}]`));
-  return links.length ? { remoteTaskExecutions: links } : {};
-};
-
-/** A remote link's delegator is an AgentRun of the tree, and each remote run is linked once. */
-export const validateRemoteTaskExecutions = (
-  agentRunIdsOfTree: ReadonlySet<string>,
-  links: readonly RemoteTaskExecution[] = [],
-): void => {
-  const seen = new Set<string>();
-  for (const link of links) {
-    const runId = remoteTaskExecutionRunId(link);
-    if (!agentRunIdsOfTree.has(link.delegatorAgentRunId)) {
-      throw new Error(`Remote run '${runId}' delegator '${link.delegatorAgentRunId}' is not an AgentRun in this tree.`);
-    }
-    const key = `${link.nodeId}\0${runId}`;
-    if (seen.has(key)) throw new Error(`Remote run '${runId}' is linked twice.`);
-    seen.add(key);
-  }
-};
-
-type TaskExecutionForestOwner = Readonly<{
-  members: readonly unknown[];
-  taskExecutions: readonly TaskExecution[];
-}>;
-
-/**
- * A task execution that records its delegator names an AgentRun in the same tree.
- * Callers pass every configured owner of task executions.
- */
-export const validateTaskExecutionDelegators = (
-  configuredAgentRunIds: Iterable<string>,
-  owners: readonly TaskExecutionForestOwner[],
-): void => {
-  const agentRunIds = new Set(configuredAgentRunIds);
-  const executions: TaskExecution[] = [];
-  const visitTask = (task: TaskExecution): void => {
-    executions.push(task);
-    if ("agentRunId" in task) {
-      agentRunIds.add(task.agentRunId);
-      return;
-    }
-    task.members.forEach((member) => agentRunIds.add(member.agentRunId));
-    task.taskExecutions.forEach(visitTask);
-  };
-  owners.forEach((owner) => owner.taskExecutions.forEach(visitTask));
-  for (const execution of executions) {
-    if (execution.delegatorAgentRunId !== undefined && !agentRunIds.has(execution.delegatorAgentRunId)) {
-      const runId = "agentRunId" in execution ? execution.agentRunId : execution.teamRunId;
-      throw new Error(`Task execution '${runId}' delegator '${execution.delegatorAgentRunId}' is not an AgentRun in this tree.`);
-    }
-  }
 };
 
 export const parseApplicationBinding = (value: unknown): TeamRunApplicationBinding | null => {
@@ -387,37 +187,6 @@ export const validateConfiguredPlacementUniqueness = (
   }
 };
 
-/** Every run ID (AgentRun and TeamRun) inside a task execution forest. */
-export const collectTaskExecutionRunIds = (tasks: readonly TaskExecution[]): string[] => {
-  const ids: string[] = [];
-  const visitTask = (task: TaskExecution): void => {
-    if ("agentRunId" in task) { ids.push(task.agentRunId); return; }
-    ids.push(task.teamRunId);
-    task.members.forEach((member) => ids.push(member.agentRunId));
-    task.taskExecutions.forEach(visitTask);
-  };
-  tasks.forEach(visitTask);
-  return ids;
-};
-
-/**
- * A Team copy (a task Team) has the member layout of its own source. `owners` are every holder of task
- * executions.
- */
-export const validateCopyLayouts = (
-  owners: readonly Readonly<{ taskExecutions: readonly TaskExecution[] }>[],
-): void => {
-  const visit = (task: TaskExecution): void => {
-    if ("teamRunId" in task) {
-      const layout = new Set<string>(task.source.members.map((member) => member.address));
-      if (task.members.length !== layout.size || task.members.some((member) => !layout.has(member.address))) {
-        throw new Error(`Task TeamRun '${task.teamRunId}' does not match its source.`);
-      }
-      task.taskExecutions.forEach(visit);
-    }
-  };
-  owners.forEach((owner) => owner.taskExecutions.forEach(visit));
-};
 
 export const deepFreeze = <T>(value: T): T => {
   if (value && typeof value === "object" && !Object.isFrozen(value)) {

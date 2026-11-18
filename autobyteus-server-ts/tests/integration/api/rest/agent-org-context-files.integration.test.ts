@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const config = vi.hoisted(() => ({ root: '' }));
 vi.mock('../../../../src/config/app-config-provider.js', () => ({ appConfigProvider: { config: {
-  getBaseUrl: () => "http://app.test", getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
+  getBaseUrl: () => "http://app.test", get: () => undefined, getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
 } } }));
 import { registerContextFileRoutes } from '../../../../src/api/rest/context-files.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
@@ -18,10 +18,11 @@ import { ContextFileLayout } from '../../../../src/context-files/store/context-f
 import { ContextFileLocalPathResolver } from '../../../../src/context-files/services/context-file-local-path-resolver.js';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { validateAgentOrgRunExecutionTreePayload } from '../../../../src/run-history/store/agent-org-run-execution-tree-schema.js';
-import { testAgentOrgExecutionTree, testOrgAgentCopySource, testOrgAgentNode, testOrgTeamCopySource, testOrgTeamNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { AgentRunProviderInputNormalizer } from '../../../../src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
+import { noDelegations } from '../../../helpers/no-delegations.js';
 
 const draft = (agentRunId: string, orgRunId = 'org') => ({ kind: 'org_member_draft', orgRunId, agentRunId });
 const final = (agentRunId: string, orgRunId = 'org') => ({ kind: 'org_member_final', orgRunId, agentRunId });
@@ -45,13 +46,8 @@ beforeEach(async () => {
   const direct = testOrgAgentNode('/shared', 'configured-direct');
   const lead = testOrgAgentNode('/delivery/lead', 'configured-lead');
   const team = testOrgTeamNode({ address: '/delivery', teamRunId: 'configured-team', coordinatorAddress: lead.address, members: [lead] });
+  // The org's own parts only: a run the org delegated to is a run of its own (autobyteus-461).
   const raw = structuredClone(testAgentOrgExecutionTree({ orgRunId: 'org', members: [direct, team] })) as any;
-  raw.rootOrg.taskExecutions = [
-    { address: direct.address, agentRunId: 'retained-direct', platformAgentRunId: null, delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z',
-      source: testOrgAgentCopySource(direct.agentDefinitionId) },
-    { address: team.address, teamRunId: 'retained-team', members: [{ address: lead.address, agentRunId: 'retained-lead', platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z',
-      source: testOrgTeamCopySource({ teamDefinitionId: team.teamDefinitionId, coordinatorAddress: lead.address, memberAddresses: [lead.address] }) },
-  ];
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
   await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, 'org'));
   writeAttachmentSidecars(dir, 'org');
@@ -60,7 +56,7 @@ beforeEach(async () => {
   local = new ContextFileLocalPathResolver({ layout, baseUrl: 'http://app.test', ownerResolver: new ContextFileOwnerResolver({
     memoryDir, locations: new AgentOrgExecutionTreeLocationService({ memoryDir }), // no runtime manager
   }) });
-  app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: '/rest' });
+  app = fastify(); await app.register(multipart); await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: '/rest' });
 });
 afterEach(async () => {
   vi.restoreAllMocks(); await app.close(); await fs.rm(config.root, { recursive: true, force: true });
@@ -87,9 +83,11 @@ describe('exact Org attachment REST with actual stored-only identity and filesys
     })).statusCode).toBe(404);
   });
 
-  it('uploads/opens/removes/finalizes distinct bytes for repeated configured/task addresses; retains saved owner across views/reopen', async () => {
+  it('uploads/opens/removes/finalizes distinct bytes for the org\'s direct and mounted-team agents; retains saved owner across views/reopen', async () => {
+    // A run the org delegated to is not an org member: its files are its own run's (autobyteus-461).
+    expect((await upload(draft('retained-direct'), 'not a member')).statusCode).toBe(400);
     const retained: { locator: string; text: string; file: string }[] = [];
-    for (const id of ['configured-direct', 'retained-direct', 'configured-lead', 'retained-lead']) {
+    for (const id of ['configured-direct', 'configured-lead']) {
       const response = await upload(draft(id), id + ' unique content'); expect(response.statusCode).toBe(200);
       const attachment = response.json();
       expect(attachment.locator).toContain(`/agent-org-runs/org/agent-runs/${id}/context-files/`);
@@ -115,8 +113,8 @@ describe('exact Org attachment REST with actual stored-only identity and filesys
       expect((await app.inject({ method: 'DELETE', url: removable.locator })).statusCode).toBe(204);
       expect((await app.inject({ method: 'GET', url: removable.locator })).statusCode).toBe(404);
     }
-    expect(new Set(retained.map(a => a.file)).size).toBe(4);
-    await app.close(); app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: '/rest' });
+    expect(new Set(retained.map(a => a.file)).size).toBe(2);
+    await app.close(); app = fastify(); await app.register(multipart); await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: '/rest' });
     for (const a of retained.reverse()) expect((await app.inject({ method: 'GET', url: a.locator })).body).toBe(a.text);
     expect(await fs.readFile(treeFile)).toEqual(treeBytes);
   });

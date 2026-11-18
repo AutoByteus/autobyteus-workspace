@@ -1,11 +1,12 @@
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type {
+  RemoteAgentLaunch,
   RemoteAgentProjection,
   RemoteOwnerCommand,
   RemoteRunSummary,
   RemoteStartedRunRef,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 
 /**
  * The inter-node contract (design § Contract Between Nodes; CM-12). Every request carries the envelope; every
@@ -31,6 +32,10 @@ export const REMOTE_OWNER_COMMANDS_PATH = "/rest/remote/owner-commands";
  * frame `{nodeId}` (or a refusal, then close), then `{agentRunId, message}` frames for the run's own agents only.
  */
 export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
+/** autobyteus-461 SR-088: one agent's own stream snapshot. */
+export const REMOTE_AGENT_STREAM_SNAPSHOT_PATH = "/rest/remote/agent-stream-snapshot";
+/** autobyteus-437: the pairing exchange (exempt from credentials: the accepting node has no peer secret yet). */
+export const REMOTE_PEER_PAIRING_EXCHANGES_PATH = "/rest/remote/peer-pairing-exchanges";
 
 /** `toNodeId` is the pinned server ID of the peer being called; `fromNodeId` the caller's own. */
 export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;
@@ -42,7 +47,12 @@ export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;
 export type StartDelegatedRunRequest = RemoteEnvelope & Readonly<{
   address: string;
   delegator: Readonly<{ agentRunId: string }>;
-  coordinatingRun: TaskAgentCoordinatingRun;
+  delegatingRun: DelegatingRunRef;
+  /**
+   * The work and its Task (autobyteus-32 DS-002): the called node's Model Router is told the text; its decision records
+   * name the Task. `taskId` is null when the caller creates the Task only after the start.
+   */
+  task: Readonly<{ text: string; title: string; taskKey: string | null; projectId: string | null; taskId: string | null }>;
 }>;
 
 /**
@@ -55,7 +65,7 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   kind: "work_packet" | "message";
   messageId?: string;
   sender: Readonly<{ agentRunId: string }>;
-  targetRoot: TaskAgentCoordinatingRun;
+  targetRoot: DelegatingRunRef;
   target: Readonly<{ agentRunId: string }>;
   content: string;
   messageType: string;
@@ -69,15 +79,27 @@ export type RemoteRefusalTarget = Readonly<{ kind: "agent" | "agent_team"; name:
  * A refusal: `message` is the responder's detail (the reason); `target` is the target definition, present for
  * `NO_DEFAULT_RUNTIME` and `AGENT_CANNOT_RUN`.
  */
-export type RemoteRefusalAnswer = Readonly<{ accepted: false; nodeId: string; code: string; message: string; target?: RemoteRefusalTarget }>;
+export type RemoteRefusalAnswer = Readonly<{
+  accepted: false; nodeId: string; code: string; message: string; target?: RemoteRefusalTarget;
+  /**
+   * `NO_DEFAULT_RUNTIME` / `AGENT_CANNOT_RUN` for a target no default covers: why the called node's Model Router did not
+   * choose either (autobyteus-32 supplement § 6); the caller words it with its own name for the node.
+   */
+  modelRouting?: RemoteModelRoutingState;
+  /** `MODEL_ROUTER_FAILED`: the agent the router could not choose for. */
+  agentName?: string;
+}>;
+
+/** The called node's Model Routing for a refused target: off, or on but not active (with why). */
+export type RemoteModelRoutingState = Readonly<{ state: "off" }> | Readonly<{ state: "not_active"; reason: string }>;
 /**
  * What the called node started (autobyteus-247 G-7): an Agent run, or a Team run with its coordinator's address and
  * every member (address and run ID, as the Team tree has them).
  */
 export type StartDelegatedRunAnswer =
-  | Readonly<{ accepted: true; nodeId: string; kind: "agent"; agentRunId: string }>
+  | Readonly<{ accepted: true; nodeId: string; kind: "agent"; agentRunId: string; launches: readonly RemoteAgentLaunch[] }>
   | Readonly<{ accepted: true; nodeId: string; kind: "agent_team"; teamRunId: string; coordinatorAddress: string;
-      members: readonly Readonly<{ address: string; agentRunId: string }>[] }>
+      members: readonly Readonly<{ address: string; agentRunId: string }>[]; launches: readonly RemoteAgentLaunch[] }>
   | RemoteRefusalAnswer;
 export type DeliverRemoteMessageAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
 /** The called node admitted this node's request: it is available to this node now. */
@@ -93,15 +115,15 @@ export type RunSummariesRequest = RemoteEnvelope & Readonly<{ runs: readonly Rem
 export type RunSummariesAnswer = Readonly<{ accepted: true; nodeId: string; runs: readonly RemoteRunSummary[] }> | RemoteRefusalAnswer;
 
 /** autobyteus-278: `targetRoot` is the run the caller's delegation started; `agentRunId` one of its own agents. */
-export type AgentProjectionRequest = RemoteEnvelope & Readonly<{ targetRoot: TaskAgentCoordinatingRun; agentRunId: string }>;
+export type AgentProjectionRequest = RemoteEnvelope & Readonly<{ targetRoot: DelegatingRunRef; agentRunId: string }>;
 export type AgentProjectionAnswer = Readonly<{ accepted: true; nodeId: string; projection: RemoteAgentProjection }> | RemoteRefusalAnswer;
 
 export type OwnerCommandRequest = RemoteEnvelope & Readonly<{
-  targetRoot: TaskAgentCoordinatingRun;
+  targetRoot: DelegatingRunRef;
   agentRunId: string;
   command: RemoteOwnerCommand;
 }>;
 export type OwnerCommandAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
 
 /** The first frame of an observation stream from the caller. */
-export type RunObservationOpening = RemoteEnvelope & Readonly<{ targetRoot: TaskAgentCoordinatingRun }>;
+export type RunObservationOpening = RemoteEnvelope & Readonly<{ targetRoot: DelegatingRunRef }>;

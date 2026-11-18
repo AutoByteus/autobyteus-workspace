@@ -1,0 +1,27 @@
+# IMP-08 key scan of the proof logs, secret gate, hygiene, licensing
+# Command: grep for key shapes over IMP-01/04/05/06 raw logs; gitleaks dir over them; scripts/check_secrets.sh origin/personal..HEAD; python3 scripts/check_repository_artifact_hygiene.py; python3 scripts/check_licensing.py
+# Commit: 6cc367a37e
+# Environment: macOS, gitleaks 8.30.1
+# Date: 2026-11-01
+
+## Key-shape grep (sk-, xai-, Bearer, api_key=, ghp_, AKIA, *_API_KEY=): matches per file
+probe.log:0
+run-a.log:0
+run-b.log:0
+runner-on-real-logs.txt:0
+
+## gitleaks dir
+6:10AM INF scanned ~64044 bytes (64.04 KB) in 33.2ms
+6:10AM INF no leaks found
+
+## Secret gate
+secret gate: scanning 1 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
+
+## Hygiene (exit 0)
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+
+## Licensing
+Licensing is consistent.
+Tracked files scanned: 7651

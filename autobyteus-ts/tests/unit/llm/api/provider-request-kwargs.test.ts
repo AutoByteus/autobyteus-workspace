@@ -7,8 +7,6 @@ import {
 describe('provider request kwargs sanitizer', () => {
   it('drops internal runtime kwargs, nullish values, and adapter-controlled keys', () => {
     const safe = cloneSafeProviderRequestKwargs({
-      logicalConversationId: 'agent-1',
-      logical_conversation_id: 'agent-1',
       conversationId: 'conversation-1',
       agentId: 'agent-1',
       turnId: 'turn-1',
@@ -27,7 +25,6 @@ describe('provider request kwargs sanitizer', () => {
     const target: Record<string, unknown> = { model: 'provider-model', stream: true };
 
     applySafeProviderRequestKwargs(target, {
-      logicalConversationId: 'agent-1',
       temperature: 0.2,
       top_p: 0.9,
       stream: false

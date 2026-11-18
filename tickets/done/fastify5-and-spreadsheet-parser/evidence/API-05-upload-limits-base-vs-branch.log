@@ -1,0 +1,27 @@
+# API-05 multipart upload limits, base vs branch: node probes/api-05-upload-limit-probe.mjs <port> <server data dir>
+# Servers as API-04 (dist/app.js, 0.0.0.0, test-owned data dir, env -i). Base ddd6fdcdf6 (@fastify/multipart 8.3.1 via fastify 4.29.1); branch 4dcdceea11 (@fastify/multipart 10.1.6, fastify 5.12.7). Studio registers multipart with limits.fileSize = CONTEXT_FILE_MAX_BYTES (25 MiB)
+# Client: Node v22.23.1 fetch + FormData from 127.0.0.1, text/plain payloads; macOS 26.5.2; date 2026-10-24T21:03:55Z
+# Case: API-05
+
+## BASE
+/rest/upload-file | LIMIT-1 (26214399 bytes) | status=200 | json keys=fileUrl | files>=1MiB after: ["media/documents/… size=26214399"]
+/rest/upload-file | LIMIT (26214400 bytes) | status=200 | json keys=fileUrl | files>=1MiB after: ["media/documents/… size=26214400"]
+/rest/upload-file | LIMIT+1 (26214401 bytes) | status=413 | detail="Uploaded file is too large." | files>=1MiB after: []
+/rest/upload-file | LIMIT+1MiB (27262976 bytes) | status=413 | detail="Uploaded file is too large." | files>=1MiB after: []
+/rest/context-files/upload | LIMIT-1 (26214399 bytes) | status=200 | json keys=displayName,locator,phase,storedFilename | files>=1MiB after: ["draft_context_files/agent-runs/… size=26214399"]
+/rest/context-files/upload | LIMIT (26214400 bytes) | status=200 | json keys=displayName,locator,phase,storedFilename | files>=1MiB after: ["draft_context_files/agent-runs/… size=26214400"]
+/rest/context-files/upload | LIMIT+1 (26214401 bytes) | status=400 | detail="Uploaded file is too large." | files>=1MiB after: []
+/rest/context-files/upload | LIMIT+1MiB (27262976 bytes) | status=400 | detail="Uploaded file is too large." | files>=1MiB after: []
+
+## BRANCH
+/rest/upload-file | LIMIT-1 (26214399 bytes) | status=200 | json keys=fileUrl | files>=1MiB after: ["media/documents/… size=26214399"]
+/rest/upload-file | LIMIT (26214400 bytes) | status=200 | json keys=fileUrl | files>=1MiB after: ["media/documents/… size=26214400"]
+/rest/upload-file | LIMIT+1 (26214401 bytes) | status=413 | detail="Uploaded file is too large." | files>=1MiB after: []
+/rest/upload-file | LIMIT+1MiB (27262976 bytes) | status=413 | detail="Uploaded file is too large." | files>=1MiB after: []
+/rest/context-files/upload | LIMIT-1 (26214399 bytes) | status=200 | json keys=displayName,locator,phase,storedFilename | files>=1MiB after: ["draft_context_files/agent-runs/… size=26214399"]
+/rest/context-files/upload | LIMIT (26214400 bytes) | status=200 | json keys=displayName,locator,phase,storedFilename | files>=1MiB after: ["draft_context_files/agent-runs/… size=26214400"]
+/rest/context-files/upload | LIMIT+1 (26214401 bytes) | status=400 | detail="Uploaded file is too large." | files>=1MiB after: []
+/rest/context-files/upload | LIMIT+1MiB (27262976 bytes) | status=400 | detail="Uploaded file is too large." | files>=1MiB after: []
+
+## diff base -> branch
+NO DIFFERENCE

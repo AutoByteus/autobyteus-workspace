@@ -1,10 +1,11 @@
+import { messageFeedInto } from "../../../helpers/view-streams.js";
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, vi } from "vitest";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
-import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentOrgRun } from "../../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { RootTeamExecutionDirectory } from "../../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -14,13 +15,14 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
-import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import type { TaskExecutionIdleTimers } from "../../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles } from "./task-publication-handles.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 /**
  * A real AgentOrg root (persistence on a temp dir, root agent registry, root team directory) with
@@ -79,24 +81,17 @@ export const buildOrg = async (kind: "agent" | "team") => {
         physicalScope: { root, ancestorTeamRunIds: [member.teamRunId] }, callbacks, activationMode: "fresh" })).commitAfterDurability();
     }
   }
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const published: AgentOrgRunEvent[] = [];
   publisher.subscribe(({ event }) => published.push(event));
   const clock = manualTimers();
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocation = 0;
-  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
-    taskExecutionIdentity: {
-      agentRuns: { allocateForAgentDefinition: async () => `task-agent-${++allocation}` },
-      taskTeams: { create: async ({ source }: { source: TeamRunAgentTeamNode }) => {
-        const id = `task-team-${++allocation}`;
-        return { teamNode: { ...source, teamRunId: id,
-          children: source.children.map((child) => ({ ...child, agentRunId: `${id}-lead`, platformAgentRunId: null })) } };
-      } },
-    } as never,
+  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
-    taskExecutionResources: new InMemoryTaskExecutionResources(),
+    taskRecords: new InMemoryTaskExecutionResources(),
+    delegationIndex: noDelegations(),
   });
   run.activate();
   const owner = run;

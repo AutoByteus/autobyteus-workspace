@@ -1,0 +1,26 @@
+# DEL-01 release smoke check (python3 scripts/release_smoke.py), run 2026-11-10T07:16:12Z-07:18:12Z on 8791266d5e (origin/personal fd0eb664c3 + this handoff document)
+# Codex: waived by the user for this release, in his words: "Waive for token limit" (2026-11-10, at the release decision).
+# worktree row: the only change is tickets/in-progress/release-beta-456/release-deployment-report.md, written by delivery at 07:16:25Z during the run (mtime); release-notes.md and the dist/ folders predate the run.
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1c451-030e-7ec0-821c-60ee0d47e281"} | {"code":"CODEX_
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1c451-0f45-7dd3-94b6-31f92e450a33","change_sequence":
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1c451-1b1a-72c2-9079-a28fe2082389"} | {"code":"CODEX_
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+worktree    left unchanged                           FAIL    git status changed: ?? tickets/in-progress/release-beta-456/release-deployment-report.md
+
+commit    8791266d5e92274e45829f60d709f5a5efdc8e75
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  live 91s, antigravity 20s, autobyteus 8s
+result    FAIL
+logs      <temp>/release-smoke-ztak1mly

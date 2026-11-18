@@ -1,0 +1,19 @@
+# IMP-02 web-nuxt-tests
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run
+# Environment mode: shell
+# Commit: 5073d38a56 (branch codex/phone-viewer-pinch-zoom-472)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T17:01:47Z
+# Excerpt of IMP-02-web-nuxt-tests.log (full log kept out of git): the specs 472 adds or changes, and the totals
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts (20 tests) 549ms
+ ✓ composables/__tests__/usePictureZoom.spec.ts (13 tests) 87ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts (3 tests) 228ms
+ ✓ composables/__tests__/usePdfPinchZoom.spec.ts (6 tests) 26ms
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 17ms
+ ✓ components/fileExplorer/__tests__/FileViewer.touchZoom.spec.ts (2 tests) 35ms
+ ✓ components/fileExplorer/__tests__/FileViewer.reload.spec.ts (2 tests) 18ms
+ ✓ composables/mobile/__tests__/useMobileFileDownload.spec.ts (5 tests) 7ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts (12 tests) 33ms
+ Test Files  755 passed (755)
+      Tests  5696 passed | 2 skipped (5698)
+# Exit status: 0

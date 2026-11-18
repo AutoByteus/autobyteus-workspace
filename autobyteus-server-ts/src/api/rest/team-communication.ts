@@ -4,6 +4,7 @@ import {
   TeamCommunicationReferenceContentError,
   getTeamCommunicationContentService,
 } from "../../services/team-communication/team-communication-content-service.js";
+import { sendUserFile } from "./user-file-reply.js";
 
 const statusForReferenceContentError = (error: TeamCommunicationReferenceContentError): number => {
   switch (error.code) {
@@ -36,8 +37,7 @@ export async function registerTeamCommunicationRoutes(
       try {
         const resolved = await contentService.resolveContent({ teamRunId, messageId, referenceId });
         reply.header("cache-control", "no-store");
-        reply.type(resolved.mimeType);
-        return reply.send(resolved.stream);
+        return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream });
       } catch (error) {
         if (error instanceof TeamCommunicationReferenceContentError) {
           return reply

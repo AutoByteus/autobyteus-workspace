@@ -1,0 +1,13 @@
+# Check: IMP-08
+# Command: pnpm -C autobyteus-web test:nuxt --run stores/__tests__/agentOrgRetainedRecovery.spec.ts stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts tests/integration/workspace-history-draft-send.integration.test.ts stores/__tests__/nativeCompactionTermination.spec.ts
+# Commit: 9e0a09dc81
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08
+
+ ✓ stores/__tests__/nativeCompactionTermination.spec.ts (17 tests) 37ms
+ ✓ tests/integration/workspace-history-draft-send.integration.test.ts (1 test) 16ms
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 109ms
+ ✓ stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts (3 tests) 1071ms
+   ✓ A running hub fetches its Team-tab list again only when a message could have been missed > a reconnect to another publisher (a stop and resume, or a restart) fetches the list although its base is below the old one  1042ms
+ Test Files  4 passed (4)
+      Tests  41 passed (41)

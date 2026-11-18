@@ -1,0 +1,258 @@
+{
+ "_header": {
+  "check": "IMP-07",
+  "command": "curl -s -X POST http://127.0.0.1:8000/graphql -d '{\"query\":\"{ availableAgentRuntimes }\"}' (pnpm dev stack, own data root, no provider keys)",
+  "commit": "5135bb73dc",
+  "environment": "macOS (darwin 25.5), this Mac's codex/claude/agy/grok, 2026-10-25",
+  "elapsed": "real 4.79 s"
+ },
+ "report": {
+  "checkedAt": "2026-10-25T07:05:44.424Z",
+  "agentRuntimes": [
+   {
+    "runtime": "codex_app_server",
+    "name": "Codex",
+    "limits": [
+     {
+      "name": "Weekly",
+      "remainingPercent": 100,
+      "resetsAt": "2026-11-01T06:31:15.000Z"
+     }
+    ],
+    "models": [
+     {
+      "id": "gpt-6.1-sol",
+      "name": "GPT-6.1-Sol (default reasoning: low)"
+     },
+     {
+      "id": "gpt-6-astra",
+      "name": "GPT-6-Astra (default reasoning: medium)"
+     },
+     {
+      "id": "gpt-6-sol",
+      "name": "GPT-6-Sol (default reasoning: medium)"
+     },
+     {
+      "id": "gpt-6-luna",
+      "name": "GPT-6-Luna (default reasoning: medium)"
+     },
+     {
+      "id": "gpt-5.6-sol",
+      "name": "GPT-5.6-Sol (default reasoning: low)"
+     },
+     {
+      "id": "gpt-5.6-terra",
+      "name": "GPT-5.6-Terra (default reasoning: medium)"
+     },
+     {
+      "id": "gpt-5.6-luna",
+      "name": "GPT-5.6-Luna (default reasoning: medium)"
+     }
+    ]
+   },
+   {
+    "runtime": "claude_agent_sdk",
+    "name": "Claude",
+    "limits": [
+     {
+      "name": "5-hour",
+      "remainingPercent": 25,
+      "resetsAt": "2026-10-25T07:10:00.238Z"
+     },
+     {
+      "name": "Weekly",
+      "remainingPercent": 53,
+      "resetsAt": "2026-10-31T16:00:00.238Z"
+     },
+     {
+      "name": "Weekly \u00b7 Fable",
+      "remainingPercent": 100,
+      "resetsAt": "2026-10-31T16:00:00.000Z"
+     }
+    ],
+    "models": [
+     {
+      "id": "opus",
+      "name": "Opus 5.5"
+     },
+     {
+      "id": "fable",
+      "name": "Fable 5.1"
+     },
+     {
+      "id": "sonnet",
+      "name": "Sonnet 5.5"
+     },
+     {
+      "id": "haiku",
+      "name": "Haiku 5.5"
+     },
+     {
+      "id": "claude-haiku-4-5-20251001",
+      "name": "Haiku 4.5"
+     },
+     {
+      "id": "claude-sonnet-5",
+      "name": "Sonnet 5"
+     },
+     {
+      "id": "claude-opus-5",
+      "name": "Opus 5"
+     },
+     {
+      "id": "claude-fable-5",
+      "name": "Fable 5"
+     },
+     {
+      "id": "claude-opus-4-8",
+      "name": "Opus 4.8"
+     },
+     {
+      "id": "claude-opus-4-7",
+      "name": "Opus 4.7"
+     },
+     {
+      "id": "claude-opus-4-6",
+      "name": "Opus 4.6"
+     },
+     {
+      "id": "claude-sonnet-4-6",
+      "name": "Sonnet 4.6"
+     }
+    ]
+   },
+   {
+    "runtime": "antigravity_cli",
+    "name": "Antigravity",
+    "limits": [
+     {
+      "name": "Gemini Models \u00b7 weekly",
+      "remainingPercent": 92,
+      "resetsAt": "2026-10-31T04:59:08.000Z"
+     },
+     {
+      "name": "Gemini Models \u00b7 5-hour",
+      "remainingPercent": 76,
+      "resetsAt": "2026-10-25T08:51:30.000Z"
+     },
+     {
+      "name": "Claude and GPT models \u00b7 weekly",
+      "remainingPercent": 0,
+      "resetsAt": "2026-10-26T10:22:39.000Z"
+     },
+     {
+      "name": "Gemini 4 Argon \u00b7 weekly",
+      "remainingPercent": 37,
+      "resetsAt": "2026-10-26T12:35:29.000Z"
+     }
+    ],
+    "models": [
+     {
+      "id": "gemini-4-argon-medium",
+      "name": "Gemini 4 Argon (Medium)"
+     },
+     {
+      "id": "gemini-4-argon-high",
+      "name": "Gemini 4 Argon (High)"
+     },
+     {
+      "id": "gemini-4-argon-low",
+      "name": "Gemini 4 Argon (Low)"
+     },
+     {
+      "id": "gemini-3.8-flash-high",
+      "name": "Gemini 3.8 Flash (High)"
+     },
+     {
+      "id": "gemini-3.8-flash-medium",
+      "name": "Gemini 3.8 Flash (Medium)"
+     },
+     {
+      "id": "gemini-3.8-flash-low",
+      "name": "Gemini 3.8 Flash (Low)"
+     },
+     {
+      "id": "claude-opus-5-5-low",
+      "name": "Claude Opus 5.5 (Low)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     },
+     {
+      "id": "claude-opus-5-5-medium",
+      "name": "Claude Opus 5.5 (Medium)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     },
+     {
+      "id": "claude-opus-5-5-high",
+      "name": "Claude Opus 5.5 (High)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     },
+     {
+      "id": "claude-sonnet-5-5-low",
+      "name": "Claude Sonnet 5.5 (Low)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     },
+     {
+      "id": "claude-sonnet-5-5-medium",
+      "name": "Claude Sonnet 5.5 (Medium)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     },
+     {
+      "id": "claude-sonnet-5-5-high",
+      "name": "Claude Sonnet 5.5 (High)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     },
+     {
+      "id": "gpt-oss-120b-medium",
+      "name": "GPT-OSS 120B (Medium)",
+      "blocked": {
+       "until": "2026-10-26T10:22:39.000Z",
+       "by": "Claude and GPT models \u00b7 weekly"
+      }
+     }
+    ]
+   },
+   {
+    "runtime": "grok_build",
+    "name": "Grok",
+    "limits": [
+     {
+      "name": "Billing period",
+      "remainingPercent": null,
+      "resetsAt": "2026-10-29T00:00:00.000Z"
+     }
+    ],
+    "limitsNote": "Grok does not report how much of the period is used.",
+    "models": [
+     {
+      "id": "grok-4.7",
+      "name": "Grok 4.7",
+      "contextTokens": 256000
+     }
+    ]
+   },
+   {
+    "runtime": "autobyteus",
+    "name": "AutoByteus",
+    "providers": []
+   }
+  ]
+ }
+}

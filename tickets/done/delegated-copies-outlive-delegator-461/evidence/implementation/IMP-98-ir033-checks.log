@@ -1,0 +1,41 @@
+IMP-98 — the gates at 0feffb0a06 (the JSON fixture fixed in 9e62ffd137 after the web suite)
+macOS, Node 22.23; load average 10-58 (another workload).
+
+== contracts
+# pass 20
+# fail 0
+# pass 50
+# fail 0
+== server typecheck
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 41.8s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+== server unit
+     × reports changes in a real skill folder, and a deleted folder as that folder 1298ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 895 passed | 4 skipped (900)
+      Tests  1 failed | 7251 passed | 7 skipped (7259)
+skill-folder-watcher.test.ts alone: Tests 7 passed (7) (the file watcher's timing under load, FU-021).
+
+== web typecheck
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+== codegen check
+codegen:check exit=0
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
+== web full
+   × runHistoryStore > loads all retained linked Org trees from the real public facade fixture without losing family or worker identity 20ms
+   × runHistoryStore > scoped public Org refresh keeps the complete forest and rejects private-stamp without replacing other rows 11ms
+   × runHistoryStore > scoped public Org refresh keeps the complete forest and rejects wrong-root without replacing other rows 2ms
+   × runHistoryStore > still rejects a private-stamped Org history reply and keeps the last valid complete family 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > loads all retained linked Org trees from the real public facade fixture without losing family or worker identity
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > scoped public Org refresh keeps the complete forest and rejects private-stamp without replacing other rows
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > scoped public Org refresh keeps the complete forest and rejects wrong-root without replacing other rows
+ FAIL  stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > still rejects a private-stamped Org history reply and keeps the last valid complete family
+ Test Files  1 failed | 770 passed (771)
+      Tests  4 failed | 5762 passed | 2 skipped (5768)
+
+After 9e62ffd137 (the static fixture test-support/fixtures/linked-org-history-public.json still carried followsTeam):
+stores/__tests__/runHistoryStore.spec.ts: Tests 59 passed (59)

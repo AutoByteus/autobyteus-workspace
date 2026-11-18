@@ -1,0 +1,19 @@
+# IMP-05 — setup-code test suite rerun after the PowerShell Local Fix (commit 0b0195deced6e1dc262fde8e107b01042bfc723b)
+Command: python3 -m unittest scripts/tests/test_public_docker_launcher_setup_code.py -v
+Environment: macOS (Darwin 25.6.0), Python Python 3.9.6, pwsh PowerShell 7.6.9
+Date: 2026-11-09T16:23:38Z
+
+test_ac001_recreate_path_shows_image_check_and_recreate_steps_on_stderr_only (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac002_still_waiting_cadence_after_about_10_seconds (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac002_waiting_message_after_first_failed_attempt_then_the_code (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac003_running_current_node_answers_at_once_with_only_the_code_on_stdout (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac004_one_silent_attempt_is_bounded_and_a_later_attempt_still_succeeds (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac005_bash_deadline_counts_wall_clock_seconds_not_attempts (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac006_powershell_text_contract_for_timeout_wait_and_no_url_block (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_ac008_new_container_shares_the_waiting_message_and_keeps_its_other_output (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 38.627s
+
+OK

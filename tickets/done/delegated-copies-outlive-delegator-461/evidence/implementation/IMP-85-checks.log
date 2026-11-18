@@ -1,0 +1,26 @@
+# commit 0b6da706b9 (CR-461-076 f15a328251, SR-080 2818701556 + 0b6da706b9); load: 13.94 19.17 21.73
+$ (web) pnpm codegen:check; pnpm typecheck; npx vitest run --no-watch
+autobyteus-web/generated/graphql.ts is current.
+[typecheck] production errors: 0; test-file errors: 91 in 39 files (baseline 90 in 38 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+exit 0
+ Test Files  767 passed (767)
+      Tests  5763 passed | 2 skipped (5765)
+$ (server) node scripts/typecheck.mjs; pnpm test:unit
+[typecheck] PASS
+exit 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > re-arms a root whose folder was replaced in place (GitHub update rename swap)
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005)
+ Test Files  2 failed | 985 passed | 5 skipped (992)
+      Tests  3 failed | 8080 passed | 9 skipped (8092)
+$ (web) after the spec's cast: pnpm typecheck
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+$ (server) the two watcher files alone, run 1 (load: 23.28 22.98 22.46)
+ Test Files  2 passed (2)
+      Tests  27 passed (27)
+$ (server) the two watcher files alone, run 2 (load: 20.53 22.40 22.26)
+ Test Files  2 passed (2)
+      Tests  27 passed (27)

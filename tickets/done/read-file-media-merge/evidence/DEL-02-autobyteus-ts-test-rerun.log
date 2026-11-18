@@ -1,0 +1,22 @@
+# DEL-02: pnpm -C autobyteus-ts test rerun in the foreground session on f1c8758505 (+ uncommitted docs fix), 2026-10-30T06:43:04Z. DEL-01's run in a background session failed 13 terminal-tool tests (ps / PTY process inspection); the 4 files alone passed 25/25 in the foreground first.
+
+> autobyteus-ts@1.0.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts
+> vitest run
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts
+
+Tool 'fail' failed: 'Error executing tool fail: dummy failure'
+mcp test server: exiting at start (mode exit-at-start)
+(node:93930) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+mcp test server: exiting at start (mode exit-at-start)
+(node:98846) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  398 passed | 22 skipped (420)
+      Tests  2374 passed | 94 skipped (2468)
+   Start at  07:43:05
+   Duration  219.76s (transform 23.59s, setup 16.74s, import 175.48s, tests 381.05s, environment 61ms)
+
+exit: 0

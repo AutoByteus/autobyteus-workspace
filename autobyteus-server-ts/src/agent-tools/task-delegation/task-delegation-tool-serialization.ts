@@ -1,4 +1,3 @@
-import { toJsonString } from "../json-utils.js";
 import {
   TaskDelegationError,
   type TaskDelegationOutcome,
@@ -40,6 +39,3 @@ export const toDelegateTaskResult = (outcome: TaskDelegationOutcome): DelegateTa
     : { delegated: true, target_kind: "team", target_team_run_id: outcome.copy.teamRunId,
       target_team_coordinator_agent_run_id: outcome.copy.teamCoordinatorAgentRunId, ...extras };
 };
-
-export const toTaskDelegationJsonString = (value: unknown): string =>
-  toJsonString(value, 2);

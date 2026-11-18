@@ -1,0 +1,5 @@
+# IMP-09 run_bash foreground latency (design escalation trigger: > 20 ms added per call)
+# Command: vitest timing file (40 sequential runBash(ctx,'true') calls after 5 warm-up, 50 ms apart; same file run in a temporary worktree of the base and in this worktree)
+# Base: 374e35a60e; change: 65ca3171c9 (same terminal sources as bad24354ee+13319ccf6a); macOS 26 (Darwin 25.5.0) arm64, bash 3.2.57, node v22.23.1; 2026-11-10
+base   374e35a60e: TIMING n=40 mean=215.5ms median=210.1ms p90=254.2ms
+change 65ca3171c9: TIMING n=40 mean=95.2ms median=92.7ms p90=115.0ms

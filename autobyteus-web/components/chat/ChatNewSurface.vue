@@ -13,6 +13,7 @@
           :avatar-url="identity.avatarUrl"
           :current-key="currentTargetKey"
           :disabled="Boolean(draft?.starting)"
+          :no-orgs="Boolean(draft?.projectChoice.projectId)"
           @choose="chooseTarget"
         />
       </div>
@@ -40,7 +41,14 @@
           autofocus
         >
           <template #footer-left>
-            <ChatWorkspaceMenu :workspace="draft.workspace" @select="chatDraftStore.setWorkspace" />
+            <!-- One chip for where the run works: the folder, or the Project it starts under (REQ-004). -->
+            <ChatWorkspaceMenu
+              :workspace="draft.workspace"
+              :projects="projectStore.projects"
+              :project-id="draft.projectChoice.projectId"
+              @select="chatDraftStore.setWorkspace"
+              @select-project="chooseProject"
+            />
             <ChatApprovalToggle
               :model-value="effectiveAutoExecuteTools(controls.runtimeKind.value, draft.autoExecuteTools)"
               :locked="isAutoApproveLockedForRuntime(controls.runtimeKind.value)"
@@ -116,10 +124,13 @@ import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { useProjectStore } from '~/stores/projectStore'
+import { projectFolderOf } from '~/stores/chatDraftProjectChoice'
 import { resolveChatLaunchReadiness } from '~/services/chat/chatLaunchService'
 import { sameRunWorkspaceChoice } from '~/services/workspace/runWorkspaceChoice'
 import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
 import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import { buildTeamMemberTree } from '~/utils/runSettings/runMemberTree'
@@ -135,6 +146,9 @@ const runStart = useRunStart()
 const composerRef = ref<InstanceType<typeof ChatComposer> | null>(null)
 
 const draft = computed(() => chatDraftStore.draft)
+const projectStore = useProjectStore()
+const chooseProject = (projectId: string | null) =>
+  chatDraftStore.setProject(projectId, projectFolderOf(projectId ? projectStore.getProjectById(projectId) : null))
 const draftContext = computed(() => draft.value?.context ?? null)
 // One composer target per draft identity; a reset draft gets a fresh target.
 const target = computed(() => (draft.value
@@ -165,7 +179,8 @@ const currentTargetKey = computed(() => {
   if (!current) return ''
   return current.kind === 'team' ? `team:${current.teamDefinitionId}` : `agent:${current.agentDefinitionId}`
 })
-const runtimeLabel = computed(() => runtimeKindToLabel(controls.runtimeKind.value))
+// A draft with no runtime yet starts on the default runtime (as `useRuntimeScopedModelSelection` resolves it).
+const runtimeLabel = computed(() => agentRuntimeName(controls.runtimeKind.value.trim() || DEFAULT_AGENT_RUNTIME_KIND))
 
 const placeholder = computed(() => {
   if (team.value) return t('chat.new.placeholderTeam', { team: team.value.name })
@@ -222,5 +237,7 @@ const chooseTarget = async (choice: RunTargetChoice) => {
 onMounted(() => {
   chatDraftStore.ensureDraft()
   if (!workspaceStore.workspacesFetched) void workspaceStore.fetchAllWorkspaces().catch(() => undefined)
+  // The chip offers the node's Projects (none: no Projects tab).
+  void projectStore.fetchProjects().catch(() => undefined)
 })
 </script>

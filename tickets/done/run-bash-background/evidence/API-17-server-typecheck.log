@@ -1,0 +1,8 @@
+# API-17 server typecheck with the new and updated test files
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: code ddd594d07b + API/E2E test changes (uncommitted at run time); macOS; 2026-11-10
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 11.5s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 30.7s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS

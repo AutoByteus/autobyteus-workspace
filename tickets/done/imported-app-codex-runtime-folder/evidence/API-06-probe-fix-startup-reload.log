@@ -1,0 +1,9 @@
+# same TEMPORARY PROBE on the FIX sources (commit 8ab3a2129a). 2026-10-24T17:29:19Z
+[AB238-PROBE] startup view 200 {"applicationId":"<id>","slots":[{"slot":{"slotKey":"draftingTeam","name":"Drafting Team","description":"Team resource used when Brief Studio launches a new drafting run.","allowedExecutionResourceKinds":["AGENT_TEAM"],"allowedExecutionResourceSources":["bundle","shared"],"required":true,"supportedL
+[AB238-PROBE] reload errors null
+[AB238-PROBE] after package reload 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+[AB238-PROBE] repair 200 {"applicationId":"<id>","state":"QUARANTINED","detail":"Application '<id>' is currently reentering. Please retry after repair/reload completes.","updatedAt":"2026-10-24T17:29:33.385Z"}
+[AB238-PROBE] after repair 503 {"detail":"Application '<id>' is currently quarantined: Application '<id>' is currently reentering. Please retry after repair/reload completes.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+ ✓ tests/e2e/runtime/zz-probe-ab238-base-reload.e2e.test.ts (1 test) 2390ms
+     ✓ reload and repair  1309ms
+exit=0

@@ -11,11 +11,13 @@ export interface ProjectWorkspaceLink {
 
 export type { ProjectTaskStatus } from "./task-status.js";
 
-/** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). It has no title; the description is the content. */
+/** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). Its title is its one-line name; the description is the content. */
 export interface ProjectTask {
   taskId: string;
   /** The readable key `<prefix>-<number>`, assigned at creation and never changed. */
   taskKey: string;
+  /** The Task's one-line name, given by its writer: trimmed, not blank, no length limit. */
+  title: string;
   description: string;
   status: ProjectTaskStatus;
   contextFiles?: ProjectTaskContextFile[];
@@ -45,13 +47,15 @@ export interface TaskAcknowledgementView {
   taskId: string;
   /** The agent-facing Task ID: a Project Task's key, or a Task with no Project's ID. */
   taskReference: string;
+  /** A Project Task's title; absent for a Task with no Project. */
+  title?: string;
   status: ProjectTaskStatus;
   /** A Project Task's dependencies (stored long IDs); absent for a Task with no Project. */
   dependsOnTaskIds?: string[];
   /** A Project Task's parent (stored long ID or null); absent for a Task with no Project. */
   partOfTaskId?: string | null;
-  /** The saved context files this update attached, in request order; present only when it attached any. */
-  attachedContextFiles?: ProjectTaskContextFile[];
+  /** The saved context files this update attached, in request order, with their local paths; present only when it attached any. */
+  attachedContextFiles?: ProjectTaskContextFileView[];
   /** The keys of the open parts this update closed with their parent (DONE or CANCELLED); present only when it closed any. */
   closedPartReferences?: string[];
   /** The keys of the open parts this update tried to close with their parent but could not; present only when any. */
@@ -97,16 +101,30 @@ export type TaskRootStatus = "running" | "initializing" | "idle" | "error" | "of
 /**
  * A Task's root: its latest `assigned` entry, i.e. the one agent or team the Task was handed to.
  * `status` is the worker's own live status; it is `offline` when the assignment is closed (Task DONE or CANCELLED),
- * failed to start, or its hosting run is not active.
+ * failed to start, or its own run is not active.
  */
 export interface TaskRootView {
   kind: "agent" | "team";
-  /** The address it was delegated to (its display name); null when recorded before it was kept. */
+  /** The address it was delegated to; null when recorded before it was kept. */
   recipientAddress: string | null;
+  /** Its name (SR-091): its slot, as its row and its own view name it; null when its address was not kept. */
+  displayName: string | null;
   /** The agent run, or the team's coordinator: the run that opens it. */
   ingressAgentRunId: string;
   teamRunId: string | null;
-  hostRoot: { kind: "agent" | "agent_team" | "agent_org"; runId: string };
+  /** The run that delegated it (one hop), for display. */
+  delegatingRun: { kind: "agent" | "agent_team" | "agent_org"; runId: string };
+  /**
+   * The run at the top of its tree, whose view lists its row (SR-080, DS-11): the Task page opens this run's view with the
+   * worker's row selected, as base opened its host. Derived from the delegation tree, never stored; null when the tree
+   * is not known (the card is then not openable).
+   */
+  topRun: { kind: "agent" | "agent_team" | "agent_org"; runId: string } | null;
+  /**
+   * Where the worker opens, as every row of its tree opens (`openTargetOf`, SR-083; autobyteus-461 SR-086 G-F1): its agent
+   * run, or its team run at its coordinator; a peer's run names its node. `null` is a row error (no coordinator known).
+   */
+  openTarget: { runKind: "agent" | "agent_team"; runId: string; agentRunId: string; nodeId?: string } | null;
   start: "starting" | "started" | "failed";
   startError: { code: string; message: string } | null;
   closed: boolean;
@@ -135,6 +153,8 @@ export interface TaskWithoutProjectView {
 export interface TaskWorkerTaskView {
   taskId: string;
   projectId: string | null;
+  /** A Project Task's title; null for a Temp task, which has none. */
+  title: string | null;
   description: string;
   status: ProjectTaskStatus;
 }
@@ -188,6 +208,7 @@ export interface RemoveProjectWorkspaceCommand {
 export interface CreateProjectTaskCommand {
   contextDraft?: ProjectTaskContextDraft | null;
   projectId: string;
+  title: string;
   description: string;
   /** Same-Project Task IDs; omitted or null means none. */
   dependsOnTaskIds?: string[] | null;
@@ -198,6 +219,7 @@ export interface CreateProjectTaskCommand {
 export interface UpdateProjectTaskCommand {
   projectId: string;
   taskId: string;
+  title?: string;
   description?: string;
   status?: ProjectTaskStatus;
   contextChanges?: ProjectTaskContextChanges | null;
@@ -213,6 +235,7 @@ export interface UpdateProjectTaskCommand {
  */
 export interface CreateTaskWithLocalContextFilesCommand {
   projectId: string;
+  title: string;
   description: string;
   /** Normalized absolute node-local file paths; may be empty. */
   localContextFiles: string[];
@@ -228,6 +251,8 @@ export interface CreateTaskWithLocalContextFilesCommand {
  */
 export interface UpdateTaskByIdCommand {
   taskId: string;
+  /** A Project Task's new title; a Task with no Project has none (TASK_TITLE_INVALID). */
+  title?: string;
   description?: string;
   status?: ProjectTaskStatus;
   localContextFiles?: string[];

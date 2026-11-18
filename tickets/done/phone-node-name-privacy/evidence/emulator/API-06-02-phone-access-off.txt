@@ -1,0 +1,7 @@
+content-desc: Back to nodes
+text: Can’t reach AutoByteus node
+text: AutoByteus node is reachable, but Phone access is off.
+content-desc: Retry
+text: Retry
+content-desc: Scan again
+text: Scan again

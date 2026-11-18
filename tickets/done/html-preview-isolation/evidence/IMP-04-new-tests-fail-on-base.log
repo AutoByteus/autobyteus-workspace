@@ -1,0 +1,27 @@
+# IMP-04 new tests fail on the base sources (HEAD tests, base HtmlPreviewer.vue and workspaces.ts from ff68bfb5fa)
+# Command: git show ff68bfb5fa:<source> > <source>; run IMP-02 and IMP-03 commands; git checkout HEAD -- <sources>
+# Commit: cdba18ba35 tests + ff68bfb5fa sources (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+## web
+   × HtmlPreviewer > uses the explicit workspace identity for static HTML previews 10ms
+   × HtmlPreviewer > isolates Blob previews and puts only the content in the Blob 3ms
+   ✓ HtmlPreviewer > uses a Blob URL for a local absolute path without workspace context 3ms
+   ✓ HtmlPreviewer > revokes Blob URLs when content changes and on unmount 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 'allow-scripts allow-same-origin' to be 'allow-scripts' // Object.is equality
+Expected: "allow-scripts"
+Received: "allow-scripts allow-same-origin"
+AssertionError: expected 'allow-scripts allow-same-origin' to be 'allow-scripts' // Object.is equality
+Expected: "allow-scripts"
+Received: "allow-scripts allow-same-origin"
+      Tests  2 failed | 2 passed (4)
+
+## server
+       × sandboxes every file the static route serves, HTML and assets alike 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected undefined to be 'sandbox allow-scripts' // Object.is equality
+- Expected:
++ Received:
+      Tests  1 failed | 6 passed (7)

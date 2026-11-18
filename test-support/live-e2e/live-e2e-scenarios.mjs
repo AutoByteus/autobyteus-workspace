@@ -91,13 +91,13 @@ export const liveE2eScenarios = Object.freeze({
     operation: 'llm',
     providerId: 'ANTHROPIC',
     requiredSecretId: 'provider.anthropic.api-key',
-    model: 'claude-sonnet-4.6',
+    model: 'claude-haiku-5-5',
   }),
   'anthropic.claude-agent-sdk-api-key': Object.freeze({
     operation: 'claude-api-key',
     providerId: 'ANTHROPIC',
     requiredSecretId: 'provider.anthropic.api-key',
-    model: 'claude-sonnet-4-6',
+    model: 'claude-haiku-5-5',
   }),
 });
 

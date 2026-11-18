@@ -1,0 +1,1260 @@
+{
+  "header": "API-07: pnpm -C autobyteus-web test:e2e:workspace-folder-picker --output-dir <fresh>; isolated app built from head 243baa36ca + the FP-P07 locator fix; 2026-11-02. The first run failed FP-P07 on a strict-mode locator (the team toggle and its nested member's toggle); probe-side, fixed.",
+  "cases": {
+    "FP-P01": {
+      "title": "isolated source-current launch and API-owned fixtures",
+      "result": "Pass",
+      "details": {
+        "instance": {
+          "instanceId": "iso-52067-b97b",
+          "pid": 80328,
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:52068",
+          "graphqlUrl": "http://127.0.0.1:52068/graphql",
+          "controlEndpoint": "http://127.0.0.1:52067",
+          "controlPort": 52067,
+          "serverPort": 52068,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6ObEr6",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "testUpdateFeedUrl": null,
+          "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6ObEr6/server-data/db/production.db",
+          "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52067-b97b.log"
+        },
+        "ids": {
+          "agent": "folder-proof-agent",
+          "team": "folder-proof-team",
+          "org": "folder-proof-org",
+          "known": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+        }
+      }
+    },
+    "FP-P02": {
+      "title": "Agent input only, explicit apply and unchanged registration",
+      "result": "Pass",
+      "details": {
+        "before": {
+          "controls": {
+            "input": {
+              "x": 555.5,
+              "y": 442.8359375,
+              "width": 263.5625,
+              "height": 34,
+              "top": 442.8359375,
+              "right": 819.0625,
+              "bottom": 476.8359375,
+              "left": 555.5
+            },
+            "browse": {
+              "x": 827.0625,
+              "y": 442.8359375,
+              "width": 86.4375,
+              "height": 34,
+              "top": 442.8359375,
+              "right": 913.5,
+              "bottom": 476.8359375,
+              "left": 827.0625
+            },
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "padding": "6px 12px",
+            "borderRadius": "6px",
+            "color": "rgb(26, 26, 26)",
+            "borderColor": "rgb(204, 204, 204)",
+            "hint": "Choose a folder on this computer, or enter its full path."
+          },
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "agent",
+            "agentDefinitionId": "folder-proof-agent"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "temp_ws_default"
+          },
+          "registered": [
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "path": "",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 225.8359375,
+            "width": 384,
+            "height": 320,
+            "top": 225.8359375,
+            "right": 926.5,
+            "bottom": 545.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "filled": {
+          "controls": {
+            "input": {
+              "x": 555.5,
+              "y": 442.8359375,
+              "width": 263.5625,
+              "height": 34,
+              "top": 442.8359375,
+              "right": 819.0625,
+              "bottom": 476.8359375,
+              "left": 555.5
+            },
+            "browse": {
+              "x": 827.0625,
+              "y": 442.8359375,
+              "width": 86.4375,
+              "height": 34,
+              "top": 442.8359375,
+              "right": 913.5,
+              "bottom": 476.8359375,
+              "left": 827.0625
+            },
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "padding": "6px 12px",
+            "borderRadius": "6px",
+            "color": "rgb(26, 26, 26)",
+            "borderColor": "rgb(204, 204, 204)",
+            "hint": "Choose a folder on this computer, or enter its full path."
+          },
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "agent",
+            "agentDefinitionId": "folder-proof-agent"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "temp_ws_default"
+          },
+          "registered": [
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/agent",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 225.8359375,
+            "width": 384,
+            "height": 320,
+            "top": 225.8359375,
+            "right": 926.5,
+            "bottom": 545.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "applied": {
+          "controls": null,
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "agent",
+            "agentDefinitionId": "folder-proof-agent"
+          },
+          "chatWorkspace": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/agent"
+          },
+          "registered": [
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "focused": "chat-workspace-trigger",
+          "menu": null,
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        }
+      }
+    },
+    "FP-P03": {
+      "result": "Not Tested",
+      "reason": "Use --native-assisted for OS Cancel/Escape proof"
+    },
+    "FP-P04": {
+      "title": "Team new Chat and known path reuse",
+      "result": "Pass",
+      "details": {
+        "before": {
+          "controls": {
+            "input": {
+              "x": 555.5,
+              "y": 429.8359375,
+              "width": 263.5625,
+              "height": 34,
+              "top": 429.8359375,
+              "right": 819.0625,
+              "bottom": 463.8359375,
+              "left": 555.5
+            },
+            "browse": {
+              "x": 827.0625,
+              "y": 429.8359375,
+              "width": 86.4375,
+              "height": 34,
+              "top": 429.8359375,
+              "right": 913.5,
+              "bottom": 463.8359375,
+              "left": 827.0625
+            },
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "padding": "6px 12px",
+            "borderRadius": "6px",
+            "color": "rgb(26, 26, 26)",
+            "borderColor": "rgb(204, 204, 204)",
+            "hint": "Choose a folder on this computer, or enter its full path."
+          },
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/agent"
+          },
+          "registered": [
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "path": "",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 164.8359375,
+            "width": 384,
+            "height": 368,
+            "top": 164.8359375,
+            "right": 926.5,
+            "bottom": 532.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "filled": {
+          "controls": {
+            "input": {
+              "x": 555.5,
+              "y": 429.8359375,
+              "width": 263.5625,
+              "height": 34,
+              "top": 429.8359375,
+              "right": 819.0625,
+              "bottom": 463.8359375,
+              "left": 555.5
+            },
+            "browse": {
+              "x": 827.0625,
+              "y": 429.8359375,
+              "width": 86.4375,
+              "height": 34,
+              "top": 429.8359375,
+              "right": 913.5,
+              "bottom": 463.8359375,
+              "left": 827.0625
+            },
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "padding": "6px 12px",
+            "borderRadius": "6px",
+            "color": "rgb(26, 26, 26)",
+            "borderColor": "rgb(204, 204, 204)",
+            "hint": "Choose a folder on this computer, or enter its full path."
+          },
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/agent"
+          },
+          "registered": [
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/known",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 164.8359375,
+            "width": 384,
+            "height": 368,
+            "top": 164.8359375,
+            "right": 926.5,
+            "bottom": 532.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "applied": {
+          "controls": null,
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+          },
+          "registered": [
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "focused": "chat-workspace-trigger",
+          "menu": null,
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        }
+      }
+    },
+    "FP-P05": {
+      "title": "Org root and specific placed-Team destination",
+      "result": "Pass",
+      "details": {
+        "root": {
+          "before": {
+            "controls": {
+              "input": {
+                "x": 667.5,
+                "y": 315.8359375,
+                "width": 263.5625,
+                "height": 34,
+                "top": 315.8359375,
+                "right": 931.0625,
+                "bottom": 349.8359375,
+                "left": 667.5
+              },
+              "browse": {
+                "x": 939.0625,
+                "y": 315.8359375,
+                "width": 86.4375,
+                "height": 34,
+                "top": 315.8359375,
+                "right": 1025.5,
+                "bottom": 349.8359375,
+                "left": 939.0625
+              },
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "padding": "6px 12px",
+              "borderRadius": "6px",
+              "color": "rgb(26, 26, 26)",
+              "borderColor": "rgb(204, 204, 204)",
+              "hint": "Choose a folder on this computer, or enter its full path."
+            },
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "orgRoot": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "path": "",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 654.5,
+              "y": 98.8359375,
+              "width": 384,
+              "height": 320,
+              "top": 98.8359375,
+              "right": 1038.5,
+              "bottom": 418.8359375,
+              "left": 654.5
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "filled": {
+            "controls": {
+              "input": {
+                "x": 667.5,
+                "y": 315.8359375,
+                "width": 263.5625,
+                "height": 34,
+                "top": 315.8359375,
+                "right": 931.0625,
+                "bottom": 349.8359375,
+                "left": 667.5
+              },
+              "browse": {
+                "x": 939.0625,
+                "y": 315.8359375,
+                "width": 86.4375,
+                "height": 34,
+                "top": 315.8359375,
+                "right": 1025.5,
+                "bottom": 349.8359375,
+                "left": 939.0625
+              },
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "padding": "6px 12px",
+              "borderRadius": "6px",
+              "color": "rgb(26, 26, 26)",
+              "borderColor": "rgb(204, 204, 204)",
+              "hint": "Choose a folder on this computer, or enter its full path."
+            },
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "orgRoot": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 654.5,
+              "y": 98.8359375,
+              "width": 384,
+              "height": 320,
+              "top": 98.8359375,
+              "right": 1038.5,
+              "bottom": 418.8359375,
+              "left": 654.5
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "applied": {
+            "controls": null,
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "focused": "chat-workspace-trigger",
+            "menu": null,
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          }
+        },
+        "member": {
+          "before": {
+            "controls": {
+              "input": {
+                "x": 1133,
+                "y": 444,
+                "width": 263.5625,
+                "height": 34,
+                "top": 444,
+                "right": 1396.5625,
+                "bottom": 478,
+                "left": 1133
+              },
+              "browse": {
+                "x": 1404.5625,
+                "y": 444,
+                "width": 86.4375,
+                "height": 34,
+                "top": 444,
+                "right": 1491,
+                "bottom": 478,
+                "left": 1404.5625
+              },
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "padding": "6px 12px",
+              "borderRadius": "6px",
+              "color": "rgb(26, 26, 26)",
+              "borderColor": "rgb(204, 204, 204)",
+              "hint": "Choose a folder on this computer, or enter its full path."
+            },
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "path": "",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 1120,
+              "y": 179,
+              "width": 384,
+              "height": 368,
+              "top": 179,
+              "right": 1504,
+              "bottom": 547,
+              "left": 1120
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "filled": {
+            "controls": {
+              "input": {
+                "x": 1133,
+                "y": 444,
+                "width": 263.5625,
+                "height": 34,
+                "top": 444,
+                "right": 1396.5625,
+                "bottom": 478,
+                "left": 1133
+              },
+              "browse": {
+                "x": 1404.5625,
+                "y": 444,
+                "width": 86.4375,
+                "height": 34,
+                "top": 444,
+                "right": 1491,
+                "bottom": 478,
+                "left": 1404.5625
+              },
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "padding": "6px 12px",
+              "borderRadius": "6px",
+              "color": "rgb(26, 26, 26)",
+              "borderColor": "rgb(204, 204, 204)",
+              "hint": "Choose a folder on this computer, or enter its full path."
+            },
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/member",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 1120,
+              "y": 179,
+              "width": 384,
+              "height": 368,
+              "top": 179,
+              "right": 1504,
+              "bottom": 547,
+              "left": 1120
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "applied": {
+            "controls": null,
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+            },
+            "teamWorkspaces": {
+              "/product": {
+                "kind": "folder",
+                "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/member"
+              }
+            },
+            "registered": [
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "focused": "chat-workspace-trigger",
+            "menu": null,
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          }
+        }
+      }
+    },
+    "FP-P06": {
+      "title": "full caller narrow form, invalid/manual/Cancel and long path geometry",
+      "result": "Pass",
+      "details": {
+        "controls": {
+          "input": {
+            "x": 21,
+            "y": 733,
+            "width": 253.5625,
+            "height": 34,
+            "top": 733,
+            "right": 274.5625,
+            "bottom": 767,
+            "left": 21
+          },
+          "browse": {
+            "x": 282.5625,
+            "y": 733,
+            "width": 86.4375,
+            "height": 34,
+            "top": 733,
+            "right": 369,
+            "bottom": 767,
+            "left": 282.5625
+          },
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "padding": "6px 12px",
+          "borderRadius": "6px",
+          "color": "rgb(26, 26, 26)",
+          "borderColor": "rgb(204, 204, 204)",
+          "hint": "Choose a folder on this computer, or enter its full path."
+        },
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+        "target": {
+          "kind": "team",
+          "teamDefinitionId": "folder-proof-team"
+        },
+        "chatWorkspace": {
+          "kind": "existing",
+          "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+        },
+        "orgRoot": {
+          "kind": "folder",
+          "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+        },
+        "teamWorkspaces": {
+          "/product": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/member"
+          }
+        },
+        "registered": [
+          "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+          "temp_ws_default"
+        ],
+        "path": "/owned/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/",
+        "focused": "chat-workspace-path",
+        "menu": {
+          "x": 8,
+          "y": 468,
+          "width": 374,
+          "height": 368,
+          "top": 468,
+          "right": 382,
+          "bottom": 836,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    },
+    "FP-P07": {
+      "title": "real Org Run, active locks, stopped member draft and explicit Save",
+      "result": "Pass",
+      "details": {
+        "before": {
+          "orgRunId": "folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62",
+          "executionTree": {
+            "subjectKind": "agent_org",
+            "createdAt": "2026-11-02T06:54:24.830Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "folder-proof-org",
+              "orgDefinitionName": "Folder Proof Org",
+              "orgRunId": "folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "claude-fable-5",
+                "llmConfig": {
+                  "thinking_enabled": false,
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+              },
+              "members": [
+                {
+                  "address": "/product",
+                  "teamDefinitionId": "folder-proof-team",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "folder_proof_team_c4fec89898b94bcd9abd7cd0319c26ed",
+                  "coordinatorAddress": "/product/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "claude-fable-5",
+                    "llmConfig": {
+                      "thinking_enabled": false,
+                      "reasoning_effort": "high"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/member"
+                  },
+                  "members": [
+                    {
+                      "address": "/product/lead",
+                      "agentDefinitionId": "folder-proof-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "folder_proof_agent_c62aa6eedfda40069dae2963158653b6",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "claude-fable-5",
+                        "llmConfig": {
+                          "thinking_enabled": false,
+                          "reasoning_effort": "high"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/member"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                },
+                {
+                  "address": "/other",
+                  "teamDefinitionId": "folder-proof-team",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "folder_proof_team_dddffbb1b4ad46c985f84f62404daf35",
+                  "coordinatorAddress": "/other/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "claude-fable-5",
+                    "llmConfig": {
+                      "thinking_enabled": false,
+                      "reasoning_effort": "high"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+                  },
+                  "members": [
+                    {
+                      "address": "/other/lead",
+                      "agentDefinitionId": "folder-proof-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "folder_proof_agent_c2559dfe1bbc49a4887a2c83f24a5129",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "claude-fable-5",
+                        "llmConfig": {
+                          "thinking_enabled": false,
+                          "reasoning_effort": "high"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                }
+              ],
+              "taskExecutions": []
+            }
+          },
+          "isActive": false,
+          "editability": {
+            "editable": true,
+            "reason": null
+          }
+        },
+        "changed": {
+          "before": {
+            "controls": {
+              "input": {
+                "x": 525.5,
+                "y": 342,
+                "width": 263.5625,
+                "height": 34,
+                "top": 342,
+                "right": 789.0625,
+                "bottom": 376,
+                "left": 525.5
+              },
+              "browse": {
+                "x": 797.0625,
+                "y": 342,
+                "width": 86.4375,
+                "height": 34,
+                "top": 342,
+                "right": 883.5,
+                "bottom": 376,
+                "left": 797.0625
+              },
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "padding": "6px 12px",
+              "borderRadius": "6px",
+              "color": "rgb(26, 26, 26)",
+              "borderColor": "rgb(204, 204, 204)",
+              "hint": "Choose a folder on this computer, or enter its full path."
+            },
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&orgRunId=folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62&mode=history&memberAddress=/product",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "registered": [
+              "agent_ws_46b14191547c4c56f39ebbb560a649869cdeac960f98e804fd4a61b1b0986571",
+              "agent_ws_898d2dd5f8b4bf5983b0f008d5c6224ae3f3a891a47ab213272f556580b02e2d",
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "path": "",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 512.5,
+              "y": 29,
+              "width": 384,
+              "height": 416,
+              "top": 29,
+              "right": 896.5,
+              "bottom": 445,
+              "left": 512.5
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "filled": {
+            "controls": {
+              "input": {
+                "x": 525.5,
+                "y": 342,
+                "width": 263.5625,
+                "height": 34,
+                "top": 342,
+                "right": 789.0625,
+                "bottom": 376,
+                "left": 525.5
+              },
+              "browse": {
+                "x": 797.0625,
+                "y": 342,
+                "width": 86.4375,
+                "height": 34,
+                "top": 342,
+                "right": 883.5,
+                "bottom": 376,
+                "left": 797.0625
+              },
+              "fontSize": "14px",
+              "lineHeight": "20px",
+              "padding": "6px 12px",
+              "borderRadius": "6px",
+              "color": "rgb(26, 26, 26)",
+              "borderColor": "rgb(204, 204, 204)",
+              "hint": "Choose a folder on this computer, or enter its full path."
+            },
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&orgRunId=folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62&mode=history&memberAddress=/product",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "registered": [
+              "agent_ws_46b14191547c4c56f39ebbb560a649869cdeac960f98e804fd4a61b1b0986571",
+              "agent_ws_898d2dd5f8b4bf5983b0f008d5c6224ae3f3a891a47ab213272f556580b02e2d",
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/saved-member",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 512.5,
+              "y": 29,
+              "width": 384,
+              "height": 416,
+              "top": 29,
+              "right": 896.5,
+              "bottom": 445,
+              "left": 512.5
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "applied": {
+            "controls": null,
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&orgRunId=folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62&mode=history&memberAddress=/product",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+            },
+            "registered": [
+              "agent_ws_46b14191547c4c56f39ebbb560a649869cdeac960f98e804fd4a61b1b0986571",
+              "agent_ws_898d2dd5f8b4bf5983b0f008d5c6224ae3f3a891a47ab213272f556580b02e2d",
+              "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+              "temp_ws_default"
+            ],
+            "focused": "chat-workspace-trigger",
+            "menu": null,
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          }
+        },
+        "after": {
+          "orgRunId": "folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62",
+          "executionTree": {
+            "subjectKind": "agent_org",
+            "createdAt": "2026-11-02T06:54:24.830Z",
+            "archivedAt": null,
+            "applicationBinding": null,
+            "handoffs": [],
+            "rootOrg": {
+              "address": "/",
+              "orgDefinitionId": "folder-proof-org",
+              "orgDefinitionName": "Folder Proof Org",
+              "orgRunId": "folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62",
+              "defaultLaunchConfiguration": {
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "claude-fable-5",
+                "llmConfig": {
+                  "thinking_enabled": false,
+                  "reasoning_effort": "high"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+              },
+              "members": [
+                {
+                  "address": "/product",
+                  "teamDefinitionId": "folder-proof-team",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "folder_proof_team_c4fec89898b94bcd9abd7cd0319c26ed",
+                  "coordinatorAddress": "/product/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "claude-fable-5",
+                    "llmConfig": {
+                      "thinking_enabled": false,
+                      "reasoning_effort": "high"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/saved-member"
+                  },
+                  "members": [
+                    {
+                      "address": "/product/lead",
+                      "agentDefinitionId": "folder-proof-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "folder_proof_agent_c62aa6eedfda40069dae2963158653b6",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "claude-fable-5",
+                        "llmConfig": {
+                          "thinking_enabled": false,
+                          "reasoning_effort": "high"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/saved-member"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                },
+                {
+                  "address": "/other",
+                  "teamDefinitionId": "folder-proof-team",
+                  "role": null,
+                  "description": null,
+                  "teamRunId": "folder_proof_team_dddffbb1b4ad46c985f84f62404daf35",
+                  "coordinatorAddress": "/other/lead",
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "claude-fable-5",
+                    "llmConfig": {
+                      "thinking_enabled": false,
+                      "reasoning_effort": "high"
+                    },
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+                  },
+                  "members": [
+                    {
+                      "address": "/other/lead",
+                      "agentDefinitionId": "folder-proof-agent",
+                      "role": null,
+                      "description": null,
+                      "agentRunId": "folder_proof_agent_c2559dfe1bbc49a4887a2c83f24a5129",
+                      "platformAgentRunId": null,
+                      "launchConfiguration": {
+                        "runtimeKind": "autobyteus",
+                        "llmModelIdentifier": "claude-fable-5",
+                        "llmConfig": {
+                          "thinking_enabled": false,
+                          "reasoning_effort": "high"
+                        },
+                        "autoExecuteTools": true,
+                        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/org"
+                      }
+                    }
+                  ],
+                  "taskExecutions": []
+                }
+              ],
+              "taskExecutions": []
+            }
+          },
+          "isActive": false,
+          "editability": {
+            "editable": true,
+            "reason": null
+          }
+        },
+        "saves": [
+          {
+            "operationName": "UpdateStoppedAgentOrgRunConfig",
+            "variables": {
+              "input": {
+                "orgRunId": "folder_proof_org_b8eebbe8c2d54fb7bddaad3497681e62",
+                "selectionPatches": [],
+                "teamWorkspacePatches": [
+                  {
+                    "teamAddress": "/product",
+                    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-3KaEvw/saved-member"
+                  }
+                ]
+              }
+            },
+            "query": "mutation UpdateStoppedAgentOrgRunConfig($input: UpdateStoppedAgentOrgRunConfigInput!) {\n  updateStoppedAgentOrgRunConfig(input: $input) {\n    success\n    outcome\n    message\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    canonical\n    __typename\n  }\n}"
+          }
+        ]
+      }
+    },
+    "FP-P08": {
+      "title": "actual Settings locale -> Chat Chinese input at desktop and narrow widths",
+      "result": "Pass",
+      "details": [
+        {
+          "controls": {
+            "input": {
+              "x": 555.5,
+              "y": 429.8359375,
+              "width": 285.34375,
+              "height": 34,
+              "top": 429.8359375,
+              "right": 840.84375,
+              "bottom": 463.8359375,
+              "left": 555.5
+            },
+            "browse": {
+              "x": 848.84375,
+              "y": 429.8359375,
+              "width": 64.65625,
+              "height": 34,
+              "top": 429.8359375,
+              "right": 913.5,
+              "bottom": 463.8359375,
+              "left": 848.84375
+            },
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "padding": "6px 12px",
+            "borderRadius": "6px",
+            "color": "rgb(26, 26, 26)",
+            "borderColor": "rgb(204, 204, 204)",
+            "hint": "\u9009\u62e9\u6b64\u7535\u8111\u4e0a\u7684\u6587\u4ef6\u5939\uff0c\u6216\u8f93\u5165\u5b8c\u6574\u8def\u5f84\u3002"
+          },
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+          },
+          "registered": [
+            "agent_ws_46b14191547c4c56f39ebbb560a649869cdeac960f98e804fd4a61b1b0986571",
+            "agent_ws_898d2dd5f8b4bf5983b0f008d5c6224ae3f3a891a47ab213272f556580b02e2d",
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "path": "",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 116.8359375,
+            "width": 384,
+            "height": 416,
+            "top": 116.8359375,
+            "right": 926.5,
+            "bottom": 532.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        {
+          "controls": {
+            "input": {
+              "x": 21,
+              "y": 733,
+              "width": 275.34375,
+              "height": 34,
+              "top": 733,
+              "right": 296.34375,
+              "bottom": 767,
+              "left": 21
+            },
+            "browse": {
+              "x": 304.34375,
+              "y": 733,
+              "width": 64.65625,
+              "height": 34,
+              "top": 733,
+              "right": 369,
+              "bottom": 767,
+              "left": 304.34375
+            },
+            "fontSize": "14px",
+            "lineHeight": "20px",
+            "padding": "6px 12px",
+            "borderRadius": "6px",
+            "color": "rgb(26, 26, 26)",
+            "borderColor": "rgb(204, 204, 204)",
+            "hint": "\u9009\u62e9\u6b64\u7535\u8111\u4e0a\u7684\u6587\u4ef6\u5939\uff0c\u6216\u8f93\u5165\u5b8c\u6574\u8def\u5f84\u3002"
+          },
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08"
+          },
+          "registered": [
+            "agent_ws_46b14191547c4c56f39ebbb560a649869cdeac960f98e804fd4a61b1b0986571",
+            "agent_ws_898d2dd5f8b4bf5983b0f008d5c6224ae3f3a891a47ab213272f556580b02e2d",
+            "agent_ws_9230842c5f779378046aba6bce55ca7aa138420f1654d4b0423310f6c1972a08",
+            "temp_ws_default"
+          ],
+          "path": "",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 8,
+            "y": 420,
+            "width": 374,
+            "height": 416,
+            "top": 420,
+            "right": 382,
+            "bottom": 836,
+            "left": 8
+          },
+          "width": 390,
+          "height": 844,
+          "overflow": false
+        }
+      ]
+    }
+  },
+  "result": "Pass",
+  "cleanup": {
+    "instance": {
+      "instanceId": "iso-52067-b97b",
+      "wasRunning": true,
+      "forced": true,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6ObEr6",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "fixtureRemoved": true
+  }
+}

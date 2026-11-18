@@ -1,8 +1,5 @@
 import { useWorkspaceStore } from '~/stores/workspace';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useRunHistoryRetiredRunsStore, withoutRetiredRuns } from '~/stores/runHistoryRetiredRuns';
-import type { AgentStatus } from '~/types/agent/AgentStatus';
+import { topLevelRunSources } from '~/stores/topLevelRunSources';
 import type { AgentOrgRunHistoryItem, RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
 import {
@@ -28,11 +25,8 @@ export const refreshRunNavigationTopologyForStore = (
   _reason: string,
 ): void => {
   const workspaceStore = useWorkspaceStore();
-  const topLevel = withoutRetiredRuns({
-    workspaceGroups: store.workspaceGroups,
-    agentContexts: useAgentContextsStore().runs,
-    teamContexts: useAgentTeamContextsStore().allTeamRuns ?? [],
-  }, useRunHistoryRetiredRunsStore().retiredRunIds);
+  // The same top-level runs as the phone's run tree (CR-461-053): no retired run, no delegated run opened from its view.
+  const topLevel = topLevelRunSources(store.workspaceGroups);
   store.navigationProjection = buildRunHistoryNavigationProjection({
     ...topLevel,
     agentAvatarByDefinitionId: store.agentAvatarByDefinitionId,
@@ -54,14 +48,12 @@ export const applyRunNavigationEffectForStore = (
   effect: RunNavigationEffect,
 ): boolean => {
   const result = applyRunNavigationEffectToProjection(ensureProjection(store), target, effect);
+  if (result.rebuild) {
+    refreshRunNavigationTopologyForStore(store, 'run-outside-listed-folders');
+    return true;
+  }
   if (!result.changed) return false;
   store.navigationProjection = result.state;
   store.navigationPatchRevision += 1;
   return true;
 };
-
-export const standaloneNavigationTarget = (input: {
-  runId: string;
-  currentStatus: AgentStatus;
-  summary?: string;
-}): RunNavigationTarget => ({ kind: 'standalone', ...input });

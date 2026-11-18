@@ -11,7 +11,9 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { parseAgentOrgHistoryItems } from '~/stores/runHistoryStoreSupport'
-import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+import { taskBearingTreeRows, taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+import { withOrgRootWorkspace } from '~/test-support/agentOrgApolloFixture'
+import { registerTestWorkspace } from '~/test-support/registeredWorkspaceFixture'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 const mocks = vi.hoisted(() => ({
@@ -47,10 +49,11 @@ class Socket {
   close() { this.readyState = 3; this.onclose?.() }
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
+// The Workspaces view lists an Org only under its registered root folder (workspace-tree-vs-chooser CR-001).
+const ORG_ROOT = '/org-workspace'
 const historyResponse = () => ({ data: { listCollaborationRootHistory: [{
-  root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: '2026-09-01T00:00:00.000Z',
-  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: taskBearingView().execution_tree, closed_task_executions: [],
-}] } })
+  root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: '2026-09-01T00:00:00.000Z', last_activity_at: '2026-09-01T00:00:00.000Z',
+  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: withOrgRootWorkspace(taskBearingView().execution_tree, ORG_ROOT) }] } })
 let wrapper: ReturnType<typeof mount> | undefined
 let stopResult: Promise<void | WorkspaceSelectionOutcome>
 let stopError: unknown
@@ -71,8 +74,7 @@ beforeEach(() => {
     if (name === 'GetAgentOrgRootHistory') return { data: { getAgentOrgRootHistory: { ...historyResponse().data.listCollaborationRootHistory[0], is_active: !stopped } } }
     if (name === 'GetAgentOrgRunInspection') {
       if (stopped && !stoppedInspectionAvailable) throw new Error('Stopped inspection unavailable')
-      const view = taskBearingView()
-      if (stopped) { view.is_active = false; view.agent_statuses = [] }
+      const view = stopped ? { ...taskBearingView(), is_active: false, agent_statuses: [] } : taskBearingView()
       return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
     }
     if (name === 'GetAgentOrgMemberFileChanges') return { data: { getAgentOrgMemberFileChanges: [] } }
@@ -93,6 +95,7 @@ afterEach(() => {
 async function open(address: string) {
   mocks.route.query.memberAddress = address
   const history = useRunHistoryStore(), orgs = useAgentOrgContextsStore(), runs = useAgentOrgRunStore()
+  registerTestWorkspace(ORG_ROOT)
   history.agentOrgHistory = parseAgentOrgHistoryItems(historyResponse().data.listCollaborationRootHistory)
   await orgs.openForInspection('org-run')
   const socket = Socket.instances[0]!
@@ -100,9 +103,14 @@ async function open(address: string) {
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView(),
   } })
+  // The Org's tree at the view's base, as the server sends it next (SR-084).
+  socket.emit({ type: 'RUN_TREE_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run',
+    base_change_sequence: taskBearingView().base_change_sequence, rows: taskBearingTreeRows() } })
   await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
   await flushPromises()
   orgs.select('org-run', address)
+  // The selected member's stored conversation loads when it is selected (autobyteus-358).
+  await flushPromises()
   const org = orgs.contextFor('org-run')!, context = org.selectedTarget()!.context
   const messages = JSON.stringify(context.conversation.messages)
   const selection = org.selection
@@ -121,7 +129,7 @@ async function open(address: string) {
       isAgentOrgMemberSelected: tree.isAgentOrgMemberSelected,
       isAgentOrgTerminating: (id: string) => Boolean(orgs.operations[id]) || runs.terminatingRunIds.has(id),
       agentOrgTerminationError: (id: string) => runs.terminationErrors[id] ?? orgs.errorFor(id), agentOrgContextFor: orgs.contextFor,
-    } as WorkspaceHistorySectionState
+    } as unknown as WorkspaceHistorySectionState // a partial stub: only the Org rows' members
     const actions = { onTerminateAgentOrg: (run) => {
       stopResult = subject.execute({ rootSubjectKind: 'agent_org', rootRunId: run.rootRunId, action: 'stop' })
         .catch((error) => { stopError = error })

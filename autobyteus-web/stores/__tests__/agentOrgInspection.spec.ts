@@ -17,22 +17,24 @@ const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection
   conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
 const inspection = (active = false) => {
-  const view = taskBearingView(); view.is_active = active
-  if (!active) view.agent_statuses = []
+  const base = taskBearingView()
+  const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
   return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })
 afterEach(() => useAgentOrgContextsStore().releaseContext('org-run'))
 describe('same-owner read-only Org inspection', () => {
-  it('publishes strict retained contexts and exact selection without creating a transport', async () => {
+  it('publishes strict retained contexts and exact selection; the stopped Org\'s open view gets its stream (autobyteus-461 SR-045)', async () => {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection())
     const store = useAgentOrgContextsStore()
-    store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' })
+    store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-lead-configured' })
     await store.openForInspection('org-run')
     expect(store.errorFor('org-run')).toBeNull()
-    expect(store.contextFor('org-run')?.selectedTarget()).toMatchObject({ access: 'read_only', kind: 'agent_org_task_team_member',
-      context: { state: { runId: 'agent-task-lead' } } })
-    expect(mocks.instances).toHaveLength(0)
+    expect(store.contextFor('org-run')?.selectedTarget()).toMatchObject({ access: 'read_only', kind: 'agent_org_team_member',
+      context: { state: { runId: 'agent-lead-configured' } } })
+    expect(mocks.instances).toHaveLength(1)
+    expect(mocks.instances[0].connect).toHaveBeenCalledTimes(1)
+    expect(store.contextFor('org-run')?.isActive).toBe(false)
   })
   it('retires pending hydration on disposal, without stale publication', async () => {
     let release!: () => void
@@ -42,6 +44,8 @@ describe('same-owner read-only Org inspection', () => {
       await gate; return projection(variables)
     })
     const store = useAgentOrgContextsStore()
+    // The selected member is staged with the view (autobyteus-358: only that one).
+    store.select('org-run', '/director')
     const pending = store.openForInspection('org-run')
     await flushPromises()
     expect(mocks.query.mock.calls.length).toBeGreaterThan(1)
@@ -73,12 +77,14 @@ describe('same-owner read-only Org inspection', () => {
     expect(mocks.instances[0].connect).toHaveBeenCalledOnce()
     expect(store.contextFor('org-run')?.phase).toBe('reopen_required')
     expect(store.activeTargetFor('org-run')).toBeNull()
-    expect(mocks.query.mock.calls.length).toBeGreaterThan(1)
+    // Nothing is selected, so no member was staged (autobyteus-358): only the view was read.
+    expect(mocks.query).toHaveBeenCalledOnce()
   })
   it('keeps unavailable projection distinct from an empty historical conversation', async () => {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getAgentOrgMemberRunProjection: null } } : inspection())
-    const store = useAgentOrgContextsStore(); await expect(store.openForInspection('org-run')).rejects.toThrow('Projection unavailable')
+    const store = useAgentOrgContextsStore(); store.select('org-run', '/director')
+    await expect(store.openForInspection('org-run')).rejects.toThrow('Projection unavailable')
     expect(store.contextFor('org-run')).toBeNull()
     expect(store.errorFor('org-run')).toContain('Projection unavailable')
     expect(mocks.instances).toHaveLength(0)

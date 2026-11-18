@@ -1,0 +1,13 @@
+# API-12 census of tracked non-media files that contain a NUL byte (read-only), commit 17e2dfbc6c, 2026-10-30T05:57:05Z
+first NUL within 8,000 bytes (refused in round 1): 201 [('.gz', 88), ('.log', 79), ('.z', 20), ('.db', 4), ('.db-journal', 3), ('.bin', 3), ('.jar', 1), ('.paths', 1), ('.sqlite', 1), ('.tgz', 1)]
+first NUL after 8,000 bytes (newly refused by DEC-006): 95 [('.log', 94), ('.pdf', 1)]
+tracked .log files: 21147 ; containing NUL: 173 ; Electron build logs among them: 167
+  first NUL at 6740 NULs 542 size 102638 autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log
+  first NUL at 11093 NULs 16 size 74041 autobyteus-server-ts/tickets/done/remove-media-output-path-restriction/logs/delivery/electron-build-mac-20260506T094425Z.log
+  first NUL at 7435 NULs 542 size 12940258 test-results/autobyteus-runtime-streaming-ui-performance/electron-build-personal-macos-arm64.log
+  first NUL at 8349 NULs 542 size 12875891 test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log
+  first NUL at 8045 NULs 542 size 104430 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-build-20260722.log
+  first NUL at 6940 NULs 542 size 102961 tickets/done/agent-idle-status-lifecycle/execution-evidence/129-electron-build-v1428-macos-personal.log
+  first NUL at 6898 NULs 542 size 103732 tickets/done/agent-idle-status-lifecycle/execution-evidence/138-dr002-electron-build-v1428-macos-personal.log
+  first NUL at 7422 NULs 542 size 102340 tickets/done/agent-idle-status-lifecycle/execution-evidence/46-electron-build-macos.log
+context around the first NUL of autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log : b'ompatibility: 0.013ms\n[nuxt] kit:compatibility: 0.071ms\n[nuxt] kit:compatibility\x00: 0.388ms\n\xe2\x84\xb9 Module pinia took 1.87ms '

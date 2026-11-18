@@ -1,0 +1,69 @@
+# Check: IMP-02 regression spec against the base production code (expected to fail)
+# Command: pnpm -C autobyteus-web exec vitest run components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts --no-watch
+# Commit: 61c886c0fe test file, with AgentEventMonitor.vue, useEventMonitorFilePreview.ts, useMobileNavigation.ts checked out at f7c31e4b0c
+# Environment: macOS (Darwin 25.5.0), Node via pnpm, vitest nuxt environment
+# Date: 2026-11-07
+# Owner: implementation engineer
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts > the phone: a file link in a conversation (autobyteus-427, autobyteus-277 DS-008) > opens the file on the Files screen as a new entry, through the real router
+[Vue warn]: inject() can only be used inside setup() or functional components.
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts > the phone: a file link in a conversation (autobyteus-427, autobyteus-277 DS-008) > opens the file on the Files screen as a new entry, through the real router
+[EventMonitorFilePreview] File preview failed. TypeError: Cannot read properties of undefined (reading 'query')
+    at orgKeys [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/mobile/useMobileNavigation.ts:45:60[90m)[39m
+    at Object.openFile [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/mobile/useMobileNavigation.ts:95:15[90m)[39m
+    at openMobilePath [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/useEventMonitorFilePreview.ts:60:28[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+    at Object.openPath [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomposables/useEventMonitorFilePreview.ts:68:16[90m)[39m
+    at handleFilePathAction [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/[39mcomponents/workspace/agent/AgentEventMonitor.vue:101:18[90m)[39m
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts > the phone: a file link in a conversation (autobyteus-427, autobyteus-277 DS-008) > a path outside the open run's folder opens nothing and shows the status line
+[Vue warn]: inject() can only be used inside setup() or functional components.
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ❯ components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts (2 tests | 1 failed) 1093ms
+   × the phone: a file link in a conversation (autobyteus-427, autobyteus-277 DS-008) > opens the file on the Files screen as a new entry, through the real router 1032ms
+     → expected 'run' to be 'files' // Object.is equality
+   ✓ the phone: a file link in a conversation (autobyteus-427, autobyteus-277 DS-008) > a path outside the open run's folder opens nothing and shows the status line 61ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts > the phone: a file link in a conversation (autobyteus-427, autobyteus-277 DS-008) > opens the file on the Files screen as a new entry, through the real router
+AssertionError: expected 'run' to be 'files' // Object.is equality
+
+Expected: [32m"files"[39m
+Received: [31m"run"[39m
+
+ ❯ components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts:59:75
+     57|     const link = wrapper.get('[data-event-monitor-file-action-id]');
+     58|     await link.trigger('click');
+     59|     await vi.waitFor(() => expect(router.currentRoute.value.query.scre…
+       |                                                                           ^
+     60|     expect(router.currentRoute.value.query).toEqual({ screen: 'files',…
+     61|     expect(wrapper.find('[data-testid="event-monitor-file-preview-stat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  20:42:04
+   Duration  7.18s (transform 3.24s, setup 5.37s, collect 166ms, tests 1.09s, environment 164ms, prepare 130ms)
+

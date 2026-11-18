@@ -1,0 +1,17 @@
+# API-03 prerequisite: pnpm -C autobyteus-web build:mobile-web; commit b6a57ab154; 2026-11-08T16:36:32Z
+[nitro]   ├─ / (37ms)
+[nitro]   ├─ /index.html (41ms)
+[nitro]   ├─ /404.html (41ms)
+[nitro]   ├─ /200.html (41ms)
+[nitro]   ├─ /projects/new (40ms)
+[nitro] ℹ Prerendered 21 routes in 0.71 seconds
+[nitro] ✔ Generated public dist/public
+[nitro] ✔ You can preview this build using npx serve dist/public
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/dist-mobile/public
+# Exit status: 0

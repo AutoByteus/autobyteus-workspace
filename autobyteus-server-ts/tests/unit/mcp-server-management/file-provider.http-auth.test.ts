@@ -51,10 +51,6 @@ describe("FileMcpServerConfigProvider streamable HTTP credentials", () => {
     expect(reloaded).toBeInstanceOf(StreamableHttpMcpServerConfig);
     expect(reloaded.token).toBe("test-dummy");
     expect(reloaded.headers).toEqual({ "X-Test-Tenant": "test-tenant" });
-    expect(reloaded.requestHeaders()).toEqual({
-      "X-Test-Tenant": "test-tenant",
-      Authorization: "Bearer test-dummy",
-    });
   });
 
   it("writes no token key when the token is blank, and updates replace a saved token", async () => {
@@ -82,6 +78,6 @@ describe("FileMcpServerConfigProvider streamable HTTP credentials", () => {
 
     const loaded = (await new FileMcpServerConfigProvider().getByServerId("existing")) as StreamableHttpMcpServerConfig;
     expect(loaded.token).toBeNull();
-    expect(loaded.requestHeaders()).toEqual({ Authorization: "Basic test-dummy" });
+    expect(loaded.headers).toEqual({ Authorization: "Basic test-dummy" });
   });
 });

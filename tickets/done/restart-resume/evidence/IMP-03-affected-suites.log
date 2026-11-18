@@ -1,0 +1,8 @@
+# IMP-03
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/remote-collaboration tests/unit/agent-team-execution/team-root-delegation-and-messaging.test.ts tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts tests/unit/agent-memory --no-watch
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+ Test Files  46 passed (46)
+      Tests  358 passed (358)

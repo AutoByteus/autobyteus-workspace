@@ -1,0 +1,15 @@
+IMP-112 — CR-461-104 (F-79, BR-001/002) pinned: opening the worker folded its delegated rows
+Code: 53f0ae2d4e's web; task-closure-tree-probe --cases BR-001,BR-002 ×2, the probe temporarily writing its per-frame samples (reverted); 2026-11-15
+Each frame: t (ms after the sampler starts, just before update_task DONE), the focused element, then per Task-A row (worker, helper, researcher): (aria-hidden, inert, opacity, classes).
+agent run 1:
+   2 workspace-team-transient-execution-row [(None, False, 1, ''), ('true', True, 0.093, 'tree-row-leave-active tree-row-leave-to'), ('true', True, 0.093, 'tree-row-leave-active tree-row-leave-to')]
+   19 workspace-team-transient-execution-row [(None, False, 1, ''), ('true', True, 0.045, 'tree-row-leave-active tree-row-leave-to'), ('true', True, 0.045, 'tree-row-leave-active tree-row-leave-to')]
+   38 workspace-agent-run-row [('true', True, 1, 'tree-row-leave-from tree-row-leave-active'), ('true', True, 0.012, ...), ('true', True, 0.012, ...)]
+   53 workspace-agent-run-row [('true', True, 1, 'tree-row-leave-from tree-row-leave-active'), None, None]
+agent run 2:
+   10 workspace-team-transient-execution-row [(None, False, 1, ''), ('true', True, 0.044, ...), ('true', True, 0.044, ...)]
+   23 workspace-team-transient-execution-row [(None, False, 1, ''), None, None]
+   48 workspace-agent-run-row [('true', True, 1, 'tree-row-leave-from tree-row-leave-active'), None, None]
+Server (temporary trace in the agent view): one tree change at the closure: removed=[writer, fact_checker, researcher].
+Screenshot agent-live-before (br12-2): the selected worker row's chevron is folded and its two rows are fading.
+Reading: the helper and researcher rows were already leaving before Task A closed (the worker's click had folded it: activateRow toggled any row with children); the closure then removed only the visible worker. At base a click folded a Team row only. Fixed: a click folds a Team row only; an agent row folds with its disclosure button (as the Team's own rows).

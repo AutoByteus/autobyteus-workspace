@@ -1,0 +1,13 @@
+# Case API-10 (API/E2E round 1): console output of the probe
+# Command: cd autobyteus-web && node tests/e2e/model-routing-decisions-probe.mjs --output-dir=<new dir>
+# Date: Tue Nov 10 08:00:25 CET 2026
+
+Pass MRD-01 Setup: the router row and the status of an active router
+Pass MRD-02 Decisions: Task blocks, the Team row folds and opens to its agents with source and reason; the remote copy is not on this node; the filter
+Pass MRD-03 Overview: period, sources and task kinds of these records
+Pass MRD-04 The Manager run's copies, each in its own Settings: runtime, model, source and reason (local member and remote copy; autobyteus-366)
+Pass MRD-05 beta's window: its own Decisions list the copy alpha delegated, without "Open run"
+Pass MRD-08 New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1); the Daily Assistant is offered (autobyteus-455 AC-005)
+Pass MRD-06 Simplified Chinese: Decisions and Overview are translated
+Pass MRD-07 No browser errors
+Model Routing decisions probe: Pass → /tmp/da455-mrd-1794293902

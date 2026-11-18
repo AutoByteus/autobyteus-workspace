@@ -1,9 +1,11 @@
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { FastifyInstance } from "fastify";
 import { registerHealthRoutes } from "./health.js";
 import { registerFileRoutes } from "./files.js";
 import { registerMediaRoutes } from "./media.js";
 import { registerUploadRoutes } from "./upload-file.js";
 import { registerWorkspaceRoutes } from "./workspaces.js";
+import { registerNodeFileRoutes } from "./node-files.js";
 import { registerContextFileRoutes } from "./context-files.js";
 import { registerRunFileChangeRoutes } from "./run-file-changes.js";
 import { registerTeamCommunicationRoutes } from "./team-communication.js";
@@ -16,6 +18,11 @@ import { registerApplicationExecutionResourceRoutes } from "./application-execut
 import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
 import { registerRemoteCollaborationRoutes } from "./remote.js";
+import { registerNodeUpdateRoutes } from "../../node-update/node-update-routes.js";
+import { registerNodeDesktopRoutes } from "./node-desktop.js";
+import { registerNodeAccessRoutes } from "./node-access.js";
+import { registerMcpGatewayTokenRoutes } from "./mcp-gateway-token.js";
+import type { NodeAccess } from "../../compositions/node-access-composition.js";
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 import { registerProjectTaskContextRoutes } from "./project-task-context-files.js";
@@ -25,17 +32,25 @@ export async function registerRestRoutes(
   dependencies: {
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRestContracts;
+    nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
+    /** The relationships between runs (SR-047): a context file of a run's child is found through its delegating run. */
+    delegationIndex: Pick<DelegationIndex, "childrenOf">;
   },
 ): Promise<void> {
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
+  await registerNodeAccessRoutes(app, dependencies.nodeAccess);
+  await registerMcpGatewayTokenRoutes(app, dependencies.nodeAccess.mcpGatewayTokens);
+  await registerNodeUpdateRoutes(app);
+  await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);
   await registerRemoteCollaborationRoutes(app);
   await registerFileRoutes(app);
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);
   await registerWorkspaceRoutes(app);
-  await registerContextFileRoutes(app);
+  await registerNodeFileRoutes(app);
+  await registerContextFileRoutes(app, dependencies.delegationIndex);
   await registerProjectTaskContextRoutes(app);
   await registerRunFileChangeRoutes(app);
   await registerTeamCommunicationRoutes(app);

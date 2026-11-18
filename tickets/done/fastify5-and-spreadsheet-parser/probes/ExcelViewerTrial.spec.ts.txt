@@ -1,0 +1,51 @@
+import { mount, flushPromises } from '@vue/test-utils';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import * as XLSX from 'xlsx';
+import ExcelViewer from '../ExcelViewer.vue';
+
+const originalFetch = global.fetch;
+const book = (sheets: Record<string, unknown[][]>) => {
+  const wb = XLSX.utils.book_new();
+  for (const [name, rows] of Object.entries(sheets)) XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), name);
+  return wb;
+};
+const serve = (bytes: ArrayBuffer) => {
+  global.fetch = vi.fn().mockResolvedValue({ ok: true, arrayBuffer: () => Promise.resolve(bytes) } as Response) as unknown as typeof fetch;
+};
+
+describe('ExcelViewer trial (real SheetJS)', () => {
+  afterEach(() => { global.fetch = originalFetch; });
+
+  for (const bookType of ['xlsx', 'biff8', 'xlsm'] as const) {
+    it(`renders ${bookType} with tabs`, async () => {
+      const wb = book({ Fruits: [['Name', 'Qty'], ['Apple', 3]], Second: [['only']] });
+      serve(XLSX.write(wb, { type: 'array', bookType }));
+      const wrapper = mount(ExcelViewer, { props: { url: 'http://example.com/f', content: null } });
+      await flushPromises();
+      expect(wrapper.find('.sheet-table table').exists()).toBe(true);
+      expect(wrapper.find('.sheet-table').text()).toContain('Apple');
+      const tabs = wrapper.findAll('.sheet-tab');
+      expect(tabs.map(t => t.text())).toEqual(['Fruits', 'Second']);
+      await tabs[1].trigger('click');
+      expect(wrapper.find('.sheet-table').text()).toContain('only');
+    });
+  }
+
+  it('renders CSV content', async () => {
+    const wrapper = mount(ExcelViewer, { props: { url: null, content: 'a,b\n1,2' } });
+    await flushPromises();
+    expect(wrapper.findAll('.sheet-table td').map(td => td.text())).toEqual(['a', 'b', '1', '2']);
+  });
+
+  it('keeps cell text inert', async () => {
+    const evil = ['x" onmouseover="window.__p=1" data-y="', '<img src=x onerror="window.__p=1">', '<script>window.__p=1</script>'];
+    serve(XLSX.write(book({ S: [evil] }), { type: 'array', bookType: 'xlsx' }));
+    const wrapper = mount(ExcelViewer, { props: { url: 'http://example.com/f', content: null } });
+    await flushPromises();
+    const root = wrapper.find('.sheet-table').element;
+    expect(root.querySelectorAll('img,script').length).toBe(0);
+    expect([...root.querySelectorAll('*')].some(el => [...el.attributes].some(a => a.name.startsWith('on')))).toBe(false);
+    expect(wrapper.find('.sheet-table').text()).toContain('<script>window.__p=1</script>');
+    console.log('TRIAL_HTML', wrapper.find('.sheet-table').html().slice(0, 400));
+  });
+});

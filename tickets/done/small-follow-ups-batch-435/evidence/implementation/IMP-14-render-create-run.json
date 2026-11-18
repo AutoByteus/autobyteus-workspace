@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-11-10T07:48:06.225Z",
+  "steps": [
+    {
+      "label": "A1 created (before the send)",
+      "query": "?row=agent:temp-1794296887370-1&screen=run",
+      "runScreen": "open",
+      "runName": "Project Task Manager",
+      "opening": false,
+      "activity": false,
+      "listRows": 15,
+      "newRun": false
+    },
+    {
+      "label": "A2 reloaded before the send",
+      "query": "?row=agent:temp-1794296887370-1",
+      "runScreen": null,
+      "runName": null,
+      "opening": false,
+      "activity": false,
+      "listRows": 15,
+      "newRun": false
+    },
+    {
+      "label": "B1 created",
+      "query": "?row=agent:temp-1794296889587-1&screen=run",
+      "runScreen": "open",
+      "runName": "Project Task Manager",
+      "opening": false,
+      "activity": false,
+      "listRows": 15,
+      "newRun": false
+    },
+    {
+      "label": "B2 after the first send",
+      "query": "?row=agent:project_task_manager_0926570f6b854139941765dd8797b385&screen=run",
+      "runScreen": "open",
+      "runName": "Project Task Manager",
+      "opening": false,
+      "activity": false,
+      "listRows": 13,
+      "newRun": false
+    },
+    {
+      "label": "B3 Activity after the send",
+      "query": "?row=agent:project_task_manager_0926570f6b854139941765dd8797b385&screen=activity",
+      "runScreen": null,
+      "runName": null,
+      "opening": false,
+      "activity": true,
+      "listRows": 13,
+      "newRun": false
+    },
+    {
+      "label": "B4 reloaded on Activity",
+      "query": "?row=agent:project_task_manager_0926570f6b854139941765dd8797b385&screen=activity",
+      "runScreen": null,
+      "runName": null,
+      "opening": false,
+      "activity": true,
+      "listRows": 13,
+      "newRun": false
+    }
+  ],
+  "finishedAt": "2026-11-10T07:48:10.499Z"
+}

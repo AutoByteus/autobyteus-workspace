@@ -1,0 +1,14 @@
+# IMP-14 rendered Create run across the first send and reloads (SR-003 DS-006b, AC-005-6, AC-005-8) on the real phone bundle
+# Steps: pnpm -C autobyteus-web test:e2e:mobile-shell --hold --output-dir=/tmp/sfb435-hold (bundle of f9cb6f7153), then
+#   node IMP-14-render-create-run-script.mjs <hold.json> <this folder> <autobyteus-web> (headless Chrome 390x844, pairs with the hold's link;
+#   New run -> Project Task Manager -> Create run). Commit f9cb6f7153; macOS; 2026-11-10.
+
+{"label": "A1 created (before the send)", "query": "?row=agent:temp-1794296887370-1&screen=run", "runScreen": "open", "runName": "Project Task Manager", "opening": false, "activity": false, "listRows": 15, "newRun": false}
+{"label": "A2 reloaded before the send", "query": "?row=agent:temp-1794296887370-1", "runScreen": null, "runName": null, "opening": false, "activity": false, "listRows": 15, "newRun": false}
+{"label": "B1 created", "query": "?row=agent:temp-1794296889587-1&screen=run", "runScreen": "open", "runName": "Project Task Manager", "opening": false, "activity": false, "listRows": 15, "newRun": false}
+{"label": "B2 after the first send", "query": "?row=agent:project_task_manager_0926570f6b854139941765dd8797b385&screen=run", "runScreen": "open", "runName": "Project Task Manager", "opening": false, "activity": false, "listRows": 13, "newRun": false}
+{"label": "B3 Activity after the send", "query": "?row=agent:project_task_manager_0926570f6b854139941765dd8797b385&screen=activity", "runScreen": null, "runName": null, "opening": false, "activity": true, "listRows": 13, "newRun": false}
+{"label": "B4 reloaded on Activity", "query": "?row=agent:project_task_manager_0926570f6b854139941765dd8797b385&screen=activity", "runScreen": null, "runName": null, "opening": false, "activity": true, "listRows": 13, "newRun": false}
+error: None
+Look for: A1 row=agent:temp-...; A2 after a reload before the send: row kept, no run screen, the list (listRows>0); B2 after the first send: row=agent:project_task_manager_<id> (no temp-); B3 Activity carries it; B4 a reload reopens Activity of that run.
+Screenshots: IMP-14-A-reload-before-send-list.png, IMP-14-B-reload-after-send-activity.png

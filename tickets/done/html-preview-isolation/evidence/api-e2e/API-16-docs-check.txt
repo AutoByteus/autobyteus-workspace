@@ -1,0 +1,31 @@
+# API-16 AC-007 docs part: approved losses (DEC-001 option A) as stated in the docs at cdba18ba35, compared with what API-10/11/15 measured
+# Command: git show cdba18ba35:autobyteus-web/docs/file_explorer.md | sed -n "/^Previews run isolated/,/in-app browser instead./p"; same for content_rendering.md bullet
+
+Previews run isolated. A previewed page has an opaque origin (`null`), never
+the app window's or a node's origin, so it cannot read or script the app
+window, call the preload API, or read the app's storage (including the phone
+credential), and the node refuses its WebSocket and API requests
+(`Origin: null`). The workspace static route also sends
+`Content-Security-Policy: sandbox allow-scripts` on every file it serves, so a
+workspace page runs isolated wherever its URL is opened, not only inside the
+preview. Do not add `allow-same-origin` (or popups, forms, modals or top
+navigation) to the preview iframe.
+
+What previewed pages can do: render, run inline and classic scripts, load
+stylesheets and images, including relative ones next to a workspace file, and
+load scripts, styles and images from other sites (CDN libraries). What they
+cannot do: load relative `type="module"` scripts, `fetch`/XHR the workspace's
+files, load web fonts from the workspace, start Web Workers, or use browser
+storage (`localStorage`, `sessionStorage`, IndexedDB) or cookies. Run complex
+UIs that need these from a server in the in-app browser instead.
+
+- Previewed pages run inline and classic scripts and load stylesheets, images
+  and CDN resources; relative module scripts, `fetch` of workspace files,
+  workspace web fonts, Web Workers and browser storage are unavailable. The
+  full contract is in
+  [File Explorer: HTML Preview Resource Contract](./file_explorer.md#html-preview-resource-contract).
+
+## Measured (API-10 workspace preview, real desktop app)
+module-script: did-not-run | fetch-relative-json: failed: TypeError | font-relative: not loaded (WsFont:error) | worker: blocked: SecurityError | localStorage/sessionStorage/indexedDB/cookie: blocked: SecurityError
+kept: inline-script ran | classic-script ran | other-site-script ran | css rgb(255, 0, 0) | img-relative loaded 3x3
+Docs and measurement agree. Release notes are delivery's (not checked here).

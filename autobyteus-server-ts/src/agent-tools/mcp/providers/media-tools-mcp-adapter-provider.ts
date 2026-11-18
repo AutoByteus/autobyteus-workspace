@@ -4,10 +4,8 @@ import {
 } from "../../media/media-generation-service.js";
 import { MEDIA_TOOL_MANIFEST } from "../../media/media-tool-manifest.js";
 import type { MediaToolExecutionContext } from "../../media/media-tool-contract.js";
-import {
-  toMediaJsonString,
-  toMediaToolErrorPayload,
-} from "../../media/media-tool-serialization.js";
+import { toMediaToolErrorPayload } from "../../media/media-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import type {
   AgentToolMcpAdapterProvider,
   AgentToolMcpToolAdapter,
@@ -48,10 +46,10 @@ export class MediaToolsMcpAdapterProvider implements AgentToolMcpAdapterProvider
             context,
             entry.parseInput(asRawArguments(rawArguments)),
           );
-          return createAgentToolsMcpSuccessResult(toMediaJsonString(result));
+          return createAgentToolsMcpSuccessResult(toToolResultJson(result));
         } catch (error) {
           return createAgentToolsMcpErrorResult(
-            toMediaJsonString(toMediaToolErrorPayload(error)),
+            toToolResultJson(toMediaToolErrorPayload(error)),
             "media_tool_execution_failed",
           );
         }

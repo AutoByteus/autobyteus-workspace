@@ -11,6 +11,10 @@ import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 if (process.env.RUN_AGY_E2E !== '1') throw new Error('Set RUN_AGY_E2E=1 to execute real AGY provider turns.');
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -36,7 +40,8 @@ const wsOpen = async url => {const socket=new WebSocket(url);const frames=[];soc
 const wsClose = ({socket}) => new Promise(resolve=>{if(socket.readyState===WebSocket.CLOSED)return resolve();const timer=setTimeout(resolve,2000);socket.once('close',()=>{clearTimeout(timer);resolve();});socket.close();});
 const model = async base => {const r=await gql(base,'query($runtimeKind: String){providerModelCatalogSnapshots(runtimeKind:$runtimeKind){llmModels{modelIdentifier}}}',{runtimeKind:'antigravity_cli'});const xs=r.providerModelCatalogSnapshots.flatMap(x=>x.llmModels.map(m=>m.modelIdentifier));const preferred=process.env.AGY_E2E_TOOL_MODEL;if(preferred&&xs.includes(preferred))return preferred;return xs.includes('gemini-3.8-flash-low')?'gemini-3.8-flash-low':xs[0];};
 const agent = async (base,name,instructions) => (await gql(base,'mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',{input:{name,role:'assistant',description:'AGY process restart browser E2E',instructions,toolNames:[]}})).createAgentDefinition.id;
-const browserOpen = async (page, frontend, workspace) => {await page.goto(`${frontend}/workspace`,{waitUntil:'domcontentloaded'});await page.locator('[data-test="app-left-panel-run-history"]').waitFor({timeout:30000});const row=page.locator(`[data-test="workspace-row"][data-workspace-root="${workspace}"]`);if(await row.count()===0){const add=page.locator('[data-test="app-left-panel-run-history"] button[title]').first();await add.click();await page.locator('[data-test="workspace-path-input"]').fill(workspace);await page.locator('[data-test="confirm-create-workspace"]').click();}await wait('workspace row',()=>row.count());if(await row.getAttribute('aria-expanded')!=='true')await row.locator('button').first().click();};
+const browserOpen = async (page, frontend, workspace) => {await page.goto(`${frontend}/workspace`,{waitUntil:'domcontentloaded'});await page.locator('[data-test="app-left-panel-run-history"]').waitFor({timeout:30000});const row=page.locator(`[data-test="workspace-row"][data-workspace-root="${workspace}"]`);// The folder is listed by its Team and Org runs (workspace-tree-vs-chooser: the run section has no add form).
+await wait('workspace row',()=>row.count());if(await row.getAttribute('aria-expanded')!=='true')await row.locator('button').first().click();};
 const sendBrowser = async (page, text, oldMarker, newMarker) => {
   const surface = page.locator('[data-testid="agent-workspace-surface"], [data-testid="team-workspace-surface"]').first();
   await surface.waitFor({ timeout: 30000 });
@@ -78,10 +83,10 @@ try {
   const backendPort=await port(),frontendPort=await port();
   const base=`http://127.0.0.1:${backendPort}`,front=`http://127.0.0.1:${frontendPort}`;
   evidence.runtime={dataRoot,workspace,backendUrl:base,frontendUrl:front};
-  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,DISABLE_HTTP_REQUEST_LOGS:'true'};
+  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,DISABLE_HTTP_REQUEST_LOGS:'true'};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
-  const startBackend=async label=>{const child=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(backendPort),'--data-dir',dataRoot],serverDir,env,path.join(outDir,`${label}.log`));await wait(`${label} health`,async()=>{assert(child.exitCode===null&&child.signalCode===null,`${label} exited before ready`);try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok;}catch{return false;}},90000);evidence.processes.push({label,pid:child.pid,readyAt:new Date().toISOString()});return child;};
+  const startBackend=async label=>{const child=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(backendPort),'--data-dir',dataRoot],serverDir,withNodeCredential(env),path.join(outDir,`${label}.log`));await wait(`${label} health`,async()=>{assert(child.exitCode===null&&child.signalCode===null,`${label} exited before ready`);try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok;}catch{return false;}},90000);evidence.processes.push({label,pid:child.pid,readyAt:new Date().toISOString()});return child;};
   backend=await startBackend('backend-A');
   const m=await model(base);assert(m,'No AGY model in real catalog');const id=randomUUID();evidence.runtime.model=m;
   const instructions='On a user request for a marker, reply with that exact marker only. Do not use tools, shell, files, or diagnostics.';
@@ -122,7 +127,7 @@ try {
   evidence.cases.processRestart={result:'Pass',oldPid:evidence.processes[0].pid,newPid:evidence.processes[1].pid,sameDataRoot:true,teamIdentityStable:true,orgIdentityStable:true};
   frontend=spawnOwned('corepack',['pnpm','dev','--host','127.0.0.1','--port',String(frontendPort)],webDir,{...process.env,NODE_ENV:'development',NUXT_TEST:'true',BACKEND_NODE_BASE_URL:base},path.join(outDir,'frontend.log'));
   await wait('Nuxt ready',async()=>{assert(frontend.exitCode===null&&frontend.signalCode===null,'Nuxt exited');try{return (await fetch(`${front}/workspace`,{signal:AbortSignal.timeout(3000)})).ok;}catch{return false;}},90000);
-  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(15000);
+  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});await attachToBrowserContext(page.context());page.setDefaultTimeout(15000);
   const errors=[];page.on('pageerror',e=>errors.push(e.message));evidence.runtime.browserErrors=errors;
   await browserOpen(page,front,workspace);
   // Team: click exact same persisted member, then send in the real composer.

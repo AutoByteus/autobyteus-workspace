@@ -2,13 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CollaborationMessagesPanel from '../CollaborationMessagesPanel.vue';
 import CollaborationMessagesSection from '../CollaborationMessagesSection.vue';
-import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { testCollaborationMessagesContextView } from '~/test-support/teamWorkspaceContextView';
 import type {
   CollaborationMessagePerspectiveRow,
   CollaborationMessagesContextView,
 } from '~/types/workspace/collaborationMessagesContextView';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
+import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection';
 
 const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart': 'to',
@@ -24,16 +25,16 @@ const testReference = (referenceId: string, path: string) => ({
   created_at: '2026-04-12T10:00:00.000Z', updated_at: '2026-04-12T10:00:00.000Z',
 });
 const reference = testReference('ref-1', '/tmp/handoff.md');
+const referenceIdOf = (messageId: string, path: string) => projectAgentOrgReference(messageId, path, '').referenceId;
 const team = buildTestTeamContext({
   teamRunId: 'team-1', coordinatorAddress: '/focused', focusedAgentRunId: 'focused-run',
   rootChildren: [
     testAgentNode('/focused', { agentRunId: 'focused-run' }),
     testAgentNode('/reviewer', { agentRunId: 'reviewer-run' }),
   ],
-  delegations: [testDelegation({ delegatorAgentRunId: 'focused-run', recipientAddress: '/reviewer', target: { agentRunId: 'task-reviewer-run' } })],
   messages: [
     { message_id: 'message-sent', sender_agent_run_id: 'focused-run', receiver_agent_run_id: 'reviewer-run', content: 'Please review the handoff.', message_type: 'handoff', created_at: '2026-04-12T10:00:00.000Z', reference_files: [reference] },
-    { message_id: 'message-received', sender_agent_run_id: 'task-reviewer-run', receiver_agent_run_id: 'focused-run', content: 'The task review is complete.', message_type: 'assignment', created_at: '2026-04-12T10:01:00.000Z', reference_files: [] },
+    { message_id: 'message-received', sender_agent_run_id: 'reviewer-run', receiver_agent_run_id: 'focused-run', content: 'The task review is complete.', message_type: 'assignment', created_at: '2026-04-12T10:01:00.000Z', reference_files: [] },
   ],
 });
 const BIG_REFERENCE_COUNT = 45;
@@ -63,7 +64,7 @@ const mountOptions = {
 const mountPanel = (
   messages: CollaborationMessagesContextView,
   rows: readonly CollaborationMessagePerspectiveRow[] = messages.listMessages(),
-) => mount(CollaborationMessagesPanel, { ...mountOptions, props: { messages, rows } });
+) => mount(CollaborationMessagesPanel, { ...mountOptions, props: { messages, rows, status: messages.messagesStatus() } });
 const mountSubject = (focusedAgentRunId = 'focused-run') => mountPanel(
   focusedAgentRunId === 'focused-run'
     ? testCollaborationMessagesContextView(team, focusedAgentRunId)
@@ -75,7 +76,7 @@ const messageRows = (wrapper: ReturnType<typeof mountPanel>) =>
   wrapper.findAll('[data-test="team-communication-message-row"]');
 
 describe('CollaborationMessagesPanel current AgentRun perspective', () => {
-  it('renders newest-first exact persistent/task messages with human placement labels', async () => {
+  it('renders newest-first exact messages with human placement labels', async () => {
     const wrapper = mountSubject();
     await wrapper.vm.$nextTick();
     const rows = messageRows(wrapper);
@@ -87,7 +88,7 @@ describe('CollaborationMessagesPanel current AgentRun perspective', () => {
     expect(rows[1].text()).toContain('to reviewer');
     expect(rows[1].text()).not.toContain('/reviewer');
     expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('The task review is complete.');
-    expect(wrapper.text()).not.toContain('task-reviewer-run');
+    expect(wrapper.text()).not.toContain('reviewer-run');
   });
 
   it('shows no-focused state for an unknown AgentRun rather than substituting by address', () => {
@@ -102,7 +103,9 @@ describe('CollaborationMessagesPanel current AgentRun perspective', () => {
     expect(wrapper.find('[data-test="team-communication-reference-row"]').exists()).toBe(false);
     await wrapper.findAll('[data-test="team-communication-message-summary"]')[1].trigger('click');
     await wrapper.get('[data-test="team-communication-reference-row"]').trigger('click');
-    expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe('team-runs/team-1/team-communication/messages/message-sent/references/ref-1/content:ref-1');
+    // A reference's ID is derived from its message and path, as the server derives it (autobyteus-358).
+    const id = referenceIdOf('message-sent', '/tmp/handoff.md');
+    expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(`team-runs/team-1/team-communication/messages/message-sent/references/${id}/content:${id}`);
   });
 });
 
@@ -132,7 +135,7 @@ describe('CollaborationMessagesPanel bounded reference files', () => {
     expect(wrapper.find('[data-test="team-communication-show-all-references"]').exists()).toBe(false);
     await references[BIG_REFERENCE_COUNT - 1].trigger('click');
     expect(wrapper.get('[data-test="reference-viewer"]').text())
-      .toBe('team-runs/team-big/team-communication/messages/message-big/references/big-44/content:big-44');
+      .toBe(`team-runs/team-big/team-communication/messages/message-big/references/${referenceIdOf('message-big', '/repo/big-44.md')}/content:${referenceIdOf('message-big', '/repo/big-44.md')}`);
   });
 
   it('shows no Show all control when the selected message is within the preview limit', async () => {
@@ -208,7 +211,7 @@ describe('CollaborationMessagesPanel bounded reference files', () => {
   });
 });
 
-it('keeps identity out of the list and reveals exact delegated provenance only on demand in the right detail', async () => {
+it('keeps identity out of the list and reveals the exact participant only on demand in the right detail', async () => {
   const wrapper = mountSubject();
   const list = wrapper.get('[data-test="team-communication-left-list"]');
   expect(list.find('[data-test="message-identity-toggle"]').exists()).toBe(false);
@@ -221,8 +224,7 @@ it('keeps identity out of the list and reveals exact delegated provenance only o
   const detail = wrapper.get('[data-test="message-identity-detail"]');
   expect(detail.attributes('id')).toBe(button.attributes('aria-controls'));
   expect(detail.text()).toContain('/reviewer');
-  expect(detail.text()).toContain('task-reviewer-run');
-  expect(detail.text()).toContain('team-1');
+  expect(detail.text()).toContain('reviewer-run');
   await wrapper.findAll('[data-test="team-communication-message-summary"]')[1].trigger('click');
   await wrapper.get('[data-test="message-identity-toggle"]').trigger('click');
   expect(wrapper.find('[data-test="message-identity-detail"]').exists()).toBe(true);

@@ -287,4 +287,21 @@ describe('agentDefinitionStore', () => {
       llmConfig: { temperature: 0.1 },
     })
   });
+  it('resets one personal setting and replaces the listed agent with the effective definition (package-personal-settings)', async () => {
+    mockWaitForBoundBackendReady.mockResolvedValue(true);
+    mockApolloClient.query.mockResolvedValue({ data: { agentDefinitions: [
+      { id: 'solution-designer', name: 'Solution Designer', toolNames: ['read_file', 'mcp_x'], personalSettings: ['TOOLS'], personalSettingsBase: 'PACKAGE' },
+    ] }, errors: [] });
+    const store = useAgentDefinitionStore();
+    await store.fetchAllAgentDefinitions();
+    const reset = { id: 'solution-designer', name: 'Solution Designer', toolNames: ['read_file'], personalSettings: [], personalSettingsBase: 'PACKAGE' };
+    mockApolloClient.mutate.mockResolvedValue({ data: { resetAgentPersonalSetting: reset }, errors: [] });
+
+    await expect(store.resetAgentPersonalSetting('solution-designer', 'TOOLS')).resolves.toEqual(reset);
+
+    expect(mockApolloClient.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { definitionId: 'solution-designer', setting: 'TOOLS' } }));
+    expect(store.getAgentDefinitionById('solution-designer')).toMatchObject({ toolNames: ['read_file'], personalSettings: [] });
+    mockApolloClient.mutate.mockResolvedValue({ data: null, errors: [{ message: 'Agent Definition x has no personal settings.' }] });
+    await expect(store.resetAgentPersonalSetting('x', 'TOOLS')).rejects.toThrow('has no personal settings');
+  });
 });

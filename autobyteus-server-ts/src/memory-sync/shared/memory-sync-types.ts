@@ -12,21 +12,40 @@ export type MemoryFileFingerprint = {
   mtimeMs?: number | null;
 };
 
-export type MemoryFileDescriptor = MemoryFileFingerprint & {
+/** A file the scanner listed: its stat, not its content. */
+export type MemoryFileEntry = {
+  kind: MemorySyncFileKind;
+  relativePath: string;
   absolutePath: string;
+  size: number;
+  mtimeMs: number;
 };
 
-export type MemoryFileOperation = MemoryFileFingerprint & {
+/** A listed file whose content differs from the last synced record, with its streamed SHA-256. */
+export type ChangedMemoryFile = MemoryFileEntry & { sha256: string };
+
+type MemoryFileOperationBase = MemoryFileFingerprint & {
   opId: string;
   operation: "replace";
+};
+
+/** A file up to the inline threshold: its content travels in the batch. */
+export type MemoryFileInlineOperation = MemoryFileOperationBase & {
   contentEncoding: "base64";
   contentBase64: string;
 };
 
+/** A larger file: its content was uploaded to the hub's staging area (named by `sha256`) before the batch. */
+export type MemoryFileStagedOperation = MemoryFileOperationBase & {
+  contentEncoding: "staged";
+};
+
+export type MemoryFileOperation = MemoryFileInlineOperation | MemoryFileStagedOperation;
+
 export type MemorySyncBatch = {
   protocolVersion: 1;
   batchId: string;
-  sourceNodeId: string;
+  memorySyncSourceId: string;
   sourceDisplayName?: string | null;
   sourceEndpoint?: string | null;
   generatedAt: string;
@@ -41,9 +60,9 @@ export type MemorySyncBatchCommitResult = {
   operationCount: number;
 };
 
-export type SourceNodeMetadata = {
+export type MemorySyncSourceMetadata = {
   schemaVersion: 1;
-  sourceNodeId: string;
+  memorySyncSourceId: string;
   displayName: string | null;
   firstImportedAt: string;
   lastImportedAt: string;
@@ -67,7 +86,7 @@ export type MemorySyncManifestBatchRecord = {
 
 export type MemorySyncManifest = {
   schemaVersion: 1;
-  sourceNodeId: string;
+  memorySyncSourceId: string;
   lastCommittedBatchId: string | null;
   lastCommittedAt: string | null;
   batchDigests: Record<string, MemorySyncManifestBatchRecord>;
@@ -84,22 +103,35 @@ export type MemorySyncSourceFileState = MemoryFileFingerprint & {
   lastBatchId: string;
 };
 
+/** A file-level problem: the file is retried at `nextAttemptAt`, or at once when its size or mtime changes. */
+export type MemorySyncFileFailure = {
+  kind: MemorySyncFileKind;
+  relativePath: string;
+  size: number;
+  mtimeMs: number;
+  reason: string;
+  attempts: number;
+  lastFailedAt: string;
+  nextAttemptAt: string;
+};
+
 export type MemorySyncSourceState = {
   schemaVersion: 1;
   hubKey: string;
   hubBaseUrl: string;
-  sourceNodeId: string;
+  memorySyncSourceId: string;
   lastSuccessfulSyncAt: string | null;
   lastError: string | null;
   lastJobState: MemorySyncJobState;
   files: Record<string, MemorySyncSourceFileState>;
+  fileFailures: Record<string, MemorySyncFileFailure>;
 };
 
 export type MemoryHubSourceCredentialRecord = {
   credentialId: string;
   label: string | null;
   credentialHash: string;
-  boundSourceNodeId: string | null;
+  boundMemorySyncSourceId: string | null;
   createdAt: string;
   lastUsedAt: string | null;
   revokedAt: string | null;
@@ -118,7 +150,7 @@ export type MemorySyncConfig = {
   };
   source: {
     enabled: boolean;
-    sourceNodeId: string | null;
+    memorySyncSourceId: string | null;
     displayName: string | null;
     hubBaseUrl: string | null;
     hubToken: string | null;
@@ -137,7 +169,7 @@ export type MemorySyncPublicConfig = Omit<MemorySyncConfig, "source"> & {
 };
 
 export type MemoryImportSummary = {
-  sourceNodeId: string;
+  memorySyncSourceId: string;
   displayName: string | null;
   lastKnownEndpoint: string | null;
   firstImportedAt: string | null;
@@ -152,13 +184,13 @@ export type MemoryImportSummary = {
 
 export type MemoryExplorerSourceInput =
   | { type: "LOCAL" }
-  | { type: "IMPORTED"; sourceNodeId: string };
+  | { type: "IMPORTED"; memorySyncSourceId: string };
 
 export type MemoryExplorerSourceOption = {
   key: "local" | `imported:${string}`;
   type: "LOCAL" | "IMPORTED";
   label: string;
-  sourceNodeId: string | null;
+  memorySyncSourceId: string | null;
   displayName: string | null;
   readOnly: boolean;
   lastImportedAt: string | null;

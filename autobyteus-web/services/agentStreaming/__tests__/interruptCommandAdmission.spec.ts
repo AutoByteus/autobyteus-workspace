@@ -16,7 +16,6 @@ describe('interrupt command admission', () => {
   it.each([
     ConnectionState.DISCONNECTED,
     ConnectionState.CONNECTING,
-    ConnectionState.RECONNECTING,
   ])('registers then rejects %s without sending', (connectionState) => {
     const pending = new Map<string, PendingInterruptCommand>();
     const send = vi.fn();

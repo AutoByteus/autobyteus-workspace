@@ -1,0 +1,16 @@
+# API-04 search-pdf-preview; commit 32dccf58fa; 2026-11-11T14:06:55Z; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:e2e:search-pdf-preview --output-dir <API-04-desktop-file-probes/search-pdf-preview>
+
+> autobyteus@1.5.13-beta.4 test:e2e:search-pdf-preview /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-04-desktop-file-probes/search-pdf-preview
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Fail
+{"cases":{"API-002":"Pass","API-003":"Fail"},"failure":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- '# SYNTHETIC RESUME NOTES\\n\\nSame workspace-relative text reader.\\n'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs:212:108\n    at async run (file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs:86:36)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/search-pdf-preview-probe.mjs:184:3","cleanup":{"browserClosed":true,"processes":[{"pid":92003,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":91955,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}
+ ELIFECYCLE  Command failed with exit code 1.
+
+# Review note (API/E2E): API-003 failed at probe line 212 (content null right after reopening resume-notes.md from the tree). Cause: since
+# autobyteus-450 (edd84787f7) an explicit open of an open workspace text file re-reads it (invalidateFileContent sets content null, then
+# fetches); the probe read the state before the read returned. Not this ticket (the workspace-relative reopen branch is unchanged).
+# Baseline test fix b49b5c539f; rerun as search-pdf-preview.log.

@@ -1,3 +1,6 @@
+import { testViewStreams } from "../helpers/view-streams.js";
+import { NOT_DELEGATED } from "../helpers/run-collaboration.js";
+import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { testActivationManager } from "./agent-run-preparation-fixtures.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -7,6 +10,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { AgentRunActivationCandidate } from "../../src/agent-execution/services/agent-run-activation-candidate.js";
 import type { AgentRunConfig } from "../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
+import type { PendingRuntimeSwitch } from "../../src/run-history/store/agent-run-metadata-types.js";
 import { FlatTeamExecutionFactory } from "../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { materializeTeamRoot } from "../../src/agent-team-execution/services/team-root-materializer.js";
 import { MemberExecutionContextBuilder } from "../../src/agent-team-execution/services/member-team-context-builder.js";
@@ -34,6 +38,8 @@ export const configuredRootFixture = async (placement: Placement, options: {
   runtimeKind?: RuntimeKind;
   binding?: string | null;
   activity?: "none" | "present" | "indeterminate";
+  /** autobyteus-348: the second member (the Worker) was saved on `runtimeKind` with this pending switch and no session ID. */
+  pendingSwitch?: PendingRuntimeSwitch;
 } = {}) => {
   const memoryDir = mkdtempSync(join(tmpdir(), "configured-first-work-"));
   const mode = options.mode ?? "restore";
@@ -45,6 +51,8 @@ export const configuredRootFixture = async (placement: Placement, options: {
   const publish = vi.fn();
   const acceptInput = vi.fn();
   const configs = new Map<string, AgentRunConfig>();
+  /** Ends the member's latest run (it died); the next input to the member re-activates it. */
+  const stops = new Map<string, () => void>();
   const failStop = vi.fn();
   let sequence = 0;
   const prepare = async ({ runId, config, platformAgentRunId }: {
@@ -52,12 +60,14 @@ export const configuredRootFixture = async (placement: Placement, options: {
   }) => {
     configs.set(runId, config);
     let listener: ((event: unknown) => void) | null = null;
+    let alive = true;
+    stops.set(runId, () => { alive = false; });
     const emitIdle = () => listener?.({ eventType: "AGENT_STATUS", runId, payload: { status: "idle" }, statusHint: "IDLE" });
     const run = {
       runId,
       bindExecutionAdmissionFence: vi.fn(),
       getInputStateSnapshot: vi.fn(),
-      isActive: () => true,
+      isActive: () => alive,
       getStatusSnapshot: () => ({ status: "idle" }),
       subscribeToEvents: (callback: (event: unknown) => void) => { listener = callback; return () => { listener = null; }; },
       postUserMessage: async (message: AgentInputUserMessage) => { acceptInput(runId, message); emitIdle(); return { accepted: true }; },
@@ -72,11 +82,12 @@ export const configuredRootFixture = async (placement: Placement, options: {
       abort,
     });
   };
-  const manager = testActivationManager({
-    newPreparation: vi.fn(prepare),
-    platformPreparation: vi.fn(prepare),
+  const preparations = { newPreparation: vi.fn(prepare), platformPreparation: vi.fn(prepare) };
+  const manager = Object.assign(testActivationManager({
+    ...preparations,
     restorePreparation: vi.fn((context) => prepare({ runId: context.runId, config: context.config })),
-  });
+    releaseExactRun: vi.fn(async () => ({ accepted: true })),
+  }), preparations);
   const dependencies = {
     agentRunManager: manager as never,
     memoryLocator: { getMemoryDir: (_placement: unknown, runId: string) => join(memoryDir, runId) } as never,
@@ -86,7 +97,6 @@ export const configuredRootFixture = async (placement: Placement, options: {
   const factory = new FlatTeamExecutionFactory(dependencies);
   const materialize = vi.spyOn(factory, "beginMaterialization");
   const definitions = { getDefinitionById: vi.fn(async () => null) };
-  const taskExecutionIdentity = { agentRuns: { allocateForAgentDefinition: vi.fn() }, taskTeams: { create: vi.fn() } };
   const prefix = placement === "mounted_team" ? "/Team" : "";
   const addresses = ["Coordinator", "Worker", "Unused"].map((name) => `${prefix}/${name}`) as [string, string, string];
   const ids = ["agent-coordinator", "agent-worker", "agent-unused"] as const;
@@ -101,21 +111,25 @@ export const configuredRootFixture = async (placement: Placement, options: {
   });
   const sidecarWrite = vi.fn(async () => ({ outcome: "committed" as const }));
   const rootId = "test-root";
-  const common = { configs, manager, activity, abort, publish, acceptInput, write, control, order, materialize, ids, addresses, failStop,
+  const memberDir = (index: number) => join(memoryDir, ids[index]!);
+  const stop = (index: number) => stops.get(ids[index]!)!();
+  const common = { configs, manager, activity, abort, publish, acceptInput, write, control, order, materialize, ids, addresses, failStop, memberDir, stop,
     dispose: () => rmSync(memoryDir, { recursive: true, force: true }),
   };
   if (placement === "standalone_team") {
     const config = testTeamRunConfig({ rootTeamRunId: rootId, coordinatorAddress: addresses[0],
-      children: addresses.map((address, i) => testAgentNode(address, { agentRunId: ids[i]!, runtimeKind, platformAgentRunId: initialBinding })),
+      children: addresses.map((address, i) => testAgentNode(address, {
+        agentRunId: ids[i]!, runtimeKind, platformAgentRunId: i === 1 && options.pendingSwitch ? null : initialBinding,
+        ...(i === 1 && options.pendingSwitch ? { pendingRuntimeSwitch: options.pendingSwitch } : {}),
+      })),
     });
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({
+    const root = await materializeTeamRoot({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
-      memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never),
-      taskExecutionIdentity: taskExecutionIdentity as never, executionTreeStore: { write } as never,
+      memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never, NOT_DELEGATED), executionTreeStore: { write } as never,
       communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never,
       onTerminated: vi.fn(),
     });
@@ -128,7 +142,8 @@ export const configuredRootFixture = async (placement: Placement, options: {
   }
   const members = addresses.map((address, i) => {
     const member = testOrgAgentNode(address, ids[i]!);
-    return { ...member, platformAgentRunId: initialBinding,
+    const pending = i === 1 ? options.pendingSwitch : undefined;
+    return { ...member, platformAgentRunId: pending ? null : initialBinding, ...(pending ? { pendingRuntimeSwitch: pending } : {}),
       launchConfiguration: { ...member.launchConfiguration, runtimeKind, workspaceRootPath: null } };
   });
   const tree = testAgentOrgExecutionTree({ orgRunId: rootId, members: placement === "direct_org" ? members : [
@@ -142,8 +157,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     executionTreeStore: { write } as never,
     communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never, enterPersistenceFailStop: failStop,
   });
-  const root = await new AgentOrgExecutionScopeBuilder({ flatTeamExecutionFactory: factory,
-    taskExecutionIdentity: taskExecutionIdentity as never, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
+  const root = await new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
     ...dependencies,
   }).build({ state, persistence, activationMode: mode, persistInitialPackage: false });
   const flatten = (tree: typeof state.executionTree) => tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member] : [...member.members]);

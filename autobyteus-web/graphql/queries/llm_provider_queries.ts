@@ -14,7 +14,7 @@ export const PROVIDER_MODEL_CATALOG_SNAPSHOT_FIELDS = gql`
     runtimeKind
     ownerProvider { id name providerType isCustom baseUrl catalogMode }
     sources {
-      modelKind state modelCount successfulUnitCount failedUnitCount safeMessage
+      state modelCount successfulUnitCount failedUnitCount safeMessage
     }
     llmModels {
       modelIdentifier name description value canonicalName providerId providerName providerType

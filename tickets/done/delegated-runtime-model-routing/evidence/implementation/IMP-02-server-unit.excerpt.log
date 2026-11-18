@@ -1,0 +1,13 @@
+# IMP-02
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 4979559f7f
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-26T14:36:32Z
+
+
+# Excerpt of IMP-02-server-unit.full.log (same folder)
+
+ Test Files  844 passed | 4 skipped (848)
+      Tests  7012 passed | 7 skipped (7019)
+test:unit exit=0
+

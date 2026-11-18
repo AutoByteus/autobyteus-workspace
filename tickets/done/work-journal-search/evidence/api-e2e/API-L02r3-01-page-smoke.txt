@@ -1,0 +1,6 @@
+# API-L02/L03 (round 3): page smoke on the packaged merged build iso-63150-d45d (3d209177ec), data root /private/tmp/wjs-api3/root (fresh clone of the memory copy), 2026-10-27 08:18–08:19 UTC; Text index complete, Meaning index embedding
+# Steps: probes/API-PROBE-memory-page.mjs over CDP 63150; screenshots in the private folder r3/ (real journal text)
+Search "Do you remember the project codenamed pelicanmarigold9152? Where is it?": note "memory-search-some-not-found | Not found in your memory: codenamed, pelicanmarigold9152."; 10 results; text matches "Words: project"; no Strong/Fair/Weak
+Search "set up a domain updater DDNS": the DDNS run codex_45ce… is result #9 here (the build includes this round's test chats that asked the same question); its match row clicked → tabs ['Work Journal', 'Raw Traces'], banner "From your search “set up a domain updater DDNS” · lines 87–129 · Words: updater, ddns", Match 1/2, "Lines 1–300 of 1.099", 43 lines highlighted
+Go to line 900 → "Lines 750–1.049 of 1.099", 294 ms
+Browse → Agent Teams: 4 "Task team" tags; page text has no "episodic", "semantic" or "working context"

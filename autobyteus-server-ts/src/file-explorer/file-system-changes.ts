@@ -46,10 +46,10 @@ export type MoveChangeDict = BaseChangeDict & {
   new_parent_id: string;
 };
 
+/** A file's content changed on disk; `path` is workspace-relative with POSIX separators. */
 export type ModifyChangeDict = BaseChangeDict & {
   type: ChangeType.MODIFY;
-  node_id: string;
-  parent_id: string;
+  path: string;
 };
 
 export type FileSystemChangeDict =
@@ -204,26 +204,23 @@ export class MoveChange extends FileSystemChange {
 }
 
 export class ModifyChange extends FileSystemChange {
-  nodeId: string;
-  parentId: string;
+  path: string;
 
-  constructor(nodeId: string, parentId: string) {
+  constructor(path: string) {
     super(ChangeType.MODIFY);
-    this.nodeId = nodeId;
-    this.parentId = parentId;
+    this.path = path;
   }
 
   override toDict(): ModifyChangeDict {
     return {
       ...super.toDict(),
       type: ChangeType.MODIFY,
-      node_id: this.nodeId,
-      parent_id: this.parentId,
+      path: this.path,
     };
   }
 
   static fromDict(data: ModifyChangeDict): ModifyChange {
-    return new ModifyChange(data.node_id, data.parent_id);
+    return new ModifyChange(data.path);
   }
 }
 

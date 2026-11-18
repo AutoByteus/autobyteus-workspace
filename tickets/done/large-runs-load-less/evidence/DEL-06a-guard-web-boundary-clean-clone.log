@@ -1,0 +1,3 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 165 bytes, trimmed to summaries, skips and failures.
+[guard:web-boundary] Passed.
+exit=0

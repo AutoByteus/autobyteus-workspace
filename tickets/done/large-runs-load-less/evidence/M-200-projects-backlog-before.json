@@ -1,0 +1,3 @@
+(node:69371) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"projects":20,"tasksPerProject":1000,"taskTotal":20000,"seedMs":3175,"listProjectsMs":[688,660,642,619,609],"listProjectsMedianMs":642,"allTasksMs":[598,658,620,648,632],"allTasksMedianMs":632,"loadAverage":[153.34,140.12,101.3],"node":"v22.23.1","platform":"darwin 25.5.0"}

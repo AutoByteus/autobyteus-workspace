@@ -1,0 +1,8 @@
+# IMP-05 server typecheck (builds the shared packages and autobyteus-ts dist first)
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: e26460bf57; macOS Darwin 25.5.0 arm64, node v22.23.1; 2026-11-10T10:40Z
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 12.7s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 32.9s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
+exit=0

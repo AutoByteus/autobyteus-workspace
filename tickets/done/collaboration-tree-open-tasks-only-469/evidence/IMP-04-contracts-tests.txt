@@ -1,0 +1,11 @@
+# IMP-04 collaboration-stream-contracts build and tests
+# Command: pnpm -C autobyteus-collaboration-stream-contracts test   (builds dist/, then node --test tests/*.test.mjs)
+# Code: commit 832f0a4572 content (dist/ rebuilt and committed); macOS, 2026-11-10
+
+# Subtest: participant messages carry stored messages of every root kind; a Team message may be empty (autobyteus-358)
+ok 31 - participant messages carry stored messages of every root kind; a Team message may be empty (autobyteus-358)
+# Subtest: participant messages name the agents of delegated runs that left the tree (autobyteus-469 D-5)
+ok 32 - participant messages name the agents of delegated runs that left the tree (autobyteus-469 D-5)
+# tests 50
+# pass 50
+# fail 0

@@ -1,0 +1,296 @@
+# API-21 env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<temp with auth.json symlink, empty config.toml> RUN_CODEX_E2E=1 pnpm exec vitest run tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts --no-watch --reporter=verbose
+# worktree, commit bce2f8b4e3, 2026-10-28T04:52:19Z, codex-cli 0.164.0
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:61444) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/.env
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9aJxMI/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Agent Definition created successfully with ID: codex-direct-sender-8b215962-55b1-433a-b0f3-7f4d04be28c3
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Agent Definition created successfully with ID: codex-direct-target-2f063cc9-6266-4533-ac61-f2f031f5bb69
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-5rBGQe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-5rBGQe.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Created and registered workspace ID: agent_ws_376f4dc52c7f04467225aefe45878f08902141457784432951cce2e95afbc668
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-5rBGQe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-5rBGQe.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Reusing registered workspace ID: agent_ws_376f4dc52c7f04467225aefe45878f08902141457784432951cce2e95afbc668
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-ZtwrsG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-ZtwrsG.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Created and registered workspace ID: agent_ws_b4109358298f0e9dcef81b4579a1755361255f9268c389beb912ce8f8d51fcaa
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-ZtwrsG
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-ZtwrsG.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Reusing registered workspace ID: agent_ws_b4109358298f0e9dcef81b4579a1755361255f9268c389beb912ce8f8d51fcaa
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Agent websocket attached for run codex_direct_target_2f063cc9_6266_4533_ac61_f2f0_8989c82cffbb45e3947628b89a2ae6ed
+Created agent session ff047dbd-9980-4512-ac61-de83d28fa9f3 for run codex_direct_target_2f063cc9_6266_4533_ac61_f2f0_8989c82cffbb45e3947628b89a2ae6ed
+Agent WebSocket connected: session=ff047dbd-9980-4512-ac61-de83d28fa9f3, run=codex_direct_target_2f063cc9_6266_4533_ac61_f2f0_8989c82cffbb45e3947628b89a2ae6ed
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+[LIVE-002 same-thread Agent Tools MCP evidence] {"senderRunId":"codex_direct_sender_8b215962_55b1_433a_b0f3_7f4d_5d7b06a0335c4f738dd3794dd075b11c","senderThreadId":"01a180da-4ba3-7993-a240-7628223930e9","modelIdentifier":"gpt-5.6-luna","redactedDescriptorAndConfig":{"serverName":"autobyteus_agent_tools","url":"http://127.0.0.1:59128/mcp/agent-tools/%3Credacted%3E","enabled_tools":["send_message_to","delegate_task"],"startup_timeout_sec":5},"activeHeaderlessSession":{"ownerRunId":"codex_direct_sender_8b215962_55b1_433a_b0f3_7f4d_5d7b06a0335c4f738dd3794dd075b11c","sessionId":"<redacted>","enabledTools":["send_message_to","delegate_task"],"toolsList":["send_message_to","delegate_task"]},"appServer":{"startupObservations":[{"sequence":1,"method":"mcpServer/startupStatus/updated","threadId":"01a180da-4ba3-7993-a240-7628223930e9","name":"autobyteus_agent_tools","status":"starting","error":null,"failureReason":null},{"sequence":2,"method":"mcpServer/startupStatus/updated","threadId":"01a180da-4ba3-7993-a240-7628223930e9","name":"autobyteus_agent_tools","status":"ready","error":null,"failureReason":null}],"statusList":{"name":"autobyteus_agent_tools","authStatus":"unsupported","toolNames":["send_message_to","delegate_task"]}},"ordering":{"createAgentRunReturnedSequence":3,"headerlessToolsListSequence":4,"readySequence":2,"appServerStatusListSequence":5,"firstAppServerToolCallSequence":6}}
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+[LIVE-002 same-thread Agent Tools MCP call results] {"active":{"isError":false,"result":{"accepted":true,"code":"DELIVERED","message":"Delivered message to codex_direct_target_2f063cc9_6266_4533_ac61_f2f0_8989c82cffbb45e3947628b89a2ae6ed.","target_agent_run_id":"codex_direct_target_2f063cc9_6266_4533_ac61_f2f0_8989c82cffbb45e3947628b89a2ae6ed"}},"inactive":{"isError":true,"result":{"accepted":false,"code":"TARGET_AGENT_RUN_NOT_ACTIVE","message":"No running agent has the run id 'codex_direct_target_2f063cc9_6266_4533_ac61_f2f0_8989c82cffbb45e3947628b89a2ae6ed', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."}}}
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination
+Closed agent session ff047dbd-9980-4512-ac61-de83d28fa9f3
+Agent WebSocket disconnected: ff047dbd-9980-4512-ac61-de83d28fa9f3
+
+ ✓ tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination 9853ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  05:52:20
+   Duration  21.28s (transform 7.69s, setup 43ms, import 10.46s, tests 10.21s, environment 0ms)
+
+
+real	0m21.955s
+user	0m13.556s
+sys	0m6.045s
+exit: 0

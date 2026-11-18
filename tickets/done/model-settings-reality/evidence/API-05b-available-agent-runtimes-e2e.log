@@ -1,0 +1,13 @@
+# API-05b — available-agent-runtimes-graphql e2e (real studio server, scripted runtime CLIs, scripted claude list) after the BASELINE FIX of two test defects (credential header; socket file in the AAR-05 scan)
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts --no-watch   (cwd: worktree root)
+# Commit: 817bd9950 + test changes · ENV-1 · 2026-11-10 · Case API-05
+# Before the fix (same command): 'Test Files 1 failed' — AAR-01..04, AAR-06: TypeError Cannot read properties of undefined (reading 'availableAgentRuntimes') because /graphql answered 401 (the test sends no node credential); AAR-05: ENXIO open .../data/node-access/local-control.sock (the data-file scan reads a unix socket).
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 20681ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  570ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  446ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14268ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013)  3753ms
+     ✓ AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)  657ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Duration  35.63s (transform 10.61s, setup 94ms, import 14.16s, tests 20.68s, environment 0ms)

@@ -1,0 +1,145 @@
+{
+  "dcf01": {
+    "copy": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ]
+    },
+    "manager": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace"
+  },
+  "dcf02": {
+    "teamRunId": "dcf_squad_c7262c_489aaa3dd798488e8f65dd67d27758d4",
+    "coordinator": {
+      "recorded": [],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ]
+    },
+    "member": {
+      "recorded": [],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ]
+    }
+  },
+  "dcf03": {
+    "worker": "dcf_writer_c7262c_ec971815f6774db0ad44b21f996c2827",
+    "sub": "dcf_helper_c7262c_5ec4a14249104100a2074bd2939ebaae",
+    "launch": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ]
+    }
+  },
+  "dcf04": {
+    "noLink": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace"
+      ]
+    },
+    "temp": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/workspace"
+      ]
+    }
+  },
+  "dcf05": {
+    "recorded": [
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F1"
+    ],
+    "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F1",
+    "addDirs": [
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F1"
+    ]
+  },
+  "dcf06": {
+    "missing": {
+      "error": {
+        "code": "TASK_PROJECT_FOLDER_UNAVAILABLE",
+        "message": "Project \"DCF moved c7262c\" has the linked folder \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-moved-away\", which is not an existing folder on this node. Fix the Project's link, or link another folder, then delegate again. Nothing was started."
+      },
+      "isError": true
+    },
+    "file": {
+      "error": {
+        "code": "TASK_PROJECT_FOLDER_UNAVAILABLE",
+        "message": "Project \"DCF file link c7262c\" has the linked folder \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/a-file.txt\", which is not an existing folder on this node. Fix the Project's link, or link another folder, then delegate again. Nothing was started."
+      },
+      "isError": true
+    }
+  },
+  "dcf07": {
+    "teamLaunch": {
+      "recorded": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ],
+      "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+      "addDirs": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+      ]
+    },
+    "org": {
+      "catalog": {
+        "recorded": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+        ],
+        "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+        "addDirs": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+        ]
+      },
+      "placement": {
+        "recorded": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+        ],
+        "capsule": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F",
+        "addDirs": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-folder-e2e-T7U64P/folder-F"
+        ]
+      }
+    }
+  },
+  "dcf08": {
+    "live": {
+      "copyG": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-restart-rNb5yb/G"
+      ],
+      "copyF": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-restart-rNb5yb/F"
+      ]
+    },
+    "pids": [
+      23788,
+      23951
+    ],
+    "launchesAfterRestart": {
+      "copyG": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-restart-rNb5yb/G"
+      ],
+      "copyF": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-restart-rNb5yb/F"
+      ],
+      "manager": [
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-restart-rNb5yb/G"
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+# Evidence: IMP-13-remote-nodes-page-probe.log
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional) pnpm -C autobyteus-web test:e2e:remote-nodes-page -- --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-13-remote-nodes-page-probe
+# Commit: 35e5853a22 (Merge origin/personal (84ea944ac5) into codex/manage-nodes-professional (autobyt)
+# Working tree: 0 changed tracked/untracked paths under autobyteus-web, autobyteus-server-ts
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 10:45:24 CET
+# Run by: implementation_engineer (autobyteus-363)
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:remote-nodes-page /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web
+> node tests/e2e/remote-nodes-page-probe.mjs -- --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-13-remote-nodes-page-probe
+
+[probe] NP-01 started
+[probe] NP-01 Pass
+[probe] NP-02 started
+[probe] NP-02 Pass
+[probe] NP-03 started
+[probe] NP-03 Pass
+[probe] NP-11 started
+[probe] NP-11 Pass
+[probe] NP-04 started
+[probe] NP-04 Pass
+[probe] NP-05 started
+[probe] NP-05 Pass
+[probe] NP-06 started
+[probe] NP-06 Pass
+[probe] NP-07 started
+[probe] NP-07 Pass
+[probe] NP-08 started
+[probe] NP-08 Pass
+[probe] NP-09 started
+[probe] NP-09 Pass
+[probe] NP-10 started
+[probe] NP-10 Pass
+[probe] NP-12 started
+[probe] NP-12 Pass
+remote-nodes-page probe: Pass
+
+# Exit code: 0

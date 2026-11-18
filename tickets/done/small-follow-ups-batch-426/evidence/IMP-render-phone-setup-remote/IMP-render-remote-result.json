@@ -1,0 +1,98 @@
+{
+  "cases": {
+    "desktop": {
+      "local_network": {
+        "status": "Office Mac isn’t reachable on a Wi-Fi or LAN address from this computer.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone talks to Office Mac directly over your local network, like two devices at home.\n\nWhen\nYour phone and Office Mac are on the same Wi-Fi or LAN, such as a home or office network.\nSetup\nNothing to install. The first time on a network, AutoByteus asks for your OK.\nSafety\nThe connection has no extra protection, so others on the same network could see it. Fine at home and in your office. On public Wi-Fi (café, hotel, airport) use Tailscale instead. Works only while the phone is on the same network as Office Mac.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "tailscale": {
+        "status": "Office Mac isn’t reachable through Tailscale from this computer.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "Still not reachable. Tailscale must be on for Office Mac and for this computer.",
+        "how": "Tailscale builds a private, encrypted connection between your phone and Office Mac, wherever they are.\n\nWhen\nYou want to use your phone away from home, on mobile data or any Wi-Fi.\nSetup\nInstall Tailscale (free) on Office Mac, on this computer and on your phone. Get Tailscale.\nSign in to the same account on all three, and keep it on.\nSafety\nThe connection is encrypted between your phone and Office Mac, and only devices signed in to your Tailscale account can reach it.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "vpn": {
+        "status": "Office Mac isn’t reachable through a VPN from this computer. Connect both to your VPN, then Check again.",
+        "statusHeight": 48,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "Still not reachable through a VPN.",
+        "how": "Your VPN puts your phone and Office Mac in the same private network.\n\nWhen\nYou already use your own VPN that connects your phone and Office Mac.\nSetup\nConnect Office Mac, this computer and your phone to the VPN. AutoByteus finds it by itself.\nSafety\nAs protected as your VPN: the connection is encrypted between your devices.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "company_address": {
+        "status": "Not set up yet.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone reaches the node at the address your company set up, through the company network or its VPN.\n\nWhen\nThe node runs on a company server and your IT gave it an address, such as autobyteus.company.com.\nSetup\nYour IT sets the address once on the node. On your phone, turn on the company VPN if your company uses one.\nSafety\nProtected by your company’s network: usually a secure (https) address reachable only inside the company or through its VPN.",
+        "blocked": "",
+        "allowedNote": ""
+      }
+    },
+    "narrow": {
+      "local_network": {
+        "status": "Office Mac isn’t reachable on a Wi-Fi or LAN address from this computer.",
+        "statusHeight": 48,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone talks to Office Mac directly over your local network, like two devices at home.\n\nWhen\nYour phone and Office Mac are on the same Wi-Fi or LAN, such as a home or office network.\nSetup\nNothing to install. The first time on a network, AutoByteus asks for your OK.\nSafety\nThe connection has no extra protection, so others on the same network could see it. Fine at home and in your office. On public Wi-Fi (café, hotel, airport) use Tailscale instead. Works only while the phone is on the same network as Office Mac.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "tailscale": {
+        "status": "Office Mac isn’t reachable through Tailscale from this computer.",
+        "statusHeight": 24,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "Still not reachable. Tailscale must be on for Office Mac and for this computer.",
+        "how": "Tailscale builds a private, encrypted connection between your phone and Office Mac, wherever they are.\n\nWhen\nYou want to use your phone away from home, on mobile data or any Wi-Fi.\nSetup\nInstall Tailscale (free) on Office Mac, on this computer and on your phone. Get Tailscale.\nSign in to the same account on all three, and keep it on.\nSafety\nThe connection is encrypted between your phone and Office Mac, and only devices signed in to your Tailscale account can reach it.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "vpn": {
+        "status": "Office Mac isn’t reachable through a VPN from this computer. Connect both to your VPN, then Check again.",
+        "statusHeight": 48,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "Still not reachable through a VPN.",
+        "how": "Your VPN puts your phone and Office Mac in the same private network.\n\nWhen\nYou already use your own VPN that connects your phone and Office Mac.\nSetup\nConnect Office Mac, this computer and your phone to the VPN. AutoByteus finds it by itself.\nSafety\nAs protected as your VPN: the connection is encrypted between your devices.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "company_address": {
+        "status": "Not set up yet.",
+        "statusHeight": 24,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone reaches the node at the address your company set up, through the company network or its VPN.\n\nWhen\nThe node runs on a company server and your IT gave it an address, such as autobyteus.company.com.\nSetup\nYour IT sets the address once on the node. On your phone, turn on the company VPN if your company uses one.\nSafety\nProtected by your company’s network: usually a secure (https) address reachable only inside the company or through its VPN.",
+        "blocked": "",
+        "allowedNote": ""
+      }
+    }
+  },
+  "browserErrors": [],
+  "kind": "remote"
+}

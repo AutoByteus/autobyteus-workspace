@@ -1,15 +1,5 @@
 import type { AgentRuntime } from '~/types/agentRuntimes'
 
-/** The page's plain runtime names (product names, not translated); the model menu keeps its own labels. */
-const RUNTIME_NAMES: Readonly<Record<string, string>> = {
-  codex_app_server: 'Codex',
-  claude_agent_sdk: 'Claude',
-  antigravity_cli: 'Antigravity',
-  grok_build: 'Grok',
-}
-
-export const runtimeName = (runtimeKind: string): string => RUNTIME_NAMES[runtimeKind] ?? runtimeKind
-
 /**
  * What this window may do with the bound node's runtimes. `own`: the desktop's own node. `remoteDesktop`: a remote node
  * whose server can open a browser on its own desktop (a Docker node's VNC Chromium). `remoteStatusOnly`: one that cannot.

@@ -353,7 +353,7 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
   }> => {
     const app = fastify();
     await app.register(websocket);
-    await registerAgentWebsocket(app);
+    await registerAgentWebsocket(app, undefined, {} as never);
     const address = await app.listen({ port: 0, host: "127.0.0.1" });
     const url = new URL(address);
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);

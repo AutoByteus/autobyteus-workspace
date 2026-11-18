@@ -1,0 +1,86 @@
+# IMP-12 (AC-008): every suite from a clean clone: git clone --branch codex/large-runs-load-less (local), pnpm install --frozen-lockfile, server prebuild + build, nuxt prepare, then each suite (script below); isolated HOME (env -i), one at a time
+# commit: b58a3106c3; env: macOS, v22.23.1; date: 2026-11-01T12:12:39Z
+# look for: each 'exit=0'; server-integration exit=1 is the 6 failures that also fail on base efd28d5c4a (FU-001)
+
+HEAD b58a3106c3
+## install: pnpm install --frozen-lockfile
+install exit=0
+## server-prebuild: pnpm -C autobyteus-server-ts prebuild
+server-prebuild exit=0
+## server-build: pnpm -C autobyteus-server-ts build
+server-build exit=0
+## nuxt-prepare: pnpm -C autobyteus-web exec nuxt prepare
+nuxt-prepare exit=0
+## contracts-collab: pnpm -C autobyteus-collaboration-stream-contracts test
+contracts-collab exit=0
+# pass 38
+# fail 0
+## contracts-team: pnpm -C autobyteus-team-stream-contracts test
+contracts-team exit=0
+# pass 21
+# fail 0
+## server-typecheck: pnpm -C autobyteus-server-ts typecheck
+server-typecheck exit=0
+## server-unit: pnpm -C autobyteus-server-ts test:unit
+server-unit exit=0
+ Test Files  903 passed | 5 skipped (908)
+      Tests  7668 passed | 9 skipped (7677)
+## server-int-prepare: pnpm -C autobyteus-server-ts test:integration:prepare
+server-int-prepare exit=0
+## server-integration: pnpm -C autobyteus-server-ts test:integration
+server-integration exit=1
+ Test Files  3 failed | 83 passed | 20 skipped (106)
+      Tests  6 failed | 480 passed | 69 skipped (555)
+## web-nuxt: pnpm -C autobyteus-web test:nuxt run
+web-nuxt exit=0
+ Test Files  680 passed (680)
+      Tests  4929 passed | 2 skipped (4931)
+## web-electron: pnpm -C autobyteus-web test:electron run
+web-electron exit=0
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+## web-typecheck: pnpm -C autobyteus-web typecheck
+web-typecheck exit=0
+[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)
+[typecheck] PASS
+## guard-web: pnpm -C autobyteus-web guard:web-boundary
+guard-web exit=0
+[guard:web-boundary] Passed.
+## guard-loc: pnpm -C autobyteus-web guard:localization-boundary
+guard-loc exit=0
+[guard:localization-boundary] Passed.
+## audit-loc: pnpm -C autobyteus-web audit:localization-literals
+audit-loc exit=0
+[audit:localization-literals] Passed with zero unresolved findings.
+DONE
+
+## server-integration failing files (all FU-001):
+   3  FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts
+   1  FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+   2  FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts
+
+## script
+set -u
+C=/tmp/ab358-clean-l2KI/repo
+git clone -q --branch codex/large-runs-load-less /Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less $C || exit 9
+cd $C; echo "HEAD $(git rev-parse --short HEAD)"
+H="$(cd "$(mktemp -d)" && pwd -P)"
+run(){ name=$1; shift; echo "## $name: $*"; env -i PATH="$PATH" HOME="$H" TMPDIR="$TMPDIR" npm_config_update_notifier=false "$@" > /tmp/ab358-clean-$name.log 2>&1; echo "$name exit=$?"; sed 's/\x1b\[[0-9;]*m//g' /tmp/ab358-clean-$name.log | grep -E "Test Files|Tests  |# pass|# fail|production errors|PASS|FAIL:|Passed" | tail -3; }
+run install pnpm install --frozen-lockfile
+run server-prebuild pnpm -C autobyteus-server-ts prebuild
+run server-build pnpm -C autobyteus-server-ts build
+run nuxt-prepare pnpm -C autobyteus-web exec nuxt prepare
+run contracts-collab pnpm -C autobyteus-collaboration-stream-contracts test
+run contracts-team pnpm -C autobyteus-team-stream-contracts test
+run server-typecheck pnpm -C autobyteus-server-ts typecheck
+run server-unit pnpm -C autobyteus-server-ts test:unit
+run server-int-prepare pnpm -C autobyteus-server-ts test:integration:prepare
+run server-integration pnpm -C autobyteus-server-ts test:integration
+run web-nuxt pnpm -C autobyteus-web test:nuxt run
+run web-electron pnpm -C autobyteus-web test:electron run
+run web-typecheck pnpm -C autobyteus-web typecheck
+run guard-web pnpm -C autobyteus-web guard:web-boundary
+run guard-loc pnpm -C autobyteus-web guard:localization-boundary
+run audit-loc pnpm -C autobyteus-web audit:localization-literals
+git status --short | grep -v "^??" | head
+echo DONE

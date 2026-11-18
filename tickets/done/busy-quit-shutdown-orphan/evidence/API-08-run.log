@@ -1,0 +1,5 @@
+[+3.1s] eof busy {"cli":56513,"tool":57170,"toolPpid":57169,"toolPgid":57169}
+[+18.1s] eof after eof {"action":"eof","cliPid":56513,"toolPid":57170,"cliExit":null,"samples":[{"afterMs":1000,"cliAlive":true,"toolAlive":true},{"afterMs":3000,"cliAlive":true,"toolAlive":true},{"afterMs":5000,"cliAlive":true,"toolAlive":true},{"afterMs":10000,"cliAlive":true,"toolAlive":true},{"afterMs":15000,"cliAlive":true,"toolAlive":true}]}
+[+24.0s] sigterm busy {"cli":57207,"tool":57833,"toolPpid":57832,"toolPgid":57832}
+[+39.0s] sigterm after sigterm {"action":"sigterm","cliPid":57207,"toolPid":57833,"cliExit":{"code":143,"signal":null,"at":1793363167379,"afterMs":732},"samples":[{"afterMs":1000,"cliAlive":false,"toolAlive":false},{"afterMs":3000,"cliAlive":false,"toolAlive":false},{"afterMs":5000,"cliAlive":false,"toolAlive":false},{"afterMs":10000,"cliAlive":false,"toolAlive":false},{"afterMs":15000,"cliAlive":false,"toolAlive":false}]}
+{"result":"Completed","error":null}

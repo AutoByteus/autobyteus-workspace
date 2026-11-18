@@ -6,8 +6,6 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testTaskTeamLayout,
-  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const {
@@ -57,33 +55,6 @@ describe('agentTeamContextsStore current Team execution view', () => {
     expect(refreshRunNavigationTopologyMock).toHaveBeenCalledWith('team-context-add');
   });
 
-  it('preserves a delegated task Team topology and exact AgentRun lookup', () => {
-    const store = useAgentTeamContextsStore();
-    const buildSquad = testTaskTeamLayout('/BuildSquad', [
-      testAgentNode('/BuildSquad/reviewer', { agentRunId: 'reviewer-run' }),
-      testAgentNode('/BuildSquad/implementer', { agentRunId: 'implementer-run' }),
-    ], { coordinatorAddress: '/BuildSquad/reviewer' });
-    const team = buildTestTeamContext({
-      teamRunId: 'delegating-team-1', coordinatorAddress: '/program_manager',
-      rootChildren: [testAgentNode('/program_manager', { agentRunId: 'program-manager-run' })],
-      delegations: [testDelegation({
-        delegatorAgentRunId: 'program-manager-run', recipientAddress: '/BuildSquad',
-        target: { teamRunId: 'build-squad-run', team: buildSquad },
-      })],
-    });
-    store.addTeamContext(team);
-
-    expect(team.view.getExecutionTree().root_team).toMatchObject({
-      members: [{ kind: 'configured_agent', address: '/program_manager' }],
-      task_executions: [{ kind: 'task_team', address: '/BuildSquad', team_run_id: 'build-squad-run', members: [
-        { kind: 'task_team_agent', address: '/BuildSquad/reviewer', agent_run_id: 'build-squad-run:reviewer-run' },
-        { kind: 'task_team_agent', address: '/BuildSquad/implementer', agent_run_id: 'build-squad-run:implementer-run' },
-      ] }],
-    });
-    expect(team.view.getAgentContext('build-squad-run:reviewer-run')?.state.runId).toBe('build-squad-run:reviewer-run');
-    expect(team.view.getMemberAddress('build-squad-run:implementer-run')).toBe('/BuildSquad/implementer');
-  });
-
   it('focuses exact AgentRun identity while preserving independent composer state', () => {
     const store = useAgentTeamContextsStore();
     const coordinatorContext = testAgentContext({ runId: 'coordinator-run', displayName: 'Coordinator' });
@@ -103,25 +74,6 @@ describe('agentTeamContextsStore current Team execution view', () => {
     expect(team.view.getFocusedAgentRunId()).toBe('worker-run');
     expect(team.view.getAgentContext('coordinator-run')?.requirement).toBe('keep this coordinator draft');
     expect(team.view.getAgentContext('worker-run')?.requirement).toBe('');
-  });
-
-  it('focuses a concrete task Agent without substituting its configured placement', () => {
-    const store = useAgentTeamContextsStore();
-    const team = buildTestTeamContext({
-      teamRunId: 'task-team-1', coordinatorAddress: '/coordinator',
-      rootChildren: [
-        testAgentNode('/coordinator', { agentRunId: 'coordinator-run' }),
-        testAgentNode('/worker', { agentRunId: 'worker-run' }),
-      ],
-      delegations: [testDelegation({ delegatorAgentRunId: 'coordinator-run', recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' } })],
-    });
-    store.addTeamContext(team);
-
-    store.focusMember('task-team-1', 'task-agent-run-1');
-
-    expect(team.view.getFocusedAgentRunId()).toBe('task-agent-run-1');
-    expect(team.view.getAgentContext('task-agent-run-1')?.state.runId).toBe('task-agent-run-1');
-    expect(team.view.getAgentContext('worker-run')?.state.runId).toBe('worker-run');
   });
 
   it('fails closed for a foreign AgentRun focus and removes only the exact root context', () => {

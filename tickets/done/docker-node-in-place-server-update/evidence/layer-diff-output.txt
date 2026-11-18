@@ -1,0 +1,15 @@
+1.5.9-beta.7: 57 layers, 2535.7 MB compressed
+1.5.9-beta.8: 57 layers, 2535.7 MB compressed
+1.5.9-beta.9: 57 layers, 2535.7 MB compressed
+1.5.9-beta.7 -> 1.5.9-beta.8: 30 new layers, 1373.7 MB to download
+   layer 27: 14.0 MB
+   layer 28: 826.7 MB
+   layer 30: 525.5 MB
+   layer 46: 2.5 MB
+   layer 49: 4.0 MB
+1.5.9-beta.8 -> 1.5.9-beta.9: 30 new layers, 1373.6 MB to download
+   layer 27: 14.0 MB
+   layer 28: 826.7 MB
+   layer 30: 525.5 MB
+   layer 46: 2.5 MB
+   layer 49: 4.0 MB

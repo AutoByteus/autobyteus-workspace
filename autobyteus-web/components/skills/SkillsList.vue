@@ -152,6 +152,7 @@ import SkillCard from './SkillCard.vue'
 import SkillSourcesModal from './SkillSourcesModal.vue'
 import SkillNameIssuesBanner from './SkillNameIssuesBanner.vue'
 import { useSkillNamesStore } from '~/stores/skillNamesStore'
+import { useIntegrationsStore } from '~/stores/integrationsStore'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import type { Skill } from '~/types/skill'
 
@@ -191,10 +192,14 @@ const filteredSkills = computed(() => {
 
 const blockingError = computed(() => Boolean(error.value && skills.value.length === 0))
 
+const integrations = useIntegrationsStore()
+
 onMounted(async () => {
   await Promise.all([
     skillStore.fetchAllSkills(),
     skillNames.fetchIssues().catch((e) => console.error('Failed to load skill name issues:', e)),
+    // The cards name an integration skill's "Integration" label (read on this node; a failure leaves the ID).
+    integrations.load(),
   ])
 })
 

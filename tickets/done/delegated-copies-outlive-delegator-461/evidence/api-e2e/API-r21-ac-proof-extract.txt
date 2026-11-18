@@ -1,0 +1,99 @@
+Extract for the Acceptance-Criteria Proof (API-REV-021): pass lines, as the logs print them, from round 21 on the merged state
+339602ff36. Source: /tmp/api461/r21/e01.clean.log (the full server E2E folder: 886 passed, 0 failed) and
+/tmp/api461/r21/live-outlives.log (LIVE-1/LIVE-2 rerun on DeepSeek with the test vault, RUN_DEEPSEEK_E2E=1). Titles cut at 230 characters.
+
+== collaboration-contract-stories
+✓ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts > The collaboration contract's stories, run against the built server (autobyteus-461 acceptance test) > §5.1 S0 … S27: a standalone agent delegates on its node a
+✓ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts > The collaboration contract's stories, run against the built server (autobyteus-461 acceptance test) > §5.2 U0 … U11: a team the user starts delegates
+✓ tests/e2e/projects/collaboration-contract-stories.e2e.test.ts > The collaboration contract's stories, run against the built server (autobyteus-461 acceptance test) > §5.3 O0 … O8: an org the user starts delegates
+== delegator-view-follows-child
+✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, agent d
+✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, team de
+✓ tests/e2e/projects/delegator-view-follows-child.e2e.test.ts > A delegator's open view follows a local delegated run across its Stop and restore (CR-461-067; real HTTP/WS/scoped MCP, scripted AGY) > FOLLOW-A / FOLLOW-T, org del
+== closed-task-input-fence
+✓ tests/e2e/projects/closed-task-input-fence.e2e.test.ts > DS-15: a delegated run whose Task is closed takes no user input (real HTTP/WS/scoped MCP, scripted AGY actor) > FENCE-1 an agent run: refused with base's text while its 
+✓ tests/e2e/projects/closed-task-input-fence.e2e.test.ts > DS-15: a delegated run whose Task is closed takes no user input (real HTTP/WS/scoped MCP, scripted AGY actor) > FENCE-2 a member of a team run: refused with base's text 
+✓ tests/e2e/projects/closed-task-input-fence.e2e.test.ts > DS-15: a delegated run whose Task is closed takes no user input (real HTTP/WS/scoped MCP, scripted AGY actor) > FENCE-3 a run whose Task was deleted is not fenced: it ta
+== task-closure-root-visibility
+✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts > Task DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: live closed event before st
+✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts > Task DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot,
+✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts > Task DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: live closed event, snapshot, inspe
+== task-reactivation-root-visibility
+✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > CLS-E2E-001 standalone Agent root: CANCELLED closes a
+✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > CLS-E2E-002 Agent Team root: the same CANCELLED journ
+✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: target_kind, refused while DON
+✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: the same journey through the Team st
+✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: the same journey through the Org stre
+✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001: a DONE from another root racing the assigner'
+== delegated-copy-model-change
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-001 / DCM-002 / DCM-003: a 
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-004: the standalone Agent r
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-005: the Org root: an agent
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-006: Stop of a Team copy in
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-008: one member of a Team c
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-007: a copy woken while edi
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-009: team root: a stopped a
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-009: org root: a stopped ag
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-009: agent root: a stopped 
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-010: team root: a stopped a
+✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-010: agent root: a stopped 
+== task-copy-idle-lifetime
+✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor) > background copies outliv
+== task-agent-several-tasks.*SEV-E2E-004
+✓ tests/e2e/projects/task-agent-several-tasks.e2e.test.ts > A task agent with several Tasks: parts on one copy, sub-work ownership, give-back, wake (real HTTP/WS/scoped MCP, scripted AGY) > SEV-E2E-004: a copy shut down while id
+== delegated-runs-own-runs-startup
+✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts > delegated runs own runs: the built server upgrades released app data at startup (autobyteus-461 API-E03) > DRO-3 DS-15: restart resume skips a delegat
+✓ tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts > delegated runs own runs: the built server upgrades released app data at startup (autobyteus-461 API-E03) > DRO-1 converts every stored shape at startu
+== task-agent-own-run-startup
+✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with thei
+✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy pres
+✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agen
+== open-task-tree-upgrade-startup
+✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-1 a closure removes the run from the t
+✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-2 an upgraded data root: admitted at s
+✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > A top run's tree is built from its open Tasks: upgrade, start, load, save and restarts (built server, scripted AGY) > OT-3 a Task record that cannot be read hi
+== standalone-unreadable-tree-containment
+✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-1 the other runs work, 
+✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-2 a new server process 
+== stopped-run-model-config-graphql
+✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > updates only a stopped standalone run config and restores the same current package after restart
+✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > updates exact stopped Team scopes and preserves the current V2 package across restart
+✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's curr
+✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > MSR-002: a new agent run and a new Team run store only the settings the model declares
+✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > stopped run model-config GraphQL lifecycle > MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read
+== runtime-switch-native-built-server.*RS-03
+✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-03: a host with a delegated copy saves its own runtime and the copy's mo
+== collaboration-model-contract
+✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts > Collaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CM-E2E-1 Agent root: delegate an outside Agent then me
+✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts > Collaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CM-E2E-2 Team root: delegating a teammate or the own T
+✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts > Collaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CM-E2E-3 Org root: siblings are delegable; a mounted T
+== own-stream-turns-read-once
+✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts > A run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY) > OST-1 / OST-2: a delegated r
+✓ tests/e2e/projects/own-stream-turns-read-once.e2e.test.ts > A run's own stream shows each turn once: delegated, reconnected, stopped, restored, interrupted, error-ended (SR-087/089; scripted AGY) > OST-3: an error-ended turn r
+== team-tab-subtree-messages
+✓ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts > The Team tab: one in-view rule over the open subtree, live and read (real HTTP/WS/scoped MCP, scripted AGY actor) > TT-1 / TT-2: a two-hop message in the top run's tab
+== unclean-shutdown-delegated-team-restore.*USR-5
+✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads ever
+== remote-delegation-two-server.*RC-(05|13|43|44|45|46) 
+✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-05 AC-104/105: a standalone delegator dele
+✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-43 461 AC-016 / REQ-013 / SR-066: with eac
+✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-13 AC-106/REQ-108: after beta restarts, a 
+✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-44 461 AC-008 / SR-067 (DS-13): archive an
+✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-45 461 CR-461-094 (SR-083): a peer run's s
+✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-46 461 G-D1 (SR-088, SR-089, CR-461-099) a
+== application-reload-repair
+✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-01 an ACTIVE application stays usable after a package reload (AC-001)
+✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)
+✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-03 imported while Codex is signed out, it is quarantined with the reason; after sig
+✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-04 after the worker process crashes, a repair resets it to stopped and the applicat
+✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts > Application reload and repair (real studio server, Brief Studio, scripted CLIs) > RE-05 a run event recorded while the application is quarantined is dispatched after a 
+== ad-hoc-task-delegation
+✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: @ resolves, described delegatio
+✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: same journey through the Team stream 
+✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: same journey through the Org stream
+== project-task-context-files-delegation
+✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts > Agent-attached Task context files reach the worker and never break DONE or ad-hoc Tasks (real HTTP/WS/scoped MCP, scripted AGY actor) > CTX-E2E-003: the Ma
+== delegated-run-outlives-delegator-live (rerun, live DeepSeek)
+✓ tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts > A delegated run outlives its delegator's Stop on a real runtime (AC-001; live DeepSeek, scripted delegator) > LIVE-1 an Agent child's real turn finishes af
+✓ tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts > A delegated run outlives its delegator's Stop on a real runtime (AC-001; live DeepSeek, scripted delegator) > LIVE-2 a Team child's coordinator's real turn
+Tests  2 passed (2)

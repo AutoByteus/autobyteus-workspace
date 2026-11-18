@@ -1,0 +1,58 @@
+[
+ {
+  "state": "S26",
+  "cases": [
+   "T-5"
+  ],
+  "diffs": [
+   "the step failed: AssertionError: Run 'project_task_manager_f25d253020f24badad28da87a7d5167d' deleted permanently.: expected true to be false // Object.is equality\n    at S26 (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:696:38)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at runStory (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:285:13)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/collaboration-contract-stories.e2e.test.ts:617:5\n    at f"
+  ],
+  "known": []
+ },
+ {
+  "state": "S27",
+  "cases": [
+   "T-4",
+   "T-8",
+   "R-11"
+  ],
+  "diffs": [
+   "A:memory/run_history_index.json[research_agent_9b10].terminatedAt: expected a string like \"2026-11-10T20:40:00.000Z\", got null",
+   "A:ad-hoc-tasks/adhoc_task_7c7c/task.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-pVb4Ca/story-5.1-A/ad-hoc-tasks/ad_hoc_task_45138a2a-895c-4511-9fb2-e1e255fb8e67/task.json)",
+   "A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json: missing (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-pVb4Ca/story-5.1-A/ad-hoc-tasks/ad_hoc_task_45138a2a-895c-4511-9fb2-e1e255fb8e67/agent_run_resources.json)"
+  ],
+  "known": [
+   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.schemaVersion: missing",
+   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[2].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.members[3].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.schemaVersion: missing",
+   "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"inherited\",\"fallbacks\":[]})",
+   "A:memory/agents/image_maker_33f0/run_metadata.json.llmConfig: expected an object, got null",
+   "A:memory/agents/image_maker_33f0/run_metadata.json.preparedAt: not in the contract (\"2026-11-13T10:33:11.847Z\")",
+   "A:memory/agents/image_maker_33f0/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-14T10:33:11.847Z\")",
+   "A:memory/agents/image_maker_33f0/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+   "A:memory/agents/upscaler_e1a1/run_metadata.json.llmConfig: expected an object, got null",
+   "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedAt: not in the contract (\"2026-11-13T10:36:47.644Z\")",
+   "A:memory/agents/upscaler_e1a1/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-14T10:36:47.644Z\")",
+   "A:memory/agents/upscaler_e1a1/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+   "A:memory/agents/image_maker_88e8/run_metadata.json.llmConfig: expected an object, got null",
+   "A:memory/agents/image_maker_88e8/run_metadata.json.preparedAt: not in the contract (\"2026-11-13T10:37:49.013Z\")",
+   "A:memory/agents/image_maker_88e8/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-14T10:37:49.013Z\")",
+   "A:memory/agents/image_maker_88e8/run_metadata.json.applicationExecutionContext: not in the contract (null)",
+   "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json.schemaVersion: missing",
+   "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json.rootTeam.members[0].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json.rootTeam.members[1].launchSource: not in the contract ({\"origin\":\"agent_default\",\"fallbacks\":[]})",
+   "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json.rootTeam.defaultLaunchSource: not in the contract ({\"origin\":\"team_default\",\"fallbacks\":[]})",
+   "B:memory/team_run_history_index.json[research_team_77aa].workspaceRootPath: expected \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-pVb4Ca/story-5.1-A/workspace\", got \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/contract-stories-e2e-pVb4Ca/story-5.1-B/temp_workspace\"",
+   "A:memory/agents/research_agent_9b10/run_metadata.json.llmConfig: expected an object, got null",
+   "A:memory/agents/research_agent_9b10/run_metadata.json.preparedAt: not in the contract (\"2026-11-13T10:40:22.755Z\")",
+   "A:memory/agents/research_agent_9b10/run_metadata.json.preparedExpiresAt: not in the contract (\"2026-11-14T10:40:22.755Z\")",
+   "A:memory/agents/research_agent_9b10/run_metadata.json.applicationExecutionContext: not in the contract (null)"
+  ]
+ }
+]

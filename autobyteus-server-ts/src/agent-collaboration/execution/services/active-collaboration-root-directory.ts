@@ -1,15 +1,5 @@
-import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import type { TaskExecutionStopResult } from "../task/task-execution-resource-port.js";
-import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import {
-  cloneCollaborationMemberExecutionIdentity,
-  cloneRootExecutionIdentity,
-  rootExecutionIdentityKey,
-  sameRootExecutionIdentity,
-  type CollaborationMemberExecutionIdentity,
-  type RootExecutionIdentity,
-} from "../domain/root-execution-identity.js";
+import { cloneRootExecutionIdentity, rootExecutionIdentityKey, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 
 export type ActiveRootMessageSender = Readonly<{
   kind: "agent";
@@ -26,16 +16,18 @@ export type ExactAgentMessageInput = Readonly<{
 }>;
 
 export interface ActiveRootMessageBoundary {
-  /** Same-root membership, including shut-down delegated children that delivery can wake. */
+  /** Whether the agent is one of this run's own agents. */
   hasAgentExecution(agentRunId: string): boolean;
-  /** A task execution's own live status (Agent status, or folded Team status); wakes nothing. */
-  taskExecutionStatus?(reference: TaskExecutionReference): AgentExecutionStatus;
-  /** Stops exactly these closed Task agent runs hosted in this root. */
-  releaseTaskExecutions?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]>;
+  /** DS-2: this root as the sender of a message to another run (its own log only). */
+  prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
+  commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
-  /** The coordinator agent run of this root's Team copy with that team run ID; `null` when it hosts none. Reads only. */
+  /** The coordinator agent run of this team run, or of a peer team run it delegated to; `null` otherwise. Reads only. */
   teamCoordinatorOf?(teamRunId: string): string | null;
 }
+
+/** Where a live agent run sits in its own root: a standalone run's agent, or a Team or Org member (autobyteus-461 DS-9). */
+export type CollaborationRunPlace = "host" | "member";
 
 export type ActiveRootRegistrationReservation = Readonly<{
   root: RootExecutionIdentity;
@@ -50,6 +42,28 @@ export class ActiveCollaborationRootDirectory {
     boundary: ActiveRootMessageBoundary;
   }>>();
   private readonly reserved = new Set<string>();
+  private readonly registrationListeners = new Map<string, Set<(registered: boolean) => void>>();
+
+  /**
+   * Told when a run's root is registered (it became managed) or unregistered (it ended), by the run's identity: an open
+   * view follows its run's lifecycle this way without holding the root (autobyteus-461 SR-046).
+   */
+  onRegistrationChanged(rootInput: RootExecutionIdentity, listener: (registered: boolean) => void): () => void {
+    const key = rootExecutionIdentityKey(rootInput);
+    const listeners = this.registrationListeners.get(key) ?? new Set<(registered: boolean) => void>();
+    listeners.add(listener);
+    this.registrationListeners.set(key, listeners);
+    return () => {
+      listeners.delete(listener);
+      if (!listeners.size && this.registrationListeners.get(key) === listeners) this.registrationListeners.delete(key);
+    };
+  }
+
+  private notifyRegistration(key: string, registered: boolean): void {
+    for (const listener of [...this.registrationListeners.get(key) ?? []]) {
+      try { listener(registered); } catch (error) { console.warn("A root registration listener failed:", error); }
+    }
+  }
 
   reserve(
     rootInput: RootExecutionIdentity,
@@ -73,6 +87,7 @@ export class ActiveCollaborationRootDirectory {
         }
         this.active.set(key, Object.freeze({ root, boundary }));
         state = "committed";
+        this.notifyRegistration(key, true);
       },
       release: () => {
         if (state === "released") return;
@@ -89,8 +104,8 @@ export class ActiveCollaborationRootDirectory {
   }
 
   /**
-   * The coordinator agent run of the Team copy with this team run ID in any active root, for
-   * `send_message_to` guidance (it reaches agents only); `null` when no active root hosts it.
+   * The coordinator agent run of the team run with this ID, as an active root knows it (its own, or a peer team run it
+   * delegated to), for `send_message_to` guidance (it reaches agents only); `null` when no active root knows it.
    */
   findTeamCoordinator(teamRunId: string): string | null {
     for (const { boundary } of this.active.values()) {
@@ -100,11 +115,33 @@ export class ActiveCollaborationRootDirectory {
     return null;
   }
 
+  /**
+   * The active root holding this agent run and its place there (autobyteus-285, restart resume); `null` when no
+   * active root holds it (application- or system-owned runs). Reads only. One root holds a run; if several boundaries
+   * claim it, that is logged and the host claim wins.
+   */
+  placeOf(agentRunIdInput: string): Readonly<{ root: RootExecutionIdentity; place: CollaborationRunPlace }> | null {
+    const agentRunId = agentRunIdInput.trim();
+    const claims = [...this.active.values()]
+      .filter(({ boundary }) => boundary.hasAgentExecution(agentRunId))
+      .map(({ root, boundary }) => Object.freeze({
+        root: cloneRootExecutionIdentity(root),
+        place: root.rootSubjectKind === "agent" && root.rootRunId === agentRunId ? "host" as const : "member" as const,
+      }));
+    if (claims.length > 1) {
+      console.warn(`Agent run '${agentRunId}' is claimed by ${claims.length} active roots: `
+        + claims.map((claim) => `${claim.root.rootSubjectKind}:${claim.root.rootRunId}`).join(", "));
+    }
+    const rank = { host: 0, member: 1 } as const;
+    return [...claims].sort((a, b) => rank[a.place] - rank[b.place])[0] ?? null;
+  }
+
   unregister(root: RootExecutionIdentity, expected: ActiveRootMessageBoundary): boolean {
     const key = rootExecutionIdentityKey(root);
     const current = this.active.get(key);
     if (!current || current.boundary !== expected || !sameRootExecutionIdentity(current.root, root)) return false;
     this.active.delete(key);
+    this.notifyRegistration(key, false);
     return true;
   }
 
@@ -117,7 +154,3 @@ export class ActiveCollaborationRootDirectory {
 let processDirectory: ActiveCollaborationRootDirectory | null = null;
 export const getActiveCollaborationRootDirectory = (): ActiveCollaborationRootDirectory =>
   processDirectory ??= new ActiveCollaborationRootDirectory();
-export const resetActiveCollaborationRootDirectory = (): void => {
-  processDirectory?.clear();
-  processDirectory = null;
-};

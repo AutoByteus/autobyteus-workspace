@@ -1,4 +1,7 @@
+import { randomUUID } from "node:crypto";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
+import { applySelectionToConfiguredMember } from "../../run-history/domain/runtime-selection-rule.js";
 import type {
   ConfiguredAgentExecutionNode,
   ConfiguredExecutionNode,
@@ -6,14 +9,16 @@ import type {
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
 import type {
-  AgentOrgRunModelConfigPatch,
+  AgentOrgRunSelectionPatch,
   TeamWorkspacePatch,
-  AgentOrgRunModelConfigScopeKind,
+  AgentOrgRunSelectionScopeKind,
 } from "../domain/agent-org-run-config.js";
 
-export type AgentOrgRunModelConfigTarget = Readonly<{
-  patch: AgentOrgRunModelConfigPatch;
+export type AgentOrgRunSelectionTarget = Readonly<{
+  patch: AgentOrgRunSelectionPatch;
   launchConfiguration: AgentLaunchConfiguration;
+  /** The member's pending switch before this save (a default scope has none). */
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
 }>;
 
 export class AgentOrgRunConfigNotFound extends Error {}
@@ -22,41 +27,48 @@ export class AgentOrgWorkspacePatchError extends Error {
 }
 
 const configuredScope = (tree: AgentOrgRunExecutionTreeFile, address: string): Readonly<{
-  kind: AgentOrgRunModelConfigScopeKind;
+  kind: AgentOrgRunSelectionScopeKind;
   launchConfiguration: AgentLaunchConfiguration;
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
 }> | null => {
   if (address === "/") return { kind: "CONFIGURED_ORG", launchConfiguration: tree.rootOrg.defaultLaunchConfiguration };
+  const agentScope = (agent: ConfiguredAgentExecutionNode) => ({ kind: "CONFIGURED_AGENT" as const,
+    launchConfiguration: agent.launchConfiguration, ...(agent.pendingRuntimeSwitch ? { pendingRuntimeSwitch: agent.pendingRuntimeSwitch } : {}) });
   for (const member of tree.rootOrg.members) {
     if (member.address === address) return "agentRunId" in member
-      ? { kind: "CONFIGURED_AGENT", launchConfiguration: member.launchConfiguration }
+      ? agentScope(member)
       : { kind: "CONFIGURED_TEAM", launchConfiguration: member.defaultLaunchConfiguration };
     if ("teamRunId" in member) {
       const agent = member.members.find((candidate) => candidate.address === address);
-      if (agent) return { kind: "CONFIGURED_AGENT", launchConfiguration: agent.launchConfiguration };
+      if (agent) return agentScope(agent);
     }
   }
   return null;
 };
 
-export const listAgentOrgRunModelConfigScopes = (tree: AgentOrgRunExecutionTreeFile): readonly Readonly<{
-  scopeKind: AgentOrgRunModelConfigScopeKind;
+export const listAgentOrgRunSelectionScopes = (tree: AgentOrgRunExecutionTreeFile): readonly Readonly<{
+  scopeKind: AgentOrgRunSelectionScopeKind;
   scopeAddress: string;
   launchConfiguration: AgentLaunchConfiguration;
-}>[] => Object.freeze([
-  { scopeKind: "CONFIGURED_ORG", scopeAddress: "/", launchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
-  ...tree.rootOrg.members.flatMap((member) => "agentRunId" in member
-    ? [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: member.address, launchConfiguration: member.launchConfiguration }]
-    : [
-        { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: member.address, launchConfiguration: member.defaultLaunchConfiguration },
-        ...member.members.map((agent) => ({ scopeKind: "CONFIGURED_AGENT" as const,
-          scopeAddress: agent.address, launchConfiguration: agent.launchConfiguration })),
-      ]),
-]);
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
+}>[] => {
+  const agentScope = (agent: ConfiguredAgentExecutionNode) => ({ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: agent.address,
+    launchConfiguration: agent.launchConfiguration, ...(agent.pendingRuntimeSwitch ? { pendingRuntimeSwitch: agent.pendingRuntimeSwitch } : {}) });
+  return Object.freeze([
+    { scopeKind: "CONFIGURED_ORG" as const, scopeAddress: "/", launchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
+    ...tree.rootOrg.members.flatMap((member) => "agentRunId" in member
+      ? [agentScope(member)]
+      : [
+          { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: member.address, launchConfiguration: member.defaultLaunchConfiguration },
+          ...member.members.map(agentScope),
+        ]),
+  ]);
+};
 
-export const resolveAgentOrgRunModelConfigTargets = (
+export const resolveAgentOrgRunSelectionTargets = (
   tree: AgentOrgRunExecutionTreeFile,
-  patches: readonly AgentOrgRunModelConfigPatch[],
-): readonly AgentOrgRunModelConfigTarget[] => {
+  patches: readonly AgentOrgRunSelectionPatch[],
+): readonly AgentOrgRunSelectionTarget[] => {
   const seen = new Set<string>();
   return patches.map((patch) => {
     const address = patch.scopeAddress?.trim();
@@ -71,44 +83,54 @@ export const resolveAgentOrgRunModelConfigTargets = (
       || !(patch.llmConfig === null || (typeof patch.llmConfig === "object" && !Array.isArray(patch.llmConfig)))) {
       throw new Error(`Configured AgentOrg scope '${address}' has an invalid model selection.`);
     }
-    return { patch: { ...patch, scopeAddress: address }, launchConfiguration: scope.launchConfiguration };
+    return { patch: { ...patch, scopeAddress: address }, launchConfiguration: scope.launchConfiguration,
+      ...(scope.pendingRuntimeSwitch ? { pendingRuntimeSwitch: scope.pendingRuntimeSwitch } : {}) };
   });
 };
 
 const replaceLaunchConfiguration = (
   current: AgentLaunchConfiguration,
-  patch: AgentOrgRunModelConfigPatch,
+  patch: AgentOrgRunSelectionPatch,
 ): AgentLaunchConfiguration => Object.freeze({
   ...current,
+  runtimeKind: patch.runtimeKind,
   llmModelIdentifier: patch.llmModelIdentifier,
   llmConfig: patch.llmConfig === null ? null : structuredClone(patch.llmConfig),
 });
 
 const patchAgent = (
   agent: ConfiguredAgentExecutionNode,
-  patches: ReadonlyMap<string, AgentOrgRunModelConfigPatch>,
+  patches: ReadonlyMap<string, AgentOrgRunSelectionPatch>,
+  newSwitchId: () => string,
 ): ConfiguredAgentExecutionNode => {
   const patch = patches.get(agent.address);
-  return patch ? { ...agent, launchConfiguration: replaceLaunchConfiguration(agent.launchConfiguration, patch) } : agent;
+  return patch ? applySelectionToConfiguredMember(agent, patch, newSwitchId()) : agent;
 };
 
 const patchMember = (
   member: ConfiguredExecutionNode,
-  patches: ReadonlyMap<string, AgentOrgRunModelConfigPatch>,
+  patches: ReadonlyMap<string, AgentOrgRunSelectionPatch>,
+  newSwitchId: () => string,
 ): ConfiguredExecutionNode => {
-  if ("agentRunId" in member) return patchAgent(member, patches);
+  if ("agentRunId" in member) return patchAgent(member, patches, newSwitchId);
   const patch = patches.get(member.address);
   const team: ConfiguredTeamExecutionNode = {
     ...member,
     ...(patch ? { defaultLaunchConfiguration: replaceLaunchConfiguration(member.defaultLaunchConfiguration, patch) } : {}),
-    members: member.members.map((agent) => patchAgent(agent, patches)),
+    members: member.members.map((agent) => patchAgent(agent, patches, newSwitchId)),
   };
   return team;
 };
 
-export const applyAgentOrgRunModelConfigPatches = (
+/**
+ * Applies the saves of a stopped Org's scopes. A configured Agent (direct, or of a mounted Team) goes through the shared
+ * switch rule (switch, undo or model-only edit; `newSwitchId` names a new switch); the Org's and a mounted Team's default
+ * scopes change the default launch only.
+ */
+export const applyAgentOrgRunSelectionPatches = (
   tree: AgentOrgRunExecutionTreeFile,
-  targets: readonly AgentOrgRunModelConfigTarget[],
+  targets: readonly AgentOrgRunSelectionTarget[],
+  newSwitchId: () => string = randomUUID,
 ): AgentOrgRunExecutionTreeFile => {
   const patches = new Map(targets.map(({ patch }) => [patch.scopeAddress, patch]));
   const rootPatch = patches.get("/");
@@ -117,7 +139,7 @@ export const applyAgentOrgRunModelConfigPatches = (
     rootOrg: {
       ...tree.rootOrg,
       ...(rootPatch ? { defaultLaunchConfiguration: replaceLaunchConfiguration(tree.rootOrg.defaultLaunchConfiguration, rootPatch) } : {}),
-      members: tree.rootOrg.members.map((member) => patchMember(member, patches)),
+      members: tree.rootOrg.members.map((member) => patchMember(member, patches, newSwitchId)),
     },
   };
 };

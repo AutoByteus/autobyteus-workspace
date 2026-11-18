@@ -1,0 +1,10 @@
+# IMP-02 server typecheck gate
+# Command: node ./scripts/typecheck.mjs  (in autobyteus-server-ts; `pnpm -C autobyteus-server-ts typecheck` after prepare:source)
+# Code: commit 832f0a4572 content; macOS, 2026-11-10
+# The baseline shrank by one (tests/unit/memory-search/memory-run-discovery.test.ts lost its one error) with
+# `node ./scripts/typecheck.mjs --update-baseline`; typecheck-baseline.json is in the commit.
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.1s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 24.9s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS

@@ -1,0 +1,30 @@
+IMP-94 — CR-461-092 (F-73): the phone probe, mobile-shell-probe.mjs, the twelve failing cases
+Code: 88234df375 (server dist and the phone bundle built from it: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web).
+The probe owns its two servers (alpha, beta), data roots, ports, nuxt dev and Chrome; scripted AGY CLI and recorded Grok ACP replay.
+
+## Run 1: --cases=MSP-02,MSP-03,MSP-05,MSP-16
+[mobile-shell] MSP-02 Pass
+[mobile-shell] MSP-03 Fail: each kind opens its agent's conversation, a message from the phone reaches it, ← keeps the scroll and marks the row
+[mobile-shell] MSP-05 Pass
+[mobile-shell] MSP-16 Pass
+MSP-03's one failure: reached=false for the task agent while shownOnPhone=true; the probe read the task agent through its
+delegator's member projection (agentRunCollaborationMemberProjection). Under rule 2 a delegated run is read by its own run ID.
+The probe now reads it with getRunProjection (fc1da7d71f); the phone's own path was not changed.
+
+## Run 2: --cases=MSP-03,MSP-06,MSP-08,MSP-11,MSP-14,MSP-17,MSP-20,MSP-33,MSP-43 (probe fix applied)
+[mobile-shell] MSP-03 Pass
+[mobile-shell] MSP-06 Pass
+[mobile-shell] MSP-08 Pass
+[mobile-shell] MSP-11 Pass
+[mobile-shell] MSP-14 Pass
+[mobile-shell] MSP-17 Fail: Timed out waiting for the Org's task agent
+[mobile-shell] MSP-20 Fail: running shows on the desktop and the phone within the push budget
+[mobile-shell] MSP-33 Pass
+[mobile-shell] MSP-43 Pass
+
+MSP-20 'running' step: the node's own status never showed child A running to the probe (nodeMs: null), so neither window
+could be timed; the 'idle again' step reached the desktop 1 ms and the phone 4 ms after the node, with no status poll
+(statusPolls desktop 0, phone 0; run-status sockets desktop 2, phone 1). A scripted turn shorter than the probe's sampling.
+MSP-17: 'Timed out waiting for the Org's task agent': the probe waits for the delegated row in getAgentOrgRunConfig's
+tree; under rule 2 the Org's configuration read carries no delegated runs (they are rows of its view). A probe read.
+Neither is the phone's rows or open path. F-73's rows (MSP-02, -14) and Team screens (MSP-05, -08, -11, -16, -33, -43) pass.

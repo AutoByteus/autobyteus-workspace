@@ -1,0 +1,5 @@
+# API-13 temporary probe (saved as API-13-round2-journey-probe.e2e.test.ts.txt; deleted after): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_API06_JOURNEY=1 API06_FIXTURES=/tmp/ab328/fixtures API06_RECEIPT=<evidence>/API-13-round2-receipt.json pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-api13-round2-journey.e2e.test.ts --no-watch --reporter=verbose
+# commit 17e2dfbc6c, 2026-10-30T05:59:01Z, macOS arm64, node v22.23.1; 240 s per turn; fixtures: picture.png green, recording.m4a says hello, clip.mp4 yellow, notes.txt 5 lines, build.log = copy of tickets/done/agent-idle-status-lifecycle/execution-evidence/57-electron-build-macos-v1.4.19-personal.log (one NUL at byte 8200)
+ ✓ tests/e2e/runtime/zz-api13-round2-journey.e2e.test.ts > API-06 read_file media journey on real providers > API-13: round 2 journey 192746ms
+      Tests  1 passed | 2 skipped (3)
+exit: 0

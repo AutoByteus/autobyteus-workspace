@@ -1,0 +1,20 @@
+# Cleanup of this round's test resources
+# Date: 2026-11-06T18:00:00Z
+
+abx405-api-node
+abx405-api-node-workspace
+abx405-api-node-data
+abx405-api-node-root-home
+abx405-api-node-chromium-profile
+abx405-api-node-server-packages
+containers abx405*: []
+volumes abx405*: []
+Untagged: mcr.microsoft.com/dotnet/runtime-deps:8.0
+Untagged: docker:cli
+image 69e9c09535fa (pulled by run 1 of API-06) present: no
+local beta tag -> sha256:9c5aa01bb2fc16bd84c43e11e5cf47a24968831c35351f54c353662991b53cdb (restored to the pre-run image)
+isolated instances recorded by this run: iso-62503-d542 stopped (API-05-10)
+user nodes:
+autobyteus-server-2	autobyteus/autobyteus-server:beta	Up 2 hours
+autobyteus-server-1	autobyteus/autobyteus-server:beta	Up 2 hours
+autobyteus-server-0	autobyteus/autobyteus-server:beta	Up 2 hours

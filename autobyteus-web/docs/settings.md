@@ -84,8 +84,14 @@ The remote AutoByteus LLM provider has been removed: Settings shows no
 model selection that names one of its former models stays visible as
 unavailable until the user picks another model. A leftover
 `AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary
-custom setting that can be deleted. The native AutoByteus runtime and the
-"AutoByteus VNC Hosts" card are unaffected.
+custom setting that can be deleted. The native AutoByteus runtime is
+unaffected.
+
+The "AutoByteus VNC Hosts" endpoint card and its `AUTOBYTEUS_VNC_SERVER_HOSTS`
+setting are retired: the VNC Viewer reaches a Docker node's desktop through
+the node's own server, so there is nothing to configure. A value saved
+earlier shows under Server Settings as an ordinary custom setting that can be
+deleted. The endpoint cards are LM Studio and Ollama.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
@@ -201,16 +207,114 @@ per-team, runtime, provider, or frontend-renderer preference.
   Rebinding the window reads the newly bound server's effective value, so two
   nodes can legitimately retain different settings without cross-node leakage.
 
+## Server Settings: Context File Size Limits
+
+Two node settings bound the size of a context file (a file attached to a message or a Project
+Task); terms are in [GLOSSARY.md](../../GLOSSARY.md) "Context Files".
+
+| Setting | Applies to | Default | Allowed |
+| --- | --- | --- | --- |
+| `AUTOBYTEUS_CONTEXT_FILE_AUDIO_VIDEO_MAX_MB` | audio and video files (the audio/video limit) | 2048 (2 GiB) | whole MiB, 1–10240 |
+| `AUTOBYTEUS_CONTEXT_FILE_OTHER_MAX_MB` | every other accepted file, images and documents included (the other-file limit) | 25 | whole MiB, 1–1024 |
+
+- They are ordinary predefined server settings: set them as environment variables or in Settings ->
+  Server Settings. A predefined setting that has no value is not listed (the node uses its default),
+  so on a node that never set them the owner adds each key with the advanced list's new-setting row;
+  once it has a value it is listed with its description. The server refuses an invalid value on save
+  and uses the default for an invalid value that is already present.
+- A change applies to the next upload on that node without a restart; the composer reads the
+  limits at each pick (`GET /rest/context-files/size-limits`), so it needs no reload either.
+- Disk use grows with large videos: lower the audio/video limit to cap it. Draft uploads of any size
+  are removed after 24 hours if never sent.
+- The native AutoByteus runtime does not send a local media file larger than 25 MiB inline in a
+  model request, whatever these limits are; the agent opens it from its path.
+
+## Server Settings: Claude Runtime
+
+Settings -> Server Settings -> Basics contains a node-bound **Claude runtime**
+card (`components/settings/ClaudeRuntimeCard.vue`), placed after the Codex full
+access card. Its one switch, **One-hour prompt cache**, asks Claude Code to keep
+the conversation cache for an hour instead of 5 minutes when Claude Code is
+billed through API credits or an API key.
+
+- The switch reads `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` from the
+  server-settings store. Never saved (absent) or any value other than `false`
+  shows it on, matching the server default.
+- Toggling saves `true` or `false` through `serverSettingsStore.updateServerSetting`
+  at once. The switch is disabled while saving; on failure it returns to the
+  previous state and shows the error under the notes.
+- The card explains the cost trade-off in plain words (writing costs a bit more,
+  reading the same; it saves money when agents wait more than 5 minutes), notes
+  that agent conversations on a Claude subscription do not change, that a
+  `promptCacheTtl` in the user's own Claude Code settings takes precedence, and
+  that the change applies to Claude agent sessions started afterwards.
+- Server behavior, precedence and the Claude Code variable are described in
+  [LLM Management: Claude Agent SDK Prompt Cache Lifetime](../../autobyteus-server-ts/docs/modules/llm_management.md#claude-agent-sdk-prompt-cache-lifetime).
+
+## Server Settings: Internal Agents
+
+Settings -> Server Settings -> Basics contains an **Internal agents** card
+(`components/settings/ShowInternalAgentsCard.vue`) with one switch, **Show
+internal agents**. Internal agents are the system's own helpers, such as the
+Model Router (an agent definition with `"internal": true`).
+
+- The switch reads `AUTOBYTEUS_SHOW_INTERNAL_AGENTS` from the server-settings
+  store; never saved (absent) shows it off, matching the server default.
+- Toggling saves `true` or `false` at once, then reloads the agent definitions
+  (`agentDefinitionStore.reloadAllAgentDefinitions`) and the run history
+  (`runHistoryStore.refreshTreeQuietly`), because the server applies the setting
+  on the next read. On failure the switch returns to its previous state and
+  shows the error.
+- While on, the Agents page marks internal agents with an **Internal** badge
+  (`AgentCard.vue`).
+- Server rule and the surfaces it covers:
+  [Agent Definition: Internal Agents](../../autobyteus-server-ts/docs/modules/agent_definition.md#internal-agents).
+- Tests: `components/settings/__tests__/ShowInternalAgentsCard.spec.ts`,
+  `components/agents/__tests__/AgentCard.spec.ts`;
+  `tests/e2e/internal-agents-probe.mjs` (`pnpm test:e2e:internal-agents`, after a
+  server build) drives the Agents page, featured picker, run history and the
+  switch in a real browser against a real node with a file-authored internal
+  agent.
+
+## Server Settings: GitHub (moved)
+
+GitHub is no longer set up in Settings: Server Settings → Basics has no GitHub
+card. Integrations (GitHub first) are imported, connected and given to agents on
+the [Integrations page](./integrations.md).
+
 ## Nodes: Manage Nodes (one list)
+
+Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
+(`nodeId`, `srv_…`); a *peer* is a remote node registered with this node; an *entry* is this
+desktop's (or phone's) own record of a node it can open, with its own entry ID (`entryId`).
+In the web code `nodeId` always means a node's ID; windows, registry changes and the phone
+session refer to an entry by `entryId`.
 
 Nodes -> Manage Nodes (`components/settings/NodeManager.vue`, tabs Manage Nodes, Memory Sync,
 Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, adds a node
 once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
 approved UI/UX spec is the design repository's `tickets/done/one-nodes-tab/ui-ux-spec.md`).
 There is no Remote Collaboration tab; `?nodeTab=remoteCollaboration` opens Manage Nodes. The
-server side is described in the server's `docs/modules/remote_collaboration.md`.
+server side is described in the server's `docs/modules/remote_collaboration.md`. Its look is
+the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-spec.md`
+(autobyteus-363); behavior, states and copy are those of 268 and 305.
 
-- **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node, its
+- **Layout.** Two cards in one frame (white, `border-slate-200`, `rounded-2xl`): "This node"
+  and "Nodes". The Nodes card is a CSS size container (`.nodes-card`, `container-type:
+  inline-size`), and each row lays out its cells by the card's width, not the window's
+  (`NodeRow.vue`, `@container`): from 64 rem one line, who · server · offer · collaboration ·
+  actions; from 38 rem who · collaboration · actions with server and offer beneath; below 38
+  rem stacked (who and the icons, then server, offer and collaboration, indented to the name).
+- **One control, one notice shape.** The remote-collaboration icon and its switch are one
+  capsule (`NodeCollaborationSwitch.vue`), the same in every row and in the add band. Every
+  line under a row (the fixing line, the server notice) is one notice: a tone icon
+  (`NodeNoticeIcon.vue`: info, warn, error, ok), its text and at most one button; the
+  connection details, the Docker hint and the duplicate message use the same icons. Words
+  carry the meaning; there are no text marks outside the confirmation dialog, which keeps
+  its own (• ✓ ✗ ○).
+
+- **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node (name, type,
+  address), its
   remote collaboration switch (`ENABLE_REMOTE_COLLABORATION`, off by default, through
   `remoteCollaborationCapabilityStore`, a `createBoundNodeCapabilityStore` capability), its
   explanation and the collapsed "How remote collaboration works" rules (any shared Agent or
@@ -223,32 +327,82 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   windows this desktop can open, addresses as the desktop reaches them) and this node's peers
   (`remoteCollaborationStore`, the nodes its agents may use, addresses as this node's server
   reaches them). The page joins them by node ID (`srv_…`): a desktop entry remembers its
-  node's ID (`NodeProfile.serverInstanceId`, learned by the window's identity probe of
-  `/rest/remote-access/status` and stored with the registry change `identify`). A node never
+  node's ID (`NodeEntry.nodeId`, learned by the window's identity probe of
+  `/rest/remote-access/status` and stored with the registry change `identify`). The desktop's
+  list is stored in `userData/node-registry.json` (in browser mode, the browser key
+  `autobyteus.node_registry`); each entry has its own `id`, the entry ID that windows and
+  registry changes refer to as `entryId`. A node never
   reached is its own row until it is reached. A row's name is the peer name when the node is
   a peer, the desktop label otherwise. This node's peers that are not in the desktop's list
   are rows too; their Open appears once this window reaches them, and the first Open adds a
   desktop entry. Two desktop entries of one node join into one row.
 - **A row**: a dot (reachable now, not reachable, a different node, checking), the name
-  (click to rename; the embedded node's is not editable), the address, the collaboration
-  switch with its icon, Open and Remove icons, and at most one line with one fixing button
+  (click to rename; the embedded node's is not editable), the address, the server version
+  (remote nodes), the offer summary, the collaboration capsule, Open and Remove icons (a slot is
+  kept for Open only when the host can open windows, and for Remove on the embedded node), and
+  at most one notice with one fixing button
   (`stores/nodeRowStatus.ts`, by priority: a step not finished [Try again]; not reachable
   with its cause [Check again]; a different node [Change address]; registered only by the
   other node [Turn on]; not collaborating [Turn on]; off there [Turn on there]; not
   registered there [Register this node there]). With this node's switch off, rows show no
-  warnings. Once collaboration is on, the 267 summary line under the row opens the offer
-  list and the connection details (`NodeConnectionDetails.vue`): both directions with the
-  address each side uses, Change address, the node ID and Check again.
+  warnings. Once collaboration is on, the row's offer summary opens one framed panel under the
+  row with the offer list and the connection details (`NodeConnectionDetails.vue`): both
+  directions with the address each side uses, Change address, the node ID and Check again.
 - **When nodes are asked.** Every row once when the tab opens, whatever this node's switch
   says; a row when it is added and on Check again; every row when the switch changes.
-  Nothing polls. "This node → it" is this node's server asking the peer
+  Nothing polls, except a row's server update line while an update runs (below). "This node → it" is this node's server asking the peer
   (`remoteCollaborationOffersStore`, `peerNodeOffer`, with the unreachable reason); the
   window reads the other node's switch and peers through its own settings API
   (`services/nodeCollaboration/nodeCollaborationApi.ts` over `directNodeApolloClient.ts`),
   and asks it `peerNodeAvailability(this node)` for "it → this node". Each ask takes a token
   per row; a stale answer is ignored.
-- **Add** (`AddNodePanel.vue`): Address, Name, the collaboration switch (on by default), Add
-  node. An address already in the list, whatever its node's state, or another address of a
+- **A remote node's server and its in-place update** (`components/settings/nodes/NodeServerUpdate.vue`,
+  `stores/nodeServerUpdateStore.ts`). For each remote row the window reaches, the row's server
+  cell shows the node's server version from its `GET /rest/node-update` (DESIGN.md rule 9
+  exception, C1), with the update chip and progress under it; results, refusals and blockers
+  are a notice under the row. The component renders both parts (`part="cell"`, `part="notice"`);
+  only the cell asks the node, so it is asked once per row. It is asked when the tab opens and when this app's version becomes known; idle rows are
+  not polled. When the node is older than this app, the line offers **Update to
+  `<version>`** ("Same version as this app"). When it is newer, it says "Newer than this app.
+  Update this app." The click sends `POST /rest/node-update` at once, as the approved
+  scenario has it (no confirmation dialog), and nothing else starts an update.
+  - While an update runs, the cell shows its step (checking, downloading, preparing,
+    restarting), asking every 2 s. While the node does not answer during its restart, it
+    shows "Restarting…" for up to 5 minutes, then "Not reachable. Last known: updating to
+    `<version>`." and asks every 10 s, so it recovers by itself.
+  - It then shows "Updated to `<version>`." or "The update to `<version>` did not
+    happen." with the node's own reason, in English as the node sends it. A
+    `NEEDS_NEW_IMAGE` refusal adds a Copy command button for
+    `autobyteus-docker upgrade --all --tag <version>`.
+  - A node whose server has no starter shows "Server version unknown" without a button. When
+    its starter does not answer, the cell shows that version text, and a notice shows the server's message.
+  - A node that cannot update in place shows its version, no button, and the node's reason
+    (`updateBlocker`). For example, a node made by an older launcher has no server-packages
+    volume: "Reinstall the launcher, then run: autobyteus-docker upgrade --all".
+  - A node whose server has no `/rest/node-update` route shows "Not reachable." under its
+    reachable row, with no special case for old releases. That includes any Docker node on
+    an image from before in-place updates (before v1.5.11-beta.6), until the owner moves it
+    to a newer image (`autobyteus-server-ts/docker/README.md`, "Update a node's server in
+    place").
+  - The embedded node has no server cell; the desktop updater updates it.
+  - **Update automatically** (`NodeAutoUpdate.vue`, `stores/nodeAutoUpdateStore.ts`,
+    autobyteus-356): a switch at the foot of the server cell, desktop windows only, shown when
+    the node can update in place or while it is on. It is the desktop registry field
+    `NodeEntry.autoUpdate` of the row's first entry (`set-auto-update`, remote entries only),
+    never a node setting. With it on, the desktop's main process updates the node to this app's
+    version when the node is older (`electron_packaging.md`, Automatic Node Updates). The cell
+    then says "Updated automatically to `<version>`" (new until seen) or "Automatic update
+    failed. Nothing was changed." with the node's reason (IPC `node-auto-update:get-state`,
+    `node-auto-update:mark-read`, broadcast `node-auto-update:changed`); the notice under the
+    row does not repeat that result. A failure for a version the node already runs, or has
+    passed, does not stay (autobyteus-412): whenever the cell has a new answer from the node
+    while the outcome is a failure, it asks the desktop to check again (`node-auto-update:recheck`,
+    switch on or off). The main process asks the node about the failed version and drops the
+    failure if the node has reached it; the cell then shows no automatic outcome, and the
+    notice shows as it would without one (for example "Updated to `<version>`." after the
+    cell's own update).
+- **Add** (`AddNodePanel.vue`, the band under the Nodes header): Address, Name, the
+  collaboration capsule (on by default), Add node. An address already in the list, whatever its node's state, or another address of a
   listed node (by node ID) is not added again: "This is X, already in your list." Adding
   does not open the node's window. With the switch on and the node reachable, the
   confirmation opens; an unreachable node is added and its row shows the cause.
@@ -265,13 +419,24 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   Rename (no dialog) renames the peer, then the desktop entry, and stops on a refused name.
 - **Causes and the Docker hint** (`utils/nodeConnectionErrorText.ts`): refused, timed out,
   name not found (from here or from the other node), not an AutoByteus node, a different
-  node; "fetch failed" is never shown. When a node in a container cannot find an address and
+  node, and a node that refuses the name in the address (`PEER_HOST_REFUSED` or the attempt
+  result `host_refused`: "The node at this address doesn’t accept the name {{host}}. Add {{host}}
+  to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."); "fetch failed" is never shown.
+  The window's own probe (`utils/nodeIdentityProbe.ts`, autobyteus-435) reads a node's 403
+  `REMOTE_ACCESS_HOST_REFUSED` where it can (the desktop window: Electron does not subject its
+  `file://` requests to CORS) and gives `host_refused`, with the words above. A browser window
+  cannot read that refusal (it carries no CORS headers, so the request fails): when its readable
+  request fails for a reason other than time, it asks the same address once more without reading
+  the answer (`no-cors`), and an answer gives `window_refused`: "Something answers at {{host}}, but
+  it doesn’t accept requests from this page. If it is an AutoByteus node, allow this page’s address
+  (AUTOBYTEUS_ALLOWED_ORIGINS) or the name {{host}} (AUTOBYTEUS_ALLOWED_HOSTS) on it." When a node in a container cannot find an address and
   the first one it tried was loopback, the hint suggests `host.docker.internal:<port>` with
   Use this and a link to the Docker Guide tab. The add form never shows it.
-- **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
-  names cut by the line's width, or a label such as "Connection details") and opens into
-  `RemoteCollaborationOfferList.vue` (Agents and Agent Teams side by side from `md` up; a
-  search box when either kind has more than 6) with the connection details below it.
+- **The offer.** `RemoteCollaborationOfferToggle.vue` is the row's offer summary ("7 Agents ·
+  2 Agent Teams", or a label such as "Connection details" or an empty offer), with the names as
+  its tooltip. It opens the row's panel: `RemoteCollaborationOfferList.vue` (Agents and Agent
+  Teams side by side from `md` up; a search box when either kind has more than 6) with the
+  connection details below it.
 
 ## Server Settings: Feature Capability Toggles
 
@@ -324,7 +489,8 @@ The quiet place where updates of the app, imported GitHub agent packages,
 imported GitHub skill sources and (in the desktop's own window) installed agent
 runtimes are shown. Nothing opens by itself. Nothing is updated without the
 user's Update, except a kind whose **Update automatically** switch the user
-turned on (packages, skill sources, runtimes; never the app).
+turned on (packages, skill sources, runtimes, and the app itself; each Docker
+node has its own switch on the Nodes page).
 
 - **Entry.** `components/layout/SidebarNotificationsEntry.vue`: a word pill
   ("3 updates") on the right of the sidebar's Settings row
@@ -357,13 +523,23 @@ turned on (packages, skill sources, runtimes; never the app).
   first opens a danger confirmation (local changes are replaced without asking
   and cannot be restored); runtimes turn on at once. Once on, the card says how
   many waiting updates will be installed within about a minute; with Update
-  checks off it says it has no effect. Confirmations opened from the panel use
+  checks off it says it has no effect. The Software update card has the app's
+  own switch (`kind: 'app'`, autobyteus-356): kept by the desktop shell
+  (`AppUpdateState.automaticUpdate`, IPC `app-update:set-automatic` through
+  `appUpdateStore.setAutomaticUpdate`), off by default, no confirmation, "The app
+  restarts by itself" in its explanation, and "only a check you start installs
+  new versions" while the app's own checks are off. The same switch is on
+  Settings → Updates. Confirmations opened from the panel use
   `ConfirmationModal`'s `layerClass="z-[100]"` so they sit above it, and the
   panel leaves outside clicks and Esc to them.
 - **Outcomes** are rows of their kind: "Updated automatically to …" (green,
-  unread until seen, with the compare link, or "From <version>" for a runtime,
-  and Clear); an automatic failure keeps the row waiting with a red box "Automatic
-  update failed. Nothing was changed." and the reason, plus Update; a runtime
+  unread until seen, with the compare link, or "From <version>" for a runtime
+  and the app, and Clear); an automatic failure keeps the row waiting with a red
+  box "Automatic update failed. Nothing was changed." and the reason, plus Update
+  (Download for the app). The app's outcome comes from the shell's record
+  (`AppUpdateNotification.outcome`, `outcomeReason`); an unread `AUTO_UPDATED`
+  app row keeps the entry visible and counts in its "N updated" like the other
+  kinds (the store's `automaticOutcomeRows` is the one set). A runtime
   whose agents run shows Update at 50 % (`aria-disabled`) and "Update unavailable
   while N agents are running." (with the switch on: "It will be updated
   automatically once no agent is running.").
@@ -420,7 +596,10 @@ turned on (packages, skill sources, runtimes; never the app).
   are off" before any check while off. A failed periodic check is quiet (no
   toast, `isQuietBackgroundAppUpdateError`) and adds "The last automatic check
   failed. The next one runs at the interval." A found app update is only
-  announced; Download and Install stay the user's actions. Windows without the
+  announced; Download and Install stay the user's actions, unless **Update
+  automatically** (below the channel, `AutoUpdateSwitch` `variant="settings"`)
+  is on: then any check's find downloads and, once downloaded, installs and
+  restarts at once (`electron_packaging.md`, Automatic App Updates). Windows without the
   shell's checks (browser windows, disabled updates) have no such section.
 
 ## Server Settings: Embedding
@@ -469,7 +648,8 @@ states.
 ## Settings: Agent Runtimes
 
 Settings -> **Agent Runtimes** (`?section=agent-runtimes`, right after API Keys)
-lists Codex, Claude, Antigravity and Grok for the node the window is bound to.
+lists Codex, Claude, Antigravity, Grok and DeepSeek Harness for the node the
+window is bound to.
 The user installs runtimes. AutoByteus shows what it finds, checks for newer
 versions, and starts the vendor's own update and login commands.
 
@@ -477,7 +657,11 @@ versions, and starts the vendor's own update and login commands.
   installed**, its update state (Checking for updates…, Up to date, Update
   available (version X), Check failed), and its account (Signed in, Not signed
   in, Sign-in unknown, or "–" when Codex is set up with a model provider that
-  needs no OpenAI sign-in).
+  needs no OpenAI sign-in). DeepSeek Harness has no sign-in of its own: its
+  model calls use the DeepSeek key saved in Settings → API Keys, so its
+  account reads **API key set** or **API key not set**, the latter with "Save
+  its API key in Settings → API Keys." ("… of that node." in a remote node's
+  window), and it has no Sign in button.
 - **Finding runtimes.** The page uses the same lookup AutoByteus uses to run
   agents (PATH and the existing per-runtime command settings), so it shows
   exactly what agent runs will use. A runtime that is not installed shows
@@ -489,7 +673,8 @@ versions, and starts the vendor's own update and login commands.
   newest version on its own, so a slow or failing source only marks its own
   row ("Couldn't reach the update source. <Runtime> still works."). Checking
   changes nothing.
-- **Update** (the desktop's own node only) runs `<runtime> update`. The row
+- **Update** (the desktop's own node only) runs `<runtime> update` (for
+  DeepSeek Harness, `npm install -g @deepseek-ai/dsh@latest`). The row
   shows the command and the vendor's latest output line. Then it shows
   "Updated from X to Y." and checks that runtime again. A failure, or an exit
   without a newer version, shows the vendor's message and **Try again**.
@@ -541,6 +726,94 @@ versions, and starts the vendor's own update and login commands.
 
 Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md).
 
+## Settings: Model Routing
+
+Settings -> **Model Routing** (`?section=model-routing`, right after Agent
+Runtimes) turns Model Routing on or off for the node this window is bound to and
+shows what its Model Router chose (server side:
+[Model Routing](../../autobyteus-server-ts/docs/modules/model_routing.md)).
+
+- **Header.** The switch (`setModelRoutingEnabled`) and a status strip from
+  `modelRoutingStatus`: off; on and active, with the router's runtime and model;
+  or on but not usable, with the reason (no launch set, runtime missing or
+  signed out, model unknown or blocked) and a link to Configuration. **Talk to the
+  router** (`openModelRouterAgent`) opens the router's run in the chat.
+- **Tabs** (`?tab=`): **Configuration** (`setup`), **Decisions** (`decisions`),
+  **Overview** (`overview`) and **Runtimes** (`runtimes`, the "Agent runtimes
+  now" section).
+- **Configuration** (autobyteus-313): the router's launch configuration with the
+  app's launch controls, the same as on New chat and in run Settings:
+  `ChatModelMenu` (runtimes grouped with model counts, search, "<model>
+  <runtime>" labels), `ChatThinkingControl` and one `ChatModelOptionControl` per
+  other model setting (e.g. Codex Fast mode). `modelRouterLaunchControls.ts`
+  adapts the status's `routerLaunch` to them: a model choice saves runtime, model
+  and the model's settings made explicit (`explicitChatModelConfig`, as
+  `chatDraftStore.setModel`); a thinking or option change saves the launch with
+  the new settings. Each change is one `setModelRouterLaunch(runtimeKind,
+  llmModelIdentifier, llmConfig)`; a refused one shows the server's message and
+  keeps the saved launch. The controls are inert and dimmed while Model Routing
+  is off or a save runs. A changed launch starts a new router run (its
+  `knowledge.md` stays).
+- **Names** (autobyteus-313): the page names runtimes and models as the rest of
+  the app does (`modelRoutingNames.ts`): a runtime by its one name
+  (`agentRuntimeName`, "Claude Agent SDK"; `GLOSSARY.md`, Agent Runtimes), a model
+  with its runtime as the model menu does (the catalog's model label and the
+  runtime's name, "claude-sonnet-5-5 Claude Agent SDK"), on Configuration,
+  Decisions, Overview, Runtimes and the problem line. Labels load with each runtime's catalog; until then a model reads as its
+  ID. On Runtimes, a model the catalog does not have keeps the report's name.
+- **Decisions** (`modelRoutingDecisions`): one entry per started copy, newest
+  first, pages of 8 from the server, filter All / Model Router / Not the router.
+  Each agent row shows its runtime and model, the source, the task kind and
+  reason when the router chose, the skipped layers and the router's failure. A
+  focus link (`decisionRun`, `decisionCopy`, `decisionAgent`, from run Settings'
+  **View decision**) loads pages until it finds the decision (at most 12) and
+  highlights it, or says it was not found.
+- **Overview** (`modelRoutingStatistics`, 7 days / 30 days / all): who chose the
+  launches (one bar by source), router failures, and per task kind the runtimes
+  and models used; "Not routed" holds defaults and inherited launches. Empty
+  states differ for "no records yet" (with a link to Configuration while off) and "none
+  in this period".
+
+The **Runtimes** tab ("Agent runtimes now") shows what the node can run now: the same answer
+the opt-in agent tool
+`list_available_agent_runtimes` gives, read through the GraphQL query
+`availableAgentRuntimes` (one JSON value, rendered as the tool returns it).
+
+- **When it reads.** When the section opens, on **Check again**, and when
+  another node is bound to the window. It never polls: each read starts short
+  runtime processes on the node (0 tokens). The header shows the node and the
+  time of the last check.
+- **Rows.** One row per available runtime (installed and not known to be
+  signed out): its limits (name, % left with a bar, reset time in local time),
+  the runtime's `limitsNote`, and its models (collapsed list; a blocked model
+  shows "Blocked until <time> (<limit or reason>)"). "Sign-in could not be
+  checked", "Limits not reported", "Limits unknown: <reason>" and "Models
+  unknown: <reason>" show the server's states. AutoByteus has one sub-row per
+  provider with a key, and per local model server (Ollama, LM Studio) that
+  answers with models now: balance, the reason it cannot run, and its models
+  ("Models unknown: <reason>" for a custom endpoint that cannot be read now).
+  No plan, tier or credit details.
+- **States.** Loading, a failed first read (Check again retries), a failed
+  later read (the last answer stays, with a note), and an empty node.
+- Views: `components/settings/model-routing/` (`ModelRoutingManager`,
+  `ModelRoutingStatusStrip`, `ModelRoutingSegmented`, `ModelRoutingSetup`,
+  `ModelRoutingDecisions`, `ModelRoutingOverview`, `modelRoutingPresentation.ts`,
+  `modelRouterLaunchControls.ts`, `modelRoutingNames.ts`,
+  `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
+  `availableAgentRuntimesPresentation.ts`). GraphQL:
+  `graphql/queries/modelRoutingQueries.ts`, `graphql/mutations/modelRoutingMutations.ts`;
+  types `types/modelRouting.ts`. Copy:
+  `localization/messages/{en,zh-CN}/modelRoutingSettings.ts`.
+- Tests: `components/settings/model-routing/__tests__/ModelRoutingManager.spec.ts`
+  (the page), `AgentRuntimesNowSection.spec.ts`;
+  `tests/e2e/model-routing-settings-probe.mjs`
+  (`pnpm test:e2e:model-routing-settings`, after a server build) drives the
+  section in a real browser against two real nodes on fresh data roots, with
+  scripted runtime CLIs and provider endpoints answered inside each node
+  (`tests/e2e/fixtures/model-routing-provider-usage.mjs`).
+
+Server side: [Agent Runtimes](../../autobyteus-server-ts/docs/modules/agent_runtimes.md#available-agent-runtimes).
+
 ## Settings: Agent Packages Auto-Refresh
 
 `components/settings/AgentPackagesManager.vue` shows each package row's
@@ -578,14 +851,14 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
+    Handler-->|Team communication messages| ParticipantMessages[Collaboration Participant Messages]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Background task snapshot| BackgroundTaskStore[Background Task Store]
     Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    TeamCommunicationStore-->|Reactivity| UI
+    ParticipantMessages-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
     UsageMeterStore-->|Reactivity| UI
 ```
@@ -837,18 +1110,9 @@ different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
-For a newly delegated child, the root Team stream publishes
-`TASK_EXECUTION_STARTED` before every exact Agent frame. The server's
-registry-owned durability gate retains pre-activation Agent events, drains them
-FIFO after the durable tree write (including synchronous reentrant events), then
-forwards later status, turn, content, tool, and segment events exactly once
-through the unchanged root publisher before assignment work can start. Abort or
-disposal releases neither events nor work. The frontend inserts the child into
-the view's execution tree from that event, then routes all later frames by
-`agent_execution`; an already-selected child therefore advances its
-conversation, Activity, and execution status without refocus or reload, and two
-same-address task runs cannot share updates. Snapshot/reconnect remains the
-recovery path rather than the normal live-update mechanism.
+A newly delegated run reaches an open view as its tree's next change, and its
+output is on its own stream once its row is opened (see
+[Run trees](./agent_execution_architecture.md#run-trees-autobyteus-461)).
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -924,31 +1188,11 @@ compatible run-id fallback. The frontend must not recreate the removed
 as a routing authority. Idle shutdown does not remove delegated rows; they stay
 in the tree with `offline` status, in active and historical views alike.
 
-Task closure: when a Project Task becomes DONE, its task executions leave the
-Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),
-together with everything under them. The execution tree itself is never
-filtered, so message participants and history keep their identities. Closure is
-a separate fact beside the tree: the root snapshot and stored reads carry
-`closed_task_executions`, and the live `task_executions_closed` /
-`TASK_EXECUTIONS_CLOSED` event is published before the runs are stopped, so a
-failed stop does not keep them listed. `utils/collaboration/taskExecutionClosure.ts`
-owns the closed-subtree rule; the run-history row builders and
-`AgentRunTaskRows` / `WorkspaceTeamExecutionTree` /
-`WorkspaceAgentOrgHistoryCollection` apply it. Leaving rows use
-`useLeavingTreeRows` and `treeRowLeave.css`: a 200 ms ease-out fade and collapse
-while the remaining rows move up, at once under `prefers-reduced-motion`. New
-rows appear without motion. A selected closed run hands selection to the Agent
-run (Agent root), to the delegating Manager (Team root), or to the agent that
-delegated its outermost closed execution (Org root), and keyboard focus
-on a leaving row moves to that row. Messages with closed runs stay in the Team
-tab, and nothing is deleted from disk. Only the Workspaces tree and the main
-view follow closure; other Team surfaces still list closed members.
-Reactivation reverses closure for one execution. After the Task leaves DONE,
-the assigning run messages the execution's run ID. The root then publishes
-`task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
-`removeReopenedTaskExecutions` drops that reference from the closed set. The
-execution is listed again without reload, and its still-closed helpers stay
-hidden. Snapshots and stored reads follow the same Task-side view.
+Task closure: when a Project Task becomes DONE or CANCELLED, a run whose last open
+Task it was leaves its delegator's tree, and every tree above it, as the trees'
+next change; a reactivated run comes back the same way. Selection, focus and the
+leave motion follow the rows (see
+[Agent Execution Architecture](./agent_execution_architecture.md), "Task closure").
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -1108,7 +1352,7 @@ overlay.
 ### Workspace History Progressive Disclosure
 
 The Workspaces sidebar history tree uses progressive disclosure for its
-ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+ordinary desktop render. `RunSectionPanel.vue` wires the tree state
 from `useWorkspaceHistoryTreeState(...)`, and
 `WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
 current expansion state.
@@ -1206,7 +1450,7 @@ a minute clock rather than background stream traffic.
 
 ### Workspace History Archive And Delete Actions
 
-`components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
+`components/workspace/history/RunSectionPanel.vue` owns the
 workspace history tree wiring and delegates row rendering to
 `WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
 archive, termination, draft removal, and permanent delete separate:
@@ -1235,6 +1479,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
+   `useContextAttachmentComposer` also owns the pick sequence: it reads the node's context-file size limits once per pick (`ContextFileUploadStore.readSizeLimits()`), refuses an over-limit file before sending any byte, uploads the rest in parallel with per-item progress and an `AbortController` (`cancelUpload`), and groups failures (`ContextFileUploadFailure`: too large with its limit, unsupported type, interrupted, other) into the localized lines the component renders. Cancel removes the item without a message; the server's own error text is never shown.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
 5. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
@@ -1314,36 +1559,54 @@ The saved-run view uses the start surfaces' visual language:
   model menu matches the chat model menu: a search box, the run's runtime as a
   locked label ("The runtime is fixed for this run") and only that runtime's
   models.
-- **Members** list for Teams and Orgs. Changing the team- or org-wide model
-  updates every non-customized member, including members of placed teams.
-- **Delegated copies**, for Agent, Team and Org runs that have
-  any: a second `RunMembersSection` under Members, with the description "Started
-  by agents in this run. Stop one to change its model; its next message resumes it
-  on the new model."
-  - **Rows.** The rows come from `utils/runSettings/delegatedLaunchRows.ts`
-    (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`), which builds
-    `RunMemberNode`s with `runMemberTree.memberNode`. They are drawn with the same
-    `RunMemberRow` as Members, so a copy looks like the run's own Members list.
-  - **Collapsed by default.** Each open delegated copy is one
-    row. Expansion is local to the section and starts empty. It looks the same
-    for a running and a stopped run.
-  - **Row content.** A row shows a Delegated copy badge. Its
-    summary is `model · runtime · approval`, followed by its source label. A row
-    whose model the user chose (its own choice, or its Team's for a member that
-    follows the Team) shows its model like any edited member, with no source label.
-  - **Notes on a collapsed Team.** A collapsed Team copy whose
-    agents have fallback notes also shows "Notes: N".
-  - **Opening a Team** shows its settings card, then its Members:
+- **One agent at a time (autobyteus-366).** Settings show the agent focused in the
+  left tree, resolved by `utils/runSettings/settingsSubject.ts`
+  (`resolveSettingsSubject`), and stay open while the focus moves within the run.
+  - A standalone run: its own card. With open copies, one line says "Select a copy
+    on the left to change its settings."
+  - A delegated copy: its own card, with its Delegated copy badge, its source and
+    notes. Its header's stop icon stops that copy. A copy another node runs is
+    read-only, with that node's chip.
+  - A member of a Team copy: its own card, a line naming its Team, and a **Team
+    settings** switch: the copy's Team card, then its Members.
+  - A Team member (the coordinator too) or an Org member (a placed team's too): its
+    own card, a line naming its group, and a **Team settings** / **Organization
+    settings** switch: the run's card and Members, as below. The header's stop icon
+    stops the Team or Org. The switch returns to the agent when the focus moves.
+  - No row for the focused agent (nothing selected, or not loaded yet): the run's
+    card and Members.
+- **Save bar.** Edits stay pending across focus changes. The bar names every agent
+  with unsaved edits ("Unsaved changes: code reviewer, writer"), since they may be
+  off screen; a Team- or Org-wide edit is named by its group, not its followers.
+  Save and Cancel act on all of them.
+- **Members** list for Teams and Orgs (the group view). Changing the team- or
+  org-wide model updates every non-customized member, including members of placed
+  teams.
+- **Delegated copies**, for Agent, Team and Org runs that have any: reached by
+  focusing one in the left tree, never as a list on the run.
+  - **Rows.** The nodes are the run's tree rows (`useDelegatedRunRows`, the tree held
+    while Settings show it), built by `treeDelegatedLaunchNodes` in
+    `utils/runSettings/delegatedLaunchRows.ts` as `RunMemberNode`s with
+    `runMemberTree.memberNode`; a copy started while Settings are open appears as the
+    tree's next change. A focused copy is drawn with
+    `RunSubjectCard`; a Team copy's Members with the same `RunMemberRow` as the
+    run's own Members.
+  - **Card content.** The Delegated copy badge and its source label. A copy whose
+    model the user chose (its own choice, or its Team's for a member that follows
+    the Team) shows its model like any edited member, with no source label.
+  - **A Team copy's group view** shows its settings card, then its Members:
     - the copy's coordinator carries the Coordinator chip;
     - a team-level fallback note is shown once, on the Team;
     - each member shows only its own notes;
     - each member opens to its settings card.
-  - **Opening an Agent** shows its settings card.
   - These cards are locked while the copy runs and editable while it is stopped
-    (see Editing below).
-  - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
-    can hold several copies. Names follow Members: the role,
-    else the last address segment.
+    (see Editing below). After a Save the card shows what was saved: the saved
+    launch reaches the tree as its next change, also when the delegator is stopped
+    (CR-461-111).
+  - **Keys and names.** Rows are keyed by the tree row's `key` (`run-member-<key>`),
+    because one address can hold several copies. A copy is named as its tree row
+    names it, its slot from the server (`name`, SR-091); a Team copy's members by
+    their addresses.
   - **Source labels:**
     - Agent default;
     - Team default;
@@ -1351,56 +1614,71 @@ The saved-run view uses the start surfaces' visual language:
     - As configured in this run: a copy of a configured placement. It shows the
       launch it recorded when it started (origin `configured`), not the placement's
       current launch;
-    - Source not recorded: a record from before sources were recorded.
+    - Source not recorded: a record from before sources were recorded;
+    - Model Router · {task kind}: the node's Model Router chose it. The row
+      also shows the router's reason and **View decision**, which opens
+      Settings -> Model Routing on Decisions with that decision in focus
+      (`?section=model-routing&tab=decisions&decisionRun=<delegator run>&decisionCopy=<copy>&decisionAgent=<agent>`).
+      A user's model choice hides both (it is no longer the router's launch).
+  - **Copies another node runs** (the tree's `peer_agent` / `peer_team` rows):
+    read-only rows with that node's chip, built from the row's `launch`, the node's
+    answer (runtime, model, source and the router's reason). A copy
+    without launches (started before nodes reported them) has no row; a
+    "View decision" is not offered, since the decision is on that node.
   - **Fallback line.** A skipped default shows "{layer} {model} was not used:
     {detail}".
-  - **Effective values.** Values come from the contract packages' copy launch
-    rule (`teamCopyAgentLaunch`, `collaborationCopyAgentLaunch`): the agent's own
-    choice, else its Team's when it follows the Team (the member's recorded
-    `follows_team` / `followsTeam`), else its started value, all read from the
-    copy's own `source`. This edit's choices are applied as they are made. A member's
-    source is its own, else its Team's.
+  - **Effective values.** Each row shows what its own run has: its launch and
+    origin as the server's tree row carries them (autobyteus-461 SR-084), with this
+    edit's unsaved choices applied by the draft rule (`draftLaunch` in
+    `utils/runSettings/delegatedLaunchRows.ts`): the row's own choice, else the
+    launch its run has. A Team row's choice is its Team's default only; each member
+    keeps its own launch (CR-461-089). A member's source is its own, else its Team's.
   - **Stop.** A running copy (any of its agents not offline) has
-    the run's red stop icon on its own row, never on one member of a Team. It
-    calls `delegatedLaunchDraftStore.stop` (`stopDelegatedExecution`): the copy and
-    the copies it started stop and stay restorable; the run keeps running. The same
+    the run's red stop icon in its header; a Team copy's member's header stops its
+    Team copy, never that one member. It
+    calls `delegatedLaunchDraftStore.stop`, the copy's own ordinary Stop
+    (`terminateAgentRun` / `terminateAgentTeamRun`; it replaced
+    `stopDelegatedExecution`): the copy stops and stays restorable, the runs it
+    delegated keep working, and the run keeps running. The same
     action is on the copy's sidebar row (`DelegatedStopButton`), whose enabled
     icon is red at rest, darker red on pale red when hovered, and red again on
     leave, like all sidebar root Stops. Disabled/pending sidebar icons are muted
     gray without the enabled-hover accent. Settings stop styling is unchanged.
   - **Editing (SR-007).** While a copy is stopped (stopped by the user, idled out,
     or the run is stopped), its rows edit the model and its settings like a stopped
-    run's member (`RunSettingsCard`; runtime, approval and workspace locked); a
+    run's member (`RunSettingsCard`; approval and workspace locked; the agent runtime opens with the model, see
+    [Existing Run Configuration](#existing-run-configuration)); a
     Team row edits the Team's choice. While it runs, its model is locked with the
     hint "Stop this copy to change its model." There is no separate reset: the
-    user picks the model again. Model menus list the copy's options
-    (`delegatedLaunchModelOptions`).
-  - **Save.** The changes join the run's Save bar
-    (`delegatedLaunchDraftStore`). On a stopped run they are saved with the run's
-    own changed models in one request (`updateDelegatedLaunchSelections` with
-    `configuredPatches`); a workspace change is saved on its own. A copy woken
-    before Save refuses the Save ("This copy is running. Stop it, then change its
-    model."). Right after Save the rows show the saved choice: Settings reads the
-    run's canonical settings again. A stopped Agent also rereads its collaboration
-    tree and closed-task list into the Settings snapshot; it does not depend on
-    an old live collaboration view. The current editor and expanded rows stay
-    mounted while the accepted model/config and Team followers are refreshed.
-    Save remains pending until that readback completes. A live run also publishes
-    the choice to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
-    `delegated_launch_selections_changed` on Org and Agent streams). The Team view
-    records it in place; Org and Agent views reload. Member conversations then
-    show the model the copy runs on.
+    user picks the model again. Model menus list the copy's own options, read by its
+    own run (`AgentRunModelOptions` / `TeamRunModelOptions`; they replaced
+    `delegatedLaunchModelOptions`).
+  - **Save.** The changes join the run's Save bar (`delegatedLaunchDraftStore`).
+    The run's own settings are saved first, then each changed copy by its own
+    stopped-run save, in row order (`updateStoppedAgentRunSelection`, or for a Team
+    copy `updateStoppedTeamRunSelections` with a `CONFIGURED_TEAM` patch at `/` or a
+    `CONFIGURED_AGENT` patch at a member's address; it replaced
+    `updateDelegatedLaunchSelections`). A copy that runs refuses the Save before any
+    write ("This copy is running. Stop it, then change its model."). A failure names
+    the copies saved and the one not saved; nothing is rolled back. Right after Save
+    each saved row shows its run's answer, and the saved launch reaches every tree
+    that holds the row as the tree's next change, so Member conversations then show
+    the model the copy runs on. The current editor and expanded rows stay mounted
+    while the accepted values are read back, and Save remains pending until then.
+    (No separate save event is published; it replaced
+    `DELEGATED_LAUNCH_SELECTIONS_CHANGED` / `delegated_launch_selections_changed`.)
   - **Save recovery.** A rejected or failed write retains the edits for correction
     or retry. If the write succeeds but canonical readback fails, Settings says
     "Settings were saved, but could not be refreshed. Refresh before making more
     changes." It locks editing and offers **Refresh** rather than showing stale
     "Saved" or treating committed changes as unsaved. Refresh rereads the same
-    canonical snapshot without another Save or starting/resuming the run. Cancel
-    before Save writes nothing; repeated edits start from the accepted values.
+    canonical snapshot without another Save or starting/resuming the run. A
+    running Org's view reloading during the readback does not fail it: the Org
+    reads its settings again, up to three times (`agentOrgContextsStore.readRunConfig`);
+    only a closed Org, a switched node or a pending Org operation fails the readback.
+    Cancel before Save writes nothing; repeated edits start from the accepted values.
   - **Closed copies.** Copies whose Task is DONE or CANCELLED, and everything
     under them, are left out.
-  - **Refresh.** For a saved Team or Org run, a copy started while Settings is
-    open appears after Refresh or reopening.
 - **Save bar** only when there are changes: "Unsaved changes · they apply when
   this run resumes · Cancel · Save". Cancel calls
   `existingRunConfigStore.discardChanges()`. Save shows "Saving…", then "Saved.
@@ -1432,7 +1710,7 @@ missing workspace ID. It does not change saved paths or the model-only Save
 payload. The stopped AgentOrg placed-Team workspace control is a separate flow.
 
 Replacement choices come from server-owned options for the saved run/scope.
-For Claude Agent SDK, Codex App Server, Antigravity CLI, and Grok Build, every **distinct
+For Claude Agent SDK, Codex App Server, Antigravity CLI, Grok Build and DeepSeek Harness, every **distinct
 model offered by the backend selection catalog** is eligible without a platform
 context-capacity gate, including smaller or unknown-capacity models. The Claude
 backend omits `default` from new offers only when it proves another listed ID
@@ -1496,14 +1774,27 @@ duplicated, or silently written back. Missing catalog/schema state keeps Save
 locked. These residual rules describe the unchanged saved model, not transfer
 of old settings into a replacement. The server revalidates every Agent/Team
 scope against its fixed runtime and selected model, returning field-addressed
-validation errors when applicable.
+validation errors when applicable. A setting the current schema no longer
+declares cannot be edited and is left out by the server when the run's settings
+are saved (it is not an error); read-only and historical views still show it as
+a residual until then.
+
+A stopped Agent run's root card also lets the user choose another **agent runtime** (and a model of it): saving
+keeps the same run and chat and records a pending agent runtime switch; the new agent runtime takes over with the next
+message (a hint says so while another one is chosen, and the chat shows a marker "Agent runtime changed from … to …").
+The same holds for each member row of a stopped Team or Org run (a direct Agent, a mounted Team and its Agents) and for each
+stopped delegated copy row: the row's agent runtime control opens exactly when its model control does
+(`RunMemberRow`: `runtimeLocked || locked.model`), and a choice names the runtime with the model. A Team or Org
+root's own agent runtime stays fixed; editing a Team default's runtime carries it to the members linked to it (the
+planner's draft-start equality), each switching by itself. A switch for a run that cannot
+switch is refused by the server with a message.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
-revision-free mutations are `updateStoppedAgentRunModelConfig`,
-`updateStoppedTeamRunModelConfigs`, and `updateStoppedAgentOrgRunConfig`. The
-AgentOrg command carries independent model and mounted-Team workspace patch
+revision-free mutations are `updateStoppedAgentRunSelection`,
+`updateStoppedTeamRunSelections`, and `updateStoppedAgentOrgRunConfig`. The
+AgentOrg command carries independent `selectionPatches` and mounted-Team workspace patch
 lists so one validated tree write publishes their aggregate result. Each model
-command/patch requires both `llmModelIdentifier` and explicitly present nullable
+command/patch requires `runtimeKind`, `llmModelIdentifier` and explicitly present nullable
 `llmConfig`; a whole-pair no-op produces no write. Agent results return
 `canonicalSelection`; Team results retain `canonicalExecutionTree`; AgentOrg
 results return the canonical execution tree. Determinate responses replace the
@@ -1579,9 +1870,9 @@ unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
 When the schema has a thinking on/off switch, a user edit to a setting that only
-applies while thinking is on (for example `reasoning_effort`,
-`thinking_budget_tokens` or `thinking_display`) made under **Advanced** while
-**Thinking** is OFF also turns **Thinking** ON and keeps the edited value.
+applies while thinking is on (for example `reasoning_effort`) made under
+**Advanced** while **Thinking** is OFF also turns **Thinking** ON and keeps the
+edited value.
 `ModelConfigSection` routes these edits through `applyThinkingDependentEdit`
 (`utils/llmThinkingConfigAdapter.ts`), the same owner the Chat thinking menu uses.
 Automatic default and sanitize writes do not go through it and never turn
@@ -1784,7 +2075,7 @@ Incoming events are routed based on their `type`:
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
 | `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and agent-to-agent deliveries (shown as "From <Sender>:") in the target member's transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
-| `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
+| `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text; a notice whose `message_id` the conversation already shows (a snapshot's stored copy, a replayed frame) adds nothing (autobyteus-526: one card per notice). |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
 | `BACKGROUND_TASK_UPDATED` | `backgroundTaskHandler.handleBackgroundTaskUpdated` | Upserts one background-task snapshot (by `task_id`) into `agentBackgroundTaskStore` for the receiving run; it never changes run status or the active right-panel tab. |
@@ -1876,8 +2167,8 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
-2.  **Team Communication (`TeamCommunicationStore`)**:
-    - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+2.  **Team Communication (`CollaborationParticipantMessages`)**:
+    - The owner is `CollaborationParticipantMessages` (`services/collaborationMessages/`, autobyteus-358): one list per root kind, root run and participant, loaded through `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)` when the Team tab or a mobile message screen shows it. Live `communication` / `TEAM_COMMUNICATION_MESSAGE` events are buffered from before the request and merged by message ID; every rebuild of a root's context (reconnect, gap or checkpoint reopen, recovery, stop/inspect) reloads its lists only when a message could have been missed. The lists hold every message through a sequence C, which advances on every applied stream event and on a seen single `checkpoint_required` event. A rebuild in the same live sequence (`live_sequence_id`) whose latest message (`last_message_change_sequence`) is at or before C keeps the lists and their loads in flight, and C becomes its base; a stored view, another live sequence (a stop and resume, or a restart) or a message past C reloads them. So a new delegation, whose copy's output moves the base but writes no message, refetches nothing. The hub and Org inspections and the Team open read (`getTeamRunResumeConfig`) name a running root's live sequence, base and latest message too, so the stream snapshot that follows an open keeps a list loaded in between. No root view carries a message log.
     - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
     - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
@@ -1930,6 +2221,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Visible numbers, currency, percentages, and UTC dates use the active locale while exact token/accounting evidence remains available. English and Simplified Chinese layouts must avoid document-level overflow; keyboard focus and disclosure restoration remain visible.
     - `Run details` preserves the current-run-record investigation path under `tokenUsageRunStatistics`. Its date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and selected rows retain lifetime cumulative totals.
     - Run-details Task rows are standalone agent runs or root Team runs with backend-provided concrete member `children`; exact `rootTeamRunId`/`runId` identity prevents double-counting. Model remains the secondary runtime/model diagnostic. Sorting, expansion, created-time fallback, cost disclosure, mixed identity summaries, retained loading/error/empty states, and history-migration guidance remain intact.
+    - The expanded cost disclosure (`TokenUsageCostBreakdown.vue`) splits cache writes like the live Token Meter: **Cache write 5m** and **Cache write 1h** rows with their tokens and costs when the aggregate has them, and one **Cache writes** row for writes outside that split (its cost is the cache-write cost the split rows do not carry). An aggregate without a split keeps the single **Cache writes** row.
     - Run-details labels use token-usage-owned display fields. Model rows show server-owned `modelDisplayName` beside raw `llmModel`; Task rows keep positional `modelDisplayNames` beside raw models. Custom-provider labels prefer persisted provider-name snapshots, with current metadata only as the established no-snapshot fallback.
     - The Task table retains its nine-column scan view (`Task / Run`, `Runtime`, `Model(s)`, `Input`, `Output`, `Input Cost`, `Output Cost`, `Total Cost`, `Created Time`), accessible sortable headers, and the value-plus-disclosure control for detailed cost status. Complete estimates stay quiet in main rows while non-complete states remain visible.
     - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology, and changing Task/Model presentation does not refetch.

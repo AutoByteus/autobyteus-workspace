@@ -1,0 +1,141 @@
+{
+  "startedAt": "2026-11-08T11:21:47.766Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 58676,
+      "nodeId": "srv_QJuvJGYU6k7eYOn-kxxKEA-q_rsam3EP",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 58677,
+      "nodeId": "srv_SOfLyjyPfTRPhlIMnmSq5mT3npRlifqL",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_6c16a8ad6805452dab01dd8fe6ccc6c6",
+    "writerRun": "release_notes_writer_6a95da5769cc4c39b3e93e834566d06d",
+    "squadRun": "docs_review_team_616a4ace59d54c1897aa80b45d1dd4db",
+    "reviewer": "release_notes_writer_f2b9e277c8c145ca91b20832adb5f2a6",
+    "memberDelegated": "fact_checker_427bc7e26c38403599a8b0401a2730d8",
+    "remoteAgentRun": "publisher_b2beb9f17cdb44be85e388407fe1944d",
+    "remoteTeamRun": "studio_team_bbd94fde876b4bf2bb21e8042d7be17d",
+    "plain": [
+      "fact_checker_ae5d103dcdad46cc854b980bb25a0fb3",
+      "fact_checker_545c1f96e70d480ab94541d957895075",
+      "fact_checker_cd366e520c20494bba198dd4c3600a3b"
+    ],
+    "org": "delivery_org_8089837cd2704055a53ad38559c93143",
+    "orgPlanner": "release_notes_writer_8fcf02c3d8714badaddea8981b549dc5",
+    "reviewOrg": "review_org_0790c088b5f44ed0a030faa84a59ff2c",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_7f8e354217d54f9ebb969a7e5e9c9011",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_791d960974754b4f81c9451236cb66a8",
+    "deliveryLead": "fact_checker_532513a05dce40f49a1807debff1ce7f",
+    "deliveryMate": "release_notes_writer_25e3d14377ff460192fb5afc6444afc4",
+    "leadDelegated": "changelog_helper_e8826a7691724963bbcd3051041c1f33",
+    "approver": "approver_f77368ba4cb04e88b52bfa110dabdef7",
+    "taskA": "launch-6b52c9-1",
+    "taskB": "launch-6b52c9-2"
+  },
+  "cases": {
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 5.6,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_8089837cd2704055a53ad38559c93143&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?pairing=…&rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_8089837cd2704055a53ad38559c93143&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_8089837cd2704055a53ad38559c93143&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-05",
+      "label": "phone",
+      "url": "http://192.168.77.10:58676/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-05",
+      "label": "phone",
+      "url": "http://192.168.77.10:58676/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-05": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-08T11:22:27.963Z"
+}

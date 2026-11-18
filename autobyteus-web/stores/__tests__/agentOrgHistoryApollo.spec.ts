@@ -2,9 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue'
-import type { WorkspaceHistorySectionState } from '~/components/workspace/history/workspaceHistorySectionContracts'
+import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from '~/components/workspace/history/workspaceHistorySectionContracts'
 import { flushPromises, mount } from '@vue/test-utils'
 import { ControlledOrgApollo, historyData } from '~/test-support/agentOrgApolloFixture'
+import { registerTestWorkspace } from '~/test-support/registeredWorkspaceFixture'
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
 import { useRunHistoryStore } from '../runHistoryStore'
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport'
@@ -15,9 +16,11 @@ vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () =>
 let recovery: ReturnType<typeof vi.spyOn>, wrapper: ReturnType<typeof mount>
 let transport: ControlledOrgApollo, store: ReturnType<typeof useRunHistoryStore>
 const HISTORY = 'ListCollaborationRootHistory', ROOT = 'GetAgentOrgRootHistory', WORKSPACE = 'ListWorkspaceRunHistory'
+// The Workspaces view lists an Org only under its registered root folder (workspace-tree-vs-chooser CR-001).
+const ORG_ROOT = '/org-workspace'
 const row = (id = 'org-run') => store.agentOrgHistory.find(r => r.rootRunId === id)!
 const rawRow = (active: boolean, id = 'org-run') => {
-  const result = historyData(active).listCollaborationRootHistory[0]!
+  const result = historyData(active, ORG_ROOT).listCollaborationRootHistory[0]!
   result.root_run_id = id; result.org.rootOrg.orgRunId = id
   return result
 }
@@ -35,11 +38,14 @@ async function call(kind: string, n: number) {
 beforeEach(() => {
   setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client
   recovery = vi.spyOn(useAgentOrgContextsStore(), 'reconcileRetainedHistory')
-  store = useRunHistoryStore(); store.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
+  registerTestWorkspace(ORG_ROOT)
+  store = useRunHistoryStore(); store.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true, ORG_ROOT).listCollaborationRootHistory)
   wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, {
     avatars: { getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {} },
     workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions),
-    state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {},
+    // Partial stubs: the Org rows read only these members.
+    state: { isAgentOrgDefinitionExpanded: () => true } as unknown as WorkspaceHistorySectionState,
+    actions: {} as unknown as WorkspaceHistorySectionActions,
   }) }), { global: { stubs: { Icon: true } } })
   expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
 })

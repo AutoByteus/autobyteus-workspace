@@ -1,0 +1,3 @@
+the contract's §3 … §4 examples are states of the model
+the contract's §5.1 … §5.3 match the model
+collaboration-walkthrough.md matches the model

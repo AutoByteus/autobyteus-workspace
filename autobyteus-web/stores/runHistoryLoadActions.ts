@@ -8,6 +8,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns';
 import {
@@ -72,6 +73,7 @@ export interface RunHistoryFetchStoreLike {
   agentOrgHistoryItemErrors: Record<string, string>;
 
   workspaceRequestGeneration: number;
+  historyWindow: number | null;
   refreshRunNavigationTopology(reason: string): void;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
@@ -94,10 +96,11 @@ const readAgentOrgHistory = async (
 
 export const fetchRunHistoryTree = async (
   store: RunHistoryFetchStoreLike,
-  limitPerAgent = 6,
   options: { quiet?: boolean } = {},
 ): Promise<void> => {
   const quiet = options.quiet === true;
+  // Every read, first or quiet, uses the store's one read window (`null`: every run).
+  const limitPerAgent = store.historyWindow;
   const requests = store.agentOrgRequestSequenceById;
   const agentOrgGeneration = ++store.agentOrgRequestGeneration;
   // An older workspace snapshot must not be applied (or reconciled) after a newer one.
@@ -294,10 +297,13 @@ export const reconcileDiscoveredActiveRuns = async (
   const teamContextsStore = useAgentTeamContextsStore();
   const agentTeamRunStore = useAgentTeamRunStore();
 
+  const delegatedRuns = useDelegatedRunsStore();
   for (const [runId, context] of agentContextsStore.runs.entries()) {
     if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
       continue;
     }
+    // A delegated run opened from its delegator's view keeps its own stream (rule 2, SR-045); the list does not hold it.
+    if (delegatedRuns.ownsAgentRun(runId)) continue;
     // A send to this run awaits server activation; this snapshot may predate it (D-14).
     if (agentRunStore.isActivationPending(runId)) {
       continue;
@@ -349,9 +355,8 @@ export const reconcileDiscoveredActiveRuns = async (
       continue;
     }
 
-    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) {
-      agentTeamRunStore.disconnectTeamStream(rootTeamRunId);
-    }
+    // An open Team's view keeps its stream, which tells its state, active or stopped (autobyteus-461 SR-045).
+    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) continue;
     teamContext.view.setRootTeamActive(false);
     teamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
       if (agentContext.state.currentStatus !== AgentStatus.Error) {
@@ -370,7 +375,7 @@ export const reconcileDiscoveredActiveRuns = async (
       const streamConnected = agentTeamRunStore.isTeamStreamReady(teamRunId);
       if (!streamReopenRequired) {
         // Retired executions keep their terminal history status even when the root is active.
-        existingTeamContext.view.listLiveAgentContextEntries().forEach(({ agentContext }) => {
+        existingTeamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
           agentContext.config.isLocked = true;
           applyActiveRuntimePlaceholder(agentContext, {
             preserveExistingLive: true,
@@ -449,14 +454,14 @@ export const resolveRunHistoryWorkspaceMetadataByRootPath = async (
   }
 };
 
-export const ensureRunHistoryWorkspaceByRootPath = async (
+/**
+ * The workspace ID for a root path: a workspace already listed, else the one the node registers for it.
+ * Throws when the node refuses the path (`WORKSPACE_PATH_REFUSED`) or the request fails.
+ */
+export const findOrRegisterWorkspaceByRootPath = async (
   rootPath: string,
-): Promise<string | null> => {
+): Promise<string> => {
   const workspaceStore = useWorkspaceStore();
-  if (!rootPath.trim()) {
-    return null;
-  }
-
   const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
   const findWorkspaceIdByRootPath = (): string | null => {
     const matchingWorkspace = workspaceStore.allWorkspaces.find((workspace) => {
@@ -484,13 +489,18 @@ export const ensureRunHistoryWorkspaceByRootPath = async (
     }
   }
 
-  try {
-    const fetchedWorkspaceId = findWorkspaceIdByRootPath();
-    if (fetchedWorkspaceId) {
-      return fetchedWorkspaceId;
-    }
+  return findWorkspaceIdByRootPath() ?? await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+};
 
-    return await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+/** History restore: the workspace for a recorded root path, or `null` when there is none to open. */
+export const ensureRunHistoryWorkspaceByRootPath = async (
+  rootPath: string,
+): Promise<string | null> => {
+  if (!rootPath.trim()) {
+    return null;
+  }
+  try {
+    return await findOrRegisterWorkspaceByRootPath(rootPath);
   } catch {
     return null;
   }

@@ -1,13 +1,13 @@
-import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
-import { cloneExistingRunSelection, existingRunSelectionsEqual } from './existingAgentModelConfigDraft'
+import type { ExistingAgentRunSelection } from '~/types/agent/ExistingRunModelConfigDraft'
+import { cloneExistingAgentRunSelection, existingAgentRunSelectionsEqual } from './existingAgentModelConfigDraft'
 
 export type ExistingHierarchicalModelConfigScope<K extends string = string> = Readonly<{
   scopeKind: K
   address: string
   parentAddress: string | null
-  runtimeKind: string
-  originalSelection: ExistingRunModelSelection
-  draftSelection: ExistingRunModelSelection
+  /** The scope's selection as saved and as edited; both name the agent runtime (a member can switch it, autobyteus-348). */
+  originalSelection: ExistingAgentRunSelection
+  draftSelection: ExistingAgentRunSelection
   linkedToParentAtDraftStart: boolean
   directlyEdited: boolean
 }>
@@ -20,6 +20,7 @@ export type ExistingHierarchicalModelConfigDraft<K extends string = string> = Re
 export type ExistingHierarchicalModelConfigPatch<K extends string = string> = Readonly<{
   scopeKind: K
   scopeAddress: string
+  runtimeKind: string
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
 }>
@@ -33,8 +34,8 @@ export const createExistingHierarchicalModelConfigDraft = <K extends string>(
     if (!scope.address || scopesByAddress[scope.address]) throw new Error(`Duplicate or invalid configured scope '${scope.address}'.`)
     if (scope.parentAddress && !scopesByAddress[scope.parentAddress]) throw new Error(`Configured scope parent '${scope.parentAddress}' was not found.`)
     scopesByAddress[scope.address] = { ...scope,
-      originalSelection: cloneExistingRunSelection(scope.originalSelection),
-      draftSelection: cloneExistingRunSelection(scope.originalSelection), directlyEdited: false }
+      originalSelection: cloneExistingAgentRunSelection(scope.originalSelection),
+      draftSelection: cloneExistingAgentRunSelection(scope.originalSelection), directlyEdited: false }
     if (scope.parentAddress) (childAddressesByParent[scope.parentAddress] ??= []).push(scope.address)
   }
   return { scopesByAddress, childAddressesByParent }
@@ -43,14 +44,14 @@ export const createExistingHierarchicalModelConfigDraft = <K extends string>(
 export const updateExistingHierarchicalScopeModelConfig = <K extends string>(
   draft: ExistingHierarchicalModelConfigDraft<K>,
   address: string,
-  selection: ExistingRunModelSelection,
+  selection: ExistingAgentRunSelection,
   directlyEdited = true,
 ): ExistingHierarchicalModelConfigDraft<K> => {
   if (!draft.scopesByAddress[address]) throw new Error(`Configured scope '${address}' was not found.`)
   const scopesByAddress: Record<string, ExistingHierarchicalModelConfigScope<K>> = { ...draft.scopesByAddress }
-  const update = (currentAddress: string, inherited: ExistingRunModelSelection, direct: boolean): void => {
+  const update = (currentAddress: string, inherited: ExistingAgentRunSelection, direct: boolean): void => {
     const scope = scopesByAddress[currentAddress]!
-    scopesByAddress[currentAddress] = { ...scope, draftSelection: cloneExistingRunSelection(inherited),
+    scopesByAddress[currentAddress] = { ...scope, draftSelection: cloneExistingAgentRunSelection(inherited),
       directlyEdited: scope.directlyEdited || direct }
     for (const childAddress of draft.childAddressesByParent[currentAddress] ?? []) {
       const child = scopesByAddress[childAddress]!
@@ -65,7 +66,7 @@ export const updateExistingHierarchicalScopeModelConfig = <K extends string>(
 export const planExistingHierarchicalModelConfigPatches = <K extends string>(
   draft: ExistingHierarchicalModelConfigDraft<K>,
 ): ExistingHierarchicalModelConfigPatch<K>[] => Object.values(draft.scopesByAddress)
-  .filter((scope) => !existingRunSelectionsEqual(scope.originalSelection, scope.draftSelection))
+  .filter((scope) => !existingAgentRunSelectionsEqual(scope.originalSelection, scope.draftSelection))
   .sort((left, right) => left.address.localeCompare(right.address))
   .map((scope) => ({ scopeKind: scope.scopeKind, scopeAddress: scope.address,
-    ...cloneExistingRunSelection(scope.draftSelection) }))
+    ...cloneExistingAgentRunSelection(scope.draftSelection) }))

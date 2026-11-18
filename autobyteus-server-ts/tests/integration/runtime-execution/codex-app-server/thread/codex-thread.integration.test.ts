@@ -13,13 +13,12 @@ import { CodexAppServerClientManager } from "../../../../../src/runtime-manageme
 import { CodexClientThreadRouter } from "../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import type { CodexAppServerMessage } from "../../../../../src/agent-execution/backends/codex/thread/codex-app-server-message.js";
 import { CodexThreadManager } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
-import {
-  CodexApprovalPolicy,
-  type CodexSandboxMode,
-} from "../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
+import { CodexApprovalPolicy } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
+import type { CodexSandboxMode } from "../../../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
 import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { CodexModelCatalog } from "../../../../../src/llm-management/services/codex-model-catalog.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -52,7 +51,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: input.model,
         workingDirectory: input.workingDirectory,
@@ -153,17 +152,20 @@ const resolveApprovalInvocationId = (message: CodexAppServerMessage): string | n
   return itemId;
 };
 
-const fetchCodexMiniModelIdentifier = async (
+// The model comes from the live Codex catalog: CODEX_BACKEND_MODEL, else the live Codex test model (TESTING.md).
+const fetchCodexModelIdentifier = async (
   clientManager: CodexAppServerClientManager,
   cwd: string,
 ): Promise<string> => {
+  const modelIdentifier = process.env.CODEX_BACKEND_MODEL?.trim() || "gpt-6.1-terra";
   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
-  const gpt54Mini = models.find((model) => model.model_identifier === "gpt-5.4-mini");
-  if (!gpt54Mini) {
-    throw new Error("Codex model catalog did not return gpt-5.4-mini.");
+  if (!models.some((model) => model.model_identifier === modelIdentifier)) {
+    throw new Error(`Codex model catalog did not return ${modelIdentifier} (set CODEX_BACKEND_MODEL).`);
   }
-  return gpt54Mini.model_identifier;
+  return modelIdentifier;
 };
+/** The caller of a thread creation here never withdraws it. */
+const stillAccepting = () => undefined;
 
 describeCodexThreadIntegration("CodexThread integration (live transport)", () => {
   let clientManager: CodexAppServerClientManager | null = null;
@@ -174,7 +176,8 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     if (threadManager) {
       for (const runId of createdRunIds) {
         try {
-          await threadManager.terminateThread(runId);
+          const thread = threadManager.getThread(runId);
+          if (thread) await threadManager.terminateThread(runId, thread);
         } catch {
           // ignore cleanup failures in test teardown
         }
@@ -201,10 +204,9 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runId = "run-thread-live-turn";
     createdRunIds.add(runId);
@@ -216,6 +218,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
         model: modelIdentifier,
         reasoningEffort: "medium",
       }),
+      stillAccepting,
     );
 
     await waitForStartupReady(thread.startup.waitForReady);
@@ -230,7 +233,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    const result = await thread.submitInput(
+    const result = await thread.startInput(
       new AgentInputUserMessage("Reply with the single word READY."),
     );
 
@@ -260,10 +263,9 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-thread-live-steer";
     createdRunIds.add(runId);
 
@@ -275,6 +277,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
         reasoningEffort: "medium",
         approvalPolicy: CodexApprovalPolicy.NEVER,
       }),
+      stillAccepting,
     );
     await waitForStartupReady(thread.startup.waitForReady);
 
@@ -297,7 +300,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
         120_000,
       );
 
-      const started = await thread.submitInput(new AgentInputUserMessage(
+      const started = await thread.startInput(new AgentInputUserMessage(
         "Use the terminal tool to execute `sleep 8` exactly once. Do not simulate it. After it finishes, reply with FIRST_DONE.",
       ));
       expect(started).toMatchObject({ kind: "started" });
@@ -305,9 +308,9 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       await commandStartedPromise;
       expect(thread.activeTurnId).toBe(started.turnId);
 
-      const steered = await thread.submitInput(new AgentInputUserMessage(
+      const steered = await thread.appendInput(new AgentInputUserMessage(
         "Continue this exact active turn and include SECOND_INPUT_ACK in the final reply.",
-      ));
+      ), started.turnId);
       expect(steered).toEqual({ kind: "steered", turnId: started.turnId });
       expect(thread.activeTurnId).toBe(started.turnId);
       expect(thread.currentStatus).toBe("RUNNING");
@@ -343,10 +346,9 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runId = "run-thread-tool-approve";
     createdRunIds.add(runId);
@@ -359,6 +361,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
         reasoningEffort: "medium",
         approvalPolicy: CodexApprovalPolicy.ON_REQUEST,
       }),
+      stillAccepting,
     );
     await waitForStartupReady(thread.startup.waitForReady);
 
@@ -373,7 +376,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    await thread.submitInput(
+    await thread.startInput(
       new AgentInputUserMessage(
         `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
       ),
@@ -414,10 +417,9 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runId = "run-thread-tool-deny";
     createdRunIds.add(runId);
@@ -430,6 +432,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
         reasoningEffort: "medium",
         approvalPolicy: CodexApprovalPolicy.ON_REQUEST,
       }),
+      stillAccepting,
     );
     await waitForStartupReady(thread.startup.waitForReady);
 
@@ -443,7 +446,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    await thread.submitInput(
+    await thread.startInput(
       new AgentInputUserMessage(
         `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
       ),
@@ -484,10 +487,9 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
 
     const runId = "run-thread-interrupt";
     createdRunIds.add(runId);
@@ -500,6 +502,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
         reasoningEffort: "medium",
         approvalPolicy: CodexApprovalPolicy.NEVER,
       }),
+      stillAccepting,
     );
     await waitForStartupReady(thread.startup.waitForReady);
 
@@ -509,7 +512,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    const turn = await thread.submitInput(
+    const turn = await thread.startInput(
       new AgentInputUserMessage(
         "Use the terminal tool to execute this command exactly once:\nsleep 30\nDo not simulate execution. After the command completes, respond with DONE.",
       ),

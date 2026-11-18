@@ -8,9 +8,12 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { ownRunOfAgent, projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { readParticipantMessages } from "../../helpers/collaboration-participant-messages.js";
+import { delegatedRunsTree } from "../helpers/run-tree-delegated.js";
 
 // Members of a delegated copy contact the standalone Agent-run host that delegated the work
 // (delegated-copy-member-contact-delegator SR-005/SR-006: REQ-001..REQ-004, REQ-006; AC-001..AC-003, AC-006, AC-009)
@@ -190,13 +193,13 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     hostRunId = created.runId; rootActive = true;
     const input = await connect("agent", hostRunId, (frames) => frames.some((frame) => frame.type === "CONNECTED"));
     const view = await connect("agent-collaboration", hostRunId, (frames) => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
-    const liveTree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: hostRunId }))
-      .agentRunCollaboration?.root_agent?.execution_tree ?? null;
+    // autobyteus-461 SR-084: the host's delegated runs, from its tree (its view carries its own parts only).
+    const liveTree = async () => delegatedRunsTree(graphql, "agent", hostRunId);
     const hostConversation = async () => (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
       { id: hostRunId })).getRunProjection?.conversation;
-    const memberConversation = async (address: string, agentRunId: string) => (await graphql(
-      `query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: hostRunId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the host.
+    const memberConversation = async (_address: string, agentRunId: string) =>
+      (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     const candidatesFor = async (focusedAgentRunId: string | null) => ((await graphql(
       `query($k:String!,$id:String!,$f:String){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id,focusedAgentRunId:$f){availability candidates{kind definitionId}}}`,
       { k: "agent", id: hostRunId, f: focusedAgentRunId })).collaboratorMentionCandidates.candidates as any[]).map((candidate) => candidate.definitionId as string);
@@ -209,16 +212,36 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
         `host tool result for ${content.slice(0, 100)}`, 60_000);
       return results[before]!;
     };
-    /** Posts a user message to a copy member through the Agent-root stream (the task-child composer path); returns its ACK. */
+    /**
+     * Posts a user message to a copy member on its own run's stream: selecting a delegated row binds the composer to that
+     * run (autobyteus-461 rule 2, SR-061); the host's view only shows rows. Returns the run's own command ACK.
+     */
+    const childStreams = new Map<string, Promise<Awaited<ReturnType<typeof connect>>>>();
     const postToChild = async (agentRunId: string, content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {
-      const commandId = randomUUID();
-      view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        root_subject_kind: "agent", root_run_id: hostRunId, target_agent_run_id: agentRunId, command_id: commandId,
-        content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds(), ...(mentions ? { mentions } : {}) } }));
-      let ack: Frame | undefined;
-      await until(() => Boolean(ack = view.frames.find((frame) => frame.type === "AGENT_COMMAND_ACK" && frame.payload.command_id === commandId)),
-        `ACK for ${commandId}`, 60_000);
-      return ack!.payload;
+      // An agent run's own stream answers with its command ACK; a member of a team run is sent on its team's own stream,
+      // which answers a refusal with an ERROR naming the member and an accepted message with the member's input echo.
+      // A member that never ran has no memory folder yet: its team is found from the host's tree rows (SR-084).
+      let own = await ownRunOfAgent(path.join(dataDir, "memory"), agentRunId);
+      if (!own) {
+        const team = objectsIn(await liveTree()).find((row) => typeof row.teamRunId === "string" && Array.isArray(row.members)
+          && (row.members as Record<string, any>[]).some((member) => member.agentRunId === agentRunId));
+        if (team) own = { kind: "team", teamRunId: String(team.teamRunId) };
+      }
+      const key = own?.kind === "team" ? `team:${own.teamRunId}` : `agent:${agentRunId}`;
+      if (!childStreams.has(key)) childStreams.set(key, own?.kind === "team"
+        ? connect("agent-team", own.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"))
+        : connect("agent", agentRunId, (frames) => frames.some((frame) => frame.type === "CONNECTED")));
+      const stream = await childStreams.get(key)!;
+      const ids = buildE2eClientCommandIds();
+      const from = stream.frames.length;
+      stream.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+        agent_run_id: agentRunId, content, context_file_paths: [], image_urls: [], ...ids, ...(mentions ? { mentions } : {}) } }));
+      let answer: Frame | undefined;
+      await until(() => Boolean(answer = stream.frames.slice(from).find((frame) => (frame.type === "AGENT_COMMAND_ACK" && frame.payload.message_id === ids.message_id)
+        || (frame.type === "ERROR" && JSON.stringify(frame.payload).includes(agentRunId))
+        || (frame.type === "MEMBER_INPUT_MESSAGE" && frame.payload.message_id === ids.message_id))), `answer for ${ids.message_id}`, 60_000);
+      if (answer!.type === "AGENT_COMMAND_ACK") return answer!.payload;
+      return answer!.type === "ERROR" ? { state: "rejected", ...answer!.payload } : { state: "accepted", message_id: ids.message_id };
     };
     /** Posts a scripted tool call to a copy member and returns the tool result it reports. */
     const childCalls = async (address: string, agentRunId: string, content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {
@@ -298,8 +321,7 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     expect(hostText).toContain("CALLED:");
     await expectNothingAdded("@host and send_message_to");
     // The Team tab's record: one reviewer → host message carrying the request.
-    const communication = (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: hostRunId }))
-      .agentRunCollaboration?.root_agent?.communication_messages?.messages as any[] | undefined ?? [];
+    const communication = await readParticipantMessages(graphql, { rootKind: "agent", rootRunId: hostRunId, agentRunId: hostRunId });
     const toHost = communication.filter((message) => message.senderAgentRunId === reviewer.agentRunId
       && message.receiverAgentRunId === hostRunId && String(message.content).includes(marker));
     expect(toHost, JSON.stringify(communication).slice(0, 1_000)).toHaveLength(1);
@@ -320,10 +342,15 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     expect(listedBy(soloList)).toContainEqual(expect.objectContaining(hostEntry));
     expect(listedBy(hostList).map((entry) => entry.address)).not.toContain(hostAddress);
     expect(listedBy(hostList).map((entry) => entry.name)).not.toContain(names.manager);
-    // A non-host list is the host entry plus exactly the host's own list (same addresses).
+    // A non-host list is the host entry plus exactly the host's own list (same addresses). For a member of the delegated
+    // team (contract §2.3, design "What a delegated run sees as in its run", TC-12): step 1 lists its own team at its
+    // team's root (`/lead`, `/reviewer`); a definition reached there is not listed again at its catalog address (its own
+    // team first). SR-075 F-40: a run's own definition stays out of its list, as every run's does (autobyteus-455 AC-006):
+    // the solo copy's `/dcm_solo…` and the team's `/dcm_squad…`.
     const addresses = (result: Record<string, any>) => listedBy(result).map((entry) => entry.address).sort();
-    expect(addresses(reviewerList)).toEqual([...addresses(hostList), hostAddress].sort());
-    expect(addresses(soloList)).toEqual([...addresses(hostList), hostAddress].sort());
+    const ownTeamCatalog = [names.lead, names.reviewer, names.squad].map((name) => `/${segment(name)}`);
+    expect(addresses(reviewerList)).toEqual([...addresses(hostList).filter((address) => !ownTeamCatalog.includes(address)), hostAddress, "/lead", "/reviewer"].sort());
+    expect(addresses(soloList)).toEqual([...addresses(hostList).filter((address) => address !== `/${segment(names.solo)}`), hostAddress].sort());
     const plainMarker = `PLAIN_WORDS_${randomUUID().slice(0, 8)}`;
     const soloSend = toolResult(await childCalls(soloCopy.address, soloCopy.agentRunId!,
       callTool("send_message_to", { recipient_address: hostAddress, content: `Status for the manager: ${plainMarker}.` })));

@@ -1,0 +1,46 @@
+# API-10 repository content checks (read-only git grep / ls-files) at 256cee925e
+# worktree /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294, 2026-10-27T19:57:32Z
+
+## AC-006: the 10 tool names and the two module paths (server src, tests, docs; tickets excluded)
+create_agent_definition: 0 matches in autobyteus-server-ts
+delete_agent_definition: 0 matches in autobyteus-server-ts
+get_agent_definition: 0 matches in autobyteus-server-ts
+list_agent_definitions: 0 matches in autobyteus-server-ts
+update_agent_definition: 0 matches in autobyteus-server-ts
+create_agent_team_definition: 0 matches in autobyteus-server-ts
+delete_agent_team_definition: 0 matches in autobyteus-server-ts
+get_agent_team_definition: 0 matches in autobyteus-server-ts
+list_agent_team_definitions: 0 matches in autobyteus-server-ts
+update_agent_team_definition: 0 matches in autobyteus-server-ts
+agent-tools/agent-management: 0 matches in autobyteus-server-ts
+agent-tools/agent-team-management: 0 matches in autobyteus-server-ts
+register-agent-tools: 0 matches in autobyteus-server-ts
+register-agent-team-tools: 0 matches in autobyteus-server-ts
+### the same names anywhere in the repository (outside tickets)
+
+## AC-026: git ls-files 'autobyteus-server-ts/tests/**/*.js'
+tracked .js under autobyteus-server-ts/tests: 0
+
+## AC-029 grep half: i-heroicons- in autobyteus-web
+i-heroicons- matches: 0
+
+## AC-021: references to the removed gateway scripts
+build-runtime-package: 0
+release-manifest: 11
+build:runtime-package: 0
+runtime-package-stage: 0
+dist-runtime: 0
+Binary file 256cee925e:test-results/autobyteus-runtime-streaming-ui-performance/electron-build-personal-macos-arm64.log matches
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:4268:2026-07-31 19:35:56.998 copy-helper[77371:32052090] bomCopierCopyFileUpdate:./Contents/Resources/server/dist/managed-capabilities/messaging-gateway/messaging-gateway-release-manifest-service.js, objectType 1 objectSize 3818 copyResult 0
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:4270:2026-07-31 19:35:56.998 copy-helper[77371:32052090] bomCopierCopyFileUpdate:./Contents/Resources/server/dist/managed-capabilities/messaging-gateway/release-manifest.json, objectType 1 objectSize 904 copyResult 0
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:36888:2026-07-31 19:36:08.813 copy-helper[77371:32052090] bomCopierCopyFileUpdate:./Contents/Resources/server/tests/unit/managed-capabilities/messaging-gateway/messaging-gateway-release-manifest-service.test.ts, objectType 1 objectSize 3240 copyResult 0
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:38241:2026-07-31 19:36:09.272 copy-helper[77371:32052090] bomCopierCopyFileUpdate:./Contents/Resources/server/src/managed-capabilities/messaging-gateway/release-manifest.json, objectType 1 objectSize 904 copyResult 0
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:38244:2026-07-31 19:36:09.273 copy-helper[77371:32052090] bomCopierCopyFileUpdate:./Contents/Resources/server/src/managed-capabilities/messaging-gateway/messaging-gateway-release-manifest-service.ts, objectType 1 objectSize 4418 copyResult 0
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:41842:+ AutoByteus.app/Contents/Resources/server/dist/managed-capabilities/messaging-gateway/messaging-gateway-release-manifest-service.js
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:41843:+ AutoByteus.app/Contents/Resources/server/dist/managed-capabilities/messaging-gateway/release-manifest.json
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:68611:+ AutoByteus.app/Contents/Resources/server/src/managed-capabilities/messaging-gateway/messaging-gateway-release-manifest-service.ts
+test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log:68612:+ AutoByteus.app/Contents/Resources/server/src/managed-capabilities/messaging-gateway/release-manifest.json
+
+## AC-025: the Claude 'env' option
+autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-control-query.ts:33:    env?: Record<string, string | undefined>;
+(end)

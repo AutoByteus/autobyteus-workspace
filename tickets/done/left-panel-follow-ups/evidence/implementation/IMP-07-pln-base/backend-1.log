@@ -1,0 +1,969 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:62041
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:62041
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/db/development.db"
+
+SQLite database development.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:11278) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-06T08:53:05.977Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793955186427,"pid":11278,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62062"}
+{"level":30,"time":1793955186456,"pid":11278,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62041"}
+[2026-11-06T08:53:06.456Z] [INFO] [server.runtime] Server listening on 127.0.0.1:62041
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: project-task-manager-89e3
+Agent Definition created successfully with ID: release-notes-writer-89e3
+Agent Definition created successfully with ID: fact-checker-89e3
+Agent Team Definition created successfully with ID: docs-review-team-89e3
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Created and registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Created terminal session d1a5574f-d477-4e3f-8b96-be27798b904f using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: d1a5574f-d477-4e3f-8b96-be27798b904f
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Closed PTY session d1a5574f-d477-4e3f-8b96-be27798b904f
+Terminal WebSocket disconnected: d1a5574f-d477-4e3f-8b96-be27798b904f
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 9de165f4-3bdb-4afb-b6ab-4b67a70ecbfd for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=9de165f4-3bdb-4afb-b6ab-4b67a70ecbfd, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+AGY compaction detection off for run release_notes_writer_89e3_02a0fb2ba13b48dfbc7e986a13930513: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Closed agent session 9de165f4-3bdb-4afb-b6ab-4b67a70ecbfd
+Agent WebSocket disconnected: 9de165f4-3bdb-4afb-b6ab-4b67a70ecbfd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session b4ce86dd-9d27-486e-bda4-8c97da9ab775 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=b4ce86dd-9d27-486e-bda4-8c97da9ab775, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+AGY compaction detection off for run release_notes_writer_89e3_ea3965eab0c04535a482db325dcf6b6b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Closed agent session b4ce86dd-9d27-486e-bda4-8c97da9ab775
+Agent WebSocket disconnected: b4ce86dd-9d27-486e-bda4-8c97da9ab775
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session e0fe55c7-70c3-4cb8-99af-4c553bf12ee4 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=e0fe55c7-70c3-4cb8-99af-4c553bf12ee4, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/r-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/r-first.
+Created and registered workspace ID: agent_ws_59884ee58815d7ff5af6e1995d7528968b7b0fbcb192c953268bdb0f03cd13a1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+AGY compaction detection off for run fact_checker_89e3_4ea5fad3953f481a9d9615577dbfc39b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Closed agent session e0fe55c7-70c3-4cb8-99af-4c553bf12ee4
+Agent WebSocket disconnected: e0fe55c7-70c3-4cb8-99af-4c553bf12ee4
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session f5777448-3163-4b25-b9de-ddea33a74237 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=f5777448-3163-4b25-b9de-ddea33a74237, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created terminal session e7525dc3-0319-4f94-b2ae-84c0fff42571 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: e7525dc3-0319-4f94-b2ae-84c0fff42571
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Closed PTY session e7525dc3-0319-4f94-b2ae-84c0fff42571
+Terminal WebSocket disconnected: e7525dc3-0319-4f94-b2ae-84c0fff42571
+Closed agent session f5777448-3163-4b25-b9de-ddea33a74237
+Agent WebSocket disconnected: f5777448-3163-4b25-b9de-ddea33a74237
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 0e4f794f-ab28-4278-b6d4-fdc558abb596 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=0e4f794f-ab28-4278-b6d4-fdc558abb596, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Closed agent session 0e4f794f-ab28-4278-b6d4-fdc558abb596
+Agent WebSocket disconnected: 0e4f794f-ab28-4278-b6d4-fdc558abb596
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 9e433d61-2fa6-4d0e-b632-13be06b9e8eb for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=9e433d61-2fa6-4d0e-b632-13be06b9e8eb, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created terminal session f25a1962-9788-41f7-aef5-bff0d2ddd1aa using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: f25a1962-9788-41f7-aef5-bff0d2ddd1aa
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Closed agent session 9e433d61-2fa6-4d0e-b632-13be06b9e8eb
+Agent WebSocket disconnected: 9e433d61-2fa6-4d0e-b632-13be06b9e8eb
+Closed PTY session f25a1962-9788-41f7-aef5-bff0d2ddd1aa
+Terminal WebSocket disconnected: f25a1962-9788-41f7-aef5-bff0d2ddd1aa
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 40c07662-de54-4145-b336-81225d1564ad for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=40c07662-de54-4145-b336-81225d1564ad, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 7938d51e-cfe8-4863-a7c8-bab65b0231ce for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=7938d51e-cfe8-4863-a7c8-bab65b0231ce, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 40c07662-de54-4145-b336-81225d1564ad
+Agent WebSocket disconnected: 40c07662-de54-4145-b336-81225d1564ad
+Closed agent session 7938d51e-cfe8-4863-a7c8-bab65b0231ce
+Agent WebSocket disconnected: 7938d51e-cfe8-4863-a7c8-bab65b0231ce
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session e97b9ef9-c48f-4b84-9556-c54d1125743c for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=e97b9ef9-c48f-4b84-9556-c54d1125743c, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session e72bcaeb-47c5-47d5-a815-30520164de17 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=e72bcaeb-47c5-47d5-a815-30520164de17, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/r-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/r-first.
+Reusing registered workspace ID: agent_ws_59884ee58815d7ff5af6e1995d7528968b7b0fbcb192c953268bdb0f03cd13a1
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 4520d208-b7af-4311-9fd9-81bcabfd54ae for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=4520d208-b7af-4311-9fd9-81bcabfd54ae, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/r-first
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/r-first.
+Reusing registered workspace ID: agent_ws_59884ee58815d7ff5af6e1995d7528968b7b0fbcb192c953268bdb0f03cd13a1
+Closed agent session 4520d208-b7af-4311-9fd9-81bcabfd54ae
+Agent WebSocket disconnected: 4520d208-b7af-4311-9fd9-81bcabfd54ae
+Closed agent session e72bcaeb-47c5-47d5-a815-30520164de17
+Agent WebSocket disconnected: e72bcaeb-47c5-47d5-a815-30520164de17
+Closed agent session e97b9ef9-c48f-4b84-9556-c54d1125743c
+Agent WebSocket disconnected: e97b9ef9-c48f-4b84-9556-c54d1125743c
+AGY compaction detection off for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 687c5091-4935-49d2-8297-3dcbc65c14b3 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=687c5091-4935-49d2-8297-3dcbc65c14b3, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 5f9f3c61-1bbe-45f5-ba6f-2fd87f74dc5d for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=5f9f3c61-1bbe-45f5-ba6f-2fd87f74dc5d, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 376809c9-9951-424a-90cc-6566b75d79ae for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=376809c9-9951-424a-90cc-6566b75d79ae, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 46434835-7398-4959-bebe-0b855dc56440 for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=46434835-7398-4959-bebe-0b855dc56440, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 46434835-7398-4959-bebe-0b855dc56440
+Agent WebSocket disconnected: 46434835-7398-4959-bebe-0b855dc56440
+Closed agent session 376809c9-9951-424a-90cc-6566b75d79ae
+Agent WebSocket disconnected: 376809c9-9951-424a-90cc-6566b75d79ae
+Closed agent session 5f9f3c61-1bbe-45f5-ba6f-2fd87f74dc5d
+Agent WebSocket disconnected: 5f9f3c61-1bbe-45f5-ba6f-2fd87f74dc5d
+Closed agent session 687c5091-4935-49d2-8297-3dcbc65c14b3
+Agent WebSocket disconnected: 687c5091-4935-49d2-8297-3dcbc65c14b3
+AGY compaction detection off for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session c04a0e5a-9be2-4feb-95b0-c898911aa295 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=c04a0e5a-9be2-4feb-95b0-c898911aa295, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session e6e621db-673b-4fbe-8772-9924be09a9e9 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=e6e621db-673b-4fbe-8772-9924be09a9e9, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 21c85217-dfbd-4663-9c98-101487402002 for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=21c85217-dfbd-4663-9c98-101487402002, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 6ed586b0-5361-42e6-952d-7f73b58001ba for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=6ed586b0-5361-42e6-952d-7f73b58001ba, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/picked-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/picked-folder.
+Created and registered workspace ID: agent_ws_600f3d7ea388a220404f24b0b830934c3dc779de0451064cee984962786ef245
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/picked-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/picked-folder.
+Reusing registered workspace ID: agent_ws_600f3d7ea388a220404f24b0b830934c3dc779de0451064cee984962786ef245
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session 8313215c-57aa-4655-badf-b50e5427c585 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=8313215c-57aa-4655-badf-b50e5427c585, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/picked-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/picked-folder.
+Reusing registered workspace ID: agent_ws_600f3d7ea388a220404f24b0b830934c3dc779de0451064cee984962786ef245
+Closed agent session e6e621db-673b-4fbe-8772-9924be09a9e9
+Agent WebSocket disconnected: e6e621db-673b-4fbe-8772-9924be09a9e9
+Closed agent session c04a0e5a-9be2-4feb-95b0-c898911aa295
+Agent WebSocket disconnected: c04a0e5a-9be2-4feb-95b0-c898911aa295
+Closed agent session 8313215c-57aa-4655-badf-b50e5427c585
+Agent WebSocket disconnected: 8313215c-57aa-4655-badf-b50e5427c585
+Closed agent session 6ed586b0-5361-42e6-952d-7f73b58001ba
+Agent WebSocket disconnected: 6ed586b0-5361-42e6-952d-7f73b58001ba
+Closed agent session 21c85217-dfbd-4663-9c98-101487402002
+Agent WebSocket disconnected: 21c85217-dfbd-4663-9c98-101487402002
+AGY compaction detection off for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 698c692f-11fd-495b-948c-39c16592cb41 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=698c692f-11fd-495b-948c-39c16592cb41, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 0fe8b06f-8ad8-473a-bba9-38e609a3f72c for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=0fe8b06f-8ad8-473a-bba9-38e609a3f72c, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session 2fa2a418-c84b-4e41-9de7-40fbc6044ba1 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=2fa2a418-c84b-4e41-9de7-40fbc6044ba1, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 202ab32e-79ac-4b83-912d-5f37e965440d for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=202ab32e-79ac-4b83-912d-5f37e965440d, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session d8d7c066-d7dc-4ef2-90fb-0384b7b010e3 for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=d8d7c066-d7dc-4ef2-90fb-0384b7b010e3, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 9012ed44-7cd4-4f60-9837-54aa203faef7 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=9012ed44-7cd4-4f60-9837-54aa203faef7, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session d8d7c066-d7dc-4ef2-90fb-0384b7b010e3
+Agent WebSocket disconnected: d8d7c066-d7dc-4ef2-90fb-0384b7b010e3
+Closed agent session 202ab32e-79ac-4b83-912d-5f37e965440d
+Agent WebSocket disconnected: 202ab32e-79ac-4b83-912d-5f37e965440d
+Closed agent session 2fa2a418-c84b-4e41-9de7-40fbc6044ba1
+Agent WebSocket disconnected: 2fa2a418-c84b-4e41-9de7-40fbc6044ba1
+Closed agent session 0fe8b06f-8ad8-473a-bba9-38e609a3f72c
+Agent WebSocket disconnected: 0fe8b06f-8ad8-473a-bba9-38e609a3f72c
+Closed agent session 698c692f-11fd-495b-948c-39c16592cb41
+Agent WebSocket disconnected: 698c692f-11fd-495b-948c-39c16592cb41
+Closed agent session 9012ed44-7cd4-4f60-9837-54aa203faef7
+Agent WebSocket disconnected: 9012ed44-7cd4-4f60-9837-54aa203faef7
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 4ce6042d-ce57-48aa-8221-c9f4605be182 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=4ce6042d-ce57-48aa-8221-c9f4605be182, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session c39939d5-0ffb-4840-9d8a-de865f9dd583 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=c39939d5-0ffb-4840-9d8a-de865f9dd583, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session da635523-ae61-4d53-beee-5161ad22b5d2 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=da635523-ae61-4d53-beee-5161ad22b5d2, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session 528eb593-8f3a-4aac-88ee-33043c7f0b39 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=528eb593-8f3a-4aac-88ee-33043c7f0b39, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created terminal session e842a8ca-4b03-4925-a0f7-ee2134c76159 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: e842a8ca-4b03-4925-a0f7-ee2134c76159
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 487fd0d1-24c7-47a2-8990-34320ccc0869 for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=487fd0d1-24c7-47a2-8990-34320ccc0869, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 1139ff1d-7831-46ba-b95c-149ecef4e948 for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=1139ff1d-7831-46ba-b95c-149ecef4e948, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Closed agent session 528eb593-8f3a-4aac-88ee-33043c7f0b39
+Agent WebSocket disconnected: 528eb593-8f3a-4aac-88ee-33043c7f0b39
+Closed agent session 1139ff1d-7831-46ba-b95c-149ecef4e948
+Agent WebSocket disconnected: 1139ff1d-7831-46ba-b95c-149ecef4e948
+Closed agent session c39939d5-0ffb-4840-9d8a-de865f9dd583
+Agent WebSocket disconnected: c39939d5-0ffb-4840-9d8a-de865f9dd583
+Closed agent session 4ce6042d-ce57-48aa-8221-c9f4605be182
+Agent WebSocket disconnected: 4ce6042d-ce57-48aa-8221-c9f4605be182
+Closed agent session da635523-ae61-4d53-beee-5161ad22b5d2
+Agent WebSocket disconnected: da635523-ae61-4d53-beee-5161ad22b5d2
+Closed agent session 487fd0d1-24c7-47a2-8990-34320ccc0869
+Agent WebSocket disconnected: 487fd0d1-24c7-47a2-8990-34320ccc0869
+Closed PTY session e842a8ca-4b03-4925-a0f7-ee2134c76159
+Terminal WebSocket disconnected: e842a8ca-4b03-4925-a0f7-ee2134c76159
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 96707f12-023e-4584-ab2a-3ddebc72c605 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=96707f12-023e-4584-ab2a-3ddebc72c605, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 85275fec-f00c-4242-a273-3ade1946d97c for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=85275fec-f00c-4242-a273-3ade1946d97c, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 09470950-64ef-4667-99d0-da0116e4211b for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=09470950-64ef-4667-99d0-da0116e4211b, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Created terminal session baec4430-4088-4b98-bb71-83a65992b006 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: baec4430-4088-4b98-bb71-83a65992b006
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session bb6c8557-f270-4753-8750-d38d6a17b840 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=bb6c8557-f270-4753-8750-d38d6a17b840, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 88b55c76-be39-49e2-acd3-62912627e204 for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=88b55c76-be39-49e2-acd3-62912627e204, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session a2b92d2e-aea7-4f76-bbbd-45a61a732a2a for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=a2b92d2e-aea7-4f76-bbbd-45a61a732a2a, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Closed PTY session baec4430-4088-4b98-bb71-83a65992b006
+Terminal WebSocket disconnected: baec4430-4088-4b98-bb71-83a65992b006
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session faa46a06-cd95-4b62-9ce6-41c3d95bc3e5 for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=faa46a06-cd95-4b62-9ce6-41c3d95bc3e5, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session faa46a06-cd95-4b62-9ce6-41c3d95bc3e5
+Closed agent session a2b92d2e-aea7-4f76-bbbd-45a61a732a2a
+Agent WebSocket disconnected: a2b92d2e-aea7-4f76-bbbd-45a61a732a2a
+Closed agent session 88b55c76-be39-49e2-acd3-62912627e204
+Agent WebSocket disconnected: 88b55c76-be39-49e2-acd3-62912627e204
+Closed agent session bb6c8557-f270-4753-8750-d38d6a17b840
+Agent WebSocket disconnected: bb6c8557-f270-4753-8750-d38d6a17b840
+Closed agent session 09470950-64ef-4667-99d0-da0116e4211b
+Agent WebSocket disconnected: 09470950-64ef-4667-99d0-da0116e4211b
+Closed agent session 85275fec-f00c-4242-a273-3ade1946d97c
+Agent WebSocket disconnected: 85275fec-f00c-4242-a273-3ade1946d97c
+Closed agent session 96707f12-023e-4584-ab2a-3ddebc72c605
+Agent WebSocket disconnected: 96707f12-023e-4584-ab2a-3ddebc72c605
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 229abbcb-9329-4350-ac49-f5af5f7f6663 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=229abbcb-9329-4350-ac49-f5af5f7f6663, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 49abadb1-bf4f-41d8-8c05-1929857ff5a8 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=49abadb1-bf4f-41d8-8c05-1929857ff5a8, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session bfff0703-ac22-481c-844c-e74225bb02c2 for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=bfff0703-ac22-481c-844c-e74225bb02c2, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Created terminal session f522a2bb-2209-4192-8096-e48379f29f57 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: f522a2bb-2209-4192-8096-e48379f29f57
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session 50afe416-88ec-499c-a624-d3acc6f21fd5 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=50afe416-88ec-499c-a624-d3acc6f21fd5, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session e52c49bd-33e4-48ea-b4ce-5a099a42bf49 for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=e52c49bd-33e4-48ea-b4ce-5a099a42bf49, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 8c93bb13-6d95-44e9-96da-254ee0483a7f for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=8c93bb13-6d95-44e9-96da-254ee0483a7f, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session 5ce3406d-ada5-4ff6-a335-32eda3ab81eb for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=5ce3406d-ada5-4ff6-a335-32eda3ab81eb, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Closed PTY session f522a2bb-2209-4192-8096-e48379f29f57
+Terminal WebSocket disconnected: f522a2bb-2209-4192-8096-e48379f29f57
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Agent websocket attached for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Created agent session b76531f4-e10b-4719-925d-35541ff780cf for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Agent WebSocket connected: session=b76531f4-e10b-4719-925d-35541ff780cf, run=project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session bfff0703-ac22-481c-844c-e74225bb02c2
+Agent WebSocket disconnected: bfff0703-ac22-481c-844c-e74225bb02c2
+Closed agent session 8c93bb13-6d95-44e9-96da-254ee0483a7f
+Agent WebSocket disconnected: 8c93bb13-6d95-44e9-96da-254ee0483a7f
+Closed agent session b76531f4-e10b-4719-925d-35541ff780cf
+Agent WebSocket disconnected: b76531f4-e10b-4719-925d-35541ff780cf
+Closed agent session 5ce3406d-ada5-4ff6-a335-32eda3ab81eb
+Closed agent session 229abbcb-9329-4350-ac49-f5af5f7f6663
+Agent WebSocket disconnected: 229abbcb-9329-4350-ac49-f5af5f7f6663
+Closed agent session e52c49bd-33e4-48ea-b4ce-5a099a42bf49
+Agent WebSocket disconnected: e52c49bd-33e4-48ea-b4ce-5a099a42bf49
+Closed agent session 50afe416-88ec-499c-a624-d3acc6f21fd5
+Agent WebSocket disconnected: 50afe416-88ec-499c-a624-d3acc6f21fd5
+Closed agent session 49abadb1-bf4f-41d8-8c05-1929857ff5a8
+Agent WebSocket disconnected: 49abadb1-bf4f-41d8-8c05-1929857ff5a8
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Created agent session b57acd94-5065-4955-9b98-960d8ca3e3c5 for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Agent WebSocket connected: session=b57acd94-5065-4955-9b98-960d8ca3e3c5, run=project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Created terminal session 4fa866ba-713b-4c4e-a4ab-f1fb0b8ce3ae using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: 4fa866ba-713b-4c4e-a4ab-f1fb0b8ce3ae
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 87848b8c-fac8-4783-a75e-fa71c2e26e8b for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=87848b8c-fac8-4783-a75e-fa71c2e26e8b, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 9b4e0a9f-050f-4d30-8321-3e617e24f996 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=9b4e0a9f-050f-4d30-8321-3e617e24f996, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 3306fc18-edb3-4b86-a462-85e2e1b8be3d for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=3306fc18-edb3-4b86-a462-85e2e1b8be3d, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session c85d9d55-aa0a-4aa9-bfa7-c814cd98e896 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=c85d9d55-aa0a-4aa9-bfa7-c814cd98e896, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 14092fbd-95d0-4e01-a45f-59dc1c986b66 for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=14092fbd-95d0-4e01-a45f-59dc1c986b66, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 66f18b8e-5594-4839-81c6-0224a7b69348 for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=66f18b8e-5594-4839-81c6-0224a7b69348, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session 8d7fff92-c975-4b9b-851a-231911af63cb for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=8d7fff92-c975-4b9b-851a-231911af63cb, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed PTY session 4fa866ba-713b-4c4e-a4ab-f1fb0b8ce3ae
+Terminal WebSocket disconnected: 4fa866ba-713b-4c4e-a4ab-f1fb0b8ce3ae
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_f90aa9d00a274dc3bacee1472c85cc44/release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 2faf63f9-4b19-40e6-9afc-3a84c7518a7d for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=2faf63f9-4b19-40e6-9afc-3a84c7518a7d, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+AGY compaction detection off for run fact_checker_89e3_48ec8f8a48a443e0941daf0461fc8580: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_f90aa9d00a274dc3bacee1472c85cc44/release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session 2faf63f9-4b19-40e6-9afc-3a84c7518a7d
+Agent WebSocket disconnected: 2faf63f9-4b19-40e6-9afc-3a84c7518a7d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session efc0821d-603f-4e36-a151-879f21d5467f for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=efc0821d-603f-4e36-a151-879f21d5467f, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+AGY compaction detection off for run release_notes_writer_89e3_138a184545844a94a20a619cd99beb6d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_f90aa9d00a274dc3bacee1472c85cc44/release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session efc0821d-603f-4e36-a151-879f21d5467f
+Agent WebSocket disconnected: efc0821d-603f-4e36-a151-879f21d5467f
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session adbce5a6-4364-4d5c-8bbb-705b7488e42c for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=adbce5a6-4364-4d5c-8bbb-705b7488e42c, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+AGY compaction detection off for run release_notes_writer_89e3_f3f73442bdf24e7885783763d78fecbb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_f90aa9d00a274dc3bacee1472c85cc44/release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session adbce5a6-4364-4d5c-8bbb-705b7488e42c
+Agent WebSocket disconnected: adbce5a6-4364-4d5c-8bbb-705b7488e42c
+Closed agent session b57acd94-5065-4955-9b98-960d8ca3e3c5
+Agent WebSocket disconnected: b57acd94-5065-4955-9b98-960d8ca3e3c5
+Closed agent session 14092fbd-95d0-4e01-a45f-59dc1c986b66
+Agent WebSocket disconnected: 14092fbd-95d0-4e01-a45f-59dc1c986b66
+Closed agent session c85d9d55-aa0a-4aa9-bfa7-c814cd98e896
+Agent WebSocket disconnected: c85d9d55-aa0a-4aa9-bfa7-c814cd98e896
+Closed agent session 87848b8c-fac8-4783-a75e-fa71c2e26e8b
+Agent WebSocket disconnected: 87848b8c-fac8-4783-a75e-fa71c2e26e8b
+Closed agent session 9b4e0a9f-050f-4d30-8321-3e617e24f996
+Agent WebSocket disconnected: 9b4e0a9f-050f-4d30-8321-3e617e24f996
+Closed agent session 66f18b8e-5594-4839-81c6-0224a7b69348
+Agent WebSocket disconnected: 66f18b8e-5594-4839-81c6-0224a7b69348
+Closed agent session 8d7fff92-c975-4b9b-851a-231911af63cb
+Closed agent session 3306fc18-edb3-4b86-a462-85e2e1b8be3d
+Agent WebSocket disconnected: 3306fc18-edb3-4b86-a462-85e2e1b8be3d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Created agent session 87e092fb-5cf1-450c-8f88-6b503b490848 for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Agent WebSocket connected: session=87e092fb-5cf1-450c-8f88-6b503b490848, run=project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 7ca9376a-2657-4b01-8d75-2224dd0421d6 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=7ca9376a-2657-4b01-8d75-2224dd0421d6, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cefba416f7424722a40f60349372b35b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Created terminal session 5a590a6a-1dda-4867-b9f8-c36b3700977f using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: 5a590a6a-1dda-4867-b9f8-c36b3700977f
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session b7a7cca3-1819-47ea-a911-665516b98ccf for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=b7a7cca3-1819-47ea-a911-665516b98ccf, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Created agent session 4b2764c2-727b-428b-8383-ff7143ed1c1f for run project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Agent WebSocket connected: session=4b2764c2-727b-428b-8383-ff7143ed1c1f, run=project_task_manager_89e3_cefba416f7424722a40f60349372b35b
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session 8e277b67-10c7-49d0-b23f-67dbd20d7024 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=8e277b67-10c7-49d0-b23f-67dbd20d7024, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 9c5acd35-e039-4ea2-9bf7-23590a84887e for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=9c5acd35-e039-4ea2-9bf7-23590a84887e, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session eece6fb6-e189-424e-8897-3f433f515fda for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=eece6fb6-e189-424e-8897-3f433f515fda, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session dc66dd7a-6027-4237-af48-ef916f913763 for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=dc66dd7a-6027-4237-af48-ef916f913763, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 9c450005-5855-44fd-928c-87aed8a8d327 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=9c450005-5855-44fd-928c-87aed8a8d327, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed PTY session 5a590a6a-1dda-4867-b9f8-c36b3700977f
+Terminal WebSocket disconnected: 5a590a6a-1dda-4867-b9f8-c36b3700977f
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session 9c450005-5855-44fd-928c-87aed8a8d327
+Agent WebSocket disconnected: 9c450005-5855-44fd-928c-87aed8a8d327
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_f90aa9d00a274dc3bacee1472c85cc44/release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 255a1c27-ea6f-4ccf-92d2-b2eb8295e824 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=255a1c27-ea6f-4ccf-92d2-b2eb8295e824, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session 255a1c27-ea6f-4ccf-92d2-b2eb8295e824
+Agent WebSocket disconnected: 255a1c27-ea6f-4ccf-92d2-b2eb8295e824
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 8e94da91-8c24-4a1d-b7c2-cc7c6fc5ace9 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=8e94da91-8c24-4a1d-b7c2-cc7c6fc5ace9, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+AGY compaction detection off for run release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session 8e94da91-8c24-4a1d-b7c2-cc7c6fc5ace9
+Agent WebSocket disconnected: 8e94da91-8c24-4a1d-b7c2-cc7c6fc5ace9
+Closed agent session dc66dd7a-6027-4237-af48-ef916f913763
+Closed agent session 8e277b67-10c7-49d0-b23f-67dbd20d7024
+Agent WebSocket disconnected: 8e277b67-10c7-49d0-b23f-67dbd20d7024
+Closed agent session eece6fb6-e189-424e-8897-3f433f515fda
+Agent WebSocket disconnected: eece6fb6-e189-424e-8897-3f433f515fda
+Closed agent session 7ca9376a-2657-4b01-8d75-2224dd0421d6
+Agent WebSocket disconnected: 7ca9376a-2657-4b01-8d75-2224dd0421d6
+Closed agent session 87e092fb-5cf1-450c-8f88-6b503b490848
+Agent WebSocket disconnected: 87e092fb-5cf1-450c-8f88-6b503b490848
+Closed agent session 9c5acd35-e039-4ea2-9bf7-23590a84887e
+Agent WebSocket disconnected: 9c5acd35-e039-4ea2-9bf7-23590a84887e
+Closed agent session b7a7cca3-1819-47ea-a911-665516b98ccf
+Agent WebSocket disconnected: b7a7cca3-1819-47ea-a911-665516b98ccf
+Closed agent session 4b2764c2-727b-428b-8383-ff7143ed1c1f
+Agent WebSocket disconnected: 4b2764c2-727b-428b-8383-ff7143ed1c1f
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_73008d0a5a5c44aca72d69c947c94955: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_95a6d5cb69744a59b3208483a41a6bd3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_0fb2fa0111d74d6fb8b28aa42a6d126d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_c6686f96a0044e9989bc83f8dca24af0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_8bc5d1b558e1429dae8874f78883ea0d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/p-folder.
+Reusing registered workspace ID: agent_ws_b82af436acec724b1a92d2e8f54146b35ae573db72c325ae6e26c622f77ad5cd
+AGY compaction detection off for run project_task_manager_89e3_167b452d6d214e0690414e161b737e08: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session db7ef6ed-27fb-49a8-9152-adac0a6c4f30 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=db7ef6ed-27fb-49a8-9152-adac0a6c4f30, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 9f0e6de1-dcb5-46bd-8dab-02ec749c5718 for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=9f0e6de1-dcb5-46bd-8dab-02ec749c5718, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 4d787e59-674a-4c9f-96df-4fbc1dda7fc8 for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=4d787e59-674a-4c9f-96df-4fbc1dda7fc8, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session 272a67e7-5778-4c25-810f-ef59c0f84260 for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=272a67e7-5778-4c25-810f-ef59c0f84260, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Created terminal session b1b4b6f3-5326-40ea-b794-f5db306165b9 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: b1b4b6f3-5326-40ea-b794-f5db306165b9
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Closed agent session 4d787e59-674a-4c9f-96df-4fbc1dda7fc8
+Agent WebSocket disconnected: 4d787e59-674a-4c9f-96df-4fbc1dda7fc8
+Closed agent session db7ef6ed-27fb-49a8-9152-adac0a6c4f30
+Agent WebSocket disconnected: db7ef6ed-27fb-49a8-9152-adac0a6c4f30
+Closed agent session 272a67e7-5778-4c25-810f-ef59c0f84260
+Closed agent session 9f0e6de1-dcb5-46bd-8dab-02ec749c5718
+Agent WebSocket disconnected: 9f0e6de1-dcb5-46bd-8dab-02ec749c5718
+Closed PTY session b1b4b6f3-5326-40ea-b794-f5db306165b9
+Terminal WebSocket disconnected: b1b4b6f3-5326-40ea-b794-f5db306165b9
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Created agent session f7c05c05-9e79-4a08-9d6b-10bcc606d4d4 for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Agent WebSocket connected: session=f7c05c05-9e79-4a08-9d6b-10bcc606d4d4, run=project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 8b82bc60-41b9-4387-80bb-987904568ef6 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=8b82bc60-41b9-4387-80bb-987904568ef6, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Created terminal session 28ff5aa3-1f20-44ea-ba57-8abe3452dbcb using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: 28ff5aa3-1f20-44ea-ba57-8abe3452dbcb
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 9007b01b-6658-4216-9fea-7a9ac6cd9cbc for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=9007b01b-6658-4216-9fea-7a9ac6cd9cbc, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session 1dc6b6ce-7885-4a4f-9e34-8ad8dbc7465e for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=1dc6b6ce-7885-4a4f-9e34-8ad8dbc7465e, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session 97bd4f0c-b073-4e5f-bba9-fb89adb101dc for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=97bd4f0c-b073-4e5f-bba9-fb89adb101dc, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session 2d8d9d1f-dd66-42d5-bfe1-3ace0c4ddb2c for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=2d8d9d1f-dd66-42d5-bfe1-3ace0c4ddb2c, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session a76abc69-c4a0-4327-be26-1b9ccc3d005b for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=a76abc69-c4a0-4327-be26-1b9ccc3d005b, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed PTY session 28ff5aa3-1f20-44ea-ba57-8abe3452dbcb
+Terminal WebSocket disconnected: 28ff5aa3-1f20-44ea-ba57-8abe3452dbcb
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_f90aa9d00a274dc3bacee1472c85cc44/release_notes_writer_89e3_886b29c26f88486bb2ed3a79ae59bb52/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session 97bd4f0c-b073-4e5f-bba9-fb89adb101dc
+Agent WebSocket disconnected: 97bd4f0c-b073-4e5f-bba9-fb89adb101dc
+Closed agent session 9007b01b-6658-4216-9fea-7a9ac6cd9cbc
+Agent WebSocket disconnected: 9007b01b-6658-4216-9fea-7a9ac6cd9cbc
+Closed agent session 2d8d9d1f-dd66-42d5-bfe1-3ace0c4ddb2c
+Agent WebSocket disconnected: 2d8d9d1f-dd66-42d5-bfe1-3ace0c4ddb2c
+Closed agent session a76abc69-c4a0-4327-be26-1b9ccc3d005b
+Closed agent session f7c05c05-9e79-4a08-9d6b-10bcc606d4d4
+Agent WebSocket disconnected: f7c05c05-9e79-4a08-9d6b-10bcc606d4d4
+Closed agent session 8b82bc60-41b9-4387-80bb-987904568ef6
+Agent WebSocket disconnected: 8b82bc60-41b9-4387-80bb-987904568ef6
+Closed agent session 1dc6b6ce-7885-4a4f-9e34-8ad8dbc7465e
+Agent WebSocket disconnected: 1dc6b6ce-7885-4a4f-9e34-8ad8dbc7465e
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Created agent session 906d912f-3749-4e12-bd44-628691efb1e4 for run project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Agent WebSocket connected: session=906d912f-3749-4e12-bd44-628691efb1e4, run=project_task_manager_89e3_c62aed273a834b92a06c8e03a81cea8d
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Created terminal session 11c9805a-7f6e-43cd-b302-7bde619fd6a1 using backend IsolatedPtySession for target /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Terminal WebSocket connected: 11c9805a-7f6e-43cd-b302-7bde619fd6a1
+Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/home
+Agent websocket attached for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Created agent session 0ccda92a-de7b-46bf-ad3b-6dbfc28636f6 for run project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Agent WebSocket connected: session=0ccda92a-de7b-46bf-ad3b-6dbfc28636f6, run=project_task_manager_89e3_edbbca44daed46ba8f611e42c8f61220
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Created agent session 6a579496-2610-483a-ad2d-0aff7beff0a3 for run project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Agent WebSocket connected: session=6a579496-2610-483a-ad2d-0aff7beff0a3, run=project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Created agent session f778e3e7-2526-491b-ac17-8554a591e2d9 for run project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Agent WebSocket connected: session=f778e3e7-2526-491b-ac17-8554a591e2d9, run=project_task_manager_89e3_f9d3d0bb9809441b8c370ce00da17123
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Created agent session bc3fc731-1d6e-4788-90df-13e87911b15c for run project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent WebSocket connected: session=bc3fc731-1d6e-4788-90df-13e87911b15c, run=project_task_manager_89e3_cc683be01b944a49bebe23a6f7477bd6
+Agent websocket attached for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Created agent session efc29f7d-f834-4f18-995c-4b44879672da for run project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent WebSocket connected: session=efc29f7d-f834-4f18-995c-4b44879672da, run=project_task_manager_89e3_6e99fd7646434fcf9bed74ee44aa4086
+Agent team websocket attached for team run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Created agent session f2d137bc-10d6-464d-943d-c7a65d037f5b for run docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Agent Team WebSocket connected: session=f2d137bc-10d6-464d-943d-c7a65d037f5b, run=docs_review_team_89e3_c67fcf6de3254801981b71d01555df48
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agent_teams/docs_review_team_89e3_c67fcf6de3254801981b71d01555df48/release_notes_writer_89e3_bc8ff941170e415d8a77baefe5bca1f1/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-8fopqh/memory/agents/project_task_manager_89e3_1f07003822bd4cdc922fd9f332f209c0/raw_traces_manifest.json
+Closed agent session f2d137bc-10d6-464d-943d-c7a65d037f5b
+Closed agent session efc29f7d-f834-4f18-995c-4b44879672da
+Agent WebSocket disconnected: efc29f7d-f834-4f18-995c-4b44879672da
+Closed agent session bc3fc731-1d6e-4788-90df-13e87911b15c
+Agent WebSocket disconnected: bc3fc731-1d6e-4788-90df-13e87911b15c
+Closed agent session f778e3e7-2526-491b-ac17-8554a591e2d9
+Agent WebSocket disconnected: f778e3e7-2526-491b-ac17-8554a591e2d9
+Closed agent session 6a579496-2610-483a-ad2d-0aff7beff0a3
+Agent WebSocket disconnected: 6a579496-2610-483a-ad2d-0aff7beff0a3
+Closed agent session 0ccda92a-de7b-46bf-ad3b-6dbfc28636f6
+Agent WebSocket disconnected: 0ccda92a-de7b-46bf-ad3b-6dbfc28636f6
+Closed agent session 906d912f-3749-4e12-bd44-628691efb1e4
+Agent WebSocket disconnected: 906d912f-3749-4e12-bd44-628691efb1e4

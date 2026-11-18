@@ -1,0 +1,20 @@
+# Check: IMP-20
+# Command: node tickets/in-progress/workspace-tree-vs-chooser/evidence/implementation/IMP-20-render-probe.mjs --output-dir tickets/in-progress/workspace-tree-vs-chooser/evidence/implementation/IMP-20 (under env -i PATH HOME=<tmp> TMPDIR)
+# Commit: 0d3c31c4ae (server dist built from it at 21:14); probe as committed with this evidence
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 21:22 CET (third run; see the handoff for runs 1-2)
+# Full output: IMP-20/IMP-20-evidence.json, IMP-20/backend.log, IMP-20/frontend.log, 17 screenshots in IMP-20/
+
+VIS-015 Pass Projects view with no Projects on the node: text-only empty state
+VIS-014 Pass Workspaces view with folders but no run: text-only empty state; the chooser lists every folder
+VIS-016 Pass Projects exist but none has a run: its own text-only state
+VIS-001/002 Pass Workspaces view (default): only folders with runs, no remove button; the View menu
+VIS-003/004 Pass Runs view: every run newest first; menu open on Runs
+VIS-005/006 Pass Projects view: only the Project with a run; menu open on Projects
+VIS-011 Pass Keyboard focus ring on the View button; arrows, Escape returns focus
+VIS-012 Pass zh-CN: the Runs view and its title
+VIS-013 Pass 600x800: the run section in the left drawer with the same menu
+VIS-007/008/009 Pass Chat chooser: every folder; Remove on hover; confirmation; removed from every list
+VIS-010 Pass Remove refused while a run is running in the folder; nothing changes
+VIS-017 Pass A folder with only a draft is not listed; it appears with the first sent message
+exit=0

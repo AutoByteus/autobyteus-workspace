@@ -14,6 +14,7 @@ import {
   GET_HANDOFF_RULES_TOOL_NAME,
 } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import { buildGetHandoffRulesParameterSchema } from "./get-handoff-rules-parameter-schema.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 
 const OWNER = "server-owned-agent-communication";
 
@@ -35,7 +36,7 @@ export class AutoByteusGetHandoffRulesTool extends BaseTool<unknown, Record<stri
   protected async _execute(): Promise<string> {
     const result = (this.options.service ?? getGetHandoffRulesService())
       .getRules(this.options.memberExecutionContext?.collaboration);
-    return JSON.stringify(result);
+    return toToolResultJson(result);
   }
 }
 

@@ -1,0 +1,16 @@
+# IMP-02 chooseLiveModel unit tests
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/e2e-helpers/live-model-choice.test.ts --reporter=verbose
+# Commit: 6cc367a37e
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, vitest 4.1.12, worktree release-guide-notes-and-grok-smoke
+# Date: 2026-11-01
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/release-guide-notes-and-grok-smoke/autobyteus-server-ts
+ ✓ tests/unit/e2e-helpers/live-model-choice.test.ts > chooseLiveModel > uses the pin when the runtime offers it 1ms
+ ✓ tests/unit/e2e-helpers/live-model-choice.test.ts > chooseLiveModel > falls back to Grok's first offered model when its pin is missing 0ms
+ ✓ tests/unit/e2e-helpers/live-model-choice.test.ts > chooseLiveModel > fails Codex and Claude when their pin is missing 1ms
+ ✓ tests/unit/e2e-helpers/live-model-choice.test.ts > chooseLiveModel > uses an offered override and fails a missing one, also on Grok 0ms
+ ✓ tests/unit/e2e-helpers/live-model-choice.test.ts > chooseLiveModel > fails on an empty list 0ms
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  06:10:14
+   Duration  536ms (transform 35ms, setup 41ms, import 8ms, tests 3ms, environment 0ms)

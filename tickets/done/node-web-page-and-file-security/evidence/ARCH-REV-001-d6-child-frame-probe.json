@@ -1,0 +1,91 @@
+{
+ "electron": "42.11.16",
+ "seen": [
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-post",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-iframe-post",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/blank-iframe-get",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/blank-iframe-ws",
+   "origin": "file://"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-post",
+   "origin": "(none)"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/navigate-from-file",
+   "origin": "null"
+  }
+ ],
+ "decisions": [
+  {
+   "url": "file:///tmp/arch-review-416-probe/page.html",
+   "resourceType": "mainFrame",
+   "frameUrl": "",
+   "frameOrigin": "null",
+   "rewrite": false
+  },
+  {
+   "url": "/top-post",
+   "resourceType": "xhr",
+   "frameUrl": "file:///tmp/arch-review-416-probe/page.html",
+   "frameOrigin": "file://",
+   "rewrite": true
+  },
+  {
+   "url": "/blank-iframe-post",
+   "resourceType": "xhr",
+   "frameUrl": "file:///tmp/arch-review-416-probe/page.html",
+   "frameOrigin": "file://",
+   "rewrite": true
+  },
+  {
+   "url": "/blank-iframe-get",
+   "resourceType": "xhr",
+   "frameUrl": "file:///tmp/arch-review-416-probe/page.html",
+   "frameOrigin": "file://",
+   "rewrite": true
+  },
+  {
+   "url": "ws://127.0.0.1:52251/blank-iframe-ws",
+   "resourceType": "webSocket",
+   "frameUrl": "about:blank",
+   "frameOrigin": "file://",
+   "rewrite": false
+  },
+  {
+   "url": "/srcdoc-post",
+   "resourceType": "xhr",
+   "frameUrl": "about:srcdoc",
+   "frameOrigin": "file://",
+   "rewrite": false
+  },
+  {
+   "url": "/navigate-from-file",
+   "resourceType": "mainFrame",
+   "frameUrl": "file:///tmp/arch-review-416-probe/page.html",
+   "frameOrigin": "file://",
+   "rewrite": true
+  }
+ ]
+}

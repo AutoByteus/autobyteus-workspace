@@ -1,0 +1,15 @@
+# API-07 sensitivity (mutation) check — does MSR-001 fail when the behavior it guards is removed?
+# Step: autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts — removed the empty-list rule
+#   `if (runtime !== RuntimeKind.AUTOBYTEUS && catalog.offeredModels.length === 0) throw new ModelListUnavailableError(runtime);`
+# then `corepack pnpm -C autobyteus-server-ts build` (exit 0), then
+#   env -i PATH=$PATH HOME=/root TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts -t "MSR-001" --no-watch
+# Commit 817bd9950 · ENV-1 · 2026-11-10 14:0x UTC · Case API-07. Source restored from /tmp copy right after (git status of autobyteus-server-ts/src clean) and dist rebuilt (exit 0).
+# Observed (copied from the run):
+ × MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list 6555ms
+AssertionError: expected { success: false, …(6) } to match object { success: false, …(2) }
+-   "message": "The model list of Claude Agent SDK could not be read. Try again. Saved settings were not changed.",
+-   "outcome": "MODEL_LIST_UNAVAILABLE",
++   "message": "'claude-new-model' is not offered by Claude Agent SDK now. Refresh the model list and choose again. Saved settings were not changed.",
++   "outcome": "MODEL_UNAVAILABLE",
+      Tests  1 failed | 2 skipped (3)
+# Reading: with the empty-list rule gone, the unreadable list is reported as "not offered"; the test catches exactly the change this ticket made.

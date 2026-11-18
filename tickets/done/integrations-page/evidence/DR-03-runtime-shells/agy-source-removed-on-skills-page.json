@@ -1,0 +1,45 @@
+{
+  "runtime": "antigravity_cli (scripted CLI)",
+  "probe": {
+    "result": {
+      "apiHttp": "200",
+      "gitStatus": 0,
+      "psStatus": 0,
+      "psEnvStatus": 0
+    },
+    "address": "http://127.0.0.1:65100/r/rp_<pass>/github/api",
+    "gitConfig": [
+      [
+        "url.http://127.0.0.1:65100/r/rp_<pass>/github/git/.insteadOf",
+        "https://github.com/"
+      ]
+    ],
+    "terminalPrompt": "0",
+    "issueNumber": 1,
+    "lsRemoteHead": true,
+    "tokenInShellOutputs": []
+  },
+  "before": {
+    "status": 200,
+    "error": null
+  },
+  "afterRemoval": {
+    "status": 403,
+    "error": "INTEGRATION_NOT_ALLOWED"
+  },
+  "sourceStillListed": false,
+  "cards": [],
+  "connections": {
+    "integrations": {
+      "github": {
+        "login": null,
+        "connectedAt": null
+      }
+    }
+  },
+  "scan": {
+    "onWire": false,
+    "filesInDataDir": [],
+    "filesInCodexHome": "not scanned (not a temp CODEX_HOME)"
+  }
+}

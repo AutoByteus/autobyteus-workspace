@@ -1,0 +1,4 @@
+GET /rest/node-update?target=1.5.12-beta.3
+{"inPlaceUpdate":"available","version":"1.5.12-beta.7","target":{"version":"1.5.12-beta.3","relation":"older"},"update":{"state":"succeeded","targetVersion":"1.5.12-beta.7","step":"confirming","code":null,"message":"Updated to 1.5.12-beta.7.","startedAt":"2026-11-07T20:15:16.042Z","finishedAt":"2026-11-07T20:16:49.063Z","requestedFrom":"172.17.0.1"}}
+GET /rest/node-update?target=1.5.12-beta.7
+{"inPlaceUpdate":"available","version":"1.5.12-beta.7","target":{"version":"1.5.12-beta.7","relation":"same"},"update":{"state":"succeeded","targetVersion":"1.5.12-beta.7","step":"confirming","code":null,"message":"Updated to 1.5.12-beta.7.","startedAt":"2026-11-07T20:15:16.042Z","finishedAt":"2026-11-07T20:16:49.063Z","requestedFrom":"172.17.0.1"}}

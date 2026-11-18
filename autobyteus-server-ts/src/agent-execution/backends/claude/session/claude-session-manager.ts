@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import type { WorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../../../workspaces/workspace-manager.js";
 import { normalizeSessionMessages } from "../claude-runtime-message-normalizers.js";
@@ -16,12 +17,6 @@ import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecy
 import type {
   AgentToolMcpRunSessionAuthority,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
-import {
-  getClaudeWorkspaceSkillMaterializer,
-} from "../claude-workspace-skill-materializer.js";
-import type {
-  WorkspaceSkillMaterializer,
-} from "../../shared/workspace-skill-materializer.js";
 export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
 
@@ -44,8 +39,7 @@ export class ClaudeSessionManager {
     agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority,
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    workspaceSkillMaterializer: WorkspaceSkillMaterializer =
-      getClaudeWorkspaceSkillMaterializer(),
+    private readonly integrationRunAccess: IntegrationRunAccess | null = null,
   ) {
     if (!agentToolMcpRunSessions) {
       throw new Error("Claude Agent Tools MCP run-session activator is required.");
@@ -53,7 +47,7 @@ export class ClaudeSessionManager {
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
     this.agentToolMcpRunSessions = agentToolMcpRunSessions;
-    this.sessionCleanup = new ClaudeSessionCleanup(workspaceSkillMaterializer);
+    this.sessionCleanup = new ClaudeSessionCleanup();
   }
 
   async createRunSession(
@@ -177,6 +171,7 @@ export class ClaudeSessionManager {
       sdkClient: this.sdkClient,
       toolingCoordinator: this.toolingCoordinator,
       agentToolMcpRunSessions: this.agentToolMcpRunSessions,
+      integrationRunAccess: this.integrationRunAccess,
       isRunSessionActive: () => this.sessions.get(runId) === exact(),
       terminateRunSession: () => this.releaseExactSession(exact()),
     };

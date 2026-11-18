@@ -1,0 +1,231 @@
+# API-06R server iter6 pid 50764; mode repeat; 2026-10-31T06:28:49.438Z
+[132.49] Platform detection: Windows=false
+[132.49] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-server-ts
+[132.49] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data
+[132.49] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/.env
+[132.49] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/.env
+[132.49] ◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[132.49] Environment variables loaded successfully
+[132.49] Server public base URL configured to: http://127.0.0.1:61410
+[132.49] === Starting logging configuration ===
+[132.49] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-server-ts/logging_config.ini
+[132.49] ============================================================
+[132.49] SERVER PUBLIC URL: http://127.0.0.1:61410
+[132.49] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-server-ts
+[132.49] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data
+[132.49] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/db
+[132.49] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/logs
+[132.49] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/download
+[132.49] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/memory
+[132.49] ============================================================
+[133.49] AgentFactory (Singleton) initialized.
+[133.67] Running Prisma migrations...
+[133.67] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[133.87] Prisma schema loaded from prisma/schema.prisma
+[133.87] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/db/test.db"
+[133.89] 27 migrations found in prisma/migrations
+
+
+[133.89] No pending migrations to apply.
+[133.91] Database migrations completed successfully.
+[133.92] (node:50764) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[133.92] (Use `node --trace-warnings ...` to show where the warning was created)
+[133.92] prisma:info Starting a sqlite pool with 21 connections.
+[133.93] [2026-10-31T06:31:03.365Z] [INFO] [secret-management.vault] Secret vault: application database
+[133.96] Initialized server settings service with 33 predefined settings
+[134.03] AgentRunManager initialized.
+[134.03] AgentRunManager initialized.
+[134.11] Loading workspace packages to trigger registration...
+[134.11] Successfully loaded workspace packages.
+[134.11] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/temp_workspace
+[134.11] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/temp_workspace.
+[134.11] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/data/temp_workspace with fixed ID 'temp_ws_default'
+[134.11] Temp workspace created and cached with ID: temp_ws_default
+[134.11] Registering agent customization processors...
+[134.11] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[134.11] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[134.11] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[134.11] Registered input processor 'UserInputContextBuildingProcessor'.
+[134.11] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[134.11] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[134.11] Agent customization processor registration complete.
+[134.11] Successfully registered tool definition: 'read_file'
+[134.11] Successfully registered tool definition: 'write_file'
+[134.11] Successfully registered tool definition: 'edit_file'
+[134.11] Successfully registered tool definition: 'run_bash'
+[134.11] Successfully registered tool definition: 'start_background_process'
+[134.11] Successfully registered tool definition: 'get_background_processes'
+[134.11] Successfully registered tool definition: 'get_process_output'
+[134.11] Successfully registered tool definition: 'stop_background_process'
+[134.11] Successfully registered tool definition: 'search_web'
+[134.11] Successfully registered tool definition: 'download_media'
+[134.11] Successfully registered tool definition: 'read_url'
+[134.11] Registered required tool unit: Core Tools
+[134.12] Successfully registered tool definition: 'get_project_task'
+[134.12] Successfully registered tool definition: 'list_projects'
+[134.12] Successfully registered tool definition: 'list_project_tasks'
+[134.12] Successfully registered tool definition: 'search_project_tasks'
+[134.12] Successfully registered tool definition: 'create_project'
+[134.12] Successfully registered tool definition: 'update_project'
+[134.12] Successfully registered tool definition: 'create_task'
+[134.12] Successfully registered tool definition: 'update_task'
+[134.12] Successfully registered tool definition: 'delegate_task'
+[134.12] Successfully registered tool definition: 'generate_image'
+[134.12] Successfully registered tool definition: 'edit_image'
+[134.12] Successfully registered tool definition: 'generate_speech'
+[134.12] Successfully registered tool definition: 'generate_video'
+[134.12] Registered required tool unit: Project Task Tools
+[134.12] Registered required tool unit: Task Delegation Tools
+[134.12] Registered required tool unit: Media Tools
+[134.13] Successfully registered tool definition: 'list_available_agents'
+[134.13] Successfully registered tool definition: 'list_peer_nodes'
+[134.13] Registered required tool unit: Agent Discovery Tools
+[134.13] Successfully registered tool definition: 'list_available_agent_runtimes'
+[134.13] Successfully registered tool definition: 'submit_launch_choices'
+[134.13] Registered required tool unit: Agent Runtime Tools
+[134.13] Registered required tool unit: Browser Tools
+[134.13] Successfully registered tool definition: 'publish_artifacts'
+[134.13] Registered required tool unit: Published Artifact Tools
+[134.13] Successfully registered tool definition: 'search_memory'
+[134.13] Registered required tool unit: Memory Tools
+[134.13] Successfully registered tool definition: 'send_message_to'
+[134.13] Successfully registered tool definition: 'get_handoff_rules'
+[134.13] Registered required tool unit: Agent Communication Tools
+[134.13] Overwriting existing tool definition for name: 'search_web'
+[134.13] Successfully registered tool definition: 'search_web'
+[134.13] Registered required tool unit: Search Tools
+[134.15] {"level":30,"time":1793428263591,"pid":50764,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61419"}
+[134.18] {"level":30,"time":1793428263622,"pid":50764,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61410"}
+[134.18] {"level":30,"time":1793428263622,"pid":50764,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:61410"}
+[134.18] {"level":30,"time":1793428263622,"pid":50764,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:61410"}
+[134.18] [2026-10-31T06:31:03.622Z] [INFO] [server.runtime] Server listening on 0.0.0.0:61410
+[134.18] Scheduling Studio-only non-critical startup tasks...
+[134.19] Background cache pre-loading process has started.
+[134.19] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[134.19] Populating MCP server config cache for the first time...
+[134.19] Running MCP tool registration background task...
+[134.19] Loading and registering all MCP server configurations from file...
+[134.19] Background task 'Memory Sync Worker' completed successfully.
+[134.19] Background task 'Memory Search' completed successfully.
+[134.19] MCP server config cache populated with 0 items.
+[134.19] Found 0 total MCP server configs.
+[134.19] Synchronized cached configurations with the core MCP config service.
+[134.19] Pre-loaded 0 MCP server configs into cache.
+[134.20] Finished loading and registering all MCP server configurations.
+[134.20] Background task 'MCP Tool Registration' completed successfully.
+[134.20] Pre-loaded 33 LLM models into cache.
+[134.20] Pre-loaded 7 image models into cache.
+[134.20] Pre-loaded 3 audio models into cache.
+[134.20] Background application cache pre-loading completed.
+[134.20] Background task 'Cache Pre-loading' completed successfully.
+[134.21] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[134.21] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[134.21] Created and registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[134.26] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[134.26] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[134.26] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[134.39] Agent websocket attached for run probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828
+[134.39] Created agent session 6bf4bb9b-d8dd-4dd1-9d3f-2307c45f6a03 for run probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828
+[134.39] Agent WebSocket connected: session=6bf4bb9b-d8dd-4dd1-9d3f-2307c45f6a03, run=probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828
+[134.64] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[134.64] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[134.64] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[134.69] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[134.69] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[134.69] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[134.71] Agent websocket attached for run probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef
+[134.71] Created agent session 0ff3f9f1-6bb7-4c76-a01a-f442ef3e3f5f for run probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef
+[134.71] Agent WebSocket connected: session=0ff3f9f1-6bb7-4c76-a01a-f442ef3e3f5f, run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef
+[135.12] Agent Definition created successfully with ID: probe-team-coordinator-team-codex-6-bq284lmvw0sx3y
+[135.17] Agent Team Definition created successfully with ID: probe-team-bq284lmvw0sx3y-team-codex-6
+[135.17] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[135.17] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[135.17] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[135.25] Agent team websocket attached for team run probe_team_bq284lmvw0sx3y_team_codex_6_df9fa7253df14c4ead4ea2a4f537a60f
+[135.25] Created agent session ba6f0b7b-7038-45c4-aedc-f9d9b026be22 for run probe_team_bq284lmvw0sx3y_team_codex_6_df9fa7253df14c4ead4ea2a4f537a60f
+[135.25] Agent Team WebSocket connected: session=ba6f0b7b-7038-45c4-aedc-f9d9b026be22, run=probe_team_bq284lmvw0sx3y_team_codex_6_df9fa7253df14c4ead4ea2a4f537a60f
+[135.40] {"level":40,"time":1793428264838,"pid":50764,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_JvayZqBb8PhBz7aKOVPeyt_zOQ8RS3vo2cIhej7hStk","statusCode":400,"elapsedMs":0.7703750000000582,"msg":"http request completed"}
+[136.27] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[136.27] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[136.27] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[136.28] Agent Definition created successfully with ID: probe-org-manager-org-claude-6-bq284lmvw0sx3y
+[136.28] [CodexClientThreadRouter] app-server message was not routed {
+[136.28]   kind: 'notification',
+[136.28]   method: 'thread/started',
+[136.28]   requestId: undefined,
+[136.28]   threadCount: 2,
+[136.28]   paramKeys: [ 'thread' ]
+[136.28] }
+[136.32] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[136.33] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[136.33] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[138.18] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace
+[138.18] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-repeat-JcK352/workspace.
+[138.18] Reusing registered workspace ID: agent_ws_1c677ca25faa004f316fba20c029414a5d7bfc46947be9cc9b7e54fe80f17e80
+[138.34] {"level":40,"time":1793428267778,"pid":50764,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_8TuAtyf40kYmPsOSbPX2mx_Vm6mw3U2XttLih9pNMQE","statusCode":400,"elapsedMs":0.3140000000003056,"msg":"http request completed"}
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z stage org start
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z gate AgentOrg 'probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8' closeAndDrain admitted=0 
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z org probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8 terminateOnce start
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z org probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8 gate drained
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z member probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b fence start readinessPending=false activation=false
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z member probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b after readiness run=true stale=false
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z run probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b fence enqueue
+[142.97] [339-DIAG] 2026-10-31T06:31:12.404Z run probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b fence running activeTurn={"kind":"IDENTIFIED","turnId":"probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b:turn:f70bf410-9b44-436e-aed2-d45051957546"} pendingCmd=false dispatch=false
+[142.97] [339-DIAG] 2026-10-31T06:31:12.405Z fence interrupt sent run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b
+[142.97] [339-DIAG] 2026-10-31T06:31:12.405Z fence evaluate run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b:turn:f70bf410-9b44-436e-aed2-d45051957546"} pendingCmd=false
+[142.97] Closed agent session ba6f0b7b-7038-45c4-aedc-f9d9b026be22
+[142.97] Closed agent session 0ff3f9f1-6bb7-4c76-a01a-f442ef3e3f5f
+[142.97] Agent WebSocket disconnected: 0ff3f9f1-6bb7-4c76-a01a-f442ef3e3f5f
+[142.97] Closed agent session 6bf4bb9b-d8dd-4dd1-9d3f-2307c45f6a03
+[142.97] Agent WebSocket disconnected: 6bf4bb9b-d8dd-4dd1-9d3f-2307c45f6a03
+[142.97] [339-DIAG] 2026-10-31T06:31:12.413Z fence evaluate run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b:turn:f70bf410-9b44-436e-aed2-d45051957546"} pendingCmd=false
+[142.98] [339-DIAG] 2026-10-31T06:31:12.414Z fence evaluate run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b:turn:f70bf410-9b44-436e-aed2-d45051957546"} pendingCmd=false
+[142.99] [339-DIAG] 2026-10-31T06:31:12.424Z fence evaluate run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b:turn:f70bf410-9b44-436e-aed2-d45051957546"} pendingCmd=false
+[142.99] [339-DIAG] 2026-10-31T06:31:12.424Z fence evaluate run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b quiescent=false hasActiveTurn=false interruptRequested=true turn={"kind":"NONE"} pendingCmd=false
+[142.99] [339-DIAG] 2026-10-31T06:31:12.425Z run probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b fence settled {"accepted":true}
+[142.99] [339-DIAG] 2026-10-31T06:31:12.425Z member probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b fence result {"accepted":true}
+[142.99] [339-DIAG] 2026-10-31T06:31:12.425Z fence interrupt result run=probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b {"accepted":true,"turnId":"probe_org_manager_org_claude_6_bq284lmvw0sx3y_9e01794641a64aaabb7a1185d83e6e2b:turn:f70bf410-9b44-436e-aed2-d45051957546"}
+[142.99] [339-DIAG] 2026-10-31T06:31:12.425Z org probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8 fenced {"accepted":true}
+[142.99] [339-DIAG] 2026-10-31T06:31:12.425Z org probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8 taskExecutions drained
+[142.99] [339-DIAG] 2026-10-31T06:31:12.425Z org probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8 persistence drained
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z org probe_org_bq284lmvw0sx3y_org_claude_6_af39a6e428374e028f5b5d744c361df8 finished {"accepted":true}
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z stage org end
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z stage team start
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z member probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 fence start readinessPending=false activation=false
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z member probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 after readiness run=true stale=false
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z run probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 fence enqueue
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z run probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 fence running activeTurn={"kind":"IDENTIFIED","turnId":"01a190a7-9b1f-7291-8320-85a9c6d81961"} pendingCmd=false dispatch=false
+[143.75] [339-DIAG] 2026-10-31T06:31:13.186Z fence interrupt sent run=probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0
+[143.76] [339-DIAG] 2026-10-31T06:31:13.201Z fence evaluate run=probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"01a190a7-9b1f-7291-8320-85a9c6d81961"} pendingCmd=false
+[143.76] [339-DIAG] 2026-10-31T06:31:13.201Z fence evaluate run=probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"01a190a7-9b1f-7291-8320-85a9c6d81961"} pendingCmd=false
+[143.76] [339-DIAG] 2026-10-31T06:31:13.201Z fence evaluate run=probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 quiescent=false hasActiveTurn=false interruptRequested=true turn={"kind":"NONE"} pendingCmd=false
+[143.76] [339-DIAG] 2026-10-31T06:31:13.202Z run probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 fence settled {"accepted":true}
+[143.76] [339-DIAG] 2026-10-31T06:31:13.202Z member probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 fence result {"accepted":true}
+[143.76] [339-DIAG] 2026-10-31T06:31:13.202Z fence interrupt result run=probe_team_coordinator_team_codex_6_bq284lmvw0sx_e3e7a2d871a9437a9bf777f2fa5aa1c0 {"accepted":true,"turnId":"01a190a7-9b1f-7291-8320-85a9c6d81961"}
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z stage team end
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z stage standalone roots start
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z gate Agent root 'probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828' closeAndDrain admitted=0 
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z gate Agent root 'probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef' closeAndDrain admitted=0 
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z stage standalone roots end
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z stage agent runs start
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z run probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 fence enqueue
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z run probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef fence enqueue
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z run probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 fence running activeTurn={"kind":"IDENTIFIED","turnId":"01a190a7-9498-7021-b589-0abc555bf016"} pendingCmd=false dispatch=false
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z run probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef fence running activeTurn={"kind":"IDENTIFIED","turnId":"probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef:turn:b42e6088-dbb8-476b-b143-07e1fdc81ed8"} pendingCmd=false dispatch=false
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z fence interrupt sent run=probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828
+[143.76] [339-DIAG] 2026-10-31T06:31:13.203Z fence interrupt sent run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef
+[143.77] [339-DIAG] 2026-10-31T06:31:13.203Z fence evaluate run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef:turn:b42e6088-dbb8-476b-b143-07e1fdc81ed8"} pendingCmd=false
+[143.78] [339-DIAG] 2026-10-31T06:31:13.213Z fence evaluate run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef:turn:b42e6088-dbb8-476b-b143-07e1fdc81ed8"} pendingCmd=false
+[143.78] [339-DIAG] 2026-10-31T06:31:13.214Z fence evaluate run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef:turn:b42e6088-dbb8-476b-b143-07e1fdc81ed8"} pendingCmd=false
+[143.78] [339-DIAG] 2026-10-31T06:31:13.222Z fence evaluate run=probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"01a190a7-9498-7021-b589-0abc555bf016"} pendingCmd=false
+[143.78] [339-DIAG] 2026-10-31T06:31:13.223Z fence evaluate run=probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"01a190a7-9498-7021-b589-0abc555bf016"} pendingCmd=false
+[143.78] [339-DIAG] 2026-10-31T06:31:13.223Z fence evaluate run=probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 quiescent=false hasActiveTurn=false interruptRequested=true turn={"kind":"NONE"} pendingCmd=false
+[143.79] [339-DIAG] 2026-10-31T06:31:13.224Z run probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 fence settled {"accepted":true}
+[143.79] [339-DIAG] 2026-10-31T06:31:13.224Z fence interrupt result run=probe_agent_bq284lmvw0sx3y_55f74b36929c43dab5f745d9f6b91828 {"accepted":true,"turnId":"01a190a7-9498-7021-b589-0abc555bf016"}
+[143.79] [339-DIAG] 2026-10-31T06:31:13.228Z fence evaluate run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef quiescent=false hasActiveTurn=true interruptRequested=true turn={"kind":"IDENTIFIED","turnId":"probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef:turn:b42e6088-dbb8-476b-b143-07e1fdc81ed8"} pendingCmd=false
+[143.79] [339-DIAG] 2026-10-31T06:31:13.228Z fence evaluate run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef quiescent=false hasActiveTurn=false interruptRequested=true turn={"kind":"NONE"} pendingCmd=false
+[143.79] [339-DIAG] 2026-10-31T06:31:13.229Z run probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef fence settled {"accepted":true}
+[143.79] [339-DIAG] 2026-10-31T06:31:13.229Z fence interrupt result run=probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef {"accepted":true,"turnId":"probe_agent_bq284lmvw0sx3y_fdaf707cdcf145ab962ef94dfba2d7ef:turn:b42e6088-dbb8-476b-b143-07e1fdc81ed8"}
+[143.79] [CodexAppServerClient] stderr: [2m2026-10-31T06:31:13.232844Z[0m [31mERROR[0m [2mcodex_core::session[0m[2m:[0m failed to record rollout items: thread 01a190a7-9352-7c00-89f8-3db5b75d1c3f not found
+[143.80] [CodexAppServerClient] stderr: [2m2026-10-31T06:31:13.233846Z[0m [31mERROR[0m [2mcodex_core::session[0m[2m:[0m failed to record rollout items: thread 01a190a7-9af1-74b0-8a02-631f914417dd not found
+[144.47] [339-DIAG] 2026-10-31T06:31:13.908Z stage agent runs end

@@ -1,0 +1,98 @@
+{
+ "header": {
+  "id": "IMP-11",
+  "command": "pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<tmp> --cases=MSP-44,MSP-45,MSP-46",
+  "commit": "2d01ca639d",
+  "env": "clean env (env -i, temp HOME); test-owned nodes; scripted AGY CLI; headless Chrome",
+  "date": "2026-11-12T05:09:44.935Z",
+  "source": "excerpt of mobile-shell-probe.json"
+ },
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-44": "Pass",
+   "MSP-45": "Pass",
+   "MSP-46": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "MSP-44": {
+  "result": "Pass",
+  "seconds": 26.8,
+  "run": "fact_checker_0a192762182f4c87920c831610e4bcf7",
+  "firstTask": {
+   "taskId": "2328a04f-ab01-46c4-ab40-5696a50f1144/task-11",
+   "status": "running",
+   "command": "sleep 25 # background step 11",
+   "summary": null,
+   "startedAt": "2026-11-12T05:08:52.930Z"
+  },
+  "listed": [
+   {
+    "status": "running",
+    "text": "sleep 25 # background step 11RunningStarted 05:08 AM"
+   }
+  ],
+  "ended": [
+   {
+    "status": "failed",
+    "text": "sleep 25 # background step 11FailedCommand exited with code 1Started 05:08 AM"
+   }
+  ],
+  "section": "BACKGROUND TASKS 1 ended sleep 25 # background step 11 Failed Command exited with code 1 Started 05:08 AM"
+ },
+ "MSP-45": {
+  "result": "Pass",
+  "seconds": 8.5,
+  "before": [
+   {
+    "status": "failed",
+    "text": "sleep 25 # background step 11FailedCommand exited with code 1Started 05:08 AM"
+   }
+  ],
+  "live": [
+   {
+    "status": "running",
+    "text": "sleep 8 # background step 21RunningStarted 05:09 AM"
+   },
+   {
+    "status": "failed",
+    "text": "sleep 25 # background step 11FailedCommand exited with code 1Started 05:08 AM"
+   }
+  ],
+  "completed": [
+   {
+    "status": "completed",
+    "text": "sleep 8 # background step 21CompletedCommand exited with code 0Started 05:09 AM"
+   },
+   {
+    "status": "failed",
+    "text": "sleep 25 # background step 11FailedCommand exited with code 1Started 05:08 AM"
+   }
+  ]
+ },
+ "MSP-46": {
+  "result": "Pass",
+  "seconds": 14.9,
+  "deskRun": "fact_checker_b41bbc287b834cdebdbad09efcda6307",
+  "task": {
+   "taskId": "222afd1b-12dc-4b9c-a7fa-c61df625f953/task-11",
+   "status": "running",
+   "command": "sleep 60 # background step 11",
+   "summary": null,
+   "startedAt": "2026-11-12T05:09:28.184Z"
+  },
+  "beforeReload": [
+   {
+    "status": "running",
+    "text": "sleep 60 # background step 11RunningShell"
+   }
+  ],
+  "afterReload": [
+   {
+    "status": "running",
+    "text": "sleep 60 # background step 11RunningShell"
+   }
+  ]
+ }
+}

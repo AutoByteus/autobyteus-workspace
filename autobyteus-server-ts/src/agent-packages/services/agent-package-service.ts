@@ -34,6 +34,8 @@ import {
   mapLocalPackage,
 } from "./agent-package-mappers.js";
 import { GitHubAgentPackageUpdates } from "./github-agent-package-updates.js";
+import { PackageEditCapture } from "./package-edit-capture.js";
+import { PersonalSettingsService } from "../../personal-settings/services/personal-settings-service.js";
 
 type ReloadAgentPackageDefinitionsFn = () => Promise<void>;
 type PackageFolderWatchStatusFn = (rootPath: string) => PackageFolderWatchStatus | null;
@@ -80,6 +82,7 @@ export class AgentPackageService {
     reloadAgentPackageDefinitions?: ReloadAgentPackageDefinitionsFn;
     packageFolderWatchStatus?: PackageFolderWatchStatusFn;
     skillNames?: SkillNameGuard;
+    packageEditCapture?: Pick<PackageEditCapture, "captureAndBackUp">;
   } = {}) {
     this.rootSettingsStore =
       dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
@@ -100,6 +103,8 @@ export class AgentPackageService {
       installer: this.installer,
       reloadAgentPackageDefinitions: this.reloadAgentPackageDefinitions,
       assertPackageSkillNames: (rootPath) => this.assertPackageSkillNames(rootPath),
+      packageEditCapture: dependencies.packageEditCapture
+        ?? new PackageEditCapture({ installer: this.installer, personalSettings: () => PersonalSettingsService.getInstance() }),
     });
   }
 

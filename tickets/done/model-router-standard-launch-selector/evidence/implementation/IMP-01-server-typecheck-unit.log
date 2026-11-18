@@ -1,0 +1,241 @@
+# IMP-01
+# Command: pnpm -C autobyteus-server-ts typecheck && pnpm -C autobyteus-server-ts test:unit
+# Commit: 09f99eed32
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-27T12:06:36Z
+
+typecheck exit=0
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/model-router-standard-launch-selector/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/model-router-standard-launch-selector/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+(node:51551) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:51551) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/model-router-standard-launch-selector/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/model-router-standard-launch-selector/autobyteus-server-ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-851EuW/workspace.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-wpmdii/workspace.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/secret-management/live-e2e-compaction-boundary.test.ts (10 tests | 2 failed) 24ms
+     × deepseek.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports 10ms
+     × lmstudio.qwen36.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports 3ms
+(node:51962) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:51962) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:51962) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:51962) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:51962) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:51962) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:52356) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:52356) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:52356) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:52356) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:52364) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+(node:52364) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+runtime-bootstrap-console-check
+runtime-bootstrap-fastify-check
+runtime-bootstrap-info-should-appear
+runtime-bootstrap-debug-should-appear
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-zBkSF0/workspace.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/secret-management/live-e2e-compaction-observation.test.ts (2 tests | 1 failed) 12ms
+   × captures post failure before termination/deletion and rethrows original without provider traffic 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+ FAIL  tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports
+AssertionError: expected Error: Native command host scope is requi… to be Error: AGENT_SETUP_REACHED_WITHOUT_GENERA… // Object.is equality
+
+- Expected
++ Received
+
+  Error {
+-   "message": "AGENT_SETUP_REACHED_WITHOUT_GENERATION",
++   "message": "Native command host scope is required",
+  }
+
+ ❯ tests/unit/secret-management/live-e2e-compaction-boundary.test.ts:60:57
+     58|           throw reached; // Stop at setup; no generation/network.
+     59|         });
+     60|       await expect(scenario.executeCompactionAgentFlow()).rejects.toBe…
+       |                                                         ^
+     61|       expect(backend).toHaveBeenCalledTimes(1);
+     62|       expect(create).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+AssertionError: expected Error: Native command host scope is requi… to be Error: synthetic-private-value { …(1) } // Object.is equality
+
+- Expected
++ Received
+
+  Error {
+-   "message": "synthetic-private-value",
+-   "code": "ETIMEDOUT",
++   "message": "Native command host scope is required",
+  }
+
+ ❯ tests/unit/secret-management/live-e2e-compaction-observation.test.ts:34:7
+     32|     await expect(scenario.executeCompactionAgentFlow((value:any)=>{
+     33|       if(value.event==='managed_compaction_all_exit'){order.push('obse…
+     34|     })).rejects.toBe(failure);
+       |       ^
+     35|     expect(order).toEqual(['observe','terminate']);
+     36|     expect(observed).toMatchObject({stage:'post-turn-1',completedTurns…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  2 failed | 859 passed | 4 skipped (865)
+      Tests  3 failed | 7183 passed | 7 skipped (7193)
+   Start at  13:06:52
+   Duration  653.00s (transform 17.11s, setup 10.54s, import 292.69s, tests 264.45s, environment 660ms)
+
+test:unit exit=1
+
+# Triage: the 3 failures (secret-management/live-e2e-compaction-*: "Native command host scope is required") are the base failures recorded as FU-010 of autobyteus-32 (delivery DEL-03); this branch changes nothing under secret-management.

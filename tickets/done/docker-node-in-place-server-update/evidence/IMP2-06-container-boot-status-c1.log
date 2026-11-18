@@ -1,0 +1,39 @@
+# IMP2-06 boot of the step-2 image: starter, built-in package, C2 status, C1, owner-only route
+# Image: autobyteus-server-305-test:step2 sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9, built from b1029fc1b0's Dockerfile, starter and server source (IMP2-05)
+# Container: ab305-step2 on 127.0.0.1:<free port>, test-owned volumes ab305-step2-server-packages and ab305-step2-data only; removed afterwards with docker rm -f -v and docker volume rm. The user's nodes were not touched.
+# Environment: macOS arm64 host, Docker 29.0.1. Date: 2026-10-30
+
+$ docker exec ab305-step2 node /opt/autobyteus/starter/cli.mjs status; echo exit=$?
+{"version":"1.5.11-beta.5","state":"running","server":{"pid":101,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+exit=0
+$ curl /rest/node-update?target=1.5.11-beta.6
+{"inPlaceUpdate":"available","version":"1.5.11-beta.5","target":{"version":"1.5.11-beta.6","relation":"newer"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+$ curl /rest/node-update?target=1.5.11-beta.5
+{"inPlaceUpdate":"available","version":"1.5.11-beta.5","target":{"version":"1.5.11-beta.5","relation":"same"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+$ curl -w %{http_code} /rest/node-update?target=latest
+{"code":"INVALID_VERSION","message":"'latest' is not a release version (X.Y.Z or X.Y.Z-beta.N)"} 400
+$ curl with a phone (mobile) credential: the made-up value 'mra_phone' sent as the bearer token, GET /rest/node-update
+{"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Mobile credentials do not authorize owner-management routes."} 403
+$ supervisorctl status autobyteus_server
+autobyteus_server                RUNNING   pid 51, uptime 0:00:03
+starter (supervisord child) pid 51: node /opt/autobyteus/starter/starter.mjs 
+server pid 101: /usr/bin/node /opt/autobyteus/server-package/dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data 
+server ppid: 51, server pgid: 101, starter pgid: 51
+server cwd: /opt/autobyteus/server-package
+server env: AUTOBYTEUS_STARTER_SOCKET=/run/autobyteus/starter.sock
+srw------- 1 root root 0 Oct 30 17:08 /run/autobyteus/starter.sock
+state.json: {"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+1
+cli.mjs
+data-copy.mjs
+package-store.mjs
+release-version.mjs
+server-supervisor.mjs
+starter-log.mjs
+starter.mjs
+starter-paths.mjs
+starter-socket.mjs
+state-file.mjs
+system-facts.mjs
+update-status.mjs
+{"time":"2026-10-30T17:08:27.202Z","starter":"server-started","pid":101,"version":"1.5.11-beta.5","source":"builtIn"}

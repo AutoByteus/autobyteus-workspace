@@ -14,7 +14,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getProjectService, resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
-import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskService, getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
@@ -22,6 +22,7 @@ import {
   type ProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 const env = process.env;
 const enabled = env["RUN_PROJECT_INDEX_STATUS_LOAD"] === "1";
@@ -29,7 +30,7 @@ const PROJECTS = Number(env["TEST_STATUS_LOAD_PROJECTS"] ?? 20);
 const TASKS = Number(env["TEST_STATUS_LOAD_TASKS"] ?? 1000);
 const FIRST_LOAD_BUDGET_MS = 1000;
 const REFRESH_BUDGET_MS = 300;
-const reset = () => { resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)]!;
 
 describe.runIf(enabled)("Embedding section status load (QR-001)", () => {
@@ -49,16 +50,16 @@ describe.runIf(enabled)("Embedding section status load (QR-001)", () => {
     reset();
     fake = await createFakeEmbeddingIndex({ rootDir: path.join(root, "embeddings"), filesPresent: true });
     // As composed in production (index-after-write kept out of the measurement).
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+    tasks = new ProjectTaskService(withTaskRunResources({ searchCleanup: processProjectTaskSearchCleanup, changes: {
       ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
-    } });
+    } }));
     startSearch();
     const started = Date.now();
     for (let p = 0; p < PROJECTS; p++) {
       const { projectId } = await getProjectService().createProject({ name: `Load ${String(p).padStart(2, "0")}` });
       for (let start = 0; start < TASKS; start += 50) {
         await Promise.all(Array.from({ length: Math.min(50, TASKS - start) }, (_, i) =>
-          tasks.createTask({ projectId, description: `Task ${start + i} of project ${p}: docker image sidebar token cost ${(start + i) % 97}` })));
+          tasks.createTask({ projectId, title: `Task ${start + i} of project ${p}: docker image sidebar token cost ${(start + i) % 97}`, description: `Task ${start + i} of project ${p}: docker image sidebar token cost ${(start + i) % 97}` })));
       }
       seeded.projects++;
       seeded.tasks += TASKS;

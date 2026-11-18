@@ -5,6 +5,7 @@ import { antigravityTranslation } from "./antigravity-translation.js";
 import { autobyteusTranslation } from "./autobyteus-translation.js";
 import { claudeTranslation } from "./claude-translation.js";
 import { codexTranslation } from "./codex-translation.js";
+import { deepSeekHarnessTranslation } from "./deepseek-harness-translation.js";
 import { grokTranslation } from "./grok-translation.js";
 
 /** A tool call as recorded: its name and arguments. */
@@ -23,10 +24,15 @@ export type BodyPart =
   | Readonly<{ kind: "diff"; lines: readonly string[] }>
   /** Written file content: the first lines when long. */
   | Readonly<{ kind: "content"; text: string }>
+  /** The free text of a message or a task, shown with the argument line limit. */
+  | Readonly<{ kind: "message"; text: string }>
   /** A generic tool's long or multi-line argument, on its own `<key>:` lines (§5). */
   | Readonly<{ kind: "argument"; key: string; text: string }>
   /** A generic tool's result under a `result:` line, used when argument lines are present (§5). */
   | Readonly<{ kind: "labeled_result"; text: string }>;
+
+/** A tool of another server: the tool and the server it belongs to. */
+export type QualifiedToolName = Readonly<{ tool: string; server: string }>;
 
 /** One built-in call as a plain action line: the head (`Command: …`), outcome and details. */
 export type BuiltInLine = Readonly<{ head: string; outcome: ToolOutcome; parts: readonly BodyPart[] }>;
@@ -40,12 +46,17 @@ export type BuiltInConverter = (call: RecordedCall, result: RecordedResult | nul
 export type RuntimeTranslation = Readonly<{
   /** The runtime label of the journal header. */
   label: string;
-  /** Built-in tools by recorded name (contract §4); any other name uses the generic rule (§5). */
+  /**
+   * The runtime's own tools by recorded name: built-in and runtime-only tools (contract §4). A name
+   * that is not here goes to the platform converters, then the generic rule (`toolCallLine`).
+   */
   builtInTools: ReadonlyMap<string, BuiltInConverter>;
   /** A result with this runtime's envelopes and runtime texts removed. */
   normalizeResult(result: RecordedResult): NormalizedToolResult;
   /** Rewrites an older wrapped call into its recorded inner call (AGY `call_mcp_tool`). */
   unwrapCall?(call: RecordedCall): RecordedCall;
+  /** Splits a name this runtime qualifies with its server (`server.tool`); null for an unqualified name. */
+  splitToolName?(name: string): QualifiedToolName | null;
   normalizeAgentText?(text: string): string;
   normalizeUserText?(text: string): string;
 }>;
@@ -65,6 +76,7 @@ export const getRuntimeTranslation = (runtimeKind: RuntimeKind | string | null):
     [RuntimeKind.CODEX_APP_SERVER, codexTranslation],
     [RuntimeKind.ANTIGRAVITY_CLI, antigravityTranslation],
     [RuntimeKind.GROK_BUILD, grokTranslation],
+    [RuntimeKind.DEEPSEEK_HARNESS, deepSeekHarnessTranslation],
     [RuntimeKind.AUTOBYTEUS, autobyteusTranslation],
   ]);
   return (runtimeKind && registry.get(runtimeKind)) || genericTranslation;

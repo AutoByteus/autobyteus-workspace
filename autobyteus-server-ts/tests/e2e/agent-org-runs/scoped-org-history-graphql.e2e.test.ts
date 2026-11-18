@@ -9,6 +9,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type Json = Record<string, any>;
 type Server = Awaited<ReturnType<typeof startBuiltTestServer>>;
@@ -106,16 +107,28 @@ describe("scoped Org history real HTTP lifecycle", () => {
     const invalidPayload = await invalid.json();
     expect(invalidPayload.errors?.[0].message).toContain("orgRunId is required");
     expect(await readRoot(first, aId)).toEqual(storedA);
-    const badConfig = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
-      llmConfig: { unsupported_setting: true } } });
-    expect(badConfig).toMatchObject({ success: false, agentOrgRunId: null });
+    // A setting the model's schema does not declare is left out of the saved configuration, not refused.
+    const undeclared = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
+      llmConfig: { reasoning_effort: "low", unsupported_setting: true } } });
+    expect(undeclared).toMatchObject({ success: true });
+    const undeclaredRoot = await readRoot(first, undeclared.agentOrgRunId);
+    expect(JSON.stringify(undeclaredRoot)).not.toContain("unsupported_setting");
+    expect(undeclaredRoot.org.rootOrg.members.find((m: Json) => m.address === "/lead").launchConfiguration.llmConfig)
+      .toEqual({ reasoning_effort: "low" });
     expect(await fs.readFile(treeFile)).toEqual(bytes);
-    const restored = await gql(`mutation($id: String!) {
-      restoreAgentOrgRun(agentOrgRunId: $id) { success message agentOrgRunId }
-    }`, { id: aId });
-    expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: aId });
+    // A configuration that is not an object is still refused, and the refused creation records nothing.
+    const rootsBeforeRefusal = await readRoots(first);
+    const badConfig = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
+      llmConfig: "not-an-object" as never } });
+    expect(badConfig).toMatchObject({ success: false, agentOrgRunId: null });
+    expect(badConfig.message).toContain("Model configuration must be null or an object.");
+    expect(await readRoots(first)).toEqual(rootsBeforeRefusal);
+    expect(await fs.readFile(treeFile)).toEqual(bytes);
+    // The user continues the stopped org by a message to one of its agents on its view (autobyteus-461 CR-461-008).
+    await restoreByMemberMessage({ url: first.serverUrl, gql: (query, variables) => gql(query, variables ?? {}), kind: "org", runId: aId,
+      memberRunId: members[0].agentRunId });
     expect(await readRoot(first, aId)).toMatchObject({ is_active: true });
-    await stop(aId); await stop(b.agentOrgRunId);
+    await stop(aId); await stop(b.agentOrgRunId); await stop(undeclared.agentOrgRunId);
     const beforeRestart = await readRoots(first);
     const settledBytes = await fs.readFile(treeFile);
     await first.stop(); servers.delete(first);

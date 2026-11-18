@@ -182,6 +182,9 @@ export class AgentRunActivationRegistry {
     record.quarantineError = result.error;
   }
 
+  /** Observation only: no pruning, attachment release, retirement or lifecycle events. */
+  peekPublishedRun(runId: string): AgentRun | null { return this.activeRuns.get(runId) ?? null; }
+
   getActiveRun(runId: string): AgentRun | null {
     const run = this.activeRuns.get(runId) ?? null;
     if (!run) return null;

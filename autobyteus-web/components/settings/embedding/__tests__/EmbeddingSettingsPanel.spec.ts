@@ -10,6 +10,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 import EmbeddingSettingsPanel from '../EmbeddingSettingsPanel.vue'
 import { BUSY_POLL_MS, IDLE_POLL_MS } from '~/composables/settings/useEmbeddingSettings'
 import type { EmbeddingModelInfo, EmbeddingSettingsStatus, ProjectTaskIndex } from '~/types/embeddingSettings'
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 
 const GRANITE = 'granite-embedding-small-english-r2'
 const LEAF = 'mdbr-leaf-ir'
@@ -144,7 +145,7 @@ describe('EmbeddingSettingsPanel', () => {
     expect(textOf(wrapper!.get(`[data-testid="embedding-model-${GRANITE}-status"]`))).toBe('Active · Preparing…')
     expect(wrapper!.get(`[data-testid="embedding-model-${GRANITE}-preparing"]`).text()).toBe('Downloading the model: 10 of 55 MB · 18%')
     expect(wrapper!.get(`[data-testid="embedding-model-${GRANITE}-actions"]`).findAll('button')).toHaveLength(0)
-    expect(projectRow('p-billing').text()).toContain('Waiting for the model…')
+    expect(projectRow('p-billing').text()).toContain('Waiting…')
 
     modelOf(GRANITE).activeDisplay = { state: 'PREPARING', phase: 'LOADING', done: 0, total: 0, reason: null }
     await vi.advanceTimersByTimeAsync(BUSY_POLL_MS)
@@ -154,6 +155,25 @@ describe('EmbeddingSettingsPanel', () => {
     await vi.advanceTimersByTimeAsync(BUSY_POLL_MS)
     await flushPromises()
     expect(wrapper!.get('[data-testid="embedding-announce"]').text()).toBe('IBM Granite Embedding Small English R2 is ready.')
+  })
+
+  // autobyteus-320 (AC-007): one Waiting state whatever the model's state, in both languages.
+  it.each([
+    ['en', 'READY', 'Waiting…'], ['en', 'PREPARING', 'Waiting…'],
+    ['zh-CN', 'READY', '等待中…'], ['zh-CN', 'PREPARING', '等待中…'],
+  ] as const)('shows a requested Project as one Waiting state (%s, model %s)', async (locale, modelState, text) => {
+    await localizationRuntime.setPreference(locale)
+    try {
+      current.projects = [project('p-billing', 'Billing', 'WAITING', { total: 12 })]
+      if (modelState === 'PREPARING') {
+        modelOf(GRANITE).activeDisplay = { state: 'PREPARING', phase: 'LOADING', done: 0, total: 0, reason: null }
+      }
+      await mountPanel()
+      const status = wrapper!.get('[data-testid="embedding-project-p-billing-status"]')
+      expect(status.text()).toBe(text)
+    } finally {
+      await localizationRuntime.setPreference('en')
+    }
   })
 
   it('downloads ahead with progress and Cancel only, and shows a failed download with its reason and Retry', async () => {

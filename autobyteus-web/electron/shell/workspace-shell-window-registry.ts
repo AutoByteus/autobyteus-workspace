@@ -3,11 +3,11 @@ import type { WorkspaceShellWindow } from './workspace-shell-window';
 
 export class WorkspaceShellWindowRegistry {
   private readonly shellsById = new Map<number, WorkspaceShellWindow>();
-  private readonly shellIdByNodeId = new Map<string, number>();
+  private readonly shellIdByEntryId = new Map<string, number>();
 
   register(shell: WorkspaceShellWindow): void {
     this.shellsById.set(shell.shellId, shell);
-    this.shellIdByNodeId.set(shell.nodeId, shell.shellId);
+    this.shellIdByEntryId.set(shell.entryId, shell.shellId);
   }
 
   unregister(shellId: number): void {
@@ -17,8 +17,8 @@ export class WorkspaceShellWindowRegistry {
     }
 
     this.shellsById.delete(shellId);
-    if (this.shellIdByNodeId.get(shell.nodeId) === shellId) {
-      this.shellIdByNodeId.delete(shell.nodeId);
+    if (this.shellIdByEntryId.get(shell.entryId) === shellId) {
+      this.shellIdByEntryId.delete(shell.entryId);
     }
   }
 
@@ -26,23 +26,23 @@ export class WorkspaceShellWindowRegistry {
     return this.shellsById.get(shellId) ?? null;
   }
 
-  getByNodeId(nodeId: string): WorkspaceShellWindow | null {
-    const shellId = this.shellIdByNodeId.get(nodeId);
+  getByEntryId(entryId: string): WorkspaceShellWindow | null {
+    const shellId = this.shellIdByEntryId.get(entryId);
     if (typeof shellId !== 'number') {
       return null;
     }
     return this.getByShellId(shellId);
   }
 
-  list(): Array<{ windowId: number; nodeId: string }> {
+  list(): Array<{ windowId: number; entryId: string }> {
     return Array.from(this.shellsById.values()).map((shell) => ({
       windowId: shell.shellId,
-      nodeId: shell.nodeId,
+      entryId: shell.entryId,
     }));
   }
 
-  getNodeIdForShell(shellId: number): string | null {
-    return this.shellsById.get(shellId)?.nodeId ?? null;
+  getEntryIdForShell(shellId: number): string | null {
+    return this.shellsById.get(shellId)?.entryId ?? null;
   }
 
   isOwnedMainFrame(webContentsId: number, frame: WebFrameMain): boolean {
@@ -70,8 +70,8 @@ export class WorkspaceShellWindowRegistry {
     return true;
   }
 
-  closeNodeWindow(nodeId: string): void {
-    this.getByNodeId(nodeId)?.close();
+  closeNodeWindow(entryId: string): void {
+    this.getByEntryId(entryId)?.close();
   }
 
   broadcast(channel: string, payload: unknown): void {
